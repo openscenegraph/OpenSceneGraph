@@ -26,13 +26,34 @@ TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS);
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	I_BaseType(osg::Referenced);
-	I_Method0(const std::string &, getName);
-	I_Method0(const std::string &, getFullName);
-	I_Method0(osgDB::DynamicLibrary::HANDLE, getHandle);
-	I_Method1(osgDB::DynamicLibrary::PROC_ADDRESS, getProcAddress, IN, const std::string &, procName);
-	I_StaticMethod1(osgDB::DynamicLibrary *, loadLibrary, IN, const std::string &, libraryName);
-	I_ReadOnlyProperty(const std::string &, FullName);
-	I_ReadOnlyProperty(osgDB::DynamicLibrary::HANDLE, Handle);
-	I_ReadOnlyProperty(const std::string &, Name);
+	I_Method0(const std::string &, getName,
+	          __C5_std_string_R1__getName,
+	          "return name of library stripped of path. ",
+	          "");
+	I_Method0(const std::string &, getFullName,
+	          __C5_std_string_R1__getFullName,
+	          "return name of library including full path to it. ",
+	          "");
+	I_Method0(osgDB::DynamicLibrary::HANDLE, getHandle,
+	          __HANDLE__getHandle,
+	          "return handle to .dso/.dll dynamic library itself. ",
+	          "");
+	I_Method1(osgDB::DynamicLibrary::PROC_ADDRESS, getProcAddress, IN, const std::string &, procName,
+	          __PROC_ADDRESS__getProcAddress__C5_std_string_R1,
+	          "return address of function located in library. ",
+	          "");
+	I_StaticMethod1(osgDB::DynamicLibrary *, loadLibrary, IN, const std::string &, libraryName,
+	                __DynamicLibrary_P1__loadLibrary__C5_std_string_R1_S,
+	                "returns a pointer to a DynamicLibrary object on successfully opening of library returns NULL on failure. ",
+	                "");
+	I_SimpleProperty(const std::string &, FullName, 
+	                 __C5_std_string_R1__getFullName, 
+	                 0);
+	I_SimpleProperty(osgDB::DynamicLibrary::HANDLE, Handle, 
+	                 __HANDLE__getHandle, 
+	                 0);
+	I_SimpleProperty(const std::string &, Name, 
+	                 __C5_std_string_R1__getName, 
+	                 0);
 END_REFLECTOR
 

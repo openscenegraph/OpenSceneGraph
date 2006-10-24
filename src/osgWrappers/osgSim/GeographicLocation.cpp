@@ -22,16 +22,48 @@
 
 BEGIN_OBJECT_REFLECTOR(osgSim::GeographicLocation)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Constructor2(IN, double, lat, IN, double, lon);
-	I_Method0(double *, ptr);
-	I_Method0(const double *, ptr);
-	I_Method2(void, set, IN, double, lat, IN, double, lon);
-	I_Method0(double &, latitude);
-	I_Method0(double &, longitude);
-	I_Method0(double, latitude);
-	I_Method0(double, longitude);
-	I_Method0(bool, valid);
-	I_Method0(bool, isNaN);
+	I_Constructor0(____GeographicLocation,
+	               "",
+	               "");
+	I_Constructor2(IN, double, lat, IN, double, lon,
+	               ____GeographicLocation__double__double,
+	               "",
+	               "");
+	I_Method0(double *, ptr,
+	          __double_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const double *, ptr,
+	          __C5_double_P1__ptr,
+	          "",
+	          "");
+	I_Method2(void, set, IN, double, lat, IN, double, lon,
+	          __void__set__double__double,
+	          "",
+	          "");
+	I_Method0(double &, latitude,
+	          __double_R1__latitude,
+	          "",
+	          "");
+	I_Method0(double &, longitude,
+	          __double_R1__longitude,
+	          "",
+	          "");
+	I_Method0(double, latitude,
+	          __double__latitude,
+	          "",
+	          "");
+	I_Method0(double, longitude,
+	          __double__longitude,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(bool, isNaN,
+	          __bool__isNaN,
+	          "",
+	          "");
 END_REFLECTOR
 

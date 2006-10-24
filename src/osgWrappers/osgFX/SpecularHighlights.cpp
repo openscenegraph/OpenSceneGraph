@@ -26,28 +26,92 @@
 
 BEGIN_OBJECT_REFLECTOR(osgFX::SpecularHighlights)
 	I_BaseType(osgFX::Effect);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgFX::SpecularHighlights &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(const char *, effectName);
-	I_Method0(const char *, effectDescription);
-	I_Method0(const char *, effectAuthor);
-	I_Method0(int, getLightNumber);
-	I_Method1(void, setLightNumber, IN, int, n);
-	I_Method0(int, getTextureUnit);
-	I_Method1(void, setTextureUnit, IN, int, n);
-	I_Method0(const osg::Vec4 &, getSpecularColor);
-	I_Method1(void, setSpecularColor, IN, const osg::Vec4 &, color);
-	I_Method0(float, getSpecularExponent);
-	I_Method1(void, setSpecularExponent, IN, float, e);
-	I_Property(int, LightNumber);
-	I_Property(const osg::Vec4 &, SpecularColor);
-	I_Property(float, SpecularExponent);
-	I_Property(int, TextureUnit);
+	I_Constructor0(____SpecularHighlights,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgFX::SpecularHighlights &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____SpecularHighlights__C5_SpecularHighlights_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(const char *, effectName,
+	          __C5_char_P1__effectName,
+	          "get the name of this Effect ",
+	          "");
+	I_Method0(const char *, effectDescription,
+	          __C5_char_P1__effectDescription,
+	          "get a brief description of this Effect ",
+	          "");
+	I_Method0(const char *, effectAuthor,
+	          __C5_char_P1__effectAuthor,
+	          "get the effect author's name ",
+	          "");
+	I_Method0(int, getLightNumber,
+	          __int__getLightNumber,
+	          "get the OpenGL light number ",
+	          "");
+	I_Method1(void, setLightNumber, IN, int, n,
+	          __void__setLightNumber__int,
+	          "set the OpenGL light number that will be used in lighting computations ",
+	          "");
+	I_Method0(int, getTextureUnit,
+	          __int__getTextureUnit,
+	          "get the texture unit number ",
+	          "");
+	I_Method1(void, setTextureUnit, IN, int, n,
+	          __void__setTextureUnit__int,
+	          "set the texture unit that will be used to apply the cube map ",
+	          "");
+	I_Method0(const osg::Vec4 &, getSpecularColor,
+	          __C5_osg_Vec4_R1__getSpecularColor,
+	          "get the specular color ",
+	          "");
+	I_Method1(void, setSpecularColor, IN, const osg::Vec4 &, color,
+	          __void__setSpecularColor__C5_osg_Vec4_R1,
+	          "set the specular color ",
+	          "");
+	I_Method0(float, getSpecularExponent,
+	          __float__getSpecularExponent,
+	          "get the specular exponent ",
+	          "");
+	I_Method1(void, setSpecularExponent, IN, float, e,
+	          __void__setSpecularExponent__float,
+	          "set the specular exponent ",
+	          "");
+	I_SimpleProperty(int, LightNumber, 
+	                 __int__getLightNumber, 
+	                 __void__setLightNumber__int);
+	I_SimpleProperty(const osg::Vec4 &, SpecularColor, 
+	                 __C5_osg_Vec4_R1__getSpecularColor, 
+	                 __void__setSpecularColor__C5_osg_Vec4_R1);
+	I_SimpleProperty(float, SpecularExponent, 
+	                 __float__getSpecularExponent, 
+	                 __void__setSpecularExponent__float);
+	I_SimpleProperty(int, TextureUnit, 
+	                 __int__getTextureUnit, 
+	                 __void__setTextureUnit__int);
 END_REFLECTOR
 

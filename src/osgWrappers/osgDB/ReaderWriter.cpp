@@ -34,32 +34,109 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter &, rw, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, acceptsExtension, IN, const std::string &, x);
-	I_MethodWithDefaults4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, x, , IN, osgDB::ReaderWriter::ArchiveStatus, x, , IN, unsigned, int, 4096, IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, openArchive, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readImage, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readNode, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL);
+	I_Constructor0(____ReaderWriter,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter &, rw, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ReaderWriter__C5_ReaderWriter_R1__C5_osg_CopyOp,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, acceptsExtension, IN, const std::string &, x,
+	          __bool__acceptsExtension__C5_std_string_R1,
+	          "",
+	          "");
+	I_MethodWithDefaults4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, x, , IN, osgDB::ReaderWriter::ArchiveStatus, x, , IN, unsigned, int, 4096, IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__openArchive__C5_std_string_R1__ArchiveStatus__unsigned__C5_Options_P1,
+	                      "open an archive for reading, writing or or to create an empty archive for writing to. ",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, openArchive, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__openArchive__std_istream_R1__C5_Options_P1,
+	                      "open an archive for reading. ",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readObject__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readImage__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readHeightField__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readNode__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeObject__C5_osg_Object_R1__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeImage__C5_osg_Image_R1__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeHeightField__C5_osg_HeightField_R1__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readObject__std_istream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readImage, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readImage__std_istream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readHeightField__std_istream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readNode, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __ReadResult__readNode__std_istream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeObject__C5_osg_Object_R1__std_ostream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeImage__C5_osg_Image_R1__std_ostream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeHeightField__C5_osg_HeightField_R1__std_ostream_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      __WriteResult__writeNode__C5_osg_Node_R1__std_ostream_R1__C5_Options_P1,
+	                      "",
+	                      "");
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
@@ -74,25 +151,77 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor1(IN, const std::string &, str);
-	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter::Options &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setOptionString, IN, const std::string &, str);
-	I_Method0(const std::string &, getOptionString);
-	I_Method1(void, setDatabasePath, IN, const std::string &, str);
-	I_Method0(osgDB::FilePathList &, getDatabasePathList);
-	I_Method0(const osgDB::FilePathList &, getDatabasePathList);
-	I_Method1(void, setObjectCacheHint, IN, osgDB::ReaderWriter::Options::CacheHintOptions, useObjectCache);
-	I_Method0(osgDB::ReaderWriter::Options::CacheHintOptions, getObjectCacheHint);
-	I_WriteOnlyProperty(const std::string &, DatabasePath);
-	I_ReadOnlyProperty(osgDB::FilePathList &, DatabasePathList);
-	I_Property(osgDB::ReaderWriter::Options::CacheHintOptions, ObjectCacheHint);
-	I_Property(const std::string &, OptionString);
+	I_Constructor0(____Options,
+	               "",
+	               "");
+	I_Constructor1(IN, const std::string &, str,
+	               ____Options__C5_std_string_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter::Options &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Options__C5_Options_R1__C5_osg_CopyOp,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setOptionString, IN, const std::string &, str,
+	          __void__setOptionString__C5_std_string_R1,
+	          "Set the general Options string. ",
+	          "");
+	I_Method0(const std::string &, getOptionString,
+	          __C5_std_string_R1__getOptionString,
+	          "Get the general Options string. ",
+	          "");
+	I_Method1(void, setDatabasePath, IN, const std::string &, str,
+	          __void__setDatabasePath__C5_std_string_R1,
+	          "Set the database path to use a hint of where to look when loading models. ",
+	          "");
+	I_Method0(osgDB::FilePathList &, getDatabasePathList,
+	          __FilePathList_R1__getDatabasePathList,
+	          "Get the database path which is used a hint of where to look when loading models. ",
+	          "");
+	I_Method0(const osgDB::FilePathList &, getDatabasePathList,
+	          __C5_FilePathList_R1__getDatabasePathList,
+	          "Get the const database path which is used a hint of where to look when loading models. ",
+	          "");
+	I_Method1(void, setObjectCacheHint, IN, osgDB::ReaderWriter::Options::CacheHintOptions, useObjectCache,
+	          __void__setObjectCacheHint__CacheHintOptions,
+	          "Set whether the Registry::ObjectCache should be used by default. ",
+	          "");
+	I_Method0(osgDB::ReaderWriter::Options::CacheHintOptions, getObjectCacheHint,
+	          __CacheHintOptions__getObjectCacheHint,
+	          "Get whether the Registry::ObjectCache should be used by default. ",
+	          "");
+	I_SimpleProperty(const std::string &, DatabasePath, 
+	                 0, 
+	                 __void__setDatabasePath__C5_std_string_R1);
+	I_SimpleProperty(osgDB::FilePathList &, DatabasePathList, 
+	                 __FilePathList_R1__getDatabasePathList, 
+	                 0);
+	I_SimpleProperty(osgDB::ReaderWriter::Options::CacheHintOptions, ObjectCacheHint, 
+	                 __CacheHintOptions__getObjectCacheHint, 
+	                 __void__setObjectCacheHint__CacheHintOptions);
+	I_SimpleProperty(const std::string &, OptionString, 
+	                 __C5_std_string_R1__getOptionString, 
+	                 __void__setOptionString__C5_std_string_R1);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
@@ -104,37 +233,125 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
-	I_ConstructorWithDefaults1(IN, osgDB::ReaderWriter::ReadResult::ReadStatus, status, osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED);
-	I_Constructor1(IN, const std::string &, m);
-	I_ConstructorWithDefaults2(IN, osg::Object *, obj, , IN, osgDB::ReaderWriter::ReadResult::ReadStatus, status, osgDB::ReaderWriter::ReadResult::FILE_LOADED);
-	I_Constructor1(IN, const osgDB::ReaderWriter::ReadResult &, rr);
-	I_Method0(osg::Object *, getObject);
-	I_Method0(osg::Image *, getImage);
-	I_Method0(osg::HeightField *, getHeightField);
-	I_Method0(osg::Node *, getNode);
-	I_Method0(osgDB::Archive *, getArchive);
-	I_Method0(bool, validObject);
-	I_Method0(bool, validImage);
-	I_Method0(bool, validHeightField);
-	I_Method0(bool, validNode);
-	I_Method0(bool, validArchive);
-	I_Method0(osg::Object *, takeObject);
-	I_Method0(osg::Image *, takeImage);
-	I_Method0(osg::HeightField *, takeHeightField);
-	I_Method0(osg::Node *, takeNode);
-	I_Method0(osgDB::Archive *, takeArchive);
-	I_Method0(const std::string &, message);
-	I_Method0(osgDB::ReaderWriter::ReadResult::ReadStatus, status);
-	I_Method0(bool, success);
-	I_Method0(bool, loadedFromCache);
-	I_Method0(bool, error);
-	I_Method0(bool, notHandled);
-	I_Method0(bool, notFound);
-	I_ReadOnlyProperty(osgDB::Archive *, Archive);
-	I_ReadOnlyProperty(osg::HeightField *, HeightField);
-	I_ReadOnlyProperty(osg::Image *, Image);
-	I_ReadOnlyProperty(osg::Node *, Node);
-	I_ReadOnlyProperty(osg::Object *, Object);
+	I_ConstructorWithDefaults1(IN, osgDB::ReaderWriter::ReadResult::ReadStatus, status, osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED,
+	                           ____ReadResult__ReadStatus,
+	                           "",
+	                           "");
+	I_Constructor1(IN, const std::string &, m,
+	               ____ReadResult__C5_std_string_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, osg::Object *, obj, , IN, osgDB::ReaderWriter::ReadResult::ReadStatus, status, osgDB::ReaderWriter::ReadResult::FILE_LOADED,
+	                           ____ReadResult__osg_Object_P1__ReadStatus,
+	                           "",
+	                           "");
+	I_Constructor1(IN, const osgDB::ReaderWriter::ReadResult &, rr,
+	               ____ReadResult__C5_ReadResult_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, getObject,
+	          __osg_Object_P1__getObject,
+	          "",
+	          "");
+	I_Method0(osg::Image *, getImage,
+	          __osg_Image_P1__getImage,
+	          "",
+	          "");
+	I_Method0(osg::HeightField *, getHeightField,
+	          __osg_HeightField_P1__getHeightField,
+	          "",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          __osg_Node_P1__getNode,
+	          "",
+	          "");
+	I_Method0(osgDB::Archive *, getArchive,
+	          __osgDB_Archive_P1__getArchive,
+	          "",
+	          "");
+	I_Method0(bool, validObject,
+	          __bool__validObject,
+	          "",
+	          "");
+	I_Method0(bool, validImage,
+	          __bool__validImage,
+	          "",
+	          "");
+	I_Method0(bool, validHeightField,
+	          __bool__validHeightField,
+	          "",
+	          "");
+	I_Method0(bool, validNode,
+	          __bool__validNode,
+	          "",
+	          "");
+	I_Method0(bool, validArchive,
+	          __bool__validArchive,
+	          "",
+	          "");
+	I_Method0(osg::Object *, takeObject,
+	          __osg_Object_P1__takeObject,
+	          "",
+	          "");
+	I_Method0(osg::Image *, takeImage,
+	          __osg_Image_P1__takeImage,
+	          "",
+	          "");
+	I_Method0(osg::HeightField *, takeHeightField,
+	          __osg_HeightField_P1__takeHeightField,
+	          "",
+	          "");
+	I_Method0(osg::Node *, takeNode,
+	          __osg_Node_P1__takeNode,
+	          "",
+	          "");
+	I_Method0(osgDB::Archive *, takeArchive,
+	          __osgDB_Archive_P1__takeArchive,
+	          "",
+	          "");
+	I_Method0(const std::string &, message,
+	          __C5_std_string_R1__message,
+	          "",
+	          "");
+	I_Method0(osgDB::ReaderWriter::ReadResult::ReadStatus, status,
+	          __ReadStatus__status,
+	          "",
+	          "");
+	I_Method0(bool, success,
+	          __bool__success,
+	          "",
+	          "");
+	I_Method0(bool, loadedFromCache,
+	          __bool__loadedFromCache,
+	          "",
+	          "");
+	I_Method0(bool, error,
+	          __bool__error,
+	          "",
+	          "");
+	I_Method0(bool, notHandled,
+	          __bool__notHandled,
+	          "",
+	          "");
+	I_Method0(bool, notFound,
+	          __bool__notFound,
+	          "",
+	          "");
+	I_SimpleProperty(osgDB::Archive *, Archive, 
+	                 __osgDB_Archive_P1__getArchive, 
+	                 0);
+	I_SimpleProperty(osg::HeightField *, HeightField, 
+	                 __osg_HeightField_P1__getHeightField, 
+	                 0);
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __osg_Image_P1__getImage, 
+	                 0);
+	I_SimpleProperty(osg::Node *, Node, 
+	                 __osg_Node_P1__getNode, 
+	                 0);
+	I_SimpleProperty(osg::Object *, Object, 
+	                 __osg_Object_P1__getObject, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::WriteResult::WriteStatus)
@@ -144,14 +361,38 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::WriteResult::WriteStatus)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::WriteResult)
-	I_ConstructorWithDefaults1(IN, osgDB::ReaderWriter::WriteResult::WriteStatus, status, osgDB::ReaderWriter::WriteResult::FILE_NOT_HANDLED);
-	I_Constructor1(IN, const std::string &, m);
-	I_Constructor1(IN, const osgDB::ReaderWriter::WriteResult &, rr);
-	I_Method0(const std::string &, message);
-	I_Method0(osgDB::ReaderWriter::WriteResult::WriteStatus, status);
-	I_Method0(bool, success);
-	I_Method0(bool, error);
-	I_Method0(bool, notHandled);
+	I_ConstructorWithDefaults1(IN, osgDB::ReaderWriter::WriteResult::WriteStatus, status, osgDB::ReaderWriter::WriteResult::FILE_NOT_HANDLED,
+	                           ____WriteResult__WriteStatus,
+	                           "",
+	                           "");
+	I_Constructor1(IN, const std::string &, m,
+	               ____WriteResult__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgDB::ReaderWriter::WriteResult &, rr,
+	               ____WriteResult__C5_WriteResult_R1,
+	               "",
+	               "");
+	I_Method0(const std::string &, message,
+	          __C5_std_string_R1__message,
+	          "",
+	          "");
+	I_Method0(osgDB::ReaderWriter::WriteResult::WriteStatus, status,
+	          __WriteStatus__status,
+	          "",
+	          "");
+	I_Method0(bool, success,
+	          __bool__success,
+	          "",
+	          "");
+	I_Method0(bool, error,
+	          __bool__error,
+	          "",
+	          "");
+	I_Method0(bool, notHandled,
+	          __bool__notHandled,
+	          "",
+	          "");
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::deque< std::string >, osgDB::FilePathList);

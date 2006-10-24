@@ -21,15 +21,40 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Timer)
-	I_Constructor0();
-	I_Method0(osg::Timer_t, tick);
-	I_Method2(double, delta_s, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	I_Method2(double, delta_m, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	I_Method2(double, delta_u, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	I_Method2(double, delta_n, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2);
-	I_Method0(double, getSecondsPerTick);
-	I_StaticMethod0(const osg::Timer *, instance);
-	I_ReadOnlyProperty(double, SecondsPerTick);
+	I_Constructor0(____Timer,
+	               "",
+	               "");
+	I_Method0(osg::Timer_t, tick,
+	          __Timer_t__tick,
+	          "",
+	          "");
+	I_Method2(double, delta_s, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
+	          __double__delta_s__Timer_t__Timer_t,
+	          "",
+	          "");
+	I_Method2(double, delta_m, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
+	          __double__delta_m__Timer_t__Timer_t,
+	          "",
+	          "");
+	I_Method2(double, delta_u, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
+	          __double__delta_u__Timer_t__Timer_t,
+	          "",
+	          "");
+	I_Method2(double, delta_n, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
+	          __double__delta_n__Timer_t__Timer_t,
+	          "",
+	          "");
+	I_Method0(double, getSecondsPerTick,
+	          __double__getSecondsPerTick,
+	          "",
+	          "");
+	I_StaticMethod0(const osg::Timer *, instance,
+	                __C5_Timer_P1__instance_S,
+	                "",
+	                "");
+	I_SimpleProperty(double, SecondsPerTick, 
+	                 __double__getSecondsPerTick, 
+	                 0);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(unsigned long long, osg::Timer_t);

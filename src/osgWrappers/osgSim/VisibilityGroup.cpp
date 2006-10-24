@@ -26,24 +26,77 @@
 
 BEGIN_OBJECT_REFLECTOR(osgSim::VisibilityGroup)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::VisibilityGroup &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setVisibilityVolume, IN, osg::Node *, node);
-	I_Method0(osg::Node *, getVisibilityVolume);
-	I_Method0(const osg::Node *, getVisibilityVolume);
-	I_Method1(void, setVolumeIntersectionMask, IN, osg::Node::NodeMask, mask);
-	I_Method0(osg::Node::NodeMask, getVolumeIntersectionMask);
-	I_Method1(void, setSegmentLength, IN, float, length);
-	I_Method0(float, getSegmentLength);
-	I_Property(float, SegmentLength);
-	I_Property(osg::Node *, VisibilityVolume);
-	I_Property(osg::Node::NodeMask, VolumeIntersectionMask);
+	I_Constructor0(____VisibilityGroup,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::VisibilityGroup &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____VisibilityGroup__C5_VisibilityGroup_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method1(void, setVisibilityVolume, IN, osg::Node *, node,
+	          __void__setVisibilityVolume__osg_Node_P1,
+	          "Set the subgraph that is intersected for the visibility determination. ",
+	          "");
+	I_Method0(osg::Node *, getVisibilityVolume,
+	          __osg_Node_P1__getVisibilityVolume,
+	          "Get the subgraph that is intersected for the visibility determination. ",
+	          "");
+	I_Method0(const osg::Node *, getVisibilityVolume,
+	          __C5_osg_Node_P1__getVisibilityVolume,
+	          "Get the const subgraph that is intersected for the visibility determination. ",
+	          "");
+	I_Method1(void, setVolumeIntersectionMask, IN, osg::Node::NodeMask, mask,
+	          __void__setVolumeIntersectionMask__osg_Node_NodeMask,
+	          "Set the traversal mask for the intersection testing. ",
+	          "");
+	I_Method0(osg::Node::NodeMask, getVolumeIntersectionMask,
+	          __osg_Node_NodeMask__getVolumeIntersectionMask,
+	          "Get the traversal mask for the intersection testing. ",
+	          "");
+	I_Method1(void, setSegmentLength, IN, float, length,
+	          __void__setSegmentLength__float,
+	          "Set the length of the intersection segment. ",
+	          "The segments extends this many database units from the camera eye-point along the look vector. If this is left at zero then the diameter of the bounding sphere of the visibility volume is used. ");
+	I_Method0(float, getSegmentLength,
+	          __float__getSegmentLength,
+	          "Get the length of the intersection segment. ",
+	          "");
+	I_SimpleProperty(float, SegmentLength, 
+	                 __float__getSegmentLength, 
+	                 __void__setSegmentLength__float);
+	I_SimpleProperty(osg::Node *, VisibilityVolume, 
+	                 __osg_Node_P1__getVisibilityVolume, 
+	                 __void__setVisibilityVolume__osg_Node_P1);
+	I_SimpleProperty(osg::Node::NodeMask, VolumeIntersectionMask, 
+	                 __osg_Node_NodeMask__getVolumeIntersectionMask, 
+	                 __void__setVolumeIntersectionMask__osg_Node_NodeMask);
 END_REFLECTOR
 

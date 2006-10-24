@@ -34,24 +34,77 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::LightSource)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::LightSource &, ls, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setReferenceFrame, IN, osg::LightSource::ReferenceFrame, rf);
-	I_Method0(osg::LightSource::ReferenceFrame, getReferenceFrame);
-	I_Method1(void, setLight, IN, osg::Light *, light);
-	I_Method0(osg::Light *, getLight);
-	I_Method0(const osg::Light *, getLight);
-	I_Method2(void, setStateSetModes, IN, osg::StateSet &, x, IN, osg::StateAttribute::GLModeValue, x);
-	I_MethodWithDefaults1(void, setLocalStateSetModes, IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_Property(osg::Light *, Light);
-	I_WriteOnlyProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes);
-	I_Property(osg::LightSource::ReferenceFrame, ReferenceFrame);
+	I_Constructor0(____LightSource,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::LightSource &, ls, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____LightSource__C5_LightSource_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, setReferenceFrame, IN, osg::LightSource::ReferenceFrame, rf,
+	          __void__setReferenceFrame__ReferenceFrame,
+	          "Set the light sources's ReferenceFrame, either to be relative to its parent reference frame, or relative to an absolute coordinate frame. ",
+	          "RELATIVE_RF is the default. Note: setting the ReferenceFrame to be ABSOLUTE_RF will also set the CullingActive flag on the light source, and hence all of its parents, to false, thereby disabling culling of it and all its parents. This is necessary to prevent inappropriate culling, but may impact cull times if the absolute light source is deep in the scene graph. It is therefore recommended to only use absolute light source at the top of the scene.");
+	I_Method0(osg::LightSource::ReferenceFrame, getReferenceFrame,
+	          __ReferenceFrame__getReferenceFrame,
+	          "",
+	          "");
+	I_Method1(void, setLight, IN, osg::Light *, light,
+	          __void__setLight__Light_P1,
+	          "Set the attached light. ",
+	          "");
+	I_Method0(osg::Light *, getLight,
+	          __Light_P1__getLight,
+	          "Get the attached light. ",
+	          "");
+	I_Method0(const osg::Light *, getLight,
+	          __C5_Light_P1__getLight,
+	          "Get the const attached light. ",
+	          "");
+	I_Method2(void, setStateSetModes, IN, osg::StateSet &, x, IN, osg::StateAttribute::GLModeValue, x,
+	          __void__setStateSetModes__StateSet_R1__StateAttribute_GLModeValue,
+	          "Set the GLModes on StateSet associated with the LightSource. ",
+	          "");
+	I_MethodWithDefaults1(void, setLocalStateSetModes, IN, osg::StateAttribute::GLModeValue, value, osg::StateAttribute::ON,
+	                      __void__setLocalStateSetModes__StateAttribute_GLModeValue,
+	                      "Set up the local StateSet. ",
+	                      "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          __BoundingSphere__computeBound,
+	          "Compute the bounding sphere around Node's geometry or children. ",
+	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_SimpleProperty(osg::Light *, Light, 
+	                 __Light_P1__getLight, 
+	                 __void__setLight__Light_P1);
+	I_SimpleProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes, 
+	                 0, 
+	                 __void__setLocalStateSetModes__StateAttribute_GLModeValue);
+	I_SimpleProperty(osg::LightSource::ReferenceFrame, ReferenceFrame, 
+	                 __ReferenceFrame__getReferenceFrame, 
+	                 __void__setReferenceFrame__ReferenceFrame);
 END_REFLECTOR
 

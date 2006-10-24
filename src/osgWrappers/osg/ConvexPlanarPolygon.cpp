@@ -24,11 +24,27 @@
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::ConvexPlanarPolygon::VertexList);
 
 BEGIN_VALUE_REFLECTOR(osg::ConvexPlanarPolygon)
-	I_Constructor0();
-	I_Method1(void, add, IN, const osg::Vec3 &, v);
-	I_Method1(void, setVertexList, IN, const osg::ConvexPlanarPolygon::VertexList &, vertexList);
-	I_Method0(osg::ConvexPlanarPolygon::VertexList &, getVertexList);
-	I_Method0(const osg::ConvexPlanarPolygon::VertexList &, getVertexList);
-	I_Property(const osg::ConvexPlanarPolygon::VertexList &, VertexList);
+	I_Constructor0(____ConvexPlanarPolygon,
+	               "",
+	               "");
+	I_Method1(void, add, IN, const osg::Vec3 &, v,
+	          __void__add__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, setVertexList, IN, const osg::ConvexPlanarPolygon::VertexList &, vertexList,
+	          __void__setVertexList__C5_VertexList_R1,
+	          "",
+	          "");
+	I_Method0(osg::ConvexPlanarPolygon::VertexList &, getVertexList,
+	          __VertexList_R1__getVertexList,
+	          "",
+	          "");
+	I_Method0(const osg::ConvexPlanarPolygon::VertexList &, getVertexList,
+	          __C5_VertexList_R1__getVertexList,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::ConvexPlanarPolygon::VertexList &, VertexList, 
+	                 __C5_VertexList_R1__getVertexList, 
+	                 __void__setVertexList__C5_VertexList_R1);
 END_REFLECTOR
 

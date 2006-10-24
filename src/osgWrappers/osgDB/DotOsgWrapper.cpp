@@ -34,18 +34,51 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DotOsgWrapper)
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE);
-	I_Method0(const osg::Object *, getPrototype);
-	I_Method0(const std::string &, getName);
-	I_Method0(const osgDB::DotOsgWrapper::Associates &, getAssociates);
-	I_Method0(osgDB::DotOsgWrapper::ReadFunc, getReadFunc);
-	I_Method0(osgDB::DotOsgWrapper::WriteFunc, getWriteFunc);
-	I_Method0(osgDB::DotOsgWrapper::ReadWriteMode, getReadWriteMode);
-	I_ReadOnlyProperty(const osgDB::DotOsgWrapper::Associates &, Associates);
-	I_ReadOnlyProperty(const std::string &, Name);
-	I_ReadOnlyProperty(const osg::Object *, Prototype);
-	I_ReadOnlyProperty(osgDB::DotOsgWrapper::ReadFunc, ReadFunc);
-	I_ReadOnlyProperty(osgDB::DotOsgWrapper::ReadWriteMode, ReadWriteMode);
-	I_ReadOnlyProperty(osgDB::DotOsgWrapper::WriteFunc, WriteFunc);
+	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE,
+	                           ____DotOsgWrapper__osg_Object_P1__C5_std_string_R1__C5_std_string_R1__ReadFunc__WriteFunc__ReadWriteMode,
+	                           "",
+	                           "");
+	I_Method0(const osg::Object *, getPrototype,
+	          __C5_osg_Object_P1__getPrototype,
+	          "",
+	          "");
+	I_Method0(const std::string &, getName,
+	          __C5_std_string_R1__getName,
+	          "",
+	          "");
+	I_Method0(const osgDB::DotOsgWrapper::Associates &, getAssociates,
+	          __C5_Associates_R1__getAssociates,
+	          "",
+	          "");
+	I_Method0(osgDB::DotOsgWrapper::ReadFunc, getReadFunc,
+	          __ReadFunc__getReadFunc,
+	          "",
+	          "");
+	I_Method0(osgDB::DotOsgWrapper::WriteFunc, getWriteFunc,
+	          __WriteFunc__getWriteFunc,
+	          "",
+	          "");
+	I_Method0(osgDB::DotOsgWrapper::ReadWriteMode, getReadWriteMode,
+	          __ReadWriteMode__getReadWriteMode,
+	          "",
+	          "");
+	I_SimpleProperty(const osgDB::DotOsgWrapper::Associates &, Associates, 
+	                 __C5_Associates_R1__getAssociates, 
+	                 0);
+	I_SimpleProperty(const std::string &, Name, 
+	                 __C5_std_string_R1__getName, 
+	                 0);
+	I_SimpleProperty(const osg::Object *, Prototype, 
+	                 __C5_osg_Object_P1__getPrototype, 
+	                 0);
+	I_SimpleProperty(osgDB::DotOsgWrapper::ReadFunc, ReadFunc, 
+	                 __ReadFunc__getReadFunc, 
+	                 0);
+	I_SimpleProperty(osgDB::DotOsgWrapper::ReadWriteMode, ReadWriteMode, 
+	                 __ReadWriteMode__getReadWriteMode, 
+	                 0);
+	I_SimpleProperty(osgDB::DotOsgWrapper::WriteFunc, WriteFunc, 
+	                 __WriteFunc__getWriteFunc, 
+	                 0);
 END_REFLECTOR
 

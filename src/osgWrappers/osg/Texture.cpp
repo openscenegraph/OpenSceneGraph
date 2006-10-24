@@ -81,176 +81,623 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Texture &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method0(bool, isTextureAttribute);
-	I_Method0(GLenum, getTextureTarget);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method0(int, getTextureWidth);
-	I_Method0(int, getTextureHeight);
-	I_Method0(int, getTextureDepth);
-	I_Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap);
-	I_Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which);
-	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getBorderColor);
-	I_Method1(void, setBorderWidth, IN, GLint, width);
-	I_Method0(GLint, getBorderWidth);
-	I_Method2(void, setFilter, IN, osg::Texture::FilterParameter, which, IN, osg::Texture::FilterMode, filter);
-	I_Method1(osg::Texture::FilterMode, getFilter, IN, osg::Texture::FilterParameter, which);
-	I_Method1(void, setMaxAnisotropy, IN, float, anis);
-	I_Method0(float, getMaxAnisotropy);
-	I_Method1(void, setUseHardwareMipMapGeneration, IN, bool, useHardwareMipMapGeneration);
-	I_Method0(bool, getUseHardwareMipMapGeneration);
-	I_Method1(void, setUnRefImageDataAfterApply, IN, bool, flag);
-	I_Method0(bool, getUnRefImageDataAfterApply);
-	I_Method1(void, setClientStorageHint, IN, bool, flag);
-	I_Method0(bool, getClientStorageHint);
-	I_Method1(void, setResizeNonPowerOfTwoHint, IN, bool, flag);
-	I_Method0(bool, getResizeNonPowerOfTwoHint);
-	I_Method1(void, setInternalFormatMode, IN, osg::Texture::InternalFormatMode, mode);
-	I_Method0(osg::Texture::InternalFormatMode, getInternalFormatMode);
-	I_Method1(void, setInternalFormat, IN, GLint, internalFormat);
-	I_Method0(GLint, getInternalFormat);
-	I_Method0(bool, isCompressedInternalFormat);
-	I_Method1(void, setSourceFormat, IN, GLenum, sourceFormat);
-	I_Method0(GLenum, getSourceFormat);
-	I_Method1(void, setSourceType, IN, GLenum, sourceType);
-	I_Method0(GLenum, getSourceType);
-	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID);
-	I_Method0(void, dirtyTextureObject);
-	I_Method0(bool, areAllTextureObjectsLoaded);
-	I_Method1(unsigned int &, getTextureParameterDirty, IN, unsigned int, contextID);
-	I_Method0(void, dirtyTextureParameters);
-	I_Method1(void, setShadowComparison, IN, bool, flag);
-	I_Method1(void, setShadowCompareFunc, IN, osg::Texture::ShadowCompareFunc, func);
-	I_Method0(osg::Texture::ShadowCompareFunc, getShadowCompareFunc);
-	I_Method1(void, setShadowTextureMode, IN, osg::Texture::ShadowTextureMode, mode);
-	I_Method0(osg::Texture::ShadowTextureMode, getShadowTextureMode);
-	I_Method1(void, setShadowAmbient, IN, float, shadow_ambient);
-	I_Method0(float, getShadowAmbient);
-	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image);
-	I_Method1(osg::Image *, getImage, IN, unsigned int, face);
-	I_Method1(const osg::Image *, getImage, IN, unsigned int, face);
-	I_Method0(unsigned int, getNumImages);
-	I_Method1(void, setReadPBuffer, IN, osg::GraphicsContext *, context);
-	I_Method0(osg::GraphicsContext *, getReadPBuffer);
-	I_Method0(const osg::GraphicsContext *, getReadPBuffer);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Method1(void, compileGLObjects, IN, osg::State &, state);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	I_Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels);
-	I_Method7(void, applyTexImage2D_subload, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, inInternalFormat, IN, GLsizei, numMipmapLevels);
-	I_Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm);
-	I_StaticMethod2(osg::Texture::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
-	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture::Extensions *, extensions);
-	I_StaticMethod1(bool, isCompressedInternalFormat, IN, GLint, internalFormat);
-	I_StaticMethod6(void, getCompressedSize, IN, GLenum, internalFormat, IN, GLint, width, IN, GLint, height, IN, GLint, depth, IN, GLint &, blockSize, IN, GLint &, size);
-	I_StaticMethod2(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target);
-	I_StaticMethod8(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	I_StaticMethod1(void, setMinimumNumberOfTextureObjectsToRetainInCache, IN, unsigned int, minimum);
-	I_StaticMethod0(unsigned int, getMinimumNumberOfTextureObjectsToRetainInCache);
-	I_StaticMethod1(void, flushAllDeletedTextureObjects, IN, unsigned int, contextID);
-	I_StaticMethod3(void, flushDeletedTextureObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime);
-	I_Property(const osg::Vec4 &, BorderColor);
-	I_Property(GLint, BorderWidth);
-	I_Property(bool, ClientStorageHint);
-	I_IndexedProperty1(osg::Texture::FilterMode, Filter, osg::Texture::FilterParameter, which);
-	I_ArrayProperty_G(osg::Image *, Image, Images, unsigned int, void);
-	I_Property(GLint, InternalFormat);
-	I_Property(osg::Texture::InternalFormatMode, InternalFormatMode);
-	I_Property(float, MaxAnisotropy);
-	I_Property(osg::GraphicsContext *, ReadPBuffer);
-	I_Property(bool, ResizeNonPowerOfTwoHint);
-	I_Property(float, ShadowAmbient);
-	I_Property(osg::Texture::ShadowCompareFunc, ShadowCompareFunc);
-	I_WriteOnlyProperty(bool, ShadowComparison);
-	I_Property(osg::Texture::ShadowTextureMode, ShadowTextureMode);
-	I_Property(GLenum, SourceFormat);
-	I_Property(GLenum, SourceType);
-	I_ReadOnlyProperty(int, TextureDepth);
-	I_ReadOnlyProperty(int, TextureHeight);
-	I_ReadOnlyProperty(GLenum, TextureTarget);
-	I_ReadOnlyProperty(int, TextureWidth);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	I_Property(bool, UnRefImageDataAfterApply);
-	I_Property(bool, UseHardwareMipMapGeneration);
-	I_IndexedProperty1(osg::Texture::WrapMode, Wrap, osg::Texture::WrapParameter, which);
+	I_Constructor0(____Texture,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Texture &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Texture__C5_Texture_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method0(bool, isTextureAttribute,
+	          __bool__isTextureAttribute,
+	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
+	          "");
+	I_Method0(GLenum, getTextureTarget,
+	          __GLenum__getTextureTarget,
+	          "",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method0(int, getTextureWidth,
+	          __int__getTextureWidth,
+	          "",
+	          "");
+	I_Method0(int, getTextureHeight,
+	          __int__getTextureHeight,
+	          "",
+	          "");
+	I_Method0(int, getTextureDepth,
+	          __int__getTextureDepth,
+	          "",
+	          "");
+	I_Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap,
+	          __void__setWrap__WrapParameter__WrapMode,
+	          "Sets the texture wrap mode. ",
+	          "");
+	I_Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which,
+	          __WrapMode__getWrap__WrapParameter,
+	          "Gets the texture wrap mode. ",
+	          "");
+	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color,
+	          __void__setBorderColor__C5_Vec4_R1,
+	          "Sets the border color. ",
+	          "Only used when wrap mode is CLAMP_TO_BORDER. ");
+	I_Method0(const osg::Vec4 &, getBorderColor,
+	          __C5_Vec4_R1__getBorderColor,
+	          "Gets the border color. ",
+	          "");
+	I_Method1(void, setBorderWidth, IN, GLint, width,
+	          __void__setBorderWidth__GLint,
+	          "Sets the border width. ",
+	          "");
+	I_Method0(GLint, getBorderWidth,
+	          __GLint__getBorderWidth,
+	          "",
+	          "");
+	I_Method2(void, setFilter, IN, osg::Texture::FilterParameter, which, IN, osg::Texture::FilterMode, filter,
+	          __void__setFilter__FilterParameter__FilterMode,
+	          "Sets the texture filter mode. ",
+	          "");
+	I_Method1(osg::Texture::FilterMode, getFilter, IN, osg::Texture::FilterParameter, which,
+	          __FilterMode__getFilter__FilterParameter,
+	          "Gets the texture filter mode. ",
+	          "");
+	I_Method1(void, setMaxAnisotropy, IN, float, anis,
+	          __void__setMaxAnisotropy__float,
+	          "Sets the maximum anisotropy value, default value is 1.0 for no anisotropic filtering. ",
+	          "If hardware does not support anisotropic filtering, use normal filtering (equivilant to a max anisotropy value of 1.0. Valid range is 1.0f upwards. The maximum value depends on the graphics system. ");
+	I_Method0(float, getMaxAnisotropy,
+	          __float__getMaxAnisotropy,
+	          "Gets the maximum anisotropy value. ",
+	          "");
+	I_Method1(void, setUseHardwareMipMapGeneration, IN, bool, useHardwareMipMapGeneration,
+	          __void__setUseHardwareMipMapGeneration__bool,
+	          "Sets the hardware mipmap generation hint. ",
+	          "If enabled, it will only be used if supported in the graphics system. ");
+	I_Method0(bool, getUseHardwareMipMapGeneration,
+	          __bool__getUseHardwareMipMapGeneration,
+	          "Gets the hardware mipmap generation hint. ",
+	          "");
+	I_Method1(void, setUnRefImageDataAfterApply, IN, bool, flag,
+	          __void__setUnRefImageDataAfterApply__bool,
+	          "Sets whether or not the apply() function will unreference the image data. ",
+	          "If enabled, and the image data is only referened by this Texture, apply() will delete the image data. ");
+	I_Method0(bool, getUnRefImageDataAfterApply,
+	          __bool__getUnRefImageDataAfterApply,
+	          "Gets whether or not apply() unreferences image data. ",
+	          "");
+	I_Method1(void, setClientStorageHint, IN, bool, flag,
+	          __void__setClientStorageHint__bool,
+	          "Sets whether to use client storage for the texture, if supported by the graphics system. ",
+	          "Note: If enabled, and the graphics system supports it, the osg::Image(s) associated with this texture cannot be deleted, so the UnRefImageDataAfterApply flag would be ignored. ");
+	I_Method0(bool, getClientStorageHint,
+	          __bool__getClientStorageHint,
+	          "Gets whether to use client storage for the texture. ",
+	          "");
+	I_Method1(void, setResizeNonPowerOfTwoHint, IN, bool, flag,
+	          __void__setResizeNonPowerOfTwoHint__bool,
+	          "Sets whether to force the texture to resize images that have dimensions that are not a power of two. ",
+	          "If enabled, NPOT images will be resized, whether or not NPOT textures are supported by the hardware. If disabled, NPOT images will not be resized if supported by hardware. ");
+	I_Method0(bool, getResizeNonPowerOfTwoHint,
+	          __bool__getResizeNonPowerOfTwoHint,
+	          "Gets whether texture will force non power to two images to be resized. ",
+	          "");
+	I_Method1(void, setInternalFormatMode, IN, osg::Texture::InternalFormatMode, mode,
+	          __void__setInternalFormatMode__InternalFormatMode,
+	          "Sets the internal texture format mode. ",
+	          "Note: If the texture format is USE_IMAGE_DATA_FORMAT, USE_ARB_COMPRESSION, or USE_S3TC_COMPRESSION, the internal format mode is set automatically and will overwrite the previous _internalFormat. ");
+	I_Method0(osg::Texture::InternalFormatMode, getInternalFormatMode,
+	          __InternalFormatMode__getInternalFormatMode,
+	          "Gets the internal texture format mode. ",
+	          "");
+	I_Method1(void, setInternalFormat, IN, GLint, internalFormat,
+	          __void__setInternalFormat__GLint,
+	          "Sets the internal texture format. ",
+	          "Implicitly sets the internalFormatMode to USE_USER_DEFINED_FORMAT. ");
+	I_Method0(GLint, getInternalFormat,
+	          __GLint__getInternalFormat,
+	          "Gets the internal texture format. ",
+	          "");
+	I_Method0(bool, isCompressedInternalFormat,
+	          __bool__isCompressedInternalFormat,
+	          "Return true if the internal format is one of the compressed formats. ",
+	          "");
+	I_Method1(void, setSourceFormat, IN, GLenum, sourceFormat,
+	          __void__setSourceFormat__GLenum,
+	          "Sets the external source image format, used as a fallback when no osg::Image is attached to provide the source image format. ",
+	          "");
+	I_Method0(GLenum, getSourceFormat,
+	          __GLenum__getSourceFormat,
+	          "Gets the external source image format. ",
+	          "");
+	I_Method1(void, setSourceType, IN, GLenum, sourceType,
+	          __void__setSourceType__GLenum,
+	          "Sets the external source data type, used as a fallback when no osg::Image is attached to provide the source image format. ",
+	          "");
+	I_Method0(GLenum, getSourceType,
+	          __GLenum__getSourceType,
+	          "Gets the external source data type. ",
+	          "");
+	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID,
+	          __TextureObject_P1__getTextureObject__unsigned_int,
+	          "Returns a pointer to the texture object for the current context. ",
+	          "");
+	I_Method0(void, dirtyTextureObject,
+	          __void__dirtyTextureObject,
+	          "Forces a recompile on next apply() of associated OpenGL texture objects. ",
+	          "");
+	I_Method0(bool, areAllTextureObjectsLoaded,
+	          __bool__areAllTextureObjectsLoaded,
+	          "Returns true if the texture objects for all the required graphics contexts are loaded. ",
+	          "");
+	I_Method1(unsigned int &, getTextureParameterDirty, IN, unsigned int, contextID,
+	          __unsigned_int_R1__getTextureParameterDirty__unsigned_int,
+	          "Gets the dirty flag for the current contextID. ",
+	          "");
+	I_Method0(void, dirtyTextureParameters,
+	          __void__dirtyTextureParameters,
+	          "Force a reset on next apply() of associated OpenGL texture parameters. ",
+	          "");
+	I_Method1(void, setShadowComparison, IN, bool, flag,
+	          __void__setShadowComparison__bool,
+	          "Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. ",
+	          "");
+	I_Method1(void, setShadowCompareFunc, IN, osg::Texture::ShadowCompareFunc, func,
+	          __void__setShadowCompareFunc__ShadowCompareFunc,
+	          "Sets shadow texture comparison function. ",
+	          "");
+	I_Method0(osg::Texture::ShadowCompareFunc, getShadowCompareFunc,
+	          __ShadowCompareFunc__getShadowCompareFunc,
+	          "",
+	          "");
+	I_Method1(void, setShadowTextureMode, IN, osg::Texture::ShadowTextureMode, mode,
+	          __void__setShadowTextureMode__ShadowTextureMode,
+	          "Sets shadow texture mode after comparison. ",
+	          "");
+	I_Method0(osg::Texture::ShadowTextureMode, getShadowTextureMode,
+	          __ShadowTextureMode__getShadowTextureMode,
+	          "",
+	          "");
+	I_Method1(void, setShadowAmbient, IN, float, shadow_ambient,
+	          __void__setShadowAmbient__float,
+	          "Sets the TEXTURE_COMPARE_FAIL_VALUE_ARB texture parameter. ",
+	          "See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt. ");
+	I_Method0(float, getShadowAmbient,
+	          __float__getShadowAmbient,
+	          "",
+	          "");
+	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image,
+	          __void__setImage__unsigned_int__Image_P1,
+	          "Sets the texture image for the specified face. ",
+	          "");
+	I_Method1(osg::Image *, getImage, IN, unsigned int, face,
+	          __Image_P1__getImage__unsigned_int,
+	          "Gets the texture image for the specified face. ",
+	          "");
+	I_Method1(const osg::Image *, getImage, IN, unsigned int, face,
+	          __C5_Image_P1__getImage__unsigned_int,
+	          "Gets the const texture image for specified face. ",
+	          "");
+	I_Method0(unsigned int, getNumImages,
+	          __unsigned_int__getNumImages,
+	          "Gets the number of images that can be assigned to this Texture. ",
+	          "");
+	I_Method1(void, setReadPBuffer, IN, osg::GraphicsContext *, context,
+	          __void__setReadPBuffer__GraphicsContext_P1,
+	          "Set the PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
+	          "");
+	I_Method0(osg::GraphicsContext *, getReadPBuffer,
+	          __GraphicsContext_P1__getReadPBuffer,
+	          "Get the PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
+	          "");
+	I_Method0(const osg::GraphicsContext *, getReadPBuffer,
+	          __C5_GraphicsContext_P1__getReadPBuffer,
+	          "Get the const PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "Texture is a pure virtual base class, apply must be overriden. ",
+	          "");
+	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          __void__compileGLObjects__State_R1,
+	          "Calls apply(state) to compile the texture. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      __void__releaseGLObjects__State_P1,
+	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels,
+	          __void__applyTexImage2D_load__State_R1__GLenum__C5_Image_P1__GLsizei__GLsizei__GLsizei,
+	          "Helper method. ",
+	          "Creates the texture, but doesn't set or use a texture binding. Note: Don't call this method directly unless you're implementing a subload callback. ");
+	I_Method7(void, applyTexImage2D_subload, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, inInternalFormat, IN, GLsizei, numMipmapLevels,
+	          __void__applyTexImage2D_subload__State_R1__GLenum__C5_Image_P1__GLsizei__GLsizei__GLint__GLsizei,
+	          "Helper method. ",
+	          "Subloads images into the texture, but doesn't set or use a texture binding. Note: Don't call this method directly unless you're implementing a subload callback. ");
+	I_Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm,
+	          __void__takeTextureObjects__TextureObjectListMap_R1,
+	          "Takes the active texture objects from the Texture and places them in the specified TextureObjectListMap. ",
+	          "");
+	I_StaticMethod2(osg::Texture::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Gets the extension for the specified context. ",
+	                "Creates the Extensions object for that context if it doesn't exist. Returns NULL if the Extensions object for the context doesn't exist and the createIfNotInitalized flag is false. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "Overrides Extensions objects across graphics contexts. ",
+	                "Typically used to ensure the same lowest common denominator of extensions on sustems with different graphics pipes. ");
+	I_StaticMethod1(bool, isCompressedInternalFormat, IN, GLint, internalFormat,
+	                __bool__isCompressedInternalFormat__GLint_S,
+	                "Determine whether the given internalFormat is a compressed image format. ",
+	                "");
+	I_StaticMethod6(void, getCompressedSize, IN, GLenum, internalFormat, IN, GLint, width, IN, GLint, height, IN, GLint, depth, IN, GLint &, blockSize, IN, GLint &, size,
+	                __void__getCompressedSize__GLenum__GLint__GLint__GLint__GLint_R1__GLint_R1_S,
+	                "Determine the size of a compressed image, given the internalFormat, the width, the height, and the depth of the image. ",
+	                "The block size and the size are output parameters. ");
+	I_StaticMethod2(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target,
+	                __TextureObject_P1__generateTextureObject__unsigned_int__GLenum_S,
+	                "",
+	                "");
+	I_StaticMethod8(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	                __TextureObject_P1__generateTextureObject__unsigned_int__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint_S,
+	                "",
+	                "");
+	I_StaticMethod1(void, setMinimumNumberOfTextureObjectsToRetainInCache, IN, unsigned int, minimum,
+	                __void__setMinimumNumberOfTextureObjectsToRetainInCache__unsigned_int_S,
+	                "Set the minimum number of texture objects to retain in the deleted display list cache. ",
+	                "");
+	I_StaticMethod0(unsigned int, getMinimumNumberOfTextureObjectsToRetainInCache,
+	                __unsigned_int__getMinimumNumberOfTextureObjectsToRetainInCache_S,
+	                "Get the minimum number of display lists to retain in the deleted display list cache. ",
+	                "");
+	I_StaticMethod1(void, flushAllDeletedTextureObjects, IN, unsigned int, contextID,
+	                __void__flushAllDeletedTextureObjects__unsigned_int_S,
+	                "",
+	                "");
+	I_StaticMethod3(void, flushDeletedTextureObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedTextureObjects__unsigned_int__double__double_R1_S,
+	                "",
+	                "");
+	I_SimpleProperty(const osg::Vec4 &, BorderColor, 
+	                 __C5_Vec4_R1__getBorderColor, 
+	                 __void__setBorderColor__C5_Vec4_R1);
+	I_SimpleProperty(GLint, BorderWidth, 
+	                 __GLint__getBorderWidth, 
+	                 __void__setBorderWidth__GLint);
+	I_SimpleProperty(bool, ClientStorageHint, 
+	                 __bool__getClientStorageHint, 
+	                 __void__setClientStorageHint__bool);
+	I_IndexedProperty(osg::Texture::FilterMode, Filter, 
+	                  __FilterMode__getFilter__FilterParameter, 
+	                  __void__setFilter__FilterParameter__FilterMode, 
+	                  0);
+	I_ArrayProperty(osg::Image *, Image, 
+	                __Image_P1__getImage__unsigned_int, 
+	                __void__setImage__unsigned_int__Image_P1, 
+	                __unsigned_int__getNumImages, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(GLint, InternalFormat, 
+	                 __GLint__getInternalFormat, 
+	                 __void__setInternalFormat__GLint);
+	I_SimpleProperty(osg::Texture::InternalFormatMode, InternalFormatMode, 
+	                 __InternalFormatMode__getInternalFormatMode, 
+	                 __void__setInternalFormatMode__InternalFormatMode);
+	I_SimpleProperty(float, MaxAnisotropy, 
+	                 __float__getMaxAnisotropy, 
+	                 __void__setMaxAnisotropy__float);
+	I_SimpleProperty(osg::GraphicsContext *, ReadPBuffer, 
+	                 __GraphicsContext_P1__getReadPBuffer, 
+	                 __void__setReadPBuffer__GraphicsContext_P1);
+	I_SimpleProperty(bool, ResizeNonPowerOfTwoHint, 
+	                 __bool__getResizeNonPowerOfTwoHint, 
+	                 __void__setResizeNonPowerOfTwoHint__bool);
+	I_SimpleProperty(float, ShadowAmbient, 
+	                 __float__getShadowAmbient, 
+	                 __void__setShadowAmbient__float);
+	I_SimpleProperty(osg::Texture::ShadowCompareFunc, ShadowCompareFunc, 
+	                 __ShadowCompareFunc__getShadowCompareFunc, 
+	                 __void__setShadowCompareFunc__ShadowCompareFunc);
+	I_SimpleProperty(bool, ShadowComparison, 
+	                 0, 
+	                 __void__setShadowComparison__bool);
+	I_SimpleProperty(osg::Texture::ShadowTextureMode, ShadowTextureMode, 
+	                 __ShadowTextureMode__getShadowTextureMode, 
+	                 __void__setShadowTextureMode__ShadowTextureMode);
+	I_SimpleProperty(GLenum, SourceFormat, 
+	                 __GLenum__getSourceFormat, 
+	                 __void__setSourceFormat__GLenum);
+	I_SimpleProperty(GLenum, SourceType, 
+	                 __GLenum__getSourceType, 
+	                 __void__setSourceType__GLenum);
+	I_SimpleProperty(int, TextureDepth, 
+	                 __int__getTextureDepth, 
+	                 0);
+	I_SimpleProperty(int, TextureHeight, 
+	                 __int__getTextureHeight, 
+	                 0);
+	I_SimpleProperty(GLenum, TextureTarget, 
+	                 __GLenum__getTextureTarget, 
+	                 0);
+	I_SimpleProperty(int, TextureWidth, 
+	                 __int__getTextureWidth, 
+	                 0);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
+	I_SimpleProperty(bool, UnRefImageDataAfterApply, 
+	                 __bool__getUnRefImageDataAfterApply, 
+	                 __void__setUnRefImageDataAfterApply__bool);
+	I_SimpleProperty(bool, UseHardwareMipMapGeneration, 
+	                 __bool__getUseHardwareMipMapGeneration, 
+	                 __void__setUseHardwareMipMapGeneration__bool);
+	I_IndexedProperty(osg::Texture::WrapMode, Wrap, 
+	                  __WrapMode__getWrap__WrapParameter, 
+	                  __void__setWrap__WrapParameter__WrapMode, 
+	                  0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID);
-	I_Constructor1(IN, const osg::Texture::Extensions &, rhs);
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs);
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID);
-	I_Method1(void, setMultiTexturingSupported, IN, bool, flag);
-	I_Method0(bool, isMultiTexturingSupported);
-	I_Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag);
-	I_Method0(bool, isTextureFilterAnisotropicSupported);
-	I_Method1(void, setTextureCompressionARBSupported, IN, bool, flag);
-	I_Method0(bool, isTextureCompressionARBSupported);
-	I_Method1(void, setTextureCompressionS3TCSupported, IN, bool, flag);
-	I_Method0(bool, isTextureCompressionS3TCSupported);
-	I_Method1(void, setTextureMirroredRepeatSupported, IN, bool, flag);
-	I_Method0(bool, isTextureMirroredRepeatSupported);
-	I_Method1(void, setTextureEdgeClampSupported, IN, bool, flag);
-	I_Method0(bool, isTextureEdgeClampSupported);
-	I_Method1(void, setTextureBorderClampSupported, IN, bool, flag);
-	I_Method0(bool, isTextureBorderClampSupported);
-	I_Method1(void, setGenerateMipMapSupported, IN, bool, flag);
-	I_Method0(bool, isGenerateMipMapSupported);
-	I_Method1(void, setShadowSupported, IN, bool, flag);
-	I_Method0(bool, isShadowSupported);
-	I_Method1(void, setShadowAmbientSupported, IN, bool, flag);
-	I_Method0(bool, isShadowAmbientSupported);
-	I_Method1(void, setMaxTextureSize, IN, GLint, maxsize);
-	I_Method0(GLint, maxTextureSize);
-	I_Method1(void, setNumTextureUnits, IN, GLint, nunits);
-	I_Method0(GLint, numTextureUnits);
-	I_Method0(bool, isCompressedTexImage2DSupported);
-	I_Method1(void, setCompressedTexImage2DProc, IN, void *, ptr);
-	I_Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data);
-	I_Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr);
-	I_Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data);
-	I_Method1(void, setGetCompressedTexImageProc, IN, void *, ptr);
-	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data);
-	I_Method0(bool, isClientStorageSupported);
-	I_Method1(bool, isNonPowerOfTwoTextureSupported, IN, GLenum, filter);
-	I_WriteOnlyProperty(void *, CompressedTexImage2DProc);
-	I_WriteOnlyProperty(void *, CompressedTexSubImage2DProc);
-	I_WriteOnlyProperty(bool, GenerateMipMapSupported);
-	I_WriteOnlyProperty(void *, GetCompressedTexImageProc);
-	I_WriteOnlyProperty(GLint, MaxTextureSize);
-	I_WriteOnlyProperty(bool, MultiTexturingSupported);
-	I_WriteOnlyProperty(GLint, NumTextureUnits);
-	I_WriteOnlyProperty(bool, ShadowAmbientSupported);
-	I_WriteOnlyProperty(bool, ShadowSupported);
-	I_WriteOnlyProperty(bool, TextureBorderClampSupported);
-	I_WriteOnlyProperty(bool, TextureCompressionARBSupported);
-	I_WriteOnlyProperty(bool, TextureCompressionS3TCSupported);
-	I_WriteOnlyProperty(bool, TextureEdgeClampSupported);
-	I_WriteOnlyProperty(bool, TextureFilterAnisotropicSupported);
-	I_WriteOnlyProperty(bool, TextureMirroredRepeatSupported);
-	I_WriteOnlyProperty(unsigned int, upGLExtensions);
+	I_Constructor1(IN, unsigned int, contextID,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Texture::Extensions &, rhs,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
+	          __void__setupGLExtensions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setMultiTexturingSupported, IN, bool, flag,
+	          __void__setMultiTexturingSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isMultiTexturingSupported,
+	          __bool__isMultiTexturingSupported,
+	          "",
+	          "");
+	I_Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag,
+	          __void__setTextureFilterAnisotropicSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureFilterAnisotropicSupported,
+	          __bool__isTextureFilterAnisotropicSupported,
+	          "",
+	          "");
+	I_Method1(void, setTextureCompressionARBSupported, IN, bool, flag,
+	          __void__setTextureCompressionARBSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureCompressionARBSupported,
+	          __bool__isTextureCompressionARBSupported,
+	          "",
+	          "");
+	I_Method1(void, setTextureCompressionS3TCSupported, IN, bool, flag,
+	          __void__setTextureCompressionS3TCSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureCompressionS3TCSupported,
+	          __bool__isTextureCompressionS3TCSupported,
+	          "",
+	          "");
+	I_Method1(void, setTextureMirroredRepeatSupported, IN, bool, flag,
+	          __void__setTextureMirroredRepeatSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureMirroredRepeatSupported,
+	          __bool__isTextureMirroredRepeatSupported,
+	          "",
+	          "");
+	I_Method1(void, setTextureEdgeClampSupported, IN, bool, flag,
+	          __void__setTextureEdgeClampSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureEdgeClampSupported,
+	          __bool__isTextureEdgeClampSupported,
+	          "",
+	          "");
+	I_Method1(void, setTextureBorderClampSupported, IN, bool, flag,
+	          __void__setTextureBorderClampSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureBorderClampSupported,
+	          __bool__isTextureBorderClampSupported,
+	          "",
+	          "");
+	I_Method1(void, setGenerateMipMapSupported, IN, bool, flag,
+	          __void__setGenerateMipMapSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isGenerateMipMapSupported,
+	          __bool__isGenerateMipMapSupported,
+	          "",
+	          "");
+	I_Method1(void, setShadowSupported, IN, bool, flag,
+	          __void__setShadowSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isShadowSupported,
+	          __bool__isShadowSupported,
+	          "",
+	          "");
+	I_Method1(void, setShadowAmbientSupported, IN, bool, flag,
+	          __void__setShadowAmbientSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isShadowAmbientSupported,
+	          __bool__isShadowAmbientSupported,
+	          "",
+	          "");
+	I_Method1(void, setMaxTextureSize, IN, GLint, maxsize,
+	          __void__setMaxTextureSize__GLint,
+	          "",
+	          "");
+	I_Method0(GLint, maxTextureSize,
+	          __GLint__maxTextureSize,
+	          "",
+	          "");
+	I_Method1(void, setNumTextureUnits, IN, GLint, nunits,
+	          __void__setNumTextureUnits__GLint,
+	          "",
+	          "");
+	I_Method0(GLint, numTextureUnits,
+	          __GLint__numTextureUnits,
+	          "",
+	          "");
+	I_Method0(bool, isCompressedTexImage2DSupported,
+	          __bool__isCompressedTexImage2DSupported,
+	          "",
+	          "");
+	I_Method1(void, setCompressedTexImage2DProc, IN, void *, ptr,
+	          __void__setCompressedTexImage2DProc__void_P1,
+	          "",
+	          "");
+	I_Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
+	          __void__glCompressedTexImage2D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
+	          "",
+	          "");
+	I_Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr,
+	          __void__setCompressedTexSubImage2DProc__void_P1,
+	          "",
+	          "");
+	I_Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data,
+	          __void__glCompressedTexSubImage2D__GLenum__GLint__GLint__GLint__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
+	          "",
+	          "");
+	I_Method1(void, setGetCompressedTexImageProc, IN, void *, ptr,
+	          __void__setGetCompressedTexImageProc__void_P1,
+	          "",
+	          "");
+	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data,
+	          __void__glGetCompressedTexImage__GLenum__GLint__GLvoid_P1,
+	          "",
+	          "");
+	I_Method0(bool, isClientStorageSupported,
+	          __bool__isClientStorageSupported,
+	          "",
+	          "");
+	I_Method1(bool, isNonPowerOfTwoTextureSupported, IN, GLenum, filter,
+	          __bool__isNonPowerOfTwoTextureSupported__GLenum,
+	          "",
+	          "");
+	I_SimpleProperty(void *, CompressedTexImage2DProc, 
+	                 0, 
+	                 __void__setCompressedTexImage2DProc__void_P1);
+	I_SimpleProperty(void *, CompressedTexSubImage2DProc, 
+	                 0, 
+	                 __void__setCompressedTexSubImage2DProc__void_P1);
+	I_SimpleProperty(bool, GenerateMipMapSupported, 
+	                 0, 
+	                 __void__setGenerateMipMapSupported__bool);
+	I_SimpleProperty(void *, GetCompressedTexImageProc, 
+	                 0, 
+	                 __void__setGetCompressedTexImageProc__void_P1);
+	I_SimpleProperty(GLint, MaxTextureSize, 
+	                 0, 
+	                 __void__setMaxTextureSize__GLint);
+	I_SimpleProperty(bool, MultiTexturingSupported, 
+	                 0, 
+	                 __void__setMultiTexturingSupported__bool);
+	I_SimpleProperty(GLint, NumTextureUnits, 
+	                 0, 
+	                 __void__setNumTextureUnits__GLint);
+	I_SimpleProperty(bool, ShadowAmbientSupported, 
+	                 0, 
+	                 __void__setShadowAmbientSupported__bool);
+	I_SimpleProperty(bool, ShadowSupported, 
+	                 0, 
+	                 __void__setShadowSupported__bool);
+	I_SimpleProperty(bool, TextureBorderClampSupported, 
+	                 0, 
+	                 __void__setTextureBorderClampSupported__bool);
+	I_SimpleProperty(bool, TextureCompressionARBSupported, 
+	                 0, 
+	                 __void__setTextureCompressionARBSupported__bool);
+	I_SimpleProperty(bool, TextureCompressionS3TCSupported, 
+	                 0, 
+	                 __void__setTextureCompressionS3TCSupported__bool);
+	I_SimpleProperty(bool, TextureEdgeClampSupported, 
+	                 0, 
+	                 __void__setTextureEdgeClampSupported__bool);
+	I_SimpleProperty(bool, TextureFilterAnisotropicSupported, 
+	                 0, 
+	                 __void__setTextureFilterAnisotropicSupported__bool);
+	I_SimpleProperty(bool, TextureMirroredRepeatSupported, 
+	                 0, 
+	                 __void__setTextureMirroredRepeatSupported__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_BaseType(osg::Referenced);
-	I_Constructor2(IN, GLuint, id, IN, GLenum, target);
-	I_Constructor8(IN, GLuint, id, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	I_Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	I_Method0(void, bind);
-	I_MethodWithDefaults1(void, setAllocated, IN, bool, allocated, true);
-	I_Method6(void, setAllocated, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border);
-	I_Method0(bool, isAllocated);
-	I_Method0(bool, isReusable);
-	I_WriteOnlyProperty(bool, Allocated);
+	I_Constructor2(IN, GLuint, id, IN, GLenum, target,
+	               ____TextureObject__GLuint__GLenum,
+	               "",
+	               "");
+	I_Constructor8(IN, GLuint, id, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	               ____TextureObject__GLuint__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	               "",
+	               "");
+	I_Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          __bool__match__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	          "",
+	          "");
+	I_Method0(void, bind,
+	          __void__bind,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setAllocated, IN, bool, allocated, true,
+	                      __void__setAllocated__bool,
+	                      "",
+	                      "");
+	I_Method6(void, setAllocated, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          __void__setAllocated__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	          "",
+	          "");
+	I_Method0(bool, isAllocated,
+	          __bool__isAllocated,
+	          "",
+	          "");
+	I_Method0(bool, isReusable,
+	          __bool__isReusable,
+	          "",
+	          "");
+	I_SimpleProperty(bool, Allocated, 
+	                 0, 
+	                 __void__setAllocated__bool);
 	I_PublicMemberProperty(GLuint, _id);
 	I_PublicMemberProperty(GLenum, _target);
 	I_PublicMemberProperty(GLint, _numMipmapLevels);
@@ -264,24 +711,65 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
-	I_Constructor0();
-	I_Constructor1(IN, unsigned int, size);
-	I_Method1(void, setAllElementsTo, IN, const osg::Texture::TextureObjectList &, t);
-	I_Method0(void, clear);
-	I_Method0(bool, empty);
-	I_Method0(unsigned int, size);
-	I_WriteOnlyProperty(const osg::Texture::TextureObjectList &, AllElementsTo);
+	I_Constructor0(____buffered_object,
+	               "",
+	               "");
+	I_Constructor1(IN, unsigned int, size,
+	               ____buffered_object__unsigned_int,
+	               "",
+	               "");
+	I_Method1(void, setAllElementsTo, IN, const osg::Texture::TextureObjectList &, t,
+	          __void__setAllElementsTo__C5_T_R1,
+	          "",
+	          "");
+	I_Method0(void, clear,
+	          __void__clear,
+	          "",
+	          "");
+	I_Method0(bool, empty,
+	          __bool__empty,
+	          "",
+	          "");
+	I_Method0(unsigned int, size,
+	          __unsigned_int__size,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Texture::TextureObjectList &, AllElementsTo, 
+	                 0, 
+	                 __void__setAllElementsTo__C5_T_R1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::Texture::TextureObject *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObject > &, rp);
-	I_Method0(osg::Texture::TextureObject *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::Texture::TextureObject *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::Texture::TextureObject > &, rp);
-	I_ReadOnlyProperty(osg::Texture::TextureObject *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Texture::TextureObject *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObject > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Texture::TextureObject *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Texture::TextureObject *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Texture::TextureObject > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Texture::TextureObject *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Texture::TextureObject > >);

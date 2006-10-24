@@ -25,17 +25,55 @@
 
 BEGIN_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgFX::MultiTextureControl &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method2(void, setTextureWeight, IN, unsigned int, unit, IN, float, weight);
-	I_Method1(float, getTextureWeight, IN, unsigned int, unit);
-	I_Method0(unsigned int, getNumTextureWeights);
-	I_ArrayProperty_G(float, TextureWeight, TextureWeights, unsigned int, void);
+	I_Constructor0(____MultiTextureControl,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgFX::MultiTextureControl &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____MultiTextureControl__C5_MultiTextureControl_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method2(void, setTextureWeight, IN, unsigned int, unit, IN, float, weight,
+	          __void__setTextureWeight__unsigned_int__float,
+	          "",
+	          "");
+	I_Method1(float, getTextureWeight, IN, unsigned int, unit,
+	          __float__getTextureWeight__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumTextureWeights,
+	          __unsigned_int__getNumTextureWeights,
+	          "",
+	          "");
+	I_ArrayProperty(float, TextureWeight, 
+	                __float__getTextureWeight__unsigned_int, 
+	                __void__setTextureWeight__unsigned_int__float, 
+	                __unsigned_int__getNumTextureWeights, 
+	                0, 
+	                0, 
+	                0);
 END_REFLECTOR
 

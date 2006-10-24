@@ -30,49 +30,160 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgGA::Simp
 
 BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	I_VirtualBaseType(osgGA::GraphicsWindow);
-	I_Constructor0();
-	I_Method1(void, setSceneData, IN, osg::Node *, node);
-	I_Method0(osg::Node *, getSceneData);
-	I_Method0(const osg::Node *, getSceneData);
-	I_Method0(osg::CameraNode *, getCamera);
-	I_Method0(const osg::CameraNode *, getCamera);
-	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator);
-	I_Method0(osgGA::MatrixManipulator *, getCameraManipulator);
-	I_Method0(const osgGA::MatrixManipulator *, getCameraManipulator);
-	I_Method1(void, addEventHandler, IN, osgGA::GUIEventHandler *, eventHandler);
-	I_Method0(osgGA::SimpleViewer::EventHandlers &, getEventHandlers);
-	I_Method0(const osgGA::SimpleViewer::EventHandlers &, getEventHandlers);
-	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp);
-	I_Method0(osgDB::DatabasePager *, getDatabasePager);
-	I_Method0(const osgDB::DatabasePager *, getDatabasePager);
-	I_Method0(void, frame);
-	I_Method0(void, frameAdvance);
-	I_Method0(void, frameEventTraversal);
-	I_Method0(void, frameUpdateTraversal);
-	I_Method0(void, frameCullTraversal);
-	I_Method0(void, frameDrawTraversal);
-	I_Method0(void, releaseAllGLObjects);
-	I_Method0(void, cleanup);
-	I_Method0(osgUtil::SceneView *, getSceneView);
-	I_Method0(const osgUtil::SceneView *, getSceneView);
-	I_Method0(void, init);
-	I_ReadOnlyProperty(osg::CameraNode *, Camera);
-	I_Property(osgGA::MatrixManipulator *, CameraManipulator);
-	I_Property(osgDB::DatabasePager *, DatabasePager);
-	I_ReadOnlyProperty(osgGA::SimpleViewer::EventHandlers &, EventHandlers);
-	I_Property(osg::Node *, SceneData);
-	I_ReadOnlyProperty(osgUtil::SceneView *, SceneView);
+	I_Constructor0(____SimpleViewer,
+	               "",
+	               "");
+	I_Method1(void, setSceneData, IN, osg::Node *, node,
+	          __void__setSceneData__osg_Node_P1,
+	          "",
+	          "");
+	I_Method0(osg::Node *, getSceneData,
+	          __osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method0(const osg::Node *, getSceneData,
+	          __C5_osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method0(osg::CameraNode *, getCamera,
+	          __osg_CameraNode_P1__getCamera,
+	          "",
+	          "");
+	I_Method0(const osg::CameraNode *, getCamera,
+	          __C5_osg_CameraNode_P1__getCamera,
+	          "",
+	          "");
+	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator,
+	          __void__setCameraManipulator__MatrixManipulator_P1,
+	          "",
+	          "");
+	I_Method0(osgGA::MatrixManipulator *, getCameraManipulator,
+	          __MatrixManipulator_P1__getCameraManipulator,
+	          "",
+	          "");
+	I_Method0(const osgGA::MatrixManipulator *, getCameraManipulator,
+	          __C5_MatrixManipulator_P1__getCameraManipulator,
+	          "",
+	          "");
+	I_Method1(void, addEventHandler, IN, osgGA::GUIEventHandler *, eventHandler,
+	          __void__addEventHandler__GUIEventHandler_P1,
+	          "",
+	          "");
+	I_Method0(osgGA::SimpleViewer::EventHandlers &, getEventHandlers,
+	          __EventHandlers_R1__getEventHandlers,
+	          "",
+	          "");
+	I_Method0(const osgGA::SimpleViewer::EventHandlers &, getEventHandlers,
+	          __C5_EventHandlers_R1__getEventHandlers,
+	          "",
+	          "");
+	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
+	          __void__setDatabasePager__osgDB_DatabasePager_P1,
+	          "",
+	          "");
+	I_Method0(osgDB::DatabasePager *, getDatabasePager,
+	          __osgDB_DatabasePager_P1__getDatabasePager,
+	          "",
+	          "");
+	I_Method0(const osgDB::DatabasePager *, getDatabasePager,
+	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
+	          "",
+	          "");
+	I_Method0(void, frame,
+	          __void__frame,
+	          "Render a complete new frame. ",
+	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal(). Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code. ");
+	I_Method0(void, frameAdvance,
+	          __void__frameAdvance,
+	          "",
+	          "");
+	I_Method0(void, frameEventTraversal,
+	          __void__frameEventTraversal,
+	          "",
+	          "");
+	I_Method0(void, frameUpdateTraversal,
+	          __void__frameUpdateTraversal,
+	          "",
+	          "");
+	I_Method0(void, frameCullTraversal,
+	          __void__frameCullTraversal,
+	          "",
+	          "");
+	I_Method0(void, frameDrawTraversal,
+	          __void__frameDrawTraversal,
+	          "",
+	          "");
+	I_Method0(void, releaseAllGLObjects,
+	          __void__releaseAllGLObjects,
+	          "Release all OpenGL objects associated with this viewer's scenegraph. ",
+	          "Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained. ");
+	I_Method0(void, cleanup,
+	          __void__cleanup,
+	          "Clean up all OpenGL objects associated with this viewer's scenegraph. ",
+	          "Note, must only be called from the graphics context associated with this viewer. ");
+	I_Method0(osgUtil::SceneView *, getSceneView,
+	          __osgUtil_SceneView_P1__getSceneView,
+	          "",
+	          "");
+	I_Method0(const osgUtil::SceneView *, getSceneView,
+	          __C5_osgUtil_SceneView_P1__getSceneView,
+	          "",
+	          "");
+	I_Method0(void, init,
+	          __void__init,
+	          "",
+	          "");
+	I_SimpleProperty(osg::CameraNode *, Camera, 
+	                 __osg_CameraNode_P1__getCamera, 
+	                 0);
+	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
+	                 __MatrixManipulator_P1__getCameraManipulator, 
+	                 __void__setCameraManipulator__MatrixManipulator_P1);
+	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
+	                 __osgDB_DatabasePager_P1__getDatabasePager, 
+	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
+	I_SimpleProperty(osgGA::SimpleViewer::EventHandlers &, EventHandlers, 
+	                 __EventHandlers_R1__getEventHandlers, 
+	                 0);
+	I_SimpleProperty(osg::Node *, SceneData, 
+	                 __osg_Node_P1__getSceneData, 
+	                 __void__setSceneData__osg_Node_P1);
+	I_SimpleProperty(osgUtil::SceneView *, SceneView, 
+	                 __osgUtil_SceneView_P1__getSceneView, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
-	I_Constructor0();
-	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
-	I_Method0(osgGA::GUIEventHandler *, get);
-	I_Method0(bool, valid);
-	I_Method0(osgGA::GUIEventHandler *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp);
-	I_ReadOnlyProperty(osgGA::GUIEventHandler *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgGA::GUIEventHandler *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgGA::GUIEventHandler *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgGA::GUIEventHandler *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >);

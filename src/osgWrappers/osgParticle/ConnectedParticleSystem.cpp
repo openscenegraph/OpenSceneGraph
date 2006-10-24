@@ -26,15 +26,44 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
 	I_BaseType(osgParticle::ParticleSystem);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::ConnectedParticleSystem &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(osgParticle::Particle *, createParticle, IN, const osgParticle::Particle *, ptemplate);
-	I_Method1(void, reuseParticle, IN, int, i);
-	I_Method1(void, drawImplementation, IN, osg::State &, state);
+	I_Constructor0(____ConnectedParticleSystem,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::ConnectedParticleSystem &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConnectedParticleSystem__C5_ConnectedParticleSystem_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osgParticle::Particle *, createParticle, IN, const osgParticle::Particle *, ptemplate,
+	          __Particle_P1__createParticle__C5_Particle_P1,
+	          "Create a new particle from the specified template (or the default one if ptemplate is null). ",
+	          "");
+	I_Method1(void, reuseParticle, IN, int, i,
+	          __void__reuseParticle__int,
+	          "Reuse the i-th particle. ",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	          __void__drawImplementation__osg_State_R1,
+	          "Draw the connected particles as either a line or a quad strip, depending upon viewing distance. . ",
+	          "");
 END_REFLECTOR
 

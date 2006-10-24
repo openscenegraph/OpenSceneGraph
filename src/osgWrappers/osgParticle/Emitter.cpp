@@ -26,17 +26,50 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Emitter)
 	I_BaseType(osgParticle::ParticleProcessor);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::Emitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(const osgParticle::Particle &, getParticleTemplate);
-	I_Method1(void, setParticleTemplate, IN, const osgParticle::Particle &, p);
-	I_Method0(bool, getUseDefaultTemplate);
-	I_Method1(void, setUseDefaultTemplate, IN, bool, v);
-	I_Property(const osgParticle::Particle &, ParticleTemplate);
-	I_Property(bool, UseDefaultTemplate);
+	I_Constructor0(____Emitter,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::Emitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Emitter__C5_Emitter_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(const osgParticle::Particle &, getParticleTemplate,
+	          __C5_Particle_R1__getParticleTemplate,
+	          "Get the particle template. ",
+	          "");
+	I_Method1(void, setParticleTemplate, IN, const osgParticle::Particle &, p,
+	          __void__setParticleTemplate__C5_Particle_R1,
+	          "Set the particle template (particle is copied). ",
+	          "");
+	I_Method0(bool, getUseDefaultTemplate,
+	          __bool__getUseDefaultTemplate,
+	          "Return whether the particle system's default template should be used. ",
+	          "");
+	I_Method1(void, setUseDefaultTemplate, IN, bool, v,
+	          __void__setUseDefaultTemplate__bool,
+	          "Set whether the default particle template should be used. ",
+	          "When this flag is true, the particle template is ignored, and the particle system's default template is used instead.");
+	I_SimpleProperty(const osgParticle::Particle &, ParticleTemplate, 
+	                 __C5_Particle_R1__getParticleTemplate, 
+	                 __void__setParticleTemplate__C5_Particle_R1);
+	I_SimpleProperty(bool, UseDefaultTemplate, 
+	                 __bool__getUseDefaultTemplate, 
+	                 __void__setUseDefaultTemplate__bool);
 END_REFLECTOR
 

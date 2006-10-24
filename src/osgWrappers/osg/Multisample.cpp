@@ -32,46 +32,145 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Multisample)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Multisample &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method2(void, setSampleCoverage, IN, float, coverage, IN, bool, invert);
-	I_Method1(void, setCoverage, IN, float, coverage);
-	I_Method0(float, getCoverage);
-	I_Method1(void, setInvert, IN, bool, invert);
-	I_Method0(bool, getInvert);
-	I_Method1(void, setHint, IN, osg::Multisample::Mode, mode);
-	I_Method0(osg::Multisample::Mode, getHint);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_StaticMethod2(osg::Multisample::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
-	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Multisample::Extensions *, extensions);
-	I_Property(float, Coverage);
-	I_Property(osg::Multisample::Mode, Hint);
-	I_Property(bool, Invert);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____Multisample,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Multisample &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Multisample__C5_Multisample_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method2(void, setSampleCoverage, IN, float, coverage, IN, bool, invert,
+	          __void__setSampleCoverage__float__bool,
+	          "",
+	          "");
+	I_Method1(void, setCoverage, IN, float, coverage,
+	          __void__setCoverage__float,
+	          "",
+	          "");
+	I_Method0(float, getCoverage,
+	          __float__getCoverage,
+	          "",
+	          "");
+	I_Method1(void, setInvert, IN, bool, invert,
+	          __void__setInvert__bool,
+	          "",
+	          "");
+	I_Method0(bool, getInvert,
+	          __bool__getInvert,
+	          "",
+	          "");
+	I_Method1(void, setHint, IN, osg::Multisample::Mode, mode,
+	          __void__setHint__Mode,
+	          "",
+	          "");
+	I_Method0(osg::Multisample::Mode, getHint,
+	          __Mode__getHint,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_StaticMethod2(osg::Multisample::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Multisample::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions allows users to override the extensions across graphics contexts. ",
+	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_SimpleProperty(float, Coverage, 
+	                 __float__getCoverage, 
+	                 __void__setCoverage__float);
+	I_SimpleProperty(osg::Multisample::Mode, Hint, 
+	                 __Mode__getHint, 
+	                 __void__setHint__Mode);
+	I_SimpleProperty(bool, Invert, 
+	                 __bool__getInvert, 
+	                 __void__setInvert__bool);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Multisample::Extensions)
 	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID);
-	I_Constructor1(IN, const osg::Multisample::Extensions &, rhs);
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Multisample::Extensions &, rhs);
-	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID);
-	I_Method1(void, setMultisampleSupported, IN, bool, flag);
-	I_Method1(void, setMultisampleFilterHintSupported, IN, bool, flag);
-	I_Method0(bool, isMultisampleSupported);
-	I_Method0(bool, isMultisampleFilterHintSupported);
-	I_Method1(void, setSampleCoverageProc, IN, void *, ptr);
-	I_Method2(void, glSampleCoverage, IN, GLclampf, value, IN, GLboolean, invert);
-	I_WriteOnlyProperty(bool, MultisampleFilterHintSupported);
-	I_WriteOnlyProperty(bool, MultisampleSupported);
-	I_WriteOnlyProperty(void *, SampleCoverageProc);
-	I_WriteOnlyProperty(unsigned int, upGLExtenions);
+	I_Constructor1(IN, unsigned int, contextID,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Multisample::Extensions &, rhs,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::Multisample::Extensions &, rhs,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	          __void__setupGLExtenions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setMultisampleSupported, IN, bool, flag,
+	          __void__setMultisampleSupported__bool,
+	          "",
+	          "");
+	I_Method1(void, setMultisampleFilterHintSupported, IN, bool, flag,
+	          __void__setMultisampleFilterHintSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isMultisampleSupported,
+	          __bool__isMultisampleSupported,
+	          "",
+	          "");
+	I_Method0(bool, isMultisampleFilterHintSupported,
+	          __bool__isMultisampleFilterHintSupported,
+	          "",
+	          "");
+	I_Method1(void, setSampleCoverageProc, IN, void *, ptr,
+	          __void__setSampleCoverageProc__void_P1,
+	          "",
+	          "");
+	I_Method2(void, glSampleCoverage, IN, GLclampf, value, IN, GLboolean, invert,
+	          __void__glSampleCoverage__GLclampf__GLboolean,
+	          "",
+	          "");
+	I_SimpleProperty(bool, MultisampleFilterHintSupported, 
+	                 0, 
+	                 __void__setMultisampleFilterHintSupported__bool);
+	I_SimpleProperty(bool, MultisampleSupported, 
+	                 0, 
+	                 __void__setMultisampleSupported__bool);
+	I_SimpleProperty(void *, SampleCoverageProc, 
+	                 0, 
+	                 __void__setSampleCoverageProc__void_P1);
 END_REFLECTOR
 

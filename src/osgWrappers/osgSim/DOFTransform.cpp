@@ -36,71 +36,251 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DOFTransform)
 	I_BaseType(osg::Transform);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::DOFTransform &, dof, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setMinHPR, IN, const osg::Vec3 &, hpr);
-	I_Method0(const osg::Vec3 &, getMinHPR);
-	I_Method1(void, setMaxHPR, IN, const osg::Vec3 &, hpr);
-	I_Method0(const osg::Vec3 &, getMaxHPR);
-	I_Method1(void, setIncrementHPR, IN, const osg::Vec3 &, hpr);
-	I_Method0(const osg::Vec3 &, getIncrementHPR);
-	I_Method1(void, setCurrentHPR, IN, const osg::Vec3 &, hpr);
-	I_Method0(const osg::Vec3 &, getCurrentHPR);
-	I_Method1(void, updateCurrentHPR, IN, const osg::Vec3 &, hpr);
-	I_Method1(void, setMinTranslate, IN, const osg::Vec3 &, translate);
-	I_Method0(const osg::Vec3 &, getMinTranslate);
-	I_Method1(void, setMaxTranslate, IN, const osg::Vec3 &, translate);
-	I_Method0(const osg::Vec3 &, getMaxTranslate);
-	I_Method1(void, setIncrementTranslate, IN, const osg::Vec3 &, translate);
-	I_Method0(const osg::Vec3 &, getIncrementTranslate);
-	I_Method1(void, setCurrentTranslate, IN, const osg::Vec3 &, translate);
-	I_Method0(const osg::Vec3 &, getCurrentTranslate);
-	I_Method1(void, updateCurrentTranslate, IN, const osg::Vec3 &, translate);
-	I_Method1(void, setMinScale, IN, const osg::Vec3 &, scale);
-	I_Method0(const osg::Vec3 &, getMinScale);
-	I_Method1(void, setMaxScale, IN, const osg::Vec3 &, scale);
-	I_Method0(const osg::Vec3 &, getMaxScale);
-	I_Method1(void, setIncrementScale, IN, const osg::Vec3 &, scale);
-	I_Method0(const osg::Vec3 &, getIncrementScale);
-	I_Method1(void, setCurrentScale, IN, const osg::Vec3 &, scale);
-	I_Method0(const osg::Vec3 &, getCurrentScale);
-	I_Method1(void, updateCurrentScale, IN, const osg::Vec3 &, scale);
-	I_Method1(void, setPutMatrix, IN, const osg::Matrix &, put);
-	I_Method0(const osg::Matrix &, getPutMatrix);
-	I_Method1(void, setInversePutMatrix, IN, const osg::Matrix &, inversePut);
-	I_Method0(const osg::Matrix &, getInversePutMatrix);
-	I_Method1(void, setLimitationFlags, IN, unsigned long, flags);
-	I_Method0(unsigned long, getLimitationFlags);
-	I_Method1(void, setHPRMultOrder, IN, const osgSim::DOFTransform::MultOrder, order);
-	I_Method0(const osgSim::DOFTransform::MultOrder, getHPRMultOrder);
-	I_Method1(void, setAnimationOn, IN, bool, do_animate);
-	I_Method0(bool, getAnimationOn);
-	I_Method1(void, animate, IN, float, deltaTime);
-	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Property(bool, AnimationOn);
-	I_Property(const osg::Vec3 &, CurrentHPR);
-	I_Property(const osg::Vec3 &, CurrentScale);
-	I_Property(const osg::Vec3 &, CurrentTranslate);
-	I_Property(const osgSim::DOFTransform::MultOrder, HPRMultOrder);
-	I_Property(const osg::Vec3 &, IncrementHPR);
-	I_Property(const osg::Vec3 &, IncrementScale);
-	I_Property(const osg::Vec3 &, IncrementTranslate);
-	I_Property(const osg::Matrix &, InversePutMatrix);
-	I_Property(unsigned long, LimitationFlags);
-	I_Property(const osg::Vec3 &, MaxHPR);
-	I_Property(const osg::Vec3 &, MaxScale);
-	I_Property(const osg::Vec3 &, MaxTranslate);
-	I_Property(const osg::Vec3 &, MinHPR);
-	I_Property(const osg::Vec3 &, MinScale);
-	I_Property(const osg::Vec3 &, MinTranslate);
-	I_Property(const osg::Matrix &, PutMatrix);
+	I_Constructor0(____DOFTransform,
+	               "constructor ",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::DOFTransform &, dof, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DOFTransform__C5_DOFTransform_R1__C5_osg_CopyOp_R1,
+	                           "copy constructor ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method1(void, setMinHPR, IN, const osg::Vec3 &, hpr,
+	          __void__setMinHPR__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getMinHPR,
+	          __C5_osg_Vec3_R1__getMinHPR,
+	          "",
+	          "");
+	I_Method1(void, setMaxHPR, IN, const osg::Vec3 &, hpr,
+	          __void__setMaxHPR__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getMaxHPR,
+	          __C5_osg_Vec3_R1__getMaxHPR,
+	          "",
+	          "");
+	I_Method1(void, setIncrementHPR, IN, const osg::Vec3 &, hpr,
+	          __void__setIncrementHPR__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getIncrementHPR,
+	          __C5_osg_Vec3_R1__getIncrementHPR,
+	          "",
+	          "");
+	I_Method1(void, setCurrentHPR, IN, const osg::Vec3 &, hpr,
+	          __void__setCurrentHPR__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCurrentHPR,
+	          __C5_osg_Vec3_R1__getCurrentHPR,
+	          "",
+	          "");
+	I_Method1(void, updateCurrentHPR, IN, const osg::Vec3 &, hpr,
+	          __void__updateCurrentHPR__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, setMinTranslate, IN, const osg::Vec3 &, translate,
+	          __void__setMinTranslate__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getMinTranslate,
+	          __C5_osg_Vec3_R1__getMinTranslate,
+	          "",
+	          "");
+	I_Method1(void, setMaxTranslate, IN, const osg::Vec3 &, translate,
+	          __void__setMaxTranslate__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getMaxTranslate,
+	          __C5_osg_Vec3_R1__getMaxTranslate,
+	          "",
+	          "");
+	I_Method1(void, setIncrementTranslate, IN, const osg::Vec3 &, translate,
+	          __void__setIncrementTranslate__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getIncrementTranslate,
+	          __C5_osg_Vec3_R1__getIncrementTranslate,
+	          "",
+	          "");
+	I_Method1(void, setCurrentTranslate, IN, const osg::Vec3 &, translate,
+	          __void__setCurrentTranslate__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCurrentTranslate,
+	          __C5_osg_Vec3_R1__getCurrentTranslate,
+	          "",
+	          "");
+	I_Method1(void, updateCurrentTranslate, IN, const osg::Vec3 &, translate,
+	          __void__updateCurrentTranslate__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, setMinScale, IN, const osg::Vec3 &, scale,
+	          __void__setMinScale__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getMinScale,
+	          __C5_osg_Vec3_R1__getMinScale,
+	          "",
+	          "");
+	I_Method1(void, setMaxScale, IN, const osg::Vec3 &, scale,
+	          __void__setMaxScale__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getMaxScale,
+	          __C5_osg_Vec3_R1__getMaxScale,
+	          "",
+	          "");
+	I_Method1(void, setIncrementScale, IN, const osg::Vec3 &, scale,
+	          __void__setIncrementScale__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getIncrementScale,
+	          __C5_osg_Vec3_R1__getIncrementScale,
+	          "",
+	          "");
+	I_Method1(void, setCurrentScale, IN, const osg::Vec3 &, scale,
+	          __void__setCurrentScale__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCurrentScale,
+	          __C5_osg_Vec3_R1__getCurrentScale,
+	          "",
+	          "");
+	I_Method1(void, updateCurrentScale, IN, const osg::Vec3 &, scale,
+	          __void__updateCurrentScale__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method1(void, setPutMatrix, IN, const osg::Matrix &, put,
+	          __void__setPutMatrix__C5_osg_Matrix_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix &, getPutMatrix,
+	          __C5_osg_Matrix_R1__getPutMatrix,
+	          "",
+	          "");
+	I_Method1(void, setInversePutMatrix, IN, const osg::Matrix &, inversePut,
+	          __void__setInversePutMatrix__C5_osg_Matrix_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix &, getInversePutMatrix,
+	          __C5_osg_Matrix_R1__getInversePutMatrix,
+	          "",
+	          "");
+	I_Method1(void, setLimitationFlags, IN, unsigned long, flags,
+	          __void__setLimitationFlags__unsigned_long,
+	          "",
+	          "");
+	I_Method0(unsigned long, getLimitationFlags,
+	          __unsigned_long__getLimitationFlags,
+	          "",
+	          "");
+	I_Method1(void, setHPRMultOrder, IN, const osgSim::DOFTransform::MultOrder, order,
+	          __void__setHPRMultOrder__C5_MultOrder,
+	          "",
+	          "");
+	I_Method0(const osgSim::DOFTransform::MultOrder, getHPRMultOrder,
+	          __C5_MultOrder__getHPRMultOrder,
+	          "",
+	          "");
+	I_Method1(void, setAnimationOn, IN, bool, do_animate,
+	          __void__setAnimationOn__bool,
+	          "",
+	          "");
+	I_Method0(bool, getAnimationOn,
+	          __bool__getAnimationOn,
+	          "",
+	          "");
+	I_Method1(void, animate, IN, float, deltaTime,
+	          __void__animate__float,
+	          "",
+	          "");
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
+	          __bool__computeLocalToWorldMatrix__osg_Matrix_R1__osg_NodeVisitor_P1,
+	          "",
+	          "");
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
+	          __bool__computeWorldToLocalMatrix__osg_Matrix_R1__osg_NodeVisitor_P1,
+	          "",
+	          "");
+	I_SimpleProperty(bool, AnimationOn, 
+	                 __bool__getAnimationOn, 
+	                 __void__setAnimationOn__bool);
+	I_SimpleProperty(const osg::Vec3 &, CurrentHPR, 
+	                 __C5_osg_Vec3_R1__getCurrentHPR, 
+	                 __void__setCurrentHPR__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, CurrentScale, 
+	                 __C5_osg_Vec3_R1__getCurrentScale, 
+	                 __void__setCurrentScale__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, CurrentTranslate, 
+	                 __C5_osg_Vec3_R1__getCurrentTranslate, 
+	                 __void__setCurrentTranslate__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osgSim::DOFTransform::MultOrder, HPRMultOrder, 
+	                 __C5_MultOrder__getHPRMultOrder, 
+	                 __void__setHPRMultOrder__C5_MultOrder);
+	I_SimpleProperty(const osg::Vec3 &, IncrementHPR, 
+	                 __C5_osg_Vec3_R1__getIncrementHPR, 
+	                 __void__setIncrementHPR__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, IncrementScale, 
+	                 __C5_osg_Vec3_R1__getIncrementScale, 
+	                 __void__setIncrementScale__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, IncrementTranslate, 
+	                 __C5_osg_Vec3_R1__getIncrementTranslate, 
+	                 __void__setIncrementTranslate__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Matrix &, InversePutMatrix, 
+	                 __C5_osg_Matrix_R1__getInversePutMatrix, 
+	                 __void__setInversePutMatrix__C5_osg_Matrix_R1);
+	I_SimpleProperty(unsigned long, LimitationFlags, 
+	                 __unsigned_long__getLimitationFlags, 
+	                 __void__setLimitationFlags__unsigned_long);
+	I_SimpleProperty(const osg::Vec3 &, MaxHPR, 
+	                 __C5_osg_Vec3_R1__getMaxHPR, 
+	                 __void__setMaxHPR__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, MaxScale, 
+	                 __C5_osg_Vec3_R1__getMaxScale, 
+	                 __void__setMaxScale__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, MaxTranslate, 
+	                 __C5_osg_Vec3_R1__getMaxTranslate, 
+	                 __void__setMaxTranslate__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, MinHPR, 
+	                 __C5_osg_Vec3_R1__getMinHPR, 
+	                 __void__setMinHPR__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, MinScale, 
+	                 __C5_osg_Vec3_R1__getMinScale, 
+	                 __void__setMinScale__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, MinTranslate, 
+	                 __C5_osg_Vec3_R1__getMinTranslate, 
+	                 __void__setMinTranslate__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Matrix &, PutMatrix, 
+	                 __C5_osg_Matrix_R1__getPutMatrix, 
+	                 __void__setPutMatrix__C5_osg_Matrix_R1);
 END_REFLECTOR
 

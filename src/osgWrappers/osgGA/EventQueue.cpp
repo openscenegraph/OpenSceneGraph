@@ -26,46 +26,151 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::Even
 
 BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults1(IN, osgGA::GUIEventAdapter::MouseYOrientation, mouseYOrientation, osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
-	I_Method1(void, setEvents, IN, osgGA::EventQueue::Events &, events);
-	I_Method1(bool, takeEvents, IN, osgGA::EventQueue::Events &, events);
-	I_Method1(bool, copyEvents, IN, osgGA::EventQueue::Events &, events);
-	I_Method1(void, appendEvents, IN, osgGA::EventQueue::Events &, events);
-	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event);
-	I_MethodWithDefaults5(void, windowResize, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true);
-	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm);
-	I_Method2(void, mouseScroll2D, IN, float, x, IN, float, y);
-	I_Method1(void, penPressure, IN, float, pressure);
-	I_Method2(void, penProximity, IN, osgGA::GUIEventAdapter::TabletPointerType, pt, IN, bool, isEntering);
-	I_Method2(void, mouseWarp, IN, float, x, IN, float, y);
-	I_Method2(void, mouseMotion, IN, float, x, IN, float, y);
-	I_Method3(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button);
-	I_Method3(void, mouseDoubleButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button);
-	I_Method3(void, mouseButtonRelease, IN, float, x, IN, float, y, IN, unsigned int, button);
-	I_Method1(void, keyPress, IN, osgGA::GUIEventAdapter::KeySymbol, key);
-	I_Method1(void, keyRelease, IN, osgGA::GUIEventAdapter::KeySymbol, key);
-	I_Method1(void, frame, IN, double, t);
-	I_Method1(void, setStartTick, IN, osg::Timer_t, tick);
-	I_Method0(osg::Timer_t, getStartTick);
-	I_Method0(double, getTime);
-	I_Method0(osgGA::GUIEventAdapter *, createEvent);
-	I_Method0(osgGA::GUIEventAdapter *, getCurrentEventState);
-	I_Method0(const osgGA::GUIEventAdapter *, getCurrentEventState);
-	I_ReadOnlyProperty(osgGA::GUIEventAdapter *, CurrentEventState);
-	I_WriteOnlyProperty(osgGA::EventQueue::Events &, Events);
-	I_Property(osg::Timer_t, StartTick);
-	I_ReadOnlyProperty(double, Time);
+	I_ConstructorWithDefaults1(IN, osgGA::GUIEventAdapter::MouseYOrientation, mouseYOrientation, osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS,
+	                           ____EventQueue__GUIEventAdapter_MouseYOrientation,
+	                           "",
+	                           "");
+	I_Method1(void, setEvents, IN, osgGA::EventQueue::Events &, events,
+	          __void__setEvents__Events_R1,
+	          "Set events. ",
+	          "");
+	I_Method1(bool, takeEvents, IN, osgGA::EventQueue::Events &, events,
+	          __bool__takeEvents__Events_R1,
+	          "Take the entire event queue leaving the EventQueue' event queue empty. ",
+	          "");
+	I_Method1(bool, copyEvents, IN, osgGA::EventQueue::Events &, events,
+	          __bool__copyEvents__Events_R1,
+	          "Take a copy the entire event queue leaving the EventQueue' event queue intact. ",
+	          "");
+	I_Method1(void, appendEvents, IN, osgGA::EventQueue::Events &, events,
+	          __void__appendEvents__Events_R1,
+	          "Add events to end of event queue. ",
+	          "");
+	I_Method1(void, addEvent, IN, osgGA::GUIEventAdapter *, event,
+	          __void__addEvent__GUIEventAdapter_P1,
+	          "Add an event to the end of the event queue. ",
+	          "");
+	I_MethodWithDefaults5(void, windowResize, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true,
+	                      __void__windowResize__int__int__unsigned_int__unsigned_int__bool,
+	                      "Method for adapting window resize event, placing this event on the back of the event queue. ",
+	                      "");
+	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm,
+	          __void__mouseScroll__GUIEventAdapter_ScrollingMotion,
+	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. ",
+	          "");
+	I_Method2(void, mouseScroll2D, IN, float, x, IN, float, y,
+	          __void__mouseScroll2D__float__float,
+	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. ",
+	          "");
+	I_Method1(void, penPressure, IN, float, pressure,
+	          __void__penPressure__float,
+	          "Method for adapting pen pressure events, placing this event on the back og the event queue. ",
+	          "");
+	I_Method2(void, penProximity, IN, osgGA::GUIEventAdapter::TabletPointerType, pt, IN, bool, isEntering,
+	          __void__penProximity__GUIEventAdapter_TabletPointerType__bool,
+	          "Method for adapting pen proximity events, placing this event on the back og the event queue. ",
+	          "");
+	I_Method2(void, mouseWarp, IN, float, x, IN, float, y,
+	          __void__mouseWarp__float__float,
+	          "Method for updating in response to a mouse warp. ",
+	          "Note, just moves the mouse position without creating a new event for it. ");
+	I_Method2(void, mouseMotion, IN, float, x, IN, float, y,
+	          __void__mouseMotion__float__float,
+	          "Method for adapting mouse motion events whilst mouse buttons are pressed, placing this event on the back of the event queue. ",
+	          "");
+	I_Method3(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button,
+	          __void__mouseButtonPress__float__float__unsigned_int,
+	          "Method for adapting mouse button pressed events, placing this event on the back of the event queue. ",
+	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
+	I_Method3(void, mouseDoubleButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button,
+	          __void__mouseDoubleButtonPress__float__float__unsigned_int,
+	          "Method for adapting mouse button pressed events, placing this event on the back of the event queue. ",
+	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
+	I_Method3(void, mouseButtonRelease, IN, float, x, IN, float, y, IN, unsigned int, button,
+	          __void__mouseButtonRelease__float__float__unsigned_int,
+	          "Method for adapting mouse button release events, placing this event on the back of the event queue. ",
+	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
+	I_Method1(void, keyPress, IN, osgGA::GUIEventAdapter::KeySymbol, key,
+	          __void__keyPress__GUIEventAdapter_KeySymbol,
+	          "Method for adapting keyboard press events. ",
+	          "");
+	I_Method1(void, keyRelease, IN, osgGA::GUIEventAdapter::KeySymbol, key,
+	          __void__keyRelease__GUIEventAdapter_KeySymbol,
+	          "Method for adapting keyboard press events. ",
+	          "");
+	I_Method1(void, frame, IN, double, t,
+	          __void__frame__double,
+	          "Method for adapting frame events. ",
+	          "");
+	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
+	          __void__setStartTick__osg_Timer_t,
+	          "",
+	          "");
+	I_Method0(osg::Timer_t, getStartTick,
+	          __osg_Timer_t__getStartTick,
+	          "",
+	          "");
+	I_Method0(double, getTime,
+	          __double__getTime,
+	          "",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter *, createEvent,
+	          __GUIEventAdapter_P1__createEvent,
+	          "convinience method for create an event ready to fill in. ",
+	          "Clones the getCurrentEventState() to produce a up to date event state. ");
+	I_Method0(osgGA::GUIEventAdapter *, getCurrentEventState,
+	          __GUIEventAdapter_P1__getCurrentEventState,
+	          "",
+	          "");
+	I_Method0(const osgGA::GUIEventAdapter *, getCurrentEventState,
+	          __C5_GUIEventAdapter_P1__getCurrentEventState,
+	          "",
+	          "");
+	I_SimpleProperty(osgGA::GUIEventAdapter *, CurrentEventState, 
+	                 __GUIEventAdapter_P1__getCurrentEventState, 
+	                 0);
+	I_SimpleProperty(osgGA::EventQueue::Events &, Events, 
+	                 0, 
+	                 __void__setEvents__Events_R1);
+	I_SimpleProperty(osg::Timer_t, StartTick, 
+	                 __osg_Timer_t__getStartTick, 
+	                 __void__setStartTick__osg_Timer_t);
+	I_SimpleProperty(double, Time, 
+	                 __double__getTime, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventAdapter >)
-	I_Constructor0();
-	I_Constructor1(IN, osgGA::GUIEventAdapter *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventAdapter > &, rp);
-	I_Method0(osgGA::GUIEventAdapter *, get);
-	I_Method0(bool, valid);
-	I_Method0(osgGA::GUIEventAdapter *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventAdapter > &, rp);
-	I_ReadOnlyProperty(osgGA::GUIEventAdapter *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgGA::GUIEventAdapter *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventAdapter > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgGA::GUIEventAdapter *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventAdapter > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgGA::GUIEventAdapter *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >);

@@ -46,40 +46,136 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Stencil)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Stencil &, stencil, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method3(void, setFunction, IN, osg::Stencil::Function, func, IN, int, ref, IN, unsigned int, mask);
-	I_Method1(void, setFunction, IN, osg::Stencil::Function, func);
-	I_Method0(osg::Stencil::Function, getFunction);
-	I_Method1(void, setFunctionRef, IN, int, ref);
-	I_Method0(int, getFunctionRef);
-	I_Method1(void, setFunctionMask, IN, unsigned int, mask);
-	I_Method0(unsigned int, getFunctionMask);
-	I_Method3(void, setOperation, IN, osg::Stencil::Operation, sfail, IN, osg::Stencil::Operation, zfail, IN, osg::Stencil::Operation, zpass);
-	I_Method1(void, setStencilFailOperation, IN, osg::Stencil::Operation, sfail);
-	I_Method0(osg::Stencil::Operation, getStencilFailOperation);
-	I_Method1(void, setStencilPassAndDepthFailOperation, IN, osg::Stencil::Operation, zfail);
-	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthFailOperation);
-	I_Method1(void, setStencilPassAndDepthPassOperation, IN, osg::Stencil::Operation, zpass);
-	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthPassOperation);
-	I_Method1(void, setWriteMask, IN, unsigned int, mask);
-	I_Method0(unsigned int, getWriteMask);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(osg::Stencil::Function, Function);
-	I_Property(unsigned int, FunctionMask);
-	I_Property(int, FunctionRef);
-	I_Property(osg::Stencil::Operation, StencilFailOperation);
-	I_Property(osg::Stencil::Operation, StencilPassAndDepthFailOperation);
-	I_Property(osg::Stencil::Operation, StencilPassAndDepthPassOperation);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	I_Property(unsigned int, WriteMask);
+	I_Constructor0(____Stencil,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Stencil &, stencil, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Stencil__C5_Stencil_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method3(void, setFunction, IN, osg::Stencil::Function, func, IN, int, ref, IN, unsigned int, mask,
+	          __void__setFunction__Function__int__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setFunction, IN, osg::Stencil::Function, func,
+	          __void__setFunction__Function,
+	          "",
+	          "");
+	I_Method0(osg::Stencil::Function, getFunction,
+	          __Function__getFunction,
+	          "",
+	          "");
+	I_Method1(void, setFunctionRef, IN, int, ref,
+	          __void__setFunctionRef__int,
+	          "",
+	          "");
+	I_Method0(int, getFunctionRef,
+	          __int__getFunctionRef,
+	          "",
+	          "");
+	I_Method1(void, setFunctionMask, IN, unsigned int, mask,
+	          __void__setFunctionMask__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getFunctionMask,
+	          __unsigned_int__getFunctionMask,
+	          "",
+	          "");
+	I_Method3(void, setOperation, IN, osg::Stencil::Operation, sfail, IN, osg::Stencil::Operation, zfail, IN, osg::Stencil::Operation, zpass,
+	          __void__setOperation__Operation__Operation__Operation,
+	          "set the operations to apply when the various stencil and depth tests fail or pass. ",
+	          "First parameter is to control the operation when the stencil test fails. The second parameter is to control the operation when the stencil test passes, but depth test fails. The third parameter controls the operation when both the stencil test and depth pass. Ordering of parameter is the same as if using glStencilOp(,,). ");
+	I_Method1(void, setStencilFailOperation, IN, osg::Stencil::Operation, sfail,
+	          __void__setStencilFailOperation__Operation,
+	          "set the operation when the stencil test fails. ",
+	          "");
+	I_Method0(osg::Stencil::Operation, getStencilFailOperation,
+	          __Operation__getStencilFailOperation,
+	          "get the operation when the stencil test fails. ",
+	          "");
+	I_Method1(void, setStencilPassAndDepthFailOperation, IN, osg::Stencil::Operation, zfail,
+	          __void__setStencilPassAndDepthFailOperation__Operation,
+	          "set the operation when the stencil test passes but the depth test fails. ",
+	          "");
+	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthFailOperation,
+	          __Operation__getStencilPassAndDepthFailOperation,
+	          "get the operation when the stencil test passes but the depth test fails. ",
+	          "");
+	I_Method1(void, setStencilPassAndDepthPassOperation, IN, osg::Stencil::Operation, zpass,
+	          __void__setStencilPassAndDepthPassOperation__Operation,
+	          "set the operation when both the stencil test and the depth test pass. ",
+	          "");
+	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthPassOperation,
+	          __Operation__getStencilPassAndDepthPassOperation,
+	          "get the operation when both the stencil test and the depth test pass. ",
+	          "");
+	I_Method1(void, setWriteMask, IN, unsigned int, mask,
+	          __void__setWriteMask__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getWriteMask,
+	          __unsigned_int__getWriteMask,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_SimpleProperty(osg::Stencil::Function, Function, 
+	                 __Function__getFunction, 
+	                 __void__setFunction__Function);
+	I_SimpleProperty(unsigned int, FunctionMask, 
+	                 __unsigned_int__getFunctionMask, 
+	                 __void__setFunctionMask__unsigned_int);
+	I_SimpleProperty(int, FunctionRef, 
+	                 __int__getFunctionRef, 
+	                 __void__setFunctionRef__int);
+	I_SimpleProperty(osg::Stencil::Operation, StencilFailOperation, 
+	                 __Operation__getStencilFailOperation, 
+	                 __void__setStencilFailOperation__Operation);
+	I_SimpleProperty(osg::Stencil::Operation, StencilPassAndDepthFailOperation, 
+	                 __Operation__getStencilPassAndDepthFailOperation, 
+	                 __void__setStencilPassAndDepthFailOperation__Operation);
+	I_SimpleProperty(osg::Stencil::Operation, StencilPassAndDepthPassOperation, 
+	                 __Operation__getStencilPassAndDepthPassOperation, 
+	                 __void__setStencilPassAndDepthPassOperation__Operation);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
+	I_SimpleProperty(unsigned int, WriteMask, 
+	                 __unsigned_int__getWriteMask, 
+	                 __void__setWriteMask__unsigned_int);
 END_REFLECTOR
 

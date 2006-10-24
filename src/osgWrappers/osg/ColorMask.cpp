@@ -26,30 +26,99 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::ColorMask)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_Constructor4(IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
-	I_ConstructorWithDefaults2(IN, const osg::ColorMask &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method4(void, setMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha);
-	I_Method1(void, setRedMask, IN, bool, mask);
-	I_Method0(bool, getRedMask);
-	I_Method1(void, setGreenMask, IN, bool, mask);
-	I_Method0(bool, getGreenMask);
-	I_Method1(void, setBlueMask, IN, bool, mask);
-	I_Method0(bool, getBlueMask);
-	I_Method1(void, setAlphaMask, IN, bool, mask);
-	I_Method0(bool, getAlphaMask);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(bool, AlphaMask);
-	I_Property(bool, BlueMask);
-	I_Property(bool, GreenMask);
-	I_Property(bool, RedMask);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____ColorMask,
+	               "",
+	               "");
+	I_Constructor4(IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha,
+	               ____ColorMask__bool__bool__bool__bool,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ColorMask &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ColorMask__C5_ColorMask_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method4(void, setMask, IN, bool, red, IN, bool, green, IN, bool, blue, IN, bool, alpha,
+	          __void__setMask__bool__bool__bool__bool,
+	          "",
+	          "");
+	I_Method1(void, setRedMask, IN, bool, mask,
+	          __void__setRedMask__bool,
+	          "",
+	          "");
+	I_Method0(bool, getRedMask,
+	          __bool__getRedMask,
+	          "",
+	          "");
+	I_Method1(void, setGreenMask, IN, bool, mask,
+	          __void__setGreenMask__bool,
+	          "",
+	          "");
+	I_Method0(bool, getGreenMask,
+	          __bool__getGreenMask,
+	          "",
+	          "");
+	I_Method1(void, setBlueMask, IN, bool, mask,
+	          __void__setBlueMask__bool,
+	          "",
+	          "");
+	I_Method0(bool, getBlueMask,
+	          __bool__getBlueMask,
+	          "",
+	          "");
+	I_Method1(void, setAlphaMask, IN, bool, mask,
+	          __void__setAlphaMask__bool,
+	          "",
+	          "");
+	I_Method0(bool, getAlphaMask,
+	          __bool__getAlphaMask,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_SimpleProperty(bool, AlphaMask, 
+	                 __bool__getAlphaMask, 
+	                 __void__setAlphaMask__bool);
+	I_SimpleProperty(bool, BlueMask, 
+	                 __bool__getBlueMask, 
+	                 __void__setBlueMask__bool);
+	I_SimpleProperty(bool, GreenMask, 
+	                 __bool__getGreenMask, 
+	                 __void__setGreenMask__bool);
+	I_SimpleProperty(bool, RedMask, 
+	                 __bool__getRedMask, 
+	                 __void__setRedMask__bool);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 

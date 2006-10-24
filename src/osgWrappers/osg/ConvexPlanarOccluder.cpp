@@ -27,22 +27,67 @@ TYPE_NAME_ALIAS(std::vector< osg::ConvexPlanarPolygon >, osg::ConvexPlanarOcclud
 
 BEGIN_OBJECT_REFLECTOR(osg::ConvexPlanarOccluder)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::ConvexPlanarOccluder &, cpo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setOccluder, IN, const osg::ConvexPlanarPolygon &, cpp);
-	I_Method0(osg::ConvexPlanarPolygon &, getOccluder);
-	I_Method0(const osg::ConvexPlanarPolygon &, getOccluder);
-	I_Method1(void, addHole, IN, const osg::ConvexPlanarPolygon &, cpp);
-	I_Method1(void, setHoleList, IN, const osg::ConvexPlanarOccluder::HoleList &, holeList);
-	I_Method0(osg::ConvexPlanarOccluder::HoleList &, getHoleList);
-	I_Method0(const osg::ConvexPlanarOccluder::HoleList &, getHoleList);
-	I_Property(const osg::ConvexPlanarOccluder::HoleList &, HoleList);
-	I_Property(const osg::ConvexPlanarPolygon &, Occluder);
+	I_Constructor0(____ConvexPlanarOccluder,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ConvexPlanarOccluder &, cpo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConvexPlanarOccluder__C5_ConvexPlanarOccluder_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setOccluder, IN, const osg::ConvexPlanarPolygon &, cpp,
+	          __void__setOccluder__C5_ConvexPlanarPolygon_R1,
+	          "",
+	          "");
+	I_Method0(osg::ConvexPlanarPolygon &, getOccluder,
+	          __ConvexPlanarPolygon_R1__getOccluder,
+	          "",
+	          "");
+	I_Method0(const osg::ConvexPlanarPolygon &, getOccluder,
+	          __C5_ConvexPlanarPolygon_R1__getOccluder,
+	          "",
+	          "");
+	I_Method1(void, addHole, IN, const osg::ConvexPlanarPolygon &, cpp,
+	          __void__addHole__C5_ConvexPlanarPolygon_R1,
+	          "",
+	          "");
+	I_Method1(void, setHoleList, IN, const osg::ConvexPlanarOccluder::HoleList &, holeList,
+	          __void__setHoleList__C5_HoleList_R1,
+	          "",
+	          "");
+	I_Method0(osg::ConvexPlanarOccluder::HoleList &, getHoleList,
+	          __HoleList_R1__getHoleList,
+	          "",
+	          "");
+	I_Method0(const osg::ConvexPlanarOccluder::HoleList &, getHoleList,
+	          __C5_HoleList_R1__getHoleList,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::ConvexPlanarOccluder::HoleList &, HoleList, 
+	                 __C5_HoleList_R1__getHoleList, 
+	                 __void__setHoleList__C5_HoleList_R1);
+	I_SimpleProperty(const osg::ConvexPlanarPolygon &, Occluder, 
+	                 __C5_ConvexPlanarPolygon_R1__getOccluder, 
+	                 __void__setOccluder__C5_ConvexPlanarPolygon_R1);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ConvexPlanarPolygon >);

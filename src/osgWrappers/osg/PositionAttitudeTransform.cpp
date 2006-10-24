@@ -28,29 +28,96 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::PositionAttitudeTransform)
 	I_BaseType(osg::Transform);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::PositionAttitudeTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
-	I_Method0(const osg::PositionAttitudeTransform *, asPositionAttitudeTransform);
-	I_Method1(void, setPosition, IN, const osg::Vec3d &, pos);
-	I_Method0(const osg::Vec3d &, getPosition);
-	I_Method1(void, setAttitude, IN, const osg::Quat &, quat);
-	I_Method0(const osg::Quat &, getAttitude);
-	I_Method1(void, setScale, IN, const osg::Vec3d &, scale);
-	I_Method0(const osg::Vec3d &, getScale);
-	I_Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot);
-	I_Method0(const osg::Vec3d &, getPivotPoint);
-	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv);
-	I_Property(const osg::Quat &, Attitude);
-	I_Property(const osg::Vec3d &, PivotPoint);
-	I_Property(const osg::Vec3d &, Position);
-	I_Property(const osg::Vec3d &, Scale);
+	I_Constructor0(____PositionAttitudeTransform,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::PositionAttitudeTransform &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____PositionAttitudeTransform__C5_PositionAttitudeTransform_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(osg::PositionAttitudeTransform *, asPositionAttitudeTransform,
+	          __PositionAttitudeTransform_P1__asPositionAttitudeTransform,
+	          "",
+	          "");
+	I_Method0(const osg::PositionAttitudeTransform *, asPositionAttitudeTransform,
+	          __C5_PositionAttitudeTransform_P1__asPositionAttitudeTransform,
+	          "",
+	          "");
+	I_Method1(void, setPosition, IN, const osg::Vec3d &, pos,
+	          __void__setPosition__C5_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getPosition,
+	          __C5_Vec3d_R1__getPosition,
+	          "",
+	          "");
+	I_Method1(void, setAttitude, IN, const osg::Quat &, quat,
+	          __void__setAttitude__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Quat &, getAttitude,
+	          __C5_Quat_R1__getAttitude,
+	          "",
+	          "");
+	I_Method1(void, setScale, IN, const osg::Vec3d &, scale,
+	          __void__setScale__C5_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getScale,
+	          __C5_Vec3d_R1__getScale,
+	          "",
+	          "");
+	I_Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot,
+	          __void__setPivotPoint__C5_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getPivotPoint,
+	          __C5_Vec3d_R1__getPivotPoint,
+	          "",
+	          "");
+	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
+	          __bool__computeLocalToWorldMatrix__Matrix_R1__NodeVisitor_P1,
+	          "",
+	          "");
+	I_Method2(bool, computeWorldToLocalMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
+	          __bool__computeWorldToLocalMatrix__Matrix_R1__NodeVisitor_P1,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Quat &, Attitude, 
+	                 __C5_Quat_R1__getAttitude, 
+	                 __void__setAttitude__C5_Quat_R1);
+	I_SimpleProperty(const osg::Vec3d &, PivotPoint, 
+	                 __C5_Vec3d_R1__getPivotPoint, 
+	                 __void__setPivotPoint__C5_Vec3d_R1);
+	I_SimpleProperty(const osg::Vec3d &, Position, 
+	                 __C5_Vec3d_R1__getPosition, 
+	                 __void__setPosition__C5_Vec3d_R1);
+	I_SimpleProperty(const osg::Vec3d &, Scale, 
+	                 __C5_Vec3d_R1__getScale, 
+	                 __void__setScale__C5_Vec3d_R1);
 END_REFLECTOR
 

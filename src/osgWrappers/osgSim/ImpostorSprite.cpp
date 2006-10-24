@@ -35,63 +35,212 @@
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	I_BaseType(osg::Drawable);
-	I_Constructor0();
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(void, setParent, IN, osgSim::Impostor *, parent);
-	I_Method0(osgSim::Impostor *, getParent);
-	I_Method0(const osgSim::Impostor *, getParent);
-	I_Method1(void, setStoredLocalEyePoint, IN, const osg::Vec3 &, v);
-	I_Method0(const osg::Vec3 &, getStoredLocalEyePoint);
-	I_Method1(void, setLastFrameUsed, IN, int, frameNumber);
-	I_Method0(int, getLastFrameUsed);
-	I_Method0(osg::Vec3 *, getCoords);
-	I_Method0(const osg::Vec3 *, getCoords);
-	I_Method0(osg::Vec2 *, getTexCoords);
-	I_Method0(const osg::Vec2 *, getTexCoords);
-	I_Method0(osg::Vec3 *, getControlCoords);
-	I_Method0(const osg::Vec3 *, getControlCoords);
-	I_Method1(float, calcPixelError, IN, const osg::Matrix &, MVPW);
-	I_Method3(void, setTexture, IN, osg::Texture2D *, tex, IN, int, s, IN, int, t);
-	I_Method0(osg::Texture2D *, getTexture);
-	I_Method0(const osg::Texture2D *, getTexture);
-	I_Method0(int, s);
-	I_Method0(int, t);
-	I_Method1(void, drawImplementation, IN, osg::State &, state);
-	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x);
-	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, af);
-	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x);
-	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af);
-	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x);
-	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf);
-	I_Method0(osg::BoundingBox, computeBound);
-	I_Method1(void, setCameraNode, IN, osg::CameraNode *, camera);
-	I_Method0(osg::CameraNode *, getCameraNode);
-	I_Method0(const osg::CameraNode *, getCameraNode);
-	I_Property(osg::CameraNode *, CameraNode);
-	I_ReadOnlyProperty(osg::Vec3 *, ControlCoords);
-	I_ReadOnlyProperty(osg::Vec3 *, Coords);
-	I_Property(int, LastFrameUsed);
-	I_Property(osgSim::Impostor *, Parent);
-	I_Property(const osg::Vec3 &, StoredLocalEyePoint);
-	I_ReadOnlyProperty(osg::Vec2 *, TexCoords);
-	I_ReadOnlyProperty(osg::Texture2D *, Texture);
+	I_Constructor0(____ImpostorSprite,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone an object of the same type as an ImpostorSprite. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone on ImpostorSprite just returns a clone of type, since it is not appropriate to share data of an ImpostorSprite. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setParent, IN, osgSim::Impostor *, parent,
+	          __void__setParent__Impostor_P1,
+	          "Set the parent, which must be an Impostor. ",
+	          "Unlike conventional Drawables, ImpostorSprites can only ever have one parent.");
+	I_Method0(osgSim::Impostor *, getParent,
+	          __Impostor_P1__getParent,
+	          "Get the parent, which is an Impostor. ",
+	          "");
+	I_Method0(const osgSim::Impostor *, getParent,
+	          __C5_Impostor_P1__getParent,
+	          "Get the const parent, which is an Impostor. ",
+	          "");
+	I_Method1(void, setStoredLocalEyePoint, IN, const osg::Vec3 &, v,
+	          __void__setStoredLocalEyePoint__C5_osg_Vec3_R1,
+	          "Set the eye point for when the ImpostorSprite was snapped. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getStoredLocalEyePoint,
+	          __C5_osg_Vec3_R1__getStoredLocalEyePoint,
+	          "Get the eye point for when the ImpostorSprite was snapped. ",
+	          "");
+	I_Method1(void, setLastFrameUsed, IN, int, frameNumber,
+	          __void__setLastFrameUsed__int,
+	          "Set the frame number for when the ImpostorSprite was last used in rendering. ",
+	          "");
+	I_Method0(int, getLastFrameUsed,
+	          __int__getLastFrameUsed,
+	          "Get the frame number for when the ImpostorSprite was last used in rendering. ",
+	          "");
+	I_Method0(osg::Vec3 *, getCoords,
+	          __osg_Vec3_P1__getCoords,
+	          "Get the coordinates of the corners of the quad. ",
+	          "Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.");
+	I_Method0(const osg::Vec3 *, getCoords,
+	          __C5_osg_Vec3_P1__getCoords,
+	          "Get the const coordinates of the corners of the quad. ",
+	          "");
+	I_Method0(osg::Vec2 *, getTexCoords,
+	          __osg_Vec2_P1__getTexCoords,
+	          "Get the texture coordinates of the corners of the quad. ",
+	          "Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.");
+	I_Method0(const osg::Vec2 *, getTexCoords,
+	          __C5_osg_Vec2_P1__getTexCoords,
+	          "Get the const texture coordinates of the corners of the quad. ",
+	          "");
+	I_Method0(osg::Vec3 *, getControlCoords,
+	          __osg_Vec3_P1__getControlCoords,
+	          "Get the control coordinates of the corners of the quad. ",
+	          "The control coordinates are the corners of the quad projected out onto the front face of bounding box which enclosed the impostor geometry when it was pre-rendered into the impostor sprite's texture. At the point of creation/or update of the impostor sprite the control coords will lie on top of the corners of the quad in screen space - with a pixel error of zero. Once the camera moves relative to the impostor sprite the control coords will no longer lie on top of the corners of the quad in screen space - a pixel error will have accumulated. This pixel error can then be used to determine whether the impostor needs to be updated. Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.");
+	I_Method0(const osg::Vec3 *, getControlCoords,
+	          __C5_osg_Vec3_P1__getControlCoords,
+	          "Get the const control coordinates of the corners of the quad. ",
+	          "");
+	I_Method1(float, calcPixelError, IN, const osg::Matrix &, MVPW,
+	          __float__calcPixelError__C5_osg_Matrix_R1,
+	          "Calculate the pixel error value for passing in the ModelViewProjectionWindow transform, which transform local coords into screen space. ",
+	          "");
+	I_Method3(void, setTexture, IN, osg::Texture2D *, tex, IN, int, s, IN, int, t,
+	          __void__setTexture__osg_Texture2D_P1__int__int,
+	          "",
+	          "");
+	I_Method0(osg::Texture2D *, getTexture,
+	          __osg_Texture2D_P1__getTexture,
+	          "",
+	          "");
+	I_Method0(const osg::Texture2D *, getTexture,
+	          __C5_osg_Texture2D_P1__getTexture,
+	          "",
+	          "");
+	I_Method0(int, s,
+	          __int__s,
+	          "",
+	          "");
+	I_Method0(int, t,
+	          __int__t,
+	          "",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	          __void__drawImplementation__osg_State_R1,
+	          "Draw ImpostorSprite directly. ",
+	          "");
+	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
+	          __bool__supports__C5_AttributeFunctor_R1,
+	          "Return true, osg::ImpostorSprite does support accept(AttributeFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, af,
+	          __void__accept__AttributeFunctor_R1,
+	          "Accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "");
+	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x,
+	          __bool__supports__C5_ConstAttributeFunctor_R1,
+	          "Return true, osg::ImpostorSprite does support accept(ConstAttributeFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
+	          __void__accept__ConstAttributeFunctor_R1,
+	          "Accept a ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "");
+	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
+	          __bool__supports__C5_osg_PrimitiveFunctor_R1,
+	          "Return true, osg::ImpostorSprite does support accept(PrimitiveFunctor&). ",
+	          "");
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf,
+	          __void__accept__osg_PrimitiveFunctor_R1,
+	          "Accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
+	          "");
+	I_Method0(osg::BoundingBox, computeBound,
+	          __osg_BoundingBox__computeBound,
+	          "Compute the bounding box around Drawables's geometry. ",
+	          "");
+	I_Method1(void, setCameraNode, IN, osg::CameraNode *, camera,
+	          __void__setCameraNode__osg_CameraNode_P1,
+	          "Set the camera node to use for pre rendering the impostor sprite's texture. ",
+	          "");
+	I_Method0(osg::CameraNode *, getCameraNode,
+	          __osg_CameraNode_P1__getCameraNode,
+	          "Get the camera node to use for pre rendering the impostor sprite's texture. ",
+	          "");
+	I_Method0(const osg::CameraNode *, getCameraNode,
+	          __C5_osg_CameraNode_P1__getCameraNode,
+	          "Get the const camera node to use for pre rendering the impostor sprite's texture. ",
+	          "");
+	I_SimpleProperty(osg::CameraNode *, CameraNode, 
+	                 __osg_CameraNode_P1__getCameraNode, 
+	                 __void__setCameraNode__osg_CameraNode_P1);
+	I_SimpleProperty(osg::Vec3 *, ControlCoords, 
+	                 __osg_Vec3_P1__getControlCoords, 
+	                 0);
+	I_SimpleProperty(osg::Vec3 *, Coords, 
+	                 __osg_Vec3_P1__getCoords, 
+	                 0);
+	I_SimpleProperty(int, LastFrameUsed, 
+	                 __int__getLastFrameUsed, 
+	                 __void__setLastFrameUsed__int);
+	I_SimpleProperty(osgSim::Impostor *, Parent, 
+	                 __Impostor_P1__getParent, 
+	                 __void__setParent__Impostor_P1);
+	I_SimpleProperty(const osg::Vec3 &, StoredLocalEyePoint, 
+	                 __C5_osg_Vec3_R1__getStoredLocalEyePoint, 
+	                 __void__setStoredLocalEyePoint__C5_osg_Vec3_R1);
+	I_SimpleProperty(osg::Vec2 *, TexCoords, 
+	                 __osg_Vec2_P1__getTexCoords, 
+	                 0);
+	I_SimpleProperty(osg::Texture2D *, Texture, 
+	                 __osg_Texture2D_P1__getTexture, 
+	                 0);
 	I_PublicMemberProperty(osg::Vec4, _color);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSpriteManager)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method0(bool, empty);
-	I_Method0(osgSim::ImpostorSprite *, first);
-	I_Method0(osgSim::ImpostorSprite *, last);
-	I_Method1(void, push_back, IN, osgSim::ImpostorSprite *, is);
-	I_Method1(void, remove, IN, osgSim::ImpostorSprite *, is);
-	I_Method3(osgSim::ImpostorSprite *, createOrReuseImpostorSprite, IN, int, s, IN, int, t, IN, int, frameNumber);
-	I_Method0(osg::StateSet *, createOrReuseStateSet);
-	I_Method0(void, reset);
+	I_Constructor0(____ImpostorSpriteManager,
+	               "",
+	               "");
+	I_Method0(bool, empty,
+	          __bool__empty,
+	          "",
+	          "");
+	I_Method0(osgSim::ImpostorSprite *, first,
+	          __ImpostorSprite_P1__first,
+	          "",
+	          "");
+	I_Method0(osgSim::ImpostorSprite *, last,
+	          __ImpostorSprite_P1__last,
+	          "",
+	          "");
+	I_Method1(void, push_back, IN, osgSim::ImpostorSprite *, is,
+	          __void__push_back__ImpostorSprite_P1,
+	          "",
+	          "");
+	I_Method1(void, remove, IN, osgSim::ImpostorSprite *, is,
+	          __void__remove__ImpostorSprite_P1,
+	          "",
+	          "");
+	I_Method3(osgSim::ImpostorSprite *, createOrReuseImpostorSprite, IN, int, s, IN, int, t, IN, int, frameNumber,
+	          __ImpostorSprite_P1__createOrReuseImpostorSprite__int__int__int,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, createOrReuseStateSet,
+	          __osg_StateSet_P1__createOrReuseStateSet,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
 END_REFLECTOR
 

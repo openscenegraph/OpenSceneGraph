@@ -23,17 +23,52 @@
 
 BEGIN_OBJECT_REFLECTOR(osgProducer::GraphicsContextImplementation)
 	I_BaseType(osg::GraphicsContext);
-	I_Constructor1(IN, osg::GraphicsContext::Traits *, traits);
-	I_Constructor1(IN, Producer::RenderSurface *, rs);
-	I_Method0(Producer::RenderSurface *, getRenderSurface);
-	I_Method0(const Producer::RenderSurface *, getRenderSurface);
-	I_Method0(bool, realizeImplementation);
-	I_Method0(bool, isRealizedImplementation);
-	I_Method0(void, closeImplementation);
-	I_Method0(void, makeCurrentImplementation);
-	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext);
-	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer);
-	I_Method0(void, swapBuffersImplementation);
-	I_ReadOnlyProperty(Producer::RenderSurface *, RenderSurface);
+	I_Constructor1(IN, osg::GraphicsContext::Traits *, traits,
+	               ____GraphicsContextImplementation__Traits_P1,
+	               "Construct a graphics context to specified traits. ",
+	               "");
+	I_Constructor1(IN, Producer::RenderSurface *, rs,
+	               ____GraphicsContextImplementation__Producer_RenderSurface_P1,
+	               "Construct a graphics context with specified RenderSurface. ",
+	               "");
+	I_Method0(Producer::RenderSurface *, getRenderSurface,
+	          __Producer_RenderSurface_P1__getRenderSurface,
+	          "Return the RenderSurface that implements the graphics context. ",
+	          "");
+	I_Method0(const Producer::RenderSurface *, getRenderSurface,
+	          __C5_Producer_RenderSurface_P1__getRenderSurface,
+	          "Return the const RenderSurface that implements the graphics context. ",
+	          "");
+	I_Method0(bool, realizeImplementation,
+	          __bool__realizeImplementation,
+	          "Realise the GraphicsContext. ",
+	          "");
+	I_Method0(bool, isRealizedImplementation,
+	          __bool__isRealizedImplementation,
+	          "Return true if the graphics context has been realised and is ready to use. ",
+	          "");
+	I_Method0(void, closeImplementation,
+	          __void__closeImplementation,
+	          "Close the graphics context. ",
+	          "");
+	I_Method0(void, makeCurrentImplementation,
+	          __void__makeCurrentImplementation,
+	          "Make this graphics context current. ",
+	          "");
+	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
+	          __void__makeContextCurrentImplementation__osg_GraphicsContext_P1,
+	          "Make this graphics context current with specified read context. ",
+	          "");
+	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer,
+	          __void__bindPBufferToTextureImplementation__GLenum,
+	          "Bind the graphics context to associated texture. ",
+	          "");
+	I_Method0(void, swapBuffersImplementation,
+	          __void__swapBuffersImplementation,
+	          "swap the front and back buffers. ",
+	          "");
+	I_SimpleProperty(Producer::RenderSurface *, RenderSurface, 
+	                 __Producer_RenderSurface_P1__getRenderSurface, 
+	                 0);
 END_REFLECTOR
 

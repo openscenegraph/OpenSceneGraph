@@ -32,41 +32,135 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::Cl
 
 BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::ClipNode &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_MethodWithDefaults2(void, createClipBox, IN, const osg::BoundingBox &, bb, , IN, unsigned int, clipPlaneNumberBase, 0);
-	I_Method1(bool, addClipPlane, IN, osg::ClipPlane *, clipplane);
-	I_Method1(bool, removeClipPlane, IN, osg::ClipPlane *, clipplane);
-	I_Method1(bool, removeClipPlane, IN, unsigned int, pos);
-	I_Method0(unsigned int, getNumClipPlanes);
-	I_Method1(osg::ClipPlane *, getClipPlane, IN, unsigned int, pos);
-	I_Method1(const osg::ClipPlane *, getClipPlane, IN, unsigned int, pos);
-	I_Method1(void, getClipPlaneList, IN, const osg::ClipNode::ClipPlaneList &, cpl);
-	I_Method0(osg::ClipNode::ClipPlaneList &, getClipPlaneList);
-	I_Method0(const osg::ClipNode::ClipPlaneList &, getClipPlaneList);
-	I_Method2(void, setStateSetModes, IN, osg::StateSet &, x, IN, osg::StateAttribute::GLModeValue, x);
-	I_MethodWithDefaults1(void, setLocalStateSetModes, IN, osg::StateAttribute::GLModeValue, x, osg::StateAttribute::ON);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_ArrayProperty_GA(osg::ClipPlane *, ClipPlane, ClipPlanes, unsigned int, bool);
-	I_ReadOnlyProperty(osg::ClipNode::ClipPlaneList &, ClipPlaneList);
-	I_WriteOnlyProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes);
+	I_Constructor0(____ClipNode,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ClipNode &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ClipNode__C5_ClipNode_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_MethodWithDefaults2(void, createClipBox, IN, const osg::BoundingBox &, bb, , IN, unsigned int, clipPlaneNumberBase, 0,
+	                      __void__createClipBox__C5_BoundingBox_R1__unsigned_int,
+	                      "Creates six clip planes corresponding to the given BoundingBox. ",
+	                      "");
+	I_Method1(bool, addClipPlane, IN, osg::ClipPlane *, clipplane,
+	          __bool__addClipPlane__ClipPlane_P1,
+	          "Adds the clipplane. ",
+	          "Returns true on success, and false if the plane has already been added, or if clipplane is NULL. ");
+	I_Method1(bool, removeClipPlane, IN, osg::ClipPlane *, clipplane,
+	          __bool__removeClipPlane__ClipPlane_P1,
+	          "Removes the clipplane. ",
+	          "Returns true on success, false if clipplane isn't in this ClipNode. ");
+	I_Method1(bool, removeClipPlane, IN, unsigned int, pos,
+	          __bool__removeClipPlane__unsigned_int,
+	          "Remove the ClipPlane with the given index. ",
+	          "Returns true on success, false if pos is not a valid plane index. ");
+	I_Method0(unsigned int, getNumClipPlanes,
+	          __unsigned_int__getNumClipPlanes,
+	          "Returns the number of ClipPlanes. ",
+	          "");
+	I_Method1(osg::ClipPlane *, getClipPlane, IN, unsigned int, pos,
+	          __ClipPlane_P1__getClipPlane__unsigned_int,
+	          "Get ClipPlane at the given index position. ",
+	          "");
+	I_Method1(const osg::ClipPlane *, getClipPlane, IN, unsigned int, pos,
+	          __C5_ClipPlane_P1__getClipPlane__unsigned_int,
+	          "Get const ClipPlane at the given index position. ",
+	          "");
+	I_Method1(void, getClipPlaneList, IN, const osg::ClipNode::ClipPlaneList &, cpl,
+	          __void__getClipPlaneList__C5_ClipPlaneList_R1,
+	          "Set the ClipPlaneList. ",
+	          "");
+	I_Method0(osg::ClipNode::ClipPlaneList &, getClipPlaneList,
+	          __ClipPlaneList_R1__getClipPlaneList,
+	          "Get the ClipPlaneList. ",
+	          "");
+	I_Method0(const osg::ClipNode::ClipPlaneList &, getClipPlaneList,
+	          __C5_ClipPlaneList_R1__getClipPlaneList,
+	          "Get the const ClipPlaneList. ",
+	          "");
+	I_Method2(void, setStateSetModes, IN, osg::StateSet &, x, IN, osg::StateAttribute::GLModeValue, x,
+	          __void__setStateSetModes__StateSet_R1__StateAttribute_GLModeValue,
+	          "Set the GLModes for all ClipPlanes, on the StateSet. ",
+	          "");
+	I_MethodWithDefaults1(void, setLocalStateSetModes, IN, osg::StateAttribute::GLModeValue, x, osg::StateAttribute::ON,
+	                      __void__setLocalStateSetModes__StateAttribute_GLModeValue,
+	                      "Set up the local StateSet. ",
+	                      "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          __BoundingSphere__computeBound,
+	          "Compute the bounding sphere around Node's geometry or children. ",
+	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_ArrayProperty(osg::ClipPlane *, ClipPlane, 
+	                __ClipPlane_P1__getClipPlane__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumClipPlanes, 
+	                __bool__addClipPlane__ClipPlane_P1, 
+	                0, 
+	                __bool__removeClipPlane__unsigned_int);
+	I_SimpleProperty(osg::ClipNode::ClipPlaneList &, ClipPlaneList, 
+	                 __ClipPlaneList_R1__getClipPlaneList, 
+	                 0);
+	I_SimpleProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes, 
+	                 0, 
+	                 __void__setLocalStateSetModes__StateAttribute_GLModeValue);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::ClipPlane >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::ClipPlane *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::ClipPlane > &, rp);
-	I_Method0(osg::ClipPlane *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::ClipPlane *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::ClipPlane > &, rp);
-	I_ReadOnlyProperty(osg::ClipPlane *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::ClipPlane *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::ClipPlane > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::ClipPlane *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::ClipPlane *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::ClipPlane > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::ClipPlane *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::ClipPlane > >);

@@ -25,14 +25,39 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::VariableRateCounter)
 	I_BaseType(osgParticle::Counter);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::VariableRateCounter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const osgParticle::rangef &, getRateRange);
-	I_Method1(void, setRateRange, IN, const osgParticle::rangef &, r);
-	I_Method2(void, setRateRange, IN, float, minrange, IN, float, maxrange);
-	I_Property(const osgParticle::rangef &, RateRange);
+	I_Constructor0(____VariableRateCounter,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::VariableRateCounter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____VariableRateCounter__C5_VariableRateCounter_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const osgParticle::rangef &, getRateRange,
+	          __C5_rangef_R1__getRateRange,
+	          "",
+	          "");
+	I_Method1(void, setRateRange, IN, const osgParticle::rangef &, r,
+	          __void__setRateRange__C5_rangef_R1,
+	          "",
+	          "");
+	I_Method2(void, setRateRange, IN, float, minrange, IN, float, maxrange,
+	          __void__setRateRange__float__float,
+	          "",
+	          "");
+	I_SimpleProperty(const osgParticle::rangef &, RateRange, 
+	                 __C5_rangef_R1__getRateRange, 
+	                 __void__setRateRange__C5_rangef_R1);
 END_REFLECTOR
 

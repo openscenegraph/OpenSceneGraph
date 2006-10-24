@@ -27,50 +27,163 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture1D)
 	I_BaseType(osg::Texture);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Texture1D &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	I_Method0(GLenum, getTextureTarget);
-	I_Method1(void, setImage, IN, osg::Image *, image);
-	I_Method0(osg::Image *, getImage);
-	I_Method0(const osg::Image *, getImage);
-	I_Method1(unsigned int &, getModifiedCount, IN, unsigned int, contextID);
-	I_Method2(void, setImage, IN, unsigned, int, IN, osg::Image *, image);
-	I_Method1(osg::Image *, getImage, IN, unsigned, int);
-	I_Method1(const osg::Image *, getImage, IN, unsigned, int);
-	I_Method0(unsigned int, getNumImages);
-	I_Method1(void, setTextureWidth, IN, int, width);
-	I_Method0(int, getTextureWidth);
-	I_Method0(int, getTextureHeight);
-	I_Method0(int, getTextureDepth);
-	I_Method1(void, setSubloadCallback, IN, osg::Texture1D::SubloadCallback *, cb);
-	I_Method0(osg::Texture1D::SubloadCallback *, getSubloadCallback);
-	I_Method0(const osg::Texture1D::SubloadCallback *, getSubloadCallback);
-	I_Method1(void, setNumMipmapLevels, IN, unsigned int, num);
-	I_Method0(unsigned int, getNumMipmapLevels);
-	I_Method4(void, copyTexImage1D, IN, osg::State &, state, IN, int, x, IN, int, y, IN, int, width);
-	I_Method5(void, copyTexSubImage1D, IN, osg::State &, state, IN, int, xoffset, IN, int, x, IN, int, y, IN, int, width);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(osg::Image *, Image);
-	I_WriteOnlyProperty(unsigned int, NumMipmapLevels);
-	I_Property(osg::Texture1D::SubloadCallback *, SubloadCallback);
-	I_ReadOnlyProperty(int, TextureDepth);
-	I_ReadOnlyProperty(int, TextureHeight);
-	I_ReadOnlyProperty(GLenum, TextureTarget);
-	I_Property(int, TextureWidth);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____Texture1D,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Texture1D &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Texture1D__C5_Texture1D_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method0(GLenum, getTextureTarget,
+	          __GLenum__getTextureTarget,
+	          "",
+	          "");
+	I_Method1(void, setImage, IN, osg::Image *, image,
+	          __void__setImage__Image_P1,
+	          "Sets the texture image. ",
+	          "");
+	I_Method0(osg::Image *, getImage,
+	          __Image_P1__getImage,
+	          "Gets the texture image. ",
+	          "");
+	I_Method0(const osg::Image *, getImage,
+	          __C5_Image_P1__getImage,
+	          "Gets the const texture image. ",
+	          "");
+	I_Method1(unsigned int &, getModifiedCount, IN, unsigned int, contextID,
+	          __unsigned_int_R1__getModifiedCount__unsigned_int,
+	          "",
+	          "");
+	I_Method2(void, setImage, IN, unsigned, int, IN, osg::Image *, image,
+	          __void__setImage__unsigned__Image_P1,
+	          "Sets the texture image, ignoring face. ",
+	          "");
+	I_Method1(osg::Image *, getImage, IN, unsigned, int,
+	          __Image_P1__getImage__unsigned,
+	          "Gets the texture image, ignoring face. ",
+	          "");
+	I_Method1(const osg::Image *, getImage, IN, unsigned, int,
+	          __C5_Image_P1__getImage__unsigned,
+	          "Gets the const texture image, ignoring face. ",
+	          "");
+	I_Method0(unsigned int, getNumImages,
+	          __unsigned_int__getNumImages,
+	          "Gets the number of images that can be assigned to the Texture. ",
+	          "");
+	I_Method1(void, setTextureWidth, IN, int, width,
+	          __void__setTextureWidth__int,
+	          "Sets the texture width. ",
+	          "If width is zero, calculate the value from the source image width. ");
+	I_Method0(int, getTextureWidth,
+	          __int__getTextureWidth,
+	          "Gets the texture width. ",
+	          "");
+	I_Method0(int, getTextureHeight,
+	          __int__getTextureHeight,
+	          "",
+	          "");
+	I_Method0(int, getTextureDepth,
+	          __int__getTextureDepth,
+	          "",
+	          "");
+	I_Method1(void, setSubloadCallback, IN, osg::Texture1D::SubloadCallback *, cb,
+	          __void__setSubloadCallback__SubloadCallback_P1,
+	          "",
+	          "");
+	I_Method0(osg::Texture1D::SubloadCallback *, getSubloadCallback,
+	          __SubloadCallback_P1__getSubloadCallback,
+	          "",
+	          "");
+	I_Method0(const osg::Texture1D::SubloadCallback *, getSubloadCallback,
+	          __C5_SubloadCallback_P1__getSubloadCallback,
+	          "",
+	          "");
+	I_Method1(void, setNumMipmapLevels, IN, unsigned int, num,
+	          __void__setNumMipmapLevels__unsigned_int,
+	          "Helper function. ",
+	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texuture::apply(), or during a custom OpenGL texture load. ");
+	I_Method0(unsigned int, getNumMipmapLevels,
+	          __unsigned_int__getNumMipmapLevels,
+	          "Gets the number of mipmap levels created. ",
+	          "");
+	I_Method4(void, copyTexImage1D, IN, osg::State &, state, IN, int, x, IN, int, y, IN, int, width,
+	          __void__copyTexImage1D__State_R1__int__int__int,
+	          "Copies pixels into a 1D texture image, as per glCopyTexImage1D. ",
+	          "Creates an OpenGL texture object from the current OpenGL background framebuffer contents at position x, y with width width. width must be a power of two. ");
+	I_Method5(void, copyTexSubImage1D, IN, osg::State &, state, IN, int, xoffset, IN, int, x, IN, int, y, IN, int, width,
+	          __void__copyTexSubImage1D__State_R1__int__int__int__int,
+	          "Copies a one-dimensional texture subimage, as per glCopyTexSubImage1D. ",
+	          "Updates a portion of an existing OpenGL texture object from the current OpenGL background framebuffer contents at position x, y with width width. ");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "Bind the texture object. ",
+	          "If the texture object hasn't already been compiled, create the texture mipmap levels. ");
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __Image_P1__getImage, 
+	                 __void__setImage__Image_P1);
+	I_SimpleProperty(unsigned int, NumMipmapLevels, 
+	                 0, 
+	                 __void__setNumMipmapLevels__unsigned_int);
+	I_SimpleProperty(osg::Texture1D::SubloadCallback *, SubloadCallback, 
+	                 __SubloadCallback_P1__getSubloadCallback, 
+	                 __void__setSubloadCallback__SubloadCallback_P1);
+	I_SimpleProperty(int, TextureDepth, 
+	                 __int__getTextureDepth, 
+	                 0);
+	I_SimpleProperty(int, TextureHeight, 
+	                 __int__getTextureHeight, 
+	                 0);
+	I_SimpleProperty(GLenum, TextureTarget, 
+	                 __GLenum__getTextureTarget, 
+	                 0);
+	I_SimpleProperty(int, TextureWidth, 
+	                 __int__getTextureWidth, 
+	                 __void__setTextureWidth__int);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture1D::SubloadCallback)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method2(void, load, IN, const osg::Texture1D &, texture, IN, osg::State &, state);
-	I_Method2(void, subload, IN, const osg::Texture1D &, texture, IN, osg::State &, state);
+	I_Constructor0(____SubloadCallback,
+	               "",
+	               "");
+	I_Method2(void, load, IN, const osg::Texture1D &, texture, IN, osg::State &, state,
+	          __void__load__C5_Texture1D_R1__State_R1,
+	          "",
+	          "");
+	I_Method2(void, subload, IN, const osg::Texture1D &, texture, IN, osg::State &, state,
+	          __void__subload__C5_Texture1D_R1__State_R1,
+	          "",
+	          "");
 END_REFLECTOR
 

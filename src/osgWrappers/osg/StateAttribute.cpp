@@ -95,57 +95,183 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::StateAttribute &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method0(unsigned int, getMember);
-	I_Method0(osg::StateAttribute::TypeMemberPair, getTypeMemberPair);
-	I_Method0(bool, isTextureAttribute);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method0(const osg::StateAttribute::ParentList &, getParents);
-	I_Method1(osg::StateSet *, getParent, IN, unsigned int, i);
-	I_Method1(const osg::StateSet *, getParent, IN, unsigned int, i);
-	I_Method0(unsigned int, getNumParents);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x);
-	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, x);
-	I_Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc);
-	I_Method0(osg::StateAttribute::Callback *, getUpdateCallback);
-	I_Method0(const osg::StateAttribute::Callback *, getUpdateCallback);
-	I_Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec);
-	I_Method0(osg::StateAttribute::Callback *, getEventCallback);
-	I_Method0(const osg::StateAttribute::Callback *, getEventCallback);
-	I_Method1(void, apply, IN, osg::State &, x);
-	I_Method1(void, compileGLObjects, IN, osg::State &, x);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0);
-	I_Property(osg::StateAttribute::Callback *, EventCallback);
-	I_ReadOnlyProperty(unsigned int, Member);
-	I_ArrayProperty_G(osg::StateSet *, Parent, Parents, unsigned int, void);
-	I_ReadOnlyProperty(const osg::StateAttribute::ParentList &, Parents);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
-	I_ReadOnlyProperty(osg::StateAttribute::TypeMemberPair, TypeMemberPair);
-	I_Property(osg::StateAttribute::Callback *, UpdateCallback);
+	I_Constructor0(____StateAttribute,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::StateAttribute &, sa, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____StateAttribute__C5_StateAttribute_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method0(unsigned int, getMember,
+	          __unsigned_int__getMember,
+	          "Return the member identifier within the attribute's class type. ",
+	          "Used for light number/clip plane number etc. ");
+	I_Method0(osg::StateAttribute::TypeMemberPair, getTypeMemberPair,
+	          __TypeMemberPair__getTypeMemberPair,
+	          "Return the TypeMemberPair that uniquely identifies this type member. ",
+	          "");
+	I_Method0(bool, isTextureAttribute,
+	          __bool__isTextureAttribute,
+	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method0(const osg::StateAttribute::ParentList &, getParents,
+	          __C5_ParentList_R1__getParents,
+	          "Get the parent list of this StateAttribute. ",
+	          "");
+	I_Method1(osg::StateSet *, getParent, IN, unsigned int, i,
+	          __StateSet_P1__getParent__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::StateSet *, getParent, IN, unsigned int, i,
+	          __C5_StateSet_P1__getParent__unsigned_int,
+	          "Get a single const parent of this StateAttribute. ",
+	          " param i index of the parent to get.   return the parent i.");
+	I_Method0(unsigned int, getNumParents,
+	          __unsigned_int__getNumParents,
+	          "Get the number of parents of this StateAttribute. ",
+	          "the number of parents of this StateAttribute. ");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "Return the modes associated with this StateAttribute. ",
+	          "");
+	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, x,
+	          __bool__checkValidityOfAssociatedModes__osg_State_R1,
+	          "Check the modes associated with this StateAttribute are supported by current OpenGL drivers, and if not set the associated mode in osg::State to be black listed/invalid. ",
+	          "Return true if all associated modes are valid. ");
+	I_Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc,
+	          __void__setUpdateCallback__Callback_P1,
+	          "Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal. ",
+	          "");
+	I_Method0(osg::StateAttribute::Callback *, getUpdateCallback,
+	          __Callback_P1__getUpdateCallback,
+	          "Get the non const UpdateCallback. ",
+	          "");
+	I_Method0(const osg::StateAttribute::Callback *, getUpdateCallback,
+	          __C5_Callback_P1__getUpdateCallback,
+	          "Get the const UpdateCallback. ",
+	          "");
+	I_Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec,
+	          __void__setEventCallback__Callback_P1,
+	          "Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal. ",
+	          "");
+	I_Method0(osg::StateAttribute::Callback *, getEventCallback,
+	          __Callback_P1__getEventCallback,
+	          "Get the non const EventCallback. ",
+	          "");
+	I_Method0(const osg::StateAttribute::Callback *, getEventCallback,
+	          __C5_Callback_P1__getEventCallback,
+	          "Get the const EventCallback. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, x,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_Method1(void, compileGLObjects, IN, osg::State &, x,
+	          __void__compileGLObjects__State_R1,
+	          "default to nothing to compile - all state is applied immediately. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      __void__releaseGLObjects__State_P1,
+	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL. ",
+	                      "");
+	I_SimpleProperty(osg::StateAttribute::Callback *, EventCallback, 
+	                 __Callback_P1__getEventCallback, 
+	                 __void__setEventCallback__Callback_P1);
+	I_SimpleProperty(unsigned int, Member, 
+	                 __unsigned_int__getMember, 
+	                 0);
+	I_ArrayProperty(osg::StateSet *, Parent, 
+	                __StateSet_P1__getParent__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumParents, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(const osg::StateAttribute::ParentList &, Parents, 
+	                 __C5_ParentList_R1__getParents, 
+	                 0);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
+	I_SimpleProperty(osg::StateAttribute::TypeMemberPair, TypeMemberPair, 
+	                 __TypeMemberPair__getTypeMemberPair, 
+	                 0);
+	I_SimpleProperty(osg::StateAttribute::Callback *, UpdateCallback, 
+	                 __Callback_P1__getUpdateCallback, 
+	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
 	I_VirtualBaseType(osg::Object);
-	I_Constructor0();
-	I_Constructor2(IN, const osg::StateAttribute::Callback &, x, IN, const osg::CopyOp &, x);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
+	I_Constructor0(____Callback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::StateAttribute::Callback &, x, IN, const osg::CopyOp &, x,
+	               ____Callback__C5_Callback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
-	I_Constructor0();
-	I_Method1(void, usesMode, IN, osg::StateAttribute::GLMode, mode);
-	I_Method1(void, usesTextureMode, IN, osg::StateAttribute::GLMode, mode);
+	I_Constructor0(____ModeUsage,
+	               "",
+	               "");
+	I_Method1(void, usesMode, IN, osg::StateAttribute::GLMode, mode,
+	          __void__usesMode__GLMode,
+	          "",
+	          "");
+	I_Method1(void, usesTextureMode, IN, osg::StateAttribute::GLMode, mode,
+	          __void__usesTextureMode__GLMode,
+	          "",
+	          "");
 END_REFLECTOR
 
 STD_PAIR_REFLECTOR(std::pair< osg::StateAttribute::Type COMMA  unsigned int >);

@@ -34,58 +34,194 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Polytope::VertexList);
 TYPE_NAME_ALIAS(osg::fast_back_stack< osg::Polytope::ClippingMask >, osg::Polytope::MaskStack);
 
 BEGIN_VALUE_REFLECTOR(osg::Polytope)
-	I_Constructor0();
-	I_Constructor1(IN, const osg::Polytope &, cv);
-	I_Constructor1(IN, const osg::Polytope::PlaneList &, pl);
-	I_Method0(void, clear);
-	I_MethodWithDefaults2(void, setToUnitFrustum, IN, bool, withNear, true, IN, bool, withFar, true);
-	I_Method2(void, setAndTransformProvidingInverse, IN, const osg::Polytope &, pt, IN, const osg::Matrix &, matrix);
-	I_Method1(void, set, IN, const osg::Polytope::PlaneList &, pl);
-	I_Method1(void, add, IN, const osg::Plane &, pl);
-	I_Method0(void, flip);
-	I_Method0(osg::Polytope::PlaneList &, getPlaneList);
-	I_Method0(const osg::Polytope::PlaneList &, getPlaneList);
-	I_Method1(void, setReferenceVertexList, IN, osg::Polytope::VertexList &, vertices);
-	I_Method0(osg::Polytope::VertexList &, getReferenceVertexList);
-	I_Method0(const osg::Polytope::VertexList &, getReferenceVertexList);
-	I_Method0(void, setupMask);
-	I_Method0(osg::Polytope::ClippingMask &, getCurrentMask);
-	I_Method0(osg::Polytope::ClippingMask, getCurrentMask);
-	I_Method1(void, setResultMask, IN, osg::Polytope::ClippingMask, mask);
-	I_Method0(osg::Polytope::ClippingMask, getResultMask);
-	I_Method0(osg::Polytope::MaskStack &, getMaskStack);
-	I_Method0(const osg::Polytope::MaskStack &, getMaskStack);
-	I_Method0(void, pushCurrentMask);
-	I_Method0(void, popCurrentMask);
-	I_Method1(bool, contains, IN, const osg::Vec3 &, v);
-	I_Method1(bool, contains, IN, const std::vector< osg::Vec3 > &, vertices);
-	I_Method1(bool, contains, IN, const osg::BoundingSphere &, bs);
-	I_Method1(bool, contains, IN, const osg::BoundingBox &, bb);
-	I_Method1(bool, containsAllOf, IN, const std::vector< osg::Vec3 > &, vertices);
-	I_Method1(bool, containsAllOf, IN, const osg::BoundingSphere &, bs);
-	I_Method1(bool, containsAllOf, IN, const osg::BoundingBox &, bb);
-	I_Method1(void, transform, IN, const osg::Matrix &, matrix);
-	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix);
-	I_WriteOnlyProperty(const osg::Polytope::PlaneList &, );
-	I_ReadOnlyProperty(osg::Polytope::ClippingMask, CurrentMask);
-	I_ReadOnlyProperty(osg::Polytope::MaskStack &, MaskStack);
-	I_ReadOnlyProperty(osg::Polytope::PlaneList &, PlaneList);
-	I_Property(osg::Polytope::VertexList &, ReferenceVertexList);
-	I_Property(osg::Polytope::ClippingMask, ResultMask);
+	I_Constructor0(____Polytope,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Polytope &, cv,
+	               ____Polytope__C5_Polytope_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Polytope::PlaneList &, pl,
+	               ____Polytope__C5_PlaneList_R1,
+	               "",
+	               "");
+	I_Method0(void, clear,
+	          __void__clear,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, setToUnitFrustum, IN, bool, withNear, true, IN, bool, withFar, true,
+	                      __void__setToUnitFrustum__bool__bool,
+	                      "Create a Polytope which is a cube, centered at 0,0,0, with sides of 2 units. ",
+	                      "");
+	I_Method2(void, setAndTransformProvidingInverse, IN, const osg::Polytope &, pt, IN, const osg::Matrix &, matrix,
+	          __void__setAndTransformProvidingInverse__C5_Polytope_R1__C5_osg_Matrix_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, const osg::Polytope::PlaneList &, pl,
+	          __void__set__C5_PlaneList_R1,
+	          "",
+	          "");
+	I_Method1(void, add, IN, const osg::Plane &, pl,
+	          __void__add__C5_osg_Plane_R1,
+	          "",
+	          "");
+	I_Method0(void, flip,
+	          __void__flip,
+	          "flip/reverse the orientation of all the planes. ",
+	          "");
+	I_Method0(osg::Polytope::PlaneList &, getPlaneList,
+	          __PlaneList_R1__getPlaneList,
+	          "",
+	          "");
+	I_Method0(const osg::Polytope::PlaneList &, getPlaneList,
+	          __C5_PlaneList_R1__getPlaneList,
+	          "",
+	          "");
+	I_Method1(void, setReferenceVertexList, IN, osg::Polytope::VertexList &, vertices,
+	          __void__setReferenceVertexList__VertexList_R1,
+	          "",
+	          "");
+	I_Method0(osg::Polytope::VertexList &, getReferenceVertexList,
+	          __VertexList_R1__getReferenceVertexList,
+	          "",
+	          "");
+	I_Method0(const osg::Polytope::VertexList &, getReferenceVertexList,
+	          __C5_VertexList_R1__getReferenceVertexList,
+	          "",
+	          "");
+	I_Method0(void, setupMask,
+	          __void__setupMask,
+	          "",
+	          "");
+	I_Method0(osg::Polytope::ClippingMask &, getCurrentMask,
+	          __ClippingMask_R1__getCurrentMask,
+	          "",
+	          "");
+	I_Method0(osg::Polytope::ClippingMask, getCurrentMask,
+	          __ClippingMask__getCurrentMask,
+	          "",
+	          "");
+	I_Method1(void, setResultMask, IN, osg::Polytope::ClippingMask, mask,
+	          __void__setResultMask__ClippingMask,
+	          "",
+	          "");
+	I_Method0(osg::Polytope::ClippingMask, getResultMask,
+	          __ClippingMask__getResultMask,
+	          "",
+	          "");
+	I_Method0(osg::Polytope::MaskStack &, getMaskStack,
+	          __MaskStack_R1__getMaskStack,
+	          "",
+	          "");
+	I_Method0(const osg::Polytope::MaskStack &, getMaskStack,
+	          __C5_MaskStack_R1__getMaskStack,
+	          "",
+	          "");
+	I_Method0(void, pushCurrentMask,
+	          __void__pushCurrentMask,
+	          "",
+	          "");
+	I_Method0(void, popCurrentMask,
+	          __void__popCurrentMask,
+	          "",
+	          "");
+	I_Method1(bool, contains, IN, const osg::Vec3 &, v,
+	          __bool__contains__C5_osg_Vec3_R1,
+	          "Check whether a vertex is contained within clipping set. ",
+	          "");
+	I_Method1(bool, contains, IN, const std::vector< osg::Vec3 > &, vertices,
+	          __bool__contains__C5_std_vectorT1_Vec3__R1,
+	          "Check whether any part of vertex list is contained within clipping set. ",
+	          "");
+	I_Method1(bool, contains, IN, const osg::BoundingSphere &, bs,
+	          __bool__contains__C5_osg_BoundingSphere_R1,
+	          "Check whether any part of a bounding sphere is contained within clipping set. ",
+	          "Using a mask to determine which planes should be used for the check, and modifying the mask to turn off planes which wouldn't contribute to clipping of any internal objects. This feature is used in osgUtil::CullVisitor to prevent redundant plane checking. ");
+	I_Method1(bool, contains, IN, const osg::BoundingBox &, bb,
+	          __bool__contains__C5_osg_BoundingBox_R1,
+	          "Check whether any part of a bounding box is contained within clipping set. ",
+	          "Using a mask to determine which planes should be used for the check, and modifying the mask to turn off planes which wouldn't contribute to clipping of any internal objects. This feature is used in osgUtil::CullVisitor to prevent redundant plane checking. ");
+	I_Method1(bool, containsAllOf, IN, const std::vector< osg::Vec3 > &, vertices,
+	          __bool__containsAllOf__C5_std_vectorT1_Vec3__R1,
+	          "Check whether all of vertex list is contained with clipping set. ",
+	          "");
+	I_Method1(bool, containsAllOf, IN, const osg::BoundingSphere &, bs,
+	          __bool__containsAllOf__C5_osg_BoundingSphere_R1,
+	          "Check whether the entire bounding sphere is contained within clipping set. ",
+	          "");
+	I_Method1(bool, containsAllOf, IN, const osg::BoundingBox &, bb,
+	          __bool__containsAllOf__C5_osg_BoundingBox_R1,
+	          "Check whether the entire bounding box is contained within clipping set. ",
+	          "");
+	I_Method1(void, transform, IN, const osg::Matrix &, matrix,
+	          __void__transform__C5_osg_Matrix_R1,
+	          "Transform the clipping set by matrix. ",
+	          "Note, this operations carries out the calculation of the inverse of the matrix since a plane must be multiplied by the inverse transposed to transform it. This makes this operation expensive. If the inverse has been already calculated elsewhere then use transformProvidingInverse() instead. See http://www.worldserver.com/turk/computergraphics/NormalTransformations.pdf ");
+	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix,
+	          __void__transformProvidingInverse__C5_osg_Matrix_R1,
+	          "Transform the clipping set by provide a pre inverted matrix. ",
+	          "see transform for details. ");
+	I_SimpleProperty(osg::Polytope::ClippingMask, CurrentMask, 
+	                 __ClippingMask__getCurrentMask, 
+	                 0);
+	I_SimpleProperty(osg::Polytope::MaskStack &, MaskStack, 
+	                 __MaskStack_R1__getMaskStack, 
+	                 0);
+	I_SimpleProperty(osg::Polytope::PlaneList &, PlaneList, 
+	                 __PlaneList_R1__getPlaneList, 
+	                 0);
+	I_SimpleProperty(osg::Polytope::VertexList &, ReferenceVertexList, 
+	                 __VertexList_R1__getReferenceVertexList, 
+	                 __void__setReferenceVertexList__VertexList_R1);
+	I_SimpleProperty(osg::Polytope::ClippingMask, ResultMask, 
+	                 __ClippingMask__getResultMask, 
+	                 __void__setResultMask__ClippingMask);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::fast_back_stack< osg::Polytope::ClippingMask >)
-	I_Constructor0();
-	I_Constructor1(IN, const osg::fast_back_stack< osg::Polytope::ClippingMask > &, fbs);
-	I_Constructor1(IN, const osg::Polytope::ClippingMask &, value);
-	I_Method0(void, clear);
-	I_Method0(bool, empty);
-	I_Method0(unsigned int, size);
-	I_Method0(osg::Polytope::ClippingMask &, back);
-	I_Method0(const osg::Polytope::ClippingMask &, back);
-	I_Method0(void, push_back);
-	I_Method1(void, push_back, IN, const osg::Polytope::ClippingMask &, value);
-	I_Method0(void, pop_back);
+	I_Constructor0(____fast_back_stack,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::fast_back_stack< osg::Polytope::ClippingMask > &, fbs,
+	               ____fast_back_stack__C5_fast_back_stack_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Polytope::ClippingMask &, value,
+	               ____fast_back_stack__C5_T_R1,
+	               "",
+	               "");
+	I_Method0(void, clear,
+	          __void__clear,
+	          "",
+	          "");
+	I_Method0(bool, empty,
+	          __bool__empty,
+	          "",
+	          "");
+	I_Method0(unsigned int, size,
+	          __unsigned_int__size,
+	          "",
+	          "");
+	I_Method0(osg::Polytope::ClippingMask &, back,
+	          __T_R1__back,
+	          "",
+	          "");
+	I_Method0(const osg::Polytope::ClippingMask &, back,
+	          __C5_T_R1__back,
+	          "",
+	          "");
+	I_Method0(void, push_back,
+	          __void__push_back,
+	          "",
+	          "");
+	I_Method1(void, push_back, IN, const osg::Polytope::ClippingMask &, value,
+	          __void__push_back__C5_T_R1,
+	          "",
+	          "");
+	I_Method0(void, pop_back,
+	          __void__pop_back,
+	          "",
+	          "");
 	I_PublicMemberProperty(osg::Polytope::ClippingMask, _value);
 	I_PublicMemberProperty(std::vector< osg::Polytope::ClippingMask >, _stack);
 	I_PublicMemberProperty(unsigned int, _size);

@@ -24,22 +24,68 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::RenderInfo)
-	I_Constructor0();
-	I_Constructor1(IN, const osg::RenderInfo &, rhs);
-	I_Constructor2(IN, osg::State *, state, IN, osg::View *, view);
-	I_Method0(unsigned int, getContextID);
-	I_Method1(void, setState, IN, osg::State *, state);
-	I_Method0(osg::State *, getState);
-	I_Method0(const osg::State *, getState);
-	I_Method1(void, setView, IN, osg::View *, view);
-	I_Method0(osg::View *, getView);
-	I_Method0(const osg::View *, getView);
-	I_Method1(void, setUserData, IN, osg::Referenced *, userData);
-	I_Method0(osg::Referenced *, getUserData);
-	I_Method0(const osg::Referenced *, getUserData);
-	I_ReadOnlyProperty(unsigned int, ContextID);
-	I_Property(osg::State *, State);
-	I_Property(osg::Referenced *, UserData);
-	I_Property(osg::View *, View);
+	I_Constructor0(____RenderInfo,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::RenderInfo &, rhs,
+	               ____RenderInfo__C5_RenderInfo_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, osg::State *, state, IN, osg::View *, view,
+	               ____RenderInfo__State_P1__View_P1,
+	               "",
+	               "");
+	I_Method0(unsigned int, getContextID,
+	          __unsigned_int__getContextID,
+	          "",
+	          "");
+	I_Method1(void, setState, IN, osg::State *, state,
+	          __void__setState__State_P1,
+	          "",
+	          "");
+	I_Method0(osg::State *, getState,
+	          __State_P1__getState,
+	          "",
+	          "");
+	I_Method0(const osg::State *, getState,
+	          __C5_State_P1__getState,
+	          "",
+	          "");
+	I_Method1(void, setView, IN, osg::View *, view,
+	          __void__setView__View_P1,
+	          "",
+	          "");
+	I_Method0(osg::View *, getView,
+	          __View_P1__getView,
+	          "",
+	          "");
+	I_Method0(const osg::View *, getView,
+	          __C5_View_P1__getView,
+	          "",
+	          "");
+	I_Method1(void, setUserData, IN, osg::Referenced *, userData,
+	          __void__setUserData__Referenced_P1,
+	          "",
+	          "");
+	I_Method0(osg::Referenced *, getUserData,
+	          __Referenced_P1__getUserData,
+	          "",
+	          "");
+	I_Method0(const osg::Referenced *, getUserData,
+	          __C5_Referenced_P1__getUserData,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, ContextID, 
+	                 __unsigned_int__getContextID, 
+	                 0);
+	I_SimpleProperty(osg::State *, State, 
+	                 __State_P1__getState, 
+	                 __void__setState__State_P1);
+	I_SimpleProperty(osg::Referenced *, UserData, 
+	                 __Referenced_P1__getUserData, 
+	                 __void__setUserData__Referenced_P1);
+	I_SimpleProperty(osg::View *, View, 
+	                 __View_P1__getView, 
+	                 __void__setView__View_P1);
 END_REFLECTOR
 

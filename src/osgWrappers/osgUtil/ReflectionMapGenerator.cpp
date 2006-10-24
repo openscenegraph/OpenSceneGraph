@@ -23,7 +23,13 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
 	I_BaseType(osgUtil::CubeMapGenerator);
-	I_ConstructorWithDefaults1(IN, int, texture_size, 64);
-	I_ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
+	                           ____ReflectionMapGenerator__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ReflectionMapGenerator__C5_ReflectionMapGenerator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
 END_REFLECTOR
 

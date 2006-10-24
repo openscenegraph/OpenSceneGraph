@@ -25,22 +25,68 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgUtil::TangentSpaceGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_MethodWithDefaults2(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0);
-	I_Method0(osg::Vec4Array *, getTangentArray);
-	I_Method0(const osg::Vec4Array *, getTangentArray);
-	I_Method1(void, setTangentArray, IN, osg::Vec4Array *, array);
-	I_Method0(osg::Vec4Array *, getNormalArray);
-	I_Method0(const osg::Vec4Array *, getNormalArray);
-	I_Method1(void, setNormalArray, IN, osg::Vec4Array *, array);
-	I_Method0(osg::Vec4Array *, getBinormalArray);
-	I_Method0(const osg::Vec4Array *, getBinormalArray);
-	I_Method1(void, setBinormalArray, IN, osg::Vec4Array *, array);
-	I_Method0(osg::IndexArray *, getIndices);
-	I_Property(osg::Vec4Array *, BinormalArray);
-	I_ReadOnlyProperty(osg::IndexArray *, Indices);
-	I_Property(osg::Vec4Array *, NormalArray);
-	I_Property(osg::Vec4Array *, TangentArray);
+	I_Constructor0(____TangentSpaceGenerator,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgUtil::TangentSpaceGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TangentSpaceGenerator__C5_TangentSpaceGenerator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_MethodWithDefaults2(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0,
+	                      __void__generate__osg_Geometry_P1__int,
+	                      "",
+	                      "");
+	I_Method0(osg::Vec4Array *, getTangentArray,
+	          __osg_Vec4Array_P1__getTangentArray,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4Array *, getTangentArray,
+	          __C5_osg_Vec4Array_P1__getTangentArray,
+	          "",
+	          "");
+	I_Method1(void, setTangentArray, IN, osg::Vec4Array *, array,
+	          __void__setTangentArray__osg_Vec4Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec4Array *, getNormalArray,
+	          __osg_Vec4Array_P1__getNormalArray,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4Array *, getNormalArray,
+	          __C5_osg_Vec4Array_P1__getNormalArray,
+	          "",
+	          "");
+	I_Method1(void, setNormalArray, IN, osg::Vec4Array *, array,
+	          __void__setNormalArray__osg_Vec4Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec4Array *, getBinormalArray,
+	          __osg_Vec4Array_P1__getBinormalArray,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4Array *, getBinormalArray,
+	          __C5_osg_Vec4Array_P1__getBinormalArray,
+	          "",
+	          "");
+	I_Method1(void, setBinormalArray, IN, osg::Vec4Array *, array,
+	          __void__setBinormalArray__osg_Vec4Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::IndexArray *, getIndices,
+	          __osg_IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Vec4Array *, BinormalArray, 
+	                 __osg_Vec4Array_P1__getBinormalArray, 
+	                 __void__setBinormalArray__osg_Vec4Array_P1);
+	I_SimpleProperty(osg::IndexArray *, Indices, 
+	                 __osg_IndexArray_P1__getIndices, 
+	                 0);
+	I_SimpleProperty(osg::Vec4Array *, NormalArray, 
+	                 __osg_Vec4Array_P1__getNormalArray, 
+	                 __void__setNormalArray__osg_Vec4Array_P1);
+	I_SimpleProperty(osg::Vec4Array *, TangentArray, 
+	                 __osg_Vec4Array_P1__getTangentArray, 
+	                 __void__setTangentArray__osg_Vec4Array_P1);
 END_REFLECTOR
 

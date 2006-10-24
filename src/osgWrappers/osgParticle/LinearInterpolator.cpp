@@ -24,13 +24,36 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::LinearInterpolator)
 	I_BaseType(osgParticle::Interpolator);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::LinearInterpolator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method3(float, interpolate, IN, float, t, IN, float, y1, IN, float, y2);
+	I_Constructor0(____LinearInterpolator,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::LinearInterpolator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____LinearInterpolator__C5_LinearInterpolator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method3(float, interpolate, IN, float, t, IN, float, y1, IN, float, y2,
+	          __float__interpolate__float__float__float,
+	          "Interpolate between floats. Must be overriden in descendant classes. ",
+	          "");
 END_REFLECTOR
 

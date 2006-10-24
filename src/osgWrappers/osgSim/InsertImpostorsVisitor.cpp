@@ -25,17 +25,50 @@
 
 BEGIN_OBJECT_REFLECTOR(osgSim::InsertImpostorsVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0();
-	I_Method1(void, setImpostorThresholdRatio, IN, float, ratio);
-	I_Method0(float, getImpostorThresholdRatio);
-	I_Method1(void, setMaximumNumberOfNestedImpostors, IN, unsigned int, num);
-	I_Method0(unsigned int, getMaximumNumberOfNestedImpostors);
-	I_Method0(void, reset);
-	I_Method1(void, apply, IN, osg::Node &, node);
-	I_Method1(void, apply, IN, osg::Group &, node);
-	I_Method1(void, apply, IN, osg::LOD &, node);
-	I_Method0(void, insertImpostors);
-	I_Property(float, ImpostorThresholdRatio);
-	I_Property(unsigned int, MaximumNumberOfNestedImpostors);
+	I_Constructor0(____InsertImpostorsVisitor,
+	               "Default to traversing all children. ",
+	               "");
+	I_Method1(void, setImpostorThresholdRatio, IN, float, ratio,
+	          __void__setImpostorThresholdRatio__float,
+	          "",
+	          "");
+	I_Method0(float, getImpostorThresholdRatio,
+	          __float__getImpostorThresholdRatio,
+	          "",
+	          "");
+	I_Method1(void, setMaximumNumberOfNestedImpostors, IN, unsigned int, num,
+	          __void__setMaximumNumberOfNestedImpostors__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaximumNumberOfNestedImpostors,
+	          __unsigned_int__getMaximumNumberOfNestedImpostors,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "Empty visitor, make it ready for next traversal. ",
+	          "");
+	I_Method1(void, apply, IN, osg::Node &, node,
+	          __void__apply__osg_Node_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Group &, node,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LOD &, node,
+	          __void__apply__osg_LOD_R1,
+	          "",
+	          "");
+	I_Method0(void, insertImpostors,
+	          __void__insertImpostors,
+	          "",
+	          "");
+	I_SimpleProperty(float, ImpostorThresholdRatio, 
+	                 __float__getImpostorThresholdRatio, 
+	                 __void__setImpostorThresholdRatio__float);
+	I_SimpleProperty(unsigned int, MaximumNumberOfNestedImpostors, 
+	                 __unsigned_int__getMaximumNumberOfNestedImpostors, 
+	                 __void__setMaximumNumberOfNestedImpostors__unsigned_int);
 END_REFLECTOR
 

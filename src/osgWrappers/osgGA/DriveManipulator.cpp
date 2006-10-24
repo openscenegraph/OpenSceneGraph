@@ -27,33 +27,108 @@
 
 BEGIN_OBJECT_REFLECTOR(osgGA::DriveManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
-	I_Constructor0();
-	I_Method0(const char *, className);
-	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method0(osg::Matrixd, getMatrix);
-	I_Method0(osg::Matrixd, getInverseMatrix);
-	I_Method1(void, setNode, IN, osg::Node *, x);
-	I_Method0(const osg::Node *, getNode);
-	I_Method0(osg::Node *, getNode);
-	I_Method0(void, computeHomePosition);
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage);
-	I_Method1(void, setModelScale, IN, double, in_ms);
-	I_Method0(double, getModelScale);
-	I_Method1(void, setVelocity, IN, double, in_vel);
-	I_Method0(double, getVelocity);
-	I_Method1(void, setHeight, IN, double, in_h);
-	I_Method0(double, getHeight);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	I_Property(double, Height);
-	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	I_ReadOnlyProperty(osg::Matrixd, Matrix);
-	I_Property(double, ModelScale);
-	I_Property(osg::Node *, Node);
-	I_Property(double, Velocity);
+	I_Constructor0(____DriveManipulator,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method1(void, setNode, IN, osg::Node *, x,
+	          __void__setNode__osg_Node_P1,
+	          "Attach a node to the manipulator, automatically detaching any previously attached node. ",
+	          "setNode(NULL) detaches previous nodes. May be ignored by manipulators which do not require a reference model.");
+	I_Method0(const osg::Node *, getNode,
+	          __C5_osg_Node_P1__getNode,
+	          "Return const node if attached. ",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          __osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method0(void, computeHomePosition,
+	          __void__computeHomePosition,
+	          "Compute the home position. ",
+	          "");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate.");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "FIXME: what does this actually mean? Provide examples.");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method1(void, setModelScale, IN, double, in_ms,
+	          __void__setModelScale__double,
+	          "",
+	          "");
+	I_Method0(double, getModelScale,
+	          __double__getModelScale,
+	          "",
+	          "");
+	I_Method1(void, setVelocity, IN, double, in_vel,
+	          __void__setVelocity__double,
+	          "",
+	          "");
+	I_Method0(double, getVelocity,
+	          __double__getVelocity,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, double, in_h,
+	          __void__setHeight__double,
+	          "",
+	          "");
+	I_Method0(double, getHeight,
+	          __double__getHeight,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
+	                 0, 
+	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
+	                 0, 
+	                 __void__setByMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(double, Height, 
+	                 __double__getHeight, 
+	                 __void__setHeight__double);
+	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
+	                 __osg_Matrixd__getInverseMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, Matrix, 
+	                 __osg_Matrixd__getMatrix, 
+	                 0);
+	I_SimpleProperty(double, ModelScale, 
+	                 __double__getModelScale, 
+	                 __void__setModelScale__double);
+	I_SimpleProperty(osg::Node *, Node, 
+	                 __osg_Node_P1__getNode, 
+	                 __void__setNode__osg_Node_P1);
+	I_SimpleProperty(double, Velocity, 
+	                 __double__getVelocity, 
+	                 __void__setVelocity__double);
 END_REFLECTOR
 

@@ -32,56 +32,172 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	I_BaseType(osg::Geode);
-	I_Constructor0();
-	I_ConstructorWithDefaults7(IN, int, numColors, , IN, int, numLabels, , IN, osgSim::ScalarsToColors *, stc, , IN, const std::string &, title, , IN, osgSim::ScalarBar::Orientation, orientation, osgSim::ScalarBar::HORIZONTAL, IN, float, aspectRatio, 0.25, IN, osgSim::ScalarBar::ScalarPrinter *, sp, new osgSim::ScalarBar::ScalarPrinter);
-	I_Constructor2(IN, const osgSim::ScalarBar &, rhs, IN, const osg::CopyOp &, co);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setNumColors, IN, int, numColors);
-	I_Method0(int, getNumColors);
-	I_Method1(void, setNumLabels, IN, int, numLabels);
-	I_Method0(int, getNumLabels);
-	I_Method1(void, setScalarsToColors, IN, osgSim::ScalarsToColors *, stc);
-	I_Method0(const osgSim::ScalarsToColors *, getScalarsToColors);
-	I_Method1(void, setTitle, IN, const std::string &, title);
-	I_Method0(std::string, getTitle);
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos);
-	I_Method0(const osg::Vec3 &, getPosition);
-	I_Method1(void, setWidth, IN, float, width);
-	I_Method0(float, getWidth);
-	I_Method1(void, setAspectRatio, IN, float, aspectRatio);
-	I_Method0(float, getAspectRatio);
-	I_Method1(void, setOrientation, IN, osgSim::ScalarBar::Orientation, orientation);
-	I_Method0(osgSim::ScalarBar::Orientation, getOrientation);
-	I_Method1(void, setScalarPrinter, IN, osgSim::ScalarBar::ScalarPrinter *, sp);
-	I_Method0(const osgSim::ScalarBar::ScalarPrinter *, getScalarPrinter);
-	I_Method1(void, setTextProperties, IN, const osgSim::ScalarBar::TextProperties &, tp);
-	I_Method0(const osgSim::ScalarBar::TextProperties &, getTextProperties);
-	I_Method0(void, update);
-	I_Property(float, AspectRatio);
-	I_WriteOnlyProperty(int, NumColors);
-	I_WriteOnlyProperty(int, NumLabels);
-	I_Property(osgSim::ScalarBar::Orientation, Orientation);
-	I_Property(const osg::Vec3 &, Position);
-	I_WriteOnlyProperty(osgSim::ScalarBar::ScalarPrinter *, ScalarPrinter);
-	I_WriteOnlyProperty(osgSim::ScalarsToColors *, ScalarsToColors);
-	I_Property(const osgSim::ScalarBar::TextProperties &, TextProperties);
-	I_ReadOnlyProperty(std::string, Title);
-	I_Property(float, Width);
+	I_Constructor0(____ScalarBar,
+	               "Default constructor. ",
+	               "");
+	I_ConstructorWithDefaults7(IN, int, numColors, , IN, int, numLabels, , IN, osgSim::ScalarsToColors *, stc, , IN, const std::string &, title, , IN, osgSim::ScalarBar::Orientation, orientation, osgSim::ScalarBar::HORIZONTAL, IN, float, aspectRatio, 0.25, IN, osgSim::ScalarBar::ScalarPrinter *, sp, new osgSim::ScalarBar::ScalarPrinter,
+	                           ____ScalarBar__int__int__ScalarsToColors_P1__C5_std_string_R1__Orientation__float__ScalarPrinter_P1,
+	                           "Construct a ScalarBar with the supplied parameters. ",
+	                           " param numColors Specify the number of colors in the scalar bar. Color interpolation occurs where necessary.  numLabels Specify the number of labels in the scalar bar.  stc The ScalarsToColors defining the range of scalars and the colors they map to.  title The title to be used when displaying the ScalarBar. Specify \"\" for no title.  orientation The orientation of the ScalarBar.  param aspectRatio The aspect ration (y/x) for the displayed bar. Bear in mind you may want to change this if you change the orientation.  sp A ScalarPrinter object for the ScalarBar. For every displayed ScalarBar label, the scalar value will be passed to the ScalarPrinter object to turn it into a string. Users may override the default ScalarPrinter object to map scalars to whatever strings they wish.  see Orientation.  see ScalarPrinter");
+	I_Constructor2(IN, const osgSim::ScalarBar &, rhs, IN, const osg::CopyOp &, co,
+	               ____ScalarBar__C5_ScalarBar_R1__C5_osg_CopyOp_R1,
+	               "Copy constructor. ",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, setNumColors, IN, int, numColors,
+	          __void__setNumColors__int,
+	          "Set the number of distinct colours on the ScalarBar. ",
+	          "");
+	I_Method0(int, getNumColors,
+	          __int__getNumColors,
+	          "Get the number of distinct colours on the ScalarBar. ",
+	          "");
+	I_Method1(void, setNumLabels, IN, int, numLabels,
+	          __void__setNumLabels__int,
+	          "Set the number of labels to display along the ScalarBar. ",
+	          "There will be one label at each end point, and evenly distributed labels in between. ");
+	I_Method0(int, getNumLabels,
+	          __int__getNumLabels,
+	          "Get the number of labels displayed along the ScalarBar. ",
+	          "");
+	I_Method1(void, setScalarsToColors, IN, osgSim::ScalarsToColors *, stc,
+	          __void__setScalarsToColors__ScalarsToColors_P1,
+	          "Set the ScalarsToColors mapping object for the ScalarBar. ",
+	          "");
+	I_Method0(const osgSim::ScalarsToColors *, getScalarsToColors,
+	          __C5_ScalarsToColors_P1__getScalarsToColors,
+	          "Get the ScalarsToColors mapping object from the ScalarBar. ",
+	          "");
+	I_Method1(void, setTitle, IN, const std::string &, title,
+	          __void__setTitle__C5_std_string_R1,
+	          "Set the title for the ScalarBar, set \"\" for no title. ",
+	          "");
+	I_Method0(std::string, getTitle,
+	          __std_string__getTitle,
+	          "Get the title for the ScalarBar. ",
+	          "");
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
+	          __void__setPosition__C5_osg_Vec3_R1,
+	          "Set the position of scalar bar's lower left corner. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getPosition,
+	          __C5_osg_Vec3_R1__getPosition,
+	          "Get the position of scalar bar. ",
+	          "");
+	I_Method1(void, setWidth, IN, float, width,
+	          __void__setWidth__float,
+	          "Set the width of the scalar bar. ",
+	          "");
+	I_Method0(float, getWidth,
+	          __float__getWidth,
+	          "Get the width of the scalar bar. ",
+	          "");
+	I_Method1(void, setAspectRatio, IN, float, aspectRatio,
+	          __void__setAspectRatio__float,
+	          "Set the aspect ration (y/x) for the displayed bar. ",
+	          "Bear in mind you may want to change this if you change the orientation. ");
+	I_Method0(float, getAspectRatio,
+	          __float__getAspectRatio,
+	          "Get the aspect ration (y/x) for the displayed bar. ",
+	          "");
+	I_Method1(void, setOrientation, IN, osgSim::ScalarBar::Orientation, orientation,
+	          __void__setOrientation__ScalarBar_Orientation,
+	          "Set the orientation of the ScalarBar. ",
+	          "Orientation  ");
+	I_Method0(osgSim::ScalarBar::Orientation, getOrientation,
+	          __ScalarBar_Orientation__getOrientation,
+	          "Get the orientation of the ScalarBar. ",
+	          "Orientation  ");
+	I_Method1(void, setScalarPrinter, IN, osgSim::ScalarBar::ScalarPrinter *, sp,
+	          __void__setScalarPrinter__ScalarPrinter_P1,
+	          "Set a ScalarPrinter object for the ScalarBar. ",
+	          "For every displayed ScalarBar label, the scalar value will be passed to the ScalarPrinter object to turn it into a string. Users may override the default ScalarPrinter object to map scalars to whatever strings they wish.ScalarPrinter  ");
+	I_Method0(const osgSim::ScalarBar::ScalarPrinter *, getScalarPrinter,
+	          __C5_ScalarPrinter_P1__getScalarPrinter,
+	          "Get the ScalarPrinter object. ",
+	          "");
+	I_Method1(void, setTextProperties, IN, const osgSim::ScalarBar::TextProperties &, tp,
+	          __void__setTextProperties__C5_TextProperties_R1,
+	          "Set the TextProperties for the labels & title. ",
+	          "TextProperties  ");
+	I_Method0(const osgSim::ScalarBar::TextProperties &, getTextProperties,
+	          __C5_TextProperties_R1__getTextProperties,
+	          "Get the TextProperties for the labels & title. ",
+	          "TextProperties  ");
+	I_Method0(void, update,
+	          __void__update,
+	          "force update the drawables used to render the scalar bar. ",
+	          "");
+	I_SimpleProperty(float, AspectRatio, 
+	                 __float__getAspectRatio, 
+	                 __void__setAspectRatio__float);
+	I_SimpleProperty(int, NumColors, 
+	                 0, 
+	                 __void__setNumColors__int);
+	I_SimpleProperty(int, NumLabels, 
+	                 0, 
+	                 __void__setNumLabels__int);
+	I_SimpleProperty(osgSim::ScalarBar::Orientation, Orientation, 
+	                 __ScalarBar_Orientation__getOrientation, 
+	                 __void__setOrientation__ScalarBar_Orientation);
+	I_SimpleProperty(const osg::Vec3 &, Position, 
+	                 __C5_osg_Vec3_R1__getPosition, 
+	                 __void__setPosition__C5_osg_Vec3_R1);
+	I_SimpleProperty(osgSim::ScalarBar::ScalarPrinter *, ScalarPrinter, 
+	                 0, 
+	                 __void__setScalarPrinter__ScalarPrinter_P1);
+	I_SimpleProperty(osgSim::ScalarsToColors *, ScalarsToColors, 
+	                 0, 
+	                 __void__setScalarsToColors__ScalarsToColors_P1);
+	I_SimpleProperty(const osgSim::ScalarBar::TextProperties &, TextProperties, 
+	                 __C5_TextProperties_R1__getTextProperties, 
+	                 __void__setTextProperties__C5_TextProperties_R1);
+	I_SimpleProperty(std::string, Title, 
+	                 __std_string__getTitle, 
+	                 __void__setTitle__C5_std_string_R1);
+	I_SimpleProperty(float, Width, 
+	                 __float__getWidth, 
+	                 __void__setWidth__float);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar::ScalarPrinter)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method1(std::string, printScalar, IN, float, scalar);
+	I_Constructor0(____ScalarPrinter,
+	               "",
+	               "");
+	I_Method1(std::string, printScalar, IN, float, scalar,
+	          __std_string__printScalar__float,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::ScalarBar::TextProperties)
-	I_Constructor0();
+	I_Constructor0(____TextProperties,
+	               "",
+	               "");
 	I_PublicMemberProperty(std::string, _fontFile);
 	I_PublicMemberProperty(std::pair< int COMMA  int >, _fontResolution);
 	I_PublicMemberProperty(float, _characterSize);

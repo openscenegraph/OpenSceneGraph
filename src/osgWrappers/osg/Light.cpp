@@ -28,53 +28,183 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::Light)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::Light &, light, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method0(unsigned int, getMember);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, setLightNum, IN, int, num);
-	I_Method0(int, getLightNum);
-	I_Method1(void, setAmbient, IN, const osg::Vec4 &, ambient);
-	I_Method0(const osg::Vec4 &, getAmbient);
-	I_Method1(void, setDiffuse, IN, const osg::Vec4 &, diffuse);
-	I_Method0(const osg::Vec4 &, getDiffuse);
-	I_Method1(void, setSpecular, IN, const osg::Vec4 &, specular);
-	I_Method0(const osg::Vec4 &, getSpecular);
-	I_Method1(void, setPosition, IN, const osg::Vec4 &, position);
-	I_Method0(const osg::Vec4 &, getPosition);
-	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction);
-	I_Method0(const osg::Vec3 &, getDirection);
-	I_Method1(void, setConstantAttenuation, IN, float, constant_attenuation);
-	I_Method0(float, getConstantAttenuation);
-	I_Method1(void, setLinearAttenuation, IN, float, linear_attenuation);
-	I_Method0(float, getLinearAttenuation);
-	I_Method1(void, setQuadraticAttenuation, IN, float, quadratic_attenuation);
-	I_Method0(float, getQuadraticAttenuation);
-	I_Method1(void, setSpotExponent, IN, float, spot_exponent);
-	I_Method0(float, getSpotExponent);
-	I_Method1(void, setSpotCutoff, IN, float, spot_cutoff);
-	I_Method0(float, getSpotCutoff);
-	I_Method0(void, captureLightState);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(const osg::Vec4 &, Ambient);
-	I_Property(float, ConstantAttenuation);
-	I_Property(const osg::Vec4 &, Diffuse);
-	I_Property(const osg::Vec3 &, Direction);
-	I_Property(int, LightNum);
-	I_Property(float, LinearAttenuation);
-	I_ReadOnlyProperty(unsigned int, Member);
-	I_Property(const osg::Vec4 &, Position);
-	I_Property(float, QuadraticAttenuation);
-	I_Property(const osg::Vec4 &, Specular);
-	I_Property(float, SpotCutoff);
-	I_Property(float, SpotExponent);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____Light,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Light &, light, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Light__C5_Light_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method0(unsigned int, getMember,
+	          __unsigned_int__getMember,
+	          "Return the member identifier within the attribute's class type. ",
+	          "Used for light number/clip plane number etc. ");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method1(void, setLightNum, IN, int, num,
+	          __void__setLightNum__int,
+	          "Set which OpenGL light to operate on. ",
+	          "");
+	I_Method0(int, getLightNum,
+	          __int__getLightNum,
+	          "Get which OpenGL light this osg::Light operates on. ",
+	          "");
+	I_Method1(void, setAmbient, IN, const osg::Vec4 &, ambient,
+	          __void__setAmbient__C5_Vec4_R1,
+	          "Set the ambient component of the light. ",
+	          "");
+	I_Method0(const osg::Vec4 &, getAmbient,
+	          __C5_Vec4_R1__getAmbient,
+	          "Get the ambient component of the light. ",
+	          "");
+	I_Method1(void, setDiffuse, IN, const osg::Vec4 &, diffuse,
+	          __void__setDiffuse__C5_Vec4_R1,
+	          "Set the diffuse component of the light. ",
+	          "");
+	I_Method0(const osg::Vec4 &, getDiffuse,
+	          __C5_Vec4_R1__getDiffuse,
+	          "Get the diffuse component of the light. ",
+	          "");
+	I_Method1(void, setSpecular, IN, const osg::Vec4 &, specular,
+	          __void__setSpecular__C5_Vec4_R1,
+	          "Set the specular component of the light. ",
+	          "");
+	I_Method0(const osg::Vec4 &, getSpecular,
+	          __C5_Vec4_R1__getSpecular,
+	          "Get the specular component of the light. ",
+	          "");
+	I_Method1(void, setPosition, IN, const osg::Vec4 &, position,
+	          __void__setPosition__C5_Vec4_R1,
+	          "Set the position of the light. ",
+	          "");
+	I_Method0(const osg::Vec4 &, getPosition,
+	          __C5_Vec4_R1__getPosition,
+	          "Get the position of the light. ",
+	          "");
+	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
+	          __void__setDirection__C5_Vec3_R1,
+	          "Set the direction of the light. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getDirection,
+	          __C5_Vec3_R1__getDirection,
+	          "Get the direction of the light. ",
+	          "");
+	I_Method1(void, setConstantAttenuation, IN, float, constant_attenuation,
+	          __void__setConstantAttenuation__float,
+	          "Set the constant attenuation of the light. ",
+	          "");
+	I_Method0(float, getConstantAttenuation,
+	          __float__getConstantAttenuation,
+	          "Get the constant attenuation of the light. ",
+	          "");
+	I_Method1(void, setLinearAttenuation, IN, float, linear_attenuation,
+	          __void__setLinearAttenuation__float,
+	          "Set the linear attenuation of the light. ",
+	          "");
+	I_Method0(float, getLinearAttenuation,
+	          __float__getLinearAttenuation,
+	          "Get the linear attenuation of the light. ",
+	          "");
+	I_Method1(void, setQuadraticAttenuation, IN, float, quadratic_attenuation,
+	          __void__setQuadraticAttenuation__float,
+	          "Set the quadratic attenuation of the light. ",
+	          "");
+	I_Method0(float, getQuadraticAttenuation,
+	          __float__getQuadraticAttenuation,
+	          "Get the quadratic attenuation of the light. ",
+	          "");
+	I_Method1(void, setSpotExponent, IN, float, spot_exponent,
+	          __void__setSpotExponent__float,
+	          "Set the spot exponent of the light. ",
+	          "");
+	I_Method0(float, getSpotExponent,
+	          __float__getSpotExponent,
+	          "Get the spot exponent of the light. ",
+	          "");
+	I_Method1(void, setSpotCutoff, IN, float, spot_cutoff,
+	          __void__setSpotCutoff__float,
+	          "Set the spot cutoff of the light. ",
+	          "");
+	I_Method0(float, getSpotCutoff,
+	          __float__getSpotCutoff,
+	          "Get the spot cutoff of the light. ",
+	          "");
+	I_Method0(void, captureLightState,
+	          __void__captureLightState,
+	          "Capture the lighting settings of the current OpenGL state and store them in this object. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "Apply the light's state to the OpenGL state machine. ",
+	          "");
+	I_SimpleProperty(const osg::Vec4 &, Ambient, 
+	                 __C5_Vec4_R1__getAmbient, 
+	                 __void__setAmbient__C5_Vec4_R1);
+	I_SimpleProperty(float, ConstantAttenuation, 
+	                 __float__getConstantAttenuation, 
+	                 __void__setConstantAttenuation__float);
+	I_SimpleProperty(const osg::Vec4 &, Diffuse, 
+	                 __C5_Vec4_R1__getDiffuse, 
+	                 __void__setDiffuse__C5_Vec4_R1);
+	I_SimpleProperty(const osg::Vec3 &, Direction, 
+	                 __C5_Vec3_R1__getDirection, 
+	                 __void__setDirection__C5_Vec3_R1);
+	I_SimpleProperty(int, LightNum, 
+	                 __int__getLightNum, 
+	                 __void__setLightNum__int);
+	I_SimpleProperty(float, LinearAttenuation, 
+	                 __float__getLinearAttenuation, 
+	                 __void__setLinearAttenuation__float);
+	I_SimpleProperty(unsigned int, Member, 
+	                 __unsigned_int__getMember, 
+	                 0);
+	I_SimpleProperty(const osg::Vec4 &, Position, 
+	                 __C5_Vec4_R1__getPosition, 
+	                 __void__setPosition__C5_Vec4_R1);
+	I_SimpleProperty(float, QuadraticAttenuation, 
+	                 __float__getQuadraticAttenuation, 
+	                 __void__setQuadraticAttenuation__float);
+	I_SimpleProperty(const osg::Vec4 &, Specular, 
+	                 __C5_Vec4_R1__getSpecular, 
+	                 __void__setSpecular__C5_Vec4_R1);
+	I_SimpleProperty(float, SpotCutoff, 
+	                 __float__getSpotCutoff, 
+	                 __void__setSpotCutoff__float);
+	I_SimpleProperty(float, SpotExponent, 
+	                 __float__getSpotExponent, 
+	                 __void__setSpotExponent__float);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 

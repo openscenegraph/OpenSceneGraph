@@ -61,71 +61,249 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::TexEnvCombine &, texenv, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method0(bool, isTextureAttribute);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(void, setCombine_RGB, IN, GLint, cm);
-	I_Method1(void, setCombine_Alpha, IN, GLint, cm);
-	I_Method0(GLint, getCombine_RGB);
-	I_Method0(GLint, getCombine_Alpha);
-	I_Method1(void, setSource0_RGB, IN, GLint, sp);
-	I_Method1(void, setSource1_RGB, IN, GLint, sp);
-	I_Method1(void, setSource2_RGB, IN, GLint, sp);
-	I_Method1(void, setSource0_Alpha, IN, GLint, sp);
-	I_Method1(void, setSource1_Alpha, IN, GLint, sp);
-	I_Method1(void, setSource2_Alpha, IN, GLint, sp);
-	I_Method0(GLint, getSource0_RGB);
-	I_Method0(GLint, getSource1_RGB);
-	I_Method0(GLint, getSource2_RGB);
-	I_Method0(GLint, getSource0_Alpha);
-	I_Method0(GLint, getSource1_Alpha);
-	I_Method0(GLint, getSource2_Alpha);
-	I_Method1(void, setOperand0_RGB, IN, GLint, op);
-	I_Method1(void, setOperand1_RGB, IN, GLint, op);
-	I_Method1(void, setOperand2_RGB, IN, GLint, op);
-	I_Method1(void, setOperand0_Alpha, IN, GLint, op);
-	I_Method1(void, setOperand1_Alpha, IN, GLint, op);
-	I_Method1(void, setOperand2_Alpha, IN, GLint, op);
-	I_Method0(GLint, getOperand0_RGB);
-	I_Method0(GLint, getOperand1_RGB);
-	I_Method0(GLint, getOperand2_RGB);
-	I_Method0(GLint, getOperand0_Alpha);
-	I_Method0(GLint, getOperand1_Alpha);
-	I_Method0(GLint, getOperand2_Alpha);
-	I_Method1(void, setScale_RGB, IN, float, scale);
-	I_Method1(void, setScale_Alpha, IN, float, scale);
-	I_Method0(float, getScale_RGB);
-	I_Method0(float, getScale_Alpha);
-	I_Method1(void, setConstantColor, IN, const osg::Vec4 &, color);
-	I_Method0(const osg::Vec4 &, getConstantColor);
-	I_Method1(void, setConstantColorAsLightDirection, IN, const osg::Vec3 &, direction);
-	I_Method0(osg::Vec3, getConstantColorAsLightDirection);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(GLint, Combine_Alpha);
-	I_Property(GLint, Combine_RGB);
-	I_Property(const osg::Vec4 &, ConstantColor);
-	I_ReadOnlyProperty(osg::Vec3, ConstantColorAsLightDirection);
-	I_Property(GLint, Operand0_Alpha);
-	I_Property(GLint, Operand0_RGB);
-	I_Property(GLint, Operand1_Alpha);
-	I_Property(GLint, Operand1_RGB);
-	I_Property(GLint, Operand2_Alpha);
-	I_Property(GLint, Operand2_RGB);
-	I_Property(float, Scale_Alpha);
-	I_Property(float, Scale_RGB);
-	I_Property(GLint, Source0_Alpha);
-	I_Property(GLint, Source0_RGB);
-	I_Property(GLint, Source1_Alpha);
-	I_Property(GLint, Source1_RGB);
-	I_Property(GLint, Source2_Alpha);
-	I_Property(GLint, Source2_RGB);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____TexEnvCombine,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TexEnvCombine &, texenv, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TexEnvCombine__C5_TexEnvCombine_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method0(bool, isTextureAttribute,
+	          __bool__isTextureAttribute,
+	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(void, setCombine_RGB, IN, GLint, cm,
+	          __void__setCombine_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setCombine_Alpha, IN, GLint, cm,
+	          __void__setCombine_Alpha__GLint,
+	          "",
+	          "");
+	I_Method0(GLint, getCombine_RGB,
+	          __GLint__getCombine_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getCombine_Alpha,
+	          __GLint__getCombine_Alpha,
+	          "",
+	          "");
+	I_Method1(void, setSource0_RGB, IN, GLint, sp,
+	          __void__setSource0_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setSource1_RGB, IN, GLint, sp,
+	          __void__setSource1_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setSource2_RGB, IN, GLint, sp,
+	          __void__setSource2_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setSource0_Alpha, IN, GLint, sp,
+	          __void__setSource0_Alpha__GLint,
+	          "",
+	          "");
+	I_Method1(void, setSource1_Alpha, IN, GLint, sp,
+	          __void__setSource1_Alpha__GLint,
+	          "",
+	          "");
+	I_Method1(void, setSource2_Alpha, IN, GLint, sp,
+	          __void__setSource2_Alpha__GLint,
+	          "",
+	          "");
+	I_Method0(GLint, getSource0_RGB,
+	          __GLint__getSource0_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getSource1_RGB,
+	          __GLint__getSource1_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getSource2_RGB,
+	          __GLint__getSource2_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getSource0_Alpha,
+	          __GLint__getSource0_Alpha,
+	          "",
+	          "");
+	I_Method0(GLint, getSource1_Alpha,
+	          __GLint__getSource1_Alpha,
+	          "",
+	          "");
+	I_Method0(GLint, getSource2_Alpha,
+	          __GLint__getSource2_Alpha,
+	          "",
+	          "");
+	I_Method1(void, setOperand0_RGB, IN, GLint, op,
+	          __void__setOperand0_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setOperand1_RGB, IN, GLint, op,
+	          __void__setOperand1_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setOperand2_RGB, IN, GLint, op,
+	          __void__setOperand2_RGB__GLint,
+	          "",
+	          "");
+	I_Method1(void, setOperand0_Alpha, IN, GLint, op,
+	          __void__setOperand0_Alpha__GLint,
+	          "",
+	          "");
+	I_Method1(void, setOperand1_Alpha, IN, GLint, op,
+	          __void__setOperand1_Alpha__GLint,
+	          "",
+	          "");
+	I_Method1(void, setOperand2_Alpha, IN, GLint, op,
+	          __void__setOperand2_Alpha__GLint,
+	          "",
+	          "");
+	I_Method0(GLint, getOperand0_RGB,
+	          __GLint__getOperand0_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getOperand1_RGB,
+	          __GLint__getOperand1_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getOperand2_RGB,
+	          __GLint__getOperand2_RGB,
+	          "",
+	          "");
+	I_Method0(GLint, getOperand0_Alpha,
+	          __GLint__getOperand0_Alpha,
+	          "",
+	          "");
+	I_Method0(GLint, getOperand1_Alpha,
+	          __GLint__getOperand1_Alpha,
+	          "",
+	          "");
+	I_Method0(GLint, getOperand2_Alpha,
+	          __GLint__getOperand2_Alpha,
+	          "",
+	          "");
+	I_Method1(void, setScale_RGB, IN, float, scale,
+	          __void__setScale_RGB__float,
+	          "",
+	          "");
+	I_Method1(void, setScale_Alpha, IN, float, scale,
+	          __void__setScale_Alpha__float,
+	          "",
+	          "");
+	I_Method0(float, getScale_RGB,
+	          __float__getScale_RGB,
+	          "",
+	          "");
+	I_Method0(float, getScale_Alpha,
+	          __float__getScale_Alpha,
+	          "",
+	          "");
+	I_Method1(void, setConstantColor, IN, const osg::Vec4 &, color,
+	          __void__setConstantColor__C5_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getConstantColor,
+	          __C5_Vec4_R1__getConstantColor,
+	          "",
+	          "");
+	I_Method1(void, setConstantColorAsLightDirection, IN, const osg::Vec3 &, direction,
+	          __void__setConstantColorAsLightDirection__C5_Vec3_R1,
+	          "Set the constant color attribute to the given light direction for use with DOT3 combine operation. ",
+	          "");
+	I_Method0(osg::Vec3, getConstantColorAsLightDirection,
+	          __Vec3__getConstantColorAsLightDirection,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_SimpleProperty(GLint, Combine_Alpha, 
+	                 __GLint__getCombine_Alpha, 
+	                 __void__setCombine_Alpha__GLint);
+	I_SimpleProperty(GLint, Combine_RGB, 
+	                 __GLint__getCombine_RGB, 
+	                 __void__setCombine_RGB__GLint);
+	I_SimpleProperty(const osg::Vec4 &, ConstantColor, 
+	                 __C5_Vec4_R1__getConstantColor, 
+	                 __void__setConstantColor__C5_Vec4_R1);
+	I_SimpleProperty(osg::Vec3, ConstantColorAsLightDirection, 
+	                 __Vec3__getConstantColorAsLightDirection, 
+	                 __void__setConstantColorAsLightDirection__C5_Vec3_R1);
+	I_SimpleProperty(GLint, Operand0_Alpha, 
+	                 __GLint__getOperand0_Alpha, 
+	                 __void__setOperand0_Alpha__GLint);
+	I_SimpleProperty(GLint, Operand0_RGB, 
+	                 __GLint__getOperand0_RGB, 
+	                 __void__setOperand0_RGB__GLint);
+	I_SimpleProperty(GLint, Operand1_Alpha, 
+	                 __GLint__getOperand1_Alpha, 
+	                 __void__setOperand1_Alpha__GLint);
+	I_SimpleProperty(GLint, Operand1_RGB, 
+	                 __GLint__getOperand1_RGB, 
+	                 __void__setOperand1_RGB__GLint);
+	I_SimpleProperty(GLint, Operand2_Alpha, 
+	                 __GLint__getOperand2_Alpha, 
+	                 __void__setOperand2_Alpha__GLint);
+	I_SimpleProperty(GLint, Operand2_RGB, 
+	                 __GLint__getOperand2_RGB, 
+	                 __void__setOperand2_RGB__GLint);
+	I_SimpleProperty(float, Scale_Alpha, 
+	                 __float__getScale_Alpha, 
+	                 __void__setScale_Alpha__float);
+	I_SimpleProperty(float, Scale_RGB, 
+	                 __float__getScale_RGB, 
+	                 __void__setScale_RGB__float);
+	I_SimpleProperty(GLint, Source0_Alpha, 
+	                 __GLint__getSource0_Alpha, 
+	                 __void__setSource0_Alpha__GLint);
+	I_SimpleProperty(GLint, Source0_RGB, 
+	                 __GLint__getSource0_RGB, 
+	                 __void__setSource0_RGB__GLint);
+	I_SimpleProperty(GLint, Source1_Alpha, 
+	                 __GLint__getSource1_Alpha, 
+	                 __void__setSource1_Alpha__GLint);
+	I_SimpleProperty(GLint, Source1_RGB, 
+	                 __GLint__getSource1_RGB, 
+	                 __void__setSource1_RGB__GLint);
+	I_SimpleProperty(GLint, Source2_Alpha, 
+	                 __GLint__getSource2_Alpha, 
+	                 __void__setSource2_Alpha__GLint);
+	I_SimpleProperty(GLint, Source2_RGB, 
+	                 __GLint__getSource2_RGB, 
+	                 __void__setSource2_RGB__GLint);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 

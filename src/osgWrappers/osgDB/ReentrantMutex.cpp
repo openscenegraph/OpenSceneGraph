@@ -21,9 +21,20 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
-	I_Constructor0();
-	I_Method0(int, lock);
-	I_Method0(int, unlock);
-	I_Method0(int, trylock);
+	I_Constructor0(____ReentrantMutex,
+	               "",
+	               "");
+	I_Method0(int, lock,
+	          __int__lock,
+	          "",
+	          "");
+	I_Method0(int, unlock,
+	          __int__unlock,
+	          "",
+	          "");
+	I_Method0(int, trylock,
+	          __int__trylock,
+	          "",
+	          "");
 END_REFLECTOR
 

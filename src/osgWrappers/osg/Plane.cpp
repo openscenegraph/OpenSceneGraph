@@ -30,35 +30,119 @@
 BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
-	I_Constructor0();
-	I_Constructor1(IN, const osg::Plane &, pl);
-	I_Constructor4(IN, float, a, IN, float, b, IN, float, c, IN, float, d);
-	I_Constructor1(IN, const osg::Vec4 &, vec);
-	I_Constructor2(IN, const osg::Vec3 &, norm, IN, float, d);
-	I_Constructor3(IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3);
-	I_Constructor2(IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point);
-	I_Method1(void, set, IN, const osg::Plane &, pl);
-	I_Method4(void, set, IN, float, a, IN, float, b, IN, float, c, IN, float, d);
-	I_Method1(void, set, IN, const osg::Vec4 &, vec);
-	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, float, d);
-	I_Method3(void, set, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3);
-	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point);
-	I_Method0(void, flip);
-	I_Method0(void, makeUnitLength);
-	I_Method0(void, calculateUpperLowerBBCorners);
-	I_Method0(bool, valid);
-	I_Method0(float *, ptr);
-	I_Method0(const float *, ptr);
-	I_Method0(osg::Vec4 &, asVec4);
-	I_Method0(const osg::Vec4 &, asVec4);
-	I_Method0(osg::Vec3, getNormal);
-	I_Method1(float, distance, IN, const osg::Vec3 &, v);
-	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices);
-	I_Method1(int, intersect, IN, const osg::BoundingSphere &, bs);
-	I_Method1(int, intersect, IN, const osg::BoundingBox &, bb);
-	I_Method1(void, transform, IN, const osg::Matrix &, matrix);
-	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix);
-	I_WriteOnlyProperty(const osg::Vec4 &, );
-	I_ReadOnlyProperty(osg::Vec3, Normal);
+	I_Constructor0(____Plane,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Plane &, pl,
+	               ____Plane__C5_Plane_R1,
+	               "",
+	               "");
+	I_Constructor4(IN, float, a, IN, float, b, IN, float, c, IN, float, d,
+	               ____Plane__float__float__float__float,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Vec4 &, vec,
+	               ____Plane__C5_Vec4_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3 &, norm, IN, float, d,
+	               ____Plane__C5_Vec3_R1__float,
+	               "",
+	               "");
+	I_Constructor3(IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3,
+	               ____Plane__C5_Vec3_R1__C5_Vec3_R1__C5_Vec3_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point,
+	               ____Plane__C5_Vec3_R1__C5_Vec3_R1,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const osg::Plane &, pl,
+	          __void__set__C5_Plane_R1,
+	          "",
+	          "");
+	I_Method4(void, set, IN, float, a, IN, float, b, IN, float, c, IN, float, d,
+	          __void__set__float__float__float__float,
+	          "",
+	          "");
+	I_Method1(void, set, IN, const osg::Vec4 &, vec,
+	          __void__set__C5_Vec4_R1,
+	          "",
+	          "");
+	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, float, d,
+	          __void__set__C5_Vec3_R1__float,
+	          "",
+	          "");
+	I_Method3(void, set, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3,
+	          __void__set__C5_Vec3_R1__C5_Vec3_R1__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point,
+	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(void, flip,
+	          __void__flip,
+	          "flip/reverse the orientation of the plane. ",
+	          "");
+	I_Method0(void, makeUnitLength,
+	          __void__makeUnitLength,
+	          "",
+	          "");
+	I_Method0(void, calculateUpperLowerBBCorners,
+	          __void__calculateUpperLowerBBCorners,
+	          "calculate the upper and lower bounding box corners to be used in the intersect(BoundingBox&) method for speeding calculations. ",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(float *, ptr,
+	          __float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const float *, ptr,
+	          __C5_float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(osg::Vec4 &, asVec4,
+	          __Vec4_R1__asVec4,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, asVec4,
+	          __C5_Vec4_R1__asVec4,
+	          "",
+	          "");
+	I_Method0(osg::Vec3, getNormal,
+	          __osg_Vec3__getNormal,
+	          "",
+	          "");
+	I_Method1(float, distance, IN, const osg::Vec3 &, v,
+	          __float__distance__C5_osg_Vec3_R1,
+	          "calculate the distance between a point and the plane. ",
+	          "");
+	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices,
+	          __int__intersect__C5_std_vectorT1_Vec3__R1,
+	          "intersection test between plane and vertex list return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ",
+	          "");
+	I_Method1(int, intersect, IN, const osg::BoundingSphere &, bs,
+	          __int__intersect__C5_BoundingSphere_R1,
+	          "intersection test between plane and bounding sphere. ",
+	          "return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ");
+	I_Method1(int, intersect, IN, const osg::BoundingBox &, bb,
+	          __int__intersect__C5_BoundingBox_R1,
+	          "intersection test between plane and bounding sphere. ",
+	          "return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ");
+	I_Method1(void, transform, IN, const osg::Matrix &, matrix,
+	          __void__transform__C5_osg_Matrix_R1,
+	          "Transform the plane by matrix. ",
+	          "Note, this operation carries out the calculation of the inverse of the matrix since a plane must be multiplied by the inverse transposed to transform it. This make this operation expensive. If the inverse has been already calculated elsewhere then use transformProvidingInverse() instead. See http://www.worldserver.com/turk/computergraphics/NormalTransformations.pdf ");
+	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix,
+	          __void__transformProvidingInverse__C5_osg_Matrix_R1,
+	          "Transform the plane by providing a pre inverted matrix. ",
+	          "see transform for details. ");
+	I_SimpleProperty(osg::Vec3, Normal, 
+	                 __osg_Vec3__getNormal, 
+	                 0);
 END_REFLECTOR
 

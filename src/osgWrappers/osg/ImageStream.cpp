@@ -37,29 +37,96 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	I_BaseType(osg::Image);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::ImageStream &, image, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(int, compare, IN, const osg::Image &, rhs);
-	I_Method0(void, play);
-	I_Method0(void, pause);
-	I_Method0(void, rewind);
-	I_MethodWithDefaults1(void, quit, IN, bool, x, true);
-	I_Method0(osg::ImageStream::StreamStatus, getStatus);
-	I_Method1(void, setLoopingMode, IN, osg::ImageStream::LoopingMode, mode);
-	I_Method0(osg::ImageStream::LoopingMode, getLoopingMode);
-	I_Method1(void, setReferenceTime, IN, double, x);
-	I_Method0(double, getReferenceTime);
-	I_Method1(void, setTimeMultiplier, IN, double, x);
-	I_Method0(double, getTimeMultiplier);
-	I_Method0(void, update);
-	I_Property(osg::ImageStream::LoopingMode, LoopingMode);
-	I_Property(double, ReferenceTime);
-	I_ReadOnlyProperty(osg::ImageStream::StreamStatus, Status);
-	I_Property(double, TimeMultiplier);
+	I_Constructor0(____ImageStream,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ImageStream &, image, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ImageStream__C5_ImageStream_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(int, compare, IN, const osg::Image &, rhs,
+	          __int__compare__C5_Image_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method0(void, play,
+	          __void__play,
+	          "",
+	          "");
+	I_Method0(void, pause,
+	          __void__pause,
+	          "",
+	          "");
+	I_Method0(void, rewind,
+	          __void__rewind,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, quit, IN, bool, x, true,
+	                      __void__quit__bool,
+	                      "",
+	                      "");
+	I_Method0(osg::ImageStream::StreamStatus, getStatus,
+	          __StreamStatus__getStatus,
+	          "",
+	          "");
+	I_Method1(void, setLoopingMode, IN, osg::ImageStream::LoopingMode, mode,
+	          __void__setLoopingMode__LoopingMode,
+	          "",
+	          "");
+	I_Method0(osg::ImageStream::LoopingMode, getLoopingMode,
+	          __LoopingMode__getLoopingMode,
+	          "",
+	          "");
+	I_Method1(void, setReferenceTime, IN, double, x,
+	          __void__setReferenceTime__double,
+	          "",
+	          "");
+	I_Method0(double, getReferenceTime,
+	          __double__getReferenceTime,
+	          "",
+	          "");
+	I_Method1(void, setTimeMultiplier, IN, double, x,
+	          __void__setTimeMultiplier__double,
+	          "",
+	          "");
+	I_Method0(double, getTimeMultiplier,
+	          __double__getTimeMultiplier,
+	          "",
+	          "");
+	I_Method0(void, update,
+	          __void__update,
+	          "",
+	          "");
+	I_SimpleProperty(osg::ImageStream::LoopingMode, LoopingMode, 
+	                 __LoopingMode__getLoopingMode, 
+	                 __void__setLoopingMode__LoopingMode);
+	I_SimpleProperty(double, ReferenceTime, 
+	                 __double__getReferenceTime, 
+	                 __void__setReferenceTime__double);
+	I_SimpleProperty(osg::ImageStream::StreamStatus, Status, 
+	                 __StreamStatus__getStatus, 
+	                 0);
+	I_SimpleProperty(double, TimeMultiplier, 
+	                 __double__getTimeMultiplier, 
+	                 __void__setTimeMultiplier__double);
 END_REFLECTOR
 

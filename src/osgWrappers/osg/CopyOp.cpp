@@ -51,6 +51,9 @@ BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::CopyOp)
-	I_ConstructorWithDefaults1(IN, osg::CopyOp::CopyFlags, flags, osg::CopyOp::SHALLOW_COPY);
+	I_ConstructorWithDefaults1(IN, osg::CopyOp::CopyFlags, flags, osg::CopyOp::SHALLOW_COPY,
+	                           ____CopyOp__CopyFlags,
+	                           "",
+	                           "");
 END_REFLECTOR
 

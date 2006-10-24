@@ -35,34 +35,119 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	I_BaseType(osg::Group);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osg::ProxyNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method1(bool, addChild, IN, osg::Node *, child);
-	I_Method2(bool, addChild, IN, osg::Node *, child, IN, const std::string &, filename);
-	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove);
-	I_Method1(void, setDatabasePath, IN, const std::string &, path);
-	I_Method0(const std::string &, getDatabasePath);
-	I_Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename);
-	I_Method1(const std::string &, getFileName, IN, unsigned int, childNo);
-	I_Method0(unsigned int, getNumFileNames);
-	I_Method1(void, setCenterMode, IN, osg::ProxyNode::CenterMode, mode);
-	I_Method0(osg::ProxyNode::CenterMode, getCenterMode);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setRadius, IN, float, radius);
-	I_Method0(float, getRadius);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_Property(const osg::Vec3 &, Center);
-	I_Property(osg::ProxyNode::CenterMode, CenterMode);
-	I_Property(const std::string &, DatabasePath);
-	I_ArrayProperty_G(const std::string &, FileName, FileNames, unsigned int, void);
-	I_Property(float, Radius);
+	I_Constructor0(____ProxyNode,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ProxyNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ProxyNode__C5_ProxyNode_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method1(bool, addChild, IN, osg::Node *, child,
+	          __bool__addChild__Node_P1,
+	          "Add Node to Group. ",
+	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes.");
+	I_Method2(bool, addChild, IN, osg::Node *, child, IN, const std::string &, filename,
+	          __bool__addChild__Node_P1__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove,
+	          __bool__removeChildren__unsigned_int__unsigned_int,
+	          "Remove children from Group. ",
+	          "Note, must be override by subclasses of Group which add per child attributes. ");
+	I_Method1(void, setDatabasePath, IN, const std::string &, path,
+	          __void__setDatabasePath__C5_std_string_R1,
+	          "Set the database path to prepend to children's filenames. ",
+	          "");
+	I_Method0(const std::string &, getDatabasePath,
+	          __C5_std_string_R1__getDatabasePath,
+	          "Get the database path used to prepend to children's filenames. ",
+	          "");
+	I_Method2(void, setFileName, IN, unsigned int, childNo, IN, const std::string &, filename,
+	          __void__setFileName__unsigned_int__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(const std::string &, getFileName, IN, unsigned int, childNo,
+	          __C5_std_string_R1__getFileName__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumFileNames,
+	          __unsigned_int__getNumFileNames,
+	          "",
+	          "");
+	I_Method1(void, setCenterMode, IN, osg::ProxyNode::CenterMode, mode,
+	          __void__setCenterMode__CenterMode,
+	          "Set how the center of object should be determined when computed which child is active. ",
+	          "");
+	I_Method0(osg::ProxyNode::CenterMode, getCenterMode,
+	          __CenterMode__getCenterMode,
+	          "Get how the center of object should be determined when computed which child is active. ",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	          __void__setCenter__C5_Vec3_R1,
+	          "Sets the object-space point which defines the center of the osg::ProxyNode. ",
+	          "center is affected by any transforms in the hierarchy above the osg::ProxyNode. ");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_Vec3_R1__getCenter,
+	          "return the ProxyNode center point. ",
+	          "");
+	I_Method1(void, setRadius, IN, float, radius,
+	          __void__setRadius__float,
+	          "Set the object-space reference radius of the volume enclosed by the ProxyNode. ",
+	          "Used to detmine the bounding sphere of the ProxyNode in the absense of any children. ");
+	I_Method0(float, getRadius,
+	          __float__getRadius,
+	          "Get the object-space radius of the volume enclosed by the ProxyNode. ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          __BoundingSphere__computeBound,
+	          "Compute the bounding sphere around Node's geometry or children. ",
+	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(osg::ProxyNode::CenterMode, CenterMode, 
+	                 __CenterMode__getCenterMode, 
+	                 __void__setCenterMode__CenterMode);
+	I_SimpleProperty(const std::string &, DatabasePath, 
+	                 __C5_std_string_R1__getDatabasePath, 
+	                 __void__setDatabasePath__C5_std_string_R1);
+	I_ArrayProperty(const std::string &, FileName, 
+	                __C5_std_string_R1__getFileName__unsigned_int, 
+	                __void__setFileName__unsigned_int__C5_std_string_R1, 
+	                __unsigned_int__getNumFileNames, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(float, Radius, 
+	                 __float__getRadius, 
+	                 __void__setRadius__float);
 END_REFLECTOR
 

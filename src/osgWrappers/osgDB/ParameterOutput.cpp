@@ -22,10 +22,25 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::ParameterOutput)
-	I_Constructor1(IN, osgDB::Output &, fw);
-	I_Constructor2(IN, osgDB::Output &, fw, IN, int, numItemsPerLine);
-	I_Method0(void, begin);
-	I_Method0(void, newLine);
-	I_Method0(void, end);
+	I_Constructor1(IN, osgDB::Output &, fw,
+	               ____ParameterOutput__Output_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, osgDB::Output &, fw, IN, int, numItemsPerLine,
+	               ____ParameterOutput__Output_R1__int,
+	               "",
+	               "");
+	I_Method0(void, begin,
+	          __void__begin,
+	          "",
+	          "");
+	I_Method0(void, newLine,
+	          __void__newLine,
+	          "",
+	          "");
+	I_Method0(void, end,
+	          __void__end,
+	          "",
+	          "");
 END_REFLECTOR
 

@@ -44,56 +44,183 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_Constructor2(IN, GLenum, source, IN, GLenum, destination);
-	I_Constructor4(IN, GLenum, source, IN, GLenum, destination, IN, GLenum, source_alpha, IN, GLenum, destination_alpha);
-	I_ConstructorWithDefaults2(IN, const osg::BlendFunc &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method2(void, setFunction, IN, GLenum, source, IN, GLenum, destination);
-	I_Method4(void, setFunction, IN, GLenum, source_rgb, IN, GLenum, destination_rgb, IN, GLenum, source_alpha, IN, GLenum, destination_alpha);
-	I_Method1(void, setSource, IN, GLenum, source);
-	I_Method0(GLenum, getSource);
-	I_Method1(void, setSourceRGB, IN, GLenum, source);
-	I_Method0(GLenum, getSourceRGB);
-	I_Method1(void, setSourceAlpha, IN, GLenum, source);
-	I_Method0(GLenum, getSourceAlpha);
-	I_Method1(void, setDestination, IN, GLenum, destination);
-	I_Method0(GLenum, getDestination);
-	I_Method1(void, setDestinationRGB, IN, GLenum, destination);
-	I_Method0(GLenum, getDestinationRGB);
-	I_Method1(void, setDestinationAlpha, IN, GLenum, destination);
-	I_Method0(GLenum, getDestinationAlpha);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_StaticMethod2(osg::BlendFunc::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized);
-	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BlendFunc::Extensions *, extensions);
-	I_Property(GLenum, Destination);
-	I_Property(GLenum, DestinationAlpha);
-	I_Property(GLenum, DestinationRGB);
-	I_Property(GLenum, Source);
-	I_Property(GLenum, SourceAlpha);
-	I_Property(GLenum, SourceRGB);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____BlendFunc,
+	               "",
+	               "");
+	I_Constructor2(IN, GLenum, source, IN, GLenum, destination,
+	               ____BlendFunc__GLenum__GLenum,
+	               "",
+	               "");
+	I_Constructor4(IN, GLenum, source, IN, GLenum, destination, IN, GLenum, source_alpha, IN, GLenum, destination_alpha,
+	               ____BlendFunc__GLenum__GLenum__GLenum__GLenum,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::BlendFunc &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____BlendFunc__C5_BlendFunc_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method2(void, setFunction, IN, GLenum, source, IN, GLenum, destination,
+	          __void__setFunction__GLenum__GLenum,
+	          "",
+	          "");
+	I_Method4(void, setFunction, IN, GLenum, source_rgb, IN, GLenum, destination_rgb, IN, GLenum, source_alpha, IN, GLenum, destination_alpha,
+	          __void__setFunction__GLenum__GLenum__GLenum__GLenum,
+	          "",
+	          "");
+	I_Method1(void, setSource, IN, GLenum, source,
+	          __void__setSource__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getSource,
+	          __GLenum__getSource,
+	          "",
+	          "");
+	I_Method1(void, setSourceRGB, IN, GLenum, source,
+	          __void__setSourceRGB__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getSourceRGB,
+	          __GLenum__getSourceRGB,
+	          "",
+	          "");
+	I_Method1(void, setSourceAlpha, IN, GLenum, source,
+	          __void__setSourceAlpha__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getSourceAlpha,
+	          __GLenum__getSourceAlpha,
+	          "",
+	          "");
+	I_Method1(void, setDestination, IN, GLenum, destination,
+	          __void__setDestination__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getDestination,
+	          __GLenum__getDestination,
+	          "",
+	          "");
+	I_Method1(void, setDestinationRGB, IN, GLenum, destination,
+	          __void__setDestinationRGB__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getDestinationRGB,
+	          __GLenum__getDestinationRGB,
+	          "",
+	          "");
+	I_Method1(void, setDestinationAlpha, IN, GLenum, destination,
+	          __void__setDestinationAlpha__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getDestinationAlpha,
+	          __GLenum__getDestinationAlpha,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "apply the OpenGL state attributes. ",
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_StaticMethod2(osg::BlendFunc::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Returns the Extensions object for the given context. ",
+	                "If createIfNotInitalized is true and the Exentsions object doesn't exist, getExtensions() creates it on the given context. Returns NULL if createIfNotInitalized is false and the Extensions object doesn't exist. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BlendFunc::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions() allows users to override the extensions across graphics contexts. ",
+	                "Typically used when you have different extensions supported across graphics pipes, but need to ensure that they all use the same low common denominator extensions. ");
+	I_SimpleProperty(GLenum, Destination, 
+	                 __GLenum__getDestination, 
+	                 __void__setDestination__GLenum);
+	I_SimpleProperty(GLenum, DestinationAlpha, 
+	                 __GLenum__getDestinationAlpha, 
+	                 __void__setDestinationAlpha__GLenum);
+	I_SimpleProperty(GLenum, DestinationRGB, 
+	                 __GLenum__getDestinationRGB, 
+	                 __void__setDestinationRGB__GLenum);
+	I_SimpleProperty(GLenum, Source, 
+	                 __GLenum__getSource, 
+	                 __void__setSource__GLenum);
+	I_SimpleProperty(GLenum, SourceAlpha, 
+	                 __GLenum__getSourceAlpha, 
+	                 __void__setSourceAlpha__GLenum);
+	I_SimpleProperty(GLenum, SourceRGB, 
+	                 __GLenum__getSourceRGB, 
+	                 __void__setSourceRGB__GLenum);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
 	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID);
-	I_Constructor1(IN, const osg::BlendFunc::Extensions &, rhs);
-	I_Method1(void, lowestCommonDenominator, IN, const osg::BlendFunc::Extensions &, rhs);
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID);
-	I_Method1(void, setBlendFuncSeparateSupported, IN, bool, flag);
-	I_Method0(bool, isBlendFuncSeparateSupported);
-	I_Method1(void, setBlendFuncSeparateProc, IN, void *, ptr);
-	I_Method4(void, glBlendFuncSeparate, IN, GLenum, sfactorRGB, IN, GLenum, dfactorRGB, IN, GLenum, sfactorAlpha, IN, GLenum, dfactorAlpha);
-	I_WriteOnlyProperty(void *, BlendFuncSeparateProc);
-	I_WriteOnlyProperty(bool, BlendFuncSeparateSupported);
-	I_WriteOnlyProperty(unsigned int, upGLExtensions);
+	I_Constructor1(IN, unsigned int, contextID,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::BlendFunc::Extensions &, rhs,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::BlendFunc::Extensions &, rhs,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
+	          __void__setupGLExtensions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setBlendFuncSeparateSupported, IN, bool, flag,
+	          __void__setBlendFuncSeparateSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isBlendFuncSeparateSupported,
+	          __bool__isBlendFuncSeparateSupported,
+	          "",
+	          "");
+	I_Method1(void, setBlendFuncSeparateProc, IN, void *, ptr,
+	          __void__setBlendFuncSeparateProc__void_P1,
+	          "",
+	          "");
+	I_Method4(void, glBlendFuncSeparate, IN, GLenum, sfactorRGB, IN, GLenum, dfactorRGB, IN, GLenum, sfactorAlpha, IN, GLenum, dfactorAlpha,
+	          __void__glBlendFuncSeparate__GLenum__GLenum__GLenum__GLenum,
+	          "",
+	          "");
+	I_SimpleProperty(void *, BlendFuncSeparateProc, 
+	                 0, 
+	                 __void__setBlendFuncSeparateProc__void_P1);
+	I_SimpleProperty(bool, BlendFuncSeparateSupported, 
+	                 0, 
+	                 __void__setBlendFuncSeparateSupported__bool);
 END_REFLECTOR
 

@@ -29,52 +29,169 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_BaseType(osgGA::GUIEventHandler);
-	I_Method0(const char *, className);
-	I_Method1(void, setMinimumDistance, IN, float, minimumDistance);
-	I_Method0(float, getMinimumDistance);
-	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::MatrixManipulator::CoordinateFrameCallback *, cb);
-	I_Method0(osgGA::MatrixManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback);
-	I_Method0(const osgGA::MatrixManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback);
-	I_Method1(osg::CoordinateFrame, getCoordinateFrame, IN, const osg::Vec3d &, position);
-	I_Method1(osg::Vec3d, getSideVector, IN, const osg::CoordinateFrame &, cf);
-	I_Method1(osg::Vec3d, getFrontVector, IN, const osg::CoordinateFrame &, cf);
-	I_Method1(osg::Vec3d, getUpVector, IN, const osg::CoordinateFrame &, cf);
-	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix);
-	I_Method0(osg::Matrixd, getMatrix);
-	I_Method0(osg::Matrixd, getInverseMatrix);
-	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode);
-	I_Method0(float, getFusionDistanceValue);
-	I_Method1(void, setIntersectTraversalMask, IN, unsigned int, mask);
-	I_Method0(unsigned int, getIntersectTraversalMask);
-	I_Method1(void, setNode, IN, osg::Node *, x);
-	I_Method0(const osg::Node *, getNode);
-	I_Method0(osg::Node *, getNode);
-	I_MethodWithDefaults4(void, setHomePosition, IN, const osg::Vec3d &, eye, , IN, const osg::Vec3d &, center, , IN, const osg::Vec3d &, up, , IN, bool, autoComputeHomePosition, false);
-	I_Method3(void, getHomePosition, IN, osg::Vec3d &, eye, IN, osg::Vec3d &, center, IN, osg::Vec3d &, up);
-	I_Method1(void, setAutoComputeHomePosition, IN, bool, flag);
-	I_Method0(bool, getAutoComputeHomePosition);
-	I_Method0(void, computeHomePosition);
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
-	I_Method1(void, home, IN, double, x);
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x);
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us);
-	I_Property(bool, AutoComputeHomePosition);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByInverseMatrix);
-	I_WriteOnlyProperty(const osg::Matrixd &, ByMatrix);
-	I_Property(osgGA::MatrixManipulator::CoordinateFrameCallback *, CoordinateFrameCallback);
-	I_ReadOnlyProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode);
-	I_ReadOnlyProperty(float, FusionDistanceValue);
-	I_Property(unsigned int, IntersectTraversalMask);
-	I_ReadOnlyProperty(osg::Matrixd, InverseMatrix);
-	I_ReadOnlyProperty(osg::Matrixd, Matrix);
-	I_Property(float, MinimumDistance);
-	I_Property(osg::Node *, Node);
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setMinimumDistance, IN, float, minimumDistance,
+	          __void__setMinimumDistance__float,
+	          "set the minimum distance (as ratio) the eye point can be zoomed in towards the center before the center is pushed forward. ",
+	          "");
+	I_Method0(float, getMinimumDistance,
+	          __float__getMinimumDistance,
+	          "get the minimum distance (as ratio) the eye point can be zoomed in ",
+	          "");
+	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::MatrixManipulator::CoordinateFrameCallback *, cb,
+	          __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1,
+	          "set the coordinate frame which callback tells the manipulator which way is up, east and north. ",
+	          "");
+	I_Method0(osgGA::MatrixManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback,
+	          __CoordinateFrameCallback_P1__getCoordinateFrameCallback,
+	          "get the coordinate frame callback which tells the manipulator which way is up, east and north. ",
+	          "");
+	I_Method0(const osgGA::MatrixManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback,
+	          __C5_CoordinateFrameCallback_P1__getCoordinateFrameCallback,
+	          "get the coordinate frame callback which tells the manipulator which way is up, east and north. ",
+	          "");
+	I_Method1(osg::CoordinateFrame, getCoordinateFrame, IN, const osg::Vec3d &, position,
+	          __osg_CoordinateFrame__getCoordinateFrame__C5_osg_Vec3d_R1,
+	          "get the coordinate frame. ",
+	          "");
+	I_Method1(osg::Vec3d, getSideVector, IN, const osg::CoordinateFrame &, cf,
+	          __osg_Vec3d__getSideVector__C5_osg_CoordinateFrame_R1,
+	          "",
+	          "");
+	I_Method1(osg::Vec3d, getFrontVector, IN, const osg::CoordinateFrame &, cf,
+	          __osg_Vec3d__getFrontVector__C5_osg_CoordinateFrame_R1,
+	          "",
+	          "");
+	I_Method1(osg::Vec3d, getUpVector, IN, const osg::CoordinateFrame &, cf,
+	          __osg_Vec3d__getUpVector__C5_osg_CoordinateFrame_R1,
+	          "",
+	          "");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
+	          "Get the FusionDistanceMode. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method0(float, getFusionDistanceValue,
+	          __float__getFusionDistanceValue,
+	          "Get the FusionDistanceValue. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method1(void, setIntersectTraversalMask, IN, unsigned int, mask,
+	          __void__setIntersectTraversalMask__unsigned_int,
+	          "Set the mask to use when set up intersection traversal such as used in manipulators that follow terrain or have collision detection. ",
+	          "The intersection traversal mask is useful for controlling what parts of the scene graph should be used for intersection purposes. ");
+	I_Method0(unsigned int, getIntersectTraversalMask,
+	          __unsigned_int__getIntersectTraversalMask,
+	          "Get the mask to use when set up intersection traversal such as used in manipulators that follow terrain or have collision detection. ",
+	          "");
+	I_Method1(void, setNode, IN, osg::Node *, x,
+	          __void__setNode__osg_Node_P1,
+	          "Attach a node to the manipulator, automatically detaching any previously attached node. ",
+	          "setNode(NULL) detaches previous nodes. May be ignored by manipulators which do not require a reference model.");
+	I_Method0(const osg::Node *, getNode,
+	          __C5_osg_Node_P1__getNode,
+	          "Return const node if attached. ",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          __osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_MethodWithDefaults4(void, setHomePosition, IN, const osg::Vec3d &, eye, , IN, const osg::Vec3d &, center, , IN, const osg::Vec3d &, up, , IN, bool, autoComputeHomePosition, false,
+	                      __void__setHomePosition__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__bool,
+	                      "Manually set the home position, and set the automatic compute of home position. ",
+	                      "");
+	I_Method3(void, getHomePosition, IN, osg::Vec3d &, eye, IN, osg::Vec3d &, center, IN, osg::Vec3d &, up,
+	          __void__getHomePosition__osg_Vec3d_R1__osg_Vec3d_R1__osg_Vec3d_R1,
+	          "Get the mnaully set home position. ",
+	          "");
+	I_Method1(void, setAutoComputeHomePosition, IN, bool, flag,
+	          __void__setAutoComputeHomePosition__bool,
+	          "Set whether the automatic compute of the home position is enabled. ",
+	          "");
+	I_Method0(bool, getAutoComputeHomePosition,
+	          __bool__getAutoComputeHomePosition,
+	          "Get whether the automatic compute of the home position is enabled. ",
+	          "");
+	I_Method0(void, computeHomePosition,
+	          __void__computeHomePosition,
+	          "Compute the home position. ",
+	          "");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate.");
+	I_Method1(void, home, IN, double, x,
+	          __void__home__double,
+	          "Move the camera to the default position. ",
+	          "This version does not require GUIEventAdapter and GUIActionAdapter so may be called from somewhere other than a handle() method in GUIEventHandler. Application must be aware of implications.");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "FIXME: what does this actually mean? Provide examples.");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_SimpleProperty(bool, AutoComputeHomePosition, 
+	                 __bool__getAutoComputeHomePosition, 
+	                 __void__setAutoComputeHomePosition__bool);
+	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
+	                 0, 
+	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
+	                 0, 
+	                 __void__setByMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(osgGA::MatrixManipulator::CoordinateFrameCallback *, CoordinateFrameCallback, 
+	                 __CoordinateFrameCallback_P1__getCoordinateFrameCallback, 
+	                 __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1);
+	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
+	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
+	                 0);
+	I_SimpleProperty(float, FusionDistanceValue, 
+	                 __float__getFusionDistanceValue, 
+	                 0);
+	I_SimpleProperty(unsigned int, IntersectTraversalMask, 
+	                 __unsigned_int__getIntersectTraversalMask, 
+	                 __void__setIntersectTraversalMask__unsigned_int);
+	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
+	                 __osg_Matrixd__getInverseMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, Matrix, 
+	                 __osg_Matrixd__getMatrix, 
+	                 0);
+	I_SimpleProperty(float, MinimumDistance, 
+	                 __float__getMinimumDistance, 
+	                 __void__setMinimumDistance__float);
+	I_SimpleProperty(osg::Node *, Node, 
+	                 __osg_Node_P1__getNode, 
+	                 __void__setNode__osg_Node_P1);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator::CoordinateFrameCallback)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method1(osg::CoordinateFrame, getCoordinateFrame, IN, const osg::Vec3d &, position);
+	I_Constructor0(____CoordinateFrameCallback,
+	               "",
+	               "");
+	I_Method1(osg::CoordinateFrame, getCoordinateFrame, IN, const osg::Vec3d &, position,
+	          __osg_CoordinateFrame__getCoordinateFrame__C5_osg_Vec3d_R1,
+	          "",
+	          "");
 END_REFLECTOR
 

@@ -26,29 +26,95 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::FluidProgram)
 	I_BaseType(osgParticle::Program);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::FluidProgram &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, setFluidViscosity, IN, float, v);
-	I_Method0(float, getFluidViscosity);
-	I_Method1(void, setFluidDensity, IN, float, d);
-	I_Method0(float, getFluidDensity);
-	I_Method1(void, setWind, IN, const osg::Vec3 &, wind);
-	I_Method0(const osg::Vec3 &, getWind);
-	I_Method1(void, setAcceleration, IN, const osg::Vec3 &, v);
-	I_Method0(const osg::Vec3 &, getAcceleration);
-	I_MethodWithDefaults1(void, setToGravity, IN, float, scale, 1.0f);
-	I_Method0(void, setFluidToAir);
-	I_Method0(void, setFluidToWater);
-	I_Property(const osg::Vec3 &, Acceleration);
-	I_Property(float, FluidDensity);
-	I_Property(float, FluidViscosity);
-	I_WriteOnlyProperty(float, ToGravity);
-	I_Property(const osg::Vec3 &, Wind);
+	I_Constructor0(____FluidProgram,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::FluidProgram &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____FluidProgram__C5_FluidProgram_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, setFluidViscosity, IN, float, v,
+	          __void__setFluidViscosity__float,
+	          "Set the viscosity of the fluid. ",
+	          "");
+	I_Method0(float, getFluidViscosity,
+	          __float__getFluidViscosity,
+	          "Get the viscosity of the fluid. ",
+	          "");
+	I_Method1(void, setFluidDensity, IN, float, d,
+	          __void__setFluidDensity__float,
+	          "Set the density of the fluid. ",
+	          "");
+	I_Method0(float, getFluidDensity,
+	          __float__getFluidDensity,
+	          "Get the density of the fluid. ",
+	          "");
+	I_Method1(void, setWind, IN, const osg::Vec3 &, wind,
+	          __void__setWind__C5_osg_Vec3_R1,
+	          "Set the wind vector. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getWind,
+	          __C5_osg_Vec3_R1__getWind,
+	          "Get the wind vector. ",
+	          "");
+	I_Method1(void, setAcceleration, IN, const osg::Vec3 &, v,
+	          __void__setAcceleration__C5_osg_Vec3_R1,
+	          "Set the acceleration vector. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getAcceleration,
+	          __C5_osg_Vec3_R1__getAcceleration,
+	          "Get the acceleration vector. ",
+	          "");
+	I_MethodWithDefaults1(void, setToGravity, IN, float, scale, 1.0f,
+	                      __void__setToGravity__float,
+	                      "Set the acceleration vector to the gravity on earth (0, 0, -9.81). ",
+	                      "The acceleration will be multiplied by the scale parameter.");
+	I_Method0(void, setFluidToAir,
+	          __void__setFluidToAir,
+	          "Set the fluid parameters as for air (20°C temperature). ",
+	          "");
+	I_Method0(void, setFluidToWater,
+	          __void__setFluidToWater,
+	          "Set the fluid parameters as for pure water (20°C temperature). ",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Acceleration, 
+	                 __C5_osg_Vec3_R1__getAcceleration, 
+	                 __void__setAcceleration__C5_osg_Vec3_R1);
+	I_SimpleProperty(float, FluidDensity, 
+	                 __float__getFluidDensity, 
+	                 __void__setFluidDensity__float);
+	I_SimpleProperty(float, FluidViscosity, 
+	                 __float__getFluidViscosity, 
+	                 __void__setFluidViscosity__float);
+	I_SimpleProperty(float, ToGravity, 
+	                 0, 
+	                 __void__setToGravity__float);
+	I_SimpleProperty(const osg::Vec3 &, Wind, 
+	                 __C5_osg_Vec3_R1__getWind, 
+	                 __void__setWind__C5_osg_Vec3_R1);
 END_REFLECTOR
 

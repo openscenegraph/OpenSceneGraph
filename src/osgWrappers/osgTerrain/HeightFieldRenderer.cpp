@@ -26,14 +26,39 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode);
-	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode);
-	I_Method0(void, initialize);
-	I_Method0(void, heightFieldHasBeenModified);
-	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv);
-	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv);
-	I_ReadOnlyProperty(osgTerrain::HeightFieldNode *, HeightFieldNode);
+	I_Constructor0(____HeightFieldRenderer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____HeightFieldRenderer__C5_HeightFieldRenderer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          __HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          __C5_HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(void, initialize,
+	          __void__initialize,
+	          "",
+	          "");
+	I_Method0(void, heightFieldHasBeenModified,
+	          __void__heightFieldHasBeenModified,
+	          "",
+	          "");
+	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
+	          __void__update__osgUtil_UpdateVisitor_P1,
+	          "",
+	          "");
+	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv,
+	          __void__cull__osgUtil_CullVisitor_P1,
+	          "",
+	          "");
+	I_SimpleProperty(osgTerrain::HeightFieldNode *, HeightFieldNode, 
+	                 __HeightFieldNode_P1__getHeightFieldNode, 
+	                 0);
 END_REFLECTOR
 

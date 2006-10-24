@@ -34,29 +34,80 @@ TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer:
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	I_BaseType(osg::Object);
-	I_Constructor0();
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(void, reset);
-	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr);
-	I_MethodWithDefaults3(void, draw, IN, osg::State &, state, , IN, osgUtil::RenderLeaf *&, previous, , IN, const osg::Matrix *, postMultMatrix, 0);
+	I_Constructor0(____PositionalStateContainer,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          __void__addPositionedAttribute__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
+	          "",
+	          "");
+	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          __void__addPositionedTextureAttribute__unsigned_int__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
+	          "",
+	          "");
+	I_MethodWithDefaults3(void, draw, IN, osg::State &, state, , IN, osgUtil::RenderLeaf *&, previous, , IN, const osg::Matrix *, postMultMatrix, 0,
+	                      __void__draw__osg_State_R1__RenderLeaf_P1R1__C5_osg_Matrix_P1,
+	                      "",
+	                      "");
 	I_PublicMemberProperty(osgUtil::PositionalStateContainer::AttrMatrixList, _attrList);
 	I_PublicMemberProperty(osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap, _texAttrListMap);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
-	I_Constructor0();
-	I_Constructor1(IN, osg::RefMatrix *, ptr);
-	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp);
-	I_Method0(osg::RefMatrix *, get);
-	I_Method0(bool, valid);
-	I_Method0(osg::RefMatrix *, release);
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::RefMatrix > &, rp);
-	I_ReadOnlyProperty(osg::RefMatrix *, );
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::RefMatrix *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::RefMatrix *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::RefMatrix *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::RefMatrix > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::RefMatrix *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >);

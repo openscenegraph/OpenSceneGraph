@@ -49,40 +49,137 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_BaseType(osg::PrimitiveFunctor);
-	I_Constructor0();
-	I_Method0(void, reset);
-	I_Method1(void, setType, IN, osgUtil::Statistics::StatsType, t);
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, x);
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, x);
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, x);
-	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, x, IN, GLsizei, count);
-	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, x);
-	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, x);
-	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, x);
-	I_Method1(void, begin, IN, GLenum, mode);
-	I_Method0(void, vertex);
-	I_Method3(void, vertex, IN, float, x, IN, float, x, IN, float, x);
-	I_Method1(void, vertex, IN, const osg::Vec3 &, x);
-	I_Method1(void, vertex, IN, const osg::Vec2 &, x);
-	I_Method1(void, vertex, IN, const osg::Vec4 &, x);
-	I_Method2(void, vertex, IN, float, x, IN, float, x);
-	I_Method4(void, vertex, IN, float, x, IN, float, x, IN, float, x, IN, float, x);
-	I_Method0(void, end);
-	I_Method0(void, addDrawable);
-	I_Method0(void, addMatrix);
-	I_Method1(void, addLight, IN, int, np);
-	I_Method1(void, addImpostor, IN, int, np);
-	I_Method0(int, getBins);
-	I_Method1(void, setDepth, IN, int, d);
-	I_Method1(void, addBins, IN, int, np);
-	I_Method1(void, setBinNo, IN, int, n);
-	I_Method1(void, add, IN, const osgUtil::Statistics &, stats);
-	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesBegin);
-	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesEnd);
-	I_WriteOnlyProperty(int, BinNo);
-	I_ReadOnlyProperty(int, Bins);
-	I_WriteOnlyProperty(int, Depth);
-	I_WriteOnlyProperty(osgUtil::Statistics::StatsType, Type);
+	I_Constructor0(____Statistics,
+	               "",
+	               "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method1(void, setType, IN, osgUtil::Statistics::StatsType, t,
+	          __void__setType__StatsType,
+	          "",
+	          "");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, x,
+	          __void__setVertexArray__unsigned_int__C5_osg_Vec3_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function.");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, x,
+	          __void__setVertexArray__unsigned_int__C5_osg_Vec2_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function.");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, x,
+	          __void__setVertexArray__unsigned_int__C5_osg_Vec4_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function.");
+	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, x, IN, GLsizei, count,
+	          __void__drawArrays__GLenum__GLint__GLsizei,
+	          "Mimics the OpenGL glDrawArrays() function. ",
+	          "");
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, x,
+	          __void__drawElements__GLenum__GLsizei__C5_GLubyte_P1,
+	          "Mimics the OpenGL glDrawElements() function. ",
+	          "");
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, x,
+	          __void__drawElements__GLenum__GLsizei__C5_GLushort_P1,
+	          "Mimics the OpenGL glDrawElements() function. ",
+	          "");
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, x,
+	          __void__drawElements__GLenum__GLsizei__C5_GLuint_P1,
+	          "Mimics the OpenGL glDrawElements() function. ",
+	          "");
+	I_Method1(void, begin, IN, GLenum, mode,
+	          __void__begin__GLenum,
+	          "Mimics the OpenGL glBegin() function. ",
+	          "");
+	I_Method0(void, vertex,
+	          __void__vertex,
+	          "",
+	          "");
+	I_Method3(void, vertex, IN, float, x, IN, float, x, IN, float, x,
+	          __void__vertex__float__float__float,
+	          "Mimics the OpenGL glVertex() \"family of functions\". ",
+	          "");
+	I_Method1(void, vertex, IN, const osg::Vec3 &, x,
+	          __void__vertex__C5_osg_Vec3_R1,
+	          "Mimics the OpenGL glVertex() \"family of functions\". ",
+	          "");
+	I_Method1(void, vertex, IN, const osg::Vec2 &, x,
+	          __void__vertex__C5_osg_Vec2_R1,
+	          "Mimics the OpenGL glVertex() \"family of functions\". ",
+	          "");
+	I_Method1(void, vertex, IN, const osg::Vec4 &, x,
+	          __void__vertex__C5_osg_Vec4_R1,
+	          "Mimics the OpenGL glVertex() \"family of functions\". ",
+	          "");
+	I_Method2(void, vertex, IN, float, x, IN, float, x,
+	          __void__vertex__float__float,
+	          "Mimics the OpenGL glVertex() \"family of functions\". ",
+	          "");
+	I_Method4(void, vertex, IN, float, x, IN, float, x, IN, float, x, IN, float, x,
+	          __void__vertex__float__float__float__float,
+	          "Mimics the OpenGL glVertex() \"family of functions\". ",
+	          "");
+	I_Method0(void, end,
+	          __void__end,
+	          "Mimics the OpenGL glEnd() function. ",
+	          "");
+	I_Method0(void, addDrawable,
+	          __void__addDrawable,
+	          "",
+	          "");
+	I_Method0(void, addMatrix,
+	          __void__addMatrix,
+	          "",
+	          "");
+	I_Method1(void, addLight, IN, int, np,
+	          __void__addLight__int,
+	          "",
+	          "");
+	I_Method1(void, addImpostor, IN, int, np,
+	          __void__addImpostor__int,
+	          "",
+	          "");
+	I_Method0(int, getBins,
+	          __int__getBins,
+	          "",
+	          "");
+	I_Method1(void, setDepth, IN, int, d,
+	          __void__setDepth__int,
+	          "",
+	          "");
+	I_Method1(void, addBins, IN, int, np,
+	          __void__addBins__int,
+	          "",
+	          "");
+	I_Method1(void, setBinNo, IN, int, n,
+	          __void__setBinNo__int,
+	          "",
+	          "");
+	I_Method1(void, add, IN, const osgUtil::Statistics &, stats,
+	          __void__add__C5_Statistics_R1,
+	          "",
+	          "");
+	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesBegin,
+	          __PrimitiveCountMap_iterator__GetPrimitivesBegin,
+	          "",
+	          "");
+	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesEnd,
+	          __PrimitiveCountMap_iterator__GetPrimitivesEnd,
+	          "",
+	          "");
+	I_SimpleProperty(int, BinNo, 
+	                 0, 
+	                 __void__setBinNo__int);
+	I_SimpleProperty(int, Bins, 
+	                 __int__getBins, 
+	                 0);
+	I_SimpleProperty(int, Depth, 
+	                 0, 
+	                 __void__setDepth__int);
+	I_SimpleProperty(osgUtil::Statistics::StatsType, Type, 
+	                 0, 
+	                 __void__setType__StatsType);
 	I_PublicMemberProperty(int, numDrawables);
 	I_PublicMemberProperty(int, nummat);
 	I_PublicMemberProperty(int, nbins);
@@ -104,17 +201,49 @@ TYPE_NAME_ALIAS(std::set< osg::StateSet * >, osgUtil::StatsVisitor::StateSetSet)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0();
-	I_Method0(void, reset);
-	I_Method1(void, apply, IN, osg::Node &, node);
-	I_Method1(void, apply, IN, osg::Group &, node);
-	I_Method1(void, apply, IN, osg::Transform &, node);
-	I_Method1(void, apply, IN, osg::LOD &, node);
-	I_Method1(void, apply, IN, osg::Switch &, node);
-	I_Method1(void, apply, IN, osg::Geode &, node);
-	I_Method1(void, apply, IN, osg::Drawable &, drawable);
-	I_Method0(void, totalUpStats);
-	I_Method1(void, print, IN, std::ostream &, out);
+	I_Constructor0(____StatsVisitor,
+	               "",
+	               "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "Method to call to reset visitor. ",
+	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_Method1(void, apply, IN, osg::Node &, node,
+	          __void__apply__osg_Node_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Group &, node,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Transform &, node,
+	          __void__apply__osg_Transform_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LOD &, node,
+	          __void__apply__osg_LOD_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Switch &, node,
+	          __void__apply__osg_Switch_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, node,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Drawable &, drawable,
+	          __void__apply__osg_Drawable_R1,
+	          "",
+	          "");
+	I_Method0(void, totalUpStats,
+	          __void__totalUpStats,
+	          "",
+	          "");
+	I_Method1(void, print, IN, std::ostream &, out,
+	          __void__print__std_ostream_R1,
+	          "",
+	          "");
 	I_PublicMemberProperty(unsigned int, _numInstancedGroup);
 	I_PublicMemberProperty(unsigned int, _numInstancedSwitch);
 	I_PublicMemberProperty(unsigned int, _numInstancedLOD);

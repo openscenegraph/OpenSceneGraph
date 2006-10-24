@@ -32,17 +32,52 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0();
-	I_Method0(void, reset);
-	I_Method1(void, apply, IN, osg::Node &, node);
-	I_Method1(void, apply, IN, osg::Geode &, node);
-	I_Method1(void, apply, IN, osg::Billboard &, node);
-	I_Method1(void, apply, IN, osg::LightSource &, node);
-	I_Method1(void, apply, IN, osg::Group &, node);
-	I_Method1(void, apply, IN, osg::Transform &, node);
-	I_Method1(void, apply, IN, osg::Projection &, node);
-	I_Method1(void, apply, IN, osg::Switch &, node);
-	I_Method1(void, apply, IN, osg::LOD &, node);
-	I_Method1(void, apply, IN, osg::OccluderNode &, node);
+	I_Constructor0(____UpdateVisitor,
+	               "",
+	               "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "Method to call to reset visitor. ",
+	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_Method1(void, apply, IN, osg::Node &, node,
+	          __void__apply__osg_Node_R1,
+	          "During traversal each type of node calls its callbacks and its children traversed. ",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, node,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Billboard &, node,
+	          __void__apply__osg_Billboard_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LightSource &, node,
+	          __void__apply__osg_LightSource_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Group &, node,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Transform &, node,
+	          __void__apply__osg_Transform_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Projection &, node,
+	          __void__apply__osg_Projection_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Switch &, node,
+	          __void__apply__osg_Switch_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LOD &, node,
+	          __void__apply__osg_LOD_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::OccluderNode &, node,
+	          __void__apply__osg_OccluderNode_R1,
+	          "",
+	          "");
 END_REFLECTOR
 

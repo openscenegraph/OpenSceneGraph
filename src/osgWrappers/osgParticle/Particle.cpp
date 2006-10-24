@@ -35,91 +35,320 @@ BEGIN_ENUM_REFLECTOR(osgParticle::Particle::Shape)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
-	I_Constructor0();
-	I_Method0(osgParticle::Particle::Shape, getShape);
-	I_Method1(void, setShape, IN, osgParticle::Particle::Shape, s);
-	I_Method0(bool, isAlive);
-	I_Method0(double, getLifeTime);
-	I_Method0(double, getAge);
-	I_Method0(const osgParticle::rangef &, getSizeRange);
-	I_Method0(const osgParticle::rangef &, getAlphaRange);
-	I_Method0(const osgParticle::rangev4 &, getColorRange);
-	I_Method0(const osgParticle::Interpolator *, getSizeInterpolator);
-	I_Method0(const osgParticle::Interpolator *, getAlphaInterpolator);
-	I_Method0(const osgParticle::Interpolator *, getColorInterpolator);
-	I_Method0(float, getRadius);
-	I_Method0(float, getMass);
-	I_Method0(float, getMassInv);
-	I_Method0(const osg::Vec3 &, getPosition);
-	I_Method0(const osg::Vec3 &, getVelocity);
-	I_Method0(const osg::Vec3 &, getPreviousPosition);
-	I_Method0(const osg::Vec3 &, getAngle);
-	I_Method0(const osg::Vec3 &, getAngularVelocity);
-	I_Method0(const osg::Vec3 &, getPreviousAngle);
-	I_Method0(const osg::Vec4 &, getCurrentColor);
-	I_Method0(float, getCurrentAlpha);
-	I_Method0(const float, getSTexCoord);
-	I_Method0(float, getTCoord);
-	I_Method0(int, getTileS);
-	I_Method0(int, getTileT);
-	I_Method0(int, getNumTiles);
-	I_Method0(void, kill);
-	I_Method1(void, setLifeTime, IN, double, t);
-	I_Method1(void, setSizeRange, IN, const osgParticle::rangef &, r);
-	I_Method1(void, setAlphaRange, IN, const osgParticle::rangef &, r);
-	I_Method1(void, setColorRange, IN, const osgParticle::rangev4 &, r);
-	I_Method1(void, setSizeInterpolator, IN, osgParticle::Interpolator *, ri);
-	I_Method1(void, setAlphaInterpolator, IN, osgParticle::Interpolator *, ai);
-	I_Method1(void, setColorInterpolator, IN, osgParticle::Interpolator *, ci);
-	I_Method1(void, setRadius, IN, float, r);
-	I_Method1(void, setMass, IN, float, m);
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, p);
-	I_Method1(void, setVelocity, IN, const osg::Vec3 &, v);
-	I_Method1(void, addVelocity, IN, const osg::Vec3 &, dv);
-	I_Method1(void, transformPositionVelocity, IN, const osg::Matrix &, xform);
-	I_Method3(void, transformPositionVelocity, IN, const osg::Matrix &, xform1, IN, const osg::Matrix &, xform2, IN, float, r);
-	I_Method1(void, setAngle, IN, const osg::Vec3 &, a);
-	I_Method1(void, setAngularVelocity, IN, const osg::Vec3 &, v);
-	I_Method1(void, addAngularVelocity, IN, const osg::Vec3 &, dv);
-	I_Method1(void, transformAngleVelocity, IN, const osg::Matrix &, xform);
-	I_Method1(bool, update, IN, double, dt);
-	I_Method0(void, beginRender);
-	I_MethodWithDefaults4(void, render, IN, const osg::Vec3 &, xpos, , IN, const osg::Vec3 &, px, , IN, const osg::Vec3 &, py, , IN, float, scale, 1.0f);
-	I_Method0(void, endRender);
-	I_Method0(float, getCurrentSize);
-	I_MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, numTiles, 0);
-	I_Method1(void, setPreviousParticle, IN, int, previous);
-	I_Method0(int, getPreviousParticle);
-	I_Method1(void, setNextParticle, IN, int, next);
-	I_Method0(int, getNextParticle);
-	I_Method1(void, setUpTexCoordsAsPartOfConnectedParticleSystem, IN, osgParticle::ParticleSystem *, ps);
-	I_ReadOnlyProperty(double, Age);
-	I_WriteOnlyProperty(osgParticle::Interpolator *, AlphaInterpolator);
-	I_Property(const osgParticle::rangef &, AlphaRange);
-	I_Property(const osg::Vec3 &, Angle);
-	I_Property(const osg::Vec3 &, AngularVelocity);
-	I_WriteOnlyProperty(osgParticle::Interpolator *, ColorInterpolator);
-	I_Property(const osgParticle::rangev4 &, ColorRange);
-	I_ReadOnlyProperty(float, CurrentAlpha);
-	I_ReadOnlyProperty(const osg::Vec4 &, CurrentColor);
-	I_ReadOnlyProperty(float, CurrentSize);
-	I_Property(double, LifeTime);
-	I_Property(float, Mass);
-	I_ReadOnlyProperty(float, MassInv);
-	I_Property(int, NextParticle);
-	I_Property(const osg::Vec3 &, Position);
-	I_ReadOnlyProperty(const osg::Vec3 &, PreviousAngle);
-	I_Property(int, PreviousParticle);
-	I_ReadOnlyProperty(const osg::Vec3 &, PreviousPosition);
-	I_Property(float, Radius);
-	I_ReadOnlyProperty(const float, STexCoord);
-	I_Property(osgParticle::Particle::Shape, Shape);
-	I_WriteOnlyProperty(osgParticle::Interpolator *, SizeInterpolator);
-	I_Property(const osgParticle::rangef &, SizeRange);
-	I_ReadOnlyProperty(float, TCoord);
-	I_ReadOnlyProperty(int, TileS);
-	I_ReadOnlyProperty(int, TileT);
-	I_WriteOnlyProperty(osgParticle::ParticleSystem *, UpTexCoordsAsPartOfConnectedParticleSystem);
-	I_Property(const osg::Vec3 &, Velocity);
+	I_Constructor0(____Particle,
+	               "",
+	               "");
+	I_Method0(osgParticle::Particle::Shape, getShape,
+	          __Shape__getShape,
+	          "Get the shape of the particle. ",
+	          "");
+	I_Method1(void, setShape, IN, osgParticle::Particle::Shape, s,
+	          __void__setShape__Shape,
+	          "Set the shape of the particle. ",
+	          "");
+	I_Method0(bool, isAlive,
+	          __bool__isAlive,
+	          "Get whether the particle is still alive. ",
+	          "");
+	I_Method0(double, getLifeTime,
+	          __double__getLifeTime,
+	          "Get the life time of the particle (in seconds). ",
+	          "");
+	I_Method0(double, getAge,
+	          __double__getAge,
+	          "Get the age of the particle (in seconds). ",
+	          "");
+	I_Method0(const osgParticle::rangef &, getSizeRange,
+	          __C5_rangef_R1__getSizeRange,
+	          "Get the minimum and maximum values for polygon size. ",
+	          "");
+	I_Method0(const osgParticle::rangef &, getAlphaRange,
+	          __C5_rangef_R1__getAlphaRange,
+	          "Get the minimum and maximum values for alpha. ",
+	          "");
+	I_Method0(const osgParticle::rangev4 &, getColorRange,
+	          __C5_rangev4_R1__getColorRange,
+	          "Get the minimum and maximum values for color. ",
+	          "");
+	I_Method0(const osgParticle::Interpolator *, getSizeInterpolator,
+	          __C5_Interpolator_P1__getSizeInterpolator,
+	          "Get the interpolator for computing the size of polygons. ",
+	          "");
+	I_Method0(const osgParticle::Interpolator *, getAlphaInterpolator,
+	          __C5_Interpolator_P1__getAlphaInterpolator,
+	          "Get the interpolator for computing alpha values. ",
+	          "");
+	I_Method0(const osgParticle::Interpolator *, getColorInterpolator,
+	          __C5_Interpolator_P1__getColorInterpolator,
+	          "Get the interpolator for computing color values. ",
+	          "");
+	I_Method0(float, getRadius,
+	          __float__getRadius,
+	          "Get the physical radius of the particle. ",
+	          "For built-in operators to work correctly, lengths must be expressed in meters.");
+	I_Method0(float, getMass,
+	          __float__getMass,
+	          "Get the mass of the particle. ",
+	          "For built-in operators to work correctly, remember that the mass is expressed in kg.");
+	I_Method0(float, getMassInv,
+	          __float__getMassInv,
+	          "Get 1 / getMass(). ",
+	          "");
+	I_Method0(const osg::Vec3 &, getPosition,
+	          __C5_osg_Vec3_R1__getPosition,
+	          "Get the position vector. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getVelocity,
+	          __C5_osg_Vec3_R1__getVelocity,
+	          "Get the velocity vector. ",
+	          "For built-in operators to work correctly, remember that velocity components are expressed in meters per second.");
+	I_Method0(const osg::Vec3 &, getPreviousPosition,
+	          __C5_osg_Vec3_R1__getPreviousPosition,
+	          "Get the previous position (the position before last update). ",
+	          "");
+	I_Method0(const osg::Vec3 &, getAngle,
+	          __C5_osg_Vec3_R1__getAngle,
+	          "Get the angle vector. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getAngularVelocity,
+	          __C5_osg_Vec3_R1__getAngularVelocity,
+	          "Get the rotational velocity vector. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getPreviousAngle,
+	          __C5_osg_Vec3_R1__getPreviousAngle,
+	          "Get the previous angle vector. ",
+	          "");
+	I_Method0(const osg::Vec4 &, getCurrentColor,
+	          __C5_osg_Vec4_R1__getCurrentColor,
+	          "Get the current color. ",
+	          "");
+	I_Method0(float, getCurrentAlpha,
+	          __float__getCurrentAlpha,
+	          "Get the current alpha. ",
+	          "");
+	I_Method0(const float, getSTexCoord,
+	          __C5_float__getSTexCoord,
+	          "Get the s texture coordinate of the bottom left of the particle. ",
+	          "");
+	I_Method0(float, getTCoord,
+	          __float__getTCoord,
+	          "Get the t texture coordinate of the bottom left of the particle. ",
+	          "");
+	I_Method0(int, getTileS,
+	          __int__getTileS,
+	          "Get width of texture tile. ",
+	          "");
+	I_Method0(int, getTileT,
+	          __int__getTileT,
+	          "Get height of texture tile. ",
+	          "");
+	I_Method0(int, getNumTiles,
+	          __int__getNumTiles,
+	          "Get number of texture tiles. ",
+	          "");
+	I_Method0(void, kill,
+	          __void__kill,
+	          "Kill the particle on next update NOTE: after calling this function, the isAlive() method will still return true until the particle is updated again. ",
+	          "");
+	I_Method1(void, setLifeTime, IN, double, t,
+	          __void__setLifeTime__double,
+	          "Set the life time of the particle. ",
+	          "");
+	I_Method1(void, setSizeRange, IN, const osgParticle::rangef &, r,
+	          __void__setSizeRange__C5_rangef_R1,
+	          "Set the minimum and maximum values for polygon size. ",
+	          "");
+	I_Method1(void, setAlphaRange, IN, const osgParticle::rangef &, r,
+	          __void__setAlphaRange__C5_rangef_R1,
+	          "Set the minimum and maximum values for alpha. ",
+	          "");
+	I_Method1(void, setColorRange, IN, const osgParticle::rangev4 &, r,
+	          __void__setColorRange__C5_rangev4_R1,
+	          "Set the minimum and maximum values for color. ",
+	          "");
+	I_Method1(void, setSizeInterpolator, IN, osgParticle::Interpolator *, ri,
+	          __void__setSizeInterpolator__Interpolator_P1,
+	          "Set the interpolator for computing size values. ",
+	          "");
+	I_Method1(void, setAlphaInterpolator, IN, osgParticle::Interpolator *, ai,
+	          __void__setAlphaInterpolator__Interpolator_P1,
+	          "Set the interpolator for computing alpha values. ",
+	          "");
+	I_Method1(void, setColorInterpolator, IN, osgParticle::Interpolator *, ci,
+	          __void__setColorInterpolator__Interpolator_P1,
+	          "Set the interpolator for computing color values. ",
+	          "");
+	I_Method1(void, setRadius, IN, float, r,
+	          __void__setRadius__float,
+	          "Set the physical radius of the particle. ",
+	          "For built-in operators to work correctly, lengths must be expressed in meters.");
+	I_Method1(void, setMass, IN, float, m,
+	          __void__setMass__float,
+	          "Set the mass of the particle. ",
+	          "For built-in operators to work correctly, remember that the mass is expressed in kg.");
+	I_Method1(void, setPosition, IN, const osg::Vec3 &, p,
+	          __void__setPosition__C5_osg_Vec3_R1,
+	          "Set the position vector. ",
+	          "");
+	I_Method1(void, setVelocity, IN, const osg::Vec3 &, v,
+	          __void__setVelocity__C5_osg_Vec3_R1,
+	          "Set the velocity vector. ",
+	          "For built-in operators to work correctly, remember that velocity components are expressed in meters per second.");
+	I_Method1(void, addVelocity, IN, const osg::Vec3 &, dv,
+	          __void__addVelocity__C5_osg_Vec3_R1,
+	          "Add a vector to the velocity vector. ",
+	          "");
+	I_Method1(void, transformPositionVelocity, IN, const osg::Matrix &, xform,
+	          __void__transformPositionVelocity__C5_osg_Matrix_R1,
+	          "Transform position and velocity vectors by a matrix. ",
+	          "");
+	I_Method3(void, transformPositionVelocity, IN, const osg::Matrix &, xform1, IN, const osg::Matrix &, xform2, IN, float, r,
+	          __void__transformPositionVelocity__C5_osg_Matrix_R1__C5_osg_Matrix_R1__float,
+	          "Transform position and velocity vectors by a combination of two matrices. ",
+	          "");
+	I_Method1(void, setAngle, IN, const osg::Vec3 &, a,
+	          __void__setAngle__C5_osg_Vec3_R1,
+	          "Set the angle vector. ",
+	          "");
+	I_Method1(void, setAngularVelocity, IN, const osg::Vec3 &, v,
+	          __void__setAngularVelocity__C5_osg_Vec3_R1,
+	          "Set the angular velocity vector. ",
+	          "Components x, y and z are angles of rotation around the respective axis (in radians).");
+	I_Method1(void, addAngularVelocity, IN, const osg::Vec3 &, dv,
+	          __void__addAngularVelocity__C5_osg_Vec3_R1,
+	          "Add a vector to the angular velocity vector. ",
+	          "");
+	I_Method1(void, transformAngleVelocity, IN, const osg::Matrix &, xform,
+	          __void__transformAngleVelocity__C5_osg_Matrix_R1,
+	          "Transform angle and angularVelocity vectors by a matrix. ",
+	          "");
+	I_Method1(bool, update, IN, double, dt,
+	          __bool__update__double,
+	          "Update the particle (don't call this method manually). ",
+	          "This method is called automatically by ParticleSystem::update(); it updates the graphical properties of the particle for the current time, checks whether the particle is still alive, and then updates its position by computing P = P + V * dt (where P is the position and V is the velocity).");
+	I_Method0(void, beginRender,
+	          __void__beginRender,
+	          "Perform some pre-rendering tasks. Called automatically by particle systems. ",
+	          "");
+	I_MethodWithDefaults4(void, render, IN, const osg::Vec3 &, xpos, , IN, const osg::Vec3 &, px, , IN, const osg::Vec3 &, py, , IN, float, scale, 1.0f,
+	                      __void__render__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__float,
+	                      "Render the particle. Called automatically by particle systems. ",
+	                      "");
+	I_Method0(void, endRender,
+	          __void__endRender,
+	          "Perform some post-rendering tasks. Called automatically by particle systems. ",
+	          "");
+	I_Method0(float, getCurrentSize,
+	          __float__getCurrentSize,
+	          "Get the current (interpolated) polygon size. Valid only after the first call to update(). ",
+	          "");
+	I_MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, numTiles, 0,
+	                      __void__setTextureTile__int__int__int,
+	                      "Specify how the particle texture is tiled. ",
+	                      "");
+	I_Method1(void, setPreviousParticle, IN, int, previous,
+	          __void__setPreviousParticle__int,
+	          "Set the previous particle. ",
+	          "");
+	I_Method0(int, getPreviousParticle,
+	          __int__getPreviousParticle,
+	          "Get the previous particle. ",
+	          "");
+	I_Method1(void, setNextParticle, IN, int, next,
+	          __void__setNextParticle__int,
+	          "Set the next particle. ",
+	          "");
+	I_Method0(int, getNextParticle,
+	          __int__getNextParticle,
+	          "Get the const next particle. ",
+	          "");
+	I_Method1(void, setUpTexCoordsAsPartOfConnectedParticleSystem, IN, osgParticle::ParticleSystem *, ps,
+	          __void__setUpTexCoordsAsPartOfConnectedParticleSystem__ParticleSystem_P1,
+	          "Method for initializing a particles texture coords as part of a connected particle system. ",
+	          "");
+	I_SimpleProperty(double, Age, 
+	                 __double__getAge, 
+	                 0);
+	I_SimpleProperty(osgParticle::Interpolator *, AlphaInterpolator, 
+	                 0, 
+	                 __void__setAlphaInterpolator__Interpolator_P1);
+	I_SimpleProperty(const osgParticle::rangef &, AlphaRange, 
+	                 __C5_rangef_R1__getAlphaRange, 
+	                 __void__setAlphaRange__C5_rangef_R1);
+	I_SimpleProperty(const osg::Vec3 &, Angle, 
+	                 __C5_osg_Vec3_R1__getAngle, 
+	                 __void__setAngle__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, AngularVelocity, 
+	                 __C5_osg_Vec3_R1__getAngularVelocity, 
+	                 __void__setAngularVelocity__C5_osg_Vec3_R1);
+	I_SimpleProperty(osgParticle::Interpolator *, ColorInterpolator, 
+	                 0, 
+	                 __void__setColorInterpolator__Interpolator_P1);
+	I_SimpleProperty(const osgParticle::rangev4 &, ColorRange, 
+	                 __C5_rangev4_R1__getColorRange, 
+	                 __void__setColorRange__C5_rangev4_R1);
+	I_SimpleProperty(float, CurrentAlpha, 
+	                 __float__getCurrentAlpha, 
+	                 0);
+	I_SimpleProperty(const osg::Vec4 &, CurrentColor, 
+	                 __C5_osg_Vec4_R1__getCurrentColor, 
+	                 0);
+	I_SimpleProperty(float, CurrentSize, 
+	                 __float__getCurrentSize, 
+	                 0);
+	I_SimpleProperty(double, LifeTime, 
+	                 __double__getLifeTime, 
+	                 __void__setLifeTime__double);
+	I_SimpleProperty(float, Mass, 
+	                 __float__getMass, 
+	                 __void__setMass__float);
+	I_SimpleProperty(float, MassInv, 
+	                 __float__getMassInv, 
+	                 0);
+	I_SimpleProperty(int, NextParticle, 
+	                 __int__getNextParticle, 
+	                 __void__setNextParticle__int);
+	I_SimpleProperty(const osg::Vec3 &, Position, 
+	                 __C5_osg_Vec3_R1__getPosition, 
+	                 __void__setPosition__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3 &, PreviousAngle, 
+	                 __C5_osg_Vec3_R1__getPreviousAngle, 
+	                 0);
+	I_SimpleProperty(int, PreviousParticle, 
+	                 __int__getPreviousParticle, 
+	                 __void__setPreviousParticle__int);
+	I_SimpleProperty(const osg::Vec3 &, PreviousPosition, 
+	                 __C5_osg_Vec3_R1__getPreviousPosition, 
+	                 0);
+	I_SimpleProperty(float, Radius, 
+	                 __float__getRadius, 
+	                 __void__setRadius__float);
+	I_SimpleProperty(const float, STexCoord, 
+	                 __C5_float__getSTexCoord, 
+	                 0);
+	I_SimpleProperty(osgParticle::Particle::Shape, Shape, 
+	                 __Shape__getShape, 
+	                 __void__setShape__Shape);
+	I_SimpleProperty(osgParticle::Interpolator *, SizeInterpolator, 
+	                 0, 
+	                 __void__setSizeInterpolator__Interpolator_P1);
+	I_SimpleProperty(const osgParticle::rangef &, SizeRange, 
+	                 __C5_rangef_R1__getSizeRange, 
+	                 __void__setSizeRange__C5_rangef_R1);
+	I_SimpleProperty(float, TCoord, 
+	                 __float__getTCoord, 
+	                 0);
+	I_SimpleProperty(int, TileS, 
+	                 __int__getTileS, 
+	                 0);
+	I_SimpleProperty(int, TileT, 
+	                 __int__getTileT, 
+	                 0);
+	I_SimpleProperty(osgParticle::ParticleSystem *, UpTexCoordsAsPartOfConnectedParticleSystem, 
+	                 0, 
+	                 __void__setUpTexCoordsAsPartOfConnectedParticleSystem__ParticleSystem_P1);
+	I_SimpleProperty(const osg::Vec3 &, Velocity, 
+	                 __C5_osg_Vec3_R1__getVelocity, 
+	                 __void__setVelocity__C5_osg_Vec3_R1);
 END_REFLECTOR
 

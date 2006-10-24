@@ -26,22 +26,70 @@
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Scribe)
 	I_BaseType(osgFX::Effect);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgFX::Scribe &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method0(const char *, effectName);
-	I_Method0(const char *, effectDescription);
-	I_Method0(const char *, effectAuthor);
-	I_Method0(const osg::Vec4 &, getWireframeColor);
-	I_Method1(void, setWireframeColor, IN, const osg::Vec4 &, color);
-	I_Method0(float, getWireframeLineWidth);
-	I_Method1(void, setWireframeLineWidth, IN, float, w);
-	I_Property(const osg::Vec4 &, WireframeColor);
-	I_Property(float, WireframeLineWidth);
+	I_Constructor0(____Scribe,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgFX::Scribe &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Scribe__C5_Scribe_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method0(const char *, effectName,
+	          __C5_char_P1__effectName,
+	          "get the name of this Effect ",
+	          "");
+	I_Method0(const char *, effectDescription,
+	          __C5_char_P1__effectDescription,
+	          "get a brief description of this Effect ",
+	          "");
+	I_Method0(const char *, effectAuthor,
+	          __C5_char_P1__effectAuthor,
+	          "get the effect author's name ",
+	          "");
+	I_Method0(const osg::Vec4 &, getWireframeColor,
+	          __C5_osg_Vec4_R1__getWireframeColor,
+	          "get the wireframe color ",
+	          "");
+	I_Method1(void, setWireframeColor, IN, const osg::Vec4 &, color,
+	          __void__setWireframeColor__C5_osg_Vec4_R1,
+	          "set the wireframe color ",
+	          "");
+	I_Method0(float, getWireframeLineWidth,
+	          __float__getWireframeLineWidth,
+	          "get the wireframe line width ",
+	          "");
+	I_Method1(void, setWireframeLineWidth, IN, float, w,
+	          __void__setWireframeLineWidth__float,
+	          "set the wireframe line width ",
+	          "");
+	I_SimpleProperty(const osg::Vec4 &, WireframeColor, 
+	                 __C5_osg_Vec4_R1__getWireframeColor, 
+	                 __void__setWireframeColor__C5_osg_Vec4_R1);
+	I_SimpleProperty(float, WireframeLineWidth, 
+	                 __float__getWireframeLineWidth, 
+	                 __void__setWireframeLineWidth__float);
 END_REFLECTOR
 

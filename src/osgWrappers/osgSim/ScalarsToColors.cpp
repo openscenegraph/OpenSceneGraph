@@ -23,11 +23,27 @@
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ScalarsToColors)
 	I_BaseType(osg::Referenced);
-	I_Constructor2(IN, float, scalarMin, IN, float, scalarMax);
-	I_Method1(osg::Vec4, getColor, IN, float, scalar);
-	I_Method0(float, getMin);
-	I_Method0(float, getMax);
-	I_ReadOnlyProperty(float, Max);
-	I_ReadOnlyProperty(float, Min);
+	I_Constructor2(IN, float, scalarMin, IN, float, scalarMax,
+	               ____ScalarsToColors__float__float,
+	               "",
+	               "");
+	I_Method1(osg::Vec4, getColor, IN, float, scalar,
+	          __osg_Vec4__getColor__float,
+	          "Get the color for a given scalar value. ",
+	          "");
+	I_Method0(float, getMin,
+	          __float__getMin,
+	          "Get the minimum scalar value. ",
+	          "");
+	I_Method0(float, getMax,
+	          __float__getMax,
+	          "Get the maximum scalar value. ",
+	          "");
+	I_SimpleProperty(float, Max, 
+	                 __float__getMax, 
+	                 0);
+	I_SimpleProperty(float, Min, 
+	                 __float__getMin, 
+	                 0);
 END_REFLECTOR
 

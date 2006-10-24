@@ -30,41 +30,142 @@ TYPE_NAME_ALIAS(std::vector< osgSim::LightPoint >, osgSim::LightPointNode::Light
 
 BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	I_BaseType(osg::Node);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgSim::LightPointNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv);
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv);
-	I_Method0(unsigned int, getNumLightPoints);
-	I_Method1(unsigned int, addLightPoint, IN, const osgSim::LightPoint &, lp);
-	I_Method1(void, removeLightPoint, IN, unsigned int, pos);
-	I_Method1(osgSim::LightPoint &, getLightPoint, IN, unsigned int, pos);
-	I_Method1(const osgSim::LightPoint &, getLightPoint, IN, unsigned int, pos);
-	I_Method1(void, setLightPointList, IN, const osgSim::LightPointNode::LightPointList &, lpl);
-	I_Method0(osgSim::LightPointNode::LightPointList &, getLightPointList);
-	I_Method0(const osgSim::LightPointNode::LightPointList &, getLightPointList);
-	I_Method1(void, setMinPixelSize, IN, float, minPixelSize);
-	I_Method0(float, getMinPixelSize);
-	I_Method1(void, setMaxPixelSize, IN, float, maxPixelSize);
-	I_Method0(float, getMaxPixelSize);
-	I_Method1(void, setMaxVisibleDistance2, IN, float, maxVisibleDistance2);
-	I_Method0(float, getMaxVisibleDistance2);
-	I_Method1(void, setLightPointSystem, IN, osgSim::LightPointSystem *, lps);
-	I_Method0(osgSim::LightPointSystem *, getLightPointSystem);
-	I_MethodWithDefaults1(void, setPointSprite, IN, bool, enable, true);
-	I_Method0(bool, getPointSprite);
-	I_Method0(osg::BoundingSphere, computeBound);
-	I_ArrayProperty_GA(const osgSim::LightPoint &, LightPoint, LightPoints, unsigned int, unsigned int);
-	I_Property(const osgSim::LightPointNode::LightPointList &, LightPointList);
-	I_Property(osgSim::LightPointSystem *, LightPointSystem);
-	I_Property(float, MaxPixelSize);
-	I_Property(float, MaxVisibleDistance2);
-	I_Property(float, MinPixelSize);
-	I_Property(bool, PointSprite);
+	I_Constructor0(____LightPointNode,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::LightPointNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____LightPointNode__C5_LightPointNode_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method0(unsigned int, getNumLightPoints,
+	          __unsigned_int__getNumLightPoints,
+	          "",
+	          "");
+	I_Method1(unsigned int, addLightPoint, IN, const osgSim::LightPoint &, lp,
+	          __unsigned_int__addLightPoint__C5_LightPoint_R1,
+	          "",
+	          "");
+	I_Method1(void, removeLightPoint, IN, unsigned int, pos,
+	          __void__removeLightPoint__unsigned_int,
+	          "",
+	          "");
+	I_Method1(osgSim::LightPoint &, getLightPoint, IN, unsigned int, pos,
+	          __LightPoint_R1__getLightPoint__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osgSim::LightPoint &, getLightPoint, IN, unsigned int, pos,
+	          __C5_LightPoint_R1__getLightPoint__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setLightPointList, IN, const osgSim::LightPointNode::LightPointList &, lpl,
+	          __void__setLightPointList__C5_LightPointList_R1,
+	          "",
+	          "");
+	I_Method0(osgSim::LightPointNode::LightPointList &, getLightPointList,
+	          __LightPointList_R1__getLightPointList,
+	          "",
+	          "");
+	I_Method0(const osgSim::LightPointNode::LightPointList &, getLightPointList,
+	          __C5_LightPointList_R1__getLightPointList,
+	          "",
+	          "");
+	I_Method1(void, setMinPixelSize, IN, float, minPixelSize,
+	          __void__setMinPixelSize__float,
+	          "",
+	          "");
+	I_Method0(float, getMinPixelSize,
+	          __float__getMinPixelSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxPixelSize, IN, float, maxPixelSize,
+	          __void__setMaxPixelSize__float,
+	          "",
+	          "");
+	I_Method0(float, getMaxPixelSize,
+	          __float__getMaxPixelSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxVisibleDistance2, IN, float, maxVisibleDistance2,
+	          __void__setMaxVisibleDistance2__float,
+	          "",
+	          "");
+	I_Method0(float, getMaxVisibleDistance2,
+	          __float__getMaxVisibleDistance2,
+	          "",
+	          "");
+	I_Method1(void, setLightPointSystem, IN, osgSim::LightPointSystem *, lps,
+	          __void__setLightPointSystem__osgSim_LightPointSystem_P1,
+	          "",
+	          "");
+	I_Method0(osgSim::LightPointSystem *, getLightPointSystem,
+	          __osgSim_LightPointSystem_P1__getLightPointSystem,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setPointSprite, IN, bool, enable, true,
+	                      __void__setPointSprite__bool,
+	                      "",
+	                      "");
+	I_Method0(bool, getPointSprite,
+	          __bool__getPointSprite,
+	          "",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          __osg_BoundingSphere__computeBound,
+	          "Compute the bounding sphere around Node's geometry or children. ",
+	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_ArrayProperty(const osgSim::LightPoint &, LightPoint, 
+	                __C5_LightPoint_R1__getLightPoint__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumLightPoints, 
+	                __unsigned_int__addLightPoint__C5_LightPoint_R1, 
+	                0, 
+	                __void__removeLightPoint__unsigned_int);
+	I_SimpleProperty(const osgSim::LightPointNode::LightPointList &, LightPointList, 
+	                 __C5_LightPointList_R1__getLightPointList, 
+	                 __void__setLightPointList__C5_LightPointList_R1);
+	I_SimpleProperty(osgSim::LightPointSystem *, LightPointSystem, 
+	                 __osgSim_LightPointSystem_P1__getLightPointSystem, 
+	                 __void__setLightPointSystem__osgSim_LightPointSystem_P1);
+	I_SimpleProperty(float, MaxPixelSize, 
+	                 __float__getMaxPixelSize, 
+	                 __void__setMaxPixelSize__float);
+	I_SimpleProperty(float, MaxVisibleDistance2, 
+	                 __float__getMaxVisibleDistance2, 
+	                 __void__setMaxVisibleDistance2__float);
+	I_SimpleProperty(float, MinPixelSize, 
+	                 __float__getMinPixelSize, 
+	                 __void__setMinPixelSize__float);
+	I_SimpleProperty(bool, PointSprite, 
+	                 __bool__getPointSprite, 
+	                 __void__setPointSprite__bool);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osgSim::LightPoint >);

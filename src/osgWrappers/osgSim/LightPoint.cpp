@@ -30,10 +30,21 @@ BEGIN_ENUM_REFLECTOR(osgSim::LightPoint::BlendingMode)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::LightPoint)
-	I_Constructor0();
-	I_Constructor2(IN, const osg::Vec3 &, position, IN, const osg::Vec4 &, color);
-	I_ConstructorWithDefaults8(IN, bool, on, , IN, const osg::Vec3 &, position, , IN, const osg::Vec4 &, color, , IN, float, intensity, 1.0f, IN, float, radius, 1.0f, IN, osgSim::Sector *, sector, 0, IN, osgSim::BlinkSequence *, blinkSequence, 0, IN, osgSim::LightPoint::BlendingMode, blendingMode, osgSim::LightPoint::BLENDED);
-	I_Constructor1(IN, const osgSim::LightPoint &, lp);
+	I_Constructor0(____LightPoint,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Vec3 &, position, IN, const osg::Vec4 &, color,
+	               ____LightPoint__C5_osg_Vec3_R1__C5_osg_Vec4_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults8(IN, bool, on, , IN, const osg::Vec3 &, position, , IN, const osg::Vec4 &, color, , IN, float, intensity, 1.0f, IN, float, radius, 1.0f, IN, osgSim::Sector *, sector, 0, IN, osgSim::BlinkSequence *, blinkSequence, 0, IN, osgSim::LightPoint::BlendingMode, blendingMode, osgSim::LightPoint::BLENDED,
+	                           ____LightPoint__bool__C5_osg_Vec3_R1__C5_osg_Vec4_R1__float__float__Sector_P1__BlinkSequence_P1__BlendingMode,
+	                           "",
+	                           "");
+	I_Constructor1(IN, const osgSim::LightPoint &, lp,
+	               ____LightPoint__C5_LightPoint_R1,
+	               "",
+	               "");
 	I_PublicMemberProperty(bool, _on);
 	I_PublicMemberProperty(osg::Vec3, _position);
 	I_PublicMemberProperty(osg::Vec4, _color);

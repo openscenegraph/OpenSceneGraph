@@ -32,43 +32,151 @@ BEGIN_ENUM_REFLECTOR(osgDB::Field::FieldType)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::Field)
-	I_Constructor0();
-	I_Constructor1(IN, const osgDB::Field &, field);
-	I_Method0(void, reset);
-	I_Method1(void, addChar, IN, char, c);
-	I_Method0(int, getNoCharacters);
-	I_MethodWithDefaults1(void, setWithinQuotes, IN, bool, withinQuotes, true);
-	I_Method0(bool, getWithinQuotes);
-	I_Method1(void, setNoNestedBrackets, IN, int, no);
-	I_Method0(int, getNoNestedBrackets);
-	I_Method0(osgDB::Field::FieldType, getFieldType);
-	I_Method0(bool, isValid);
-	I_Method0(bool, isOpenBracket);
-	I_Method0(bool, isCloseBracket);
-	I_Method0(bool, isWord);
-	I_Method1(bool, matchWord, IN, const char *, str);
-	I_Method2(bool, matchWord, IN, const char *, str, IN, int, noCharacters);
-	I_Method0(bool, isString);
-	I_Method1(bool, matchString, IN, const char *, str);
-	I_Method2(bool, matchString, IN, const char *, str, IN, int, noCharacters);
-	I_Method0(bool, isQuotedString);
-	I_Method0(const char *, getStr);
-	I_Method0(char *, takeStr);
-	I_Method0(bool, isInt);
-	I_Method1(bool, matchInt, IN, int, i);
-	I_Method1(bool, getInt, IN, int &, i);
-	I_Method0(bool, isUInt);
-	I_Method1(bool, matchUInt, IN, unsigned int, i);
-	I_Method1(bool, getUInt, IN, unsigned int &, i);
-	I_Method0(bool, isFloat);
-	I_Method1(bool, matchFloat, IN, float, f);
-	I_Method1(bool, getFloat, IN, float &, f);
-	I_Method1(bool, getFloat, IN, double &, f);
-	I_StaticMethodWithDefaults2(osgDB::Field::FieldType, calculateFieldType, IN, const char *, str, , IN, bool, withinQuotes, false);
-	I_ReadOnlyProperty(osgDB::Field::FieldType, FieldType);
-	I_ReadOnlyProperty(int, NoCharacters);
-	I_Property(int, NoNestedBrackets);
-	I_ReadOnlyProperty(const char *, Str);
-	I_Property(bool, WithinQuotes);
+	I_Constructor0(____Field,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgDB::Field &, field,
+	               ____Field__C5_Field_R1,
+	               "",
+	               "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method1(void, addChar, IN, char, c,
+	          __void__addChar__char,
+	          "",
+	          "");
+	I_Method0(int, getNoCharacters,
+	          __int__getNoCharacters,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setWithinQuotes, IN, bool, withinQuotes, true,
+	                      __void__setWithinQuotes__bool,
+	                      "",
+	                      "");
+	I_Method0(bool, getWithinQuotes,
+	          __bool__getWithinQuotes,
+	          "",
+	          "");
+	I_Method1(void, setNoNestedBrackets, IN, int, no,
+	          __void__setNoNestedBrackets__int,
+	          "",
+	          "");
+	I_Method0(int, getNoNestedBrackets,
+	          __int__getNoNestedBrackets,
+	          "",
+	          "");
+	I_Method0(osgDB::Field::FieldType, getFieldType,
+	          __FieldType__getFieldType,
+	          "",
+	          "");
+	I_Method0(bool, isValid,
+	          __bool__isValid,
+	          "",
+	          "");
+	I_Method0(bool, isOpenBracket,
+	          __bool__isOpenBracket,
+	          "",
+	          "");
+	I_Method0(bool, isCloseBracket,
+	          __bool__isCloseBracket,
+	          "",
+	          "");
+	I_Method0(bool, isWord,
+	          __bool__isWord,
+	          "",
+	          "");
+	I_Method1(bool, matchWord, IN, const char *, str,
+	          __bool__matchWord__C5_char_P1,
+	          "",
+	          "");
+	I_Method2(bool, matchWord, IN, const char *, str, IN, int, noCharacters,
+	          __bool__matchWord__C5_char_P1__int,
+	          "",
+	          "");
+	I_Method0(bool, isString,
+	          __bool__isString,
+	          "",
+	          "");
+	I_Method1(bool, matchString, IN, const char *, str,
+	          __bool__matchString__C5_char_P1,
+	          "",
+	          "");
+	I_Method2(bool, matchString, IN, const char *, str, IN, int, noCharacters,
+	          __bool__matchString__C5_char_P1__int,
+	          "",
+	          "");
+	I_Method0(bool, isQuotedString,
+	          __bool__isQuotedString,
+	          "",
+	          "");
+	I_Method0(const char *, getStr,
+	          __C5_char_P1__getStr,
+	          "",
+	          "");
+	I_Method0(char *, takeStr,
+	          __char_P1__takeStr,
+	          "",
+	          "");
+	I_Method0(bool, isInt,
+	          __bool__isInt,
+	          "",
+	          "");
+	I_Method1(bool, matchInt, IN, int, i,
+	          __bool__matchInt__int,
+	          "",
+	          "");
+	I_Method1(bool, getInt, IN, int &, i,
+	          __bool__getInt__int_R1,
+	          "",
+	          "");
+	I_Method0(bool, isUInt,
+	          __bool__isUInt,
+	          "",
+	          "");
+	I_Method1(bool, matchUInt, IN, unsigned int, i,
+	          __bool__matchUInt__unsigned_int,
+	          "",
+	          "");
+	I_Method1(bool, getUInt, IN, unsigned int &, i,
+	          __bool__getUInt__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method0(bool, isFloat,
+	          __bool__isFloat,
+	          "",
+	          "");
+	I_Method1(bool, matchFloat, IN, float, f,
+	          __bool__matchFloat__float,
+	          "",
+	          "");
+	I_Method1(bool, getFloat, IN, float &, f,
+	          __bool__getFloat__float_R1,
+	          "",
+	          "");
+	I_Method1(bool, getFloat, IN, double &, f,
+	          __bool__getFloat__double_R1,
+	          "",
+	          "");
+	I_StaticMethodWithDefaults2(osgDB::Field::FieldType, calculateFieldType, IN, const char *, str, , IN, bool, withinQuotes, false,
+	                            __FieldType__calculateFieldType__C5_char_P1__bool_S,
+	                            "",
+	                            "");
+	I_SimpleProperty(osgDB::Field::FieldType, FieldType, 
+	                 __FieldType__getFieldType, 
+	                 0);
+	I_SimpleProperty(int, NoCharacters, 
+	                 __int__getNoCharacters, 
+	                 0);
+	I_SimpleProperty(int, NoNestedBrackets, 
+	                 __int__getNoNestedBrackets, 
+	                 __void__setNoNestedBrackets__int);
+	I_SimpleProperty(const char *, Str, 
+	                 __C5_char_P1__getStr, 
+	                 0);
+	I_SimpleProperty(bool, WithinQuotes, 
+	                 __bool__getWithinQuotes, 
+	                 __void__setWithinQuotes__bool);
 END_REFLECTOR
 

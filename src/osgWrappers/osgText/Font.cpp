@@ -30,115 +30,375 @@
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_BaseType(osg::Object);
-	I_ConstructorWithDefaults1(IN, osgText::Font::FontImplementation *, implementation, 0);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, className);
-	I_Method0(const char *, libraryName);
-	I_Method0(std::string, getFileName);
-	I_Method1(void, setTexEnv, IN, osg::TexEnv *, texenv);
-	I_Method0(osg::TexEnv *, getTexEnv);
-	I_Method0(const osg::TexEnv *, getTexEnv);
-	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset);
-	I_Method0(osg::StateSet *, getStateSet);
-	I_Method0(const osg::StateSet *, getStateSet);
-	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height);
-	I_Method0(unsigned int, getFontWidth);
-	I_Method0(unsigned int, getFontHeight);
-	I_Method3(osg::Vec2, getKerning, IN, unsigned int, leftcharcode, IN, unsigned int, rightcharcode, IN, osgText::KerningType, kerningType);
-	I_Method1(osgText::Font::Glyph *, getGlyph, IN, unsigned int, charcode);
-	I_Method0(bool, hasVertical);
-	I_Method1(void, setGlyphImageMargin, IN, unsigned int, margin);
-	I_Method0(unsigned int, getGlyphImageMargin);
-	I_Method2(void, setTextureSizeHint, IN, unsigned int, width, IN, unsigned int, height);
-	I_Method0(unsigned int, getTextureWidthHint);
-	I_Method0(unsigned int, getTextureHeightHint);
-	I_Method1(void, setMinFilterHint, IN, osg::Texture::FilterMode, mode);
-	I_Method0(osg::Texture::FilterMode, getMinFilterHint);
-	I_Method1(void, setMagFilterHint, IN, osg::Texture::FilterMode, mode);
-	I_Method0(osg::Texture::FilterMode, getMagFilterHint);
-	I_Method1(void, setImplementation, IN, osgText::Font::FontImplementation *, implementation);
-	I_Method0(osgText::Font::FontImplementation *, getImplementation);
-	I_Method0(const osgText::Font::FontImplementation *, getImplementation);
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0);
-	I_ReadOnlyProperty(std::string, FileName);
-	I_ReadOnlyProperty(unsigned int, FontHeight);
-	I_ReadOnlyProperty(unsigned int, FontWidth);
-	I_Property(unsigned int, GlyphImageMargin);
-	I_Property(osgText::Font::FontImplementation *, Implementation);
-	I_Property(osg::Texture::FilterMode, MagFilterHint);
-	I_Property(osg::Texture::FilterMode, MinFilterHint);
-	I_Property(osg::StateSet *, StateSet);
-	I_Property(osg::TexEnv *, TexEnv);
-	I_ReadOnlyProperty(unsigned int, TextureHeightHint);
-	I_ReadOnlyProperty(unsigned int, TextureWidthHint);
+	I_ConstructorWithDefaults1(IN, osgText::Font::FontImplementation *, implementation, 0,
+	                           ____Font__FontImplementation_P1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(std::string, getFileName,
+	          __std_string__getFileName,
+	          "",
+	          "");
+	I_Method1(void, setTexEnv, IN, osg::TexEnv *, texenv,
+	          __void__setTexEnv__osg_TexEnv_P1,
+	          "",
+	          "");
+	I_Method0(osg::TexEnv *, getTexEnv,
+	          __osg_TexEnv_P1__getTexEnv,
+	          "",
+	          "");
+	I_Method0(const osg::TexEnv *, getTexEnv,
+	          __C5_osg_TexEnv_P1__getTexEnv,
+	          "",
+	          "");
+	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset,
+	          __void__setStateSet__osg_StateSet_P1,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getStateSet,
+	          __osg_StateSet_P1__getStateSet,
+	          "",
+	          "");
+	I_Method0(const osg::StateSet *, getStateSet,
+	          __C5_osg_StateSet_P1__getStateSet,
+	          "",
+	          "");
+	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height,
+	          __void__setFontResolution__unsigned_int__unsigned_int,
+	          "Set the pixel width and height hint. ",
+	          "");
+	I_Method0(unsigned int, getFontWidth,
+	          __unsigned_int__getFontWidth,
+	          "",
+	          "");
+	I_Method0(unsigned int, getFontHeight,
+	          __unsigned_int__getFontHeight,
+	          "",
+	          "");
+	I_Method3(osg::Vec2, getKerning, IN, unsigned int, leftcharcode, IN, unsigned int, rightcharcode, IN, osgText::KerningType, kerningType,
+	          __osg_Vec2__getKerning__unsigned_int__unsigned_int__KerningType,
+	          "Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint. ",
+	          "");
+	I_Method1(osgText::Font::Glyph *, getGlyph, IN, unsigned int, charcode,
+	          __Glyph_P1__getGlyph__unsigned_int,
+	          "Get a Glyph for specified charcode, and the font size nearest to the current font size hint. ",
+	          "");
+	I_Method0(bool, hasVertical,
+	          __bool__hasVertical,
+	          "Return true if this font provides vertical alignments and spacing or glyphs. ",
+	          "");
+	I_Method1(void, setGlyphImageMargin, IN, unsigned int, margin,
+	          __void__setGlyphImageMargin__unsigned_int,
+	          "Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other. ",
+	          "Default margin is 2 texels. ");
+	I_Method0(unsigned int, getGlyphImageMargin,
+	          __unsigned_int__getGlyphImageMargin,
+	          "",
+	          "");
+	I_Method2(void, setTextureSizeHint, IN, unsigned int, width, IN, unsigned int, height,
+	          __void__setTextureSizeHint__unsigned_int__unsigned_int,
+	          "Set the size of texture to create to store the glyph images when rendering. ",
+	          "Note, this doesn't affect already created Texture Glhph's. ");
+	I_Method0(unsigned int, getTextureWidthHint,
+	          __unsigned_int__getTextureWidthHint,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTextureHeightHint,
+	          __unsigned_int__getTextureHeightHint,
+	          "",
+	          "");
+	I_Method1(void, setMinFilterHint, IN, osg::Texture::FilterMode, mode,
+	          __void__setMinFilterHint__osg_Texture_FilterMode,
+	          "Set the minification texture filter to use when creating the texture to store the glyph images when rendering. ",
+	          "Note, this doesn't affect already created Texture Glhph's. ");
+	I_Method0(osg::Texture::FilterMode, getMinFilterHint,
+	          __osg_Texture_FilterMode__getMinFilterHint,
+	          "",
+	          "");
+	I_Method1(void, setMagFilterHint, IN, osg::Texture::FilterMode, mode,
+	          __void__setMagFilterHint__osg_Texture_FilterMode,
+	          "Set the magnification texture filter to use when creating the texture to store the glyph images when rendering. ",
+	          "Note, this doesn't affect already created Texture Glhph's. ");
+	I_Method0(osg::Texture::FilterMode, getMagFilterHint,
+	          __osg_Texture_FilterMode__getMagFilterHint,
+	          "",
+	          "");
+	I_Method1(void, setImplementation, IN, osgText::Font::FontImplementation *, implementation,
+	          __void__setImplementation__FontImplementation_P1,
+	          "",
+	          "");
+	I_Method0(osgText::Font::FontImplementation *, getImplementation,
+	          __FontImplementation_P1__getImplementation,
+	          "",
+	          "");
+	I_Method0(const osgText::Font::FontImplementation *, getImplementation,
+	          __C5_FontImplementation_P1__getImplementation,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_SimpleProperty(std::string, FileName, 
+	                 __std_string__getFileName, 
+	                 0);
+	I_SimpleProperty(unsigned int, FontHeight, 
+	                 __unsigned_int__getFontHeight, 
+	                 0);
+	I_SimpleProperty(unsigned int, FontWidth, 
+	                 __unsigned_int__getFontWidth, 
+	                 0);
+	I_SimpleProperty(unsigned int, GlyphImageMargin, 
+	                 __unsigned_int__getGlyphImageMargin, 
+	                 __void__setGlyphImageMargin__unsigned_int);
+	I_SimpleProperty(osgText::Font::FontImplementation *, Implementation, 
+	                 __FontImplementation_P1__getImplementation, 
+	                 __void__setImplementation__FontImplementation_P1);
+	I_SimpleProperty(osg::Texture::FilterMode, MagFilterHint, 
+	                 __osg_Texture_FilterMode__getMagFilterHint, 
+	                 __void__setMagFilterHint__osg_Texture_FilterMode);
+	I_SimpleProperty(osg::Texture::FilterMode, MinFilterHint, 
+	                 __osg_Texture_FilterMode__getMinFilterHint, 
+	                 __void__setMinFilterHint__osg_Texture_FilterMode);
+	I_SimpleProperty(osg::StateSet *, StateSet, 
+	                 __osg_StateSet_P1__getStateSet, 
+	                 __void__setStateSet__osg_StateSet_P1);
+	I_SimpleProperty(osg::TexEnv *, TexEnv, 
+	                 __osg_TexEnv_P1__getTexEnv, 
+	                 __void__setTexEnv__osg_TexEnv_P1);
+	I_SimpleProperty(unsigned int, TextureHeightHint, 
+	                 __unsigned_int__getTextureHeightHint, 
+	                 0);
+	I_SimpleProperty(unsigned int, TextureWidthHint, 
+	                 __unsigned_int__getTextureWidthHint, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::FontImplementation)
 	I_BaseType(osg::Referenced);
-	I_Constructor0();
-	I_Method0(std::string, getFileName);
-	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height);
-	I_Method1(osgText::Font::Glyph *, getGlyph, IN, unsigned int, charcode);
-	I_Method3(osg::Vec2, getKerning, IN, unsigned int, leftcharcode, IN, unsigned int, rightcharcode, IN, osgText::KerningType, kerningType);
-	I_Method0(bool, hasVertical);
-	I_Method1(void, setFontWidth, IN, unsigned int, width);
-	I_Method1(void, setFontHeight, IN, unsigned int, height);
-	I_Method4(void, addGlyph, IN, unsigned int, width, IN, unsigned int, height, IN, unsigned int, charcode, IN, osgText::Font::Glyph *, glyph);
-	I_ReadOnlyProperty(std::string, FileName);
-	I_WriteOnlyProperty(unsigned int, FontHeight);
-	I_WriteOnlyProperty(unsigned int, FontWidth);
+	I_Constructor0(____FontImplementation,
+	               "",
+	               "");
+	I_Method0(std::string, getFileName,
+	          __std_string__getFileName,
+	          "",
+	          "");
+	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height,
+	          __void__setFontResolution__unsigned_int__unsigned_int,
+	          "Set the pixel width and height hint. ",
+	          "");
+	I_Method1(osgText::Font::Glyph *, getGlyph, IN, unsigned int, charcode,
+	          __Glyph_P1__getGlyph__unsigned_int,
+	          "Get a Glyph for specified charcode, and the font size nearest to the current font size hint. ",
+	          "");
+	I_Method3(osg::Vec2, getKerning, IN, unsigned int, leftcharcode, IN, unsigned int, rightcharcode, IN, osgText::KerningType, kerningType,
+	          __osg_Vec2__getKerning__unsigned_int__unsigned_int__KerningType,
+	          "Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint. ",
+	          "");
+	I_Method0(bool, hasVertical,
+	          __bool__hasVertical,
+	          "Return true if this font provides vertical alignments and spacing or glyphs. ",
+	          "");
+	I_Method1(void, setFontWidth, IN, unsigned int, width,
+	          __void__setFontWidth__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setFontHeight, IN, unsigned int, height,
+	          __void__setFontHeight__unsigned_int,
+	          "",
+	          "");
+	I_Method4(void, addGlyph, IN, unsigned int, width, IN, unsigned int, height, IN, unsigned int, charcode, IN, osgText::Font::Glyph *, glyph,
+	          __void__addGlyph__unsigned_int__unsigned_int__unsigned_int__Glyph_P1,
+	          "",
+	          "");
+	I_SimpleProperty(std::string, FileName, 
+	                 __std_string__getFileName, 
+	                 0);
+	I_SimpleProperty(unsigned int, FontHeight, 
+	                 0, 
+	                 __void__setFontHeight__unsigned_int);
+	I_SimpleProperty(unsigned int, FontWidth, 
+	                 0, 
+	                 __void__setFontWidth__unsigned_int);
 	I_PublicMemberProperty(osgText::Font *, _facade);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	I_BaseType(osg::Image);
-	I_Constructor0();
-	I_Method0(unsigned int, getGlyphCode);
-	I_Method1(void, setHorizontalBearing, IN, const osg::Vec2 &, bearing);
-	I_Method0(const osg::Vec2 &, getHorizontalBearing);
-	I_Method1(void, setHorizontalAdvance, IN, float, advance);
-	I_Method0(float, getHorizontalAdvance);
-	I_Method1(void, setVerticalBearing, IN, const osg::Vec2 &, bearing);
-	I_Method0(const osg::Vec2 &, getVerticalBearing);
-	I_Method1(void, setVerticalAdvance, IN, float, advance);
-	I_Method0(float, getVerticalAdvance);
-	I_Method1(void, setTexture, IN, osgText::Font::GlyphTexture *, texture);
-	I_Method0(osgText::Font::GlyphTexture *, getTexture);
-	I_Method0(const osgText::Font::GlyphTexture *, getTexture);
-	I_Method2(void, setTexturePosition, IN, int, posX, IN, int, posY);
-	I_Method0(int, getTexturePositionX);
-	I_Method0(int, getTexturePositionY);
-	I_Method1(void, setMinTexCoord, IN, const osg::Vec2 &, coord);
-	I_Method0(const osg::Vec2 &, getMinTexCoord);
-	I_Method1(void, setMaxTexCoord, IN, const osg::Vec2 &, coord);
-	I_Method0(const osg::Vec2 &, getMaxTexCoord);
-	I_Method0(void, subload);
-	I_Method1(void, draw, IN, osg::State &, state);
-	I_ReadOnlyProperty(unsigned int, GlyphCode);
-	I_Property(float, HorizontalAdvance);
-	I_Property(const osg::Vec2 &, HorizontalBearing);
-	I_Property(const osg::Vec2 &, MaxTexCoord);
-	I_Property(const osg::Vec2 &, MinTexCoord);
-	I_Property(osgText::Font::GlyphTexture *, Texture);
-	I_ReadOnlyProperty(int, TexturePositionX);
-	I_ReadOnlyProperty(int, TexturePositionY);
-	I_Property(float, VerticalAdvance);
-	I_Property(const osg::Vec2 &, VerticalBearing);
+	I_Constructor0(____Glyph,
+	               "",
+	               "");
+	I_Method0(unsigned int, getGlyphCode,
+	          __unsigned_int__getGlyphCode,
+	          "",
+	          "");
+	I_Method1(void, setHorizontalBearing, IN, const osg::Vec2 &, bearing,
+	          __void__setHorizontalBearing__C5_osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec2 &, getHorizontalBearing,
+	          __C5_osg_Vec2_R1__getHorizontalBearing,
+	          "",
+	          "");
+	I_Method1(void, setHorizontalAdvance, IN, float, advance,
+	          __void__setHorizontalAdvance__float,
+	          "",
+	          "");
+	I_Method0(float, getHorizontalAdvance,
+	          __float__getHorizontalAdvance,
+	          "",
+	          "");
+	I_Method1(void, setVerticalBearing, IN, const osg::Vec2 &, bearing,
+	          __void__setVerticalBearing__C5_osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec2 &, getVerticalBearing,
+	          __C5_osg_Vec2_R1__getVerticalBearing,
+	          "",
+	          "");
+	I_Method1(void, setVerticalAdvance, IN, float, advance,
+	          __void__setVerticalAdvance__float,
+	          "",
+	          "");
+	I_Method0(float, getVerticalAdvance,
+	          __float__getVerticalAdvance,
+	          "",
+	          "");
+	I_Method1(void, setTexture, IN, osgText::Font::GlyphTexture *, texture,
+	          __void__setTexture__GlyphTexture_P1,
+	          "",
+	          "");
+	I_Method0(osgText::Font::GlyphTexture *, getTexture,
+	          __GlyphTexture_P1__getTexture,
+	          "",
+	          "");
+	I_Method0(const osgText::Font::GlyphTexture *, getTexture,
+	          __C5_GlyphTexture_P1__getTexture,
+	          "",
+	          "");
+	I_Method2(void, setTexturePosition, IN, int, posX, IN, int, posY,
+	          __void__setTexturePosition__int__int,
+	          "",
+	          "");
+	I_Method0(int, getTexturePositionX,
+	          __int__getTexturePositionX,
+	          "",
+	          "");
+	I_Method0(int, getTexturePositionY,
+	          __int__getTexturePositionY,
+	          "",
+	          "");
+	I_Method1(void, setMinTexCoord, IN, const osg::Vec2 &, coord,
+	          __void__setMinTexCoord__C5_osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec2 &, getMinTexCoord,
+	          __C5_osg_Vec2_R1__getMinTexCoord,
+	          "",
+	          "");
+	I_Method1(void, setMaxTexCoord, IN, const osg::Vec2 &, coord,
+	          __void__setMaxTexCoord__C5_osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec2 &, getMaxTexCoord,
+	          __C5_osg_Vec2_R1__getMaxTexCoord,
+	          "",
+	          "");
+	I_Method0(void, subload,
+	          __void__subload,
+	          "",
+	          "");
+	I_Method1(void, draw, IN, osg::State &, state,
+	          __void__draw__osg_State_R1,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, GlyphCode, 
+	                 __unsigned_int__getGlyphCode, 
+	                 0);
+	I_SimpleProperty(float, HorizontalAdvance, 
+	                 __float__getHorizontalAdvance, 
+	                 __void__setHorizontalAdvance__float);
+	I_SimpleProperty(const osg::Vec2 &, HorizontalBearing, 
+	                 __C5_osg_Vec2_R1__getHorizontalBearing, 
+	                 __void__setHorizontalBearing__C5_osg_Vec2_R1);
+	I_SimpleProperty(const osg::Vec2 &, MaxTexCoord, 
+	                 __C5_osg_Vec2_R1__getMaxTexCoord, 
+	                 __void__setMaxTexCoord__C5_osg_Vec2_R1);
+	I_SimpleProperty(const osg::Vec2 &, MinTexCoord, 
+	                 __C5_osg_Vec2_R1__getMinTexCoord, 
+	                 __void__setMinTexCoord__C5_osg_Vec2_R1);
+	I_SimpleProperty(osgText::Font::GlyphTexture *, Texture, 
+	                 __GlyphTexture_P1__getTexture, 
+	                 __void__setTexture__GlyphTexture_P1);
+	I_SimpleProperty(int, TexturePositionX, 
+	                 __int__getTexturePositionX, 
+	                 0);
+	I_SimpleProperty(int, TexturePositionY, 
+	                 __int__getTexturePositionY, 
+	                 0);
+	I_SimpleProperty(float, VerticalAdvance, 
+	                 __float__getVerticalAdvance, 
+	                 __void__setVerticalAdvance__float);
+	I_SimpleProperty(const osg::Vec2 &, VerticalBearing, 
+	                 __C5_osg_Vec2_R1__getVerticalBearing, 
+	                 __void__setVerticalBearing__C5_osg_Vec2_R1);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	I_BaseType(osg::Texture2D);
-	I_Constructor0();
-	I_Method0(const char *, className);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs);
-	I_Method1(void, setGlyphImageMargin, IN, unsigned int, margin);
-	I_Method0(unsigned int, getGlyphImageMargin);
-	I_Method3(bool, getSpaceForGlyph, IN, osgText::Font::Glyph *, glyph, IN, int &, posX, IN, int &, posY);
-	I_Method3(void, addGlyph, IN, osgText::Font::Glyph *, glyph, IN, int, posX, IN, int, posY);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(unsigned int, GlyphImageMargin);
+	I_Constructor0(____GlyphTexture,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs,
+	          __int__compare__C5_osg_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(void, setGlyphImageMargin, IN, unsigned int, margin,
+	          __void__setGlyphImageMargin__unsigned_int,
+	          "Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other. ",
+	          "");
+	I_Method0(unsigned int, getGlyphImageMargin,
+	          __unsigned_int__getGlyphImageMargin,
+	          "",
+	          "");
+	I_Method3(bool, getSpaceForGlyph, IN, osgText::Font::Glyph *, glyph, IN, int &, posX, IN, int &, posY,
+	          __bool__getSpaceForGlyph__Glyph_P1__int_R1__int_R1,
+	          "",
+	          "");
+	I_Method3(void, addGlyph, IN, osgText::Font::Glyph *, glyph, IN, int, posX, IN, int, posY,
+	          __void__addGlyph__Glyph_P1__int__int,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__osg_State_R1,
+	          "Bind the texture object. ",
+	          "If the texture object hasn't already been compiled, create the texture mipmap levels. ");
+	I_SimpleProperty(unsigned int, GlyphImageMargin, 
+	                 __unsigned_int__getGlyphImageMargin, 
+	                 __void__setGlyphImageMargin__unsigned_int);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::KerningType)

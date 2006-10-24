@@ -25,14 +25,39 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
 	I_BaseType(osgParticle::Placer);
-	I_Constructor0();
-	I_ConstructorWithDefaults2(IN, const osgParticle::CenteredPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const osg::Vec3 &, getCenter);
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, v);
-	I_Method3(void, setCenter, IN, float, x, IN, float, y, IN, float, z);
-	I_Property(const osg::Vec3 &, Center);
+	I_Constructor0(____CenteredPlacer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::CenteredPlacer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____CenteredPlacer__C5_CenteredPlacer_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getCenter,
+	          __C5_osg_Vec3_R1__getCenter,
+	          "Get the center point. ",
+	          "");
+	I_Method1(void, setCenter, IN, const osg::Vec3 &, v,
+	          __void__setCenter__C5_osg_Vec3_R1,
+	          "Set the center point. ",
+	          "");
+	I_Method3(void, setCenter, IN, float, x, IN, float, y, IN, float, z,
+	          __void__setCenter__float__float__float,
+	          "Set the center point. ",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Center, 
+	                 __C5_osg_Vec3_R1__getCenter, 
+	                 __void__setCenter__C5_osg_Vec3_R1);
 END_REFLECTOR
 

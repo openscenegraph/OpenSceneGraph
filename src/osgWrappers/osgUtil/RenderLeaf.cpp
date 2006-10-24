@@ -27,10 +27,22 @@
 	
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f);
-	I_MethodWithDefaults4(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f);
-	I_Method0(void, reset);
-	I_Method2(void, render, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *, previous);
+	I_ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
+	                           ____RenderLeaf__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
+	                           "",
+	                           "");
+	I_MethodWithDefaults4(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
+	                      __void__set__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
+	                      "",
+	                      "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method2(void, render, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *, previous,
+	          __void__render__osg_RenderInfo_R1__RenderLeaf_P1,
+	          "",
+	          "");
 	I_PublicMemberProperty(osgUtil::StateGraph *, _parent);
 	I_PublicMemberProperty(osg::Drawable *, _drawable);
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _projection);

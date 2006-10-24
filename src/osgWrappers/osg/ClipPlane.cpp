@@ -28,30 +28,100 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::ClipPlane)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0();
-	I_Constructor2(IN, unsigned int, no, IN, const osg::Vec4d &, plane);
-	I_Constructor2(IN, unsigned int, no, IN, const osg::Plane &, plane);
-	I_Constructor5(IN, unsigned int, no, IN, double, a, IN, double, b, IN, double, c, IN, double, d);
-	I_ConstructorWithDefaults2(IN, const osg::ClipPlane &, cp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY);
-	I_Method0(osg::Object *, cloneType);
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop);
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj);
-	I_Method0(const char *, libraryName);
-	I_Method0(const char *, className);
-	I_Method0(osg::StateAttribute::Type, getType);
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa);
-	I_Method0(unsigned int, getMember);
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage);
-	I_Method1(void, setClipPlane, IN, const osg::Plane &, plane);
-	I_Method4(void, setClipPlane, IN, double, a, IN, double, b, IN, double, c, IN, double, d);
-	I_Method1(void, setClipPlane, IN, const osg::Vec4d &, plane);
-	I_Method0(const osg::Vec4d &, getClipPlane);
-	I_Method1(void, setClipPlaneNum, IN, unsigned int, num);
-	I_Method0(unsigned int, getClipPlaneNum);
-	I_Method1(void, apply, IN, osg::State &, state);
-	I_Property(const osg::Vec4d &, ClipPlane);
-	I_Property(unsigned int, ClipPlaneNum);
-	I_ReadOnlyProperty(unsigned int, Member);
-	I_ReadOnlyProperty(osg::StateAttribute::Type, Type);
+	I_Constructor0(____ClipPlane,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, const osg::Vec4d &, plane,
+	               ____ClipPlane__unsigned_int__C5_Vec4d_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, unsigned int, no, IN, const osg::Plane &, plane,
+	               ____ClipPlane__unsigned_int__C5_Plane_R1,
+	               "",
+	               "");
+	I_Constructor5(IN, unsigned int, no, IN, double, a, IN, double, b, IN, double, c, IN, double, d,
+	               ____ClipPlane__unsigned_int__double__double__double__double,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ClipPlane &, cp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ClipPlane__C5_ClipPlane_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method0(unsigned int, getMember,
+	          __unsigned_int__getMember,
+	          "Return the member identifier within the attribute's class type. ",
+	          "Used for light number/clip plane number etc. ");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method1(void, setClipPlane, IN, const osg::Plane &, plane,
+	          __void__setClipPlane__C5_Plane_R1,
+	          "Set the clip plane with the given Plane. ",
+	          "");
+	I_Method4(void, setClipPlane, IN, double, a, IN, double, b, IN, double, c, IN, double, d,
+	          __void__setClipPlane__double__double__double__double,
+	          "Defines the plane as [ a b c d ]. ",
+	          "");
+	I_Method1(void, setClipPlane, IN, const osg::Vec4d &, plane,
+	          __void__setClipPlane__C5_Vec4d_R1,
+	          "Set the clip plane with the given Vec4. ",
+	          "");
+	I_Method0(const osg::Vec4d &, getClipPlane,
+	          __C5_Vec4d_R1__getClipPlane,
+	          "Gets the clip plane as a Vec4d. ",
+	          "");
+	I_Method1(void, setClipPlaneNum, IN, unsigned int, num,
+	          __void__setClipPlaneNum__unsigned_int,
+	          "Sets the clip plane number. ",
+	          "");
+	I_Method0(unsigned int, getClipPlaneNum,
+	          __unsigned_int__getClipPlaneNum,
+	          "Gets the clip plane number. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          __void__apply__State_R1,
+	          "Applies the clip plane's state to the OpenGL state machine. ",
+	          "");
+	I_SimpleProperty(const osg::Vec4d &, ClipPlane, 
+	                 __C5_Vec4d_R1__getClipPlane, 
+	                 __void__setClipPlane__C5_Vec4d_R1);
+	I_SimpleProperty(unsigned int, ClipPlaneNum, 
+	                 __unsigned_int__getClipPlaneNum, 
+	                 __void__setClipPlaneNum__unsigned_int);
+	I_SimpleProperty(unsigned int, Member, 
+	                 __unsigned_int__getMember, 
+	                 0);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
 END_REFLECTOR
 

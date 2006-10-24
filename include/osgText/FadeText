@@ -28,10 +28,12 @@ public:
 
     META_Object(osgText,FadeText)
 
-    typedef std::map<osg::View*, osg::Vec4 > ViewBlendColourMap;
-    
-    ViewBlendColourMap& getViewBlendColourMap() { return _viewBlendColourMap; }
-    const ViewBlendColourMap& getViewBlendColourMap() const { return _viewBlendColourMap; }
+
+    /** Set the speed that the alpha value changes as the text is occluded or becomes visible.*/
+    void setFadeSpeed(float fadeSpeed) { _fadeSpeed = fadeSpeed; }
+
+    /** Get the speed that the alpha value changes.*/
+    float getFadeSpeed() const { return _fadeSpeed; }
 
     /** Draw the text.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
@@ -41,6 +43,16 @@ protected:
     virtual ~FadeText() {}
 
     void init();
+  
+    struct FadeTextUpdateCallback;
+    friend struct FadeTextUpdateCallback;
+
+    typedef std::map<osg::View*, osg::Vec4 > ViewBlendColourMap;
+    
+    ViewBlendColourMap& getViewBlendColourMap() { return _viewBlendColourMap; }
+    const ViewBlendColourMap& getViewBlendColourMap() const { return _viewBlendColourMap; }
+
+    float _fadeSpeed;
     
     mutable ViewBlendColourMap _viewBlendColourMap;
 };

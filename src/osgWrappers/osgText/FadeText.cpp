@@ -24,8 +24,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< osg::View * COMMA  osg::Vec4 >, osgText::FadeText::ViewBlendColourMap);
-
 BEGIN_OBJECT_REFLECTOR(osgText::FadeText)
 	I_BaseType(osgText::Text);
 	I_Constructor0(____FadeText,
@@ -55,22 +53,20 @@ BEGIN_OBJECT_REFLECTOR(osgText::FadeText)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap,
-	          __ViewBlendColourMap_R1__getViewBlendColourMap,
-	          "",
+	I_Method1(void, setFadeSpeed, IN, float, fadeSpeed,
+	          __void__setFadeSpeed__float,
+	          "Set the speed that the alpha value changes as the text is occluded or becomes visible. ",
 	          "");
-	I_Method0(const osgText::FadeText::ViewBlendColourMap &, getViewBlendColourMap,
-	          __C5_ViewBlendColourMap_R1__getViewBlendColourMap,
-	          "",
+	I_Method0(float, getFadeSpeed,
+	          __float__getFadeSpeed,
+	          "Get the speed that the alpha value changes. ",
 	          "");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "Draw the text. ",
 	          "");
-	I_SimpleProperty(osgText::FadeText::ViewBlendColourMap &, ViewBlendColourMap, 
-	                 __ViewBlendColourMap_R1__getViewBlendColourMap, 
-	                 0);
+	I_SimpleProperty(float, FadeSpeed, 
+	                 __float__getFadeSpeed, 
+	                 __void__setFadeSpeed__float);
 END_REFLECTOR
-
-STD_MAP_REFLECTOR(std::map< osg::View * COMMA  osg::Vec4 >);
 

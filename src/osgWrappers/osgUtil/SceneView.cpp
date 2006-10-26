@@ -498,15 +498,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          "");
 	I_Method2(bool, projectWindowIntoObject, IN, const osg::Vec3 &, window, IN, osg::Vec3 &, object,
 	          __bool__projectWindowIntoObject__C5_osg_Vec3_R1__osg_Vec3_R1,
-	          "Calculate, via glUnProject, the object coordinates of a window point. ",
+	          "Calculate the object coordinates of a point in window coordinates. ",
 	          "Note, current implementation requires that SceneView::draw() has been previously called for projectWindowIntoObject to produce valid values. Consistent with OpenGL windows coordinates are calculated relative to the bottom left of the window. Returns true on successful projection.");
 	I_Method4(bool, projectWindowXYIntoObject, IN, int, x, IN, int, y, IN, osg::Vec3 &, near_point, IN, osg::Vec3 &, far_point,
 	          __bool__projectWindowXYIntoObject__int__int__osg_Vec3_R1__osg_Vec3_R1,
-	          "Calculate, via glUnProject, the object coordinates of a window x,y when projected onto the near and far planes. ",
+	          "Calculate the object coordinates of a window x,y when projected onto the near and far planes. ",
 	          "Note, current implementation requires that SceneView::draw() has been previously called for projectWindowIntoObject to produce valid values. Consistent with OpenGL windows coordinates are calculated relative to the bottom left of the window. Returns true on successful projection.");
 	I_Method2(bool, projectObjectIntoWindow, IN, const osg::Vec3 &, object, IN, osg::Vec3 &, window,
 	          __bool__projectObjectIntoWindow__C5_osg_Vec3_R1__osg_Vec3_R1,
-	          "Calculate, via glProject, the object coordinates of a window. ",
+	          "Calculate the window coordinates of a point in object coordinates. ",
 	          "Note, current implementation requires that SceneView::draw() has been previously called for projectWindowIntoObject to produce valid values. Consistent with OpenGL windows coordinates are calculated relative to the bottom left of the window, whereas window API's normally have the top left as the origin, so you may need to pass in (mouseX,window_height-mouseY,...). Returns true on successful projection.");
 	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
 	          __void__setFrameStamp__osg_FrameStamp_P1,

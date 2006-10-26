@@ -461,12 +461,53 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
         return NULL;
     }
     //Got a sampler and a surface and an imaged. Time to create the texture stuff for osg
-    dImg->getInit_from()->getValue().validate();
+    osg::Image *img = NULL;
+    if ( dImg->getInit_from() != NULL )
+    {
+        dImg->getInit_from()->getValue().validate();
 
-    std::string filename = (dImg->getInit_from()->getValue().getURI()+7);
-    osg::Image *img = osgDB::readImageFile( filename.c_str() );
+        if ( std::string( dImg->getInit_from()->getValue().getProtocol() ) == std::string( "file" ) )
+        {
+            unsigned int bufSize = 1; //for the null char
+            if ( dImg->getInit_from()->getValue().getFilepath() != NULL )
+            {
+               bufSize += strlen( dImg->getInit_from()->getValue().getFilepath() );
+            }
+            if ( dImg->getInit_from()->getValue().getFile() != NULL )
+            {
+               bufSize += strlen( dImg->getInit_from()->getValue().getFile() );
+            }
+            char *path = new char[bufSize+1];
+            if ( !dImg->getInit_from()->getValue().getPath( path, bufSize ) )
+            {
+               osg::notify( osg::WARN ) << "Unable to get path from URI." << std::endl;
+               return NULL;
+            }
 
-    osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
+#ifdef WIN32
+            // under windows the URI passed back from the dom includes a / i.e. /c:/path/file, so we need to jump over the leading /
+            char* filename = path+1;
+#else
+            char* filename = path;
+#endif
+
+            img = osgDB::readImageFile( filename );
+
+            delete [] path;
+
+            osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
+        }
+        else
+        {
+            osg::notify( osg::WARN ) << "Only images with a \"file\" scheme URI are supported in this version." << std::endl;
+            return NULL;
+        }
+    }
+    else
+    {
+        osg::notify( osg::WARN ) << "Embedded image data is not supported in this version." << std::endl;
+            return NULL;
+    }
 
     osg::Texture2D *t2D = new osg::Texture2D( img );
     //set texture parameters

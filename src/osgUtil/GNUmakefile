@@ -10,6 +10,7 @@ CXXFILES = \
 	DisplayRequirementsVisitor.cpp\
 	HalfWayMapGenerator.cpp\
 	HighlightMapGenerator.cpp\
+	IntersectionVisitor.cpp\
 	IntersectVisitor.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\

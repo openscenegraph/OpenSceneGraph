@@ -1,0 +1,191 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGUTIL_INTERSECTIONVISITOR
+#define OSGUTIL_INTERSECTIONVISITOR 1
+
+#include <osg/NodeVisitor>
+#include <osgUtil/Export>
+
+#include <list>
+
+namespace osgUtil
+{
+
+// forward declare to allow Intersector to reference it.
+class IntersectionVisitor;
+
+/** Pure virtual base class for implementating custom intersection technique.
+  * To implement a specific intersection technique on must override all
+  * the pure virtue methods, concrete examples of how to do this can be seen in
+  * the LineSegmentIntersector. */
+class Intersector : public osg::Referenced
+{
+    public:
+    
+        virtual Intersector* clone(osgUtil::IntersectionVisitor& iv) = 0;
+        
+        virtual void merge(Intersector* intersector) = 0;
+
+        virtual bool enter(const osg::Node& node) = 0;
+        
+        virtual void leave() = 0;
+        
+        virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable) = 0;
+        
+        virtual void reset() = 0;
+        
+        virtual bool containsIntersections() = 0;
+
+};
+
+/** Concrent class for implementing line intersections with the scene graph.
+  * To be used in conjunction with IntersectionVisitor. */
+class LineSegmentIntersector : public Intersector
+{
+    public:
+    
+        LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end);
+    
+        struct Intersection
+        {
+            bool operator < (const Intersection& rhs) const { return ratio < rhs.ratio; }
+
+            typedef std::vector<unsigned int> IndexList;
+
+            double                          ratio;
+            osg::NodePath                   nodePath;
+            osg::ref_ptr<osg::Drawable>     drawable;
+            osg::ref_ptr<osg::RefMatrix>    matrix;
+            osg::Vec3d                      localIntersectionPoint;
+            osg::Vec3                       localIntersectionNormal;
+            IndexList                       indexList;
+            unsigned int                    primitiveIndex;
+        };
+        
+        typedef std::multiset<Intersection> Intersections;
+        
+        Intersections& getIntersections() { return _intersections; }
+
+    public:
+
+        virtual Intersector* clone(osgUtil::IntersectionVisitor& iv);
+        
+        virtual void merge(Intersector* intersector);
+
+        virtual bool enter(const osg::Node& node);
+        
+        virtual void leave();
+        
+        virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable);
+        
+        virtual void reset();
+
+        virtual bool containsIntersections() { return !_intersections.empty(); }
+
+    protected:
+    
+        bool intersects(const osg::BoundingSphere& bs);
+        bool intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const osg::BoundingBox& bb);
+
+        osg::Vec3d  _start;
+        osg::Vec3d  _end;
+        
+        Intersections _intersections;
+    
+};
+
+/** InteresectionVisitor is used to testing for intersections with the scene, traversing the scene using generic osgUtil::Intersector's to test against the scene.
+  * To implement different types of intersection techniques, one implements custom versions of the osgUtil::Intersector, and then
+  * pass the constructed intersector to the IntersectionVisitor.*/
+class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
+{
+    public:
+
+        /** Callback used to implement the reading of external files, allowing support for paged databases to be
+          * intergrated with IntersectionVisitor.  A concrete implementation can be found in osgDB.
+          * Note, this loose coupling approach is required as osgUtil is independent from osgDB where the file reading
+          * is implemented, and osgDB itself is dependent upon osgUtil so a circular dependency would result from
+          * tighter integration.*/
+        struct ReadCallback : public osg::Referenced
+        {
+            virtual osg::Node* readNodeFile(const std::string& filename) = 0;
+        };
+
+
+        IntersectionVisitor(Intersector* intersector=0, ReadCallback* readCallback=0);
+        
+        virtual void reset();
+
+        /** Set the intersector that will be used to intersect with the scene, and to store any hits that occur.*/
+        void setIntersector(Intersector* intersector);
+        
+        /** Get the intersector that will be used to intersect with the scene, and to store any hits that occur.*/
+        Intersector* getIntersector() { return _intersectorStack.empty() ? 0 : _intersectorStack.front().get(); }
+
+        /** Get the const intersector that will be used to intersect with the scene, and to store any hits that occur.*/
+        const Intersector* getIntersector() const { return _intersectorStack.empty() ? 0 : _intersectorStack.front().get(); }
+
+
+        /** Set the read callback.*/
+        void setReadCallback(ReadCallback* rc) { _readCallback = rc; }
+
+        /** Get the read callback.*/
+        ReadCallback* getReadCallback() { return _readCallback.get(); }
+
+        /** Get the const read callback.*/
+        const ReadCallback* getReadCallback() const { return _readCallback.get(); }
+
+        osg::RefMatrix* getWindowMatrix() { return _windowStack.empty() ? 0 :  _windowStack.back().get(); }
+        osg::RefMatrix* getProjectionMatrix() { return _projectionStack.empty() ? 0 :  _projectionStack.back().get(); }
+        osg::RefMatrix* getViewMatrix() { return _viewStack.empty() ? 0 :  _viewStack.back().get(); }
+        osg::RefMatrix* getModelMatrix() { return _modelStack.empty() ? 0 :  _modelStack.back().get(); }
+
+
+    public:
+
+        virtual void apply(osg::Node& node);
+        virtual void apply(osg::Geode& geode);
+        virtual void apply(osg::Billboard& geode);
+        virtual void apply(osg::Group& group);
+        virtual void apply(osg::LOD& lod);
+        virtual void apply(osg::PagedLOD& lod);
+        virtual void apply(osg::Transform& transform);
+        virtual void apply(osg::Projection& projection);
+        virtual void apply(osg::CameraNode& camera);
+    
+    protected:
+    
+        inline bool enter(const osg::Node& node) { return _intersectorStack.empty() ? false : _intersectorStack.back()->enter(node); }
+        inline void leave() { _intersectorStack.back()->leave(); }
+        inline void intersect(osg::Drawable* drawable) { _intersectorStack.back()->intersect(*this, drawable); }
+        inline void push_clone() { _intersectorStack.push_back ( _intersectorStack.front()->clone(*this) ); }
+        inline void pop_clone() { if (_intersectorStack.size()>=2) { _intersectorStack.front()->merge(_intersectorStack.back().get()); _intersectorStack.pop_back(); } }
+
+        typedef std::list< osg::ref_ptr<Intersector> > IntersectorStack;
+        IntersectorStack _intersectorStack;
+        
+        osg::ref_ptr<ReadCallback> _readCallback;
+        
+        typedef std::list< osg::ref_ptr<osg::RefMatrix> > MatrixStack;
+        MatrixStack _windowStack;
+        MatrixStack _projectionStack;
+        MatrixStack _viewStack;
+        MatrixStack _modelStack;
+
+};
+
+}
+
+#endif
+

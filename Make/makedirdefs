@@ -210,6 +210,7 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgcubemap \
 	osgdelaunay \
 	osgdepthpartition \
+	osgdepthshadow \
 	osgdistortion \
 	osgforest \
 	osgfxbrowser \
@@ -218,6 +219,7 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osghangglide \
 	osghud \
 	osgimpostor \
+	osgintersection \
 	osgkeyboard \
 	osgkeyboardmouse \
 	osglauncher \
@@ -249,7 +251,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgshaderterrain \
 	osgshadow \
 	osgshadowtexture \
-	osgdepthshadow \
 	osgshape \
 	osgsimple \
 	osgsimplepager \

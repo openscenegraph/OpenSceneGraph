@@ -197,7 +197,8 @@ struct TriangleIntersector
 //  LineSegmentIntersector
 //
 
-LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end):
+LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent):
+    _parent(parent),
     _start(start),
     _end(end)
 {
@@ -211,18 +212,12 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
         osg::Matrix inverse;
         inverse.invert(*model);
     
-        return new LineSegmentIntersector(_start * inverse, _end * inverse);
+        return new LineSegmentIntersector(_start * inverse, _end * inverse, this);
     }
     else
     {
-        return new LineSegmentIntersector(_start, _end);
+        return new LineSegmentIntersector(_start, _end, this);
     }
-}
-
-void LineSegmentIntersector::merge(Intersector* intersector)
-{
-    LineSegmentIntersector* lsi = dynamic_cast<LineSegmentIntersector*>(intersector);
-    _intersections.insert(lsi->_intersections.begin(),lsi->_intersections.end());
 }
 
 bool LineSegmentIntersector::enter(const osg::Node& node)
@@ -282,7 +277,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 }
             }
 
-            _intersections.insert(hit);
+            insertIntersection(hit);
 
         }
     }
@@ -291,6 +286,8 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
 void LineSegmentIntersector::reset()
 {
+    Intersector::reset();
+    
     _intersections.clear();
 }
 
@@ -444,6 +441,125 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
     if (s==e) return false;
 
     return true;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  LineSegmentIntersector
+//
+
+
+IntersectorGroup::IntersectorGroup()
+{
+}
+
+void IntersectorGroup::addIntersector(Intersector* intersector)
+{
+    _intersectors.push_back(intersector);
+}
+
+void IntersectorGroup::clear()
+{
+    _intersectors.clear();
+}
+
+Intersector* IntersectorGroup::clone(osgUtil::IntersectionVisitor& iv)
+{
+    IntersectorGroup* ig = new IntersectorGroup;
+    
+    // now copy across all intersectors that arn't disabled.
+    for(Intersectors::iterator itr = _intersectors.begin();
+        itr != _intersectors.end();
+        ++itr)
+    {
+        if (!(*itr)->disabled())
+        {
+            ig->addIntersector( (*itr)->clone(iv) );
+        }
+    }
+
+    return ig;
+}
+
+bool IntersectorGroup::enter(const osg::Node& node)
+{
+    if (disabled()) return false;
+    
+    bool foundIntersections = false;
+    
+    for(Intersectors::iterator itr = _intersectors.begin();
+        itr != _intersectors.end();
+        ++itr)
+    {
+        if ((*itr)->disabled()) (*itr)->incrementDisabledCount();
+        else if ((*itr)->enter(node)) foundIntersections = true;
+        else (*itr)->incrementDisabledCount();
+    }
+    
+    if (!foundIntersections) 
+    {
+        // need to call leave to clean up the DisabledCount's.
+        leave();
+        return false;
+    }
+    
+    // we have found at least one suitable intersector, so return true
+    return true;
+}
+
+void IntersectorGroup::leave()
+{
+    for(Intersectors::iterator itr = _intersectors.begin();
+        itr != _intersectors.end();
+        ++itr)
+    {
+        if ((*itr)->disabled()) (*itr)->decrementDisabledCount();
+    }
+}
+
+void IntersectorGroup::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
+{
+    if (disabled()) return;
+
+    unsigned int numTested = 0;
+    for(Intersectors::iterator itr = _intersectors.begin();
+        itr != _intersectors.end();
+        ++itr)
+    {
+        if (!(*itr)->disabled())
+        {
+            (*itr)->intersect(iv, drawable);
+            
+            ++numTested;
+        }
+    }
+    
+    // osg::notify(osg::NOTICE)<<"Number testing "<<numTested<<std::endl;
+
+}
+
+void IntersectorGroup::reset()
+{
+    Intersector::reset();
+    
+    for(Intersectors::iterator itr = _intersectors.begin();
+        itr != _intersectors.end();
+        ++itr)
+    {
+        (*itr)->reset();
+    }
+}
+
+bool IntersectorGroup::containsIntersections()
+{
+    for(Intersectors::iterator itr = _intersectors.begin();
+        itr != _intersectors.end();
+        ++itr)
+    {
+        if ((*itr)->containsIntersections()) return true;
+    }
+    return false;
 }
 
 

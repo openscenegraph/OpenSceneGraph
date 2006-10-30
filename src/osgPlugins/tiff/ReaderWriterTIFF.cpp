@@ -472,7 +472,14 @@ int *numComponents_ret)
     else
         format = 3;
     */
-    format = samplesperpixel * bitspersample / 8;
+    // if it has a palette, data returned is 3 byte rgb
+    // so set format to 3.
+    if (photometric == PHOTOMETRIC_PALETTE)
+        format = 3; 
+    else
+        format = samplesperpixel * bitspersample / 8;
+    
+    
 
     buffer = new unsigned char [w*h*format];
     for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;

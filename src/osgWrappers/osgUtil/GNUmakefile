@@ -10,6 +10,7 @@ CXXFILES =\
 	HalfWayMapGenerator.cpp\
 	HighlightMapGenerator.cpp\
 	IntersectVisitor.cpp\
+	IntersectionVisitor.cpp\
 	Optimizer.cpp\
 	PositionalStateContainer.cpp\
 	ReflectionMapGenerator.cpp\

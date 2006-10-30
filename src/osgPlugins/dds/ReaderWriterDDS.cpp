@@ -392,7 +392,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             //###[afarre_051904] osgImage->setMipmapData(mipmaps);
         }
         // Handle uncompressed mipmaps
-        if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
+        if(ddsd.ddpfPixelFormat.dwFlags & (DDPF_RGB | DDPF_LUMINANCE | DDPF_ALPHA))
         {
             int offset = 0;
             int width = ddsd.dwWidth;

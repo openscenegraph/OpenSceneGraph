@@ -379,7 +379,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         geom->setTexCoordArray (0, texCoords);
         geom->setTexCoordIndices (0, texIndices);
 
-        geom->setNormalArray (g_md2NormalsArray);
+        geom->setNormalArray (normalCoords);
         geom->setNormalIndices (normalIndices);
         geom->setNormalBinding (osg::Geometry::BIND_PER_VERTEX);
 

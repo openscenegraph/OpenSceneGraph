@@ -190,16 +190,13 @@ BoundingSphere Switch::computeBound() const
 
     BoundingBox bb;
     bb.init();
-    NodeList::const_iterator itr;
-    for(itr=_children.begin();
-        itr!=_children.end();
-        ++itr)
+    for(unsigned int pos=0;pos<_children.size();++pos)
     {
-        const osg::Transform* transform = (*itr)->asTransform();
+        const osg::Transform* transform = _children[pos]->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
-            if( getChildValue((*itr).get()) == true )
-                bb.expandBy((*itr)->getBound());
+            if( _values[pos] == true )
+                bb.expandBy(_children[pos]->getBound());
         }
     }
 
@@ -210,15 +207,13 @@ BoundingSphere Switch::computeBound() const
 
     bsphere._center = bb.center();
     bsphere._radius = 0.0f;
-    for(itr=_children.begin();
-        itr!=_children.end();
-        ++itr)
+    for(unsigned int pos=0;pos<_children.size();++pos)
     {
-        const osg::Transform* transform = (*itr)->asTransform();
+        const osg::Transform* transform = _children[pos]->asTransform();
         if (!transform || transform->getReferenceFrame()==osg::Transform::RELATIVE_RF)
         {
-            if( getChildValue((*itr).get()) == true )
-                bsphere.expandRadiusBy((*itr)->getBound());
+            if( _values[pos] == true )
+                bsphere.expandRadiusBy(_children[pos]->getBound());
         }
     }
     return bsphere;

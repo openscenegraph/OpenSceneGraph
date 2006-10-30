@@ -128,6 +128,10 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\IntersectVisitor.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\IntersectionVisitor.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\Optimizer.cpp
 # End Source File
 

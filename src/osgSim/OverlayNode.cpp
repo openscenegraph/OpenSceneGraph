@@ -26,7 +26,8 @@ OverlayNode::OverlayNode():
     _texEnvMode(GL_DECAL),
     _textureUnit(1),
     _textureSizeHint(1024),
-    _continuousUpdate(false)
+    _continuousUpdate(false),
+    _updateCamera(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
     init();
@@ -100,9 +101,8 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
         Group::traverse(nv);
 
-        if (_continuousUpdate)
+        if (_continuousUpdate || _updateCamera)
         {
-
             // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
             osg::BoundingSphere bs;
             for(unsigned int i=0; i<_camera->getNumChildren(); ++i)
@@ -176,6 +176,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
                 _textureFrustum.setToUnitFrustum(false,false);
                 _textureFrustum.transformProvidingInverse(MVP);
             }
+            _updateCamera = false;
         }
 
         return;
@@ -257,6 +258,7 @@ void OverlayNode::setOverlaySubgraph(osg::Node* node)
 void OverlayNode::dirtyOverlayTexture()
 {
     _textureObjectValidList.setAllElementsTo(0);
+    _updateCamera = true;
 }
 
 void OverlayNode::setOverlayClearColor(const osg::Vec4& color)

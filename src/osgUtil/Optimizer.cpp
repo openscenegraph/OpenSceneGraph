@@ -2156,17 +2156,20 @@ class MergeArrayVisitor : public osg::ArrayVisitor
     public:
     
         osg::Array* _lhs;
+        int         _offset;
     
         MergeArrayVisitor() :
-            _lhs(0) {}
+            _lhs(0),
+            _offset(0) {}
             
             
-        void merge(osg::Array* lhs,osg::Array* rhs)
+        void merge(osg::Array* lhs,osg::Array* rhs, int offset=0)
         {
             if (lhs==0 || rhs==0) return;
             if (lhs->getType()!=rhs->getType()) return;
             
             _lhs = lhs;
+            _offset = offset;
             
             rhs->accept(*this);
         }
@@ -2178,14 +2181,29 @@ class MergeArrayVisitor : public osg::ArrayVisitor
             lhs->insert(lhs->end(),rhs.begin(),rhs.end());
         }
         
+        template<typename T>
+        void _mergeAndOffset(T& rhs)
+        {
+            T* lhs = static_cast<T*>(_lhs); 
+
+            typename T::iterator itr;
+            for(itr = rhs.begin();
+                itr != rhs.end();
+                ++itr)
+            {
+                lhs->push_back(*itr + _offset);
+            }
+        }
             
         virtual void apply(osg::Array&) { osg::notify(osg::WARN) << "Warning: Optimizer's MergeArrayVisitor cannot merge Array type." << std::endl; }
-        virtual void apply(osg::ByteArray& rhs) { _merge(rhs); }
-        virtual void apply(osg::ShortArray& rhs) { _merge(rhs); }
-        virtual void apply(osg::IntArray& rhs) { _merge(rhs); }
-        virtual void apply(osg::UByteArray& rhs) { _merge(rhs); }
-        virtual void apply(osg::UShortArray& rhs) { _merge(rhs); }
-        virtual void apply(osg::UIntArray& rhs) { _merge(rhs); }
+
+        virtual void apply(osg::ByteArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+        virtual void apply(osg::ShortArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+        virtual void apply(osg::IntArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+        virtual void apply(osg::UByteArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+        virtual void apply(osg::UShortArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+        virtual void apply(osg::UIntArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
+
         virtual void apply(osg::Vec4ubArray& rhs) { _merge(rhs); }
         virtual void apply(osg::FloatArray& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec2Array& rhs) { _merge(rhs); }
@@ -2206,11 +2224,11 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     MergeArrayVisitor merger;
  
     unsigned int base = 0;
+    unsigned int vbase = lhs.getVertexArray() ? lhs.getVertexArray()->getNumElements() : 0; 
     if (lhs.getVertexArray() && rhs.getVertexArray())
     {
 
         base = lhs.getVertexArray()->getNumElements();
-
         merger.merge(lhs.getVertexArray(),rhs.getVertexArray());
 
     }
@@ -2224,7 +2242,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     {
 
         base = lhs.getVertexIndices()->getNumElements();
-        merger.merge(lhs.getVertexIndices(),rhs.getVertexIndices());
+        merger.merge(lhs.getVertexIndices(),rhs.getVertexIndices(),vbase);
 
     }
     else if (rhs.getVertexIndices())
@@ -2234,6 +2252,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
     
 
+    unsigned int nbase = lhs.getNormalArray() ? lhs.getNormalArray()->getNumElements() : 0; 
     if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getNormalArray(),rhs.getNormalArray());
@@ -2245,14 +2264,16 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
 
     if (lhs.getNormalIndices() && rhs.getNormalIndices() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getNormalIndices(),rhs.getNormalIndices());
+        merger.merge(lhs.getNormalIndices(),rhs.getNormalIndices(),nbase);
     }
     else if (rhs.getNormalIndices())
     {
+        // this assignment makes the assumption that lhs.NormalArray is empty as well and NormalIndices
         lhs.setNormalIndices(rhs.getNormalIndices());
     }
 
 
+    unsigned int cbase = lhs.getColorArray() ? lhs.getColorArray()->getNumElements() : 0; 
     if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getColorArray(),rhs.getColorArray());
@@ -2264,13 +2285,15 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     if (lhs.getColorIndices() && rhs.getColorIndices() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getColorIndices(),rhs.getColorIndices());
+        merger.merge(lhs.getColorIndices(),rhs.getColorIndices(),cbase);
     }
     else if (rhs.getColorIndices())
     {
+        // this assignment makes the assumption that lhs.ColorArray is empty as well and ColorIndices
         lhs.setColorIndices(rhs.getColorIndices());
     }
 
+    unsigned int scbase = lhs.getSecondaryColorArray() ? lhs.getSecondaryColorArray()->getNumElements() : 0; 
     if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray());
@@ -2282,13 +2305,15 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     if (lhs.getSecondaryColorIndices() && rhs.getSecondaryColorIndices() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getSecondaryColorIndices(),rhs.getSecondaryColorIndices());
+        merger.merge(lhs.getSecondaryColorIndices(),rhs.getSecondaryColorIndices(),scbase);
     }
     else if (rhs.getSecondaryColorIndices())
     {
+        // this assignment makes the assumption that lhs.SecondaryColorArray is empty as well and SecondaryColorIndices
         lhs.setSecondaryColorIndices(rhs.getSecondaryColorIndices());
     }
 
+    unsigned int fcbase = lhs.getFogCoordArray() ? lhs.getFogCoordArray()->getNumElements() : 0; 
     if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
     {
         merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray());
@@ -2300,10 +2325,11 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
 
     if (lhs.getFogCoordIndices() && rhs.getFogCoordIndices() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getFogCoordIndices(),rhs.getFogCoordIndices());
+        merger.merge(lhs.getFogCoordIndices(),rhs.getFogCoordIndices(),fcbase);
     }
     else if (rhs.getFogCoordIndices())
     {
+        // this assignment makes the assumption that lhs.FogCoordArray is empty as well and FogCoordIndices
         lhs.setFogCoordIndices(rhs.getFogCoordIndices());
     }
 
@@ -2311,19 +2337,23 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     unsigned int unit;
     for(unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
+        unsigned int tcbase = lhs.getTexCoordArray(unit) ? lhs.getTexCoordArray(unit)->getNumElements() : 0; 
         merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit));
+        
         if (lhs.getTexCoordIndices(unit) && rhs.getTexCoordIndices(unit))
         {
-            merger.merge(lhs.getTexCoordIndices(unit),rhs.getTexCoordIndices(unit));
+            merger.merge(lhs.getTexCoordIndices(unit),rhs.getTexCoordIndices(unit),tcbase);
         }
     }
     
     for(unit=0;unit<lhs.getNumVertexAttribArrays();++unit)
     {
+        unsigned int vabase = lhs.getVertexAttribArray(unit) ? lhs.getVertexAttribArray(unit)->getNumElements() : 0; 
         merger.merge(lhs.getVertexAttribArray(unit),rhs.getVertexAttribArray(unit));
+        
         if (lhs.getVertexAttribIndices(unit) && rhs.getVertexAttribIndices(unit))
         {
-            merger.merge(lhs.getVertexAttribIndices(unit),rhs.getVertexAttribIndices(unit));
+            merger.merge(lhs.getVertexAttribIndices(unit),rhs.getVertexAttribIndices(unit),vabase);
         }
     }
 

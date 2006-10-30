@@ -117,6 +117,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         osg::ref_ptr<osg::Texture2D>    _texture;
 
         bool                            _continuousUpdate;
+        bool                            _updateCamera;
         osg::Polytope                   _textureFrustum;
 };
 

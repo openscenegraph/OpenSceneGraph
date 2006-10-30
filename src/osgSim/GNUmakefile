@@ -13,6 +13,8 @@ CXXFILES = \
 	LightPointDrawable.cpp\
 	LightPointSpriteDrawable.cpp\
 	LightPointNode.cpp\
+	LineOfSight.cpp\
+	HeightAboveTerrain.cpp\
 	MultiSwitch.cpp\
 	OverlayNode.cpp\
 	OpenFlightOptimizer.cpp\

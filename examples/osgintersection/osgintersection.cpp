@@ -8,6 +8,8 @@
 
 #include <osgUtil/IntersectionVisitor>
 
+#include <osgSim/LineOfSight>
+
 #include <iostream>
 
 struct MyReadCallback : public osgUtil::IntersectionVisitor::ReadCallback
@@ -45,8 +47,62 @@ int main(int argc, char **argv)
 
 
     bool useIntersectorGroup = true;
+    bool useLineOfSight = true;
     
-    if (useIntersectorGroup)
+    if (useLineOfSight)
+    {
+        osg::Timer_t startTick = osg::Timer::instance()->tick();
+    
+        osg::Vec3d start = bs.center() + osg::Vec3d(0.0,bs.radius(),0.0);
+        osg::Vec3d end = bs.center();// - osg::Vec3d(0.0, bs.radius(),0.0);
+        osg::Vec3d deltaRow( 0.0, 0.0, bs.radius()*0.01);
+        osg::Vec3d deltaColumn( bs.radius()*0.01, 0.0, 0.0);
+        unsigned int numRows = 50;
+        unsigned int numColumns = 50;
+
+        osgSim::LineOfSight los;
+
+        for(unsigned int r=0; r<numRows; ++r)
+        {
+            for(unsigned int c=0; c<numColumns; ++c)
+            {
+                osg::Vec3d s = start + deltaColumn * double(c) + deltaRow * double(r);
+                osg::Vec3d e = end + deltaColumn * double(c) + deltaRow * double(r);
+                los.addLOS(s,e);
+            }
+        }
+
+
+        los.computeIntersections(root.get());
+        
+        osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+        std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+
+#if 0
+        for(unsigned int i=0; i<los.getNumLOS(); i++)
+        {
+            const osgSim::LineOfSight::Intersections& intersections = los.getIntersections(i);
+            for(osgSim::LineOfSight::Intersections::const_iterator itr = intersections.begin();
+                itr != intersections.end();
+                ++itr)
+            {
+                 std::cout<<"  point "<<*itr<<std::endl;
+            }
+        }
+#endif
+
+        // now do a second traversal to test performance of cache.
+        startTick = osg::Timer::instance()->tick();
+
+        los.computeIntersections(root.get());
+        
+        endTick = osg::Timer::instance()->tick();
+
+        std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+
+    }
+    else if (useIntersectorGroup)
     {
         osg::Timer_t startTick = osg::Timer::instance()->tick();
     

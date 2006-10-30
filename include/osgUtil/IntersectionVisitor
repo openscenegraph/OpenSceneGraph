@@ -15,6 +15,7 @@
 #define OSGUTIL_INTERSECTIONVISITOR 1
 
 #include <osg/NodeVisitor>
+#include <osg/Drawable>
 #include <osgUtil/Export>
 
 #include <list>

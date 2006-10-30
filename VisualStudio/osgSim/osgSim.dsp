@@ -167,6 +167,10 @@ SOURCE=..\..\src\osgSim\DOFTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\HeightAboveTerrain.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\Impostor.cpp
 # End Source File
 # Begin Source File
@@ -192,6 +196,10 @@ SOURCE=..\..\src\osgSim\LightPointSpriteDrawable.cpp
 # Begin Source File
 
 SOURCE=..\..\src\osgSim\LightPointNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgSim\LineOfSight.cpp
 # End Source File
 # Begin Source File
 
@@ -251,6 +259,10 @@ SOURCE=..\..\include\osgSim\Export
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgSim\HeightAboveTerrain
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\Include\osgSim\Impostor
 # End Source File
 # Begin Source File
@@ -280,6 +292,10 @@ SOURCE=..\..\include\osgSim\LightPointNode
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\LightPointSystem
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\LineOfSight
 # End Source File
 # Begin Source File
 

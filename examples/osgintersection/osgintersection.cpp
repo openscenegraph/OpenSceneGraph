@@ -1,6 +1,7 @@
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 #include <osg/Timer>
+#include <osg/CoordinateSystemNode>
 #include <osg/Notify>
 #include <osg/io_utils>
 
@@ -9,6 +10,7 @@
 #include <osgUtil/IntersectionVisitor>
 
 #include <osgSim/LineOfSight>
+#include <osgSim/HeightAboveTerrain>
 
 #include <iostream>
 
@@ -31,9 +33,9 @@ int main(int argc, char **argv)
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
-    osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
     
-    if (!root) 
+    if (!scene) 
     {
         std::cout<<"No model loaded, please specify a valid model on the command line."<<std::endl;
         return 0;
@@ -42,8 +44,10 @@ int main(int argc, char **argv)
     std::cout<<"Intersection "<<std::endl;
 
     
+    osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene.get());
+    osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
     
-    osg::BoundingSphere bs = root->getBound();
+    osg::BoundingSphere bs = scene->getBound();
 
 
     bool useIntersectorGroup = true;
@@ -57,10 +61,13 @@ int main(int argc, char **argv)
         osg::Vec3d end = bs.center();// - osg::Vec3d(0.0, bs.radius(),0.0);
         osg::Vec3d deltaRow( 0.0, 0.0, bs.radius()*0.01);
         osg::Vec3d deltaColumn( bs.radius()*0.01, 0.0, 0.0);
-        unsigned int numRows = 50;
-        unsigned int numColumns = 50;
+        unsigned int numRows = 20;
+        unsigned int numColumns = 20;
 
         osgSim::LineOfSight los;
+        
+        osgSim::HeightAboveTerrain hat;
+        hat.setDatabaseCacheReadCallback(los.getDatabaseCacheReadCallback());
 
         for(unsigned int r=0; r<numRows; ++r)
         {
@@ -69,17 +76,20 @@ int main(int argc, char **argv)
                 osg::Vec3d s = start + deltaColumn * double(c) + deltaRow * double(r);
                 osg::Vec3d e = end + deltaColumn * double(c) + deltaRow * double(r);
                 los.addLOS(s,e);
+                hat.addPoint(s);
             }
         }
 
 
-        los.computeIntersections(root.get());
+        std::cout<<"Computing LineOfSight"<<std::endl;
+
+        los.computeIntersections(scene.get());
         
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 
         std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
 
-#if 0
+#if 1
         for(unsigned int i=0; i<los.getNumLOS(); i++)
         {
             const osgSim::LineOfSight::Intersections& intersections = los.getIntersections(i);
@@ -95,8 +105,15 @@ int main(int argc, char **argv)
         // now do a second traversal to test performance of cache.
         startTick = osg::Timer::instance()->tick();
 
-        los.computeIntersections(root.get());
+        std::cout<<"Computing HeightAboveTerrain"<<std::endl;
+
+        hat.computeIntersections(scene.get());
         
+        for(unsigned int i=0; i<hat.getNumPoints(); i++)
+        {
+             std::cout<<"  point = "<<hat.getPoint(i)<<" hat = "<<hat.getHeightAboveTerrain(i)<<std::endl;
+        }
+
         endTick = osg::Timer::instance()->tick();
 
         std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
@@ -128,7 +145,7 @@ int main(int argc, char **argv)
 
         
         osgUtil::IntersectionVisitor intersectVisitor( intersectorGroup.get(), new MyReadCallback );
-        root->accept(intersectVisitor);
+        scene->accept(intersectVisitor);
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 
@@ -181,7 +198,7 @@ int main(int argc, char **argv)
 
         osgUtil::IntersectionVisitor intersectVisitor( intersector.get(), new MyReadCallback );
 
-        root->accept(intersectVisitor);
+        scene->accept(intersectVisitor);
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 

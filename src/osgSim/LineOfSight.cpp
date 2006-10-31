@@ -92,7 +92,7 @@ LineOfSight::LineOfSight()
     setDatabaseCacheReadCallback(new DatabaseCacheReadCallback);
 }
 
-void LineOfSight::clearLOS()
+void LineOfSight::clear()
 {
     _LOSList.clear();
 }

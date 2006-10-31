@@ -52,7 +52,7 @@ class OSGSIM_EXPORT LineOfSight
         LineOfSight();
 
         /** Clear the internal LOS List so it contains no line of sight tests.*/
-        void clearLOS();
+        void clear();
     
         /** Add a line of sight test, consisting of start and end point. Returns the index number of the newly adding LOS test.*/
         unsigned int addLOS(const osg::Vec3d& start, const osg::Vec3d& end);
@@ -78,7 +78,7 @@ class OSGSIM_EXPORT LineOfSight
         const Intersections& getIntersections(unsigned int i) const  { return _LOSList[i]._intersections; }
 
         /** Compute the LOS intersections with the specified scene graph.
-          * The results are all stored in the form of IntersectionList, one per LOS test.*/
+          * The results are all stored in the form of Intersections list, one per LOS test.*/
         void computeIntersections(osg::Node* scene);
 
         /** Compute the intersection between the specified scene graph and a single LOS start,end pair. Returns an IntersectionList, of all the points intersected.*/

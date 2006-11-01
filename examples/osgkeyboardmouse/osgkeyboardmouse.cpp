@@ -186,13 +186,18 @@ public:
 
         // remap the mouse x,y into viewport coordinates.
         
+
+       osg::notify(osg::NOTICE)<<std::endl;
+
+#if 0
+        // use non dimension coordinates - in projection/clip space
+        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION, osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),0.0), osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),1.0) );
+#else
+        // use window coordinates
         float mx = _sceneView->getViewport()->x() + (int)((float)_sceneView->getViewport()->width()*(ea.getXnormalized()*0.5f+0.5f));
         float my = _sceneView->getViewport()->y() + (int)((float)_sceneView->getViewport()->height()*(ea.getYnormalized()*0.5f+0.5f));
-
-#if 1
-
-        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
-        picker->setCoordinateFrame(osgUtil::Intersector::WINDOW);
+        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
+#endif
 
         osgUtil::IntersectionVisitor iv(picker);
         
@@ -205,7 +210,7 @@ public:
             osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
             osg::notify(osg::NOTICE)<<"Picking "<<intersection.localIntersectionPoint<<std::endl;
 
-
+#if 0
             osg::NodePath& nodePath = intersection.nodePath;
             osg::Node* node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
             osg::Group* parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
@@ -238,64 +243,34 @@ public:
                     }
                 }
             }
+#endif
 
         }
         
 
-#else
-
-        // do the pick traversal.
-        osgUtil::PickVisitor pick(_sceneView->getViewport(),
-                                  _sceneView->getProjectionMatrix(), 
-                                  _sceneView->getViewMatrix(), mx, my);
-        scene->accept(pick);
-
-        osgUtil::PickVisitor::LineSegmentHitListMap& segHitList = pick.getSegHitList();
-        if (!segHitList.empty() && !segHitList.begin()->second.empty())
         {
-            std::cout<<"Got hits"<<std::endl;
+            float mx = _sceneView->getViewport()->x() + (int)((float)_sceneView->getViewport()->width()*(ea.getXnormalized()*0.5f+0.5f));
+            float my = _sceneView->getViewport()->y() + (int)((float)_sceneView->getViewport()->height()*(ea.getYnormalized()*0.5f+0.5f));
 
-            // get the hits for the first segment
-            osgUtil::PickVisitor::HitList& hits = segHitList.begin()->second;
+            // do the pick traversal use the other PickVisitor to double check results.
+            osgUtil::PickVisitor pick(_sceneView->getViewport(),
+                                      _sceneView->getProjectionMatrix(), 
+                                      _sceneView->getViewMatrix(), mx, my);
+            scene->accept(pick);
 
-            // just take the first hit - nearest the eye point.
-            osgUtil::Hit& hit = hits.front();
-
-            osg::NodePath& nodePath = hit._nodePath;
-            osg::Node* node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
-            osg::Group* parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
-
-            if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
-
-            // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
-            if (parent && node)
+            osgUtil::PickVisitor::LineSegmentHitListMap& segHitList = pick.getSegHitList();
+            if (!segHitList.empty() && !segHitList.begin()->second.empty())
             {
 
-                std::cout<<"  parent "<<parent->className()<<std::endl;
+                // get the hits for the first segment
+                osgUtil::PickVisitor::HitList& hits = segHitList.begin()->second;
 
-                osgFX::Scribe* parentAsScribe = dynamic_cast<osgFX::Scribe*>(parent);
-                if (!parentAsScribe)
-                {
-                    // node not already picked, so highlight it with an osgFX::Scribe
-                    osgFX::Scribe* scribe = new osgFX::Scribe();
-                    scribe->addChild(node);
-                    parent->replaceChild(node,scribe);
-                }
-                else
-                {
-                    // node already picked so we want to remove scribe to unpick it.
-                    osg::Node::ParentList parentList = parentAsScribe->getParents();
-                    for(osg::Node::ParentList::iterator itr=parentList.begin();
-                        itr!=parentList.end();
-                        ++itr)
-                    {
-                        (*itr)->replaceChild(parentAsScribe,node);
-                    }
-                }
+                // just take the first hit - nearest the eye point.
+                osgUtil::Hit& hit = hits.front();
+
+                std::cout<<"Got hits"<<hit.getLocalIntersectPoint()<<std::endl;
             }
-
         }
-#endif
 
     }
 

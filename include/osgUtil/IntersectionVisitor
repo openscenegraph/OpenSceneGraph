@@ -42,8 +42,8 @@ class Intersector : public osg::Referenced
             MODEL
         };
         
-        Intersector():
-            _coordinateFrame(MODEL),
+        Intersector(CoordinateFrame cf=MODEL):
+            _coordinateFrame(cf),
             _disabledCount(0) {}
     
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }
@@ -83,6 +83,8 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
     public:
     
         LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent=0);
+        
+        LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent=0);
         
         struct Intersection
         {

@@ -217,6 +217,14 @@ LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const os
 {
 }
 
+LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent):
+    Intersector(cf),
+    _parent(parent),
+    _start(start),
+    _end(end)
+{
+}
+
 Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 {
     if (_coordinateFrame==MODEL && iv.getModelMatrix()==0)
@@ -257,7 +265,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
 bool LineSegmentIntersector::enter(const osg::Node& node)
 {
-    return intersects( node.getBound() );
+    return !node.isCullingActive() || intersects( node.getBound() );
 }
 
 void LineSegmentIntersector::leave()
@@ -269,6 +277,10 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 {
     osg::Vec3d s(_start), e(_end);    
     if ( !intersectAndClip( s, e, drawable->getBound() ) ) return;
+
+    // reset the clipped range as it can be too close in on the BB, and cause missing due precission issues.
+    s = _start;
+    e = _end;
 
     osg::TriangleFunctor<TriangleIntersector> ti;
     ti.set(s,e);
@@ -473,7 +485,9 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
         }
     }
     
-    if (s==e) return false;
+    // osg::notify(osg::NOTICE)<<"clampped segment "<<s<<" "<<e<<std::endl;
+    
+    // if (s==e) return false;
 
     return true;
 }
@@ -659,11 +673,11 @@ void IntersectionVisitor::apply(osg::Group& group)
 
 void IntersectionVisitor::apply(osg::Geode& geode)
 {
-    osg::notify(osg::NOTICE)<<"apply(Geode&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"apply(Geode&)"<<std::endl;
 
     if (!enter(geode)) return;
 
-    osg::notify(osg::NOTICE)<<"inside apply(Geode&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"inside apply(Geode&)"<<std::endl;
 
     for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
     {
@@ -768,11 +782,11 @@ void IntersectionVisitor::apply(osg::Projection& projection)
 
 void IntersectionVisitor::apply(osg::CameraNode& camera)
 {
-    osg::notify(osg::NOTICE)<<"apply(CameraNode&)"<<std::endl;
+    //osg::notify(osg::NOTICE)<<"apply(CameraNode&)"<<std::endl;
 
-    // if (!enter(camera)) return;
+    if (!enter(camera)) return;
     
-    osg::notify(osg::NOTICE)<<"inside apply(CameraNode&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"inside apply(CameraNode&)"<<std::endl;
 
     if (camera.getViewport()) pushWindowMatrix( camera.getViewport() );
     pushProjectionMatrix( new osg::RefMatrix(camera.getProjectionMatrix()) );

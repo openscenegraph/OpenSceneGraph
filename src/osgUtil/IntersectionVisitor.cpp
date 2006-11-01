@@ -219,18 +219,40 @@ LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const os
 
 Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 {
-    osg::RefMatrix* model= iv.getModelMatrix();
-    if (model)
-    {
-        osg::Matrix inverse;
-        inverse.invert(*model);
-    
-        return new LineSegmentIntersector(_start * inverse, _end * inverse, this);
-    }
-    else
+    if (_coordinateFrame==MODEL && iv.getModelMatrix()==0)
     {
         return new LineSegmentIntersector(_start, _end, this);
     }
+
+    // compute the matrix that takes this Intersector from its CoordinateFrame into the local MODEL coordinate frame
+    // that geometry in the scene graph will always be in.
+    osg::Matrix matrix;
+    switch (_coordinateFrame)
+    {
+        case(WINDOW): 
+            if (iv.getWindowMatrix()) matrix.preMult( *iv.getWindowMatrix() );
+            if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
+            if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
+            if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
+            break;
+        case(PROJECTION): 
+            if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
+            if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
+            if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
+            break;
+        case(VIEW): 
+            if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
+            if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
+            break;
+        case(MODEL):
+            if (iv.getModelMatrix()) matrix = *iv.getModelMatrix();
+            break;
+    }
+
+    osg::Matrix inverse;
+    inverse.invert(matrix);
+
+    return new LineSegmentIntersector(_start * inverse, _end * inverse, this);
 }
 
 bool LineSegmentIntersector::enter(const osg::Node& node)
@@ -615,7 +637,11 @@ void IntersectionVisitor::reset()
 
 void IntersectionVisitor::apply(osg::Node& node)
 {
+    osg::notify(osg::NOTICE)<<"apply(Node&)"<<std::endl;
+
     if (!enter(node)) return;
+
+    osg::notify(osg::NOTICE)<<"inside apply(Node&)"<<std::endl;
 
     traverse(node);
 
@@ -633,7 +659,11 @@ void IntersectionVisitor::apply(osg::Group& group)
 
 void IntersectionVisitor::apply(osg::Geode& geode)
 {
+    osg::notify(osg::NOTICE)<<"apply(Geode&)"<<std::endl;
+
     if (!enter(geode)) return;
+
+    osg::notify(osg::NOTICE)<<"inside apply(Geode&)"<<std::endl;
 
     for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
     {
@@ -699,7 +729,7 @@ void IntersectionVisitor::apply(osg::Transform& transform)
     osg::ref_ptr<osg::RefMatrix> matrix = _modelStack.empty() ? new osg::RefMatrix() : new osg::RefMatrix(*_modelStack.back());
     transform.computeLocalToWorldMatrix(*matrix,this);
 
-    _modelStack.push_back(matrix);
+    pushModelMatrix(matrix.get());
 
     // now push an new intersector clone transform to the new local coordinates
     push_clone();
@@ -709,7 +739,7 @@ void IntersectionVisitor::apply(osg::Transform& transform)
     // pop the clone.
     pop_clone();
     
-    _modelStack.pop_back();
+    popModelMatrix();
 
     // tidy up an cached cull variabes in the current intersector.
     leave();
@@ -720,7 +750,17 @@ void IntersectionVisitor::apply(osg::Projection& projection)
 {
     if (!enter(projection)) return;
 
+    pushProjectionMatrix(new osg::RefMatrix(projection.getMatrix()) );
+
+    // now push an new intersector clone transform to the new local coordinates
+    push_clone();
+
     traverse(projection);
+    
+    // pop the clone.
+    pop_clone();
+    
+    popProjectionMatrix();
 
     leave();
 }
@@ -728,9 +768,29 @@ void IntersectionVisitor::apply(osg::Projection& projection)
 
 void IntersectionVisitor::apply(osg::CameraNode& camera)
 {
-    if (!enter(camera)) return;
+    osg::notify(osg::NOTICE)<<"apply(CameraNode&)"<<std::endl;
+
+    // if (!enter(camera)) return;
+    
+    osg::notify(osg::NOTICE)<<"inside apply(CameraNode&)"<<std::endl;
+
+    if (camera.getViewport()) pushWindowMatrix( camera.getViewport() );
+    pushProjectionMatrix( new osg::RefMatrix(camera.getProjectionMatrix()) );
+    pushViewMatrix( new osg::RefMatrix(camera.getViewMatrix()) );
+    pushModelMatrix( new osg::RefMatrix() );
+
+    // now push an new intersector clone transform to the new local coordinates
+    push_clone();
 
     traverse(camera);
+    
+    // pop the clone.
+    pop_clone();
+    
+    popModelMatrix();
+    popViewMatrix();
+    popProjectionMatrix();
+    if (camera.getViewport()) popWindowMatrix();
 
-    leave();
+    // leave();
 }

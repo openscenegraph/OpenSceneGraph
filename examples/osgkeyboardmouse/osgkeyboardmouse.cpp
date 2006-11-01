@@ -13,6 +13,7 @@
 
 #include <osgUtil/SceneView>
 #include <osgUtil/IntersectVisitor>
+#include <osgUtil/IntersectionVisitor>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -187,7 +188,62 @@ public:
         
         float mx = _sceneView->getViewport()->x() + (int)((float)_sceneView->getViewport()->width()*(ea.getXnormalized()*0.5f+0.5f));
         float my = _sceneView->getViewport()->y() + (int)((float)_sceneView->getViewport()->height()*(ea.getYnormalized()*0.5f+0.5f));
-   
+
+#if 1
+
+        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
+        picker->setCoordinateFrame(osgUtil::Intersector::WINDOW);
+
+        osgUtil::IntersectionVisitor iv(picker);
+        
+        _sceneView->getCamera()->accept(iv);
+        
+        osg::notify(osg::NOTICE)<<"Done pick, "<<picker->containsIntersections()<<std::endl;
+        
+        if (picker->containsIntersections())
+        {
+            osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
+            osg::notify(osg::NOTICE)<<"Picking "<<intersection.localIntersectionPoint<<std::endl;
+
+
+            osg::NodePath& nodePath = intersection.nodePath;
+            osg::Node* node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
+            osg::Group* parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
+
+            if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
+
+            // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
+            if (parent && node)
+            {
+
+                std::cout<<"  parent "<<parent->className()<<std::endl;
+
+                osgFX::Scribe* parentAsScribe = dynamic_cast<osgFX::Scribe*>(parent);
+                if (!parentAsScribe)
+                {
+                    // node not already picked, so highlight it with an osgFX::Scribe
+                    osgFX::Scribe* scribe = new osgFX::Scribe();
+                    scribe->addChild(node);
+                    parent->replaceChild(node,scribe);
+                }
+                else
+                {
+                    // node already picked so we want to remove scribe to unpick it.
+                    osg::Node::ParentList parentList = parentAsScribe->getParents();
+                    for(osg::Node::ParentList::iterator itr=parentList.begin();
+                        itr!=parentList.end();
+                        ++itr)
+                    {
+                        (*itr)->replaceChild(parentAsScribe,node);
+                    }
+                }
+            }
+
+        }
+        
+
+#else
+
         // do the pick traversal.
         osgUtil::PickVisitor pick(_sceneView->getViewport(),
                                   _sceneView->getProjectionMatrix(), 
@@ -239,6 +295,8 @@ public:
             }
 
         }
+#endif
+
     }
 
     void saveSelectedModel()

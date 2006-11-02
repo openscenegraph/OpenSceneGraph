@@ -348,7 +348,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Application osgviewer"=.\applications\osgviewer\osgviewer.dsp - Package Owner=<4>
+Project: "Application osgviewer"=.\applications\osgviewer\osgviewerapplication.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -2127,7 +2127,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgsimple"=.\examples\osgsimpleProducer\osgsimpleviewerProducer.dsp - Package Owner=<4>
+Project: "Example osgsimple"=.\examples\osgsimpleviewerProducer\osgsimpleviewerProducer.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

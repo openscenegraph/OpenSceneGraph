@@ -187,6 +187,10 @@ SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\IntersectionVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\Optimizer.cpp
 # End Source File
 # Begin Source File
@@ -292,6 +296,10 @@ SOURCE=..\..\include\osgUtil\HighlightMapGenerator
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\IntersectVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\IntersectionVisitor
 # End Source File
 # Begin Source File
 

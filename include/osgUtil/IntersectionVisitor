@@ -81,10 +81,18 @@ class Intersector : public osg::Referenced
 class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
 {
     public:
-    
-        LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent=0);
+
+        /** Construct a LineSegmentIntersector the runs between the secified start and end points in MODEL coordinates. */
+        LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end);
         
-        LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent=0);
+        /** Construct a LineSegmentIntersector the runs between the secified start and end points in the specified coordinate frame. */
+        LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end);
+        
+        /** Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates
+          * In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1).
+          * In PROJECTION coordinates (clip space cube) creates a start value of (x,y,1) and end value of (x,y,-1).
+          * In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1).*/
+        LineSegmentIntersector(CoordinateFrame cf, double x, double y);
         
         struct Intersection
         {
@@ -148,10 +156,18 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 {
     public:
     
-        PolytopeIntersector(const osg::Polytope& polytope, PolytopeIntersector* parent=0);
+        /** Construct a PolytopeIntersector using speified polytope in MODEL coordinates.*/
+        PolytopeIntersector(const osg::Polytope& polytope);
         
-        PolytopeIntersector(CoordinateFrame cf, const osg::Polytope& polytope, PolytopeIntersector* parent=0);
+        /** Construct a PolytopeIntersector using speified polytope in specified coordinate frame.*/
+        PolytopeIntersector(CoordinateFrame cf, const osg::Polytope& polytope);
         
+        /** Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates
+          * In WINDOW coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax.
+          * In PROJECTION coordinates (clip space cube) creates a five sided polytope box that has a front face at -1 and sides around box xMin, yMin, xMax, yMax.
+          * In VIEW and MODEL coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax.*/
+        PolytopeIntersector(CoordinateFrame cf, double xMin, double yMin, double xMax, double yMax);
+
         struct Intersection
         {
             Intersection() {}

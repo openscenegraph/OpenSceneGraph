@@ -191,29 +191,25 @@ public:
         bool usePolytopePicking = true;
         if (usePolytopePicking)
         {
+
+#if 0
             // use window coordinates
             // remap the mouse x,y into viewport coordinates.
             osg::Viewport* viewport = viewer->getCamera()->getViewport();
-            float mx = viewport->x() + (int)((float)viewport->width()*(ea.getXnormalized()*0.5f+0.5f));
-            float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
+            double mx = viewport->x() + (int)((double )viewport->width()*(ea.getXnormalized()*0.5+0.5));
+            double my = viewport->y() + (int)((double )viewport->height()*(ea.getYnormalized()*0.5+0.5));
 
-            float width = 10.0f;
-            float height = 10.0f;
-
-            float min_x = mx - width*0.5;
-            float max_x = mx + width*0.5;
-            float min_y = my - height*0.5;
-            float max_y = my + height*0.5;
-
-            osg::Polytope polytope;
-            polytope.add(osg::Plane(1,0,0,-min_x));
-            polytope.add(osg::Plane(-1,0,0,max_x));
-            polytope.add(osg::Plane(0,1,0,-min_y));
-            polytope.add(osg::Plane(0,-1,0,max_y));
-            polytope.add(osg::Plane(0,0,1,0));
-
-            osgUtil::PolytopeIntersector* picker = new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, polytope );
-
+            // half width, height.
+            double w = 5.0f;
+            double h = 5.0f;
+            osgUtil::PolytopeIntersector* picker = new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, mx-w, my-h, mx+w, my+h );
+#else
+            double mx = ea.getXnormalized();
+            double my = ea.getYnormalized();
+            double w = 0.05;
+            double h = 0.05;
+            osgUtil::PolytopeIntersector* picker = new osgUtil::PolytopeIntersector( osgUtil::Intersector::PROJECTION, mx-w, my-h, mx+w, my+h );
+#endif
             osgUtil::IntersectionVisitor iv(picker);
 
             viewer->getCamera()->accept(iv);
@@ -235,15 +231,15 @@ public:
         {
 
             #if 0
-            // use non dimension coordinates - in projection/clip space
-            osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION, osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),-1.0), osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),1.0) );
+            // use non dimensional coordinates - in projection/clip space
+            osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector( osgUtil::Intersector::PROJECTION, ea.getXnormalized(),ea.getYnormalized() );
             #else
             // use window coordinates
             // remap the mouse x,y into viewport coordinates.
             osg::Viewport* viewport = viewer->getCamera()->getViewport();
             float mx = viewport->x() + (int)((float)viewport->width()*(ea.getXnormalized()*0.5f+0.5f));
             float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
-            osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
+            osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector( osgUtil::Intersector::WINDOW, mx, my );
             #endif
 
             osgUtil::IntersectionVisitor iv(picker);

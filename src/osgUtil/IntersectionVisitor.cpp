@@ -210,26 +210,41 @@ struct TriangleIntersector
 //  LineSegmentIntersector
 //
 
-LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent):
-    _parent(parent),
+LineSegmentIntersector::LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end):
+    _parent(0),
     _start(start),
     _end(end)
 {
 }
 
-LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersector* parent):
+LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end):
     Intersector(cf),
-    _parent(parent),
+    _parent(0),
     _start(start),
     _end(end)
 {
+}
+
+LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, double x, double y):
+    Intersector(cf),
+    _parent(0)
+{
+    switch(cf)
+    {
+        case WINDOW : _start.set(x,y,0.0); _end.set(x,y,1.0); break;
+        case PROJECTION : _start.set(x,y,1.0); _end.set(x,y,-1.0); break;
+        case VIEW : _start.set(x,y,0.0); _end.set(x,y,1.0); break;
+        case MODEL : _start.set(x,y,0.0); _end.set(x,y,1.0); break;
+    }
 }
 
 Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 {
     if (_coordinateFrame==MODEL && iv.getModelMatrix()==0)
     {
-        return new LineSegmentIntersector(_start, _end, this);
+        osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start, _end);
+        lsi->_parent = this;
+        return lsi.release();
     }
 
     // compute the matrix that takes this Intersector from its CoordinateFrame into the local MODEL coordinate frame
@@ -260,7 +275,9 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
     osg::Matrix inverse;
     inverse.invert(matrix);
 
-    return new LineSegmentIntersector(_start * inverse, _end * inverse, this);
+    osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start * inverse, _end * inverse);
+    lsi->_parent = this;
+    return lsi.release();
 }
 
 bool LineSegmentIntersector::enter(const osg::Node& node)
@@ -497,24 +514,46 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
 //
 //  IntersectorGroup
 //
-PolytopeIntersector::PolytopeIntersector(const osg::Polytope& polytope, PolytopeIntersector* parent):
-    _parent(parent),
+PolytopeIntersector::PolytopeIntersector(const osg::Polytope& polytope):
+    _parent(0),
     _polytope(polytope)
 {
 }
 
-PolytopeIntersector::PolytopeIntersector(CoordinateFrame cf, const osg::Polytope& polytope, PolytopeIntersector* parent):
+PolytopeIntersector::PolytopeIntersector(CoordinateFrame cf, const osg::Polytope& polytope):
     Intersector(cf),
-    _parent(parent),
+    _parent(0),
     _polytope(polytope)
 {
+}
+
+PolytopeIntersector::PolytopeIntersector(CoordinateFrame cf, double xMin, double yMin, double xMax, double yMax):
+    Intersector(cf),
+    _parent(0)
+{
+    double zNear = 0.0;
+    switch(cf)
+    {
+        case WINDOW : zNear = 0.0; break;
+        case PROJECTION : zNear = 1.0; break;
+        case VIEW : zNear = 0.0; break;
+        case MODEL : zNear = 0.0; break;
+    }
+
+    _polytope.add(osg::Plane(1.0, 0.0, 0.0, -xMin));
+    _polytope.add(osg::Plane(-1.0,0.0 ,0.0, xMax));
+    _polytope.add(osg::Plane(0.0, 1.0, 0.0,-yMin));
+    _polytope.add(osg::Plane(0.0,-1.0,0.0, yMax));
+    _polytope.add(osg::Plane(0.0,0.0,1.0, zNear));
 }
 
 Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
 {
     if (_coordinateFrame==MODEL && iv.getModelMatrix()==0)
     {
-        return new PolytopeIntersector(_polytope, this);
+        osg::ref_ptr<PolytopeIntersector> pi = new PolytopeIntersector(_polytope);
+        pi->_parent = this;
+        return pi.release();
     }
 
     // compute the matrix that takes this Intersector from its CoordinateFrame into the local MODEL coordinate frame
@@ -545,7 +584,9 @@ Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
     osg::Polytope transformedPolytope;
     transformedPolytope.setAndTransformProvidingInverse(_polytope, matrix);
 
-    return new PolytopeIntersector(transformedPolytope, this);
+    osg::ref_ptr<PolytopeIntersector> pi = new PolytopeIntersector(transformedPolytope);
+    pi->_parent = this;
+    return pi.release();
 }
 
 bool PolytopeIntersector::enter(const osg::Node& node)

@@ -191,10 +191,6 @@ SOURCE=..\..\src\osgGA\MatrixManipulator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgGA\SimpleViewer.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osgGA\StateSetManipulator.cpp
 # End Source File
 # Begin Source File
@@ -264,10 +260,6 @@ SOURCE=..\..\Include\osgGA\KeySwitchMatrixManipulator
 # Begin Source File
 
 SOURCE=..\..\Include\osgGA\MatrixManipulator
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\Include\osgGA\SimpleViewer
 # End Source File
 # Begin Source File
 

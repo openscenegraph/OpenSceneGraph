@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgsimpleviewerSDL.cpp\
 
-LIBS  += -losgGA -losgDB -losgUtil -losg `sdl-config --libs`  $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS  += -losgViewer -losgGA -losgDB -losgUtil -losg `sdl-config --libs`  $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgsimpleviewerSDL
 

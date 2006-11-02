@@ -3,7 +3,7 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
@@ -90,7 +90,7 @@ int main( int argc, char **argv )
     
     SDL_EnableUNICODE(1);
     
-    osgGA::SimpleViewer viewer;
+    osgViewer::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
     viewer.getEventQueue()->windowResize(0, 0, windowWidth, windowHeight );

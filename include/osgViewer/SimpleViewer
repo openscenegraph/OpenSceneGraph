@@ -11,21 +11,22 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_SimpleViewer
-#define OSGGA_SimpleViewer 1
+#ifndef OSGVIEWER_SimpleViewer
+#define OSGVIEWER_SimpleViewer 1
 
 #include <osgGA/EventVisitor>
 #include <osgGA/MatrixManipulator>
-#include <osgGA/GraphicsWindow>
+
+#include <osgViewer/GraphicsWindow>
 
 #include <osgDB/DatabasePager>
 
 #include <list>
 
-namespace osgGA{
+namespace osgViewer{
 
 /** SimpleViewer provide a simple interface for setting up rendering of an scene graph, using a single camera view within a single window.*/
-class OSGGA_EXPORT SimpleViewer : public virtual osgGA::GraphicsWindow
+class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
 {
     public:
 
@@ -39,14 +40,14 @@ class OSGGA_EXPORT SimpleViewer : public virtual osgGA::GraphicsWindow
         osg::CameraNode* getCamera();
         const osg::CameraNode* getCamera() const;
 
-        void setCameraManipulator(MatrixManipulator* manipulator);
-        MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
-        const MatrixManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
+        void setCameraManipulator(osgGA::MatrixManipulator* manipulator);
+        osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
+        const osgGA::MatrixManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
 
 
-        typedef std::list< osg::ref_ptr<GUIEventHandler> > EventHandlers;
+        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
         
-        void addEventHandler(GUIEventHandler* eventHandler);
+        void addEventHandler(osgGA::GUIEventHandler* eventHandler);
         EventHandlers& getEventHandlers() { return _eventHandlers; }
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
 

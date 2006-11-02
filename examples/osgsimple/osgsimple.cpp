@@ -7,7 +7,7 @@
 
 #include <osgUtil/SceneView>
 #include <osgDB/ReadFile>
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 
 
 int main( int argc, char **argv )
@@ -34,7 +34,7 @@ int main( int argc, char **argv )
     renderSurface->realize();
     
     
-    osgGA::SimpleViewer viewer;
+    osgViewer::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
 
     // initialize the view to look at the center of the scene graph

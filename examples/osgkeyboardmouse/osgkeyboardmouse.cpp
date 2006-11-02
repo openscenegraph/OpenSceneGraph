@@ -1,6 +1,6 @@
 // C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
 //
-// Simple example of use of Producer::RenderSurface + KeyboardMouseCallback + SceneView
+// Simple example of use of Producer::RenderSurface + KeyboardMouseCallback + SimpleViewer
 // example that provides the user with control over view position with basic picking.
 
 #include <Producer/RenderSurface>
@@ -11,16 +11,15 @@
 #include <osg/io_utils>
 #include <osg/observer_ptr>
 
-#include <osgUtil/SceneView>
-#include <osgUtil/IntersectVisitor>
 #include <osgUtil/IntersectionVisitor>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
-#include <osgGA/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
+
+#include <osgViewer/SimpleViewer>
 
 #include <osgFX/Scribe>
 
@@ -138,21 +137,22 @@ public:
 class PickHandler : public osgGA::GUIEventHandler {
 public: 
 
-    PickHandler(osgUtil::SceneView* sceneView):
-        _sceneView(sceneView),
+    PickHandler():
         _mx(0.0),_my(0.0) {}
 
     ~PickHandler() {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
+        osgViewer::SimpleViewer* viewer = dynamic_cast<osgViewer::SimpleViewer*>(&aa);
+
         switch(ea.getEventType())
         {
             case(osgGA::GUIEventAdapter::KEYUP):
             {
-                if (ea.getKey()=='s')
+                if (ea.getKey()=='s' && viewer)
                 {
-                    saveSelectedModel();
+                    saveSelectedModel(viewer->getSceneData());
                 }
                 return false;
             }
@@ -168,7 +168,7 @@ public:
                 if (_mx == ea.getX() && _my == ea.getY())
                 {
                     // only do a pick if the mouse hasn't moved
-                    pick(ea);
+                    pick(ea,viewer);
                 }
                 return true;
             }    
@@ -178,39 +178,39 @@ public:
         }
     }
 
-    void pick(const osgGA::GUIEventAdapter& ea)
+    void pick(const osgGA::GUIEventAdapter& ea, osgViewer::SimpleViewer* viewer)
     {
-
-        osg::Node* scene = _sceneView.valid() ? _sceneView->getSceneData() : 0;
+        osg::Node* scene = viewer->getSceneData();
         if (!scene) return;
 
-        // remap the mouse x,y into viewport coordinates.
         
 
        osg::notify(osg::NOTICE)<<std::endl;
 
 #if 0
         // use non dimension coordinates - in projection/clip space
-        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION, osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),0.0), osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),1.0) );
+        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION, osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),-1.0), osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),1.0) );
 #else
         // use window coordinates
-        float mx = _sceneView->getViewport()->x() + (int)((float)_sceneView->getViewport()->width()*(ea.getXnormalized()*0.5f+0.5f));
-        float my = _sceneView->getViewport()->y() + (int)((float)_sceneView->getViewport()->height()*(ea.getYnormalized()*0.5f+0.5f));
+        // remap the mouse x,y into viewport coordinates.
+        osg::Viewport* viewport = viewer->getCamera()->getViewport();
+        float mx = viewport->x() + (int)((float)viewport->width()*(ea.getXnormalized()*0.5f+0.5f));
+        float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
         osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
+
 #endif
 
         osgUtil::IntersectionVisitor iv(picker);
         
-        _sceneView->getCamera()->accept(iv);
+        viewer->getCamera()->accept(iv);
         
-        osg::notify(osg::NOTICE)<<"Done pick, "<<picker->containsIntersections()<<std::endl;
-        
+
         if (picker->containsIntersections())
         {
             osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
-            osg::notify(osg::NOTICE)<<"Picking "<<intersection.localIntersectionPoint<<std::endl;
+            osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl;
 
-#if 0
+#if 1
             osg::NodePath& nodePath = intersection.nodePath;
             osg::Node* node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
             osg::Group* parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
@@ -247,37 +247,14 @@ public:
 
         }
         
-
-        {
-            float mx = _sceneView->getViewport()->x() + (int)((float)_sceneView->getViewport()->width()*(ea.getXnormalized()*0.5f+0.5f));
-            float my = _sceneView->getViewport()->y() + (int)((float)_sceneView->getViewport()->height()*(ea.getYnormalized()*0.5f+0.5f));
-
-            // do the pick traversal use the other PickVisitor to double check results.
-            osgUtil::PickVisitor pick(_sceneView->getViewport(),
-                                      _sceneView->getProjectionMatrix(), 
-                                      _sceneView->getViewMatrix(), mx, my);
-            scene->accept(pick);
-
-            osgUtil::PickVisitor::LineSegmentHitListMap& segHitList = pick.getSegHitList();
-            if (!segHitList.empty() && !segHitList.begin()->second.empty())
-            {
-
-                // get the hits for the first segment
-                osgUtil::PickVisitor::HitList& hits = segHitList.begin()->second;
-
-                // just take the first hit - nearest the eye point.
-                osgUtil::Hit& hit = hits.front();
-
-                std::cout<<"Got hits"<<hit.getLocalIntersectPoint()<<std::endl;
-            }
-        }
-
     }
 
-    void saveSelectedModel()
+    void saveSelectedModel(osg::Node* scene)
     {
+        if (!scene) return;
+    
         CreateModelToSaveVisitor cmtsv;
-        _sceneView->getSceneData()->accept(cmtsv);
+        scene->accept(cmtsv);
         
         if (cmtsv._group->getNumChildren()>0)
         {
@@ -288,7 +265,6 @@ public:
 
 protected:
 
-    osg::observer_ptr<osgUtil::SceneView> _sceneView;
     float _mx,_my;
 };
 
@@ -317,7 +293,7 @@ int main( int argc, char **argv )
     
 
     // create the view of the scene.
-    osgGA::SimpleViewer viewer;
+    osgViewer::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
     
     // set up a KeyboardMouse to manage the events comming in from the RenderSurface
@@ -334,7 +310,7 @@ int main( int argc, char **argv )
     viewer.addEventHandler(statesetManipulator.get());
 
     // add the pick handler
-    viewer.addEventHandler(new PickHandler(viewer.getSceneView()));
+    viewer.addEventHandler(new PickHandler());
     
     // set the window dimensions 
     viewer.getEventQueue()->getCurrentEventState()->setWindowRectangle(100,100,800,600);

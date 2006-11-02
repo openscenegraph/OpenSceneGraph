@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgsimpleviewerProducer.cpp\
 
-LIBS     += -lProducer -losgGA -losgDB --losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -lProducer -losgViewer -losgGA -losgDB --losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgsimpleviewerProducer
 

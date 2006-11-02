@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgkeyboardmouse.cpp\
 
-LIBS     += -lProducer -losgFX -losgGA -losgDB -losgUtil -losg $(X_LIBS) $(OTHER_LIBS) -lOpenThreads
+LIBS     += -lProducer -losgFX -losgViewer -losgGA -losgDB -losgUtil -losg $(X_LIBS) $(OTHER_LIBS) -lOpenThreads
 
 INSTFILES = \
 	$(CXXFILES)\

@@ -3,7 +3,7 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-class GraphicsWindowFLTK : public Fl_Gl_Window,  virtual osgGA::GraphicsWindow
+class GraphicsWindowFLTK : public Fl_Gl_Window,  virtual osgViewer::GraphicsWindow
 {
 public:
 
@@ -70,7 +70,7 @@ void idle_cb()
 }
 
 
-class SimpleViewerFLTK : public osgGA::SimpleViewer, public GraphicsWindowFLTK
+class SimpleViewerFLTK : public osgViewer::SimpleViewer, public GraphicsWindowFLTK
 {
 public:
     SimpleViewerFLTK(int x, int y, int w, int h, const char *label=0):

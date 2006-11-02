@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgsimpleviewerQT3.cpp\
 
-LIBS     += -losgDB -losgUtil -losg -lqt-mt $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgGA -losgDB -losgUtil -losg -lqt-mt $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgsimpleviewerQT3
 

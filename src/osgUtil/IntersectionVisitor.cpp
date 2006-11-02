@@ -495,9 +495,94 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//  LineSegmentIntersector
+//  IntersectorGroup
 //
+PolytopeIntersector::PolytopeIntersector(const osg::Polytope& polytope, PolytopeIntersector* parent):
+    _parent(parent),
+    _polytope(polytope)
+{
+}
 
+PolytopeIntersector::PolytopeIntersector(CoordinateFrame cf, const osg::Polytope& polytope, PolytopeIntersector* parent):
+    Intersector(cf),
+    _parent(parent),
+    _polytope(polytope)
+{
+}
+
+Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
+{
+    if (_coordinateFrame==MODEL && iv.getModelMatrix()==0)
+    {
+        return new PolytopeIntersector(_polytope, this);
+    }
+
+    // compute the matrix that takes this Intersector from its CoordinateFrame into the local MODEL coordinate frame
+    // that geometry in the scene graph will always be in.
+    osg::Matrix matrix;
+    switch (_coordinateFrame)
+    {
+        case(WINDOW): 
+            if (iv.getWindowMatrix()) matrix.preMult( *iv.getWindowMatrix() );
+            if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
+            if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
+            if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
+            break;
+        case(PROJECTION): 
+            if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
+            if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
+            if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
+            break;
+        case(VIEW): 
+            if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
+            if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
+            break;
+        case(MODEL):
+            if (iv.getModelMatrix()) matrix = *iv.getModelMatrix();
+            break;
+    }
+
+    osg::Polytope transformedPolytope;
+    transformedPolytope.setAndTransformProvidingInverse(_polytope, matrix);
+
+    return new PolytopeIntersector(transformedPolytope, this);
+}
+
+bool PolytopeIntersector::enter(const osg::Node& node)
+{
+    return !node.isCullingActive() || _polytope.contains( node.getBound() );
+}
+
+
+void PolytopeIntersector::leave()
+{
+    // do nothing.
+}
+
+
+void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
+{
+    if ( !_polytope.contains( drawable->getBound() ) ) return;
+
+    Intersection hit;
+    hit.nodePath = iv.getNodePath();
+    hit.drawable = drawable;
+}
+
+
+void PolytopeIntersector::reset()
+{
+    Intersector::reset();
+    
+    _intersections.clear();
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  IntersectorGroup
+//
 
 IntersectorGroup::IntersectorGroup()
 {
@@ -782,9 +867,10 @@ void IntersectionVisitor::apply(osg::Projection& projection)
 
 void IntersectionVisitor::apply(osg::CameraNode& camera)
 {
-    //osg::notify(osg::NOTICE)<<"apply(CameraNode&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"apply(CameraNode&)"<<std::endl;
 
-    if (!enter(camera)) return;
+    // note, commenting out right now because default CameraNode setup is with the culling active.  Should this be changed?
+    // if (!enter(camera)) return;
     
     // osg::notify(osg::NOTICE)<<"inside apply(CameraNode&)"<<std::endl;
 

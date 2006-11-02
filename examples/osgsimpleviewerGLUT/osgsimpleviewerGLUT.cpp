@@ -13,11 +13,11 @@
 #  include <GL/glut.h>
 #endif
 
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-osg::ref_ptr<osgGA::SimpleViewer> viewer;
+osg::ref_ptr<osgViewer::SimpleViewer> viewer;
 
 void display(void)
 {
@@ -89,7 +89,7 @@ int main( int argc, char **argv )
     glutKeyboardFunc( keyboard );
 
     // create the view of the scene.
-    viewer = new osgGA::SimpleViewer;
+    viewer = new osgViewer::SimpleViewer;
     viewer->setSceneData(loadedModel.get());
     viewer->setCameraManipulator(new osgGA::TrackballManipulator);
 

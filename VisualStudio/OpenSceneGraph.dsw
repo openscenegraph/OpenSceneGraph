@@ -183,6 +183,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Core osgViewer"=.\osgViewer\osgViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgDB
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "Core osgProducer"=.\osgProducer\osgProducer.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2042,6 +2066,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgGA
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -2065,6 +2092,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
     End Project Dependency
 }}}
 
@@ -2090,6 +2120,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgGA
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -2113,6 +2146,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
     End Project Dependency
 }}}
 
@@ -2138,6 +2174,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgGA
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -2162,6 +2201,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Core osgGA
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -2185,6 +2227,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
     End Project Dependency
 }}}
 

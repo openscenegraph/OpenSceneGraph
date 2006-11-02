@@ -11,10 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgGA/SimpleViewer>
-#include <osgGA/TrackballManipulator>
+#include <osgViewer/SimpleViewer>
 
-using namespace osgGA;
+using namespace osgViewer;
 
 SimpleViewer::SimpleViewer():
     _firstFrame(true)
@@ -80,7 +79,7 @@ const osg::CameraNode* SimpleViewer::getCamera() const
     return _sceneView->getCamera();
 }
 
-void SimpleViewer::setCameraManipulator(MatrixManipulator* manipulator)
+void SimpleViewer::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 {
     if (_cameraManipulator == manipulator) return;
     
@@ -94,7 +93,7 @@ void SimpleViewer::setCameraManipulator(MatrixManipulator* manipulator)
     }
 }
 
-void SimpleViewer::addEventHandler(GUIEventHandler* eventHandler)
+void SimpleViewer::addEventHandler(osgGA::GUIEventHandler* eventHandler)
 {
     _eventHandlers.push_back(eventHandler);
 }

@@ -11,15 +11,17 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_GRAPHICWINDOW
-#define OSG_GRAPHICWINDOW 1
+#ifndef OSGVIEWER_GRAPHICWINDOW
+#define OSGVIEWER_GRAPHICWINDOW 1
 
 #include <osg/GraphicsContext>
 #include <osg/Notify>
 
 #include <osgGA/EventQueue>
 
-namespace osgGA {
+#include <osgViewer/Export>
+
+namespace osgViewer {
 
 /** Base class for providing Windowing API agnostic access to creating and managing graphisc window and events.
   * Note, the GraphicsWindow is subclassed from osg::GraphicsContext, and to provide an implemention you'll need to implement its 
@@ -27,7 +29,7 @@ namespace osgGA {
   * GraphicsWindow adds the event queue ontop of the GraphicsContext, thereby adding a mechnism for adapting Windowing events
   * as well as basics graphics context work, you should wire up custom GraphicsWindowImplementation to push their events through
   * into the EventQueue. */
-class OSGGA_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgGA::GUIActionAdapter
+class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgGA::GUIActionAdapter
 {
     public:
     

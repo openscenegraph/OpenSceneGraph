@@ -3,7 +3,7 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
@@ -14,7 +14,7 @@ class QWidget;
 
 #include <iostream>
 
-class GraphicsWindowQT : public QGLWidget, virtual public osgGA::GraphicsWindow
+class GraphicsWindowQT : public QGLWidget, virtual public osgViewer::GraphicsWindow
 {
 public:
 
@@ -89,7 +89,7 @@ void GraphicsWindowQT::mouseMoveEvent( QMouseEvent* event )
 }
 
 
-class SimpleViewerQT : public osgGA::SimpleViewer, public GraphicsWindowQT
+class SimpleViewerQT : public osgViewer::SimpleViewer, public GraphicsWindowQT
 {
     public:
         SimpleViewerQT() {}

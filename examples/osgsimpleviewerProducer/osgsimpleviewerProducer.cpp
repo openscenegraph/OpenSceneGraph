@@ -8,7 +8,7 @@
 
 #include <osgDB/ReadFile>
 
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
 
@@ -81,7 +81,7 @@ private:
 // first approach uses a custom GraphicsWindow
 // then uses multiple inheritance to create a SimpleViewerWindowProducer
 
-class GraphicsWindowProducer : public virtual osgGA::GraphicsWindow, public Producer::RenderSurface
+class GraphicsWindowProducer : public virtual osgViewer::GraphicsWindow, public Producer::RenderSurface
 {
     public:
     
@@ -120,7 +120,7 @@ class GraphicsWindowProducer : public virtual osgGA::GraphicsWindow, public Prod
         osg::ref_ptr<MyKeyboardMouseCallback> _kbmcb;
 };
 
-class SimplerViewerProducer : public osgGA::SimpleViewer, public GraphicsWindowProducer
+class SimplerViewerProducer : public osgViewer::SimpleViewer, public GraphicsWindowProducer
 {
     public:
         SimplerViewerProducer() {}
@@ -198,7 +198,7 @@ int main( int argc, char **argv )
     
 
     // create the view of the scene.
-    osgGA::SimpleViewer viewer;
+    osgViewer::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
     
     // set up a KeyboardMouse to manage the events comming in from the RenderSurface

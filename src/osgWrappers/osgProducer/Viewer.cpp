@@ -19,6 +19,7 @@
 #include <osg/Vec3>
 #include <osgGA/EventQueue>
 #include <osgGA/EventVisitor>
+#include <osgGA/GUIEventHandler>
 #include <osgGA/KeySwitchMatrixManipulator>
 #include <osgGA/MatrixManipulator>
 #include <osgProducer/KeyboardMouseCallback>
@@ -409,6 +410,41 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	                 __bool__getWriteImageWhenDone, 
 	                 __void__setWriteImageWhenDone__bool);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgGA::GUIEventHandler *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgGA::GUIEventHandler *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgGA::GUIEventHandler *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >);
 
 STD_LIST_REFLECTOR(std::list< std::string >);
 

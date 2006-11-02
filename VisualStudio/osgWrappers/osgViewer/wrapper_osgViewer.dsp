@@ -1,24 +1,24 @@
-# Microsoft Developer Studio Project File - Name="osgWrapper osgSim" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="osgWrapper osgViewer" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=osgWrapper osgSim - Win32 Release
+CFG=osgWrapper osgViewer - Win32 Release
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "wrapper_osgSim.mak".
+!MESSAGE NMAKE /f "wrapper_osgViewer.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "wrapper_osgSim.mak" CFG="osgWrapper osgSim - Win32 Release"
+!MESSAGE NMAKE /f "wrapper_osgViewer.mak" CFG="osgWrapper osgViewer - Win32 Release"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "osgWrapper osgSim - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "osgWrapper osgSim - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgWrapper osgViewer - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "osgWrapper osgViewer - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CPP=cl.exe
 MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "osgWrapper osgSim - Win32 Release"
+!IF  "$(CFG)" == "osgWrapper osgViewer - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -54,10 +54,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 opengl32.lib OpenThreadsWin32.lib  /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /opt:ref /opt:icf /out:"$(OutDir)/osgwrapper_osgSim.dll" /implib:"../../../lib/$(PlatformName)/osgwrapper_osgSim.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 opengl32.lib OpenThreadsWin32.lib  /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /opt:ref /opt:icf /out:"$(OutDir)/osgwrapper_osgViewer.dll" /implib:"../../../lib/$(PlatformName)/osgwrapper_osgViewer.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /nodefaultlib
 
-!ELSEIF  "$(CFG)" == "osgWrapper osgSim - Win32 Debug"
+!ELSEIF  "$(CFG)" == "osgWrapper osgViewer - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -82,97 +82,29 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 opengl32.lib OpenThreadsWin32d.lib  /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"$(OutDir)/osgwrapper_osgSimd.dll" /pdbtype:sept /implib:"../../../lib/$(PlatformName)/osgwrapper_osgSimd.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
+# ADD LINK32 opengl32.lib OpenThreadsWin32d.lib  /nologo /dll /debug /machine:I386 /nodefaultlib:"LIBC" /out:"$(OutDir)/osgwrapper_osgViewerd.dll" /pdbtype:sept /implib:"../../../lib/$(PlatformName)/osgwrapper_osgViewerd.lib" /libpath:"../../../lib/$(PlatformName)" /libpath:"../../../../OpenThreads/lib/$(PlatformName)" /libpath:"../../../../Producer/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib/$(PlatformName)" /libpath:"../../../../3rdParty/lib"
 # SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ENDIF 
 
 # Begin Target
 
-# Name "osgWrapper osgSim - Win32 Release"
-# Name "osgWrapper osgSim - Win32 Debug"
+# Name "osgWrapper osgViewer - Win32 Release"
+# Name "osgWrapper osgViewer - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\BlinkSequence.cpp
+SOURCE=..\..\..\src\osgWrappers\osgViewer\Export.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\ColorRange.cpp
+SOURCE=..\..\..\src\osgWrappers\osgViewer\GraphicsWindow.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\DOFTransform.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\GeographicLocation.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\HeightAboveTerrain.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\Impostor.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\ImpostorSprite.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\InsertImpostorsVisitor.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\LightPoint.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\LightPointNode.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\LightPointSystem.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\LineOfSight.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\MultiSwitch.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\OpenFlightOptimizer.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\OverlayNode.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\ScalarBar.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\ScalarsToColors.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\Sector.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\SphereSegment.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\VisibilityGroup.cpp
+SOURCE=..\..\..\src\osgWrappers\osgViewer\SimpleViewer.cpp
 # End Source File
 
 # End Group

@@ -15,8 +15,8 @@
 #include <osgDB/DatabasePager>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
-#include <osgGA/SimpleViewer>
 #include <osgUtil/SceneView>
+#include <osgViewer/SimpleViewer>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -26,10 +26,10 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgGA::SimpleViewer::EventHandlers);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::SimpleViewer::EventHandlers);
 
-BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
-	I_VirtualBaseType(osgGA::GraphicsWindow);
+BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
+	I_VirtualBaseType(osgViewer::GraphicsWindow);
 	I_Constructor0(____SimpleViewer,
 	               "",
 	               "");
@@ -54,26 +54,26 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	          "",
 	          "");
 	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator,
-	          __void__setCameraManipulator__MatrixManipulator_P1,
+	          __void__setCameraManipulator__osgGA_MatrixManipulator_P1,
 	          "",
 	          "");
 	I_Method0(osgGA::MatrixManipulator *, getCameraManipulator,
-	          __MatrixManipulator_P1__getCameraManipulator,
+	          __osgGA_MatrixManipulator_P1__getCameraManipulator,
 	          "",
 	          "");
 	I_Method0(const osgGA::MatrixManipulator *, getCameraManipulator,
-	          __C5_MatrixManipulator_P1__getCameraManipulator,
+	          __C5_osgGA_MatrixManipulator_P1__getCameraManipulator,
 	          "",
 	          "");
 	I_Method1(void, addEventHandler, IN, osgGA::GUIEventHandler *, eventHandler,
-	          __void__addEventHandler__GUIEventHandler_P1,
+	          __void__addEventHandler__osgGA_GUIEventHandler_P1,
 	          "",
 	          "");
-	I_Method0(osgGA::SimpleViewer::EventHandlers &, getEventHandlers,
+	I_Method0(osgViewer::SimpleViewer::EventHandlers &, getEventHandlers,
 	          __EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
-	I_Method0(const osgGA::SimpleViewer::EventHandlers &, getEventHandlers,
+	I_Method0(const osgViewer::SimpleViewer::EventHandlers &, getEventHandlers,
 	          __C5_EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
@@ -137,12 +137,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	                 __osg_CameraNode_P1__getCamera, 
 	                 0);
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
-	                 __MatrixManipulator_P1__getCameraManipulator, 
-	                 __void__setCameraManipulator__MatrixManipulator_P1);
+	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
+	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);
 	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
 	                 __osgDB_DatabasePager_P1__getDatabasePager, 
 	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
-	I_SimpleProperty(osgGA::SimpleViewer::EventHandlers &, EventHandlers, 
+	I_SimpleProperty(osgViewer::SimpleViewer::EventHandlers &, EventHandlers, 
 	                 __EventHandlers_R1__getEventHandlers, 
 	                 0);
 	I_SimpleProperty(osg::Node *, SceneData, 
@@ -152,39 +152,4 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SimpleViewer)
 	                 __osgUtil_SceneView_P1__getSceneView, 
 	                 0);
 END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
-	I_Constructor0(____ref_ptr,
-	               "",
-	               "");
-	I_Constructor1(IN, osgGA::GUIEventHandler *, ptr,
-	               ____ref_ptr__T_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventHandler > &, rp,
-	               ____ref_ptr__C5_ref_ptr_R1,
-	               "",
-	               "");
-	I_Method0(osgGA::GUIEventHandler *, get,
-	          __T_P1__get,
-	          "",
-	          "");
-	I_Method0(bool, valid,
-	          __bool__valid,
-	          "",
-	          "");
-	I_Method0(osgGA::GUIEventHandler *, release,
-	          __T_P1__release,
-	          "",
-	          "");
-	I_Method1(void, swap, IN, osg::ref_ptr< osgGA::GUIEventHandler > &, rp,
-	          __void__swap__ref_ptr_R1,
-	          "",
-	          "");
-	I_SimpleProperty(osgGA::GUIEventHandler *, , 
-	                 __T_P1__get, 
-	                 0);
-END_REFLECTOR
-
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >);
 

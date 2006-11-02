@@ -6,12 +6,14 @@ CXXFILES =\
 	ColorRange.cpp\
 	DOFTransform.cpp\
 	GeographicLocation.cpp\
+	HeightAboveTerrain.cpp\
 	Impostor.cpp\
 	ImpostorSprite.cpp\
 	InsertImpostorsVisitor.cpp\
 	LightPoint.cpp\
 	LightPointNode.cpp\
 	LightPointSystem.cpp\
+	LineOfSight.cpp\
 	MultiSwitch.cpp\
 	OpenFlightOptimizer.cpp\
 	OverlayNode.cpp\

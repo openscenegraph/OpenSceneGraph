@@ -13,7 +13,6 @@ CXXFILES =\
 	KeySwitchMatrixManipulator.cpp\
 	MatrixManipulator.cpp\
 	NodeTrackerManipulator.cpp\
-	SimpleViewer.cpp\
 	StateSetManipulator.cpp\
 	TerrainManipulator.cpp\
 	TrackballManipulator.cpp\

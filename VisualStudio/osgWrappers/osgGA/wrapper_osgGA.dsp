@@ -140,10 +140,6 @@ SOURCE=..\..\..\src\osgWrappers\osgGA\NodeTrackerManipulator.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgGA\SimpleViewer.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgGA\StateSetManipulator.cpp
 # End Source File
 

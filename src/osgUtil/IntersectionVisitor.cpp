@@ -564,9 +564,18 @@ void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawa
 {
     if ( !_polytope.contains( drawable->getBound() ) ) return;
 
+    osg::Geometry* geometry = drawable->asGeometry();
+    osg::Vec3Array* vertices = geometry ? dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray()) : 0;
+    if (vertices)
+    {
+        if (!_polytope.contains(*vertices)) return;
+    }
+
     Intersection hit;
     hit.nodePath = iv.getNodePath();
     hit.drawable = drawable;
+    
+    insertIntersection(hit);
 }
 
 
@@ -736,11 +745,11 @@ void IntersectionVisitor::reset()
 
 void IntersectionVisitor::apply(osg::Node& node)
 {
-    osg::notify(osg::NOTICE)<<"apply(Node&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"apply(Node&)"<<std::endl;
 
     if (!enter(node)) return;
 
-    osg::notify(osg::NOTICE)<<"inside apply(Node&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"inside apply(Node&)"<<std::endl;
 
     traverse(node);
 

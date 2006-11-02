@@ -183,70 +183,113 @@ public:
         osg::Node* scene = viewer->getSceneData();
         if (!scene) return;
 
-        
+        osg::notify(osg::NOTICE)<<std::endl;
 
-       osg::notify(osg::NOTICE)<<std::endl;
+        osg::Node* node = 0;
+        osg::Group* parent = 0;
 
-#if 0
-        // use non dimension coordinates - in projection/clip space
-        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION, osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),-1.0), osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),1.0) );
-#else
-        // use window coordinates
-        // remap the mouse x,y into viewport coordinates.
-        osg::Viewport* viewport = viewer->getCamera()->getViewport();
-        float mx = viewport->x() + (int)((float)viewport->width()*(ea.getXnormalized()*0.5f+0.5f));
-        float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
-        osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
-
-#endif
-
-        osgUtil::IntersectionVisitor iv(picker);
-        
-        viewer->getCamera()->accept(iv);
-        
-
-        if (picker->containsIntersections())
+        bool usePolytopePicking = true;
+        if (usePolytopePicking)
         {
-            osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
-            osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl;
+            // use window coordinates
+            // remap the mouse x,y into viewport coordinates.
+            osg::Viewport* viewport = viewer->getCamera()->getViewport();
+            float mx = viewport->x() + (int)((float)viewport->width()*(ea.getXnormalized()*0.5f+0.5f));
+            float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
 
-#if 1
-            osg::NodePath& nodePath = intersection.nodePath;
-            osg::Node* node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
-            osg::Group* parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
+            float width = 10.0f;
+            float height = 10.0f;
 
-            if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
+            float min_x = mx - width*0.5;
+            float max_x = mx + width*0.5;
+            float min_y = my - height*0.5;
+            float max_y = my + height*0.5;
 
-            // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
-            if (parent && node)
+            osg::Polytope polytope;
+            polytope.add(osg::Plane(1,0,0,-min_x));
+            polytope.add(osg::Plane(-1,0,0,max_x));
+            polytope.add(osg::Plane(0,1,0,-min_y));
+            polytope.add(osg::Plane(0,-1,0,max_y));
+            polytope.add(osg::Plane(0,0,1,0));
+
+            osgUtil::PolytopeIntersector* picker = new osgUtil::PolytopeIntersector( osgUtil::Intersector::WINDOW, polytope );
+
+            osgUtil::IntersectionVisitor iv(picker);
+
+            viewer->getCamera()->accept(iv);
+
+            if (picker->containsIntersections())
             {
+                osgUtil::PolytopeIntersector::Intersection intersection = picker->getFirstIntersection();
 
-                std::cout<<"  parent "<<parent->className()<<std::endl;
+                osg::NodePath& nodePath = intersection.nodePath;
+                node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
+                parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
 
-                osgFX::Scribe* parentAsScribe = dynamic_cast<osgFX::Scribe*>(parent);
-                if (!parentAsScribe)
-                {
-                    // node not already picked, so highlight it with an osgFX::Scribe
-                    osgFX::Scribe* scribe = new osgFX::Scribe();
-                    scribe->addChild(node);
-                    parent->replaceChild(node,scribe);
-                }
-                else
-                {
-                    // node already picked so we want to remove scribe to unpick it.
-                    osg::Node::ParentList parentList = parentAsScribe->getParents();
-                    for(osg::Node::ParentList::iterator itr=parentList.begin();
-                        itr!=parentList.end();
-                        ++itr)
-                    {
-                        (*itr)->replaceChild(parentAsScribe,node);
-                    }
-                }
+                if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
+
             }
-#endif
 
         }
-        
+        else
+        {
+
+            #if 0
+            // use non dimension coordinates - in projection/clip space
+            osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::PROJECTION, osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),-1.0), osg::Vec3d(ea.getXnormalized(),ea.getYnormalized(),1.0) );
+            #else
+            // use window coordinates
+            // remap the mouse x,y into viewport coordinates.
+            osg::Viewport* viewport = viewer->getCamera()->getViewport();
+            float mx = viewport->x() + (int)((float)viewport->width()*(ea.getXnormalized()*0.5f+0.5f));
+            float my = viewport->y() + (int)((float)viewport->height()*(ea.getYnormalized()*0.5f+0.5f));
+            osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, osg::Vec3d(mx,my,0.0), osg::Vec3d(mx,my,1.0) );
+            #endif
+
+            osgUtil::IntersectionVisitor iv(picker);
+
+            viewer->getCamera()->accept(iv);
+
+            if (picker->containsIntersections())
+            {
+                osgUtil::LineSegmentIntersector::Intersection intersection = picker->getFirstIntersection();
+                osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl;
+
+                osg::NodePath& nodePath = intersection.nodePath;
+                node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
+                parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
+
+                if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
+
+            }
+        }        
+
+        // now we try to decorate the hit node by the osgFX::Scribe to show that its been "picked"
+        if (parent && node)
+        {
+
+            std::cout<<"  parent "<<parent->className()<<std::endl;
+
+            osgFX::Scribe* parentAsScribe = dynamic_cast<osgFX::Scribe*>(parent);
+            if (!parentAsScribe)
+            {
+                // node not already picked, so highlight it with an osgFX::Scribe
+                osgFX::Scribe* scribe = new osgFX::Scribe();
+                scribe->addChild(node);
+                parent->replaceChild(node,scribe);
+            }
+            else
+            {
+                // node already picked so we want to remove scribe to unpick it.
+                osg::Node::ParentList parentList = parentAsScribe->getParents();
+                for(osg::Node::ParentList::iterator itr=parentList.begin();
+                    itr!=parentList.end();
+                    ++itr)
+                {
+                    (*itr)->replaceChild(parentAsScribe,node);
+                }
+            }
+        }
     }
 
     void saveSelectedModel(osg::Node* scene)

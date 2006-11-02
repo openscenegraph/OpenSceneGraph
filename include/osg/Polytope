@@ -200,21 +200,25 @@ class OSG_EXPORT Polytope
             if (!_maskStack.back()) return true;
 
             _resultMask = _maskStack.back();
-            ClippingMask selector_mask = 0x1;
 
-            for(PlaneList::const_iterator itr=_planeList.begin();
-                itr!=_planeList.end();
-                ++itr)
+            for(std::vector<Vec3>::const_iterator vitr = vertices.begin();
+                vitr != vertices.end();
+                ++vitr)
             {
-                if (_resultMask&selector_mask)
+                const osg::Vec3& v = *vitr;
+                bool outside = false;
+                ClippingMask selector_mask = 0x1;
+                for(PlaneList::const_iterator itr=_planeList.begin();
+                    itr!=_planeList.end() && !outside;
+                    ++itr)
                 {
-                    int res=itr->intersect(vertices);
-                    if (res<0) return false; // outside clipping set.
-                    else if (res>0) _resultMask ^= selector_mask; // subsequent checks against this plane not required.
+                    if ((_maskStack.back()&selector_mask) && (itr->distance(v)<0.0f)) outside = true;
+                    selector_mask <<= 1;
                 }
-                selector_mask <<= 1; 
+                
+                if (!outside) return true;
             }
-            return true;
+            return false;
         }
 
         /** Check whether any part of a bounding sphere is contained within clipping set.

@@ -263,7 +263,7 @@ void EventQueue::keyPress(GUIEventAdapter::KeySymbol key)
         case(GUIEventAdapter::KEY_Meta_L):       _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_META | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Meta_R):       _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_META | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Alt_L):        _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_ALT | _accumulateEventState->getModKeyMask()); break;
-        case(GUIEventAdapter::KEY_Alt_R):        _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_ALT | _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Alt_R):        _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_ALT | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Caps_Lock):
         {
             if ((_accumulateEventState->getModKeyMask() & GUIEventAdapter::MODKEY_CAPS_LOCK)!=0) 
@@ -301,7 +301,7 @@ void EventQueue::keyRelease(GUIEventAdapter::KeySymbol key)
         case(GUIEventAdapter::KEY_Meta_L):       _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_META & _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Meta_R):       _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_META & _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Alt_L):        _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_ALT & _accumulateEventState->getModKeyMask()); break;
-        case(GUIEventAdapter::KEY_Alt_R):        _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_ALT & _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Alt_R):        _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_ALT & _accumulateEventState->getModKeyMask()); break;
         default: break;
     }        
 

@@ -83,6 +83,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 
             case 'w' :
                 cyclePolygonMode();
+                aa.requestRedraw();
                 break;
 
 #if COMPILE_TEXENVFILTER_USAGE
@@ -97,6 +98,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 
                     // cycle through the available modes.
                     texenvfilter->setLodBias(texenvfilter->getLodBias()+0.1);
+                    aa.requestRedraw();
                 }
                 break;
 #endif

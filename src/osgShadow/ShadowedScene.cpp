@@ -20,7 +20,6 @@
 #include <osgShadow/ShadowedScene>
 
 using namespace osgShadow;
-using namespace osg;
 
 ShadowedScene::ShadowedScene()
 {

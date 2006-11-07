@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
+    OccluderGeometry.cpp\
     ShadowedScene.cpp\
     ShadowTechnique.cpp\
     ShadowMap.cpp\

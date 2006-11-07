@@ -155,6 +155,10 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgShadow\OccluderGeometry.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgShadow\ShadowedScene.cpp
 # End Source File
 # Begin Source File
@@ -188,6 +192,10 @@ SOURCE=..\..\src\osgShadow\Version.cpp
 # Begin Source File
 
 SOURCE=..\..\include\osgShadow\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgShadow\OccluderGeometry
 # End Source File
 # Begin Source File
 

@@ -1519,6 +1519,16 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write objects to file \""+fileName+"\".");
     }
 
+    if (results.front().message().empty())
+    {
+        switch(results.front().status())
+        {
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            default: break;
+        }
+    }
+
     return results.front();
 }
 
@@ -1545,6 +1555,8 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
         else results.push_back(rr);
     }
 
+    results.clear();
+
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
@@ -1562,6 +1574,16 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write image to file \""+fileName+"\".");
     }
     
+    if (results.front().message().empty())
+    {
+        switch(results.front().status())
+        {
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            default: break;
+        }
+    }
+
     return results.front();
 }
 
@@ -1587,6 +1609,8 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
         else results.push_back(rr);
     }
 
+    results.clear();
+
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
     if (loadLibrary(libraryName))
@@ -1602,6 +1626,16 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     if (results.empty())
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write HeightField to file \""+fileName+"\".");
+    }
+
+    if (results.front().message().empty())
+    {
+        switch(results.front().status())
+        {
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            default: break;
+        }
     }
     
     return results.front();
@@ -1629,13 +1663,18 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
         else results.push_back(rr);
     }
 
+    results.clear();
+
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
+
+
     if (loadLibrary(libraryName))
     {
         for(;itr.valid();++itr)
         {
             ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
+    
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1644,6 +1683,16 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     if (results.empty())
     {
         return ReaderWriter::WriteResult("Warning: Could not find plugin to write nodes to file \""+fileName+"\".");
+    }
+
+    if (results.front().message().empty())
+    {
+        switch(results.front().status())
+        {
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            default: break;
+        }
     }
 
     return results.front();

@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle)
+BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 	I_BaseType(osg::Texture);
 	I_Constructor0(____TextureRectangle,
 	               "",

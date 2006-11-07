@@ -363,7 +363,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	                 __void__setVerticalBearing__C5_osg_Vec2_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
+BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	I_BaseType(osg::Texture2D);
 	I_Constructor0(____GlyphTexture,
 	               "",

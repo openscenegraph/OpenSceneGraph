@@ -100,6 +100,10 @@ SOURCE=..\..\..\src\osgWrappers\osgShadow\Export.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgShadow\OccluderGeometry.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgShadow\ParallelSplitShadowMap.cpp
 # End Source File
 

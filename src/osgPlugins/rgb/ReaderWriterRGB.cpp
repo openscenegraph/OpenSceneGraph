@@ -257,8 +257,6 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
     int count, done = 0;
     unsigned short *tempShort;
 
-    osg::notify(osg::NOTICE)<<std::endl<<"RawImageGetRow - "<<std::endl;
-
     if ((raw->type & 0xFF00) == 0x0100)
     {
         raw->file->seekg((long) raw->rowStart[y+z*raw->sizeY], std::ios::beg);

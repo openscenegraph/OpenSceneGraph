@@ -630,10 +630,19 @@ int main( int argc, char **argv )
                 std::cout<<"Warning: compressing texture only supported when outputing to .ive"<<std::endl;
             }
         }
-
-        if (osgDB::writeNodeFile(*root,fileNameOut))
+        
+        osgDB::ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeNode(*root,fileNameOut);
+        if (result.success())
         {
             osg::notify(osg::NOTICE)<<"Data written to '"<<fileNameOut<<"'."<< std::endl;
+        }
+        else if  (result.message().empty())
+        {
+            osg::notify(osg::NOTICE)<<"Warning: file write to '"<<fileNameOut<<"' no supported."<< std::endl;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<result.message()<< std::endl;
         }
     }
     else

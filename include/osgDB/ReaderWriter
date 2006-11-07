@@ -164,6 +164,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 osg::Node* takeNode();
                 osgDB::Archive* takeArchive();
 
+                std::string& message() { return _message; }
                 const std::string& message() const { return _message; }
 
                 ReadStatus status() const { return _status; }
@@ -197,6 +198,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 WriteResult(const WriteResult& rr):_status(rr._status),_message(rr._message) {}
                 WriteResult& operator = (const WriteResult& rr) { if (this==&rr) return *this; _status=rr._status; _message=rr._message; return *this; }
                 
+                std::string& message() { return _message; }
                 const std::string& message() const { return _message; }
 
                 WriteStatus status() const { return _status; }

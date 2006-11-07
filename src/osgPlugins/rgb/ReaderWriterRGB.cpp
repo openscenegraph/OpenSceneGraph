@@ -257,9 +257,11 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
     int count, done = 0;
     unsigned short *tempShort;
 
+    osg::notify(osg::NOTICE)<<std::endl<<"RawImageGetRow - "<<std::endl;
+
     if ((raw->type & 0xFF00) == 0x0100)
     {
-                raw->file->seekg((long) raw->rowStart[y+z*raw->sizeY], std::ios::beg);
+        raw->file->seekg((long) raw->rowStart[y+z*raw->sizeY], std::ios::beg);
         raw->file->read((char*)raw->tmp, (unsigned int)raw->rowSize[y+z*raw->sizeY]);
 
         iPtr = raw->tmp;
@@ -275,14 +277,24 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
                 tempShort++;
                 iPtr = reinterpret_cast<unsigned char *>(tempShort);
             }
+            
             if(raw->bpc != 1)
                 ConvertShort(&pixel, 1);
+
             count = (int)(pixel & 0x7F);
-            if (!count)
+            
+            // limit the count value to the remiaing row size
+            if (oPtr + count*raw->bpc > buf + raw->sizeX*raw->bpc)
+            {
+                count = ( (buf + raw->sizeX*raw->bpc) - oPtr ) / raw->bpc;
+            }
+                
+            if (count<=0)
             {
                 done = 1;
                 return;
             }
+            
             if (pixel & 0x80)
             {
                 while (count--)
@@ -356,6 +368,12 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
     //     if (width!=raw->sizeX) width += 4;
 
     // byte aligned.
+    
+    osg::notify(osg::NOTICE)<<"raw->sizeX = "<<raw->sizeX<<std::endl;
+    osg::notify(osg::NOTICE)<<"raw->sizeY = "<<raw->sizeY<<std::endl;
+    osg::notify(osg::NOTICE)<<"raw->sizeZ = "<<raw->sizeZ<<std::endl;
+    osg::notify(osg::NOTICE)<<"raw->bpc = "<<raw->bpc<<std::endl;
+    
     *data = new unsigned char [(raw->sizeX)*(raw->sizeY)*(raw->sizeZ)*(raw->bpc)];
 
     ptr = *data;

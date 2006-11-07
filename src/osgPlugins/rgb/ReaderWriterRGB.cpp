@@ -367,10 +367,10 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
 
     // byte aligned.
     
-    osg::notify(osg::NOTICE)<<"raw->sizeX = "<<raw->sizeX<<std::endl;
-    osg::notify(osg::NOTICE)<<"raw->sizeY = "<<raw->sizeY<<std::endl;
-    osg::notify(osg::NOTICE)<<"raw->sizeZ = "<<raw->sizeZ<<std::endl;
-    osg::notify(osg::NOTICE)<<"raw->bpc = "<<raw->bpc<<std::endl;
+    osg::notify(osg::INFO)<<"raw->sizeX = "<<raw->sizeX<<std::endl;
+    osg::notify(osg::INFO)<<"raw->sizeY = "<<raw->sizeY<<std::endl;
+    osg::notify(osg::INFO)<<"raw->sizeZ = "<<raw->sizeZ<<std::endl;
+    osg::notify(osg::INFO)<<"raw->bpc = "<<raw->bpc<<std::endl;
     
     *data = new unsigned char [(raw->sizeX)*(raw->sizeY)*(raw->sizeZ)*(raw->bpc)];
 

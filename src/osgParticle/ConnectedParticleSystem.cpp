@@ -20,14 +20,16 @@ using namespace osgParticle;
 
 ConnectedParticleSystem::ConnectedParticleSystem():
     _startParticle(Particle::INVALID_INDEX),
-    _lastParticleCreated(Particle::INVALID_INDEX)
+    _lastParticleCreated(Particle::INVALID_INDEX),
+    _maxNumberOfParticlesToSkip(200)
 {
 }
 
 ConnectedParticleSystem::ConnectedParticleSystem(const ConnectedParticleSystem& copy, const osg::CopyOp& copyop):
     ParticleSystem(copy,copyop),
     _startParticle(copy._startParticle),
-    _lastParticleCreated(copy._lastParticleCreated)
+    _lastParticleCreated(copy._lastParticleCreated),
+    _maxNumberOfParticlesToSkip(200)
 {
 }
 
@@ -105,8 +107,9 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
     particle->setPreviousParticle(Particle::INVALID_INDEX);
     particle->setNextParticle(Particle::INVALID_INDEX);
     
-    // do the actual destroy of the particle
-    ParticleSystem::destroyParticle(particleIndex);
+    // put the particle on the death stack
+    ParticleSystem::reuseParticle(particleIndex);
+
 }
 
 void ConnectedParticleSystem::drawImplementation(osg::State& state) const
@@ -119,7 +122,7 @@ void ConnectedParticleSystem::drawImplementation(osg::State& state) const
     float pixelSizeOfFirstParticle = unitPixelSize * particle->getCurrentSize();
     //float desiredGapBetweenDrawnParticles = 50.0f/unitPixelSize;
     //float desiredGapBetweenDrawnParticles2 = desiredGapBetweenDrawnParticles*desiredGapBetweenDrawnParticles;
-    unsigned int maxNumParticlesToSkip = 200;
+    
     float maxPixelError2 = osg::square(1.0f/unitPixelSize);
     
     if (pixelSizeOfFirstParticle<1.0)
@@ -145,7 +148,7 @@ void ConnectedParticleSystem::drawImplementation(osg::State& state) const
 
                 // now skip particles of required
                 for(unsigned int i=0;
-                    i<maxNumParticlesToSkip && ((distance2<maxPixelError2) && (nextParticle->getNextParticle()!=Particle::INVALID_INDEX));
+                    i<_maxNumberOfParticlesToSkip && ((distance2<maxPixelError2) && (nextParticle->getNextParticle()!=Particle::INVALID_INDEX));
                     ++i)
                 {
                     nextParticle = &_particles[nextParticle->getNextParticle()];
@@ -185,7 +188,7 @@ void ConnectedParticleSystem::drawImplementation(osg::State& state) const
 
                 // now skip particles of required
                 for(unsigned int i=0;
-                    i<maxNumParticlesToSkip && ((distance2<maxPixelError2) && (nextParticle->getNextParticle()!=Particle::INVALID_INDEX));
+                    i<_maxNumberOfParticlesToSkip && ((distance2<maxPixelError2) && (nextParticle->getNextParticle()!=Particle::INVALID_INDEX));
                     ++i)
                 {
                     nextParticle = &_particles[nextParticle->getNextParticle()];
@@ -216,5 +219,7 @@ void ConnectedParticleSystem::drawImplementation(osg::State& state) const
         }
         glEnd();
     }
-
 }
+
+    
+

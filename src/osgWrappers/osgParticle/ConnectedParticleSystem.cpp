@@ -65,5 +65,27 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
 	          __void__drawImplementation__osg_State_R1,
 	          "Draw the connected particles as either a line or a quad strip, depending upon viewing distance. . ",
 	          "");
+	I_Method0(const osgParticle::Particle *, getStartParticle,
+	          __C5_osgParticle_Particle_P1__getStartParticle,
+	          "Get the (const) particle from where the line or quadstrip starts to be drawn. ",
+	          "");
+	I_Method0(osgParticle::Particle *, getStartParticle,
+	          __osgParticle_Particle_P1__getStartParticle,
+	          "Get the particle from where the line or quadstrip starts to be drawn. ",
+	          "");
+	I_Method1(void, setMaxNumberOfParticlesToSkip, IN, unsigned int, maxNumberofParticlesToSkip,
+	          __void__setMaxNumberOfParticlesToSkip__unsigned_int,
+	          "Set the maximum numbers of particles to be skipped during the predraw filtering. ",
+	          "");
+	I_Method0(unsigned int, getMaxNumberOfParticlesToSkip,
+	          __unsigned_int__getMaxNumberOfParticlesToSkip,
+	          "Get the maximum numbers of particles to be skipped during the predraw filtering. ",
+	          "");
+	I_SimpleProperty(unsigned int, MaxNumberOfParticlesToSkip, 
+	                 __unsigned_int__getMaxNumberOfParticlesToSkip, 
+	                 __void__setMaxNumberOfParticlesToSkip__unsigned_int);
+	I_SimpleProperty(osgParticle::Particle *, StartParticle, 
+	                 __osgParticle_Particle_P1__getStartParticle, 
+	                 0);
 END_REFLECTOR
 

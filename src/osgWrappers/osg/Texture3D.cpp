@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D)
+BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	I_BaseType(osg::Texture);
 	I_Constructor0(____Texture3D,
 	               "",

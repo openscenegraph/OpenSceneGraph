@@ -1070,13 +1070,12 @@ void CullVisitor::apply(osg::CameraNode& camera)
     // push the node's state.
     StateSet* node_state = camera.getStateSet();
     if (node_state) pushStateSet(node_state);
-    
-    // set the compute near far mode.
-    ComputeNearFarMode saved_compute_near_far_mode = getComputeNearFarMode();
-    if (camera.getInheritanceMask() & COMPUTE_NEAR_FAR_MODE)
-    {
-        setComputeNearFarMode( camera.getComputeNearFarMode());
-    }
+
+    // Save current cull settings
+    CullSettings saved_cull_settings(*this);
+
+    // activate all active cull settings from this CameraNode
+    inheritCullSettings(camera);
 
     RefMatrix& originalModelView = getModelViewMatrix();
 
@@ -1184,22 +1183,9 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // set the current renderbin to be the newly created stage.
         setCurrentRenderBin(rtts.get());
 
-        // set the cull traversal mask of camera node
-        osg::Node::NodeMask saved_mask = getCullMask();
-        if (camera.getInheritanceMask() & CULL_MASK)
-        {
-             setTraversalMask(camera.getCullMask());
-        }
-
         // traverse the subgraph
         {
             handle_cull_callbacks_and_traverse(camera);
-        }
-
-        // restore the cull traversal mask of camera node
-        if (camera.getInheritanceMask() & CULL_MASK)
-        {
-            setTraversalMask(saved_mask);
         }
 
         // restore the previous renderbin.
@@ -1233,8 +1219,8 @@ void CullVisitor::apply(osg::CameraNode& camera)
     // restore the previous model view matrix.
     popProjectionMatrix();
 
-    // restore the previous compute near far mode
-    setComputeNearFarMode(saved_compute_near_far_mode);
+    // restore the previous cull settings
+    setCullSettings(saved_cull_settings);
 
     // pop the node's state off the render graph stack.    
     if (node_state) popStateSet();

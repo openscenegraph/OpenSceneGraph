@@ -162,6 +162,7 @@
 				005988B60652DBAC003D6AA1 /* PBXTargetDependency */,
 				005988BA0652DBAC003D6AA1 /* PBXTargetDependency */,
 				009DA141081D9282001FA987 /* PBXTargetDependency */,
+				00FB21200B0160920052DD79 /* PBXTargetDependency */,
 				006FD300065A89EC00677FA5 /* PBXTargetDependency */,
 			);
 			name = osgFrameworks;
@@ -1355,10 +1356,8 @@
 		00557D250624A9F8000A808A /* DriveManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D190624A9F8000A808A /* DriveManipulator.cpp */; };
 		00557D260624A9F8000A808A /* FlightManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1A0624A9F8000A808A /* FlightManipulator.cpp */; };
 		00557D280624A9F8000A808A /* GUIEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1C0624A9F8000A808A /* GUIEventHandler.cpp */; };
-		00557D290624A9F8000A808A /* GUIEventHandlerVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1D0624A9F8000A808A /* GUIEventHandlerVisitor.cpp */; };
 		00557D2A0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1E0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp */; };
 		00557D2B0624A9F8000A808A /* MatrixManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1F0624A9F8000A808A /* MatrixManipulator.cpp */; };
-		00557D2C0624A9F8000A808A /* SetSceneViewVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D200624A9F8000A808A /* SetSceneViewVisitor.cpp */; };
 		00557D2D0624A9F8000A808A /* StateSetManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D210624A9F8000A808A /* StateSetManipulator.cpp */; };
 		00557D2E0624A9F8000A808A /* TrackballManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D220624A9F8000A808A /* TrackballManipulator.cpp */; };
 		00557D2F0624A9F8000A808A /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D230624A9F8000A808A /* Version.cpp */; };
@@ -1436,10 +1435,8 @@
 		005581DE0624BD3D000A808A /* GUIActionAdapter in Headers */ = {isa = PBXBuildFile; fileRef = 00557D580624AB42000A808A /* GUIActionAdapter */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581DF0624BD3D000A808A /* GUIEventAdapter in Headers */ = {isa = PBXBuildFile; fileRef = 00557D590624AB42000A808A /* GUIEventAdapter */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E00624BD3D000A808A /* GUIEventHandler in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5A0624AB42000A808A /* GUIEventHandler */; settings = {ATTRIBUTES = (Public, ); }; };
-		005581E10624BD3D000A808A /* GUIEventHandlerVisitor in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5B0624AB42000A808A /* GUIEventHandlerVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E20624BD3D000A808A /* KeySwitchMatrixManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5C0624AB42000A808A /* KeySwitchMatrixManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E30624BD3D000A808A /* MatrixManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5D0624AB42000A808A /* MatrixManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
-		005581E40624BD3D000A808A /* SetSceneViewVisitor in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5E0624AB42000A808A /* SetSceneViewVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E50624BD3D000A808A /* StateSetManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5F0624AB42000A808A /* StateSetManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E60624BD3D000A808A /* TrackballManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D600624AB42000A808A /* TrackballManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E70624BD3D000A808A /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 00557D610624AB42000A808A /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2196,6 +2193,25 @@
 		00F2394C0767791D00528CDD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		00F23A1A07678E7600528CDD /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		00F7B0EC081F41B200CF8D98 /* osgforest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0007BA2106C199B000C884E1 /* osgforest.cpp */; };
+		00FB206D0B013D200052DD79 /* IntersectionVisitor in Headers */ = {isa = PBXBuildFile; fileRef = 00FB206C0B013D200052DD79 /* IntersectionVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
+		00FB20780B0141180052DD79 /* IntersectionVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FB20770B0141170052DD79 /* IntersectionVisitor.cpp */; };
+		00FB20FA0B015CF20052DD79 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		00FB20FB0B015CF20052DD79 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		00FB20FC0B015CF20052DD79 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
+		00FB21140B015F4C0052DD79 /* SimpleViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FB21110B015F4B0052DD79 /* SimpleViewer.cpp */; };
+		00FB21150B015F4C0052DD79 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FB21120B015F4B0052DD79 /* Version.cpp */; };
+		00FB211B0B01603A0052DD79 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = 00FB21170B0160390052DD79 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
+		00FB211C0B01603A0052DD79 /* GraphicsWindow in Headers */ = {isa = PBXBuildFile; fileRef = 00FB21180B0160390052DD79 /* GraphicsWindow */; settings = {ATTRIBUTES = (Public, ); }; };
+		00FB211D0B01603A0052DD79 /* SimpleViewer in Headers */ = {isa = PBXBuildFile; fileRef = 00FB21190B0160390052DD79 /* SimpleViewer */; settings = {ATTRIBUTES = (Public, ); }; };
+		00FB211E0B01603A0052DD79 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 00FB211A0B01603A0052DD79 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
+		00FB21310B0163770052DD79 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		00FB21320B0163820052DD79 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		00FB214D0B0165B80052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		00FB21510B0165E70052DD79 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		00FB21590B0166460052DD79 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		00FB215A0B0166600052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		00FB21660B0168960052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		00FB217B0B016E850052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		6320CCD50784566500FE3D2C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		6320CCD60784566500FE3D2C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -3519,70 +3535,70 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 006E23730AC0D11D00FBB48F /* osgdb_OpenFlight */;
+			remoteGlobalIDString = 006E23730AC0D11D00FBB48F;
 			remoteInfo = osgdb_OpenFlight;
 		};
 		006E25570AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BE117FB205D63B3800EB53E5 /* osg */;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
 			remoteInfo = osg;
 		};
 		006E25590AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BE11849905D7126100EB53E5 /* osgUtil */;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
 			remoteInfo = osgUtil;
 		};
 		006E255B0AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BE1188E605D764C400EB53E5 /* osgDB */;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
 			remoteInfo = osgDB;
 		};
 		006E255D0AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BE11876905D75C2700EB53E5 /* osgText */;
+			remoteGlobalIDString = BE11876905D75C2700EB53E5;
 			remoteInfo = osgText;
 		};
 		006E255F0AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00557CDF0624A947000A808A /* osgGA */;
+			remoteGlobalIDString = 00557CDF0624A947000A808A;
 			remoteInfo = osgGA;
 		};
 		006E25610AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 0098F3130652ED84007615E2 /* osgProducer */;
+			remoteGlobalIDString = 0098F3130652ED84007615E2;
 			remoteInfo = osgProducer;
 		};
 		006E25630AC11A6C00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6320CD0307845BC300FE3D2C /* osgTerrain */;
+			remoteGlobalIDString = 6320CD0307845BC300FE3D2C;
 			remoteInfo = osgTerrain;
 		};
 		006E25660AC11B1E00FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 006E24600AC0D66700FBB48F /* osgfadetext */;
+			remoteGlobalIDString = 006E24600AC0D66700FBB48F;
 			remoteInfo = osgfadetext;
 		};
 		006E257C0AC124E200FBB48F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 0055835A0624D1E5000A808A /* osgFX */;
+			remoteGlobalIDString = 0055835A0624D1E5000A808A;
 			remoteInfo = osgFX;
 		};
 		006FD2FF065A89EC00677FA5 /* PBXContainerItemProxy */ = {
@@ -4411,6 +4427,41 @@
 			remoteGlobalIDString = 00F2392A076776E700528CDD;
 			remoteInfo = osgplanets;
 		};
+		00FB20D20B015CF10052DD79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
+			remoteInfo = osg;
+		};
+		00FB20D40B015CF20052DD79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
+			remoteInfo = osgUtil;
+		};
+		00FB211F0B0160920052DD79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteInfo = osgViewer;
+		};
+		00FB216E0B016DCD0052DD79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteInfo = osgViewer;
+		};
+		00FB21700B016DDF0052DD79 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteInfo = osgViewer;
+		};
 		6320CD4E07845CAE00FE3D2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -5139,10 +5190,8 @@
 		00557D190624A9F8000A808A /* DriveManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = DriveManipulator.cpp; path = ../../src/osgGA/DriveManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D1A0624A9F8000A808A /* FlightManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = FlightManipulator.cpp; path = ../../src/osgGA/FlightManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D1C0624A9F8000A808A /* GUIEventHandler.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GUIEventHandler.cpp; path = ../../src/osgGA/GUIEventHandler.cpp; sourceTree = SOURCE_ROOT; };
-		00557D1D0624A9F8000A808A /* GUIEventHandlerVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GUIEventHandlerVisitor.cpp; path = ../../src/osgGA/GUIEventHandlerVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		00557D1E0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = KeySwitchMatrixManipulator.cpp; path = ../../src/osgGA/KeySwitchMatrixManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D1F0624A9F8000A808A /* MatrixManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MatrixManipulator.cpp; path = ../../src/osgGA/MatrixManipulator.cpp; sourceTree = SOURCE_ROOT; };
-		00557D200624A9F8000A808A /* SetSceneViewVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = SetSceneViewVisitor.cpp; path = ../../src/osgGA/SetSceneViewVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		00557D210624A9F8000A808A /* StateSetManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = StateSetManipulator.cpp; path = ../../src/osgGA/StateSetManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D220624A9F8000A808A /* TrackballManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TrackballManipulator.cpp; path = ../../src/osgGA/TrackballManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D230624A9F8000A808A /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgGA/Version.cpp; sourceTree = SOURCE_ROOT; };
@@ -5153,10 +5202,8 @@
 		00557D580624AB42000A808A /* GUIActionAdapter */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = GUIActionAdapter; sourceTree = "<group>"; };
 		00557D590624AB42000A808A /* GUIEventAdapter */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = GUIEventAdapter; sourceTree = "<group>"; };
 		00557D5A0624AB42000A808A /* GUIEventHandler */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = GUIEventHandler; sourceTree = "<group>"; };
-		00557D5B0624AB42000A808A /* GUIEventHandlerVisitor */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = GUIEventHandlerVisitor; sourceTree = "<group>"; };
 		00557D5C0624AB42000A808A /* KeySwitchMatrixManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = KeySwitchMatrixManipulator; sourceTree = "<group>"; };
 		00557D5D0624AB42000A808A /* MatrixManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = MatrixManipulator; sourceTree = "<group>"; };
-		00557D5E0624AB42000A808A /* SetSceneViewVisitor */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = SetSceneViewVisitor; sourceTree = "<group>"; };
 		00557D5F0624AB42000A808A /* StateSetManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = StateSetManipulator; sourceTree = "<group>"; };
 		00557D600624AB42000A808A /* TrackballManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = TrackballManipulator; sourceTree = "<group>"; };
 		00557D610624AB42000A808A /* Version */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = Version; sourceTree = "<group>"; };
@@ -5706,6 +5753,15 @@
 		00F2393B076776E700528CDD /* osgplanets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgplanets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00F239410767781100528CDD /* osgmotionblur.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmotionblur.cpp; sourceTree = "<group>"; };
 		00F239480767784100528CDD /* osgplanets.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgplanets.cpp; sourceTree = "<group>"; };
+		00FB206C0B013D200052DD79 /* IntersectionVisitor */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = IntersectionVisitor; path = ../../include/osgUtil/IntersectionVisitor; sourceTree = SOURCE_ROOT; };
+		00FB20770B0141170052DD79 /* IntersectionVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = IntersectionVisitor.cpp; path = ../../src/osgUtil/IntersectionVisitor.cpp; sourceTree = SOURCE_ROOT; };
+		00FB21010B015CF20052DD79 /* osgViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		00FB21110B015F4B0052DD79 /* SimpleViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleViewer.cpp; sourceTree = "<group>"; };
+		00FB21120B015F4B0052DD79 /* Version.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Version.cpp; sourceTree = "<group>"; };
+		00FB21170B0160390052DD79 /* Export */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Export; sourceTree = "<group>"; };
+		00FB21180B0160390052DD79 /* GraphicsWindow */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = GraphicsWindow; sourceTree = "<group>"; };
+		00FB21190B0160390052DD79 /* SimpleViewer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SimpleViewer; sourceTree = "<group>"; };
+		00FB211A0B01603A0052DD79 /* Version */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6423,6 +6479,7 @@
 				00A6946006CBD6FB00F26612 /* osgFX.framework in Frameworks */,
 				004099920924D219009ADD90 /* Producer.framework in Frameworks */,
 				004099930924D21B009ADD90 /* OpenThreads.framework in Frameworks */,
+				00FB21660B0168960052DD79 /* osgViewer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7037,6 +7094,8 @@
 				00638E01093B9BC5002722CD /* GLUT.framework in Frameworks */,
 				00638E17093B9E7C002722CD /* Cocoa.framework in Frameworks */,
 				00638EA9093BA03C002722CD /* OpenGL.framework in Frameworks */,
+				00FB214D0B0165B80052DD79 /* osgViewer.framework in Frameworks */,
+				00FB21510B0165E70052DD79 /* osgGA.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7051,6 +7110,8 @@
 				00638D84093B9B88002722CD /* GLUT.framework in Frameworks */,
 				00638E12093B9E5A002722CD /* Cocoa.framework in Frameworks */,
 				00638EA8093BA02C002722CD /* OpenGL.framework in Frameworks */,
+				00FB21590B0166460052DD79 /* osgGA.framework in Frameworks */,
+				00FB215A0B0166600052DD79 /* osgViewer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7616,6 +7677,7 @@
 				00EF4DA106CB04C6008ACEFF /* osgGA.framework in Frameworks */,
 				004099D50924D3BC009ADD90 /* Producer.framework in Frameworks */,
 				004099D60924D3BE009ADD90 /* OpenThreads.framework in Frameworks */,
+				00FB217B0B016E850052DD79 /* osgViewer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7846,6 +7908,18 @@
 				00F2393A076776E700528CDD /* osgGA.framework in Frameworks */,
 				004099BB0924D31C009ADD90 /* OpenThreads.framework in Frameworks */,
 				004099BC0924D322009ADD90 /* Producer.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00FB20F90B015CF20052DD79 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FB20FA0B015CF20052DD79 /* osg.framework in Frameworks */,
+				00FB20FB0B015CF20052DD79 /* osgUtil.framework in Frameworks */,
+				00FB20FC0B015CF20052DD79 /* OpenThreads.framework in Frameworks */,
+				00FB21310B0163770052DD79 /* osgDB.framework in Frameworks */,
+				00FB21320B0163820052DD79 /* osgGA.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9236,11 +9310,9 @@
 				00557D1A0624A9F8000A808A /* FlightManipulator.cpp */,
 				008F447706CBFA4200F4220C /* GUIEventAdapter.cpp */,
 				00557D1C0624A9F8000A808A /* GUIEventHandler.cpp */,
-				00557D1D0624A9F8000A808A /* GUIEventHandlerVisitor.cpp */,
 				00557D1E0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp */,
 				00557D1F0624A9F8000A808A /* MatrixManipulator.cpp */,
 				00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */,
-				00557D200624A9F8000A808A /* SetSceneViewVisitor.cpp */,
 				00557D210624A9F8000A808A /* StateSetManipulator.cpp */,
 				00CE2E8E065BD0FD003C8656 /* TerrainManipulator.cpp */,
 				00557D220624A9F8000A808A /* TrackballManipulator.cpp */,
@@ -9263,11 +9335,9 @@
 				00557D580624AB42000A808A /* GUIActionAdapter */,
 				00557D590624AB42000A808A /* GUIEventAdapter */,
 				00557D5A0624AB42000A808A /* GUIEventHandler */,
-				00557D5B0624AB42000A808A /* GUIEventHandlerVisitor */,
 				00557D5C0624AB42000A808A /* KeySwitchMatrixManipulator */,
 				00557D5D0624AB42000A808A /* MatrixManipulator */,
 				00E28147076767D1005AEE61 /* NodeTrackerManipulator */,
-				00557D5E0624AB42000A808A /* SetSceneViewVisitor */,
 				00557D5F0624AB42000A808A /* StateSetManipulator */,
 				00CE2E0C065BCFEC003C8656 /* TerrainManipulator */,
 				00557D600624AB42000A808A /* TrackballManipulator */,
@@ -10186,6 +10256,28 @@
 			path = ../../examples/osgplanets;
 			sourceTree = SOURCE_ROOT;
 		};
+		00FB210F0B015F4A0052DD79 /* osgViewer */ = {
+			isa = PBXGroup;
+			children = (
+				00FB21110B015F4B0052DD79 /* SimpleViewer.cpp */,
+				00FB21120B015F4B0052DD79 /* Version.cpp */,
+			);
+			name = osgViewer;
+			path = ../../src/osgViewer;
+			sourceTree = SOURCE_ROOT;
+		};
+		00FB21160B0160380052DD79 /* osgViewer */ = {
+			isa = PBXGroup;
+			children = (
+				00FB21170B0160390052DD79 /* Export */,
+				00FB21180B0160390052DD79 /* GraphicsWindow */,
+				00FB21190B0160390052DD79 /* SimpleViewer */,
+				00FB211A0B01603A0052DD79 /* Version */,
+			);
+			name = osgViewer;
+			path = ../../include/osgViewer;
+			sourceTree = SOURCE_ROOT;
+		};
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -10331,6 +10423,7 @@
 				004E4D320A51FA4D00EC8521 /* osgprecipitation.app */,
 				006E23E80AC0D11D00FBB48F /* osgdb_OpenFlight.so */,
 				006E24720AC0D66700FBB48F /* osgfadetext.app */,
+				00FB21010B015CF20052DD79 /* osgViewer.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -10395,6 +10488,7 @@
 				0055810F0624BC49000A808A /* osgSim */,
 				005583980624D257000A808A /* osgFX */,
 				00A14A1E084D51CE000150AD /* osgIntrospection */,
+				00FB210F0B015F4A0052DD79 /* osgViewer */,
 				0098F3660652F05F007615E2 /* osgProducer */,
 				6320CCFE07845B7C00FE3D2C /* osgTerrain */,
 				00558606062622D8000A808A /* osgPlugins */,
@@ -10562,6 +10656,7 @@
 				005580E90624BC1A000A808A /* osgSim */,
 				005583610624D208000A808A /* osgFX */,
 				00A149EB084D517F000150AD /* osgIntrospection */,
+				00FB21160B0160380052DD79 /* osgViewer */,
 				0098F34F0652F041007615E2 /* osgProducer */,
 				6320CCF60784580300FE3D2C /* osgTerrain */,
 			);
@@ -10733,6 +10828,7 @@
 				BE1185FB05D71A7B00EB53E5 /* DisplayRequirementsVisitor.cpp */,
 				BE1185FC05D71A7B00EB53E5 /* HalfWayMapGenerator.cpp */,
 				BE1185FD05D71A7B00EB53E5 /* HighlightMapGenerator.cpp */,
+				00FB20770B0141170052DD79 /* IntersectionVisitor.cpp */,
 				BE1185FF05D71A7B00EB53E5 /* IntersectVisitor.cpp */,
 				BE11860005D71A7B00EB53E5 /* Optimizer.cpp */,
 				0096C51009195DBE00B255F2 /* PositionalStateContainer.cpp */,
@@ -10769,6 +10865,7 @@
 				008F444B06CBF8EF00F4220C /* GLObjectsVisitor */,
 				BE11863805D71AD300EB53E5 /* HalfWayMapGenerator */,
 				BE11863905D71AD300EB53E5 /* HighlightMapGenerator */,
+				00FB206C0B013D200052DD79 /* IntersectionVisitor */,
 				BE11863B05D71AD300EB53E5 /* IntersectVisitor */,
 				BE11863C05D71AD300EB53E5 /* Optimizer */,
 				0096C50C09195D8B00B255F2 /* PositionalStateContainer */,
@@ -11629,11 +11726,9 @@
 				005581DE0624BD3D000A808A /* GUIActionAdapter in Headers */,
 				005581DF0624BD3D000A808A /* GUIEventAdapter in Headers */,
 				005581E00624BD3D000A808A /* GUIEventHandler in Headers */,
-				005581E10624BD3D000A808A /* GUIEventHandlerVisitor in Headers */,
 				005581E20624BD3D000A808A /* KeySwitchMatrixManipulator in Headers */,
 				005581E30624BD3D000A808A /* MatrixManipulator in Headers */,
 				00E28148076767D2005AEE61 /* NodeTrackerManipulator in Headers */,
-				005581E40624BD3D000A808A /* SetSceneViewVisitor in Headers */,
 				005581E50624BD3D000A808A /* StateSetManipulator in Headers */,
 				00CE2E1C065BD011003C8656 /* TerrainManipulator in Headers */,
 				005581E60624BD3D000A808A /* TrackballManipulator in Headers */,
@@ -12223,6 +12318,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00FB20D50B015CF20052DD79 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FB211B0B01603A0052DD79 /* Export in Headers */,
+				00FB211C0B01603A0052DD79 /* GraphicsWindow in Headers */,
+				00FB211D0B01603A0052DD79 /* SimpleViewer in Headers */,
+				00FB211E0B01603A0052DD79 /* Version in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6320CD0507845BC300FE3D2C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -12404,6 +12510,7 @@
 				00C0454006CC1856008F84FE /* GLObjectsVisitor in Headers */,
 				BE11865405D71AD300EB53E5 /* HalfWayMapGenerator in Headers */,
 				BE11865505D71AD300EB53E5 /* HighlightMapGenerator in Headers */,
+				00FB206D0B013D200052DD79 /* IntersectionVisitor in Headers */,
 				BE11865705D71AD300EB53E5 /* IntersectVisitor in Headers */,
 				BE11865805D71AD300EB53E5 /* Optimizer in Headers */,
 				BE11865905D71AD300EB53E5 /* ReflectionMapGenerator in Headers */,
@@ -13917,6 +14024,7 @@
 				00638D25093B93F8002722CD /* PBXTargetDependency */,
 				00638D27093B93F8002722CD /* PBXTargetDependency */,
 				00638D2B093B93F8002722CD /* PBXTargetDependency */,
+				00FB216F0B016DCD0052DD79 /* PBXTargetDependency */,
 			);
 			name = osgGLUTkeyboardmouse;
 			productName = osgtext;
@@ -13938,6 +14046,7 @@
 				00638D45093B9590002722CD /* PBXTargetDependency */,
 				00638D47093B9590002722CD /* PBXTargetDependency */,
 				00638D4B093B9590002722CD /* PBXTargetDependency */,
+				00FB21710B016DDF0052DD79 /* PBXTargetDependency */,
 			);
 			name = osgGLUTsimple;
 			productName = osgtext;
@@ -15110,6 +15219,27 @@
 			productReference = 00F2393B076776E700528CDD /* osgplanets.app */;
 			productType = "com.apple.product-type.application";
 		};
+		00FB20D00B015CF10052DD79 /* osgViewer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00FB20FD0B015CF20052DD79 /* Build configuration list for PBXNativeTarget "osgViewer" */;
+			buildPhases = (
+				00FB20D50B015CF20052DD79 /* Headers */,
+				00FB20E70B015CF20052DD79 /* Resources */,
+				00FB20E80B015CF20052DD79 /* Sources */,
+				00FB20F80B015CF20052DD79 /* Rez */,
+				00FB20F90B015CF20052DD79 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00FB20D10B015CF10052DD79 /* PBXTargetDependency */,
+				00FB20D30B015CF10052DD79 /* PBXTargetDependency */,
+			);
+			name = osgViewer;
+			productName = osgGA;
+			productReference = 00FB21010B015CF20052DD79 /* osgViewer.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		6320CD0307845BC300FE3D2C /* osgTerrain */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0011038D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgTerrain" */;
@@ -15249,6 +15379,7 @@
 				009DA08D081D7AB7001FA987 /* osgIntrospection */,
 				005580E00624BBB3000A808A /* osgSim */,
 				0055835A0624D1E5000A808A /* osgFX */,
+				00FB20D00B015CF10052DD79 /* osgViewer */,
 				0098F3130652ED84007615E2 /* osgProducer */,
 				6320CD0307845BC300FE3D2C /* osgTerrain */,
 				005585CE06261D98000A808A /* osgPlugins */,
@@ -16067,6 +16198,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00FB20E70B015CF20052DD79 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6320CD2207845BC300FE3D2C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -16127,6 +16265,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		005583580624D1E5000A808A /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00FB20F80B015CF20052DD79 /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -17090,10 +17235,8 @@
 				00557D250624A9F8000A808A /* DriveManipulator.cpp in Sources */,
 				00557D260624A9F8000A808A /* FlightManipulator.cpp in Sources */,
 				00557D280624A9F8000A808A /* GUIEventHandler.cpp in Sources */,
-				00557D290624A9F8000A808A /* GUIEventHandlerVisitor.cpp in Sources */,
 				00557D2A0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp in Sources */,
 				00557D2B0624A9F8000A808A /* MatrixManipulator.cpp in Sources */,
-				00557D2C0624A9F8000A808A /* SetSceneViewVisitor.cpp in Sources */,
 				00557D2D0624A9F8000A808A /* StateSetManipulator.cpp in Sources */,
 				00557D2E0624A9F8000A808A /* TrackballManipulator.cpp in Sources */,
 				00557D2F0624A9F8000A808A /* Version.cpp in Sources */,
@@ -17709,6 +17852,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00FB20E80B015CF20052DD79 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FB21140B015F4C0052DD79 /* SimpleViewer.cpp in Sources */,
+				00FB21150B015F4C0052DD79 /* Version.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6320CD2407845BC300FE3D2C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -17871,6 +18023,7 @@
 				002BE0680768EF1700D7268C /* Tesselator.cpp in Sources */,
 				0096C51209195DBF00B255F2 /* PositionalStateContainer.cpp in Sources */,
 				0096C51309195DBF00B255F2 /* StateGraph.cpp in Sources */,
+				00FB20780B0141180052DD79 /* IntersectionVisitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19755,6 +19908,31 @@
 			isa = PBXTargetDependency;
 			target = 00F2392A076776E700528CDD /* osgplanets */;
 			targetProxy = 00F23A1807678DB800528CDD /* PBXContainerItemProxy */;
+		};
+		00FB20D10B015CF10052DD79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE117FB205D63B3800EB53E5 /* osg */;
+			targetProxy = 00FB20D20B015CF10052DD79 /* PBXContainerItemProxy */;
+		};
+		00FB20D30B015CF10052DD79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = 00FB20D40B015CF20052DD79 /* PBXContainerItemProxy */;
+		};
+		00FB21200B0160920052DD79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = 00FB211F0B0160920052DD79 /* PBXContainerItemProxy */;
+		};
+		00FB216F0B016DCD0052DD79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = 00FB216E0B016DCD0052DD79 /* PBXContainerItemProxy */;
+		};
+		00FB21710B016DDF0052DD79 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = 00FB21700B016DDF0052DD79 /* PBXContainerItemProxy */;
 		};
 		6320CD0407845BC300FE3D2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -35471,6 +35649,102 @@
 			};
 			name = Default;
 		};
+		00FB20FE0B015CF20052DD79 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgViewer-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x2049a000,
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgViewer;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		00FB20FF0B015CF20052DD79 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgViewer-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x2049a000,
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgViewer;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		00FB21000B015CF20052DD79 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgViewer-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x2049a000,
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgViewer;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -36970,6 +37244,16 @@
 				00D3F0E50920187300817AAD /* Development */,
 				00D3F0E60920187300817AAD /* Deployment */,
 				00D3F0E70920187300817AAD /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		00FB20FD0B015CF20052DD79 /* Build configuration list for PBXNativeTarget "osgViewer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00FB20FE0B015CF20052DD79 /* Development */,
+				00FB20FF0B015CF20052DD79 /* Deployment */,
+				00FB21000B015CF20052DD79 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

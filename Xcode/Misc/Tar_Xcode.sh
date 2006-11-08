@@ -5,17 +5,17 @@
 
 (cd OpenThreads; \
 	rm -f XcodeOpenThreads.tar.gz; \
-	tar -zcvf XcodeOpenThreads.tar.gz --exclude='*.pbxuser' --exclude='*.mode1' --exclude='*.perspective' --exclude='build' --exclude='.DS_Store' Xcode/;
+	tar -zcvf XcodeOpenThreads.tar.gz --exclude='*.pbxuser' --exclude='*.mode1' --exclude='*.perspective' --exclude='build' --exclude='.DS_Store' --exclude='CVS' Xcode/;
 )
 
 (cd Producer; \
 	rm -f XcodeProducer.tar.gz 
-	tar -zcvf XcodeProducer.tar.gz --exclude='*.pbxuser' --exclude='*.mode1' --exclude='*.perspective' --exclude='build' --exclude='.DS_Store' Xcode/
+	tar -zcvf XcodeProducer.tar.gz --exclude='*.pbxuser' --exclude='*.mode1' --exclude='*.perspective' --exclude='build' --exclude='.DS_Store' --exclude='CVS' Xcode/
 )
 
 (cd OpenSceneGraph; \
 	rm -f XcodeOpenSceneGraph.tar.gz
-	tar -zcvf XcodeOpenSceneGraph.tar.gz --exclude='*.pbxuser' --exclude='*.mode1' --exclude='*.perspective' --exclude='build' --exclude='.DS_Store' Xcode/
+	tar -zcvf XcodeOpenSceneGraph.tar.gz --exclude='*.pbxuser' --exclude='*.mode1' --exclude='*.perspective' --exclude='build' --exclude='.DS_Store' --exclude='CVS' Xcode/
 )
 
 rm -f md5list.txt

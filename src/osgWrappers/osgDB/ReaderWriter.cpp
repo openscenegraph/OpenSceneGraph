@@ -309,6 +309,10 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 	          __osgDB_Archive_P1__takeArchive,
 	          "",
 	          "");
+	I_Method0(std::string &, message,
+	          __std_string_R1__message,
+	          "",
+	          "");
 	I_Method0(const std::string &, message,
 	          __C5_std_string_R1__message,
 	          "",
@@ -373,6 +377,10 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::WriteResult)
 	               ____WriteResult__C5_WriteResult_R1,
 	               "",
 	               "");
+	I_Method0(std::string &, message,
+	          __std_string_R1__message,
+	          "",
+	          "");
 	I_Method0(const std::string &, message,
 	          __C5_std_string_R1__message,
 	          "",

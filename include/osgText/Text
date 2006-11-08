@@ -276,7 +276,7 @@ public:
      */
     void setBackdropOffset(float horizontal, float vertical);
 
-    float getBackdropHorizontalOffet() const { return _backdropHorizontalOffset; }
+    float getBackdropHorizontalOffset() const { return _backdropHorizontalOffset; }
 
     float getBackdropVerticalOffset() const { return _backdropVerticalOffset; }
 

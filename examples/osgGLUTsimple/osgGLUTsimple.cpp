@@ -13,10 +13,10 @@
 #  include <GL/glut.h>
 #endif
 
-#include <osgGA/SimpleViewer>
+#include <osgViewer/SimpleViewer>
 #include <osgDB/ReadFile>
 
-osg::ref_ptr<osgGA::SimpleViewer> viewer;
+osg::ref_ptr<osgViewer::SimpleViewer> viewer;
 
 void display(void)
 {
@@ -60,7 +60,7 @@ int main( int argc, char **argv )
     glutReshapeFunc( reshape );
 
     // create the view of the scene.
-    viewer = new osgGA::SimpleViewer;
+    viewer = new osgViewer::SimpleViewer;
     viewer->setSceneData(loadedModel.get());
 
     // initialize the view to look at the center of the scene graph

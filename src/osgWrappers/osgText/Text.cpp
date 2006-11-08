@@ -300,8 +300,8 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          __void__setBackdropOffset__float__float,
 	          "This overloaded version lets you specify the offset for the horizontal and vertical components separately. ",
 	          "");
-	I_Method0(float, getBackdropHorizontalOffet,
-	          __float__getBackdropHorizontalOffet,
+	I_Method0(float, getBackdropHorizontalOffset,
+	          __float__getBackdropHorizontalOffset,
 	          "",
 	          "");
 	I_Method0(float, getBackdropVerticalOffset,
@@ -416,8 +416,8 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_SimpleProperty(const osg::Vec4 &, BackdropColor, 
 	                 __C5_osg_Vec4_R1__getBackdropColor, 
 	                 __void__setBackdropColor__C5_osg_Vec4_R1);
-	I_SimpleProperty(float, BackdropHorizontalOffet, 
-	                 __float__getBackdropHorizontalOffet, 
+	I_SimpleProperty(float, BackdropHorizontalOffset, 
+	                 __float__getBackdropHorizontalOffset, 
 	                 0);
 	I_SimpleProperty(osgText::Text::BackdropImplementation, BackdropImplementation, 
 	                 __BackdropImplementation__getBackdropImplementation, 

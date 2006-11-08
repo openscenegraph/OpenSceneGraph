@@ -94,7 +94,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          "");
 	I_Method1(bool, loadLibrary, IN, const std::string &, fileName,
 	          __bool__loadLibrary__C5_std_string_R1,
-	          "find the library in the SG_LIBRARY_PATH and load it. ",
+	          "find the library in the OSG_LIBRARY_PATH and load it. ",
 	          "");
 	I_Method1(bool, closeLibrary, IN, const std::string &, fileName,
 	          __bool__closeLibrary__C5_std_string_R1,

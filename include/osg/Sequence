@@ -44,6 +44,12 @@ public :
     /** Get time for child. */
     float getTime(int frame) const;
 
+    /** Set default time in seconds for new child. */
+    void setDefaultTime(float t) {_defaultTime = t;}
+
+    /** Get default time in seconds for new child. */
+    float getDefaultTime(void) const {return _defaultTime;};
+
     /** Get number of frames */
     inline unsigned int getNumFrames() const { return _frameTime.size(); }
 
@@ -106,6 +112,8 @@ protected :
 
     float _speed;
     int _nreps, _nrepsremain;
+
+    float _defaultTime ;
 
     SequenceMode _mode;
 };

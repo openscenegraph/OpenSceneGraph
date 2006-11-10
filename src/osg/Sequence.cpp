@@ -30,6 +30,7 @@ Sequence::Sequence() :
     _speed(0),
     _nreps(0),
     _nrepsremain(0),
+    _defaultTime(1.f),
     _mode(STOP)
 {
     setNumChildrenRequiringUpdateTraversal(1);
@@ -47,6 +48,7 @@ Sequence::Sequence(const Sequence& seq, const CopyOp& copyop) :
     _speed(seq._speed),
     _nreps(seq._nreps),
     _nrepsremain(seq._nrepsremain),
+    _defaultTime(seq._defaultTime),
     _mode(seq._mode)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
@@ -144,7 +146,7 @@ void Sequence::traverse(NodeVisitor& nv)
             // default timeout for unset values
             if (sw >= (int) _frameTime.size())
             {
-                setTime(sw, 1.0f);
+                setTime(sw,  _defaultTime);
             }
 
             // frame time-out?

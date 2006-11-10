@@ -79,7 +79,9 @@ class OSG_EXPORT Material : public StateAttribute
 
         virtual bool getModeUsage(ModeUsage& usage) const
         {
-            usage.usesMode(GL_COLOR_MATERIAL);
+            // note, since Material does it's own glEnable/glDisable of GL_COLOR_MATERIAL
+            // we shouldn't declare usage of that mode, so commenting out the below usage.
+            // usage.usesMode(GL_COLOR_MATERIAL);
             return true;
         }
 

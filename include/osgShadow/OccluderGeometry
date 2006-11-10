@@ -68,14 +68,16 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
 
 
         /** Compute an occluder geometry containing all the geometry in specified subgraph.*/
-        void computeOccluderGeometry(osg::Node* subgraph, float sampleRatio=1.0f);
+        void computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix=0, float sampleRatio=1.0f);
         
         /** Compute an occluder geometry containing the geometry in specified drawable.*/
-        void computeOccluderGeometry(osg::Drawable* drawable, float sampleRatio=1.0f);
+        void computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix=0, float sampleRatio=1.0f);
 
         /** Render the occluder geometry. */
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
         
+        /** Compute the bounding box around occluder geometry.*/
+        virtual osg::BoundingBox computeBound() const;
 
     protected :
 

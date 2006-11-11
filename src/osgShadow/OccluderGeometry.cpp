@@ -159,8 +159,9 @@ struct TriangleIndexCollector
     OccluderGeometry::Vec3List& _vertices;
     OccluderGeometry::UIntList& _triangleIndices;
     unsigned int                _baseIndex;
+    osg::Matrix*                _matrix;
 
-    TriangleIndexCollector(OccluderGeometry::Vec3List& vertices, OccluderGeometry::UIntList& triangleIndices):
+    TriangleIndexCollector(OccluderGeometry::Vec3List& vertices, OccluderGeometry::UIntList& triangleIndices, osg::Matrix* matrix):
             _vertices(vertices),
             _triangleIndices(triangleIndices)
     {
@@ -179,36 +180,77 @@ typedef osg::TriangleIndexFunctor<TriangleIndexCollector> TriangleIndexCollector
 
 struct TriangleCollector
 {
-    OccluderGeometry::Vec3List& _vertices;
-    OccluderGeometry::UIntList& _triangleIndices;
+    OccluderGeometry::Vec3List* _vertices;
+    OccluderGeometry::UIntList* _triangleIndices;
+    osg::Matrix*                _matrix;
 
     typedef std::vector<const osg::Vec3*> VertexPointers;
     VertexPointers _vertexPointers;
     
     OccluderGeometry::Vec3List _tempoaryTriangleVertices;
 
-    TriangleCollector(OccluderGeometry::Vec3List& vertices, OccluderGeometry::UIntList& triangleIndices):
-            _vertices(vertices),
-            _triangleIndices(triangleIndices)
+    TriangleCollector():_matrix(0) { }
+
+    void set(OccluderGeometry::Vec3List* vertices, OccluderGeometry::UIntList* triangleIndices, osg::Matrix* matrix)
     {
+        _vertices = vertices;
+        _triangleIndices = triangleIndices;
+        _matrix = matrix;
     }
+
 
     //   bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
     inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool treatVertexDataAsTemporary)
     {
         if (treatVertexDataAsTemporary)
         {
+            osg::notify(osg::NOTICE)<<"Triangle temp ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
             _tempoaryTriangleVertices.push_back(v1);
             _tempoaryTriangleVertices.push_back(v2);
             _tempoaryTriangleVertices.push_back(v3);
         }
         else
         {
+            // osg::notify(osg::NOTICE)<<"Triangle ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
             _vertexPointers.push_back(&v1);
             _vertexPointers.push_back(&v2);
             _vertexPointers.push_back(&v3);
         }
 
+    }
+    
+    void copyToLocalData()
+    {
+        if (_vertexPointers.size()<3) return;
+    
+        const osg::Vec3* minVertex = _vertexPointers.front();
+        const osg::Vec3* maxVertex = _vertexPointers.front();
+        VertexPointers::iterator itr;
+        for(itr = _vertexPointers.begin();
+            itr != _vertexPointers.end();
+            ++itr)
+        {
+            if (*itr < minVertex) minVertex = *itr;
+            if (*itr > maxVertex) maxVertex = *itr;
+        }
+
+        unsigned int base = _vertices->size();
+        unsigned int numberNewVertices = (maxVertex - minVertex);
+        
+        osg::notify(osg::NOTICE)<<"base = "<<base<<" numberNewVertices="<<numberNewVertices<<std::endl;
+
+        _vertices->resize(base + numberNewVertices);
+        
+        for(itr = _vertexPointers.begin();
+            itr != _vertexPointers.end();
+            ++itr)
+        {
+            const osg::Vec3* vec = *itr;
+            unsigned int index = base + (vec - minVertex);
+            (*_vertices)[index] = *vec;
+            _triangleIndices->push_back(index);
+        }
+        
     }
 
 };
@@ -217,13 +259,26 @@ typedef osg::TriangleFunctor<TriangleCollector> TriangleCollectorFunctor;
 void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
 {
     osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
-    if (matrix)
+
+    TriangleCollectorFunctor tc;
+    tc.set(&_vertices, &_triangleIndices, matrix);
+
+    drawable->accept(tc);
+    
+    tc.copyToLocalData();
+    
+    for(Vec3List::iterator vitr = _vertices.begin();
+        vitr != _vertices.end();
+        ++vitr)
     {
-        osg::notify(osg::NOTICE)<<"   matrix"<<*matrix<<std::endl;
+        osg::notify(osg::NOTICE)<<"v "<<*vitr<<std::endl;
     }
-    else
+
+    for(UIntList::iterator titr = _triangleIndices.begin();
+        titr != _triangleIndices.end();
+        )
     {
-        osg::notify(osg::NOTICE)<<"   no matrix"<<std::endl;
+        osg::notify(osg::NOTICE)<<"t "<<*titr++<<" "<<*titr++<<" "<<*titr++<<std::endl;
     }
 }
 

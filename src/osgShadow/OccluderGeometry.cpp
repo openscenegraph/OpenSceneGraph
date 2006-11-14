@@ -12,11 +12,16 @@
 */
 
 #include <osgShadow/OccluderGeometry>
+
 #include <osg/Notify>
 #include <osg/Geode>
 #include <osg/io_utils>
 #include <osg/TriangleFunctor>
 #include <osg/TriangleIndexFunctor>
+#include <osg/GL>
+#include <osg/Timer>
+
+#include <algorithm>
 
 using namespace osgShadow;
 
@@ -121,7 +126,7 @@ public:
         osg::StateAttribute::GLModeValue blendModeValue = _blendModeStack.empty() ? osg::StateAttribute::GLModeValue(osg::StateAttribute::INHERIT) : _blendModeStack.back();
         if (blendModeValue & osg::StateAttribute::ON)
         {
-            osg::notify(osg::NOTICE)<<"Ignoring transparent drawable."<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Ignoring transparent drawable."<<std::endl;
             return;
         }
         
@@ -147,36 +152,16 @@ protected:
 void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix, float sampleRatio)
 {
     osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
+
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
     
     CollectOccludersVisitor cov(this, matrix, sampleRatio);
     subgraph->accept(cov);
 
-    osg::notify(osg::NOTICE)<<"done"<<std::endl;
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+    osg::notify(osg::NOTICE)<<"done in "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
 }
-
-struct TriangleIndexCollector
-{
-    OccluderGeometry::Vec3List& _vertices;
-    OccluderGeometry::UIntList& _triangleIndices;
-    unsigned int                _baseIndex;
-    osg::Matrix*                _matrix;
-
-    TriangleIndexCollector(OccluderGeometry::Vec3List& vertices, OccluderGeometry::UIntList& triangleIndices, osg::Matrix* matrix):
-            _vertices(vertices),
-            _triangleIndices(triangleIndices)
-    {
-        _baseIndex = _vertices.size();
-    }
-
-    inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
-    {
-        _triangleIndices.push_back(_baseIndex + p1);
-        _triangleIndices.push_back(_baseIndex + p2);
-        _triangleIndices.push_back(_baseIndex + p3);
-    }
-
-};
-typedef osg::TriangleIndexFunctor<TriangleIndexCollector> TriangleIndexCollectorFunctor;
 
 struct TriangleCollector
 {
@@ -186,6 +171,31 @@ struct TriangleCollector
 
     typedef std::vector<const osg::Vec3*> VertexPointers;
     VertexPointers _vertexPointers;
+    
+    struct IndexVec3PtrPair
+    {
+        IndexVec3PtrPair():
+            vec(0),
+            index(0) {}
+
+        IndexVec3PtrPair(const osg::Vec3* v, unsigned int i):
+            vec(v),
+            index(i) {}
+            
+        inline bool operator < (const IndexVec3PtrPair& rhs) const
+        {
+            return *vec < *rhs.vec;
+        }
+    
+        inline bool operator == (const IndexVec3PtrPair& rhs) const
+        {
+            return *vec == *rhs.vec;
+        }
+
+        const osg::Vec3* vec;
+        unsigned int index;
+    };
+    
     
     OccluderGeometry::Vec3List _tempoaryTriangleVertices;
 
@@ -204,7 +214,7 @@ struct TriangleCollector
     {
         if (treatVertexDataAsTemporary)
         {
-            osg::notify(osg::NOTICE)<<"Triangle temp ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Triangle temp ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
             _tempoaryTriangleVertices.push_back(v1);
             _tempoaryTriangleVertices.push_back(v2);
             _tempoaryTriangleVertices.push_back(v3);
@@ -221,10 +231,12 @@ struct TriangleCollector
     
     void copyToLocalData()
     {
-        if (_vertexPointers.size()<3) return;
+        if ((_vertexPointers.size()+_tempoaryTriangleVertices.size())<3) return;
     
-        const osg::Vec3* minVertex = _vertexPointers.front();
-        const osg::Vec3* maxVertex = _vertexPointers.front();
+    
+        const osg::Vec3* minVertex = _vertexPointers.empty() ? 0 : _vertexPointers.front();
+        const osg::Vec3* maxVertex = _vertexPointers.empty() ? 0 : _vertexPointers.front();
+    
         VertexPointers::iterator itr;
         for(itr = _vertexPointers.begin();
             itr != _vertexPointers.end();
@@ -235,11 +247,11 @@ struct TriangleCollector
         }
 
         unsigned int base = _vertices->size();
-        unsigned int numberNewVertices = (maxVertex - minVertex);
+        unsigned int numberNewVertices = _vertexPointers.empty() ? 0 : (maxVertex - minVertex) + 1;
         
-        osg::notify(osg::NOTICE)<<"base = "<<base<<" numberNewVertices="<<numberNewVertices<<std::endl;
+        // osg::notify(osg::NOTICE)<<"base = "<<base<<" numberNewVertices="<<numberNewVertices<<std::endl;
 
-        _vertices->resize(base + numberNewVertices);
+        _vertices->resize(base + numberNewVertices + _tempoaryTriangleVertices.size());
         
         for(itr = _vertexPointers.begin();
             itr != _vertexPointers.end();
@@ -250,6 +262,50 @@ struct TriangleCollector
             (*_vertices)[index] = *vec;
             _triangleIndices->push_back(index);
         }
+
+        osg::notify(osg::NOTICE)<<"temp = "<<_tempoaryTriangleVertices.size()<<std::endl;
+
+        if (!_tempoaryTriangleVertices.empty()) 
+        {
+            typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
+            IndexVec3PtrPairs indexVec3PtrPairs;
+
+            unsigned int i = 0;
+            for(OccluderGeometry::Vec3List::iterator vitr = _tempoaryTriangleVertices.begin();
+                 vitr != _tempoaryTriangleVertices.end();
+                 ++vitr, ++i)
+            {
+                indexVec3PtrPairs.push_back(IndexVec3PtrPair(&(*vitr),i));
+            }
+            std::sort(indexVec3PtrPairs.begin(),indexVec3PtrPairs.end());;
+
+            IndexVec3PtrPairs::iterator prev = indexVec3PtrPairs.begin();
+            IndexVec3PtrPairs::iterator curr = ++prev;
+            unsigned int numDuplicates = 0;
+            for(; curr != indexVec3PtrPairs.end(); ++curr)
+            {
+                if (*prev==*curr) ++numDuplicates;
+                else prev = curr;
+            }
+            osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
+        }
+
+        unsigned int pos = base + numberNewVertices;
+        for(OccluderGeometry::Vec3List::iterator vitr = _tempoaryTriangleVertices.begin();
+             vitr != _tempoaryTriangleVertices.end();
+             ++vitr, ++pos)
+        {
+            (*_vertices)[pos] = *vitr;
+            _triangleIndices->push_back(pos);
+        }
+
+        if (_matrix)
+        {
+            for(unsigned int i=base; i<_vertices->size(); ++i)
+            {
+                (*_vertices)[i] = (*_vertices)[i] * (*_matrix);
+            }
+        }
         
     }
 
@@ -258,7 +314,7 @@ typedef osg::TriangleFunctor<TriangleCollector> TriangleCollectorFunctor;
 
 void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
 {
-    osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
 
     TriangleCollectorFunctor tc;
     tc.set(&_vertices, &_triangleIndices, matrix);
@@ -267,6 +323,7 @@ void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Mat
     
     tc.copyToLocalData();
     
+#if 0    
     for(Vec3List::iterator vitr = _vertices.begin();
         vitr != _vertices.end();
         ++vitr)
@@ -280,11 +337,22 @@ void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Mat
     {
         osg::notify(osg::NOTICE)<<"t "<<*titr++<<" "<<*titr++<<" "<<*titr++<<std::endl;
     }
+#endif
+    
+    dirtyDisplayList();
+    //setUseDisplayList(false);
+    //setCullingActive(false);
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::notify(osg::NOTICE)<<"drawImplementation(osg::RenderInfo& renderInfo)"<<std::endl;
+
+    renderInfo.getState()->disableAllVertexArrays();
+
+    renderInfo.getState()->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
+
+    glDrawElements(GL_TRIANGLES, _triangleIndices.size(), GL_UNSIGNED_INT, &(_triangleIndices.front()) );
 }
 
 osg::BoundingBox OccluderGeometry::computeBound() const
@@ -296,5 +364,8 @@ osg::BoundingBox OccluderGeometry::computeBound() const
     {
         bb.expandBy(*itr);
     }
+
+    osg::notify(osg::NOTICE)<<"computeBB "<<bb.xMin()<<", "<<bb.xMax()<<std::endl;
+
     return bb;
 }

@@ -19,17 +19,17 @@
 using namespace osgParticle;
 
 ConnectedParticleSystem::ConnectedParticleSystem():
-    _startParticle(Particle::INVALID_INDEX),
     _lastParticleCreated(Particle::INVALID_INDEX),
-    _maxNumberOfParticlesToSkip(200)
+    _maxNumberOfParticlesToSkip(200),
+    _startParticle(Particle::INVALID_INDEX)
 {
 }
 
 ConnectedParticleSystem::ConnectedParticleSystem(const ConnectedParticleSystem& copy, const osg::CopyOp& copyop):
     ParticleSystem(copy,copyop),
-    _startParticle(copy._startParticle),
     _lastParticleCreated(copy._lastParticleCreated),
-    _maxNumberOfParticlesToSkip(200)
+    _maxNumberOfParticlesToSkip(200),
+    _startParticle(copy._startParticle)
 {
 }
 

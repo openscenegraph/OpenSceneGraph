@@ -168,24 +168,24 @@ PrecipitationEffect::PrecipitationEffect(const PrecipitationEffect& copy, const 
     update();
 }
 
-void PrecipitationEffect::compileGLObjects(osg::State& state) const
+void PrecipitationEffect::compileGLObjects(osg::RenderInfo& renderInfo) const
 {
     if (_quadGeometry.valid()) 
     {
-        _quadGeometry->compileGLObjects(state);
-        if (_quadGeometry->getStateSet()) _quadGeometry->getStateSet()->compileGLObjects(state);
+        _quadGeometry->compileGLObjects(renderInfo);
+        if (_quadGeometry->getStateSet()) _quadGeometry->getStateSet()->compileGLObjects(*renderInfo.getState());
     }
 
     if (_lineGeometry.valid()) 
     {
-        _lineGeometry->compileGLObjects(state);
-        if (_lineGeometry->getStateSet()) _lineGeometry->getStateSet()->compileGLObjects(state);
+        _lineGeometry->compileGLObjects(renderInfo);
+        if (_lineGeometry->getStateSet()) _lineGeometry->getStateSet()->compileGLObjects(*renderInfo.getState());
     }
 
     if (_pointGeometry.valid()) 
     {
-        _pointGeometry->compileGLObjects(state);
-        if (_pointGeometry->getStateSet()) _pointGeometry->getStateSet()->compileGLObjects(state);
+        _pointGeometry->compileGLObjects(renderInfo);
+        if (_pointGeometry->getStateSet()) _pointGeometry->getStateSet()->compileGLObjects(*renderInfo.getState());
     }
 }
 
@@ -217,7 +217,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         {
             if (globjVisitor->getMode() & osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
             {
-                compileGLObjects(*(globjVisitor->getState()));
+                compileGLObjects(globjVisitor->getRenderInfo());
             }
         }
     

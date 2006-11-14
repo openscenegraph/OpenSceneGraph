@@ -450,13 +450,13 @@ void Drawable::dirtyBound()
     }
 }
 
-void Drawable::compileGLObjects(State& state) const
+void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 {
     if (!_useDisplayList) return;
 
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
-    unsigned int contextID = state.getContextID();
+    unsigned int contextID = renderInfo.getContextID();
 
     // get the globj for the current contextID.
     GLuint& globj = _globjList[contextID];
@@ -471,9 +471,9 @@ void Drawable::compileGLObjects(State& state) const
     glNewList( globj, GL_COMPILE );
 
     if (_drawCallback.valid())
-        _drawCallback->drawImplementation(state,this);
+        _drawCallback->drawImplementation(renderInfo,this);
     else 
-        drawImplementation(state);
+        drawImplementation(renderInfo);
 
     glEndList();
 

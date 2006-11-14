@@ -199,13 +199,13 @@ BoundingSphere Geode::computeBound() const
     return bsphere;
 }
 
-void Geode::compileDrawables(State& state)
+void Geode::compileDrawables(RenderInfo& renderInfo)
 {
     for(DrawableList::iterator itr = _drawables.begin();
         itr!=_drawables.end();
         ++itr)
     {
-        (*itr)->compileGLObjects(state);
+        (*itr)->compileGLObjects(renderInfo);
     }
 }
 

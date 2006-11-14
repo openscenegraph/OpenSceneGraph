@@ -179,10 +179,6 @@ SOURCE=..\..\..\src\osgPlugins\ac3d\Exception.h
 
 SOURCE=..\..\..\src\osgPlugins\ac3d\Geode.h
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\..\src\osgPlugins\ac3d\osgac3d.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 

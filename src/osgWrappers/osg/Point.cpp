@@ -164,6 +164,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
 	          __bool__isPointParametersSupported,
 	          "",
 	          "");
+	I_Method2(void, glPointParameteri, IN, GLenum, pname, IN, GLint, param,
+	          __void__glPointParameteri__GLenum__GLint,
+	          "",
+	          "");
 	I_Method2(void, glPointParameterf, IN, GLenum, pname, IN, GLfloat, param,
 	          __void__glPointParameterf__GLenum__GLfloat,
 	          "",

@@ -17,6 +17,7 @@
 #include <osg/Geode>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/RenderInfo>
 #include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -106,8 +107,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	          __C5_DrawableList_R1__getDrawableList,
 	          "Get the list of drawables. ",
 	          "");
-	I_Method1(void, compileDrawables, IN, osg::State &, state,
-	          __void__compileDrawables__State_R1,
+	I_Method1(void, compileDrawables, IN, osg::RenderInfo &, renderInfo,
+	          __void__compileDrawables__RenderInfo_R1,
 	          "Compile OpenGL Display List for each drawable. ",
 	          "");
 	I_Method0(const osg::BoundingBox &, getBoundingBox,

@@ -88,6 +88,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          __float__getTime__int,
 	          "Get time for child. ",
 	          "");
+	I_Method1(void, setDefaultTime, IN, float, t,
+	          __void__setDefaultTime__float,
+	          "Set default time in seconds for new child. ",
+	          "");
+	I_Method0(float, getDefaultTime,
+	          __float__getDefaultTime,
+	          "Get default time in seconds for new child. ",
+	          "");
 	I_Method0(unsigned int, getNumFrames,
 	          __unsigned_int__getNumFrames,
 	          "Get number of frames. ",
@@ -116,6 +124,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          __SequenceMode__getMode,
 	          "Get sequence mode. ",
 	          "");
+	I_SimpleProperty(float, DefaultTime, 
+	                 __float__getDefaultTime, 
+	                 __void__setDefaultTime__float);
 	I_SimpleProperty(osg::Sequence::SequenceMode, Mode, 
 	                 __SequenceMode__getMode, 
 	                 __void__setMode__SequenceMode);

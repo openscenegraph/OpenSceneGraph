@@ -77,7 +77,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Material)
 	          __int__compare__C5_StateAttribute_R1,
 	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
 	          __bool__getModeUsage__ModeUsage_R1,
 	          "",
 	          "");

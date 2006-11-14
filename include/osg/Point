@@ -94,6 +94,7 @@ class OSG_EXPORT Point : public StateAttribute
                 void setPointParametersSupported(bool flag) { _isPointParametersSupported=flag; }
                 bool isPointParametersSupported() const { return _isPointParametersSupported; }
                 
+                void glPointParameteri(GLenum pname, GLint param) const;
                 void glPointParameterf(GLenum pname, GLfloat param) const;
                 void glPointParameterfv(GLenum pname, const GLfloat *params) const;
 
@@ -103,6 +104,7 @@ class OSG_EXPORT Point : public StateAttribute
                 
                 bool    _isPointParametersSupported;
 
+                void*   _glPointParameteri;
                 void*   _glPointParameterf;
                 void*   _glPointParameterfv;
 

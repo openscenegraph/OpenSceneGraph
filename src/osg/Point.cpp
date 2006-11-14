@@ -116,6 +116,7 @@ Point::Extensions::Extensions(const Extensions& rhs):
 void Point::Extensions::lowestCommonDenominator(const Extensions& rhs)
 {
     if (!rhs._isPointParametersSupported)  _isPointParametersSupported = false;
+    if (!rhs._glPointParameteri)           _glPointParameteri = 0;
     if (!rhs._glPointParameterf)           _glPointParameterf = 0;
     if (!rhs._glPointParameterfv)          _glPointParameterfv = 0;
 }
@@ -126,7 +127,10 @@ void Point::Extensions::setupGLExtenions(unsigned int contextID)
                                   isGLExtensionSupported(contextID,"GL_ARB_point_parameters") ||
                                   isGLExtensionSupported(contextID,"GL_EXT_point_parameters") ||
                                   isGLExtensionSupported(contextID,"GL_SGIS_point_parameters");
-                                  
+            
+    _glPointParameteri = getGLExtensionFuncPtr("glPointParameteri", "glPointParameteriARB");
+    if (!_glPointParameteri) _glPointParameteri = getGLExtensionFuncPtr("glPointParameteriEXT", "glPointParameteriSGIS");
+
     _glPointParameterf = getGLExtensionFuncPtr("glPointParameterf", "glPointParameterfARB");
     if (!_glPointParameterf) _glPointParameterf = getGLExtensionFuncPtr("glPointParameterfEXT", "glPointParameterfSGIS");
 
@@ -134,6 +138,18 @@ void Point::Extensions::setupGLExtenions(unsigned int contextID)
     if (!_glPointParameterfv) _glPointParameterfv = getGLExtensionFuncPtr("glPointParameterfvEXT", "glPointParameterfvSGIS");
 }
 
+void Point::Extensions::glPointParameteri(GLenum pname, GLint param) const
+{
+    if (_glPointParameteri)
+    {
+        typedef void (APIENTRY * GLPointParameteriProc) (GLenum pname, GLint param);
+        ((GLPointParameteriProc)_glPointParameteri)(pname, param);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glPointParameteri not supported by OpenGL driver"<<std::endl;
+    }
+}
 
 void Point::Extensions::glPointParameterf(GLenum pname, GLfloat param) const
 {

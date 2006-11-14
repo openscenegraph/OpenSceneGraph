@@ -24,12 +24,17 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osg::PointSprite::CoordOriginMode)
+	I_EnumLabel(osg::PointSprite::UPPER_LEFT);
+	I_EnumLabel(osg::PointSprite::LOWER_LEFT);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PointSprite,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osg::PointSprite &, texenv, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	I_ConstructorWithDefaults2(IN, const osg::PointSprite &, ps, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____PointSprite__C5_PointSprite_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
@@ -77,10 +82,21 @@ BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
 	          __void__apply__osg_State_R1,
 	          "apply the OpenGL state attributes. ",
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_Method1(void, setCoordOriginMode, IN, osg::PointSprite::CoordOriginMode, mode,
+	          __void__setCoordOriginMode__CoordOriginMode,
+	          "",
+	          "");
+	I_Method0(osg::PointSprite::CoordOriginMode, getCoordOriginMode,
+	          __CoordOriginMode__getCoordOriginMode,
+	          "",
+	          "");
 	I_StaticMethod1(bool, isPointSpriteSupported, IN, unsigned int, context,
 	                __bool__isPointSpriteSupported__unsigned_int_S,
 	                "",
 	                "");
+	I_SimpleProperty(osg::PointSprite::CoordOriginMode, CoordOriginMode, 
+	                 __CoordOriginMode__getCoordOriginMode, 
+	                 __void__setCoordOriginMode__CoordOriginMode);
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);

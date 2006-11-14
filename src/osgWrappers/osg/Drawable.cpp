@@ -208,8 +208,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          __void__draw__RenderInfo_R1,
 	          "Draw OpenGL primitives. ",
 	          "If the Drawable has _useDisplayList set to true, then use an OpenGL display list, automatically compiling one if required. Otherwise, call drawImplementation(). This method should not be overridden in subclasses, as it manages the optional display list (notice this is not even virtual). Subclasses should override drawImplementation() instead. ");
-	I_Method1(void, compileGLObjects, IN, osg::State &, state,
-	          __void__compileGLObjects__State_R1,
+	I_Method1(void, compileGLObjects, IN, osg::RenderInfo &, renderInfo,
+	          __void__compileGLObjects__RenderInfo_R1,
 	          "Immediately compile this Drawable into an OpenGL Display List. ",
 	          "Operation is ignored if _useDisplayList is false. ");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,

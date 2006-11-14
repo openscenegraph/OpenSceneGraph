@@ -13,6 +13,7 @@
 #include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Node>
+#include <osg/RenderInfo>
 #include <osg/State>
 #include <osg/StateSet>
 #include <osgUtil/GLObjectsVisitor>
@@ -65,6 +66,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	          __osg_State_P1__getState,
 	          "",
 	          "");
+	I_Method1(void, setRenderInfo, IN, osg::RenderInfo &, renderInfo,
+	          __void__setRenderInfo__osg_RenderInfo_R1,
+	          "",
+	          "");
+	I_Method0(osg::RenderInfo &, getRenderInfo,
+	          __osg_RenderInfo_R1__getRenderInfo,
+	          "",
+	          "");
 	I_Method1(void, apply, IN, osg::Node &, node,
 	          __void__apply__osg_Node_R1,
 	          "Simply traverse using standard NodeVisitor traverse method. ",
@@ -84,6 +93,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	I_SimpleProperty(osgUtil::GLObjectsVisitor::Mode, Mode, 
 	                 __Mode__getMode, 
 	                 __void__setMode__Mode);
+	I_SimpleProperty(osg::RenderInfo &, RenderInfo, 
+	                 __osg_RenderInfo_R1__getRenderInfo, 
+	                 __void__setRenderInfo__osg_RenderInfo_R1);
 	I_SimpleProperty(osg::State *, State, 
 	                 __osg_State_P1__getState, 
 	                 __void__setState__osg_State_P1);

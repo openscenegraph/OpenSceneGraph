@@ -517,7 +517,7 @@ void DataSet::SourceData::readImage(DestinationData& destination)
 
         // note, we have to handle the possibility of goegraphic datasets wrapping over on themselves when they pass over the dateline
         // to do this we have to test geographic datasets via two passes, each with a 360 degree shift of the source cata.
-        double xoffset = d_bb.xMin() < s_bb.xMin() ? -360.0 : 0.0;
+        double xoffset = ((d_bb.xMin() < s_bb.xMin()) && (d_bb._isGeographic)) ? -360.0 : 0.0;
         unsigned int numXChecks = d_bb._isGeographic ? 2 : 1;
         for(unsigned int ic = 0; ic < numXChecks; ++ic, xoffset += 360.0)
         {
@@ -875,7 +875,7 @@ void DataSet::SourceData::readHeightField(DestinationData& destination)
 
         // note, we have to handle the possibility of goegraphic datasets wrapping over on themselves when they pass over the dateline
         // to do this we have to test geographic datasets via two passes, each with a 360 degree shift of the source cata.
-        double xoffset = d_bb.xMin() < s_bb.xMin() ? -360.0 : 0.0;
+        double xoffset = ((d_bb.xMin() < s_bb.xMin()) && (d_bb._isGeographic)) ? -360.0 : 0.0;
         unsigned int numXChecks = d_bb._isGeographic ? 2 : 1;
         for(unsigned int ic = 0; ic < numXChecks; ++ic, xoffset += 360.0)
         {

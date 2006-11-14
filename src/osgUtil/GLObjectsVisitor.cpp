@@ -23,7 +23,6 @@ GLObjectsVisitor::GLObjectsVisitor(Mode mode)
 
     _mode = mode;
 
-    _state = NULL;
 }
 
 
@@ -74,14 +73,14 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
         drawable.setUseDisplayList(true);
     }
 
-    if (_mode&COMPILE_DISPLAY_LISTS && _state.valid())
+    if (_mode&COMPILE_DISPLAY_LISTS && _renderInfo.getState())
     {
-        drawable.compileGLObjects(*_state);
+        drawable.compileGLObjects(_renderInfo);
     }
 
     if (_mode&RELEASE_DISPLAY_LISTS)
     {
-        drawable.releaseGLObjects(_state.get());
+        drawable.releaseGLObjects(_renderInfo.getState());
     }
 
     if (_mode&SWITCH_ON_VERTEX_BUFFER_OBJECTS)
@@ -101,18 +100,18 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     
     _stateSetAppliedSet.insert(&stateset);
 
-    if (_mode & COMPILE_STATE_ATTRIBUTES && _state.valid())
+    if (_mode & COMPILE_STATE_ATTRIBUTES && _renderInfo.getState())
     {
-        stateset.compileGLObjects(*_state);
+        stateset.compileGLObjects(*_renderInfo.getState());
     }
 
     if (_mode & RELEASE_STATE_ATTRIBUTES)
     {
-        stateset.releaseGLObjects(_state.get());
+        stateset.releaseGLObjects(_renderInfo.getState());
     }
     
     if (_mode & CHECK_BLACK_LISTED_MODES)
     {
-        stateset.checkValidityOfAssociatedModes(*_state.get());
+        stateset.checkValidityOfAssociatedModes(*_renderInfo.getState());
     }
 }

@@ -71,14 +71,23 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         /** Set the State to use during traversal. */
         void setState(osg::State* state)
         {
-            _state = state;
+            _renderInfo.setState(state);
         }
         
         osg::State* getState()
         {
-            return _state.get();
+            return _renderInfo.getState();
+        }
+
+        void setRenderInfo(osg::RenderInfo& renderInfo)
+        {
+            _renderInfo = renderInfo;
         }
         
+        osg::RenderInfo& getRenderInfo()
+        {
+            return _renderInfo;
+        }
 
         /** Simply traverse using standard NodeVisitor traverse method.*/
         virtual void apply(osg::Node& node);
@@ -97,7 +106,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         typedef std::set<osg::StateSet*> StatesSetAppliedSet;
 
         Mode                        _mode;
-        osg::ref_ptr<osg::State>    _state;
+        osg::RenderInfo             _renderInfo;
         DrawableAppliedSet          _drawablesAppliedSet;
         StatesSetAppliedSet         _stateSetAppliedSet;
 

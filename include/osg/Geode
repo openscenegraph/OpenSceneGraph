@@ -126,7 +126,7 @@ class OSG_EXPORT Geode : public Node
         const DrawableList& getDrawableList() const { return _drawables; }
 
         /** Compile OpenGL Display List for each drawable.*/
-        void compileDrawables(State& state);
+        void compileDrawables(RenderInfo& renderInfo);
 
         /** Return the Geode's bounding box, which is the union of all the
           * bounding boxes of the geode's drawables.*/

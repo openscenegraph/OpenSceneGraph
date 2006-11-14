@@ -867,6 +867,9 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 {
 //    osg::notify(osg::NOTICE)<<"DatabasePager::compileGLObjects "<<_frameNumber<<std::endl;
 
+    osg::RenderInfo renderInfo;
+    renderInfo.setState(&state);
+
     if (availableTime>0.0)
     {
 
@@ -971,7 +974,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 {
                     //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;
                     double startCompileTime = timer.delta_s(start_tick,timer.tick());
-                    (*itr)->compileGLObjects(state);
+                    (*itr)->compileGLObjects(renderInfo);
                     elapsedTime = timer.delta_s(start_tick,timer.tick());
 
                     // estimate the duration of the compile based on current compile duration.

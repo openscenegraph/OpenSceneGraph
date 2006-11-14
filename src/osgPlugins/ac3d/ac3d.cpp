@@ -4,46 +4,46 @@
 // eg the basic parsing of an AC3D file.
 // Conversion from AC3D scenegraph to OSG by GW Michel.
 
+#include <assert.h>
+#include <vector>
+#include <iostream>
 
-#include <stdio.h>
-// Where is malloc.h really needed?
-#if !defined(__APPLE__) && !defined(macintosh) && !defined(__FreeBSD__)
-#include <malloc.h>
-#endif
-#include <math.h>
+#include <osg/GL>
+#include <osg/GLU>
 
+#include <osg/Math>
+#include <osg/BlendFunc>
 #include <osg/CullFace>
 #include <osg/Geode>
 #include <osg/Group>
-#include <osg/Geometry>  //Set>
+#include <osg/Geometry>
 #include <osg/Light>
 #include <osg/LightSource>
 #include <osg/Material>
+#include <osg/Math>
 #include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/StateSet>
+#include <osg/ShadeModel>
+#include <osg/Math>
 #include <osg/Notify>
-#include <osg/Texture2D>
-#include <osg/LightModel>
 
+#include <osgUtil/Tesselator>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 
-#include <osgUtil/Tesselator>
-#include <osgUtil/SmoothingVisitor>
-
-#include "osgac3d.h"
 #include "Exception.h"
 #include "Geode.h"
 
-using namespace osg;
-using namespace osgDB;
+namespace ac3d {
 
-// define this if you have a recent OSG with pRegistry->getFromObjectCache method
-#define USE_TEXTURE_CACHE
+osg::Node*
+readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options);
+
+}
 
 class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub-graph attached to 'this'
         public:
@@ -52,18 +52,13 @@ class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub
 
             ~geodeVisitor() { _geodelist.clear();}
 
-        // one apply for each type of Node that might be a user transform
-         //   virtual void apply(osgAction::ActionHeader& ah);
-           // virtual void apply(osg::Drawable& dr);
+            // one apply for each type of Node that might be a user transform
             virtual void apply(osg::Geode& geode) {
                 _geodelist.push_back(&geode);
             }
-        //    virtual void apply(osg::Billboard& geode);
             virtual void apply(osg::Group& gp){
                 traverse(gp);    // must continue subgraph traversal.
             }
-         //   virtual void apply(osg::Switch& sw);
-           // virtual void apply(osg::Transform& transform);
             std::vector<const osg::Geode *> getGeodes() {return _geodelist;}
         protected:
 
@@ -80,33 +75,53 @@ class ReaderWriterAC : public osgDB::ReaderWriter
         {
             return osgDB::equalCaseInsensitive(extension,"ac");
         }
-        virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options) const
+        virtual ReadResult readNode(const std::string& file,const Options* options) const
         {
-            std::string ext = getFileExtension(file);
+            std::string ext = osgDB::getFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            osg::Group *grp; // holder for all loaded objects
             // GWM added Dec 2003 - get full path name (change in osgDB handling of files).
             std::string fileName = osgDB::findDataFile( file, options );
+            osg::notify(osg::INFO) << "osgDB ac3d reader: starting reading \"" << fileName << "\"" << std::endl;
             
             // Anders Backmann - correct return if path not found
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
-            osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+            // allocate per file data and start reading
+            std::ifstream fin;
+            fin.open(fileName.c_str(), std::ios::in);
+            if (!fin.is_open()) return ReadResult::FILE_NOT_FOUND;
+
+            // code for setting up the database path so that internally referenced file are
+            // searched for on relative paths. 
+            osg::ref_ptr<Options> local_opt;
+            if (options)
+                local_opt = static_cast<Options*>(options->clone(osg::CopyOp::DEEP_COPY_ALL));
+            else
+                local_opt = new Options;
             local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
-            grp=ac_load_ac3d(fileName.c_str(), local_opt.get());
-            return grp;
-        };
-        virtual WriteResult writeNode(const Node& node,const std::string& fileName, const osgDB::ReaderWriter::Options* /*options*/) const
+            ReadResult result = readNode(fin, local_opt.get());
+            if (result.validNode())
+                result.getNode()->setName(fileName);
+            return result;
+        }
+        virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
-            std::string ext = getFileExtension(fileName);
+            std::string header;
+            fin >> header;
+            if (header.substr(0, 4) != "AC3D")
+                return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+
+            return ac3d::readFile(fin, options);
+        }
+        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName, const Options* /*options*/) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
             geodeVisitor vs; // this collects geodes.
-            Node *nd=(Node *)(&node);
             std::vector<unsigned int>iNumMaterials;
-            nd->accept(vs); // this parses the tree to find Geodes
+            const_cast<osg::Node&>(node).accept(vs); // this parses the tree to streamd Geodes
             std::vector<const osg::Geode *> glist=vs.getGeodes();
             std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             // Write out the file header
@@ -128,7 +143,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             return WriteResult::FILE_SAVED;
         }
         
-        virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* opts) const
+        virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout, const Options* opts) const
         {
             try
             {
@@ -155,812 +170,1122 @@ class ReaderWriterAC : public osgDB::ReaderWriter
 private:
 };
 
-class appearance : public osg::Referenced { // how a surface is rendered - basic copy of ACsurface
-    // except that as a ref_ptr it will automatically delete itself when the object has loaded
-        // and the list of appearances is deleted
-public:
-    appearance(const int imat=-1) {material=imat;
-        type=0x00;
-    }
-    void setMaterial(const int i) { material=i;}
-    inline int getMaterial(void) const { return material;}
-    void setSurfaceType(const int i) { type=i;}
-    inline int getSurfaceType(void) const { return type;}
-protected:
-    ~appearance() {
-    }
-    int material; // index in the ac3d file
-    int type; // as used in ac3d, onesided etc are held as 0x20, 0x21...
+// now register with osg::Registry to instantiate the above
+// reader/writer.
+osgDB::RegisterReaderWriterProxy<ReaderWriterAC> g_readerWriter_AC_Proxy;
+
+
+namespace ac3d {
+
+enum {
+  ObjectTypeNormal = 0,
+  ObjectTypeGroup = 1,
+  ObjectTypeLight = 2,
+
+  SurfaceTypePolygon = 0,
+  SurfaceTypeLineLoop = 1,
+  SurfaceTypeLineStrip = 2,
+
+  SurfaceShaded = 1<<4,
+  SurfaceTwoSided = 1<<5,
 };
 
-static int line = 0;
-static char buff[255];
-
-static std::vector<osg::Material*> palette; // change to dynamic array
-static int startmatindex = 0;
-
-
-osg::Material*ac_palette_get_material(const unsigned int id)
+/// Returns a possibly quoted string given in the end of the current line in the stream
+static
+std::string
+readString(std::istream& stream)
 {
-    if (id<palette.size()) return(palette[id]);
-    else return NULL;
-}
+    std::string s;
+    stream >> std::ws;
 
-
-Boolean read_line(std::istream &fin)
-{
-    fin.getline(buff,255);
-    return !(fin.eof());
-}
-
-
-
-int tokc = 0;
-char *tokv[30];
-
-Prototype int get_tokens(char *s, int *argc, char *argv[])
-/** bung '\0' chars at the end of tokens and set up the array (tokv) and count (tokc)
-    like argv argc **/
-{
-    char *p = s;
-    char *st;
-    char c;
-    //int n;
-    int tc;
-    
-    tc = 0;
-    while ((c = *p))
+    if (stream.peek() != '\"')
     {
-        if ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13) && ( c != '\0'))
+        // Not quoted, just read the string
+        stream >> s;
+    }
+    else
+    {
+        // look for quoted strings
+    
+        // throw away the quote
+        stream.get();
+    
+        // extract characters until either an error happens or a quote is found
+        while (stream.good())
         {
-            if (c == '"')
+            std::istream::char_type c;
+            stream.get(c);
+            if (c == '\"')
+                break;
+            s += c;
+        }
+    }
+ 
+    return s;
+}
+
+static void
+setTranslucent(osg::StateSet* stateSet)
+{
+    osg::BlendFunc* blendFunc = new osg::BlendFunc;
+    blendFunc->setSource(osg::BlendFunc::SRC_ALPHA);
+    blendFunc->setDestination(osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
+    stateSet->setAttribute(blendFunc);
+    stateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+    stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+}
+
+// Just a container to store an ac3d material
+class MaterialData
+{
+  public:
+    MaterialData() :
+        mMaterial(new osg::Material),
+        mColorArray(new osg::Vec4Array(1))
+    { }
+
+    void readMaterial(std::istream& stream)
+    {
+        // note that this might be quoted
+        std::string name = readString(stream);
+        mMaterial->setName(name);
+        std::string tmp;
+        stream >> tmp;
+        osg::Vec4 diffuse;
+        stream >> diffuse[0] >> diffuse[1] >> diffuse[2];
+        mMaterial->setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
+        stream >> tmp;
+        osg::Vec4 ambient;
+        stream >> ambient[0] >> ambient[1] >> ambient[2];
+        mMaterial->setAmbient(osg::Material::FRONT_AND_BACK, ambient);
+        stream >> tmp;
+        osg::Vec4 emmissive;
+        stream >> emmissive[0] >> emmissive[1] >> emmissive[2];
+        mMaterial->setEmission(osg::Material::FRONT_AND_BACK, emmissive);
+        stream >> tmp;
+        osg::Vec4 specular;
+        stream >> specular[0] >> specular[1] >> specular[2];
+        mMaterial->setSpecular(osg::Material::FRONT_AND_BACK, specular);
+        stream >> tmp;
+        float shininess;
+        stream >> shininess;
+        mMaterial->setShininess(osg::Material::FRONT_AND_BACK, shininess);
+        stream >> tmp;
+        float transparency;
+        stream >> transparency;
+        mMaterial->setTransparency(osg::Material::FRONT_AND_BACK, transparency);
+        mTranslucent = 0 < transparency;
+
+        // must correspond to the material we use for the color array below
+        mMaterial->setColorMode(osg::Material::DIFFUSE);
+        // this must be done past the transparency setting ...
+        (*mColorArray)[0] = mMaterial->getDiffuse(osg::Material::FRONT_AND_BACK);
+    }
+  
+    void toStateSet(osg::StateSet* stateSet) const
+    {
+        stateSet->setAttribute(mMaterial.get());
+        if (mTranslucent)
+            setTranslucent(stateSet);
+    }
+
+    osg::Vec4Array* getColorArray() const
+    {
+        return mColorArray.get();
+    }
+
+private:
+    osg::ref_ptr<osg::Material> mMaterial;
+    osg::ref_ptr<osg::Vec4Array> mColorArray;
+    bool mTranslucent;
+};
+
+class TextureData
+{
+  public:
+    TextureData() :
+        mTranslucent(false)
+    {
+    }
+
+    bool setTexture(const std::string& name, const osgDB::ReaderWriter::Options* options)
+    {
+        mTexture2D = new osg::Texture2D;
+        mTexture2D->setImage(mImage.get());
+        mTexture2D->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
+        mTexture2D->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+
+        std::string absFileName = osgDB::findDataFile(name, options);
+        if (absFileName.empty())
+        {
+            osg::notify(osg::FATAL) << "osgDB ac3d reader: could not find texture \"" << name << "\"" << std::endl;
+            return false;
+        }
+        mImage = osgDB::readImageFile(absFileName, options);
+        if (!mImage.valid())
+        {
+            osg::notify(osg::FATAL) << "osgDB ac3d reader: could not read texture \"" << name << "\"" << std::endl;
+            return false;
+        }
+        mTranslucent = mImage->isImageTranslucent();
+        return true;
+    }
+    bool valid() const
+    {
+        return mImage.valid();
+    }
+    std::string getFileName() const
+    {
+        if (!mImage.valid())
+            return std::string();
+        return mImage->getFileName();
+    }
+    void toTextureStateSet(osg::StateSet* stateSet) const
+    {
+        osg::TexEnv* texEnv = new osg::TexEnv;
+        texEnv->setMode(osg::TexEnv::MODULATE);
+        stateSet->setTextureAttribute(0, texEnv);
+        stateSet->setTextureAttribute(0, mTexture2D.get());
+        stateSet->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+        if (mTranslucent)
+            setTranslucent(stateSet);
+    }
+private:
+    osg::ref_ptr<osg::Texture2D> mTexture2D;
+    osg::ref_ptr<osg::Image> mImage;
+    bool mTranslucent;
+};
+
+class FileData
+{
+  public:
+    FileData(const osgDB::ReaderWriter::Options* options) :
+        mOptions(options),
+        mLightIndex(1)
+    { }
+
+    bool toTextureStateSet(const std::string& texName, osg::StateSet* stateSet)
+    {
+        if (!mTextureStates[texName].valid())
+        {
+            TextureData textureData;
+            if (!textureData.setTexture(texName, mOptions.get()))
+                return false;
+            mTextureStates[texName] = textureData;
+        }
+        mTextureStates[texName].toTextureStateSet(stateSet);
+        return true;
+    }
+
+    osg::Light* getNextLight()
+    {
+        osg::Light* light = new osg::Light;
+        light->setLightNum(mLightIndex++);
+        return light;
+    }
+
+    void addMaterial(const MaterialData& material)
+    {
+        mMaterials.push_back(material);
+    }
+    unsigned getNumMaterials() const
+    {
+        return mMaterials.size();
+    }
+    const MaterialData& getMaterial(unsigned idx) const
+    {
+        return mMaterials[idx];
+    }
+
+private:
+    /// Stores the ac3d file reader options, only used for reading texture files
+    osg::ref_ptr<osgDB::ReaderWriter::Options const> mOptions;
+
+    /// The list of ac3d MATERIALS
+    std::vector<MaterialData> mMaterials;
+
+    /// Local per model texture attribute cache.
+    /// ... images are usualy cached in the registries object cache
+    std::map<std::string, TextureData> mTextureStates;
+
+    /// Hack to include light nodes from ac3d into the scenegraph
+    unsigned mLightIndex;
+};
+
+struct RefData {
+    RefData(const osg::Vec3& _weightedNormal, const osg::Vec2& _texCoord, bool _smooth) :
+        weightedFlatNormal(_weightedNormal),
+        weightedFlatNormalLength(_weightedNormal.length()),
+        texCoord(_texCoord),
+        smooth(_smooth)
+    { }
+    // weighted flat surface normal
+    osg::Vec3 weightedFlatNormal;
+    float weightedFlatNormalLength;
+    osg::Vec2 texCoord;
+    // resulting vertex normal
+    osg::Vec3 finalNormal;
+    // if zero no need to smooth
+    unsigned smooth;
+};
+
+struct VertexData {
+    VertexData(const osg::Vec3& vertex) : _vertex(vertex) {}
+    unsigned addRefData(const RefData& refData)
+    {
+        unsigned index = _refs.size();
+        _refs.push_back(refData);
+        return index;
+    }
+
+    void collect(float cosCreaseAngle, const RefData& ref)
+    {
+        unsigned size = _refs.size();
+        for (unsigned i = 0; i < size; ++i)
+        {
+            if (_refs[i].smooth == ~0u)
             {
-                c = *p++;
-                st = p;
-                while ((c = *p) && ((c != '"')&&(c != '\n')&& ( c != 13) && ( c != '\0')) )
+                float dot = _refs[i].weightedFlatNormal*ref.weightedFlatNormal;
+                float lengths = _refs[i].weightedFlatNormalLength*ref.weightedFlatNormalLength;
+                if (cosCreaseAngle*lengths <= dot)
                 {
-                    if (c == '\\')
-                        strcpy(p, p+1);
-                    p++;
+                    // Ok put that into the current set
+                    _refs[i].smooth = ref.smooth;
+                    collect(cosCreaseAngle, _refs[i]);
                 }
-                argv[tc++] = st;
+            }
+        }
+    }
+
+    void smoothNormals(float cosCreaseAngle)
+    {
+        // compute sets of vertices smoothed to the same normal
+        // if smooth is zero we do not need to smooth
+        // in a first pass mark all refs not yet in a set to ~0u
+        unsigned size = _refs.size();
+        for (unsigned i = 0; i < size; ++i)
+        {
+            if (_refs[i].smooth)
+            {
+                _refs[i].smooth = ~0u;
+            }
+        }
+        // Now collect the sets
+        unsigned currentSet = 1;
+        for (unsigned i = 0; i < size; ++i)
+        {
+            if (_refs[i].smooth == ~0u)
+            {
+                _refs[i].smooth = currentSet++;
+                collect(cosCreaseAngle, _refs[i]);
+            }
+        }
+        // smooth and normalize the sets
+        for (--currentSet; 0 < currentSet; --currentSet)
+        {
+            osg::Vec3 normal(0, 0, 0);
+            for (unsigned i = 0; i < size; ++i)
+            {
+                if (_refs[i].smooth == currentSet)
+                {
+                    normal += _refs[i].weightedFlatNormal;
+                }
+            }
+            normal.normalize();
+            for (unsigned i = 0; i < size; ++i)
+            {
+                if (_refs[i].smooth == currentSet)
+                {
+                  _refs[i].finalNormal = normal;
+                }
+            }
+        }
+
+        // normalize the ones which do not need smoothing
+        for (unsigned i = 0; i < size; ++i)
+        {
+            if (_refs[i].smooth == 0)
+            {
+                _refs[i].finalNormal = _refs[i].weightedFlatNormal;
+                _refs[i].finalNormal.normalize();
+            }
+        }
+    }
+    osg::Vec3 _vertex;
+    std::vector<RefData> _refs;
+};
+struct VertexIndex {
+    VertexIndex(unsigned _vertexIndex = 0, unsigned _refIndex = 0) :
+        vertexIndex(_vertexIndex), refIndex(_refIndex)
+    { }
+    unsigned vertexIndex;
+    unsigned refIndex;
+};
+
+class VertexSet : public osg::Referenced {
+public:
+    VertexSet() : _dirty(true)
+    { }
+    void reserve(unsigned n)
+    {
+        _vertices.reserve(n);
+    }
+    unsigned size() const
+    {
+        return _vertices.size();
+    }
+    void setCreaseAngle(float crease)
+    {
+        _dirty = true;
+        if (crease <= 0)
+            _cosCreaseAngle = 1;
+        else if (180 <= crease)
+            _cosCreaseAngle = -1;
+        else
+            _cosCreaseAngle = cosf(osg::DegreesToRadians(crease));
+    }
+    void addVertex(const osg::Vec3& vertex)
+    {
+        _dirty = true;
+        _vertices.push_back(vertex);
+    }
+    const osg::Vec3& getVertex(unsigned index)
+    {
+        return _vertices[index]._vertex;
+    }
+    const osg::Vec3& getVertex(const VertexIndex& vertexIndex)
+    {
+        return _vertices[vertexIndex.vertexIndex]._vertex;
+    }
+    const osg::Vec3& getNormal(const VertexIndex& vertexIndex)
+    {
+        if (_dirty)
+            smoothNormals();
+        return _vertices[vertexIndex.vertexIndex]._refs[vertexIndex.refIndex].finalNormal;
+    }
+    const osg::Vec2& getTexCoord(const VertexIndex& vertexIndex)
+    {
+        return _vertices[vertexIndex.vertexIndex]._refs[vertexIndex.refIndex].texCoord;
+    }
+
+    VertexIndex addRefData(unsigned i, const RefData& refData)
+    {
+        // must be checked outside
+        assert(i < _vertices.size());
+        _dirty = true;
+        return VertexIndex(i, _vertices[i].addRefData(refData));
+    }
+
+private:
+    void smoothNormals()
+    {
+        std::vector<VertexData>::iterator i;
+        for (i = _vertices.begin(); i != _vertices.end(); ++i)
+        {
+            i->smoothNormals(_cosCreaseAngle);
+        }
+        _dirty = false;
+    }
+
+    std::vector<VertexData> _vertices;
+    float _cosCreaseAngle;
+    bool _dirty;
+};
+
+
+class PrimitiveBin : public osg::Referenced
+{
+  public:
+    PrimitiveBin(unsigned flags, VertexSet* vertexSet) :
+        _geometry(new osg::Geometry),
+        _vertexSet(vertexSet),
+        _flags(flags)
+    { }
+
+    virtual bool beginPrimitive(unsigned nRefs) = 0;
+    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord) = 0;
+    virtual bool endPrimitive() = 0;
+
+    virtual osg::Geometry* finalize(const MaterialData& material) = 0;
+
+  protected:
+    bool isLineLoop() const
+    {
+        return _flags & SurfaceTypeLineLoop;
+    }
+    bool isLineStrip() const
+    {
+        return _flags & SurfaceTypeLineStrip;
+    }
+    bool isTwoSided() const
+    {
+        return _flags & SurfaceTwoSided;
+    }
+    bool isSmooth() const
+    {
+        return _flags & SurfaceShaded;
+    }
+
+    osg::ref_ptr<osg::Geometry> _geometry;
+    osg::ref_ptr<VertexSet> _vertexSet;
+
+  private:
+    unsigned _flags;
+};
+
+class LineBin : public PrimitiveBin
+{
+  private:
+    osg::ref_ptr<osg::Vec3Array> _vertices;
+    osg::ref_ptr<osg::Vec2Array> _texCoords;
+    struct Ref {
+      osg::Vec2 texCoord;
+      unsigned index;
+    };
+    std::vector<Ref> _refs;
+
+  public:
+    LineBin(unsigned flags, VertexSet* vertexSet) :
+        PrimitiveBin(flags, vertexSet),
+        _vertices(new osg::Vec3Array)
+    {
+        _geometry->setVertexArray(_vertices.get());
+        _texCoords = new osg::Vec2Array;
+        _geometry->setTexCoordArray(0, _texCoords.get());
+        osg::StateSet* stateSet = _geometry->getOrCreateStateSet();
+        stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    }
+
+    virtual bool beginPrimitive(unsigned nRefs)
+    {
+        // Check if we have enough for a line or someting broken ...
+        if (nRefs < 2) {
+            osg::notify(osg::WARN) << "osgDB ac3d reader: detected line with less than 2 vertices!" << std::endl;
+            return false;
+        }
+
+        _refs.reserve(nRefs);
+        _refs.resize(0);
+        return true;
+    }
+    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord)
+    {
+        Ref ref;
+        ref.index = vertexIndex;
+        ref.texCoord = texCoord;
+        _refs.push_back(ref);
+        return true;
+    }
+    virtual bool endPrimitive()
+    {
+        GLint type;
+        if (isLineLoop())
+            type = osg::PrimitiveSet::LINE_LOOP;
+        else if (isLineStrip())
+            type = osg::PrimitiveSet::LINE_STRIP;
+        else {
+            osg::notify(osg::FATAL) << "osgDB ac3d reader: non surface flags in surface bin!" << std::endl;
+            return false;
+        }
+        unsigned nRefs = _refs.size();
+        unsigned start = _vertices->size();
+        for (unsigned i = 0; i < nRefs; ++i) {
+            osg::Vec3 vertex = _vertexSet->getVertex(_refs[i].index);
+            _vertices->push_back(vertex);
+            _texCoords->push_back(_refs[i].texCoord);
+        }
+        _geometry->addPrimitiveSet(new osg::DrawArrays(type, start, nRefs));
+
+        return true;
+    }
+
+    virtual osg::Geometry* finalize(const MaterialData& material)
+    {
+        material.toStateSet(_geometry->getOrCreateStateSet());
+        _geometry->setColorArray(material.getColorArray());
+        _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        _geometry->setNormalBinding(osg::Geometry::BIND_OFF);
+        return _geometry.get();
+    }
+};
+
+
+
+class SurfaceBin : public PrimitiveBin {
+  private:
+    struct Ref {
+        osg::Vec2 texCoord;
+        unsigned index;
+    };
+    std::vector<Ref> _refs;
+  
+    struct TriangleData {
+        VertexIndex index[3];
+    };
+    std::vector<TriangleData> _triangles;
+  
+    struct QuadData {
+        VertexIndex index[4];
+    };
+    std::vector<QuadData> _quads;
+
+    struct PolygonData {
+        std::vector<VertexIndex> index;
+    };
+    std::vector<PolygonData> _polygons;
+    std::vector<PolygonData> _toTesselatePolygons;
+
+  public:
+    SurfaceBin(unsigned flags, VertexSet *vertexSet) :
+        PrimitiveBin(flags, vertexSet)
+    { }
+
+    virtual bool beginPrimitive(unsigned nRefs)
+    {
+        _refs.reserve(nRefs);
+        _refs.clear();
+
+        // Check if we have enough for a line or someting broken ...
+        if (nRefs < 3) {
+            osg::notify(osg::WARN) << "osgDB ac3d reader: detected surface with less than 3 vertices!" << std::endl;
+            return false;
+        }
+        return true;
+    }
+    virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord)
+    {
+        Ref ref;
+        ref.index = vertexIndex;
+        ref.texCoord = texCoord;
+        _refs.push_back(ref);
+        return true;
+    }
+    virtual bool endPrimitive()
+    {
+        unsigned nRefs = _refs.size();
+
+        // Compute the normal times the enclosed area.
+        // During that check if the surface is convex. If so, put in the surface as such.
+        bool needTesselation = false;
+        osg::Vec3 weightedNormal(0, 0, 0);
+        osg::Vec3 v0 = _vertexSet->getVertex(_refs[0].index);
+        for (unsigned i = 2; i < nRefs; ++i) {
+            osg::Vec3 side1 = _vertexSet->getVertex(_refs[i-1].index) - v0;
+            osg::Vec3 side2 = _vertexSet->getVertex(_refs[i].index) - v0;
+            osg::Vec3 newNormal = side1^side2;
+            if (3 < nRefs && newNormal*weightedNormal < 0)
+            {
+                needTesselation = true;
+            }
+
+            weightedNormal += newNormal;
+        }
+        
+        if (needTesselation)
+        {
+            unsigned polygonIndex = _toTesselatePolygons.size();
+            _toTesselatePolygons.resize(polygonIndex + 1);
+            for (unsigned i = 0; i < nRefs; ++i) {
+                RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                _toTesselatePolygons[polygonIndex].index.push_back(vertexIndex);
+            }
+        }
+        else if (nRefs == 3)
+        {
+            unsigned triangleIndex = _triangles.size();
+            _triangles.resize(triangleIndex + 1);
+            for (unsigned i = 0; i < 3; ++i) {
+                RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                _triangles[triangleIndex].index[i] = vertexIndex;
+            }
+        }
+        else if (nRefs == 4)
+        {
+            unsigned quadIndex = _quads.size();
+            _quads.resize(quadIndex + 1);
+            for (unsigned i = 0; i < 4; ++i) {
+                RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                _quads[quadIndex].index[i] = vertexIndex;
+            }
+        }
+        else
+        {
+            unsigned polygonIndex = _polygons.size();
+            _polygons.resize(polygonIndex + 1);
+            for (unsigned i = 0; i < nRefs; ++i) {
+                RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
+                VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
+                _polygons[polygonIndex].index.push_back(vertexIndex);
+            }
+        }
+        return true;
+    }
+
+    void pushVertex(const VertexIndex& vertexIndex, osg::Vec3Array* vertexArray,
+                    osg::Vec3Array* normalArray, osg::Vec2Array* texcoordArray)
+    {
+        vertexArray->push_back(_vertexSet->getVertex(vertexIndex));
+        normalArray->push_back(_vertexSet->getNormal(vertexIndex));
+        texcoordArray->push_back(_vertexSet->getTexCoord(vertexIndex));
+    }
+
+    virtual osg::Geometry* finalize(const MaterialData& material)
+    {
+        osg::StateSet* stateSet = _geometry->getOrCreateStateSet();
+        material.toStateSet(stateSet);
+        stateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+
+        // Single- or doublesided culling
+        if (isTwoSided()) {
+            stateSet->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
+        } else {
+            osg::CullFace* cullFace = new osg::CullFace;
+            cullFace->setMode(osg::CullFace::BACK);
+            stateSet->setAttribute(cullFace);
+            stateSet->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
+        }
+
+        // Flat or smooth shading
+        osg::ShadeModel* shadeModel = new osg::ShadeModel;
+        if (isSmooth())
+            shadeModel->setMode(osg::ShadeModel::SMOOTH);
+        else
+            shadeModel->setMode(osg::ShadeModel::FLAT);
+        stateSet->setAttribute(shadeModel);
+        
+        // Set up the arrays, allways store texture coords, may be we need them later ...
+        osg::Vec3Array* normalArray = new osg::Vec3Array;
+        osg::Vec3Array* vertexArray = new osg::Vec3Array;
+        osg::Vec2Array* texcoordArray = new osg::Vec2Array;
+        _geometry->setColorArray(material.getColorArray());
+        _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        _geometry->setNormalArray(normalArray);
+        _geometry->setVertexArray(vertexArray);
+        _geometry->setTexCoordArray(0, texcoordArray);
+
+        // At first handle the the polygons to tesselate, fix them and append the other polygons later
+        if (!_toTesselatePolygons.empty())
+        {
+            for (unsigned i = 0; i < _toTesselatePolygons.size(); ++i)
+            {
+                unsigned start = vertexArray->size();
+                for (unsigned j = 0; j < _toTesselatePolygons[i].index.size(); ++j)
+                {
+                    pushVertex(_toTesselatePolygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                }
+                unsigned count = _toTesselatePolygons[i].index.size();
+                osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::POLYGON, start, count);
+                _geometry->addPrimitiveSet(drawArray);
+            }
+
+            osgUtil::Tesselator tesselator;
+            tesselator.retesselatePolygons(*_geometry);
+        }
+
+        // handle triangles
+        if (!_triangles.empty())
+        {
+            unsigned start = vertexArray->size();
+            for (unsigned i = 0; i < _triangles.size(); ++i)
+            {
+                for (unsigned j = 0; j < 3; ++j)
+                {
+                    pushVertex(_triangles[i].index[j], vertexArray, normalArray, texcoordArray);
+                }
+            }
+            osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, start, 3*_triangles.size());
+            _geometry->addPrimitiveSet(drawArray);
+        }
+
+        // handle quads
+        if (!_quads.empty())
+        {
+            unsigned start = vertexArray->size();
+            for (unsigned i = 0; i < _quads.size(); ++i)
+            {
+                for (unsigned j = 0; j < 4; ++j)
+                {
+                    pushVertex(_quads[i].index[j], vertexArray, normalArray, texcoordArray);
+                }
+            }
+            osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::QUADS, start, 4*_quads.size());
+            _geometry->addPrimitiveSet(drawArray);
+        }
+
+        // handle polygons
+        if (!_polygons.empty())
+        {
+            for (unsigned i = 0; i < _polygons.size(); ++i)
+            {
+                unsigned start = vertexArray->size();
+                for (unsigned j = 0; j < _polygons[i].index.size(); ++j)
+                {
+                    pushVertex(_polygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                }
+                unsigned count = _polygons[i].index.size();
+                osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::POLYGON, start, count);
+                _geometry->addPrimitiveSet(drawArray);
+            }
+        }
+
+        return _geometry.get();
+    }
+};
+
+struct Bins
+{
+    PrimitiveBin* getOrCreatePrimitiveBin(unsigned flags, VertexSet* vertexSet)
+    {
+        if ((flags & SurfaceTypeLineLoop) || (flags & SurfaceTypeLineStrip))
+        {
+            if (!lineBin.valid())
+            {
+                lineBin = new LineBin(flags, vertexSet);
+            }
+            return lineBin.get();
+        }
+        else if (flags & SurfaceShaded)
+        {
+            if (flags & SurfaceTwoSided)
+            {
+                if (!smoothDoubleSurfaceBin.valid())
+                {
+                    smoothDoubleSurfaceBin = new SurfaceBin(flags, vertexSet);
+                }
+                return smoothDoubleSurfaceBin.get();
             }
             else
             {
-                st = p;
-                while ((c = *p) && ((c != ' ') && (c != '\t') && (c != '\n') && ( c != 13) && ( c != '\0')) )
-                    p++;
-                if (c != '"') argv[tc++] = st;
-            }            
-        }
-        if (*p) p++;
-    }
-    
-    *argc = tc;
-    return(tc);
-}
-
-
-void initobject(ACObject *ob)
-{
-    ob->loc[0] = ob->loc[1] = ob->loc[2] = 0.0;
-    ob->name = ob->url = NULL;
-    ob->data = NULL;
-    ob->num_vert = 0;
-    ob->num_surf = 0;
-    ob->texture = NULL;
-    ob->texture_repeat_x = ob->texture_repeat_y = 1.0;
-    ob->texture_offset_x = ob->texture_offset_y = 0.0;
-    ob->kids = NULL;
-    ob->num_kids = 0;
-    ob->matrix[0] = 1;
-    ob->matrix[1] = 0;
-    ob->matrix[2] = 0;
-    ob->matrix[3] = 0;
-    ob->matrix[4] = 1;
-    ob->matrix[5] = 0;
-    ob->matrix[6] = 0;
-    ob->matrix[7] = 0;
-    ob->matrix[8] = 1;
-    ob->type=OBJECT_WORLD;
-}
-
-
-void init_surface(ACSurface *s)
-{
-    s->num_vertref = 0;
-    s->flags = 0;
-    s->mat = 0;
-//    s->normal.x = 0.0; s->normal.z = 0.0; s->normal.z = 0.0; 
-}
-
-
-void osgtri_calc_normal(osg::Vec3 &v1, osg::Vec3 &v2, osg::Vec3 &v3, osg::Vec3 &n)
-{
-    osg::Vec3 side1=v2-v1;
-    osg::Vec3 side2=v3-v2;
-    n=side1^side2;
-    n.normalize();
-
-}
-
-ACSurface *read_surface(std::istream &f, ACSurface *s,osg::UShortArray *nusidx,
-                        osg::Vec2Array *tcs)
-{
-    char t[20];
-    init_surface(s);
-
-    while (!f.eof()) //feof(f))
-    {
-    read_line(f);
-    sscanf(buff, "%s", t);
-
-    if (streq(t, "SURF"))
-        {
-        int flgs;
-
-        if (get_tokens(buff, &tokc, tokv) != 2)
-            {
-            printf("SURF should be followed by one flags argument\n");
+                if (!smoothSingleSurfaceBin.valid())
+                {
+                    smoothSingleSurfaceBin = new SurfaceBin(flags, vertexSet);
+                }
+                return smoothSingleSurfaceBin.get();
             }
+        }
         else
+        {
+            if (flags & SurfaceTwoSided)
             {
-            flgs = strtol(tokv[1], NULL, 0);
-            s->flags = flgs;
+                if (!flatDoubleSurfaceBin.valid())
+                {
+                    flatDoubleSurfaceBin = new SurfaceBin(flags, vertexSet);
+                }
+                return flatDoubleSurfaceBin.get();
+            }
+            else
+            {
+                if (!flatSingleSurfaceBin.valid())
+                {
+                    flatSingleSurfaceBin = new SurfaceBin(flags, vertexSet);
+                }
+                return flatSingleSurfaceBin.get();
             }
         }
-    else
-    if (streq(t, "mat"))
-        {
-        int mindx;
-
-        sscanf(buff, "%s %d", t, &mindx);
-        s->mat = mindx+startmatindex;
-        }
-    else
-    if (streq(t, "refs"))
-        {
-        int num, n;
-        int ind;
-        osg::Vec2 tx;
-  
-          sscanf(buff, "%s %d", t, &num);        
-
-        s->num_vertref = num;
-
-        for (n = 0; n < num; n++)
-           {
-            read_line(f);
-          sscanf(buff, "%d %f %f\n", &ind, &tx[0], &tx[1]); line++;
-            nusidx->push_back(ind);
-            if (tcs) tcs->push_back(tx);
-           }
-
-        return(s);
-        }
-    else
-        printf("ignoring %s\n", t);
-
     }
-   return(NULL);
-}
+    void finalize(osg::Geode* geode, const MaterialData& material)
+    {
+        if (lineBin.valid())
+        {
+            geode->addDrawable(lineBin->finalize(material));
+        }
+        if (smoothDoubleSurfaceBin.valid())
+        {
+            geode->addDrawable(smoothDoubleSurfaceBin->finalize(material));
+        }
+        if (smoothSingleSurfaceBin.valid())
+        {
+            geode->addDrawable(smoothSingleSurfaceBin->finalize(material));
+        }
+        if (flatDoubleSurfaceBin.valid())
+        {
+            geode->addDrawable(flatDoubleSurfaceBin->finalize(material));
+        }
+        if (flatSingleSurfaceBin.valid())
+        {
+            geode->addDrawable(flatSingleSurfaceBin->finalize(material));
+        }
+    }
 
-int string_to_objecttype(char *s)
-{
-    if (streq("world", s))
-        return(OBJECT_WORLD);
-    if (streq("poly", s))
-        return(OBJECT_NORMAL);
-    if (streq("group", s))
-        return(OBJECT_GROUP);
-    if (streq("light", s))
-        return(OBJECT_LIGHT);
-    return(OBJECT_NORMAL);
-}
+private:
+    osg::ref_ptr<LineBin> lineBin;
+    osg::ref_ptr<SurfaceBin> flatDoubleSurfaceBin;
+    osg::ref_ptr<SurfaceBin> flatSingleSurfaceBin;
+    osg::ref_ptr<SurfaceBin> smoothDoubleSurfaceBin;
+    osg::ref_ptr<SurfaceBin> smoothSingleSurfaceBin;
+};
 
-void
-protate(osg::Vec3 p, float m[9])
-{ // p-> m*p, m is 3.3 matrix
-    osg::Vec3 t=p;
-    p[0]=m[0]*t[0]+m[1]*t[1]+m[2]*t[3];
-    p[1]=m[3]*t[0]+m[4]*t[1]+m[5]*t[3];
-    p[2]=m[6]*t[0]+m[7]*t[1]+m[8]*t[3];
-}
-
-osg::Group *ac_load_object(std::istream &f,const ACObject *parent,const osgDB::ReaderWriter::Options* options)
+osg::Node*
+readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform)
 {
     // most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
-    char t[20];
-    osg::Group *gp=NULL;
-    osg::Geode *geode=NULL;
 
-    ACObject ob; // local storage for stuff taken from AC's loader
-    osg::ref_ptr<osg::Vec3Array> vertpool = new osg::Vec3Array;
-    initobject(&ob); // zero data for object
-
-    if (parent)
-        ob.loc=parent->loc; // copy loc
-    while (!f.eof())
-    {
-        read_line(f);
-
-        sscanf(buff, "%s", t);
-
-        if (streq(t, "MATERIAL"))
-        {
-            if (get_tokens(buff, &tokc, tokv) != 22)
-            {
-                printf("expected 21 params after \"MATERIAL\" - line %d\n", line);
-            }
+    // The transform configured in this current object level
+    osg::Matrix transform;
+    // The vertex pool in this object
+    osg::ref_ptr<VertexSet> vertexSet = new VertexSet;
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    osg::Vec2 textureOffset(0, 0);
+    osg::Vec2 textureRepeat(1, 1);
+    float creaseAngle = 61;
+    unsigned objectType = ObjectTypeGroup;
+    
+    while (!stream.eof() && stream.good()) {
+        std::string token;
+        stream >> token;
+      
+        if (token == "MATERIAL") {
+            MaterialData mat;
+            mat.readMaterial(stream);
+            fileData.addMaterial(mat);
+        }
+        else if (token == "OBJECT") {
+            std::string type;
+            stream >> type;
+            
+            if (type == "group")
+                objectType = ObjectTypeGroup;
+            else if (type == "light")
+                objectType = ObjectTypeLight;
+            else if (type == "world")
+                objectType = ObjectTypeGroup;
             else
-            {
-                osg::Material *numat=new osg::Material();
-                osg::Vec4 cdiff((float)atof(tokv[3]), (float)atof(tokv[4]), 
-                                (float)atof(tokv[5]), 1.0-(float)atof(tokv[21]));
-                numat->setDiffuse(osg::Material::FRONT_AND_BACK,cdiff);
-                osg::Vec4 camb((float)atof(tokv[7]),(float)atof(tokv[8]),
-                                (float)atof(tokv[9]),1.0-(float)atof(tokv[21]));
-                numat->setAmbient(osg::Material::FRONT_AND_BACK,camb);
-                osg::Vec4 cspec((float)atof(tokv[15]), (float)atof(tokv[16]),
-                                (float)atof(tokv[17]),1.0-(float)atof(tokv[21]));
-                numat->setSpecular(osg::Material::FRONT_AND_BACK,cspec);
-                // addition 1 Nov 2003 - use shininess (was defaulted)
-                float shininess=atof(tokv[19]);
-                numat->setShininess(osg::Material::FRONT_AND_BACK,shininess);
-                osg::Vec4 cemm((float)atof(tokv[11]),(float)atof(tokv[12]),(float)atof(tokv[13]),1.0-(float)atof(tokv[21]));
-                // correction 1 Nov 2003 - from Marcio Ferraz - use emission colour for emission
-                numat->setEmission(osg::Material::FRONT_AND_BACK,cemm);
-                //numat->setTransparency(osg::Material::FRONT_AND_BACK, 1.0-(float)atof(tokv[21]));
-
-                palette.push_back(numat); // [num_palette++] = numat;
-
-            }
+                objectType = ObjectTypeNormal;
         }
-        else if (streq(t, "OBJECT"))
-        {
-            char type[20];
-            char str[20];
-            osg::Vec3 loc=ob.loc;
-            if (gp!=NULL)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: Ac3d loader - possible internal error."<<std::endl;
-            }
-            gp = new osg::Group();
-            initobject(&ob); // rezero data for object
-            ob.loc=loc;
-
-            sscanf(buff, "%s %s", str, type);
-
-            ob.type = string_to_objecttype(type);
+        else if (token == "crease") {
+            stream >> creaseAngle;
         }
-        else if (streq(t, "data"))
-        {
-            if (get_tokens(buff, &tokc, tokv) != 2)
-                printf("expected 'data <number>' at line %d\n", line);
-            else
-            {
-                char *str;
-                int len;
-
-                len = atoi(tokv[1]);
-                if (len > 0)
-                {
-                    str = (char *)myalloc(len+1);
-                    f>>str; //fread(str, len, 1, f);
-                    str[len] = 0;
-                    //fscanf(f, "\n");
-                    line++;
-                    ob.data = STRING(str);
-                    myfree(str);
-                }
-            }
+        else if (token == "data") {
+            int len;
+            stream >> len;
+            std::vector<char> tmp(len);
+            stream.read(&(tmp[0]), len);
         }
-        else if (streq(t, "name"))
-        {
-            int numtok = get_tokens(buff, &tokc, tokv);
-            if (numtok != 2)
-            {
-                printf("expected quoted name at line %d (got %d tokens)\n", line, numtok);
-            }
-            else {
-                char *endquot=strrchr(tokv[1],'\"');
-                if (endquot>0) {
-                    *endquot='\0';
-                }
-                if (gp) gp->setName(tokv[1]);
-            }
+        else if (token == "name") {
+            group->setName(readString(stream));
         }
-        else if (streq(t, "texture"))
-        {
-            if (get_tokens(buff, &tokc, tokv) != 2)
-                printf("expected quoted texture name at line %d\n", line);
-
-            else
-            {
-                char *ctmp=tokv[1]; // upate Jul 19 2004 - for texture file names in quotes
-                while (*ctmp) {
-                    ctmp++;
-                    if (*ctmp == '"') *ctmp='\0'; // latest ac3d seems toa dd more quotes than older versions.
-                }
-                osgDB::Registry* pRegistry = osgDB::Registry::instance();
-                osg::Texture2D* pTexture = dynamic_cast<osg::Texture2D*>(pRegistry->getFromObjectCache(std::string(tokv[1]) + "TEXTURE2D"));
-                if (NULL != pTexture)
-                {
-                    // Use cached texture
-                    ob.texture = pTexture;
-                    osg::notify(osg::INFO) << "Using cached texture "  << pTexture->getImage()->getFileName() <<std::endl;
-                }
-                else
-                {
-                    // Try to load the texture
-                    osg::Image *ctx= osgDB::readImageFile(tokv[1], options);
-                    if (ctx)
-                    { // image could be read
-                        ob.texture = new osg::Texture2D;// ac_load_texture(tokv[1]);
-                        ob.texture->setImage(ctx);
-                        ob.texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
-                        ob.texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
-                        pRegistry->addEntryToObjectCache(std::string(tokv[1]) + "TEXTURE2D", ob.texture.get());
-                    }
-                }
-            }
+        else if (token == "texture") {
+            // read the texture name
+            std::string texname = readString(stream);
+            
+            // strip the path to the texture, just look in the directory we read the ac file
+            std::string::size_type p = texname.rfind('\\');
+            if (p != std::string::npos)
+                texname = texname.substr(p+1, std::string::npos);
+            p = texname.rfind('/');
+            if (p != std::string::npos)
+                texname = texname.substr(p+1, std::string::npos);
+        
+            fileData.toTextureStateSet(texname, group->getOrCreateStateSet());
         }
-        else if (streq(t, "texrep"))
-        {
-            if (get_tokens(buff, &tokc, tokv) != 3)
-                printf("expected 'texrep <float> <float>' at line %d\n", line);
-            else
-            {
-                ob.texture_repeat_x = atof(tokv[1]);
-                ob.texture_repeat_y = atof(tokv[2]);
-            }
+        else if (token == "texrep") {
+            stream >> textureRepeat[0] >> textureRepeat[1];
         }
-        else if (streq(t, "texoff"))
-        {
-            if (get_tokens(buff, &tokc, tokv) != 3)
-                printf("expected 'texoff <float> <float>' at line %d\n", line);
-            else
-            {
-                ob.texture_offset_x = atof(tokv[1]);
-                ob.texture_offset_y = atof(tokv[2]);
-            }
+        else if (token == "texoff") {
+            stream >> textureOffset[0] >> textureOffset[1];
         }
-        else if (streq(t, "rot"))
-        {
-            float r[9];
-            char str2[5];
-            int n;
-
-            sscanf(buff, "%s %f %f %f %f %f %f %f %f %f", str2, &r[0], &r[1], &r[2], &r[3], &r[4], &r[5], &r[6], &r[7], &r[8] );
-
-            for (n = 0; n < 9; n++)
-                ob.matrix[n] = r[n];
-
+        else if (token == "rot") {
+            for (unsigned n = 0; n < 3; ++n)
+                for (unsigned m = 0; m < 3; ++m)
+                    stream >> transform(m, n);
         }
-        else if (streq(t, "loc"))
-        {
-            char str[5];
-            osg::Vec3 loc;
-            sscanf(buff, "%s %f %f %f", str, &loc[0], &loc[1], &loc[2]);
-            ob.loc+=loc;
+        else if (token == "loc") {
+            for (unsigned n = 0; n < 3; ++n)
+                stream >> transform(3, n);
         }
-        else if (streq(t, "url"))
-        {
-            int ret;
-            if ((ret = get_tokens(buff, &tokc, tokv)) != 2)
-                printf("expected one arg to url at line %d (got %d)\n", line, ret); 
-            else
-                ob.url = STRING(tokv[1]);
+        else if (token == "url") {
+            std::string url;
+            stream >> url;
+            group->addDescription(url);
         }
-        else if (streq(t, "numvert"))
-        {
-            int num, n;
-            char str[10];
-            if (ob.type == OBJECT_GROUP || ob.type == OBJECT_WORLD)
-            {
-            }
-            else if (ob.type == OBJECT_NORMAL)
-            {
-                if (geode!=NULL)
-                {
-                    osg::notify(osg::NOTICE)<<"Warning: Ac3d loader - possible internal error."<<std::endl;
-                }
-                geode = new osg::Geode();
-                gp->addChild(geode);
-                geode->setName(gp->getName());
-                if (ob.data) { // GWM March 8 2004 - turn comment data into descriptors
-                    char *ctmp=strtok(ob.data,"\n");
-                    while (ctmp) {
-                        if (gp) gp->addDescription(std::string(ctmp));
-                        else geode->addDescription(std::string(ctmp));
-                        ctmp=strtok(NULL,"\n");
-                    }
-                }
-            }
-
-            sscanf(buff, "%s %d", str, &num);
-
-            if (num > 0)
-            {
-                ob.num_vert = num;
-
-                for (n = 0; n < num; n++)
-                {
+        else if (token == "numvert") {
+            osg::Matrix currentTransform = transform*parentTransform;
+            
+            unsigned num;
+            stream >> num;
+            if (num != 0) {
+                vertexSet->reserve(num);
+              
+                for (unsigned n = 0; n < num; ++n) {
                     osg::Vec3 p;
-                    read_line(f);
-                    sscanf(buff, "%f %f %f\n", &p[0], &p[1], &p[2]); line++;
-                    protate(p, ob.matrix);
-                    vertpool->push_back(p+ob.loc);
-                }
-
-            }
-        }
-        else if (streq(t, "numsurf"))
-        {
-            int num, n;
-            char str[10];
-            // this is not obvious (what is?).  Each set of surfaces can have different material on each surface.
-            // so I set up a set of 'bins' for 
-            //    the primitives (geometry list, geomlist)
-            //    the coords array of each geometry (Vec3Array list, vertslist)
-            //    the tx coords array for each geometry (Vec2Array list, texslist)
-            // then I add a new geometry to the current Geode for each new material as it is found.
-
-            std::vector< osg::ref_ptr<appearance> > ia; // list of materials required- generate one geode per material
-             typedef std::vector<osg::ref_ptr<osg::Geometry> > geomlist;
-            geomlist glist;
-             typedef std::vector<osg::ref_ptr<osg::Vec3Array> > vertslist;
-            vertslist vlists; // list of vertices for each glist element
-             typedef std::vector<osg::ref_ptr<osg::Vec2Array> > texslist;
-            texslist txlists; // list of texture coords for each glist element
-
-            sscanf(buff, "%s %d", str, &num);
-            if (num > 0)
-            {
-                int needSmooth=0; // flat shaded
-                ob.num_surf = num;
-
-                for (n = 0; n < num; n++)
-                { // add each surface (poly, 2 sided poly, line, polyline) to a geometry suitable for its:
-                    // material index
-                    // lighting (off for line, polyline).
-                      osg::ref_ptr<osg::Geometry> geom=NULL; // the surface will be addded to this geometry
-                     osg::ref_ptr<osg::Vec3Array> vgeom=NULL; // vertices corresponding to geom taken from vertexpool
-                    osg::ref_ptr<Vec2Array> tgeom=NULL; // texture coords corresponding to geom taken from vertexpool
-                    ACSurface asurf;
-                     osg::ref_ptr<UShortArray> nusidx = new osg::UShortArray; // indices into the vertices
-                    osg::ref_ptr<Vec2Array> tcs=new osg::Vec2Array; // texture coordinates for this object
-                    ACSurface *news = read_surface(f, &asurf, nusidx.get(), tcs.get());
-                    if (news == NULL)
-                    {
-                        printf("error whilst reading surface at line: %d\n", line);
-                        return(NULL);
-                    }
-                    else
-                    {
-                        int i=0;
-                        // check for shared material and texture... and lighting mode
-                        // since lines are not affected by light.
-                        for (std::vector< osg::ref_ptr<appearance> >::iterator itr= ia.begin(); itr<ia.end(); itr++, i++)
-                        {
-                            if ((*itr)->getMaterial()==asurf.mat)
-                            { // shares material
-                                // check the line type.
-                                if ((*itr)->getSurfaceType()==asurf.flags) {
-                                    geom=glist[i];
-                                    vgeom=vlists[i];
-                                    tgeom=txlists[i]; // what is current texture array
-                                }
-                            }
-                        }
-                        if (!geom.valid())
-                        { // then we need a new geometry
-                            osg::Vec3Array *verts = new osg::Vec3Array;
-                            osg::Vec3Array *normals = new osg::Vec3Array; // 31.03.05 create a new array for each geometry
-//                            fprintf(stdout,"New geom in %s nrms %x are %d nrms\n",gp->getName().c_str(),normals,normals->size());
-
-                            osg::ref_ptr<Vec2Array> tcrds=new osg::Vec2Array; // texture coordinates for this object
-                            vgeom=verts;
-                            tgeom=tcrds; // what is current texture array
-                            vlists.push_back(verts);
-                            txlists.push_back(tcrds);
-                            geom=new osg::Geometry();
-                            geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
-                            geom->setNormalArray(normals);
-                            geom->setVertexArray(verts);
-                            if (ob.texture.valid())
-                            {
-                                geom->setTexCoordArray(0,tgeom.get()); // share same set of TexCoords
-                            }
-                            osg::StateSet *dstate = new osg::StateSet;
-                            osg::Material*mat=ac_palette_get_material(asurf.mat);
-                            if (mat) {
-                                if (asurf.flags & SURFACE_TYPE_CLOSEDLINE || asurf.flags & SURFACE_TYPE_LINE) {
-                                    dstate->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
-                                } else {
-                                    dstate->setMode( GL_LIGHTING, osg::StateAttribute::ON );
-                                }
-                                dstate->setAttribute(mat);
-                                const osg::Vec4 cdiff =mat->getDiffuse(osg::Material::FRONT_AND_BACK);
-                                if (cdiff[3]<0.99)
-                                {
-                                    dstate->setMode(GL_BLEND,osg::StateAttribute::ON);
-                                    dstate->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                                } 
-                                else
-                                {
-                                    dstate->setMode(GL_BLEND,osg::StateAttribute::OFF);
-                                }
-                            }
-                            if (ob.texture.valid()) dstate->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
-                            if (ob.texture.valid())
-                            {
-                                osg::TexEnv* texenv = new osg::TexEnv;
-                                texenv->setMode(osg::TexEnv::MODULATE);
-                                dstate->setTextureAttribute(0, texenv );
-                                dstate->setTextureAttributeAndModes(0,ob.texture.get(),osg::StateAttribute::ON);
-                            }
-                            if (asurf.flags & SURFACE_TWOSIDED)
-                            {
-                                osg::LightModel *pLightModel = new osg::LightModel;
-                                pLightModel->setTwoSided(true);
-                                dstate->setAttributeAndModes(pLightModel);
-                                dstate->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
-                            }
-                            else
-                                dstate->setMode( GL_CULL_FACE, osg::StateAttribute::ON );
-
-                            geom->setStateSet( dstate );
-                            glist.push_back(geom);
-                            geode->addDrawable(geom.get());
-                            osg::ref_ptr<appearance> app=new appearance(asurf.mat);
-                            app->setSurfaceType(asurf.flags);
-                            ia.push_back(app.get());
-                        }
-
-                        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geom->getNormalArray());
-                        if (normals)
-                        {
-                            /** calc surface normal **/
-                            if (asurf.num_vertref >= 3)
-                            {
-                                osg::Vec3 norm;
-                                // Handle surfaces with duplicate vertex indices
-                                unsigned short i1=(*nusidx)[0];
-                                unsigned short i2=i1;
-                                unsigned short i3=i1;
-                                int iIndex = 1;
-                                while ((iIndex < asurf.num_vertref) && (i1 == (i2 = (*nusidx)[iIndex])))
-                                    iIndex++;
-                                    
-                                if (iIndex < asurf.num_vertref)
-                                {
-                                    iIndex = 1;
-                                    while ((iIndex < asurf.num_vertref) && ((i1 == (i3 = (*nusidx)[iIndex])) || (i2 == i3)))
-                                            iIndex++;
-                                            
-                                    if (iIndex < asurf.num_vertref)
-                                    {
-                                        osgtri_calc_normal((*vertpool)[i1], (*vertpool)[i2], (*vertpool)[i3], norm);
-                                        normals->push_back(norm);
-                                    }
-                                    else
-                                    {
-                                        // Generate a dummy normal
-                                        osg::Vec3 norm(0, 1, 0);
-                                        normals->push_back(norm);
-                                    }
-                                }
-                                else
-                                {
-                                    // Generate a dummy normal
-                                    osg::Vec3 norm(0, 1, 0);
-                                    normals->push_back(norm);
-                                }
-                            }
-                            else
-                            {
-                                // Generate a dummy normal
-                                osg::Vec3 norm(0, 1, 0);
-                                normals->push_back(norm);
-                            }
-                        }
-                        int nstart=(*vgeom).size();
-                        for (i=0; i<asurf.num_vertref; i++)
-                        {
-                            osg::Vec2 TextureCoordinate;
-
-                            int i1=(*nusidx)[i];
-                            (*vgeom).push_back((*vertpool)[i1]);
-                            TextureCoordinate = (*tcs)[i];
-                            TextureCoordinate._v[0] = ob.texture_offset_x + TextureCoordinate._v[0] * ob.texture_repeat_x;
-                            TextureCoordinate._v[1] = ob.texture_offset_y + TextureCoordinate._v[1] * ob.texture_repeat_y;
-                            (*tgeom).push_back(TextureCoordinate);
-                        }
-                        GLenum poltype=osg::PrimitiveSet::POLYGON;
-                        if (asurf.flags & SURFACE_TYPE_CLOSEDLINE) poltype=osg::PrimitiveSet::LINE_LOOP;
-                        if (asurf.flags & SURFACE_TYPE_LINE) poltype=osg::PrimitiveSet::LINE_STRIP;
-                        geom->addPrimitiveSet(new osg::DrawArrays(poltype,nstart,asurf.num_vertref));
-                        if (asurf.flags & 0x10) needSmooth++;
-                    }
-                }
-                for (geomlist::iterator itr= glist.begin(); itr<glist.end(); itr++)
-                { // for each geometry 'bin', collection of facets sharing same state:
-                    osgUtil::Tesselator tesselator;
-                    if (itr->valid()) tesselator.retesselatePolygons(**itr);
-                    if (needSmooth)
-                    {
-                        osgUtil::SmoothingVisitor smoother;
-                        smoother.smooth(**itr);
-                    }
+                    stream >> p[0] >> p[1] >> p[2];
+                    vertexSet->addVertex(currentTransform.preMult(p));
                 }
             }
         }
-        else if (streq(t, "kids")) /** 'kids' is the last token in an object **/
-        {
-            int num, n;
-
-            sscanf(buff, "%s %d", t, &num);
-
-            if (num != 0)
-            {
-                // ob.kids = (ACObject **)myalloc(num * sizeof(ACObject *) );
-                ob.num_kids = num;
-
-                if (gp && ob.data) { // GWM March 8 2004 - turn comment data into descriptors
-                    char *ctmp=strtok(ob.data,"\n");
-                    while (ctmp) {
-                        gp->addDescription(std::string(ctmp));
-                        ctmp=strtok(NULL,"\n");
+        else if (token == "numsurf") {
+            unsigned num;
+            stream >> num;
+            if (0 < num) {
+                osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+                group->addChild(geode.get());
+                
+                // list of materials required- generate one geode per material
+                std::vector<Bins> primitiveBins(fileData.getNumMaterials());
+                vertexSet->setCreaseAngle(creaseAngle);
+                
+                for (unsigned n = 0; n < num; ++n) {
+                    std::string token;
+                    stream >> token;
+                    
+                    if (token != "SURF") {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: expected SURF line while reading object \""
+                                                << group->getName() << "\"!" << std::endl;
+                        return group.release();
                     }
-                }
-                for (n = 0; n < num; n++)
-                {
-                    osg::Group *k = ac_load_object(f,&ob, options); 
-                    if (k == NULL)
-                    {
-                        printf("error reading expected child object %d of %d at line: %d\n", n+1, num, line);
-                        return(gp);
+                    
+                    stream >> token;
+                    unsigned flags = strtol(token.c_str(), NULL, 0);
+                    
+                    stream >> token;
+                    if (token != "mat") {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: expected mat line while reading object \""
+                                                << group->getName() << "\"!" << std::endl;
+                        return group.release();
                     }
-                    else {
-                        osg::LightSource *ls=dynamic_cast<osg::LightSource*>(k);
-                        if (ls) {
-                            osg::StateSet* lightStateSet = gp->getOrCreateStateSet();
-                            gp->setStateSet(lightStateSet);
-                            gp->setCullingActive(false);
-                            ls->setStateSetModes(*lightStateSet,osg::StateAttribute::ON);
+                    
+                    // read the material index
+                    unsigned matIdx;
+                    stream >> matIdx;
+                    if (primitiveBins.size() <= matIdx) {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: invalid material number while reading object \""
+                                                << group->getName() << "\"" << std::endl;
+                        return group.release();
+                    }
+                    
+                    // now get the correct PrimitiveBin
+                    PrimitiveBin* primitiveBin = 0;
+                    primitiveBin = primitiveBins[matIdx].getOrCreatePrimitiveBin(flags, vertexSet.get());
+                    if (!primitiveBin) {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: unexpected primitive flags while reading object \""
+                                                << group->getName() << "\"" << std::endl;
+                        return group.release();
+                    }
+                    
+                    // read the refs
+                    stream >> token;
+                    if (token != "refs") {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: expected refs line while reading object \""
+                                                << group->getName() << "\"" << std::endl;
+                        return group.release();
+                    }
+                    
+                    unsigned nRefs = 0;
+                    stream >> nRefs;
+                    if (!stream) {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: could not read number of refs while reading object \""
+                                                << group->getName() << "\"" << std::endl;
+                        return group.release();
+                    }
+                    
+                    // in case this is an invalid refs count for this primitive
+                    // read further, but do not store that primitive
+                    bool acceptPrimitive = primitiveBin->beginPrimitive(nRefs);
+                    for (unsigned i = 0; i < nRefs; ++i) {
+                        // Read the vertex index
+                        unsigned index;
+                        stream >> index;
+                        if (vertexSet->size() <= index)
+                        {
+                            osg::notify(osg::FATAL) << "osgDB ac3d reader: invalid ref vertex index while reading object \""
+                                                    << group->getName() << "\"" << std::endl;
+                            return group.release();
                         }
                         
-                        gp->addChild(k);
+                        // Read the texture corrdinates
+                        osg::Vec2 texCoord;
+                        stream >> texCoord[0] >> texCoord[1];
+                        if (!stream) {
+                            osg::notify(osg::WARN) << "osgDB ac3d reader: could not parse texture coords while reading object \""
+                                                   << group->getName() << "\" setting to (0,0)" << std::endl;
+                            stream.clear();
+                            std::string dummy;
+                            std::getline(stream, dummy);
+                        }
+                        
+                        if (acceptPrimitive)
+                        {
+                            texCoord[0] = textureOffset[0] + texCoord[0]*textureRepeat[0];
+                            texCoord[1] = textureOffset[1] + texCoord[1]*textureRepeat[1];
+                        
+                            if (!primitiveBin->vertex(index, texCoord))
+                            {
+                                return group.release();
+                            }
+                        }
+                    }
+                    if (acceptPrimitive)
+                    {
+                        if (!primitiveBin->endPrimitive())
+                        {
+                            return group.release();
+                        }
                     }
                 }
-
+                
+                for (unsigned i = 0; i < primitiveBins.size(); ++i)
+                    primitiveBins[i].finalize(geode.get(), fileData.getMaterial(i));
             }
-            else if (ob.type == OBJECT_LIGHT)
-            { // add a light source to the scene 1 Nov 2003
-                static int nlight=1;
-                osg::Light* ac3dLight = new osg::Light;
-                ac3dLight->setLightNum(nlight++);
-                ac3dLight->setPosition(osg::Vec4(ob.loc[0],ob.loc[1],ob.loc[2],0.0f));
+        }
+        else if (token == "kids") {
+            unsigned num;
+            stream >> num;
+            if (num != 0) {
+                for (unsigned n = 0; n < num; n++) {
+                    osg::Node *k = readObject(stream, fileData, transform*parentTransform);
+                    if (k == 0) {
+                        osg::notify(osg::FATAL) << "osgDB ac3d reader: error reading child object" << std::endl;
+                        return group.release();
+                    }
+                    else {
+                        osg::LightSource *ls = dynamic_cast<osg::LightSource*>(k);
+                        if (ls) {
+                            osg::StateSet* lightStateSet = group->getOrCreateStateSet();
+                            group->setStateSet(lightStateSet);
+                            group->setCullingActive(false);
+                            ls->setStateSetModes(*lightStateSet, osg::StateAttribute::ON);
+                        }
+                        
+                        group->addChild(k);
+                    }
+                }
+            }
+            else if (objectType == ObjectTypeLight) { // add a light source to the scene 1 Nov 2003
+                osg::Light* ac3dLight = fileData.getNextLight();
+                osg::Matrix tt = transform*parentTransform;
+                ac3dLight->setPosition(osg::Vec4(tt(3, 0), tt(3, 1), tt(3, 2), 1));
+                ac3dLight->setDirection(osg::Matrix::transform3x3(osg::Vec3(0.0f, 0.0f, -1.0f), tt));
                 ac3dLight->setAmbient(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
                 ac3dLight->setDiffuse(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
                 ac3dLight->setSpecular(osg::Vec4(1.0f,1.0f,0.5f,1.0f));
                 
                 osg::LightSource* ac3dLightSource = new osg::LightSource;    
                 ac3dLightSource->setLight(ac3dLight);
-                ac3dLightSource->setLocalStateSetModes(osg::StateAttribute::ON); 
+                ac3dLightSource->setLocalStateSetModes(osg::StateAttribute::ON);
                 
                 // for some mad reason, you need to set this so that the light works.  WHY?
                 return ac3dLightSource;
             }
-            return(gp);
+            return group.release();
         }
     }
-    return(gp);
+    
+    return group.release();
 }
 
-
-/*void ac_calc_vertex_normals(ACObject *ob)
+osg::Node*
+readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options)
 {
-int n;
-
-    ac_object_calc_vertex_normals(ob);
-    if (ob->num_kids)
-        for (n = 0; n < ob->num_kids; n++)
-            ac_calc_vertex_normals(ob->kids[n]);
-}*/
-
-
-osg::Group *ac_load_ac3d(const char *fname,const osgDB::ReaderWriter::Options* options)
-{
-    osg::Group *ret = NULL;
-    if (strlen(fname)>0) {
-    std::ifstream fin(fname, std::ios::in);
-//    FILE *f = fopen(fname, "r");
-
-        if (!fin.is_open())
-        {
-            printf("can't open %s for loading\n", fname);
-            return(NULL);
-        }
-
-        read_line(fin);
-
-        if (strncmp(buff, "AC3D", 4))
-        {
-            printf("ac_load_ac '%s' is not a valid AC3D file.", fname);
-            fin.close(); // fclose(f);
-            return(0);
-        }
-
-
-        startmatindex = palette.size(); //num_palette;
-
-
-        ret = ac_load_object(fin,NULL, options); 
-
-        
-        fin.close();
-
-        // ac_calc_vertex_normals(ret);
-        // here I need to calculate nromals for this object
-    }
-
-    return(ret);
+    FileData fileData(options);
+    osg::Matrix idetityTransform;
+    osg::Node* node = readObject(stream, fileData, idetityTransform);
+    if (node)
+      node->setName("World");
+    return node;
 }
 
-
-
-
-
-
-
-void ac_dump(ACObject *ob)
-{ // not yet finished option ot output AC3D file from OSG scene.
-int n;
-
-    printf("OBJECT name %s\nloc %f %f %f\nnum_vert %d\nnum_surf %d\n",
-        ob->name, ob->loc[0], ob->loc[1], ob->loc[2], ob->num_vert, ob->num_surf);
-
-
-//    for (n=0; n < ob->num_vert; n++)
-//        printf("\tv %f %f %f\n", ob->vertices[n].x, ob->vertices[n].y, ob->vertices[n].z);
-
-    for (n=0; n < ob->num_surf; n++)
-        {
-////        ACSurface *s = &ob->surfaces[n];
-//        printf("surface %d, %d refs, mat %d\n", n, s->num_vertref, s->mat);
-        }
-
-/* this structure not used in OSG
-    if (ob->num_kids)
-        for (n = 0; n < ob->num_kids; n++)
-            ac_dump(ob->kids[n]); 
- */            
-}
-
-
-
-// now register with osg::Registry to instantiate the above
-// reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterAC> g_readerWriter_AC_Proxy;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+} // namespace ac3d

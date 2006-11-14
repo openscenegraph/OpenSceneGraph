@@ -17,7 +17,6 @@
 
 #include "Exception.h"
 #include "Geode.h"
-#include "osgac3d.h"
 
 using namespace ac3d;
 using namespace std;

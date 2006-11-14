@@ -7,11 +7,11 @@ namespace ac3d{
 
 class Exception{
 public:
-	Exception(std::string error);
-	~Exception();
-	std::string getError(){return _error;};
+    Exception(std::string error);
+    ~Exception();
+    std::string getError(){return _error;};
 private:
-	std::string _error;
+    std::string _error;
 };
 
 }

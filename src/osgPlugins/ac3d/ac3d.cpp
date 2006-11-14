@@ -311,7 +311,6 @@ class TextureData
     bool setTexture(const std::string& name, const osgDB::ReaderWriter::Options* options)
     {
         mTexture2D = new osg::Texture2D;
-        mTexture2D->setImage(mImage.get());
         mTexture2D->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
         mTexture2D->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
 
@@ -327,6 +326,7 @@ class TextureData
             osg::notify(osg::FATAL) << "osgDB ac3d reader: could not read texture \"" << name << "\"" << std::endl;
             return false;
         }
+        mTexture2D->setImage(mImage.get());
         mTranslucent = mImage->isImageTranslucent();
         return true;
     }

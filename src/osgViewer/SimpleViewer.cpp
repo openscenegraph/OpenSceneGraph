@@ -165,7 +165,7 @@ void SimpleViewer::frameEventTraversal()
     
         bool handled = false;
         
-        if (_eventVisitor.valid())
+        if (_eventVisitor.valid() && getSceneData())
         {
             _eventVisitor->reset();
             _eventVisitor->addEvent( event );

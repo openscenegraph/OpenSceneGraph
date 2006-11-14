@@ -54,10 +54,11 @@ int main(int argc, char** argv)
     }
     
     
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
     osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
     occluder->computeOccluderGeometry(model.get());
     
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->addDrawable(occluder.get());
 
     viewer.setSceneData(geode.get());

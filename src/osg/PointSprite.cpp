@@ -14,19 +14,27 @@
 #include <osg/GLExtensions>
 #include <osg/GL>
 #include <osg/PointSprite>
+#include <osg/Point>
 #include <osg/State>
 #include <osg/buffered_value>
 #include <osg/Notify>
 
 using namespace osg;
 
+PointSprite::PointSprite()
+    : _coordOriginMode(UPPER_LEFT)
+{
+}
+
+PointSprite::~PointSprite()
+{
+}
+
 int PointSprite::compare(const StateAttribute& sa) const
 {
-    if (this==&sa) return 0;\
-    const std::type_info* type_lhs = &typeid(*this);\
-    const std::type_info* type_rhs = &typeid(sa);\
-    if (type_lhs->before(*type_rhs)) return -1;\
-    if (*type_lhs != *type_rhs) return 1;\
+    COMPARE_StateAttribute_Types(PointSprite,sa)
+
+    COMPARE_StateAttribute_Parameter(_coordOriginMode)
 
     return 0; // passed all the above comparison macro's, must be equal.
 }
@@ -46,6 +54,11 @@ void PointSprite::apply(osg::State& state) const
     if(!isPointSpriteSupported(state.getContextID())) return;
 
     glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, 1);
+
+    const Point::Extensions* extensions = Point::getExtensions(state.getContextID(),true);
+
+    if (extensions->isPointParametersSupported())
+        extensions->glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN,_coordOriginMode);
 }
 
 struct IntializedSupportedPair

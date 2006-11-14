@@ -7,8 +7,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-#include <SDL.h>
-#include <SDL_events.h>
+#include "SDL.h"
 
 #include <iostream>
 
@@ -71,8 +70,17 @@ int main( int argc, char **argv )
         return 1;
     }
 
+#if 1
     unsigned int windowWidth = 1280;
     unsigned int windowHeight = 1024;
+#else
+    // Starting with SDL 1.2.10, passing in 0 will use the system's current resolution.
+    unsigned int windowWidth = 0;
+    unsigned int windowHeight = 0;
+#endif
+
+    // Passing in 0 for bitdepth also uses the system's current bitdepth
+    unsigned int bitDepth = 0;
 
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
     SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );
@@ -80,19 +88,23 @@ int main( int argc, char **argv )
     SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
     
-        // set up the surface to render to
-    SDL_Surface* screen = SDL_SetVideoMode(windowWidth, windowHeight, 32, SDL_OPENGL | SDL_FULLSCREEN | SDL_RESIZABLE);
+    // set up the surface to render to
+    SDL_Surface* screen = SDL_SetVideoMode(windowWidth, windowHeight, bitDepth, SDL_OPENGL | SDL_FULLSCREEN | SDL_RESIZABLE);
     if ( screen == NULL )
     {
         std::cerr<<"Unable to set "<<windowWidth<<"x"<<windowHeight<<" video: %s\n"<< SDL_GetError()<<std::endl;
         exit(1);
     }
-    
+
     SDL_EnableUNICODE(1);
     
     osgViewer::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
+
+    // If we used 0 to set the fields, query the values so we can pass it to osgViewer
+    windowWidth = screen->w;
+    windowHeight = screen->h;
     viewer.getEventQueue()->windowResize(0, 0, windowWidth, windowHeight );
 
     bool done = false;
@@ -125,7 +137,7 @@ int main( int argc, char **argv )
         // draw the new frame
         viewer.frame();
 
-    	// Swap Buffers
+        // Swap Buffers
         SDL_GL_SwapBuffers();
     }
    

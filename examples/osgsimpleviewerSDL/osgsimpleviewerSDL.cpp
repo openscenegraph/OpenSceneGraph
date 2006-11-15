@@ -70,17 +70,23 @@ int main( int argc, char **argv )
         return 1;
     }
 
-#if 1
-    unsigned int windowWidth = 1280;
-    unsigned int windowHeight = 1024;
-#else
     // Starting with SDL 1.2.10, passing in 0 will use the system's current resolution.
     unsigned int windowWidth = 0;
     unsigned int windowHeight = 0;
-#endif
 
-    // Passing in 0 for bitdepth also uses the system's current bitdepth
+    // Passing in 0 for bitdepth also uses the system's current bitdepth. This works before 1.2.10 too.
     unsigned int bitDepth = 0;
+
+    // If not linked to SDL 1.2.10+, then we must use hardcoded values
+    const SDL_version* linked_version = SDL_Linked_Version();
+    if(linked_version->major == 1 && linked_version->minor == 2)
+    {
+	if(linked_version->patch < 10)
+	{
+	    windowWidth = 1280;
+	    windowHeight = 1024;
+	}
+    }
 
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
     SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5 );

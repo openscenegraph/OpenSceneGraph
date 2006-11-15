@@ -69,7 +69,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Method for updating in response to a mouse warp. Note, just moves the mouse position without creating a new event for it.*/
         void mouseWarp(float x, float y);
 
-        /** Method for adapting mouse motion events whilst mouse buttons are pressed, placing this event on the back of the event queue.*/
+        /** Method for adapting mouse motion events, placing this event on the back of the event queue.*/
         void mouseMotion(float x, float y);
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.

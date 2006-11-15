@@ -76,7 +76,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          "Note, just moves the mouse position without creating a new event for it. ");
 	I_Method2(void, mouseMotion, IN, float, x, IN, float, y,
 	          __void__mouseMotion__float__float,
-	          "Method for adapting mouse motion events whilst mouse buttons are pressed, placing this event on the back of the event queue. ",
+	          "Method for adapting mouse motion events, placing this event on the back of the event queue. ",
 	          "");
 	I_Method3(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button,
 	          __void__mouseButtonPress__float__float__unsigned_int,

@@ -4,7 +4,6 @@
 // eg the basic parsing of an AC3D file.
 // Conversion from AC3D scenegraph to OSG by GW Michel.
 
-#include <assert.h>
 #include <vector>
 #include <iostream>
 
@@ -570,8 +569,11 @@ public:
 
     VertexIndex addRefData(unsigned i, const RefData& refData)
     {
-        // must be checked outside
-        assert(i < _vertices.size());
+         if (_vertices.size() <= i)
+         {
+             osg::notify(osg::FATAL) << "osgDB ac3d reader: internal error, got invalid vertex index!" << std::endl;
+             return VertexIndex(0, 0);
+         }
         _dirty = true;
         return VertexIndex(i, _vertices[i].addRefData(refData));
     }

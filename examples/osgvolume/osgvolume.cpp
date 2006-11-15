@@ -731,6 +731,8 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     
     stateset->setEventCallback(new FollowMouseCallback);
+    
+    stateset->setMode(GL_ALPHA_TEST,osg::StateAttribute::ON);
 
     // set up the 3d texture itself,
     // note, well set the filtering up so that mip mapping is disabled,

@@ -381,6 +381,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Point.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\PointSprite.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\PolygonMode.cpp
 # End Source File
 # Begin Source File
@@ -738,6 +742,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\PagedLOD.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Point.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\PointSprite.h
 # End Source File
 # Begin Source File
 

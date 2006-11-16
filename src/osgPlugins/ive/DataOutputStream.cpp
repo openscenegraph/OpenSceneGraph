@@ -49,6 +49,7 @@
 #include "Viewport.h"
 #include "Scissor.h"
 #include "Image.h"
+#include "PointSprite.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -749,9 +750,13 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         else if(dynamic_cast<const osg::FrontFace*>(attribute)){
             ((ive::FrontFace*)(attribute))->write(this);
         }
-        // This is a FrontFace
+        // This is a Program
         else if(dynamic_cast<const osg::Program*>(attribute)){
             ((ive::Program*)(attribute))->write(this);
+        }
+        // This is a PointSprite
+        else if(dynamic_cast<const osg::PointSprite*>(attribute)){
+            ((ive::PointSprite*)(attribute))->write(this);
         }
 
         else{

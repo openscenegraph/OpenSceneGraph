@@ -46,6 +46,7 @@
 #include "Viewport.h"
 #include "Scissor.h"
 #include "Image.h"
+#include "PointSprite.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -1025,6 +1026,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEPROGRAM){
         attribute = new osg::Program();
         ((ive::Program*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEPOINTSPRITE){
+        attribute = new osg::PointSprite();
+        ((ive::PointSprite*)(attribute))->read(this);
     }
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");

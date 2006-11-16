@@ -447,14 +447,14 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
         titr!=geometry._texCoordList.end();
         ++titr)
     {
-        _texCoordList.push_back(*titr);
+        _texCoordList.push_back(ArrayData(*titr, copyop));
     }
 
     for(ArrayList::const_iterator vitr=geometry._vertexAttribList.begin();
         vitr!=geometry._vertexAttribList.end();
         ++vitr)
     {
-        _vertexAttribList.push_back(*vitr);
+        _vertexAttribList.push_back(ArrayData(*vitr, copyop));
     }
 }
 

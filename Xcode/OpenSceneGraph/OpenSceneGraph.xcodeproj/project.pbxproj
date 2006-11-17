@@ -74,6 +74,7 @@
 				00EF500906CB1775008ACEFF /* PBXTargetDependency */,
 				00A14D8B084E5D95000150AD /* PBXTargetDependency */,
 				00A14D8D084E5D95000150AD /* PBXTargetDependency */,
+				00C59E150B0941EF00E9BCA1 /* PBXTargetDependency */,
 				00EF500F06CB1775008ACEFF /* PBXTargetDependency */,
 				006CEA420921B08000985402 /* PBXTargetDependency */,
 				00EF501306CB1775008ACEFF /* PBXTargetDependency */,
@@ -226,6 +227,31 @@
 			);
 			name = GDALdependentStuff;
 			productName = GDALdependentStuff;
+		};
+		00C5AD4C0B0D6AE900E9BCA1 /* SDLdependentStuff */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 00C5AD570B0D6AE900E9BCA1 /* Build configuration list for PBXAggregateTarget "SDLdependentStuff" */;
+			buildPhases = (
+			);
+			comments = "This requires the gdal.framework to be installed to your system in /Library/Frameworks or ~/Library/Frameworks\nYou should build the main osg frameworks before building this target.\n\n";
+			dependencies = (
+				00C5AD5C0B0D6B3300E9BCA1 /* PBXTargetDependency */,
+			);
+			name = SDLdependentStuff;
+			productName = GDALdependentStuff;
+		};
+		00C5AD5F0B0D6B7300E9BCA1 /* AllStandardTargetsAndGDALAndSDLdependentStuff */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 00C5AD640B0D6B7300E9BCA1 /* Build configuration list for PBXAggregateTarget "AllStandardTargetsAndGDALAndSDLdependentStuff" */;
+			buildPhases = (
+			);
+			dependencies = (
+				00C5AD600B0D6B7300E9BCA1 /* PBXTargetDependency */,
+				00C5AD620B0D6B7300E9BCA1 /* PBXTargetDependency */,
+				00C5AD690B0D6B9600E9BCA1 /* PBXTargetDependency */,
+			);
+			name = AllStandardTargetsAndGDALAndSDLdependentStuff;
+			productName = AllStandardTargetsAndGDALdependentStuff;
 		};
 /* End PBXAggregateTarget section */
 
@@ -1008,7 +1034,6 @@
 		001DFD2A065A9660003310BF /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFD23065A9660003310BF /* Exception.h */; };
 		001DFD2B065A9660003310BF /* Geode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFD24065A9660003310BF /* Geode.cpp */; };
 		001DFD2C065A9660003310BF /* Geode.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFD25065A9660003310BF /* Geode.h */; };
-		001DFD2D065A9660003310BF /* osgac3d.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFD27065A9660003310BF /* osgac3d.h */; };
 		001DFD45065A96A9003310BF /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		001DFD51065A9837003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		001DFD52065A9837003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -1959,6 +1984,42 @@
 		00C0CEC20626564F0091ED7C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00C0CEC3062656520091ED7C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		00C0CEC4062656590091ED7C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		00C59D270B0926A800E9BCA1 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		00C59D280B0926A800E9BCA1 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		00C59D290B0926A800E9BCA1 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		00C59D2A0B0926A800E9BCA1 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
+		00C59D2B0B0926A800E9BCA1 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638D83093B9B87002722CD /* GLUT.framework */; };
+		00C59D2C0B0926A800E9BCA1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638E11093B9E5A002722CD /* Cocoa.framework */; };
+		00C59D2D0B0926A800E9BCA1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
+		00C59D2E0B0926A800E9BCA1 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		00C59D2F0B0926A800E9BCA1 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		00C59D3B0B092D0400E9BCA1 /* osgsimple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF4E0406CB0A57008ACEFF /* osgsimple.cpp */; };
+		00C59D560B092D3B00E9BCA1 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		00C59D570B092D3B00E9BCA1 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		00C59D580B092D3B00E9BCA1 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		00C59D590B092D3B00E9BCA1 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
+		00C59D5B0B092D3B00E9BCA1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638E11093B9E5A002722CD /* Cocoa.framework */; };
+		00C59D5C0B092D3B00E9BCA1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
+		00C59D5D0B092D3B00E9BCA1 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		00C59D5E0B092D3B00E9BCA1 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		00C59D7D0B0930E000E9BCA1 /* osgsimpleviewerGLUT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00C59D7A0B0930E000E9BCA1 /* osgsimpleviewerGLUT.cpp */; };
+		00C59D9D0B09343B00E9BCA1 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		00C59D9E0B09343B00E9BCA1 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		00C59D9F0B09343B00E9BCA1 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		00C59DA00B09343B00E9BCA1 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
+		00C59DA10B09343B00E9BCA1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638E11093B9E5A002722CD /* Cocoa.framework */; };
+		00C59DA20B09343B00E9BCA1 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
+		00C59DA30B09343B00E9BCA1 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		00C59DA40B09343B00E9BCA1 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		00C59DC20B0935E900E9BCA1 /* osgsimpleviewerSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00C59DBE0B0935E900E9BCA1 /* osgsimpleviewerSDL.cpp */; };
+		00C59DD20B09382700E9BCA1 /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 00C59DD00B09382600E9BCA1 /* SDLMainForMacOSX.h */; };
+		00C59DD30B09382700E9BCA1 /* SDLMainForMacOSX.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C59DD10B09382600E9BCA1 /* SDLMainForMacOSX.m */; };
+		00C59EE50B09597600E9BCA1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 00C59ED80B09597200E9BCA1 /* InfoPlist.strings */; };
+		00C59EE60B09597600E9BCA1 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 00C59EDA0B09597300E9BCA1 /* MainMenu.nib */; };
+		00C59EE80B09597600E9BCA1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 00C59EDE0B09597400E9BCA1 /* Info.plist */; };
+		00C59EE90B09597600E9BCA1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C59EDF0B09597500E9BCA1 /* main.m */; };
+		00C59EEC0B09597600E9BCA1 /* SimpleViewerCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 00C59EE20B09597600E9BCA1 /* SimpleViewerCocoa.mm */; };
+		00C5A6C80B0AD74100E9BCA1 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		00CE2D31065BCCE7003C8656 /* CoordinateSystemNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00CE2D30065BCCE7003C8656 /* CoordinateSystemNode.cpp */; };
 		00CE2D63065BCD69003C8656 /* CoordinateSystemNode in Headers */ = {isa = PBXBuildFile; fileRef = 00CE2D3C065BCD25003C8656 /* CoordinateSystemNode */; settings = {ATTRIBUTES = (Public, ); }; };
 		00CE2D64065BCD69003C8656 /* CullSettings in Headers */ = {isa = PBXBuildFile; fileRef = 00CE2D3D065BCD25003C8656 /* CullSettings */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2085,7 +2146,6 @@
 		00EF4DF806CB092F008ACEFF /* osgshadowtexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF4DF306CB092F008ACEFF /* osgshadowtexture.cpp */; };
 		00EF4DF906CB0975008ACEFF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		00EF4E0006CB09E5008ACEFF /* osgshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF4DFD06CB09E4008ACEFF /* osgshape.cpp */; };
-		00EF4E0706CB0A58008ACEFF /* osgsimple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00EF4E0406CB0A57008ACEFF /* osgsimple.cpp */; };
 		00EF4E1306CB0A98008ACEFF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00EF4E1406CB0A98008ACEFF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00EF4E1506CB0A98008ACEFF /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -4028,6 +4088,146 @@
 			remoteGlobalIDString = 00A14CA1084E580E000150AD;
 			remoteInfo = osgdem;
 		};
+		00C59D1B0B0926A800E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
+			remoteInfo = osg;
+		};
+		00C59D1D0B0926A800E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
+			remoteInfo = osgUtil;
+		};
+		00C59D1F0B0926A800E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		00C59D210B0926A800E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
+			remoteInfo = osgViewer;
+		};
+		00C59D4A0B092D3B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
+			remoteInfo = osg;
+		};
+		00C59D4C0B092D3B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
+			remoteInfo = osgUtil;
+		};
+		00C59D4E0B092D3B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		00C59D500B092D3B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
+			remoteInfo = osgViewer;
+		};
+		00C59D920B09343B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
+			remoteInfo = osg;
+		};
+		00C59D940B09343B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
+			remoteInfo = osgUtil;
+		};
+		00C59D960B09343B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		00C59D980B09343B00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
+			remoteInfo = osgViewer;
+		};
+		00C59E140B0941EF00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00C59D190B0926A800E9BCA1;
+			remoteInfo = osgsimpleviewerGLUT;
+		};
+		00C5A0840B0966EF00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00557CDF0624A947000A808A;
+			remoteInfo = osgGA;
+		};
+		00C5A08D0B09670A00E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		00C5ACF10B0D63D300E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11876905D75C2700EB53E5;
+			remoteInfo = osgText;
+		};
+		00C5AD5B0B0D6B3300E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00C59D900B09343B00E9BCA1;
+			remoteInfo = osgsimpleviewerSDL;
+		};
+		00C5AD610B0D6B7300E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 006FD302065A8A1600677FA5;
+			remoteInfo = AllStandardTargets;
+		};
+		00C5AD630B0D6B7300E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00A15423084FE455000150AD;
+			remoteInfo = GDALdependentStuff;
+		};
+		00C5AD680B0D6B9600E9BCA1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00C5AD4C0B0D6AE900E9BCA1;
+			remoteInfo = SDLdependentStuff;
+		};
 		00C6172B0924ECA40098F34F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0040992A0924CC7D009ADD90 /* OpenThreads.xcodeproj */;
@@ -4445,21 +4645,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
 		00FB216E0B016DCD0052DD79 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
 		00FB21700B016DDF0052DD79 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
 		6320CD4E07845CAE00FE3D2C /* PBXContainerItemProxy */ = {
@@ -5010,7 +5210,6 @@
 		001DFD23065A9660003310BF /* Exception.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Exception.h; path = ../../src/osgPlugins/ac3d/Exception.h; sourceTree = SOURCE_ROOT; };
 		001DFD24065A9660003310BF /* Geode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Geode.cpp; path = ../../src/osgPlugins/ac3d/Geode.cpp; sourceTree = SOURCE_ROOT; };
 		001DFD25065A9660003310BF /* Geode.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Geode.h; path = ../../src/osgPlugins/ac3d/Geode.h; sourceTree = SOURCE_ROOT; };
-		001DFD27065A9660003310BF /* osgac3d.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = osgac3d.h; path = ../../src/osgPlugins/ac3d/osgac3d.h; sourceTree = SOURCE_ROOT; };
 		001DFD53065A9837003310BF /* osgdb_bmp.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_bmp.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001DFD64065A98CC003310BF /* ReaderWriterBMP.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterBMP.cpp; path = ../../src/osgPlugins/bmp/ReaderWriterBMP.cpp; sourceTree = SOURCE_ROOT; };
 		001DFD7B065A9908003310BF /* osgdb_x.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_x.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5639,6 +5838,19 @@
 		00A15398084FE150000150AD /* ReaderWriterGDAL.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterGDAL.cpp; path = ../../src/osgPlugins/gdal/ReaderWriterGDAL.cpp; sourceTree = SOURCE_ROOT; };
 		00C0CAC1062651A40091ED7C /* osgdb_freetype.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_freetype.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C0CAE90626525D0091ED7C /* osgdb_osgText.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_osgText.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59D340B0926A800E9BCA1 /* osgsimpleviewerGLUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgsimpleviewerGLUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59D630B092D3B00E9BCA1 /* osgsimpleviewerCocoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgsimpleviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59D7A0B0930E000E9BCA1 /* osgsimpleviewerGLUT.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgsimpleviewerGLUT.cpp; sourceTree = "<group>"; };
+		00C59DA90B09343B00E9BCA1 /* osgsimpleviewerSDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgsimpleviewerSDL.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59DBE0B0935E900E9BCA1 /* osgsimpleviewerSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgsimpleviewerSDL.cpp; sourceTree = "<group>"; };
+		00C59DD00B09382600E9BCA1 /* SDLMainForMacOSX.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMainForMacOSX.h; sourceTree = "<group>"; };
+		00C59DD10B09382600E9BCA1 /* SDLMainForMacOSX.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMainForMacOSX.m; sourceTree = "<group>"; };
+		00C59ED90B09597300E9BCA1 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		00C59EDB0B09597300E9BCA1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		00C59EDE0B09597400E9BCA1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
+		00C59EDF0B09597500E9BCA1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		00C59EE10B09597600E9BCA1 /* SimpleViewerCocoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SimpleViewerCocoa.h; sourceTree = "<group>"; };
+		00C59EE20B09597600E9BCA1 /* SimpleViewerCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = SimpleViewerCocoa.mm; sourceTree = "<group>"; };
 		00CE2D30065BCCE7003C8656 /* CoordinateSystemNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CoordinateSystemNode.cpp; path = ../../src/osg/CoordinateSystemNode.cpp; sourceTree = SOURCE_ROOT; };
 		00CE2D3C065BCD25003C8656 /* CoordinateSystemNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = CoordinateSystemNode; path = ../../include/osg/CoordinateSystemNode; sourceTree = SOURCE_ROOT; };
 		00CE2D3D065BCD25003C8656 /* CullSettings */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = CullSettings; path = ../../include/osg/CullSettings; sourceTree = SOURCE_ROOT; };
@@ -7533,6 +7745,53 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00C59D260B0926A800E9BCA1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59D270B0926A800E9BCA1 /* osg.framework in Frameworks */,
+				00C59D280B0926A800E9BCA1 /* osgDB.framework in Frameworks */,
+				00C59D290B0926A800E9BCA1 /* osgUtil.framework in Frameworks */,
+				00C59D2A0B0926A800E9BCA1 /* OpenThreads.framework in Frameworks */,
+				00C59D2B0B0926A800E9BCA1 /* GLUT.framework in Frameworks */,
+				00C59D2C0B0926A800E9BCA1 /* Cocoa.framework in Frameworks */,
+				00C59D2D0B0926A800E9BCA1 /* OpenGL.framework in Frameworks */,
+				00C59D2E0B0926A800E9BCA1 /* osgGA.framework in Frameworks */,
+				00C59D2F0B0926A800E9BCA1 /* osgViewer.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D550B092D3B00E9BCA1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59D560B092D3B00E9BCA1 /* osg.framework in Frameworks */,
+				00C59D570B092D3B00E9BCA1 /* osgDB.framework in Frameworks */,
+				00C59D580B092D3B00E9BCA1 /* osgUtil.framework in Frameworks */,
+				00C59D590B092D3B00E9BCA1 /* OpenThreads.framework in Frameworks */,
+				00C59D5B0B092D3B00E9BCA1 /* Cocoa.framework in Frameworks */,
+				00C59D5C0B092D3B00E9BCA1 /* OpenGL.framework in Frameworks */,
+				00C59D5D0B092D3B00E9BCA1 /* osgGA.framework in Frameworks */,
+				00C59D5E0B092D3B00E9BCA1 /* osgViewer.framework in Frameworks */,
+				00C5A6C80B0AD74100E9BCA1 /* osgText.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D9C0B09343B00E9BCA1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59D9D0B09343B00E9BCA1 /* osg.framework in Frameworks */,
+				00C59D9E0B09343B00E9BCA1 /* osgDB.framework in Frameworks */,
+				00C59D9F0B09343B00E9BCA1 /* osgUtil.framework in Frameworks */,
+				00C59DA00B09343B00E9BCA1 /* OpenThreads.framework in Frameworks */,
+				00C59DA10B09343B00E9BCA1 /* Cocoa.framework in Frameworks */,
+				00C59DA20B09343B00E9BCA1 /* OpenGL.framework in Frameworks */,
+				00C59DA30B09343B00E9BCA1 /* osgGA.framework in Frameworks */,
+				00C59DA40B09343B00E9BCA1 /* osgViewer.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00D3F0E10920182C00817AAD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8989,6 +9248,9 @@
 				00EF4DFA06CB09E2008ACEFF /* osgshape */,
 				00EF4E0106CB0A55008ACEFF /* osgsimple */,
 				00EF4E6A06CB0B03008ACEFF /* osgsimplepager */,
+				00C59ED50B09597100E9BCA1 /* osgsimpleviewerCocoa */,
+				00C59D770B0930DE00E9BCA1 /* osgsimpleviewerGLUT */,
+				00C59DBA0B0935E700E9BCA1 /* osgsimpleviewerSDL */,
 				00EF4E7106CB0BA3008ACEFF /* osgsimplifier */,
 				00EF4E7806CB0C25008ACEFF /* osgsimulation */,
 				006CEA2C0921B00A00985402 /* osgslice */,
@@ -9036,7 +9298,6 @@
 				001DFD23065A9660003310BF /* Exception.h */,
 				001DFD24065A9660003310BF /* Geode.cpp */,
 				001DFD25065A9660003310BF /* Geode.h */,
-				001DFD27065A9660003310BF /* osgac3d.h */,
 			);
 			name = ac3d;
 			path = ../../src/osgPlugins/ac3d;
@@ -10016,6 +10277,40 @@
 			path = ../../src/osgPlugins/gdal;
 			sourceTree = SOURCE_ROOT;
 		};
+		00C59D770B0930DE00E9BCA1 /* osgsimpleviewerGLUT */ = {
+			isa = PBXGroup;
+			children = (
+				00C59D7A0B0930E000E9BCA1 /* osgsimpleviewerGLUT.cpp */,
+			);
+			name = osgsimpleviewerGLUT;
+			path = ../../examples/osgsimpleviewerGLUT;
+			sourceTree = SOURCE_ROOT;
+		};
+		00C59DBA0B0935E700E9BCA1 /* osgsimpleviewerSDL */ = {
+			isa = PBXGroup;
+			children = (
+				00C59DD00B09382600E9BCA1 /* SDLMainForMacOSX.h */,
+				00C59DD10B09382600E9BCA1 /* SDLMainForMacOSX.m */,
+				00C59DBE0B0935E900E9BCA1 /* osgsimpleviewerSDL.cpp */,
+			);
+			name = osgsimpleviewerSDL;
+			path = ../../examples/osgsimpleviewerSDL;
+			sourceTree = SOURCE_ROOT;
+		};
+		00C59ED50B09597100E9BCA1 /* osgsimpleviewerCocoa */ = {
+			isa = PBXGroup;
+			children = (
+				00C59ED80B09597200E9BCA1 /* InfoPlist.strings */,
+				00C59EDA0B09597300E9BCA1 /* MainMenu.nib */,
+				00C59EDE0B09597400E9BCA1 /* Info.plist */,
+				00C59EDF0B09597500E9BCA1 /* main.m */,
+				00C59EE20B09597600E9BCA1 /* SimpleViewerCocoa.mm */,
+				00C59EE10B09597600E9BCA1 /* SimpleViewerCocoa.h */,
+			);
+			name = osgsimpleviewerCocoa;
+			path = ../../examples/osgsimpleviewerCocoa;
+			sourceTree = SOURCE_ROOT;
+		};
 		00E281E707676DF6005AEE61 /* net */ = {
 			isa = PBXGroup;
 			children = (
@@ -10424,6 +10719,9 @@
 				006E23E80AC0D11D00FBB48F /* osgdb_OpenFlight.so */,
 				006E24720AC0D66700FBB48F /* osgfadetext.app */,
 				00FB21010B015CF20052DD79 /* osgViewer.framework */,
+				00C59D340B0926A800E9BCA1 /* osgsimpleviewerGLUT.app */,
+				00C59D630B092D3B00E9BCA1 /* osgsimpleviewerCocoa.app */,
+				00C59DA90B09343B00E9BCA1 /* osgsimpleviewerSDL.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -11559,7 +11857,6 @@
 			files = (
 				001DFD2A065A9660003310BF /* Exception.h in Headers */,
 				001DFD2C065A9660003310BF /* Geode.h in Headers */,
-				001DFD2D065A9660003310BF /* osgac3d.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12128,6 +12425,28 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D220B0926A800E9BCA1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D510B092D3B00E9BCA1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D990B09343B00E9BCA1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59DD20B09382700E9BCA1 /* SDLMainForMacOSX.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14726,6 +15045,73 @@
 			productReference = 00C0CAE90626525D0091ED7C /* osgdb_osgText.so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		00C59D190B0926A800E9BCA1 /* osgsimpleviewerGLUT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00C59D300B0926A800E9BCA1 /* Build configuration list for PBXNativeTarget "osgsimpleviewerGLUT" */;
+			buildPhases = (
+				00C59D220B0926A800E9BCA1 /* Headers */,
+				00C59D230B0926A800E9BCA1 /* Resources */,
+				00C59D240B0926A800E9BCA1 /* Sources */,
+				00C59D260B0926A800E9BCA1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00C59D1A0B0926A800E9BCA1 /* PBXTargetDependency */,
+				00C59D1C0B0926A800E9BCA1 /* PBXTargetDependency */,
+				00C59D1E0B0926A800E9BCA1 /* PBXTargetDependency */,
+				00C59D200B0926A800E9BCA1 /* PBXTargetDependency */,
+			);
+			name = osgsimpleviewerGLUT;
+			productName = osgtext;
+			productReference = 00C59D340B0926A800E9BCA1 /* osgsimpleviewerGLUT.app */;
+			productType = "com.apple.product-type.application";
+		};
+		00C59D480B092D3B00E9BCA1 /* osgsimpleviewerCocoa */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00C59D5F0B092D3B00E9BCA1 /* Build configuration list for PBXNativeTarget "osgsimpleviewerCocoa" */;
+			buildPhases = (
+				00C59D510B092D3B00E9BCA1 /* Headers */,
+				00C59D520B092D3B00E9BCA1 /* Resources */,
+				00C59D530B092D3B00E9BCA1 /* Sources */,
+				00C59D550B092D3B00E9BCA1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00C59D490B092D3B00E9BCA1 /* PBXTargetDependency */,
+				00C59D4B0B092D3B00E9BCA1 /* PBXTargetDependency */,
+				00C59D4D0B092D3B00E9BCA1 /* PBXTargetDependency */,
+				00C59D4F0B092D3B00E9BCA1 /* PBXTargetDependency */,
+				00C5ACF20B0D63D300E9BCA1 /* PBXTargetDependency */,
+			);
+			name = osgsimpleviewerCocoa;
+			productName = osgtext;
+			productReference = 00C59D630B092D3B00E9BCA1 /* osgsimpleviewerCocoa.app */;
+			productType = "com.apple.product-type.application";
+		};
+		00C59D900B09343B00E9BCA1 /* osgsimpleviewerSDL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00C59DA50B09343B00E9BCA1 /* Build configuration list for PBXNativeTarget "osgsimpleviewerSDL" */;
+			buildPhases = (
+				00C59D990B09343B00E9BCA1 /* Headers */,
+				00C59D9A0B09343B00E9BCA1 /* Resources */,
+				00C59D9B0B09343B00E9BCA1 /* Sources */,
+				00C59D9C0B09343B00E9BCA1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00C59D910B09343B00E9BCA1 /* PBXTargetDependency */,
+				00C59D930B09343B00E9BCA1 /* PBXTargetDependency */,
+				00C59D950B09343B00E9BCA1 /* PBXTargetDependency */,
+				00C59D970B09343B00E9BCA1 /* PBXTargetDependency */,
+			);
+			name = osgsimpleviewerSDL;
+			productName = osgtext;
+			productReference = 00C59DA90B09343B00E9BCA1 /* osgsimpleviewerSDL.app */;
+			productType = "com.apple.product-type.application";
+		};
 		00D3F0E20920182C00817AAD /* osgdb___ */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00D3F0E40920187300817AAD /* Build configuration list for PBXNativeTarget "osgdb___" */;
@@ -15234,6 +15620,8 @@
 			dependencies = (
 				00FB20D10B015CF10052DD79 /* PBXTargetDependency */,
 				00FB20D30B015CF10052DD79 /* PBXTargetDependency */,
+				00C5A0850B0966EF00E9BCA1 /* PBXTargetDependency */,
+				00C5A08E0B09670A00E9BCA1 /* PBXTargetDependency */,
 			);
 			name = osgViewer;
 			productName = osgGA;
@@ -15369,6 +15757,7 @@
 			targets = (
 				006FD302065A8A1600677FA5 /* AllStandardTargets */,
 				00638D6C093B9904002722CD /* AllStandardTargetsAndGDALdependentStuff */,
+				00C5AD5F0B0D6B7300E9BCA1 /* AllStandardTargetsAndGDALAndSDLdependentStuff */,
 				005988A50652DB9D003D6AA1 /* osgFrameworks */,
 				BE117FB205D63B3800EB53E5 /* osg */,
 				BE11849905D7126100EB53E5 /* osgUtil */,
@@ -15436,6 +15825,7 @@
 				00A14CA1084E580E000150AD /* osgdem */,
 				001D069A065AB62B003310BF /* Examples */,
 				00A15423084FE455000150AD /* GDALdependentStuff */,
+				00C5AD4C0B0D6AE900E9BCA1 /* SDLdependentStuff */,
 				0007B90B06C181CC00C884E1 /* osganimate */,
 				0007B96A06C18F9900C884E1 /* osgautotransform */,
 				000A24BA06CACA60009EE43A /* osgbillboard */,
@@ -15497,6 +15887,8 @@
 				00EF4D7706CB04C2008ACEFF /* osgshape */,
 				00EF4D9106CB04C6008ACEFF /* osgsimple */,
 				00EF4E0806CB0A98008ACEFF /* osgsimplepager */,
+				00C59D480B092D3B00E9BCA1 /* osgsimpleviewerCocoa */,
+				00C59D190B0926A800E9BCA1 /* osgsimpleviewerGLUT */,
 				00EF4E2206CB0AA0008ACEFF /* osgsimplifier */,
 				006CE9DC0921AD7800985402 /* osgslice */,
 				0007BC7806C1A8FA00C884E1 /* osgspacewarp */,
@@ -15517,6 +15909,7 @@
 				0007BA3306C19B6900C884E1 /* os */,
 				006E24600AC0D66700FBB48F /* osgfadetext */,
 				00EF4E3606CB0AA6008ACEFF /* osgsimulation */,
+				00C59D900B09343B00E9BCA1 /* osgsimpleviewerSDL */,
 			);
 		};
 /* End PBXProject section */
@@ -16038,6 +16431,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		00A14F1F084E65B3000150AD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D230B0926A800E9BCA1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D520B092D3B00E9BCA1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59EE50B09597600E9BCA1 /* InfoPlist.strings in Resources */,
+				00C59EE60B09597600E9BCA1 /* MainMenu.nib in Resources */,
+				00C59EE80B09597600E9BCA1 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D9A0B09343B00E9BCA1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -17638,6 +18055,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00C59D240B0926A800E9BCA1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59D7D0B0930E000E9BCA1 /* osgsimpleviewerGLUT.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D530B092D3B00E9BCA1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59EE90B09597600E9BCA1 /* main.m in Sources */,
+				00C59EEC0B09597600E9BCA1 /* SimpleViewerCocoa.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00C59D9B0B09343B00E9BCA1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00C59DC20B0935E900E9BCA1 /* osgsimpleviewerSDL.cpp in Sources */,
+				00C59DD30B09382700E9BCA1 /* SDLMainForMacOSX.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00D3F0E00920182C00817AAD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -17727,7 +18170,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00EF4E0706CB0A58008ACEFF /* osgsimple.cpp in Sources */,
+				00C59D3B0B092D0400E9BCA1 /* osgsimple.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19479,6 +19922,106 @@
 			target = 00A14CA1084E580E000150AD /* osgdem */;
 			targetProxy = 00A15428084FE46D000150AD /* PBXContainerItemProxy */;
 		};
+		00C59D1A0B0926A800E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE117FB205D63B3800EB53E5 /* osg */;
+			targetProxy = 00C59D1B0B0926A800E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D1C0B0926A800E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = 00C59D1D0B0926A800E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D1E0B0926A800E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = 00C59D1F0B0926A800E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D200B0926A800E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = 00C59D210B0926A800E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D490B092D3B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE117FB205D63B3800EB53E5 /* osg */;
+			targetProxy = 00C59D4A0B092D3B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D4B0B092D3B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = 00C59D4C0B092D3B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D4D0B092D3B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = 00C59D4E0B092D3B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D4F0B092D3B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = 00C59D500B092D3B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D910B09343B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE117FB205D63B3800EB53E5 /* osg */;
+			targetProxy = 00C59D920B09343B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D930B09343B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = 00C59D940B09343B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D950B09343B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = 00C59D960B09343B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59D970B09343B00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = 00C59D980B09343B00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C59E150B0941EF00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00C59D190B0926A800E9BCA1 /* osgsimpleviewerGLUT */;
+			targetProxy = 00C59E140B0941EF00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5A0850B0966EF00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00557CDF0624A947000A808A /* osgGA */;
+			targetProxy = 00C5A0840B0966EF00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5A08E0B09670A00E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = 00C5A08D0B09670A00E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5ACF20B0D63D300E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11876905D75C2700EB53E5 /* osgText */;
+			targetProxy = 00C5ACF10B0D63D300E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5AD5C0B0D6B3300E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00C59D900B09343B00E9BCA1 /* osgsimpleviewerSDL */;
+			targetProxy = 00C5AD5B0B0D6B3300E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5AD600B0D6B7300E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 006FD302065A8A1600677FA5 /* AllStandardTargets */;
+			targetProxy = 00C5AD610B0D6B7300E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5AD620B0D6B7300E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00A15423084FE455000150AD /* GDALdependentStuff */;
+			targetProxy = 00C5AD630B0D6B7300E9BCA1 /* PBXContainerItemProxy */;
+		};
+		00C5AD690B0D6B9600E9BCA1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00C5AD4C0B0D6AE900E9BCA1 /* SDLdependentStuff */;
+			targetProxy = 00C5AD680B0D6B9600E9BCA1 /* PBXContainerItemProxy */;
+		};
 		00C6172C0924ECA40098F34F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = OpenThreads;
@@ -19982,6 +20525,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		00C59ED80B09597200E9BCA1 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				00C59ED90B09597300E9BCA1 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		00C59EDA0B09597300E9BCA1 /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				00C59EDB0B09597300E9BCA1 /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
 		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -33660,6 +34219,7 @@
 					i386,
 				);
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"../../../OpenThreads/Xcode/OpenThreads/build/$(CONFIGURATION)",
 					"$(HOME)/Library/Frameworks",
@@ -33688,6 +34248,7 @@
 					ppc,
 					i386,
 				);
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"../../../OpenThreads/Xcode/OpenThreads/build/$(CONFIGURATION)",
 					"$(HOME)/Library/Frameworks",
@@ -33716,6 +34277,7 @@
 					ppc,
 					i386,
 				);
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"../../../OpenThreads/Xcode/OpenThreads/build/$(CONFIGURATION)",
 					"$(HOME)/Library/Frameworks",
@@ -35587,6 +36149,445 @@
 			};
 			name = Default;
 		};
+		00C59D310B0926A800E9BCA1 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "osgsimpleviewerGLUT-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerGLUT;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		00C59D320B0926A800E9BCA1 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "osgsimpleviewerGLUT-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerGLUT;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		00C59D330B0926A800E9BCA1 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "osgsimpleviewerGLUT-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerGLUT;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		00C59D600B092D3B00E9BCA1 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OBJC_CALL_CXX_CDTORS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ../../examples/osgsimpleviewerCocoa/Info.plist;
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerCocoa;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		00C59D610B092D3B00E9BCA1 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OBJC_CALL_CXX_CDTORS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ../../examples/osgsimpleviewerCocoa/Info.plist;
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerCocoa;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		00C59D620B092D3B00E9BCA1 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_OBJC_CALL_CXX_CDTORS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = ../../examples/osgsimpleviewerCocoa/Info.plist;
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerCocoa;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		00C59DA60B09343B00E9BCA1 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "osgsimpleviewerSDL-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+					"-framework",
+					SDL,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerSDL;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		00C59DA70B09343B00E9BCA1 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "osgsimpleviewerSDL-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+					"-framework",
+					SDL,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerSDL;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		00C59DA80B09343B00E9BCA1 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"../../../Producer/Xcode/Producer/build/$(CONFIGURATION)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(HOME)/Library/Frameworks/SDL.framework/Headers",
+					/Library/Frameworks/SDL.framework/Headers,
+					/usr/X11R6/include,
+					../../../Producer/include,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "osgsimpleviewerSDL-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+					"-framework",
+					SDL,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgsimpleviewerSDL;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		00C5AD580B0D6AE900E9BCA1 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				OPTIMIZATION_CFLAGS = "-O0";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = GDALdependentStuff;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		00C5AD590B0D6AE900E9BCA1 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = GDALdependentStuff;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		00C5AD5A0B0D6AE900E9BCA1 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = GDALdependentStuff;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+			};
+			name = Default;
+		};
+		00C5AD650B0D6B7300E9BCA1 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+			};
+			name = Development;
+		};
+		00C5AD660B0D6B7300E9BCA1 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		00C5AD670B0D6B7300E9BCA1 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+			};
+			name = Default;
+		};
 		00D3F0E50920187300817AAD /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -37234,6 +38235,56 @@
 				0079507609D36679003FC8A1 /* Development */,
 				0079507709D36679003FC8A1 /* Deployment */,
 				0079507809D36679003FC8A1 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		00C59D300B0926A800E9BCA1 /* Build configuration list for PBXNativeTarget "osgsimpleviewerGLUT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00C59D310B0926A800E9BCA1 /* Development */,
+				00C59D320B0926A800E9BCA1 /* Deployment */,
+				00C59D330B0926A800E9BCA1 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		00C59D5F0B092D3B00E9BCA1 /* Build configuration list for PBXNativeTarget "osgsimpleviewerCocoa" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00C59D600B092D3B00E9BCA1 /* Development */,
+				00C59D610B092D3B00E9BCA1 /* Deployment */,
+				00C59D620B092D3B00E9BCA1 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		00C59DA50B09343B00E9BCA1 /* Build configuration list for PBXNativeTarget "osgsimpleviewerSDL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00C59DA60B09343B00E9BCA1 /* Development */,
+				00C59DA70B09343B00E9BCA1 /* Deployment */,
+				00C59DA80B09343B00E9BCA1 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		00C5AD570B0D6AE900E9BCA1 /* Build configuration list for PBXAggregateTarget "SDLdependentStuff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00C5AD580B0D6AE900E9BCA1 /* Development */,
+				00C5AD590B0D6AE900E9BCA1 /* Deployment */,
+				00C5AD5A0B0D6AE900E9BCA1 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		00C5AD640B0D6B7300E9BCA1 /* Build configuration list for PBXAggregateTarget "AllStandardTargetsAndGDALAndSDLdependentStuff" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00C5AD650B0D6B7300E9BCA1 /* Development */,
+				00C5AD660B0D6B7300E9BCA1 /* Deployment */,
+				00C5AD670B0D6B7300E9BCA1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

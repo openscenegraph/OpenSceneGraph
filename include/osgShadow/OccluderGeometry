@@ -37,7 +37,7 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         virtual Object* cloneType() const { return new OccluderGeometry(); }
         virtual Object* clone(const osg::CopyOp& copyop) const { return new OccluderGeometry(*this,copyop); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const OccluderGeometry*>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* libraryName() const { return "osgShadow"; }
         virtual const char* className() const { return "OccluderGeometry"; }
         
 
@@ -66,7 +66,6 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         typedef std::vector<GLuint> UIntList;
         typedef std::vector<Edge> EdgeList;
 
-
         /** Compute an occluder geometry containing all the geometry in specified subgraph.*/
         void computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix=0, float sampleRatio=1.0f);
         
@@ -79,6 +78,10 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         /** Compute the bounding box around occluder geometry.*/
         virtual osg::BoundingBox computeBound() const;
 
+    public:
+
+        void processGeometry(osg::Drawable* drawable, osg::Matrix* matrix=0, float sampleRatio=1.0f);
+
     protected :
 
         virtual ~OccluderGeometry() {}
@@ -89,8 +92,10 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
             return ( delta * _triangleNormals[edge._t1] ) *
                    ( delta * _triangleNormals[edge._t2] ); 
         }
-
         
+        
+        void removeDuplicates();
+
         Vec3List _vertices;
         Vec3List _triangleNormals;
         UIntList _triangleIndices;

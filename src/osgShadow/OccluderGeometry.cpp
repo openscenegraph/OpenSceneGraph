@@ -130,11 +130,9 @@ public:
             return;
         }
         
-        _oc->computeOccluderGeometry(drawable, (_matrixStack.empty() ? 0 : &_matrixStack.back()), _ratio);
+        _oc->processGeometry(drawable, (_matrixStack.empty() ? 0 : &_matrixStack.back()), _ratio);
         
     }
-    
-    
     
 protected:
     
@@ -157,10 +155,23 @@ void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix*
     
     CollectOccludersVisitor cov(this, matrix, sampleRatio);
     subgraph->accept(cov);
+    
+    removeDuplicates();
+
+    dirtyDisplayList();
 
     osg::Timer_t endTick = osg::Timer::instance()->tick();
 
     osg::notify(osg::NOTICE)<<"done in "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
+}
+
+void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
+{
+    processGeometry(drawable, matrix, sampleRatio);
+
+    removeDuplicates();
+    
+    dirtyDisplayList();
 }
 
 struct TriangleCollector
@@ -171,31 +182,6 @@ struct TriangleCollector
 
     typedef std::vector<const osg::Vec3*> VertexPointers;
     VertexPointers _vertexPointers;
-    
-    struct IndexVec3PtrPair
-    {
-        IndexVec3PtrPair():
-            vec(0),
-            index(0) {}
-
-        IndexVec3PtrPair(const osg::Vec3* v, unsigned int i):
-            vec(v),
-            index(i) {}
-            
-        inline bool operator < (const IndexVec3PtrPair& rhs) const
-        {
-            return *vec < *rhs.vec;
-        }
-    
-        inline bool operator == (const IndexVec3PtrPair& rhs) const
-        {
-            return *vec == *rhs.vec;
-        }
-
-        const osg::Vec3* vec;
-        unsigned int index;
-    };
-    
     
     OccluderGeometry::Vec3List _tempoaryTriangleVertices;
 
@@ -218,6 +204,7 @@ struct TriangleCollector
             _tempoaryTriangleVertices.push_back(v1);
             _tempoaryTriangleVertices.push_back(v2);
             _tempoaryTriangleVertices.push_back(v3);
+            
         }
         else
         {
@@ -263,32 +250,6 @@ struct TriangleCollector
             _triangleIndices->push_back(index);
         }
 
-        osg::notify(osg::NOTICE)<<"temp = "<<_tempoaryTriangleVertices.size()<<std::endl;
-
-        if (!_tempoaryTriangleVertices.empty()) 
-        {
-            typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
-            IndexVec3PtrPairs indexVec3PtrPairs;
-
-            unsigned int i = 0;
-            for(OccluderGeometry::Vec3List::iterator vitr = _tempoaryTriangleVertices.begin();
-                 vitr != _tempoaryTriangleVertices.end();
-                 ++vitr, ++i)
-            {
-                indexVec3PtrPairs.push_back(IndexVec3PtrPair(&(*vitr),i));
-            }
-            std::sort(indexVec3PtrPairs.begin(),indexVec3PtrPairs.end());;
-
-            IndexVec3PtrPairs::iterator prev = indexVec3PtrPairs.begin();
-            IndexVec3PtrPairs::iterator curr = ++prev;
-            unsigned int numDuplicates = 0;
-            for(; curr != indexVec3PtrPairs.end(); ++curr)
-            {
-                if (*prev==*curr) ++numDuplicates;
-                else prev = curr;
-            }
-            osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
-        }
 
         unsigned int pos = base + numberNewVertices;
         for(OccluderGeometry::Vec3List::iterator vitr = _tempoaryTriangleVertices.begin();
@@ -309,10 +270,11 @@ struct TriangleCollector
         
     }
 
+
 };
 typedef osg::TriangleFunctor<TriangleCollector> TriangleCollectorFunctor;
 
-void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
+void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
 {
     // osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
 
@@ -338,11 +300,126 @@ void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Mat
         osg::notify(osg::NOTICE)<<"t "<<*titr++<<" "<<*titr++<<" "<<*titr++<<std::endl;
     }
 #endif
-    
-    dirtyDisplayList();
-    //setUseDisplayList(false);
-    //setCullingActive(false);
 }
+
+struct IndexVec3PtrPair
+{
+    IndexVec3PtrPair():
+        vec(0),
+        index(0) {}
+
+    IndexVec3PtrPair(const osg::Vec3* v, unsigned int i):
+        vec(v),
+        index(i) {}
+
+    inline bool operator < (const IndexVec3PtrPair& rhs) const
+    {
+        return *vec < *rhs.vec;
+    }
+
+    inline bool operator == (const IndexVec3PtrPair& rhs) const
+    {
+        return *vec == *rhs.vec;
+    }
+
+    const osg::Vec3* vec;
+    unsigned int index;
+};
+
+void OccluderGeometry::removeDuplicates()
+{
+    if (_vertices.empty()) return;
+    
+    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
+
+    typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
+    IndexVec3PtrPairs indexVec3PtrPairs;
+    indexVec3PtrPairs.reserve(_vertices.size());
+
+    unsigned int i = 0;
+    for(OccluderGeometry::Vec3List::iterator vitr = _vertices.begin();
+         vitr != _vertices.end();
+         ++vitr, ++i)
+    {
+        indexVec3PtrPairs.push_back(IndexVec3PtrPair(&(*vitr),i));
+    }
+    std::sort(indexVec3PtrPairs.begin(),indexVec3PtrPairs.end());;
+
+
+    // compute size
+    IndexVec3PtrPairs::iterator prev = indexVec3PtrPairs.begin();
+    IndexVec3PtrPairs::iterator curr = prev;
+    ++curr;
+
+    unsigned int numDuplicates = 0;
+    unsigned int numUnique = 1;
+
+    for(; curr != indexVec3PtrPairs.end(); ++curr)
+    {
+        if (*prev==*curr) 
+        {
+            ++numDuplicates;
+        }
+        else
+        {
+            prev = curr; 
+            ++numUnique;
+        }
+    }
+    
+    osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num unique = "<<numUnique<<std::endl;
+
+    if (numDuplicates==0) return;
+
+    // now assign the unique Vec3 to the newVertices arrays    
+    typedef std::vector<unsigned int> IndexMap;
+    IndexMap indexMap(indexVec3PtrPairs.size());
+
+    Vec3List newVertices;
+    newVertices.reserve(numUnique);
+    unsigned int index = 0;
+
+    prev = indexVec3PtrPairs.begin();
+    curr = prev;
+
+    // add first vertex
+    indexMap[curr->index] = index;
+    newVertices.push_back(*(curr->vec));
+
+    ++curr;
+
+    for(; curr != indexVec3PtrPairs.end(); ++curr)
+    {
+        if (*prev==*curr) 
+        {
+            indexMap[curr->index] = index;
+        }
+        else
+        {
+            ++index;            
+            
+            // add new unique vertex
+            indexMap[curr->index] = index;
+            newVertices.push_back(*(curr->vec));
+
+            prev = curr; 
+        }
+    }
+
+    // copy over need arrays and index values
+    _vertices.swap(newVertices);
+
+    for(UIntList::iterator titr = _triangleIndices.begin();
+        titr != _triangleIndices.end();
+        ++titr)
+    {
+        *titr = indexMap[*titr];
+    }
+
+    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
+}
+
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {

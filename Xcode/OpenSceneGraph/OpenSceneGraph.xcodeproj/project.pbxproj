@@ -25425,7 +25425,7 @@
 					../../../Producer/include,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgviewer-Info.plist";
+				INFOPLIST_FILE = "osgviewerApplication-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -25465,7 +25465,7 @@
 					../../../Producer/include,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgviewer-Info.plist";
+				INFOPLIST_FILE = "osgviewerApplication-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -25500,7 +25500,7 @@
 					../../../Producer/include,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgviewer-Info.plist";
+				INFOPLIST_FILE = "osgviewerApplication-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (

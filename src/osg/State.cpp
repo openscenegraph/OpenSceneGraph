@@ -123,7 +123,18 @@ void State::reset()
     _projection = _identity;
     
     dirtyAllVertexArrays();
+    
+#if 0
+    // reset active texture unit values and call OpenGL
+    // note, this OpenGL op precludes the use of State::reset() without a
+    // valid graphics context, therefore the new implementation below 
+    // is prefered.
     setActiveTextureUnit(0);
+#else
+    // reset active texture unit values without calling OpenGL
+    _currentActiveTextureUnit = 0;
+    _currentClientActiveTextureUnit = 0;
+#endif
     
     _lastAppliedProgramObject = 0;
 

@@ -93,10 +93,14 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
                    ( delta * _triangleNormals[edge._t2] ); 
         }
         
+        void setUpInternalStructures();
         
-        void removeDuplicates();
+        void removeDuplicateVertices();
+        void computeNormals();
+        void buildEdgeMaps();
 
         Vec3List _vertices;
+        Vec3List _normals;
         Vec3List _triangleNormals;
         UIntList _triangleIndices;
         

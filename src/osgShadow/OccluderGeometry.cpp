@@ -156,9 +156,7 @@ void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix*
     CollectOccludersVisitor cov(this, matrix, sampleRatio);
     subgraph->accept(cov);
     
-    removeDuplicates();
-
-    dirtyDisplayList();
+    setUpInternalStructures();
 
     osg::Timer_t endTick = osg::Timer::instance()->tick();
 
@@ -169,9 +167,7 @@ void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Mat
 {
     processGeometry(drawable, matrix, sampleRatio);
 
-    removeDuplicates();
-    
-    dirtyDisplayList();
+    setUpInternalStructures();
 }
 
 struct TriangleCollector
@@ -302,6 +298,17 @@ void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* mat
 #endif
 }
 
+void OccluderGeometry::setUpInternalStructures()
+{
+    removeDuplicateVertices();
+
+    computeNormals();
+
+    buildEdgeMaps();
+    
+    dirtyDisplayList();
+}
+
 struct IndexVec3PtrPair
 {
     IndexVec3PtrPair():
@@ -326,7 +333,7 @@ struct IndexVec3PtrPair
     unsigned int index;
 };
 
-void OccluderGeometry::removeDuplicates()
+void OccluderGeometry::removeDuplicateVertices()
 {
     if (_vertices.empty()) return;
     
@@ -420,6 +427,58 @@ void OccluderGeometry::removeDuplicates()
     osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
 }
 
+void OccluderGeometry::computeNormals()
+{
+    osg::notify(osg::NOTICE)<<"OccluderGeometry::computeNormals()"<<std::endl;
+    
+    unsigned int numTriangles = _triangleIndices.size() / 3;
+    unsigned int redundentIndices = _triangleIndices.size() - numTriangles * 3;
+    if (redundentIndices)
+    {
+        osg::notify(osg::NOTICE)<<"Warning OccluderGeometry::computeNormals() has found redundent trailing indices"<<std::endl;
+        _triangleIndices.erase(_triangleIndices.begin() + numTriangles * 3, _triangleIndices.end());
+    }
+    
+    _triangleNormals.clear();
+    _triangleNormals.reserve(numTriangles);
+    
+    _normals.resize(_vertices.size());
+
+
+    for(UIntList::iterator titr = _triangleIndices.begin();
+        titr != _triangleIndices.end();
+        )
+    {
+        GLuint p1 = *titr++;
+        GLuint p2 = *titr++;
+        GLuint p3 = *titr++;
+        osg::Vec3 normal = (_vertices[p2] - _vertices[p1]) ^ (_vertices[p3] - _vertices[p2]);
+        normal.normalize();
+
+        _triangleNormals.push_back(normal);
+
+        if (!_normals.empty())
+        {        
+            _normals[p1] += normal;
+            _normals[p2] += normal;
+            _normals[p3] += normal;
+        }
+    }
+    
+    for(Vec3List::iterator nitr = _normals.begin();
+        nitr != _normals.end();
+        ++nitr)
+    {
+        nitr->normalize();
+    }
+
+    
+}
+
+void OccluderGeometry::buildEdgeMaps()
+{
+    osg::notify(osg::NOTICE)<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
+}
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
@@ -428,6 +487,11 @@ void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     renderInfo.getState()->disableAllVertexArrays();
 
     renderInfo.getState()->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
+    
+    if (!_normals.empty())
+    {
+        renderInfo.getState()->setNormalPointer( GL_FLOAT, 0, &(_normals.front()) );
+    }
 
     glDrawElements(GL_TRIANGLES, _triangleIndices.size(), GL_UNSIGNED_INT, &(_triangleIndices.front()) );
 }

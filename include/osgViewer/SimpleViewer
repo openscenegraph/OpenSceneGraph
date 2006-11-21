@@ -37,6 +37,11 @@ class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
         osg::Node* getSceneData();
         const osg::Node* getSceneData() const;
 
+        void setDatabasePager(osgDB::DatabasePager* dp);
+        osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
+        const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
+
+
         osg::CameraNode* getCamera();
         const osg::CameraNode* getCamera() const;
 
@@ -51,9 +56,6 @@ class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
         EventHandlers& getEventHandlers() { return _eventHandlers; }
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
 
-        void setDatabasePager(osgDB::DatabasePager* dp);
-        osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
-        const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
 
 
         /** Render a complete new frame.

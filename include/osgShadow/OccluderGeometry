@@ -20,6 +20,7 @@
 
 #include <osgShadow/Export>
 
+
 namespace osgShadow {
 
 /** OccluderGeometry provides a sepecialised geometry representation of objects in scene that occlude light and therefore cast shadows.
@@ -41,29 +42,70 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         virtual const char* className() const { return "OccluderGeometry"; }
         
 
+        typedef std::vector<osg::Vec3> Vec3List;
+        typedef std::vector<GLuint> UIntList;
+
+        struct Point
+        {
+            Point() {}
+
+            UIntList _edges;
+        };
+
+        typedef std::vector<Point> PointList;
+
         struct Edge
         {
             Edge():
                 _p1(0),
                 _p2(0),
-                _t1(0),
-                _t2(0) {}
+                _t1(-1),
+                _t2(-1) {}
 
-            Edge(unsigned int p1, unsigned int p2, unsigned int t1, unsigned int t2):
+            Edge(unsigned int p1, unsigned int p2):
                 _p1(p1),
                 _p2(p2),
-                _t1(t1),
-                _t2(t2) {}
+                _t1(-1),
+                _t2(-1)
+            {
+                if (p1>p2)
+                {
+                    // swap ordering so p1 is less than or equal to p2
+                    _p1 = p2;
+                    _p2 = p1;
+                }
+            }
+            
+            inline bool operator < (const Edge& rhs) const
+            {
+                if (_p1 < rhs._p1) return true;
+                if (_p1 > rhs._p1) return false;
+                return (_p2 < rhs._p2);
+            }
+            
+            bool addTriangle(unsigned int tri) const
+            {
+                if (_t1<0)
+                {
+                    _t1 = tri;
+                    return true;
+                }
+                else if (_t2<0)
+                {
+                    _t2 = tri;
+                    return true;
+                }
+                // argg more than two triangles assigned
+                return false;
+            }
         
             unsigned int _p1;
             unsigned int _p2;
             
-            unsigned int _t1;
-            unsigned int _t2;
+            mutable int _t1;
+            mutable int _t2;
         };
 
-        typedef std::vector<osg::Vec3> Vec3List;
-        typedef std::vector<GLuint> UIntList;
         typedef std::vector<Edge> EdgeList;
 
         /** Compute an occluder geometry containing all the geometry in specified subgraph.*/
@@ -96,6 +138,7 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         void setUpInternalStructures();
         
         void removeDuplicateVertices();
+        void removeNullTriangles();
         void computeNormals();
         void buildEdgeMaps();
 
@@ -103,6 +146,9 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         Vec3List _normals;
         Vec3List _triangleNormals;
         UIntList _triangleIndices;
+        
+        PointList _points;
+        EdgeList _edges;
         
 };
 

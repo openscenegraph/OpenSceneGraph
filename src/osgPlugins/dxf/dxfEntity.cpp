@@ -333,19 +333,15 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
     if (cv._groupCode == 0) {
         if (s == "VERTEX") {
             _currentVertex = new dxfVertex;
-            if (_mcount && (_flag & 64) && _vertices.size() == _mcount) {
-                _indices.push_back(_currentVertex);
-            } else {
-                // don't know if and what to do if no _mcount
-                _vertices.push_back(_currentVertex);
-            }
-        } else {
-            // hum not sure if 
-            //        1) that is possible 
-            //        2) what to do...
+            _vertices.push_back(_currentVertex);
         }
     } else if (_currentVertex) {
         _currentVertex->assign(dxf, cv);
+
+        if ((_flag & 64 /*i.e. polymesh*/) && 
+            (cv._groupCode == 70 /*i.e. vertex flag*/) && 
+            (cv._int && 128 /*i.e. vertex is actually a face*/))
+            _indices.push_back(_currentVertex); // Add the index only if _currentvertex is actually an index
     } else {
         double d = cv._double;
         switch (cv._groupCode) {
@@ -362,9 +358,23 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
                 _flag = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 71:
+                // Meaningful only when _surfacetype == 6, don' trust it for polymeshes.
+                // From the docs :
+                // "The 71 group specifies the number of vertices in the mesh, and the 72 group 
+                // specifies the number of faces. Although these counts are correct for all meshes 
+                // created with the PFACE command, applications are not required to place correct 
+                // values in these fields.)"
+                // Amusing isn't it ?
                 _mcount = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 72:
+                // Meaningful only when _surfacetype == 6, don' trust it for polymeshes.
+                // From the docs :
+                // "The 71 group specifies the number of vertices in the mesh, and the 72 group 
+                // specifies the number of faces. Although these counts are correct for all meshes 
+                // created with the PFACE command, applications are not required to place correct 
+                // values in these fields.)"
+                // Amusing isn't it ?
                 _ncount = cv._int; // 2005.12.13 pdr: group codes [70,78] now signed int.
                 break;
             case 73:
@@ -396,8 +406,6 @@ dxfPolyline::assign(dxfFile* dxf, codeValue& cv)
 void
 dxfPolyline::drawScene(scene* sc)
 {
-//    if (getLayer() != "UDF2" && getLayer() != "ENGINES") return;
-//    if (!(_flag & 16)) return;
     Matrixd m;
     getOCSMatrix(_ocs, m);
     sc->ocs(m);
@@ -412,7 +420,7 @@ dxfPolyline::drawScene(scene* sc)
         //dxfVertex* v = NULL;
         unsigned short ncount;
         unsigned short mcount;
-        if (_surfacetype ==6) { 
+        if (_surfacetype == 6) { 
             // I dont have examples of type 5 and 8, but they may be the same as 6
             mcount = _mdensity;
             ncount = _ndensity;
@@ -543,14 +551,11 @@ dxfPolyline::drawScene(scene* sc)
             sc->addTriangles(getLayer(), _color, vlist, invert_order);
 
     } else if (_flag & 64) { 
-        if (_ncount > _indices.size()) 
-            _ncount = _indices.size();
         unsigned short _facetype = 3;
-        unsigned short count = 0;
-        for (unsigned short i = 0; i < _ncount; i++) {
+
+        for (unsigned short i = 0; i < _indices.size(); i++) {
             dxfVertex* vindice = _indices[i].get();
             if (!vindice) continue;
-            //dxfVertex* v = NULL;
             if (vindice->getIndice4()) {
                 _facetype = 4;
                 d = _vertices[vindice->getIndice4()-1].get()->getVertex();
@@ -560,17 +565,17 @@ dxfPolyline::drawScene(scene* sc)
             if (vindice->getIndice3()) {
                 c = _vertices[vindice->getIndice3()-1].get()->getVertex();
             } else {
-                c = _vertices[count++].get()->getVertex();
+                c = vindice->getVertex(); // Vertex not indexed. Use as is
             }
             if (vindice->getIndice2()) {
                 b = _vertices[vindice->getIndice2()-1].get()->getVertex();
             } else {
-                b = _vertices[count++].get()->getVertex();
+                b = vindice->getVertex(); // Vertex not indexed. Use as is
             }
             if (vindice->getIndice1()) {
                 a = _vertices[vindice->getIndice1()-1].get()->getVertex();
             } else {
-                a = _vertices[count++].get()->getVertex();
+                a = vindice->getVertex(); // Vertex not indexed. Use as is
             }
             if (_facetype == 4) {
                 qlist.push_back(d);
@@ -726,6 +731,11 @@ dxfInsert::drawScene(scene* sc)
     // but for now, it seems working fine 
     // (with the files I have, the results are equal to Voloview,
     // and better than Deep Exploration and Lightwave).
+    
+    // sanity check (useful when no block remains after all SOLIDS, TEXT, ... have been filtered out)
+    if (!_block)
+        return;
+
     Matrixd back = sc->backMatrix();
     Matrixd m;
     m.makeIdentity();

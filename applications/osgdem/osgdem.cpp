@@ -333,7 +333,6 @@ int main( int argc, char **argv )
         {
             image_ext.insert(0,".");
             dataset->setDestinationImageExtension(image_ext);
-            return 1;
         }
         else
         {

@@ -301,10 +301,14 @@ void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* mat
 void OccluderGeometry::setUpInternalStructures()
 {
     removeDuplicateVertices();
+    
+    removeNullTriangles();
 
     computeNormals();
 
     buildEdgeMaps();
+
+    dirtyBound();
     
     dirtyDisplayList();
 }
@@ -427,6 +431,46 @@ void OccluderGeometry::removeDuplicateVertices()
     osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
 }
 
+void OccluderGeometry::removeNullTriangles()
+{
+    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeNullTriangles()"<<std::endl;
+
+    
+    UIntList::iterator lastValidItr = _triangleIndices.begin();
+    for(UIntList::iterator titr = _triangleIndices.begin();
+        titr != _triangleIndices.end();
+        )
+    {
+        UIntList::iterator currItr = titr;
+        GLuint p1 = *titr++;
+        GLuint p2 = *titr++;
+        GLuint p3 = *titr++;
+        if ((p1 != p2) && (p1 != p3) && (p2 != p3))
+        {
+            if (lastValidItr!=currItr)
+            {
+                *lastValidItr++ = p1;
+                *lastValidItr++ = p2;
+                *lastValidItr++ = p3;
+            }
+            else
+            {
+                lastValidItr = titr;
+            }
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Null triangle"<<std::endl;
+        }
+    }
+    if (lastValidItr != _triangleIndices.end())
+    {
+         osg::notify(osg::NOTICE)<<"Pruning end - before "<<_triangleIndices.size()<<std::endl;
+        _triangleIndices.erase(lastValidItr,_triangleIndices.end());
+         osg::notify(osg::NOTICE)<<"Pruning end - after "<<_triangleIndices.size()<<std::endl;
+    }
+}
+
 void OccluderGeometry::computeNormals()
 {
     osg::notify(osg::NOTICE)<<"OccluderGeometry::computeNormals()"<<std::endl;
@@ -478,6 +522,94 @@ void OccluderGeometry::computeNormals()
 void OccluderGeometry::buildEdgeMaps()
 {
     osg::notify(osg::NOTICE)<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
+    
+    typedef std::set<Edge> EdgeSet;
+    EdgeSet edgeSet;
+    
+    unsigned int numTriangleErrors = 0;
+    unsigned int triNo=0;
+    for(UIntList::iterator titr = _triangleIndices.begin();
+        titr != _triangleIndices.end();
+        ++triNo)
+    {
+        GLuint p1 = *titr++;
+        GLuint p2 = *titr++;
+        GLuint p3 = *titr++;
+        
+        {
+            Edge edge12(p1,p2);
+            EdgeSet::iterator itr = edgeSet.find(edge12);
+            if (itr == edgeSet.end()) 
+            {
+                if (!edge12.addTriangle(triNo)) ++numTriangleErrors;
+                edgeSet.insert(edge12);
+            }
+            else
+            {
+                if (!itr->addTriangle(triNo)) ++numTriangleErrors;
+            }
+        }
+
+        {        
+            Edge edge23(p2,p3);
+            EdgeSet::iterator itr = edgeSet.find(edge23);
+            if (itr == edgeSet.end()) 
+            {
+                if (!edge23.addTriangle(triNo)) ++numTriangleErrors;
+                edgeSet.insert(edge23);
+            }
+            else
+            {
+                if (!itr->addTriangle(triNo)) ++numTriangleErrors;
+            }
+        }
+        
+        {
+            Edge edge31(p3,p1);
+            EdgeSet::iterator itr = edgeSet.find(edge31);
+            if (itr == edgeSet.end()) 
+            {
+                if (!edge31.addTriangle(triNo)) ++numTriangleErrors;
+                
+                edgeSet.insert(edge31);
+            }
+            else
+            {
+                if (!itr->addTriangle(triNo)) ++numTriangleErrors;
+            }
+        }
+    }
+
+    _edges.clear();
+    _edges.reserve(edgeSet.size());
+    
+    unsigned int numEdgesWithNoTriangles = 0;
+    unsigned int numEdgesWithOneTriangles = 0;
+    unsigned int numEdgesWithTwoTriangles = 0;
+    
+    for(EdgeSet::iterator eitr = edgeSet.begin();
+        eitr != edgeSet.end();
+        ++eitr)
+    {
+        _edges.push_back(*eitr);
+        unsigned int numTriangles = ((eitr->_t1>=0)? 1:0) + ((eitr->_t2>=0)? 1:0);
+        switch(numTriangles)
+        {
+            case(0): ++numEdgesWithNoTriangles;  break; 
+            case(1): ++numEdgesWithOneTriangles;  break; 
+            default: ++numEdgesWithTwoTriangles;  break; 
+        }
+    }
+
+    osg::notify(osg::NOTICE)<<"Num of indices "<<_triangleIndices.size()<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num of triangles "<<triNo<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num of numTriangleErrors "<<numTriangleErrors<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num of edges "<<edgeSet.size()<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num of numEdgesWithNoTriangles "<<numEdgesWithNoTriangles<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num of numEdgesWithOneTriangles "<<numEdgesWithOneTriangles<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num of numEdgesWithTwoTriangles "<<numEdgesWithTwoTriangles<<std::endl;
+    
+    
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const

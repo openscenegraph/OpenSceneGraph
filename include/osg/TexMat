@@ -27,12 +27,13 @@ class OSG_EXPORT TexMat : public StateAttribute
 
         TexMat();
 
-        TexMat(const Matrix& matrix):_matrix(matrix) {}
+        TexMat(const Matrix& matrix):_matrix(matrix),_scaleByTextureRectangleSize(false) {}
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         TexMat(const TexMat& texmat,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(texmat,copyop),
-            _matrix(texmat._matrix) {}
+            _matrix(texmat._matrix),
+            _scaleByTextureRectangleSize(texmat._scaleByTextureRectangleSize) {}
 
         META_StateAttribute(osg, TexMat, TEXMAT);
         

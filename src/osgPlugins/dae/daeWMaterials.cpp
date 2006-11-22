@@ -27,13 +27,14 @@ using namespace osgdae;
 
 void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, const std::string &geoName )
 {
+    osg::ref_ptr<osg::StateSet> ssClean = CleanStateSet(ss); // Need to hold a ref to this or the materialMap.find() will delete it
     domBind_material *bm = daeSafeCast< domBind_material >( ig->createAndPlace( COLLADA_ELEMENT_BIND_MATERIAL ) );
     domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( bm->createAndPlace( "technique_common" ) );
     domInstance_material *im = daeSafeCast< domInstance_material >( tc->createAndPlace( COLLADA_ELEMENT_INSTANCE_MATERIAL ) );
     std::string symbol = geoName + "_material";
     im->setSymbol( symbol.c_str() );
 
-    std::map< osg::StateSet*, domMaterial* >::iterator iter = materialMap.find( ss );
+    MaterialMap::iterator iter = materialMap.find( ssClean );
     if ( iter != materialMap.end() )
     {
         std::string url = "#" + std::string( iter->second->getId() );
@@ -47,7 +48,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
     }
 
     domMaterial *mat = daeSafeCast< domMaterial >( lib_mats->createAndPlace( COLLADA_ELEMENT_MATERIAL ) );
-    std::string name = ss->getName();
+    std::string name = ssClean->getName();
     if ( name.empty() )
     {
         name = "material";
@@ -78,10 +79,10 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
     pc_teq->setSid( "t0" );
     domProfile_COMMON::domTechnique::domPhong *phong = daeSafeCast< domProfile_COMMON::domTechnique::domPhong >( pc_teq->createAndPlace( "phong" ) );
 
-    osg::Texture *tex = static_cast<osg::Texture*>(ss->getTextureAttribute( 0, osg::StateAttribute::TEXTURE ));
-    if ( ss->getTextureAttribute( 1, osg::StateAttribute::TEXTURE ) != NULL )
+    osg::Texture *tex = static_cast<osg::Texture*>(ssClean->getTextureAttribute( 0, osg::StateAttribute::TEXTURE ));
+    if ( ssClean->getTextureAttribute( 1, osg::StateAttribute::TEXTURE ) != NULL )
     {
-        tex = static_cast<osg::Texture*>(ss->getTextureAttribute( 1, osg::StateAttribute::TEXTURE ));
+        tex = static_cast<osg::Texture*>(ssClean->getTextureAttribute( 1, osg::StateAttribute::TEXTURE ));
     }
     if ( tex != NULL && tex->getImage( 0 ) != NULL )
     {
@@ -93,12 +94,23 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         osg::Image *osgimg = tex->getImage( 0 );
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->createAndPlace( "init_from" ) );
         std::string imgstr = "/" + osgDB::convertFileNameToUnixStyle( osgDB::findDataFile( osgimg->getFileName() ) );
+#ifdef WIN32
+        daeURI uri( _strlwr( (char *)imgstr.c_str() ) );
+#else
         daeURI uri( imgstr.c_str() );
+#endif
         uri.validate();
         imgif->setValue( uri.getURI() );
         //imgif->setValue( imgstr.c_str() );
         //imgif->getValue().validate();
+#ifdef WIN32
+        std::string docUriString = doc->getDocumentURI()->getFilepath();
+        docUriString += doc->getDocumentURI()->getFile();
+        daeURI docUri( _strlwr( (char *)docUriString.c_str() ) );
+        imgif->getValue().makeRelativeTo( &docUri );
+#else
         imgif->getValue().makeRelativeTo( doc->getDocumentURI() ); 
+#endif
         //imgif->setValue( osgimg->getFileName().c_str() );
         //osg::notify( osg::WARN ) << "original img filename " << osgimg->getFileName() << std::endl;
         //osg::notify( osg::WARN ) << "init_from filename " << imgstr << std::endl;
@@ -237,8 +249,8 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         bvi->setInput_set( 0 );
 
         //take care of blending if any
-        osg::BlendFunc *bf = static_cast< osg::BlendFunc * >( ss->getAttribute( osg::StateAttribute::BLENDFUNC ) );
-        osg::BlendColor *bc = static_cast< osg::BlendColor * >( ss->getAttribute( osg::StateAttribute::BLENDCOLOR ) );
+        osg::BlendFunc *bf = static_cast< osg::BlendFunc * >( ssClean->getAttribute( osg::StateAttribute::BLENDFUNC ) );
+        osg::BlendColor *bc = static_cast< osg::BlendColor * >( ssClean->getAttribute( osg::StateAttribute::BLENDCOLOR ) );
         if ( bc != NULL )
         {
             domCommon_transparent_type *ctt = daeSafeCast< domCommon_transparent_type >( phong->createAndPlace( "transparent" ) );
@@ -263,7 +275,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         }
         
     }
-    osg::Material *osgmat = static_cast<osg::Material*>(ss->getAttribute( osg::StateAttribute::MATERIAL ));
+    osg::Material *osgmat = static_cast<osg::Material*>(ssClean->getAttribute( osg::StateAttribute::MATERIAL ));
     if ( osgmat != NULL )
     {
         const osg::Vec4 &eCol = osgmat->getEmissionFrontAndBack()?osgmat->getEmission( osg::Material::FRONT_AND_BACK ):osgmat->getEmission( osg::Material::FRONT );
@@ -288,7 +300,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
 
         
         //### check if we really have a texture
-        if ((tex == NULL) || (!cot->getTexture()))
+        if ( phong->getDiffuse() == NULL )
         {
             cot = daeSafeCast< domCommon_color_or_texture_type >( phong->createAndPlace( "diffuse" ) );
             col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->createAndPlace( "color" ) );
@@ -309,7 +321,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             domAny *any = (domAny*)(daeElement*)teq->createAndPlace( "color" );
 
             std::ostringstream colVal;
-            colVal << std::dec << " " << int(dCol[0]) << " " << int(dCol[1]) << " " << int(dCol[2]) << " " << int(dCol[3]);
+            colVal << dCol.r() << " " << dCol.g() << " " << dCol.b() << " " << dCol.a();
             any->setValue( colVal.str().c_str() );
         }
 
@@ -325,5 +337,22 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         f->setValue( shininess );
     }
 
-    materialMap.insert( std::make_pair( ss, mat ) );
+    materialMap.insert( std::make_pair( ssClean, mat ) );
 }
+
+osg::StateSet* daeWriter::CleanStateSet(osg::StateSet* pStateSet) const
+{
+    // TODO - clean out all the the attributes and modes not used to define materials
+    osg::StateSet* pCleanedStateSet = new osg::StateSet;
+    pCleanedStateSet->setTextureAttributeList(pStateSet->getTextureAttributeList());
+    if (NULL != pStateSet->getAttribute(osg::StateAttribute::BLENDFUNC))
+        pCleanedStateSet->setAttribute(pStateSet->getAttribute(osg::StateAttribute::BLENDFUNC));
+    if (NULL != pStateSet->getAttribute(osg::StateAttribute::BLENDCOLOR))
+        pCleanedStateSet->setAttribute(pStateSet->getAttribute(osg::StateAttribute::BLENDCOLOR));
+    if (NULL != pStateSet->getAttribute(osg::StateAttribute::MATERIAL))
+        pCleanedStateSet->setAttribute(pStateSet->getAttribute(osg::StateAttribute::MATERIAL));
+
+    return pCleanedStateSet;
+}
+
+

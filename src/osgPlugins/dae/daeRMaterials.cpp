@@ -25,6 +25,8 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
+#include <sstream>
+
 using namespace osgdae;
 
 void daeReader::processBindMaterial( domBind_material *bm, osg::Node *geo )
@@ -333,20 +335,8 @@ osg::StateAttribute **sa )
                     {
                         osg::Vec4 col;
                         domAny *dcol = (domAny*)(daeElement*)teq->getContents()[0];
-                        char *val = (char *)dcol->getValue();
-                        int cnt = 0;
-                        while ( cnt < 4 && strlen( val ) != 0 )
-                        {
-                            char *space = strchr( val, ' ' );
-                            if ( space != NULL )
-                            {
-                                *space = 0;
-                            }
-                            int tmp = atoi( val );
-                            col[cnt] = tmp;
-                            cnt++;
-                            val = space + 1;                            
-                        }
+                        std::istringstream diffuse_colour((const char *)dcol->getValue());
+                        diffuse_colour >> col.r() >> col.g() >> col.b() >> col.a();
                         mat->setDiffuse( osg::Material::FRONT_AND_BACK, col );
                         retVal = true;
                         break;

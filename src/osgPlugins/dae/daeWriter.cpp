@@ -23,8 +23,8 @@
 using namespace osgdae;
 
 daeWriter::daeWriter( DAE *dae_, const std::string &fname,bool _usePolygons ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
-										dae(dae_),
-										usePolygons (_usePolygons) 
+                                        dae(dae_),
+                                        usePolygons (_usePolygons) 
 {
     success = true;
 
@@ -54,6 +54,8 @@ daeWriter::daeWriter( DAE *dae_, const std::string &fname,bool _usePolygons ) : 
     lib_mats = NULL;
 
     lastDepth = 0;
+
+    currentStateSet = new osg::StateSet();
 }
 
 daeWriter::~daeWriter()
@@ -143,3 +145,35 @@ void daeWriter::createAssetTag()
     u->setName( "meter" );
     u->setMeter( 1 );
 }
+
+void daeWriter::traverse (osg::Node &node)
+{
+    pushStateSet(node.getStateSet());
+
+    osg::NodeVisitor::traverse( node );
+
+    popStateSet(node.getStateSet());
+}
+
+void daeWriter::pushStateSet(osg::StateSet* ss)
+{
+  if (NULL!=ss) {
+    // Save our current stateset
+    stateSetStack.push(currentStateSet.get());
+    
+    // merge with node stateset
+    currentStateSet = static_cast<osg::StateSet*>(currentStateSet->clone(osg::CopyOp::SHALLOW_COPY));
+    currentStateSet->merge(*ss);    
+  }
+}
+
+
+void daeWriter::popStateSet(osg::StateSet* ss)
+{
+    if (NULL!=ss) {
+      // restore the previous stateset
+      currentStateSet = stateSetStack.top();
+      stateSetStack.pop();
+    }
+}
+

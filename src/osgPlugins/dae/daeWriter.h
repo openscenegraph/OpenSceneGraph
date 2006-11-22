@@ -15,6 +15,7 @@
 #define _DAE_WRITER_H_
 
 #include <map>
+#include <stack>
 
 #include <osg/Node>
 #include <osg/Geode>
@@ -106,6 +107,8 @@ public:
     //virtual void  apply( osg::ClearNode &node)
     //virtual void  apply( osg::OccluderNode &node)
 
+    void traverse (osg::Node &node);
+  
 /*protected:
     struct MeshData {
         domMesh *mesh;
@@ -130,6 +133,10 @@ protected: //methods
 
     void createAssetTag();
 
+    void pushStateSet(osg::StateSet* ss);
+
+    void popStateSet(osg::StateSet* ss);
+
 protected: //members
     DAE *dae;
     daeDocument *doc;
@@ -147,14 +154,36 @@ protected: //members
     NodeType lastVisited;
     unsigned int lastDepth;
 
+  struct CompareStateSet
+  {
+      bool operator()(const osg::ref_ptr<osg::StateSet>& ss1, const osg::ref_ptr<osg::StateSet>& ss2) const
+    {
+      //std::cout << "CompareStateSet: " << ss1->compare(*ss2, false) << " " << ss1 << " " << ss2 << std::endl;
+      return ss1->compare(*ss2, true) < 0;
+    }
+  };
+  
+  
+
     std::map< std::string, int > uniqueNames;
 
     std::map< osg::Geometry*, domGeometry * > geometryMap;
-    std::map< osg::StateSet*, domMaterial * > materialMap;
+
+    typedef std::map< osg::ref_ptr<osg::StateSet>, domMaterial *, CompareStateSet> MaterialMap;
+
+    MaterialMap materialMap;
+
+    typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
+
+    StateSetStack stateSetStack;
+
+    osg::ref_ptr<osg::StateSet> currentStateSet;
 
     daeURI rootName;
 
     bool usePolygons;
+
+    osg::StateSet* CleanStateSet(osg::StateSet* pStateSet) const;
 
 protected: //inner classes
     class ArrayNIndices 

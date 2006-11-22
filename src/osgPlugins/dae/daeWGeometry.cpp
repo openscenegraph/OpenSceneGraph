@@ -31,12 +31,15 @@ void daeWriter::apply( osg::Geode &node )
     debugPrint( node );
 #endif
 
+    pushStateSet(node.getStateSet());
+
     unsigned int count = node.getNumDrawables();
     for ( unsigned int i = 0; i < count; i++ )
     {
         osg::Geometry *g = node.getDrawable( i )->asGeometry();
         if ( g != NULL )
         {
+            pushStateSet(g->getStateSet());
             std::map< osg::Geometry*, domGeometry *>::iterator iter = geometryMap.find( g );
             if ( iter != geometryMap.end() )
             {
@@ -44,11 +47,8 @@ void daeWriter::apply( osg::Geode &node )
                     
                 std::string url = "#" + std::string( iter->second->getId() );
                 ig->setUrl( url.c_str() );
-                //osg::notify( osg::WARN ) << "Found a duplicate Geometry " << url << std::endl;
-                if ( node.getStateSet() != NULL )
-                {
-                    processMaterial( node.getStateSet(), ig, iter->second->getId() );
-                }
+                if (!stateSetStack.empty())
+                    processMaterial( currentStateSet.get(), ig, iter->second->getId() );
             }
             else
             {
@@ -78,17 +78,16 @@ void daeWriter::apply( osg::Geode &node )
                 geometryMap.insert( std::make_pair( g, geo ) );
 #endif
 
-                if ( node.getStateSet() != NULL )
-                {
-                    processMaterial( node.getStateSet(), ig, name );
-                }
+                if (!stateSetStack.empty())
+                    processMaterial( currentStateSet.get(), ig, name );
             }
+            popStateSet(g->getStateSet());
         }
     }
 
     lastVisited = GEODE;
 
-    traverse( node );
+    popStateSet(node.getStateSet());
 }
 
 /** append elements (verts, normals, colors and texcoord) for file write */

@@ -43,10 +43,10 @@ public:
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
         _oc(oc),
         _ratio(ratio)
-        {
-            if (matrix) pushMatrix(*matrix);
-        }
-        
+    {
+        if (matrix) pushMatrix(*matrix);
+    }
+
     void apply(osg::Node& node)
     {
         if (node.getStateSet()) pushState(node.getStateSet());
@@ -619,14 +619,57 @@ void OccluderGeometry::buildEdgeMaps()
         eitr != edgeSet.end();
         ++eitr)
     {
-        _edges.push_back(*eitr);
-        unsigned int numTriangles = ((eitr->_t1>=0)? 1:0) + ((eitr->_t2>=0)? 1:0);
+        const Edge& edge = *eitr;
+        osg::Vec3 pos(0.0,0.0,0.0);
+        osg::Vec3 mid = (_vertices[edge._p1] + _vertices[edge._p1]) * 0.5f;
+        unsigned int numTriangles = 0;
+        if (edge._t1>=0)
+        {
+            ++numTriangles;
+
+            GLuint p1 = _triangleIndices[edge._t1*3];
+            GLuint p2 = _triangleIndices[edge._t1*3+1];
+            GLuint p3 = _triangleIndices[edge._t1*3+2];
+            GLuint opposite = p1;
+            if (p1 != edge._p1 && p1 != edge._p2) opposite = p1;
+            else if (p2 != edge._p1 && p2 != edge._p2) opposite = p2;
+            else if (p3 != edge._p1 && p3 != edge._p2) opposite = p3;
+            pos = _vertices[opposite];
+        }
+        
+        if (edge._t2>=0)
+        {
+            ++numTriangles;
+
+            GLuint p1 = _triangleIndices[edge._t2*3];
+            GLuint p2 = _triangleIndices[edge._t2*3+1];
+            GLuint p3 = _triangleIndices[edge._t2*3+2];
+            GLuint opposite = p1;
+            if (p1 != edge._p1 && p1 != edge._p2) opposite = p1;
+            else if (p2 != edge._p1 && p2 != edge._p2) opposite = p2;
+            else if (p3 != edge._p1 && p3 != edge._p2) opposite = p3;
+            pos += _vertices[opposite];
+        }
+
         switch(numTriangles)
         {
-            case(0): ++numEdgesWithNoTriangles;  break; 
-            case(1): ++numEdgesWithOneTriangles;  break; 
-            default: ++numEdgesWithTwoTriangles;  break; 
+            case(0):
+                ++numEdgesWithNoTriangles;
+                edge._normal.set(0.0,0.0,0.0);
+                break; 
+            case(1):
+                ++numEdgesWithOneTriangles;
+                edge._normal = pos - mid;
+                edge._normal.normalize();
+                break; 
+            default:
+                ++numEdgesWithTwoTriangles; 
+                edge._normal = (pos*0.5f) - mid;
+                edge._normal.normalize();
+                break; 
         }
+
+        _edges.push_back(edge);
     }
 
 #if 0
@@ -669,8 +712,19 @@ void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lig
         Edge& edge = *eitr;
         if (isLightDirectionSilhouetteEdge(lightdirection,edge))
         {
-            _silhouetteIndices.push_back(edge._p1);
-            _silhouetteIndices.push_back(edge._p2);
+            osg::Vec3& v1 = _vertices[edge._p1];
+            osg::Vec3& v2 = _vertices[edge._p2];
+            osg::Vec3 normal = (v2-v1) ^ lightdirection;
+            if (normal * edge._normal < 0.0)
+            {        
+                _silhouetteIndices.push_back(edge._p1);
+                _silhouetteIndices.push_back(edge._p2);
+            }
+            else
+            {
+                _silhouetteIndices.push_back(edge._p2);
+                _silhouetteIndices.push_back(edge._p1);
+            }
         }
     }
 }

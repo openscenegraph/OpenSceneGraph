@@ -104,11 +104,13 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
             
             bool boundaryEdge() const { return _t2<0; }
         
-            unsigned int _p1;
-            unsigned int _p2;
+            unsigned int    _p1;
+            unsigned int    _p2;
             
-            mutable int _t1;
-            mutable int _t2;
+            mutable int     _t1;
+            mutable int     _t2;
+            
+            mutable osg::Vec3   _normal;
         };
 
         typedef std::vector<Edge> EdgeList;

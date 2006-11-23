@@ -128,11 +128,17 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
 
         virtual ~OccluderGeometry() {}
         
-        inline bool isSilhouetteEdge(const osg::Vec3& lightpos, const Edge& edge) const
+        inline float testLightPointSilhouetteEdge(const osg::Vec3& lightpos, const Edge& edge) const
         {
             osg::Vec3 delta(lightpos-_vertices[edge._p1]);
             return ( delta * _triangleNormals[edge._t1] ) *
                    ( delta * _triangleNormals[edge._t2] ); 
+        }
+
+        inline float testLightDirectionSilhouetteEdge(const osg::Vec3& lightdirection, const Edge& edge) const
+        {
+            return ( lightdirection * _triangleNormals[edge._t1] ) *
+                   ( lightdirection * _triangleNormals[edge._t2] ); 
         }
         
         void setUpInternalStructures();
@@ -141,6 +147,9 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         void removeNullTriangles();
         void computeNormals();
         void buildEdgeMaps();
+        
+        void computeLightPointSlihouetteEdges(const osg::Vec3& lightpos);
+        void computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection);
 
         Vec3List _vertices;
         Vec3List _normals;
@@ -149,7 +158,7 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         
         PointList _points;
         EdgeList _edges;
-        
+        UIntList _silhouetteIndices;
 };
 
 }

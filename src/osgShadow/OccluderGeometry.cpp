@@ -650,7 +650,7 @@ void OccluderGeometry::computeLightPointSlihouetteEdges(const osg::Vec3& lightpo
         ++eitr)
     {
         Edge& edge = *eitr;
-        if (testLightPointSilhouetteEdge(lightpos,edge)<=0.0f)
+        if (isLightPointSilhouetteEdge(lightpos,edge))
         {
             _silhouetteIndices.push_back(edge._p1);
             _silhouetteIndices.push_back(edge._p2);
@@ -667,7 +667,7 @@ void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lig
         ++eitr)
     {
         Edge& edge = *eitr;
-        if (testLightDirectionSilhouetteEdge(lightdirection,edge)<=0.0f)
+        if (isLightDirectionSilhouetteEdge(lightdirection,edge))
         {
             _silhouetteIndices.push_back(edge._p1);
             _silhouetteIndices.push_back(edge._p2);
@@ -675,10 +675,82 @@ void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lig
     }
 }
 
+void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg)
+{
+    ShadowVolumeGeometry::Vec3List& shadowVertices = svg.getVertices();
+    shadowVertices.clear();
+
+    ShadowVolumeGeometry::Vec3List& shadowNormals = svg.getNormals();
+    shadowNormals.clear();
+
+    osg::Plane basePlane(0.0, 0.0, 1.0, 0.0);
+    
+    const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
+    
+    if (!planes.empty())
+    {
+        basePlane = planes[0];
+    }
+
+    osg::Vec3 offset;
+
+    if (lightpos.w()==0.0)
+    {
+        osg::Vec3 lightdirection( lightpos.x(), lightpos.y(), lightpos.z());
+        
+        osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
+        computeLightDirectionSlihouetteEdges(lightdirection);
+        
+        offset = lightdirection*5.0f;
+        
+        float directionScale = 1.0f / (basePlane.getNormal() * lightdirection);
+        
+        for(UIntList::iterator itr = _silhouetteIndices.begin();
+            itr != _silhouetteIndices.end();
+            )
+        {
+            osg::Vec3& v1 = _vertices[*itr++];
+            osg::Vec3& v2 = _vertices[*itr++];
+
+            float r1 = basePlane.distance(v1) * directionScale;
+            float r2 = basePlane.distance(v2) * directionScale;
+
+            osg::Vec3 v1_projected = v1 - (lightdirection * r1);
+            osg::Vec3 v2_projected = v2 - (lightdirection * r2);
+
+            shadowVertices.push_back( v1);
+            shadowVertices.push_back( v1_projected);
+            shadowVertices.push_back( v2_projected);
+            shadowVertices.push_back( v2);
+
+            osg::Vec3 normal = (v2-v1) ^ lightdirection;
+            normal.normalize();
+            shadowNormals.push_back(normal);
+            shadowNormals.push_back(normal);
+            shadowNormals.push_back(normal);
+            shadowNormals.push_back(normal);
+        }
+
+    }
+    else
+    {
+        osg::Vec3 lightposition( lightpos.x(), lightpos.y(), lightpos.z());
+
+        osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
+        computeLightPointSlihouetteEdges(lightposition);
+        
+        offset.set(0.0,0.0,-.5);
+    }
+
+
+
+    svg.dirtyDisplayList();
+    svg.dirtyBound();
+
+}
+
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    osg::notify(osg::NOTICE)<<"drawImplementation(osg::RenderInfo& renderInfo)"<<std::endl;
-
     renderInfo.getState()->disableAllVertexArrays();
 
     renderInfo.getState()->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
@@ -711,7 +783,52 @@ osg::BoundingBox OccluderGeometry::computeBound() const
         bb.expandBy(*itr);
     }
 
-    osg::notify(osg::NOTICE)<<"computeBB "<<bb.xMin()<<", "<<bb.xMax()<<std::endl;
+    return bb;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  ShadowVolumeGeometry
+//
+ShadowVolumeGeometry::ShadowVolumeGeometry()
+{
+}
+
+ShadowVolumeGeometry::ShadowVolumeGeometry(const ShadowVolumeGeometry& oc, const osg::CopyOp& copyop):
+    osg::Drawable(oc,copyop)
+{
+}
+
+void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
+{
+    renderInfo.getState()->disableAllVertexArrays();
+
+    renderInfo.getState()->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
+    
+    if (!_normals.empty())
+    {
+        renderInfo.getState()->setNormalPointer( GL_FLOAT, 0, &(_normals.front()) );
+    }
+    else
+    {
+        glNormal3f(0.0f, 0.0f, 0.0f);
+    }
+
+
+    glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
+    
+    glDrawArrays( GL_QUADS, 0, _vertices.size() );
+}
+
+osg::BoundingBox ShadowVolumeGeometry::computeBound() const
+{
+    osg::BoundingBox bb;
+    for(Vec3List::const_iterator itr =  _vertices.begin();
+        itr != _vertices.end();
+        ++itr)
+    {
+        bb.expandBy(*itr);
+    }
 
     return bb;
 }

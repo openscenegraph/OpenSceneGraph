@@ -53,15 +53,27 @@ int main(int argc, char** argv)
         return 1;
     }
     
+    const osg::BoundingSphere& bs = model->getBound();
+    osg::Plane basePlane(0.0, 0.0, 1.0, -( bs.center().z() - bs.radius() ) );
     
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
     osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
     occluder->computeOccluderGeometry(model.get());
+    occluder->getBoundingPolytope().add(basePlane);
+    //geode->addDrawable(occluder.get());
     
-    geode->addDrawable(occluder.get());
+    osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
+    occluder->comptueShadowVolumeGeometry(osg::Vec4(0.0f,-.5f,-1.0f,0.0f), *shadowVolume);
+    geode->addDrawable(shadowVolume.get());
 
-    viewer.setSceneData(geode.get());
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->addChild(model.get());
+    group->addChild(geode.get());
+
+
+    viewer.setSceneData(group.get());
 
     // create the windows and run the threads.
     viewer.realize();

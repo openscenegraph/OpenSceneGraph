@@ -300,13 +300,41 @@ void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* mat
 
 void OccluderGeometry::setUpInternalStructures()
 {
+
+    osg::Timer_t t0 = osg::Timer::instance()->tick();
+
     removeDuplicateVertices();
     
+    osg::Timer_t t1 = osg::Timer::instance()->tick();
+
     removeNullTriangles();
+
+    osg::Timer_t t2 = osg::Timer::instance()->tick();
 
     computeNormals();
 
+    osg::Timer_t t3 = osg::Timer::instance()->tick();
+
     buildEdgeMaps();
+    
+    osg::Timer_t t4 = osg::Timer::instance()->tick();
+
+    computeLightDirectionSlihouetteEdges(osg::Vec3(0.0,0.0,1.0f));
+
+    osg::Timer_t t45 = osg::Timer::instance()->tick();
+
+    computeLightDirectionSlihouetteEdges(osg::Vec3(0.0,0.0,1.0f));
+
+    osg::Timer_t t5 = osg::Timer::instance()->tick();
+
+    osg::notify(osg::NOTICE)<<"removeDuplicateVertices "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"removeNullTriangles "<<osg::Timer::instance()->delta_m(t1,t2)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"computeNormals "<<osg::Timer::instance()->delta_m(t2,t3)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"buildEdgeMaps "<<osg::Timer::instance()->delta_m(t3,t4)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"computeLightDirectionSlihouetteEdges "<<osg::Timer::instance()->delta_m(t4,t45)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"computeLightDirectionSlihouetteEdges "<<osg::Timer::instance()->delta_m(t45,t5)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"setUpInternalStructures "<<osg::Timer::instance()->delta_m(t0,t5)<<" ms"<<std::endl;
+
 
     dirtyBound();
     
@@ -341,7 +369,7 @@ void OccluderGeometry::removeDuplicateVertices()
 {
     if (_vertices.empty()) return;
     
-    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
 
     typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
     IndexVec3PtrPairs indexVec3PtrPairs;
@@ -378,8 +406,8 @@ void OccluderGeometry::removeDuplicateVertices()
         }
     }
     
-    osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num unique = "<<numUnique<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Num unique = "<<numUnique<<std::endl;
 
     if (numDuplicates==0) return;
 
@@ -428,12 +456,12 @@ void OccluderGeometry::removeDuplicateVertices()
         *titr = indexMap[*titr];
     }
 
-    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
 }
 
 void OccluderGeometry::removeNullTriangles()
 {
-    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeNullTriangles()"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"OccluderGeometry::removeNullTriangles()"<<std::endl;
 
     
     UIntList::iterator lastValidItr = _triangleIndices.begin();
@@ -460,20 +488,20 @@ void OccluderGeometry::removeNullTriangles()
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Null triangle"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Null triangle"<<std::endl;
         }
     }
     if (lastValidItr != _triangleIndices.end())
     {
-         osg::notify(osg::NOTICE)<<"Pruning end - before "<<_triangleIndices.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Pruning end - before "<<_triangleIndices.size()<<std::endl;
         _triangleIndices.erase(lastValidItr,_triangleIndices.end());
-         osg::notify(osg::NOTICE)<<"Pruning end - after "<<_triangleIndices.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Pruning end - after "<<_triangleIndices.size()<<std::endl;
     }
 }
 
 void OccluderGeometry::computeNormals()
 {
-    osg::notify(osg::NOTICE)<<"OccluderGeometry::computeNormals()"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"OccluderGeometry::computeNormals()"<<std::endl;
     
     unsigned int numTriangles = _triangleIndices.size() / 3;
     unsigned int redundentIndices = _triangleIndices.size() - numTriangles * 3;
@@ -521,7 +549,7 @@ void OccluderGeometry::computeNormals()
 
 void OccluderGeometry::buildEdgeMaps()
 {
-    osg::notify(osg::NOTICE)<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
     
     typedef std::set<Edge> EdgeSet;
     EdgeSet edgeSet;
@@ -601,6 +629,7 @@ void OccluderGeometry::buildEdgeMaps()
         }
     }
 
+#if 0
     osg::notify(osg::NOTICE)<<"Num of indices "<<_triangleIndices.size()<<std::endl;
     osg::notify(osg::NOTICE)<<"Num of triangles "<<triNo<<std::endl;
     osg::notify(osg::NOTICE)<<"Num of numTriangleErrors "<<numTriangleErrors<<std::endl;
@@ -608,8 +637,42 @@ void OccluderGeometry::buildEdgeMaps()
     osg::notify(osg::NOTICE)<<"Num of numEdgesWithNoTriangles "<<numEdgesWithNoTriangles<<std::endl;
     osg::notify(osg::NOTICE)<<"Num of numEdgesWithOneTriangles "<<numEdgesWithOneTriangles<<std::endl;
     osg::notify(osg::NOTICE)<<"Num of numEdgesWithTwoTriangles "<<numEdgesWithTwoTriangles<<std::endl;
+#endif
+}
+
+
+void OccluderGeometry::computeLightPointSlihouetteEdges(const osg::Vec3& lightpos)
+{
+    _silhouetteIndices.clear();
     
+    for(EdgeList::iterator eitr = _edges.begin();
+        eitr != _edges.end();
+        ++eitr)
+    {
+        Edge& edge = *eitr;
+        if (testLightPointSilhouetteEdge(lightpos,edge)<=0.0f)
+        {
+            _silhouetteIndices.push_back(edge._p1);
+            _silhouetteIndices.push_back(edge._p2);
+        }
+    }
+}
+
+void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection)
+{
+    _silhouetteIndices.clear();
     
+    for(EdgeList::iterator eitr = _edges.begin();
+        eitr != _edges.end();
+        ++eitr)
+    {
+        Edge& edge = *eitr;
+        if (testLightDirectionSilhouetteEdge(lightdirection,edge)<=0.0f)
+        {
+            _silhouetteIndices.push_back(edge._p1);
+            _silhouetteIndices.push_back(edge._p2);
+        }
+    }
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
@@ -625,7 +688,17 @@ void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
         renderInfo.getState()->setNormalPointer( GL_FLOAT, 0, &(_normals.front()) );
     }
 
-    glDrawElements(GL_TRIANGLES, _triangleIndices.size(), GL_UNSIGNED_INT, &(_triangleIndices.front()) );
+    if (!_triangleIndices.empty())
+    {
+        glDrawElements(GL_TRIANGLES, _triangleIndices.size(), GL_UNSIGNED_INT, &(_triangleIndices.front()) );
+    }
+    
+    if (!_silhouetteIndices.empty())
+    {
+        glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        glDrawElements(GL_LINES, _silhouetteIndices.size(), GL_UNSIGNED_INT, &(_silhouetteIndices.front()) );
+    }
+    
 }
 
 osg::BoundingBox OccluderGeometry::computeBound() const

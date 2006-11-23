@@ -7,6 +7,90 @@
 #include <osgDB/ReadFile>
 
 
+class ComputeBoundingBoxVisitor : public osg::NodeVisitor
+{
+public:
+    ComputeBoundingBoxVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+    {
+    }
+    
+    virtual void reset()
+    {
+        _matrixStack.clear();
+        _bb.init();
+    }
+    
+    osg::BoundingBox& getBoundingBox() { return _bb; }
+        
+    void apply(osg::Node& node)
+    {
+        traverse(node);
+    }
+    
+    void apply(osg::Transform& transform)
+    {
+        osg::Matrix matrix;
+        if (!_matrixStack.empty()) matrix = _matrixStack.back();
+        
+        transform.computeLocalToWorldMatrix(matrix,this);
+        
+        pushMatrix(matrix);
+        
+        traverse(transform);
+        
+        popMatrix();
+    }
+    
+    void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+        {
+            apply(geode.getDrawable(i));
+        }
+    }
+    
+    void pushMatrix(osg::Matrix& matrix)
+    {
+        _matrixStack.push_back(matrix);
+    }
+    
+    void popMatrix()
+    {
+        _matrixStack.pop_back();
+    }
+
+    void apply(osg::Drawable* drawable)
+    {
+        if (_matrixStack.empty()) _bb.expandBy(drawable->getBound());
+        else
+        {
+            osg::Matrix& matrix = _matrixStack.back();
+            const osg::BoundingBox& dbb = drawable->getBound();
+            if (dbb.valid())
+            {
+                _bb.expandBy(dbb.corner(0) * matrix);
+                _bb.expandBy(dbb.corner(1) * matrix);
+                _bb.expandBy(dbb.corner(2) * matrix);
+                _bb.expandBy(dbb.corner(3) * matrix);
+                _bb.expandBy(dbb.corner(4) * matrix);
+                _bb.expandBy(dbb.corner(5) * matrix);
+                _bb.expandBy(dbb.corner(6) * matrix);
+                _bb.expandBy(dbb.corner(7) * matrix);
+            }
+        }
+    }
+    
+protected:
+    
+    typedef std::vector<osg::Matrix> MatrixStack;
+
+    MatrixStack         _matrixStack;
+    osg::BoundingBox    _bb;
+};
+
+
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -53,8 +137,10 @@ int main(int argc, char** argv)
         return 1;
     }
     
-    const osg::BoundingSphere& bs = model->getBound();
-    osg::Plane basePlane(0.0, 0.0, 1.0, -( bs.center().z() - bs.radius() ) );
+    ComputeBoundingBoxVisitor cbbv;
+    model->accept(cbbv);
+    const osg::BoundingBox& bb = cbbv.getBoundingBox();
+    osg::Plane basePlane(0.0, 0.0, 1.0, -bb.zMin() );
     
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
@@ -64,7 +150,7 @@ int main(int argc, char** argv)
     //geode->addDrawable(occluder.get());
     
     osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
-    occluder->comptueShadowVolumeGeometry(osg::Vec4(0.0f,-.5f,-1.0f,0.0f), *shadowVolume);
+    occluder->comptueShadowVolumeGeometry(osg::Vec4(0.5f,-.5f,-1.0f,0.0f), *shadowVolume);
     geode->addDrawable(shadowVolume.get());
 
 

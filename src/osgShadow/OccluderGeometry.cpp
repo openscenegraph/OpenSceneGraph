@@ -743,14 +743,14 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     ShadowVolumeGeometry::Vec3List& shadowNormals = svg.getNormals();
     shadowNormals.clear();
 
-    osg::Plane basePlane(0.0, 0.0, 1.0, 0.0);
-    
-    const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
-    
-    if (!planes.empty())
+
+    // need to have some kind of handling of case when no planes exist.
+    if (_boundingPolytope.getPlaneList().empty())
     {
-        basePlane = planes[0];
+        osg::notify(osg::NOTICE)<<"Warning: no bounding polytope registered with OccluderGeometry."<<std::endl;
+        return;
     }
+
 
     if (lightpos.w()==0.0)
     {
@@ -759,13 +759,29 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         
         osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
         
+        // choose the base plane
+        const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
+        osg::Polytope::PlaneList::const_iterator pitr = planes.begin();
+        osg::Plane basePlane = *pitr;
+        ++pitr;
+
+        for(;
+            pitr != planes.end();
+            ++pitr)
+        {
+            if (basePlane.dotProductNormal(lightdirection)  > pitr->dotProductNormal(lightdirection))
+            {
+                basePlane = *pitr;
+            }
+        }
+
         // compute the silhouette edge
         UIntList silhouetteIndices;
         computeLightDirectionSlihouetteEdges(lightdirection, silhouetteIndices);
         
         osg::Vec3 offset( lightdirection*5.0f );
         
-        float directionScale = 1.0f / (basePlane.getNormal() * lightdirection);
+        float directionScale = 1.0f / basePlane.dotProductNormal(lightdirection);
         
         for(UIntList::iterator itr = silhouetteIndices.begin();
             itr != silhouetteIndices.end();
@@ -799,10 +815,16 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         // positional light
         osg::Vec3 lightposition( lightpos.x(), lightpos.y(), lightpos.z());
 
+        osg::Plane basePlane(0.0, 0.0, 1.0, 0.0);
+
         osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
         UIntList silhouetteIndices;
         computeLightPositionSlihouetteEdges(lightposition, silhouetteIndices);
         
+        osg::notify(osg::NOTICE)<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
+        osg::notify(osg::NOTICE)<<"lightpos  = "<<std::endl;
+        const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
+
         for(UIntList::iterator itr = silhouetteIndices.begin();
             itr != silhouetteIndices.end();
             )
@@ -810,14 +832,30 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
             const osg::Vec3& v1 = _vertices[*itr++];
             const osg::Vec3& v2 = _vertices[*itr++];
             
-            osg::Vec3d d1 = v1 - lightposition;
-            osg::Vec3d d2 = v2 - lightposition;
+            osg::Vec3 d1 = v1 - lightposition;
+            osg::Vec3 d2 = v2 - lightposition;
 
-            float r1 = basePlane.distance(v1) / (basePlane.getNormal() * d1);
-            float r2 = basePlane.distance(v2) / (basePlane.getNormal() * d2);
+            osg::Polytope::PlaneList::const_iterator pitr = planes.begin();
+            float r1 = - pitr->distance(v1) / (pitr->dotProductNormal(d1));
+            float r2 = - pitr->distance(v2) / (pitr->dotProductNormal(d2));
+            ++pitr;
 
-            osg::Vec3 v1_projected = v1 - (d1 * r1);
-            osg::Vec3 v2_projected = v2 - (d2 * r2);
+            for(;
+                pitr != planes.end();
+                ++pitr)
+            {
+                float lr1 = - pitr->distance(v1) / (pitr->dotProductNormal(d1));
+                float lr2 = - pitr->distance(v2) / (pitr->dotProductNormal(d2));
+
+                if (lr1>=0.0f && lr2>=0.0f && (lr1+lr2)<(r1+r2))
+                {
+                    r1 = lr1;
+                    r2 = lr2;
+                }
+            }
+
+            osg::Vec3 v1_projected = v1 + (d1 * r1);
+            osg::Vec3 v2_projected = v2 + (d2 * r2);
 
             shadowVertices.push_back( v1);
             shadowVertices.push_back( v1_projected);

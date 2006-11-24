@@ -319,21 +319,12 @@ void OccluderGeometry::setUpInternalStructures()
     
     osg::Timer_t t4 = osg::Timer::instance()->tick();
 
-    computeLightDirectionSlihouetteEdges(osg::Vec3(0.0,0.0,1.0f));
-
-    osg::Timer_t t45 = osg::Timer::instance()->tick();
-
-    computeLightDirectionSlihouetteEdges(osg::Vec3(0.0,0.0,1.0f));
-
-    osg::Timer_t t5 = osg::Timer::instance()->tick();
 
     osg::notify(osg::NOTICE)<<"removeDuplicateVertices "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
     osg::notify(osg::NOTICE)<<"removeNullTriangles "<<osg::Timer::instance()->delta_m(t1,t2)<<" ms"<<std::endl;
     osg::notify(osg::NOTICE)<<"computeNormals "<<osg::Timer::instance()->delta_m(t2,t3)<<" ms"<<std::endl;
     osg::notify(osg::NOTICE)<<"buildEdgeMaps "<<osg::Timer::instance()->delta_m(t3,t4)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"computeLightDirectionSlihouetteEdges "<<osg::Timer::instance()->delta_m(t4,t45)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"computeLightDirectionSlihouetteEdges "<<osg::Timer::instance()->delta_m(t45,t5)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"setUpInternalStructures "<<osg::Timer::instance()->delta_m(t0,t5)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"setUpInternalStructures "<<osg::Timer::instance()->delta_m(t0,t4)<<" ms"<<std::endl;
 
 
     dirtyBound();
@@ -684,53 +675,68 @@ void OccluderGeometry::buildEdgeMaps()
 }
 
 
-void OccluderGeometry::computeLightPointSlihouetteEdges(const osg::Vec3& lightpos)
+void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const
 {
-    _silhouetteIndices.clear();
+    silhouetteIndices.clear();
     
-    for(EdgeList::iterator eitr = _edges.begin();
+    for(EdgeList::const_iterator eitr = _edges.begin();
         eitr != _edges.end();
         ++eitr)
     {
-        Edge& edge = *eitr;
-        if (isLightPointSilhouetteEdge(lightpos,edge))
-        {
-            _silhouetteIndices.push_back(edge._p1);
-            _silhouetteIndices.push_back(edge._p2);
-        }
-    }
-}
-
-void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection)
-{
-    _silhouetteIndices.clear();
-    
-    for(EdgeList::iterator eitr = _edges.begin();
-        eitr != _edges.end();
-        ++eitr)
-    {
-        Edge& edge = *eitr;
+        const Edge& edge = *eitr;
         if (isLightDirectionSilhouetteEdge(lightdirection,edge))
         {
-            osg::Vec3& v1 = _vertices[edge._p1];
-            osg::Vec3& v2 = _vertices[edge._p2];
+            const osg::Vec3& v1 = _vertices[edge._p1];
+            const osg::Vec3& v2 = _vertices[edge._p2];
             osg::Vec3 normal = (v2-v1) ^ lightdirection;
             if (normal * edge._normal < 0.0)
             {        
-                _silhouetteIndices.push_back(edge._p1);
-                _silhouetteIndices.push_back(edge._p2);
+                silhouetteIndices.push_back(edge._p1);
+                silhouetteIndices.push_back(edge._p2);
             }
             else
             {
-                _silhouetteIndices.push_back(edge._p2);
-                _silhouetteIndices.push_back(edge._p1);
+                silhouetteIndices.push_back(edge._p2);
+                silhouetteIndices.push_back(edge._p1);
             }
         }
     }
 }
 
-void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg)
+void OccluderGeometry::computeLightPositionSlihouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const
 {
+    silhouetteIndices.clear();
+    
+    for(EdgeList::const_iterator eitr = _edges.begin();
+        eitr != _edges.end();
+        ++eitr)
+    {
+        const Edge& edge = *eitr;
+        if (isLightPointSilhouetteEdge(lightpos,edge))
+        {
+            const osg::Vec3& v1 = _vertices[edge._p1];
+            const osg::Vec3& v2 = _vertices[edge._p2];
+            osg::Vec3 normal = (v2-v1) ^ (v1-lightpos);
+            if (normal * edge._normal < 0.0)
+            {        
+                silhouetteIndices.push_back(edge._p1);
+                silhouetteIndices.push_back(edge._p2);
+            }
+            else
+            {
+                silhouetteIndices.push_back(edge._p2);
+                silhouetteIndices.push_back(edge._p1);
+            }
+
+        }
+    }
+}
+
+
+void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const
+{
+    osg::Timer_t t0 = osg::Timer::instance()->tick();
+
     ShadowVolumeGeometry::Vec3List& shadowVertices = svg.getVertices();
     shadowVertices.clear();
 
@@ -746,25 +752,27 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         basePlane = planes[0];
     }
 
-    osg::Vec3 offset;
-
     if (lightpos.w()==0.0)
     {
+        // directional light.
         osg::Vec3 lightdirection( lightpos.x(), lightpos.y(), lightpos.z());
         
         osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
-        computeLightDirectionSlihouetteEdges(lightdirection);
         
-        offset = lightdirection*5.0f;
+        // compute the silhouette edge
+        UIntList silhouetteIndices;
+        computeLightDirectionSlihouetteEdges(lightdirection, silhouetteIndices);
+        
+        osg::Vec3 offset( lightdirection*5.0f );
         
         float directionScale = 1.0f / (basePlane.getNormal() * lightdirection);
         
-        for(UIntList::iterator itr = _silhouetteIndices.begin();
-            itr != _silhouetteIndices.end();
+        for(UIntList::iterator itr = silhouetteIndices.begin();
+            itr != silhouetteIndices.end();
             )
         {
-            osg::Vec3& v1 = _vertices[*itr++];
-            osg::Vec3& v2 = _vertices[*itr++];
+            const osg::Vec3& v1 = _vertices[*itr++];
+            const osg::Vec3& v2 = _vertices[*itr++];
 
             float r1 = basePlane.distance(v1) * directionScale;
             float r2 = basePlane.distance(v2) * directionScale;
@@ -788,19 +796,49 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     }
     else
     {
+        // positional light
         osg::Vec3 lightposition( lightpos.x(), lightpos.y(), lightpos.z());
 
         osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
-        computeLightPointSlihouetteEdges(lightposition);
+        UIntList silhouetteIndices;
+        computeLightPositionSlihouetteEdges(lightposition, silhouetteIndices);
         
-        offset.set(0.0,0.0,-.5);
+        for(UIntList::iterator itr = silhouetteIndices.begin();
+            itr != silhouetteIndices.end();
+            )
+        {
+            const osg::Vec3& v1 = _vertices[*itr++];
+            const osg::Vec3& v2 = _vertices[*itr++];
+            
+            osg::Vec3d d1 = v1 - lightposition;
+            osg::Vec3d d2 = v2 - lightposition;
+
+            float r1 = basePlane.distance(v1) / (basePlane.getNormal() * d1);
+            float r2 = basePlane.distance(v2) / (basePlane.getNormal() * d2);
+
+            osg::Vec3 v1_projected = v1 - (d1 * r1);
+            osg::Vec3 v2_projected = v2 - (d2 * r2);
+
+            shadowVertices.push_back( v1);
+            shadowVertices.push_back( v1_projected);
+            shadowVertices.push_back( v2_projected);
+            shadowVertices.push_back( v2);
+
+            osg::Vec3 normal = (v2-v1) ^ d1;
+            normal.normalize();
+            shadowNormals.push_back(normal);
+            shadowNormals.push_back(normal);
+            shadowNormals.push_back(normal);
+            shadowNormals.push_back(normal);
+        }
+
     }
-
-
 
     svg.dirtyDisplayList();
     svg.dirtyBound();
 
+    osg::Timer_t t1 = osg::Timer::instance()->tick();
+    osg::notify(osg::NOTICE)<<"comptueShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
@@ -818,13 +856,6 @@ void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         glDrawElements(GL_TRIANGLES, _triangleIndices.size(), GL_UNSIGNED_INT, &(_triangleIndices.front()) );
     }
-    
-    if (!_silhouetteIndices.empty())
-    {
-        glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-        glDrawElements(GL_LINES, _silhouetteIndices.size(), GL_UNSIGNED_INT, &(_silhouetteIndices.front()) );
-    }
-    
 }
 
 osg::BoundingBox OccluderGeometry::computeBound() const

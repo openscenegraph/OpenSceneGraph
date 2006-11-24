@@ -91,6 +91,14 @@ class OSG_EXPORT Matrixf
         value_type * ptr() { return (value_type*)_mat; }
         const value_type * ptr() const { return (const value_type *)_mat; }
 
+        bool isIdentity() const
+        {
+            return _mat[0][0]==1.0f && _mat[0][1]==0.0f && _mat[0][2]==0.0f &&  _mat[0][3]==0.0f &&
+                   _mat[1][0]==0.0f && _mat[1][1]==1.0f && _mat[1][2]==0.0f &&  _mat[1][3]==0.0f &&
+                   _mat[2][0]==0.0f && _mat[2][1]==0.0f && _mat[2][2]==1.0f &&  _mat[2][3]==0.0f &&
+                   _mat[3][0]==0.0f && _mat[3][1]==0.0f && _mat[3][2]==0.0f &&  _mat[3][3]==1.0f;
+        }
+
         void makeIdentity();
         
         void makeScale( const Vec3f& );

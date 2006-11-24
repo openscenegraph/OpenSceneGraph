@@ -22,6 +22,19 @@ public:
     }
     
     osg::BoundingBox& getBoundingBox() { return _bb; }
+
+    void getPolytope(osg::Polytope& polytope, float margin=0.1) const
+    {
+        float delta = _bb.radius()*margin;
+        polytope.add( osg::Plane(0.0, 0.0, 1.0, -(_bb.zMin()-delta)) );
+        polytope.add( osg::Plane(0.0, 0.0, -1.0, (_bb.zMax()+delta)) );
+
+        polytope.add( osg::Plane(1.0, 0.0, 0.0, -(_bb.xMin()-delta)) );
+        polytope.add( osg::Plane(-1.0, 0.0, 0.0, (_bb.xMax()+delta)) );
+
+        polytope.add( osg::Plane(0.0, 1.0, 0.0, -(_bb.yMin()-delta)) );
+        polytope.add( osg::Plane(0.0, -1.0, 0.0, (_bb.yMax()+delta)) );
+    }
         
     void apply(osg::Node& node)
     {
@@ -137,24 +150,26 @@ int main(int argc, char** argv)
         return 1;
     }
     
-    ComputeBoundingBoxVisitor cbbv;
-    model->accept(cbbv);
-    const osg::BoundingBox& bb = cbbv.getBoundingBox();
-    osg::Plane basePlane(0.0, 0.0, 1.0, -bb.zMin() );
     
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
     osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
     occluder->computeOccluderGeometry(model.get());
-    occluder->getBoundingPolytope().add(basePlane);
+
+    ComputeBoundingBoxVisitor cbbv;
+    model->accept(cbbv);
+    cbbv.getPolytope(occluder->getBoundingPolytope(),0.001);
+    osg::BoundingBox bb = cbbv.getBoundingBox();
+
     //geode->addDrawable(occluder.get());
     
     osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
 
-#if 0
-    occluder->comptueShadowVolumeGeometry(osg::Vec4(bb.xMin(), bb.yMin(), bb.zMax() + bb.radius() ,1.0f), *shadowVolume);
+#if 1
+//    occluder->comptueShadowVolumeGeometry(osg::Vec4(bb.xMin()+ bb.radius(), bb.yMin()+ bb.radius(), bb.zMax() + bb.radius()  ,1.0f), *shadowVolume);
+    occluder->comptueShadowVolumeGeometry(osg::Vec4(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()  ,1.0f), *shadowVolume);
 #else
-    occluder->comptueShadowVolumeGeometry(osg::Vec4(0.5f,-.5f,-1.0f,0.0f), *shadowVolume);
+    occluder->comptueShadowVolumeGeometry(osg::Vec4(0.5f,.25f,0.2f,0.0f), *shadowVolume);
 #endif
     geode->addDrawable(shadowVolume.get());
 

@@ -150,7 +150,12 @@ int main(int argc, char** argv)
     //geode->addDrawable(occluder.get());
     
     osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
+
+#if 0
+    occluder->comptueShadowVolumeGeometry(osg::Vec4(bb.xMin(), bb.yMin(), bb.zMax() + bb.radius() ,1.0f), *shadowVolume);
+#else
     occluder->comptueShadowVolumeGeometry(osg::Vec4(0.5f,-.5f,-1.0f,0.0f), *shadowVolume);
+#endif
     geode->addDrawable(shadowVolume.get());
 
 

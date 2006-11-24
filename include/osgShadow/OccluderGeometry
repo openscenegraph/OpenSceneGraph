@@ -44,19 +44,44 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         virtual const char* libraryName() const { return "osgShadow"; }
         virtual const char* className() const { return "OccluderGeometry"; }
         
+        /** Compute an occluder geometry containing all the geometry in specified subgraph.*/
+        void computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix=0, float sampleRatio=1.0f);
+        
+        /** Compute an occluder geometry containing the geometry in specified drawable.*/
+        void computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix=0, float sampleRatio=1.0f);
+        
+
+        /** Compute ShadowVolumeGeometry. */
+        void comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const;
+
+        
+        /** Set the bounding polytope of the OccluderGeometry.*/
+        void setBoundingPolytope(const osg::Polytope& polytope) { _boundingPolytope = polytope; }
+
+        /** Get the bounding polytope of the OccluderGeometry.*/
+        osg::Polytope& getBoundingPolytope() { return _boundingPolytope; }
+
+        /** Get the const bounding polytope of the OccluderGeometry.*/
+        const osg::Polytope& getBoundingPolytope() const { return _boundingPolytope; }
+
+
+        /** Render the occluder geometry. */
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
+        
+        /** Compute the bounding box around occluder geometry.*/
+        virtual osg::BoundingBox computeBound() const;
 
         typedef std::vector<osg::Vec3> Vec3List;
         typedef std::vector<GLuint> UIntList;
 
-        struct Point
-        {
-            Point() {}
+    public:
 
-            UIntList _edges;
-        };
+        void processGeometry(osg::Drawable* drawable, osg::Matrix* matrix=0, float sampleRatio=1.0f);
 
-        typedef std::vector<Point> PointList;
+    protected :
 
+        virtual ~OccluderGeometry() {}
+        
         struct Edge
         {
             Edge():
@@ -115,42 +140,6 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
 
         typedef std::vector<Edge> EdgeList;
 
-
-        /** Compute an occluder geometry containing all the geometry in specified subgraph.*/
-        void computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix=0, float sampleRatio=1.0f);
-        
-        /** Compute an occluder geometry containing the geometry in specified drawable.*/
-        void computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix=0, float sampleRatio=1.0f);
-        
-
-        /** Compute ShadowVolumeGeometry. */
-        void comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg);
-
-        
-        /** Set the bounding polytope of the OccluderGeometry.*/
-        void setBoundingPolytope(const osg::Polytope& polytope) { _boundingPolytope = polytope; }
-
-        /** Get the bounding polytope of the OccluderGeometry.*/
-        osg::Polytope& getBoundingPolytope() { return _boundingPolytope; }
-
-        /** Get the const bounding polytope of the OccluderGeometry.*/
-        const osg::Polytope& getBoundingPolytope() const { return _boundingPolytope; }
-
-
-        /** Render the occluder geometry. */
-        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
-        
-        /** Compute the bounding box around occluder geometry.*/
-        virtual osg::BoundingBox computeBound() const;
-
-    public:
-
-        void processGeometry(osg::Drawable* drawable, osg::Matrix* matrix=0, float sampleRatio=1.0f);
-
-    protected :
-
-        virtual ~OccluderGeometry() {}
-        
         inline bool isLightPointSilhouetteEdge(const osg::Vec3& lightpos, const Edge& edge) const
         {
             if (edge.boundaryEdge()) return true;
@@ -183,8 +172,8 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         void computeNormals();
         void buildEdgeMaps();
         
-        void computeLightPointSlihouetteEdges(const osg::Vec3& lightpos);
-        void computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection);
+        void computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const;
+        void computeLightPositionSlihouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const;
 
         osg::Polytope _boundingPolytope;
 
@@ -193,9 +182,7 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         Vec3List _triangleNormals;
         UIntList _triangleIndices;
         
-        PointList _points;
         EdgeList _edges;
-        UIntList _silhouetteIndices;
 };
 
 class OSGSHADOW_EXPORT ShadowVolumeGeometry : public osg::Drawable

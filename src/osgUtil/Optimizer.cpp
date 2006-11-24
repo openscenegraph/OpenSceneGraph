@@ -796,7 +796,7 @@ class CollectLowestTransformsVisitor : public BaseOptimizerVisitor
                 {
                     if (!_transformSet.empty()) 
                     {
-                        if (_firstMatrix!=_identity_matrix) _moreThanOneMatrixRequired=true;
+                        if (!_firstMatrix.isIdentity()) _moreThanOneMatrixRequired=true;
                     }
 
                 }
@@ -807,8 +807,6 @@ class CollectLowestTransformsVisitor : public BaseOptimizerVisitor
             bool            _moreThanOneMatrixRequired;
             osg::Matrix     _firstMatrix;
             TransformSet    _transformSet;
-            osg::Matrix     _identity_matrix; 
-
         };    
 
 
@@ -1314,34 +1312,40 @@ void Optimizer::RemoveEmptyNodesVisitor::removeEmptyNodes()
 // RemoveRedundantNodes.
 ////////////////////////////////////////////////////////////////////////////
 
+bool Optimizer::RemoveRedundantNodesVisitor::isOperationPermissible(osg::Node& node)
+{
+    return node.getNumParents()>0 &&
+           !node.getStateSet() &&
+           !node.getUserData() &&
+           !node.getUpdateCallback() &&
+           !node.getEventCallback() &&
+           !node.getUpdateCallback() &&
+           node.getDescriptions().empty() &&
+           isOperationPermissibleForObject(&node);    
+}
+
 void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Group& group)
 {
-    if (group.getNumParents()>0)
+    if (group.getNumChildren()==1 && 
+        typeid(group)==typeid(osg::Group) &&
+        isOperationPermissible(group))
     {
-        if (group.getNumChildren()==1 && typeid(group)==typeid(osg::Group))
-        {
-            if (group.getNumParents()>0 && group.getNumChildren()<=1)
-            {
-                if (isOperationPermissibleForObject(&group))
-                {
-                    _redundantNodeList.insert(&group);
-                }
-            }
-        }
+        _redundantNodeList.insert(&group);
     }
+
     traverse(group);
 }
 
+
+
 void Optimizer::RemoveRedundantNodesVisitor::apply(osg::Transform& transform)
 {
-    if (transform.getNumParents()>0 && 
-        transform.getDataVariance()==osg::Object::STATIC &&
-        isOperationPermissibleForObject(&transform))
+    if (transform.getDataVariance()==osg::Object::STATIC &&
+        isOperationPermissible(transform))
     {
-        static osg::Matrix identity;
         osg::Matrix matrix;
         transform.computeWorldToLocalMatrix(matrix,NULL);
-        if (matrix==identity)
+        if (matrix.isIdentity())
         {
             _redundantNodeList.insert(&transform);
         }

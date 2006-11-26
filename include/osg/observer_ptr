@@ -14,6 +14,8 @@
 #ifndef OSG_OBSERVER_PTR
 #define OSG_OBSERVER_PTR
 
+#include <osg/Notify>
+
 namespace osg {
 
 class Observer
@@ -57,12 +59,9 @@ class observer_ptr : public Observer
             return *this;
         }
         
-        virtual void objectDeleted(void* ptr)
+        virtual void objectDeleted(void*)
         {
-            if (_ptr==ptr)
-            {
-                _ptr = 0;
-            }
+            _ptr = 0;
         }
 
         // comparison operators for observer_ptr.

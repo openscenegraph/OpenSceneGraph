@@ -330,6 +330,8 @@ class OSGUTIL_EXPORT Optimizer
                 virtual void apply(osg::Group& group);
                 virtual void apply(osg::Transform& transform);
                 
+                bool isOperationPermissible(osg::Node& node);
+                
                 void removeRedundantNodes();
 
         };

@@ -260,15 +260,11 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
                 if (dataType==0) dataType = _imageReadPixelDataType;
                 if (dataType==0) dataType = GL_UNSIGNED_BYTE;
-
-                image->allocateImage(width, height, 1, pixelFormat, dataType);
-
             }
 
-            _imageReadPixelFormat = pixelFormat;
-            _imageReadPixelDataType = dataType;
-
-            setImage(itr->second._image.get());
+            _bufferAttachmentMap[itr->first]._imageReadPixelFormat = pixelFormat;
+            _bufferAttachmentMap[itr->first]._imageReadPixelDataType = dataType;
+            _bufferAttachmentMap[itr->first]._image = image;
         }
         
         if (itr->second._texture.valid())
@@ -738,28 +734,30 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     {
         copyTexture(renderInfo);
     }
-    
-    if (_image.valid())
-    {
+    std::map< osg::CameraNode::BufferComponent, Attachment>::const_iterator itr;
+     for(itr = _bufferAttachmentMap.begin();     itr != _bufferAttachmentMap.end();     ++itr){
+         if (itr->second._image.valid())
+         {
 
-        if (_readBuffer != GL_NONE)
-        {
-            glReadBuffer(_readBuffer);
-        }
+             if (_readBuffer != GL_NONE)
+             {
+                 glReadBuffer(_readBuffer);
+             }
 
-        GLenum pixelFormat = _image->getPixelFormat();
-        if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
-        if (pixelFormat==0) pixelFormat = GL_RGB;
+             GLenum pixelFormat = itr->second._image->getPixelFormat();
+              if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
+             if (pixelFormat==0) pixelFormat = GL_RGB;
 
-        GLenum dataType = _image->getDataType();
-        if (dataType==0) dataType =  _imageReadPixelDataType;
-        if (dataType==0) dataType = GL_UNSIGNED_BYTE;       
-        
-        _image->readPixels(_viewport->x(), _viewport->y(),
-                           _viewport->width(), _viewport->height(), 
-                           pixelFormat, dataType);
+             GLenum dataType = itr->second._image->getDataType();
+              if (dataType==0) dataType =  _imageReadPixelDataType;
+             if (dataType==0) dataType = GL_UNSIGNED_BYTE;       
 
-    }
+             itr->second._image->readPixels(_viewport->x(), _viewport->y(),
+                 _viewport->width(), _viewport->height(), 
+                 pixelFormat, dataType);
+
+         }
+     }
        
     
     if (fbo_supported)
@@ -1014,4 +1012,9 @@ bool RenderStage::getStats(Statistics& stats) const
         statsCollected = true;
     }
     return statsCollected;
+}
+
+void RenderStage::attach(osg::CameraNode::BufferComponent buffer, osg::Image* image)
+{
+    _bufferAttachmentMap[buffer]._image = image;
 }

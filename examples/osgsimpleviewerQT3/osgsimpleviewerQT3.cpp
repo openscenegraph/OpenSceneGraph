@@ -92,8 +92,10 @@ void GraphicsWindowQT::mouseMoveEvent( QMouseEvent* event )
 class SimpleViewerQT : public osgViewer::SimpleViewer, public GraphicsWindowQT
 {
     public:
-        SimpleViewerQT() {}
 
+        SimpleViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):
+            GraphicsWindowQT( parent, name, shareWidget, f )
+            {}
 
         virtual void initializeGL()
         {

@@ -200,7 +200,17 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         /** Extract stats for current draw list. */
         bool getStats(Statistics& stats) const; 
-        
+ 
+
+
+       struct Attachment
+        {
+            osg::ref_ptr<osg::Image>                _image;
+            GLenum                                  _imageReadPixelFormat;
+            GLenum                                  _imageReadPixelDataType;
+        };
+       
+        void attach(osg::CameraNode::BufferComponent buffer, osg::Image* image);
         
     protected:
         
@@ -235,6 +245,8 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         osg::ref_ptr<osg::Image>                _image;
         GLenum                                  _imageReadPixelFormat;
         GLenum                                  _imageReadPixelDataType;
+        
+        std::map< osg::CameraNode::BufferComponent, Attachment> _bufferAttachmentMap;
         
         osg::ref_ptr<osg::FrameBufferObject>    _fbo;
         osg::ref_ptr<osg::GraphicsContext>      _graphicsContext;

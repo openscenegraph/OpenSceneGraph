@@ -282,7 +282,7 @@ FrameBufferAttachment::FrameBufferAttachment(TextureRectangle* target)
     _ximpl->textureTarget = target;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment& attachment)
+FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
 {
     osg::Texture* texture = attachment._texture.get();
     
@@ -344,12 +344,12 @@ FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment& attachment)
         }
         else
         {
-            osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
+            osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
         }
         return;
     }
 
-    osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(CameraNode::Attachment&) passed an unrecognised Texture type."<<std::endl;
+    osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
 }
 
 

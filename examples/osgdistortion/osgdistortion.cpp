@@ -39,7 +39,7 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
    
     // set up the render to texture camera.
     {
-        osg::CameraNode* camera = new osg::CameraNode;
+        osg::Camera* camera = new osg::Camera;
 
         // set clear the color and depth buffer
         camera->setClearColor(clearColour);
@@ -54,13 +54,13 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         camera->setViewport(0,0,tex_width,tex_height);
 
         // set the camera to render before the main camera.
-        camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+        camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
 
         // add subgraph to render
         camera->addChild(subgraph);
@@ -145,7 +145,7 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         geode->addDrawable(polyGeom);
 
         // set up the camera to render the textured quad
-        osg::CameraNode* camera = new osg::CameraNode;
+        osg::Camera* camera = new osg::Camera;
 
         // just inherit the main cameras view
         camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
@@ -153,13 +153,13 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         camera->setProjectionMatrixAsOrtho2D(0,1280,0,1024);
 
         // set the camera to render before the main camera.
-        camera->setRenderOrder(osg::CameraNode::NESTED_RENDER);
+        camera->setRenderOrder(osg::Camera::NESTED_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
 
         // add subgraph to render
         camera->addChild(geode);

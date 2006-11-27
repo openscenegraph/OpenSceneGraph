@@ -28,7 +28,7 @@ void CURRENT_CLASS::init()
     _active = true;
     _numCameras = 0;
     setCullingActive(false);
-    _renderOrder = osg::CameraNode::POST_RENDER;
+    _renderOrder = osg::Camera::POST_RENDER;
     _clearColorBuffer = true;
 }
 
@@ -42,7 +42,7 @@ void CURRENT_CLASS::setClearColorBuffer(bool clear)
 {
     _clearColorBuffer = clear;
 
-    // Update the render order for the first CameraNode if it exists
+    // Update the render order for the first Camera if it exists
     if(!_cameraList.empty())
     {
       if(clear) 
@@ -52,11 +52,11 @@ void CURRENT_CLASS::setClearColorBuffer(bool clear)
     }
 }
 
-void CURRENT_CLASS::setRenderOrder(osg::CameraNode::RenderOrder order)
+void CURRENT_CLASS::setRenderOrder(osg::Camera::RenderOrder order)
 {
     _renderOrder = order;
 
-    // Update the render order for existing CameraNodes
+    // Update the render order for existing Cameras
     unsigned int numCameras = _cameraList.size();
     for(unsigned int i = 0; i < numCameras; i++)
     {
@@ -104,18 +104,18 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
       _children[i]->accept(*(_distAccumulator.get()));
     }
 
-    // Step 2: Compute the near and far distances for every CameraNode that
+    // Step 2: Compute the near and far distances for every Camera that
     // should be used to render the scene.
     _distAccumulator->computeCameraPairs();
 
-    // Step 3: Create the CameraNodes, and add them as children.
+    // Step 3: Create the Cameras, and add them as children.
     DistanceAccumulator::PairList& camPairs = _distAccumulator->getCameraPairs();
     _numCameras = camPairs.size(); // Get the number of cameras
 
-    // Create the CameraNodes, and add them as children.
+    // Create the Cameras, and add them as children.
     if(_numCameras > 0)
     {
-      osg::CameraNode *currCam;
+      osg::Camera *currCam;
       DistanceAccumulator::DistancePair currPair;
 
       for(i = 0; i < _numCameras; i++)
@@ -147,7 +147,7 @@ bool CURRENT_CLASS::insertChild(unsigned int index, osg::Node *child)
 {
     if(!Group::insertChild(index, child)) return false; // Insert child
 
-    // Insert child into each CameraNode
+    // Insert child into each Camera
     unsigned int totalCameras = _cameraList.size();
     for(unsigned int i = 0; i < totalCameras; i++)
     {
@@ -161,7 +161,7 @@ bool CURRENT_CLASS::removeChildren(unsigned int pos, unsigned int numRemove)
 {
     if(!Group::removeChildren(pos, numRemove)) return false; // Remove child
 
-    // Remove child from each CameraNode
+    // Remove child from each Camera
     unsigned int totalCameras = _cameraList.size();
     for(unsigned int i = 0; i < totalCameras; i++)
     {
@@ -174,7 +174,7 @@ bool CURRENT_CLASS::setChild(unsigned int i, osg::Node *node)
 {
     if(!Group::setChild(i, node)) return false; // Set child
 
-    // Set child for each CameraNode
+    // Set child for each Camera
     unsigned int totalCameras = _cameraList.size();
     for(unsigned int j = 0; j < totalCameras; j++)
     {
@@ -183,16 +183,16 @@ bool CURRENT_CLASS::setChild(unsigned int i, osg::Node *node)
     return true;
 }
 
-osg::CameraNode* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj, 
+osg::Camera* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj, 
                             double znear, double zfar, 
                             const unsigned int &camNum)
 {
     if(_cameraList.size() <= camNum) _cameraList.resize(camNum+1);
-    osg::CameraNode *camera = _cameraList[camNum].get();
+    osg::Camera *camera = _cameraList[camNum].get();
     
-    if(!camera) // Create a new CameraNode
+    if(!camera) // Create a new Camera
     {
-      camera = new osg::CameraNode;
+      camera = new osg::Camera;
       camera->setCullingActive(false);
       camera->setRenderOrder(_renderOrder);
       camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
@@ -206,7 +206,7 @@ osg::CameraNode* CURRENT_CLASS::createOrReuseCamera(const osg::Matrix& proj,
       else
         camera->setClearMask(GL_DEPTH_BUFFER_BIT);
 
-      // Add our children to the new CameraNode's children
+      // Add our children to the new Camera's children
       unsigned int numChildren = _children.size();
       for(unsigned int i = 0; i < numChildren; i++)
       {

@@ -1509,10 +1509,10 @@
 		006CE73809218D9400985402 /* Viewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE73209218D9300985402 /* Viewport.cpp */; };
 		006CE73909218D9400985402 /* Viewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 006CE73309218D9300985402 /* Viewport.h */; };
 		006CE73B09218DEE00985402 /* Scissor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE73A09218DEE00985402 /* Scissor.cpp */; };
-		006CE73E09218E2400985402 /* CameraNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE73C09218E2300985402 /* CameraNode.cpp */; };
+		006CE73E09218E2400985402 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE73C09218E2300985402 /* Camera.cpp */; };
 		006CE73F09218E2400985402 /* CameraView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE73D09218E2400985402 /* CameraView.cpp */; };
-		006CE74409218E6900985402 /* CameraNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE74009218E6800985402 /* CameraNode.cpp */; };
-		006CE74509218E6900985402 /* CameraNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 006CE74109218E6800985402 /* CameraNode.h */; };
+		006CE74409218E6900985402 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE74009218E6800985402 /* Camera.cpp */; };
+		006CE74509218E6900985402 /* Camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 006CE74109218E6800985402 /* Camera.h */; };
 		006CE74609218E6900985402 /* CameraView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE74209218E6800985402 /* CameraView.cpp */; };
 		006CE74709218E6900985402 /* CameraView.h in Headers */ = {isa = PBXBuildFile; fileRef = 006CE74309218E6900985402 /* CameraView.h */; };
 		006CE7FF092195B500985402 /* OverlayNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C5FA0919637300B255F2 /* OverlayNode.cpp */; };
@@ -1707,7 +1707,7 @@
 		0096C51309195DBF00B255F2 /* StateGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C51109195DBE00B255F2 /* StateGraph.cpp */; };
 		0096C51409195E3E00B255F2 /* PositionalStateContainer in Headers */ = {isa = PBXBuildFile; fileRef = 0096C50C09195D8B00B255F2 /* PositionalStateContainer */; settings = {ATTRIBUTES = (Public, ); }; };
 		0096C51509195E3E00B255F2 /* StateGraph in Headers */ = {isa = PBXBuildFile; fileRef = 0096C50D09195D8B00B255F2 /* StateGraph */; settings = {ATTRIBUTES = (Public, ); }; };
-		0096C54309195F3E00B255F2 /* CameraNode in Headers */ = {isa = PBXBuildFile; fileRef = 0096C51909195F1000B255F2 /* CameraNode */; settings = {ATTRIBUTES = (Public, ); }; };
+		0096C54309195F3E00B255F2 /* Camera in Headers */ = {isa = PBXBuildFile; fileRef = 0096C51909195F1000B255F2 /* Camera */; settings = {ATTRIBUTES = (Public, ); }; };
 		0096C54409195F3E00B255F2 /* CameraView in Headers */ = {isa = PBXBuildFile; fileRef = 0096C51A09195F1000B255F2 /* CameraView */; settings = {ATTRIBUTES = (Public, ); }; };
 		0096C54509195F3E00B255F2 /* FrameBufferObject in Headers */ = {isa = PBXBuildFile; fileRef = 0096C51B09195F1000B255F2 /* FrameBufferObject */; settings = {ATTRIBUTES = (Public, ); }; };
 		0096C54609195F3E00B255F2 /* GraphicsContext in Headers */ = {isa = PBXBuildFile; fileRef = 0096C51C09195F1000B255F2 /* GraphicsContext */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1721,7 +1721,7 @@
 		0096C54E09195F3E00B255F2 /* Vec4b in Headers */ = {isa = PBXBuildFile; fileRef = 0096C52409195F1200B255F2 /* Vec4b */; settings = {ATTRIBUTES = (Public, ); }; };
 		0096C54F09195F3E00B255F2 /* Vec4s in Headers */ = {isa = PBXBuildFile; fileRef = 0096C52509195F1300B255F2 /* Vec4s */; settings = {ATTRIBUTES = (Public, ); }; };
 		0096C55009195F3E00B255F2 /* Vec4ub in Headers */ = {isa = PBXBuildFile; fileRef = 0096C52609195F1300B255F2 /* Vec4ub */; settings = {ATTRIBUTES = (Public, ); }; };
-		0096C55A09195FE500B255F2 /* CameraNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C55309195FE300B255F2 /* CameraNode.cpp */; };
+		0096C55A09195FE500B255F2 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C55309195FE300B255F2 /* Camera.cpp */; };
 		0096C55B09195FE500B255F2 /* CameraView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C55409195FE300B255F2 /* CameraView.cpp */; };
 		0096C55C09195FE500B255F2 /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C55509195FE400B255F2 /* FrameBufferObject.cpp */; };
 		0096C55D09195FE500B255F2 /* GraphicsContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C55609195FE400B255F2 /* GraphicsContext.cpp */; };
@@ -5521,10 +5521,10 @@
 		006CE73209218D9300985402 /* Viewport.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = Viewport.cpp; sourceTree = "<group>"; };
 		006CE73309218D9300985402 /* Viewport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Viewport.h; sourceTree = "<group>"; };
 		006CE73A09218DEE00985402 /* Scissor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = Scissor.cpp; sourceTree = "<group>"; };
-		006CE73C09218E2300985402 /* CameraNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = CameraNode.cpp; sourceTree = "<group>"; };
+		006CE73C09218E2300985402 /* Camera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = Camera.cpp; sourceTree = "<group>"; };
 		006CE73D09218E2400985402 /* CameraView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = CameraView.cpp; sourceTree = "<group>"; };
-		006CE74009218E6800985402 /* CameraNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = CameraNode.cpp; sourceTree = "<group>"; };
-		006CE74109218E6800985402 /* CameraNode.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CameraNode.h; sourceTree = "<group>"; };
+		006CE74009218E6800985402 /* Camera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = Camera.cpp; sourceTree = "<group>"; };
+		006CE74109218E6800985402 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		006CE74209218E6800985402 /* CameraView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = CameraView.cpp; sourceTree = "<group>"; };
 		006CE74309218E6900985402 /* CameraView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CameraView.h; sourceTree = "<group>"; };
 		006CE90B0921A83D00985402 /* osgcamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgcamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -5651,7 +5651,7 @@
 		0096C50D09195D8B00B255F2 /* StateGraph */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = StateGraph; path = ../../include/osgUtil/StateGraph; sourceTree = SOURCE_ROOT; };
 		0096C51009195DBE00B255F2 /* PositionalStateContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PositionalStateContainer.cpp; path = ../../src/osgUtil/PositionalStateContainer.cpp; sourceTree = SOURCE_ROOT; };
 		0096C51109195DBE00B255F2 /* StateGraph.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateGraph.cpp; path = ../../src/osgUtil/StateGraph.cpp; sourceTree = SOURCE_ROOT; };
-		0096C51909195F1000B255F2 /* CameraNode */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = CameraNode; sourceTree = "<group>"; };
+		0096C51909195F1000B255F2 /* Camera */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Camera; sourceTree = "<group>"; };
 		0096C51A09195F1000B255F2 /* CameraView */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = CameraView; sourceTree = "<group>"; };
 		0096C51B09195F1000B255F2 /* FrameBufferObject */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = FrameBufferObject; sourceTree = "<group>"; };
 		0096C51C09195F1000B255F2 /* GraphicsContext */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = GraphicsContext; sourceTree = "<group>"; };
@@ -5665,7 +5665,7 @@
 		0096C52409195F1200B255F2 /* Vec4b */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Vec4b; sourceTree = "<group>"; };
 		0096C52509195F1300B255F2 /* Vec4s */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Vec4s; sourceTree = "<group>"; };
 		0096C52609195F1300B255F2 /* Vec4ub */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Vec4ub; sourceTree = "<group>"; };
-		0096C55309195FE300B255F2 /* CameraNode.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CameraNode.cpp; sourceTree = "<group>"; };
+		0096C55309195FE300B255F2 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		0096C55409195FE300B255F2 /* CameraView.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CameraView.cpp; sourceTree = "<group>"; };
 		0096C55509195FE400B255F2 /* FrameBufferObject.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferObject.cpp; sourceTree = "<group>"; };
 		0096C55609195FE400B255F2 /* GraphicsContext.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsContext.cpp; sourceTree = "<group>"; };
@@ -8780,7 +8780,7 @@
 				001D02A3065AACB6003310BF /* AnimationPath.cpp */,
 				001D02A4065AACB6003310BF /* Billboard.cpp */,
 				001D02A5065AACB6003310BF /* BlendFunc.cpp */,
-				006CE73C09218E2300985402 /* CameraNode.cpp */,
+				006CE73C09218E2300985402 /* Camera.cpp */,
 				006CE73D09218E2400985402 /* CameraView.cpp */,
 				001D02A6065AACB6003310BF /* ClearNode.cpp */,
 				0079500C09D36132003FC8A1 /* ClusterCullingCallback.cpp */,
@@ -8989,8 +8989,8 @@
 				0079500309D360F6003FC8A1 /* Depth.h */,
 				0079500409D360F7003FC8A1 /* TextureRectangle.cpp */,
 				0079500509D360F7003FC8A1 /* TextureRectangle.h */,
-				006CE74009218E6800985402 /* CameraNode.cpp */,
-				006CE74109218E6800985402 /* CameraNode.h */,
+				006CE74009218E6800985402 /* Camera.cpp */,
+				006CE74109218E6800985402 /* Camera.h */,
 				006CE74209218E6800985402 /* CameraView.cpp */,
 				006CE74309218E6900985402 /* CameraView.h */,
 				006CE72E09218D9200985402 /* PolygonMode.cpp */,
@@ -10833,7 +10833,7 @@
 				BE117FC105D63B8900EB53E5 /* BoundingBox.cpp */,
 				BE117FC205D63B8900EB53E5 /* BoundingSphere.cpp */,
 				009D9F99081D7216001FA987 /* BufferObject.cpp */,
-				0096C55309195FE300B255F2 /* CameraNode.cpp */,
+				0096C55309195FE300B255F2 /* Camera.cpp */,
 				0096C55409195FE300B255F2 /* CameraView.cpp */,
 				004E4CF00A51F17800EC8521 /* ClampColor.cpp */,
 				BE117FC305D63B8900EB53E5 /* ClearNode.cpp */,
@@ -10979,7 +10979,7 @@
 				BE1181F905D63C0900EB53E5 /* BoundsChecking */,
 				BE1181FA05D63C0900EB53E5 /* buffered_value */,
 				009D9F89081D717F001FA987 /* BufferObject */,
-				0096C51909195F1000B255F2 /* CameraNode */,
+				0096C51909195F1000B255F2 /* Camera */,
 				0096C51A09195F1000B255F2 /* CameraView */,
 				004E4CD70A51F12700EC8521 /* ClampColor */,
 				BE1181FB05D63C0900EB53E5 /* ClearNode */,
@@ -11818,7 +11818,7 @@
 				006CE73509218D9400985402 /* PolygonMode.h in Headers */,
 				006CE73709218D9400985402 /* Scissor.h in Headers */,
 				006CE73909218D9400985402 /* Viewport.h in Headers */,
-				006CE74509218E6900985402 /* CameraNode.h in Headers */,
+				006CE74509218E6900985402 /* Camera.h in Headers */,
 				006CE74709218E6900985402 /* CameraView.h in Headers */,
 				0079500709D360F7003FC8A1 /* AutoTransform.h in Headers */,
 				0079500909D360F7003FC8A1 /* Depth.h in Headers */,
@@ -12679,7 +12679,7 @@
 				BE11842C05D70D1800EB53E5 /* BoundsChecking in Headers */,
 				BE11842D05D70D1800EB53E5 /* buffered_value in Headers */,
 				009D9FB3081D7392001FA987 /* BufferObject in Headers */,
-				0096C54309195F3E00B255F2 /* CameraNode in Headers */,
+				0096C54309195F3E00B255F2 /* Camera in Headers */,
 				0096C54409195F3E00B255F2 /* CameraView in Headers */,
 				004E4CD80A51F12800EC8521 /* ClampColor in Headers */,
 				BE11842E05D70D1800EB53E5 /* ClearNode in Headers */,
@@ -17264,7 +17264,7 @@
 				00A14B36084D61B2000150AD /* Uniform.cpp in Sources */,
 				00A14B37084D61B2000150AD /* Viewport.cpp in Sources */,
 				006CE73B09218DEE00985402 /* Scissor.cpp in Sources */,
-				006CE73E09218E2400985402 /* CameraNode.cpp in Sources */,
+				006CE73E09218E2400985402 /* Camera.cpp in Sources */,
 				006CE73F09218E2400985402 /* CameraView.cpp in Sources */,
 				0079500D09D36132003FC8A1 /* ClusterCullingCallback.cpp in Sources */,
 			);
@@ -17453,7 +17453,7 @@
 				006CE73409218D9400985402 /* PolygonMode.cpp in Sources */,
 				006CE73609218D9400985402 /* Scissor.cpp in Sources */,
 				006CE73809218D9400985402 /* Viewport.cpp in Sources */,
-				006CE74409218E6900985402 /* CameraNode.cpp in Sources */,
+				006CE74409218E6900985402 /* Camera.cpp in Sources */,
 				006CE74609218E6900985402 /* CameraView.cpp in Sources */,
 				0079500609D360F7003FC8A1 /* AutoTransform.cpp in Sources */,
 				0079500809D360F7003FC8A1 /* Depth.cpp in Sources */,
@@ -18425,7 +18425,7 @@
 				009D9FA5081D7218001FA987 /* Shader.cpp in Sources */,
 				009D9FA6081D7218001FA987 /* StateAttribute.cpp in Sources */,
 				009D9FA7081D7218001FA987 /* Uniform.cpp in Sources */,
-				0096C55A09195FE500B255F2 /* CameraNode.cpp in Sources */,
+				0096C55A09195FE500B255F2 /* Camera.cpp in Sources */,
 				0096C55B09195FE500B255F2 /* CameraView.cpp in Sources */,
 				0096C55C09195FE500B255F2 /* FrameBufferObject.cpp in Sources */,
 				0096C55D09195FE500B255F2 /* GraphicsContext.cpp in Sources */,

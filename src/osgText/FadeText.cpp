@@ -401,11 +401,11 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
     osg::Matrix lmv = atc._matrix;
     lmv.postMult(state.getModelViewMatrix());
     
-    if (renderInfo.getView())
+    if (renderInfo.getView() && renderInfo.getView()->getCamera())
     {
         // move from camera into the view space.
         lmv.postMult(state.getInitialInverseViewMatrix());
-        lmv.postMult(renderInfo.getView()->getViewMatrix());
+        lmv.postMult(renderInfo.getView()->getCamera()->getViewMatrix());
     }
     
     FadeTextData ftd(const_cast<osgText::FadeText*>(this));

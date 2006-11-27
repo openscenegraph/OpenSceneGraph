@@ -15,7 +15,7 @@ CXXFILES =\
 	BoundingBox.cpp\
 	BoundingSphere.cpp\
 	BufferObject.cpp\
-	CameraNode.cpp\
+	Camera.cpp\
 	CameraView.cpp\
 	ClearNode.cpp\
 	ClipNode.cpp\

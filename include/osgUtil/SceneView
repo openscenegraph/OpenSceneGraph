@@ -21,7 +21,7 @@
 #include <osg/DisplaySettings>
 #include <osg/CollectOccludersVisitor>
 #include <osg/CullSettings>
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgUtil/CullVisitor>
 
@@ -56,13 +56,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         void setDefaults(unsigned int options = STANDARD_SETTINGS);
 
         /** Set the camera used to represent the camera view of this SceneView.*/
-        void setCamera(osg::CameraNode* camera);
+        void setCamera(osg::Camera* camera);
 
         /** Get the camera used to represent the camera view of this SceneView.*/
-        osg::CameraNode* getCamera() { return _camera.get(); }
+        osg::Camera* getCamera() { return _camera.get(); }
 
         /** Get the const camera used to represent the camera view of this SceneView.*/
-        const osg::CameraNode* getCamera() const { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
 
         /** Set the data to view. The data will typically be
          *  an osg::Scene but can be any osg::Node type.
@@ -500,7 +500,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSetting
         
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
         
-        osg::ref_ptr<osg::CameraNode>               _camera;
+        osg::ref_ptr<osg::Camera>               _camera;
         
         osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::Light>                    _light;

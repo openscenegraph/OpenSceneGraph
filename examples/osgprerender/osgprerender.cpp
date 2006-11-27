@@ -107,14 +107,14 @@ class MyGeometryCallback :
         
 };
 
-struct MyCameraPostDrawCallback : public osg::CameraNode::DrawCallback
+struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
 {
     MyCameraPostDrawCallback(osg::Image* image):
         _image(image)
     {
     }
 
-    virtual void operator () (const osg::CameraNode& /*camera*/) const
+    virtual void operator () (const osg::Camera& /*camera*/) const
     {
         if (_image && _image->getPixelFormat()==GL_RGBA && _image->getDataType()==GL_UNSIGNED_BYTE)
         {
@@ -177,7 +177,7 @@ struct MyCameraPostDrawCallback : public osg::CameraNode::DrawCallback
 };
 
 
-osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation, bool useImage, bool useTextureRectangle, bool useHDR)
+osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::Camera::RenderTargetImplementation renderImplementation, bool useImage, bool useTextureRectangle, bool useHDR)
 {
     if (!subgraph) return 0;
 
@@ -288,7 +288,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
 
     // then create the camera node to do the render to texture
     {    
-        osg::CameraNode* camera = new osg::CameraNode;
+        osg::Camera* camera = new osg::Camera;
 
         // set up the background color and clear mask.
         camera->setClearColor(osg::Vec4(0.1f,0.1f,0.3f,1.0f));
@@ -321,7 +321,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         camera->setViewport(0,0,tex_width,tex_height);
 
         // set the camera to render before the main camera.
-        camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+        camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderImplementation);
@@ -334,7 +334,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
             image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_FLOAT);
 
             // attach the image so its copied on each frame.
-            camera->attach(osg::CameraNode::COLOR_BUFFER, image);
+            camera->attach(osg::Camera::COLOR_BUFFER, image);
             
             camera->setPostDrawCallback(new MyCameraPostDrawCallback(image));
             
@@ -351,7 +351,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         else
         {
             // attach the texture and use it as the color buffer.
-            camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+            camera->attach(osg::Camera::COLOR_BUFFER, texture);
         }
 
 
@@ -404,13 +404,13 @@ int main( int argc, char **argv )
     while (arguments.read("--width", tex_width)) {}
     while (arguments.read("--height", tex_height)) {}
 
-    osg::CameraNode::RenderTargetImplementation renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT;
+    osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     
-    while (arguments.read("--fbo")) { renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT; }
-    while (arguments.read("--pbuffer")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER; }
-    while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER_RTT; }
-    while (arguments.read("--fb")) { renderImplementation = osg::CameraNode::FRAME_BUFFER; }
-    while (arguments.read("--window")) { renderImplementation = osg::CameraNode::SEPERATE_WINDOW; }
+    while (arguments.read("--fbo")) { renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT; }
+    while (arguments.read("--pbuffer")) { renderImplementation = osg::Camera::PIXEL_BUFFER; }
+    while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }
+    while (arguments.read("--fb")) { renderImplementation = osg::Camera::FRAME_BUFFER; }
+    while (arguments.read("--window")) { renderImplementation = osg::Camera::SEPERATE_WINDOW; }
 
     bool useImage = false;
     while (arguments.read("--image")) { useImage = true; }

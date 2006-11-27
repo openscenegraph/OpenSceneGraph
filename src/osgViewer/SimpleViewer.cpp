@@ -69,12 +69,12 @@ const osg::Node* SimpleViewer::getSceneData() const
     return _sceneView->getSceneData();
 }
 
-osg::CameraNode* SimpleViewer::getCamera()
+osg::Camera* SimpleViewer::getCamera()
 {
     return _sceneView->getCamera();
 }
 
-const osg::CameraNode* SimpleViewer::getCamera() const
+const osg::Camera* SimpleViewer::getCamera() const
 {
     return _sceneView->getCamera();
 }

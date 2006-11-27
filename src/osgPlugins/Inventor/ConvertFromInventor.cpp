@@ -287,11 +287,9 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
         textureMat.set((float *) action->getTextureMatrix().getValue());
 
         // Transform texture coordinates if texture matrix is not an identity mat
-        osg::Matrix identityMat;
-        identityMat.makeIdentity();
         osg::Vec2Array* texCoords 
             = new osg::Vec2Array(thisPtr->textureCoords.size());
-        if (textureMat == identityMat)
+        if (textureMat.isIdentity())
         {
             // Set the texture coordinates
             for (unsigned int i = 0; i < thisPtr->textureCoords.size(); i++)

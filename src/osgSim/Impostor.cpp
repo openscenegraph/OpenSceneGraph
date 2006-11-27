@@ -387,11 +387,11 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     Vec3 center_world = bs.center()*matrix;
 
     
-    osg::CameraNode* camera = impostorSprite->getCameraNode();
+    osg::Camera* camera = impostorSprite->getCamera();
     if (!camera)
     {
-        camera = new osg::CameraNode;
-        impostorSprite->setCameraNode(camera);
+        camera = new osg::Camera;
+        impostorSprite->setCamera(camera);
     }
 
     camera->setCullCallback(new ImpostorTraverseNodeCallback(this));
@@ -456,13 +456,13 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     camera->setViewport(0,0,new_s,new_t);
 
     // tell the camera to use OpenGL frame buffer object where supported.
-    camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT, osg::CameraNode::FRAME_BUFFER);
+    camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT, osg::Camera::FRAME_BUFFER);
 
     // set the camera to render before the main camera.
-    camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+    camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
     // attach the texture and use it as the color buffer.
-    camera->attach(osg::CameraNode::COLOR_BUFFER, texture);
+    camera->attach(osg::Camera::COLOR_BUFFER, texture);
 
     // do the cull traversal on the subgraph
     camera->accept(*cv);

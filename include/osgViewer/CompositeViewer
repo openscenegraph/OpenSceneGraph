@@ -1,0 +1,68 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_CompositeViewer
+#define OSGVIEWER_CompositeViewer 1
+
+#include <osgViewer/GraphicsWindow>
+#include <osgViewer/View>
+
+namespace osgViewer {
+
+// WARNING ** Under development do not use, yet :-) 
+
+/** CompsiteViewer holds a or more views to a one more scenes.*/
+class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
+{
+    public:
+
+        CompositeViewer();
+        virtual ~CompositeViewer();
+
+        void addView(osgViewer* view);
+        osgViewer* getView(unsigned i) { return _views[i].get(); }
+        const osgViewer* getView(unsigned i) const { return _views[i].get(); }
+        void getNumViews() const { return _views.size(); }
+
+        /** Render a complete new frame.
+          * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal().
+          * Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code.*/ 
+        virtual void frame();
+
+        virtual void frameAdvance();
+        virtual void frameEventTraversal();
+        virtual void frameUpdateTraversal();
+        virtual void frameCullTraversal();
+        virtual void frameDrawTraversal();
+
+        /** Release all OpenGL objects associated with this viewer's scenegraph. Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained.*/ 
+        virtual void releaseAllGLObjects();
+
+        /** Clean up all OpenGL objects associated with this viewer's scenegraph. Note, must only be called from the graphics context associated with this viewer.*/ 
+        virtual void cleanup();
+
+    public:
+
+        void init();
+
+    protected:
+
+        typedef std::vector< osg::ref_ptr<osg:Viewer:View> > Views;
+        Views _views;
+       
+};
+
+
+}
+
+#endif

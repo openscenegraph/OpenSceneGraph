@@ -121,6 +121,10 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	          __float__distance__C5_osg_Vec3_R1,
 	          "calculate the distance between a point and the plane. ",
 	          "");
+	I_Method1(float, dotProductNormal, IN, const osg::Vec3 &, v,
+	          __float__dotProductNormal__C5_osg_Vec3_R1,
+	          "calculate the dot product of the plane normal and a point. ",
+	          "");
 	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices,
 	          __int__intersect__C5_std_vectorT1_Vec3__R1,
 	          "intersection test between plane and vertex list return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ",

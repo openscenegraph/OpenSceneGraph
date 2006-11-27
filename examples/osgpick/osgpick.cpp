@@ -25,7 +25,7 @@
 #include <osg/Depth>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/io_utils>
 
 #include <osgText/Text>
@@ -116,11 +116,11 @@ osg::Node* createHUD(osgText::Text* updateText)
     // eg to be used as a menuing/help system!
     // Can pick texts too!
 
-    osg::CameraNode* hudCamera = new osg::CameraNode;
+    osg::Camera* hudCamera = new osg::Camera;
     hudCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     hudCamera->setProjectionMatrixAsOrtho2D(0,1280,0,1024);
     hudCamera->setViewMatrix(osg::Matrix::identity());
-    hudCamera->setRenderOrder(osg::CameraNode::POST_RENDER);
+    hudCamera->setRenderOrder(osg::Camera::POST_RENDER);
     hudCamera->setClearMask(GL_DEPTH_BUFFER_BIT);
     
     std::string timesFont("fonts/times.ttf");

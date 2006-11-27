@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/FrameBufferObject>
 #include <osg/Object>
@@ -113,8 +113,8 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	               ____FrameBufferAttachment__TextureRectangle_P1,
 	               "",
 	               "");
-	I_Constructor1(IN, osg::CameraNode::Attachment &, attachment,
-	               ____FrameBufferAttachment__CameraNode_Attachment_R1,
+	I_Constructor1(IN, osg::Camera::Attachment &, attachment,
+	               ____FrameBufferAttachment__Camera_Attachment_R1,
 	               "",
 	               "");
 	I_Method2(void, createRequiredTexturesAndApplyGenerateMipMap, IN, osg::State &, state, IN, const osg::FBOExtensions *, ext,

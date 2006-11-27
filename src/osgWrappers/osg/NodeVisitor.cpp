@@ -11,7 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/CameraView>
 #include <osg/ClearNode>
 #include <osg/ClipNode>
@@ -35,7 +35,6 @@
 #include <osg/TexGenNode>
 #include <osg/Transform>
 #include <osg/Vec3>
-#include <osg/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -221,12 +220,8 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	          __void__apply__Transform_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osg::View &, node,
-	          __void__apply__View_R1,
-	          "",
-	          "");
-	I_Method1(void, apply, IN, osg::CameraNode &, node,
-	          __void__apply__CameraNode_R1,
+	I_Method1(void, apply, IN, osg::Camera &, node,
+	          __void__apply__Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::CameraView &, node,

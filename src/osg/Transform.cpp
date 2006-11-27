@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Transform>
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osg/Notify>
 
@@ -30,13 +30,13 @@ class TransformVisitor : public NodeVisitor
 
         CoordMode       _coordMode;
         Matrix&         _matrix;
-        bool            _ignoreCameraNodes;
+        bool            _ignoreCameras;
 
-        TransformVisitor(Matrix& matrix,CoordMode coordMode, bool ignoreCameraNodes):
+        TransformVisitor(Matrix& matrix,CoordMode coordMode, bool ignoreCameras):
             NodeVisitor(),
             _coordMode(coordMode),
             _matrix(matrix),
-            _ignoreCameraNodes(ignoreCameraNodes)
+            _ignoreCameras(ignoreCameras)
             {}
 
         virtual void apply(Transform& transform)
@@ -56,9 +56,9 @@ class TransformVisitor : public NodeVisitor
             if (nodePath.empty()) return;
  
             unsigned int i = 0;
-            if (_ignoreCameraNodes)
+            if (_ignoreCameras)
             {
-                // we need to found out the last absolute CameraNode in NodePath and
+                // we need to found out the last absolute Camera in NodePath and
                 // set the i index to after it so the final accumulation set ignores it.
                 i = nodePath.size();
                 NodePath::const_reverse_iterator ritr;
@@ -66,7 +66,7 @@ class TransformVisitor : public NodeVisitor
                     ritr != nodePath.rend();
                     ++ritr, --i)
                 {
-                    const osg::CameraNode* camera = dynamic_cast<const osg::CameraNode*>(*ritr);
+                    const osg::Camera* camera = dynamic_cast<const osg::Camera*>(*ritr);
                     if (camera && 
                         (camera->getReferenceFrame()==osg::Transform::ABSOLUTE_RF || camera->getParents().empty()))
                     {
@@ -86,35 +86,35 @@ class TransformVisitor : public NodeVisitor
     
 };
 
-Matrix osg::computeLocalToWorld(const NodePath& nodePath, bool ignoreCameraNodes)
+Matrix osg::computeLocalToWorld(const NodePath& nodePath, bool ignoreCameras)
 {
     Matrix matrix;
-    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,ignoreCameraNodes);
+    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,ignoreCameras);
     tv.accumulate(nodePath);
     return matrix;
 }
 
-Matrix osg::computeWorldToLocal(const NodePath& nodePath, bool ignoreCameraNodes)
+Matrix osg::computeWorldToLocal(const NodePath& nodePath, bool ignoreCameras)
 {
     osg::Matrix matrix;
-    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,ignoreCameraNodes);
+    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,ignoreCameras);
     tv.accumulate(nodePath);
     return matrix;
 }
 
-Matrix osg::computeLocalToEye(const Matrix& modelview,const NodePath& nodePath, bool ignoreCameraNodes)
+Matrix osg::computeLocalToEye(const Matrix& modelview,const NodePath& nodePath, bool ignoreCameras)
 {
     Matrix matrix(modelview);
-    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,ignoreCameraNodes);
+    TransformVisitor tv(matrix,TransformVisitor::LOCAL_TO_WORLD,ignoreCameras);
     tv.accumulate(nodePath);
     return matrix;
 }
 
-Matrix osg::computeEyeToLocal(const Matrix& modelview,const NodePath& nodePath, bool ignoreCameraNodes)
+Matrix osg::computeEyeToLocal(const Matrix& modelview,const NodePath& nodePath, bool ignoreCameras)
 {
     Matrix matrix;
     matrix.invert(modelview);
-    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,ignoreCameraNodes);
+    TransformVisitor tv(matrix,TransformVisitor::WORLD_TO_LOCAL,ignoreCameras);
     tv.accumulate(nodePath);
     return matrix;
 }

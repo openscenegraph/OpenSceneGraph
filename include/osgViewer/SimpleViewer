@@ -42,8 +42,8 @@ class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
         const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
 
 
-        osg::CameraNode* getCamera();
-        const osg::CameraNode* getCamera() const;
+        osg::Camera* getCamera();
+        const osg::Camera* getCamera() const;
 
         void setCameraManipulator(osgGA::MatrixManipulator* manipulator);
         osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }

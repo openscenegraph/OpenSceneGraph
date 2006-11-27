@@ -148,7 +148,7 @@ void daeWriter::apply( osg::LightSource &node )
 }
 
 //CAMERA
-void daeWriter::apply( osg::CameraNode &node )
+void daeWriter::apply( osg::Camera &node )
 {
 #ifdef _DEBUG
     debugPrint( node );

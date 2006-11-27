@@ -181,7 +181,7 @@ int main( int argc, char **argv )
     osgUtil::UpdateVisitor updateVisitor;
     updateVisitor.setFrameStamp(frameStamp.get());
     
-    typedef std::list< osg::ref_ptr<osg::CameraNode> > CameraList;
+    typedef std::list< osg::ref_ptr<osg::Camera> > CameraList;
     typedef std::set< osg::GraphicsContext* > GraphicsContextSet;
 
     CameraList cameraList;
@@ -192,7 +192,7 @@ int main( int argc, char **argv )
     osg::GraphicsContext* previousContext = 0;
     for(unsigned int i=0; i< numberCameras; ++i)
     {
-        osg::ref_ptr<osg::CameraNode> camera = new osg::CameraNode;
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->addChild(loadedModel.get());
 
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
@@ -284,7 +284,7 @@ int main( int argc, char **argv )
         citr != cameraList.end();
         ++citr)
     {
-        osg::CameraNode* camera = citr->get();
+        osg::Camera* camera = citr->get();
         osg::GraphicsThread* graphicsThread = camera->getGraphicsContext()->getGraphicsThread();
         
         // create a scene view to do the cull and draw

@@ -13,7 +13,7 @@
 #include <osg/AnimationPath>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/CameraView>
 #include <osg/io_utils>
 
@@ -156,7 +156,7 @@ class AnimationPathCallbackVisitor : public NodeVisitor
             _pivotPoint(pivotPoint),
             _useInverseMatrix(useInverseMatrix) {}
 
-        virtual void apply(CameraNode& camera)
+        virtual void apply(Camera& camera)
         {
             Matrix matrix;
             if (_useInverseMatrix)

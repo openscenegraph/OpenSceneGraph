@@ -68,7 +68,7 @@ void OverlayNode::init()
     if (!_camera)
     {
         // create the camera
-        _camera = new osg::CameraNode;
+        _camera = new osg::Camera;
          
         _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
@@ -76,13 +76,13 @@ void OverlayNode::init()
         _camera->setViewport(0,0,tex_width,tex_height);
 
         // set the camera to render before the main camera.
-        _camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+        _camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        _camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
-        _camera->attach(osg::CameraNode::COLOR_BUFFER, _texture.get());
+        _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
     }
 
     if (!_texgenNode) _texgenNode = new osg::TexGenNode;
@@ -122,7 +122,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
                     csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
                 }
 
-                _camera->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
+                _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
 
                 if (csn)
                 {

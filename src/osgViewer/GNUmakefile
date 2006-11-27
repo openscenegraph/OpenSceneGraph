@@ -4,6 +4,8 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES = \
 	SimpleViewer.cpp\
+	Scene.cpp\
+	View.cpp\
 	Version.cpp\
 
 DEF     += -DOSGVIEWER_LIBRARY

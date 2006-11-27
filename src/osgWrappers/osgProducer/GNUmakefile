@@ -10,7 +10,7 @@ CXXFILES =\
 	Viewer.cpp\
 	ViewerEventHandler.cpp\
 
-LIBS   += -losgProducer -losg -losgIntrospection -losgUtil -losgGA -losgDB -lProducer -losgGA -losgText  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgProducer -losg -losgIntrospection -losgUtil -losgDB -lProducer -losgGA -losgText  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

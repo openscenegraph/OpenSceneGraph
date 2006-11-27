@@ -16,7 +16,9 @@
 #include <osg/Matrix>
 #include <osg/Node>
 #include <osg/Object>
+#include <osg/Polytope>
 #include <osg/RenderInfo>
+#include <osg/Vec4>
 #include <osgShadow/OccluderGeometry>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -30,8 +32,6 @@
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::OccluderGeometry::Vec3List);
 
 TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::OccluderGeometry::UIntList);
-
-TYPE_NAME_ALIAS(std::vector< osgShadow::OccluderGeometry::Edge >, osgShadow::OccluderGeometry::EdgeList);
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	I_BaseType(osg::Drawable);
@@ -70,6 +70,22 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	                      __void__computeOccluderGeometry__osg_Drawable_P1__osg_Matrix_P1__float,
 	                      "Compute an occluder geometry containing the geometry in specified drawable. ",
 	                      "");
+	I_Method2(void, comptueShadowVolumeGeometry, IN, const osg::Vec4 &, lightpos, IN, osgShadow::ShadowVolumeGeometry &, svg,
+	          __void__comptueShadowVolumeGeometry__C5_osg_Vec4_R1__ShadowVolumeGeometry_R1,
+	          "Compute ShadowVolumeGeometry. ",
+	          "");
+	I_Method1(void, setBoundingPolytope, IN, const osg::Polytope &, polytope,
+	          __void__setBoundingPolytope__C5_osg_Polytope_R1,
+	          "Set the bounding polytope of the OccluderGeometry. ",
+	          "");
+	I_Method0(osg::Polytope &, getBoundingPolytope,
+	          __osg_Polytope_R1__getBoundingPolytope,
+	          "Get the bounding polytope of the OccluderGeometry. ",
+	          "");
+	I_Method0(const osg::Polytope &, getBoundingPolytope,
+	          __C5_osg_Polytope_R1__getBoundingPolytope,
+	          "Get the const bounding polytope of the OccluderGeometry. ",
+	          "");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "Render the occluder geometry. ",
@@ -78,23 +94,87 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	          __osg_BoundingBox__computeBound,
 	          "Compute the bounding box around occluder geometry. ",
 	          "");
+	I_MethodWithDefaults3(void, processGeometry, IN, osg::Drawable *, drawable, , IN, osg::Matrix *, matrix, 0, IN, float, sampleRatio, 1.0f,
+	                      __void__processGeometry__osg_Drawable_P1__osg_Matrix_P1__float,
+	                      "",
+	                      "");
+	I_SimpleProperty(const osg::Polytope &, BoundingPolytope, 
+	                 __C5_osg_Polytope_R1__getBoundingPolytope, 
+	                 __void__setBoundingPolytope__C5_osg_Polytope_R1);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgShadow::OccluderGeometry::Edge)
-	I_Constructor0(____Edge,
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::ShadowVolumeGeometry::Vec3List);
+
+TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::ShadowVolumeGeometry::UIntList);
+
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
+	I_BaseType(osg::Drawable);
+	I_Constructor0(____ShadowVolumeGeometry,
 	               "",
 	               "");
-	I_Constructor4(IN, unsigned int, p1, IN, unsigned int, p2, IN, unsigned int, t1, IN, unsigned int, t2,
-	               ____Edge__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
-	               "",
-	               "");
-	I_PublicMemberProperty(unsigned int, _p1);
-	I_PublicMemberProperty(unsigned int, _p2);
-	I_PublicMemberProperty(unsigned int, _t1);
-	I_PublicMemberProperty(unsigned int, _t2);
+	I_ConstructorWithDefaults2(IN, const osgShadow::ShadowVolumeGeometry &, oc, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ShadowVolumeGeometry__C5_ShadowVolumeGeometry_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setVertices, IN, const osgShadow::ShadowVolumeGeometry::Vec3List &, vertices,
+	          __void__setVertices__C5_Vec3List_R1,
+	          "",
+	          "");
+	I_Method0(osgShadow::ShadowVolumeGeometry::Vec3List &, getVertices,
+	          __Vec3List_R1__getVertices,
+	          "",
+	          "");
+	I_Method0(const osgShadow::ShadowVolumeGeometry::Vec3List &, getVertices,
+	          __C5_Vec3List_R1__getVertices,
+	          "",
+	          "");
+	I_Method1(void, setNormals, IN, const osgShadow::ShadowVolumeGeometry::Vec3List &, normals,
+	          __void__setNormals__C5_Vec3List_R1,
+	          "",
+	          "");
+	I_Method0(osgShadow::ShadowVolumeGeometry::Vec3List &, getNormals,
+	          __Vec3List_R1__getNormals,
+	          "",
+	          "");
+	I_Method0(const osgShadow::ShadowVolumeGeometry::Vec3List &, getNormals,
+	          __C5_Vec3List_R1__getNormals,
+	          "",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
+	          __void__drawImplementation__osg_RenderInfo_R1,
+	          "Render the occluder geometry. ",
+	          "");
+	I_Method0(osg::BoundingBox, computeBound,
+	          __osg_BoundingBox__computeBound,
+	          "Compute the bounding box around occluder geometry. ",
+	          "");
+	I_SimpleProperty(const osgShadow::ShadowVolumeGeometry::Vec3List &, Normals, 
+	                 __C5_Vec3List_R1__getNormals, 
+	                 __void__setNormals__C5_Vec3List_R1);
+	I_SimpleProperty(const osgShadow::ShadowVolumeGeometry::Vec3List &, Vertices, 
+	                 __C5_Vec3List_R1__getVertices, 
+	                 __void__setVertices__C5_Vec3List_R1);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< GLuint >);
-
-STD_VECTOR_REFLECTOR(std::vector< osgShadow::OccluderGeometry::Edge >);
 

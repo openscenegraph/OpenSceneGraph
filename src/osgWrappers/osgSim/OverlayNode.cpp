@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
@@ -119,16 +119,16 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          __unsigned_int__getOverlayTextureSizeHint,
 	          "Get the texture size hint. ",
 	          "");
-	I_Method0(osg::CameraNode *, getCamera,
-	          __osg_CameraNode_P1__getCamera,
+	I_Method0(osg::Camera *, getCamera,
+	          __osg_Camera_P1__getCamera,
 	          "Get the camera used to implement the render to texture of the overlay subgraph. ",
 	          "");
-	I_Method0(const osg::CameraNode *, getCamera,
-	          __C5_osg_CameraNode_P1__getCamera,
+	I_Method0(const osg::Camera *, getCamera,
+	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const camera used to implement the render to texture of the overlay subgraph. ",
 	          "");
-	I_SimpleProperty(osg::CameraNode *, Camera, 
-	                 __osg_CameraNode_P1__getCamera, 
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
 	                 0);
 	I_SimpleProperty(bool, ContinuousUpdate, 
 	                 __bool__getContinuousUpdate, 

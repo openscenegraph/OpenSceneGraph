@@ -50,7 +50,7 @@
 
 #include "Group.h"
 #include "MatrixTransform.h"
-#include "CameraNode.h"
+#include "Camera.h"
 #include "CameraView.h"
 #include "Geode.h"
 #include "LightSource.h"
@@ -1207,9 +1207,9 @@ osg::Node* DataInputStream::readNode()
         node = new osg::MatrixTransform();
         ((ive::MatrixTransform*)(node))->read(this);
     }
-    else if(nodeTypeID== IVECAMERANODE){
-        node = new osg::CameraNode();
-        ((ive::CameraNode*)(node))->read(this);
+    else if(nodeTypeID== IVECAMERA){
+        node = new osg::Camera();
+        ((ive::Camera*)(node))->read(this);
     }
     else if(nodeTypeID== IVECAMERAVIEW){
         node = new osg::CameraView();

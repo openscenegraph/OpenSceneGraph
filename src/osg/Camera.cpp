@@ -10,12 +10,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Notify>
 
 using namespace osg;
 
-CameraNode::CameraNode():
+Camera::Camera():
     _view(0),
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
     _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
@@ -30,7 +30,7 @@ CameraNode::CameraNode():
     setStateSet(new StateSet);
 }
 
-CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
+Camera::Camera(const Camera& camera,const CopyOp& copyop):
     Transform(camera,copyop),
     CullSettings(camera),
     _view(camera._view),
@@ -53,23 +53,23 @@ CameraNode::CameraNode(const CameraNode& camera,const CopyOp& copyop):
 }
 
 
-CameraNode::~CameraNode()
+Camera::~Camera()
 {
 }
 
-bool CameraNode::isRenderToTextureCamera() const
+bool Camera::isRenderToTextureCamera() const
 {
     return (!_bufferAttachmentMap.empty());
 }
 
-void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl)
+void Camera::setRenderTargetImplementation(RenderTargetImplementation impl)
 {
     _renderTargetImplementation = impl;
     if (impl<FRAME_BUFFER) _renderTargetFallback = (RenderTargetImplementation)(impl+1);
     else _renderTargetFallback = impl;
 }   
 
-void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback)
+void Camera::setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback)
 {
     if (impl<fallback || (impl==FRAME_BUFFER && fallback==FRAME_BUFFER))
     {
@@ -78,12 +78,12 @@ void CameraNode::setRenderTargetImplementation(RenderTargetImplementation impl, 
     }
     else 
     {
-        osg::notify(osg::NOTICE)<<"Warning: CameraNode::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Warning: Camera::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
         setRenderTargetImplementation(impl);
     }
 }
 
-void CameraNode::setColorMask(osg::ColorMask* colorMask)
+void Camera::setColorMask(osg::ColorMask* colorMask)
 {
     if (_colorMask == colorMask) return;
 
@@ -101,13 +101,13 @@ void CameraNode::setColorMask(osg::ColorMask* colorMask)
     }
 }
 
-void CameraNode::setColorMask(bool red, bool green, bool blue, bool alpha)
+void Camera::setColorMask(bool red, bool green, bool blue, bool alpha)
 {
     if (!_colorMask) setColorMask(new osg::ColorMask);
     if (_colorMask.valid()) _colorMask->setMask(red,green,blue,alpha);
 }
 
-void CameraNode::setViewport(osg::Viewport* viewport)
+void Camera::setViewport(osg::Viewport* viewport)
 {
     if (_viewport == viewport) return;
 
@@ -125,19 +125,19 @@ void CameraNode::setViewport(osg::Viewport* viewport)
     }
 }
 
-void CameraNode::setViewport(int x,int y,int width,int height)
+void Camera::setViewport(int x,int y,int width,int height)
 {
     if (!_viewport) setViewport(new osg::Viewport);
     if (_viewport.valid()) _viewport->setViewport(x,y,width,height);
 }
 
-Matrixd CameraNode::getInverseViewMatrix() const
+Matrixd Camera::getInverseViewMatrix() const
 {
     Matrixd inverse;
     inverse.invert(_viewMatrix);
     return inverse;
 }
-void CameraNode::setProjectionMatrixAsOrtho(double left, double right,
+void Camera::setProjectionMatrixAsOrtho(double left, double right,
                                            double bottom, double top,
                                            double zNear, double zFar)
 {
@@ -146,14 +146,14 @@ void CameraNode::setProjectionMatrixAsOrtho(double left, double right,
                                            zNear, zFar));
 }                                           
 
-void CameraNode::setProjectionMatrixAsOrtho2D(double left, double right,
+void Camera::setProjectionMatrixAsOrtho2D(double left, double right,
                                              double bottom, double top)
 {
     setProjectionMatrix(osg::Matrixd::ortho2D(left, right,
                                              bottom, top));
 }
 
-void CameraNode::setProjectionMatrixAsFrustum(double left, double right,
+void Camera::setProjectionMatrixAsFrustum(double left, double right,
                                              double bottom, double top,
                                              double zNear, double zFar)
 {
@@ -162,14 +162,14 @@ void CameraNode::setProjectionMatrixAsFrustum(double left, double right,
                                              zNear, zFar));
 }
 
-void CameraNode::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
+void Camera::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
                                                  double zNear, double zFar)
 {
     setProjectionMatrix(osg::Matrixd::perspective(fovy,aspectRatio,
                                                  zNear, zFar));
 }                                      
 
-bool CameraNode::getProjectionMatrixAsOrtho(double& left, double& right,
+bool Camera::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
                                            double& zNear, double& zFar)
 {
@@ -178,7 +178,7 @@ bool CameraNode::getProjectionMatrixAsOrtho(double& left, double& right,
                                        zNear, zFar);
 }
 
-bool CameraNode::getProjectionMatrixAsFrustum(double& left, double& right,
+bool Camera::getProjectionMatrixAsFrustum(double& left, double& right,
                                              double& bottom, double& top,
                                              double& zNear, double& zFar)
 {
@@ -187,29 +187,29 @@ bool CameraNode::getProjectionMatrixAsFrustum(double& left, double& right,
                                          zNear, zFar);
 }                                  
 
-bool CameraNode::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
+bool Camera::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
                                                  double& zNear, double& zFar)
 {
     return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
 }                                                 
 
-void CameraNode::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+void Camera::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
 {
     setViewMatrix(osg::Matrixd::lookAt(eye,center,up));
 }
 
-void CameraNode::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+void Camera::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
 {
     _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }
 
 
-void CameraNode::attach(BufferComponent buffer, GLenum internalFormat)
+void Camera::attach(BufferComponent buffer, GLenum internalFormat)
 {
     _bufferAttachmentMap[buffer]._internalFormat = internalFormat;
 }
 
-void CameraNode::attach(BufferComponent buffer, osg::Texture* texture, unsigned int level, unsigned int face, bool mipMapGeneration)
+void Camera::attach(BufferComponent buffer, osg::Texture* texture, unsigned int level, unsigned int face, bool mipMapGeneration)
 {
     _bufferAttachmentMap[buffer]._texture = texture;
     _bufferAttachmentMap[buffer]._level = level;
@@ -217,26 +217,26 @@ void CameraNode::attach(BufferComponent buffer, osg::Texture* texture, unsigned 
     _bufferAttachmentMap[buffer]._mipMapGeneration = mipMapGeneration;
 }
 
-void CameraNode::attach(BufferComponent buffer, osg::Image* image)
+void Camera::attach(BufferComponent buffer, osg::Image* image)
 {
     _bufferAttachmentMap[buffer]._image = image;
 }
 
-void CameraNode::detach(BufferComponent buffer)
+void Camera::detach(BufferComponent buffer)
 {
     _bufferAttachmentMap.erase(buffer);
 }
 
-void CameraNode::releaseGLObjects(osg::State* state) const
+void Camera::releaseGLObjects(osg::State* state) const
 {
-    if (state) const_cast<CameraNode*>(this)->_renderingCache[state->getContextID()] = 0;
-    else const_cast<CameraNode*>(this)->_renderingCache.setAllElementsTo(0);
+    if (state) const_cast<Camera*>(this)->_renderingCache[state->getContextID()] = 0;
+    else const_cast<Camera*>(this)->_renderingCache.setAllElementsTo(0);
     
     Transform::releaseGLObjects(state);
 }
 
 
-bool CameraNode::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
+bool Camera::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_referenceFrame==RELATIVE_RF)
     {
@@ -256,7 +256,7 @@ bool CameraNode::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
     return true;
 }
 
-bool CameraNode::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
+bool Camera::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
     const Matrixd& inverse = getInverseViewMatrix();
 

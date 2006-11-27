@@ -14,7 +14,7 @@
 #ifndef OSGSHADOW_SHADOWEDTEXTURE
 #define OSGSHADOW_SHADOWEDTEXTURE 1
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgShadow/ShadowTechnique>
 

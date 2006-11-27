@@ -21,7 +21,7 @@
 #include <osg/Depth>
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgText/Text>
 
@@ -69,7 +69,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("Then place an osg::CameraNode above the subgraph\n"
+        text->setText("Then place an osg::Camera above the subgraph\n"
                       "to create an orthographic projection.\n");
         
         position += delta;
@@ -81,7 +81,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("Set the CameraNode's ReferenceFrame to ABSOLUTE_RF to ensure\n"
+        text->setText("Set the Camera's ReferenceFrame to ABSOLUTE_RF to ensure\n"
                       "it remains independent from any external model view matrices.");
         
         position += delta;
@@ -93,7 +93,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("And set the CameraNode's clear mask to just clear the depth buffer.");
+        text->setText("And set the Camera's clear mask to just clear the depth buffer.");
         
         position += delta;
     }    
@@ -104,7 +104,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("And finally set the CameraNode's RenderOrder to POST_RENDER\n"
+        text->setText("And finally set the Camera's RenderOrder to POST_RENDER\n"
                       "to make sure its drawn last.");
         
         position += delta;
@@ -148,7 +148,7 @@ osg::Node* createHUD()
         geode->addDrawable(geom);
     }
 
-    osg::CameraNode* camera = new osg::CameraNode;
+    osg::Camera* camera = new osg::Camera;
 
     // set the projection matrix
     camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
@@ -161,7 +161,7 @@ osg::Node* createHUD()
     camera->setClearMask(GL_DEPTH_BUFFER_BIT);
 
     // draw subgraph after main camera view.
-    camera->setRenderOrder(osg::CameraNode::POST_RENDER);
+    camera->setRenderOrder(osg::Camera::POST_RENDER);
 
     camera->addChild(geode);
     

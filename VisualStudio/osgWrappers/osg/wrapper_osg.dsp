@@ -148,7 +148,7 @@ SOURCE=..\..\..\src\osgWrappers\osg\BufferObject.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\CameraNode.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\Camera.cpp
 # End Source File
 
 # Begin Source File

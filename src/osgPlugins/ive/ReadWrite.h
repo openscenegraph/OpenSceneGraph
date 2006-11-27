@@ -34,7 +34,7 @@ namespace ive {
 #define IVETEXGENNODE                   0x00000025
 #define IVECLIPNODE                     0x00000026
 #define IVEPROXYNODE                    0x00000027
-#define IVECAMERANODE                   0x00000028
+#define IVECAMERA                       0x00000028
 #define IVECAMERAVIEW                   0x00000029
 #define IVEAUTOTRANSFORM                0x00000030
 

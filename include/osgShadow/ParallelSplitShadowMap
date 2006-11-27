@@ -14,7 +14,7 @@
 #ifndef OSGSHADOW_PARALLELSPLITSHADOWMAP
 #define OSGSHADOW_PARALLELSPLITSHADOWMAP 1
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgShadow/ShadowTechnique>
 

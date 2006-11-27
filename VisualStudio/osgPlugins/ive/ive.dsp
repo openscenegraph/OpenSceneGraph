@@ -193,7 +193,7 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\CameraNode.cpp
+SOURCE=..\..\..\src\osgPlugins\ive\Camera.cpp
 # End Source File
 # Begin Source File
 
@@ -553,7 +553,7 @@ SOURCE=..\..\..\src\osgPlugins\ive\BlinkSequence.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ive\CameraNode.h
+SOURCE=..\..\..\src\osgPlugins\ive\Camera.h
 # End Source File
 # Begin Source File
 

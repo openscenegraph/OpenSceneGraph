@@ -155,7 +155,18 @@ struct DDSURFACEDESC2
     DDPIXELFORMAT ddpfPixelFormat;         
     DDSCAPS2      ddsCaps;                 
     UI32 dwTextureStage;          
-}; 
+};
+
+//
+// Structure of a DXT-1 compressed texture block
+// see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/directx9_c/Opaque_and_1_Bit_Alpha_Textures.asp
+//
+struct DXT1TexelsBlock
+{
+    unsigned short color_0;     // colors at their
+    unsigned short color_1;     // extreme
+    unsigned int   texels4x4;   // interpolated colors (2 bits per texel)
+};
 
 //
 // DDSURFACEDESC2 flags that mark the validity of the struct data
@@ -259,6 +270,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // while compressed formats will use DDPF_FOURCC with a four-character code.
     
     bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
+    bool checkIfUsingOneBitAlpha = false;
 
     // Uncompressed formats.
     if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
@@ -304,6 +316,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             {
                 internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+                checkIfUsingOneBitAlpha = true;
             }
             break;
         case FOURCC_DXT3:
@@ -431,13 +444,29 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // Read image data
     _istream.read((char*)imageData, size);
 
+    // Check if alpha information embedded in the 8-byte encoding blocks
+    if (checkIfUsingOneBitAlpha)
+    {
+        const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
+
+        // Only do the check on the first mipmap level
+        unsigned int numBlocks = mipmaps.size()>0 ? mipmaps[0] / 8 : size / 8;
+
+        for (int i=numBlocks; i>0; --i, ++texelsBlock)
+        {
+            if (texelsBlock->color_0<=texelsBlock->color_1)
+            {
+                // Texture is using the 1-bit alpha encoding, so we need to update the assumed pixel format
+                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                break;
+            }
+        }
+    }
+
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
     if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
- 
-
-
-
-        
+         
     // Return Image.
     return osgImage.release();
 }

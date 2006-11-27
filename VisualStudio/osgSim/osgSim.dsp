@@ -167,6 +167,10 @@ SOURCE=..\..\src\osgSim\DOFTransform.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgSim\ElevationSlice.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgSim\HeightAboveTerrain.cpp
 # End Source File
 # Begin Source File
@@ -260,6 +264,10 @@ SOURCE=..\..\include\osgSim\Export
 # Begin Source File
 
 SOURCE=..\..\include\osgSim\HeightAboveTerrain
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgSim\ElevationSlice
 # End Source File
 # Begin Source File
 

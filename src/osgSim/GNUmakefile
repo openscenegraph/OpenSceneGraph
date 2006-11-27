@@ -15,6 +15,7 @@ CXXFILES = \
 	LightPointNode.cpp\
 	LineOfSight.cpp\
 	HeightAboveTerrain.cpp\
+	ElevationSlice.cpp\
 	MultiSwitch.cpp\
 	OverlayNode.cpp\
 	OpenFlightOptimizer.cpp\

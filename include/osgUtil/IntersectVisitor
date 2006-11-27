@@ -213,7 +213,7 @@ class OSGUTIL_EXPORT PickVisitor : public osgUtil::IntersectVisitor
 
         void apply(osg::Projection& projection);
 
-        void apply(osg::CameraNode& camera);
+        void apply(osg::Camera& camera);
 
     protected:
         

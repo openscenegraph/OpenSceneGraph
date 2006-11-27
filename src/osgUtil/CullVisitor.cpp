@@ -1065,7 +1065,7 @@ void CullVisitor::apply(osg::ClearNode& node)
 
 }
 
-void CullVisitor::apply(osg::CameraNode& camera)
+void CullVisitor::apply(osg::Camera& camera)
 {
     // push the node's state.
     StateSet* node_state = camera.getStateSet();
@@ -1074,7 +1074,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
     // Save current cull settings
     CullSettings saved_cull_settings(*this);
 
-    // activate all active cull settings from this CameraNode
+    // activate all active cull settings from this Camera
     inheritCullSettings(camera);
 
     RefMatrix& originalModelView = getModelViewMatrix();
@@ -1084,7 +1084,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()));
         pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()));
     }
-    else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLY)
+    else if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
     {
         pushProjectionMatrix(createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix()));
         pushModelViewMatrix(createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix()));
@@ -1096,7 +1096,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
     }
 
 
-    if (camera.getRenderOrder()==osg::CameraNode::NESTED_RENDER)
+    if (camera.getRenderOrder()==osg::Camera::NESTED_RENDER)
     {
         handle_cull_callbacks_and_traverse(camera);
     }
@@ -1117,7 +1117,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(camera.getDataChangeMutex()));
         
             rtts = new osgUtil::RenderStage;
-            rtts->setCameraNode(&camera);
+            rtts->setCamera(&camera);
 
             if (camera.getDrawBuffer() != GL_NONE)
             {
@@ -1203,7 +1203,7 @@ void CullVisitor::apply(osg::CameraNode& camera)
         // dependancy list.
         switch(camera.getRenderOrder())
         {
-            case osg::CameraNode::PRE_RENDER:
+            case osg::Camera::PRE_RENDER:
                 getCurrentRenderBin()->getStage()->addPreRenderStage(rtts.get(),camera.getRenderOrderNum());
                 break;
             default:

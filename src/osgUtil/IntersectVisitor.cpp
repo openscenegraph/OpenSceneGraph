@@ -19,7 +19,7 @@
 #include <osg/TriangleFunctor>
 #include <osg/Geometry>
 #include <osg/Projection>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/io_utils>
 
 #include <float.h>
@@ -800,11 +800,11 @@ void PickVisitor::apply(osg::Projection& projection)
                           _mx, _my );
 }
 
-void PickVisitor::apply(osg::CameraNode& camera)
+void PickVisitor::apply(osg::Camera& camera)
 {
     if (!camera.isRenderToTextureCamera())
     {
-        if (camera.getReferenceFrame()==osg::CameraNode::ABSOLUTE_RF)
+        if (camera.getReferenceFrame()==osg::Camera::ABSOLUTE_RF)
         {
             runNestedPickVisitor( camera,
                                   camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
@@ -812,7 +812,7 @@ void PickVisitor::apply(osg::CameraNode& camera)
                                   camera.getViewMatrix(),
                                   _mx, _my );
         }
-        else if (camera.getTransformOrder()==osg::CameraNode::POST_MULTIPLY)
+        else if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
         {
             runNestedPickVisitor( camera,
                                   camera.getViewport() ? camera.getViewport() : _lastViewport.get(),

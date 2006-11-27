@@ -102,6 +102,10 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	          __void__makeIdentity,
 	          "",
 	          "");
+	I_Method0(bool, isIdentity,
+	          __bool__isIdentity,
+	          "",
+	          "");
 	I_Method1(void, makeScale, IN, const osg::Vec3f &, x,
 	          __void__makeScale__C5_Vec3f_R1,
 	          "",
@@ -244,14 +248,6 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	          "");
 	I_Method1(osg::Vec4d, postMult, IN, const osg::Vec4d &, v,
 	          __Vec4d__postMult__C5_Vec4d_R1,
-	          "",
-	          "");
-	I_Method1(void, set, IN, const osg::Quat &, q,
-	          __void__set__C5_Quat_R1,
-	          "",
-	          "");
-	I_Method1(void, get, IN, osg::Quat &, q,
-	          __void__get__Quat_R1,
 	          "",
 	          "");
 	I_Method1(void, setRotate, IN, const osg::Quat &, q,

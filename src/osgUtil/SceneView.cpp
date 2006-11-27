@@ -99,7 +99,7 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _prioritizeTextures = false;
     
-    _camera = new CameraNode;
+    _camera = new Camera;
     _camera->setViewport(new Viewport);
     _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
     
@@ -210,7 +210,7 @@ void SceneView::setDefaults(unsigned int options)
     _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
 }
 
-void SceneView::setCamera(osg::CameraNode* camera)
+void SceneView::setCamera(osg::Camera* camera)
 {
     if (camera)
     {

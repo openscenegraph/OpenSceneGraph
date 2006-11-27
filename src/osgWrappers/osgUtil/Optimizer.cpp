@@ -442,6 +442,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
 	          __void__apply__osg_Transform_R1,
 	          "",
 	          "");
+	I_Method1(bool, isOperationPermissible, IN, osg::Node &, node,
+	          __bool__isOperationPermissible__osg_Node_R1,
+	          "",
+	          "");
 	I_Method0(void, removeRedundantNodes,
 	          __void__removeRedundantNodes,
 	          "",

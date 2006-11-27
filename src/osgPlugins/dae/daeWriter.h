@@ -22,7 +22,7 @@
 #include <osg/Geometry>
 #include <osg/Group>
 #include <osg/LightSource>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Material>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
@@ -88,7 +88,7 @@ public:
     virtual void    apply( osg::Geode &node );
     virtual void    apply( osg::Group &node );
     virtual void    apply( osg::LightSource &node );
-    virtual void    apply( osg::CameraNode &node );
+    virtual void    apply( osg::Camera &node );
     virtual void    apply( osg::MatrixTransform &node );
     virtual void    apply( osg::PositionAttitudeTransform &node );
     virtual void    apply( osg::Switch &node );

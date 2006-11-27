@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgViewer\Export.cpp
+SOURCE=..\..\..\src\osgWrappers\osgViewer\CompositeViewer.cpp
 # End Source File
 
 # Begin Source File
@@ -104,7 +104,23 @@ SOURCE=..\..\..\src\osgWrappers\osgViewer\GraphicsWindow.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgViewer\GraphicsWindowProxy.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgViewer\Scene.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgViewer\SimpleViewer.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgViewer\View.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgViewer\Viewer.cpp
 # End Source File
 
 # End Group

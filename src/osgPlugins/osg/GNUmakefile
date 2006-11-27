@@ -7,7 +7,7 @@ CXXFILES =\
         AutoTransform.cpp\
         Billboard.cpp\
         BlendFunc.cpp\
-        CameraNode.cpp\
+        Camera.cpp\
         CameraView.cpp\
         ClearNode.cpp\
         ClipNode.cpp\

@@ -11,7 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/BoundingBox>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Matrix>
@@ -166,21 +166,21 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          __osg_BoundingBox__computeBound,
 	          "Compute the bounding box around Drawables's geometry. ",
 	          "");
-	I_Method1(void, setCameraNode, IN, osg::CameraNode *, camera,
-	          __void__setCameraNode__osg_CameraNode_P1,
+	I_Method1(void, setCamera, IN, osg::Camera *, camera,
+	          __void__setCamera__osg_Camera_P1,
 	          "Set the camera node to use for pre rendering the impostor sprite's texture. ",
 	          "");
-	I_Method0(osg::CameraNode *, getCameraNode,
-	          __osg_CameraNode_P1__getCameraNode,
+	I_Method0(osg::Camera *, getCamera,
+	          __osg_Camera_P1__getCamera,
 	          "Get the camera node to use for pre rendering the impostor sprite's texture. ",
 	          "");
-	I_Method0(const osg::CameraNode *, getCameraNode,
-	          __C5_osg_CameraNode_P1__getCameraNode,
+	I_Method0(const osg::Camera *, getCamera,
+	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const camera node to use for pre rendering the impostor sprite's texture. ",
 	          "");
-	I_SimpleProperty(osg::CameraNode *, CameraNode, 
-	                 __osg_CameraNode_P1__getCameraNode, 
-	                 __void__setCameraNode__osg_CameraNode_P1);
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
+	                 __void__setCamera__osg_Camera_P1);
 	I_SimpleProperty(osg::Vec3 *, ControlCoords, 
 	                 __osg_Vec3_P1__getControlCoords, 
 	                 0);

@@ -15,7 +15,7 @@
 #define OSGSIM_OVERLAYNODE 1
 
 #include <osg/buffered_value>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Texture2D>
 #include <osg/TexGenNode>
 
@@ -82,10 +82,10 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         
 
         /** Get the camera used to implement the render to texture of the overlay subgraph.*/
-        osg::CameraNode* getCamera() { return _camera.get(); }
+        osg::Camera* getCamera() { return _camera.get(); }
 
         /** Get the const camera used to implement the render to texture of the overlay subgraph.*/
-        const osg::CameraNode* getCamera() const { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
         
     protected :
 
@@ -99,7 +99,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         
         mutable TextureObjectValidList _textureObjectValidList;
 
-        osg::ref_ptr<osg::CameraNode>   _camera;
+        osg::ref_ptr<osg::Camera>   _camera;
         
         // overlay subgraph is render to a texture
         osg::ref_ptr<osg::Node>         _overlaySubgraph;

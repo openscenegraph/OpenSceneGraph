@@ -2,9 +2,13 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	Export.cpp\
+	CompositeViewer.cpp\
 	GraphicsWindow.cpp\
+	GraphicsWindowProxy.cpp\
+	Scene.cpp\
 	SimpleViewer.cpp\
+	View.cpp\
+	Viewer.cpp\
 
 LIBS   += -losgViewer -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 

@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/ColorMask>
 #include <osg/CopyOp>
 #include <osg/GraphicsContext>
@@ -35,49 +35,49 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >, osg::CameraNode::BufferAttachmentMap);
+TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap);
 
-BEGIN_ENUM_REFLECTOR(osg::CameraNode::TransformOrder)
-	I_EnumLabel(osg::CameraNode::PRE_MULTIPLY);
-	I_EnumLabel(osg::CameraNode::POST_MULTIPLY);
+BEGIN_ENUM_REFLECTOR(osg::Camera::TransformOrder)
+	I_EnumLabel(osg::Camera::PRE_MULTIPLY);
+	I_EnumLabel(osg::Camera::POST_MULTIPLY);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderOrder)
-	I_EnumLabel(osg::CameraNode::PRE_RENDER);
-	I_EnumLabel(osg::CameraNode::NESTED_RENDER);
-	I_EnumLabel(osg::CameraNode::POST_RENDER);
+BEGIN_ENUM_REFLECTOR(osg::Camera::RenderOrder)
+	I_EnumLabel(osg::Camera::PRE_RENDER);
+	I_EnumLabel(osg::Camera::NESTED_RENDER);
+	I_EnumLabel(osg::Camera::POST_RENDER);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osg::CameraNode::RenderTargetImplementation)
-	I_EnumLabel(osg::CameraNode::FRAME_BUFFER_OBJECT);
-	I_EnumLabel(osg::CameraNode::PIXEL_BUFFER_RTT);
-	I_EnumLabel(osg::CameraNode::PIXEL_BUFFER);
-	I_EnumLabel(osg::CameraNode::FRAME_BUFFER);
-	I_EnumLabel(osg::CameraNode::SEPERATE_WINDOW);
+BEGIN_ENUM_REFLECTOR(osg::Camera::RenderTargetImplementation)
+	I_EnumLabel(osg::Camera::FRAME_BUFFER_OBJECT);
+	I_EnumLabel(osg::Camera::PIXEL_BUFFER_RTT);
+	I_EnumLabel(osg::Camera::PIXEL_BUFFER);
+	I_EnumLabel(osg::Camera::FRAME_BUFFER);
+	I_EnumLabel(osg::Camera::SEPERATE_WINDOW);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osg::CameraNode::BufferComponent)
-	I_EnumLabel(osg::CameraNode::DEPTH_BUFFER);
-	I_EnumLabel(osg::CameraNode::STENCIL_BUFFER);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER0);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER1);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER2);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER3);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER4);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER5);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER6);
-	I_EnumLabel(osg::CameraNode::COLOR_BUFFER7);
+BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
+	I_EnumLabel(osg::Camera::DEPTH_BUFFER);
+	I_EnumLabel(osg::Camera::STENCIL_BUFFER);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER0);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER1);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER2);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER3);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER4);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER5);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER6);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER7);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
+BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_BaseType(osg::Transform);
 	I_BaseType(osg::CullSettings);
-	I_Constructor0(____CameraNode,
+	I_Constructor0(____Camera,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osg::CameraNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____CameraNode__C5_CameraNode_R1__C5_CopyOp_R1,
+	I_ConstructorWithDefaults2(IN, const osg::Camera &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Camera__C5_Camera_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
@@ -164,11 +164,11 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	          __Viewport_P1__getViewport,
 	          "Get the viewport. ",
 	          "");
-	I_Method1(void, setTransformOrder, IN, osg::CameraNode::TransformOrder, order,
+	I_Method1(void, setTransformOrder, IN, osg::Camera::TransformOrder, order,
 	          __void__setTransformOrder__TransformOrder,
 	          "Set the transformation order for world-to-local and local-to-world transformation. ",
 	          "");
-	I_Method0(osg::CameraNode::TransformOrder, getTransformOrder,
+	I_Method0(osg::Camera::TransformOrder, getTransformOrder,
 	          __TransformOrder__getTransformOrder,
 	          "Get the transformation order. ",
 	          "");
@@ -244,11 +244,11 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	          __Matrixd__getInverseViewMatrix,
 	          "Get the inverse view matrix. ",
 	          "");
-	I_MethodWithDefaults2(void, setRenderOrder, IN, osg::CameraNode::RenderOrder, order, , IN, int, orderNum, 0,
+	I_MethodWithDefaults2(void, setRenderOrder, IN, osg::Camera::RenderOrder, order, , IN, int, orderNum, 0,
 	                      __void__setRenderOrder__RenderOrder__int,
 	                      "Set the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within. ",
 	                      "For rendering to a texture, one typically uses PRE_RENDER. For Head Up Displays, one would typically use POST_RENDER. ");
-	I_Method0(osg::CameraNode::RenderOrder, getRenderOrder,
+	I_Method0(osg::Camera::RenderOrder, getRenderOrder,
 	          __RenderOrder__getRenderOrder,
 	          "Get the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within. ",
 	          "");
@@ -260,19 +260,19 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	          __bool__isRenderToTextureCamera,
 	          "Return true if this Camera is set up as a render to texture camera, i.e. ",
 	          "it has textures assigned to it. ");
-	I_Method1(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl,
+	I_Method1(void, setRenderTargetImplementation, IN, osg::Camera::RenderTargetImplementation, impl,
 	          __void__setRenderTargetImplementation__RenderTargetImplementation,
 	          "Set the render target. ",
 	          "");
-	I_Method2(void, setRenderTargetImplementation, IN, osg::CameraNode::RenderTargetImplementation, impl, IN, osg::CameraNode::RenderTargetImplementation, fallback,
+	I_Method2(void, setRenderTargetImplementation, IN, osg::Camera::RenderTargetImplementation, impl, IN, osg::Camera::RenderTargetImplementation, fallback,
 	          __void__setRenderTargetImplementation__RenderTargetImplementation__RenderTargetImplementation,
 	          "Set the render target and fall-back that's used if the former isn't available. ",
 	          "");
-	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetImplementation,
+	I_Method0(osg::Camera::RenderTargetImplementation, getRenderTargetImplementation,
 	          __RenderTargetImplementation__getRenderTargetImplementation,
 	          "Get the render target. ",
 	          "");
-	I_Method0(osg::CameraNode::RenderTargetImplementation, getRenderTargetFallback,
+	I_Method0(osg::Camera::RenderTargetImplementation, getRenderTargetFallback,
 	          __RenderTargetImplementation__getRenderTargetFallback,
 	          "Get the render target fallback. ",
 	          "");
@@ -292,27 +292,27 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	          __GLenum__getReadBuffer,
 	          "Get the read buffer for any required copy operations to use. ",
 	          "");
-	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, GLenum, internalFormat,
+	I_Method2(void, attach, IN, osg::Camera::BufferComponent, buffer, IN, GLenum, internalFormat,
 	          __void__attach__BufferComponent__GLenum,
 	          "",
 	          "");
-	I_MethodWithDefaults5(void, attach, IN, osg::CameraNode::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false,
+	I_MethodWithDefaults5(void, attach, IN, osg::Camera::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false,
 	                      __void__attach__BufferComponent__osg_Texture_P1__unsigned_int__unsigned_int__bool,
 	                      "",
 	                      "");
-	I_Method2(void, attach, IN, osg::CameraNode::BufferComponent, buffer, IN, osg::Image *, image,
+	I_Method2(void, attach, IN, osg::Camera::BufferComponent, buffer, IN, osg::Image *, image,
 	          __void__attach__BufferComponent__osg_Image_P1,
 	          "",
 	          "");
-	I_Method1(void, detach, IN, osg::CameraNode::BufferComponent, buffer,
+	I_Method1(void, detach, IN, osg::Camera::BufferComponent, buffer,
 	          __void__detach__BufferComponent,
 	          "",
 	          "");
-	I_Method0(osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap,
+	I_Method0(osg::Camera::BufferAttachmentMap &, getBufferAttachmentMap,
 	          __BufferAttachmentMap_R1__getBufferAttachmentMap,
 	          "Get the BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads. ",
 	          "");
-	I_Method0(const osg::CameraNode::BufferAttachmentMap &, getBufferAttachmentMap,
+	I_Method0(const osg::Camera::BufferAttachmentMap &, getBufferAttachmentMap,
 	          __C5_BufferAttachmentMap_R1__getBufferAttachmentMap,
 	          "Get the const BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads. ",
 	          "");
@@ -340,15 +340,15 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	          __C5_osg_Object_P1__getRenderingCache__unsigned_int,
 	          "Get the const Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
-	I_Method1(void, setPostDrawCallback, IN, osg::CameraNode::DrawCallback *, cb,
+	I_Method1(void, setPostDrawCallback, IN, osg::Camera::DrawCallback *, cb,
 	          __void__setPostDrawCallback__DrawCallback_P1,
 	          "Set the post draw callback for custom operations to do done after the drawing of the camera's subgraph has been completed. ",
 	          "");
-	I_Method0(osg::CameraNode::DrawCallback *, getPostDrawCallback,
+	I_Method0(osg::Camera::DrawCallback *, getPostDrawCallback,
 	          __DrawCallback_P1__getPostDrawCallback,
 	          "Get the post draw callback. ",
 	          "");
-	I_Method0(const osg::CameraNode::DrawCallback *, getPostDrawCallback,
+	I_Method0(const osg::Camera::DrawCallback *, getPostDrawCallback,
 	          __C5_DrawCallback_P1__getPostDrawCallback,
 	          "Get the const post draw callback. ",
 	          "");
@@ -368,7 +368,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	          __bool__computeWorldToLocalMatrix__Matrix_R1__NodeVisitor_P1,
 	          "Transform method that must be defined to provide generic interface for scene graph traversals. ",
 	          "");
-	I_SimpleProperty(osg::CameraNode::BufferAttachmentMap &, BufferAttachmentMap, 
+	I_SimpleProperty(osg::Camera::BufferAttachmentMap &, BufferAttachmentMap, 
 	                 __BufferAttachmentMap_R1__getBufferAttachmentMap, 
 	                 0);
 	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
@@ -392,7 +392,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_SimpleProperty(osg::Matrixd, InverseViewMatrix, 
 	                 __Matrixd__getInverseViewMatrix, 
 	                 0);
-	I_SimpleProperty(osg::CameraNode::DrawCallback *, PostDrawCallback, 
+	I_SimpleProperty(osg::Camera::DrawCallback *, PostDrawCallback, 
 	                 __DrawCallback_P1__getPostDrawCallback, 
 	                 __void__setPostDrawCallback__DrawCallback_P1);
 	I_SimpleProperty(const osg::Matrixd &, ProjectionMatrix, 
@@ -401,23 +401,23 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	I_SimpleProperty(GLenum, ReadBuffer, 
 	                 __GLenum__getReadBuffer, 
 	                 __void__setReadBuffer__GLenum);
-	I_SimpleProperty(osg::CameraNode::RenderOrder, RenderOrder, 
+	I_SimpleProperty(osg::Camera::RenderOrder, RenderOrder, 
 	                 __RenderOrder__getRenderOrder, 
 	                 0);
 	I_SimpleProperty(int, RenderOrderNum, 
 	                 __int__getRenderOrderNum, 
 	                 0);
-	I_SimpleProperty(osg::CameraNode::RenderTargetImplementation, RenderTargetFallback, 
+	I_SimpleProperty(osg::Camera::RenderTargetImplementation, RenderTargetFallback, 
 	                 __RenderTargetImplementation__getRenderTargetFallback, 
 	                 0);
-	I_SimpleProperty(osg::CameraNode::RenderTargetImplementation, RenderTargetImplementation, 
+	I_SimpleProperty(osg::Camera::RenderTargetImplementation, RenderTargetImplementation, 
 	                 __RenderTargetImplementation__getRenderTargetImplementation, 
 	                 __void__setRenderTargetImplementation__RenderTargetImplementation);
 	I_IndexedProperty(osg::Object *, RenderingCache, 
 	                  __osg_Object_P1__getRenderingCache__unsigned_int, 
 	                  __void__setRenderingCache__unsigned_int__osg_Object_P1, 
 	                  0);
-	I_SimpleProperty(osg::CameraNode::TransformOrder, TransformOrder, 
+	I_SimpleProperty(osg::Camera::TransformOrder, TransformOrder, 
 	                 __TransformOrder__getTransformOrder, 
 	                 __void__setTransformOrder__TransformOrder);
 	I_SimpleProperty(osg::View *, View, 
@@ -431,7 +431,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode)
 	                 __void__setViewport__osg_Viewport_P1);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
+BEGIN_VALUE_REFLECTOR(osg::Camera::Attachment)
 	I_Constructor0(____Attachment,
 	               "",
 	               "");
@@ -455,12 +455,12 @@ BEGIN_VALUE_REFLECTOR(osg::CameraNode::Attachment)
 	I_PublicMemberProperty(bool, _mipMapGeneration);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Camera::DrawCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____DrawCallback,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::CameraNode::DrawCallback &, x, IN, const osg::CopyOp &, x,
+	I_Constructor2(IN, const osg::Camera::DrawCallback &, x, IN, const osg::CopyOp &, x,
 	               ____DrawCallback__C5_DrawCallback_R1__C5_CopyOp_R1,
 	               "",
 	               "");
@@ -486,5 +486,5 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraNode::DrawCallback)
 	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osg::CameraNode::BufferComponent COMMA  osg::CameraNode::Attachment >);
+STD_MAP_REFLECTOR(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >);
 

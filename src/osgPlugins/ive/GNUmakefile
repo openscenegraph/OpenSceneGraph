@@ -14,7 +14,7 @@ CXXFILES =\
 	ClipNode.cpp\
 	ClipPlane.cpp\
         ClusterCullingCallback.cpp\
-        CameraNode.cpp\
+        Camera.cpp\
         CameraView.cpp\
 	ConeSector.cpp\
         ConvexPlanarOccluder.cpp\

@@ -12,7 +12,7 @@
 
 #include <osg/Billboard>
 #include <osg/BoundingBox>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/ClearNode>
 #include <osg/ClipNode>
 #include <osg/Drawable>
@@ -124,8 +124,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          __void__apply__osg_ClearNode_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osg::CameraNode &, node,
-	          __void__apply__osg_CameraNode_R1,
+	I_Method1(void, apply, IN, osg::Camera &, node,
+	          __void__apply__osg_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::OccluderNode &, node,

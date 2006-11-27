@@ -14,112 +14,43 @@
 #ifndef OSG_VIEW
 #define OSG_VIEW 1
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <OpenThreads/Mutex>
 
 namespace osg {
 
-/** View - is a subclass of Transform which encompasses all the cameras that combine to make up a single view of the scene.
+/** View - maintains a master camera view and a list of slave cameras that are relative to this master camera.
+  * Note, if no slave cameras are attached to the view then the master camera does both the control and implementation of the rendering of the scene,
+  * but if slave cameras are present then the master controls the view onto the scene, while the slaves implement the rendering of the scene.
 */
-class OSG_EXPORT View : public osg::Transform, public CullSettings
+class OSG_EXPORT View : public osg::Referenced
 {
     public :
 
 
         View();
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        View(const View&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        /** Set the master camera of the view. */        
+        void setCamera(osg::Camera* camera) { _camera = camera; }
 
-        META_Node(osg, View);
+        /** Get the master camera of the view. */        
+        osg::Camera* getCamera() { return _camera.get(); }
 
+        /** Get the const master camera of the view. */        
+        const osg::Camera* getCamera() const { return _camera.get(); }
 
-        /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
-        inline void setProjectionMatrix(const osg::Matrixf& matrix) { _projectionMatrix.set(matrix);  updateCameras(); }
-
-        /** Set the projection matrix. Can be thought of as setting the lens of a camera. */
-        inline void setProjectionMatrix(const osg::Matrixd& matrix) { _projectionMatrix.set(matrix);  updateCameras(); }
-
-        /** Set to an orthographic projection. See OpenGL glOrtho for documentation further details.*/
-        void setProjectionMatrixAsOrtho(double left, double right,
-                                        double bottom, double top,
-                                        double zNear, double zFar);
-
-        /** Set to a 2D orthographic projection. See OpenGL glOrtho2D documentation for further details.*/
-        void setProjectionMatrixAsOrtho2D(double left, double right,
-                                          double bottom, double top);
-
-        /** Set to a perspective projection. See OpenGL glFrustum documentation for further details.*/
-        void setProjectionMatrixAsFrustum(double left, double right,
-                                          double bottom, double top,
-                                          double zNear, double zFar);
-
-        /** Create a symmetrical perspective projection, See OpenGL gluPerspective documentation for further details.
-          * Aspect ratio is defined as width/height.*/
-        void setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
-                                              double zNear, double zFar);
-
-        /** Get the projection matrix.*/
-        osg::Matrixd& getProjectionMatrix() { return _projectionMatrix; }
-
-        /** Get the const projection matrix.*/
-        const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
-
-        /** Get the othographic settings of the orthographic projection matrix. 
-          * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
-        bool getProjectionMatrixAsOrtho(double& left, double& right,
-                                        double& bottom, double& top,
-                                        double& zNear, double& zFar);
-
-        /** Get the frustum setting of a perspective projection matrix.
-          * Returns false if matrix is not a perspective matrix, where parameter values are undefined.*/
-        bool getProjectionMatrixAsFrustum(double& left, double& right,
-                                          double& bottom, double& top,
-                                          double& zNear, double& zFar);
-
-        /** Get the frustum setting of a symmetric perspective projection matrix.
-          * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
-          * Note, if matrix is not a symmetric perspective matrix then the shear will be lost.
-          * Asymmetric matrices occur when stereo, power walls, caves and reality center display are used.
-          * In these configurations one should use the 'getProjectionMatrixAsFrustum' method instead.*/
-        bool getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
-                                              double& zNear, double& zFar);
-
-
-
-        /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
-        inline void setViewMatrix(const osg::Matrixf& matrix) { _viewMatrix.set(matrix);  dirtyBound(); updateCameras(); }
-        
-        /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
-        inline void setViewMatrix(const osg::Matrixd& matrix) { _viewMatrix.set(matrix);  dirtyBound(); updateCameras(); }
-
-        /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
-        void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
-
-        /** Get the view matrix. */
-        osg::Matrixd& getViewMatrix() { return _viewMatrix; }
-
-        /** Get the const view matrix. */
-        const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
-
-        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
-
-        /** Get the inverse view matrix.*/
-        Matrixd getInverseViewMatrix() const;
-
-
-        struct CameraData
+        /** Slave allows one to up a camera that follows the master with a local offset to the project and view matrices.*/
+        struct Slave
         {
-            CameraData() {}
-            CameraData(osg::CameraNode* camera, const osg::Matrixd& projectionOffset, const osg::Matrixd& viewOffset):
+            Slave() {}
+            Slave(osg::Camera* camera, const osg::Matrixd& projectionOffset, const osg::Matrixd& viewOffset):
                 _camera(camera), _projectionOffset(projectionOffset), _viewOffset(viewOffset) {}
         
-            CameraData(const CameraData& rhs) :
+            Slave(const Slave& rhs) :
                 _camera(rhs._camera), _projectionOffset(rhs._projectionOffset), _viewOffset(rhs._viewOffset) {}
 
-            CameraData& operator = (const CameraData& rhs)
+            Slave& operator = (const Slave& rhs)
             {
                 _camera = rhs._camera;
                 _projectionOffset = rhs._projectionOffset;
@@ -127,46 +58,32 @@ class OSG_EXPORT View : public osg::Transform, public CullSettings
                 return *this;
             }
 
-            osg::ref_ptr<osg::CameraNode>   _camera;
+            osg::ref_ptr<osg::Camera>   _camera;
             osg::Matrixd                    _projectionOffset;
             osg::Matrixd                    _viewOffset;
         };
 
-        bool addCamera(osg::CameraNode* camera) { return addCamera(camera, osg::Matrix::identity(), osg::Matrix::identity()); }
+        bool addSlave(osg::Camera* camera) { return addSlave(camera, osg::Matrix::identity(), osg::Matrix::identity()); }
 
-        bool addCamera(osg::CameraNode* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffse);
+        bool addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffse);
 
-        bool removeCamera(unsigned int pos);
+        bool removeSlave(unsigned int pos);
         
-        unsigned int getNumCameras() const { return _cameras.size(); }
+        unsigned int getNumSlaves() const { return _slaves.size(); }
 
-        CameraNode* getCamera(unsigned int pos) { return _cameras[pos]._camera.get(); }
-        const CameraNode* getCamera(unsigned int pos) const { return _cameras[pos]._camera.get(); }
-        
-        CameraData& getCameraData(unsigned int pos) { return _cameras[pos]; }
-        const CameraData& getCameraData(unsigned int pos) const { return _cameras[pos]; }
-
-        
-    public:
-
-        /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
-        virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const;
-
-        /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
-        virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const;
-
+        Slave& getSlave(unsigned int pos) { return _slaves[pos]; }
+        const Slave& getSlave(unsigned int pos) const { return _slaves[pos]; }
 
     protected :
     
         virtual ~View();
 
-        void updateCameras();
+        void updateSlaves();
         
-        Matrixd                     _projectionMatrix;
-        Matrixd                     _viewMatrix;
+        osg::ref_ptr<osg::Camera>   _camera;
         
-        typedef std::vector<CameraData> CameraList;
-        CameraList _cameras;
+        typedef std::vector<Slave> Slaves;
+        Slaves _slaves;
 };
 
 }

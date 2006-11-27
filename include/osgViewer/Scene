@@ -1,0 +1,87 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_SCENE
+#define OSGVIEWER_SCENE 1
+
+#include <osgUtil/UpdateVisitor>
+#include <osgGA/GUIEventHandler>
+#include <osgGA/EventVisitor>
+#include <osgDB/DatabasePager>
+
+#include <osgViewer/Export>
+
+#include <list>
+
+namespace osgViewer{
+
+// WARNING ** Under development do not use, yet :-) 
+
+/** Scene holds the highe level reference to a single scene graph.*/
+class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
+{
+    public:
+
+        Scene();
+        virtual ~Scene();
+
+        void setSceneData(osg::Node* node);
+        osg::Node* getSceneData();
+        const osg::Node* getSceneData() const;
+
+
+        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
+        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
+        const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
+
+        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
+        
+        void addEventHandler(osgGA::GUIEventHandler* eventHandler);
+        EventHandlers& getEventHandlers() { return _eventHandlers; }
+        const EventHandlers& getEventHandlers() const { return _eventHandlers; }
+
+        void setDatabasePager(osgDB::DatabasePager* dp);
+        osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
+        const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
+
+        virtual void frameAdvance();
+        virtual void frameEventTraversal();
+        virtual void frameUpdateTraversal();
+
+    public:
+
+        void init();
+
+    protected:
+    
+        bool                                _firstFrame;
+        osg::Timer_t                        _startTick;
+        osg::ref_ptr<osg::FrameStamp>       _frameStamp;
+
+        osg::ref_ptr<osg::Node>             _sceneData;
+
+        osg::ref_ptr<osgUtil::UpdateVisitor>  _updateVisitor;
+
+        osg::ref_ptr<osgGA::EventQueue>     _eventQueue;
+        osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
+
+        osg::ref_ptr<osgDB::DatabasePager>  _databasePager;
+
+        EventHandlers                       _eventHandlers;
+    
+};
+
+
+}
+
+#endif

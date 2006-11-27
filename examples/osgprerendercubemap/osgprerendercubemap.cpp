@@ -18,7 +18,7 @@
 #include <osg/Material>
 #include <osg/PositionAttitudeTransform>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/TexGenNode>
 
 using namespace osg;
@@ -111,11 +111,11 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
 {
     public:
     
-        typedef std::vector< osg::ref_ptr<osg::CameraNode> >  CameraList;
+        typedef std::vector< osg::ref_ptr<osg::Camera> >  CameraList;
 
-        UpdateCameraAndTexGenCallback(osg::NodePath& reflectorNodePath, CameraList& cameraNodes):
+        UpdateCameraAndTexGenCallback(osg::NodePath& reflectorNodePath, CameraList& Cameras):
             _reflectorNodePath(reflectorNodePath),
-            _cameraNodes(cameraNodes)
+            _Cameras(Cameras)
         {
         }
        
@@ -141,7 +141,7 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
             };
 
             for(unsigned int i=0; 
-                i<6 && i<_cameraNodes.size();
+                i<6 && i<_Cameras.size();
                 ++i)
             {
                 osg::Matrix localOffset;
@@ -149,9 +149,9 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
                 
                 osg::Matrix viewMatrix = worldToLocal*localOffset;
             
-                _cameraNodes[i]->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
-                _cameraNodes[i]->setProjectionMatrixAsFrustum(-1.0,1.0,-1.0,1.0,1.0,10000.0);
-                _cameraNodes[i]->setViewMatrix(viewMatrix);
+                _Cameras[i]->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+                _Cameras[i]->setProjectionMatrixAsFrustum(-1.0,1.0,-1.0,1.0,1.0,10000.0);
+                _Cameras[i]->setViewMatrix(viewMatrix);
             }
         }
         
@@ -160,7 +160,7 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
         virtual ~UpdateCameraAndTexGenCallback() {}
         
         osg::NodePath               _reflectorNodePath;        
-        CameraList                  _cameraNodes;
+        CameraList                  _Cameras;
 };
 
 class TexMatCullCallback : public osg::NodeCallback
@@ -191,7 +191,7 @@ class TexMatCullCallback : public osg::NodeCallback
 };
 
 
-osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath reflectorNodePath, unsigned int unit, const osg::Vec4& clearColor, unsigned tex_width, unsigned tex_height, osg::CameraNode::RenderTargetImplementation renderImplementation)
+osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath reflectorNodePath, unsigned int unit, const osg::Vec4& clearColor, unsigned tex_width, unsigned tex_height, osg::Camera::RenderTargetImplementation renderImplementation)
 {
 
     osg::Group* group = new osg::Group;
@@ -207,11 +207,11 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath refl
     texture->setFilter(osg::TextureCubeMap::MAG_FILTER,osg::TextureCubeMap::LINEAR);
     
     // set up the render to texture cameras.
-    UpdateCameraAndTexGenCallback::CameraList cameraNodes;
+    UpdateCameraAndTexGenCallback::CameraList Cameras;
     for(unsigned int i=0; i<6; ++i)
     {
         // create the camera
-        osg::CameraNode* camera = new osg::CameraNode;
+        osg::Camera* camera = new osg::Camera;
 
         camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         camera->setClearColor(clearColor);
@@ -220,20 +220,20 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath refl
         camera->setViewport(0,0,tex_width,tex_height);
 
         // set the camera to render before the main camera.
-        camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+        camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
         camera->setRenderTargetImplementation(renderImplementation);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::CameraNode::COLOR_BUFFER, texture, 0, i);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, i);
 
         // add subgraph to render
         camera->addChild(reflectedSubgraph);
         
         group->addChild(camera);
         
-        cameraNodes.push_back(camera);
+        Cameras.push_back(camera);
     }
    
     // create the texgen node to project the tex coords onto the subgraph
@@ -264,7 +264,7 @@ osg::Group* createShadowedScene(osg::Node* reflectedSubgraph, osg::NodePath refl
     group->addChild(reflectedSubgraph);
     
     // set an update callback to keep moving the camera and tex gen in the right direction.
-    group->setUpdateCallback(new UpdateCameraAndTexGenCallback(reflectorNodePath, cameraNodes));
+    group->setUpdateCallback(new UpdateCameraAndTexGenCallback(reflectorNodePath, Cameras));
 
     return group;
 }
@@ -307,12 +307,12 @@ int main(int argc, char** argv)
     while (arguments.read("--width", tex_width)) {}
     while (arguments.read("--height", tex_height)) {}
 
-    osg::CameraNode::RenderTargetImplementation renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT;
+    osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     
-    while (arguments.read("--fbo")) { renderImplementation = osg::CameraNode::FRAME_BUFFER_OBJECT; }
-    while (arguments.read("--pbuffer")) { renderImplementation = osg::CameraNode::PIXEL_BUFFER; }
-    while (arguments.read("--fb")) { renderImplementation = osg::CameraNode::FRAME_BUFFER; }
-    while (arguments.read("--window")) { renderImplementation = osg::CameraNode::SEPERATE_WINDOW; }
+    while (arguments.read("--fbo")) { renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT; }
+    while (arguments.read("--pbuffer")) { renderImplementation = osg::Camera::PIXEL_BUFFER; }
+    while (arguments.read("--fb")) { renderImplementation = osg::Camera::FRAME_BUFFER; }
+    while (arguments.read("--window")) { renderImplementation = osg::Camera::SEPERATE_WINDOW; }
     
 
     // any option left unread are converted into errors to write out later.

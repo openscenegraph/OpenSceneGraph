@@ -21,10 +21,7 @@
 
 #include <stdio.h>
 
-using namespace Producer;
 using namespace osgProducer;
-using namespace osg;
-
 
 #ifdef __APPLE__
 #define SINGLE_THREAD_KEYBOARDMOUSE
@@ -60,7 +57,7 @@ public:
         traverse(node);
     }
     
-    NodePath _pathToCoordinateSystemNode;
+    osg::NodePath _pathToCoordinateSystemNode;
 };
 
 

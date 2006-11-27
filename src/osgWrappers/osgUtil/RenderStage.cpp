@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/ColorMask>
 #include <osg/CopyOp>
 #include <osg/FrameBufferObject>
@@ -150,16 +150,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	          __int__getClearStencil,
 	          "Get the clear color. ",
 	          "");
-	I_Method1(void, setCameraNode, IN, osg::CameraNode *, camera,
-	          __void__setCameraNode__osg_CameraNode_P1,
+	I_Method1(void, setCamera, IN, osg::Camera *, camera,
+	          __void__setCamera__osg_Camera_P1,
 	          "",
 	          "");
-	I_Method0(osg::CameraNode *, getCameraNode,
-	          __osg_CameraNode_P1__getCameraNode,
+	I_Method0(osg::Camera *, getCamera,
+	          __osg_Camera_P1__getCamera,
 	          "",
 	          "");
-	I_Method0(const osg::CameraNode *, getCameraNode,
-	          __C5_osg_CameraNode_P1__getCameraNode,
+	I_Method0(const osg::Camera *, getCamera,
+	          __C5_osg_Camera_P1__getCamera,
 	          "",
 	          "");
 	I_Method1(void, setCameraRequiresSetUp, IN, bool, flag,
@@ -306,9 +306,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	          __bool__getStats__Statistics_R1,
 	          "Extract stats for current draw list. ",
 	          "");
-	I_SimpleProperty(osg::CameraNode *, CameraNode, 
-	                 __osg_CameraNode_P1__getCameraNode, 
-	                 __void__setCameraNode__osg_CameraNode_P1);
+	I_Method2(void, attach, IN, osg::Camera::BufferComponent, buffer, IN, osg::Image *, image,
+	          __void__attach__osg_Camera_BufferComponent__osg_Image_P1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
+	                 __void__setCamera__osg_Camera_P1);
 	I_SimpleProperty(bool, CameraRequiresSetUp, 
 	                 __bool__getCameraRequiresSetUp, 
 	                 __void__setCameraRequiresSetUp__bool);
@@ -366,5 +370,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_SimpleProperty(osg::Viewport *, Viewport, 
 	                 __osg_Viewport_P1__getViewport, 
 	                 __void__setViewport__osg_Viewport_P1);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgUtil::RenderStage::Attachment)
+	I_Constructor0(____Attachment,
+	               "",
+	               "");
+	I_PublicMemberProperty(osg::ref_ptr< osg::Image >, _image);
+	I_PublicMemberProperty(GLenum, _imageReadPixelFormat);
+	I_PublicMemberProperty(GLenum, _imageReadPixelDataType);
 END_REFLECTOR
 

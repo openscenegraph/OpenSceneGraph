@@ -82,7 +82,7 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::Node >)
 	               ____observer_ptr__C5_observer_ptr_R1,
 	               "",
 	               "");
-	I_Method1(void, objectDeleted, IN, void *, ptr,
+	I_Method1(void, objectDeleted, IN, void *, x,
 	          __void__objectDeleted__void_P1,
 	          "",
 	          "");

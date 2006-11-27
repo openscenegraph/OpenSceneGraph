@@ -15,7 +15,7 @@
 #define OSGSHADOW_SHADOWEDTECHNIQUE 1
 
 #include <osg/buffered_value>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Texture2D>
 #include <osg/TexGenNode>
 

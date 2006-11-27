@@ -20,7 +20,7 @@
 #include <osgProducer/Viewer>
 
 #include <osg/Geode>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/ShapeDrawable>
 #include <osg/Sequence>
 
@@ -540,7 +540,7 @@ int main( int argc, char **argv )
 
         {
             // create the hud.
-            osg::CameraNode* camera = new osg::CameraNode;
+            osg::Camera* camera = new osg::Camera;
             camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
             camera->setProjectionMatrixAsOrtho2D(0,1280,0,1024);
             camera->setViewMatrix(osg::Matrix::identity());

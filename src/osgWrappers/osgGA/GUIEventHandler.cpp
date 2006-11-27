@@ -76,13 +76,3 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 	          "");
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgGA::GUIEventHandlerVisitor)
-	I_Constructor0(____GUIEventHandlerVisitor,
-	               "",
-	               "");
-	I_Method1(void, visit, IN, osgGA::GUIEventHandler &, x,
-	          __void__visit__GUIEventHandler_R1,
-	          "",
-	          "");
-END_REFLECTOR
-

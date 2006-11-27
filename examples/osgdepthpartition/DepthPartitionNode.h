@@ -2,7 +2,7 @@
 #define _OF_DEPTHPARTITIONNODE_
 
 #include "DistanceAccumulator.h"
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #define CURRENT_CLASS DepthPartitionNode
 /**********************************************************
@@ -28,13 +28,13 @@ class CURRENT_CLASS : public osg::Group
 	inline bool getActive() const { return _active; }
 
 	/** Specify whether the color buffer should be cleared before the first
-	    CameraNode draws it's scene. */
+	    Camera draws it's scene. */
 	void setClearColorBuffer(bool clear);
 	inline bool getClearColorBuffer() const { return _clearColorBuffer; }
 
-	/** Specify the render order for each CameraNode */
-	void setRenderOrder(osg::CameraNode::RenderOrder order);
-	inline osg::CameraNode::RenderOrder getRenderOrder() const
+	/** Specify the render order for each Camera */
+	void setRenderOrder(osg::Camera::RenderOrder order);
+	inline osg::Camera::RenderOrder getRenderOrder() const
 	{ return _renderOrder; }
 
 	/** Set/get the maximum depth that the scene will be traversed to.
@@ -48,7 +48,7 @@ class CURRENT_CLASS : public osg::Group
 	/** Override update and cull traversals */
 	virtual void traverse(osg::NodeVisitor &nv);
 
-	/** Catch child management functions so the CameraNodes can be informed
+	/** Catch child management functions so the Cameras can be informed
 	    of added or removed children. */
 	virtual bool addChild(osg::Node *child);
 	virtual bool insertChild(unsigned int index, osg::Node *child);
@@ -56,14 +56,14 @@ class CURRENT_CLASS : public osg::Group
 	virtual bool setChild(unsigned int i, osg::Node *node);
 
   protected:
-	typedef std::vector< osg::ref_ptr<osg::CameraNode> > CameraList;
+	typedef std::vector< osg::ref_ptr<osg::Camera> > CameraList;
 
 	~CURRENT_CLASS();
 
 	void init();
 
-	// Creates a new CameraNode object with default settings
-	osg::CameraNode* createOrReuseCamera(const osg::Matrix& proj, 
+	// Creates a new Camera object with default settings
+	osg::Camera* createOrReuseCamera(const osg::Matrix& proj, 
                                 double znear, double zfar, 
                                 const unsigned int &camNum);
 
@@ -72,13 +72,13 @@ class CURRENT_CLASS : public osg::Group
 	// The NodeVisitor that computes cameras for the scene
 	osg::ref_ptr<DistanceAccumulator> _distAccumulator;
 
-	osg::CameraNode::RenderOrder _renderOrder;
+	osg::Camera::RenderOrder _renderOrder;
 	bool _clearColorBuffer;
 
 	// Cameras that should be used to draw the scene.  These cameras
 	// will be reused on every frame in order to save time and memory.
 	CameraList _cameraList;
-	unsigned int _numCameras; // Number of CameraNodes actually being used
+	unsigned int _numCameras; // Number of Cameras actually being used
 };
 #undef CURRENT_CLASS
 

@@ -16,7 +16,7 @@
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/CameraView>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Notify>
 
 using namespace osg;
@@ -28,7 +28,7 @@ class ApplyMatrixVisitor : public NodeVisitor
         ApplyMatrixVisitor(const osg::Matrix& matrix):
             _matrix(matrix) {}
 
-        virtual void apply(CameraNode& camera)
+        virtual void apply(Camera& camera)
         {
             camera.setViewMatrix(_matrix);
         }

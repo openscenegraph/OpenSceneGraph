@@ -323,7 +323,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         virtual void apply(osg::PagedLOD& lod);
         virtual void apply(osg::Transform& transform);
         virtual void apply(osg::Projection& projection);
-        virtual void apply(osg::CameraNode& camera);
+        virtual void apply(osg::Camera& camera);
     
     protected:
     

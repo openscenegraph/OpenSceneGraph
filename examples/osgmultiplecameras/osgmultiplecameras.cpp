@@ -22,7 +22,7 @@
 #include <osg/Projection>
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/FrontFace>
 
 #include <osgText/Text>
@@ -30,7 +30,7 @@
 
 osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
 {
-    osg::CameraNode* camera = new osg::CameraNode;
+    osg::Camera* camera = new osg::Camera;
 
     // set the viewport
     camera->setViewport(10,10,400,200);
@@ -38,7 +38,7 @@ osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
     // set the view matrix
     camera->setCullingActive(false);    
     camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
-    camera->setTransformOrder(osg::CameraNode::POST_MULTIPLY);
+    camera->setTransformOrder(osg::Camera::POST_MULTIPLY);
 
     camera->setProjectionMatrix(osg::Matrixd::scale(-1.0f,1.0f,1.0f));
     camera->setViewMatrix(osg::Matrixd::rotate(osg::inDegrees(180.0f),0.0f,1.0f,0.0f));
@@ -48,7 +48,7 @@ osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
     camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
     // draw subgraph after main camera view.
-    camera->setRenderOrder(osg::CameraNode::POST_RENDER);
+    camera->setRenderOrder(osg::Camera::POST_RENDER);
 
     // add the subgraph to draw.
     camera->addChild(subgraph);

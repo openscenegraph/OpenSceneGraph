@@ -16,7 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Notify>
 #include <osg/OccluderNode>
-#include <osg/CameraNode>
+#include <osg/Transform>
 
 #include <algorithm>
 

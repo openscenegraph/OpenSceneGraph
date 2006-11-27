@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Node>
 #include <osgDB/DatabasePager>
 #include <osgGA/GUIEventHandler>
@@ -45,12 +45,24 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
 	          __C5_osg_Node_P1__getSceneData,
 	          "",
 	          "");
-	I_Method0(osg::CameraNode *, getCamera,
-	          __osg_CameraNode_P1__getCamera,
+	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
+	          __void__setDatabasePager__osgDB_DatabasePager_P1,
 	          "",
 	          "");
-	I_Method0(const osg::CameraNode *, getCamera,
-	          __C5_osg_CameraNode_P1__getCamera,
+	I_Method0(osgDB::DatabasePager *, getDatabasePager,
+	          __osgDB_DatabasePager_P1__getDatabasePager,
+	          "",
+	          "");
+	I_Method0(const osgDB::DatabasePager *, getDatabasePager,
+	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, getCamera,
+	          __osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method0(const osg::Camera *, getCamera,
+	          __C5_osg_Camera_P1__getCamera,
 	          "",
 	          "");
 	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator,
@@ -75,18 +87,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
 	          "");
 	I_Method0(const osgViewer::SimpleViewer::EventHandlers &, getEventHandlers,
 	          __C5_EventHandlers_R1__getEventHandlers,
-	          "",
-	          "");
-	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
-	          __void__setDatabasePager__osgDB_DatabasePager_P1,
-	          "",
-	          "");
-	I_Method0(osgDB::DatabasePager *, getDatabasePager,
-	          __osgDB_DatabasePager_P1__getDatabasePager,
-	          "",
-	          "");
-	I_Method0(const osgDB::DatabasePager *, getDatabasePager,
-	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
 	          "",
 	          "");
 	I_Method0(void, frame,
@@ -133,8 +133,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
 	          __void__init,
 	          "",
 	          "");
-	I_SimpleProperty(osg::CameraNode *, Camera, 
-	                 __osg_CameraNode_P1__getCamera, 
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
 	                 0);
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 

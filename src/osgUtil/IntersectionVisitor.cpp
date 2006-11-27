@@ -17,7 +17,7 @@
 #include <osg/PagedLOD>
 #include <osg/Transform>
 #include <osg/Projection>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Geode>
 #include <osg/Billboard>
 #include <osg/Geometry>
@@ -915,14 +915,14 @@ void IntersectionVisitor::apply(osg::Projection& projection)
 }
 
 
-void IntersectionVisitor::apply(osg::CameraNode& camera)
+void IntersectionVisitor::apply(osg::Camera& camera)
 {
-    // osg::notify(osg::NOTICE)<<"apply(CameraNode&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"apply(Camera&)"<<std::endl;
 
-    // note, commenting out right now because default CameraNode setup is with the culling active.  Should this be changed?
+    // note, commenting out right now because default Camera setup is with the culling active.  Should this be changed?
     // if (!enter(camera)) return;
     
-    // osg::notify(osg::NOTICE)<<"inside apply(CameraNode&)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"inside apply(Camera&)"<<std::endl;
 
     if (camera.getViewport()) pushWindowMatrix( camera.getViewport() );
     pushProjectionMatrix( new osg::RefMatrix(camera.getProjectionMatrix()) );

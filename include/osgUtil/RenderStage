@@ -18,7 +18,7 @@
 #include <osg/Viewport>
 #include <osg/Texture>
 #include <osg/FrameBufferObject>
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgUtil/RenderBin>
 #include <osgUtil/PositionalStateContainer>
@@ -119,9 +119,9 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Get the clear color.*/
         int getClearStencil() const { return _clearStencil; }
 
-        void setCameraNode(osg::CameraNode* camera) { if (_camera!=camera) { _camera = camera; _cameraRequiresSetUp = true; } }
-        osg::CameraNode* getCameraNode() { return _camera; }
-        const osg::CameraNode* getCameraNode() const { return _camera; }
+        void setCamera(osg::Camera* camera) { if (_camera!=camera) { _camera = camera; _cameraRequiresSetUp = true; } }
+        osg::Camera* getCamera() { return _camera; }
+        const osg::Camera* getCamera() const { return _camera; }
 
         void setCameraRequiresSetUp(bool flag) { _cameraRequiresSetUp = flag; }
         bool getCameraRequiresSetUp() const { return _cameraRequiresSetUp; }
@@ -210,7 +210,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             GLenum                                  _imageReadPixelDataType;
         };
        
-        void attach(osg::CameraNode::BufferComponent buffer, osg::Image* image);
+        void attach(osg::Camera::BufferComponent buffer, osg::Image* image);
         
     protected:
         
@@ -236,7 +236,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         int                                 _clearStencil;
 
         bool                                    _cameraRequiresSetUp;
-        osg::CameraNode*                        _camera;
+        osg::Camera*                        _camera;
         
         osg::ref_ptr<osg::Texture>              _texture;
         unsigned int                            _level;
@@ -246,7 +246,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         GLenum                                  _imageReadPixelFormat;
         GLenum                                  _imageReadPixelDataType;
         
-        std::map< osg::CameraNode::BufferComponent, Attachment> _bufferAttachmentMap;
+        std::map< osg::Camera::BufferComponent, Attachment> _bufferAttachmentMap;
         
         osg::ref_ptr<osg::FrameBufferObject>    _fbo;
         osg::ref_ptr<osg::GraphicsContext>      _graphicsContext;

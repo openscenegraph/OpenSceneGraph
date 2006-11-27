@@ -14,7 +14,7 @@
 #ifndef OSGSHADOW_SHADOWVOLUME
 #define OSGSHADOW_SHADOWVOLUME 1
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgShadow/ShadowTechnique>
 

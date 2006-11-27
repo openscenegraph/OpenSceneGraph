@@ -61,7 +61,7 @@
 #include <osg/BoundingSphere>
 #include <osg/BoundsChecking>
 #include <osg/BufferObject>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/CameraView>
 #include <osg/ClearNode>
 #include <osg/ClipNode>

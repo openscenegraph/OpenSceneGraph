@@ -11,7 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Billboard>
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/Drawable>
 #include <osg/Geode>
 #include <osg/Group>
@@ -280,8 +280,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PickVisitor)
 	          __void__apply__osg_Projection_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osg::CameraNode &, camera,
-	          __void__apply__osg_CameraNode_R1,
+	I_Method1(void, apply, IN, osg::Camera &, camera,
+	          __void__apply__osg_Camera_R1,
 	          "",
 	          "");
 END_REFLECTOR

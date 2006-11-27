@@ -20,7 +20,7 @@
 #include <osg/AlphaFunc>
 #include <osg/TexEnv>
 #include <osg/Texture2D>
-#include <osg/CameraNode>
+#include <osg/Camera>
 
 #include <osgSim/Export>
 
@@ -152,13 +152,13 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         virtual osg::BoundingBox computeBound() const;
         
         /** Set the camera node to use for pre rendering the impostor sprite's texture.*/
-        void setCameraNode(osg::CameraNode* camera) { _camera = camera; }
+        void setCamera(osg::Camera* camera) { _camera = camera; }
 
         /** Get the camera node to use for pre rendering the impostor sprite's texture.*/
-        osg::CameraNode* getCameraNode() { return _camera.get(); }
+        osg::Camera* getCamera() { return _camera.get(); }
 
         /** Get the const camera node to use for pre rendering the impostor sprite's texture.*/
-        const osg::CameraNode* getCameraNode() const { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
 
     protected:
 
@@ -172,7 +172,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         friend class osgSim::ImpostorSpriteManager;
         
         // camera node for doing the pre rendering.
-        osg::ref_ptr<osg::CameraNode> _camera;
+        osg::ref_ptr<osg::Camera> _camera;
 
         // support for a double linked list managed by the
         // ImposotorSpriteManager.

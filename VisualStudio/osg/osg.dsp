@@ -208,7 +208,7 @@ SOURCE=..\..\src\osg\BufferObject.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\CameraNode.cpp
+SOURCE=..\..\src\osg\Camera.cpp
 # End Source File
 # Begin Source File
 
@@ -676,7 +676,7 @@ SOURCE=..\..\include\osg\BufferObject
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osg\CameraNode
+SOURCE=..\..\include\osg\Camera
 # End Source File
 # Begin Source File
 

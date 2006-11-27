@@ -53,7 +53,7 @@
 
 #include "Group.h"
 #include "MatrixTransform.h"
-#include "CameraNode.h"
+#include "Camera.h"
 #include "CameraView.h"
 #include "Geode.h"
 #include "LightSource.h"
@@ -927,8 +927,8 @@ void DataOutputStream::writeNode(const osg::Node* node)
         if(dynamic_cast<const osg::MatrixTransform*>(node)){
             ((ive::MatrixTransform*)(node))->write(this);
         }
-        else if(dynamic_cast<const osg::CameraNode*>(node)){
-            ((ive::CameraNode*)(node))->write(this);
+        else if(dynamic_cast<const osg::Camera*>(node)){
+            ((ive::Camera*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::CameraView*>(node)){
             ((ive::CameraView*)(node))->write(this);

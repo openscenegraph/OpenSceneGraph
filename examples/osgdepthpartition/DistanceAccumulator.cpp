@@ -73,7 +73,7 @@ void CURRENT_CLASS::pushDistancePair(double zNear, double zFar)
 }
 
 /** Return true if the node should be traversed, and false if the bounding sphere
-    of the node is small enough to be rendered by one CameraNode. If the latter
+    of the node is small enough to be rendered by one Camera. If the latter
     is true, then store the node's near & far plane distances. */
 bool CURRENT_CLASS::shouldContinueTraversal(osg::Node &node)
 {

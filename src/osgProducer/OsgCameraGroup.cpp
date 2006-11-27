@@ -29,7 +29,6 @@
 #define        WGL_SAMPLES_ARB                0x2042
 #endif
 
-using namespace Producer;
 using namespace osgProducer;
 
 static osg::ApplicationUsageProxy OsgCameraGroup_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_PROCESSOR_AFFINITY <mode>", "ON | OFF - Where supported, switch on or off the processor affinity." );
@@ -554,8 +553,8 @@ bool OsgCameraGroup::realize()
         sv->setDefaults(_realizeSceneViewOptions);
 
         // note, should really compute the projection and view offsets...
-        // but not critical as Producer controls the CameraNode matrices via SceneView.
-        _view->addCamera(sv->getCamera());
+        // but not critical as Producer controls the osg::Camera matrices via SceneView.
+        _view->addSlave(sv->getCamera());
         sv->setView(_view.get());
         
         if (_renderSurfaceStateMap.count(rs)==0)
@@ -693,7 +692,7 @@ bool OsgCameraGroup::realize()
     // disable multi-threading of cameras.
     if (_threadModel == Producer::CameraGroup::ThreadPerCamera)
     {
-        std::set<RenderSurface*> renderSurfaceSet;
+        std::set<Producer::RenderSurface*> renderSurfaceSet;
         for( unsigned int i = 0; i < _cfg->getNumberOfCameras(); i++ )
         {
             Producer::Camera *cam = _cfg->getCamera(i);
@@ -707,7 +706,7 @@ bool OsgCameraGroup::realize()
             osg::notify(osg::INFO)<<"         threading problems when camera's share a RenderSurface."<<std::endl;
             _threadModel = Producer::CameraGroup::SingleThreaded;
         }
-        else if (renderSurfaceSet.size()>1 && RenderSurface::allGLContextsAreShared())
+        else if (renderSurfaceSet.size()>1 && Producer::RenderSurface::allGLContextsAreShared())
         {
             // we have multiple RenderSurface, but with share contexts, which is dangerous for multi-threaded usage,
             // so need to disable multi-threading to prevent problems.
@@ -811,16 +810,21 @@ void OsgCameraGroup::frame()
         double left, right, bottom, top, nearClip, farClip;
         getLensParams(left, right, bottom, top, nearClip, farClip);
 
-        if (getLensProjectionType()==Camera::Lens::Perspective)
+        if (!_view->getCamera()) 
         {
-            _view->setProjectionMatrixAsFrustum(left, right, bottom, top, nearClip, farClip);
+            _view->setCamera(new osg::Camera);
+        }
+
+        if (getLensProjectionType()==Producer::Camera::Lens::Perspective)
+        {
+            _view->getCamera()->setProjectionMatrixAsFrustum(left, right, bottom, top, nearClip, farClip);
         }
         else
         {
-            _view->setProjectionMatrixAsOrtho(left, right, bottom, top, nearClip, farClip);
+            _view->getCamera()->setProjectionMatrixAsOrtho(left, right, bottom, top, nearClip, farClip);
         }
         
-        _view->setViewMatrix(getViewMatrix());
+        _view->getCamera()->setViewMatrix(getViewMatrix());
     }
                                 
     // the settings in sync.

@@ -17,7 +17,7 @@
 #include <osg/TexEnvCombine>
 #include <osg/TexEnv>
 
-#include <osg/CameraNode>
+#include <osg/Camera>
 #include <osg/TexGenNode>
 
 #include <osgDB/ReadFile>
@@ -193,9 +193,9 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
 {
     public:
     
-        UpdateCameraAndTexGenCallback(osg::MatrixTransform* light_transform, osg::CameraNode* cameraNode, osg::TexGenNode* texgenNode):
+        UpdateCameraAndTexGenCallback(osg::MatrixTransform* light_transform, osg::Camera* Camera, osg::TexGenNode* texgenNode):
             _light_transform(light_transform),
-            _cameraNode(cameraNode),
+            _Camera(Camera),
             _texgenNode(texgenNode)
         {
         }
@@ -207,14 +207,14 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
             
             // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
             osg::BoundingSphere bs;
-            for(unsigned int i=0; i<_cameraNode->getNumChildren(); ++i)
+            for(unsigned int i=0; i<_Camera->getNumChildren(); ++i)
             {
-                bs.expandBy(_cameraNode->getChild(i)->getBound());
+                bs.expandBy(_Camera->getChild(i)->getBound());
             }
             
             if (!bs.valid())
             {
-                osg::notify(osg::WARN) << "bb invalid"<<_cameraNode.get()<<std::endl;
+                osg::notify(osg::WARN) << "bb invalid"<<_Camera.get()<<std::endl;
                 return;
             }
             
@@ -234,14 +234,14 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
             float top   = (bs.radius()/centerDistance)*znear;
             float right = top;
 
-            _cameraNode->setReferenceFrame(osg::CameraNode::ABSOLUTE_RF);
-            _cameraNode->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-            _cameraNode->setViewMatrixAsLookAt(position,bs.center(),osg::Vec3(0.0f,1.0f,0.0f));
+            _Camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+            _Camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+            _Camera->setViewMatrixAsLookAt(position,bs.center(),osg::Vec3(0.0f,1.0f,0.0f));
 
             // compute the matrix which takes a vertex from local coords into tex coords
             // will use this later to specify osg::TexGen..
-            osg::Matrix MVPT = _cameraNode->getViewMatrix() * 
-                               _cameraNode->getProjectionMatrix() *
+            osg::Matrix MVPT = _Camera->getViewMatrix() * 
+                               _Camera->getProjectionMatrix() *
                                osg::Matrix::translate(1.0,1.0,1.0) *
                                osg::Matrix::scale(0.5f,0.5f,0.5f);
                                
@@ -255,7 +255,7 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
         virtual ~UpdateCameraAndTexGenCallback() {}
         
         osg::ref_ptr<osg::MatrixTransform>  _light_transform;
-        osg::ref_ptr<osg::CameraNode>       _cameraNode;
+        osg::ref_ptr<osg::Camera>       _Camera;
         osg::ref_ptr<osg::TexGenNode>       _texgenNode;
 
 };
@@ -307,11 +307,11 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
     {
 
         // create the camera
-        osg::CameraNode* camera = new osg::CameraNode;
+        osg::Camera* camera = new osg::Camera;
 
         camera->setClearMask(GL_DEPTH_BUFFER_BIT);
         camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-        camera->setComputeNearFarMode(osg::CameraNode::DO_NOT_COMPUTE_NEAR_FAR);
+        camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
 
         // set viewport
         camera->setViewport(0,0,tex_width,tex_height);
@@ -337,13 +337,13 @@ osg::Group* createShadowedScene(osg::Node* shadowed,osg::MatrixTransform* light_
 
 
         // set the camera to render before the main camera.
-        camera->setRenderOrder(osg::CameraNode::PRE_RENDER);
+        camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        camera->setRenderTargetImplementation(osg::CameraNode::FRAME_BUFFER_OBJECT);
+        camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::CameraNode::DEPTH_BUFFER, texture);
+        camera->attach(osg::Camera::DEPTH_BUFFER, texture);
 
         // add subgraph to render
         camera->addChild(shadowed);

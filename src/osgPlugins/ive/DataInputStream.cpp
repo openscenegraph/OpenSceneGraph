@@ -157,11 +157,6 @@ bool DataInputStream::readBool(){
     return c!=0;
 }
 
-unsigned int DataInputStream::getVersion()
-{
-    return( _version );
-}
-
 char DataInputStream::readChar(){
     char c;
     _istream->read(&c, CHARSIZE);
@@ -387,11 +382,24 @@ osg::Vec4d DataInputStream::readVec4d(){
 
 osg::Plane DataInputStream::readPlane(){
     osg::Plane v;
-    v[0]=readFloat();
-    v[1]=readFloat();
-    v[2]=readFloat();
-    v[3]=readFloat();
 
+    if (getVersion() <= VERSION_0018)
+    {
+        v[0]=readFloat();
+        v[1]=readFloat();
+        v[2]=readFloat();
+        v[3]=readFloat();
+    }
+    else
+    {
+        // assume double for planes even if Plane::value_type is float
+        // to ensure that the .ive format does vary.
+        v[0]=readDouble();
+        v[1]=readDouble();
+        v[2]=readDouble();
+        v[3]=readDouble();
+    }
+    
     if (_verboseOutput) std::cout<<"read/writePlane() ["<<v<<"]"<<std::endl;
     
     return v;

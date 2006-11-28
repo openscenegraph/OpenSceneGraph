@@ -933,9 +933,9 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
     osg::TexGenNode* texgenNode_0 = new osg::TexGenNode;
     texgenNode_0->setTextureUnit(0);
     texgenNode_0->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Vec4(xMultiplier,0.0f,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Vec4(0.0f,yMultiplier,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Vec4(0.0f,0.0f,zMultiplier,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Plane(xMultiplier,0.0f,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Plane(0.0f,yMultiplier,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,zMultiplier,0.5f));
     
     if (two_pass)
     {

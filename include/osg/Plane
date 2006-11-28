@@ -23,6 +23,8 @@
 
 #include <vector>
 
+#define OSG_USE_DOUBLE_PLANE 1
+
 namespace osg {
 
 /** A plane class. It can be used to represent an infinite plane.*/
@@ -31,91 +33,137 @@ class OSG_EXPORT Plane
 
     public:
 
-        inline Plane():_fv(0.0f,0.0f,0.0f,0.0f) { _lowerBBCorner = 0; _upperBBCorner = 0; }
-        inline Plane(const Plane& pl):_fv(pl._fv) { calculateUpperLowerBBCorners(); }
-        inline Plane(float a,float b,float c,float d):_fv(a,b,c,d) { calculateUpperLowerBBCorners(); }
-        inline Plane(const Vec4& vec):_fv(vec) { calculateUpperLowerBBCorners(); }
-        inline Plane(const Vec3& norm,float d):_fv(norm[0],norm[1],norm[2],d) { calculateUpperLowerBBCorners(); }
-        inline Plane(const Vec3& v1, const Vec3& v2, const Vec3& v3) { set(v1,v2,v3); }
-        inline Plane(const Vec3& norm, const Vec3& point) { set(norm,point); }
+#ifdef OSG_USE_DOUBLE_PLANE
+        /** Type of Plane class.*/
+        typedef double value_type;
+        typedef Vec3d Vec3_type;
+        typedef Vec4d Vec4_type;
+#else
+        /** Type of Plane class.*/
+        typedef float value_type;
+        typedef Vec3f Vec3_type;
+        typedef Vec4f Vec4_type;
+#endif
+
+        /** Number of vector components. */
+        enum { num_components = 3 };
+
+
+        inline Plane() { _fv[0]=0.0; _fv[1]=0.0; _fv[2]=0.0; _fv[3]=0.0; _lowerBBCorner = 0; _upperBBCorner = 0; }
+        inline Plane(const Plane& pl) { set(pl); }
+        inline Plane(value_type a,value_type b,value_type c,value_type d) { set(a,b,c,d); }
+
+        inline Plane(const Vec4f& vec) { set(vec); }
+        inline Plane(const Vec4d& vec) { set(vec); }
+
+        inline Plane(const Vec3_type& norm,value_type d) { set(norm,d); }
+
+        inline Plane(const Vec3_type& v1, const Vec3_type& v2, const Vec3_type& v3) { set(v1,v2,v3); }
+
+        inline Plane(const Vec3_type& norm, const Vec3_type& point) { set(norm,point); }
 
         inline Plane& operator = (const Plane& pl)
         {
             if (&pl==this) return *this;
-            _fv = pl._fv;
-            _lowerBBCorner = pl._lowerBBCorner;
-            _upperBBCorner = pl._upperBBCorner;
+            set(pl);
             return *this;
         }
 
-        inline void set(const Plane& pl) { _fv = pl._fv; calculateUpperLowerBBCorners(); }
-        inline void set(float a,float b,float c,float d) { _fv.set(a,b,c,d); calculateUpperLowerBBCorners(); }
-        inline void set(const Vec4& vec) { _fv = vec; calculateUpperLowerBBCorners(); }
-        inline void set(const Vec3& norm,float d) { _fv.set(norm[0],norm[1],norm[2],d); calculateUpperLowerBBCorners(); }
-        inline void set(const Vec3& v1, const Vec3& v2, const Vec3& v3)
+        inline void set(const Plane& pl) { _fv[0]=pl._fv[0]; _fv[1]=pl._fv[1]; _fv[2]=pl._fv[2]; _fv[3]=pl._fv[3]; calculateUpperLowerBBCorners(); }
+        inline void set(value_type a, value_type b, value_type c, value_type d) { _fv[0]=a; _fv[1]=b; _fv[2]=c; _fv[3]=d; calculateUpperLowerBBCorners(); }
+
+        inline void set(const Vec4f& vec) { set(vec[0],vec[1],vec[2],vec[3]); }
+        inline void set(const Vec4d& vec) { set(vec[0],vec[1],vec[2],vec[3]); }
+
+        inline void set(const Vec3_type& norm, double d) { set(norm[0],norm[1],norm[2],d); }
+
+        inline void set(const Vec3_type& v1, const Vec3_type& v2, const Vec3_type& v3)
         {
-            osg::Vec3 norm = (v2-v1)^(v3-v2);
-            float length = norm.length();
+            Vec3_type norm = (v2-v1)^(v3-v2);
+            value_type length = norm.length();
             if (length>1e-6) norm/= length;
-            else norm.set(0.0f,0.0f,0.0f);
-            _fv.set(norm[0],norm[1],norm[2],-(v1*norm));
-            calculateUpperLowerBBCorners();
+            else norm.set(0.0,0.0,0.0);
+            set(norm[0],norm[1],norm[2],-(v1*norm));
         }
 
-        inline void set(const Vec3& norm, const Vec3& point)
+        inline void set(const Vec3_type& norm, const Vec3_type& point)
         {
-            float d = -norm[0]*point[0] - norm[1]*point[1] - norm[2]*point[2];
-            _fv.set(norm[0],norm[1],norm[2],d);
-            calculateUpperLowerBBCorners();
+            value_type d = -norm[0]*point[0] - norm[1]*point[1] - norm[2]*point[2];
+            set(norm[0],norm[1],norm[2],d);
         }
 
         /** flip/reverse the orientation of the plane.*/
         inline void flip()
         {
-            _fv = -_fv;
+            _fv[0] = -_fv[0];
+            _fv[1] = -_fv[1];
+            _fv[2] = -_fv[2];
+            _fv[3] = -_fv[3];
             calculateUpperLowerBBCorners();
         }
 
 
         inline void makeUnitLength()
         {
-            float length = sqrtf(_fv[0]*_fv[0] + _fv[1]*_fv[1]+ _fv[2]*_fv[2]);
-            _fv /= length;
+            value_type inv_length = 1.0 / sqrt(_fv[0]*_fv[0] + _fv[1]*_fv[1]+ _fv[2]*_fv[2]);
+            _fv[0] *= inv_length;
+            _fv[1] *= inv_length;
+            _fv[2] *= inv_length;
+            _fv[3] *= inv_length;
         }
 
         /** calculate the upper and lower bounding box corners to be used
           * in the intersect(BoundingBox&) method for speeding calculations.*/
         inline void calculateUpperLowerBBCorners()
         {
-            _upperBBCorner = (_fv.x()>=0.0f?1:0) |
-                             (_fv.y()>=0.0f?2:0) |
-                             (_fv.z()>=0.0f?4:0);
+            _upperBBCorner = (_fv[0]>=0.0?1:0) |
+                             (_fv[1]>=0.0?2:0) |
+                             (_fv[2]>=0.0?4:0);
 
             _lowerBBCorner = (~_upperBBCorner)&7;
 
         }
 
-        inline bool valid() const { return _fv.valid(); }
+        inline bool valid() const { return !isNaN(); }
+        inline bool isNaN() const { return osg::isNaN(_fv[0]) || osg::isNaN(_fv[1]) || osg::isNaN(_fv[2]) || osg::isNaN(_fv[3]); }
 
-        inline bool operator == (const Plane& plane) const { return _fv==plane._fv;  }
-        inline bool operator != (const Plane& plane) const { return _fv!=plane._fv; }
-        inline bool operator <  (const Plane& plane) const { return _fv<plane._fv; }
+        inline bool operator == (const Plane& plane) const { return _fv[0]==plane._fv[0] && _fv[1]==plane._fv[1] && _fv[2]==plane._fv[2] && _fv[3]==plane._fv[3]; }
 
-        inline float* ptr() { return _fv.ptr(); }
-        inline const float* ptr() const { return _fv.ptr(); }
+        inline bool operator != (const Plane& plane) const { return _fv[0]!=plane._fv[0] || _fv[1]!=plane._fv[1] || _fv[2]!=plane._fv[2] || _fv[3]!=plane._fv[3]; }
 
-        inline Vec4& asVec4() { return _fv; }
+        inline bool operator <  (const Plane& plane) const
+        {
+            if (_fv[0]<plane._fv[0]) return true;
+            else if (_fv[0]>plane._fv[0]) return false;
+            else if (_fv[1]<plane._fv[1]) return true;
+            else if (_fv[1]>plane._fv[1]) return false;
+            else if (_fv[2]<plane._fv[2]) return true;
+            else if (_fv[2]>plane._fv[2]) return false;
+            else return (_fv[3]<plane._fv[3]);
+        }
 
-        inline const Vec4& asVec4() const { return _fv; }
-        
-        inline float& operator [] (unsigned int i) { return _fv[i]; }
-        inline float  operator [] (unsigned int i) const { return _fv[i]; }
+
+        inline value_type* ptr() { return _fv; }
+        inline const value_type* ptr() const { return _fv; }
+
+        inline Vec4_type asVec4() const { return Vec4(_fv[0],_fv[1],_fv[2],_fv[3]); }
+
+        inline value_type& operator [] (unsigned int i) { return _fv[i]; }
+        inline value_type operator [] (unsigned int i) const { return _fv[i]; }
 
 
-        inline osg::Vec3 getNormal() const { return osg::Vec3(_fv[0],_fv[1],_fv[2]); }
+        inline Vec3_type getNormal() const { return Vec3_type(_fv[0],_fv[1],_fv[2]); }
       
         /** calculate the distance between a point and the plane.*/
-        inline float distance(const osg::Vec3& v) const
+        inline float distance(const osg::Vec3f& v) const
+        {
+            return _fv[0]*v.x()+
+                   _fv[1]*v.y()+
+                   _fv[2]*v.z()+
+                   _fv[3];
+        }
+
+        inline float distance(const osg::Vec3d& v) const
         {
             return _fv[0]*v.x()+
                    _fv[1]*v.y()+
@@ -124,7 +172,15 @@ class OSG_EXPORT Plane
         }
 
         /** calculate the dot product of the plane normal and a point.*/
-        inline float dotProductNormal(const osg::Vec3& v) const
+        inline float dotProductNormal(const osg::Vec3f& v) const
+        {
+            return _fv[0]*v.x()+
+                   _fv[1]*v.y()+
+                   _fv[2]*v.z();
+        }
+
+        /** calculate the dot product of the plane normal and a point.*/
+        inline float dotProductNormal(const osg::Vec3d& v) const
         {
             return _fv[0]*v.x()+
                    _fv[1]*v.y()+
@@ -210,14 +266,16 @@ class OSG_EXPORT Plane
         inline void transformProvidingInverse(const osg::Matrix& matrix)
         {
             // note pre multiplications, which effectively transposes matrix.
-            _fv = matrix * _fv;
+            Vec4_type vec(_fv[0],_fv[1],_fv[2],_fv[3]);
+            vec = matrix * vec;
+            set(vec);
             makeUnitLength();
-            calculateUpperLowerBBCorners();
         }
 
     protected:
 
-        Vec4                _fv;
+        /** Vec member varaible. */
+        value_type _fv[4];
 
         // variables cached to optimize calcs against bounding boxes.
         unsigned int        _upperBBCorner;

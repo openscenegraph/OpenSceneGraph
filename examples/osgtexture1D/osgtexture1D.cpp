@@ -63,7 +63,7 @@ osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
     
     osg::TexGen* texgen = new osg::TexGen;
     texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-    texgen->setPlane(osg::TexGen::S,osg::Vec4(0.0f,0.0f,zScale,-zBase));
+    texgen->setPlane(osg::TexGen::S,osg::Plane(0.0f,0.0f,zScale,-zBase));
     
     osg::Material* material = new osg::Material;
     

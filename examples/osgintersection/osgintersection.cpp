@@ -11,6 +11,7 @@
 
 #include <osgSim/LineOfSight>
 #include <osgSim/HeightAboveTerrain>
+#include <osgSim/ElevationSlice>
 
 #include <iostream>
 
@@ -42,7 +43,6 @@ int main(int argc, char **argv)
     }
     
     std::cout<<"Intersection "<<std::endl;
-
     
     osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene.get());
     osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
@@ -55,10 +55,9 @@ int main(int argc, char **argv)
     
     if (useLineOfSight)
     {
-        osg::Timer_t startTick = osg::Timer::instance()->tick();
     
         osg::Vec3d start = bs.center() + osg::Vec3d(0.0,bs.radius(),0.0);
-        osg::Vec3d end = bs.center();// - osg::Vec3d(0.0, bs.radius(),0.0);
+        osg::Vec3d end = bs.center() - osg::Vec3d(0.0, bs.radius(),0.0);
         osg::Vec3d deltaRow( 0.0, 0.0, bs.radius()*0.01);
         osg::Vec3d deltaColumn( bs.radius()*0.01, 0.0, 0.0);
         unsigned int numRows = 20;
@@ -66,6 +65,7 @@ int main(int argc, char **argv)
 
         osgSim::LineOfSight los;
         
+#if 0
         osgSim::HeightAboveTerrain hat;
         hat.setDatabaseCacheReadCallback(los.getDatabaseCacheReadCallback());
 
@@ -81,43 +81,66 @@ int main(int argc, char **argv)
         }
 
 
-        std::cout<<"Computing LineOfSight"<<std::endl;
-
-        los.computeIntersections(scene.get());
-        
-        osg::Timer_t endTick = osg::Timer::instance()->tick();
-
-        std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
-
-#if 1
-        for(unsigned int i=0; i<los.getNumLOS(); i++)
         {
-            const osgSim::LineOfSight::Intersections& intersections = los.getIntersections(i);
-            for(osgSim::LineOfSight::Intersections::const_iterator itr = intersections.begin();
-                itr != intersections.end();
-                ++itr)
+            std::cout<<"Computing LineOfSight"<<std::endl;
+
+            osg::Timer_t startTick = osg::Timer::instance()->tick();
+
+            los.computeIntersections(scene.get());
+
+            osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+            std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+
+            for(unsigned int i=0; i<los.getNumLOS(); i++)
             {
-                 std::cout<<"  point "<<*itr<<std::endl;
+                const osgSim::LineOfSight::Intersections& intersections = los.getIntersections(i);
+                for(osgSim::LineOfSight::Intersections::const_iterator itr = intersections.begin();
+                    itr != intersections.end();
+                    ++itr)
+                {
+                     std::cout<<"  point "<<*itr<<std::endl;
+                }
             }
+        }
+        
+        {
+            // now do a second traversal to test performance of cache.
+            osg::Timer_t startTick = osg::Timer::instance()->tick();
+
+            std::cout<<"Computing HeightAboveTerrain"<<std::endl;
+
+            hat.computeIntersections(scene.get());
+
+            osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+            for(unsigned int i=0; i<hat.getNumPoints(); i++)
+            {
+                 std::cout<<"  point = "<<hat.getPoint(i)<<" hat = "<<hat.getHeightAboveTerrain(i)<<std::endl;
+            }
+
+
+            std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
         }
 #endif
 
-        // now do a second traversal to test performance of cache.
-        startTick = osg::Timer::instance()->tick();
-
-        std::cout<<"Computing HeightAboveTerrain"<<std::endl;
-
-        hat.computeIntersections(scene.get());
-        
-        for(unsigned int i=0; i<hat.getNumPoints(); i++)
         {
-             std::cout<<"  point = "<<hat.getPoint(i)<<" hat = "<<hat.getHeightAboveTerrain(i)<<std::endl;
+            // now do a second traversal to test performance of cache.
+            osg::Timer_t startTick = osg::Timer::instance()->tick();
+
+            std::cout<<"Computing ElevationSlice"<<std::endl;
+            osgSim::ElevationSlice es;
+            es.setDatabaseCacheReadCallback(los.getDatabaseCacheReadCallback());
+
+            es.setStartPoint(bs.center()+osg::Vec3d(bs.radius(),0.0,0.0) );
+            es.setEndPoint(bs.center()+osg::Vec3d(0.0,bs.radius(),0.0) );
+
+            es.computeIntersections(scene.get());
+
+            osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+            std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
         }
-
-        endTick = osg::Timer::instance()->tick();
-
-        std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
-
     }
     else if (useIntersectorGroup)
     {

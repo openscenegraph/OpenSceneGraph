@@ -31,8 +31,6 @@
 #include <osgDB/Registry>
 #include <osg/Material>
 
-#include "daeUtils.h"
-
 
 class domBind_material;
 class domCamera;

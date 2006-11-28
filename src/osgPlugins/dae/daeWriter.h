@@ -40,8 +40,6 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
-#include "daeUtils.h"
-
 #include <dae.h>
 #include <dae/daeDocument.h>
 

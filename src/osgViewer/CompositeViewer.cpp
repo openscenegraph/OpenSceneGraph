@@ -15,7 +15,7 @@
 
 using namespace osgViewer;
 
-CompositeViewer::CompositeViewer():
+CompositeViewer::CompositeViewer()
 {
 }
 

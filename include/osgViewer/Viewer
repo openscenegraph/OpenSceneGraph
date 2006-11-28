@@ -17,7 +17,7 @@
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/View>
 
-namespace osgViewer{
+namespace osgViewer {
 
 // WARNING ** Under development do not use, yet :-) 
 

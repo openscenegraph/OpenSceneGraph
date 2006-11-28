@@ -29,10 +29,12 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         CompositeViewer();
         virtual ~CompositeViewer();
 
-        void addView(osgViewer* view);
-        osgViewer* getView(unsigned i) { return _views[i].get(); }
-        const osgViewer* getView(unsigned i) const { return _views[i].get(); }
-        void getNumViews() const { return _views.size(); }
+        void addView(osgViewer::View* view);
+        
+        osgViewer::View* getView(unsigned i) { return _views[i].get(); }
+        const osgViewer::View* getView(unsigned i) const { return _views[i].get(); }
+        
+        unsigned int getNumViews() const { return _views.size(); }
 
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal().
@@ -57,7 +59,7 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
 
     protected:
 
-        typedef std::vector< osg::ref_ptr<osg:Viewer:View> > Views;
+        typedef std::vector< osg::ref_ptr<osgViewer::View> > Views;
         Views _views;
        
 };

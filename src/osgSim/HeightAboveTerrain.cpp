@@ -15,6 +15,7 @@
 #include <osgSim/HeightAboveTerrain>
 
 #include <osg/Notify>
+#include <osgUtil/LineSegmentIntersector>
 
 using namespace osgSim;
 

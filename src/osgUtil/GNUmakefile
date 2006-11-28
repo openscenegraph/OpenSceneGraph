@@ -11,6 +11,9 @@ CXXFILES = \
 	HalfWayMapGenerator.cpp\
 	HighlightMapGenerator.cpp\
 	IntersectionVisitor.cpp\
+	LineSegmentIntersector.cpp\
+	PlaneIntersector.cpp\
+	PolytopeIntersector.cpp\
 	IntersectVisitor.cpp\
 	Optimizer.cpp\
 	RenderBin.cpp\

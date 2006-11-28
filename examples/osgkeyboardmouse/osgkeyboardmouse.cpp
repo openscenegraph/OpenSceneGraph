@@ -12,6 +12,8 @@
 #include <osg/observer_ptr>
 
 #include <osgUtil/IntersectionVisitor>
+#include <osgUtil/PolytopeIntersector>
+#include <osgUtil/LineSegmentIntersector>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>

@@ -152,6 +152,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Camera.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\CameraNode.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\CameraView.cpp
 # End Source File
 

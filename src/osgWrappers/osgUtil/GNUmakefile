@@ -11,7 +11,10 @@ CXXFILES =\
 	HighlightMapGenerator.cpp\
 	IntersectVisitor.cpp\
 	IntersectionVisitor.cpp\
+	LineSegmentIntersector.cpp\
 	Optimizer.cpp\
+	PlaneIntersector.cpp\
+	PolytopeIntersector.cpp\
 	PositionalStateContainer.cpp\
 	ReflectionMapGenerator.cpp\
 	RenderBin.cpp\

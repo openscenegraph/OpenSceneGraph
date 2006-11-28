@@ -16,6 +16,7 @@ CXXFILES =\
 	BoundingSphere.cpp\
 	BufferObject.cpp\
 	Camera.cpp\
+	CameraNode.cpp\
 	CameraView.cpp\
 	ClampColor.cpp\
 	ClearNode.cpp\

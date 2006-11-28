@@ -131,5 +131,3 @@ BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
 	                  0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec3d >);
-

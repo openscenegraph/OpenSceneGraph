@@ -5,6 +5,7 @@ CXXFILES =\
 	BlinkSequence.cpp\
 	ColorRange.cpp\
 	DOFTransform.cpp\
+	ElevationSlice.cpp\
 	GeographicLocation.cpp\
 	HeightAboveTerrain.cpp\
 	Impostor.cpp\

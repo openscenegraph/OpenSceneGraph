@@ -15,7 +15,7 @@
 
 using namespace osgViewer;
 
-Viewer::Viewer():
+Viewer::Viewer()
 {
 }
 

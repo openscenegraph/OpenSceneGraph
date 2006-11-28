@@ -18,13 +18,14 @@
 #include <osgGA/MatrixManipulator>
 #include <osgViewer/Scene>
 
+namespace osgViewer {
+
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
-class OSGVIEWER_EXPORT View : public virtual osg::View, public osgViewer::Scene
+class OSGVIEWER_EXPORT View : public virtual osg::View, public virtual osgViewer::Scene
 {
     public:
 
         View();
-        virtual ~View();
 
         void setSceneData(osg::Node* node);
         osg::Node* getSceneData();
@@ -46,6 +47,7 @@ class OSGVIEWER_EXPORT View : public virtual osg::View, public osgViewer::Scene
 
     protected:
     
+        virtual ~View();
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
     
@@ -54,5 +56,7 @@ class OSGVIEWER_EXPORT View : public virtual osg::View, public osgViewer::Scene
         EventHandlers                           _eventHandlers;
     
 };
+
+}
 
 #endif

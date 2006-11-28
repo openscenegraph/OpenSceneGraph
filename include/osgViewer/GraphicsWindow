@@ -18,6 +18,7 @@
 #include <osg/Notify>
 
 #include <osgGA/EventQueue>
+#include <osgGA/GUIActionAdapter>
 
 #include <osgViewer/Export>
 

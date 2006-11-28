@@ -187,6 +187,10 @@ SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\IntersectionVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\LineSegmentIntersector.cpp
 # End Source File
 # Begin Source File

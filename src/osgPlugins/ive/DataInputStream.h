@@ -40,7 +40,7 @@ public:
         void setOptions(const osgDB::ReaderWriter::Options* options);
         const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
-    unsigned int getVersion();
+    inline unsigned int getVersion() const { return _version; }
     bool readBool();
     char readChar();
     unsigned char readUChar();

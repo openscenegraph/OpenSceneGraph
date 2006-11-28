@@ -89,7 +89,7 @@ class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallba
             // will do the blending for us.
             osg::TexGen* texgen = new osg::TexGen;
             texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-            texgen->setPlane(osg::TexGen::R, osg::Vec4(0.0f,0.0f,0.0f,0.2f));
+            texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,0.0f,0.2f));
 
             // create the StateSet to store the texture data
             osg::StateSet* stateset = new osg::StateSet;

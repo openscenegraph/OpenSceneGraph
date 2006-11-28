@@ -272,10 +272,10 @@ void DataOutputStream::writeVec4d(const osg::Vec4d& v){
 
 void DataOutputStream::writePlane(const osg::Plane& v)
 {
-    writeFloat(v[0]);
-    writeFloat(v[1]);
-    writeFloat(v[2]);
-    writeFloat(v[3]);
+    writeDouble(v[0]);
+    writeDouble(v[1]);
+    writeDouble(v[2]);
+    writeDouble(v[3]);
     
     if (_verboseOutput) std::cout<<"read/writePlane() ["<<v<<"]"<<std::endl;
 }

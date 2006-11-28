@@ -78,25 +78,24 @@ void TexGen::setPlanesFromMatrix(const Matrixd& matrix)
 void TexGen::apply(State&) const
 {
 
-    if (_mode == OBJECT_LINEAR)
+    if (_mode == OBJECT_LINEAR || _mode == EYE_LINEAR)
     {
-        glTexGenfv(GL_S, GL_OBJECT_PLANE, _plane_s.ptr());
-        glTexGenfv(GL_T, GL_OBJECT_PLANE, _plane_t.ptr());
-        glTexGenfv(GL_R, GL_OBJECT_PLANE, _plane_r.ptr());
-        glTexGenfv(GL_Q, GL_OBJECT_PLANE, _plane_q.ptr());
-
-        glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
-        glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
-        glTexGeni( GL_R, GL_TEXTURE_GEN_MODE, _mode );
-        glTexGeni( GL_Q, GL_TEXTURE_GEN_MODE, _mode );
-
-    }
-    else if (_mode == EYE_LINEAR)
-    {
-        glTexGenfv(GL_S, GL_EYE_PLANE, _plane_s.ptr());
-        glTexGenfv(GL_T, GL_EYE_PLANE, _plane_t.ptr());
-        glTexGenfv(GL_R, GL_EYE_PLANE, _plane_r.ptr());
-        glTexGenfv(GL_Q, GL_EYE_PLANE, _plane_q.ptr());
+        GLenum glmode = _mode == OBJECT_LINEAR ? GL_OBJECT_PLANE : GL_EYE_PLANE;
+    
+        if (sizeof(_plane_s[0])==sizeof(GLfloat))
+        {
+            glTexGenfv(GL_S, glmode, (const GLfloat*)_plane_s.ptr());
+            glTexGenfv(GL_T, glmode, (const GLfloat*)_plane_t.ptr());
+            glTexGenfv(GL_R, glmode, (const GLfloat*)_plane_r.ptr());
+            glTexGenfv(GL_Q, glmode, (const GLfloat*)_plane_q.ptr());
+        }
+        else
+        {
+            glTexGendv(GL_S, glmode, (const GLdouble*)_plane_s.ptr());
+            glTexGendv(GL_T, glmode, (const GLdouble*)_plane_t.ptr());
+            glTexGendv(GL_R, glmode, (const GLdouble*)_plane_r.ptr());
+            glTexGendv(GL_Q, glmode, (const GLdouble*)_plane_q.ptr());
+        }
 
         glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
         glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
@@ -120,8 +119,6 @@ void TexGen::apply(State&) const
     }
     else                         // SPHERE_MAP
     {
-        // We ignore the planes if we are not in OBJECT_ or EYE_LINEAR mode.
-
         // Also don't set the mode of GL_R & GL_Q as these will generate
         // GL_INVALID_ENUM (See OpenGL Refrence Guide, glTexGEn.)
 

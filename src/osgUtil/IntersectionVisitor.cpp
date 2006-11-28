@@ -696,7 +696,7 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
 bool PlaneIntersector::enter(const osg::Node& node)
 {
     return !node.isCullingActive() ||
-           ( _plane.intersect(node.getBound()) && _polytope.contains(node.getBound()) );
+           ( _plane.intersect(node.getBound())==0 && _polytope.contains(node.getBound()) );
 }
 
 
@@ -708,8 +708,12 @@ void PlaneIntersector::leave()
 
 void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
 {
+    osg::notify(osg::NOTICE)<<"PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
+
     if ( !_plane.intersect( drawable->getBound() ) ) return;
     if ( !_polytope.contains( drawable->getBound() ) ) return;
+
+    osg::notify(osg::NOTICE)<<"Succed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
     Intersection hit;
     hit.nodePath = iv.getNodePath();

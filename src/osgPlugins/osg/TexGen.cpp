@@ -44,7 +44,7 @@ bool TexGen_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
     
-    Vec4 plane;
+    osg::Plane plane;
     if (fr[0].matchWord("plane_s"))
     {
         if (fr[1].getFloat(plane[0]) && fr[2].getFloat(plane[1]) &&

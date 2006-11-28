@@ -69,21 +69,21 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
      
     void buildPolytope()
     {
-        osg::Vec3 edge01 = _vertices[1] - _vertices[0];
-        osg::Vec3 edge12 = _vertices[2] - _vertices[1];
-        osg::Vec3 edge23 = _vertices[3] - _vertices[2];
-        osg::Vec3 edge30 = _vertices[0] - _vertices[3];
+        osg::Vec3d edge01 = _vertices[1] - _vertices[0];
+        osg::Vec3d edge12 = _vertices[2] - _vertices[1];
+        osg::Vec3d edge23 = _vertices[3] - _vertices[2];
+        osg::Vec3d edge30 = _vertices[0] - _vertices[3];
 
-        osg::Vec3 normalFrontFace = edge01 ^ edge12;
+        osg::Vec3d normalFrontFace = edge01 ^ edge12;
         bool needToFlip = normalFrontFace.z()>0.0f;
 
         normalFrontFace.normalize();
         add(osg::Plane(normalFrontFace, _vertices[0]));
 
-        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[0], _vertices[1]));
-        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[1], _vertices[2]));
-        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[2], _vertices[3]));
-        add(osg::Plane( osg::Vec3(0.0f,0.0f,0.0f), _vertices[3], _vertices[0]));
+        add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[0], _vertices[1]));
+        add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[1], _vertices[2]));
+        add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[2], _vertices[3]));
+        add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[3], _vertices[0]));
         
 #if 0
         osg::notify(osg::NOTICE)<<" normalFrontFace = "<<normalFrontFace<<std::endl;

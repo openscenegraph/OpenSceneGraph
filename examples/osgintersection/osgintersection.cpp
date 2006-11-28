@@ -8,6 +8,7 @@
 #include <osgDB/ReadFile>
 
 #include <osgUtil/IntersectionVisitor>
+#include <osgUtil/LineSegmentIntersector>
 
 #include <osgSim/LineOfSight>
 #include <osgSim/HeightAboveTerrain>

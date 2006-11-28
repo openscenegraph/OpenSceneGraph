@@ -187,7 +187,15 @@ SOURCE=..\..\src\osgUtil\IntersectVisitor.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\IntersectionVisitor.cpp
+SOURCE=..\..\src\osgUtil\LineSegmentIntersector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\PlaneIntersector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgUtil\PolytopeIntersector.cpp
 # End Source File
 # Begin Source File
 
@@ -300,6 +308,18 @@ SOURCE=..\..\Include\osgUtil\IntersectVisitor
 # Begin Source File
 
 SOURCE=..\..\Include\osgUtil\IntersectionVisitor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\LineSegmentIntersector
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\PlaneIntersector
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgUtil\PolytopeIntersector
 # End Source File
 # Begin Source File
 

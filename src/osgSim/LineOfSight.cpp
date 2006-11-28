@@ -14,8 +14,8 @@
 #include <osgSim/LineOfSight>
 
 #include <osg/Notify>
-
 #include <osgDB/ReadFile>
+#include <osgUtil/LineSegmentIntersector>
 
 using namespace osgSim;
 

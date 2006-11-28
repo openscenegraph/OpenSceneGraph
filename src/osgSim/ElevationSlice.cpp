@@ -15,6 +15,7 @@
 #include <osgSim/ElevationSlice>
 
 #include <osg/Notify>
+#include <osgUtil/PlaneIntersector>
 
 using namespace osgSim;
 

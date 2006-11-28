@@ -863,6 +863,12 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     else
     {
         drawInner( useRenderInfo, previous, doCopyTexture);
+        
+        if (useRenderInfo.getUserData() != renderInfo.getUserData())
+        {
+            renderInfo.setUserData(useRenderInfo.getUserData());
+        }
+        
     }
 
 

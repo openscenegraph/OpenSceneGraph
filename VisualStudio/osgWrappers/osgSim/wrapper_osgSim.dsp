@@ -108,6 +108,10 @@ SOURCE=..\..\..\src\osgWrappers\osgSim\DOFTransform.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgSim\ElevationSlice.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgSim\GeographicLocation.cpp
 # End Source File
 

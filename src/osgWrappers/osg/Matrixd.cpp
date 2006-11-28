@@ -250,6 +250,14 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	          __Vec4d__postMult__C5_Vec4d_R1,
 	          "",
 	          "");
+	I_Method1(void, set, IN, const osg::Quat &, q,
+	          __void__set__C5_Quat_R1,
+	          "",
+	          "");
+	I_Method1(void, get, IN, osg::Quat &, q,
+	          __void__get__Quat_R1,
+	          "",
+	          "");
 	I_Method1(void, setRotate, IN, const osg::Quat &, q,
 	          __void__setRotate__C5_Quat_R1,
 	          "",

@@ -15,7 +15,10 @@
 #include <osg/Matrix>
 #include <osg/Plane>
 #include <osg/Vec3>
-#include <osg/Vec4>
+#include <osg/Vec3d>
+#include <osg/Vec3f>
+#include <osg/Vec4d>
+#include <osg/Vec4f>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -27,6 +30,12 @@
 
 #include <osg/io_utils>
 	
+TYPE_NAME_ALIAS(double, osg::Plane::value_type);
+
+TYPE_NAME_ALIAS(osg::Vec3d, osg::Plane::Vec3_type);
+
+TYPE_NAME_ALIAS(osg::Vec4d, osg::Plane::Vec4_type);
+
 BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
@@ -37,48 +46,56 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	               ____Plane__C5_Plane_R1,
 	               "",
 	               "");
-	I_Constructor4(IN, float, a, IN, float, b, IN, float, c, IN, float, d,
-	               ____Plane__float__float__float__float,
+	I_Constructor4(IN, osg::Plane::value_type, a, IN, osg::Plane::value_type, b, IN, osg::Plane::value_type, c, IN, osg::Plane::value_type, d,
+	               ____Plane__value_type__value_type__value_type__value_type,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Vec4 &, vec,
-	               ____Plane__C5_Vec4_R1,
+	I_Constructor1(IN, const osg::Vec4f &, vec,
+	               ____Plane__C5_Vec4f_R1,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, norm, IN, float, d,
-	               ____Plane__C5_Vec3_R1__float,
+	I_Constructor1(IN, const osg::Vec4d &, vec,
+	               ____Plane__C5_Vec4d_R1,
 	               "",
 	               "");
-	I_Constructor3(IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3,
-	               ____Plane__C5_Vec3_R1__C5_Vec3_R1__C5_Vec3_R1,
+	I_Constructor2(IN, const osg::Plane::Vec3_type &, norm, IN, osg::Plane::value_type, d,
+	               ____Plane__C5_Vec3_type_R1__value_type,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point,
-	               ____Plane__C5_Vec3_R1__C5_Vec3_R1,
+	I_Constructor3(IN, const osg::Plane::Vec3_type &, v1, IN, const osg::Plane::Vec3_type &, v2, IN, const osg::Plane::Vec3_type &, v3,
+	               ____Plane__C5_Vec3_type_R1__C5_Vec3_type_R1__C5_Vec3_type_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Plane::Vec3_type &, norm, IN, const osg::Plane::Vec3_type &, point,
+	               ____Plane__C5_Vec3_type_R1__C5_Vec3_type_R1,
 	               "",
 	               "");
 	I_Method1(void, set, IN, const osg::Plane &, pl,
 	          __void__set__C5_Plane_R1,
 	          "",
 	          "");
-	I_Method4(void, set, IN, float, a, IN, float, b, IN, float, c, IN, float, d,
-	          __void__set__float__float__float__float,
+	I_Method4(void, set, IN, osg::Plane::value_type, a, IN, osg::Plane::value_type, b, IN, osg::Plane::value_type, c, IN, osg::Plane::value_type, d,
+	          __void__set__value_type__value_type__value_type__value_type,
 	          "",
 	          "");
-	I_Method1(void, set, IN, const osg::Vec4 &, vec,
-	          __void__set__C5_Vec4_R1,
+	I_Method1(void, set, IN, const osg::Vec4f &, vec,
+	          __void__set__C5_Vec4f_R1,
 	          "",
 	          "");
-	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, float, d,
-	          __void__set__C5_Vec3_R1__float,
+	I_Method1(void, set, IN, const osg::Vec4d &, vec,
+	          __void__set__C5_Vec4d_R1,
 	          "",
 	          "");
-	I_Method3(void, set, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3,
-	          __void__set__C5_Vec3_R1__C5_Vec3_R1__C5_Vec3_R1,
+	I_Method2(void, set, IN, const osg::Plane::Vec3_type &, norm, IN, double, d,
+	          __void__set__C5_Vec3_type_R1__double,
 	          "",
 	          "");
-	I_Method2(void, set, IN, const osg::Vec3 &, norm, IN, const osg::Vec3 &, point,
-	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
+	I_Method3(void, set, IN, const osg::Plane::Vec3_type &, v1, IN, const osg::Plane::Vec3_type &, v2, IN, const osg::Plane::Vec3_type &, v3,
+	          __void__set__C5_Vec3_type_R1__C5_Vec3_type_R1__C5_Vec3_type_R1,
+	          "",
+	          "");
+	I_Method2(void, set, IN, const osg::Plane::Vec3_type &, norm, IN, const osg::Plane::Vec3_type &, point,
+	          __void__set__C5_Vec3_type_R1__C5_Vec3_type_R1,
 	          "",
 	          "");
 	I_Method0(void, flip,
@@ -97,32 +114,40 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	          __bool__valid,
 	          "",
 	          "");
-	I_Method0(float *, ptr,
-	          __float_P1__ptr,
+	I_Method0(bool, isNaN,
+	          __bool__isNaN,
 	          "",
 	          "");
-	I_Method0(const float *, ptr,
-	          __C5_float_P1__ptr,
+	I_Method0(osg::Plane::value_type *, ptr,
+	          __value_type_P1__ptr,
 	          "",
 	          "");
-	I_Method0(osg::Vec4 &, asVec4,
-	          __Vec4_R1__asVec4,
+	I_Method0(const osg::Plane::value_type *, ptr,
+	          __C5_value_type_P1__ptr,
 	          "",
 	          "");
-	I_Method0(const osg::Vec4 &, asVec4,
-	          __C5_Vec4_R1__asVec4,
+	I_Method0(osg::Plane::Vec4_type, asVec4,
+	          __Vec4_type__asVec4,
 	          "",
 	          "");
-	I_Method0(osg::Vec3, getNormal,
-	          __osg_Vec3__getNormal,
+	I_Method0(osg::Plane::Vec3_type, getNormal,
+	          __Vec3_type__getNormal,
 	          "",
 	          "");
-	I_Method1(float, distance, IN, const osg::Vec3 &, v,
-	          __float__distance__C5_osg_Vec3_R1,
+	I_Method1(float, distance, IN, const osg::Vec3f &, v,
+	          __float__distance__C5_osg_Vec3f_R1,
 	          "calculate the distance between a point and the plane. ",
 	          "");
-	I_Method1(float, dotProductNormal, IN, const osg::Vec3 &, v,
-	          __float__dotProductNormal__C5_osg_Vec3_R1,
+	I_Method1(float, distance, IN, const osg::Vec3d &, v,
+	          __float__distance__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method1(float, dotProductNormal, IN, const osg::Vec3f &, v,
+	          __float__dotProductNormal__C5_osg_Vec3f_R1,
+	          "calculate the dot product of the plane normal and a point. ",
+	          "");
+	I_Method1(float, dotProductNormal, IN, const osg::Vec3d &, v,
+	          __float__dotProductNormal__C5_osg_Vec3d_R1,
 	          "calculate the dot product of the plane normal and a point. ",
 	          "");
 	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices,
@@ -145,8 +170,8 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	          __void__transformProvidingInverse__C5_osg_Matrix_R1,
 	          "Transform the plane by providing a pre inverted matrix. ",
 	          "see transform for details. ");
-	I_SimpleProperty(osg::Vec3, Normal, 
-	                 __osg_Vec3__getNormal, 
+	I_SimpleProperty(osg::Plane::Vec3_type, Normal, 
+	                 __Vec3_type__getNormal, 
 	                 0);
 END_REFLECTOR
 

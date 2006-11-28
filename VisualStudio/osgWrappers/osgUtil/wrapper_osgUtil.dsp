@@ -132,7 +132,19 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\IntersectionVisitor.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\LineSegmentIntersector.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\Optimizer.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\PlaneIntersector.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\PolytopeIntersector.cpp
 # End Source File
 
 # Begin Source File

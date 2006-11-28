@@ -24,7 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::View)
-	I_BaseType(osg::Referenced);
+	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____View,
 	               "",
 	               "");

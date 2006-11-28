@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osgViewer/CompositeViewer>
+#include <osgViewer/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -25,20 +26,20 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_Constructor0(____CompositeViewer,
 	               "",
 	               "");
-	I_Method1(void, addView, IN, osgViewer *, view,
-	          __void__addView__osgViewer_P1,
+	I_Method1(void, addView, IN, osgViewer::View *, view,
+	          __void__addView__osgViewer_View_P1,
 	          "",
 	          "");
-	I_Method1(osgViewer *, getView, IN, unsigned, i,
-	          __osgViewer_P1__getView__unsigned,
+	I_Method1(osgViewer::View *, getView, IN, unsigned, i,
+	          __osgViewer_View_P1__getView__unsigned,
 	          "",
 	          "");
-	I_Method1(const osgViewer *, getView, IN, unsigned, i,
-	          __C5_osgViewer_P1__getView__unsigned,
+	I_Method1(const osgViewer::View *, getView, IN, unsigned, i,
+	          __C5_osgViewer_View_P1__getView__unsigned,
 	          "",
 	          "");
-	I_Method0(void, getNumViews,
-	          __void__getNumViews,
+	I_Method0(unsigned int, getNumViews,
+	          __unsigned_int__getNumViews,
 	          "",
 	          "");
 	I_Method0(void, frame,
@@ -77,11 +78,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __void__init,
 	          "",
 	          "");
-	I_ArrayProperty(osgViewer *, View, 
-	                __osgViewer_P1__getView__unsigned, 
+	I_ArrayProperty(osgViewer::View *, View, 
+	                __osgViewer_View_P1__getView__unsigned, 
 	                0, 
-	                __void__getNumViews, 
-	                __void__addView__osgViewer_P1, 
+	                __unsigned_int__getNumViews, 
+	                __void__addView__osgViewer_View_P1, 
 	                0, 
 	                0);
 END_REFLECTOR

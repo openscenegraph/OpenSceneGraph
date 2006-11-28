@@ -23,11 +23,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, View::EventHandlers);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers);
 
-BEGIN_OBJECT_REFLECTOR(View)
+BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_VirtualBaseType(osg::View);
-	I_BaseType(osgViewer::Scene);
+	I_VirtualBaseType(osgViewer::Scene);
 	I_Constructor0(____View,
 	               "",
 	               "");
@@ -59,11 +59,11 @@ BEGIN_OBJECT_REFLECTOR(View)
 	          __void__addEventHandler__osgGA_GUIEventHandler_P1,
 	          "",
 	          "");
-	I_Method0(View::EventHandlers &, getEventHandlers,
+	I_Method0(osgViewer::View::EventHandlers &, getEventHandlers,
 	          __EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
-	I_Method0(const View::EventHandlers &, getEventHandlers,
+	I_Method0(const osgViewer::View::EventHandlers &, getEventHandlers,
 	          __C5_EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
@@ -74,7 +74,7 @@ BEGIN_OBJECT_REFLECTOR(View)
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
 	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);
-	I_SimpleProperty(View::EventHandlers &, EventHandlers, 
+	I_SimpleProperty(osgViewer::View::EventHandlers &, EventHandlers, 
 	                 __EventHandlers_R1__getEventHandlers, 
 	                 0);
 	I_SimpleProperty(osg::Node *, SceneData, 

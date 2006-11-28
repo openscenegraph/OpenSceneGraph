@@ -20,7 +20,8 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgViewer::Viewer)
+BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
+	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
 	               "",
 	               "");

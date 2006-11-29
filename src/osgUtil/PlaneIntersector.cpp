@@ -254,6 +254,12 @@ namespace PlaneIntersectorUtils
             // remove entries for the end of the end_poly and the start of the start_poly
             _endPolylineMap.erase(end_itr);
             _startPolylineMap.erase(start_itr);
+
+            if (end_poly==start_poly)
+            {
+                _polylines.push_back(end_poly);
+            }
+
         }
 
         void fuse_end_to_end(PolylineMap::iterator end1_itr, PolylineMap::iterator end2_itr)
@@ -308,17 +314,26 @@ namespace PlaneIntersectorUtils
                 osg::notify(osg::NOTICE)<<"  line - end = "<<eitr->first<<" polyline size = "<<eitr->second->_polyline.size()<<std::endl;
             }
 #endif
+
+            // move the remaining open ended line segments into the polyline list
             for(PolylineMap::iterator sitr = _startPolylineMap.begin();
                 sitr != _startPolylineMap.end();
                 ++sitr)
             {
+                _polylines.push_back(sitr->second);
+            }
+
+            for(PolylineList::iterator pitr = _polylines.begin();
+                pitr != _polylines.end();
+                ++pitr)
+            {
                 osg::notify(osg::NOTICE)<<"polyline:"<<std::endl;
-                RefPolyline::Polyline& polyline = sitr->second->_polyline;
-                for(RefPolyline::Polyline::iterator pitr = polyline.begin();
-                    pitr != polyline.end();
-                    ++pitr)
+                RefPolyline::Polyline& polyline = (*pitr)->_polyline;
+                for(RefPolyline::Polyline::iterator vitr = polyline.begin();
+                    vitr != polyline.end();
+                    ++vitr)
                 {
-                    osg::notify(osg::NOTICE)<<"  "<<*pitr<<std::endl;
+                    osg::notify(osg::NOTICE)<<"  "<<*vitr<<std::endl;
                 }
             }
 

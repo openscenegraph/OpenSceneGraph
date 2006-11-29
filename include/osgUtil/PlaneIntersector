@@ -37,13 +37,22 @@ class OSGUTIL_EXPORT PlaneIntersector : public Intersector
         
             bool operator < (const Intersection& rhs) const
             {
+                if (polyline < rhs.polyline) return true;
+                if (rhs.polyline < polyline) return false;
+                
                 if (nodePath < rhs.nodePath) return true;
                 if (rhs.nodePath < nodePath ) return false;
+                
                 return (drawable < rhs.drawable);
             }
 
+            typedef std::vector<osg::Vec3d> Polyline;
+
             osg::NodePath                   nodePath;
+            osg::ref_ptr<osg::RefMatrix>    matrix;
             osg::ref_ptr<osg::Drawable>     drawable;
+            Polyline                        polyline;
+            
         };
         
         typedef std::set<Intersection> Intersections;

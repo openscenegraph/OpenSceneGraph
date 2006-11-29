@@ -81,12 +81,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	                 0);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgUtil::PlaneIntersector::Intersection::Polyline);
+
 BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_Constructor0(____Intersection,
 	               "",
 	               "");
 	I_PublicMemberProperty(osg::NodePath, nodePath);
+	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, matrix);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, drawable);
+	I_PublicMemberProperty(osgUtil::PlaneIntersector::Intersection::Polyline, polyline);
 END_REFLECTOR
 
 STD_SET_REFLECTOR(std::set< osgUtil::PlaneIntersector::Intersection >);

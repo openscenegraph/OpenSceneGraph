@@ -17,8 +17,50 @@ using namespace osgViewer;
 
 CompositeViewer::CompositeViewer()
 {
+    osg::notify(osg::NOTICE)<<"CompositeViewer::Viewer() not implemented yet."<<std::endl;
 }
 
 CompositeViewer::~CompositeViewer()
 {
 }
+
+void CompositeViewer::frame()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::frame() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::frameAdvance()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::frameAdvance() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::frameEventTraversal()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::frameEventTraversal() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::frameUpdateTraversal()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::frameUpdateTraversal() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::frameCullTraversal()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::frameCullTraversal() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::frameDrawTraversal()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::frameDrawTraversal() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::releaseAllGLObjects()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::releaseAllGLObjects() not implemented yet."<<std::endl;
+}
+
+void CompositeViewer::cleanup()
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::cleanup() not implemented yet."<<std::endl;
+}
+

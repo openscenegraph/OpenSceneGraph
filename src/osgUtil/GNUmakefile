@@ -6,24 +6,24 @@ CXXFILES = \
 	CubeMapGenerator.cpp\
 	CullVisitor.cpp\
 	DelaunayTriangulator.cpp\
-	GLObjectsVisitor.cpp\
 	DisplayRequirementsVisitor.cpp\
+	GLObjectsVisitor.cpp\
 	HalfWayMapGenerator.cpp\
 	HighlightMapGenerator.cpp\
 	IntersectionVisitor.cpp\
+	IntersectVisitor.cpp\
 	LineSegmentIntersector.cpp\
+	Optimizer.cpp\
 	PlaneIntersector.cpp\
 	PolytopeIntersector.cpp\
-	IntersectVisitor.cpp\
-	Optimizer.cpp\
+	PositionalStateContainer.cpp\
 	RenderBin.cpp\
-	StateGraph.cpp\
 	RenderLeaf.cpp\
 	RenderStage.cpp\
-	PositionalStateContainer.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\
+	StateGraph.cpp\
 	TangentSpaceGenerator.cpp\
 	Tesselator.cpp\
 	TransformAttributeFunctor.cpp\

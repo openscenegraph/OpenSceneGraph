@@ -21,176 +21,177 @@
 
 using namespace osgUtil;
 
-struct TriangleIntersection
+namespace LineSegmentIntersectorUtils
 {
-    TriangleIntersection(unsigned int index, const osg::Vec3& normal, float r1, const osg::Vec3* v1, float r2, const osg::Vec3* v2, float r3, const osg::Vec3* v3):
-        _index(index),
-        _normal(normal),
-        _r1(r1),
-        _v1(v1),        
-        _r2(r2),
-        _v2(v2),        
-        _r3(r3),
-        _v3(v3) {}
 
-    unsigned int        _index;
-    const osg::Vec3     _normal;
-    float               _r1;
-    const osg::Vec3*    _v1;        
-    float               _r2;
-    const osg::Vec3*    _v2;        
-    float               _r3;
-    const osg::Vec3*    _v3;        
-};
+    struct TriangleIntersection
+    {
+        TriangleIntersection(unsigned int index, const osg::Vec3& normal, float r1, const osg::Vec3* v1, float r2, const osg::Vec3* v2, float r3, const osg::Vec3* v3):
+            _index(index),
+            _normal(normal),
+            _r1(r1),
+            _v1(v1),        
+            _r2(r2),
+            _v2(v2),        
+            _r3(r3),
+            _v3(v3) {}
 
-
-struct TriangleIntersector
-{
-    osg::Vec3   _s;
-    osg::Vec3   _d;
-    float       _length;
-
-    int         _index;
-    float       _ratio;
-    bool        _hit;
+        unsigned int        _index;
+        const osg::Vec3     _normal;
+        float               _r1;
+        const osg::Vec3*    _v1;        
+        float               _r2;
+        const osg::Vec3*    _v2;        
+        float               _r3;
+        const osg::Vec3*    _v3;        
+    };
 
     typedef std::multimap<float,TriangleIntersection> TriangleIntersections;
-    
-    TriangleIntersections _intersections;
 
-    TriangleIntersector()
+    struct TriangleIntersector
     {
-    }
+        osg::Vec3   _s;
+        osg::Vec3   _d;
+        float       _length;
 
-    TriangleIntersector(const osg::Vec3d& start, osg::Vec3d& end, float ratio=FLT_MAX)
-    {
-        set(start,end,ratio);
-    }
-    
-    void set(const osg::Vec3d& start, osg::Vec3d& end, float ratio=FLT_MAX)
-    {
-        _hit=false;
-        _index = 0;
-        _ratio = ratio;
+        int         _index;
+        float       _ratio;
+        bool        _hit;
 
-        _s = start;
-        _d = end - start;
-        _length = _d.length();
-        _d /= _length;
-    }
+        TriangleIntersections _intersections;
 
-    //   bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r)
-    inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool treatVertexDataAsTemporary)
-    {
-        ++_index;
-
-        if (v1==v2 || v2==v3 || v1==v3) return;
-
-        osg::Vec3 v12 = v2-v1;
-        osg::Vec3 n12 = v12^_d;
-        float ds12 = (_s-v1)*n12;
-        float d312 = (v3-v1)*n12;
-        if (d312>=0.0f)
+        TriangleIntersector()
         {
-            if (ds12<0.0f) return;
-            if (ds12>d312) return;
-        }
-        else                     // d312 < 0
-        {
-            if (ds12>0.0f) return;
-            if (ds12<d312) return;
+            _length = 0.0f;
+            _index = 0;
+            _ratio = 0.0f;
+            _hit = false;
         }
 
-        osg::Vec3 v23 = v3-v2;
-        osg::Vec3 n23 = v23^_d;
-        float ds23 = (_s-v2)*n23;
-        float d123 = (v1-v2)*n23;
-        if (d123>=0.0f)
+        void set(const osg::Vec3d& start, osg::Vec3d& end, float ratio=FLT_MAX)
         {
-            if (ds23<0.0f) return;
-            if (ds23>d123) return;
-        }
-        else                     // d123 < 0
-        {
-            if (ds23>0.0f) return;
-            if (ds23<d123) return;
+            _hit=false;
+            _index = 0;
+            _ratio = ratio;
+
+            _s = start;
+            _d = end - start;
+            _length = _d.length();
+            _d /= _length;
         }
 
-        osg::Vec3 v31 = v1-v3;
-        osg::Vec3 n31 = v31^_d;
-        float ds31 = (_s-v3)*n31;
-        float d231 = (v2-v3)*n31;
-        if (d231>=0.0f)
+        inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool treatVertexDataAsTemporary)
         {
-            if (ds31<0.0f) return;
-            if (ds31>d231) return;
+            ++_index;
+
+            if (v1==v2 || v2==v3 || v1==v3) return;
+
+            osg::Vec3 v12 = v2-v1;
+            osg::Vec3 n12 = v12^_d;
+            float ds12 = (_s-v1)*n12;
+            float d312 = (v3-v1)*n12;
+            if (d312>=0.0f)
+            {
+                if (ds12<0.0f) return;
+                if (ds12>d312) return;
+            }
+            else                     // d312 < 0
+            {
+                if (ds12>0.0f) return;
+                if (ds12<d312) return;
+            }
+
+            osg::Vec3 v23 = v3-v2;
+            osg::Vec3 n23 = v23^_d;
+            float ds23 = (_s-v2)*n23;
+            float d123 = (v1-v2)*n23;
+            if (d123>=0.0f)
+            {
+                if (ds23<0.0f) return;
+                if (ds23>d123) return;
+            }
+            else                     // d123 < 0
+            {
+                if (ds23>0.0f) return;
+                if (ds23<d123) return;
+            }
+
+            osg::Vec3 v31 = v1-v3;
+            osg::Vec3 n31 = v31^_d;
+            float ds31 = (_s-v3)*n31;
+            float d231 = (v2-v3)*n31;
+            if (d231>=0.0f)
+            {
+                if (ds31<0.0f) return;
+                if (ds31>d231) return;
+            }
+            else                     // d231 < 0
+            {
+                if (ds31>0.0f) return;
+                if (ds31<d231) return;
+            }
+
+
+            float r3;
+            if (ds12==0.0f) r3=0.0f;
+            else if (d312!=0.0f) r3 = ds12/d312;
+            else return; // the triangle and the line must be parallel intersection.
+
+            float r1;
+            if (ds23==0.0f) r1=0.0f;
+            else if (d123!=0.0f) r1 = ds23/d123;
+            else return; // the triangle and the line must be parallel intersection.
+
+            float r2;
+            if (ds31==0.0f) r2=0.0f;
+            else if (d231!=0.0f) r2 = ds31/d231;
+            else return; // the triangle and the line must be parallel intersection.
+
+            float total_r = (r1+r2+r3);
+            if (total_r!=1.0f)
+            {
+                if (total_r==0.0f) return; // the triangle and the line must be parallel intersection.
+                float inv_total_r = 1.0f/total_r;
+                r1 *= inv_total_r;
+                r2 *= inv_total_r;
+                r3 *= inv_total_r;
+            }
+
+            osg::Vec3 in = v1*r1+v2*r2+v3*r3;
+            if (!in.valid())
+            {
+                osg::notify(osg::WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
+                osg::notify(osg::WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
+                osg::notify(osg::WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
+                return;
+            }
+
+            float d = (in-_s)*_d;
+
+            if (d<0.0f) return;
+            if (d>_length) return;
+
+            osg::Vec3 normal = v12^v23;
+            normal.normalize();
+
+            float r = d/_length;
+
+
+            if (treatVertexDataAsTemporary)
+            {
+                _intersections.insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,0,r2,0,r3,0)));
+            }
+            else
+            {
+                _intersections.insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
+            }
+            _hit = true;
+
         }
-        else                     // d231 < 0
-        {
-            if (ds31>0.0f) return;
-            if (ds31<d231) return;
-        }
-        
 
-        float r3;
-        if (ds12==0.0f) r3=0.0f;
-        else if (d312!=0.0f) r3 = ds12/d312;
-        else return; // the triangle and the line must be parallel intersection.
-        
-        float r1;
-        if (ds23==0.0f) r1=0.0f;
-        else if (d123!=0.0f) r1 = ds23/d123;
-        else return; // the triangle and the line must be parallel intersection.
-        
-        float r2;
-        if (ds31==0.0f) r2=0.0f;
-        else if (d231!=0.0f) r2 = ds31/d231;
-        else return; // the triangle and the line must be parallel intersection.
+    };
 
-        float total_r = (r1+r2+r3);
-        if (total_r!=1.0f)
-        {
-            if (total_r==0.0f) return; // the triangle and the line must be parallel intersection.
-            float inv_total_r = 1.0f/total_r;
-            r1 *= inv_total_r;
-            r2 *= inv_total_r;
-            r3 *= inv_total_r;
-        }
-        
-        osg::Vec3 in = v1*r1+v2*r2+v3*r3;
-        if (!in.valid())
-        {
-            osg::notify(osg::WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
-            osg::notify(osg::WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
-            osg::notify(osg::WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
-            return;
-        }
-
-        float d = (in-_s)*_d;
-
-        if (d<0.0f) return;
-        if (d>_length) return;
-
-        osg::Vec3 normal = v12^v23;
-        normal.normalize();
-
-        float r = d/_length;
-
-        
-        if (treatVertexDataAsTemporary)
-        {
-            _intersections.insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,0,r2,0,r3,0)));
-        }
-        else
-        {
-            _intersections.insert(std::pair<const float,TriangleIntersection>(r,TriangleIntersection(_index-1,normal,r1,&v1,r2,&v2,r3,&v3)));
-        }
-        _hit = true;
-
-    }
-
-};
-
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -286,14 +287,15 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     s = _start;
     e = _end;
 
-    osg::TriangleFunctor<TriangleIntersector> ti;
+    osg::TriangleFunctor<LineSegmentIntersectorUtils::TriangleIntersector> ti;
     ti.set(s,e);
     drawable->accept(ti);
+
     if (ti._hit)
     {
         osg::Geometry* geometry = drawable->asGeometry();
 
-        for(TriangleIntersector::TriangleIntersections::iterator thitr = ti._intersections.begin();
+        for(LineSegmentIntersectorUtils::TriangleIntersections::iterator thitr = ti._intersections.begin();
             thitr != ti._intersections.end();
             ++thitr)
         {
@@ -304,7 +306,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
             // remap ratio into _start, _end range
             ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
 
-            TriangleIntersection& triHit = thitr->second;
+            LineSegmentIntersectorUtils::TriangleIntersection& triHit = thitr->second;
 
             Intersection hit;
             hit.ratio = ratio;

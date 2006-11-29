@@ -21,7 +21,7 @@
 namespace osgViewer {
 
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
-class OSGVIEWER_EXPORT View : public virtual osg::View, public virtual osgViewer::Scene
+class OSGVIEWER_EXPORT View : public osg::View, public osgViewer::Scene
 {
     public:
 

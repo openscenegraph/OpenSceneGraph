@@ -26,8 +26,8 @@
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers);
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::View)
-	I_VirtualBaseType(osg::View);
-	I_VirtualBaseType(osgViewer::Scene);
+	I_BaseType(osg::View);
+	I_BaseType(osgViewer::Scene);
 	I_Constructor0(____View,
 	               "",
 	               "");

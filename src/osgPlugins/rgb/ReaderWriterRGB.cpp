@@ -547,7 +547,10 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
             GLenum pixelFormat = img.getPixelFormat();
 
-            raw.dim    = 
+            raw.dim    = 3;
+            raw.sizeX = img.s();
+            raw.sizeY = img.t();
+            raw.sizeZ =
                 pixelFormat == GL_COLOR_INDEX? 1 :
                 pixelFormat == GL_RED? 1 :
                 pixelFormat == GL_GREEN? 1 :
@@ -559,31 +562,48 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
                 pixelFormat == GL_BGRA? 4 :
                 pixelFormat == GL_LUMINANCE? 1 :
                 pixelFormat == GL_LUMINANCE_ALPHA ? 2 : 1;
-
-            raw.sizeX = img.s();
-            raw.sizeY = img.t();
-            raw.sizeZ = raw.dim;
             raw.min = 0;
             raw.max = 0xFF;
             raw.wasteBytes = 0;
             strncpy( raw.name, name.c_str(), 80);
             raw.colorMap = 0;
+            raw.bpc = (img.getPixelSizeInBits()/raw.sizeZ)/8;
 
             int isize = img.getImageSizeInBytes();
             unsigned char *buffer = new unsigned char[isize];
-            unsigned char *dptr = buffer;
-            int i, j;
-            for( i = 0; i < raw.sizeZ; i++ )
+            if(raw.bpc == 1)
             {
-                const unsigned char *ptr = img.data();
-                ptr += i;
-                for( j = 0; j < isize/raw.sizeZ; j++ )
+                unsigned char *dptr = buffer;
+                int i, j;
+                for( i = 0; i < raw.sizeZ; ++i )
                 {
-                    *(dptr++) = *ptr;
-                    ptr += raw.sizeZ;
+                    const unsigned char *ptr = img.data();
+                    ptr += i;
+                    for( j = 0; j < isize/raw.sizeZ; ++j )
+                    {
+                        *(dptr++) = *ptr;
+                        ptr += raw.sizeZ;
+                    }
+                }
+            }
+            else
+            { // bpc == 2
+                unsigned short *dptr = reinterpret_cast<unsigned short*>(buffer);
+                int i, j;
+                for( i = 0; i < raw.sizeZ; ++i )
+                {
+                    const unsigned short *ptr = reinterpret_cast<const unsigned short*>(img.data());
+                    ptr += i;
+                    for( j = 0; j < isize/(raw.sizeZ*2); ++j )
+                    {
+                        *dptr = *ptr;
+                        ConvertShort(dptr++, 1);
+                        ptr += raw.sizeZ;
+                    }
                 }
             }
 
+        
             if( raw.needsBytesSwapped() )
                 raw.swapBytes();
 

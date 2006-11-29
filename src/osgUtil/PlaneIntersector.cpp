@@ -24,12 +24,308 @@ using namespace osgUtil;
 namespace PlaneIntersectorUtils
 {
 
-    struct TriangleIntersection
+    struct RefPolyline : public osg::Referenced
     {
-        osg::Vec3d v[2];
+        typedef std::vector<osg::Vec3d> Polyline;
+        Polyline _polyline;
+        
+        void reverse()
+        {
+            unsigned int s=0;
+            unsigned int e=_polyline.size()-1;
+            for(; s<e; ++s,--e)
+            {
+                std::swap(_polyline[s],_polyline[e]);
+            }
+            
+        }
     };
 
-    typedef std::list<TriangleIntersection> TriangleIntersections;
+    class PolylineConnector
+    {
+    public:
+        
+        typedef std::map<osg::Vec3d, osg::ref_ptr<RefPolyline> > PolylineMap;
+        typedef std::vector< osg::ref_ptr<RefPolyline> > PolylineList;
+        
+        PolylineList    _polylines;
+        PolylineMap     _startPolylineMap;
+        PolylineMap     _endPolylineMap;
+        
+        void add(const osg::Vec3d& v1, const osg::Vec3d& v2)
+        {
+            if (v1==v2) return;
+        
+            PolylineMap::iterator v1_start_itr = _startPolylineMap.find(v1);
+            PolylineMap::iterator v1_end_itr = _endPolylineMap.find(v1);
+
+            PolylineMap::iterator v2_start_itr = _startPolylineMap.find(v2);
+            PolylineMap::iterator v2_end_itr = _endPolylineMap.find(v2);
+
+            unsigned int v1_connections = 0;
+            if (v1_start_itr != _startPolylineMap.end()) ++v1_connections;
+            if (v1_end_itr != _endPolylineMap.end()) ++v1_connections;
+
+            unsigned int v2_connections = 0;
+            if (v2_start_itr != _startPolylineMap.end()) ++v2_connections;
+            if (v2_end_itr != _endPolylineMap.end()) ++v2_connections;
+            
+            if (v1_connections==0) // v1 is no connected to anything.
+            {
+                if (v2_connections==0)
+                {
+                    // new polyline
+                    newline(v1,v2);
+                }
+                else if (v2_connections==1)
+                {
+                    // v2 must connect to either a start or an end.
+                    if (v2_start_itr != _startPolylineMap.end())
+                    {
+                        insertAtStart(v1, v2_start_itr);
+                    }
+                    else if (v2_end_itr != _endPolylineMap.end())
+                    {
+                        insertAtEnd(v1, v2_end_itr);
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                    }
+                }
+                else // if (v2_connections==2)
+                {
+                    // v2 connects to a start and an end - must have a loop in the list!
+                    osg::notify(osg::NOTICE)<<"v2="<<v2<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
+                }
+            }
+            else if (v2_connections==0) // v1 is no connected to anything.
+            {
+                if (v1_connections==1)
+                {
+                    // v1 must connect to either a start or an end.
+                    if (v1_start_itr != _startPolylineMap.end())
+                    {
+                        insertAtStart(v2, v1_start_itr);
+                    }
+                    else if (v1_end_itr != _endPolylineMap.end())
+                    {
+                        insertAtEnd(v2, v1_end_itr);
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                    }
+                }
+                else // if (v1_connections==2)
+                {
+                    // v1 connects to a start and an end - must have a loop in the list!
+                    osg::notify(osg::NOTICE)<<"v1="<<v1<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
+                }
+            }
+            else 
+            {
+                // v1 and v2 connect to existing lines, now need to fuse them together.
+                bool v1_connected_to_start = v1_start_itr != _startPolylineMap.end();
+                bool v1_connected_to_end = v1_end_itr != _endPolylineMap.end();
+                
+                bool v2_connected_to_start = v2_start_itr != _startPolylineMap.end();
+                bool v2_connected_to_end = v2_end_itr != _endPolylineMap.end();
+                
+                if (v1_connected_to_start)
+                {
+                    if (v2_connected_to_start)
+                    {
+                        fuse_start_to_start(v1_start_itr, v2_start_itr);
+                    }
+                    else if (v2_connected_to_end)
+                    {
+                        fuse_start_to_end(v1_start_itr, v2_end_itr);
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                    }
+                }
+                else if (v1_connected_to_end)
+                {
+                    if (v2_connected_to_start)
+                    {
+                        fuse_start_to_end(v2_start_itr, v1_end_itr);
+                    }
+                    else if (v2_connected_to_end)
+                    {
+                        fuse_end_to_end(v1_end_itr, v2_end_itr);
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                    }
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                }
+            }
+        }
+        
+        void newline(const osg::Vec3d& v1, const osg::Vec3d& v2)
+        {
+            RefPolyline* polyline = new RefPolyline;
+            polyline->_polyline.push_back(v1);
+            polyline->_polyline.push_back(v2);
+            _startPolylineMap[v1] = polyline;
+            _endPolylineMap[v2] = polyline;
+        }
+        
+        void insertAtStart(const osg::Vec3d& v, PolylineMap::iterator v_start_itr)
+        {
+            // put v1 at the start of its poyline
+            RefPolyline* polyline = v_start_itr->second.get();
+            polyline->_polyline.insert(polyline->_polyline.begin(),v);
+
+            // reinsert the polyine at the new v1 end
+            _startPolylineMap[v] = polyline;
+
+            // remove the original entry
+            _startPolylineMap.erase(v_start_itr);
+
+        }
+        
+        void insertAtEnd(const osg::Vec3d& v, PolylineMap::iterator v_end_itr)
+        {
+            // put v1 at the end of its poyline
+            RefPolyline* polyline = v_end_itr->second.get();
+            polyline->_polyline.push_back(v);
+
+            // reinsert the polyine at the new v1 end
+            _endPolylineMap[v] = polyline;
+
+            // remove the original entry
+            _endPolylineMap.erase(v_end_itr);
+
+        }
+
+        void fuse_start_to_start(PolylineMap::iterator start1_itr, PolylineMap::iterator start2_itr)
+        {
+            osg::notify(osg::NOTICE)<<"Fusing start to start - DONE 2"<<std::endl;
+
+            osg::ref_ptr<RefPolyline> poly1 = start1_itr->second;
+            osg::ref_ptr<RefPolyline> poly2 = start2_itr->second;
+
+            PolylineMap::iterator end1_itr = _endPolylineMap.find(poly1->_polyline.back());
+            PolylineMap::iterator end2_itr = _endPolylineMap.find(poly2->_polyline.back());
+
+            // clean up the iterators associated with the original polylines
+            _startPolylineMap.erase(start1_itr);
+            _startPolylineMap.erase(start2_itr);
+            _endPolylineMap.erase(end1_itr);
+            _endPolylineMap.erase(end2_itr);
+
+            // reverse the first polyline
+            poly1->reverse();
+            
+            // add the second polyline to the first
+            poly1->_polyline.insert( poly1->_polyline.end(),
+                                     poly2->_polyline.begin(), poly2->_polyline.end() );
+            
+            _startPolylineMap[poly1->_polyline.front()] = poly1;
+            _endPolylineMap[poly1->_polyline.back()] = poly1;
+
+        }
+
+        void fuse_start_to_end(PolylineMap::iterator start_itr, PolylineMap::iterator end_itr)
+        {
+            osg::notify(osg::NOTICE)<<"Fusing start to end - DONE"<<std::endl;
+            
+            osg::ref_ptr<RefPolyline> end_poly = end_itr->second;
+            osg::ref_ptr<RefPolyline> start_poly = start_itr->second;
+            
+            PolylineMap::iterator end_start_poly_itr = _endPolylineMap.find(start_poly->_polyline.back());
+            
+            // add start_poly to end of end_poly
+            end_poly->_polyline.insert( end_poly->_polyline.end(),
+                                        start_poly->_polyline.begin(), start_poly->_polyline.end() );
+                    
+            // reassign the end of the start poly so that it now points to the merged end_poly
+            end_start_poly_itr->second = end_poly;
+
+            
+            // remove entries for the end of the end_poly and the start of the start_poly
+            _endPolylineMap.erase(end_itr);
+            _startPolylineMap.erase(start_itr);
+        }
+
+        void fuse_end_to_end(PolylineMap::iterator end1_itr, PolylineMap::iterator end2_itr)
+        {
+
+            osg::notify(osg::NOTICE)<<"Fusing end to end - DONE 3"<<std::endl;
+
+            // return;
+
+            osg::ref_ptr<RefPolyline> poly1 = end1_itr->second;
+            osg::ref_ptr<RefPolyline> poly2 = end2_itr->second;
+
+            PolylineMap::iterator start1_itr = _startPolylineMap.find(poly1->_polyline.front());
+            PolylineMap::iterator start2_itr = _startPolylineMap.find(poly2->_polyline.front());
+
+            // clean up the iterators associated with the original polylines
+            _startPolylineMap.erase(start1_itr);
+            _startPolylineMap.erase(start2_itr);
+            _endPolylineMap.erase(end1_itr);
+            _endPolylineMap.erase(end2_itr);
+
+            // reverse the first polyline
+            poly2->reverse();
+            
+            // add the second polyline to the first
+            poly1->_polyline.insert( poly1->_polyline.end(),
+                                     poly2->_polyline.begin(), poly2->_polyline.end() );
+            
+            _startPolylineMap[poly1->_polyline.front()] = poly1;
+            _endPolylineMap[poly1->_polyline.back()] = poly1;
+
+        }
+
+        void report()
+        {
+            osg::notify(osg::NOTICE)<<"report()"<<std::endl;
+#if 0            
+            osg::notify(osg::NOTICE)<<"start:"<<std::endl;
+            for(PolylineMap::iterator sitr = _startPolylineMap.begin();
+                sitr != _startPolylineMap.end();
+                ++sitr)
+            {
+                osg::notify(osg::NOTICE)<<"  line - start = "<<sitr->first<<" polyline size = "<<sitr->second->_polyline.size()<<std::endl;
+            }
+
+            osg::notify(osg::NOTICE)<<"ends:"<<std::endl;
+
+            for(PolylineMap::iterator eitr = _endPolylineMap.begin();
+                eitr != _endPolylineMap.end();
+                ++eitr)
+            {
+                osg::notify(osg::NOTICE)<<"  line - end = "<<eitr->first<<" polyline size = "<<eitr->second->_polyline.size()<<std::endl;
+            }
+#endif
+            for(PolylineMap::iterator sitr = _startPolylineMap.begin();
+                sitr != _startPolylineMap.end();
+                ++sitr)
+            {
+                osg::notify(osg::NOTICE)<<"polyline:"<<std::endl;
+                RefPolyline::Polyline& polyline = sitr->second->_polyline;
+                for(RefPolyline::Polyline::iterator pitr = polyline.begin();
+                    pitr != polyline.end();
+                    ++pitr)
+                {
+                    osg::notify(osg::NOTICE)<<"  "<<*pitr<<std::endl;
+                }
+            }
+
+
+        }
+        
+    };
 
     struct TriangleIntersector
     {
@@ -38,7 +334,8 @@ namespace PlaneIntersectorUtils
         osg::Polytope _polytope;
         bool _hit;
 
-        TriangleIntersections _intersections;
+        PolylineConnector _polylineConnector;
+
 
         TriangleIntersector()
         {
@@ -100,21 +397,21 @@ namespace PlaneIntersectorUtils
                 return;
             }
 
-            TriangleIntersection ti;
+            osg::Vec3d v[2];
             unsigned int numIntersects = 0;
 
             if (d1*d2 < 0.0)
             {
                 // edge 12 itersects
                 double div = 1.0 / (d2-d1);
-                ti.v[numIntersects++] = v1* (d2*div) - v2 * (d1*div);
+                v[numIntersects++] = v1* (d2*div) - v2 * (d1*div);
             }
 
             if (d2*d3 < 0.0)
             {
                 // edge 23 itersects
                 double div = 1.0 / (d3-d2);
-                ti.v[numIntersects++] = v2* (d3*div) - v3 * (d2*div);
+                v[numIntersects++] = v2* (d3*div) - v3 * (d2*div);
             }
 
             if (d1*d3 < 0.0)
@@ -123,7 +420,7 @@ namespace PlaneIntersectorUtils
                 {
                     // edge 13 itersects
                     double div = 1.0 / (d3-d1);
-                    ti.v[numIntersects++] = v1* (d3*div) - v3 * (d1*div);
+                    v[numIntersects++] = v1* (d3*div) - v3 * (d1*div);
                 }
                 else
                 {
@@ -132,9 +429,7 @@ namespace PlaneIntersectorUtils
                  
             }
 
-            osg::notify(osg::NOTICE)<<"ti.v1="<<ti.v[0]<<" ti.v2="<<ti.v[1]<<std::endl;
-            
-            _intersections.push_back(ti);
+            _polylineConnector.add(v[0],v[1]);
 
         }
 
@@ -233,8 +528,11 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
     ti.set(_plane,_polytope);
     drawable->accept(ti);
 
+    ti._polylineConnector.report();
+
     if (ti._hit)
     {
+
         Intersection hit;
         hit.nodePath = iv.getNodePath();
         hit.drawable = drawable;

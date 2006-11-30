@@ -1,5 +1,9 @@
 #include <osg/ArgumentParser>
 
+#include <osg/LightModel>
+#include <osg/Depth>
+#include <osg/BlendFunc>
+
 #include <osgProducer/Viewer>
 
 #include <osgShadow/OccluderGeometry>
@@ -141,6 +145,8 @@ int main(int argc, char** argv)
 
     bool updateLightPosition = true;
 
+    bool doShadow = true;
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -165,7 +171,6 @@ int main(int argc, char** argv)
     osg::BoundingBox bb = cbbv.getBoundingBox();
     
     osg::ref_ptr<osg::Group> group = new osg::Group;
-    group->addChild(model.get());
 
     // set up the occluder
     osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
@@ -191,16 +196,91 @@ int main(int argc, char** argv)
     }
     else
     {
-        lightpos.set(0.5f,0.25f,-0.8f,0.0f);
+        lightpos.set(0.5f,0.25f,0.8f,0.0f);
     }
 
+
+    osg::ref_ptr<osg::Light> light = new osg::Light;
+
+    if (!doShadow)
     {
+        group->addChild(model.get());
+
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
         occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
         geode->addDrawable(shadowVolume.get());
         group->addChild(geode.get());
     }
+    else
+    {
+        osg::Vec4 ambient(0.5,0.5,0.5,1.0);
+        osg::Vec4 diffuse(1.0,1.0,1.0,1.0);
+        osg::Vec4 zero_colour(0.0,0.0,0.0,1.0);
+    
+        // first group
+        {
 
+            osg::Group* first_model_group = new osg::Group;
+            first_model_group->addChild(model.get());
+            group->addChild(first_model_group);
+
+            osg::StateSet* ss1 = first_model_group->getOrCreateStateSet();
+
+            osg::LightModel* lm1 = new osg::LightModel;
+            lm1->setAmbientIntensity(ambient);
+            ss1->setAttribute(lm1);
+
+            osg::Light* light1 = new osg::Light;
+            light1->setAmbient(ambient);
+            light1->setDiffuse(zero_colour);
+            light1->setPosition(lightpos);
+            ss1->setAttributeAndModes(light1, osg::StateAttribute::ON);
+        
+        }    
+    
+        // second group
+        {
+
+            osg::Group* second_model_group = new osg::Group;
+            second_model_group->addChild(model.get());
+            group->addChild(second_model_group);
+
+            osg::StateSet* ss1 = second_model_group->getOrCreateStateSet();
+            ss1->setRenderBinDetails(1, "RenderBin");
+
+            osg::LightModel* lm1 = new osg::LightModel;
+            lm1->setAmbientIntensity(zero_colour);
+            ss1->setAttribute(lm1);
+
+
+            osg::LightSource* lightsource = new osg::LightSource;
+            lightsource->setLight(light.get());
+            light->setAmbient(zero_colour);
+            light->setDiffuse(diffuse);
+            light->setPosition(lightpos);
+            second_model_group->addChild(lightsource);
+            
+            ss1->setMode(GL_LIGHT0, osg::StateAttribute::ON);
+            
+            osg::Depth* depth = new osg::Depth;
+            depth->setWriteMask(false);
+            depth->setFunction(osg::Depth::LEQUAL);
+            ss1->setAttribute(depth);
+            
+            osg::BlendFunc* blend = new osg::BlendFunc;
+            blend->setFunction(osg::BlendFunc::ONE, osg::BlendFunc::ONE);
+            ss1->setAttributeAndModes(blend, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+        
+        }    
+
+        {
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+            occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+            geode->addDrawable(shadowVolume.get());
+            group->addChild(geode.get());
+        }
+
+    }
 
 
     viewer.setSceneData(group.get());
@@ -222,8 +302,9 @@ int main(int argc, char** argv)
             }
             else
             {
-                lightpos.set(sinf(t),cosf(t),-0.8f,0.0f);
+                lightpos.set(sinf(t),cosf(t),0.8f,0.0f);
             }
+            light->setPosition(lightpos);
             occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
        }
 

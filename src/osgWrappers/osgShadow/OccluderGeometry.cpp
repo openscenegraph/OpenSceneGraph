@@ -70,8 +70,8 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	                      __void__computeOccluderGeometry__osg_Drawable_P1__osg_Matrix_P1__float,
 	                      "Compute an occluder geometry containing the geometry in specified drawable. ",
 	                      "");
-	I_Method2(void, comptueShadowVolumeGeometry, IN, const osg::Vec4 &, lightpos, IN, osgShadow::ShadowVolumeGeometry &, svg,
-	          __void__comptueShadowVolumeGeometry__C5_osg_Vec4_R1__ShadowVolumeGeometry_R1,
+	I_Method2(void, computeShadowVolumeGeometry, IN, const osg::Vec4 &, lightpos, IN, osgShadow::ShadowVolumeGeometry &, svg,
+	          __void__computeShadowVolumeGeometry__C5_osg_Vec4_R1__ShadowVolumeGeometry_R1,
 	          "Compute ShadowVolumeGeometry. ",
 	          "");
 	I_Method1(void, setBoundingPolytope, IN, const osg::Polytope &, polytope,

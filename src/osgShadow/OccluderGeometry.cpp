@@ -350,17 +350,21 @@ struct IndexVec3PtrPair
     inline bool operator == (const IndexVec3PtrPair& rhs) const
     {
         return *vec == *rhs.vec;
+
+//        return (*vec - *rhs.vec).length2() < 1e-2;
+
     }
 
     const osg::Vec3* vec;
     unsigned int index;
 };
 
+
 void OccluderGeometry::removeDuplicateVertices()
 {
     if (_vertices.empty()) return;
     
-    // osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
+    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
 
     typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
     IndexVec3PtrPairs indexVec3PtrPairs;
@@ -386,7 +390,7 @@ void OccluderGeometry::removeDuplicateVertices()
 
     for(; curr != indexVec3PtrPairs.end(); ++curr)
     {
-        if (*prev==*curr) 
+        if (*prev==*curr)
         {
             ++numDuplicates;
         }
@@ -397,8 +401,8 @@ void OccluderGeometry::removeDuplicateVertices()
         }
     }
     
-    // osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
-    // osg::notify(osg::NOTICE)<<"Num unique = "<<numUnique<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
+    osg::notify(osg::NOTICE)<<"Num unique = "<<numUnique<<std::endl;
 
     if (numDuplicates==0) return;
 
@@ -689,7 +693,7 @@ void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lig
             const osg::Vec3& v1 = _vertices[edge._p1];
             const osg::Vec3& v2 = _vertices[edge._p2];
             osg::Vec3 normal = (v2-v1) ^ lightdirection;
-            if (normal * edge._normal < 0.0)
+            if (normal * edge._normal > 0.0)
             {        
                 silhouetteIndices.push_back(edge._p1);
                 silhouetteIndices.push_back(edge._p2);
@@ -717,7 +721,7 @@ void OccluderGeometry::computeLightPositionSlihouetteEdges(const osg::Vec3& ligh
             const osg::Vec3& v1 = _vertices[edge._p1];
             const osg::Vec3& v2 = _vertices[edge._p2];
             osg::Vec3 normal = (v2-v1) ^ (v1-lightpos);
-            if (normal * edge._normal < 0.0)
+            if (normal * edge._normal > 0.0)
             {        
                 silhouetteIndices.push_back(edge._p1);
                 silhouetteIndices.push_back(edge._p2);
@@ -801,7 +805,7 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
             shadowVertices.push_back( v2_projected);
             shadowVertices.push_back( v2);
 
-            osg::Vec3 normal = (v2-v1) ^ lightdirection;
+            osg::Vec3 normal = lightdirection ^ (v2-v1);
             normal.normalize();
             shadowNormals.push_back(normal);
             shadowNormals.push_back(normal);
@@ -862,7 +866,7 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
             shadowVertices.push_back( v2_projected);
             shadowVertices.push_back( v2);
 
-            osg::Vec3 normal = (v2-v1) ^ d1;
+            osg::Vec3 normal = d1 ^ (v2-v1);
             normal.normalize();
             shadowNormals.push_back(normal);
             shadowNormals.push_back(normal);

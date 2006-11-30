@@ -962,7 +962,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
         // draw skirt at begining if required.
         if (field.getSkirtHeight()!=0.0f)
         {
-            vertTop.set(0.0f,dy*(float)row+dy,field.getHeight(0,row+1)-field.getSkirtHeight());
+            vertTop.set(0.0f,dy*(float)(row+1),field.getHeight(0,row+1)-field.getSkirtHeight());
             normTop.set(field.getNormal(0,row+1));
 
             vertBase.set(0.0f,dy*(float)row,field.getHeight(0,row)-field.getSkirtHeight());
@@ -979,7 +979,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
         for(unsigned int col=0;col<field.getNumColumns();++col,u+=du)
         {
-            vertTop.set(dx*(float)col,dy*(float)row+dy,field.getHeight(col,row+1));
+            vertTop.set(dx*(float)col,dy*(float)(row+1),field.getHeight(col,row+1));
             normTop.set(field.getNormal(col,row+1));
 
             vertBase.set(dx*(float)col,dy*(float)row,field.getHeight(col,row));
@@ -1334,6 +1334,15 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 
     unsigned int numSegments = 40;
     unsigned int numRows = 20;
+    float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+    if (ratio > 0.0f && ratio != 1.0f) {
+        numRows = (unsigned int) (numRows * ratio);
+        if (numRows < MIN_NUM_ROWS)
+            numRows = MIN_NUM_ROWS;
+        numSegments = (unsigned int) (numSegments * ratio);
+        if (numSegments < MIN_NUM_SEGMENTS)
+            numSegments = MIN_NUM_SEGMENTS;
+    }
 
     float lDelta = osg::PI/(float)numRows;
     float vDelta = 1.0f/(float)numRows;
@@ -1708,7 +1717,7 @@ void PrimitiveShapeVisitor::apply(const HeightField& field)
 
         for(unsigned int col=0;col<field.getNumColumns();++col)
         {
-            Vec3 vertTop(dx*(float)col,dy*(float)row+dy,field.getHeight(col,row+1));
+            Vec3 vertTop(dx*(float)col,dy*(float)(row+1),field.getHeight(col,row+1));
             Vec3 vertBase(dx*(float)col,dy*(float)row,field.getHeight(col,row));
 
             _functor.vertex(vertTop*matrix);

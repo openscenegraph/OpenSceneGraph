@@ -616,7 +616,7 @@ void OccluderGeometry::buildEdgeMaps()
     {
         const Edge& edge = *eitr;
         osg::Vec3 pos(0.0,0.0,0.0);
-        osg::Vec3 mid = (_vertices[edge._p1] + _vertices[edge._p1]) * 0.5f;
+        osg::Vec3 mid = (_vertices[edge._p1] + _vertices[edge._p2]) * 0.5f;
         unsigned int numTriangles = 0;
         if (edge._t1>=0)
         {
@@ -651,6 +651,7 @@ void OccluderGeometry::buildEdgeMaps()
             case(0):
                 ++numEdgesWithNoTriangles;
                 edge._normal.set(0.0,0.0,0.0);
+                osg::notify(osg::NOTICE)<<"Warning no triangles on edge."<<std::endl;
                 break; 
             case(1):
                 ++numEdgesWithOneTriangles;

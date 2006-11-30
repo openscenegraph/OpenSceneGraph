@@ -52,7 +52,7 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         
 
         /** Compute ShadowVolumeGeometry. */
-        void comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const;
+        void computeShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const;
 
         
         /** Set the bounding polytope of the OccluderGeometry.*/

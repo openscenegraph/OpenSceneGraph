@@ -738,7 +738,7 @@ void OccluderGeometry::computeLightPositionSlihouetteEdges(const osg::Vec3& ligh
 }
 
 
-void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const
+void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const
 {
     osg::Timer_t t0 = osg::Timer::instance()->tick();
 
@@ -881,7 +881,7 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     svg.dirtyBound();
 
     osg::Timer_t t1 = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<"comptueShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
+    osg::notify(osg::NOTICE)<<"computeShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const

@@ -212,7 +212,7 @@ int main(int argc, char** argv)
         group->addChild(model.get());
 
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+        occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
         geode->addDrawable(shadowVolume.get());
         group->addChild(geode.get());
 
@@ -265,7 +265,7 @@ int main(int argc, char** argv)
 
             {
                 osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-                occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+                occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
                 geode->addDrawable(shadowVolume.get());
 
                 // switch off the writing to the color bit planes.
@@ -289,7 +289,7 @@ int main(int argc, char** argv)
             if (true)
             {
                 osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-                occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+                occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
                 geode->addDrawable(shadowVolume.get());
 
                 // switch off the writing to the color bit planes.
@@ -374,7 +374,7 @@ int main(int argc, char** argv)
                 lightpos.set(sinf(t),cosf(t),0.8f,0.0f);
             }
             light->setPosition(lightpos);
-            occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+            occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
        }
 
       // update the scene by traversing it with the the update visitor which will

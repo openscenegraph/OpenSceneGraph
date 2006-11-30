@@ -755,7 +755,7 @@ void OccluderGeometry::comptueShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     if (lightpos.w()==0.0)
     {
         // directional light.
-        osg::Vec3 lightdirection( lightpos.x(), lightpos.y(), lightpos.z());
+        osg::Vec3 lightdirection( -lightpos.x(), -lightpos.y(), -lightpos.z());
         
         osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
         

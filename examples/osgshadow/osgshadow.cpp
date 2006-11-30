@@ -132,6 +132,15 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    bool postionalLight = false;
+    while (arguments.read("--positionalLight")) postionalLight = true;
+    while (arguments.read("--directionalLight")) postionalLight = false;
+
+    bool addOccluderToScene = false;
+    while (arguments.read("addOccluderToScene")) addOccluderToScene = true;
+
+    bool updateLightPosition = true;
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -149,34 +158,49 @@ int main(int argc, char** argv)
         osg::notify(osg::NOTICE)<<"No model loaded, please specify a model to load."<<std::endl;
         return 1;
     }
-    
-    
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
-    osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
-    occluder->computeOccluderGeometry(model.get());
-
+    // get the bounds of the model.    
     ComputeBoundingBoxVisitor cbbv;
     model->accept(cbbv);
-    cbbv.getPolytope(occluder->getBoundingPolytope(),0.001);
     osg::BoundingBox bb = cbbv.getBoundingBox();
+    
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->addChild(model.get());
 
-    //geode->addDrawable(occluder.get());
+    // set up the occluder
+    osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
+    occluder->computeOccluderGeometry(model.get());
+    cbbv.getPolytope(occluder->getBoundingPolytope(),0.001);
+
+    if (addOccluderToScene)
+    {
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        geode->addDrawable(occluder.get());
+        group->addChild(geode.get());
+    }
     
     osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
 
-#if 1
-//    occluder->comptueShadowVolumeGeometry(osg::Vec4(bb.xMin()+ bb.radius(), bb.yMin()+ bb.radius(), bb.zMax() + bb.radius()  ,1.0f), *shadowVolume);
-    occluder->comptueShadowVolumeGeometry(osg::Vec4(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()  ,1.0f), *shadowVolume);
-#else
-    occluder->comptueShadowVolumeGeometry(osg::Vec4(0.5f,.25f,0.2f,0.0f), *shadowVolume);
-#endif
-    geode->addDrawable(shadowVolume.get());
+    shadowVolume->setUseDisplayList(!updateLightPosition);
 
+    osg::Vec4 lightpos;
+    
+    if (postionalLight)
+    {
+        lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()  ,1.0f);
+    }
+    else
+    {
+        lightpos.set(0.5f,0.25f,-0.8f,0.0f);
+    }
 
-    osg::ref_ptr<osg::Group> group = new osg::Group;
-    group->addChild(model.get());
-    group->addChild(geode.get());
+    {
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+        geode->addDrawable(shadowVolume.get());
+        group->addChild(geode.get());
+    }
+
 
 
     viewer.setSceneData(group.get());
@@ -188,6 +212,20 @@ int main(int argc, char** argv)
     {
       // wait for all cull and draw threads to complete.
       viewer.sync();
+
+        if (updateLightPosition)
+        {
+            float t = viewer.getFrameStamp()->getReferenceTime();
+            if (postionalLight)
+            {
+                lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()  ,1.0f);
+            }
+            else
+            {
+                lightpos.set(sinf(t),cosf(t),-0.8f,0.0f);
+            }
+            occluder->comptueShadowVolumeGeometry(lightpos, *shadowVolume);
+       }
 
       // update the scene by traversing it with the the update visitor which will
       // call all node update callbacks and animations.

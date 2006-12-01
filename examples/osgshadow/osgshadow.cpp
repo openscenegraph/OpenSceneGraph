@@ -149,6 +149,9 @@ int main(int argc, char** argv)
     bool updateLightPosition = true;
     while (arguments.read("--noUpdate")) updateLightPosition = false;
 
+    bool createBase = false;
+    while (arguments.read("--base")) createBase = true;
+
     bool doShadow = true;
     while (arguments.read("--noShadow")) doShadow = false;
 
@@ -174,6 +177,29 @@ int main(int argc, char** argv)
     ComputeBoundingBoxVisitor cbbv;
     model->accept(cbbv);
     osg::BoundingBox bb = cbbv.getBoundingBox();
+
+    if (createBase)
+    {
+        osg::ref_ptr<osg::Group> newGroup = new osg::Group;
+        newGroup->addChild(model.get());
+        
+        osg::Geode* geode = new osg::Geode;
+        
+        osg::Vec3 widthVec(bb.radius(), 0.0f, 0.0f);
+        osg::Vec3 depthVec(0.0f, bb.radius(), 0.0f);
+        osg::Vec3 centerBase( (bb.xMin()+bb.xMax())*0.5f, (bb.yMin()+bb.yMax())*0.5f, bb.zMin()-bb.radius()*0.1f );
+        
+        geode->addDrawable( createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
+                                                        widthVec*3.0f, depthVec*3.0f) );
+        newGroup->addChild(geode);
+        
+        model = newGroup.get();
+    }
+
+    // get the bounds of the model.
+    cbbv.reset();
+    model->accept(cbbv);
+    bb = cbbv.getBoundingBox();
     
     osg::ref_ptr<osg::Group> group = new osg::Group;
 
@@ -203,6 +229,7 @@ int main(int argc, char** argv)
     {
         lightpos.set(0.5f,0.25f,0.8f,0.0f);
     }
+
 
 
     osg::ref_ptr<osg::Light> light = new osg::Light;

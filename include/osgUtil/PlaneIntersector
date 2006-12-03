@@ -55,13 +55,11 @@ class OSGUTIL_EXPORT PlaneIntersector : public Intersector
             
         };
         
-        typedef std::set<Intersection> Intersections;
+        typedef std::vector<Intersection> Intersections;
         
-        inline void insertIntersection(const Intersection& intersection) { getIntersections().insert(intersection); }
+        inline void insertIntersection(const Intersection& intersection) { getIntersections().push_back(intersection); }
 
         inline Intersections& getIntersections() { return _parent ? _parent->_intersections : _intersections; }
-
-        inline Intersection getFirstIntersection() { Intersections& intersections = getIntersections(); return intersections.empty() ? Intersection() : *(intersections.begin()); }
 
     public:
 

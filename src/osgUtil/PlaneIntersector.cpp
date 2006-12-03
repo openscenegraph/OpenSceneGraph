@@ -52,6 +52,7 @@ namespace PlaneIntersectorUtils
         PolylineMap     _startPolylineMap;
         PolylineMap     _endPolylineMap;
         
+
         void add(const osg::Vec3d& v1, const osg::Vec3d& v2)
         {
             if (v1==v2) return;
@@ -339,6 +340,12 @@ namespace PlaneIntersectorUtils
 
 
         }
+
+        void fuse()
+        {
+             osg::notify(osg::NOTICE)<<"supposed to be doing a fuse..."<<std::endl;
+        }
+
         
     };
 
@@ -472,6 +479,7 @@ PlaneIntersector::PlaneIntersector(CoordinateFrame cf, const osg::Plane& plane, 
 {
 }
 
+
 Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
 {
     if (_coordinateFrame==MODEL && iv.getModelMatrix()==0)
@@ -547,12 +555,20 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
 
     if (ti._hit)
     {
+        Intersections& intersections = getIntersections();
+     
+        for(PlaneIntersectorUtils::PolylineConnector::PolylineList::iterator pitr = ti._polylineConnector._polylines.begin();
+            pitr != ti._polylineConnector._polylines.end();
+            ++pitr)
+        {
+            unsigned int pos = intersections.size();
+            intersections.push_back(Intersection());
+            Intersection& new_intersection = intersections[pos];
 
-        Intersection hit;
-        hit.nodePath = iv.getNodePath();
-        hit.drawable = drawable;
-
-        insertIntersection(hit);
+            new_intersection.polyline = (*pitr)->_polyline;
+            new_intersection.nodePath = iv.getNodePath();
+            new_intersection.drawable = drawable;
+        }
 
         osg::notify(osg::NOTICE)<<std::endl<<"++++++++++++ Found intersections +++++++++++++++++++++++++"<<std::endl<<std::endl;
     }

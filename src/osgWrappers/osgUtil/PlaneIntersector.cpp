@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::set< osgUtil::PlaneIntersector::Intersection >, osgUtil::PlaneIntersector::Intersections);
+TYPE_NAME_ALIAS(std::vector< osgUtil::PlaneIntersector::Intersection >, osgUtil::PlaneIntersector::Intersections);
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	I_BaseType(osgUtil::Intersector);
@@ -43,10 +43,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	          "");
 	I_Method0(osgUtil::PlaneIntersector::Intersections &, getIntersections,
 	          __Intersections_R1__getIntersections,
-	          "",
-	          "");
-	I_Method0(osgUtil::PlaneIntersector::Intersection, getFirstIntersection,
-	          __Intersection__getFirstIntersection,
 	          "",
 	          "");
 	I_Method1(osgUtil::Intersector *, clone, IN, osgUtil::IntersectionVisitor &, iv,
@@ -73,9 +69,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	          __bool__containsIntersections,
 	          "",
 	          "");
-	I_SimpleProperty(osgUtil::PlaneIntersector::Intersection, FirstIntersection, 
-	                 __Intersection__getFirstIntersection, 
-	                 0);
 	I_SimpleProperty(osgUtil::PlaneIntersector::Intersections &, Intersections, 
 	                 __Intersections_R1__getIntersections, 
 	                 0);
@@ -93,5 +86,5 @@ BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_PublicMemberProperty(osgUtil::PlaneIntersector::Intersection::Polyline, polyline);
 END_REFLECTOR
 
-STD_SET_REFLECTOR(std::set< osgUtil::PlaneIntersector::Intersection >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::PlaneIntersector::Intersection >);
 

@@ -209,8 +209,6 @@ namespace PlaneIntersectorUtils
 
         void fuse_start_to_start(PolylineMap::iterator start1_itr, PolylineMap::iterator start2_itr)
         {
-            osg::notify(osg::NOTICE)<<"Fusing start to start - DONE 2"<<std::endl;
-
             osg::ref_ptr<RefPolyline> poly1 = start1_itr->second;
             osg::ref_ptr<RefPolyline> poly2 = start2_itr->second;
 
@@ -237,8 +235,6 @@ namespace PlaneIntersectorUtils
 
         void fuse_start_to_end(PolylineMap::iterator start_itr, PolylineMap::iterator end_itr)
         {
-            osg::notify(osg::NOTICE)<<"Fusing start to end - DONE"<<std::endl;
-            
             osg::ref_ptr<RefPolyline> end_poly = end_itr->second;
             osg::ref_ptr<RefPolyline> start_poly = start_itr->second;
             
@@ -266,8 +262,6 @@ namespace PlaneIntersectorUtils
         void fuse_end_to_end(PolylineMap::iterator end1_itr, PolylineMap::iterator end2_itr)
         {
 
-            osg::notify(osg::NOTICE)<<"Fusing end to end - DONE 3"<<std::endl;
-
             // return;
 
             osg::ref_ptr<RefPolyline> poly1 = end1_itr->second;
@@ -294,6 +288,17 @@ namespace PlaneIntersectorUtils
 
         }
 
+        void consolidatePolylineLists()
+        {
+            // move the remaining open ended line segments into the polyline list
+            for(PolylineMap::iterator sitr = _startPolylineMap.begin();
+                sitr != _startPolylineMap.end();
+                ++sitr)
+            {
+                _polylines.push_back(sitr->second);
+            }
+        }
+
         void report()
         {
             osg::notify(osg::NOTICE)<<"report()"<<std::endl;
@@ -315,14 +320,6 @@ namespace PlaneIntersectorUtils
                 osg::notify(osg::NOTICE)<<"  line - end = "<<eitr->first<<" polyline size = "<<eitr->second->_polyline.size()<<std::endl;
             }
 #endif
-
-            // move the remaining open ended line segments into the polyline list
-            for(PolylineMap::iterator sitr = _startPolylineMap.begin();
-                sitr != _startPolylineMap.end();
-                ++sitr)
-            {
-                _polylines.push_back(sitr->second);
-            }
 
             for(PolylineList::iterator pitr = _polylines.begin();
                 pitr != _polylines.end();
@@ -551,7 +548,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
     ti.set(_plane,_polytope);
     drawable->accept(ti);
 
-    ti._polylineConnector.report();
+    ti._polylineConnector.consolidatePolylineLists();
 
     if (ti._hit)
     {
@@ -561,7 +558,9 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
             pitr != ti._polylineConnector._polylines.end();
             ++pitr)
         {
+
             unsigned int pos = intersections.size();
+
             intersections.push_back(Intersection());
             Intersection& new_intersection = intersections[pos];
 
@@ -569,12 +568,6 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
             new_intersection.nodePath = iv.getNodePath();
             new_intersection.drawable = drawable;
         }
-
-        osg::notify(osg::NOTICE)<<std::endl<<"++++++++++++ Found intersections +++++++++++++++++++++++++"<<std::endl<<std::endl;
-    }
-    else
-    {
-        osg::notify(osg::NOTICE)<<std::endl<<"------------ No intersections -------------------------"<<std::endl<<std::endl;
     }
 
 }

@@ -94,9 +94,20 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     scene->accept(_intersectionVisitor);
     
     osgUtil::PlaneIntersector::Intersections& intersections = intersector->getIntersections();
+    osg::notify(osg::NOTICE)<<std::endl<<"&intersector->getIntersections()="<<&(intersector->getIntersections())<<std::endl<<std::endl;
+
     if (!intersections.empty())
     {
         osg::notify(osg::NOTICE)<<"Got intersections."<<std::endl;
+        for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
+            itr != intersections.end();
+            ++itr)
+        {
+            osgUtil::PlaneIntersector::Intersection& intersection = *itr;
+            osg::notify(osg::NOTICE)<<"  intersection - "<<intersection.polyline.size()<<std::endl;
+        }
+        
+        
     }
     else
     {

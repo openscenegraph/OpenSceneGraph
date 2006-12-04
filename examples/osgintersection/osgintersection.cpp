@@ -141,6 +141,18 @@ int main(int argc, char **argv)
             osg::Timer_t endTick = osg::Timer::instance()->tick();
 
             std::cout<<"Completed in "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+
+            typedef osgSim::ElevationSlice::DistanceHeightList DistanceHeightList;
+            const DistanceHeightList& dhl = es.getDistanceHeightIntersections();
+            std::cout<<"Number of intersections ="<<dhl.size()<<std::endl;
+            for(DistanceHeightList::const_iterator dhitr = dhl.begin();
+                dhitr != dhl.end();
+                ++dhitr)
+            {
+                 std::cout<<"  "<<dhitr->first<<" "<<dhitr->second<<std::endl;
+            }
+
+
         }
     }
     else if (useIntersectorGroup)

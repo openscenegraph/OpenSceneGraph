@@ -302,7 +302,7 @@ namespace PlaneIntersectorUtils
         void report()
         {
             osg::notify(osg::NOTICE)<<"report()"<<std::endl;
-#if 0            
+
             osg::notify(osg::NOTICE)<<"start:"<<std::endl;
             for(PolylineMap::iterator sitr = _startPolylineMap.begin();
                 sitr != _startPolylineMap.end();
@@ -312,14 +312,12 @@ namespace PlaneIntersectorUtils
             }
 
             osg::notify(osg::NOTICE)<<"ends:"<<std::endl;
-
             for(PolylineMap::iterator eitr = _endPolylineMap.begin();
                 eitr != _endPolylineMap.end();
                 ++eitr)
             {
                 osg::notify(osg::NOTICE)<<"  line - end = "<<eitr->first<<" polyline size = "<<eitr->second->_polyline.size()<<std::endl;
             }
-#endif
 
             for(PolylineList::iterator pitr = _polylines.begin();
                 pitr != _polylines.end();
@@ -366,6 +364,57 @@ namespace PlaneIntersectorUtils
             _plane = plane;
             _polytope = polytope;
             _hit = false;
+        }
+
+        inline void add(osg::Vec3d& vs, osg::Vec3d& ve)
+        {
+            if (_polytope.getPlaneList().empty())
+            {
+                _polylineConnector.add(vs,ve);
+            }
+            else
+            {
+                for(osg::Polytope::PlaneList::iterator itr = _polytope.getPlaneList().begin();
+                    itr != _polytope.getPlaneList().end();
+                    ++itr)
+                {
+                    osg::Plane& plane = *itr;
+                    double ds = plane.distance(vs);
+                    double de = plane.distance(ve);
+                    
+                    if (ds<0.0)
+                    {
+                        if (de<0.0)
+                        {
+                            // osg::notify(osg::NOTICE)<<"Disgard segment "<<std::endl;
+                            return;
+                        }
+                        
+                        // osg::notify(osg::NOTICE)<<"Trim start vs="<<vs;
+
+                        double div = 1.0/(de-ds);
+                        vs = vs*(de*div) - ve*(ds*div);
+
+                        // osg::notify(osg::NOTICE)<<" after vs="<<vs<<std::endl;
+                        
+                    }
+                    else if (de<0.0)
+                    {
+                        // osg::notify(osg::NOTICE)<<"Trim end ve="<<ve;
+
+                        double div = 1.0/(ds-de);
+                        ve = ve*(ds*div) - vs*(de*div);
+
+                        // osg::notify(osg::NOTICE)<<" after ve="<<ve<<std::endl;
+                        
+                    }
+                    
+                } 
+                // osg::notify(osg::NOTICE)<<"Segment fine"<<std::endl;
+
+                _polylineConnector.add(vs,ve);
+                
+            }
         }
 
         inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool)
@@ -448,7 +497,7 @@ namespace PlaneIntersectorUtils
                  
             }
 
-            _polylineConnector.add(v[0],v[1]);
+            add(v[0],v[1]);
 
         }
 
@@ -564,6 +613,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
             intersections.push_back(Intersection());
             Intersection& new_intersection = intersections[pos];
 
+            new_intersection.matrix = iv.getModelMatrix();
             new_intersection.polyline = (*pitr)->_polyline;
             new_intersection.nodePath = iv.getNodePath();
             new_intersection.drawable = drawable;

@@ -12,12 +12,55 @@
 */
 
 #include <osg/CoordinateSystemNode>
+#include <osg/io_utils>
+
 #include <osgSim/ElevationSlice>
 
 #include <osg/Notify>
 #include <osgUtil/PlaneIntersector>
 
 using namespace osgSim;
+
+namespace ElevationSliceUtils
+{
+
+struct DistanceHeightXYZ
+{
+
+    DistanceHeightXYZ():
+        distance(0.0),
+        height(0.0) {}
+
+    DistanceHeightXYZ(double d, double h, const osg::Vec3d& pos):
+        distance(d),
+        height(h),
+        position(pos) {}
+
+    double      distance;
+    double      height;
+    osg::Vec3d  position;
+
+    bool operator < ( const DistanceHeightXYZ& rhs) const
+    {
+        // small distance values first
+        if (distance < rhs.distance) return true;
+        if (distance > rhs.distance) return false;
+        
+        // greatest heights first
+        if (height > rhs.height) return true;
+        if (height < rhs.height) return false;
+        
+        return false;
+    }
+    
+    bool equal_distance(const DistanceHeightXYZ& rhs, double epsilon=1e-6) const
+    {
+        return osg::absolute(rhs.distance - distance) <= epsilon;
+    }
+
+};
+
+}
 
 ElevationSlice::ElevationSlice()
 {
@@ -94,20 +137,117 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     scene->accept(_intersectionVisitor);
     
     osgUtil::PlaneIntersector::Intersections& intersections = intersector->getIntersections();
-    osg::notify(osg::NOTICE)<<std::endl<<"&intersector->getIntersections()="<<&(intersector->getIntersections())<<std::endl<<std::endl;
+
+    typedef osgUtil::PlaneIntersector::Intersection::Polyline Polyline;
 
     if (!intersections.empty())
     {
-        osg::notify(osg::NOTICE)<<"Got intersections."<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Got intersections."<<std::endl;
         for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
             itr != intersections.end();
             ++itr)
         {
             osgUtil::PlaneIntersector::Intersection& intersection = *itr;
-            osg::notify(osg::NOTICE)<<"  intersection - "<<intersection.polyline.size()<<std::endl;
+            // osg::notify(osg::NOTICE)<<"  intersection - "<<intersection.polyline.size()<<std::endl;
+            if (intersection.matrix.valid())
+            {
+                // osg::notify(osg::NOTICE)<<"  transforming "<<std::endl;
+                // transform points on polyline 
+                for(Polyline::iterator pitr = intersection.polyline.begin();
+                    pitr != intersection.polyline.end();
+                    ++pitr)
+                {
+                    *pitr = (*pitr) * (*intersection.matrix);
+                }
+                
+                // matrix no longer needed.
+                intersection.matrix = 0;
+            }
+#if 0            
+            for(Polyline::iterator pitr = intersection.polyline.begin();
+                pitr != intersection.polyline.end();
+                ++pitr)
+            {
+                osg::notify(osg::NOTICE)<<"  v = "<<*pitr<<std::endl;
+            }
+#endif            
         }
         
+        typedef std::set<ElevationSliceUtils::DistanceHeightXYZ> DistanceHeightSet;
+        DistanceHeightSet distanceHeightSet;
+
+        if (em)
+        {
+            osg::Vec3d directionVector = _endPoint-_startPoint;
+            directionVector.normalize();
         
+            osg::Vec3d startNormal = _startPoint;
+            startNormal.normalize();
+
+            // convert into distance/height
+            for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
+                itr != intersections.end();
+                ++itr)
+            {
+                osgUtil::PlaneIntersector::Intersection& intersection = *itr;
+                for(Polyline::iterator pitr = intersection.polyline.begin();
+                    pitr != intersection.polyline.end();
+                    ++pitr)
+                {
+                    const osg::Vec3d& v = *pitr;
+                    osg::Vec3d vNormal = v;
+                    vNormal.normalize();
+                    
+                    double latitude, longitude, height;
+                    em->convertXYZToLatLongHeight(v.x(), v.y(), v.z(),
+                                                  latitude, longitude, height);
+                    
+                    double Rv = v.length() - height;
+                    
+                    
+                    double alpha = acos( vNormal * startNormal);
+                    
+                    double Raverage = Rv;
+                    double distance = alpha * Raverage;
+                    distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, height, v));
+                }
+            }
+        }
+        else
+        {
+            // convert into distance/height
+            for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
+                itr != intersections.end();
+                ++itr)
+            {
+                osgUtil::PlaneIntersector::Intersection& intersection = *itr;
+                for(Polyline::iterator pitr = intersection.polyline.begin();
+                    pitr != intersection.polyline.end();
+                    ++pitr)
+                {
+                    const osg::Vec3d& v = *pitr;
+                    osg::Vec2d delta_xy( v.x() - _startPoint.x(), v.y() - _startPoint.y());
+                    double distance = delta_xy.length();
+                    distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, v.z(), v));
+                }
+            }
+        } 
+
+        // copy final results
+        _intersections.clear();
+        _distanceHeightIntersections.clear();
+        
+        _intersections.reserve(distanceHeightSet.size());
+        _distanceHeightIntersections.reserve(distanceHeightSet.size());
+        
+        for(DistanceHeightSet::iterator dhitr = distanceHeightSet.begin();
+            dhitr != distanceHeightSet.end();
+            ++dhitr)
+        {
+            const ElevationSliceUtils::DistanceHeightXYZ& dh = *dhitr;
+            _intersections.push_back( dh.position );
+            _distanceHeightIntersections.push_back( DistanceHeight(dh.distance, dh.height) );
+        }
     }
     else
     {

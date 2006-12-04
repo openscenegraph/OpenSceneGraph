@@ -60,6 +60,120 @@ struct DistanceHeightXYZ
 
 };
 
+
+struct DistanceHeightCalculator
+{
+    DistanceHeightCalculator(osg::EllipsoidModel* em, const osg::Vec3d& startPoint, osg::Vec3d& endPoint):
+        _em(em),
+        _startPoint(startPoint),
+        _startNormal(startPoint),
+        _endPoint(endPoint),
+        _endNormal(endPoint)
+    {
+        double latitude, longitude, height;
+
+        // set up start point variables
+        _em->convertXYZToLatLongHeight(_startPoint.x(), _startPoint.y(), _startPoint.z(), latitude, longitude, height);
+        _startRadius = _startPoint.length() - height;
+        _startNormal.normalize();
+
+        // set up end point variables
+        _em->convertXYZToLatLongHeight(_endPoint.x(), _endPoint.y(), _endPoint.z(), latitude, longitude, height);
+        _endRadius = _endPoint.length() - height;
+        _endNormal.normalize();
+
+        osg::Vec3d normal = _startNormal ^ _endNormal;
+        normal.normalize();
+
+        _angleIncrement = 0.005;
+        
+        _radiusList.push_back(_startRadius);        
+        _distanceList.push_back(0.0);
+        
+        osg::Matrixd rotationMatrix;
+        double angleBetweenStartEnd = acos( _startNormal * _endNormal );
+        double prevRadius = _startRadius;
+        double distance = 0.0;
+        for(double angle = _angleIncrement;
+            angle < angleBetweenStartEnd;
+            angle += _angleIncrement)
+        {
+            rotationMatrix.makeRotate(angle, normal);
+            osg::Vec3d newVector = osg::Matrixd::transform3x3(_startPoint, rotationMatrix);
+            
+            _em->convertXYZToLatLongHeight(newVector.x(), newVector.y(), newVector.z(), latitude, longitude, height);
+            double newRadius = newVector.length() - height;
+            
+            double distanceIncrement = _angleIncrement * (newRadius + prevRadius) *0.5;
+            distance  += distanceIncrement;
+            
+            _radiusList.push_back(newRadius);
+            _distanceList.push_back(distance);
+            
+            // osg::notify(osg::NOTICE)<<"  newVector = "<<newVector<<" newRadius = "<<newRadius<<" distanceIncrement="<<distanceIncrement<<std::endl;
+            
+            prevRadius = newRadius;
+        }
+
+    }
+    
+        
+    void computeDistanceHeight(const osg::Vec3d& v, double& distance, double& height) const
+    {
+        osg::Vec3d vNormal = v;
+        vNormal.normalize();
+
+        // compute the height at position
+        double latitude, longitude;
+        _em->convertXYZToLatLongHeight(v.x(), v.y(), v.z(),
+                                       latitude, longitude, height);
+                                       
+        // compute the radius at the point
+        double Rv = v.length() - height;
+
+        // compute the angle from the _startPoint
+        double alpha = acos( vNormal * _startNormal);
+        
+        unsigned int int_alpha = static_cast<unsigned int>(floor(alpha / _angleIncrement));
+        if (int_alpha >= _distanceList.size())
+        {
+            int_alpha = _distanceList.size() - 1;
+        }
+        
+        double prevAlpha = ((double)int_alpha) * _angleIncrement;
+        double deltaAlpha = alpha - prevAlpha;
+        double prevDistance = _distanceList[int_alpha];
+        double prevRadius = _radiusList[int_alpha];
+        
+        double averageRadius = (prevRadius + Rv)*0.5;
+        double distanceIncrement = deltaAlpha * averageRadius;
+        
+        distance = prevDistance + distanceIncrement;
+
+        // double oldDistance = alpha * (_startRadius + Rv) *0.5;
+
+        // osg::notify(osg::NOTICE)<<" new distance = "<<distance<<" old = "<<oldDistance<<" delta = "<<oldDistance-distance<<std::endl;
+    }
+
+    typedef std::vector<double> DoubleList;
+
+    osg::ref_ptr<osg::EllipsoidModel>   _em;
+
+    osg::Vec3d                          _startPoint;
+    osg::Vec3d                          _startNormal;
+    double                              _startRadius;
+
+    osg::Vec3d                          _endPoint;
+    osg::Vec3d                          _endNormal;
+    double                              _endRadius;
+
+    double                              _angleIncrement;
+    
+    DoubleList                          _radiusList;    
+    DoubleList                          _distanceList;    
+
+};
+
 }
 
 ElevationSlice::ElevationSlice()
@@ -178,11 +292,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
 
         if (em)
         {
-            osg::Vec3d directionVector = _endPoint-_startPoint;
-            directionVector.normalize();
-        
-            osg::Vec3d startNormal = _startPoint;
-            startNormal.normalize();
+            ElevationSliceUtils::DistanceHeightCalculator dhc(em, _startPoint, _endPoint);
 
             // convert into distance/height
             for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
@@ -195,20 +305,8 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                     ++pitr)
                 {
                     const osg::Vec3d& v = *pitr;
-                    osg::Vec3d vNormal = v;
-                    vNormal.normalize();
-                    
-                    double latitude, longitude, height;
-                    em->convertXYZToLatLongHeight(v.x(), v.y(), v.z(),
-                                                  latitude, longitude, height);
-                    
-                    double Rv = v.length() - height;
-                    
-                    
-                    double alpha = acos( vNormal * startNormal);
-                    
-                    double Raverage = Rv;
-                    double distance = alpha * Raverage;
+                    double distance, height;
+                    dhc.computeDistanceHeight(v, distance, height);
                     distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, height, v));
                 }
             }

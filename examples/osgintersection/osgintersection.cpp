@@ -134,7 +134,7 @@ int main(int argc, char **argv)
             es.setDatabaseCacheReadCallback(los.getDatabaseCacheReadCallback());
 
             es.setStartPoint(bs.center()+osg::Vec3d(bs.radius(),0.0,0.0) );
-            es.setEndPoint(bs.center()+osg::Vec3d(0.0,bs.radius(),0.0) );
+            es.setEndPoint(bs.center()+osg::Vec3d(0.0,0.0,bs.radius()) );
 
             es.computeIntersections(scene.get());
 
@@ -149,6 +149,7 @@ int main(int argc, char **argv)
                 dhitr != dhl.end();
                 ++dhitr)
             {
+                 std::cout.precision(10);
                  std::cout<<"  "<<dhitr->first<<" "<<dhitr->second<<std::endl;
             }
 

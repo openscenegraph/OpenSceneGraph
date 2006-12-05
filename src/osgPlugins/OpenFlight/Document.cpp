@@ -10,6 +10,7 @@ using namespace flt;
 
 
 Document::Document() :
+    _replaceClampWithClampToEdge(false),
     _preserveFace(false),
     _preserveObject(false),
     _defaultDOFAnimationState(false),

@@ -69,14 +69,14 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         attr->fileFormat  = in.readInt32();
         attr->minFilterMode  = in.readInt32();
         attr->magFilterMode  = in.readInt32();
-        attr->wrapMode  = in.readInt32();
+        attr->wrapMode  = in.readInt32(AttrData::WRAP_REPEAT);
 
         attr->wrapMode_u  = in.readInt32();
-        if ((attr->wrapMode_u != AttrData::WRAP_CLAMP) && ((attr->wrapMode_u != AttrData::WRAP_REPEAT)))
+        if (attr->wrapMode_u == AttrData::WRAP_NONE)
             attr->wrapMode_u = attr->wrapMode;
 
         attr->wrapMode_v  = in.readInt32();
-        if ((attr->wrapMode_v != AttrData::WRAP_CLAMP) && ((attr->wrapMode_v != AttrData::WRAP_REPEAT)))
+        if (attr->wrapMode_v == AttrData::WRAP_NONE)
             attr->wrapMode_v = attr->wrapMode;
 
         attr->modifyFlag = in.readInt32();
@@ -86,7 +86,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         // v11 ends here
 //      if (in.eof() || (_flt_version <= 11)) return true;
 #if 1
-        attr->texEnvMode = in.readInt32();
+        attr->texEnvMode = in.readInt32(AttrData::TEXENV_MODULATE);
         attr->intensityAsAlpha = in.readInt32();
         in.forward(4*8);
         attr->size_u = in.readFloat64();

@@ -246,22 +246,26 @@ protected:
 
     virtual ~TexturePalette() {}
 
-    osg::Texture2D::WrapMode convertWrapMode( int32 wrap )
+    osg::Texture2D::WrapMode convertWrapMode(int32 attrWrapMode, const Document& document)
     {
-        switch( wrap )
+        osg::Texture2D::WrapMode osgWrapMode = osg::Texture2D::REPEAT;
+        switch (attrWrapMode)
         {
         case AttrData::WRAP_CLAMP:
-            return osg::Texture2D::CLAMP;
+            if (document.getReplaceClampWithClampToEdge())
+                osgWrapMode = osg::Texture2D::CLAMP_TO_EDGE;
+            else
+                osgWrapMode = osg::Texture2D::CLAMP;
             break;
         case AttrData::WRAP_MIRRORED_REPEAT:
-            return osg::Texture2D::MIRROR;
+            osgWrapMode = osg::Texture2D::MIRROR;
             break;
-        default:
         case AttrData::WRAP_REPEAT:
-            return osg::Texture2D::REPEAT;
+            osgWrapMode = osg::Texture2D::REPEAT;
             break;
         }
-        return osg::Texture2D::REPEAT;
+
+        return osgWrapMode;
     }
 
     virtual void readRecord(RecordInputStream& in, Document& document)
@@ -299,10 +303,10 @@ protected:
         if (attr.valid())
         {
             // Wrap mode
-            osg::Texture2D::WrapMode wrap_s = convertWrapMode( attr->wrapMode_u );
+            osg::Texture2D::WrapMode wrap_s = convertWrapMode(attr->wrapMode_u,document);
             texture->setWrap(osg::Texture2D::WRAP_S,wrap_s);
 
-            osg::Texture2D::WrapMode wrap_t = convertWrapMode( attr->wrapMode_v );
+            osg::Texture2D::WrapMode wrap_t = convertWrapMode(attr->wrapMode_v,document);
             texture->setWrap(osg::Texture2D::WRAP_T,wrap_t);
 
             // Min filter

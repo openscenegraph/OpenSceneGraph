@@ -32,78 +32,118 @@
 
 #define NUM_CMD_INDEX 20
 
-namespace osg {
-
-    class MovieData;
-
-    /**
-     * Quicktime Image Stream class.
-     */
-    class QuicktimeImageStream : public osg::ImageStream, public OpenThreads::Thread
-    {
-    public:
-        QuicktimeImageStream(std::string fileName = "");
-
-        virtual Object* clone() const { return new QuicktimeImageStream; }
-        virtual bool isSameKindAs(const Object* obj) const {
-            return dynamic_cast<const QuicktimeImageStream*>(obj) != NULL;
-        }
-        virtual const char* className() const { return "QuicktimeImageStream"; }
-
-        /// Start or continue stream.
-        virtual void play()
-        {
-            if (!isRunning()) start();
-            
-            setCmd(THREAD_START);
-        }
-
-        /// Pause stream at current position.
-        virtual void pause() { setCmd(THREAD_STOP); }
-
-        /// Rewind stream to beginning.
-        virtual void rewind() { setCmd(THREAD_REWIND); }
-
-        virtual void quit(bool wiatForThreadToExit);
-	
-        /// Get total length in seconds.
-        inline float getLength() const { return _len; }
-        
-        void load(std::string fileName);
-
-        virtual void run();
-
-    protected:
-        virtual ~QuicktimeImageStream();
-
-    private:
-        float _lastUpdate;
-        float _len;
-        
-        MovieData* _data;
-
-        enum ThreadCommand {
-            THREAD_IDLE = 0,
-            THREAD_START,
-            THREAD_STOP,
-            THREAD_REWIND,
-            THREAD_CLOSE,
-            THREAD_QUIT
-        };
-        ThreadCommand _cmd[NUM_CMD_INDEX];
-        int _wrIndex, _rdIndex;
-
-        OpenThreads::Mutex _mutex;
-
-        /// Set command.
-        void setCmd(ThreadCommand cmd);
-
-        /// Get command.
-        ThreadCommand getCmd();
 
 
-    };
+class MovieData;
 
-} // namespace
+/**
+* Quicktime Image Stream class. streams a quicktime movie into an image
+*/
+class QuicktimeImageStream : public osg::ImageStream, public OpenThreads::Thread
+{
+public:
+   /** Constructor
+   * @param fileName movie to open */
+   QuicktimeImageStream(std::string fileName = "");
+   virtual Object* clone() const { return new QuicktimeImageStream; }
+   virtual bool isSameKindAs(const Object* obj) const {
+      return dynamic_cast<const QuicktimeImageStream*>(obj) != NULL;
+   }
+
+   virtual const char* className() const { return "QuicktimeImageStream"; }
+
+   /// Start or continue stream.
+   virtual void play()
+   {
+      if (!isRunning()) start();
+
+      setCmd(THREAD_START);
+
+      // ricky
+      _status = ImageStream::PLAYING;
+   }
+
+   /// sets the movierate of this movie
+   void setMovieRate(float rate) {
+      if (!isRunning()) start();
+      setCmd(THREAD_SETRATE,rate);
+   }
+
+   /// Pause stream at current position.
+   virtual void pause() 
+   {
+      setCmd(THREAD_STOP); 
+      // ricky
+      _status = ImageStream::PAUSED;
+   }
+
+   /// Rewind stream to beginning.
+   virtual void rewind() { setCmd(THREAD_REWIND); }
+
+   /// forward stream to the end
+   virtual void forward() { setCmd(THREAD_FORWARD); }
+
+   /// stop playing 
+   virtual void quit(bool wiatForThreadToExit);
+
+   /// Get total length in seconds.
+   inline float getLength() const { return _len; }
+
+   /// jumps to a specific position 
+   void jumpTo(float pos) {
+      setCmd(THREAD_SEEK, pos);
+   }
+
+   /// returns the current playing position
+   inline float getCurrentTime() const { return _current; }
+
+   /// @return the current moviedata-object
+   MovieData* getMovieData() { return _data; }
+
+   /// loads a movie from fileName
+   void load(std::string fileName);
+
+   /// starts the thread
+   virtual void run();
+
+protected:
+   /// destructor
+   virtual ~QuicktimeImageStream();
+
+private:
+   float _lastUpdate;
+   float _len;
+   float _current;
+   float _currentRate;
+
+   MovieData* _data;
+
+   enum ThreadCommand {
+      THREAD_IDLE = 0,
+      THREAD_START,
+      THREAD_STOP,
+      THREAD_REWIND,
+      THREAD_FORWARD,
+      THREAD_SEEK,
+      THREAD_SETRATE,
+      THREAD_CLOSE,
+      THREAD_QUIT
+   };
+   ThreadCommand _cmd[NUM_CMD_INDEX];
+   float _rates[NUM_CMD_INDEX];
+   int _wrIndex, _rdIndex;
+
+   OpenThreads::Mutex _mutex;
+
+   /// Set command.
+   void setCmd(ThreadCommand cmd, float rate = 0.0f);
+
+   /// Get command.
+   ThreadCommand getCmd();
+
+   // ricky
+   static int _qtInstanceCount;
+};
+
 
 #endif

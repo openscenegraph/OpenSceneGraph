@@ -418,8 +418,8 @@ dxfPolyline::drawScene(scene* sc)
         Vec3d nr;
         bool nset = false;
         //dxfVertex* v = NULL;
-        unsigned short ncount;
-        unsigned short mcount;
+        unsigned int ncount;
+        unsigned int mcount;
         if (_surfacetype == 6) { 
             // I dont have examples of type 5 and 8, but they may be the same as 6
             mcount = _mdensity;
@@ -428,8 +428,8 @@ dxfPolyline::drawScene(scene* sc)
             mcount = _mcount;
             ncount = _ncount;
         }
-        for (unsigned short n = 0; n < ncount-1; n++) {
-            for (unsigned short m = 1; m < mcount; m++) {
+        for (unsigned int n = 0; n < ncount-1; n++) {
+            for (unsigned int m = 1; m < mcount; m++) {
                 // 0
                 a = _vertices[(m-1)*ncount+n].get()->getVertex();
                 // 1
@@ -463,7 +463,7 @@ dxfPolyline::drawScene(scene* sc)
             }
         }
         if (_flag & 1) {
-            for (unsigned short n = 0; n < ncount-1; n++) {
+            for (unsigned int n = 0; n < ncount-1; n++) {
                 // 0
                 a = _vertices[(mcount-1)*ncount+n].get()->getVertex();
                 // 1
@@ -492,7 +492,7 @@ dxfPolyline::drawScene(scene* sc)
             }
         }
         if (_flag & 32) {
-            for (unsigned short m = 1; m < mcount; m++) {
+            for (unsigned int m = 1; m < mcount; m++) {
                 // 0
                 a = _vertices[(m-1)*ncount+(ncount-1)].get()->getVertex();
                 // 1
@@ -553,7 +553,7 @@ dxfPolyline::drawScene(scene* sc)
     } else if (_flag & 64) { 
         unsigned short _facetype = 3;
 
-        for (unsigned short i = 0; i < _indices.size(); i++) {
+        for (unsigned int i = 0; i < _indices.size(); i++) {
             dxfVertex* vindice = _indices[i].get();
             if (!vindice) continue;
             if (vindice->getIndice4()) {
@@ -751,8 +751,8 @@ dxfInsert::drawScene(scene* sc)
     sc->pushMatrix(m);
     sc->pushMatrix(back);
 
-    std::vector<dxfEntity*> l = _block->getEntityList();
-    for (std::vector<dxfEntity*>::iterator itr = l.begin(); itr != l.end(); ++itr) {
+    std::vector<osg::ref_ptr<dxfEntity> > l = _block->getEntityList();
+    for (std::vector<osg::ref_ptr<dxfEntity> >::iterator itr = l.begin(); itr != l.end(); ++itr) {
         dxfBasicEntity* e = (*itr)->getEntity();
         if (e) {
             e->drawScene(sc);

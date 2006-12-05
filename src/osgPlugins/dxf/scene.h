@@ -32,7 +32,7 @@ class dxfLayerTable;
 class bounds {
 public:
     bounds() : _min(DBL_MAX, DBL_MAX, DBL_MAX), _max(-DBL_MAX, -DBL_MAX, -DBL_MAX) {}
-    inline void expandBy(osg::Vec3d v) {
+    inline void expandBy(const osg::Vec3d & v) {
         if(v.x()<_min.x()) _min.x() = v.x();
         if(v.x()>_max.x()) _max.x() = v.x();
 
@@ -57,7 +57,7 @@ public:
 
 
 static inline 
-osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Array* vertices, osg::Vec4 color)
+osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Array* vertices, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
@@ -75,7 +75,7 @@ osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Arra
 
 
 static inline 
-osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, osg::Vec4 color)
+osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
@@ -90,7 +90,7 @@ osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* norm
 }
 
 static inline 
-osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, osg::Vec4 color)
+osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
     geom->setVertexArray(vertices);
@@ -103,8 +103,9 @@ osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* nor
     geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     return geom;
 }
+
 static inline 
-osg::Geode* createModel(std::string name, osg::Geometry* geom)
+osg::Geode* createModel(const std::string & name, osg::Geometry* geom)
 {
     osg::Geode* geom_geode = new osg::Geode;
     geom_geode->addDrawable(geom);
@@ -275,7 +276,7 @@ public:
 
     osg::Vec3d addVertex(osg::Vec3d v);
     osg::Vec3d addNormal(osg::Vec3d v);
-    sceneLayer* findOrCreateSceneLayer(std::string l)
+    sceneLayer* findOrCreateSceneLayer(const std::string & l)
     {
         sceneLayer* ly = _layers[l].get();
         if (!ly) {
@@ -284,13 +285,13 @@ public:
         }
         return ly;
     }
-    unsigned short correctedColorIndex(std::string l, unsigned short color);
+    unsigned short correctedColorIndex(const std::string & l, unsigned short color);
 
-    void addLine(std::string l, unsigned short color, osg::Vec3d s, osg::Vec3d e);
-    void addLineStrip(std::string l, unsigned short color, std::vector<osg::Vec3d> vertices);
-    void addLineLoop(std::string l, unsigned short color, std::vector<osg::Vec3d> vertices);
-    void addTriangles(std::string l, unsigned short color, std::vector<osg::Vec3d> vertices, bool inverted=false);
-    void addQuads(std::string l, unsigned short color, std::vector<osg::Vec3d> vertices, bool inverted=false);
+    void addLine(const std::string & l, unsigned short color, osg::Vec3d & s, osg::Vec3d & e);
+    void addLineStrip(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);
+    void addLineLoop(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);
+    void addTriangles(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, bool inverted=false);
+    void addQuads(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, bool inverted=false);
     osg::Group* scene2osg()
     {
         osg::Group* root = NULL;
@@ -324,12 +325,11 @@ public:
 protected:
     osg::Matrixd                _m;
     osg::Matrixd                _r;
-    osg::Vec3d                        _t;
-    bounds                        _b;
+    osg::Vec3d                  _t;
+    bounds                      _b;
     std::map<std::string, osg::ref_ptr<sceneLayer> >        _layers;
-    std::vector<osg::Matrixd>    _mStack;
-    dxfLayerTable* _layerTable;
-
+    std::vector<osg::Matrixd>   _mStack;
+    dxfLayerTable*              _layerTable;
 };
 
 #endif

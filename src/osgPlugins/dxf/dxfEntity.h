@@ -147,14 +147,14 @@ public:
     virtual void assign(dxfFile* dxf, codeValue& cv);
     void getVertex(double &x, double &y, double &z) { x=_vertex.x();y=_vertex.y();z=_vertex.z(); }
     const osg::Vec3d& getVertex() const { return _vertex; }
-    const unsigned short getIndice1() const { return _indice1; }
-    const unsigned short getIndice2() const { return _indice2; }
-    const unsigned short getIndice3() const { return _indice3; }
-    const unsigned short getIndice4() const { return _indice4; }
+    const unsigned int getIndice1() const { return _indice1; }
+    const unsigned int getIndice2() const { return _indice2; }
+    const unsigned int getIndice3() const { return _indice3; }
+    const unsigned int getIndice4() const { return _indice4; }
 
 protected:
     osg::Vec3d    _vertex;
-    unsigned short _indice1, _indice2, _indice3, _indice4;
+    unsigned int _indice1, _indice2, _indice3, _indice4;
 };
 
 class dxfPolyline : public dxfBasicEntity
@@ -185,11 +185,11 @@ protected:
     std::vector<osg::ref_ptr<dxfVertex> >        _indices;
     double                        _elevation;
     unsigned short                _flag;
-    unsigned short                _mcount;
-    unsigned short                _ncount;
+    unsigned int                  _mcount;
+    unsigned int                  _ncount;
     unsigned short                _nstart; // 71
     unsigned short                _nend; //72
-    osg::Vec3d                        _ocs; //210 220 230
+    osg::Vec3d                    _ocs; //210 220 230
     unsigned short                _mdensity; // 73
     unsigned short                _ndensity; // 74
     unsigned short                _surfacetype; //75
@@ -246,8 +246,8 @@ protected:
                 // entities (dxf garble things) in the sequence
     double            _rotation;
     osg::Vec3d        _scale;
-    osg::Vec3d            _point;
-    osg::Vec3d            _ocs;
+    osg::Vec3d        _point;
+    osg::Vec3d        _ocs;
 };
 
 class dxfEntity : public osg::Referenced

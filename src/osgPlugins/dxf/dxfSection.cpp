@@ -78,7 +78,7 @@ void dxfEntities::assign(dxfFile* dxf, codeValue& cv)
 void 
 dxfEntities::drawScene(scene* sc)
 {
-    for (std::vector<osg::ref_ptr<dxfEntity> >::iterator itr = _entityList.begin();
+    for (EntityList::iterator itr = _entityList.begin();
         itr != _entityList.end(); ++itr)
         (*itr)->drawScene(sc);
 }

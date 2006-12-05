@@ -25,6 +25,8 @@ class dxfFile;
 class codeValue;
 class dxfEntity;
 
+typedef std::vector<osg::ref_ptr<dxfEntity> > EntityList;
+
 class dxfBlock : public osg::Referenced
 {
 public:
@@ -32,10 +34,11 @@ public:
     virtual ~dxfBlock() {}
     inline const std::string& getName() const { return _name; }
     virtual void assign(dxfFile* dxf, codeValue& cv);
-    std::vector<osg::ref_ptr<dxfEntity> > & getEntityList() { return _entityList; }
+    EntityList& getEntityList() { return _entityList; }
     const osg::Vec3d& getPosition() const;
+    
 protected:
-    std::vector<osg::ref_ptr<dxfEntity> > _entityList;
+    EntityList _entityList;
     dxfEntity* _currentEntity;
     std::string _name;
     osg::Vec3d _position;

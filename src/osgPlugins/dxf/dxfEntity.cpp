@@ -751,8 +751,8 @@ dxfInsert::drawScene(scene* sc)
     sc->pushMatrix(m);
     sc->pushMatrix(back);
 
-    std::vector<osg::ref_ptr<dxfEntity> > l = _block->getEntityList();
-    for (std::vector<osg::ref_ptr<dxfEntity> >::iterator itr = l.begin(); itr != l.end(); ++itr) {
+    EntityList& l = _block->getEntityList();
+    for (EntityList::iterator itr = l.begin(); itr != l.end(); ++itr) {
         dxfBasicEntity* e = (*itr)->getEntity();
         if (e) {
             e->drawScene(sc);

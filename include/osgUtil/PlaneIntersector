@@ -16,6 +16,8 @@
 
 #include <osgUtil/IntersectionVisitor>
 
+#include <osg/CoordinateSystemNode>
+
 namespace osgUtil
 {
 
@@ -47,11 +49,13 @@ class OSGUTIL_EXPORT PlaneIntersector : public Intersector
             }
 
             typedef std::vector<osg::Vec3d> Polyline;
+            typedef std::vector<double> Attributes;
 
             osg::NodePath                   nodePath;
             osg::ref_ptr<osg::RefMatrix>    matrix;
             osg::ref_ptr<osg::Drawable>     drawable;
             Polyline                        polyline;
+            Attributes                      attributes;
             
         };
         
@@ -60,6 +64,15 @@ class OSGUTIL_EXPORT PlaneIntersector : public Intersector
         inline void insertIntersection(const Intersection& intersection) { getIntersections().push_back(intersection); }
 
         inline Intersections& getIntersections() { return _parent ? _parent->_intersections : _intersections; }
+
+        
+        void setRecordHeightsAsAttributes(bool flag) { _recordHeightsAsAttributes = flag; }
+        
+        bool getRecordHeightsAsAttributes() const { return _recordHeightsAsAttributes; }
+
+        void setEllipsoidModel(osg::EllipsoidModel* em) { _em = em; }
+        
+        const osg::EllipsoidModel* getEllipsoidModel() const { return _em.get(); }
 
     public:
 
@@ -77,12 +90,15 @@ class OSGUTIL_EXPORT PlaneIntersector : public Intersector
 
     protected:
 
-        PlaneIntersector*   _parent;
-
-        osg::Plane          _plane;
-        osg::Polytope       _polytope;
+        PlaneIntersector*                   _parent;
         
-        Intersections       _intersections;
+        bool                                _recordHeightsAsAttributes;
+        osg::ref_ptr<osg::EllipsoidModel>   _em;
+
+        osg::Plane                          _plane;
+        osg::Polytope                       _polytope;
+        
+        Intersections                       _intersections;
     
 };
 

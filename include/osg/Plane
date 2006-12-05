@@ -163,7 +163,7 @@ class OSG_EXPORT Plane
                    _fv[3];
         }
 
-        inline float distance(const osg::Vec3d& v) const
+        inline double distance(const osg::Vec3d& v) const
         {
             return _fv[0]*v.x()+
                    _fv[1]*v.y()+
@@ -180,7 +180,7 @@ class OSG_EXPORT Plane
         }
 
         /** calculate the dot product of the plane normal and a point.*/
-        inline float dotProductNormal(const osg::Vec3d& v) const
+        inline double dotProductNormal(const osg::Vec3d& v) const
         {
             return _fv[0]*v.x()+
                    _fv[1]*v.y()+

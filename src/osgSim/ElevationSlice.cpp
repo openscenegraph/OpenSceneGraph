@@ -245,6 +245,10 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     
     osg::ref_ptr<osgUtil::PlaneIntersector> intersector = new osgUtil::PlaneIntersector(plane, boundingPolytope);
 
+
+    intersector->setRecordHeightsAsAttributes(true);
+    intersector->setEllipsoidModel(em);
+
     _intersectionVisitor.reset();
     _intersectionVisitor.setIntersector( intersector.get() );
     
@@ -253,6 +257,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     osgUtil::PlaneIntersector::Intersections& intersections = intersector->getIntersections();
 
     typedef osgUtil::PlaneIntersector::Intersection::Polyline Polyline;
+    typedef osgUtil::PlaneIntersector::Intersection::Attributes Attributes;
 
     if (!intersections.empty())
     {
@@ -300,14 +305,23 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                 ++itr)
             {
                 osgUtil::PlaneIntersector::Intersection& intersection = *itr;
+                
+                if (intersection.attributes.size()!=intersection.polyline.size()) continue;
+                
+                Attributes::iterator aitr = intersection.attributes.begin();
                 for(Polyline::iterator pitr = intersection.polyline.begin();
                     pitr != intersection.polyline.end();
-                    ++pitr)
+                    ++pitr, ++aitr)
                 {
                     const osg::Vec3d& v = *pitr;
                     double distance, height;
                     dhc.computeDistanceHeight(v, distance, height);
-                    distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, height, v));
+                    
+                    double pi_height = *aitr;
+                    
+                    osg::notify(osg::NOTICE)<<"computed height = "<<height<<" PI height = "<<pi_height<<std::endl;
+                    
+                    distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, pi_height, v));
                 }
             }
         }

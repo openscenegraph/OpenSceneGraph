@@ -134,7 +134,7 @@ int main(int argc, char **argv)
             es.setDatabaseCacheReadCallback(los.getDatabaseCacheReadCallback());
 
             es.setStartPoint(bs.center()+osg::Vec3d(bs.radius(),0.0,0.0) );
-            es.setEndPoint(bs.center()+osg::Vec3d(0.0,0.0,bs.radius()) );
+            es.setEndPoint(bs.center()+osg::Vec3d(bs.radius(),bs.radius(),bs.radius()) );
 
             es.computeIntersections(scene.get());
 

@@ -26,7 +26,7 @@ namespace PlaneIntersectorUtils
 
     struct RefPolyline : public osg::Referenced
     {
-        typedef std::vector<osg::Vec3d> Polyline;
+        typedef std::vector<osg::Vec4d> Polyline;
         Polyline _polyline;
         
         void reverse()
@@ -45,15 +45,21 @@ namespace PlaneIntersectorUtils
     {
     public:
         
-        typedef std::map<osg::Vec3d, osg::ref_ptr<RefPolyline> > PolylineMap;
+        typedef std::map<osg::Vec4d, osg::ref_ptr<RefPolyline> > PolylineMap;
         typedef std::vector< osg::ref_ptr<RefPolyline> > PolylineList;
         
         PolylineList    _polylines;
         PolylineMap     _startPolylineMap;
         PolylineMap     _endPolylineMap;
+        osg::ref_ptr<osg::EllipsoidModel>   _em;
         
 
         void add(const osg::Vec3d& v1, const osg::Vec3d& v2)
+        {
+            add(osg::Vec4d(v1,0.0), osg::Vec4d(v2,0.0));
+        }
+        
+        void add(const osg::Vec4d& v1, const osg::Vec4d& v2)
         {
             if (v1==v2) return;
         
@@ -170,7 +176,7 @@ namespace PlaneIntersectorUtils
             }
         }
         
-        void newline(const osg::Vec3d& v1, const osg::Vec3d& v2)
+        void newline(const osg::Vec4d& v1, const osg::Vec4d& v2)
         {
             RefPolyline* polyline = new RefPolyline;
             polyline->_polyline.push_back(v1);
@@ -179,7 +185,7 @@ namespace PlaneIntersectorUtils
             _endPolylineMap[v2] = polyline;
         }
         
-        void insertAtStart(const osg::Vec3d& v, PolylineMap::iterator v_start_itr)
+        void insertAtStart(const osg::Vec4d& v, PolylineMap::iterator v_start_itr)
         {
             // put v1 at the start of its poyline
             RefPolyline* polyline = v_start_itr->second.get();
@@ -193,7 +199,7 @@ namespace PlaneIntersectorUtils
 
         }
         
-        void insertAtEnd(const osg::Vec3d& v, PolylineMap::iterator v_end_itr)
+        void insertAtEnd(const osg::Vec4d& v, PolylineMap::iterator v_end_itr)
         {
             // put v1 at the end of its poyline
             RefPolyline* polyline = v_end_itr->second.get();
@@ -350,7 +356,10 @@ namespace PlaneIntersectorUtils
         osg::Plane _plane;
         osg::Polytope _polytope;
         bool _hit;
-
+        osg::ref_ptr<osg::RefMatrix>        _matrix;
+        bool _recordHeightsAsAttributes;
+        osg::ref_ptr<osg::EllipsoidModel>   _em;
+        
         PolylineConnector _polylineConnector;
 
 
@@ -359,14 +368,25 @@ namespace PlaneIntersectorUtils
             _hit = false;
         }
 
-        void set(const osg::Plane& plane, const osg::Polytope& polytope)
+        void set(const osg::Plane& plane, const osg::Polytope& polytope, osg::RefMatrix* matrix, bool recordHeightsAsAttributes, osg::EllipsoidModel* em)
         {
             _plane = plane;
             _polytope = polytope;
             _hit = false;
+            _matrix = matrix;
+            _recordHeightsAsAttributes = recordHeightsAsAttributes;
+            _em = em;
         }
 
-        inline void add(osg::Vec3d& vs, osg::Vec3d& ve)
+        inline double distance(const osg::Plane& plane, const osg::Vec4d& v) const
+        {
+            return plane[0]*v.x()+
+                   plane[1]*v.y()+
+                   plane[2]*v.z()+
+                   plane[3];
+        }
+
+        inline void add(osg::Vec4d& vs, osg::Vec4d& ve)
         {
             if (_polytope.getPlaneList().empty())
             {
@@ -379,8 +399,8 @@ namespace PlaneIntersectorUtils
                     ++itr)
                 {
                     osg::Plane& plane = *itr;
-                    double ds = plane.distance(vs);
-                    double de = plane.distance(ve);
+                    double ds = distance(plane,vs);
+                    double de = distance(plane,ve);
                     
                     if (ds<0.0)
                     {
@@ -465,21 +485,57 @@ namespace PlaneIntersectorUtils
                 return;
             }
 
-            osg::Vec3d v[2];
+            osg::Vec4d v[2];
             unsigned int numIntersects = 0;
+            
+            osg::Vec4d p1(v1, v1.z());
+            osg::Vec4d p2(v2, v2.z());
+            osg::Vec4d p3(v3, v3.z());
+            
+            if (_em.valid())
+            {
+                double latitude, longitude, height;
+                
+                if (_matrix.valid())
+                {
+                    osg::Vec3d tp = v1 * (*_matrix);
+                    _em->convertXYZToLatLongHeight(tp.x(), tp.y(), tp.z(), latitude, longitude, height);
+                    p1[3] = height;
+
+                    tp = v2 * (*_matrix);
+                    _em->convertXYZToLatLongHeight(tp.x(), tp.y(), tp.z(), latitude, longitude, height);
+                    p2[3] = height;
+
+                    tp = v3 * (*_matrix);
+                    _em->convertXYZToLatLongHeight(tp.x(), tp.y(), tp.z(), latitude, longitude, height);
+                    p3[3] = height;
+
+                }
+                else
+                {
+                    _em->convertXYZToLatLongHeight(v1.x(), v1.y(), v1.z(), latitude, longitude, height);
+                    p1[3] = height;
+
+                    _em->convertXYZToLatLongHeight(v2.x(), v2.y(), v2.z(), latitude, longitude, height);
+                    p2[3] = height;
+
+                    _em->convertXYZToLatLongHeight(v3.x(), v3.y(), v3.z(), latitude, longitude, height);
+                    p3[3] = height;
+                }
+            }
 
             if (d1*d2 < 0.0)
             {
                 // edge 12 itersects
                 double div = 1.0 / (d2-d1);
-                v[numIntersects++] = v1* (d2*div) - v2 * (d1*div);
+                v[numIntersects++] = p1* (d2*div) - p2 * (d1*div);
             }
 
             if (d2*d3 < 0.0)
             {
                 // edge 23 itersects
                 double div = 1.0 / (d3-d2);
-                v[numIntersects++] = v2* (d3*div) - v3 * (d2*div);
+                v[numIntersects++] = p2* (d3*div) - p3 * (d2*div);
             }
 
             if (d1*d3 < 0.0)
@@ -488,7 +544,7 @@ namespace PlaneIntersectorUtils
                 {
                     // edge 13 itersects
                     double div = 1.0 / (d3-d1);
-                    v[numIntersects++] = v1* (d3*div) - v3 * (d1*div);
+                    v[numIntersects++] = p1* (d3*div) - p3 * (d1*div);
                 }
                 else
                 {
@@ -512,6 +568,7 @@ namespace PlaneIntersectorUtils
 //
 PlaneIntersector::PlaneIntersector(const osg::Plane& plane, const osg::Polytope& boundingPolytope):
     _parent(0),
+    _recordHeightsAsAttributes(false),
     _plane(plane),
     _polytope(boundingPolytope)
 {
@@ -520,6 +577,7 @@ PlaneIntersector::PlaneIntersector(const osg::Plane& plane, const osg::Polytope&
 PlaneIntersector::PlaneIntersector(CoordinateFrame cf, const osg::Plane& plane, const osg::Polytope& boundingPolytope):
     Intersector(cf),
     _parent(0),
+    _recordHeightsAsAttributes(false),
     _plane(plane),
     _polytope(boundingPolytope)
 {
@@ -532,6 +590,8 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
     {
         osg::ref_ptr<PlaneIntersector> pi = new PlaneIntersector(_plane, _polytope);
         pi->_parent = this;
+        pi->_recordHeightsAsAttributes = _recordHeightsAsAttributes;
+        pi->_em = _em;
         return pi.release();
     }
 
@@ -568,6 +628,8 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
     osg::ref_ptr<PlaneIntersector> pi = new PlaneIntersector(plane, transformedPolytope);
     pi->_parent = this;
+    pi->_recordHeightsAsAttributes = _recordHeightsAsAttributes;
+    pi->_em = _em;
     return pi.release();
 }
 
@@ -594,7 +656,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
     // osg::notify(osg::NOTICE)<<"Succed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
     osg::TriangleFunctor<PlaneIntersectorUtils::TriangleIntersector> ti;
-    ti.set(_plane,_polytope);
+    ti.set(_plane, _polytope, iv.getModelMatrix(), _recordHeightsAsAttributes, _em.get());
     drawable->accept(ti);
 
     ti._polylineConnector.consolidatePolylineLists();
@@ -614,7 +676,19 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
             Intersection& new_intersection = intersections[pos];
 
             new_intersection.matrix = iv.getModelMatrix();
-            new_intersection.polyline = (*pitr)->_polyline;
+    
+            new_intersection.polyline.reserve((*pitr)->_polyline.size());
+            if (_recordHeightsAsAttributes) new_intersection.attributes.reserve((*pitr)->_polyline.size());
+            
+            for(PlaneIntersectorUtils::RefPolyline::Polyline::iterator vitr = (*pitr)->_polyline.begin();
+                vitr != (*pitr)->_polyline.end();
+                ++vitr)
+            {
+                const osg::Vec4d& v = *vitr;
+                new_intersection.polyline.push_back( osg::Vec3d(v.x(), v.y(), v.z()) );
+                if (_recordHeightsAsAttributes) new_intersection.attributes.push_back( v.w() );
+            }
+
             new_intersection.nodePath = iv.getNodePath();
             new_intersection.drawable = drawable;
         }

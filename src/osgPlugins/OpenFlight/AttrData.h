@@ -58,8 +58,8 @@ class AttrData : public osg::Object
         enum WrapMode {
             WRAP_REPEAT = 0,
             WRAP_CLAMP = 1,
-            WRAP_NONE = 2,
-            WRAP_MIRRORED_REPEAT = 3
+            WRAP_NONE = 3,
+            WRAP_MIRRORED_REPEAT = 4
         };
 
         enum TexEnvMode {

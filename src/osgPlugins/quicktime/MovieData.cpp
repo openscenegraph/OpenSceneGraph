@@ -7,7 +7,7 @@
  *
  */
 #include <osg/GL>
-
+#include <osg/Endian>
 #include <osgDB/FileNameUtils>
 
 #include "MovieData.h"
@@ -106,14 +106,14 @@ void MovieData::_initImage(osg::Image* image)
 
     buffer = (void*)(((unsigned long)(_pointer + 31) >> 5) << 5);
 
-    GLenum internalFormat = (getCpuByteOrder()==osg::BigEndian)?
+    GLenum internalFormat = (osg::getCpuByteOrder()==osg::BigEndian)?
                             GL_UNSIGNED_INT_8_8_8_8_REV :
                             GL_UNSIGNED_INT_8_8_8_8;
 
     image->setImage(_textureWidth,_textureHeight,1,
                    (GLint) GL_RGBA8,
                    (GLenum)GL_BGRA_EXT,
-                   internalformat,
+                   internalFormat,
                    (unsigned char*) buffer,osg::Image::NO_DELETE,4);
 
 }
@@ -180,9 +180,10 @@ void MovieData::setMovieTime(float atime) {
 void MovieData::setMovieRate(float rate) { 
     // osg::notify(osg::ALWAYS) << "new movierate: " << rate << " current: " << getMovieRate() << std::endl;
     _movieRate = rate;
-    if (rate != 0) {
+    if ((rate != 0) && (_preRolled == false)) {
         PrerollMovie(_movie, GetMovieTime(_movie,NULL), X2Fix(rate));
         _checkMovieError("PrerollMovie failed");
+        _preRolled = true;
     }
     
     SetMovieRate(_movie, X2Fix(rate)); 

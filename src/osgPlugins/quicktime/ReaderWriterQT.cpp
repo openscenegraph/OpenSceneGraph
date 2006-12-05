@@ -47,7 +47,7 @@ public:
       // this should be the only image importer required on the Mac
       // dont know what else it supports, but these will do
       return 
-         /*osgDB::equalCaseInsensitive(extension,"rgb") ||
+         osgDB::equalCaseInsensitive(extension,"rgb") ||
          osgDB::equalCaseInsensitive(extension,"rgba") ||
          osgDB::equalCaseInsensitive(extension,"jpg") || 
          osgDB::equalCaseInsensitive(extension,"jpeg") ||
@@ -59,7 +59,7 @@ public:
          osgDB::equalCaseInsensitive(extension,"pct") ||
          osgDB::equalCaseInsensitive(extension,"tga") ||
          osgDB::equalCaseInsensitive(extension,"psd") ||                
-         */
+         
          acceptsMovieExtension(extension);
    }
 

@@ -1,4 +1,4 @@
-/*
+ /*
  *  MovieData.h
  *  encapsulates movie-related stuff
  *
@@ -85,7 +85,8 @@
             unsigned int    _movieWidth, _movieHeight, _textureWidth, _textureHeight;
             float           _timescale;
             bool            _fError;
-            float            _movieRate;
+            float           _movieRate;
+            bool            _preRolled;
             
             /** inits the image for storage */
             void _initImage(osg::Image* image);

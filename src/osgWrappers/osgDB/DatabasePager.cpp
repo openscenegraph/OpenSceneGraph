@@ -17,6 +17,7 @@
 #include <osg/PagedLOD>
 #include <osg/State>
 #include <osgDB/DatabasePager>
+#include <osgDB/ReaderWriter>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -55,6 +56,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp,
 	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1,
 	          "Add a request to load a node file to end the the database request list. ",
+	          "");
+	I_Method5(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osgDB::ReaderWriter::Options *, loadOptions,
+	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__ReaderWriter_Options_P1,
+	          "",
 	          "");
 	I_Method0(void, run,
 	          __void__run,

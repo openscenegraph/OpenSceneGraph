@@ -138,16 +138,16 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	          __float__distance__C5_osg_Vec3f_R1,
 	          "calculate the distance between a point and the plane. ",
 	          "");
-	I_Method1(float, distance, IN, const osg::Vec3d &, v,
-	          __float__distance__C5_osg_Vec3d_R1,
+	I_Method1(double, distance, IN, const osg::Vec3d &, v,
+	          __double__distance__C5_osg_Vec3d_R1,
 	          "",
 	          "");
 	I_Method1(float, dotProductNormal, IN, const osg::Vec3f &, v,
 	          __float__dotProductNormal__C5_osg_Vec3f_R1,
 	          "calculate the dot product of the plane normal and a point. ",
 	          "");
-	I_Method1(float, dotProductNormal, IN, const osg::Vec3d &, v,
-	          __float__dotProductNormal__C5_osg_Vec3d_R1,
+	I_Method1(double, dotProductNormal, IN, const osg::Vec3d &, v,
+	          __double__dotProductNormal__C5_osg_Vec3d_R1,
 	          "calculate the dot product of the plane normal and a point. ",
 	          "");
 	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices,

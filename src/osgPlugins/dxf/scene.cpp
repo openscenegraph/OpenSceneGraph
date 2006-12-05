@@ -52,7 +52,7 @@ Vec3d scene::addNormal(Vec3d v)
 }
 
 void 
-scene::addLine(std::string l, unsigned short color, Vec3d s, Vec3d e) 
+scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e) 
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -61,7 +61,7 @@ scene::addLine(std::string l, unsigned short color, Vec3d s, Vec3d e)
     ly->_lines[correctedColorIndex(l, color)].push_back(a);
     ly->_lines[correctedColorIndex(l, color)].push_back(b);
 }
-void scene::addLineStrip(std::string l, unsigned short color, std::vector<Vec3d> vertices) 
+void scene::addLineStrip(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices) 
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -73,7 +73,7 @@ void scene::addLineStrip(std::string l, unsigned short color, std::vector<Vec3d>
     }
     ly->_linestrips[correctedColorIndex(l, color)].push_back(converted);
 }
-void scene::addLineLoop(std::string l, unsigned short color, std::vector<Vec3d> vertices) 
+void scene::addLineLoop(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices) 
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -88,7 +88,7 @@ void scene::addLineLoop(std::string l, unsigned short color, std::vector<Vec3d> 
 }
 
 
-void scene::addTriangles(std::string l, unsigned short color, std::vector<Vec3d> vertices, bool inverted) 
+void scene::addTriangles(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, bool inverted) 
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -119,7 +119,7 @@ void scene::addTriangles(std::string l, unsigned short color, std::vector<Vec3d>
             }
     }
 }
-void scene::addQuads(std::string l, unsigned short color, std::vector<Vec3d> vertices, bool inverted) 
+void scene::addQuads(const std::string & l, unsigned short color, std::vector<Vec3d> & vertices, bool inverted) 
 {
     dxfLayer* layer = _layerTable->findOrCreateLayer(l);
     if (layer->getFrozen()) return;
@@ -170,7 +170,7 @@ void scene::addQuads(std::string l, unsigned short color, std::vector<Vec3d> ver
 
 
 unsigned short 
-scene::correctedColorIndex(std::string l, unsigned short color)
+scene::correctedColorIndex(const std::string & l, unsigned short color)
 {
     if (color >= aci::MIN && color <= aci::MAX)
     {

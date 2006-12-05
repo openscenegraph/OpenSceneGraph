@@ -1003,10 +1003,12 @@ PolygonZ::PolygonZ(const PolygonZ &p):
         parts[i] = p.parts[i];
 
     points = new Point[numPoints];
+    zArray = new Double[numPoints]; // jcm 
     mArray = new Double[numPoints];
     for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
+        zArray[i] = p.zArray[i]; // jcm 
         mArray[i] = p.mArray[i];
     }
 }

@@ -142,6 +142,8 @@ class Document
 
 
         // Options
+        void setReplaceClampWithClampToEdge(bool flag) { _replaceClampWithClampToEdge = flag; }
+        bool getReplaceClampWithClampToEdge() const { return _replaceClampWithClampToEdge; }
         void setPreserveFace(bool flag) { _preserveFace = flag; }
         bool getPreserveFace() const { return _preserveFace; }
         void setPreserveObject(bool flag) { _preserveObject = flag; }
@@ -164,6 +166,7 @@ class Document
 
         // Options
         osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
+        bool                        _replaceClampWithClampToEdge;
         bool                        _preserveFace;
         bool                        _preserveObject;
         bool                        _defaultDOFAnimationState;

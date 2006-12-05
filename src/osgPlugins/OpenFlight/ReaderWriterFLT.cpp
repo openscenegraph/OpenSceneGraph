@@ -159,6 +159,9 @@ class FLTReaderWriter : public ReaderWriter
             {
                 const char readerMsg[] = "flt reader option: ";
                 
+                document.setReplaceClampWithClampToEdge((options->getOptionString().find("clampToEdge")!=std::string::npos));
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "clampToEdge=" << document.getReplaceClampWithClampToEdge() << std::endl;
+
                 document.setKeepExternalReferences((options->getOptionString().find("keepExternalReferences")!=std::string::npos));
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "keepExternalReferences=" << document.getKeepExternalReferences() << std::endl;
 
@@ -243,26 +246,6 @@ class FLTReaderWriter : public ReaderWriter
         virtual WriteResult writeNode(const Node& /*node*/,const std::string& /*fileName*/, const osgDB::ReaderWriter::Options* /*options*/) const
         {
             return WriteResult::FILE_NOT_HANDLED;
-
-#if 0
-            // following code creates a blank file even though file write isn't supported, so have #if'd out implementation.
-            // can only presume the author implementated the following is with a final write flt support in mind.
-            // Robert Osfield, Novemeber 2006.
-
-            std::string ext = getFileExtension(fileName);
-            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-
-
-            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
-            osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-            if(local_opt->getDatabasePathList().empty())
-                local_opt->setDatabasePath(osgDB::getFilePath(fileName));
-
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
-            WriteResult result = writeNode(node, fout, local_opt.get());
-            fout.close();
-            return result;      
-#endif
         }
         
         virtual WriteResult writeObject(const Object& object,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const

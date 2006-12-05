@@ -7,6 +7,7 @@
 #include <osg/Texture2D>
 #include <osg/Light>
 #include <Inventor/actions/SoCallbackAction.h>
+#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
 #include <vector>
 #include <stack>
 
@@ -16,8 +17,8 @@ class ConvertFromInventor
         ConvertFromInventor();
         ~ConvertFromInventor();
         
-        osg::Node* convert(SoNode* rootIVNode);
-
+       osg::Node* convert(SoNode* rootIVNode);
+        
     private:
 
         // Callback functions for converting inventor scene graph to osg 
@@ -45,7 +46,7 @@ class ConvertFromInventor
                                  SoCallbackAction* action, const SoNode* node);
 
         static void addTriangleCB(void* data, SoCallbackAction* action,
-	                          const SoPrimitiveVertex *v0,
+                              const SoPrimitiveVertex *v0,
                                   const SoPrimitiveVertex *v1,
                                   const SoPrimitiveVertex *v2);
         static void addLineSegmentCB(void* data, SoCallbackAction* action,
@@ -53,12 +54,29 @@ class ConvertFromInventor
                                      const SoPrimitiveVertex *v1);
         static void addPointCB(void* data, SoCallbackAction* action,
                                const SoPrimitiveVertex *v0);
+        ///Callback to intercept VRMLImageTexture(s)
+        ///\param data The node data
+        ///\param action The callback handling class
+        ///\param node The current VRMLImageTexture node
+        static SoCallbackAction::Response 
+                      _vrmlImageTextureAction(void* data,
+                                             SoCallbackAction* action, 
+                                             const SoNode* node);
+        ///Set the SVRMLImageTexture for the current node
+        ///\param texture The found texture
+        ///\param action The callback action
+        void _setVRMLImageTexture(const SoVRMLImageTexture* texture,
+                                  SoCallbackAction* action);
+        
+        ///Get the currently converted texture
+        osg::Texture2D* _getConvertedVRMLImageTexture();
+                                          
     private:
 
         void addVertex(SoCallbackAction* action, const SoPrimitiveVertex* v, 
                        int index);
 
-        osg::StateSet* getStateSet(SoCallbackAction* action);
+         osg::ref_ptr<osg::StateSet> getStateSet(SoCallbackAction* action);
 
         osg::Texture2D* convertIVTexToOSGTex(SoTexture2* soTex, 
                                            SoCallbackAction* action);
@@ -90,19 +108,22 @@ class ConvertFromInventor
         VertexOrder vertexOrder;
 
         // Stack of group nodes (used to build the scene graph)
-        std::stack<osg::Group *> groupStack;
-
+        std::stack<osg::Group* > groupStack;
         // Stack of texture nodes (used for attaching the right texture to the
         // geosets)
-        std::stack<SoTexture2 *> soTexStack;
+        std::stack<SoTexture2*> soTexStack;
 
         // For avoiding duplication of same texture objects
-        std::map<SoTexture2 *, osg::Texture2D *> ivToOsgTexMap;
+        std::map<SoTexture2*, osg::Texture2D*> ivToOsgTexMap;
 
         // Stack to maintain the list of lights at each level of the 
         // scenegraph
         typedef std::vector<osg::Light *> LightList;
         std::stack<LightList> lightStack;
+
+        osg::ref_ptr<osg::MatrixTransform> _root;///<The root node;
+        bool _hasVRMLImageTexture;///<Flag for processing VRMLImamgeTextures
+        osg::ref_ptr<osg::Texture2D> _currentVRMLImageTexture;///<The current converted texture
 };
 
 #endif

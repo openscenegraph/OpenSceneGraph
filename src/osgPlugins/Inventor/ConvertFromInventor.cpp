@@ -4,6 +4,7 @@
 
 // OSG headers
 #include <osg/MatrixTransform>
+#include <osg/Node>
 #include <osg/Geode>
 #include <osg/Notify>
 #include <osg/LineWidth>
@@ -15,6 +16,7 @@
 #include <osg/Material>
 #include <osg/CullFace>
 #include <osg/LightModel>
+#include <osg/ShadeModel>
 #include <osg/LOD>
 #include <osgUtil/TransformCallback>
 
@@ -35,6 +37,7 @@
 #include <Inventor/misc/SoChildList.h>
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/SbLinear.h>
+#include <Inventor/SbImage.h>
 
 #include "GroupSoLOD.h"
 
@@ -48,29 +51,30 @@
 #endif
 
 #define DEBUG_IV_PLUGIN
-
+///////////////////////////////////////////
 ConvertFromInventor::ConvertFromInventor()
 {
     numPrimitives = 0;
+    _hasVRMLImageTexture = false;
 }
-
+///////////////////////////////////////////
 ConvertFromInventor::~ConvertFromInventor()
 {
 }
-
+///////////////////////////////////////////////////////////
 osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
 {    
     // Transformation matrix for converting Inventor coordinate system to OSG 
     // coordinate system
-    osg::Matrix ivToOSGMat(osg::Matrix(1.0, 0.0, 0.0, 0.0,
+   osg::Matrix ivToOSGMat(osg::Matrix(1.0, 0.0, 0.0, 0.0,
                                        0.0, 0.0, 1.0, 0.0,
                                        0.0,-1.0, 0.0, 0.0,
                                        0.0, 0.0, 0.0, 1.0));
 
     // Create a root node and push it onto the stack
-    osg::MatrixTransform* root = new osg::MatrixTransform;
-    root->setMatrix(ivToOSGMat);
-    groupStack.push(root);
+    _root = new osg::MatrixTransform;
+    _root->setMatrix(ivToOSGMat);
+    groupStack.push(_root.get());
 
     // Push an empty list of light and push it onto the light stack
     LightList lightList;
@@ -91,8 +95,12 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
     cbAction.addTriangleCallback(SoShape::getClassTypeId(), addTriangleCB, this);
     cbAction.addLineSegmentCallback(SoShape::getClassTypeId(), addLineSegmentCB,
                                     this);
+    
     cbAction.addPointCallback(SoShape::getClassTypeId(), addPointCB, this);
     
+    //callback for VRMLImageTextures
+    cbAction.addPreCallback(SoVRMLImageTexture::getClassTypeId(),
+                            _vrmlImageTextureAction,this);
     // Traverse the inventor scene graph
     cbAction.apply(rootIVNode);
 
@@ -101,9 +109,31 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
 
     lightStack.pop();
 
-    return root; 
+    return _root.get(); 
 }
+//////////////////////////////////////////////////////////////////////////////////
+SoCallbackAction::Response 
+ConvertFromInventor::_vrmlImageTextureAction(void* data, SoCallbackAction* action, 
+                                             const SoNode* node)
+{
+#ifdef DEBUG_IV_PLUGIN
+    osg::notify(osg::INFO) << "_vrmlImageTextureAction()    " 
+              << node->getTypeId().getName().getString() << std::endl;
+#endif
+    ///The converter data
+    ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
+
+    SoVRMLImageTexture* vit = (SoVRMLImageTexture*)(node);
+    if(vit)
+    {
+       //convert the SoVRMLImageTexture to an osg::Texture
+       thisPtr->_setVRMLImageTexture(vit,action);
+    }
+
+    return SoCallbackAction::CONTINUE;
+}
+///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preShape(void* data, SoCallbackAction* action, 
                               const SoNode* node)
@@ -183,8 +213,10 @@ ConvertFromInventor::preShape(void* data, SoCallbackAction* action,
     
     return SoCallbackAction::CONTINUE;
 }
-
-// OSG doesn't seem to have a transpose function for matrices
+///////////////////////////////////////////////////////////
+// OSG doesn't seem to have a transpose function         //
+//for matrices                                           //
+///////////////////////////////////////////////////////////
 void ConvertFromInventor::transposeMatrix(osg::Matrix& mat)
 {
     float tmp;
@@ -199,7 +231,7 @@ void ConvertFromInventor::transposeMatrix(osg::Matrix& mat)
     }
 
 }
-
+////////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::postShape(void* data, SoCallbackAction* action, 
                                const SoNode* node)
@@ -213,18 +245,18 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
 
 
     // Create a new Geometry
-    osg::Geometry* geometry = new osg::Geometry;
+    osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
 
     // Get the modeling matrix
     osg::Matrix modelMat;
     modelMat.set((float *)action->getModelMatrix().getValue());
 
     // Tranform the vertices based on the modeling matrix
-    osg::Vec3Array* coords = new osg::Vec3Array(thisPtr->vertices.size());
+    osg::ref_ptr<osg::Vec3Array> coords = new osg::Vec3Array(thisPtr->vertices.size());
     for (unsigned int i = 0; i < thisPtr->vertices.size(); i++)
         (*coords)[i] = modelMat.preMult(thisPtr->vertices[i]);
 
-    geometry->setVertexArray(coords);
+    geometry->setVertexArray(coords.get());
 
 
     // Normals need to be transformed using the transpose of the inverse 
@@ -234,7 +266,7 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
     thisPtr->transposeMatrix(invModelMat);
 
     // Tranform the normals based on the modeling matrix
-    osg::Vec3Array* norms = NULL;
+    osg::ref_ptr<osg::Vec3Array> norms = NULL;
     if (thisPtr->normalBinding == osg::Geometry::BIND_OVERALL)
     {
         norms = new osg::Vec3Array(1);
@@ -253,11 +285,11 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
             (*norms)[i].normalize();
         }
     }
-    geometry->setNormalArray(norms);
+    geometry->setNormalArray(norms.get());
     geometry->setNormalBinding(thisPtr->normalBinding);
 
     // Set the colors
-    osg::Vec4Array* cols;
+    osg::ref_ptr<osg::Vec4Array> cols;
     if (thisPtr->colorBinding == osg::Geometry::BIND_OVERALL)
     {
         cols = new osg::Vec4Array(1);
@@ -273,23 +305,46 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
         for (unsigned int i = 0; i < thisPtr->colors.size(); i++)
             (*cols)[i] = thisPtr->colors[i];
     }
-    geometry->setColorArray(cols);
+    geometry->setColorArray(cols.get());
     geometry->setColorBinding(thisPtr->colorBinding);
 
 
+#if 0 // original code
+      // BUG: if default texture coordinates are used in Inventor model,
+      // the texture is not shown in OSG
     if (!(thisPtr->textureCoords.empty()) && action->getNumTextureCoordinates()>0)
     {
 
         osg::notify(osg::NOTICE)<<"tex coords found"<<std::endl;
+
+#elif 0 // bug fix
+
+    if (!(thisPtr->textureCoords.empty())/* && action->getNumTextureCoordinates()>0*/) // BUG: That was avoiding using of automatic texture coordinate generation of IV.
+
+#else // improved code
+
+    if (thisPtr->textureCoords.empty())
+        osg::notify(osg::NOTICE)<<"tex coords not found"<<std::endl;
+    else {
+        
+        // report texture coordinate conditions
+        if (action->getNumTextureCoordinates()>0)
+            osg::notify(osg::DEBUG_INFO)<<"tex coords found"<<std::endl;
+        else
+           osg::notify(osg::DEBUG_INFO)<<"tex coords generated"<<std::endl;
+
+#endif // end of changes
 
         // Get the texture transformation matrix
         osg::Matrix textureMat;
         textureMat.set((float *) action->getTextureMatrix().getValue());
 
         // Transform texture coordinates if texture matrix is not an identity mat
-        osg::Vec2Array* texCoords 
+        osg::Matrix identityMat;
+        identityMat.makeIdentity();
+        osg::ref_ptr<osg::Vec2Array> texCoords 
             = new osg::Vec2Array(thisPtr->textureCoords.size());
-        if (textureMat.isIdentity())
+        if (textureMat == identityMat)
         {
             // Set the texture coordinates
             for (unsigned int i = 0; i < thisPtr->textureCoords.size(); i++)
@@ -308,28 +363,27 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
             }
         }
 
-        geometry->setTexCoordArray(0, texCoords);
+        geometry->setTexCoordArray(0, texCoords.get());
     }
     
     // Set the parameters for the geometry
 
     geometry->addPrimitiveSet(new osg::DrawArrays(thisPtr->primitiveType,0,
                                                   coords->size()));
-    
     // Get the StateSet for the geoset
-    osg::StateSet* stateSet = thisPtr->getStateSet(action);
-    geometry->setStateSet(stateSet);
+    osg::ref_ptr<osg::StateSet> stateSet = thisPtr->getStateSet(action);
+    geometry->setStateSet(stateSet.get());
     
     // Add the geoset to a geode
-    osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(geometry);
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+    geode->addDrawable(geometry.get());
 
     // Add geode to scenegraph
-    thisPtr->groupStack.top()->addChild(geode);
+    thisPtr->groupStack.top()->addChild(geode.get());
 
     return SoCallbackAction::CONTINUE;
 }
-
+///////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preTexture(void* data, SoCallbackAction *, 
                                 const SoNode* node)
@@ -347,7 +401,7 @@ ConvertFromInventor::preTexture(void* data, SoCallbackAction *,
         
     return SoCallbackAction::CONTINUE;
 }
-
+//////////////////////////////////////////////////////////////////
 void ConvertFromInventor::transformLight(SoCallbackAction* action, 
                                          const SbVec3f& vec, 
                                          osg::Vec3& transVec)
@@ -358,7 +412,7 @@ void ConvertFromInventor::transformLight(SoCallbackAction* action,
     transVec.set(vec[0], vec[1], vec[2]);
     transVec = modelMat.preMult(transVec);
 }
-
+///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preLight(void* data, SoCallbackAction* action, 
                               const SoNode* node)
@@ -376,7 +430,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     if (!ivLight->on.getValue())
         return SoCallbackAction::CONTINUE;
 
-    osg::Light* osgLight = new osg::Light;
+    osg::ref_ptr<osg::Light> osgLight = new osg::Light;
     osgLight->setLightNum(lightNum++);
     
     // Get color and intensity
@@ -428,17 +482,17 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     {
         LightList lightList;
         lightList = thisPtr->lightStack.top();
-        lightList.push_back(osgLight);
+        lightList.push_back(osgLight.get());
         thisPtr->lightStack.pop();
         thisPtr->lightStack.push(lightList);
     }
 
     return SoCallbackAction::CONTINUE;
 }
-
-osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
+///////////////////////////////////////////////////////////////////////////////////////
+ osg::ref_ptr<osg::StateSet> ConvertFromInventor::getStateSet(SoCallbackAction* action)
 {
-    osg::StateSet* stateSet = new osg::StateSet;
+    osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet;
     
     // Inherit modes from the global state
     stateSet->clear();
@@ -453,8 +507,8 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     // Set transparency
     if (transparency > 0)
     {
-        osg::BlendFunc* transparency = new osg::BlendFunc;
-        stateSet->setAttributeAndModes(transparency, 
+        osg::ref_ptr<osg::BlendFunc> transparency = new osg::BlendFunc;
+        stateSet->setAttributeAndModes(transparency.get(), 
                                        osg::StateAttribute::ON);
     
         // Enable depth sorting for transparent objects
@@ -464,20 +518,18 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     // Set linewidth
     if (action->getLineWidth())
     {
-        osg::LineWidth* lineWidth = new osg::LineWidth;
+        osg::ref_ptr<osg::LineWidth> lineWidth = new osg::LineWidth;
         lineWidth->setWidth(action->getLineWidth());
-        stateSet->setAttributeAndModes(lineWidth, osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(lineWidth.get(), osg::StateAttribute::ON);
     }
 
     // Set pointsize
     if (action->getPointSize())
     {
-        osg::Point* point = new osg::Point;
+        osg::ref_ptr<osg::Point> point = new osg::Point;
         point->setSize(action->getPointSize());
-        stateSet->setAttributeAndModes(point, osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(point.get(), osg::StateAttribute::ON);
     }
-    
-
     
     // Set draw mode 
     switch (action->getDrawStyle())
@@ -495,18 +547,18 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
         }
         case SoDrawStyle::LINES:
         {
-            osg::PolygonMode *polygonMode = new osg::PolygonMode;
+            osg::ref_ptr<osg::PolygonMode> polygonMode = new osg::PolygonMode;
             polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, 
                                  osg::PolygonMode::LINE);
-            stateSet->setAttributeAndModes(polygonMode, osg::StateAttribute::ON);
+            stateSet->setAttributeAndModes(polygonMode.get(), osg::StateAttribute::ON);
             break;
         }
         case SoDrawStyle::POINTS:
         {
-            osg::PolygonMode *polygonMode = new osg::PolygonMode;
+            osg::ref_ptr<osg::PolygonMode> polygonMode = new osg::PolygonMode;
             polygonMode->setMode(osg::PolygonMode::FRONT_AND_BACK, 
                                  osg::PolygonMode::POINT);
-            stateSet->setAttributeAndModes(polygonMode, osg::StateAttribute::ON);
+            stateSet->setAttributeAndModes(polygonMode.get(), osg::StateAttribute::ON);
             break;
         }
         case SoDrawStyle::INVISIBLE:
@@ -517,9 +569,9 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     // Set back face culling
     if (action->getShapeType() == SoShapeHints::SOLID)
     {
-        osg::CullFace* cullFace = new osg::CullFace;
+        osg::ref_ptr<osg::CullFace> cullFace = new osg::CullFace;
         cullFace->setMode(osg::CullFace::BACK);
-        stateSet->setAttributeAndModes(cullFace, osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(cullFace.get(), osg::StateAttribute::ON);
     } 
 
     // Set lighting
@@ -528,7 +580,7 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     else
     {
         // Set the material
-        osg::Material* material = new osg::Material;
+        osg::ref_ptr<osg::Material> material = new osg::Material;
 
         material->setAmbient(osg::Material::FRONT_AND_BACK, 
                              osg::Vec4(ambient[0], ambient[1], ambient[2], 
@@ -551,7 +603,7 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
 
         material->setColorMode(osg::Material::DIFFUSE);
 
-        stateSet->setAttributeAndModes(material, osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(material.get(), osg::StateAttribute::ON);
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
 #if 0
@@ -569,27 +621,61 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
     }
     
     // Convert the IV texture to OSG texture if any
-    if (soTexStack.top())
+    osg::ref_ptr<osg::Texture2D> texture;
+    if(_hasVRMLImageTexture)
+    {
+       ///VRMLImageTexture
+       texture = _getConvertedVRMLImageTexture();
+       _hasVRMLImageTexture = false;
+       stateSet->setTextureAttributeAndModes(0,texture.get(), osg::StateAttribute::ON);
+
+       // Set the texture environment
+       osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
+       switch (action->getTextureModel())
+       {
+          case SoTexture2::MODULATE:
+              texEnv->setMode(osg::TexEnv::MODULATE);
+              break;
+          case SoTexture2::DECAL:
+              texEnv->setMode(osg::TexEnv::DECAL);
+              break;
+          case SoTexture2::BLEND:
+              texEnv->setMode(osg::TexEnv::BLEND);
+              break;
+
+#ifdef COIN_BASIC_H
+// This check is a very crude Coin detector.
+// SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
+            case SoTexture2::REPLACE:
+                texEnv->setMode(osg::TexEnv::REPLACE);
+                break;
+#endif
+        }
+        stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
+        stateSet->setAttributeAndModes(new osg::ShadeModel());
+       
+    }
+    else if (soTexStack.top())
     {
         osg::notify(osg::NOTICE)<<"Have texture"<<std::endl;
     
-        osg::Texture2D* tex;
+        //osg::ref_ptr<osg::Texture2D> tex;
         // Found a corresponding OSG texture object
         if (ivToOsgTexMap[soTexStack.top()])
-            tex = ivToOsgTexMap[soTexStack.top()];
+            texture = ivToOsgTexMap[soTexStack.top()];
         else
         {
             // Create a new osg texture
-            tex = convertIVTexToOSGTex(soTexStack.top(), action);
+            texture = convertIVTexToOSGTex(soTexStack.top(), action);
 
             // Add the new texture to the database
-            ivToOsgTexMap[soTexStack.top()] = tex;
+            ivToOsgTexMap[soTexStack.top()] = texture.get();
         }
         
-        stateSet->setTextureAttributeAndModes(0,tex, osg::StateAttribute::ON);
+        stateSet->setTextureAttributeAndModes(0,texture.get(), osg::StateAttribute::ON);
 
         // Set the texture environment
-        osg::TexEnv* texEnv = new osg::TexEnv;
+        osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
         switch (action->getTextureModel())
         {
             case SoTexture2::MODULATE:
@@ -610,7 +696,7 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
                 break;
 #endif
         }
-        stateSet->setTextureAttributeAndModes(0,texEnv,osg::StateAttribute::ON);
+        stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
     }
     else
     {
@@ -630,7 +716,7 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
             memcpy(imageData, texImage, soTexSize[0] * soTexSize[1] * soTexNC);
 
             // Create the osg image 
-            osg::Image* osgTexImage = new osg::Image;
+            osg::ref_ptr<osg::Image> osgTexImage = new osg::Image;
 #if 0
             SbString iv_string;
             soTex->filename.get(iv_string);
@@ -645,11 +731,11 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
             GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
             osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
                     formats[soTexNC-1], GL_UNSIGNED_BYTE, imageData, 
-                    osg::Image::USE_NEW_DELETE, -1);
+                    osg::Image::USE_NEW_DELETE/*, -1*/); // BUG: -1 have to be removed (definitely WRONG packing!) It causes crashes of GLU.
 
             // Create the osg texture
-            osg::Texture2D* osgTex = new osg::Texture2D;
-            osgTex->setImage(osgTexImage);
+            texture = new osg::Texture2D;
+            texture->setImage(osgTexImage.get());
 
             static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap2;
             static bool firstTime2 = true;
@@ -659,15 +745,14 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
                 texWrapMap2[SoTexture2::REPEAT] = osg::Texture2D::REPEAT;
                 firstTime2 = false;
             }
-
             // Set texture wrap mode
-            osgTex->setWrap(osg::Texture2D::WRAP_S,texWrapMap2[action->getTextureWrapS()]);
-            osgTex->setWrap(osg::Texture2D::WRAP_T,texWrapMap2[action->getTextureWrapT()]);
+            texture->setWrap(osg::Texture2D::WRAP_S,texWrapMap2[action->getTextureWrapS()]);
+            texture->setWrap(osg::Texture2D::WRAP_T,texWrapMap2[action->getTextureWrapT()]);
             
-            stateSet->setTextureAttributeAndModes(0,osgTex, osg::StateAttribute::ON);
+            stateSet->setTextureAttributeAndModes(0,texture.get(), osg::StateAttribute::ON);
 
             // Set the texture environment
-            osg::TexEnv* texEnv = new osg::TexEnv;
+            osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
             switch (action->getTextureModel())
             {
                 case SoTexture2::MODULATE:
@@ -688,14 +773,12 @@ osg::StateSet* ConvertFromInventor::getStateSet(SoCallbackAction* action)
                     break;
     #endif
             }
-            stateSet->setTextureAttributeAndModes(0,texEnv,osg::StateAttribute::ON);
+            stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
         }
-
     }
-          
     return stateSet;
 }
-
+////////////////////////////////////////////////////////////////////
 osg::Texture2D* 
 ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex, 
                                           SoCallbackAction* action)
@@ -719,7 +802,7 @@ ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex,
     memcpy(imageData, texImage, soTexSize[0] * soTexSize[1] * soTexNC);
 
     // Create the osg image 
-    osg::Image* osgTexImage = new osg::Image;
+    osg::ref_ptr<osg::Image> osgTexImage = new osg::Image;
     SbString iv_string;
     soTex->filename.get(iv_string);
     std::string str(iv_string.getString());
@@ -731,11 +814,11 @@ ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex,
     GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
     osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
             formats[soTexNC-1], GL_UNSIGNED_BYTE, imageData, 
-            osg::Image::USE_NEW_DELETE, -1);
+            osg::Image::USE_NEW_DELETE/*, -1*/); // BUG: -1 have to be removed (definitely WRONG packing!) It causes crashes of GLU.
 
     // Create the osg texture
-    osg::Texture2D* osgTex = new osg::Texture2D;
-    osgTex->setImage(osgTexImage);
+    osg::ref_ptr<osg::Texture2D> osgTex = new osg::Texture2D;
+    osgTex->setImage(osgTexImage.get());
 
     static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap;
     static bool firstTime = true;
@@ -750,9 +833,9 @@ ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex,
     osgTex->setWrap(osg::Texture2D::WRAP_S,texWrapMap[action->getTextureWrapS()]);
     osgTex->setWrap(osg::Texture2D::WRAP_T,texWrapMap[action->getTextureWrapT()]);
 
-    return osgTex; 
+    return osgTex.get(); 
 }
-
+///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preGroup(void* data, SoCallbackAction* action, 
                               const SoNode* node)
@@ -769,8 +852,9 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
         return preLOD(data, action, node);
 
     // Create a new group and add it to the stack
-    osg::Group* group = new osg::Group;
-    thisPtr->groupStack.push(group);
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    thisPtr->groupStack.top()->addChild(group.get());
+    thisPtr->groupStack.push(group.get());
 
     if (node->isOfType(SoSeparator::getClassTypeId()))
     {
@@ -787,7 +871,7 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
 
     return SoCallbackAction::CONTINUE;
 }
-
+//////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::postGroup(void* data, SoCallbackAction *, 
                                const SoNode* node)
@@ -801,17 +885,17 @@ ConvertFromInventor::postGroup(void* data, SoCallbackAction *,
 
     // Pop all the groups that are Transforms and add it 
     // to the corresponding parent group
-    osg::Group* group = thisPtr->groupStack.top();
+    osg::ref_ptr<osg::Group> group = thisPtr->groupStack.top();
     while (strcmp(group->className(), "MatrixTransform") == 0)
     {
         thisPtr->groupStack.pop();
-        thisPtr->groupStack.top()->addChild(group);
+        thisPtr->groupStack.top()->addChild(group.get());
         group = thisPtr->groupStack.top();
     }
 
     // Pop the group from the stack and add it to it's parent
     thisPtr->groupStack.pop();
-    thisPtr->groupStack.top()->addChild(group);
+    thisPtr->groupStack.top()->addChild(group.get());
 
     // Pop the state if the group is a Separator
     if (node->isOfType(SoSeparator::getClassTypeId()))
@@ -822,7 +906,7 @@ ConvertFromInventor::postGroup(void* data, SoCallbackAction *,
  
     return SoCallbackAction::CONTINUE;
 }
-
+////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preLOD(void* data, SoCallbackAction *, 
                             const SoNode* node)
@@ -838,8 +922,9 @@ ConvertFromInventor::preLOD(void* data, SoCallbackAction *,
     SoLOD *ivLOD = (SoLOD *) node;
 
     // Create a new LOD and add it to the stack
-    osg::LOD* lod = new osg::LOD;
-    thisPtr->groupStack.push(lod);
+    osg::ref_ptr<osg::LOD> lod = new osg::LOD;
+    thisPtr->groupStack.push(lod.get());
+    thisPtr->groupStack.top()->addChild(lod.get());
 
     // Get the center of LOD and set it
     SbVec3f ivCenter = ivLOD->center.getValue();
@@ -856,7 +941,7 @@ ConvertFromInventor::preLOD(void* data, SoCallbackAction *,
 
     return SoCallbackAction::CONTINUE;
 }
-
+/////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preRotor(void* data, SoCallbackAction *, 
                               const SoNode* node)
@@ -875,24 +960,25 @@ ConvertFromInventor::preRotor(void* data, SoCallbackAction *,
     ivRotor->rotation.getValue(ivAxis, angle);
 
     // Create a new osg::MatrixTransform
-    osg::MatrixTransform* rotorTransform = new osg::MatrixTransform;
+    osg::ref_ptr<osg::MatrixTransform> rotorTransform = new osg::MatrixTransform;
     
     // Create a Rotor Callback equivalent to the inventor Rotor
     osg::Vec3 pivot(0, 0, 0);
     osg::Vec3 axis(ivAxis[0], ivAxis[1], ivAxis[2]);
-    osgUtil::TransformCallback* rotorCallback 
+    osg::ref_ptr<osgUtil::TransformCallback> rotorCallback 
         = new osgUtil::TransformCallback(pivot, axis, 
                                          2 * osg::PI * ivRotor->speed.getValue());
 
     // Set the app callback
-    rotorTransform->setUpdateCallback(rotorCallback);
+    rotorTransform->setUpdateCallback(rotorCallback.get());
     
     // Push the rotor transform onto the group stack
-    thisPtr->groupStack.push(rotorTransform);
+    thisPtr->groupStack.push(rotorTransform.get());
+    thisPtr->groupStack.top()->addChild(rotorTransform.get());
 
     return SoCallbackAction::CONTINUE;
 }
-
+////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::prePendulum(void* data, SoCallbackAction *, 
                                  const SoNode* node)
@@ -912,7 +998,7 @@ ConvertFromInventor::prePendulum(void* data, SoCallbackAction *,
     ivPendulum->rotation1.getValue(ivAxis1, endAngle);
 
     // Create a new osg::MatrixTransform
-    osg::MatrixTransform* pendulumTransform = new osg::MatrixTransform;
+    osg::ref_ptr<osg::MatrixTransform> pendulumTransform = new osg::MatrixTransform;
     
     // Create a Pendulum Callback equivalent to the inventor Rotor
     osg::Vec3 axis(ivAxis0[0], ivAxis0[1], ivAxis0[2]);
@@ -924,11 +1010,12 @@ ConvertFromInventor::prePendulum(void* data, SoCallbackAction *,
     pendulumTransform->setUpdateCallback(pendulumCallback);
     
     // Push the pendulum transform onto the group stack
-    thisPtr->groupStack.push(pendulumTransform);
+    thisPtr->groupStack.push(pendulumTransform.get());
+    thisPtr->groupStack.top()->addChild(pendulumTransform.get());
 
     return SoCallbackAction::CONTINUE;
 }
-
+////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preShuttle(void* data, SoCallbackAction *, 
                                 const SoNode* node)
@@ -947,7 +1034,7 @@ ConvertFromInventor::preShuttle(void* data, SoCallbackAction *,
     ivEndPos = ivShuttle->translation1.getValue();
 
     // Create a new osg::MatrixTransform
-    osg::MatrixTransform* shuttleTransform = new osg::MatrixTransform;
+    osg::ref_ptr<osg::MatrixTransform> shuttleTransform = new osg::MatrixTransform;
     
     // Create a shuttle Callback equivalent to the inventor Rotor
     osg::Vec3 startPos(ivStartPos[0], ivStartPos[1], ivStartPos[2]);
@@ -959,14 +1046,15 @@ ConvertFromInventor::preShuttle(void* data, SoCallbackAction *,
     shuttleTransform->setUpdateCallback(shuttleCallback);
     
     // Push the shuttle transform onto the group stack
-    thisPtr->groupStack.push(shuttleTransform);
+    thisPtr->groupStack.push(shuttleTransform.get());
+    thisPtr->groupStack.top()->addChild(shuttleTransform.get());
 
     return SoCallbackAction::CONTINUE;
 }
-
-
+////////////////////////////////////////////////////////////
 void ConvertFromInventor::addVertex(SoCallbackAction* action,
-                                    const SoPrimitiveVertex *v, int index)
+                                    const SoPrimitiveVertex *v, 
+                                    int index)
 {
     // Get the coordinates of the vertex
     SbVec3f pt = v->getPoint();
@@ -1004,9 +1092,9 @@ void ConvertFromInventor::addVertex(SoCallbackAction* action,
     SbVec4f texCoord = v->getTextureCoords();
     textureCoords.push_back(osg::Vec2(texCoord[0], texCoord[1]));
 }
-
+////////////////////////////////////////////////////////////////////////////
 void ConvertFromInventor::addTriangleCB(void* data, SoCallbackAction* action,
-                                    const SoPrimitiveVertex* v0,
+                                        const SoPrimitiveVertex* v0,
                                         const SoPrimitiveVertex* v1,
                                         const SoPrimitiveVertex* v2)
 {
@@ -1029,7 +1117,7 @@ void ConvertFromInventor::addTriangleCB(void* data, SoCallbackAction* action,
     thisPtr->numPrimitives++;
     thisPtr->primitiveType = osg::PrimitiveSet::TRIANGLES;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void ConvertFromInventor::addLineSegmentCB(void* data, SoCallbackAction* action,
                                            const SoPrimitiveVertex* v0,
                                            const SoPrimitiveVertex* v1)
@@ -1042,7 +1130,7 @@ void ConvertFromInventor::addLineSegmentCB(void* data, SoCallbackAction* action,
     thisPtr->numPrimitives++;
     thisPtr->primitiveType = osg::PrimitiveSet::LINES;
 }
-
+//////////////////////////////////////////////////////////////////////////
 void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
                                      const SoPrimitiveVertex* v0)
 {
@@ -1052,4 +1140,73 @@ void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
 
     thisPtr->numPrimitives++;
     thisPtr->primitiveType = osg::PrimitiveSet::POINTS;
+}
+//////////////////////////////////////////////////////////////////////
+void ConvertFromInventor::_setVRMLImageTexture(const SoVRMLImageTexture* vit,
+                                               SoCallbackAction* /*action*/)
+{
+    _hasVRMLImageTexture = true;
+    ///Coin API to extract VRML97 ImageTexture
+    int nComponents = 1;
+    SbImage* vitImage = (SbImage*)vit->getImage();
+    SbString filename;
+    filename = vit->url.getValues(0)[0];
+    vitImage->readFile(filename);
+
+    SbVec2s dimensions;
+    dimensions[0] = 2;
+    dimensions[1] = 2;
+    const unsigned char* dataPtr = vitImage->getValue(dimensions,nComponents);
+  
+    unsigned char* data = new unsigned char[dimensions[0]*
+                                           dimensions[1]*
+                                           nComponents];
+
+    ///Is this effiecient???
+    memcpy(data, dataPtr, dimensions[0]*dimensions[1]*nComponents);
+   
+    GLenum format = GL_RGBA;
+    switch (nComponents)
+    {
+       case 1:
+         format = GL_LUMINANCE;
+         break;
+       case 2:
+         format = GL_LUMINANCE_ALPHA;
+         break;
+       case 3:
+          format = GL_RGB;
+          break;
+       case 4:
+         default:
+         format = GL_RGBA;
+       break;
+    };
+
+    osg::ref_ptr<osg::Image> image = new osg::Image();
+    image->setImage(dimensions[0], dimensions[1], 0, nComponents,
+                   format, GL_UNSIGNED_BYTE, const_cast<unsigned char*>(data), 
+                   osg::Image::USE_NEW_DELETE);
+
+   
+    osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D();
+    texture->setImage(image.get());
+
+    osg::Texture::WrapMode smode = (vit->repeatS.getValue())?(osg::Texture::REPEAT):(osg::Texture::CLAMP);
+    osg::Texture::WrapMode tmode = (vit->repeatT.getValue())?(osg::Texture::REPEAT):(osg::Texture::CLAMP);
+
+    // Set texture wrap mode
+    texture->setWrap(osg::Texture2D::WRAP_S,smode);
+    texture->setWrap(osg::Texture2D::WRAP_T,tmode);
+    _currentVRMLImageTexture = texture;
+    _currentVRMLImageTexture->dirtyTextureObject();
+}
+////////////////////////////////////////////////////////////////////
+osg::Texture2D* ConvertFromInventor::_getConvertedVRMLImageTexture()
+{
+    if(_currentVRMLImageTexture.valid())
+    {
+       return _currentVRMLImageTexture.get();
+    }
+    return 0;
 }

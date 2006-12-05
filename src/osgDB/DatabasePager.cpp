@@ -181,7 +181,15 @@ void DatabasePager::clear()
     // _activeGraphicsContexts
 }
 
-void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const osg::FrameStamp* framestamp)
+void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
+                                    float priority, const osg::FrameStamp* framestamp)
+{
+    requestNodeFile(fileName,group,priority,framestamp,Registry::instance()->getOptions());
+}
+
+void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
+                                    float priority, const osg::FrameStamp* framestamp,
+                                    ReaderWriter::Options* loadOptions)
 {
     if (!_acceptNewRequests) return;
    
@@ -264,6 +272,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             databaseRequest->_timestampLastRequest = timestamp;
             databaseRequest->_priorityLastRequest = priority;
             databaseRequest->_groupForAddingLoadedSubgraph = group;
+            databaseRequest->_loadOptions = loadOptions;
 
             _fileRequestList.push_back(databaseRequest);
 
@@ -509,12 +518,14 @@ void DatabasePager::run()
                     // do *not* assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
                     static OpenThreads::Mutex s_serialize_readNodeFile_mutex;
                     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_serialize_readNodeFile_mutex);
-                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
+                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName,
+                        databaseRequest->_loadOptions.get());
                 }
                 else
                 {
-                    // assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
-                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName);
+                    // assume that we only have one DatabasePager, or that readNodeFile is thread safe...
+                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName,
+                        databaseRequest->_loadOptions.get());
                 }
                     
                 //osg::notify(osg::NOTICE)<<"     node read in "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms"<<std::endl;

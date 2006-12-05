@@ -85,8 +85,8 @@ public:
     virtual void drawScene(scene* sc);
 
 protected:
-    dxfEntity*                _currentEntity;
-    std::vector<osg::ref_ptr<dxfEntity> > _entityList;
+    dxfEntity*              _currentEntity;
+    EntityList              _entityList;
 
 };
 

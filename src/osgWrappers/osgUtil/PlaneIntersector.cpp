@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CoordinateSystemNode>
 #include <osg/Drawable>
 #include <osg/Node>
 #include <osg/Plane>
@@ -45,6 +46,22 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	          __Intersections_R1__getIntersections,
 	          "",
 	          "");
+	I_Method1(void, setRecordHeightsAsAttributes, IN, bool, flag,
+	          __void__setRecordHeightsAsAttributes__bool,
+	          "",
+	          "");
+	I_Method0(bool, getRecordHeightsAsAttributes,
+	          __bool__getRecordHeightsAsAttributes,
+	          "",
+	          "");
+	I_Method1(void, setEllipsoidModel, IN, osg::EllipsoidModel *, em,
+	          __void__setEllipsoidModel__osg_EllipsoidModel_P1,
+	          "",
+	          "");
+	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel,
+	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
+	          "",
+	          "");
 	I_Method1(osgUtil::Intersector *, clone, IN, osgUtil::IntersectionVisitor &, iv,
 	          __Intersector_P1__clone__osgUtil_IntersectionVisitor_R1,
 	          "",
@@ -69,12 +86,20 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	          __bool__containsIntersections,
 	          "",
 	          "");
+	I_SimpleProperty(osg::EllipsoidModel *, EllipsoidModel, 
+	                 0, 
+	                 __void__setEllipsoidModel__osg_EllipsoidModel_P1);
 	I_SimpleProperty(osgUtil::PlaneIntersector::Intersections &, Intersections, 
 	                 __Intersections_R1__getIntersections, 
 	                 0);
+	I_SimpleProperty(bool, RecordHeightsAsAttributes, 
+	                 __bool__getRecordHeightsAsAttributes, 
+	                 __void__setRecordHeightsAsAttributes__bool);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgUtil::PlaneIntersector::Intersection::Polyline);
+
+TYPE_NAME_ALIAS(std::vector< double >, osgUtil::PlaneIntersector::Intersection::Attributes);
 
 BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_Constructor0(____Intersection,
@@ -84,7 +109,10 @@ BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, matrix);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, drawable);
 	I_PublicMemberProperty(osgUtil::PlaneIntersector::Intersection::Polyline, polyline);
+	I_PublicMemberProperty(osgUtil::PlaneIntersector::Intersection::Attributes, attributes);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< double >);
 
 STD_VECTOR_REFLECTOR(std::vector< osgUtil::PlaneIntersector::Intersection >);
 

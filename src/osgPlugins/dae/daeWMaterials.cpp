@@ -93,27 +93,30 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
 
         osg::Image *osgimg = tex->getImage( 0 );
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->createAndPlace( "init_from" ) );
-        std::string imgstr = "/" + osgDB::convertFileNameToUnixStyle( osgDB::findDataFile( osgimg->getFileName() ) );
+        std::string imgstr = osgDB::convertFileNameToUnixStyle( osgDB::findDataFile( osgimg->getFileName() ) );
 #ifdef WIN32
-        daeURI uri( _strlwr( (char *)imgstr.c_str() ) );
-#else
+        // At this point imgstr might contain something like "c:/xxxx" which should be treated
+        // as an absolute path. In this case I will prepend a / and normalise the drive letter to upper case.
+        //
+        // There are also a number of valid windows path formats
+        // such as UNC names which will appear like this at this point
+        // //sharename/filepath
+        // and volume names which will appear like this at this point
+        // //?/{guid}/   where guid is a multi digit number
+        // In fact //?/ can be prepended to any path and is some wierd windows specific marker
+        // File paths of these formats are almost guaranteed to break the dae URI code.
+        //
+        if ((imgstr.length() > 3) && (isalpha(imgstr[0])) && (imgstr[1] == ':') && (imgstr[2] == '/'))
+        {
+            if (islower(imgstr[0]))
+                imgstr[0] = (char)_toupper(imgstr[0]);
+            imgstr = '/' + imgstr;
+        }
+#endif
         daeURI uri( imgstr.c_str() );
-#endif
-        uri.validate();
+        uri.validate(); // This returns an absolute URI
         imgif->setValue( uri.getURI() );
-        //imgif->setValue( imgstr.c_str() );
-        //imgif->getValue().validate();
-#ifdef WIN32
-        std::string docUriString = doc->getDocumentURI()->getFilepath();
-        docUriString += doc->getDocumentURI()->getFile();
-        daeURI docUri( _strlwr( (char *)docUriString.c_str() ) );
-        imgif->getValue().makeRelativeTo( &docUri );
-#else
         imgif->getValue().makeRelativeTo( doc->getDocumentURI() ); 
-#endif
-        //imgif->setValue( osgimg->getFileName().c_str() );
-        //osg::notify( osg::WARN ) << "original img filename " << osgimg->getFileName() << std::endl;
-        //osg::notify( osg::WARN ) << "init_from filename " << imgstr << std::endl;
 
 #ifndef EARTH_TEX
         domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->createAndPlace( "newparam" ) );

@@ -50,17 +50,22 @@ PORTIONS OF THIS CODE ARE COPYRIGHT APPLE COMPUTER -
  *
  */
 
-
+#ifdef __APPLE__
 #include <Carbon/Carbon.h>
-    
 #include <QuickTime/ImageCompression.h> // for image loading and decompression
 #include <QuickTime/QuickTimeComponents.h> // for file type support
+#else
+#include <ImageCompression.h> // for image loading and decompression
+#include <QuickTimeComponents.h> // for file type support
+#endif
 
-#include <OpenGL/gl.h> // for OpenGL API
-#include <OpenGL/glu.h> // for OpenGL API
-#include <OpenGL/glext.h> // for OpenGL extension support 
-
+#include <osg/GL> // for OpenGL API
+#include "QTUtils.h"
 #include "QTtexture.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // ==================================
 
@@ -346,15 +351,10 @@ FSSpec *darwinPathToFSSpec (char *fname ) {
 
     FSSpec *fs;
     OSStatus    result;
+#if defined( __APPLE__ )
     FSRef    ref;
-    
-    /* convert the POSIX path to an FSRef */
-#if defined( __APPLE__ ) && ( __GNUC__ > 3 )
-    result = FSPathMakeRef( (UInt8*)fname, &ref, false); // fname is not a directory
-#else
-    result = FSPathMakeRef(fname, &ref, false); // fname is not a directory
-#endif
 
+    result = FSPathMakeRef( (UInt8*)fname, &ref, false); // fname is not a directory
     if (result!=0) return NULL;
     
     /* and then convert the FSRef to an FSSpec */
@@ -365,6 +365,16 @@ FSSpec *darwinPathToFSSpec (char *fname ) {
     // failed:
     free(fs);
     return NULL;
+#else
+    // windows implementation to get a fsspec
+    fs = (FSSpec *) malloc(sizeof(FSSpec));
+    result = NativePathNameToFSSpec(fname, fs, 0 /* flags */);
+
+    if (0 == result) 
+        return fs;
+    free(fs);
+    return NULL;
+#endif
 }
 
 

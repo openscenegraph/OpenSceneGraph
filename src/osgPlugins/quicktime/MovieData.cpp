@@ -6,21 +6,17 @@
  *  Copyright (c) 2004 __MyCompanyName__. All rights reserved.
  *
  */
-#include <OpenGL/gl.h>
-#include <OpenGL/glext.h>
+#include <osg/GL>
 
-#include <osg/Endian>
+#include <osgDB/FileNameUtils>
 
 #include "MovieData.h"
 #include "QTUtils.h"
 
 
 
-using namespace osgQuicktime;
-
-namespace osg {
     
-MovieData::MovieData() : _movie(NULL), _gw(NULL), _fError(false)
+MovieData::MovieData() : _pointer(NULL), _movie(NULL), _gw(NULL), _fError(false)
 {
 
 }
@@ -28,6 +24,7 @@ MovieData::MovieData() : _movie(NULL), _gw(NULL), _fError(false)
 
 MovieData::~MovieData()
 {
+    if (_pointer) free(_pointer);
     if (_gw) DisposeGWorld(_gw);
     if (_movie) DisposeMovie(_movie);
 }
@@ -35,10 +32,13 @@ MovieData::~MovieData()
    
     
     
-void MovieData::load(osg::Image* image, std::string filename, float startTime)
+void MovieData::load(osg::Image* image, std::string afilename, float startTime)
 {
     Rect bounds;
-    
+    std::string filename = afilename;
+    if (!osgDB::isFileNameNativeStyle(filename)) 
+        filename = osgDB::convertFileNameToNativeStyle(filename);
+
     osg::notify(osg::INFO) << "MovieData :: opening movie '" << filename << "'" << std::endl;
     
     OSStatus err = MakeMovieFromPath(filename.c_str(),&_movie);
@@ -75,6 +75,9 @@ void MovieData::load(osg::Image* image, std::string filename, float startTime)
             
         UpdateMovie(_movie);
         SetMovieRate(_movie,0);
+        SetMovieActive(_movie, true);
+        UpdateMovie(_movie);
+        MoviesTask(_movie,0);
     }
 }
 
@@ -88,30 +91,30 @@ void MovieData::_initImage(osg::Image* image)
 {
 
     void* buffer;
-    char* pointer;
+    
 
     _textureWidth = ((_movieWidth + 7) >> 3) << 3;
     _textureHeight = _movieHeight;
     
     // some magic alignment... 
-    pointer = (char*)malloc(4 * _textureWidth * _textureHeight + 32);
+    _pointer = (char*)malloc(4 * _textureWidth * _textureHeight + 32);
 
-    if (pointer == NULL) {
+    if (_pointer == NULL) {
         osg::notify(osg::FATAL) << "MovieData: " << "Can't allocate texture buffer" << std::endl;
         _fError= true;
     }
 
-    buffer = (void*)(((unsigned long)(pointer + 31) >> 5) << 5);
+    buffer = (void*)(((unsigned long)(_pointer + 31) >> 5) << 5);
 
     GLenum internalFormat = (getCpuByteOrder()==osg::BigEndian)?
                             GL_UNSIGNED_INT_8_8_8_8_REV :
                             GL_UNSIGNED_INT_8_8_8_8;
 
-    image->setImage(_textureWidth,_textureHeight,0,
+    image->setImage(_textureWidth,_textureHeight,1,
                    (GLint) GL_RGBA8,
                    (GLenum)GL_BGRA_EXT,
-                   internalFormat,
-                   (unsigned char*) buffer,osg::Image::USE_MALLOC_FREE,4);
+                   internalformat,
+                   (unsigned char*) buffer,osg::Image::NO_DELETE,4);
 
 }
 
@@ -162,6 +165,36 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
 
 }
 
+void MovieData::setMovieTime(float atime) {
+    float time = (atime > getMovieDuration()) ? getMovieDuration() : atime;
+    
+    TimeValue t = (TimeValue) (time * _timescale);
+    SetMovieTimeValue(_movie,t);
+    _checkMovieError("setMovieTime failed");
+    UpdateMovie(_movie);
+    MoviesTask(_movie,0);
+    
+        
+}
+
+void MovieData::setMovieRate(float rate) { 
+    // osg::notify(osg::ALWAYS) << "new movierate: " << rate << " current: " << getMovieRate() << std::endl;
+    _movieRate = rate;
+    if (rate != 0) {
+        PrerollMovie(_movie, GetMovieTime(_movie,NULL), X2Fix(rate));
+        _checkMovieError("PrerollMovie failed");
+    }
+    
+    SetMovieRate(_movie, X2Fix(rate)); 
+    _checkMovieError("setMovieRate failed");
+    MoviesTask(_movie, 0);
+    _checkMovieError("MoviesTask failed");
+    
+    UpdateMovie(_movie);
+    _checkMovieError("UpdateMovie failed");
+
+}
 
 
-} // namespace
+
+

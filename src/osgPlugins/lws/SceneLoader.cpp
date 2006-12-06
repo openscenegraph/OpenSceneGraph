@@ -155,10 +155,10 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
         osg::ref_ptr<osg::PositionAttitudeTransform> pat = pats[j];
         if (!pat.valid()) {
             pat = new osg::PositionAttitudeTransform;
-            pat->setName(i->name);
             pats[j] = pat;
         }
 
+        pat->setName(i->name);
         pat->addChild(i->layer_node.get());
         pat->setPivotPoint(options_.csf->fix_point(i->pivot));
 

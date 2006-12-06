@@ -13,53 +13,20 @@
 
 #include <osg/CoordinateSystemNode>
 #include <osg/io_utils>
+#include <osg/Geode>
+#include <osg/Geometry>
 
 #include <osgSim/ElevationSlice>
 
 #include <osg/Notify>
 #include <osgUtil/PlaneIntersector>
 
+#include <osgDB/WriteFile>
+
 using namespace osgSim;
 
 namespace ElevationSliceUtils
 {
-
-struct DistanceHeightXYZ
-{
-
-    DistanceHeightXYZ():
-        distance(0.0),
-        height(0.0) {}
-
-    DistanceHeightXYZ(double d, double h, const osg::Vec3d& pos):
-        distance(d),
-        height(h),
-        position(pos) {}
-
-    double      distance;
-    double      height;
-    osg::Vec3d  position;
-
-    bool operator < ( const DistanceHeightXYZ& rhs) const
-    {
-        // small distance values first
-        if (distance < rhs.distance) return true;
-        if (distance > rhs.distance) return false;
-        
-        // greatest heights first
-        if (height > rhs.height) return true;
-        if (height < rhs.height) return false;
-        
-        return false;
-    }
-    
-    bool equal_distance(const DistanceHeightXYZ& rhs, double epsilon=1e-6) const
-    {
-        return osg::absolute(rhs.distance - distance) <= epsilon;
-    }
-
-};
-
 
 struct DistanceHeightCalculator
 {
@@ -174,6 +141,259 @@ struct DistanceHeightCalculator
 
 };
 
+struct DistanceHeightXYZ
+{
+
+    DistanceHeightXYZ():
+        distance(0.0),
+        height(0.0) {}
+
+    DistanceHeightXYZ(const DistanceHeightXYZ& dh):
+        distance(dh.distance),
+        height(dh.height),
+        position(dh.position) {}
+
+    DistanceHeightXYZ(double d, double h, const osg::Vec3d& pos):
+        distance(d),
+        height(h),
+        position(pos) {}
+
+    bool operator < (const DistanceHeightXYZ& rhs) const
+    {
+        // small distance values first
+        if (distance < rhs.distance) return true;
+        if (distance > rhs.distance) return false;
+        
+        // smallest heights first
+        return (height < rhs.height);
+    }
+    
+    bool operator == (const DistanceHeightXYZ& rhs) const
+    {
+        return distance==rhs.distance && height==rhs.height;
+    }
+    
+    bool operator != (const DistanceHeightXYZ& rhs) const
+    {
+        return distance!=rhs.distance || height!=rhs.height;
+    }
+    
+    bool equal_distance(const DistanceHeightXYZ& rhs, double epsilon=1e-6) const
+    {
+        return osg::absolute(rhs.distance - distance) <= epsilon;
+    }
+
+    double      distance;
+    double      height;
+    osg::Vec3d  position;
+};
+
+struct Point : public osg::Referenced, public DistanceHeightXYZ
+{
+    Point() {}
+    Point(double d, double h, const osg::Vec3d& pos):
+         DistanceHeightXYZ(d,h,pos) {}
+    
+    Point(const Point& point):
+        osg::Referenced(),
+        DistanceHeightXYZ(point) {}
+
+
+};
+
+struct Segment
+{
+    Segment(Point* p1, Point* p2)
+    {
+        if (*p1 < *p2)
+        {
+            _p1 = p1;
+            _p2 = p2;
+        }
+        else
+        {
+            _p1 = p2;
+            _p2 = p1;
+        }
+    }
+
+
+    bool operator < ( const Segment& rhs) const
+    {
+        if (*_p1 < *rhs._p1) return true;
+        if (*rhs._p1 < *_p1) return false;
+
+        return (*_p2 < *rhs._p2);
+    }
+    
+    enum Classification
+    {
+        IDENTICAL,
+        SEPERATE,
+        JOINED,
+        OVERLAPPING,
+    };
+    
+    Classification compare(const Segment& rhs) const
+    {
+        if (*_p1 == *rhs._p1 && *_p2==*rhs._p2) return IDENTICAL;
+        
+        if (*rhs._p2 < *_p1 || *_p2 < *rhs._p1) return SEPERATE;
+        
+        if (*_p2 == *rhs._p1 || *rhs._p2 == *_p1) return JOINED;
+        
+        return OVERLAPPING;
+    }
+
+    osg::ref_ptr<Point> _p1;
+    osg::ref_ptr<Point> _p2;
+
+};
+
+
+struct LineConstructor
+{
+
+    typedef std::set<Segment> SegmentSet;
+
+    LineConstructor() {}
+    
+    void add(double d, double h, const osg::Vec3d& pos)
+    {
+        osg::ref_ptr<Point> newPoint = new Point(d,h,pos);
+        
+        if (_previousPoint.valid() && *newPoint != *_previousPoint)
+        {
+            _segments.insert( Segment(_previousPoint.get(), newPoint.get()) );
+        }
+        
+        _previousPoint = newPoint;
+    }
+    
+    void endline()
+    {
+        _previousPoint = 0;
+    }
+    
+    void report()
+    {
+        osg::notify(osg::NOTICE)<<"Number of segments = "<<_segments.size()<<std::endl;
+        
+        SegmentSet::iterator prevItr = _segments.begin();
+        SegmentSet::iterator nextItr = prevItr;
+        ++nextItr;
+        
+        for(; 
+            nextItr != _segments.end();
+            ++nextItr,++prevItr)
+        {
+            Segment::Classification classification = prevItr->compare(*nextItr);
+            switch(classification)
+            {
+                case(Segment::IDENTICAL): osg::notify(osg::NOTICE)<<"i"; break;
+                case(Segment::SEPERATE): osg::notify(osg::NOTICE)<<"s"<<std::endl; break;
+                case(Segment::JOINED): osg::notify(osg::NOTICE)<<"j"; break;
+                case(Segment::OVERLAPPING): osg::notify(osg::NOTICE)<<"O"; break;
+            }
+            
+        }
+
+        osg::notify(osg::NOTICE)<<std::endl;
+        
+        for(SegmentSet::iterator itr = _segments.begin();
+            itr != _segments.end();
+            ++itr)
+        {
+            osg::notify(osg::NOTICE)<<numOverlapping(itr);
+        }
+
+        osg::notify(osg::NOTICE)<<std::endl;
+        
+    }
+    
+    void pruneOverlappingSegments()
+    {
+        SegmentSet::iterator prevItr = _segments.begin();
+        SegmentSet::iterator nextItr = prevItr;
+        ++nextItr;
+        
+        for(SegmentSet::iterator itr = _segments.begin();
+            itr != _segments.end();
+            ++itr)
+        {
+            SegmentSet::iterator nextItr = itr;
+            ++nextItr;
+            while (nextItr!=_segments.end() && itr->compare(*nextItr)==Segment::OVERLAPPING)
+            {
+                SegmentSet::iterator tempItr = nextItr;
+                ++nextItr;
+                _segments.erase(tempItr);
+            }
+        }
+    }
+    
+    unsigned int numOverlapping(SegmentSet::iterator startItr)
+    {
+        if (startItr==_segments.end()) return 0;
+    
+        SegmentSet::iterator nextItr = startItr;
+        ++nextItr;
+        
+        unsigned int numOverlapping = 0;
+        while (nextItr!=_segments.end() && startItr->compare(*nextItr)==Segment::OVERLAPPING)
+        {
+            ++numOverlapping;
+            ++nextItr;
+        }
+        return numOverlapping;
+    }
+    
+    void copyPoints(ElevationSlice::Vec3dList& intersections, ElevationSlice::DistanceHeightList& distanceHeightIntersections)
+    {
+        SegmentSet::iterator prevItr = _segments.begin();
+        SegmentSet::iterator nextItr = prevItr;
+        ++nextItr;
+        
+        intersections.push_back( prevItr->_p1->position );
+        distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(prevItr->_p1->distance, prevItr->_p1->height) );
+        
+        intersections.push_back( prevItr->_p2->position );
+        distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(prevItr->_p2->distance, prevItr->_p2->height) );
+
+        for(; 
+            nextItr != _segments.end();
+            ++nextItr,++prevItr)
+        {
+            Segment::Classification classification = prevItr->compare(*nextItr);
+            switch(classification)
+            {
+                case(Segment::SEPERATE):
+                {
+                    intersections.push_back( nextItr->_p1->position );
+                    distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p1->distance, nextItr->_p1->height) );
+        
+                    intersections.push_back( nextItr->_p2->position );
+                    distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p2->distance, nextItr->_p2->height) );
+                    break;
+                }
+                case(Segment::JOINED): 
+                {
+                    intersections.push_back( nextItr->_p2->position );
+                    distanceHeightIntersections.push_back( ElevationSlice::DistanceHeight(nextItr->_p2->distance, nextItr->_p2->height) );
+                    break;
+                }
+                default : break;
+            }
+            
+        }
+        
+    }
+    
+    SegmentSet _segments;
+    osg::ref_ptr<Point> _previousPoint;
+    
+};
+
 }
 
 ElevationSlice::ElevationSlice()
@@ -261,13 +481,14 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
 
     if (!intersections.empty())
     {
-        // osg::notify(osg::NOTICE)<<"Got intersections."<<std::endl;
-        for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
+
+        osgUtil::PlaneIntersector::Intersections::iterator itr;
+        for(itr = intersections.begin();
             itr != intersections.end();
             ++itr)
         {
             osgUtil::PlaneIntersector::Intersection& intersection = *itr;
-            // osg::notify(osg::NOTICE)<<"  intersection - "<<intersection.polyline.size()<<std::endl;
+
             if (intersection.matrix.valid())
             {
                 // osg::notify(osg::NOTICE)<<"  transforming "<<std::endl;
@@ -282,25 +503,54 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                 // matrix no longer needed.
                 intersection.matrix = 0;
             }
-#if 0            
+        }
+
+        
+
+
+#if 0
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        
+        for(itr = intersections.begin();
+            itr != intersections.end();
+            ++itr)
+        {
+
+            osgUtil::PlaneIntersector::Intersection& intersection = *itr;
+            osg::Geometry* geometry = new osg::Geometry;
+
+            osg::Vec3Array* vertices = new osg::Vec3Array;
+            vertices->reserve(intersection.polyline.size());
             for(Polyline::iterator pitr = intersection.polyline.begin();
                 pitr != intersection.polyline.end();
                 ++pitr)
             {
-                osg::notify(osg::NOTICE)<<"  v = "<<*pitr<<std::endl;
+                vertices->push_back(*pitr);
             }
-#endif            
+
+            geometry->setVertexArray( vertices );
+            geometry->addPrimitiveSet( new osg::DrawArrays(GL_LINE_STRIP, 0, vertices->size()) );
+            
+            osg::Vec4Array* colours = new osg::Vec4Array;
+            colours->push_back( osg::Vec4(1.0f,1.0f,1.0f,1.0f) );
+            
+            geometry->setColorArray( colours );
+
+            geode->addDrawable( geometry );
+            geode->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
         }
         
-        typedef std::set<ElevationSliceUtils::DistanceHeightXYZ> DistanceHeightSet;
-        DistanceHeightSet distanceHeightSet;
+        osgDB::writeNodeFile(*geode, "raw.osg");
+#endif
+
+        ElevationSliceUtils::LineConstructor constructor;
 
         if (em)
         {
             ElevationSliceUtils::DistanceHeightCalculator dhc(em, _startPoint, _endPoint);
 
             // convert into distance/height
-            for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
+            for(itr = intersections.begin();
                 itr != intersections.end();
                 ++itr)
             {
@@ -319,16 +569,20 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                     
                     double pi_height = *aitr;
                     
-                    osg::notify(osg::NOTICE)<<"computed height = "<<height<<" PI height = "<<pi_height<<std::endl;
-                    
-                    distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, pi_height, v));
+                    // osg::notify(osg::NOTICE)<<"computed height = "<<height<<" PI height = "<<pi_height<<std::endl;
+
+                    constructor.add( distance, pi_height, v);
+
                 }
+                constructor.endline();
             }
+
+
         }
         else
         {
             // convert into distance/height
-            for(osgUtil::PlaneIntersector::Intersections::iterator itr = intersections.begin();
+            for(itr = intersections.begin();
                 itr != intersections.end();
                 ++itr)
             {
@@ -340,15 +594,24 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                     const osg::Vec3d& v = *pitr;
                     osg::Vec2d delta_xy( v.x() - _startPoint.x(), v.y() - _startPoint.y());
                     double distance = delta_xy.length();
-                    distanceHeightSet.insert(ElevationSliceUtils::DistanceHeightXYZ( distance, v.z(), v));
+
+                    constructor.add( distance, v.z(), v);
                 }
+                constructor.endline();
             }
         } 
 
         // copy final results
         _intersections.clear();
         _distanceHeightIntersections.clear();
+
+        // constructor.report();
+        constructor.pruneOverlappingSegments();
+        // constructor.report();
+
+        constructor.copyPoints(_intersections, _distanceHeightIntersections);
         
+#if 0
         _intersections.reserve(distanceHeightSet.size());
         _distanceHeightIntersections.reserve(distanceHeightSet.size());
         
@@ -360,6 +623,38 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
             _intersections.push_back( dh.position );
             _distanceHeightIntersections.push_back( DistanceHeight(dh.distance, dh.height) );
         }
+#endif
+
+#if 0
+        {
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
+            osg::Geometry* geometry = new osg::Geometry;
+
+            osg::Vec3Array* vertices = new osg::Vec3Array;
+            vertices->reserve(_intersections.size());
+            for(Vec3dList::iterator pitr = _intersections.begin();
+                pitr != _intersections.end();
+                ++pitr)
+            {
+                vertices->push_back(*pitr);
+            }
+
+            geometry->setVertexArray( vertices );
+            geometry->addPrimitiveSet( new osg::DrawArrays(GL_LINE_STRIP, 0, _intersections.size()) );
+
+            osg::Vec4Array* colours = new osg::Vec4Array;
+            colours->push_back( osg::Vec4(1.0f,0.5f,0.5f,1.0f) );
+
+            geometry->setColorArray( colours );
+
+            geode->addDrawable( geometry );
+            geode->getOrCreateStateSet()->setMode( GL_LIGHTING, osg::StateAttribute::OFF );
+
+            osgDB::writeNodeFile(*geode, "processed.osg");
+        }
+#endif
+
     }
     else
     {

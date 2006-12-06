@@ -1143,7 +1143,7 @@ void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
 }
 //////////////////////////////////////////////////////////////////////
 void ConvertFromInventor::_setVRMLImageTexture(const SoVRMLImageTexture* vit,
-                                               SoCallbackAction* /*action*/)
+                                               SoCallbackAction* action)
 {
     _hasVRMLImageTexture = true;
     ///Coin API to extract VRML97 ImageTexture
@@ -1184,7 +1184,7 @@ void ConvertFromInventor::_setVRMLImageTexture(const SoVRMLImageTexture* vit,
     };
 
     osg::ref_ptr<osg::Image> image = new osg::Image();
-    image->setImage(dimensions[0], dimensions[1], 0, nComponents,
+    image->setImage(dimensions[0], dimensions[1], 1, nComponents,
                    format, GL_UNSIGNED_BYTE, const_cast<unsigned char*>(data), 
                    osg::Image::USE_NEW_DELETE);
 

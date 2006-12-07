@@ -2339,7 +2339,8 @@ osg::StateSet* DataSet::DestinationTile::createStateSet()
         
         osg::Image* image = imageData._imagery->_image.get();
 
-        std::string imageExension(".dds"); // ".rgb"
+        std::string imageExension(_dataSet->_imageExtension);
+        //std::string imageExension(".dds"); // ".rgb"
         //std::string imageExension(".jp2"); // ".rgb"
         std::string imageName = _name;
         if (layerNum>0)
@@ -4758,8 +4759,12 @@ void DataSet::_buildDestination(bool writeToDisk)
     if (!_state) _state = new osg::State;
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> previous_options = osgDB::Registry::instance()->getOptions();
-    osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("precision 16"));
-
+    if(previous_options.get()) {
+        osg::notify(osg::NOTICE) << "osgTerrain: adding optionstring" << previous_options->getOptionString() << std::endl;
+        osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options(std::string("precision 16") + std::string(" ") + previous_options->getOptionString()) );
+    } else {
+        osgDB::Registry::instance()->setOptions(new osgDB::ReaderWriter::Options("precision 16"));
+    }
     if (!_archive && !_archiveName.empty())
     {
         unsigned int indexBlockSizeHint=4096;

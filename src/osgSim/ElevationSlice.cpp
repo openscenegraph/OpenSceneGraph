@@ -77,7 +77,7 @@ struct DistanceHeightCalculator
             _radiusList.push_back(newRadius);
             _distanceList.push_back(distance);
             
-            // osg::notify(osg::NOTICE)<<"  newVector = "<<newVector<<" newRadius = "<<newRadius<<" distanceIncrement="<<distanceIncrement<<std::endl;
+            // osg::notify(osg::INFO)<<"  newVector = "<<newVector<<" newRadius = "<<newRadius<<" distanceIncrement="<<distanceIncrement<<std::endl;
             
             prevRadius = newRadius;
         }
@@ -117,9 +117,14 @@ struct DistanceHeightCalculator
         
         distance = prevDistance + distanceIncrement;
 
-        // double oldDistance = alpha * (_startRadius + Rv) *0.5;
+#if 0
+        double oldDistance = alpha * (_startRadius + Rv) *0.5;
+        
+        distance = oldDistance;
 
-        // osg::notify(osg::NOTICE)<<" new distance = "<<distance<<" old = "<<oldDistance<<" delta = "<<oldDistance-distance<<std::endl;
+        osg::notify(osg::INFO)<<" new distance = "<<distance<<" old = "<<oldDistance<<" delta = "<<oldDistance-distance<<std::endl;
+#endif
+
     }
 
     typedef std::vector<double> DoubleList;
@@ -228,21 +233,66 @@ struct Segment
     
     enum Classification
     {
+        UNCLASSIFIED,
         IDENTICAL,
         SEPERATE,
         JOINED,
         OVERLAPPING,
+        ENCLOSING,
+        ENCLOSED
     };
     
     Classification compare(const Segment& rhs) const
     {
         if (*_p1 == *rhs._p1 && *_p2==*rhs._p2) return IDENTICAL;
+
+        const double epsilon = 1e-3; // 1mm
+
+        if (fabs(_p2->distance - rhs._p1->distance) < epsilon)
+        {
+            if (fabs(_p2->height - rhs._p1->height) < epsilon) return JOINED;
+            else return SEPERATE;
+        }
+
+        if (rhs._p2->distance < _p1->distance || _p2->distance < rhs._p1->distance) return SEPERATE;
         
-        if (*rhs._p2 < *_p1 || *_p2 < *rhs._p1) return SEPERATE;
+        bool rhs_p1_inside = (_p1->distance <= rhs._p1->distance) && (rhs._p1->distance <= _p2->distance);
+        bool rhs_p2_inside = (_p1->distance <= rhs._p2->distance) && (rhs._p2->distance <= _p2->distance);
         
-        if (*_p2 == *rhs._p1 || *rhs._p2 == *_p1) return JOINED;
+        if (rhs_p1_inside && rhs_p2_inside) return ENCLOSING;
         
-        return OVERLAPPING;
+        bool p1_inside = (rhs._p1->distance <= _p1->distance) && (_p1->distance <= rhs._p2->distance);
+        bool p2_inside = (rhs._p1->distance <= _p2->distance) && (_p2->distance <= rhs._p2->distance);
+
+        if (p1_inside && p2_inside) return ENCLOSED;
+
+        if (rhs_p1_inside || rhs_p2_inside || p1_inside || p2_inside) return OVERLAPPING;
+        
+        return UNCLASSIFIED;
+    }
+    
+    double height(double d) const
+    {
+        double delta = (_p2->distance - _p1->distance);
+        return _p1->height + ((_p2->height - _p1->height) * (d - _p1->distance) / delta);
+    }
+    
+    double deltaHeight(Point& point) const
+    {
+        return point.height - height(point.distance);
+    }
+    
+    Point* createPoint(double d) const
+    {
+        if (d == _p1->distance) return _p1.get();
+        if (d == _p2->distance) return _p2.get();
+        
+        double delta = (_p2->distance - _p1->distance);
+        double r = (d - _p1->distance)/delta;
+        double one_minus_r = 1.0 - r;
+        return new Point(d, 
+                         _p1->height * one_minus_r + _p2->height * r,
+                         _p1->position * one_minus_r + _p2->position * r);
     }
 
     osg::ref_ptr<Point> _p1;
@@ -258,13 +308,23 @@ struct LineConstructor
 
     LineConstructor() {}
     
+    
+    
     void add(double d, double h, const osg::Vec3d& pos)
     {
         osg::ref_ptr<Point> newPoint = new Point(d,h,pos);
         
-        if (_previousPoint.valid() && *newPoint != *_previousPoint)
+        
+        
+        if (_previousPoint.valid() && newPoint->distance != _previousPoint->distance)
         {
-            _segments.insert( Segment(_previousPoint.get(), newPoint.get()) );
+            const double maxGradient = 100.0;
+            double gradient = fabs( (newPoint->height - _previousPoint->height) / (newPoint->distance - _previousPoint->distance) );
+            
+            if (gradient < maxGradient)
+            {
+                _segments.insert( Segment(_previousPoint.get(), newPoint.get()) );
+            }
         }
         
         _previousPoint = newPoint;
@@ -277,7 +337,7 @@ struct LineConstructor
     
     void report()
     {
-        osg::notify(osg::NOTICE)<<"Number of segments = "<<_segments.size()<<std::endl;
+        osg::notify(osg::INFO)<<"Number of segments = "<<_segments.size()<<std::endl;
         
         SegmentSet::iterator prevItr = _segments.begin();
         SegmentSet::iterator nextItr = prevItr;
@@ -290,24 +350,53 @@ struct LineConstructor
             Segment::Classification classification = prevItr->compare(*nextItr);
             switch(classification)
             {
-                case(Segment::IDENTICAL): osg::notify(osg::NOTICE)<<"i"; break;
-                case(Segment::SEPERATE): osg::notify(osg::NOTICE)<<"s"<<std::endl; break;
-                case(Segment::JOINED): osg::notify(osg::NOTICE)<<"j"; break;
-                case(Segment::OVERLAPPING): osg::notify(osg::NOTICE)<<"O"; break;
+                case(Segment::IDENTICAL): osg::notify(osg::INFO)<<"i"; break;
+                case(Segment::SEPERATE): osg::notify(osg::INFO)<<"s"<<std::endl; break;
+                case(Segment::JOINED): osg::notify(osg::INFO)<<"j"; break;
+                case(Segment::OVERLAPPING): osg::notify(osg::INFO)<<"o"; break;
+                case(Segment::ENCLOSING): osg::notify(osg::INFO)<<"E"; break;
+                case(Segment::ENCLOSED): osg::notify(osg::INFO)<<"e"; break;
+                case(Segment::UNCLASSIFIED): osg::notify(osg::INFO)<<"U"; break;
             }
             
         }
 
-        osg::notify(osg::NOTICE)<<std::endl;
+        osg::notify(osg::INFO)<<std::endl;
         
         for(SegmentSet::iterator itr = _segments.begin();
             itr != _segments.end();
             ++itr)
         {
-            osg::notify(osg::NOTICE)<<numOverlapping(itr);
+            osg::notify(osg::INFO)<<numOverlapping(itr);
         }
 
-        osg::notify(osg::NOTICE)<<std::endl;
+        osg::notify(osg::INFO)<<std::endl;
+
+#if 0
+        for(SegmentSet::iterator itr = _segments.begin();
+            itr != _segments.end();
+            ++itr)
+        {
+            const Segment& s = *itr;
+            osg::Vec3d p;
+            
+
+            double latitude, longitude, height;
+
+            p = s._p1->position;
+            _em->convertXYZToLatLongHeight(p.x(), p.y(), p.z(), latitude, longitude, height);
+            double delta1 = height - s._p1->height;
+
+            p = s._p1->position;
+            _em->convertXYZToLatLongHeight(p.x(), p.y(), p.z(), latitude, longitude, height);
+            double delta2 = height - s._p2->height;
+
+            if (delta1>0.0 || delta2>0.0)
+            {
+                osg::notify(osg::INFO)<<"   "<<&s<<" computed height delta  ="<<delta1<<"  delta2= "<<delta2<<std::endl;
+            }
+        }
+#endif
         
     }
     
@@ -317,17 +406,211 @@ struct LineConstructor
         SegmentSet::iterator nextItr = prevItr;
         ++nextItr;
         
+        double epsilon = 0.001;
+        
         for(SegmentSet::iterator itr = _segments.begin();
             itr != _segments.end();
             ++itr)
         {
             SegmentSet::iterator nextItr = itr;
             ++nextItr;
-            while (nextItr!=_segments.end() && itr->compare(*nextItr)==Segment::OVERLAPPING)
+            Segment::Classification classification = nextItr != _segments.end() ?  itr->compare(*nextItr) : Segment::UNCLASSIFIED;
+            if (classification>=Segment::OVERLAPPING) osg::notify(osg::INFO)<<std::endl;
+            else osg::notify(osg::INFO)<<".";
+            osg::notify(osg::INFO).precision(12);
+            while (classification>=Segment::OVERLAPPING)
             {
-                SegmentSet::iterator tempItr = nextItr;
-                ++nextItr;
-                _segments.erase(tempItr);
+                switch(classification)
+                {
+                    case(Segment::OVERLAPPING):
+                    {
+                        // cases....
+                        // compute new end points for both segments
+                        // need to work out which points are overlapping - lhs_p2 && rhs_p1  or  lhs_p1 and rhs_p2
+                        // also need to check for cross cases.
+
+                        const Segment& lhs = *itr;
+                        const Segment& rhs = *nextItr;
+
+                        bool rhs_p1_inside = (lhs._p1->distance <= rhs._p1->distance) && (rhs._p1->distance <= lhs._p2->distance);
+                        bool lhs_p2_inside = (rhs._p1->distance <= lhs._p2->distance) && (lhs._p2->distance <= rhs._p2->distance);
+
+                        if (rhs_p1_inside && lhs_p2_inside)
+                        {                    
+                            double distance_between = osg::Vec2d(lhs._p2->distance - rhs._p1->distance, 
+                                                                 lhs._p2->height - rhs._p1->height).length2();
+
+                            if (distance_between < epsilon)
+                            {
+                                // osg::notify(osg::INFO)<<"OVERLAPPING : distance_between acceptable "<<distance_between<<std::endl;
+
+                                Segment newSeg(lhs._p2.get(), rhs._p2.get());
+                                _segments.insert(newSeg);
+                                
+                                _segments.erase(nextItr);
+                                
+                                nextItr = _segments.find(newSeg);
+                            }
+                            else
+                            {
+                                osg::notify(osg::INFO)<<"OVERLAPPING : distance_between unacceptable "<<distance_between<<std::endl;
+
+                                double dh1 = lhs.deltaHeight(*rhs._p1);
+                                double dh2 = -rhs.deltaHeight(*lhs._p2);
+
+                                if (dh1 * dh2 < 0.0)
+                                {
+                                    osg::notify(osg::INFO)<<"OVERLAPPING : crossing "<<dh1<<" "<<dh2<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p1 "<<lhs._p1->distance<<" "<<lhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p2 "<<lhs._p2->distance<<" "<<lhs._p2->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p1 "<<rhs._p1->distance<<" "<<rhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p2 "<<rhs._p2->distance<<" "<<rhs._p2->height<<std::endl;
+                                    ++nextItr;
+                                }
+                                else if (dh1 <= 0.0 && dh2 <= 0.0)
+                                {
+                                    osg::notify(osg::INFO)<<"OVERLAPPING : lhs below rhs "<<dh1<<" "<<dh2<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p1 "<<lhs._p1->distance<<" "<<lhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p2 "<<lhs._p2->distance<<" "<<lhs._p2->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p1 "<<rhs._p1->distance<<" "<<rhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p2 "<<rhs._p2->distance<<" "<<rhs._p2->height<<std::endl;
+                                    ++nextItr;
+                                }
+                                else if (dh1 >= 0.0 && dh2 >= 0.0)
+                                {
+                                    osg::notify(osg::INFO)<<"OVERLAPPING : lhs above rhs "<<dh1<<" "<<dh2<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p1 "<<lhs._p1->distance<<" "<<lhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p2 "<<lhs._p2->distance<<" "<<lhs._p2->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p1 "<<rhs._p1->distance<<" "<<rhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p2 "<<rhs._p2->distance<<" "<<rhs._p2->height<<std::endl;
+                                    ++nextItr;
+                                }
+                                else
+                                {
+                                    osg::notify(osg::INFO)<<"OVERLAPPING : unidentified "<<dh1 <<" "<<dh2<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p1 "<<lhs._p1->distance<<" "<<lhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    lhs_p2 "<<lhs._p2->distance<<" "<<lhs._p2->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p1 "<<rhs._p1->distance<<" "<<rhs._p1->height<<std::endl;
+                                    osg::notify(osg::INFO)<<"    rhs_p2 "<<rhs._p2->distance<<" "<<rhs._p2->height<<std::endl;
+                                    ++nextItr;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            osg::notify(osg::INFO)<<" OVERLAPPING problem, !rhs_p1_inside || !lhs_p2_inside - unhandled case" <<std::endl;
+                            ++nextItr;
+                        }
+
+
+                        break;
+                    }
+                    case(Segment::ENCLOSING):
+                    {
+                        // need to work out if rhs is below lhs or rhs is above lhs or crossing
+
+                        const Segment& enclosing = *itr;
+                        const Segment& enclosed = *nextItr;
+                        double dh1 = enclosing.deltaHeight(*enclosed._p1);
+                        double dh2 = enclosing.deltaHeight(*enclosed._p2);
+
+                        if (dh1<=epsilon && dh2<=epsilon)
+                        {
+                            // osg::notify(osg::INFO)<<"+++ ENCLOSING: ENCLOSING is above enclosed "<<dh1<<" "<<dh2<<std::endl;
+
+                            _segments.erase(nextItr);
+
+                            nextItr = itr;
+                            ++nextItr;
+
+                        }
+                        else if (dh1>=0.0 && dh2>=0.0)
+                        {
+                            osg::notify(osg::INFO)<<"ENCLOSING: ENCLOSING is below enclosed "<<dh1<<" "<<dh2<<std::endl;
+                            
+                            osg::notify(osg::INFO)<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
+
+                            ++nextItr;
+                        }
+                        else if (dh1 * dh2 < 0.0)
+                        {
+                            osg::notify(osg::INFO)<<"ENCLOSING: ENCLOSING is crossing enclosed "<<dh1<<" "<<dh2<<std::endl;
+                            
+                            osg::notify(osg::INFO)<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
+
+                            ++nextItr;
+                        }
+                        else
+                        {
+                            osg::notify(osg::INFO)<<"ENCLOSING: ENCLOSING - not sure "<<dh1<<" "<<dh2<<std::endl;
+                            
+                            osg::notify(osg::INFO)<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
+                            ++nextItr;
+                        }
+
+                        break;
+                    }
+                    case(Segment::ENCLOSED):
+                    {
+                        // need to work out if lhs is below rhs or lhs is above rhs or crossing
+                        const Segment& enclosing = *nextItr;
+                        const Segment& enclosed = *itr;
+                        double dh1 = enclosing.deltaHeight(*enclosed._p1);
+                        double dh2 = enclosing.deltaHeight(*enclosed._p2);
+
+                        if (dh1<=epsilon && dh2<=epsilon)
+                        {
+                            // osg::notify(osg::INFO)<<"+++ ENCLOSED: ENCLOSING is above enclosed "<<dh1<<" "<<dh2<<std::endl;
+                            _segments.erase(itr);
+
+                            itr = nextItr;
+                            ++nextItr;
+                        }
+                        else if (dh1>=0.0 && dh2>=0.0)
+                        {
+                            osg::notify(osg::INFO)<<"ENCLOSED: ENCLOSING is below enclosed "<<dh1<<" "<<dh2<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
+                            ++nextItr;
+                        }
+                        else if (dh1 * dh2 < 0.0)
+                        {
+                            osg::notify(osg::INFO)<<"ENCLOSED: ENCLOSING is crossing enclosed "<<dh1<<" "<<dh2<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
+                            ++nextItr;
+                        }
+                        else
+                        {
+                            osg::notify(osg::INFO)<<"ENCLOSED: ENCLOSING - not sure "<<dh1<<" "<<dh2<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p1 "<<enclosing._p1->distance<<" "<<enclosing._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosing_p2 "<<enclosing._p2->distance<<" "<<enclosing._p2->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p1 "<<enclosed._p1->distance<<" "<<enclosed._p1->height<<std::endl;
+                            osg::notify(osg::INFO)<<"    enclosed_p2 "<<enclosed._p2->distance<<" "<<enclosed._p2->height<<std::endl;
+                            ++nextItr;
+                        }
+
+                        break;
+                    }
+                    default: 
+                        ++nextItr;
+                        break;
+                }
+                
+                classification = nextItr != _segments.end() ?  itr->compare(*nextItr) : Segment::UNCLASSIFIED;
             }
         }
     }
@@ -340,7 +623,7 @@ struct LineConstructor
         ++nextItr;
         
         unsigned int numOverlapping = 0;
-        while (nextItr!=_segments.end() && startItr->compare(*nextItr)==Segment::OVERLAPPING)
+        while (nextItr!=_segments.end() && startItr->compare(*nextItr)>=Segment::OVERLAPPING)
         {
             ++numOverlapping;
             ++nextItr;
@@ -391,6 +674,8 @@ struct LineConstructor
     
     SegmentSet _segments;
     osg::ref_ptr<Point> _previousPoint;
+    osg::Plane  _plane;
+    osg::ref_ptr<osg::EllipsoidModel>   _em;
     
 };
 
@@ -420,13 +705,13 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
         em->convertXYZToLatLongHeight(_startPoint.x(), _startPoint.y(), _startPoint.z(),
                                       start_latitude, start_longitude, start_height);
 
-        osg::notify(osg::NOTICE)<<"start_lat = "<<start_latitude<<" start_longitude = "<<start_longitude<<" start_height = "<<start_height<<std::endl;
+        osg::notify(osg::INFO)<<"start_lat = "<<start_latitude<<" start_longitude = "<<start_longitude<<" start_height = "<<start_height<<std::endl;
 
         double end_latitude, end_longitude, end_height;
         em->convertXYZToLatLongHeight(_endPoint.x(), _endPoint.y(), _endPoint.z(),
                                       end_latitude, end_longitude, end_height);
 
-        osg::notify(osg::NOTICE)<<"end_lat = "<<end_latitude<<" end_longitude = "<<end_longitude<<" end_height = "<<end_height<<std::endl;
+        osg::notify(osg::INFO)<<"end_lat = "<<end_latitude<<" end_longitude = "<<end_longitude<<" end_height = "<<end_height<<std::endl;
         
         // set up the main intersection plane
         osg::Vec3d planeNormal = (_endPoint - _startPoint) ^ start_upVector;
@@ -491,7 +776,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
 
             if (intersection.matrix.valid())
             {
-                // osg::notify(osg::NOTICE)<<"  transforming "<<std::endl;
+                // osg::notify(osg::INFO)<<"  transforming "<<std::endl;
                 // transform points on polyline 
                 for(Polyline::iterator pitr = intersection.polyline.begin();
                     pitr != intersection.polyline.end();
@@ -504,9 +789,6 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                 intersection.matrix = 0;
             }
         }
-
-        
-
 
 #if 0
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -544,6 +826,8 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
 #endif
 
         ElevationSliceUtils::LineConstructor constructor;
+        constructor._plane = plane;
+        constructor._em = em;
 
         if (em)
         {
@@ -569,7 +853,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
                     
                     double pi_height = *aitr;
                     
-                    // osg::notify(osg::NOTICE)<<"computed height = "<<height<<" PI height = "<<pi_height<<std::endl;
+                    // osg::notify(osg::INFO)<<"computed height = "<<height<<" PI height = "<<pi_height<<std::endl;
 
                     constructor.add( distance, pi_height, v);
 
@@ -605,26 +889,12 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
         _intersections.clear();
         _distanceHeightIntersections.clear();
 
-        // constructor.report();
+        constructor.report();
         constructor.pruneOverlappingSegments();
-        // constructor.report();
+        constructor.report();
 
         constructor.copyPoints(_intersections, _distanceHeightIntersections);
         
-#if 0
-        _intersections.reserve(distanceHeightSet.size());
-        _distanceHeightIntersections.reserve(distanceHeightSet.size());
-        
-        for(DistanceHeightSet::iterator dhitr = distanceHeightSet.begin();
-            dhitr != distanceHeightSet.end();
-            ++dhitr)
-        {
-            const ElevationSliceUtils::DistanceHeightXYZ& dh = *dhitr;
-            _intersections.push_back( dh.position );
-            _distanceHeightIntersections.push_back( DistanceHeight(dh.distance, dh.height) );
-        }
-#endif
-
 #if 0
         {
             osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -658,7 +928,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"No intersections found."<<std::endl;
+        osg::notify(osg::INFO)<<"No intersections found."<<std::endl;
     }
     
 }

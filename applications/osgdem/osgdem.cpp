@@ -210,7 +210,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--tile-image-size","Set the tile maximum image size");
     arguments.getApplicationUsage()->addCommandLineOption("--tile-terrain-size","Set the tile maximum terrain size");
     arguments.getApplicationUsage()->addCommandLineOption("--comment","Added a comment/description string to the top most node in the dataset");     
-        
+    arguments.getApplicationUsage()->addCommandLineOption("-O","string option to pass to write plugins, use \" \" for multiple options");    
     // create DataSet.
     osg::ref_ptr<osgTerrain::DataSet> dataset = new osgTerrain::DataSet;
 
@@ -341,7 +341,13 @@ int main( int argc, char **argv )
         }
     }
 
-
+    if (arguments.read("-O",str))
+    {
+        osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
+        options->setOptionString(str);
+        osgDB::Registry::instance()->setOptions(options);
+    }
+    
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {

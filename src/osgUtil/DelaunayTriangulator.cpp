@@ -164,6 +164,9 @@ public:
     inline Vertex_index a() const { return a_; }
     inline Vertex_index b() const { return b_; }
     inline Vertex_index c() const { return c_; }
+    inline void incrementa(const int delta) { a_+=delta; }
+    inline void incrementb(const int delta) { b_+=delta; }
+    inline void incrementc(const int delta) { c_+=delta; }
 
     inline const Edge &get_edge(int idx) const { return edge_[idx];    }
     inline const osg::Vec3 &get_circumcircle() const { return cc_; }
@@ -458,7 +461,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic)]);
-                    pidx=points->size();
+                    pidx=points->size()-1;
                 }
                 else
                 {
@@ -469,7 +472,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic+1)]);
-                    pidx1=points->size();
+                    pidx1=points->size()-1;
                 }
                 else
                 {
@@ -480,7 +483,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic+2)]);
-                    pidx2=points->size();
+                    pidx2=points->size()-1;
                 }
                 else
                 {
@@ -498,7 +501,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic)]);
-                    pidx=points->size();
+                    pidx=points->size()-1;
                 } else {
                     pidx=vindexlist[prset->index(ic)];
                 }
@@ -506,7 +509,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic+1)]);
-                    pidx1=points->size();
+                    pidx1=points->size()-1;
                 }
                 else
                 {
@@ -517,7 +520,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(ic+2)]);
-                    pidx2=points->size();
+                    pidx2=points->size()-1;
                 }
                 else 
                 {
@@ -543,7 +546,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                 {
                     // this is an added point.
                     points->push_back((*constraintverts)[prset->index(0)]);
-                    pidx=points->size();
+                    pidx=points->size()-1;
                 }
                 else
                 {
@@ -556,7 +559,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                     {
                         // this is an added point.
                         points->push_back((*constraintverts)[prset->index(ic)]);
-                        pidx1=points->size();
+                        pidx1=points->size()-1;
                     }
                     else
                     {
@@ -566,7 +569,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
                     if (prset->index(ic+1)>=npts)
                     { // this is an added point.
                         points->push_back((*constraintverts)[prset->index(ic+1)]);
-                        pidx2=points->size();
+                        pidx2=points->size()-1;
                     }
                     else
                     {
@@ -847,15 +850,12 @@ bool DelaunayTriangulator::triangulate()
             }
         }
     }
+    // dec 2006 we used to remove supertriangle vertices here, but then we cant strictly use the supertriangle
+    // vertices to find intersections of constraints with terrain, so moved to later.
 
     osg::notify(osg::INFO) << "DelaunayTriangulator: finalizing and cleaning up structures\n";
 
-    // remove supertriangle vertices
-    points->pop_back();
-    points->pop_back();
-    points->pop_back();
-
-    // rejoin the two triangle lists
+     // rejoin the two triangle lists
     triangles.insert(triangles.begin(), discarded_tris.begin(), discarded_tris.end());
 
         // GWM July 2005 eliminate any triangle with an edge crossing a constraint line
@@ -1010,7 +1010,35 @@ bool DelaunayTriangulator::triangulate()
         }
     }
     // GWM Sept 2005 end
-
+    // dec 2006 remove supertriangle vertices - IF we have added some internal vertices (see fillholes)
+    // then these may not be the last vertices in the list.
+//    } else { // remove 3 super-triangle vertices more completely, moving any reference indices down.
+    Triangle_list::iterator tri;
+    GLuint supertriend = last_valid_index+3;
+    for (tri=triangles.begin(); tri!=triangles.end();)
+    { // look for triangles using the supertriangle indices or >super indices and move down by 3.
+        if ((tri->a() > last_valid_index && tri->a() <= supertriend) ||
+            (tri->b() > last_valid_index && tri->b() <= supertriend ) ||
+            (tri->c() > last_valid_index && tri->c() <= supertriend )) {
+            tri=triangles.erase(tri);
+        } else { // move down by 3 tests
+            if (tri->a() > last_valid_index) { // move down 3
+                tri->incrementa(-3);
+            }
+            if (tri->b() > last_valid_index) { // move down 3
+                tri->incrementb(-3);
+            }
+            if (tri->b() > last_valid_index) { // move down 3
+                tri->incrementc(-3);
+            }
+            ++tri; // only increment tri here as the other path increments when set tri=triangles.erase.
+        }
+    }
+        // remove 3 supertriangle vertices from points. They may not be the last vertices in points if
+        // extra points have been inserted by the constraint re-triangulation.
+    points->erase(points->begin()+last_valid_index+1,points->begin()+last_valid_index+3);
+    //last_valid_index = points->size()-1; // the last valid vertex is last point.
+    // end of dec 2006 changes.
 
     // initialize index storage vector
     std::vector<GLuint> pt_indices;
@@ -1062,7 +1090,7 @@ void DelaunayTriangulator::removeInternalTriangles(DelaunayConstraint *dc )
     {
         // triangle joins points_[itr, itr+1, itr+2]
         Triangle tritest((*triit), *(triit+1), *(triit+2), points_.get());
-        if ((*triit==166 && *(triit+1)==162 && *(triit+2)==161) ||
+/*        if ((*triit==166 && *(triit+1)==162 && *(triit+2)==161) ||
             (*triit==166 && *(triit+1)==165 && *(triit+2)==164) )
         {
             osg::Vec3 ctr=tritest.compute_centroid( points_.get());
@@ -1071,7 +1099,7 @@ void DelaunayTriangulator::removeInternalTriangles(DelaunayConstraint *dc )
             osg::notify(osg::WARN) << "testverts: " << ((*points_)[*(triit+2)].x()) << "," << ((*points_)[*(triit+2)].y()) <<","<<((*points_)[*(triit+2)].z())<<std::endl;
             osg::notify(osg::WARN) << "DelaunayTriangulator: why remove, " << (*triit) << "," << *(triit+1) <<","<<*(triit+2)<<
                 " " << (dc->windingNumber(ctr))<< std::endl;
-        }
+        }*/
         if ( dc->contains(tritest.compute_centroid( points_.get()) ) )
         {
             // centroid is inside the triangle, so IF inside linear, remove

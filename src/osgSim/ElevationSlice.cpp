@@ -1266,7 +1266,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
             }
         }
 
-#if 1
+#if 0
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
         
         for(itr = intersections.begin();
@@ -1382,7 +1382,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
 
         constructor.copyPoints(_intersections, _distanceHeightIntersections);
         
-#if 1
+#if 0
         {
             osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 

@@ -27,16 +27,20 @@ using namespace osgDB;
 
 class ReadExternalsVisitor : public osg::NodeVisitor
 {
+    bool _cloneExternalReferences;
     osg::ref_ptr<ReaderWriter::Options> _options;
 
 public:
 
     ReadExternalsVisitor(ReaderWriter::Options* options) :
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _options(options)
+        _options(options),
+        _cloneExternalReferences(false)
     {
+        if (options)
+            _cloneExternalReferences = (options->getOptionString().find("cloneExternalReferences")!=std::string::npos);
     }
-        
+
     virtual ~ReadExternalsVisitor() {}
 
     virtual void apply(ProxyNode& node)
@@ -50,12 +54,18 @@ public:
             std::string filename = node.getFileName(pos);
 
             // read external
-            osg::Node* external = osgDB::readNodeFile(filename,_options.get());
-            if (external)
-                node.addChild(external);
+            osg::ref_ptr<osg::Node> external = osgDB::readNodeFile(filename,_options.get());
+            if (external.valid())
+            {
+                if (_cloneExternalReferences)
+                    external = dynamic_cast<osg::Node*>(external->clone(osg::CopyOp(osg::CopyOp::DEEP_COPY_NODES)));
+
+                node.addChild(external.get());
+            }
         }
     }
 };
+
 
 
 class FLTReaderWriter : public ReaderWriter

@@ -207,7 +207,7 @@ void SimpleViewer::frameUpdateTraversal()
     if (previousAspectRatio != newAspectRatio)
     {
         osg::Matrixd& pm = _sceneView->getProjectionMatrix();
-        bool orthographicCamera = (pm(0,3)==0.0) && (pm(0,3)==0.0) && (pm(0,3)==0.0) && (pm(0,3)==1.0); 
+        bool orthographicCamera = (pm(0,3)==0.0) && (pm(1,3)==0.0) && (pm(2,3)==0.0) && (pm(3,3)==1.0); 
         if (orthographicCamera)
         {
             double left, right, bottom, top, zNear, zFar;

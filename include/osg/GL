@@ -90,10 +90,10 @@
 
 #endif // WIN32
 
-    inline void glLoadMatrix(const float* mat) { glLoadMatrixf((GLfloat*)mat); }
-    inline void glLoadMatrix(const double* mat) { glLoadMatrixd((GLdouble*)mat); }
-    inline void glMultMatrix(const float* mat) { glMultMatrixf((GLfloat*)mat); }
-    inline void glMultMatrix(const double* mat) { glMultMatrixd((GLdouble*)mat); }
+    inline void glLoadMatrix(const float* mat) { glLoadMatrixf(static_cast<const GLfloat*>(mat)); }
+    inline void glLoadMatrix(const double* mat) { glLoadMatrixd(static_cast<const GLdouble*>(mat)); }
+    inline void glMultMatrix(const float* mat) { glMultMatrixf(static_cast<const GLfloat*>(mat)); }
+    inline void glMultMatrix(const double* mat) { glMultMatrixd(static_cast<const GLdouble*>(mat)); }
     
 
 #endif  // __osgGL_h

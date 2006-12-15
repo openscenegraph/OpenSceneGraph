@@ -25,6 +25,8 @@ CullStack::CullStack()
 
     _index_modelviewCullingStack = 0;
     _back_modelviewCullingStack = 0;
+    
+    _referenceViewPoints.push_back(osg::Vec3(0.0f,0.0f,0.0f));
 }
 
 
@@ -42,7 +44,12 @@ void CullStack::reset()
     _projectionStack.clear();
     _modelviewStack.clear();
     _viewportStack.clear();
+
+    _referenceViewPoints.clear();
+    _referenceViewPoints.push_back(osg::Vec3(0.0f,0.0f,0.0f));
+    
     _eyePointStack.clear();
+    _viewPointStack.clear();
 
 
     _clipspaceCullingStack.clear();
@@ -60,7 +67,7 @@ void CullStack::reset()
 
     _bbCornerNear = (~_bbCornerFar)&7;
     
-     _currentReuseMatrixIndex=0;
+    _currentReuseMatrixIndex=0;
 }
 
 
@@ -186,76 +193,13 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
     
     pushCullingSet();
     
-#if 1
-    osg::Vec3f slow_eyepoint = osg::Matrix::inverse(*matrix).getTrans();
-    _eyePointStack.push_back(slow_eyepoint);
-#else    
-    
-    // fast method for computing the eye point in local coords which doesn't require the inverse matrix.
-    const float x_0 = (*matrix)(0,0);
-    const float x_1 = (*matrix)(1,0);
-    const float x_2 = (*matrix)(2,0);
-    const float x_len2 = (x_0*x_0+x_1*x_1+x_2*x_2);
+    osg::Matrix inv;
+    inv.invert(*matrix);
 
-    const float y_0 = (*matrix)(0,1);
-    const float y_1 = (*matrix)(1,1);
-    const float y_2 = (*matrix)(2,1);
-    const float y_len2 = (y_0*y_0+y_1*y_1+y_2*y_2);
-    
-
-    const float z_0 = (*matrix)(0,2);
-    const float z_1 = (*matrix)(1,2);
-    const float z_2 = (*matrix)(2,2);
-    const float z_len2 = (z_0*z_0+z_1*z_1+z_2*z_2);
+    _eyePointStack.push_back(inv.getTrans());
+    _viewPointStack.push_back(getReferenceViewPoint() * inv);
 
 
-    bool useFastPath = (osg::equivalent(x_len2,y_len2) && 
-                        osg::equivalent(x_len2,z_len2) &&
-                        osg::equivalent(y_len2,z_len2));
-                        
-    // std::cout<<"x_len2 = "<<x_len2 << "\ty_len2 = "<<y_len2 << "\tz_len2 = "<<z_len2 << std::endl;
-
-    if (useFastPath)
-    {
-        const float xyz_len0 = x_0*x_0 + y_0*y_0 + z_0*z_0;
-        const float xyz_len1 = x_1*x_1 + y_1*y_1 + z_1*z_1;
-        const float xyz_len2 = x_2*x_2 + y_2*y_2 + z_2*z_2;
-
-        // std::cout<<"xyz_len0 = "<<xyz_len0 << "\txyz_len2 = "<<xyz_len1 << "\txyz_len2 = "<<xyz_len2 << std::endl;
-
-        if (!osg::equivalent(xyz_len0,xyz_len1) ||
-            !osg::equivalent(xyz_len0,xyz_len2) ||
-            !osg::equivalent(xyz_len1,xyz_len2)) useFastPath = false;
-
-    }                       
-
-    if (useFastPath)
-    {
-        // compute the eye point in local coords using a fast technique
-        // which assumes that only proportional scaling, no shearing, this
-        // is satisfied for most scene graph usage.
-    
-        const float x_scale = (*matrix)(3,0) / -x_len2;
-        const float y_scale = (*matrix)(3,1) / -y_len2;
-        const float z_scale = (*matrix)(3,2) / -z_len2;
-
-        osg::Vec3 fast_eyepoint(x_0*x_scale + y_0*y_scale + z_0*z_scale,
-                                x_1*x_scale + y_1*y_scale + z_1*z_scale,
-                                x_2*x_scale + y_2*y_scale + z_2*z_scale);
-
-    }
-    else
-    {
-        // shearing or no proportional scaling has been detected so we 
-        // callback to compute the inverse of the model view matrix and
-        // transforming the eye point into local coords.  This is ten 
-        // to thirty times slower than the above fast path.
-        osg::Vec3 slow_eyepoint(osg::Matrix::inverse(*matrix).getTrans());
-        _eyePointStack.push_back(slow_eyepoint);
-        
-    }
-    
-#endif                    
     osg::Vec3 lookVector = getLookVectorLocal();                   
     
     _bbCornerFar = (lookVector.x()>=0?1:0) |
@@ -269,7 +213,10 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
 void CullStack::popModelViewMatrix()
 {
     _modelviewStack.pop_back();
+    
     _eyePointStack.pop_back();
+    _viewPointStack.pop_back();
+
     popCullingSet();
 
 

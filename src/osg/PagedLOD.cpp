@@ -119,7 +119,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
             float required_range = 0;
             if (_rangeMode==DISTANCE_FROM_EYE_POINT)
             {
-                required_range = nv.getDistanceToEyePoint(getCenter(),true);
+                required_range = nv.getDistanceToViewPoint(getCenter(),true);
             }
             else
             {

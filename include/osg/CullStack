@@ -134,8 +134,14 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         inline osg::RefMatrix& getProjectionMatrix();
         inline osg::Matrix getWindowMatrix();
         inline const osg::RefMatrix& getMVPW();
+        
+        inline const osg::Vec3& getReferenceViewPoint() const { return _referenceViewPoints.back(); }
+        inline void pushReferenceViewPoint(const osg::Vec3& viewPoint) { _referenceViewPoints.push_back(viewPoint); }
+        inline void popReferenceViewPoint() { _referenceViewPoints.pop_back(); }
 
         inline const osg::Vec3& getEyeLocal() const { return _eyePointStack.back(); }
+
+        inline const osg::Vec3& getViewPointLocal() const { return _viewPointStack.back(); }
 
         inline const osg::Vec3 getUpLocal() const
         {
@@ -149,6 +155,8 @@ class OSG_EXPORT CullStack : public osg::CullSettings
             return osg::Vec3(-matrix(0,2),-matrix(1,2),-matrix(2,2));
         }
         
+
+
     protected:
     
         void pushCullingSet();
@@ -168,7 +176,9 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         ViewportStack                                               _viewportStack;
         
         typedef fast_back_stack<Vec3>                               EyePointStack;
+        EyePointStack                                               _referenceViewPoints;
         EyePointStack                                               _eyePointStack;
+        EyePointStack                                               _viewPointStack;
 
         CullingStack                                                _clipspaceCullingStack;
         CullingStack                                                _projectionCullingStack;

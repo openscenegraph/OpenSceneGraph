@@ -52,6 +52,12 @@ float CollectOccludersVisitor::getDistanceToEyePoint(const Vec3& pos, bool withL
     else return (pos-getEyeLocal()).length();
 }
 
+float CollectOccludersVisitor::getDistanceToViewPoint(const Vec3& pos, bool withLODScale) const
+{
+    if (withLODScale) return (pos-getViewPointLocal()).length()*getLODScale();
+    else return (pos-getViewPointLocal()).length();
+}
+
 float CollectOccludersVisitor::getDistanceFromEyePoint(const Vec3& pos, bool withLODScale) const
 {
     const Matrix& matrix = *_modelviewStack.back();

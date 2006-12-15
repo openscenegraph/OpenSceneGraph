@@ -168,6 +168,10 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	          __osg_Vec3__getEyePoint,
 	          "Get the eye point in local coordinates. ",
 	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. ");
+	I_Method0(osg::Vec3, getViewPoint,
+	          __osg_Vec3__getViewPoint,
+	          "Get the view point in local coordinates. ",
+	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. ");
 	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, x, IN, bool, x,
 	          __float__getDistanceToEyePoint__C5_Vec3_R1__bool,
 	          "Get the distance from a point to the eye point, distance value in local coordinate system. ",
@@ -176,6 +180,10 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	          __float__getDistanceFromEyePoint__C5_Vec3_R1__bool,
 	          "Get the distance of a point from the eye point, distance value in the eye coordinate system. ",
 	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. If the getDistanceFromEyePoint(pos) is not implemented than a default value of 0.0 is returned. ");
+	I_Method2(float, getDistanceToViewPoint, IN, const osg::Vec3 &, x, IN, bool, x,
+	          __float__getDistanceToViewPoint__C5_Vec3_R1__bool,
+	          "Get the distance from a point to the view point, distance value in local coordinate system. ",
+	          "Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement. If the getDistanceToViewPoint(pos) is not implemented then a default value of 0.0 is returned. ");
 	I_Method1(void, apply, IN, osg::Node &, node,
 	          __void__apply__Node_R1,
 	          "",
@@ -299,6 +307,9 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	I_SimpleProperty(osg::Referenced *, UserData, 
 	                 __Referenced_P1__getUserData, 
 	                 __void__setUserData__Referenced_P1);
+	I_SimpleProperty(osg::Vec3, ViewPoint, 
+	                 __osg_Vec3__getViewPoint, 
+	                 0);
 	I_SimpleProperty(osg::NodeVisitor::VisitorType, VisitorType, 
 	                 __VisitorType__getVisitorType, 
 	                 __void__setVisitorType__VisitorType);

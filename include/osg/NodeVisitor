@@ -207,6 +207,10 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.*/
         virtual osg::Vec3 getEyePoint() const { return Vec3(0.0f,0.0f,0.0f); }
 
+        /** Get the view point in local coordinates.
+          * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.*/
+        virtual osg::Vec3 getViewPoint() const { return getEyePoint(); }
+
         /** Get the distance from a point to the eye point, distance value in local coordinate system.
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
           * If the getDistanceFromEyePoint(pos) is not implemented then a default value of 0.0 is returned.*/
@@ -216,6 +220,12 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
           * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
           * If the getDistanceFromEyePoint(pos) is not implemented than a default value of 0.0 is returned.*/
         virtual float getDistanceFromEyePoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
+
+        /** Get the distance from a point to the view point, distance value in local coordinate system.
+          * Note, not all NodeVisitor implement this method, it is mainly cull visitors which will implement.
+          * If the getDistanceToViewPoint(pos) is not implemented then a default value of 0.0 is returned.*/
+        virtual float getDistanceToViewPoint(const Vec3& /*pos*/, bool /*useLODScale*/) const { return 0.0f; }
+        
 
         virtual void apply(Node& node)                      { traverse(node);}
         

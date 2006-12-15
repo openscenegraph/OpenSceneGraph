@@ -153,11 +153,14 @@ float CullVisitor::getDistanceToEyePoint(const Vec3& pos, bool withLODScale) con
     else return (pos-getEyeLocal()).length();
 }
 
+float CullVisitor::getDistanceToViewPoint(const Vec3& pos, bool withLODScale) const
+{
+    if (withLODScale) return (pos-getViewPointLocal()).length()*getLODScale();
+    else return (pos-getViewPointLocal()).length();
+}
+
 inline CullVisitor::value_type distance(const osg::Vec3& coord,const osg::Matrix& matrix)
 {
-
-    //std::cout << "distance("<<coord<<", "<<matrix<<")"<<std::endl;
-
     return -((CullVisitor::value_type)coord[0]*(CullVisitor::value_type)matrix(0,2)+(CullVisitor::value_type)coord[1]*(CullVisitor::value_type)matrix(1,2)+(CullVisitor::value_type)coord[2]*(CullVisitor::value_type)matrix(2,2)+matrix(3,2));
 }
 
@@ -1079,21 +1082,43 @@ void CullVisitor::apply(osg::Camera& camera)
 
     RefMatrix& originalModelView = getModelViewMatrix();
 
+    osg::RefMatrix* projection = 0;
+    osg::RefMatrix* modelview = 0;
+
     if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
     {
-        pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()));
-        pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()));
+        projection = createOrReuseMatrix(camera.getProjectionMatrix());
+        modelview = createOrReuseMatrix(camera.getViewMatrix());
     }
     else if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
     {
-        pushProjectionMatrix(createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix()));
-        pushModelViewMatrix(createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix()));
+        projection = createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix());
+        modelview = createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix());
     }
     else // pre multiply 
     {
-        pushProjectionMatrix(createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix()));
-        pushModelViewMatrix(createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix()));
+        projection = createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix());
+        modelview = createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix());
     }
+
+
+    bool localReferenceViewPoint = true;
+    if (localReferenceViewPoint)
+    { 
+        // put the reference view point into the new camera eye coordinates
+        osg::Vec3 referenceViewPoint = getReferenceViewPoint();
+        if (originalModelView.valid())
+        {
+            osg::Matrix matrix;
+            matrix.invert(originalModelView); // note should this be view.getCamera()->getViewMatrix() ??
+            matrix.postMult(*modelview);
+            referenceViewPoint = referenceViewPoint * matrix;
+        }
+        pushReferenceViewPoint(referenceViewPoint);
+    }
+
+    pushProjectionMatrix(projection);
+    pushModelViewMatrix(modelview);
 
 
     if (camera.getRenderOrder()==osg::Camera::NESTED_RENDER)
@@ -1213,6 +1238,12 @@ void CullVisitor::apply(osg::Camera& camera)
 
     }
 
+    if (localReferenceViewPoint)
+    {
+        // restore the previous reference view point    
+        popReferenceViewPoint();
+    }
+    
     // restore the previous model view matrix.
     popModelViewMatrix();
 

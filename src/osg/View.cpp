@@ -54,6 +54,7 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
 {
     if (!camera) return false;
 
+    camera->setView(this);
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
 
     if (_camera.valid())

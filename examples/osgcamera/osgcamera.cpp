@@ -148,7 +148,27 @@ int main( int argc, char **argv )
         std::cout<<"Error: failed to loading windowing library: "<<windowingLibrary<<std::endl;
     }
 
-    unsigned int numberCameras = 3;
+    osg::GraphicsContext::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (!wsi) 
+    {
+        std::cout<<"No WindowSystemInterface available, cannot create windows."<<std::endl;
+        return 1;
+    }
+
+    unsigned int numScreens = wsi->getNumScreens();
+    for(unsigned int i=0; i<numScreens; ++i)
+    {
+        osg::GraphicsContext::ScreenIdentifier si;
+        si._screenNum = 0;
+        
+        unsigned int width, height;
+        wsi->getScreenResolution(si, width, height);
+        
+        std::cout<<"screen= "<<i<<" width="<<width<<" height="<<height<<std::endl;
+    }
+        
+
+    unsigned int numberCameras = numScreens;
     while (arguments.read("--cameras",numberCameras)) {}
 
     unsigned int xpos = 0;
@@ -186,6 +206,8 @@ int main( int argc, char **argv )
 
     CameraList cameraList;
     GraphicsContextSet graphicsContextSet;
+    
+    
 
     // create the cameras, graphic contexts and graphic threads.
     bool shareContexts = false;
@@ -197,6 +219,7 @@ int main( int argc, char **argv )
 
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
         traits->_windowName = "osgcamera";
+        traits->_screenNum = i % numScreens;
         traits->_x = xpos;
         traits->_y = ypos;
         traits->_width = width;

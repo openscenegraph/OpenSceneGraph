@@ -24,12 +24,21 @@ class OSG_EXPORT GraphicsContext : public Referenced
 {
     public:
     
+        struct ScreenIdentifier
+        {
+            ScreenIdentifier():
+                _displayNum(0),
+                _screenNum(0) {}
+                
+            std::string  _hostName;
+            unsigned int _displayNum;
+            unsigned int _screenNum;
+        };
+    
         /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
-        struct Traits : public osg::Referenced
+        struct Traits : public osg::Referenced, public ScreenIdentifier
         {
             Traits():
-                _displayNum(0),
-                _screenNum(0),
                 _x(0),
                 _y(0),
                 _width(0),
@@ -50,12 +59,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
                 _face(0),
                 _mipMapGeneration(false),
                 _sharedContext() {}
-                
-            // where graphic context is be hosted.                
-            std::string  _hostName;
-            unsigned int _displayNum;
-            unsigned int _screenNum;
-            
+                            
             // graphics context orginal and size
             unsigned int _x;
             unsigned int _y;
@@ -92,19 +96,23 @@ class OSG_EXPORT GraphicsContext : public Referenced
     
     
         /** Callback to be implemented to provide access to Windowing API's ability to create Windows/pbuffers.*/
-        struct CreateGraphicContextCallback : public osg::Referenced
+        struct WindowingSystemInterface : public osg::Referenced
         {
+            virtual unsigned int getNumScreens(const ScreenIdentifier& screenIdentifier = ScreenIdentifier()) = 0;
+
+            virtual void getScreenResolution(const ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height) = 0;
+        
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
             
-            virtual ~CreateGraphicContextCallback() {};
+            virtual ~WindowingSystemInterface() {};
         };
     
     
-        /** Set the create graphics context callback - this callback should be supplied by the windows toolkit. */
-        static void setCreateGraphicsContextCallback(CreateGraphicContextCallback* callback);
+        /** Set the querry the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. */
+        static void setWindowingSystemInterface(WindowingSystemInterface* wsInterface);
         
-        /** Get the create graphics context callback*/
-        static CreateGraphicContextCallback* getCreateGraphicsContextCallback();
+        /** Get the WindowingSystemInterface*/
+        static WindowingSystemInterface* getWindowingSystemInterface();
     
         /** Create a graphics context for a specified set of traits.*/
         static GraphicsContext* createGraphicsContext(Traits* traits);

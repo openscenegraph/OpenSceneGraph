@@ -18,22 +18,22 @@
 
 using namespace osg;
 
-static ref_ptr<GraphicsContext::CreateGraphicContextCallback> s_createGraphicsContextCallback;
+static ref_ptr<GraphicsContext::WindowingSystemInterface> s_WindowingSystemInterface;
 
-void GraphicsContext::setCreateGraphicsContextCallback(CreateGraphicContextCallback* callback)
+void GraphicsContext::setWindowingSystemInterface(WindowingSystemInterface* callback)
 {
-    s_createGraphicsContextCallback = callback;
+    s_WindowingSystemInterface = callback;
 }
 
-GraphicsContext::CreateGraphicContextCallback* GraphicsContext::getCreateGraphicsContextCallback()
+GraphicsContext::WindowingSystemInterface* GraphicsContext::getWindowingSystemInterface()
 {
-    return s_createGraphicsContextCallback.get();
+    return s_WindowingSystemInterface.get();
 }
 
 GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
 {
-    if (s_createGraphicsContextCallback.valid())
-        return s_createGraphicsContextCallback->createGraphicsContext(traits);
+    if (s_WindowingSystemInterface.valid())
+        return s_WindowingSystemInterface->createGraphicsContext(traits);
     else
         return 0;    
 }

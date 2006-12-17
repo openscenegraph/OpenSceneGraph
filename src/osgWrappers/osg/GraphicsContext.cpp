@@ -120,13 +120,13 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__swapBuffersImplementation,
 	          "Swap the front and back buffers implementation. ",
 	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
-	I_StaticMethod1(void, setCreateGraphicsContextCallback, IN, osg::GraphicsContext::CreateGraphicContextCallback *, callback,
-	                __void__setCreateGraphicsContextCallback__CreateGraphicContextCallback_P1_S,
-	                "Set the create graphics context callback - this callback should be supplied by the windows toolkit. ",
+	I_StaticMethod1(void, setWindowingSystemInterface, IN, osg::GraphicsContext::WindowingSystemInterface *, wsInterface,
+	                __void__setWindowingSystemInterface__WindowingSystemInterface_P1_S,
+	                "Set the querry the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
 	                "");
-	I_StaticMethod0(osg::GraphicsContext::CreateGraphicContextCallback *, getCreateGraphicsContextCallback,
-	                __CreateGraphicContextCallback_P1__getCreateGraphicsContextCallback_S,
-	                "Get the create graphics context callback. ",
+	I_StaticMethod0(osg::GraphicsContext::WindowingSystemInterface *, getWindowingSystemInterface,
+	                __WindowingSystemInterface_P1__getWindowingSystemInterface_S,
+	                "Get the WindowingSystemInterface. ",
 	                "");
 	I_StaticMethod1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
 	                __GraphicsContext_P1__createGraphicsContext__Traits_P1_S,
@@ -155,25 +155,21 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::CreateGraphicContextCallback)
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____CreateGraphicContextCallback,
-	               "",
-	               "");
-	I_Method1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
-	          __GraphicsContext_P1__createGraphicsContext__Traits_P1,
-	          "",
-	          "");
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____Traits,
+BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
+	I_Constructor0(____ScreenIdentifier,
 	               "",
 	               "");
 	I_PublicMemberProperty(std::string, _hostName);
 	I_PublicMemberProperty(unsigned int, _displayNum);
 	I_PublicMemberProperty(unsigned int, _screenNum);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
+	I_BaseType(osg::Referenced);
+	I_BaseType(osg::GraphicsContext::ScreenIdentifier);
+	I_Constructor0(____Traits,
+	               "",
+	               "");
 	I_PublicMemberProperty(unsigned int, _x);
 	I_PublicMemberProperty(unsigned int, _y);
 	I_PublicMemberProperty(unsigned int, _width);
@@ -195,5 +191,24 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_PublicMemberProperty(unsigned int, _face);
 	I_PublicMemberProperty(unsigned int, _mipMapGeneration);
 	I_PublicMemberProperty(osg::GraphicsContext *, _sharedContext);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____WindowingSystemInterface,
+	               "",
+	               "");
+	I_MethodWithDefaults1(unsigned int, getNumScreens, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, osg::GraphicsContext::ScreenIdentifier(),
+	                      __unsigned_int__getNumScreens__C5_ScreenIdentifier_R1,
+	                      "",
+	                      "");
+	I_Method3(void, getScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, unsigned int &, width, IN, unsigned int &, height,
+	          __void__getScreenResolution__C5_ScreenIdentifier_R1__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
+	          __GraphicsContext_P1__createGraphicsContext__Traits_P1,
+	          "",
+	          "");
 END_REFLECTOR
 

@@ -20,28 +20,43 @@ using namespace osgProducer;
 
 namespace osgProducer
 {
-    struct MyCreateGraphicContexCallback : public osg::GraphicsContext::CreateGraphicContextCallback
+    struct MyWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
     {
+        virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier) 
+        {
+            return Producer::RenderSurface::getNumberOfScreens();
+        }
+
+        virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height)
+        {
+            osg::ref_ptr<Producer::RenderSurface> rs = new Producer::RenderSurface;
+            rs->setHostName(screenIdentifier._hostName);
+            rs->setDisplayNum(screenIdentifier._displayNum);
+            rs->setScreenNum(screenIdentifier._screenNum);
+            rs->getScreenSize(width, height);
+        }
+
+
         virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
         {
             return new GraphicsContextImplementation(traits);
         }
     };
 
-    struct RegisterCreateGraphicsContextCallbackProxy
+    struct RegisterWindowingSystemInterfaceProxy
     {
-        RegisterCreateGraphicsContextCallbackProxy()
+        RegisterWindowingSystemInterfaceProxy()
         {
-            osg::GraphicsContext::setCreateGraphicsContextCallback(new MyCreateGraphicContexCallback);
+            osg::GraphicsContext::setWindowingSystemInterface(new MyWindowingSystemInterface);
         }
         
-        ~RegisterCreateGraphicsContextCallbackProxy()
+        ~RegisterWindowingSystemInterfaceProxy()
         {
-            osg::GraphicsContext::setCreateGraphicsContextCallback(0);
+            osg::GraphicsContext::setWindowingSystemInterface(0);
         }
     };
     
-    RegisterCreateGraphicsContextCallbackProxy createGraphicsContextCallbackProxy;
+    RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
 };
     
 

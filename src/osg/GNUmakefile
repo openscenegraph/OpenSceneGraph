@@ -111,8 +111,6 @@ CXXFILES =\
 	Timer.cpp\
 	Transform.cpp\
 	Uniform.cpp\
-	UnitTestFramework.cpp\
-	Vec3.cpp\
 	Version.cpp\
 	VertexProgram.cpp\
 	View.cpp\

@@ -1,4 +1,3 @@
-#include <osg/UnitTestFramework>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 
@@ -6,6 +5,7 @@
 #include <osg/Matrix>
 #include <osg/io_utils>
 
+#include "UnitTestFramework.h"
 #include "performance.h"
 
 #include <iostream>

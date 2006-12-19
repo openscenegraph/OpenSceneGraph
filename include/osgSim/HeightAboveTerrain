@@ -62,10 +62,10 @@ class OSGSIM_EXPORT HeightAboveTerrain
           * Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric,
           * with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode.
           * If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. */
-        void computeIntersections(osg::Node* scene);
+        void computeIntersections(osg::Node* scene, osg::Node::NodeMask traversalMask=0xffffffff);
 
         /** Compute the vertical distance between the specified scene graph and a single HAT point. .*/
-        static double computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point);
+        static double computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point, osg::Node::NodeMask traversalMask=0xffffffff);
         
         
         /** Clear the database cache.*/

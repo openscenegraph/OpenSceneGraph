@@ -104,7 +104,7 @@ unsigned int LineOfSight::addLOS(const osg::Vec3d& start, const osg::Vec3d& end)
     return index;
 }
 
-void LineOfSight::computeIntersections(osg::Node* scene)
+void LineOfSight::computeIntersections(osg::Node* scene, osg::Node::NodeMask traversalMask)
 {
     osg::ref_ptr<osgUtil::IntersectorGroup> intersectorGroup = new osgUtil::IntersectorGroup();
 
@@ -117,6 +117,7 @@ void LineOfSight::computeIntersections(osg::Node* scene)
     }
     
     _intersectionVisitor.reset();
+    _intersectionVisitor.setTraversalMask(traversalMask);
     _intersectionVisitor.setIntersector( intersectorGroup.get() );
     
     scene->accept(_intersectionVisitor);
@@ -147,11 +148,11 @@ void LineOfSight::computeIntersections(osg::Node* scene)
     
 }
 
-LineOfSight::Intersections LineOfSight::computeIntersections(osg::Node* scene, const osg::Vec3d& start, const osg::Vec3d& end)
+LineOfSight::Intersections LineOfSight::computeIntersections(osg::Node* scene, const osg::Vec3d& start, const osg::Vec3d& end, osg::Node::NodeMask traversalMask)
 {
     LineOfSight los;
     unsigned int index = los.addLOS(start,end);
-    los.computeIntersections(scene);
+    los.computeIntersections(scene, traversalMask);
     return los.getIntersections(index);
 }
 

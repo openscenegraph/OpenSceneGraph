@@ -1162,7 +1162,7 @@ ElevationSlice::ElevationSlice()
     setDatabaseCacheReadCallback(new DatabaseCacheReadCallback);
 }
 
-void ElevationSlice::computeIntersections(osg::Node* scene)
+void ElevationSlice::computeIntersections(osg::Node* scene, osg::Node::NodeMask traversalMask)
 {
     osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene);
     osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
@@ -1231,6 +1231,7 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     intersector->setEllipsoidModel(em);
 
     _intersectionVisitor.reset();
+    _intersectionVisitor.setTraversalMask(traversalMask);
     _intersectionVisitor.setIntersector( intersector.get() );
     
     scene->accept(_intersectionVisitor);
@@ -1420,12 +1421,12 @@ void ElevationSlice::computeIntersections(osg::Node* scene)
     
 }
 
-ElevationSlice::Vec3dList ElevationSlice::computeElevationSlice(osg::Node* scene, const osg::Vec3d& startPoint, const osg::Vec3d& endPoint)
+ElevationSlice::Vec3dList ElevationSlice::computeElevationSlice(osg::Node* scene, const osg::Vec3d& startPoint, const osg::Vec3d& endPoint, osg::Node::NodeMask traversalMask)
 {
     ElevationSlice es;
     es.setStartPoint(startPoint);
     es.setEndPoint(endPoint);
-    es.computeIntersections(scene);
+    es.computeIntersections(scene, traversalMask);
     return es.getIntersections();
 }
 

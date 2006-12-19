@@ -23,6 +23,10 @@
 //#include <dom/domLibrary_effects.h>
 //#include <dom/domLibrary_materials.h>
 
+#ifdef WIN32
+#include "windows.h"
+#endif
+
 using namespace osgdae;
 
 void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, const std::string &geoName )
@@ -93,30 +97,49 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
 
         osg::Image *osgimg = tex->getImage( 0 );
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->createAndPlace( "init_from" ) );
-        std::string imgstr = osgDB::convertFileNameToUnixStyle( osgDB::findDataFile( osgimg->getFileName() ) );
 #ifdef WIN32
-        // At this point imgstr might contain something like "c:/xxxx" which should be treated
-        // as an absolute path. In this case I will prepend a / and normalise the drive letter to upper case.
-        //
-        // There are also a number of valid windows path formats
-        // such as UNC names which will appear like this at this point
-        // //sharename/filepath
-        // and volume names which will appear like this at this point
-        // //?/{guid}/   where guid is a multi digit number
-        // In fact //?/ can be prepended to any path and is some wierd windows specific marker
-        // File paths of these formats are almost guaranteed to break the dae URI code.
-        //
-        if ((imgstr.length() > 3) && (isalpha(imgstr[0])) && (imgstr[1] == ':') && (imgstr[2] == '/'))
+        char path1[ MAX_PATH + 1 ];
+        char path2[ MAX_PATH + 1 ];
+        LPTSTR pFileName;
+        std::string imageFileName = osgDB::findDataFile( osgimg->getFileName() );
+        GetFullPathName( imageFileName.c_str(), MAX_PATH + 1, path1, &pFileName );
+        GetShortPathName( path1, path2, MAX_PATH + 1 );
+        GetLongPathName( path2, path1, MAX_PATH + 1 );
+        imageFileName = osgDB::convertFileNameToUnixStyle(path1);
+        if ((imageFileName.length() > 3) && (isalpha(imageFileName[0])) && (imageFileName[1] == ':') && (imageFileName[2] == '/'))
         {
-            if (islower(imgstr[0]))
-                imgstr[0] = (char)_toupper(imgstr[0]);
-            imgstr = '/' + imgstr;
+            if (islower(imageFileName[0]))
+                imageFileName[0] = (char)_toupper(imageFileName[0]);
+            imageFileName = '/' + imageFileName;
         }
-#endif
+        daeURI imageFileUri( imageFileName.c_str() );
+        imageFileUri.validate();
+        std::string docFileName = doc->getDocumentURI()->getFilepath();
+        docFileName += doc->getDocumentURI()->getFile();
+        if ((docFileName.length() > 3) && (docFileName[0] == '/') && (isalpha(docFileName[1])) && (docFileName[2] == ':') && (docFileName[3] == '/'))
+            GetFullPathName( docFileName.c_str() + 1, MAX_PATH + 1, path1, &pFileName );
+        else
+            GetFullPathName( docFileName.c_str(), MAX_PATH + 1, path1, &pFileName );
+        GetShortPathName( path1, path2, MAX_PATH + 1 );
+        GetLongPathName( path2, path1, MAX_PATH + 1 );
+        docFileName = osgDB::convertFileNameToUnixStyle(path1);
+        if ((docFileName.length() > 3) && (isalpha(docFileName[0])) && (docFileName[1] == ':') && (docFileName[2] == '/'))
+        {
+            if (islower(docFileName[0]))
+                docFileName[0] = (char)_toupper(docFileName[0]);
+            docFileName = '/' + docFileName;
+        }
+        daeURI docFileUri( docFileName.c_str() );
+        docFileUri.validate();
+        imgif->setValue( imageFileUri.getURI() );
+        imgif->getValue().makeRelativeTo( &docFileUri );
+#else
+        std::string imgstr = osgDB::convertFileNameToUnixStyle( osgDB::findDataFile( osgimg->getFileName() ) );
         daeURI uri( imgstr.c_str() );
         uri.validate(); // This returns an absolute URI
         imgif->setValue( uri.getURI() );
-        imgif->getValue().makeRelativeTo( doc->getDocumentURI() ); 
+        imgif->getValue().makeRelativeTo( doc->getDocumentURI() );
+#endif
 
 #ifndef EARTH_TEX
         domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->createAndPlace( "newparam" ) );

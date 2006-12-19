@@ -40,8 +40,8 @@ class OSG_EXPORT NodeCallback : public virtual Object {
         virtual void operator()(Node* node, NodeVisitor* nv)
         { 
             // note, callback is responsible for scenegraph traversal so
-            // should always include call traverse(node,nv) to ensure 
-            // that the rest of cullbacks and the scene graph are traversed.
+            // they must call traverse(node,nv) to ensure that the
+            // scene graph subtree (and associated callbacks) are traversed.
             traverse(node,nv);
         }
         

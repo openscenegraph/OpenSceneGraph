@@ -12,6 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/CollectOccludersVisitor>
+#include <osg/CopyOp>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
 #include <osg/Light>
@@ -19,6 +20,7 @@
 #include <osg/Matrixf>
 #include <osg/Node>
 #include <osg/NodeVisitor>
+#include <osg/Object>
 #include <osg/RenderInfo>
 #include <osg/State>
 #include <osg/StateSet>
@@ -66,12 +68,36 @@ BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::FusionDistanceMode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
-	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Object);
 	I_BaseType(osg::CullSettings);
 	I_ConstructorWithDefaults1(IN, osg::DisplaySettings *, ds, NULL,
 	                           ____SceneView__osg_DisplaySettings_P1,
 	                           "Construct a default scene view. ",
 	                           "");
+	I_ConstructorWithDefaults2(IN, const osgUtil::SceneView &, sceneview, , IN, const osg::CopyOp &, copyop, osg::CopyOp(),
+	                           ____SceneView__C5_SceneView_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_MethodWithDefaults1(void, setDefaults, IN, unsigned int, options, osgUtil::SceneView::STANDARD_SETTINGS,
 	                      __void__setDefaults__unsigned_int,
 	                      "Set scene view to use default global state, light, camera and render visitor. ",

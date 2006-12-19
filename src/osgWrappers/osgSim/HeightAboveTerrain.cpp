@@ -60,10 +60,10 @@ BEGIN_VALUE_REFLECTOR(osgSim::HeightAboveTerrain)
 	          __double__getLowestHeight,
 	          "Get the lowest height that the should be tested for. ",
 	          "");
-	I_Method1(void, computeIntersections, IN, osg::Node *, scene,
-	          __void__computeIntersections__osg_Node_P1,
-	          "Compute the HAT intersections with the specified scene graph. ",
-	          "The results are all stored in the form of a single height above terrain value per HAT test. Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric, with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode. If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. ");
+	I_MethodWithDefaults2(void, computeIntersections, IN, osg::Node *, scene, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      __void__computeIntersections__osg_Node_P1__osg_Node_NodeMask,
+	                      "Compute the HAT intersections with the specified scene graph. ",
+	                      "The results are all stored in the form of a single height above terrain value per HAT test. Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric, with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode. If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. ");
 	I_Method0(void, clearDatabaseCache,
 	          __void__clearDatabaseCache,
 	          "Clear the database cache. ",
@@ -80,10 +80,10 @@ BEGIN_VALUE_REFLECTOR(osgSim::HeightAboveTerrain)
 	          __osgUtil_IntersectionVisitor_R1__getIntersectionVisitor,
 	          "Get the IntersectionVistor that does the intersection traversal over the scene. ",
 	          "Note, if you want to customized the traversal then you can use the IntersectionVisitor's method to alter its behavior. ");
-	I_StaticMethod2(double, computeHeightAboveTerrain, IN, osg::Node *, scene, IN, const osg::Vec3d &, point,
-	                __double__computeHeightAboveTerrain__osg_Node_P1__C5_osg_Vec3d_R1_S,
-	                "Compute the vertical distance between the specified scene graph and a single HAT point. ",
-	                "");
+	I_StaticMethodWithDefaults3(double, computeHeightAboveTerrain, IN, osg::Node *, scene, , IN, const osg::Vec3d &, point, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                            __double__computeHeightAboveTerrain__osg_Node_P1__C5_osg_Vec3d_R1__osg_Node_NodeMask_S,
+	                            "Compute the vertical distance between the specified scene graph and a single HAT point. ",
+	                            "");
 	I_SimpleProperty(osgSim::DatabaseCacheReadCallback *, DatabaseCacheReadCallback, 
 	                 __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback, 
 	                 __void__setDatabaseCacheReadCallback__DatabaseCacheReadCallback_P1);

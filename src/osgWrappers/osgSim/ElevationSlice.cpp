@@ -58,10 +58,10 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	          __C5_DistanceHeightList_R1__getDistanceHeightIntersections,
 	          "Get the intersections in the form a vector of pair<double,double> representing distance along the slice and height. ",
 	          "");
-	I_Method1(void, computeIntersections, IN, osg::Node *, scene,
-	          __void__computeIntersections__osg_Node_P1,
-	          "Compute the intersections with the specified scene graph, the results are stored in vectors of Vec3d. ",
-	          "Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric, with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode. If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. ");
+	I_MethodWithDefaults2(void, computeIntersections, IN, osg::Node *, scene, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      __void__computeIntersections__osg_Node_P1__osg_Node_NodeMask,
+	                      "Compute the intersections with the specified scene graph, the results are stored in vectors of Vec3d. ",
+	                      "Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric, with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode. If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. ");
 	I_Method0(void, clearDatabaseCache,
 	          __void__clearDatabaseCache,
 	          "Clear the database cache. ",
@@ -78,10 +78,10 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	          __osgUtil_IntersectionVisitor_R1__getIntersectionVisitor,
 	          "Get the IntersectionVistor that does the intersection traversal over the scene. ",
 	          "Note, if you want to customized the traversal then you can use the IntersectionVisitor's method to alter its behavior. ");
-	I_StaticMethod3(osgSim::ElevationSlice::Vec3dList, computeElevationSlice, IN, osg::Node *, scene, IN, const osg::Vec3d &, startPoint, IN, const osg::Vec3d &, endPoint,
-	                __Vec3dList__computeElevationSlice__osg_Node_P1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1_S,
-	                "Compute the vertical distance between the specified scene graph and a single HAT point. ",
-	                "");
+	I_StaticMethodWithDefaults4(osgSim::ElevationSlice::Vec3dList, computeElevationSlice, IN, osg::Node *, scene, , IN, const osg::Vec3d &, startPoint, , IN, const osg::Vec3d &, endPoint, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                            __Vec3dList__computeElevationSlice__osg_Node_P1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__osg_Node_NodeMask_S,
+	                            "Compute the vertical distance between the specified scene graph and a single HAT point. ",
+	                            "");
 	I_SimpleProperty(osgSim::DatabaseCacheReadCallback *, DatabaseCacheReadCallback, 
 	                 __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback, 
 	                 __void__setDatabaseCacheReadCallback__DatabaseCacheReadCallback_P1);

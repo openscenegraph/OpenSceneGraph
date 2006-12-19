@@ -1,3 +1,23 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+/* Note, elements of GraphicsWindowX11 have used Prodcer/RenderSurface_X11.cpp as both
+ * a guide to use of X11/GLX and copiying directly in the case of setBorder().
+ * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
+ */
+
+#include <osgViewer/Viewer>
+
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

@@ -79,10 +79,10 @@ class OSGSIM_EXPORT LineOfSight
 
         /** Compute the LOS intersections with the specified scene graph.
           * The results are all stored in the form of Intersections list, one per LOS test.*/
-        void computeIntersections(osg::Node* scene);
+        void computeIntersections(osg::Node* scene, osg::Node::NodeMask traversalMask=0xffffffff);
 
         /** Compute the intersection between the specified scene graph and a single LOS start,end pair. Returns an IntersectionList, of all the points intersected.*/
-        static Intersections computeIntersections(osg::Node* scene, const osg::Vec3d& start, const osg::Vec3d& end);
+        static Intersections computeIntersections(osg::Node* scene, const osg::Vec3d& start, const osg::Vec3d& end, osg::Node::NodeMask traversalMask=0xffffffff);
         
         
         /** Clear the database cache.*/

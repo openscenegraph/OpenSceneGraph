@@ -38,7 +38,7 @@ unsigned int HeightAboveTerrain::addPoint(const osg::Vec3d& point)
     return index;
 }
 
-void HeightAboveTerrain::computeIntersections(osg::Node* scene)
+void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeMask traversalMask)
 {
     osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene);
     osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
@@ -82,6 +82,7 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene)
     }
     
     _intersectionVisitor.reset();
+    _intersectionVisitor.setTraversalMask(traversalMask);
     _intersectionVisitor.setIntersector( intersectorGroup.get() );
     
     scene->accept(_intersectionVisitor);
@@ -107,11 +108,11 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene)
     
 }
 
-double HeightAboveTerrain::computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point)
+double HeightAboveTerrain::computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point, osg::Node::NodeMask traversalMask)
 {
     HeightAboveTerrain hat;
     unsigned int index = hat.addPoint(point);
-    hat.computeIntersections(scene);
+    hat.computeIntersections(scene, traversalMask);
     return hat.getHeightAboveTerrain(index);
 }
 

@@ -159,6 +159,14 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	I_Constructor0(____ScreenIdentifier,
 	               "",
 	               "");
+	I_Constructor1(IN, unsigned int, screenNum,
+	               ____ScreenIdentifier__unsigned_int,
+	               "",
+	               "");
+	I_Constructor3(IN, const std::string &, hostName, IN, unsigned int, displayNum, IN, unsigned int, screenNum,
+	               ____ScreenIdentifier__C5_std_string_R1__unsigned_int__unsigned_int,
+	               "",
+	               "");
 	I_PublicMemberProperty(std::string, _hostName);
 	I_PublicMemberProperty(unsigned int, _displayNum);
 	I_PublicMemberProperty(unsigned int, _screenNum);

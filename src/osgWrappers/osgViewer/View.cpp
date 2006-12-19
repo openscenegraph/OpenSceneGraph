@@ -27,7 +27,6 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_BaseType(osg::View);
-	I_BaseType(osgViewer::Scene);
 	I_Constructor0(____View,
 	               "",
 	               "");
@@ -67,8 +66,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
-	I_Method0(void, init,
-	          __void__init,
+	I_Method0(void, setUpViewAcrossAllScreens,
+	          __void__setUpViewAcrossAllScreens,
+	          "Convinience method for creating slave Cameras and associated GraphicsWindows across all screens. ",
+	          "");
+	I_Method0(void, setUpRenderingSupport,
+	          __void__setUpRenderingSupport,
+	          "",
+	          "");
+	I_Method0(void, assignSceneDataToCameras,
+	          __void__assignSceneDataToCameras,
 	          "",
 	          "");
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 

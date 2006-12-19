@@ -25,6 +25,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_Constructor0(____Viewer,
 	               "",
 	               "");
+	I_Method0(void, realize,
+	          __void__realize,
+	          "set up windows and associated threads. ",
+	          "");
 	I_Method0(void, frame,
 	          __void__frame,
 	          "Render a complete new frame. ",

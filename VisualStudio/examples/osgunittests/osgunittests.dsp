@@ -94,6 +94,14 @@ SOURCE=..\..\..\examples\osgunittests\osgunittests.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\examples\osgunittestsUnitTestFramework.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\osgunittestsUnitTests_osg.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\examples\osgunittests\performance.cpp
 # End Source File
 # End Group
@@ -102,7 +110,11 @@ SOURCE=..\..\..\examples\osgunittests\performance.cpp
 # PROP Default_Filter ";h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\examples\performance\performance.h
+SOURCE=..\..\..\examples\osgunittests\UnitTestFramework.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\examples\osgunittests\performance.h
 # End Source File
 # Begin Source File
 

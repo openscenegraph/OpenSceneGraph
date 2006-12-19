@@ -1116,10 +1116,6 @@ SOURCE=..\..\Include\Osg\Uniform
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\Osg\UnitTestFramework
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\Osg\Vec2b
 # End Source File
 # Begin Source File

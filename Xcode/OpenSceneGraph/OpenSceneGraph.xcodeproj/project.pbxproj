@@ -2358,8 +2358,6 @@
 		BE1181E205D63B8A00EB53E5 /* TextureRectangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180CA05D63B8900EB53E5 /* TextureRectangle.cpp */; };
 		BE1181E305D63B8A00EB53E5 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180CB05D63B8900EB53E5 /* Timer.cpp */; };
 		BE1181E405D63B8A00EB53E5 /* Transform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180CC05D63B8900EB53E5 /* Transform.cpp */; };
-		BE1181E505D63B8A00EB53E5 /* UnitTestFramework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180CD05D63B8900EB53E5 /* UnitTestFramework.cpp */; };
-		BE1181E605D63B8A00EB53E5 /* Vec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180CE05D63B8900EB53E5 /* Vec3.cpp */; };
 		BE1181E705D63B8A00EB53E5 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180CF05D63B8900EB53E5 /* Version.cpp */; };
 		BE1181E805D63B8A00EB53E5 /* VertexProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180D005D63B8900EB53E5 /* VertexProgram.cpp */; };
 		BE1181E905D63B8A00EB53E5 /* Viewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180D105D63B8900EB53E5 /* Viewport.cpp */; };
@@ -2461,7 +2459,6 @@
 		BE11848305D70D1800EB53E5 /* Timer in Headers */ = {isa = PBXBuildFile; fileRef = BE11825005D63C0A00EB53E5 /* Timer */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11848405D70D1800EB53E5 /* Transform in Headers */ = {isa = PBXBuildFile; fileRef = BE11825105D63C0A00EB53E5 /* Transform */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11848505D70D1800EB53E5 /* TriangleFunctor in Headers */ = {isa = PBXBuildFile; fileRef = BE11825205D63C0A00EB53E5 /* TriangleFunctor */; settings = {ATTRIBUTES = (Public, ); }; };
-		BE11848705D70D1900EB53E5 /* UnitTestFramework in Headers */ = {isa = PBXBuildFile; fileRef = BE11825405D63C0A00EB53E5 /* UnitTestFramework */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11848805D70D1900EB53E5 /* Vec2 in Headers */ = {isa = PBXBuildFile; fileRef = BE11825505D63C0A00EB53E5 /* Vec2 */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11848905D70D1900EB53E5 /* Vec3 in Headers */ = {isa = PBXBuildFile; fileRef = BE11825605D63C0A00EB53E5 /* Vec3 */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11848A05D70D1900EB53E5 /* Vec4 in Headers */ = {isa = PBXBuildFile; fileRef = BE11825705D63C0A00EB53E5 /* Vec4 */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -6066,8 +6063,6 @@
 		BE1180CA05D63B8900EB53E5 /* TextureRectangle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TextureRectangle.cpp; path = ../../src/osg/TextureRectangle.cpp; sourceTree = SOURCE_ROOT; };
 		BE1180CB05D63B8900EB53E5 /* Timer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Timer.cpp; path = ../../src/osg/Timer.cpp; sourceTree = SOURCE_ROOT; };
 		BE1180CC05D63B8900EB53E5 /* Transform.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Transform.cpp; path = ../../src/osg/Transform.cpp; sourceTree = SOURCE_ROOT; };
-		BE1180CD05D63B8900EB53E5 /* UnitTestFramework.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UnitTestFramework.cpp; path = ../../src/osg/UnitTestFramework.cpp; sourceTree = SOURCE_ROOT; };
-		BE1180CE05D63B8900EB53E5 /* Vec3.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Vec3.cpp; path = ../../src/osg/Vec3.cpp; sourceTree = SOURCE_ROOT; };
 		BE1180CF05D63B8900EB53E5 /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osg/Version.cpp; sourceTree = SOURCE_ROOT; };
 		BE1180D005D63B8900EB53E5 /* VertexProgram.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = VertexProgram.cpp; path = ../../src/osg/VertexProgram.cpp; sourceTree = SOURCE_ROOT; };
 		BE1180D105D63B8900EB53E5 /* Viewport.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Viewport.cpp; path = ../../src/osg/Viewport.cpp; sourceTree = SOURCE_ROOT; };
@@ -6170,7 +6165,6 @@
 		BE11825005D63C0A00EB53E5 /* Timer */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Timer; path = ../../include/osg/Timer; sourceTree = SOURCE_ROOT; };
 		BE11825105D63C0A00EB53E5 /* Transform */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Transform; path = ../../include/osg/Transform; sourceTree = SOURCE_ROOT; };
 		BE11825205D63C0A00EB53E5 /* TriangleFunctor */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TriangleFunctor; path = ../../include/osg/TriangleFunctor; sourceTree = SOURCE_ROOT; };
-		BE11825405D63C0A00EB53E5 /* UnitTestFramework */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = UnitTestFramework; path = ../../include/osg/UnitTestFramework; sourceTree = SOURCE_ROOT; };
 		BE11825505D63C0A00EB53E5 /* Vec2 */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Vec2; path = ../../include/osg/Vec2; sourceTree = SOURCE_ROOT; };
 		BE11825605D63C0A00EB53E5 /* Vec3 */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Vec3; path = ../../include/osg/Vec3; sourceTree = SOURCE_ROOT; };
 		BE11825705D63C0A00EB53E5 /* Vec4 */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Vec4; path = ../../include/osg/Vec4; sourceTree = SOURCE_ROOT; };
@@ -10931,8 +10925,6 @@
 				BE1180CB05D63B8900EB53E5 /* Timer.cpp */,
 				BE1180CC05D63B8900EB53E5 /* Transform.cpp */,
 				009D9F9F081D7218001FA987 /* Uniform.cpp */,
-				BE1180CD05D63B8900EB53E5 /* UnitTestFramework.cpp */,
-				BE1180CE05D63B8900EB53E5 /* Vec3.cpp */,
 				BE1180CF05D63B8900EB53E5 /* Version.cpp */,
 				BE1180D005D63B8900EB53E5 /* VertexProgram.cpp */,
 				006E25450AC107DB00FBB48F /* View.cpp */,
@@ -11090,7 +11082,6 @@
 				BE11825205D63C0A00EB53E5 /* TriangleFunctor */,
 				00CE2D40065BCD25003C8656 /* TriangleIndexFunctor */,
 				009D9F8F081D7181001FA987 /* Uniform */,
-				BE11825405D63C0A00EB53E5 /* UnitTestFramework */,
 				BE11825505D63C0A00EB53E5 /* Vec2 */,
 				0096C52009195F1100B255F2 /* Vec2b */,
 				008F443D06CBF87C00F4220C /* Vec2d */,
@@ -12790,7 +12781,6 @@
 				BE11848505D70D1800EB53E5 /* TriangleFunctor in Headers */,
 				00CE2D67065BCD69003C8656 /* TriangleIndexFunctor in Headers */,
 				009D9FB9081D7392001FA987 /* Uniform in Headers */,
-				BE11848705D70D1900EB53E5 /* UnitTestFramework in Headers */,
 				BE11848805D70D1900EB53E5 /* Vec2 in Headers */,
 				008F444506CBF88200F4220C /* Vec2d in Headers */,
 				00C0453B06CC17ED008F84FE /* Vec2f in Headers */,
@@ -18400,8 +18390,6 @@
 				BE1181E205D63B8A00EB53E5 /* TextureRectangle.cpp in Sources */,
 				BE1181E305D63B8A00EB53E5 /* Timer.cpp in Sources */,
 				BE1181E405D63B8A00EB53E5 /* Transform.cpp in Sources */,
-				BE1181E505D63B8A00EB53E5 /* UnitTestFramework.cpp in Sources */,
-				BE1181E605D63B8A00EB53E5 /* Vec3.cpp in Sources */,
 				BE1181E705D63B8A00EB53E5 /* Version.cpp in Sources */,
 				BE1181E805D63B8A00EB53E5 /* VertexProgram.cpp in Sources */,
 				BE1181E905D63B8A00EB53E5 /* Viewport.cpp in Sources */,

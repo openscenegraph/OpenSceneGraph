@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgcamera.cpp\
 
-LIBS     += -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) -lOpenThreads
+LIBS     += -losgViewer -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) -lOpenThreads
 
 INSTFILES = \
 	$(CXXFILES)\

@@ -33,12 +33,16 @@ namespace osgUtil {
  * global state, lights and the scene itself.  Provides
  * methods for setting up the view and rendering it.
 */
-class OSGUTIL_EXPORT SceneView : public osg::Referenced, public osg::CullSettings
+class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 {
     public:
 
         /** Construct a default scene view.*/
         SceneView(osg::DisplaySettings* ds=NULL);
+
+        SceneView(const SceneView& sceneview, const osg::CopyOp& copyop = osg::CopyOp());
+
+        META_Object(osgUtil, SceneView);
 
         enum Options
         {

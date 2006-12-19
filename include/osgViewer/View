@@ -21,15 +21,15 @@
 namespace osgViewer {
 
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
-class OSGVIEWER_EXPORT View : public osg::View, public osgViewer::Scene
+class OSGVIEWER_EXPORT View : public osg::View
 {
     public:
 
         View();
 
         void setSceneData(osg::Node* node);
-        osg::Node* getSceneData();
-        const osg::Node* getSceneData() const;
+        osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }
+        const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
 
         void setCameraManipulator(osgGA::MatrixManipulator* manipulator);
         osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
@@ -40,18 +40,22 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgViewer::Scene
         void addEventHandler(osgGA::GUIEventHandler* eventHandler);
         EventHandlers& getEventHandlers() { return _eventHandlers; }
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
+        
+        /** Convinience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
+        void setUpViewAcrossAllScreens();
+        
 
     public:
 
-        void init();
+        void setUpRenderingSupport();
+        
+        void assignSceneDataToCameras();
 
     protected:
     
         virtual ~View();
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
-    
-        osg::ref_ptr<osgUtil::SceneView>        _sceneView;
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
     

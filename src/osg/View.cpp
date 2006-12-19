@@ -17,10 +17,16 @@ using namespace osg;
 
 View::View()
 {
+    // osg::notify(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
+
+    setCamera(new osg::Camera);
+    _camera->setProjectionMatrixAsPerspective(50.0f,1.4f,1.0f,10000.0f);
 }
 
 View::~View()
 {
+    // osg::notify(osg::NOTICE)<<"Destructing osg::View"<<std::endl;
+
     // detatch the cameras from this View to prevent dangling pointers
     for(Slaves::iterator itr = _slaves.begin();
         itr != _slaves.end();
@@ -30,6 +36,8 @@ View::~View()
         cd._camera->setView(0);
         cd._camera->setCullCallback(0);
     }
+    
+    // osg::notify(osg::NOTICE)<<"Done destructing osg::View"<<std::endl;
 }
 
 
@@ -41,10 +49,11 @@ void View::updateSlaves()
         itr != _slaves.end();
         ++itr)
     {
-        Slave& cd = *itr;
-        cd._camera->setProjectionMatrix(cd._projectionOffset * _camera->getProjectionMatrix());
-        cd._camera->setViewMatrix(cd._viewOffset * _camera->getViewMatrix());
-        cd._camera->inheritCullSettings(*_camera);
+        Slave& slave = *itr;
+        slave._camera->setProjectionMatrix(_camera->getProjectionMatrix() * slave._projectionOffset);
+        slave._camera->setViewMatrix(_camera->getViewMatrix() * slave._viewOffset);
+        slave._camera->inheritCullSettings(*_camera);
+        if (_camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) slave._camera->setClearColor(_camera->getClearColor());
     }
 
 
@@ -62,6 +71,8 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
         camera->setProjectionMatrix(projectionOffset * _camera->getProjectionMatrix());
         camera->setViewMatrix(viewOffset * _camera->getViewMatrix());
         camera->inheritCullSettings(*_camera);
+        
+        if (_camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) camera->setClearColor(_camera->getClearColor());
     }
            
     _slaves.push_back(Slave(camera, projectionOffset, viewOffset));

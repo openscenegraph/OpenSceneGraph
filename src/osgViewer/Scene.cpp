@@ -25,6 +25,7 @@ Scene::Scene():
 
     _updateVisitor = new osgUtil::UpdateVisitor;
 
+    _eventQueue = new osgGA::EventQueue;
     _eventQueue->setStartTick(_startTick);
 
     _eventVisitor = new osgGA::EventVisitor;

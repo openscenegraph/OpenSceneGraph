@@ -20,12 +20,32 @@ using namespace osgViewer;
 
 Viewer::Viewer()
 {
-    osg::notify(osg::NOTICE)<<"Viewer::Viewer() not implemented yet."<<std::endl;
 }
 
 Viewer::~Viewer()
 {
 }
+
+void Viewer::realize()
+{
+    osg::notify(osg::NOTICE)<<"Viewer::realize()"<<std::endl;
+
+    if (_camera.valid() && _camera->getGraphicsContext())
+    {
+        _camera->getGraphicsContext()->realize();
+    }
+    
+    for(unsigned int i=0; i<getNumSlaves(); ++i)
+    {
+        Slave& slave = getSlave(i);
+        if (slave._camera.valid() && slave._camera->getGraphicsContext())
+        {
+            osg::notify(osg::NOTICE)<<"  slave realize()"<<std::endl;
+            slave._camera->getGraphicsContext()->realize();
+        }
+    }
+}
+
 
 void Viewer::frame()
 {

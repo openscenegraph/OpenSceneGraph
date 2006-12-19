@@ -29,6 +29,15 @@ class OSG_EXPORT GraphicsContext : public Referenced
             ScreenIdentifier():
                 _displayNum(0),
                 _screenNum(0) {}
+
+            ScreenIdentifier(unsigned int screenNum):
+                _displayNum(0),
+                _screenNum(screenNum) {}
+
+            ScreenIdentifier(const std::string& hostName,unsigned int displayNum, unsigned int screenNum):
+                _hostName(hostName),
+                _displayNum(displayNum),
+                _screenNum(screenNum) {}
                 
             std::string  _hostName;
             unsigned int _displayNum;

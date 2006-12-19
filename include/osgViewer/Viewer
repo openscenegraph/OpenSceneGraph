@@ -28,6 +28,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         Viewer();
         virtual ~Viewer();
+        
+        /** set up windows and associated threads.*/
+        void realize();
 
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal().

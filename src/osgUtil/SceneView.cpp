@@ -90,8 +90,6 @@ SceneView::SceneView(DisplaySettings* ds)
 {
     _displaySettings = ds;
 
-
-
     _fusionDistanceMode = PROPORTIONAL_TO_SCREEN_DISTANCE;
     _fusionDistanceValue = 1.0f;
 
@@ -119,6 +117,34 @@ SceneView::SceneView(DisplaySettings* ds)
     _interlacedStereoStencilHeight = 0;
 }
 
+SceneView::SceneView(const SceneView& rhs, const osg::CopyOp&)
+{
+    _displaySettings = rhs._displaySettings;
+
+    _fusionDistanceMode = rhs._fusionDistanceMode;
+    _fusionDistanceValue = rhs._fusionDistanceValue;
+
+    _lightingMode = rhs._lightingMode;
+    
+    _prioritizeTextures = rhs._prioritizeTextures;
+    
+    _camera = rhs._camera;
+    
+    _initCalled = rhs._initCalled;
+
+    
+    _drawBufferValue = rhs._drawBufferValue;
+
+    _requiresFlush = rhs._requiresFlush;
+    
+    _activeUniforms = rhs._activeUniforms;
+    
+    _previousFrameTime = rhs._previousFrameTime;
+    
+    _redrawInterlacedStereoStencilMask = rhs._redrawInterlacedStereoStencilMask;
+    _interlacedStereoStencilWidth = rhs._interlacedStereoStencilWidth;
+    _interlacedStereoStencilHeight = rhs._interlacedStereoStencilHeight;
+}
 
 SceneView::~SceneView()
 {

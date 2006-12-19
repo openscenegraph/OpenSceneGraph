@@ -769,15 +769,34 @@ class SurfaceBin : public PrimitiveBin {
         // Compute the normal times the enclosed area.
         // During that check if the surface is convex. If so, put in the surface as such.
         bool needTesselation = false;
+        osg::Vec3 prevEdgeNormal;
         osg::Vec3 weightedNormal(0, 0, 0);
         osg::Vec3 v0 = _vertexSet->getVertex(_refs[0].index);
         for (unsigned i = 2; i < nRefs; ++i) {
             osg::Vec3 side1 = _vertexSet->getVertex(_refs[i-1].index) - v0;
             osg::Vec3 side2 = _vertexSet->getVertex(_refs[i].index) - v0;
             osg::Vec3 newNormal = side1^side2;
-            if (3 < nRefs && newNormal*weightedNormal < 0)
+            if (!needTesselation)
             {
-                needTesselation = true;
+                if (3 < nRefs && newNormal*weightedNormal < 0)
+                {
+                    needTesselation = true;
+                }
+                if (i < 3)
+                {
+                    prevEdgeNormal = newNormal;
+                }
+                else // if (3 <= i) // due to the for loop
+                {
+                    osg::Vec3 sideim1 = _vertexSet->getVertex(_refs[i-1].index) - _vertexSet->getVertex(_refs[i-2].index);
+                    osg::Vec3 sidei = _vertexSet->getVertex(_refs[i].index) - _vertexSet->getVertex(_refs[i-2].index);
+                    osg::Vec3 edgeNormal = sideim1^sidei;
+                    if (edgeNormal*prevEdgeNormal < 0)
+                    {
+                        needTesselation = true;
+                    }
+                    prevEdgeNormal = edgeNormal;
+                }
             }
 
             weightedNormal += newNormal;

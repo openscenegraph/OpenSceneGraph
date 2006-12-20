@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/FrameStamp>
 #include <osg/Node>
 #include <osgDB/DatabasePager>
 #include <osgGA/EventQueue>
@@ -41,6 +42,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          "");
 	I_Method0(const osg::Node *, getSceneData,
 	          __C5_osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          __osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
@@ -104,6 +109,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
+	                 __osg_FrameStamp_P1__getFrameStamp, 
+	                 0);
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);

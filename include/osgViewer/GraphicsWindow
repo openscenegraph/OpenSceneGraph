@@ -40,6 +40,8 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
+        virtual void checkEvents() {}
+
     public:
 
         /** Realise the GraphicsContext implementation, 

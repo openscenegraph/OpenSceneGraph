@@ -31,6 +31,10 @@ class OSGVIEWER_EXPORT View : public osg::View
         osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
 
+        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
+        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
+        const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
+
         void setCameraManipulator(osgGA::MatrixManipulator* manipulator);
         osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
         const osgGA::MatrixManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
@@ -56,6 +60,7 @@ class OSGVIEWER_EXPORT View : public osg::View
         virtual ~View();
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
+        osg::ref_ptr<osgGA::EventQueue>         _eventQueue;
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
     

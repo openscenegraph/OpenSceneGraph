@@ -50,9 +50,18 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Add an event to the end of the event queue.*/
         void addEvent(GUIEventAdapter* event);
 
+        /** Specify if mouse coordinates should be transformed into a pre defined input range, or whether they
+          * should be simply based on as local coordinates to the window that generated the mouse events.*/
+        void setUseFixedMouseInputRange(bool useFixedMouseInputRange) { _useFixedMouseInputRange = useFixedMouseInputRange; }
+
+        /** Get whether the mouse coordinates should be transformed into a pre defined input range.*/
+        bool getUseFixedMouseInputRange() { return _useFixedMouseInputRange; }
+
+        /** Set the mouse input range.*/
+        void setMouseInputRange(float xMin, float yMin, float xMax, float yMax) { getCurrentEventState()->setInputRange(xMin, yMin, xMax, yMax); }
 
         /** Method for adapting window resize event, placing this event on the back of the event queue. */
-        void windowResize(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange = true);
+        void windowResize(int x, int y, unsigned int width, unsigned int height);
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
         void mouseScroll(GUIEventAdapter::ScrollingMotion sm);
@@ -84,11 +93,11 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
         void mouseButtonRelease(float x, float y, unsigned int button);
 
-        /** Method for adapting keyboard press events.*/
-        void keyPress(GUIEventAdapter::KeySymbol key);
+        /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
+        void keyPress(int key);
 
-        /** Method for adapting keyboard press events.*/
-        void keyRelease(GUIEventAdapter::KeySymbol key);
+        /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
+        void keyRelease(int key);
 
         /** Method for adapting frame events.*/
         void frame(double t);
@@ -113,6 +122,8 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         EventQueue& operator = (const EventQueue&) { return *this; }
         
         osg::ref_ptr<GUIEventAdapter>   _accumulateEventState;
+
+        bool                        _useFixedMouseInputRange;
 
         osg::Timer_t                _startTick;
         mutable OpenThreads::Mutex  _eventQueueMutex;

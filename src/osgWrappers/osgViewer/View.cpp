@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Node>
+#include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
 #include <osgViewer/View>
@@ -40,6 +41,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          "");
 	I_Method0(const osg::Node *, getSceneData,
 	          __C5_osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
+	          __void__setEventQueue__osgGA_EventQueue_P1,
+	          "",
+	          "");
+	I_Method0(osgGA::EventQueue *, getEventQueue,
+	          __osgGA_EventQueue_P1__getEventQueue,
+	          "",
+	          "");
+	I_Method0(const osgGA::EventQueue *, getEventQueue,
+	          __C5_osgGA_EventQueue_P1__getEventQueue,
 	          "",
 	          "");
 	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator,
@@ -84,6 +97,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgViewer::View::EventHandlers &, EventHandlers, 
 	                 __EventHandlers_R1__getEventHandlers, 
 	                 0);
+	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
+	                 __osgGA_EventQueue_P1__getEventQueue, 
+	                 __void__setEventQueue__osgGA_EventQueue_P1);
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);

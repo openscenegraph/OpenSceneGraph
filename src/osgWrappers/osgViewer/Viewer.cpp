@@ -65,5 +65,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__init,
 	          "",
 	          "");
+	I_PublicMemberProperty(bool, _firstFrame);
 END_REFLECTOR
 

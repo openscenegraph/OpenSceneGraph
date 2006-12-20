@@ -40,6 +40,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __C5_osgGA_EventQueue_P1__getEventQueue,
 	          "",
 	          "");
+	I_Method0(void, checkEvents,
+	          __void__checkEvents,
+	          "",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          __bool__realizeImplementation,
 	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",

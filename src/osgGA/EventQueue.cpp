@@ -18,6 +18,7 @@ using namespace osgGA;
 
 EventQueue::EventQueue(GUIEventAdapter::MouseYOrientation mouseYOrientation)
 {
+    _useFixedMouseInputRange = false;
     _startTick = osg::Timer::instance()->tick();
     _accumulateEventState = new GUIEventAdapter();
     _accumulateEventState->setMouseYOrientation(mouseYOrientation);
@@ -77,9 +78,9 @@ bool EventQueue::copyEvents(Events& events) const
 }
 
 
-void EventQueue::windowResize(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange)
+void EventQueue::windowResize(int x, int y, unsigned int width, unsigned int height)
 {
-    _accumulateEventState->setWindowRectangle(x, y, width, height, updateMouseRange);
+    _accumulateEventState->setWindowRectangle(x, y, width, height, !_useFixedMouseInputRange);
 
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::RESIZE);
@@ -252,7 +253,7 @@ void EventQueue::mouseButtonRelease(float x, float y, unsigned int button)
     addEvent(event);
 }
 
-void EventQueue::keyPress(GUIEventAdapter::KeySymbol key)
+void EventQueue::keyPress(int key)
 {
     switch(key)
     {
@@ -290,7 +291,7 @@ void EventQueue::keyPress(GUIEventAdapter::KeySymbol key)
     addEvent(event);
 }
 
-void EventQueue::keyRelease(GUIEventAdapter::KeySymbol key)
+void EventQueue::keyRelease(int key)
 {
     switch(key)
     {

@@ -39,6 +39,7 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
         osg::Node* getSceneData();
         const osg::Node* getSceneData() const;
 
+        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
 
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }

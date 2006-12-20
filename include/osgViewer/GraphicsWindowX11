@@ -16,6 +16,9 @@
  * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
+#ifndef OSGVIEWER_GRAPHICSWINDOWX11
+#define OSGVIEWER_GRAPHICSWINDOWX11 1
+
 #include <osgViewer/Viewer>
 
 #include <X11/X.h>
@@ -23,10 +26,15 @@
 #include <X11/Xutil.h>
 
 #include <X11/Xmd.h>
+#include <X11/keysym.h>
+#include <X11/Xmu/WinUtil.h>
 #include <X11/cursorfont.h>
 
 #define GLX_GLXEXT_PROTOTYPES  1
 #include <GL/glx.h>
+
+namespace osgViewer
+{
 
 class GraphicsContextX11 : public osg::GraphicsContext
 {
@@ -110,14 +118,20 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Make this graphics context current.*/
         virtual void makeCurrentImplementation();
 
-        /** swap the front and back buffers.*/
+        /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();
         
+        /** Check to see if any events have been generated.*/
+        virtual void checkEvents();
+
     protected:
     
         bool createVisualInfo();
         void setBorder(bool flag);
         void init();
+
+        void transformMouseXY(float& x, float& y);
+        void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);
         
         Display*        _display;
         Window          _parent;
@@ -280,6 +294,7 @@ void GraphicsWindowX11::init()
     XWindowAttributes watt;
     XGetWindowAttributes( _display, _parent, &watt );
     // unsigned int parentWindowHeight = watt.height;
+    osg::notify(osg::NOTICE)<<"First watt.x = "<<watt.x<<" watt.y="<<watt.y<<std::endl;
 
     XSetWindowAttributes swatt;
     swatt.colormap = XCreateColormap( _display, _parent, _visualInfo->visual, AllocNone);
@@ -322,8 +337,11 @@ void GraphicsWindowX11::init()
     sh.height = _traits->_height;
     XSetStandardProperties( _display, _window, _traits->_windowName.c_str(), _traits->_windowName.c_str(), None, 0, 0, &sh);
 
+#if 1
     setBorder(_traits->_windowDecoration);
-
+#else
+    setBorder(true);
+#endif
     // Create  default Cursor
     _defaultCursor = XCreateFontCursor( _display, XC_left_ptr );
 
@@ -348,6 +366,13 @@ void GraphicsWindowX11::init()
         XFlush(_display);
         XSync(_display,0);
     }
+
+    XSelectInput( _display, _window, ExposureMask | StructureNotifyMask | 
+                                     KeyPressMask | KeyReleaseMask |
+                                     PointerMotionMask  | ButtonPressMask | ButtonReleaseMask);
+
+    XFlush( _display );
+    XSync( _display, 0 );
 
     _initialized = true;
 }
@@ -403,9 +428,236 @@ void GraphicsWindowX11::swapBuffersImplementation()
     glXSwapBuffers(_display, _window); 
 }
 
+void GraphicsWindowX11::checkEvents()
+{
+    // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
+    while( XPending(_display) )
+    {
+        XEvent ev;
+        XNextEvent( _display, &ev );
+
+        switch( ev.type )
+        {
+            case Expose :
+                osg::notify(osg::NOTICE)<<"Expose"<<std::endl;
+                break;
+
+            case GravityNotify :
+                osg::notify(osg::NOTICE)<<"GravityNotify"<<std::endl;
+                break;
+
+            case UnmapNotify :
+                osg::notify(osg::NOTICE)<<"UnmapNotify"<<std::endl;
+                break;
+
+            case ReparentNotify:
+                osg::notify(osg::NOTICE)<<"ReparentNotify"<<std::endl;
+                break;
+
+            case DestroyNotify :
+                osg::notify(osg::NOTICE)<<"DestroyNotify"<<std::endl;
+                _realized =  false;
+                break;
+                
+            case ConfigureNotify :
+            {
+                osg::notify(osg::NOTICE)<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
+                _traits->_x = ev.xconfigure.x;
+                _traits->_y = ev.xconfigure.y;
+                _traits->_width = ev.xconfigure.width;
+                _traits->_height = ev.xconfigure.height;
+                // need to dispatch resize event.
+                break;
+            }
+            
+            case MapNotify :
+            {
+                osg::notify(osg::NOTICE)<<"MapNotify"<<std::endl;
+                XWindowAttributes watt;
+                do
+                XGetWindowAttributes(_display, _window, &watt );
+                while( watt.map_state != IsViewable );
+
+                XSetInputFocus( _display, _window, RevertToNone, CurrentTime );
+                XFlush(_display); XSync(_display,0);
+
+                break;
+            }
+
+           case MotionNotify :
+           {
+                int  wx, wy;
+                Window win = 0L;
+                if( ev.xmotion.same_screen )
+                {
+                    wx = ev.xmotion.x;
+                    wy = ev.xmotion.y;
+                }
+                else
+                {
+                    // the mouse in on another screen so need to compute the
+                    // coordinates of the mouse position relative to an absolute position
+                    // then take away the position of the original window/screen to get
+                    // the coordinates relative to the original position.
+                    Window root;
+                    int rx, ry;
+                    unsigned int buttons;
+
+                    int screenOrigin_x = 0;
+                    int screenOrigin_y = 0;
+                    int i;
+                    for(i= 0; i < ScreenCount(_display); i++ )
+                    {
+                        if( XQueryPointer( _display, RootWindow(_display, i),
+                              &root, &win, &rx, &ry, &wx, &wy, &buttons) )
+                        {
+                            break;
+                        }
+
+                        screenOrigin_x += DisplayWidth(_display, i);
+                    }
+
+                    for(i= 0; i < static_cast<int>(_traits->_screenNum); i++ )
+                    {
+                        screenOrigin_x -= DisplayWidth(_display, i);
+                    }
+
+                    wx += (screenOrigin_x - _traits->_x);
+                    wy += (screenOrigin_y - _traits->_y);
+                }
+                
+                float mx = wx;
+                float my = wy;
+                transformMouseXY(mx, my);
+                getEventQueue()->mouseMotion(mx, my);
+
+                break;
+            }
+            
+            case ButtonPress :
+            {
+                if( ev.xbutton.button == Button4 )
+                {
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP);
+                }
+                else if( ev.xbutton.button == Button5)
+                {
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN);
+                }
+                else
+                {
+                    float mx = ev.xbutton.x;
+                    float my = ev.xmotion.y;
+                    transformMouseXY(mx, my);
+                    getEventQueue()->mouseButtonPress(mx, my, ev.xbutton.button);
+                }
+                break;
+            }
+            
+            case ButtonRelease :
+            {
+                if( ev.xbutton.button == Button4 )
+                {
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP);
+                }
+                else if( ev.xbutton.button == Button5)
+                {
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN);
+                }
+                else
+                {
+                    float mx = ev.xbutton.x;
+                    float my = ev.xmotion.y;
+                    transformMouseXY(mx, my);
+                    getEventQueue()->mouseButtonRelease(mx, my, ev.xbutton.button);
+                }
+                break;
+            }
+            
+            case KeyPress:
+            {
+                int keySymbol = 0;
+                unsigned int modifierMask = 0;
+                adaptKey(ev.xkey, keySymbol, modifierMask);
+
+                getEventQueue()->keyPress(keySymbol);
+                getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                break;
+            }
+            
+            case KeyRelease:
+            {
+                int keySymbol = 0;
+                unsigned int modifierMask = 0;
+                adaptKey(ev.xkey, keySymbol, modifierMask);
+                
+                getEventQueue()->keyRelease(keySymbol);
+                getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                break;
+            }
+            
+            default:
+                osg::notify(osg::NOTICE)<<"Other event"<<std::endl;
+                break;
+                
+        }
+    }
+}
+
+void GraphicsWindowX11::transformMouseXY(float& x, float& y)
+{
+    if (getEventQueue()->getUseFixedMouseInputRange())
+    {
+        osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
+        x = eventState->getXmin() + (eventState->getXmax()-eventState->getXmin())*x/float(_traits->_width);
+        y = eventState->getYmin() + (eventState->getYmax()-eventState->getYmin())*y/float(_traits->_height);
+    }
+}
+
+void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask)
+{
+    // KeySym ks = XKeycodeToKeysym( _display, keyevent.keycode, 0 );
+
+    static XComposeStatus state;
+    unsigned char keybuf[32];
+    XLookupString( &keyevent, (char *)keybuf, sizeof(keybuf), NULL, &state );
+
+    modifierMask = 0;
+    if( keyevent.state & ShiftMask )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
+    }
+    if( keyevent.state & LockMask )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
+    }
+    if( keyevent.state & ControlMask )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
+    }
+    if( keyevent.state & Mod1Mask )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_ALT;
+    }
+    if( keyevent.state & Mod2Mask )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_NUM_LOCK;
+    }
+    if( keyevent.state & Mod4Mask )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_META;
+    }
+
+    keySymbol = keybuf[0];
+}
 
 struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
 {
+
+    X11WindowingSystemInterface()
+    {
+    }
+
     virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
     {
         const char* displayString = si._hostName.c_str();
@@ -453,6 +705,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
             return new GraphicsWindowX11(traits);
         }
     }
+
 };
 
 struct RegisterWindowingSystemInterfaceProxy
@@ -469,3 +722,7 @@ struct RegisterWindowingSystemInterfaceProxy
 };
 
 RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
+
+}
+
+#endif

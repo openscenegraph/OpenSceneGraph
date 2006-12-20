@@ -18,10 +18,21 @@
 
 using namespace osgViewer;
 
+class ActionAdapter : public osgGA::GUIActionAdapter
+{
+public:
+        virtual ~ActionAdapter() {}
+
+        virtual void requestRedraw() { /*osg::notify(osg::NOTICE)<<"requestRedraw()"<<std::endl;*/ }
+        virtual void requestContinuousUpdate(bool needed=true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
+        virtual void requestWarpPointer(float x,float y) { osg::notify(osg::NOTICE)<<"requestWarpPointer("<<x<<","<<y<<")"<<std::endl; }
+
+};
+
 View::View()
 {
     // osg::notify(osg::NOTICE)<<"Constructing osgViewer::View"<<std::endl;
-
+   setEventQueue(new osgGA::EventQueue);
 }
 
 View::~View()
@@ -35,6 +46,20 @@ void View::setSceneData(osg::Node* node)
     _scene->setSceneData(node);
     
     assignSceneDataToCameras();
+}
+
+void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
+{
+    _cameraManipulator = manipulator;
+    if (_cameraManipulator.valid() && getSceneData())
+    {
+        _cameraManipulator->setNode(getSceneData());
+        
+        osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
+
+        ActionAdapter aa;
+        _cameraManipulator->home(*dummyEvent, aa);
+    }
 }
 
 void View::setUpViewAcrossAllScreens()
@@ -86,6 +111,11 @@ void View::setUpViewAcrossAllScreens()
     else
     {
         double rotate_x = - double(numScreens-1) * 0.5 * fovx;
+        
+        float inputRangeMinX = 0.0f;
+        float inputRangeMinY = 0.0f;
+        
+        float maxHeight = 0.0f;
     
         for(unsigned int i=0; i<numScreens; ++i, rotate_x += fovx)
         {
@@ -111,6 +141,12 @@ void View::setUpViewAcrossAllScreens()
             if (gw)
             {
                 osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+                
+                gw->getEventQueue()->setUseFixedMouseInputRange(true);
+                gw->getEventQueue()->getCurrentEventState()->setInputRange(inputRangeMinX, inputRangeMinY, inputRangeMinX+float(width),inputRangeMinY+float(height) );
+                inputRangeMinX += float(width);
+                
+                if (maxHeight < float(height)) maxHeight = float(height);
             }
             else
             {
@@ -122,6 +158,9 @@ void View::setUpViewAcrossAllScreens()
             addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate( rotate_x, 0.0, 1.0, 0.0));
             
         }
+        
+        getEventQueue()->setUseFixedMouseInputRange(true);
+        getEventQueue()->getCurrentEventState()->setInputRange(0.0f, 0.0, inputRangeMinX, maxHeight);
     }
     
     setUpRenderingSupport();
@@ -156,6 +195,16 @@ void View::assignSceneDataToCameras()
 {
     osg::Node* sceneData = _scene.valid() ? _scene->getSceneData() : 0;
     
+    if (_cameraManipulator.valid())
+    {
+        _cameraManipulator->setNode(sceneData);
+        
+        osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
+
+        ActionAdapter aa;
+        _cameraManipulator->home(*dummyEvent, aa);
+    }
+
     if (_camera.valid())
     {
         _camera->removeChildren(0,_camera->getNumChildren());

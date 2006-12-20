@@ -50,10 +50,22 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __void__addEvent__GUIEventAdapter_P1,
 	          "Add an event to the end of the event queue. ",
 	          "");
-	I_MethodWithDefaults5(void, windowResize, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true,
-	                      __void__windowResize__int__int__unsigned_int__unsigned_int__bool,
-	                      "Method for adapting window resize event, placing this event on the back of the event queue. ",
-	                      "");
+	I_Method1(void, setUseFixedMouseInputRange, IN, bool, useFixedMouseInputRange,
+	          __void__setUseFixedMouseInputRange__bool,
+	          "Specify if mouse coordinates should be transformed into a pre defined input range, or whether they should be simply based on as local coordinates to the window that generated the mouse events. ",
+	          "");
+	I_Method0(bool, getUseFixedMouseInputRange,
+	          __bool__getUseFixedMouseInputRange,
+	          "Get whether the mouse coordinates should be transformed into a pre defined input range. ",
+	          "");
+	I_Method4(void, setMouseInputRange, IN, float, xMin, IN, float, yMin, IN, float, xMax, IN, float, yMax,
+	          __void__setMouseInputRange__float__float__float__float,
+	          "Set the mouse input range. ",
+	          "");
+	I_Method4(void, windowResize, IN, int, x, IN, int, y, IN, unsigned int, width, IN, unsigned int, height,
+	          __void__windowResize__int__int__unsigned_int__unsigned_int,
+	          "Method for adapting window resize event, placing this event on the back of the event queue. ",
+	          "");
 	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm,
 	          __void__mouseScroll__GUIEventAdapter_ScrollingMotion,
 	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. ",
@@ -90,14 +102,14 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __void__mouseButtonRelease__float__float__unsigned_int,
 	          "Method for adapting mouse button release events, placing this event on the back of the event queue. ",
 	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
-	I_Method1(void, keyPress, IN, osgGA::GUIEventAdapter::KeySymbol, key,
-	          __void__keyPress__GUIEventAdapter_KeySymbol,
+	I_Method1(void, keyPress, IN, int, key,
+	          __void__keyPress__int,
 	          "Method for adapting keyboard press events. ",
-	          "");
-	I_Method1(void, keyRelease, IN, osgGA::GUIEventAdapter::KeySymbol, key,
-	          __void__keyRelease__GUIEventAdapter_KeySymbol,
+	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings. ");
+	I_Method1(void, keyRelease, IN, int, key,
+	          __void__keyRelease__int,
 	          "Method for adapting keyboard press events. ",
-	          "");
+	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings. ");
 	I_Method1(void, frame, IN, double, t,
 	          __void__frame__double,
 	          "Method for adapting frame events. ",
@@ -138,6 +150,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_SimpleProperty(double, Time, 
 	                 __double__getTime, 
 	                 0);
+	I_SimpleProperty(bool, UseFixedMouseInputRange, 
+	                 __bool__getUseFixedMouseInputRange, 
+	                 __void__setUseFixedMouseInputRange__bool);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventAdapter >)

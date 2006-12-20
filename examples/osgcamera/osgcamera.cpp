@@ -28,10 +28,25 @@
 #include <osgViewer/GraphicsWindowX11>
 #include <osgViewer/Viewer>
 
+#include <osgGA/TrackballManipulator>
+
 void renderCamera(osg::Camera* camera)
 {
     osg::GraphicsContext* gc = camera->getGraphicsContext();
     if (!gc) return;
+    
+#if 0    
+    osgViewer::GraphicsWindowX11* gwX11 =  dynamic_cast<osgViewer::GraphicsWindowX11*>(gc);
+    if (gwX11)
+    {
+        gwX11->checkEvents();
+
+        osgGA::EventQueue::Events events;
+        if (gwX11->getEventQueue()->takeEvents(events))
+        {
+        }
+    }
+#endif
     
     osgUtil::SceneView* sceneView = dynamic_cast<osgUtil::SceneView*>(camera->getRenderingCache(0));
     if (!sceneView) return;
@@ -77,6 +92,8 @@ int main( int argc, char **argv )
     viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
 
     osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
+    viewer->setSceneData(loadedModel.get());
+    viewer->setCameraManipulator(new osgGA::TrackballManipulator());
     viewer->setUpViewAcrossAllScreens();
     viewer->realize();
     
@@ -113,10 +130,12 @@ int main( int argc, char **argv )
         // do the update traversal.
         loadedModel->accept(updateVisitor);
 
+        viewer->frameAdvance();
+        viewer->frameEventTraversal();
+        viewer->frameUpdateTraversal();
 
-        viewer->getCamera()->setViewMatrix(viewMatrix);
+        // viewer->getCamera()->setViewMatrix(viewMatrix);
 
-        viewer->updateSlaves();
 
         if (viewer->getCamera() && viewer->getCamera()->getGraphicsContext()) renderCamera(viewer->getCamera());
         

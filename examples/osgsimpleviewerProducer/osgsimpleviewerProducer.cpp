@@ -96,7 +96,8 @@ class GraphicsWindowProducer : public virtual osgViewer::GraphicsWindow, public 
 
             // set the mouse input range.
             // Producer defaults to using non-dimensional units, so we pass this onto osgGA, most windowing toolkits use pixel coords so use the window size instead.
-            getEventQueue()->getCurrentEventState()->setInputRange(-1.0, -1.0, 1.0, 1.0);
+            getEventQueue()->setUseFixedMouseInputRange(true);
+            getEventQueue()->setMouseInputRange(-1.0, -1.0, 1.0, 1.0);
 
             // Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits.
             // we need to construct the event queue so that it knows about this convention.
@@ -107,7 +108,7 @@ class GraphicsWindowProducer : public virtual osgViewer::GraphicsWindow, public 
         void setWindowRectangle(int x, int y, unsigned int width, unsigned int height, bool resize = true)
         {
             Producer::RenderSurface::setWindowRectangle(x, y, width, height, resize);
-            getEventQueue()->windowResize(x,y,width,height, false);
+            getEventQueue()->windowResize(x,y,width,height);
         }
         
         void realize() { Producer::RenderSurface::realize(); _kbm->startThread(); }
@@ -159,7 +160,7 @@ int main( int argc, char **argv )
     while( viewer.isRealized() )
     {
         // update the window dimensions, in case the window has been resized.
-        viewer.getEventQueue()->windowResize(0,0,viewer.getWindowWidth(),viewer.getWindowHeight(), false);
+        viewer.getEventQueue()->windowResize(0,0,viewer.getWindowWidth(),viewer.getWindowHeight());
         
         viewer.frame();
 
@@ -215,7 +216,8 @@ int main( int argc, char **argv )
 
     // set the mouse input range.
     // Producer defaults to using non-dimensional units, so we pass this onto osgGA, most windowing toolkits use pixel coords so use the window size instead.
-    viewer.getEventQueue()->getCurrentEventState()->setInputRange(-1.0, -1.0, 1.0, 1.0);
+    viewer.getEventQueue()->setUseFixedMouseInputRange(true);
+    viewer.getEventQueue()->setMouseInputRange(-1.0, -1.0, 1.0, 1.0);
 
     // Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits.
     // we need to construct the event queue so that it knows about this convention.

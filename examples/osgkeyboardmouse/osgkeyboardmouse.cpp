@@ -163,6 +163,10 @@ public:
             {
                 _mx = ea.getX();
                 _my = ea.getY();
+                
+                osg::notify(osg::NOTICE)<<"_mx="<<_mx<<" _my="<<_my<<std::endl;
+                osg::notify(osg::NOTICE)<<"  range ="<<ea.getXmin()<<", "<<ea.getXmax()<<std::endl;
+                
                 return false;
             }
             case(osgGA::GUIEventAdapter::RELEASE):
@@ -190,7 +194,7 @@ public:
         osg::Node* node = 0;
         osg::Group* parent = 0;
 
-        bool usePolytopePicking = true;
+        bool usePolytopePicking = false;
         if (usePolytopePicking)
         {
 
@@ -358,11 +362,13 @@ int main( int argc, char **argv )
 
     // set the mouse input range.
     // Producer defaults to using non-dimensional units, so we pass this onto osgGA, most windowing toolkits use pixel coords so use the window size instead.
-    viewer.getEventQueue()->getCurrentEventState()->setInputRange(-1.0, -1.0, 1.0, 1.0);
+    viewer.getEventQueue()->setUseFixedMouseInputRange(true);
+    viewer.getEventQueue()->setMouseInputRange(-1.0, -1.0, 1.0, 1.0);
 
     // Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits.
     // we need to construct the event queue so that it knows about this convention.
     viewer.getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+    
 
     viewer.init();
 
@@ -370,7 +376,7 @@ int main( int argc, char **argv )
     while( renderSurface->isRealized() && !kbmcb->done())
     {
         // update the window dimensions, in case the window has been resized.
-         viewer.getEventQueue()->windowResize(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight(), false);
+         viewer.getEventQueue()->windowResize(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight());
 
         // pass any keyboard mouse events onto the local keyboard mouse callback.
         kbm->update( *kbmcb );

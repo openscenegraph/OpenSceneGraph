@@ -81,7 +81,7 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
     public:
         GraphicsThread();
 
-        /** Base class for implementing GraphicsThread operations.*/
+        /** Base class for implementing graphics operations.*/
         struct OSG_EXPORT Operation : virtual public Referenced
         {
             Operation(const std::string& name, bool keep):
@@ -109,7 +109,7 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
             std::string _name;
             bool        _keep;
         };
-
+        
         /** Add operation to end of OperationQueue, this will be 
           * executed by the graphics thread once this operation gets to the head of the queue.*/
         void add(Operation* operation, bool waitForCompletion=false);

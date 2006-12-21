@@ -30,7 +30,8 @@ public:
 };
 
 Viewer::Viewer():
-    _firstFrame(true)
+    _firstFrame(true),
+    _done(false)
 {
 }
 
@@ -40,7 +41,7 @@ Viewer::~Viewer()
 
 void Viewer::init()
 {
-    osg::notify(osg::NOTICE)<<"Viewer::init()"<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::init()"<<std::endl;
     
     osg::ref_ptr<osgGA::GUIEventAdapter> initEvent = _eventQueue->createEvent();
     initEvent->setEventType(osgGA::GUIEventAdapter::FRAME);
@@ -54,7 +55,7 @@ void Viewer::init()
 
 void Viewer::realize()
 {
-    osg::notify(osg::NOTICE)<<"Viewer::realize()"<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
 
     if (_camera.valid() && _camera->getGraphicsContext())
     {
@@ -66,7 +67,7 @@ void Viewer::realize()
         Slave& slave = getSlave(i);
         if (slave._camera.valid() && slave._camera->getGraphicsContext())
         {
-            osg::notify(osg::NOTICE)<<"  slave realize()"<<std::endl;
+            osg::notify(osg::INFO)<<"  slave realize()"<<std::endl;
             slave._camera->getGraphicsContext()->realize();
         }
     }
@@ -85,7 +86,7 @@ void Viewer::realize()
             Slave& slave = getSlave(i);
             if (slave._camera.valid() && slave._camera->getGraphicsContext())
             {
-                osg::notify(osg::NOTICE)<<"  slave realize()"<<std::endl;
+                osg::notify(osg::INFO)<<"  slave realize()"<<std::endl;
                 slave._camera->getGraphicsContext()->realize();
                 osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
                 gw->grabFocusIfPointerInWindow();
@@ -98,20 +99,24 @@ void Viewer::realize()
 
 void Viewer::frame()
 {
+    if (_done) return;
+
     if (_firstFrame)
     {
         init();
         _firstFrame = false;
     }
+    frameAdvance();
     
     frameEventTraversal();
     frameUpdateTraversal();
-    frameCullTraversal();
-    frameDrawTraversal();
+    frameRenderingTraversals();
 }
 
 void Viewer::frameAdvance()
 {
+    if (_done) return;
+
     // osg::notify(osg::NOTICE)<<"Viewer::frameAdvance()."<<std::endl;
 
     _scene->frameAdvance();
@@ -119,6 +124,8 @@ void Viewer::frameAdvance()
 
 void Viewer::frameEventTraversal()
 {
+    if (_done) return;
+
     // osg::notify(osg::NOTICE)<<"Viewer::frameEventTraversal()."<<std::endl;
     
     // need to copy events from the GraphicsWindow's into local EventQueue;
@@ -201,6 +208,24 @@ void Viewer::frameEventTraversal()
     }
 #endif
 
+    // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
+    for(osgGA::EventQueue::Events::iterator itr = events.begin();
+        itr != events.end();
+        ++itr)
+    {
+        osgGA::GUIEventAdapter* event = itr->get();
+        switch(event->getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+                if (event->getKey()=='q') _done = true;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    if (_done) return;
+
     ActionAdapter aa;
 
     for(osgGA::EventQueue::Events::iterator itr = events.begin();
@@ -227,6 +252,10 @@ void Viewer::frameEventTraversal()
 
 void Viewer::frameUpdateTraversal()
 {
+    if (_done) return;
+
+    if (_scene.valid()) _scene->frameUpdateTraversal();
+
     if (_cameraManipulator.valid())
     {
         _camera->setViewMatrix(_cameraManipulator->getInverseMatrix());
@@ -235,14 +264,50 @@ void Viewer::frameUpdateTraversal()
     updateSlaves();
 }
 
-void Viewer::frameCullTraversal()
+void Viewer::frameRenderingTraversals()
 {
-    osg::notify(osg::NOTICE)<<"Viewer::frameCullTraversal() not implemented yet."<<std::endl;
-}
+   if (_done) return;
 
-void Viewer::frameDrawTraversal()
-{
-    osg::notify(osg::NOTICE)<<"Viewer::frameDrawTraversal() not implemented yet."<<std::endl;
+   typedef std::set<osg::GraphicsContext*> GraphicsContexts;
+   GraphicsContexts contexts;
+
+    if (_camera.valid() && _camera->getGraphicsContext())
+    {
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+        if (gw)
+        {
+            contexts.insert(gw);
+        }
+    }
+    
+    for(unsigned int i=0; i<getNumSlaves(); ++i)
+    {
+        Slave& slave = getSlave(i);
+        if (slave._camera.valid() && slave._camera->getGraphicsContext())
+        {
+            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
+            if (gw)
+            {
+                contexts.insert(gw);
+            }
+        }
+    }
+    
+    for(GraphicsContexts::iterator itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        if (_done) return;
+        const_cast<osg::GraphicsContext*>(*itr)->makeCurrent();
+        const_cast<osg::GraphicsContext*>(*itr)->runOperations();
+    }
+   
+    for(GraphicsContexts::iterator itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        const_cast<osg::GraphicsContext*>(*itr)->swapBuffers();
+    }
 }
 
 void Viewer::releaseAllGLObjects()

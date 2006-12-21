@@ -24,6 +24,7 @@ Scene::Scene():
     _frameStamp->setReferenceTime(0);
 
     _updateVisitor = new osgUtil::UpdateVisitor;
+    _updateVisitor->setFrameStamp(_frameStamp.get());
 
     _eventQueue = new osgGA::EventQueue;
     _eventQueue->setStartTick(_startTick);
@@ -111,6 +112,10 @@ void Scene::frameEventTraversal()
 
 void Scene::frameUpdateTraversal()
 {
+    if (!getSceneData()) return;
+    
+    getSceneData()->accept(*_updateVisitor);
+    
     if (_databasePager.valid())
     {    
         // tell the DatabasePager the frame number of that the scene graph is being actively used to render a frame
@@ -120,4 +125,7 @@ void Scene::frameUpdateTraversal()
         _databasePager->updateSceneGraph(_frameStamp->getReferenceTime());
     }
 }
+
+
+ 
 

@@ -64,7 +64,7 @@ void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 
 void View::setUpViewAcrossAllScreens()
 {
-    osg::GraphicsContext::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi) 
     {
         osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;

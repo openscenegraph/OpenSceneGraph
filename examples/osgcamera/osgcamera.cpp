@@ -25,7 +25,6 @@
 
 #if !defined(_WIN32)
 
-#include <osgViewer/GraphicsWindowX11>
 #include <osgViewer/Viewer>
 
 #include <osgGA/TrackballManipulator>
@@ -34,19 +33,6 @@ void renderCamera(osg::Camera* camera)
 {
     osg::GraphicsContext* gc = camera->getGraphicsContext();
     if (!gc) return;
-    
-#if 0    
-    osgViewer::GraphicsWindowX11* gwX11 =  dynamic_cast<osgViewer::GraphicsWindowX11*>(gc);
-    if (gwX11)
-    {
-        gwX11->checkEvents();
-
-        osgGA::EventQueue::Events events;
-        if (gwX11->getEventQueue()->takeEvents(events))
-        {
-        }
-    }
-#endif
     
     osgUtil::SceneView* sceneView = dynamic_cast<osgUtil::SceneView*>(camera->getRenderingCache(0));
     if (!sceneView) return;

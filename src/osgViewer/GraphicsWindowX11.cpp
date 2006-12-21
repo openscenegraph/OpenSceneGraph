@@ -18,6 +18,15 @@
 
 #include <osgViewer/GraphicsWindowX11>
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#include <X11/Xmd.h>
+#include <X11/keysym.h>
+#include <X11/Xmu/WinUtil.h>
+#include <X11/cursorfont.h>
+
+
 using namespace osgViewer;
 
 class GraphicsContextX11 : public osg::GraphicsContext

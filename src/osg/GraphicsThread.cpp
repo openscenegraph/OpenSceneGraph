@@ -223,6 +223,11 @@ void GraphicsThread::remove(const std::string& name)
         if ((*itr)->getName()==name) itr = _operations.erase(itr);
         else ++itr;
     }
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
 }
 
 void GraphicsThread::removeAllOperations()
@@ -231,6 +236,11 @@ void GraphicsThread::removeAllOperations()
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
     _operations.clear();
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
 }
 
 

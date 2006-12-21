@@ -232,7 +232,6 @@ void GraphicsWindowX11::init()
     XWindowAttributes watt;
     XGetWindowAttributes( _display, _parent, &watt );
     // unsigned int parentWindowHeight = watt.height;
-    osg::notify(osg::NOTICE)<<"First watt.x = "<<watt.x<<" watt.y="<<watt.y<<std::endl;
 
     XSetWindowAttributes swatt;
     swatt.colormap = XCreateColormap( _display, _parent, _visualInfo->visual, AllocNone);
@@ -386,32 +385,29 @@ void GraphicsWindowX11::checkEvents()
         switch( ev.type )
         {
             case Expose :
-                osg::notify(osg::NOTICE)<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
+                osg::notify(osg::INFO)<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
                 break;
 
             case GravityNotify :
-                osg::notify(osg::NOTICE)<<"GravityNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"GravityNotify"<<std::endl;
                 break;
 
             case UnmapNotify :
-                osg::notify(osg::NOTICE)<<"UnmapNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"UnmapNotify"<<std::endl;
                 break;
 
             case ReparentNotify:
-                osg::notify(osg::NOTICE)<<"ReparentNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"ReparentNotify"<<std::endl;
                 break;
 
             case DestroyNotify :
-                osg::notify(osg::NOTICE)<<"DestroyNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"DestroyNotify"<<std::endl;
                 _realized =  false;
                 break;
                 
             case ConfigureNotify :
             {
-                osg::notify(osg::NOTICE)<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
-                XWindowAttributes watt;
-                XGetWindowAttributes( _display, _window, &watt );
-                osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
+                osg::notify(osg::INFO)<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
 
                 _traits->_x = ev.xconfigure.x;
                 _traits->_y = ev.xconfigure.y;
@@ -476,7 +472,7 @@ void GraphicsWindowX11::checkEvents()
 
                     int dest_x_return, dest_y_return;
                     Window child_return;
-                    Bool result = XTranslateCoordinates(_display, _window, _parent, 0, 0, &dest_x_return, &dest_y_return, &child_return);
+                    XTranslateCoordinates(_display, _window, _parent, 0, 0, &dest_x_return, &dest_y_return, &child_return);
 
                     wx += (screenOrigin_x - dest_x_return);
                     wy += (screenOrigin_y - dest_y_return);

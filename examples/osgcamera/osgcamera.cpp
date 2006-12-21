@@ -71,67 +71,22 @@ int main( int argc, char **argv )
         std::cout << argv[0] <<": No data loaded." << std::endl;
         return 1;
     }
-    
-    // initialize the view to look at the center of the scene graph
-    const osg::BoundingSphere& bs = loadedModel->getBound();
-    osg::Matrix viewMatrix;
-    viewMatrix.makeLookAt(bs.center()-osg::Vec3(0.0,2.0f*bs.radius(),0.0),bs.center(),osg::Vec3(0.0f,0.0f,1.0f));
 
-    osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
-    viewer->setSceneData(loadedModel.get());
-    viewer->setCameraManipulator(new osgGA::TrackballManipulator());
-    viewer->setUpViewAcrossAllScreens();
-    viewer->realize();
+    osgViewer::Viewer viewer;
     
-    viewer->getCamera()->setClearColor(osg::Vec4f(0.6f,0.6f,0.8f,1.0f));
-    
-    osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
+    viewer.setSceneData(loadedModel.get());
 
-    unsigned int frameNum = 0;
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+    viewer.getCamera()->setClearColor(osg::Vec4f(0.6f,0.6f,0.8f,1.0f));
 
-    osgUtil::UpdateVisitor updateVisitor;
-    updateVisitor.setFrameStamp(frameStamp.get());
-    
-    setUpFrameStamp(viewer->getCamera(), frameStamp.get(), loadedModel.get());
-    for(unsigned i=0; i<viewer->getNumSlaves(); ++i)
+    viewer.setUpViewAcrossAllScreens();
+    viewer.realize();
+
+    while(!viewer.done())
     {
-        osg::View::Slave& slave = viewer->getSlave(i);
-        setUpFrameStamp(slave._camera.get(), frameStamp.get(), loadedModel.get());
+        viewer.frame();
     }
 
-    // record the timer tick at the start of rendering.    
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    osg::Timer_t previous_tick = start_tick;
-
-    while(true)
-    {
-        osg::Timer_t current_tick = osg::Timer::instance()->tick();
-
-        frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(start_tick,current_tick));
-        frameStamp->setFrameNumber(frameNum++);
-        
-        //std::cout<<"Frame rate "<<1.0/osg::Timer::instance()->delta_s(previous_tick,current_tick)<<std::endl;
-        previous_tick = current_tick;
-
-        // do the update traversal.
-        loadedModel->accept(updateVisitor);
-
-        viewer->frameAdvance();
-        viewer->frameEventTraversal();
-        viewer->frameUpdateTraversal();
-
-        // viewer->getCamera()->setViewMatrix(viewMatrix);
-
-
-        if (viewer->getCamera() && viewer->getCamera()->getGraphicsContext()) renderCamera(viewer->getCamera());
-        
-        for(unsigned i=0; i<viewer->getNumSlaves(); ++i)
-        {
-            osg::View::Slave& slave = viewer->getSlave(i);
-            if (slave._camera.valid() && slave._camera->getGraphicsContext()) renderCamera(slave._camera.get());
-        }
-        
-    }
 }
 
 

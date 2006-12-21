@@ -99,7 +99,7 @@ void View::setUpViewAcrossAllScreens()
             osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
             if (gw)
             {
-                osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<std::endl;
+                osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
             }
             else
             {
@@ -140,7 +140,7 @@ void View::setUpViewAcrossAllScreens()
             osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
             if (gw)
             {
-                osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+                osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
                 
                 gw->getEventQueue()->setUseFixedMouseInputRange(true);
                 gw->getEventQueue()->getCurrentEventState()->setInputRange(inputRangeMinX, inputRangeMinY, inputRangeMinX+float(width),inputRangeMinY+float(height) );
@@ -167,14 +167,37 @@ void View::setUpViewAcrossAllScreens()
     assignSceneDataToCameras();
 }
 
+// Draw operation, that does a draw on the scene graph.
+struct RenderingOperation : public osg::GraphicsContext::Operation
+{
+    RenderingOperation(osgViewer::View* view, osg::Camera* camera, osg::FrameStamp* frameStamp):
+        osg::GraphicsContext::Operation("Render",true)
+    {
+        _sceneView = new osgUtil::SceneView;
+        _sceneView->setDefaults();
+        _sceneView->setCamera(camera);
+        _sceneView->setState(camera->getGraphicsContext()->getState());
+        _sceneView->setSceneData(view->getSceneData());
+        _sceneView->setFrameStamp(frameStamp);
+
+    }
+    
+    virtual void operator () (osg::GraphicsContext*)
+    {
+        _sceneView->cull();
+        _sceneView->draw();
+    }
+    
+    osg::ref_ptr<osgUtil::SceneView> _sceneView;
+};
+
 void View::setUpRenderingSupport()
 {
+    osg::FrameStamp* frameStamp = _scene->getFrameStamp();
+
     if (_camera.valid() && _camera->getGraphicsContext())
     {
-        osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
-        sceneView->setState(_camera->getGraphicsContext()->getState());
-        sceneView->setCamera(_camera.get());
-        _camera->setRenderingCache(0, sceneView.get());
+        _camera->getGraphicsContext()->add(new RenderingOperation(this, _camera.get(), frameStamp));
     }
     
     for(unsigned i=0; i<getNumSlaves(); ++i)
@@ -182,11 +205,7 @@ void View::setUpRenderingSupport()
         Slave& slave = getSlave(i);
         if (slave._camera.valid() && slave._camera->getGraphicsContext())
         {
-            osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
-            sceneView->setDefaults();
-            sceneView->setState(slave._camera->getGraphicsContext()->getState());
-            sceneView->setCamera(slave._camera.get());
-            slave._camera->setRenderingCache(0, sceneView.get());
+            slave._camera->getGraphicsContext()->add(new RenderingOperation(this, slave._camera.get(), frameStamp));
         }
     }
 }

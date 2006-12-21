@@ -115,6 +115,7 @@ void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
 GraphicsContext::GraphicsContext():
     _threadOfLastMakeCurrent(0)
 {
+    _operationsBlock = new Block;
 }
 
 GraphicsContext::~GraphicsContext()
@@ -245,6 +246,109 @@ void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
         if (!_graphicsThread->isRunning())
         {
             _graphicsThread->startThread();
+        }
+    }
+}
+
+void GraphicsContext::add(Operation* operation)
+{
+    osg::notify(osg::INFO)<<"Doing add"<<std::endl;
+
+    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+    // add the operation to the end of the list
+    _operations.push_back(operation);
+
+    _operationsBlock->set(true);
+}
+
+void GraphicsContext::remove(Operation* operation)
+{
+    osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
+
+    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+    for(OperationQueue::iterator itr = _operations.begin();
+        itr!=_operations.end();)
+    {
+        if ((*itr)==operation) itr = _operations.erase(itr);
+        else ++itr;
+    }
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
+}
+
+void GraphicsContext::remove(const std::string& name)
+{
+    osg::notify(osg::INFO)<<"Doing remove named operation"<<std::endl;
+    
+    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+    // find the remove all operations with specificed name
+    for(OperationQueue::iterator itr = _operations.begin();
+        itr!=_operations.end();)
+    {
+        if ((*itr)->getName()==name) itr = _operations.erase(itr);
+        else ++itr;
+    }
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
+}
+
+void GraphicsContext::removeAllOperations()
+{
+    osg::notify(osg::INFO)<<"Doing remove all operations"<<std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+    _operations.clear();
+    _operationsBlock->set(false);
+}
+
+void GraphicsContext::runOperations()
+{
+    for(OperationQueue::iterator itr = _operations.begin();
+        itr != _operations.end();
+        )
+    {
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+            _currentOperation = *itr;
+
+            if (!_currentOperation->getKeep())
+            {
+                itr = _operations.erase(itr);
+
+                if (_operations.empty())
+                {
+                    _operationsBlock->set(false);
+                }
+            }
+            else
+            {
+                ++itr;
+            }
+        }
+                
+        if (_currentOperation.valid())
+        {
+            osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
+
+            // call the graphics operation.
+            (*_currentOperation)(this);
+
+            {            
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+                _currentOperation = 0;
+            }
         }
     }
 }

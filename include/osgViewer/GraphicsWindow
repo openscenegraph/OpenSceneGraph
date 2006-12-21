@@ -42,6 +42,15 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 
         virtual void checkEvents() {}
 
+        /** Set Window decoration.*/
+        virtual void setWindowDecoration(bool /*flag*/) {}
+
+        /** Get focus.*/
+        virtual void grabFocus() {}
+        
+        /** Get focus on if the pointer is in this window.*/
+        virtual void grabFocusIfPointerInWindow() {}
+
     public:
 
         /** Realise the GraphicsContext implementation, 

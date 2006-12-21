@@ -70,6 +70,29 @@ void Viewer::realize()
             slave._camera->getGraphicsContext()->realize();
         }
     }
+
+    bool grabFocus = true;
+    if (grabFocus)
+    {
+        if (_camera.valid() && _camera->getGraphicsContext())
+        {
+            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+            gw->grabFocusIfPointerInWindow();
+        }
+
+        for(unsigned int i=0; i<getNumSlaves(); ++i)
+        {
+            Slave& slave = getSlave(i);
+            if (slave._camera.valid() && slave._camera->getGraphicsContext())
+            {
+                osg::notify(osg::NOTICE)<<"  slave realize()"<<std::endl;
+                slave._camera->getGraphicsContext()->realize();
+                osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
+                gw->grabFocusIfPointerInWindow();
+            }
+        }
+
+    }
 }
 
 

@@ -124,10 +124,18 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Check to see if any events have been generated.*/
         virtual void checkEvents();
 
+        /** Set Window decoration.*/
+        virtual void setWindowDecoration(bool flag);
+
+        /** Get focus.*/
+        virtual void grabFocus();
+        
+        /** Get focus on if the pointer is in this window.*/
+        virtual void grabFocusIfPointerInWindow();
+
     protected:
     
         bool createVisualInfo();
-        void setBorder(bool flag);
         void init();
 
         void transformMouseXY(float& x, float& y);
@@ -184,7 +192,7 @@ bool GraphicsWindowX11::createVisualInfo()
     return _visualInfo != 0;
 }
 
-void GraphicsWindowX11::setBorder(bool flag)
+void GraphicsWindowX11::setWindowDecoration(bool flag)
 {
     Atom atom;
     if( (atom = XInternAtom( _display, "_MOTIF_WM_HINTS", 0 )) != None )
@@ -239,6 +247,14 @@ void GraphicsWindowX11::setBorder(bool flag)
 
         XFlush(_display);
         XSync(_display,0);
+
+#if 0
+        // now update the window dimensions to account for any size changes made by the window manager,
+        XGetWindowAttributes( _display, _window, &watt );
+        _traits->_width = watt.width;
+        _traits->_height = watt.height;
+#endif
+
     }
     else
         osg::notify(osg::NOTICE)<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
@@ -298,7 +314,7 @@ void GraphicsWindowX11::init()
 
     XSetWindowAttributes swatt;
     swatt.colormap = XCreateColormap( _display, _parent, _visualInfo->visual, AllocNone);
-    //swatt.colormap = DefaultColormap( _dpy, 0 );
+    //swatt.colormap = DefaultColormap( _dpy, 10 );
     swatt.background_pixel = 0;
     swatt.border_pixel = 0;
     swatt.event_mask =  0;
@@ -337,13 +353,14 @@ void GraphicsWindowX11::init()
     sh.height = _traits->_height;
     XSetStandardProperties( _display, _window, _traits->_windowName.c_str(), _traits->_windowName.c_str(), None, 0, 0, &sh);
 
-#if 1
-    setBorder(_traits->_windowDecoration);
+#if 0
+    setWindowDecoration(_traits->_windowDecoration);
 #else
-    setBorder(true);
+    setWindowDecoration(true);
 #endif
     // Create  default Cursor
     _defaultCursor = XCreateFontCursor( _display, XC_left_ptr );
+
 
     // Create Null Cursor
     {
@@ -373,6 +390,14 @@ void GraphicsWindowX11::init()
 
     XFlush( _display );
     XSync( _display, 0 );
+
+    // now update the window dimensions to account for any size changes made by the window manager,
+    XGetWindowAttributes( _display, _window, &watt );
+    _traits->_width = watt.width;
+    _traits->_height = watt.height;
+    
+    //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
+
 
     _initialized = true;
 }
@@ -439,7 +464,7 @@ void GraphicsWindowX11::checkEvents()
         switch( ev.type )
         {
             case Expose :
-                osg::notify(osg::NOTICE)<<"Expose"<<std::endl;
+                osg::notify(osg::NOTICE)<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
                 break;
 
             case GravityNotify :
@@ -462,6 +487,10 @@ void GraphicsWindowX11::checkEvents()
             case ConfigureNotify :
             {
                 osg::notify(osg::NOTICE)<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
+                XWindowAttributes watt;
+                XGetWindowAttributes( _display, _window, &watt );
+                osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
+
                 _traits->_x = ev.xconfigure.x;
                 _traits->_y = ev.xconfigure.y;
                 _traits->_width = ev.xconfigure.width;
@@ -477,9 +506,10 @@ void GraphicsWindowX11::checkEvents()
                 do
                 XGetWindowAttributes(_display, _window, &watt );
                 while( watt.map_state != IsViewable );
-
-                XSetInputFocus( _display, _window, RevertToNone, CurrentTime );
-                XFlush(_display); XSync(_display,0);
+                
+                osg::notify(osg::NOTICE)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
+                _traits->_width = watt.width;
+                _traits->_height = watt.height;
 
                 break;
             }
@@ -522,14 +552,21 @@ void GraphicsWindowX11::checkEvents()
                         screenOrigin_x -= DisplayWidth(_display, i);
                     }
 
-                    wx += (screenOrigin_x - _traits->_x);
-                    wy += (screenOrigin_y - _traits->_y);
+                    int dest_x_return, dest_y_return;
+                    Window child_return;
+                    Bool result = XTranslateCoordinates(_display, _window, _parent, 0, 0, &dest_x_return, &dest_y_return, &child_return);
+
+                    wx += (screenOrigin_x - dest_x_return);
+                    wy += (screenOrigin_y - dest_y_return);
                 }
                 
+
                 float mx = wx;
                 float my = wy;
                 transformMouseXY(mx, my);
                 getEventQueue()->mouseMotion(mx, my);
+
+                // osg::notify(osg::NOTICE)<<"MotionNotify wx="<<wx<<" wy="<<wy<<" mx="<<mx<<" my="<<my<<std::endl;
 
                 break;
             }
@@ -603,6 +640,26 @@ void GraphicsWindowX11::checkEvents()
         }
     }
 }
+
+void GraphicsWindowX11::grabFocus()
+{
+    XSetInputFocus( _display, _window, RevertToNone, CurrentTime );
+    XFlush(_display); XSync(_display,0);
+}
+
+void GraphicsWindowX11::grabFocusIfPointerInWindow()
+{
+    Window win, root;
+    int wx, wy, rx, ry;
+    unsigned int buttons;
+
+    if( XQueryPointer( _display, _window,
+          &root, &win, &rx, &ry, &wx, &wy, &buttons))
+    {
+        grabFocus();
+    }
+}
+
 
 void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 {

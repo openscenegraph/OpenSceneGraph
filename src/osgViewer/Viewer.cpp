@@ -266,10 +266,17 @@ void Viewer::frameUpdateTraversal()
 
 void Viewer::frameRenderingTraversals()
 {
-   if (_done) return;
+    if (_done) return;
 
-   typedef std::set<osg::GraphicsContext*> GraphicsContexts;
-   GraphicsContexts contexts;
+    osgDB::DatabasePager* dp = _scene->getDatabasePager();
+    if (dp)
+    {
+        dp->signalBeginFrame(_scene->getFrameStamp());
+    }
+
+
+    typedef std::set<osg::GraphicsContext*> GraphicsContexts;
+    GraphicsContexts contexts;
 
     if (_camera.valid() && _camera->getGraphicsContext())
     {
@@ -292,6 +299,7 @@ void Viewer::frameRenderingTraversals()
             }
         }
     }
+
     
     for(GraphicsContexts::iterator itr = contexts.begin();
         itr != contexts.end();
@@ -301,12 +309,18 @@ void Viewer::frameRenderingTraversals()
         const_cast<osg::GraphicsContext*>(*itr)->makeCurrent();
         const_cast<osg::GraphicsContext*>(*itr)->runOperations();
     }
-   
+
+
     for(GraphicsContexts::iterator itr = contexts.begin();
         itr != contexts.end();
         ++itr)
     {
         const_cast<osg::GraphicsContext*>(*itr)->swapBuffers();
+    }
+
+    if (dp)
+    {
+        dp->signalEndFrame();
     }
 }
 

@@ -170,8 +170,9 @@ void View::setUpViewAcrossAllScreens()
 // Draw operation, that does a draw on the scene graph.
 struct RenderingOperation : public osg::GraphicsContext::Operation
 {
-    RenderingOperation(osgViewer::View* view, osg::Camera* camera, osg::FrameStamp* frameStamp):
-        osg::GraphicsContext::Operation("Render",true)
+    RenderingOperation(osgViewer::View* view, osg::Camera* camera, osgDB::DatabasePager* databasePager, osg::FrameStamp* frameStamp):
+        osg::GraphicsContext::Operation("Render",true),
+        _databasePager(databasePager)
     {
         _sceneView = new osgUtil::SceneView;
         _sceneView->setDefaults();
@@ -180,15 +181,24 @@ struct RenderingOperation : public osg::GraphicsContext::Operation
         _sceneView->setSceneData(view->getSceneData());
         _sceneView->setFrameStamp(frameStamp);
 
+        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
     }
     
     virtual void operator () (osg::GraphicsContext*)
     {
         _sceneView->cull();
         _sceneView->draw();
+
+        if (_databasePager.valid())
+        {
+            double availableTime = 0.004; // 4 ms
+            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+            _sceneView->flushDeletedGLObjects(availableTime);
+        }
     }
     
-    osg::ref_ptr<osgUtil::SceneView> _sceneView;
+    osg::ref_ptr<osgUtil::SceneView>    _sceneView;
+    osg::ref_ptr<osgDB::DatabasePager>  _databasePager;
 };
 
 void View::setUpRenderingSupport()
@@ -197,7 +207,7 @@ void View::setUpRenderingSupport()
 
     if (_camera.valid() && _camera->getGraphicsContext())
     {
-        _camera->getGraphicsContext()->add(new RenderingOperation(this, _camera.get(), frameStamp));
+        _camera->getGraphicsContext()->add(new RenderingOperation(this, _camera.get(), _scene->getDatabasePager(), frameStamp));
     }
     
     for(unsigned i=0; i<getNumSlaves(); ++i)
@@ -205,7 +215,7 @@ void View::setUpRenderingSupport()
         Slave& slave = getSlave(i);
         if (slave._camera.valid() && slave._camera->getGraphicsContext())
         {
-            slave._camera->getGraphicsContext()->add(new RenderingOperation(this, slave._camera.get(), frameStamp));
+            slave._camera->getGraphicsContext()->add(new RenderingOperation(this, slave._camera.get(), _scene->getDatabasePager(), frameStamp));
         }
     }
 }

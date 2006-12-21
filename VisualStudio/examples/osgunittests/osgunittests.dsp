@@ -94,11 +94,11 @@ SOURCE=..\..\..\examples\osgunittests\osgunittests.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\examples\osgunittestsUnitTestFramework.cpp
+SOURCE=..\..\..\examples\osgunittests\UnitTestFramework.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\examples\osgunittestsUnitTests_osg.cpp
+SOURCE=..\..\..\examples\osgunittests\UnitTests_osg.cpp
 # End Source File
 # Begin Source File
 

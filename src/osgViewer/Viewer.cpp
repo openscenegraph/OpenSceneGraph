@@ -15,6 +15,8 @@
 */
 
 #include <osgViewer/Viewer>
+#include <osgUtil/GLObjectsVisitor>
+#include <osg/GLExtensions>
 
 using namespace osgViewer;
 
@@ -24,7 +26,7 @@ public:
         virtual ~ActionAdapter() {}
 
         virtual void requestRedraw() { /*osg::notify(osg::NOTICE)<<"requestRedraw()"<<std::endl;*/ }
-        virtual void requestContinuousUpdate(bool needed=true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
+        virtual void requestContinuousUpdate(bool =true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
         virtual void requestWarpPointer(float x,float y) { osg::notify(osg::NOTICE)<<"requestWarpPointer("<<x<<","<<y<<")"<<std::endl; }
 
 };
@@ -37,6 +39,25 @@ Viewer::Viewer():
 
 Viewer::~Viewer()
 {
+#if 0
+    Contexts contexts;
+    getContexts(contexts);
+
+    // cancel any graphics threads.
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        osg::GraphicsContext* gc = (*citr);
+        gc->setGraphicsThread(0);
+    }
+    
+    if (_scene.valid() && _scene->getDatabasePager())
+    {
+        _scene->getDatabasePager()->cancel();
+        _scene->setDatabasePager(0);
+    }
+#endif    
 }
 
 void Viewer::init()
@@ -53,13 +74,14 @@ void Viewer::init()
     }
 }
 
-void Viewer::realize()
+void Viewer::getContexts(Contexts& contexts)
 {
-    osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
+    typedef std::set<osg::GraphicsContext*> ContextSet;
+    ContextSet contextSet;
 
     if (_camera.valid() && _camera->getGraphicsContext())
     {
-        _camera->getGraphicsContext()->realize();
+        contextSet.insert(_camera->getGraphicsContext());
     }
     
     for(unsigned int i=0; i<getNumSlaves(); ++i)
@@ -67,33 +89,153 @@ void Viewer::realize()
         Slave& slave = getSlave(i);
         if (slave._camera.valid() && slave._camera->getGraphicsContext())
         {
-            osg::notify(osg::INFO)<<"  slave realize()"<<std::endl;
-            slave._camera->getGraphicsContext()->realize();
+            contextSet.insert(slave._camera->getGraphicsContext());
         }
     }
+
+    contexts.clear();
+    contexts.reserve(contextSet.size());
+
+    for(ContextSet::iterator itr = contextSet.begin();
+        itr != contextSet.end();
+        ++itr)
+    {
+        contexts.push_back(const_cast<osg::GraphicsContext*>(*itr));
+    }
+}
+
+OpenThreads::Mutex mutex;
+
+// Compile operation, that compile OpenGL objects.
+struct CompileOperation : public osg::GraphicsThread::Operation
+{
+    CompileOperation(osg::Node* scene):
+        osg::GraphicsThread::Operation("Compile",false),
+        _scene(scene)
+    {
+    }
+    
+    virtual void operator () (osg::GraphicsContext* context)
+    {
+        // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
+        // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+
+        // context->makeCurrentImplementation();
+
+        osgUtil::GLObjectsVisitor compileVisitor;
+        compileVisitor.setState(context->getState());
+
+        // do the compile traversal
+        _scene->accept(compileVisitor);
+
+        // osg::notify(osg::NOTICE)<<"Done Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    }
+    
+    osg::ref_ptr<osg::Node> _scene;
+};
+
+
+// Draw operation, that does a draw on the scene graph.
+struct RunOperations : public osg::GraphicsThread::Operation
+{
+    RunOperations(osg::GraphicsContext* gc):
+        osg::GraphicsThread::Operation("RunOperation",true),
+        _originalContext(gc)
+    {
+    }
+    
+    virtual void operator () (osg::GraphicsContext* gc)
+    {
+        gc->runOperations();
+    }
+    
+    osg::GraphicsContext* _originalContext;
+};
+
+
+void Viewer::realize()
+{
+    osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
+
+    Contexts::iterator citr;
+
+    Contexts contexts;
+    getContexts(contexts);
+
+    bool multiThreaded = getNumSlaves() > 1;
+
+    if (multiThreaded)
+    {
+        _startRenderingBarrier = new osg::BarrierOperation(contexts.size()+1, osg::BarrierOperation::NO_OPERATION);
+        _endRenderingDispatchBarrier = new osg::BarrierOperation(contexts.size()+1, osg::BarrierOperation::NO_OPERATION);
+        osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
+
+        for(citr = contexts.begin();
+            citr != contexts.end();
+            ++citr)
+        {
+            osg::GraphicsContext* gc = (*citr);
+                        
+            // create the a graphics thread for this context
+            gc->createGraphicsThread();
+            
+            gc->getGraphicsThread()->add(new CompileOperation(getSceneData()));
+            
+            // add the startRenderingBarrier
+            gc->getGraphicsThread()->add(_startRenderingBarrier.get());
+
+            // add the rendering operation itself.
+            gc->getGraphicsThread()->add(new RunOperations(gc));
+            
+            // add the endRenderingDispatchBarrier
+            gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
+
+            // add the swap buffers
+            gc->getGraphicsThread()->add(swapOp.get());
+
+        }
+        
+    }
+
+    for(citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        (*citr)->realize();
+    }
+    
+    OpenThreads::Thread::YieldCurrentThread();
 
     bool grabFocus = true;
     if (grabFocus)
     {
-        if (_camera.valid() && _camera->getGraphicsContext())
+        for(citr = contexts.begin();
+            citr != contexts.end();
+            ++citr)
         {
-            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-            gw->grabFocusIfPointerInWindow();
-        }
-
-        for(unsigned int i=0; i<getNumSlaves(); ++i)
-        {
-            Slave& slave = getSlave(i);
-            if (slave._camera.valid() && slave._camera->getGraphicsContext())
+            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*citr);
+            if (gw)
             {
-                osg::notify(osg::INFO)<<"  slave realize()"<<std::endl;
-                slave._camera->getGraphicsContext()->realize();
-                osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
-                gw->grabFocusIfPointerInWindow();
+                gw->grabFocusIfPointerInWindow();    
             }
         }
+    }            
 
+
+    if (multiThreaded)
+    {
+        for(citr = contexts.begin();
+            citr != contexts.end();
+            ++citr)
+        {
+            osg::GraphicsContext* gc = (*citr);
+            if (!gc->getGraphicsThread()->isRunning())
+            {
+                gc->getGraphicsThread()->startThread();
+            }
+        }
     }
+
 }
 
 
@@ -131,27 +273,18 @@ void Viewer::frameEventTraversal()
     // need to copy events from the GraphicsWindow's into local EventQueue;
     osgGA::EventQueue::Events events;
 
-    if (_camera.valid() && _camera->getGraphicsContext())
+    Contexts contexts;
+    getContexts(contexts);
+
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
     {
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*citr);
         if (gw)
         {
             gw->checkEvents();
             gw->getEventQueue()->takeEvents(events);
-        }
-    }
-    
-    for(unsigned int i=0; i<getNumSlaves(); ++i)
-    {
-        Slave& slave = getSlave(i);
-        if (slave._camera.valid() && slave._camera->getGraphicsContext())
-        {
-            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
-            if (gw)
-            {
-                gw->checkEvents();
-                gw->getEventQueue()->takeEvents(events);
-            }
         }
     }
     
@@ -274,48 +407,49 @@ void Viewer::frameRenderingTraversals()
         dp->signalBeginFrame(_scene->getFrameStamp());
     }
 
-
-    typedef std::set<osg::GraphicsContext*> GraphicsContexts;
-    GraphicsContexts contexts;
-
-    if (_camera.valid() && _camera->getGraphicsContext())
-    {
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-        if (gw)
-        {
-            contexts.insert(gw);
-        }
-    }
+    bool multiThreaded = _startRenderingBarrier.valid();
     
-    for(unsigned int i=0; i<getNumSlaves(); ++i)
+    if (multiThreaded)
     {
-        Slave& slave = getSlave(i);
-        if (slave._camera.valid() && slave._camera->getGraphicsContext())
-        {
-            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
-            if (gw)
-            {
-                contexts.insert(gw);
-            }
-        }
-    }
-
+        // sleep(1);
     
-    for(GraphicsContexts::iterator itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
-    {
-        if (_done) return;
-        const_cast<osg::GraphicsContext*>(*itr)->makeCurrent();
-        const_cast<osg::GraphicsContext*>(*itr)->runOperations();
+        // osg::notify(osg::NOTICE)<<std::endl<<"Joing _startRenderingBarrier block"<<std::endl;
+    
+        // dispatch the the rendering threads
+        _startRenderingBarrier->block();
+        
+        // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block"<<std::endl;
+
+        // wait till the rendering dispatch is done.
+        _endRenderingDispatchBarrier->block();
+
+        // osg::notify(osg::NOTICE)<<"Leaving _endRenderingDispatchBarrier block"<<std::endl<<std::endl;
+
     }
-
-
-    for(GraphicsContexts::iterator itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
+    else
     {
-        const_cast<osg::GraphicsContext*>(*itr)->swapBuffers();
+        Contexts contexts;
+        getContexts(contexts);
+
+        Contexts::iterator itr;
+        for(itr = contexts.begin();
+            itr != contexts.end();
+            ++itr)
+        {
+            if (_done) return;
+            (*itr)->makeCurrent();
+            (*itr)->runOperations();
+        }
+
+
+        for(itr = contexts.begin();
+            itr != contexts.end();
+            ++itr)
+        {
+            (*itr)->makeCurrent();
+            (*itr)->swapBuffers();
+        }
+
     }
 
     if (dp)

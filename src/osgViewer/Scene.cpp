@@ -66,9 +66,13 @@ void Scene::setDatabasePager(osgDB::DatabasePager* dp)
 
 void Scene::frameAdvance()
 {
+    // double previousTime = _frameStamp->getReferenceTime();
+    
     osg::Timer_t currentTick  = osg::Timer::instance()->tick();
     _frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(_startTick,currentTick));
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
+    
+    // osg::notify(osg::NOTICE)<<"Frame rate = "<<1.0/(_frameStamp->getReferenceTime()-previousTime)<<std::endl;
 }
 
 void Scene::frameEventTraversal()

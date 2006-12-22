@@ -15,6 +15,7 @@
 #include <osg/GraphicsContext>
 #include <osg/Notify>
 #include <map>
+#include <sstream>
 
 using namespace osg;
 
@@ -36,6 +37,14 @@ GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
         return s_WindowingSystemInterface->createGraphicsContext(traits);
     else
         return 0;    
+}
+
+
+std::string GraphicsContext::ScreenIdentifier::displayName() const
+{
+    std::stringstream ostr;
+    ostr<<hostName<<":"<<displayNum<<"."<<screenNum;
+    return ostr.str();
 }
 
 

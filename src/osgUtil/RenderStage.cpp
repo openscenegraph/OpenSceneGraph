@@ -437,14 +437,14 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             // set up the traits of the graphics context that we want
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
 
-            traits->_width = width;
-            traits->_height = height;
+            traits->width = width;
+            traits->height = height;
 
-            // osg::notify(osg::NOTICE)<<"traits = "<<traits->_width<<" "<<traits->_height<<std::endl;
+            // osg::notify(osg::NOTICE)<<"traits = "<<traits->width<<" "<<traits->height<<std::endl;
 
-            traits->_pbuffer = (renderTargetImplemntation==osg::Camera::PIXEL_BUFFER || renderTargetImplemntation==osg::Camera::PIXEL_BUFFER_RTT);
-            traits->_windowDecoration = (renderTargetImplemntation==osg::Camera::SEPERATE_WINDOW);
-            traits->_doubleBuffer = (renderTargetImplemntation==osg::Camera::SEPERATE_WINDOW);
+            traits->pbuffer = (renderTargetImplemntation==osg::Camera::PIXEL_BUFFER || renderTargetImplemntation==osg::Camera::PIXEL_BUFFER_RTT);
+            traits->windowDecoration = (renderTargetImplemntation==osg::Camera::SEPERATE_WINDOW);
+            traits->doubleBuffer = (renderTargetImplemntation==osg::Camera::SEPERATE_WINDOW);
 
             osg::Texture* pBufferTexture = 0;
             GLenum bufferFormat = GL_NONE;
@@ -465,13 +465,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 {
                     case(osg::Camera::DEPTH_BUFFER):
                     {
-                        traits->_depth = 24;
+                        traits->depth = 24;
                         depthAttached = true;
                         break;
                     }
                     case(osg::Camera::STENCIL_BUFFER):
                     {
-                        traits->_stencil = 8;
+                        traits->stencil = 8;
                         stencilAttached = true;
                         break;
                     }
@@ -503,10 +503,10 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
                         if (renderTargetImplemntation==osg::Camera::PIXEL_BUFFER_RTT)
                         {
-                            traits->_target = bufferFormat;
-                            traits->_level = level;
-                            traits->_face = face;
-                            traits->_mipMapGeneration = attachment._mipMapGeneration;
+                            traits->target = bufferFormat;
+                            traits->level = level;
+                            traits->face = face;
+                            traits->mipMapGeneration = attachment._mipMapGeneration;
                         }
                         break;
                     }
@@ -526,29 +526,30 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             if (!depthAttached)
             {                
-                traits->_depth = 24;
+                traits->depth = 24;
             }
 
             if (!colorAttached)
             {                
                 if (bufferFormat == GL_NONE) bufferFormat = GL_RGB;
 
-                traits->_red = 8;
-                traits->_green = 8;
-                traits->_blue = 8;
-                traits->_alpha = (bufferFormat==GL_RGBA) ? 8 : 0;
+                traits->red = 8;
+                traits->green = 8;
+                traits->blue = 8;
+                traits->alpha = (bufferFormat==GL_RGBA) ? 8 : 0;
             }
 
             // share OpenGL objects if possible...
             if (state.getGraphicsContext())
             {
-                traits->_sharedContext = state.getGraphicsContext();
+                traits->sharedContext = state.getGraphicsContext();
                 
-                const osg::GraphicsContext::Traits* sharedTraits = traits->_sharedContext->getTraits();
+                const osg::GraphicsContext::Traits* sharedTraits = traits->sharedContext->getTraits();
                 if (sharedTraits)
                 {
-                    traits->_displayNum = sharedTraits->_displayNum;
-                    traits->_screenNum = sharedTraits->_screenNum;
+                    traits->hostName = sharedTraits->hostName;
+                    traits->displayNum = sharedTraits->displayNum;
+                    traits->screenNum = sharedTraits->screenNum;
                 }
             }
 

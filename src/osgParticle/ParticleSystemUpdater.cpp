@@ -23,14 +23,18 @@ osgParticle::ParticleSystemUpdater::ParticleSystemUpdater(const ParticleSystemUp
 void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
 {
     osgUtil::CullVisitor *cv = dynamic_cast<osgUtil::CullVisitor *>(&nv);
-    if (cv) {
+    if (cv) 
+    {
         if (nv.getFrameStamp())
         {
-          //added 1/17/06- bgandere@nps.edu 
-          //ensures ParticleSystem will only be updated once per frame
-          //regardless of the number of cameras viewing it
-          if( _frameNumber < nv.getFrameStamp()->getFrameNumber())
-          {
+
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_cullUpdatelMutex);
+            
+            //added 1/17/06- bgandere@nps.edu 
+            //ensures ParticleSystem will only be updated once per frame
+            //regardless of the number of cameras viewing it
+            if( _frameNumber < nv.getFrameStamp()->getFrameNumber())
+            {
                 double t = nv.getFrameStamp()->getReferenceTime();
                 if (_t0 != -1)
                 {
@@ -44,10 +48,11 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
                     }
                 }
                 _t0 = t;
-          }
-          //added- 1/17/06- bgandere@nps.edu 
-          //set frame number to the current frame number
-          _frameNumber = nv.getFrameStamp()->getFrameNumber();
+            }
+
+            //added- 1/17/06- bgandere@nps.edu 
+            //set frame number to the current frame number
+            _frameNumber = nv.getFrameStamp()->getFrameNumber();
         }
         else
         {

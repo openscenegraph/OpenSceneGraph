@@ -171,6 +171,8 @@ namespace osgParticle
         //added- 1/17/06- bgandere@nps.edu 
         //a var to keep from doing multiple updates
         int _frameNumber;
+        
+        OpenThreads::Mutex _cullUpdatelMutex;
     };
     
     // INLINE FUNCTIONS

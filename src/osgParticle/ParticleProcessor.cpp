@@ -62,9 +62,10 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
         // continue only if the particle system is valid
         if (_ps.valid())
         {
-
             if (nv.getFrameStamp())
             {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_cullUpdatelMutex);
+
                 //added- 1/17/06- bgandere@nps.edu 
                 //a check to make sure we havent updated yet this frame
                 if(_frameNumber < nv.getFrameStamp()->getFrameNumber())

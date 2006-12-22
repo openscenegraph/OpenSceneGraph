@@ -43,7 +43,7 @@ class for our graph of test cases, and defines the basic interface
 for all Test components. It is a referent, and may be pointed
 to by an osg::ref_ptr.
 */
-class OSG_EXPORT Test: public osg::Referenced
+class Test: public osg::Referenced
 {
     public:
 
@@ -70,7 +70,7 @@ as an output stream for verbose output during the running of tests.
 
 \todo Improve the output stream code by providing a filtering stream.
 */
-class OSG_EXPORT TestContext
+class TestContext
 {
 public:
 
@@ -97,7 +97,7 @@ private:
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 
-    class OSG_EXPORT TraceStream{
+    class TraceStream{
 
     public:
         TraceStream(std::ostream& o=osg::notify(osg::NOTICE), TraceLevel tl=Results);
@@ -247,7 +247,7 @@ class TestCase_ : public TestCase
 A TestSuite is the \em composite component of the Composite pattern,
 and allows aggregation of Tests into hierarchies.
 */
-class OSG_EXPORT TestSuite : public Test
+class TestSuite : public Test
 {
     public:
 
@@ -275,7 +275,7 @@ class OSG_EXPORT TestSuite : public Test
 TestGraph is a singleton providing central access to the tree of tests;
 primarily, it provides access to the root suite.
 */
-class OSG_EXPORT TestGraph
+class TestGraph
 {
 
     public:
@@ -336,7 +336,7 @@ class OSG_EXPORT TestGraph
 Maintains a string that when accessed in the "visit" member, returns the
 current qualified TestSuite path.
 */
-class OSG_EXPORT TestQualifier : public TestVisitor
+class TestQualifier : public TestVisitor
 {
     enum { SEPCHAR = '.' };
 
@@ -360,7 +360,7 @@ class OSG_EXPORT TestQualifier : public TestVisitor
 QualifiedTestPrinter prints to standard output a list of fully
 qualified tests.
 */
-class OSG_EXPORT QualifiedTestPrinter : public TestQualifier
+class QualifiedTestPrinter : public TestQualifier
 {
 public:
 
@@ -375,7 +375,7 @@ its result, and a textual description of any problems.
 \todo    Consider adding accessor methods if necessary, to get the details
         stored in the TestRecord.
 */
-class OSG_EXPORT TestRecord
+class TestRecord
 {
     public:
 
@@ -419,7 +419,7 @@ given test run.
 \todo    Add support for printing the test report in various formats:
         e.g. text, XML, CSV
 */
-class OSG_EXPORT TestReport
+class TestReport
 {
 public:
 
@@ -445,7 +445,7 @@ test graph.
 
 \todo    Consider an accessor method to get at the TestReport if necessary.
 */
-class OSG_EXPORT TestRunner : public TestQualifier
+class TestRunner : public TestQualifier
 {
 public:
 

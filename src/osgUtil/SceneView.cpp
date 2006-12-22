@@ -117,7 +117,9 @@ SceneView::SceneView(DisplaySettings* ds)
     _interlacedStereoStencilHeight = 0;
 }
 
-SceneView::SceneView(const SceneView& rhs, const osg::CopyOp&)
+SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
+    osg::Object(rhs,copyop),
+    osg::CullSettings(rhs)
 {
     _displaySettings = rhs._displaySettings;
 

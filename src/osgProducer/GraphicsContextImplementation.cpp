@@ -22,7 +22,7 @@ namespace osgProducer
 {
     struct MyWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
     {
-        virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier) 
+        virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& /*screenIdentifier*/) 
         {
             return Producer::RenderSurface::getNumberOfScreens();
         }
@@ -30,9 +30,9 @@ namespace osgProducer
         virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height)
         {
             osg::ref_ptr<Producer::RenderSurface> rs = new Producer::RenderSurface;
-            rs->setHostName(screenIdentifier._hostName);
-            rs->setDisplayNum(screenIdentifier._displayNum);
-            rs->setScreenNum(screenIdentifier._screenNum);
+            rs->setHostName(screenIdentifier.hostName);
+            rs->setDisplayNum(screenIdentifier.displayNum);
+            rs->setScreenNum(screenIdentifier.screenNum);
             rs->getScreenSize(width, height);
         }
 
@@ -66,11 +66,11 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
     _traits = traits;
 
     _rs = new Producer::RenderSurface;
-    _rs->setWindowName(traits->_windowName);
-    _rs->setWindowRectangle(traits->_x, traits->_y, traits->_width, traits->_height);
-    _rs->useBorder(traits->_windowDecoration);
-    _rs->setDisplayNum(traits->_displayNum);
-    _rs->setScreenNum(traits->_screenNum);
+    _rs->setWindowName(traits->windowName);
+    _rs->setWindowRectangle(traits->x, traits->y, traits->width, traits->height);
+    _rs->useBorder(traits->windowDecoration);
+    _rs->setDisplayNum(traits->displayNum);
+    _rs->setScreenNum(traits->screenNum);
     
 
     // set the visual chooser
@@ -81,35 +81,35 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         _rs->setVisualChooser(rs_vc);
     }
     
-    rs_vc->setRedSize(_traits->_red);
-    rs_vc->setGreenSize(_traits->_green);
-    rs_vc->setBlueSize(_traits->_blue);
-    rs_vc->setAlphaSize(_traits->_alpha);
+    rs_vc->setRedSize(_traits->red);
+    rs_vc->setGreenSize(_traits->green);
+    rs_vc->setBlueSize(_traits->blue);
+    rs_vc->setAlphaSize(_traits->alpha);
     
-    rs_vc->setDepthSize(_traits->_depth);
-    rs_vc->setStencilSize(_traits->_stencil);
+    rs_vc->setDepthSize(_traits->depth);
+    rs_vc->setStencilSize(_traits->stencil);
     
-    if (_traits->_doubleBuffer) rs_vc->useDoubleBuffer();
+    if (_traits->doubleBuffer) rs_vc->useDoubleBuffer();
 
     rs_vc->addAttribute( Producer::VisualChooser::RGBA );
 
     // Always use UseGL
     rs_vc->addAttribute( Producer::VisualChooser::UseGL );
  
-    if (traits->_pbuffer)
+    if (traits->pbuffer)
     {
         _rs->setDrawableType(Producer::RenderSurface::DrawableType_PBuffer);
 
-        if (traits->_target)
+        if (traits->target)
         {
 
-            _rs->setRenderToTextureOptions(traits->_mipMapGeneration ? Producer::RenderSurface::RequestSpaceForMipMaps :
+            _rs->setRenderToTextureOptions(traits->mipMapGeneration ? Producer::RenderSurface::RequestSpaceForMipMaps :
                                                                        Producer::RenderSurface::RenderToTextureOptions_Default);
-            _rs->setRenderToTextureMipMapLevel(traits->_level);
-            _rs->setRenderToTextureMode(traits->_alpha>0 ? Producer::RenderSurface::RenderToRGBATexture : 
+            _rs->setRenderToTextureMipMapLevel(traits->level);
+            _rs->setRenderToTextureMode(traits->alpha>0 ? Producer::RenderSurface::RenderToRGBATexture : 
                                                            Producer::RenderSurface::RenderToRGBTexture);
 
-            switch(traits->_target)
+            switch(traits->target)
             {
                 case(GL_TEXTURE_1D) : 
                     _rs->setRenderToTextureTarget(Producer::RenderSurface::Texture1D);
@@ -134,7 +134,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
                 case(GL_TEXTURE_CUBE_MAP_POSITIVE_Z) : 
                 case(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z) : 
                     _rs->setRenderToTextureTarget(Producer::RenderSurface::TextureCUBE);
-                    _rs->setRenderToTextureFace( Producer::RenderSurface::CubeMapFace(traits->_target - GL_TEXTURE_CUBE_MAP_POSITIVE_X));
+                    _rs->setRenderToTextureFace( Producer::RenderSurface::CubeMapFace(traits->target - GL_TEXTURE_CUBE_MAP_POSITIVE_X));
                     break;
             }
 
@@ -142,7 +142,7 @@ GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)
         
     }
     
-    GraphicsContextImplementation* sharedContext = dynamic_cast<GraphicsContextImplementation*>(traits->_sharedContext);
+    GraphicsContextImplementation* sharedContext = dynamic_cast<GraphicsContextImplementation*>(traits->sharedContext);
 
     if (sharedContext)
     {
@@ -184,9 +184,9 @@ GraphicsContextImplementation::GraphicsContextImplementation(Producer::RenderSur
     _closeOnDestruction = false;
 
     _traits = new osg::GraphicsContext::Traits;
-    _traits->_windowName = _rs->getWindowName();
-    _traits->_displayNum = _rs->getDisplayNum();
-    _traits->_screenNum = _rs->getScreenNum();
+    _traits->windowName = _rs->getWindowName();
+    _traits->displayNum = _rs->getDisplayNum();
+    _traits->screenNum = _rs->getScreenNum();
 }
 
 GraphicsContextImplementation::~GraphicsContextImplementation()
@@ -198,7 +198,7 @@ bool GraphicsContextImplementation::realizeImplementation()
 {
     if (_rs.valid()) 
     {
-        GraphicsContextImplementation* sharedContext = dynamic_cast<GraphicsContextImplementation*>(_traits->_sharedContext);
+        GraphicsContextImplementation* sharedContext = dynamic_cast<GraphicsContextImplementation*>(_traits->sharedContext);
 
         if (sharedContext)
         {

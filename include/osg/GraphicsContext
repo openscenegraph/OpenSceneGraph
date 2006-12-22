@@ -24,83 +24,91 @@ class OSG_EXPORT GraphicsContext : public Referenced
 {
     public:
     
-        struct ScreenIdentifier
+        struct OSG_EXPORT ScreenIdentifier
         {
             ScreenIdentifier():
-                _displayNum(0),
-                _screenNum(0) {}
+                displayNum(0),
+                screenNum(0) {}
 
-            ScreenIdentifier(unsigned int screenNum):
-                _displayNum(0),
-                _screenNum(screenNum) {}
+            ScreenIdentifier(unsigned int in_screenNum):
+                displayNum(0),
+                screenNum(in_screenNum) {}
 
-            ScreenIdentifier(const std::string& hostName,unsigned int displayNum, unsigned int screenNum):
-                _hostName(hostName),
-                _displayNum(displayNum),
-                _screenNum(screenNum) {}
+            ScreenIdentifier(const std::string& in_hostName,unsigned int in_displayNum, unsigned int in_screenNum):
+                hostName(in_hostName),
+                displayNum(in_displayNum),
+                screenNum(in_screenNum) {}
                 
-            std::string  _hostName;
-            unsigned int _displayNum;
-            unsigned int _screenNum;
+            std::string displayName() const;
+
+            std::string  hostName;
+            unsigned int displayNum;
+            unsigned int screenNum;
         };
     
         /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
         struct Traits : public osg::Referenced, public ScreenIdentifier
         {
             Traits():
-                _x(0),
-                _y(0),
-                _width(0),
-                _height(0),
-                _windowDecoration(false),
-                _supportsResize(false),
-                _red(8),
-                _blue(8),
-                _green(8),
-                _alpha(0),
-                _depth(24),
-                _stencil(0),
-                _pbuffer(false),
-                _quadBufferStereo(false),
-                _doubleBuffer(false),
-                _target(0),
-                _level(0),
-                _face(0),
-                _mipMapGeneration(false),
-                _sharedContext() {}
+                x(0),
+                y(0),
+                width(0),
+                height(0),
+                windowDecoration(false),
+                supportsResize(false),
+                red(8),
+                blue(8),
+                green(8),
+                alpha(0),
+                depth(24),
+                stencil(0),
+                sampleBuffers(0),
+                samples(0),
+                pbuffer(false),
+                quadBufferStereo(false),
+                doubleBuffer(false),
+                target(0),
+                level(0),
+                face(0),
+                mipMapGeneration(false),
+                sharedContext(0) {}
                             
             // graphics context orginal and size
-            unsigned int _x;
-            unsigned int _y;
-            unsigned int _width;
-            unsigned int _height;
+            unsigned int x;
+            unsigned int y;
+            unsigned int width;
+            unsigned int height;
             
             // window decoration and baviour
-            std::string _windowName;
-            bool        _windowDecoration;
-            bool        _supportsResize;
+            std::string windowName;
+            bool        windowDecoration;
+            bool        supportsResize;
             
             // buffer depths, 0 equals off.
-            unsigned int _red;
-            unsigned int _blue;
-            unsigned int _green;
-            unsigned int _alpha;
-            unsigned int _depth;
-            unsigned int _stencil;
-            
+            unsigned int red;
+            unsigned int blue;
+            unsigned int green;
+            unsigned int alpha;
+            unsigned int depth;
+            unsigned int stencil;
+
+            // multi sample parameters
+            unsigned int sampleBuffers;
+            unsigned int samples;
+
             // buffer configuration
-            bool _pbuffer;
-            bool _quadBufferStereo;
-            bool _doubleBuffer;
+            bool pbuffer;
+            bool quadBufferStereo;
+            bool doubleBuffer;
 
             // render to texture
-            GLenum          _target;
-            unsigned int    _level;
-            unsigned int    _face;
-            unsigned int    _mipMapGeneration;
+            GLenum          target;
+            unsigned int    level;
+            unsigned int    face;
+            unsigned int    mipMapGeneration;
             
             // shared context
-            GraphicsContext* _sharedContext;
+            GraphicsContext* sharedContext;
         };
     
     

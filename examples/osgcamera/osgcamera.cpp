@@ -39,9 +39,13 @@ int main( int argc, char **argv )
     viewer.setUpViewAcrossAllScreens();
     viewer.realize();
 
-    while(!viewer.done())
+    unsigned int numFrames = 0;
+    unsigned int maxFrames = 100;
+
+    while(!viewer.done() && numFrames<maxFrames)
     {
         viewer.frame();
+        ++numFrames;
     }
 
     return 0;

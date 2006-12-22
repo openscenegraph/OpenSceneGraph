@@ -24,7 +24,7 @@ public:
         virtual ~ActionAdapter() {}
 
         virtual void requestRedraw() { /*osg::notify(osg::NOTICE)<<"requestRedraw()"<<std::endl;*/ }
-        virtual void requestContinuousUpdate(bool needed=true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
+        virtual void requestContinuousUpdate(bool /*needed*/=true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
         virtual void requestWarpPointer(float x,float y) { osg::notify(osg::NOTICE)<<"requestWarpPointer("<<x<<","<<y<<")"<<std::endl; }
 
 };
@@ -84,13 +84,13 @@ void View::setUpViewAcrossAllScreens()
             wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->_x = 0;
-            traits->_y = 0;
-            traits->_width = width;
-            traits->_height = height;
-            traits->_windowDecoration = false;
-            traits->_doubleBuffer = true;
-            traits->_sharedContext = 0;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = width;
+            traits->height = height;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = true;
+            traits->sharedContext = 0;
             
             osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
             
@@ -123,14 +123,14 @@ void View::setUpViewAcrossAllScreens()
             wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
 
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->_screenNum = i;
-            traits->_x = 0;
-            traits->_y = 0;
-            traits->_width = width;
-            traits->_height = height;
-            traits->_windowDecoration = false;
-            traits->_doubleBuffer = true;
-            traits->_sharedContext = 0;
+            traits->screenNum = i;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = width;
+            traits->height = height;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = true;
+            traits->sharedContext = 0;
             
             osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
             

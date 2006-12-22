@@ -87,19 +87,25 @@ bool GraphicsWindowX11::createVisualInfo()
     
     attributes.push_back(GLX_RGBA);
     
-    if (_traits->_doubleBuffer) attributes.push_back(GLX_DOUBLEBUFFER);
+    if (_traits->doubleBuffer) attributes.push_back(GLX_DOUBLEBUFFER);
     
-    if (_traits->_quadBufferStereo) attributes.push_back(GLX_STEREO);
+    if (_traits->quadBufferStereo) attributes.push_back(GLX_STEREO);
     
-    attributes.push_back(GLX_RED_SIZE); attributes.push_back(_traits->_red);
-    attributes.push_back(GLX_GREEN_SIZE); attributes.push_back(_traits->_green);
-    attributes.push_back(GLX_BLUE_SIZE); attributes.push_back(_traits->_blue);
-    attributes.push_back(GLX_DEPTH_SIZE); attributes.push_back(_traits->_depth);
+    attributes.push_back(GLX_RED_SIZE); attributes.push_back(_traits->red);
+    attributes.push_back(GLX_GREEN_SIZE); attributes.push_back(_traits->green);
+    attributes.push_back(GLX_BLUE_SIZE); attributes.push_back(_traits->blue);
+    attributes.push_back(GLX_DEPTH_SIZE); attributes.push_back(_traits->depth);
     
-    if (_traits->_alpha) { attributes.push_back(GLX_ALPHA_SIZE); attributes.push_back(_traits->_alpha); }
+    if (_traits->alpha) { attributes.push_back(GLX_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
     
-    if (_traits->_stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->_stencil); }
+    if (_traits->stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
 
+#if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
+
+    if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
+    if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
+
+#endif
     // TODO
     //  GLX_AUX_BUFFERS
     //  GLX_ACCUM_RED_SIZE
@@ -109,7 +115,7 @@ bool GraphicsWindowX11::createVisualInfo()
     
     attributes.push_back(None);
     
-    _visualInfo = glXChooseVisual( _display, _traits->_screenNum, &(attributes.front()) );
+    _visualInfo = glXChooseVisual( _display, _traits->screenNum, &(attributes.front()) );
 
     return _visualInfo != 0;
 }
@@ -173,8 +179,8 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
 #if 0
         // now update the window dimensions to account for any size changes made by the window manager,
         XGetWindowAttributes( _display, _window, &watt );
-        _traits->_width = watt.width;
-        _traits->_height = watt.height;
+        _traits->width = watt.width;
+        _traits->height = watt.height;
 #endif
 
     }
@@ -186,22 +192,20 @@ void GraphicsWindowX11::init()
 {
     if (!_traits || _initialized) return;
 
-    const char* displayString = _traits->_hostName.c_str();
-    _display = XOpenDisplay(displayString);
+    _display = XOpenDisplay(_traits->displayName().c_str());
     
-    unsigned int screen = _traits->_screenNum;
+    unsigned int screen = _traits->screenNum;
 
     if (!_display)
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to open display \"" << XDisplayName(displayString) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
-        return;
+        osg::notify(osg::NOTICE)<<"Error: Unable to open display \"" << XDisplayName(_traits->displayName().c_str()) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
     }
 
      // Query for GLX extension
     int errorBase, eventBase;
     if( glXQueryExtension( _display, &errorBase, &eventBase)  == False )
     {
-        osg::notify(osg::NOTICE)<<"Error: " << XDisplayName(displayString) <<" has no GLX extension." << std::endl;
+        osg::notify(osg::NOTICE)<<"Error: " << XDisplayName(_traits->displayName().c_str()) <<" has no GLX extension." << std::endl;
 
         XCloseDisplay( _display );
         _display = 0;
@@ -249,9 +253,9 @@ void GraphicsWindowX11::init()
     }
 
     _window = XCreateWindow( _display, _parent,
-                             _traits->_x,
-                             _traits->_y,
-                             _traits->_width, _traits->_height, 0,
+                             _traits->x,
+                             _traits->y,
+                             _traits->width, _traits->height, 0,
                              _visualInfo->depth, InputOutput,
                              _visualInfo->visual, mask, &swatt );
                              
@@ -268,14 +272,14 @@ void GraphicsWindowX11::init()
     sh.flags &= 0x7;
     sh.flags |= USPosition;
     sh.flags &= 0xB;
-    sh.x = _traits->_x;
-    sh.y = _traits->_y;
-    sh.width  = _traits->_width;
-    sh.height = _traits->_height;
-    XSetStandardProperties( _display, _window, _traits->_windowName.c_str(), _traits->_windowName.c_str(), None, 0, 0, &sh);
+    sh.x = _traits->x;
+    sh.y = _traits->y;
+    sh.width  = _traits->width;
+    sh.height = _traits->height;
+    XSetStandardProperties( _display, _window, _traits->windowName.c_str(), _traits->windowName.c_str(), None, 0, 0, &sh);
 
 #if 1
-    setWindowDecoration(_traits->_windowDecoration);
+    setWindowDecoration(_traits->windowDecoration);
 #else
     setWindowDecoration(true);
 #endif
@@ -314,8 +318,8 @@ void GraphicsWindowX11::init()
 
     // now update the window dimensions to account for any size changes made by the window manager,
     XGetWindowAttributes( _display, _window, &watt );
-    _traits->_width = watt.width;
-    _traits->_height = watt.height;
+    _traits->width = watt.width;
+    _traits->height = watt.height;
     
     //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
 
@@ -428,10 +432,10 @@ void GraphicsWindowX11::checkEvents()
             {
                 osg::notify(osg::INFO)<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
 
-                _traits->_x = ev.xconfigure.x;
-                _traits->_y = ev.xconfigure.y;
-                _traits->_width = ev.xconfigure.width;
-                _traits->_height = ev.xconfigure.height;
+                _traits->x = ev.xconfigure.x;
+                _traits->y = ev.xconfigure.y;
+                _traits->width = ev.xconfigure.width;
+                _traits->height = ev.xconfigure.height;
                 // need to dispatch resize event.
                 break;
             }
@@ -445,8 +449,8 @@ void GraphicsWindowX11::checkEvents()
                 while( watt.map_state != IsViewable );
                 
                 osg::notify(osg::INFO)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
-                _traits->_width = watt.width;
-                _traits->_height = watt.height;
+                _traits->width = watt.width;
+                _traits->height = watt.height;
 
                 break;
             }
@@ -484,7 +488,7 @@ void GraphicsWindowX11::checkEvents()
                         screenOrigin_x += DisplayWidth(_display, i);
                     }
 
-                    for(i= 0; i < static_cast<int>(_traits->_screenNum); i++ )
+                    for(i= 0; i < static_cast<int>(_traits->screenNum); i++ )
                     {
                         screenOrigin_x -= DisplayWidth(_display, i);
                     }
@@ -603,8 +607,8 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
     if (getEventQueue()->getUseFixedMouseInputRange())
     {
         osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
-        x = eventState->getXmin() + (eventState->getXmax()-eventState->getXmin())*x/float(_traits->_width);
-        y = eventState->getYmin() + (eventState->getYmax()-eventState->getYmin())*y/float(_traits->_height);
+        x = eventState->getXmin() + (eventState->getXmax()-eventState->getXmin())*x/float(_traits->width);
+        y = eventState->getYmin() + (eventState->getYmax()-eventState->getYmin())*y/float(_traits->height);
     }
 }
 
@@ -665,8 +669,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
     {
-        const char* displayString = si._hostName.c_str();
-        Display* display = XOpenDisplay(displayString);
+        Display* display = XOpenDisplay(si.displayName().c_str());
         if(display)
         {
             unsigned int numScreens = ScreenCount(display); 
@@ -676,19 +679,19 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
         }
         else
         {
-            osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(displayString) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
+            osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(si.displayName().c_str()) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
             return 0;
         }
     }
 
     virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
     {
-        const char* displayString = si._hostName.c_str();
+        const char* displayString = si.displayName().c_str();
         Display* display = XOpenDisplay(displayString);
         if(display)
         {
-            width = DisplayWidth(display, si._screenNum);
-            height = DisplayHeight(display, si._screenNum);
+            width = DisplayWidth(display, si.screenNum);
+            height = DisplayHeight(display, si.screenNum);
             XCloseDisplay(display);
         }
         else
@@ -701,7 +704,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
     {
-        if (traits->_pbuffer)
+        if (traits->pbuffer)
         {
             return new GraphicsContextX11(traits);
         }

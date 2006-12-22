@@ -170,22 +170,18 @@ void View::setUpViewAcrossAllScreens()
 // Draw operation, that does a draw on the scene graph.
 struct RenderingOperation : public osg::GraphicsContext::Operation
 {
-    RenderingOperation(osgViewer::View* view, osg::Camera* camera, osgDB::DatabasePager* databasePager, osg::FrameStamp* frameStamp):
+    RenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
         osg::GraphicsContext::Operation("Render",true),
+        _sceneView(sceneView),
         _databasePager(databasePager)
     {
-        _sceneView = new osgUtil::SceneView;
-        _sceneView->setDefaults();
-        _sceneView->setCamera(camera);
-        _sceneView->setState(camera->getGraphicsContext()->getState());
-        _sceneView->setSceneData(view->getSceneData());
-        _sceneView->setFrameStamp(frameStamp);
-
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
     }
     
     virtual void operator () (osg::GraphicsContext*)
     {
+        if (!_sceneView) return;
+    
         _sceneView->cull();
         _sceneView->draw();
 
@@ -197,17 +193,29 @@ struct RenderingOperation : public osg::GraphicsContext::Operation
         }
     }
     
-    osg::ref_ptr<osgUtil::SceneView>    _sceneView;
-    osg::ref_ptr<osgDB::DatabasePager>  _databasePager;
+    osg::observer_ptr<osgUtil::SceneView>    _sceneView;
+    osg::observer_ptr<osgDB::DatabasePager>  _databasePager;
 };
 
 void View::setUpRenderingSupport()
 {
     osg::FrameStamp* frameStamp = _scene->getFrameStamp();
 
+    // what should we do with the old sceneViews?
+    _cameraSceneViewMap.clear();
+
     if (_camera.valid() && _camera->getGraphicsContext())
     {
-        _camera->getGraphicsContext()->add(new RenderingOperation(this, _camera.get(), _scene->getDatabasePager(), frameStamp));
+        osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+        _cameraSceneViewMap[_camera] = sceneView;
+
+        sceneView->setDefaults();
+        sceneView->setCamera(_camera.get());
+        sceneView->setState(_camera->getGraphicsContext()->getState());
+        sceneView->setSceneData(getSceneData());
+        sceneView->setFrameStamp(frameStamp);
+
+        _camera->getGraphicsContext()->add(new RenderingOperation(sceneView, _scene->getDatabasePager()));        
     }
     
     for(unsigned i=0; i<getNumSlaves(); ++i)
@@ -215,7 +223,16 @@ void View::setUpRenderingSupport()
         Slave& slave = getSlave(i);
         if (slave._camera.valid() && slave._camera->getGraphicsContext())
         {
-            slave._camera->getGraphicsContext()->add(new RenderingOperation(this, slave._camera.get(), _scene->getDatabasePager(), frameStamp));
+            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+            _cameraSceneViewMap[slave._camera] = sceneView;
+
+            sceneView->setDefaults();
+            sceneView->setCamera(slave._camera.get());
+            sceneView->setState(slave._camera->getGraphicsContext()->getState());
+            sceneView->setSceneData(getSceneData());
+            sceneView->setFrameStamp(frameStamp);
+
+            slave._camera->getGraphicsContext()->add(new RenderingOperation(sceneView, _scene->getDatabasePager()));
         }
     }
 }

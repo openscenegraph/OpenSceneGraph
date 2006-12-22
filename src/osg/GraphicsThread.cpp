@@ -253,13 +253,28 @@ void GraphicsThread::run()
     {
         if (!_graphicsContext->isRealized())
         {
+#if 0
+
+            osg::notify(osg::NOTICE)<<"Forced to do a realize in GraphicsThread::run."<<std::endl;
             _graphicsContext->realize();
+
             contextRealizedInThisThread = true;
+#else            
+           while (!_graphicsContext->isRealized() && !_done)
+           {
+                osg::notify(osg::INFO)<<"Waiting in GraphicsThread::run for GraphicsContext to realize."<<std::endl;
+                YieldCurrentThread();
+           }
+           osg::notify(osg::INFO)<<"GraphicsThread::run now released as GraphicsContext has been realized."<<std::endl;
+#endif            
         }
     
         osg::notify(osg::INFO)<<"Doing make current"<<std::endl;
-        _graphicsContext->makeCurrent();
+        
+        _graphicsContext->makeCurrentImplementation();
     }
+
+    // _graphicsContext->makeCurrentImplementation();
 
     // create a local object to clean up once the thread is cancelled.
     ThreadExitTidyUp threadExitTypeUp(_graphicsContext, contextRealizedInThisThread);
@@ -272,7 +287,7 @@ void GraphicsThread::run()
 
     do
     {
-        osg::notify(osg::INFO)<<"In main loop "<<this<<std::endl;
+        // osg::notify(osg::NOTICE)<<"In main loop "<<this<<std::endl;
 
         if (_operations.empty())
         {
@@ -346,6 +361,8 @@ void GraphicsThread::run()
             YieldCurrentThread();
             firstTime = false;
         }
+        
+        // osg::notify(osg::NOTICE)<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
 
     } while (!testCancel() && !_done);
 

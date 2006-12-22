@@ -53,16 +53,20 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         /** Clean up all OpenGL objects associated with this viewer's scenegraph.*/ 
         virtual void cleanup();
-
+        
     public:
-
+    
         void init();
+        
+        typedef std::vector<osg::GraphicsContext*> Contexts;
+        void getContexts(Contexts& contexts);
+
         bool _firstFrame;
         bool _done;
-
-    protected:
-    
        
+        osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
+        osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;
+
 };
 
 

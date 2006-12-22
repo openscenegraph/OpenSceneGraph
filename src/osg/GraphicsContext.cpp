@@ -242,11 +242,12 @@ void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
     if (_graphicsThread.valid()) 
     {
         _graphicsThread->_graphicsContext = this;
-        
+#if 0        
         if (!_graphicsThread->isRunning())
         {
             _graphicsThread->startThread();
         }
+#endif        
     }
 }
 

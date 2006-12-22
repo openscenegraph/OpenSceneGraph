@@ -219,7 +219,7 @@ void GraphicsWindowX11::init()
     // need to pick up from traits
     GLXContext sharedGLContext = 0;
     
-    _glxContext = glXCreateContext( _display, _visualInfo, sharedGLContext, GL_TRUE );
+    _glxContext = glXCreateContext( _display, _visualInfo, sharedGLContext, True );
     
     if (!_glxContext)
     {
@@ -325,7 +325,11 @@ void GraphicsWindowX11::init()
 
 bool GraphicsWindowX11::realizeImplementation()
 {
-    if (_realized) return true;
+    if (_realized)
+    {
+        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::realizeImplementation() Already realized"<<std::endl;
+        return true;
+    }
 
     if (!_initialized) init();
     
@@ -335,8 +339,6 @@ bool GraphicsWindowX11::realizeImplementation()
     Window temp = _window;
     XSetWMColormapWindows( _display, _window, &temp, 1);
     
-    makeCurrent();
-    
     _realized = true;
 
     return true;
@@ -344,7 +346,13 @@ bool GraphicsWindowX11::realizeImplementation()
 
 void GraphicsWindowX11::makeCurrentImplementation()
 {
+    // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
+
+    // checkEvents();
+
     glXMakeCurrent( _display, _window, _glxContext );
+    
 }
 
 
@@ -371,7 +379,18 @@ void GraphicsWindowX11::closeImplementation()
 
 void GraphicsWindowX11::swapBuffersImplementation()
 {
+    // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+
+    // makeCurrentImplementation();
+    
+
     glXSwapBuffers(_display, _window); 
+    
+#if 0   
+    checkEvents();
+#endif    
+
+    // glFlush();
 }
 
 void GraphicsWindowX11::checkEvents()
@@ -419,13 +438,13 @@ void GraphicsWindowX11::checkEvents()
             
             case MapNotify :
             {
-                osg::notify(osg::NOTICE)<<"MapNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"MapNotify"<<std::endl;
                 XWindowAttributes watt;
                 do
                 XGetWindowAttributes(_display, _window, &watt );
                 while( watt.map_state != IsViewable );
                 
-                osg::notify(osg::NOTICE)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
+                osg::notify(osg::INFO)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
                 _traits->_width = watt.width;
                 _traits->_height = watt.height;
 
@@ -631,6 +650,17 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     X11WindowingSystemInterface()
     {
+#if 1    
+        if (XInitThreads() == 0)
+        {
+            osg::notify(osg::NOTICE) << "Error: XInitThreads() failed. Aborting." << std::endl;
+            exit(1);
+        }
+        else
+        {
+            osg::notify(osg::INFO) << "X11WindowingSystemInterface, xInitThreads() multi-threaded X support initialized.\n";
+        }
+#endif        
     }
 
     virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 

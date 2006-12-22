@@ -592,14 +592,6 @@ SOURCE=..\..\src\osg\Uniform.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osg\UnitTestFramework.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\osg\Vec3.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\osg\Version.cpp
 # End Source File
 # Begin Source File

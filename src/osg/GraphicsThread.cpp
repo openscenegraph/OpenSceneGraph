@@ -56,10 +56,10 @@ struct ThreadExitTidyUp
     
 };
 
-struct BlockOperation : public GraphicsThread::Operation, public Block
+struct BlockOperation : public GraphicsOperation, public Block
 {
     BlockOperation():
-        GraphicsThread::Operation("Block",false)
+        GraphicsOperation("Block",false)
     {
         reset();
     }
@@ -165,7 +165,7 @@ int GraphicsThread::cancel()
     return result;
 }
 
-void GraphicsThread::add(Operation* operation, bool waitForCompletion)
+void GraphicsThread::add(GraphicsOperation* operation, bool waitForCompletion)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
@@ -194,7 +194,7 @@ void GraphicsThread::add(Operation* operation, bool waitForCompletion)
     }
 }
 
-void GraphicsThread::remove(Operation* operation)
+void GraphicsThread::remove(GraphicsOperation* operation)
 {
     osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
 

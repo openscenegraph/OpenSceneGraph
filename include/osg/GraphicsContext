@@ -146,40 +146,11 @@ class OSG_EXPORT GraphicsContext : public Referenced
     
     public:
     
-        /** Base class for implementing graphics operations.*/
-        struct OSG_EXPORT Operation : virtual public Referenced
-        {
-            Operation(const std::string& name, bool keep):
-                _name(name),
-                _keep(keep) {}
-                
-            /** Set the human readable name of the operation.*/
-            void setName(const std::string& name) { _name = name; }
-
-            /** Get the human readable name of the operation.*/
-            const std::string& getName() const { return _name; }
-        
-            /** Set whether the operation should be kept once its been applied.*/ 
-            void setKeep(bool keep) { _keep = keep; }
-
-            /** Get whether the operation should be kept once its been applied.*/ 
-            bool getKeep() const { return _keep; }
-
-            /** if this operation is a barrier then release it.*/
-            virtual void release() {}
-
-            /** Do the actual task of this operation.*/ 
-            virtual void operator () (GraphicsContext*) {}
-            
-            std::string _name;
-            bool        _keep;
-        };
-        
         /** Add operation to end of OperationQueue.*/
-        void add(Operation* operation);
+        void add(GraphicsOperation* operation);
         
         /** Remove operation from OperationQueue.*/
-        void remove(Operation* operation);
+        void remove(GraphicsOperation* operation);
 
         /** Remove named operation from OperationQueue.*/
         void remove(const std::string& name);
@@ -205,6 +176,9 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Get the const State object which tracks the current OpenGL state for this graphics context.*/
         inline const State* getState() const { return _state.get(); }
         
+
+        /** Return whether a valid and usable GraphicsContext has been created.*/
+        virtual bool valid() const { return false; }
 
         /** Realise the GraphicsContext.*/
         bool realize();
@@ -296,13 +270,14 @@ class OSG_EXPORT GraphicsContext : public Referenced
         OpenThreads::Mutex      _mutex;
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
         
-        typedef std::list< ref_ptr<Operation> > OperationQueue;
-        OpenThreads::Mutex          _operationsMutex;
-        osg::ref_ptr<osg::Block>    _operationsBlock;
-        OperationQueue              _operations;
-        osg::ref_ptr<Operation>     _currentOperation;
+        typedef std::list< ref_ptr<GraphicsOperation> > OperationQueue;
+        
+        OpenThreads::Mutex                  _operationsMutex;
+        osg::ref_ptr<osg::Block>            _operationsBlock;
+        OperationQueue                      _operations;
+        osg::ref_ptr<GraphicsOperation>     _currentOperation;
 
-        ref_ptr<GraphicsThread> _graphicsThread;
+        ref_ptr<GraphicsThread>             _graphicsThread;
         
 };
 

@@ -34,6 +34,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
     public:
 
         GraphicsWindowX11(osg::GraphicsContext::Traits* traits):
+            _valid(false),
             _display(0),
             _parent(0),
             _window(0),
@@ -47,10 +48,17 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         {
             _traits = traits;
 
-            setState( new osg::State );
-            getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+            init();
+            
+            if (valid())
+            {
+                setState( new osg::State );
+                getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+            }
         }
     
+        virtual bool valid() const { return _valid; }
+
         /** Realise the GraphicsContext.*/
         virtual bool realizeImplementation();
 
@@ -86,6 +94,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         void transformMouseXY(float& x, float& y);
         void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);
         
+        bool            _valid;
         Display*        _display;
         Window          _parent;
         Window          _window;

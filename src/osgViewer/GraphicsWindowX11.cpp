@@ -29,11 +29,15 @@
 
 using namespace osgViewer;
 
+namespace osgViewer
+{
+
 class GraphicsContextX11 : public osg::GraphicsContext
 {
     public:
 
         GraphicsContextX11(osg::GraphicsContext::Traits* traits):
+            _valid(false),
             _display(0),
             _parent(0),
             _window(0)
@@ -41,6 +45,8 @@ class GraphicsContextX11 : public osg::GraphicsContext
             _traits = traits;
         }
     
+        virtual bool valid() const { return _valid; }
+
         /** Realise the GraphicsContext implementation, 
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
         virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
@@ -71,12 +77,14 @@ class GraphicsContextX11 : public osg::GraphicsContext
         
     protected:
         
-        Display* _display;
-        Window _parent;
-        Window _window;
+        bool        _valid;
+        Display*    _display;
+        Window      _parent;
+        Window      _window;
 
 };
 
+}
 
 bool GraphicsWindowX11::createVisualInfo()
 {
@@ -190,7 +198,13 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
 
 void GraphicsWindowX11::init()
 {
-    if (!_traits || _initialized) return;
+    if (_initialized) return;
+
+    if (!_traits)
+    {
+        _valid = false;
+        return;
+    }
 
     _display = XOpenDisplay(_traits->displayName().c_str());
     
@@ -198,7 +212,9 @@ void GraphicsWindowX11::init()
 
     if (!_display)
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to open display \"" << XDisplayName(_traits->displayName().c_str()) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Error: Unable to open display \"" << XDisplayName(_traits->displayName().c_str()) << "\"."<<std::endl;
+        _valid = false;
+        return;
     }
 
      // Query for GLX extension
@@ -209,6 +225,7 @@ void GraphicsWindowX11::init()
 
         XCloseDisplay( _display );
         _display = 0;
+        _valid = false;
         return;
     }
     
@@ -217,6 +234,9 @@ void GraphicsWindowX11::init()
     if (!createVisualInfo())
     {
         osg::notify(osg::NOTICE)<<"Error: Not able to create requested visual." << std::endl;
+        XCloseDisplay( _display );
+        _display = 0;
+        _valid = false;
         return;
     }
     
@@ -228,6 +248,9 @@ void GraphicsWindowX11::init()
     if (!_glxContext)
     {
         osg::notify(osg::NOTICE)<<"Error: Unable to create OpenGL graphics context."<<std::endl;
+        XCloseDisplay( _display );
+        _display = 0;
+        _valid = false;
         return;
     }
     
@@ -262,6 +285,10 @@ void GraphicsWindowX11::init()
     if (!_window)
     {
         osg::notify(osg::NOTICE)<<"Error: Unable to create Window."<<std::endl;
+        XCloseDisplay( _display );
+        _display = 0;
+        _glxContext = 0;
+        _valid = false;
         return;
     }
 
@@ -323,7 +350,7 @@ void GraphicsWindowX11::init()
     
     //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
 
-
+    _valid = true;
     _initialized = true;
 }
 
@@ -350,6 +377,8 @@ bool GraphicsWindowX11::realizeImplementation()
 
 void GraphicsWindowX11::makeCurrentImplementation()
 {
+    if (!_realized) return;
+
     // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
     // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
 
@@ -362,15 +391,18 @@ void GraphicsWindowX11::makeCurrentImplementation()
 
 void GraphicsWindowX11::closeImplementation()
 {
-    //glXDestroyContext(_display, _glxContext );
-    XDestroyWindow(_display, _window);
+    if (_display && _window)
+    {
+        //glXDestroyContext(_display, _glxContext );
+        XDestroyWindow(_display, _window);
 
-    XFlush( _display );
-    XSync( _display,0 );
-    
+        XFlush( _display );
+        XSync( _display,0 );
+    }
+
     _window = 0;
     _parent = 0;
-    
+
     if(_visualInfo)
     {
         XFree(_visualInfo);
@@ -383,10 +415,11 @@ void GraphicsWindowX11::closeImplementation()
 
 void GraphicsWindowX11::swapBuffersImplementation()
 {
+    if (!_realized) return;
+
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     // makeCurrentImplementation();
-    
 
     glXSwapBuffers(_display, _window); 
     
@@ -399,6 +432,8 @@ void GraphicsWindowX11::swapBuffersImplementation()
 
 void GraphicsWindowX11::checkEvents()
 {
+    if (!_realized) return;
+
     // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
     while( XPending(_display) )
     {
@@ -679,15 +714,14 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
         }
         else
         {
-            osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(si.displayName().c_str()) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
+            osg::notify(osg::NOTICE) << "A Unable to open display \"" << XDisplayName(si.displayName().c_str()) << "\""<<std::endl;
             return 0;
         }
     }
 
     virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
     {
-        const char* displayString = si.displayName().c_str();
-        Display* display = XOpenDisplay(displayString);
+        Display* display = XOpenDisplay(si.displayName().c_str());
         if(display)
         {
             width = DisplayWidth(display, si.screenNum);
@@ -696,7 +730,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
         }
         else
         {
-            osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(displayString) << "\".  Is the DISPLAY environmental variable set?"<<std::endl;
+            osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(si.displayName().c_str()) << "\"."<<std::endl;
             width = 0;
             height = 0;
         }
@@ -706,11 +740,15 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
     {
         if (traits->pbuffer)
         {
-            return new GraphicsContextX11(traits);
+            osg::ref_ptr<osgViewer::GraphicsContextX11> pbuffer = new GraphicsContextX11(traits);
+            if (pbuffer->valid()) return pbuffer.release();
+            else return 0;
         }
         else
         {
-            return new GraphicsWindowX11(traits);
+            osg::ref_ptr<osgViewer::GraphicsWindowX11> window = new GraphicsWindowX11(traits);
+            if (window->valid()) return window.release();
+            else return 0;
         }
     }
 

@@ -168,10 +168,10 @@ void View::setUpViewAcrossAllScreens()
 }
 
 // Draw operation, that does a draw on the scene graph.
-struct RenderingOperation : public osg::GraphicsContext::Operation
+struct RenderingOperation : public osg::GraphicsOperation
 {
     RenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
-        osg::GraphicsContext::Operation("Render",true),
+        osg::GraphicsOperation("Render",true),
         _sceneView(sceneView),
         _databasePager(databasePager)
     {

@@ -107,10 +107,10 @@ void Viewer::getContexts(Contexts& contexts)
 OpenThreads::Mutex mutex;
 
 // Compile operation, that compile OpenGL objects.
-struct CompileOperation : public osg::GraphicsThread::Operation
+struct CompileOperation : public osg::GraphicsOperation
 {
     CompileOperation(osg::Node* scene):
-        osg::GraphicsThread::Operation("Compile",false),
+        osg::GraphicsOperation("Compile",false),
         _scene(scene)
     {
     }
@@ -136,10 +136,10 @@ struct CompileOperation : public osg::GraphicsThread::Operation
 
 
 // Draw operation, that does a draw on the scene graph.
-struct RunOperations : public osg::GraphicsThread::Operation
+struct RunOperations : public osg::GraphicsOperation
 {
     RunOperations(osg::GraphicsContext* gc):
-        osg::GraphicsThread::Operation("RunOperation",true),
+        osg::GraphicsOperation("RunOperation",true),
         _originalContext(gc)
     {
     }

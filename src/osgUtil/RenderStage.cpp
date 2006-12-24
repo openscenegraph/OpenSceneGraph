@@ -787,10 +787,10 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     }
 }
 
-struct DrawInnerOperation : public osg::GraphicsThread::Operation
+struct DrawInnerOperation : public osg::GraphicsOperation
 {
     DrawInnerOperation(RenderStage* stage, osg::RenderInfo& renderInfo) : 
-        osg::GraphicsThread::Operation("DrawInnerStage",false),
+        osg::GraphicsOperation("DrawInnerStage",false),
         _stage(stage),
         _renderInfo(renderInfo) {}
 

@@ -260,7 +260,7 @@ void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
     }
 }
 
-void GraphicsContext::add(Operation* operation)
+void GraphicsContext::add(GraphicsOperation* operation)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
@@ -273,7 +273,7 @@ void GraphicsContext::add(Operation* operation)
     _operationsBlock->set(true);
 }
 
-void GraphicsContext::remove(Operation* operation)
+void GraphicsContext::remove(GraphicsOperation* operation)
 {
     osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
 

@@ -50,6 +50,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Add an event to the end of the event queue.*/
         void addEvent(GUIEventAdapter* event);
 
+
         /** Specify if mouse coordinates should be transformed into a pre defined input range, or whether they
           * should be simply based on as local coordinates to the window that generated the mouse events.*/
         void setUseFixedMouseInputRange(bool useFixedMouseInputRange) { _useFixedMouseInputRange = useFixedMouseInputRange; }
@@ -57,50 +58,100 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Get whether the mouse coordinates should be transformed into a pre defined input range.*/
         bool getUseFixedMouseInputRange() { return _useFixedMouseInputRange; }
 
+
         /** Set the mouse input range.*/
         void setMouseInputRange(float xMin, float yMin, float xMax, float yMax) { getCurrentEventState()->setInputRange(xMin, yMin, xMax, yMax); }
 
+
         /** Method for adapting window resize event, placing this event on the back of the event queue. */
-        void windowResize(int x, int y, unsigned int width, unsigned int height);
+        void windowResize(int x, int y, unsigned int width, unsigned int height) { windowResize(x,y,width,height,getTime()); }
+
+        /** Method for adapting window resize event, placing this event on the back of the event queue, with specified time. */
+        void windowResize(int x, int y, unsigned int width, unsigned int height, double time);
+
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
-        void mouseScroll(GUIEventAdapter::ScrollingMotion sm);
+        void mouseScroll(GUIEventAdapter::ScrollingMotion sm) { mouseScroll(sm,getTime()); }
         
+        /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue, with specified time. */
+        void mouseScroll(GUIEventAdapter::ScrollingMotion sm, double time);
+        
+
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
-        void mouseScroll2D(float x, float y);
+        void mouseScroll2D(float x, float y) { mouseScroll2D(x, y, getTime()); }
+
+        /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */
+        void mouseScroll2D(float x, float y, double time);
         
-        /** Method for adapting pen pressure events, placing this event on the back og the event queue.*/
-        void penPressure(float pressure);
+
+        /** Method for adapting pen pressure events, placing this event on the back of the event queue.*/
+        void penPressure(float pressure) { penPressure(pressure, getTime()); }
         
-         /** Method for adapting pen proximity events, placing this event on the back og the event queue.*/
-        void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering);
+        /** Method for adapting pen pressure events, placing this event on the back of the event queue, with specified time.*/
+        void penPressure(float pressure, double time);
+        
+
+         /** Method for adapting pen proximity events, placing this event on the back of the event queue.*/
+        void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering) { penProximity(pt, isEntering, getTime()); }
+
+         /** Method for adapting pen proximity events, placing this event on the back of the event queue, with specified time.*/
+        void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering, double time);
+
 
         /** Method for updating in response to a mouse warp. Note, just moves the mouse position without creating a new event for it.*/
-        void mouseWarp(float x, float y);
+        void mouseWarped(float x, float y);
+
 
         /** Method for adapting mouse motion events, placing this event on the back of the event queue.*/
-        void mouseMotion(float x, float y);
+        void mouseMotion(float x, float y) { mouseMotion(x,y, getTime()); }
+
+        /** Method for adapting mouse motion events, placing this event on the back of the event queue, with specified time.*/
+        void mouseMotion(float x, float y, double time);
+
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseButtonPress(float x, float y, unsigned int button);
+        void mouseButtonPress(float x, float y, unsigned int button) { mouseButtonPress(x, y, button, getTime()); }
+
+        /** Method for adapting mouse button pressed events, placing this event on the back of the event queue, with specified time.
+          * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
+        void mouseButtonPress(float x, float y, unsigned int button, double time);
+
 
         /** Method for adapting mouse button pressed events, placing this event on the back of the event queue.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseDoubleButtonPress(float x, float y, unsigned int button);
+        void mouseDoubleButtonPress(float x, float y, unsigned int button) { mouseDoubleButtonPress(x, y, button, getTime()); }
         
+        /** Method for adapting mouse button pressed events, placing this event on the back of the event queue, with specified time.
+          * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
+        void mouseDoubleButtonPress(float x, float y, unsigned int button, double time);
+        
+
         /** Method for adapting mouse button release events, placing this event on the back of the event queue.
           * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
-        void mouseButtonRelease(float x, float y, unsigned int button);
+        void mouseButtonRelease(float x, float y, unsigned int button) { mouseButtonRelease(x, y, button, getTime()); }
+
+        /** Method for adapting mouse button release events, placing this event on the back of the event queue, with specified time.
+          * Button numbering is 1 for left mouse button, 2 for middle, 3 for right. */
+        void mouseButtonRelease(float x, float y, unsigned int button, double time);
+
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
-        void keyPress(int key);
+        void keyPress(int key) { keyPress(key, getTime()); }
+
+        /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time.*/
+        void keyPress(int key, double time);
+
 
         /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings.*/
-        void keyRelease(int key);
+        void keyRelease(int key) { keyRelease(key, getTime()); }
+
+        /** Method for adapting keyboard press events. Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time.*/
+        void keyRelease(int key, double time);
+
 
         /** Method for adapting frame events.*/
-        void frame(double t);
+        void frame(double time);
         
 
         void setStartTick(osg::Timer_t tick) { _startTick = tick; }
@@ -108,8 +159,10 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
         double getTime() const { return osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()); }
 
+
         /** convinience method for create an event ready to fill in.  Clones the getCurrentEventState() to produce a up to date event state. */
         GUIEventAdapter* createEvent();
+        
         
         GUIEventAdapter* getCurrentEventState() { return _accumulateEventState.get(); }
         const GUIEventAdapter* getCurrentEventState() const { return _accumulateEventState.get(); }

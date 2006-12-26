@@ -86,7 +86,6 @@ class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
     
     
         bool                                    _firstFrame;
-        osg::Timer_t                            _startTick;
         osg::ref_ptr<osg::FrameStamp>           _frameStamp;
 
         osg::ref_ptr<osgUtil::SceneView>        _sceneView;

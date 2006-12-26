@@ -163,7 +163,7 @@ void Viewer::realize()
     getContexts(contexts);
 
     bool multiThreaded = getNumSlaves() > 1;
-
+    
     if (multiThreaded)
     {
         _startRenderingBarrier = new osg::BarrierOperation(contexts.size()+1, osg::BarrierOperation::NO_OPERATION);
@@ -202,10 +202,9 @@ void Viewer::realize()
         ++citr)
     {
         (*citr)->realize();
+        OpenThreads::Thread::YieldCurrentThread();
     }
     
-    OpenThreads::Thread::YieldCurrentThread();
-
     bool grabFocus = true;
     if (grabFocus)
     {
@@ -221,6 +220,9 @@ void Viewer::realize()
         }
     }            
 
+    // initialize the global timer to be relative to the current time.
+    osg::Timer::instance()->setStartTick();
+
 
     if (multiThreaded)
     {
@@ -232,6 +234,7 @@ void Viewer::realize()
             if (!gc->getGraphicsThread()->isRunning())
             {
                 gc->getGraphicsThread()->startThread();
+                OpenThreads::Thread::YieldCurrentThread();
             }
         }
     }
@@ -288,10 +291,6 @@ void Viewer::frameEventTraversal()
         }
     }
     
-    _eventQueue->frame( _scene->getFrameStamp()->getReferenceTime() );
-
-    _eventQueue->takeEvents(events);
-
     osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
     for(osgGA::EventQueue::Events::iterator itr = events.begin();
         itr != events.end();
@@ -299,7 +298,26 @@ void Viewer::frameEventTraversal()
     {
         osgGA::GUIEventAdapter* event = itr->get();
         event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
+
+        switch(event->getEventType())
+        {
+            case(osgGA::GUIEventAdapter::PUSH):
+            case(osgGA::GUIEventAdapter::RELEASE):
+            case(osgGA::GUIEventAdapter::DRAG):
+            case(osgGA::GUIEventAdapter::MOVE):
+                eventState->setX(event->getX());
+                eventState->setY(event->getY());
+                eventState->setButtonMask(event->getButtonMask());
+                break;
+            default:
+                break;
+        }
     }
+
+    _eventQueue->frame( _scene->getFrameStamp()->getReferenceTime() );
+
+    _eventQueue->takeEvents(events);
+
 
 #if 0
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;

@@ -22,12 +22,9 @@ SimpleViewer::SimpleViewer():
     _sceneView->setDefaults();
     _sceneView->getState()->setContextID(osg::GraphicsContext::createNewContextID());
     
-    _startTick = osg::Timer::instance()->tick();
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
-
-    _eventQueue->setStartTick(_startTick);
 
     _eventVisitor = new osgGA::EventVisitor;
     
@@ -138,8 +135,7 @@ void SimpleViewer::frame()
 
 void SimpleViewer::frameAdvance()
 {
-    osg::Timer_t currentTick  = osg::Timer::instance()->tick();
-    _frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(_startTick,currentTick));
+    _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
 
     _sceneView->setFrameStamp(_frameStamp.get());

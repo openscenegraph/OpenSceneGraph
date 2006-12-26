@@ -10,11 +10,11 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgGA/AnimationPathManipulator>
-
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include "GliderManipulator.h"
+
+#include <iostream>
 
 extern osg::Node *makeTerrain( void );
 extern osg::Node *makeTrees( void );
@@ -111,17 +111,14 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
+    osg::Referenced::setThreadSafeReferenceCounting(true);
+
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::ESCAPE_SETS_DONE);
 
-    unsigned int pos = viewer.addCameraManipulator(new GliderManipulator());
-    viewer.selectCameraManipulator(pos);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    viewer.setCameraManipulator(new GliderManipulator());
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -146,32 +143,18 @@ int main( int argc, char **argv )
 
     viewer.setSceneData( rootnode );
 
+    // set up the value with sensible default event handlers.
+    viewer.setUpViewAcrossAllScreens();
 
     // create the windows and run the threads.
     viewer.realize();
 
     while( !viewer.done() )
     {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
         
     }
-    
-    // wait for all cull and draw threads to complete before exit.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
 
     return 0;
 }

@@ -26,7 +26,7 @@ using namespace osg;
 // all the rest of the timer methods are implemented within the header.
 
 
-const Timer* Timer::instance()
+Timer* Timer::instance()
 {
     static Timer s_timer;
     return &s_timer;
@@ -51,6 +51,8 @@ const Timer* Timer::instance()
             notify(NOTICE)<<"Error: Timer::Timer() unable to use QueryPerformanceFrequency, "<<std::endl;
             notify(NOTICE)<<"timing code will be wrong, Windows error code: "<<GetLastError()<<std::endl;
         }
+        
+        setStartTick();        
     }
 
     Timer_t Timer::tick() const
@@ -75,6 +77,8 @@ const Timer* Timer::instance()
     Timer::Timer( void )
     {
         _secsPerTick = (1.0 / (double) 1000000);
+
+        setStartTick();        
     }
 
     Timer_t Timer::tick() const

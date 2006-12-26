@@ -62,6 +62,11 @@ void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
     }
 }
 
+void View::addEventHandler(osgGA::GUIEventHandler* eventHandler)
+{ 
+    _eventHandlers.push_back(eventHandler);
+}
+
 void View::setUpViewAcrossAllScreens()
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();

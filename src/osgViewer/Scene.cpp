@@ -18,7 +18,6 @@ using namespace osgViewer;
 Scene::Scene():
     _firstFrame(true)
 {
-    _startTick = osg::Timer::instance()->tick();
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
@@ -27,7 +26,6 @@ Scene::Scene():
     _updateVisitor->setFrameStamp(_frameStamp.get());
 
     _eventQueue = new osgGA::EventQueue;
-    _eventQueue->setStartTick(_startTick);
 
     _eventVisitor = new osgGA::EventVisitor;
     
@@ -68,8 +66,7 @@ void Scene::frameAdvance()
 {
     // double previousTime = _frameStamp->getReferenceTime();
     
-    osg::Timer_t currentTick  = osg::Timer::instance()->tick();
-    _frameStamp->setReferenceTime(osg::Timer::instance()->delta_s(_startTick,currentTick));
+    _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
     
     // osg::notify(osg::NOTICE)<<"Frame rate = "<<1.0/(_frameStamp->getReferenceTime()-previousTime)<<std::endl;

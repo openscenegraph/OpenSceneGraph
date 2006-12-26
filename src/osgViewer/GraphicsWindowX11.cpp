@@ -25,7 +25,9 @@
 #include <X11/keysym.h>
 #include <X11/Xmu/WinUtil.h>
 #include <X11/cursorfont.h>
+#include <X11/Intrinsic.h>
 
+#include <X11/Xmd.h>		/* For CARD16 */
 
 using namespace osgViewer;
 
@@ -367,8 +369,9 @@ bool GraphicsWindowX11::realizeImplementation()
     if (!_initialized) return false;
     
     XMapWindow( _display, _window );
-    Window temp = _window;
-    XSetWMColormapWindows( _display, _window, &temp, 1);
+    
+//    Window temp = _window;
+//    XSetWMColormapWindows( _display, _window, &temp, 1);
     
     _realized = true;
 
@@ -492,6 +495,8 @@ void GraphicsWindowX11::checkEvents()
 
            case MotionNotify :
            {
+                osg::notify(osg::INFO)<<"MotionNotify time="<<ev.xmotion.time<<std::endl;
+           
                 int  wx, wy;
                 Window win = 0L;
                 if( ev.xmotion.same_screen )

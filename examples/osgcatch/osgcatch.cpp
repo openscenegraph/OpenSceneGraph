@@ -11,7 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgProducer/Viewer>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
@@ -27,7 +26,10 @@
 #include <osg/Switch>
 #include <osg/TexMat>
 #include <osg/Texture2D>
+#include <osg/Timer>
 #include <osg/io_utils>
+
+#include <osgGA/GUIEventHandler>
 
 #include <osgParticle/ExplosionEffect>
 #include <osgParticle/ExplosionDebrisEffect>
@@ -785,6 +787,8 @@ GameEventHandler::GameEventHandler()
     CatchableObject::setUpCatchablesMap(_benignCatachables);
     
     _currentScore = 0;
+    
+    setFOVY(osg::DegreesToRadians(60.0));
 
 }
 
@@ -1348,6 +1352,11 @@ void GameEventHandler::createNewCatchable()
 }
 
 
+
+#if 0
+
+#include <osgProducer/Viewer>
+
 class CompileStateCallback : public osgProducer::OsgCameraGroup::RealizeCallback
 {
     public:
@@ -1488,4 +1497,100 @@ int main( int argc, char **argv )
     
     return 0;
 }
+#else
 
+#include <osgViewer/Viewer>
+#include <iostream>
+
+int main( int argc, char **argv )
+{
+
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+    
+    // set up the usage document, in case we need to print out how to use this program.
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use node masks to create stereo images.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
+    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in sceonds between the display of successive image pairs when in auto advance mode.");
+    arguments.getApplicationUsage()->addCommandLineOption("-a","Enter auto advance of image pairs on start up.");
+    arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
+    arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    
+
+    // construct the viewer.
+    osgViewer::Viewer viewer;
+
+    // todo for osgViewer
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
+    osg::Referenced::setThreadSafeReferenceCounting(true);
+
+    // register the handler to add keyboard and mosue handling.
+    GameEventHandler* seh = new GameEventHandler();
+    viewer.addEventHandler(seh);
+
+    while (arguments.read("--boy")) seh->addPlayer(GameEventHandler::PLAYER_BOY);
+    while (arguments.read("--girl")) seh->addPlayer(GameEventHandler::PLAYER_GIRL);
+    
+    
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occured when parsing the program aguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    
+    // enable the image cache so we don't need to keep loading the particle files
+    osgDB::ReaderWriter::Options* options = new osgDB::ReaderWriter::Options;
+    options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
+    osgDB::Registry::instance()->setOptions(options);
+
+
+    // creat the scene from the file list.
+    osg::ref_ptr<osg::Node> rootNode = seh->createScene();
+
+    //osgDB::writeNodeFile(*rootNode,"test.osg");
+
+    // set the scene to render
+    viewer.setSceneData(rootNode.get());
+
+    // viewer.setRealizeCallback(new CompileStateCallback(seh));
+
+    double fovy, aspectRatio, zNear, zFar;
+    viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
+    seh->setFOVY(osg::DegreesToRadians(fovy));    
+    
+    viewer.getCamera()->setClearColor(osg::Vec4f(0.6f,0.6f,0.8f,1.0f));
+
+    // todo for osgViewer - create default set up.
+    viewer.setUpViewAcrossAllScreens();
+
+    viewer.realize();
+
+    // todo for osgViewer - implement warp pointer
+    // viewer.requestWarpPointer(0.5f,0.5f);        
+
+    while( !viewer.done() )
+    {
+        viewer.getCamera()->setViewMatrix(seh->getCameraPosition());
+
+        // fire off the cull and draw traversals of the scene.
+        viewer.frame();
+        
+    }
+    
+    return 0;
+}
+
+#endif

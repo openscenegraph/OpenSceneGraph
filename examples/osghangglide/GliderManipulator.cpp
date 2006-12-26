@@ -87,6 +87,7 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     switch(ea.getEventType())
     {
+#if 0   
         case(GUIEventAdapter::PUSH):
         {
 
@@ -101,7 +102,7 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
-            if (calcMovement()) us.requestRedraw();
+            // if (calcMovement()) us.requestRedraw();
             return true;
         }
 
@@ -110,7 +111,7 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
-            if (calcMovement()) us.requestRedraw();
+            // if (calcMovement()) us.requestRedraw();
             return true;
         }
 
@@ -119,11 +120,11 @@ bool GliderManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
             addMouseEvent(ea);
             us.requestContinuousUpdate(true);
-            if (calcMovement()) us.requestRedraw();
+            // if (calcMovement()) us.requestRedraw();
 
             return true;
         }
-
+#endif
         case(GUIEventAdapter::KEYDOWN):
             if (ea.getKey()==' ')
             {
@@ -258,6 +259,8 @@ bool GliderManipulator::calcMovement()
 
     float dx = _ga_t0->getXnormalized();
     float dy = _ga_t0->getYnormalized();
+    
+    // osg::notify(osg::NOTICE)<<"dx = "<<dx<<" dy = "<<dy<<"dt = "<<dt<<std::endl;
 
     // mew - flag to reverse mouse-control mapping
     if( getenv( "OSGHANGGLIDE_REVERSE_CONTROLS" ) )

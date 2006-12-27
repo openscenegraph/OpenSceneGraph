@@ -40,7 +40,7 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
                     {
                         ParticleSystem* ps = i->get();
                         
-                        osgDB::ScopedWriteLock lock(ps->getReadWriteMutex());
+                        osgDB::ScopedWriteLock lock(*(ps->getReadWriteMutex()));
 
                         if (!ps->isFrozen() && (ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps->getFreezeOnCull()))
                         {

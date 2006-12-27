@@ -64,7 +64,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
         {
             if (nv.getFrameStamp())
             {
-                osgDB::ScopedWriteLock lock(_ps->getReadWriteMutex());
+                osgDB::ScopedWriteLock lock(*(_ps->getReadWriteMutex()));
 
                 //added- 1/17/06- bgandere@nps.edu 
                 //a check to make sure we havent updated yet this frame

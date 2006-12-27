@@ -64,12 +64,13 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
         {
             if (nv.getFrameStamp())
             {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_cullUpdatelMutex);
+                osgDB::ScopedWriteLock lock(_ps->getReadWriteMutex());
 
                 //added- 1/17/06- bgandere@nps.edu 
                 //a check to make sure we havent updated yet this frame
                 if(_frameNumber < nv.getFrameStamp()->getFrameNumber())
                 {
+
 
                     // retrieve the current time
                     double t = nv.getFrameStamp()->getReferenceTime();

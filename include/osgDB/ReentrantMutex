@@ -37,13 +37,68 @@ class OSGDB_EXPORT ReentrantMutex : public OpenThreads::Mutex
 
     private:
 
-        ReentrantMutex(const ReentrantMutex &):OpenThreads::Mutex() {}
+        ReentrantMutex(const ReentrantMutex&):OpenThreads::Mutex() {}
 
-        ReentrantMutex &operator=(const ReentrantMutex &) {return *(this);}
+        ReentrantMutex& operator =(const ReentrantMutex&) { return *(this); }
         
         OpenThreads::Thread* _threadHoldingMutex;
         unsigned int         _lockCount;
 
+};
+
+class OSGDB_EXPORT ReadWriteMutex
+{
+    public:
+    
+        ReadWriteMutex();
+        
+        virtual ~ReadWriteMutex();
+    
+        virtual int readLock();
+
+        virtual int readUnlock();
+
+        virtual int writeLock();
+
+        virtual int writeUnlock();
+        
+    protected:
+    
+        ReadWriteMutex(const ReadWriteMutex&) {}
+        ReadWriteMutex& operator = (const ReadWriteMutex&) { return *(this); }
+        
+#if 1        
+        ReentrantMutex  _readWriteMutex;        
+        ReentrantMutex  _readCountMutex;
+#else
+        OpenThreads::Mutex  _readWriteMutex;        
+        OpenThreads::Mutex  _readCountMutex;
+#endif
+        unsigned int    _readCount;
+        
+};
+
+class ScopedReadLock
+{
+    public:
+    
+        ScopedReadLock(ReadWriteMutex& mutex):_mutex(mutex) { _mutex.readLock(); }
+        ~ScopedReadLock() { _mutex.readUnlock(); }
+        
+    protected:  
+        ReadWriteMutex& _mutex;
+};
+
+
+class ScopedWriteLock
+{
+    public:
+    
+        ScopedWriteLock(ReadWriteMutex& mutex):_mutex(mutex) { _mutex.writeLock(); }
+        ~ScopedWriteLock() { _mutex.writeUnlock(); }
+        
+    protected:  
+        ReadWriteMutex& _mutex;
 };
 
 }

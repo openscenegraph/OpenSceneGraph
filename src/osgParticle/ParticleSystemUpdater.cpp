@@ -27,32 +27,30 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
     {
         if (nv.getFrameStamp())
         {
-
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_cullUpdatelMutex);
             
-            //added 1/17/06- bgandere@nps.edu 
-            //ensures ParticleSystem will only be updated once per frame
-            //regardless of the number of cameras viewing it
             if( _frameNumber < nv.getFrameStamp()->getFrameNumber())
             {
+                _frameNumber = nv.getFrameStamp()->getFrameNumber();
+
                 double t = nv.getFrameStamp()->getReferenceTime();
-                if (_t0 != -1)
+                if (_t0 != -1.0)
                 {
                     ParticleSystem_Vector::iterator i;
                     for (i=_psv.begin(); i!=_psv.end(); ++i)
                     {
-                        if (!i->get()->isFrozen() && (i->get()->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !i->get()->getFreezeOnCull()))
+                        ParticleSystem* ps = i->get();
+                        
+                        osgDB::ScopedWriteLock lock(ps->getReadWriteMutex());
+
+                        if (!ps->isFrozen() && (ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps->getFreezeOnCull()))
                         {
-                            i->get()->update(t - _t0);
+                            ps->update(t - _t0);
                         }
                     }
                 }
                 _t0 = t;
             }
 
-            //added- 1/17/06- bgandere@nps.edu 
-            //set frame number to the current frame number
-            _frameNumber = nv.getFrameStamp()->getFrameNumber();
         }
         else
         {

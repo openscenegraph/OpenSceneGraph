@@ -119,7 +119,7 @@ void KeyboardMouseCallback::passiveMouseMotion( float mx, float my)
 void KeyboardMouseCallback::mouseWarp( float mx, float my) 
 {
     updateWindowSize();
-    if (_eventQueue.valid()) _eventQueue->mouseWarp(mx,my); // need mouse warp??
+    if (_eventQueue.valid()) _eventQueue->mouseWarped(mx,my); // need mouse warp??
 }
 
 

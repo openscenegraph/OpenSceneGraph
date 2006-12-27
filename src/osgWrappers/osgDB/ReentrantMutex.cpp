@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgDB::ReadWriteMutex)
+BEGIN_OBJECT_REFLECTOR(osgDB::ReadWriteMutex)
 	I_Constructor0(____ReadWriteMutex,
 	               "",
 	               "");

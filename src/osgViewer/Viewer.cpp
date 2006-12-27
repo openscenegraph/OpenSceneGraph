@@ -299,8 +299,12 @@ void Viewer::frameEventTraversal()
         ++itr)
     {
         osgGA::GUIEventAdapter* event = itr->get();
-        event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
-
+        
+        if (getEventQueue()->getUseFixedMouseInputRange())
+        {
+            event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
+        }
+        
         switch(event->getEventType())
         {
             case(osgGA::GUIEventAdapter::PUSH):
@@ -310,11 +314,16 @@ void Viewer::frameEventTraversal()
                 eventState->setX(event->getX());
                 eventState->setY(event->getY());
                 eventState->setButtonMask(event->getButtonMask());
+                // osg::notify(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
+                // osg::notify(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
                 break;
             default:
                 break;
         }
     }
+
+    // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
+
 
     _eventQueue->frame( _scene->getFrameStamp()->getReferenceTime() );
 

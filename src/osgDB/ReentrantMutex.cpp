@@ -12,7 +12,9 @@
 */
 
 #include <osgDB/ReentrantMutex>
+#include <OpenThreads/ScopedLock>
 
+#include <osg/Notify>
 
 using namespace osgDB;
 using namespace OpenThreads;
@@ -48,6 +50,7 @@ int ReentrantMutex::lock()
 
 int ReentrantMutex::unlock()
 {
+#if 0
     if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
     {
         --_lockCount;
@@ -57,6 +60,21 @@ int ReentrantMutex::unlock()
             return Mutex::unlock();
         }
     }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Error: ReentrantMutex::unlock() - unlocking from the wrong thread."<<std::endl;
+    }
+#else
+    if (_lockCount>0)
+    {
+        --_lockCount;
+        if (_lockCount<=0)
+        {
+            _threadHoldingMutex = 0;
+            return Mutex::unlock();
+        }
+    }
+#endif    
     return 0;
 }
 
@@ -77,4 +95,50 @@ int ReentrantMutex::trylock()
         }
         return result;
     }
+}
+
+ReadWriteMutex::ReadWriteMutex():
+    _readCount(0)
+{
+}
+
+ReadWriteMutex::~ReadWriteMutex()
+{
+}
+
+int ReadWriteMutex::readLock()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_readCountMutex);
+    int result = 0;
+    if (_readCount==0)
+    {
+        result = _readWriteMutex.lock();
+    }
+    ++_readCount;
+    return result;
+}
+
+int ReadWriteMutex::readUnlock()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_readCountMutex);
+    int result = 0;
+    if (_readCount>0)
+    {
+        --_readCount;
+        if (_readCount==0)
+        {
+            result = _readWriteMutex.unlock();
+        }
+    }
+    return result;
+}
+
+int ReadWriteMutex::writeLock()
+{
+    return _readWriteMutex.lock();
+}
+
+int ReadWriteMutex::writeUnlock()
+{
+    return _readWriteMutex.unlock();
 }

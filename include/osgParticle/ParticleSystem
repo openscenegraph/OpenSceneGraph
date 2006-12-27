@@ -30,6 +30,8 @@
 #include <osg/Vec3>
 #include <osg/BoundingBox>
 
+#include <osgDB/ReentrantMutex>
+
 namespace osgParticle
 {
 
@@ -163,6 +165,8 @@ namespace osgParticle
         virtual void drawImplementation(osg::State& state) const;
 
         virtual osg::BoundingBox computeBound() const;
+        
+        osgDB::ReadWriteMutex& getReadWriteMutex() const { return _readWriteMutex; }
 
     protected:
 
@@ -200,6 +204,8 @@ namespace osgParticle
         
         int _detail;
         mutable int _draw_count;
+        
+        mutable osgDB::ReadWriteMutex _readWriteMutex;
         
     };
     

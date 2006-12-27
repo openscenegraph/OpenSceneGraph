@@ -44,6 +44,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__checkEvents,
 	          "",
 	          "");
+	I_Method1(void, setWindowDecoration, IN, bool, x,
+	          __void__setWindowDecoration__bool,
+	          "Set Window decoration. ",
+	          "");
+	I_Method0(void, grabFocus,
+	          __void__grabFocus,
+	          "Get focus. ",
+	          "");
+	I_Method0(void, grabFocusIfPointerInWindow,
+	          __void__grabFocusIfPointerInWindow,
+	          "Get focus on if the pointer is in this window. ",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          __bool__realizeImplementation,
 	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
@@ -87,5 +99,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(bool, WindowDecoration, 
+	                 0, 
+	                 __void__setWindowDecoration__bool);
 END_REFLECTOR
 

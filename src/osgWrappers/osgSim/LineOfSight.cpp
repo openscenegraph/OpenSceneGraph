@@ -13,7 +13,6 @@
 #include <osg/Node>
 #include <osg/Vec3d>
 #include <osgSim/LineOfSight>
-#include <osgUtil/IntersectionVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -107,10 +106,6 @@ BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
 	          __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback,
 	          "Get the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
 	          "");
-	I_Method0(osgUtil::IntersectionVisitor &, getIntersectionVisitor,
-	          __osgUtil_IntersectionVisitor_R1__getIntersectionVisitor,
-	          "Get the IntersectionVistor that does the intersection traversal over the scene. ",
-	          "Note, if you want to customized the traversal then you can use the IntersectionVisitor's method to alter its behavior. ");
 	I_StaticMethodWithDefaults4(osgSim::LineOfSight::Intersections, computeIntersections, IN, osg::Node *, scene, , IN, const osg::Vec3d &, start, , IN, const osg::Vec3d &, end, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
 	                            __Intersections__computeIntersections__osg_Node_P1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__osg_Node_NodeMask_S,
 	                            "Compute the intersection between the specified scene graph and a single LOS start,end pair. ",
@@ -122,9 +117,6 @@ BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
 	                  __C5_osg_Vec3d_R1__getEndPoint__unsigned_int, 
 	                  __void__setEndPoint__unsigned_int__C5_osg_Vec3d_R1, 
 	                  0);
-	I_SimpleProperty(osgUtil::IntersectionVisitor &, IntersectionVisitor, 
-	                 __osgUtil_IntersectionVisitor_R1__getIntersectionVisitor, 
-	                 0);
 	I_IndexedProperty(const osg::Vec3d &, StartPoint, 
 	                  __C5_osg_Vec3d_R1__getStartPoint__unsigned_int, 
 	                  __void__setStartPoint__unsigned_int__C5_osg_Vec3d_R1, 

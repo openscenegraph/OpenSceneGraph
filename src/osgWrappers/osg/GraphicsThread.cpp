@@ -28,7 +28,7 @@ BEGIN_ENUM_REFLECTOR(osg::BarrierOperation::PreBlockOp)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
-	I_BaseType(osg::GraphicsThread::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
 	                           ____BarrierOperation__int__PreBlockOp,
 	                           "",
@@ -63,59 +63,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Block)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____GraphicsThread,
-	               "",
-	               "");
-	I_MethodWithDefaults2(void, add, IN, osg::GraphicsThread::Operation *, operation, , IN, bool, waitForCompletion, false,
-	                      __void__add__Operation_P1__bool,
-	                      "Add operation to end of OperationQueue, this will be executed by the graphics thread once this operation gets to the head of the queue. ",
-	                      "");
-	I_Method1(void, remove, IN, osg::GraphicsThread::Operation *, operation,
-	          __void__remove__Operation_P1,
-	          "Remove operation from OperationQueue. ",
-	          "");
-	I_Method1(void, remove, IN, const std::string &, name,
-	          __void__remove__C5_std_string_R1,
-	          "Remove named operation from OperationQueue. ",
-	          "");
-	I_Method0(void, removeAllOperations,
-	          __void__removeAllOperations,
-	          "Remove all operations from OperationQueue. ",
-	          "");
-	I_Method0(osg::ref_ptr< osg::GraphicsThread::Operation >, getCurrentOperation,
-	          __osg_ref_ptrT1_Operation___getCurrentOperation,
-	          "Get the operation currently being run. ",
-	          "");
-	I_Method0(void, run,
-	          __void__run,
-	          "Run does the graphics thread run loop. ",
-	          "");
-	I_Method1(void, setDone, IN, bool, done,
-	          __void__setDone__bool,
-	          "",
-	          "");
-	I_Method0(bool, getDone,
-	          __bool__getDone,
-	          "",
-	          "");
-	I_Method0(int, cancel,
-	          __int__cancel,
-	          "Cancel this graphics thread. ",
-	          "");
-	I_SimpleProperty(osg::ref_ptr< osg::GraphicsThread::Operation >, CurrentOperation, 
-	                 __osg_ref_ptrT1_Operation___getCurrentOperation, 
-	                 0);
-	I_SimpleProperty(bool, Done, 
-	                 __bool__getDone, 
-	                 __void__setDone__bool);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread::Operation)
+BEGIN_OBJECT_REFLECTOR(osg::GraphicsOperation)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
-	               ____Operation__C5_std_string_R1__bool,
+	               ____GraphicsOperation__C5_std_string_R1__bool,
 	               "",
 	               "");
 	I_Method1(void, setName, IN, const std::string &, name,
@@ -148,8 +99,57 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread::Operation)
 	I_PublicMemberProperty(bool, _keep);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____GraphicsThread,
+	               "",
+	               "");
+	I_MethodWithDefaults2(void, add, IN, osg::GraphicsOperation *, operation, , IN, bool, waitForCompletion, false,
+	                      __void__add__GraphicsOperation_P1__bool,
+	                      "Add operation to end of OperationQueue, this will be executed by the graphics thread once this operation gets to the head of the queue. ",
+	                      "");
+	I_Method1(void, remove, IN, osg::GraphicsOperation *, operation,
+	          __void__remove__GraphicsOperation_P1,
+	          "Remove operation from OperationQueue. ",
+	          "");
+	I_Method1(void, remove, IN, const std::string &, name,
+	          __void__remove__C5_std_string_R1,
+	          "Remove named operation from OperationQueue. ",
+	          "");
+	I_Method0(void, removeAllOperations,
+	          __void__removeAllOperations,
+	          "Remove all operations from OperationQueue. ",
+	          "");
+	I_Method0(osg::ref_ptr< osg::GraphicsOperation >, getCurrentOperation,
+	          __osg_ref_ptrT1_GraphicsOperation___getCurrentOperation,
+	          "Get the operation currently being run. ",
+	          "");
+	I_Method0(void, run,
+	          __void__run,
+	          "Run does the graphics thread run loop. ",
+	          "");
+	I_Method1(void, setDone, IN, bool, done,
+	          __void__setDone__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDone,
+	          __bool__getDone,
+	          "",
+	          "");
+	I_Method0(int, cancel,
+	          __int__cancel,
+	          "Cancel this graphics thread. ",
+	          "");
+	I_SimpleProperty(osg::ref_ptr< osg::GraphicsOperation >, CurrentOperation, 
+	                 __osg_ref_ptrT1_GraphicsOperation___getCurrentOperation, 
+	                 0);
+	I_SimpleProperty(bool, Done, 
+	                 __bool__getDone, 
+	                 __void__setDone__bool);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
-	I_BaseType(osg::GraphicsThread::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_BaseType(osg::Block);
 	I_Constructor0(____ReleaseContext_Block_MakeCurrentOperation,
 	               "",
@@ -161,25 +161,25 @@ BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
-	I_BaseType(osg::GraphicsThread::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_Constructor0(____SwapBuffersOperation,
 	               "",
 	               "");
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GraphicsThread::Operation >)
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GraphicsOperation >)
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");
-	I_Constructor1(IN, osg::GraphicsThread::Operation *, ptr,
+	I_Constructor1(IN, osg::GraphicsOperation *, ptr,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::ref_ptr< osg::GraphicsThread::Operation > &, rp,
+	I_Constructor1(IN, const osg::ref_ptr< osg::GraphicsOperation > &, rp,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
-	I_Method0(osg::GraphicsThread::Operation *, get,
+	I_Method0(osg::GraphicsOperation *, get,
 	          __T_P1__get,
 	          "",
 	          "");
@@ -187,15 +187,15 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GraphicsThread::Operation >)
 	          __bool__valid,
 	          "",
 	          "");
-	I_Method0(osg::GraphicsThread::Operation *, release,
+	I_Method0(osg::GraphicsOperation *, release,
 	          __T_P1__release,
 	          "",
 	          "");
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::GraphicsThread::Operation > &, rp,
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::GraphicsOperation > &, rp,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
-	I_SimpleProperty(osg::GraphicsThread::Operation *, , 
+	I_SimpleProperty(osg::GraphicsOperation *, , 
 	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR

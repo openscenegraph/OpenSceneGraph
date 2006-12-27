@@ -26,35 +26,66 @@ BEGIN_VALUE_REFLECTOR(osg::Timer)
 	               "");
 	I_Method0(osg::Timer_t, tick,
 	          __Timer_t__tick,
+	          "Get the timers tick value. ",
+	          "");
+	I_Method0(void, setStartTick,
+	          __void__setStartTick,
+	          "Set the start. ",
+	          "");
+	I_Method1(void, setStartTick, IN, osg::Timer_t, t,
+	          __void__setStartTick__Timer_t,
 	          "",
+	          "");
+	I_Method0(osg::Timer_t, getStartTick,
+	          __Timer_t__getStartTick,
+	          "",
+	          "");
+	I_Method0(double, time_s,
+	          __double__time_s,
+	          "Get elapsed time in seconds. ",
+	          "");
+	I_Method0(double, time_m,
+	          __double__time_m,
+	          "Get elapsed time in milliseconds. ",
+	          "");
+	I_Method0(double, time_u,
+	          __double__time_u,
+	          "Get elapsed time in micoseconds. ",
+	          "");
+	I_Method0(double, time_n,
+	          __double__time_n,
+	          "Get elapsed time in nanoseconds. ",
 	          "");
 	I_Method2(double, delta_s, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
 	          __double__delta_s__Timer_t__Timer_t,
-	          "",
+	          "Get the time in seconds between timer ticks t1 and t2. ",
 	          "");
 	I_Method2(double, delta_m, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
 	          __double__delta_m__Timer_t__Timer_t,
-	          "",
+	          "Get the time in milliseconds between timer ticks t1 and t2. ",
 	          "");
 	I_Method2(double, delta_u, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
 	          __double__delta_u__Timer_t__Timer_t,
-	          "",
+	          "Get the time in microseconds between timer ticks t1 and t2. ",
 	          "");
 	I_Method2(double, delta_n, IN, osg::Timer_t, t1, IN, osg::Timer_t, t2,
 	          __double__delta_n__Timer_t__Timer_t,
-	          "",
+	          "Get the time in nanoseconds between timer ticks t1 and t2. ",
 	          "");
 	I_Method0(double, getSecondsPerTick,
 	          __double__getSecondsPerTick,
-	          "",
+	          "Get the the numer of ticks per second. ",
 	          "");
-	I_StaticMethod0(const osg::Timer *, instance,
-	                __C5_Timer_P1__instance_S,
+	I_StaticMethod0(osg::Timer *, instance,
+	                __Timer_P1__instance_S,
 	                "",
 	                "");
 	I_SimpleProperty(double, SecondsPerTick, 
 	                 __double__getSecondsPerTick, 
 	                 0);
+	I_SimpleProperty(osg::Timer_t, StartTick, 
+	                 __Timer_t__getStartTick, 
+	                 __void__setStartTick__Timer_t);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(unsigned long long, osg::Timer_t);

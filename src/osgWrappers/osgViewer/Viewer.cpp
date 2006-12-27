@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::Viewer::Contexts);
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
@@ -29,10 +31,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__realize,
 	          "set up windows and associated threads. ",
 	          "");
+	I_Method1(void, setDone, IN, bool, done,
+	          __void__setDone__bool,
+	          "",
+	          "");
+	I_Method0(bool, done,
+	          __bool__done,
+	          "",
+	          "");
 	I_Method0(void, frame,
 	          __void__frame,
 	          "Render a complete new frame. ",
-	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal(). Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code. ");
+	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). ");
 	I_Method0(void, frameAdvance,
 	          __void__frameAdvance,
 	          "",
@@ -45,12 +55,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__frameUpdateTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameCullTraversal,
-	          __void__frameCullTraversal,
-	          "",
-	          "");
-	I_Method0(void, frameDrawTraversal,
-	          __void__frameDrawTraversal,
+	I_Method0(void, frameRenderingTraversals,
+	          __void__frameRenderingTraversals,
 	          "",
 	          "");
 	I_Method0(void, releaseAllGLObjects,
@@ -60,11 +66,23 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_Method0(void, cleanup,
 	          __void__cleanup,
 	          "Clean up all OpenGL objects associated with this viewer's scenegraph. ",
-	          "Note, must only be called from the graphics context associated with this viewer. ");
+	          "");
 	I_Method0(void, init,
 	          __void__init,
 	          "",
 	          "");
+	I_Method1(void, getContexts, IN, osgViewer::Viewer::Contexts &, contexts,
+	          __void__getContexts__Contexts_R1,
+	          "",
+	          "");
+	I_SimpleProperty(bool, Done, 
+	                 0, 
+	                 __void__setDone__bool);
 	I_PublicMemberProperty(bool, _firstFrame);
+	I_PublicMemberProperty(bool, _done);
+	I_PublicMemberProperty(osg::ref_ptr< osg::BarrierOperation >, _startRenderingBarrier);
+	I_PublicMemberProperty(osg::ref_ptr< osg::BarrierOperation >, _endRenderingDispatchBarrier);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >);
 

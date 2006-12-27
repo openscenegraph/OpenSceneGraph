@@ -66,51 +66,95 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __void__windowResize__int__int__unsigned_int__unsigned_int,
 	          "Method for adapting window resize event, placing this event on the back of the event queue. ",
 	          "");
+	I_Method5(void, windowResize, IN, int, x, IN, int, y, IN, unsigned int, width, IN, unsigned int, height, IN, double, time,
+	          __void__windowResize__int__int__unsigned_int__unsigned_int__double,
+	          "Method for adapting window resize event, placing this event on the back of the event queue, with specified time. ",
+	          "");
 	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm,
 	          __void__mouseScroll__GUIEventAdapter_ScrollingMotion,
 	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. ",
+	          "");
+	I_Method2(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm, IN, double, time,
+	          __void__mouseScroll__GUIEventAdapter_ScrollingMotion__double,
+	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue, with specified time. ",
 	          "");
 	I_Method2(void, mouseScroll2D, IN, float, x, IN, float, y,
 	          __void__mouseScroll2D__float__float,
 	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. ",
 	          "");
+	I_Method3(void, mouseScroll2D, IN, float, x, IN, float, y, IN, double, time,
+	          __void__mouseScroll2D__float__float__double,
+	          "Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. ",
+	          "");
 	I_Method1(void, penPressure, IN, float, pressure,
 	          __void__penPressure__float,
-	          "Method for adapting pen pressure events, placing this event on the back og the event queue. ",
+	          "Method for adapting pen pressure events, placing this event on the back of the event queue. ",
+	          "");
+	I_Method2(void, penPressure, IN, float, pressure, IN, double, time,
+	          __void__penPressure__float__double,
+	          "Method for adapting pen pressure events, placing this event on the back of the event queue, with specified time. ",
 	          "");
 	I_Method2(void, penProximity, IN, osgGA::GUIEventAdapter::TabletPointerType, pt, IN, bool, isEntering,
 	          __void__penProximity__GUIEventAdapter_TabletPointerType__bool,
-	          "Method for adapting pen proximity events, placing this event on the back og the event queue. ",
+	          "Method for adapting pen proximity events, placing this event on the back of the event queue. ",
 	          "");
-	I_Method2(void, mouseWarp, IN, float, x, IN, float, y,
-	          __void__mouseWarp__float__float,
+	I_Method3(void, penProximity, IN, osgGA::GUIEventAdapter::TabletPointerType, pt, IN, bool, isEntering, IN, double, time,
+	          __void__penProximity__GUIEventAdapter_TabletPointerType__bool__double,
+	          "Method for adapting pen proximity events, placing this event on the back of the event queue, with specified time. ",
+	          "");
+	I_Method2(void, mouseWarped, IN, float, x, IN, float, y,
+	          __void__mouseWarped__float__float,
 	          "Method for updating in response to a mouse warp. ",
 	          "Note, just moves the mouse position without creating a new event for it. ");
 	I_Method2(void, mouseMotion, IN, float, x, IN, float, y,
 	          __void__mouseMotion__float__float,
 	          "Method for adapting mouse motion events, placing this event on the back of the event queue. ",
 	          "");
+	I_Method3(void, mouseMotion, IN, float, x, IN, float, y, IN, double, time,
+	          __void__mouseMotion__float__float__double,
+	          "Method for adapting mouse motion events, placing this event on the back of the event queue, with specified time. ",
+	          "");
 	I_Method3(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button,
 	          __void__mouseButtonPress__float__float__unsigned_int,
 	          "Method for adapting mouse button pressed events, placing this event on the back of the event queue. ",
+	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
+	I_Method4(void, mouseButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button, IN, double, time,
+	          __void__mouseButtonPress__float__float__unsigned_int__double,
+	          "Method for adapting mouse button pressed events, placing this event on the back of the event queue, with specified time. ",
 	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
 	I_Method3(void, mouseDoubleButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button,
 	          __void__mouseDoubleButtonPress__float__float__unsigned_int,
 	          "Method for adapting mouse button pressed events, placing this event on the back of the event queue. ",
 	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
+	I_Method4(void, mouseDoubleButtonPress, IN, float, x, IN, float, y, IN, unsigned int, button, IN, double, time,
+	          __void__mouseDoubleButtonPress__float__float__unsigned_int__double,
+	          "Method for adapting mouse button pressed events, placing this event on the back of the event queue, with specified time. ",
+	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
 	I_Method3(void, mouseButtonRelease, IN, float, x, IN, float, y, IN, unsigned int, button,
 	          __void__mouseButtonRelease__float__float__unsigned_int,
 	          "Method for adapting mouse button release events, placing this event on the back of the event queue. ",
+	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
+	I_Method4(void, mouseButtonRelease, IN, float, x, IN, float, y, IN, unsigned int, button, IN, double, time,
+	          __void__mouseButtonRelease__float__float__unsigned_int__double,
+	          "Method for adapting mouse button release events, placing this event on the back of the event queue, with specified time. ",
 	          "Button numbering is 1 for left mouse button, 2 for middle, 3 for right. ");
 	I_Method1(void, keyPress, IN, int, key,
 	          __void__keyPress__int,
 	          "Method for adapting keyboard press events. ",
 	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings. ");
+	I_Method2(void, keyPress, IN, int, key, IN, double, time,
+	          __void__keyPress__int__double,
+	          "Method for adapting keyboard press events. ",
+	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time. ");
 	I_Method1(void, keyRelease, IN, int, key,
 	          __void__keyRelease__int,
 	          "Method for adapting keyboard press events. ",
 	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings. ");
-	I_Method1(void, frame, IN, double, t,
+	I_Method2(void, keyRelease, IN, int, key, IN, double, time,
+	          __void__keyRelease__int__double,
+	          "Method for adapting keyboard press events. ",
+	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time. ");
+	I_Method1(void, frame, IN, double, time,
 	          __void__frame__double,
 	          "Method for adapting frame events. ",
 	          "");

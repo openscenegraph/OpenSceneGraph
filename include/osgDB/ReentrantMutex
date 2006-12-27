@@ -67,13 +67,8 @@ class OSGDB_EXPORT ReadWriteMutex
         ReadWriteMutex(const ReadWriteMutex&) {}
         ReadWriteMutex& operator = (const ReadWriteMutex&) { return *(this); }
         
-#if 1        
         ReentrantMutex  _readWriteMutex;        
         ReentrantMutex  _readCountMutex;
-#else
-        OpenThreads::Mutex  _readWriteMutex;        
-        OpenThreads::Mutex  _readCountMutex;
-#endif
         unsigned int    _readCount;
         
 };

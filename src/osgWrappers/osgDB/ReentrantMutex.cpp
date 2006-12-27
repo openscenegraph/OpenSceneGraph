@@ -20,6 +20,28 @@
 #undef OUT
 #endif
 
+BEGIN_VALUE_REFLECTOR(osgDB::ReadWriteMutex)
+	I_Constructor0(____ReadWriteMutex,
+	               "",
+	               "");
+	I_Method0(int, readLock,
+	          __int__readLock,
+	          "",
+	          "");
+	I_Method0(int, readUnlock,
+	          __int__readUnlock,
+	          "",
+	          "");
+	I_Method0(int, writeLock,
+	          __int__writeLock,
+	          "",
+	          "");
+	I_Method0(int, writeUnlock,
+	          __int__writeUnlock,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
 	I_Constructor0(____ReentrantMutex,
 	               "",
@@ -36,5 +58,19 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
 	          __int__trylock,
 	          "",
 	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgDB::ScopedReadLock)
+	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
+	               ____ScopedReadLock__ReadWriteMutex_R1,
+	               "",
+	               "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgDB::ScopedWriteLock)
+	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
+	               ____ScopedWriteLock__ReadWriteMutex_R1,
+	               "",
+	               "");
 END_REFLECTOR
 

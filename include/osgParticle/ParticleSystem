@@ -166,7 +166,7 @@ namespace osgParticle
 
         virtual osg::BoundingBox computeBound() const;
         
-        osgDB::ReadWriteMutex& getReadWriteMutex() const { return _readWriteMutex; }
+        osgDB::ReadWriteMutex* getReadWriteMutex() const { return &_readWriteMutex; }
 
     protected:
 

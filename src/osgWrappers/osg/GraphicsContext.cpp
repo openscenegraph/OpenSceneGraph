@@ -24,6 +24,26 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_BaseType(osg::Referenced);
+	I_Method1(void, add, IN, osg::GraphicsOperation *, operation,
+	          __void__add__GraphicsOperation_P1,
+	          "Add operation to end of OperationQueue. ",
+	          "");
+	I_Method1(void, remove, IN, osg::GraphicsOperation *, operation,
+	          __void__remove__GraphicsOperation_P1,
+	          "Remove operation from OperationQueue. ",
+	          "");
+	I_Method1(void, remove, IN, const std::string &, name,
+	          __void__remove__C5_std_string_R1,
+	          "Remove named operation from OperationQueue. ",
+	          "");
+	I_Method0(void, removeAllOperations,
+	          __void__removeAllOperations,
+	          "Remove all operations from OperationQueue. ",
+	          "");
+	I_Method0(void, runOperations,
+	          __void__runOperations,
+	          "Run the operations. ",
+	          "");
 	I_Method0(const osg::GraphicsContext::Traits *, getTraits,
 	          __C5_Traits_P1__getTraits,
 	          "Get the traits of the GraphicsContext. ",
@@ -39,6 +59,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method0(const osg::State *, getState,
 	          __C5_State_P1__getState,
 	          "Get the const State object which tracks the current OpenGL state for this graphics context. ",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "Return whether a valid and usable GraphicsContext has been created. ",
 	          "");
 	I_Method0(bool, realize,
 	          __bool__realize,
@@ -159,17 +183,21 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	I_Constructor0(____ScreenIdentifier,
 	               "",
 	               "");
-	I_Constructor1(IN, unsigned int, screenNum,
+	I_Constructor1(IN, unsigned int, in_screenNum,
 	               ____ScreenIdentifier__unsigned_int,
 	               "",
 	               "");
-	I_Constructor3(IN, const std::string &, hostName, IN, unsigned int, displayNum, IN, unsigned int, screenNum,
+	I_Constructor3(IN, const std::string &, in_hostName, IN, unsigned int, in_displayNum, IN, unsigned int, in_screenNum,
 	               ____ScreenIdentifier__C5_std_string_R1__unsigned_int__unsigned_int,
 	               "",
 	               "");
-	I_PublicMemberProperty(std::string, _hostName);
-	I_PublicMemberProperty(unsigned int, _displayNum);
-	I_PublicMemberProperty(unsigned int, _screenNum);
+	I_Method0(std::string, displayName,
+	          __std_string__displayName,
+	          "",
+	          "");
+	I_PublicMemberProperty(std::string, hostName);
+	I_PublicMemberProperty(unsigned int, displayNum);
+	I_PublicMemberProperty(unsigned int, screenNum);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
@@ -178,27 +206,29 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_Constructor0(____Traits,
 	               "",
 	               "");
-	I_PublicMemberProperty(unsigned int, _x);
-	I_PublicMemberProperty(unsigned int, _y);
-	I_PublicMemberProperty(unsigned int, _width);
-	I_PublicMemberProperty(unsigned int, _height);
-	I_PublicMemberProperty(std::string, _windowName);
-	I_PublicMemberProperty(bool, _windowDecoration);
-	I_PublicMemberProperty(bool, _supportsResize);
-	I_PublicMemberProperty(unsigned int, _red);
-	I_PublicMemberProperty(unsigned int, _blue);
-	I_PublicMemberProperty(unsigned int, _green);
-	I_PublicMemberProperty(unsigned int, _alpha);
-	I_PublicMemberProperty(unsigned int, _depth);
-	I_PublicMemberProperty(unsigned int, _stencil);
-	I_PublicMemberProperty(bool, _pbuffer);
-	I_PublicMemberProperty(bool, _quadBufferStereo);
-	I_PublicMemberProperty(bool, _doubleBuffer);
-	I_PublicMemberProperty(GLenum, _target);
-	I_PublicMemberProperty(unsigned int, _level);
-	I_PublicMemberProperty(unsigned int, _face);
-	I_PublicMemberProperty(unsigned int, _mipMapGeneration);
-	I_PublicMemberProperty(osg::GraphicsContext *, _sharedContext);
+	I_PublicMemberProperty(unsigned int, x);
+	I_PublicMemberProperty(unsigned int, y);
+	I_PublicMemberProperty(unsigned int, width);
+	I_PublicMemberProperty(unsigned int, height);
+	I_PublicMemberProperty(std::string, windowName);
+	I_PublicMemberProperty(bool, windowDecoration);
+	I_PublicMemberProperty(bool, supportsResize);
+	I_PublicMemberProperty(unsigned int, red);
+	I_PublicMemberProperty(unsigned int, blue);
+	I_PublicMemberProperty(unsigned int, green);
+	I_PublicMemberProperty(unsigned int, alpha);
+	I_PublicMemberProperty(unsigned int, depth);
+	I_PublicMemberProperty(unsigned int, stencil);
+	I_PublicMemberProperty(unsigned int, sampleBuffers);
+	I_PublicMemberProperty(unsigned int, samples);
+	I_PublicMemberProperty(bool, pbuffer);
+	I_PublicMemberProperty(bool, quadBufferStereo);
+	I_PublicMemberProperty(bool, doubleBuffer);
+	I_PublicMemberProperty(GLenum, target);
+	I_PublicMemberProperty(unsigned int, level);
+	I_PublicMemberProperty(unsigned int, face);
+	I_PublicMemberProperty(unsigned int, mipMapGeneration);
+	I_PublicMemberProperty(osg::GraphicsContext *, sharedContext);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)

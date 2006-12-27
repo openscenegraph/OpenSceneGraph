@@ -96,10 +96,6 @@ class OSGSIM_EXPORT LineOfSight
         /** Get the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs.*/
         DatabaseCacheReadCallback* getDatabaseCacheReadCallback() { return _dcrc.get(); }
         
-        /** Get the IntersectionVistor that does the intersection traversal over the scene.
-          * Note, if you want to customized the traversal then you can use the IntersectionVisitor's method to alter its behavior. */
-        osgUtil::IntersectionVisitor& getIntersectionVisitor() { return _intersectionVisitor; }
-
     protected :
     
         struct LOS

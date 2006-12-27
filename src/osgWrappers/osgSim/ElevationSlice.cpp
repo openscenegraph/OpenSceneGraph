@@ -14,7 +14,6 @@
 #include <osg/Vec3d>
 #include <osgSim/ElevationSlice>
 #include <osgSim/LineOfSight>
-#include <osgUtil/IntersectionVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -74,10 +73,6 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	          __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback,
 	          "Get the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
 	          "");
-	I_Method0(osgUtil::IntersectionVisitor &, getIntersectionVisitor,
-	          __osgUtil_IntersectionVisitor_R1__getIntersectionVisitor,
-	          "Get the IntersectionVistor that does the intersection traversal over the scene. ",
-	          "Note, if you want to customized the traversal then you can use the IntersectionVisitor's method to alter its behavior. ");
 	I_StaticMethodWithDefaults4(osgSim::ElevationSlice::Vec3dList, computeElevationSlice, IN, osg::Node *, scene, , IN, const osg::Vec3d &, startPoint, , IN, const osg::Vec3d &, endPoint, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
 	                            __Vec3dList__computeElevationSlice__osg_Node_P1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__osg_Node_NodeMask_S,
 	                            "Compute the vertical distance between the specified scene graph and a single HAT point. ",
@@ -91,9 +86,6 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	I_SimpleProperty(const osg::Vec3d &, EndPoint, 
 	                 __C5_osg_Vec3d_R1__getEndPoint, 
 	                 __void__setEndPoint__C5_osg_Vec3d_R1);
-	I_SimpleProperty(osgUtil::IntersectionVisitor &, IntersectionVisitor, 
-	                 __osgUtil_IntersectionVisitor_R1__getIntersectionVisitor, 
-	                 0);
 	I_SimpleProperty(const osgSim::ElevationSlice::Vec3dList &, Intersections, 
 	                 __C5_Vec3dList_R1__getIntersections, 
 	                 0);

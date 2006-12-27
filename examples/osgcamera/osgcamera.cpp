@@ -39,9 +39,9 @@ int main( int argc, char **argv )
     viewer.setUpViewAcrossAllScreens();
     viewer.realize();
 
-    bool limitNumberOfFrames = false;
+    bool limitNumberOfFrames = true;
     unsigned int numFrames = 0;
-    unsigned int maxFrames = 100;
+    unsigned int maxFrames = 10;
 
     while(!viewer.done() && !(limitNumberOfFrames && numFrames>=maxFrames))
     {

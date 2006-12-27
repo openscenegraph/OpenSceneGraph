@@ -15,6 +15,7 @@
 #include <osg/Object>
 #include <osg/State>
 #include <osg/Vec3>
+#include <osgDB/ReentrantMutex>
 #include <osgParticle/Particle>
 #include <osgParticle/ParticleSystem>
 
@@ -192,6 +193,10 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          __osg_BoundingBox__computeBound,
 	          "Compute the bounding box around Drawables's geometry. ",
 	          "");
+	I_Method0(osgDB::ReadWriteMutex *, getReadWriteMutex,
+	          __osgDB_ReadWriteMutex_P1__getReadWriteMutex,
+	          "",
+	          "");
 	I_SimpleProperty(const osg::Vec3 &, AlignVectorX, 
 	                 __C5_osg_Vec3_R1__getAlignVectorX, 
 	                 __void__setAlignVectorX__C5_osg_Vec3_R1);
@@ -222,5 +227,8 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_SimpleProperty(osgParticle::ParticleSystem::Alignment, ParticleAlignment, 
 	                 __Alignment__getParticleAlignment, 
 	                 __void__setParticleAlignment__Alignment);
+	I_SimpleProperty(osgDB::ReadWriteMutex *, ReadWriteMutex, 
+	                 __osgDB_ReadWriteMutex_P1__getReadWriteMutex, 
+	                 0);
 END_REFLECTOR
 

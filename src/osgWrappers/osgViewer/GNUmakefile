@@ -10,7 +10,7 @@ CXXFILES =\
 	View.cpp\
 	Viewer.cpp\
 
-LIBS   += -losgViewer -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
+LIBS   += -losgViewer -losg -losgIntrospection -losgUtil -losgDB -losgGA  $(GL_LIBS) $(OTHER_LIBS)
 
 OPTF = -O
 

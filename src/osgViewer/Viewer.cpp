@@ -246,6 +246,8 @@ void Viewer::frame()
 {
     if (_done) return;
 
+    // osg::notify(osg::NOTICE)<<std::endl<<"Viewer::frame()"<<std::endl<<std::endl;
+
     if (_firstFrame)
     {
         init();

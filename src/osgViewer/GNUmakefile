@@ -13,6 +13,10 @@ CXXFILES = \
 
 CXXFILES += GraphicsWindowX11.cpp\
 
+# CXXFILES += GraphicsWindowWin32.cpp\
+
+# CXXFILES += GraphicsWindowCocoa.cpp\
+
 
 DEF     += -DOSGVIEWER_LIBRARY
 

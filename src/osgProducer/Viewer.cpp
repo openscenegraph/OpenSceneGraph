@@ -378,8 +378,6 @@ void Viewer::setUpViewer(unsigned int options)
         setKeyboardMouseCallback(new osgProducer::KeyboardMouseCallback( _kbm.get(), _done, (options & ESCAPE_SETS_DONE)!=0 ));
     }
         
-    getEventQueue()->setStartTick(_start_tick);
-    
     // register the callback with the keyboard mouse manger.
     _kbm->setCallback( _kbmcb.get() );
     //kbm->allowContinuousMouseMotionUpdate(true);
@@ -948,7 +946,7 @@ void Viewer::requestWarpPointer(float x,float y)
     {
         osg::notify(osg::INFO) << "requestWarpPointer x= "<<x<<" y="<<y<<std::endl;
     
-        getEventQueue()->mouseWarp(x,y);
+        getEventQueue()->mouseWarped(x,y);
         _kbmcb->getKeyboardMouse()->positionPointer(x,y);
         return;
     }   

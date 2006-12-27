@@ -105,11 +105,13 @@ void View::setUpViewAcrossAllScreens()
             if (gw)
             {
                 osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
+                gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
             }
             else
             {
                 osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
             }
+
 
             _camera->setViewport(new osg::Viewport(0, 0, width, height));
     }
@@ -147,6 +149,7 @@ void View::setUpViewAcrossAllScreens()
             {
                 osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
                 
+                gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
                 gw->getEventQueue()->setUseFixedMouseInputRange(true);
                 gw->getEventQueue()->getCurrentEventState()->setInputRange(inputRangeMinX, inputRangeMinY, inputRangeMinX+float(width),inputRangeMinY+float(height) );
                 inputRangeMinX += float(width);

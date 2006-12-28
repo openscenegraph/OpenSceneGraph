@@ -4007,6 +4007,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "osgWrapper osgUtil"=.\osgWrappers\osgUtil\wrapper_osgViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgViewer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgIntrospection
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Global:
 
 Package=<5>

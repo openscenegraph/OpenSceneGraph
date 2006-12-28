@@ -104,10 +104,6 @@ SOURCE=..\..\..\src\osgWrappers\osgViewer\GraphicsWindow.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgViewer\GraphicsWindowProxy.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgViewer\Scene.cpp
 # End Source File
 

@@ -199,10 +199,6 @@ SOURCE=..\..\Include\osgViewer\GraphicsWindowWin32
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgViewer\GraphicsWindowProxy
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\Include\osgViewer\Scene
 # End Source File
 # Begin Source File

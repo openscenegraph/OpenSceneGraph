@@ -24,6 +24,7 @@ CXXFILES = \
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\
 	StateGraph.cpp\
+	Statistics.cpp\
 	TangentSpaceGenerator.cpp\
 	Tesselator.cpp\
 	TransformAttributeFunctor.cpp\

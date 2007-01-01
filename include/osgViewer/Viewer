@@ -54,6 +54,10 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Clean up all OpenGL objects associated with this viewer's scenegraph.*/ 
         virtual void cleanup();
         
+        void setCameraWithFocus(osg::Camera* camera) { _cameraWithFocus = camera; }
+        osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
+        const osg::Camera* getCameraWithFocus() const { return _cameraWithFocus.get(); }
+        
     public:
     
         void init();
@@ -66,6 +70,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
        
         osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
         osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;
+        
+        osg::observer_ptr<osg::Camera> _cameraWithFocus;
 
 };
 

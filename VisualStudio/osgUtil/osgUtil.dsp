@@ -239,6 +239,10 @@ SOURCE=..\..\src\osgUtil\SmoothingVisitor.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgUtil\Statistics.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgUtil\TangentSpaceGenerator.cpp
 # End Source File
 # Begin Source File

@@ -51,10 +51,10 @@ void Viewport::read(DataInputStream* in){
             throw Exception("Viewport::read(): Could not cast this osg::Viewport to an osg::Object.");
 
         // Read Viewport's properties
-        x() = (GLenum)in->readInt();
-        y() = (GLenum)in->readInt();
-        width() = (GLenum)in->readInt();
-        height() = (GLenum)in->readInt();
+        x() = in->readInt();
+        y() = in->readInt();
+        width() = in->readInt();
+        height() = in->readInt();
 
     }
     else{

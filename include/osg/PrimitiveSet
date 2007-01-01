@@ -200,13 +200,15 @@ class OSG_EXPORT PrimitiveSet : public Object
         PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0):
             _primitiveType(primType),
             _mode(mode),
-            _modifiedCount(0) {}
+            _modifiedCount(0),
+            _rangeModifiedCount(0) {}
     
         PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(prim,copyop),
             _primitiveType(prim._primitiveType),
             _mode(prim._mode),
-            _modifiedCount(0) {}
+            _modifiedCount(0),
+            _rangeModifiedCount(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PrimitiveSet*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -245,6 +247,8 @@ class OSG_EXPORT PrimitiveSet : public Object
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* /*state*/=0) const {}
 
+        virtual void computeRange() const {}
+
     protected:
 
         virtual ~PrimitiveSet() {}
@@ -252,7 +256,7 @@ class OSG_EXPORT PrimitiveSet : public Object
         Type            _primitiveType;
         GLenum          _mode;
         unsigned int    _modifiedCount;
-
+        mutable unsigned int    _rangeModifiedCount;
 
         struct ObjectIDModifiedCountPair
         {
@@ -435,10 +439,34 @@ class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorGLubyte
 
         virtual void releaseGLObjects(State* state=0) const;
         
+        virtual void computeRange() const
+        {
+            if (empty()) 
+            {
+                _minIndex = 0;
+                _maxIndex = 0;
+                _rangeModifiedCount = _modifiedCount;
+                return;
+            }
+            
+            _minIndex = front();
+            _maxIndex = _minIndex;
+
+            for(vector_type::const_iterator itr=begin(); itr!=end();  ++itr)
+            {
+                if (*itr<_minIndex) _minIndex = *itr;
+                if (*itr>_maxIndex) _maxIndex = *itr;
+            }
+            _rangeModifiedCount = _modifiedCount;
+        }
+        
     protected:
 
         virtual ~DrawElementsUByte();
 
+        mutable unsigned int    _minIndex;
+        mutable unsigned int    _maxIndex;
+        
         mutable GLObjectList    _vboList;
 
 };
@@ -491,9 +519,33 @@ class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorGLushort
 
         virtual void releaseGLObjects(State* state=0) const;
         
+        virtual void computeRange() const
+        {
+            if (empty()) 
+            {
+                _minIndex = 0;
+                _maxIndex = 0;
+                _rangeModifiedCount = _modifiedCount;
+                return;
+            }
+            
+            _minIndex = front();
+            _maxIndex = _minIndex;
+
+            for(vector_type::const_iterator itr=begin(); itr!=end();  ++itr)
+            {
+                if (*itr<_minIndex) _minIndex = *itr;
+                if (*itr>_maxIndex) _maxIndex = *itr;
+            }
+            _rangeModifiedCount = _modifiedCount;
+        }
+
     protected:
 
         virtual ~DrawElementsUShort();
+
+        mutable unsigned int    _minIndex;
+        mutable unsigned int    _maxIndex;        
 
         mutable GLObjectList    _vboList;
 };
@@ -545,9 +597,33 @@ class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorGLuint
 
         virtual void releaseGLObjects(State* state=0) const;
         
+        virtual void computeRange() const
+        {
+            if (empty()) 
+            {
+                _minIndex = 0;
+                _maxIndex = 0;
+                _rangeModifiedCount = _modifiedCount;
+                return;
+            }
+            
+            _minIndex = front();
+            _maxIndex = _minIndex;
+
+            for(vector_type::const_iterator itr=begin(); itr!=end();  ++itr)
+            {
+                if (*itr<_minIndex) _minIndex = *itr;
+                if (*itr>_maxIndex) _maxIndex = *itr;
+            }
+            _rangeModifiedCount = _modifiedCount;
+        }
+
     protected:
 
         virtual ~DrawElementsUInt();
+        
+        mutable unsigned int    _minIndex;
+        mutable unsigned int    _maxIndex;
         
         mutable GLObjectList _vboList;
 };

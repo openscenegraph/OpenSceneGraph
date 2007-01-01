@@ -19,6 +19,9 @@
 
 namespace osg {
 
+// forward declare osg::Camera
+class Camera;
+
 /** Base class for providing Windowing API agnostic access to creating and managing graphics context.*/
 class OSG_EXPORT GraphicsContext : public Referenced
 {
@@ -74,10 +77,10 @@ class OSG_EXPORT GraphicsContext : public Referenced
                 sharedContext(0) {}
                             
             // graphics context orginal and size
-            unsigned int x;
-            unsigned int y;
-            unsigned int width;
-            unsigned int height;
+            int x;
+            int y;
+            int width;
+            int height;
             
             // window decoration and baviour
             std::string windowName;
@@ -258,12 +261,30 @@ class OSG_EXPORT GraphicsContext : public Referenced
         virtual void swapBuffersImplementation() = 0;
 
 
+        /** resized method should be called when the underlying window has been resized and the GraphicsWindow and associated Cameras must
+            be updated to keep in sync with the new size. */
+        void resized(int x, int y, int width, int height);
+
+        typedef std::list< osg::Camera* > Cameras;
+
+        /** Get the the list of cameras associated with this graphics context.*/
+        Cameras& getCameras() { return _cameras; }
+
+        /** Get the the const list of cameras associated with this graphics context.*/
+        const Cameras& getCameras() const { return _cameras; }
+
     protected:
         
         GraphicsContext();
 
         virtual ~GraphicsContext();
+        
+        void addCamera(osg::Camera* camera);
+        void removeCamera(osg::Camera* camera);
+        
+        Cameras _cameras;
 
+        friend class osg::Camera;
 
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;

@@ -88,6 +88,141 @@ class GraphicsContextX11 : public osg::GraphicsContext
 
 }
 
+class X11KeyboardMap
+{
+    public:
+
+        X11KeyboardMap()
+        {
+            _keymap[XK_Escape       ] = osgGA::GUIEventAdapter::KEY_Escape;
+            _keymap[XK_F1           ] = osgGA::GUIEventAdapter::KEY_F1;
+            _keymap[XK_F2           ] = osgGA::GUIEventAdapter::KEY_F2;
+            _keymap[XK_F3           ] = osgGA::GUIEventAdapter::KEY_F3;
+            _keymap[XK_F4           ] = osgGA::GUIEventAdapter::KEY_F4;
+            _keymap[XK_F5           ] = osgGA::GUIEventAdapter::KEY_F5;
+            _keymap[XK_F6           ] = osgGA::GUIEventAdapter::KEY_F6;
+            _keymap[XK_F7           ] = osgGA::GUIEventAdapter::KEY_F7;
+            _keymap[XK_F8           ] = osgGA::GUIEventAdapter::KEY_F8;
+            _keymap[XK_F9           ] = osgGA::GUIEventAdapter::KEY_F9;
+            _keymap[XK_F10          ] = osgGA::GUIEventAdapter::KEY_F10;
+            _keymap[XK_F11          ] = osgGA::GUIEventAdapter::KEY_F11;
+            _keymap[XK_F12          ] = osgGA::GUIEventAdapter::KEY_F12;
+            _keymap[XK_quoteleft    ] = '"';
+            _keymap[XK_1            ] = '1';
+            _keymap[XK_2            ] = '2';
+            _keymap[XK_3            ] = '3';
+            _keymap[XK_4            ] = '4';
+            _keymap[XK_5            ] = '5';
+            _keymap[XK_6            ] = '6';
+            _keymap[XK_7            ] = '7';
+            _keymap[XK_8            ] = '8';
+            _keymap[XK_9            ] = '9';
+            _keymap[XK_0            ] = '0';
+            _keymap[XK_minus        ] = '-';
+            _keymap[XK_equal        ] = '=';
+            _keymap[XK_BackSpace    ] = osgGA::GUIEventAdapter::KEY_BackSpace;
+            _keymap[XK_Tab          ] = osgGA::GUIEventAdapter::KEY_Tab;
+            _keymap[XK_a            ] = 'A';
+            _keymap[XK_b            ] = 'B';
+            _keymap[XK_c            ] = 'C';
+            _keymap[XK_d            ] = 'D';
+            _keymap[XK_e            ] = 'E';
+            _keymap[XK_f            ] = 'F';
+            _keymap[XK_g            ] = 'G';
+            _keymap[XK_h            ] = 'H';
+            _keymap[XK_i            ] = 'I';
+            _keymap[XK_j            ] = 'J';
+            _keymap[XK_k            ] = 'K';
+            _keymap[XK_l            ] = 'L';
+            _keymap[XK_m            ] = 'M';
+            _keymap[XK_n            ] = 'N';
+            _keymap[XK_o            ] = 'O';
+            _keymap[XK_p            ] = 'P';
+            _keymap[XK_q            ] = 'Q';
+            _keymap[XK_r            ] = 'R';
+            _keymap[XK_s            ] = 'S';
+            _keymap[XK_t            ] = 'T';
+            _keymap[XK_u            ] = 'U';
+            _keymap[XK_v            ] = 'V';
+            _keymap[XK_w            ] = 'W';
+            _keymap[XK_x            ] = 'X';
+            _keymap[XK_y            ] = 'Y';
+            _keymap[XK_z            ] = 'Z';
+            _keymap[XK_bracketleft  ] = '(';
+            _keymap[XK_bracketright ] = ')';
+            _keymap[XK_backslash    ] = '\\';
+            _keymap[XK_Caps_Lock    ] = osgGA::GUIEventAdapter::KEY_Caps_Lock;
+            _keymap[XK_semicolon    ] = ';';
+            _keymap[XK_apostrophe   ] = '\'';
+            _keymap[XK_Return       ] = osgGA::GUIEventAdapter::KEY_Return;
+            _keymap[XK_Shift_L      ] = osgGA::GUIEventAdapter::KEY_Shift_L;
+            _keymap[XK_comma        ] = ',';
+            _keymap[XK_period       ] = '.';
+            _keymap[XK_slash        ] = '/';
+            _keymap[XK_Shift_R      ] = osgGA::GUIEventAdapter::KEY_Shift_R;
+            _keymap[XK_Control_L    ] = osgGA::GUIEventAdapter::KEY_Control_L;
+            _keymap[XK_Super_L      ] = osgGA::GUIEventAdapter::KEY_Super_L;
+            _keymap[XK_space        ] = ' ';
+            _keymap[XK_Alt_L        ] = osgGA::GUIEventAdapter::KEY_Alt_L;
+            _keymap[XK_Alt_R        ] = osgGA::GUIEventAdapter::KEY_Alt_R;
+            _keymap[XK_Super_R      ] = osgGA::GUIEventAdapter::KEY_Super_R;
+            _keymap[XK_Menu         ] = osgGA::GUIEventAdapter::KEY_Menu;
+            _keymap[XK_Control_R    ] = osgGA::GUIEventAdapter::KEY_Control_R;
+            _keymap[XK_Print        ] = osgGA::GUIEventAdapter::KEY_Print;
+            _keymap[XK_Scroll_Lock  ] = osgGA::GUIEventAdapter::KEY_Scroll_Lock;
+            _keymap[XK_Pause        ] = osgGA::GUIEventAdapter::KEY_Pause;
+            _keymap[XK_Home         ] = osgGA::GUIEventAdapter::KEY_Home;
+            _keymap[XK_Page_Up      ] = osgGA::GUIEventAdapter::KEY_Page_Up;
+            _keymap[XK_End          ] = osgGA::GUIEventAdapter::KEY_End;
+            _keymap[XK_Page_Down    ] = osgGA::GUIEventAdapter::KEY_Page_Down;
+            _keymap[XK_Delete       ] = osgGA::GUIEventAdapter::KEY_Delete;
+            _keymap[XK_Insert       ] = osgGA::GUIEventAdapter::KEY_Insert;
+            _keymap[XK_Left         ] = osgGA::GUIEventAdapter::KEY_Left;
+            _keymap[XK_Up           ] = osgGA::GUIEventAdapter::KEY_Up;
+            _keymap[XK_Right        ] = osgGA::GUIEventAdapter::KEY_Right;
+            _keymap[XK_Down         ] = osgGA::GUIEventAdapter::KEY_Down;
+            _keymap[XK_Num_Lock     ] = osgGA::GUIEventAdapter::KEY_Num_Lock;
+            _keymap[XK_KP_Divide    ] = osgGA::GUIEventAdapter::KEY_KP_Divide;
+            _keymap[XK_KP_Multiply  ] = osgGA::GUIEventAdapter::KEY_KP_Multiply;
+            _keymap[XK_KP_Subtract  ] = osgGA::GUIEventAdapter::KEY_KP_Subtract;
+            _keymap[XK_KP_Add       ] = osgGA::GUIEventAdapter::KEY_KP_Add;
+            _keymap[XK_KP_Home      ] = osgGA::GUIEventAdapter::KEY_KP_Home;
+            _keymap[XK_KP_Up        ] = osgGA::GUIEventAdapter::KEY_KP_Up;
+            _keymap[XK_KP_Page_Up   ] = osgGA::GUIEventAdapter::KEY_KP_Page_Up;
+            _keymap[XK_KP_Left      ] = osgGA::GUIEventAdapter::KEY_KP_Left;
+            _keymap[XK_KP_Begin     ] = osgGA::GUIEventAdapter::KEY_KP_Begin;
+            _keymap[XK_KP_Right     ] = osgGA::GUIEventAdapter::KEY_KP_Right;
+            _keymap[XK_KP_End       ] = osgGA::GUIEventAdapter::KEY_KP_End;
+            _keymap[XK_KP_Down      ] = osgGA::GUIEventAdapter::KEY_KP_Down;
+            _keymap[XK_KP_Page_Down ] = osgGA::GUIEventAdapter::KEY_KP_Page_Down;
+            _keymap[XK_KP_Insert    ] = osgGA::GUIEventAdapter::KEY_KP_Insert;
+            _keymap[XK_KP_Delete    ] = osgGA::GUIEventAdapter::KEY_KP_Delete;
+            _keymap[XK_KP_Enter     ] = osgGA::GUIEventAdapter::KEY_KP_Enter;
+     
+        }
+
+        ~X11KeyboardMap() {}
+
+        int remapKey(int key)
+        {
+            KeyMap::iterator itr = _keymap.find(key);
+            if (itr == _keymap.end()) return key;
+            else return itr->second;
+        }
+      
+    protected:
+    
+
+        typedef std::map<int, int> KeyMap;
+        KeyMap _keymap;
+};
+
+static int remapX11Key(int key)
+{
+    static X11KeyboardMap s_x11KeyboardMap;
+    return s_x11KeyboardMap.remapKey(key);
+}
+
 bool GraphicsWindowX11::createVisualInfo()
 {
     typedef std::vector<int> Attributes;
@@ -347,9 +482,12 @@ void GraphicsWindowX11::init()
 
     // now update the window dimensions to account for any size changes made by the window manager,
     XGetWindowAttributes( _display, _window, &watt );
-    _traits->width = watt.width;
-    _traits->height = watt.height;
     
+    if (_traits->width != watt.width && _traits->height != watt.height)
+    {
+        resized( _traits->x, _traits->y, _traits->width, _traits->height );
+    }
+        
     //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
 
     _valid = true;
@@ -388,7 +526,6 @@ void GraphicsWindowX11::makeCurrentImplementation()
     // checkEvents();
 
     glXMakeCurrent( _display, _window, _glxContext );
-    
 }
 
 
@@ -422,8 +559,6 @@ void GraphicsWindowX11::swapBuffersImplementation()
 
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    // makeCurrentImplementation();
-
     glXSwapBuffers(_display, _window); 
     
 #if 0   
@@ -436,6 +571,11 @@ void GraphicsWindowX11::swapBuffersImplementation()
 void GraphicsWindowX11::checkEvents()
 {
     if (!_realized) return;
+
+    int windowX = _traits->x;
+    int windowY = _traits->y;
+    int windowWidth = _traits->width;
+    int windowHeight = _traits->height;
 
     // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
     while( XPending(_display) )
@@ -462,7 +602,7 @@ void GraphicsWindowX11::checkEvents()
                 break;
 
             case DestroyNotify :
-                osg::notify(osg::INFO)<<"DestroyNotify"<<std::endl;
+                osg::notify(osg::NOTICE)<<"DestroyNotify"<<std::endl;
                 _realized =  false;
                 break;
                 
@@ -470,11 +610,17 @@ void GraphicsWindowX11::checkEvents()
             {
                 osg::notify(osg::INFO)<<"ConfigureNotify x="<<ev.xconfigure.x<<" y="<<ev.xconfigure.y<<" width="<<ev.xconfigure.width<<", height="<<ev.xconfigure.height<<std::endl;
 
-                _traits->x = ev.xconfigure.x;
-                _traits->y = ev.xconfigure.y;
-                _traits->width = ev.xconfigure.width;
-                _traits->height = ev.xconfigure.height;
-                // need to dispatch resize event.
+                if (windowX != ev.xconfigure.x || 
+                    windowX != ev.xconfigure.y ||
+                    windowWidth != ev.xconfigure.width ||
+                    windowHeight != ev.xconfigure.height)
+                {
+                    windowX = ev.xconfigure.x;
+                    windowY = ev.xconfigure.y;
+                    windowWidth = ev.xconfigure.width;
+                    windowHeight = ev.xconfigure.height;
+                }
+
                 break;
             }
             
@@ -487,8 +633,16 @@ void GraphicsWindowX11::checkEvents()
                 while( watt.map_state != IsViewable );
                 
                 osg::notify(osg::INFO)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
+
+                if (windowWidth != watt.width || windowHeight != watt.height)
+                {
+                    windowWidth = watt.width;
+                    windowHeight = watt.height;
+                }
+                
                 _traits->width = watt.width;
                 _traits->height = watt.height;
+                
 
                 break;
             }
@@ -620,6 +774,15 @@ void GraphicsWindowX11::checkEvents()
                 
         }
     }
+
+    if (windowX != _traits->x || 
+        windowY != _traits->y ||
+        windowWidth != _traits->width ||
+        windowHeight != _traits->height)
+    {
+        resized(windowX, windowY, windowWidth, windowHeight); 
+        getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight);
+    }
 }
 
 void GraphicsWindowX11::grabFocus()
@@ -654,8 +817,7 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 
 void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask)
 {
-    // KeySym ks = XKeycodeToKeysym( _display, keyevent.keycode, 0 );
-
+ 
     static XComposeStatus state;
     unsigned char keybuf[32];
     XLookupString( &keyevent, (char *)keybuf, sizeof(keybuf), NULL, &state );
@@ -687,6 +849,33 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
     }
 
     keySymbol = keybuf[0];
+    
+    KeySym ks = XKeycodeToKeysym( _display, keyevent.keycode, 0 );
+    int remappedKey = remapX11Key(ks);
+    if (remappedKey & 0xff00) 
+    {
+        // special keyboard character
+        keySymbol = remappedKey;
+    }
+    else
+    {
+        // normal ascii key
+        keySymbol = keybuf[0];
+    }
+    
+    
+}
+
+void GraphicsWindowX11::requestWarpPointer(float x,float y)
+{
+    XWarpPointer( _display, 
+                  None,
+                  _window, 
+                  0, 0, 0, 0,
+                  static_cast<int>(x), static_cast<int>(y) );
+
+    XFlush(_display);
+    XSync(_display, 0);
 }
 
 struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface

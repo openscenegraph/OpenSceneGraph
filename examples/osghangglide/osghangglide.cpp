@@ -143,10 +143,71 @@ int main( int argc, char **argv )
 
     viewer.setSceneData( rootnode );
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewAcrossAllScreens();
+#if 0
 
-    // create the windows and run the threads.
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (!wsi) 
+    {
+        osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+        return 0;
+    }
+    
+    unsigned int width, height;
+    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+
+    width -= 500;
+    height -= 500;
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->x = 500;
+    traits->y = 500;
+    traits->width = width;
+    traits->height = height;
+#if 0
+    traits->windowDecoration = false;
+#else
+    traits->windowDecoration = true;
+#endif            
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+    if (gw)
+    {
+        osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+
+        gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+    }
+
+    unsigned int numCameras = 2;
+    double aspectRatioScale = 1.0/(double)numCameras;
+    for(unsigned int i=0; i<numCameras;++i)
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport((i*width)/numCameras,(i*height)/numCameras, width/numCameras, height/numCameras));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::scale(aspectRatioScale,1.0,1.0));
+    }
+
+    viewer.setUpRenderingSupport();
+    viewer.assignSceneDataToCameras();
+    
+#else
+
+    viewer.setUpViewAcrossAllScreens();
+    
+#endif    
+
     viewer.realize();
 
     while( !viewer.done() )

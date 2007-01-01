@@ -104,7 +104,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _initCalled = false;
 
     
-    _drawBufferValue = GL_BACK;
+    setDrawBufferValue(GL_BACK);
 
     _requiresFlush = true;
     
@@ -133,9 +133,6 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     _camera = rhs._camera;
     
     _initCalled = rhs._initCalled;
-
-    
-    _drawBufferValue = rhs._drawBufferValue;
 
     _requiresFlush = rhs._requiresFlush;
     
@@ -490,6 +487,8 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
 
 void SceneView::cull()
 {
+    _renderInfo.setView(_camera->getView());
+
     // update the active uniforms
     updateUniforms();
 
@@ -883,13 +882,13 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::ANAGLYPHIC):
             {
-                if( _drawBufferValue !=  GL_NONE)
+                if( getDrawBufferValue() !=  GL_NONE)
                 {
-                    _renderStageLeft->setDrawBuffer(_drawBufferValue);
-                    _renderStageLeft->setReadBuffer(_drawBufferValue);
+                    _renderStageLeft->setDrawBuffer(getDrawBufferValue());
+                    _renderStageLeft->setReadBuffer(getDrawBufferValue());
 
-                    _renderStageRight->setDrawBuffer(_drawBufferValue);
-                    _renderStageRight->setReadBuffer(_drawBufferValue);
+                    _renderStageRight->setDrawBuffer(getDrawBufferValue());
+                    _renderStageRight->setReadBuffer(getDrawBufferValue());
                 }
                 
                 _localStateSet->setAttribute(getViewport());
@@ -944,13 +943,13 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_SPLIT):
             {
-                if( _drawBufferValue !=  GL_NONE)
+                if( getDrawBufferValue() !=  GL_NONE)
                 {
-                    _renderStageLeft->setDrawBuffer(_drawBufferValue);
-                    _renderStageLeft->setReadBuffer(_drawBufferValue);
+                    _renderStageLeft->setDrawBuffer(getDrawBufferValue());
+                    _renderStageLeft->setReadBuffer(getDrawBufferValue());
 
-                    _renderStageRight->setDrawBuffer(_drawBufferValue);
-                    _renderStageRight->setReadBuffer(_drawBufferValue);
+                    _renderStageRight->setDrawBuffer(getDrawBufferValue());
+                    _renderStageRight->setReadBuffer(getDrawBufferValue());
                 }
 
                 // ensure that all color planes are active.
@@ -1010,13 +1009,13 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::VERTICAL_SPLIT):
             {
-                if( _drawBufferValue !=  GL_NONE)
+                if( getDrawBufferValue() !=  GL_NONE)
                 {
-                    _renderStageLeft->setDrawBuffer(_drawBufferValue);
-                    _renderStageLeft->setReadBuffer(_drawBufferValue);
+                    _renderStageLeft->setDrawBuffer(getDrawBufferValue());
+                    _renderStageLeft->setReadBuffer(getDrawBufferValue());
 
-                    _renderStageRight->setDrawBuffer(_drawBufferValue);
-                    _renderStageRight->setReadBuffer(_drawBufferValue);
+                    _renderStageRight->setDrawBuffer(getDrawBufferValue());
+                    _renderStageRight->setReadBuffer(getDrawBufferValue());
                 }
 
                 // ensure that all color planes are active.
@@ -1075,10 +1074,10 @@ void SceneView::draw()
         case(osg::DisplaySettings::RIGHT_EYE):
         case(osg::DisplaySettings::LEFT_EYE):
             {
-                if( _drawBufferValue !=  GL_NONE)
+                if( getDrawBufferValue() !=  GL_NONE)
                 {
-                    _renderStage->setDrawBuffer(_drawBufferValue);
-                    _renderStage->setReadBuffer(_drawBufferValue);
+                    _renderStage->setDrawBuffer(getDrawBufferValue());
+                    _renderStage->setReadBuffer(getDrawBufferValue());
                 }
 
                 // ensure that all color planes are active.
@@ -1241,10 +1240,15 @@ void SceneView::draw()
     {
 
         // Need to restore draw buffer when toggling Stereo off.
-        if( _drawBufferValue !=  GL_NONE)
+        if( _camera->getDrawBuffer() !=  GL_NONE)
         {
-            _renderStage->setDrawBuffer(_drawBufferValue);
-            _renderStage->setReadBuffer(_drawBufferValue);
+            _renderStage->setDrawBuffer(_camera->getDrawBuffer());
+            _renderStage->setReadBuffer(_camera->getDrawBuffer());
+        }
+
+        if( _camera->getReadBuffer() !=  GL_NONE)
+        {
+            _renderStage->setReadBuffer(_camera->getReadBuffer());
         }
 
         _localStateSet->setAttribute(getViewport());

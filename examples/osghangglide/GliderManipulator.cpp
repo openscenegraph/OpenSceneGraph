@@ -7,7 +7,7 @@ using namespace osgGA;
 GliderManipulator::GliderManipulator()
 {
     _modelScale = 0.01f;
-    _velocity = 0.0f;
+    _velocity = 0.2f;
     _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
 
     _distance = 1.0f;
@@ -74,7 +74,7 @@ void GliderManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     us.requestContinuousUpdate(false);
 
-    _velocity = 0.0f;
+    _velocity = 0.2f;
 
     if (ea.getEventType()!=GUIEventAdapter::RESIZE)
     {

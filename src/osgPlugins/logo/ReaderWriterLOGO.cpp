@@ -44,12 +44,10 @@ class Logos: public osg::Drawable
                     osg::Viewport *vp = cv->getViewport();
                     if( vp != NULL )
                     {
-                        int x, y, aw, ah, bw, bh;
-                        logos->getViewport()->getViewport( x, y, aw, ah );
-                        vp->getViewport(x, y, bw, bh );
-                        if( aw != bw || ah != bh )
+                        if( vp->width() != logos->getViewport()->width() ||
+                            vp->height() != logos->getViewport()->height() )
                         {
-                            logos->getViewport()->setViewport( x, y, bw, bh );
+                            logos->getViewport()->setViewport( vp->x(), vp->y(), vp->width(), vp->height() );
                             logos->dirtyDisplayList(); 
                         }
                     }
@@ -91,13 +89,18 @@ class Logos: public osg::Drawable
             if( state.getContextID() != _contextID ) 
                 return;
 
-            int x = 0, y = 0, w = 1, h = 1;
-            if( viewport != NULL )
-                viewport->getViewport( x, y, w, h );
-            float vx = x;
-            float vy = y;
-            float vw = w;
-            float vh = h;
+
+            float vx = 0.0;
+            float vy = 0.0;
+            float vw = 1.0;
+            float vh = 1.0;
+            if (viewport)
+            {
+                vx = viewport->x();
+                vy = viewport->y();
+                vx = viewport->width();
+                vy = viewport->height();
+            }
 
             glMatrixMode( GL_PROJECTION );
             glPushMatrix();

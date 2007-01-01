@@ -15,19 +15,9 @@
 #include <osgViewer/GraphicsWindow>
 
 #include <osgUtil/SceneView>
+#include <osg/io_utils>
 
 using namespace osgViewer;
-
-class ActionAdapter : public osgGA::GUIActionAdapter
-{
-public:
-        virtual ~ActionAdapter() {}
-
-        virtual void requestRedraw() { /*osg::notify(osg::NOTICE)<<"requestRedraw()"<<std::endl;*/ }
-        virtual void requestContinuousUpdate(bool /*needed*/=true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
-        virtual void requestWarpPointer(float x,float y) { osg::notify(osg::NOTICE)<<"requestWarpPointer("<<x<<","<<y<<")"<<std::endl; }
-
-};
 
 View::View()
 {
@@ -57,8 +47,7 @@ void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
         
         osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
 
-        ActionAdapter aa;
-        _cameraManipulator->home(*dummyEvent, aa);
+        _cameraManipulator->home(*dummyEvent, *this);
     }
 }
 
@@ -93,7 +82,11 @@ void View::setUpViewAcrossAllScreens()
             traits->y = 0;
             traits->width = width;
             traits->height = height;
+#if 1
             traits->windowDecoration = false;
+#else
+            traits->windowDecoration = true;
+#endif            
             traits->doubleBuffer = true;
             traits->sharedContext = 0;
             
@@ -112,18 +105,18 @@ void View::setUpViewAcrossAllScreens()
                 osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
             }
 
-
             _camera->setViewport(new osg::Viewport(0, 0, width, height));
+            
+            GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+            
+            _camera->setDrawBuffer(buffer);
+            _camera->setReadBuffer(buffer);
+
     }
     else
     {
         double rotate_x = - double(numScreens-1) * 0.5 * fovx;
-        
-        float inputRangeMinX = 0.0f;
-        float inputRangeMinY = 0.0f;
-        
-        float maxHeight = 0.0f;
-    
+            
         for(unsigned int i=0; i<numScreens; ++i, rotate_x += fovx)
         {
             unsigned int width, height;
@@ -150,11 +143,6 @@ void View::setUpViewAcrossAllScreens()
                 osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
                 
                 gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
-                gw->getEventQueue()->setUseFixedMouseInputRange(true);
-                gw->getEventQueue()->getCurrentEventState()->setInputRange(inputRangeMinX, inputRangeMinY, inputRangeMinX+float(width),inputRangeMinY+float(height) );
-                inputRangeMinX += float(width);
-                
-                if (maxHeight < float(height)) maxHeight = float(height);
             }
             else
             {
@@ -163,12 +151,13 @@ void View::setUpViewAcrossAllScreens()
             
             camera->setViewport(new osg::Viewport(0, 0, width, height));
             
+            GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+            camera->setDrawBuffer(buffer);
+            camera->setReadBuffer(buffer);
+
             addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate( rotate_x, 0.0, 1.0, 0.0));
             
         }
-        
-        getEventQueue()->setUseFixedMouseInputRange(true);
-        getEventQueue()->getCurrentEventState()->setInputRange(0.0f, 0.0, inputRangeMinX, maxHeight);
     }
     
     setUpRenderingSupport();
@@ -190,6 +179,9 @@ struct RenderingOperation : public osg::GraphicsOperation
     {
         if (!_sceneView) return;
     
+
+        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+        
         _sceneView->cull();
         _sceneView->draw();
 
@@ -255,8 +247,7 @@ void View::assignSceneDataToCameras()
         
         osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
 
-        ActionAdapter aa;
-        _cameraManipulator->home(*dummyEvent, aa);
+        _cameraManipulator->home(*dummyEvent, *this);
     }
 
     if (_camera.valid())
@@ -274,4 +265,82 @@ void View::assignSceneDataToCameras()
             if (sceneData) slave._camera->addChild(sceneData);
         }
     }    
+}
+
+void View::requestRedraw()
+{
+}
+
+void View::requestContinuousUpdate(bool)
+{
+}
+
+void View::requestWarpPointer(float x,float y)
+{
+    osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
+    bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+    
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+    if (gw)
+    {
+        bool gw_invert_y = gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+
+        x = x * float(gw->getTraits()->width) / (eventState->getXmax()-eventState->getXmin());
+        y = y * float(gw->getTraits()->height) / (eventState->getYmax()-eventState->getYmin());
+
+        if (view_invert_y != gw_invert_y) y = gw->getTraits()->height - y;
+        
+        gw->requestWarpPointer(x, y);
+        
+        return;
+    }
+
+    osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
+    
+    x = (x - eventState->getXmin()) * 2.0 / (eventState->getXmax()-eventState->getXmin()) - 1.0;
+    y = (y - eventState->getYmin())* 2.0 / (eventState->getYmax()-eventState->getYmin()) - 1.0;
+
+    if (view_invert_y) y = - y;
+    
+    for(unsigned i=0; i<getNumSlaves(); ++i)
+    {
+        Slave& slave = getSlave(i);
+        if (slave._camera.valid())
+        {
+            osg::Camera* camera = slave._camera.get();
+            osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+
+            osg::Matrix localCameraVPW = camera->getViewMatrix() * camera->getProjectionMatrix();
+            if (viewport) localCameraVPW *= viewport->computeWindowMatrix();
+
+            osg::Matrix matrix( osg::Matrix::inverse(masterCameraVPW) * localCameraVPW );
+
+            osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
+
+            if (viewport && 
+                new_coord.x() >= viewport->x() && new_coord.y() >= viewport->y() &&
+                new_coord.x() <= (viewport->x()+viewport->width()) && new_coord.y() <= (viewport->y()+viewport->height()) )
+            {
+                gw = dynamic_cast<osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
+                if (gw)
+                {
+                    x = new_coord.x();
+                    y = new_coord.y();
+
+                    bool gw_invert_y = gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+                    
+                    if (gw_invert_y) y = gw->getTraits()->height - y;
+
+                    gw->requestWarpPointer(x, y);
+
+                    return;
+                }
+            }
+
+
+        }
+    }    
+
+
+
 }

@@ -86,6 +86,9 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow();
 
+        // Override from GUIActionAdapter
+        virtual void requestWarpPointer(float x,float y);
+
     protected:
     
         bool createVisualInfo();

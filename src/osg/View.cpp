@@ -43,20 +43,26 @@ View::~View()
 
 void View::updateSlaves()
 {
-    if (!_camera) return;
-    
-    for(Slaves::iterator itr = _slaves.begin();
-        itr != _slaves.end();
-        ++itr)
+    for(unsigned int i=0; i<_slaves.size(); ++i)
     {
-        Slave& slave = *itr;
+        updateSlave(i);
+    }
+}
+
+void View::updateSlave(unsigned int i)
+{
+    if (i >= _slaves.size() || !_camera) return;
+
+    Slave& slave = _slaves[i];
+
+    if (slave._camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+    {
         slave._camera->setProjectionMatrix(_camera->getProjectionMatrix() * slave._projectionOffset);
         slave._camera->setViewMatrix(_camera->getViewMatrix() * slave._viewOffset);
-        slave._camera->inheritCullSettings(*_camera);
-        if (_camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) slave._camera->setClearColor(_camera->getClearColor());
     }
 
-
+    slave._camera->inheritCullSettings(*_camera);
+    if (_camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) slave._camera->setClearColor(_camera->getClearColor());
 }
 
 bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffset)
@@ -64,20 +70,12 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
     if (!camera) return false;
 
     camera->setView(this);
-    camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
 
-    if (_camera.valid())
-    {
-        camera->setProjectionMatrix(projectionOffset * _camera->getProjectionMatrix());
-        camera->setViewMatrix(viewOffset * _camera->getViewMatrix());
-        camera->inheritCullSettings(*_camera);
-        
-        if (_camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) camera->setClearColor(_camera->getClearColor());
-    }
-           
+    unsigned int i = _slaves.size();
+
     _slaves.push_back(Slave(camera, projectionOffset, viewOffset));
 
-    // osg::notify(osg::NOTICE)<<"Added camera"<<std::endl;
+    updateSlave(i);
 
     return true;
 }
@@ -90,10 +88,19 @@ bool View::removeSlave(unsigned int pos)
     _slaves[pos]._camera->setCullCallback(0);
     
     _slaves.erase(_slaves.begin()+pos);
-    
-    osg::notify(osg::NOTICE)<<"Removed camera"<<std::endl;
 
     return true;
 }
 
+View::Slave* View::findSlaveForCamera(osg::Camera* camera)
+{
+    if (_camera == camera) return 0;
+
+    for(unsigned int i=0; i<_slaves.size(); ++i)
+    {
+        if (_slaves[i]._camera == camera) return &(_slaves[i]);
+    }
+    
+    return 0;
+}
 

@@ -29,6 +29,7 @@ Viewport::~Viewport()
 
 void Viewport::apply(State&) const
 {
-    glViewport(_x,_y,_width,_height);
+    glViewport( static_cast<GLint>(_x),static_cast<GLint>(_y),
+                static_cast<GLsizei>(_width),static_cast<GLsizei>(_height) );
 }
 

@@ -78,7 +78,7 @@ bool EventQueue::copyEvents(Events& events) const
 }
 
 
-void EventQueue::windowResize(int x, int y, unsigned int width, unsigned int height, double time)
+void EventQueue::windowResize(int x, int y, int width, int height, double time)
 {
     _accumulateEventState->setWindowRectangle(x, y, width, height, !_useFixedMouseInputRange);
 

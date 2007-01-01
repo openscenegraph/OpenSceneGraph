@@ -70,7 +70,7 @@ GUIEventAdapter::~GUIEventAdapter()
 {
 }
 
-void GUIEventAdapter::setWindowRectangle(int x, int y, unsigned int width, unsigned int height, bool updateMouseRange)
+void GUIEventAdapter::setWindowRectangle(int x, int y, int width, int height, bool updateMouseRange)
 {
     _windowX = x;
     _windowY = y;

@@ -17,6 +17,7 @@
 #include <osg/Group>
 #include <osg/Transform>
 #include <osg/Quat>
+#include <osg/Viewport>
 
 namespace osg {
 
@@ -60,8 +61,6 @@ class OSG_EXPORT AutoTransform : public Transform
         float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
 
 
-
-
         enum AutoRotateMode
         {
             NO_ROTATION,
@@ -88,25 +87,24 @@ class OSG_EXPORT AutoTransform : public Transform
     protected :
             
         virtual ~AutoTransform() {}
+
+        Vec3                            _position;
+        Vec3                            _pivotPoint;
+        float                           _autoUpdateEyeMovementTolerance;
+
+        AutoRotateMode                  _autoRotateMode;
+
+        bool                            _autoScaleToScreen;
         
-
-        Vec3                _position;
-        Vec3                _pivotPoint;
-        float               _autoUpdateEyeMovementTolerance;
-
-        AutoRotateMode      _autoRotateMode;
-
-        bool                _autoScaleToScreen;
-        
-        mutable Quat        _rotation;
-        mutable Vec3        _scale;
-        mutable bool        _firstTimeToInitEyePoint;
-        mutable osg::Vec3   _previousEyePoint;
-        mutable osg::Vec3   _previousLocalUp;
-        mutable int         _previousWidth;
-        mutable int         _previousHeight;        
-        mutable osg::Matrix _previousProjection;
-        mutable osg::Vec3 _previousPosition;
+        mutable Quat                    _rotation;
+        mutable Vec3                    _scale;
+        mutable bool                    _firstTimeToInitEyePoint;
+        mutable osg::Vec3               _previousEyePoint;
+        mutable osg::Vec3               _previousLocalUp;
+        mutable Viewport::value_type    _previousWidth;
+        mutable Viewport::value_type    _previousHeight;        
+        mutable osg::Matrix             _previousProjection;
+        mutable osg::Vec3               _previousPosition;
 
 
         void computeMatrix() const;

@@ -232,8 +232,7 @@ bool TrackballManipulator::calcMovement()
 
     float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
     float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
-
-
+    
     // return if there is no movement.
     if (dx==0.0f && dy==0.0f)
     {

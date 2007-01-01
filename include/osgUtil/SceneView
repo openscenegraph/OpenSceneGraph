@@ -99,16 +99,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** Get the const viewport. */
         const osg::Viewport* getViewport() const { return (_camera->getViewport()!=0) ? _camera->getViewport() : 0; }
         
-         /** Get the viewport of the scene view. */
-        void getViewport(int& x,int& y,int& width,int& height) const
-        {
-            if (_camera->getViewport()!=0) 
-                _camera->getViewport()->getViewport(x,y,width,height);
-            else
-                x = y = width = height = 0;
-            
-        }
-
         /** Set the DisplaySettings. */
         inline void setDisplaySettings(osg::DisplaySettings* vs) { _displaySettings = vs; }
         
@@ -178,9 +168,9 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osg::State* getState() { return _renderInfo.getState(); }
         const osg::State* getState() const { return _renderInfo.getState(); }
         
-        void setView(osg::View* view) { _renderInfo.setView(view); }
-        osg::View* getView() { return _renderInfo.getView(); }
-        const osg::View* getView() const { return _renderInfo.getView(); }
+        void setView(osg::View* view) { _camera->setView(view); }
+        osg::View* getView() { return _camera->getView(); }
+        const osg::View* getView() const { return _camera->getView(); }
 
         void setRenderInfo(osg::RenderInfo& renderInfo) { _renderInfo = renderInfo; }
         osg::RenderInfo& getRenderInfo() { return _renderInfo; }
@@ -315,16 +305,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 
 
         /** Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode */
-        void setDrawBufferValue( GLenum drawBufferValue )
-        {
-            _drawBufferValue = drawBufferValue;
-        }
+        void setDrawBufferValue( GLenum drawBufferValue ) { _camera->setDrawBuffer(drawBufferValue); }
 
         /** Get the draw buffer value used at the start of each frame draw. */
-        GLenum getDrawBufferValue() const
-        {
-            return _drawBufferValue;
-        }
+        GLenum getDrawBufferValue() const { return _camera->getDrawBuffer(); }
 
 
         /** FusionDistanceMode is used only when working in stereo.*/
@@ -504,7 +488,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
         
-        osg::ref_ptr<osg::Camera>               _camera;
+        osg::ref_ptr<osg::Camera>                   _camera;
         
         osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::Light>                    _light;
@@ -516,8 +500,6 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         LightingMode                                _lightingMode;
         
         bool                                        _prioritizeTextures;
-        
-        GLenum                                      _drawBufferValue;
         
         bool                                        _requiresFlush;
         

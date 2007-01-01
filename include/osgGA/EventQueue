@@ -64,10 +64,10 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
 
 
         /** Method for adapting window resize event, placing this event on the back of the event queue. */
-        void windowResize(int x, int y, unsigned int width, unsigned int height) { windowResize(x,y,width,height,getTime()); }
+        void windowResize(int x, int y, int width, int height) { windowResize(x,y,width,height,getTime()); }
 
         /** Method for adapting window resize event, placing this event on the back of the event queue, with specified time. */
-        void windowResize(int x, int y, unsigned int width, unsigned int height, double time);
+        void windowResize(int x, int y, int width, int height, double time);
 
 
         /** Method for adapting mouse scroll wheel events, placing this event on the back of the event queue. */

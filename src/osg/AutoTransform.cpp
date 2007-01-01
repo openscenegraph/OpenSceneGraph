@@ -102,8 +102,8 @@ void AutoTransform::accept(NodeVisitor& nv)
         if (cs)
         {
 
-            int width = _previousWidth;
-            int height = _previousHeight;
+            Viewport::value_type width = _previousWidth;
+            Viewport::value_type height = _previousHeight;
 
             osg::Viewport* viewport = cs->getViewport();
             if (viewport)

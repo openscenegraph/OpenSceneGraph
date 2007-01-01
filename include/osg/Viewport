@@ -23,9 +23,15 @@ namespace osg {
 class OSG_EXPORT Viewport : public StateAttribute
 {
     public :
+
+#if 0
+        typedef int value_type;
+#else
+        typedef double value_type;
+#endif
         Viewport();
         
-        Viewport(int x,int y,int width,int height):
+        Viewport(value_type x,value_type y,value_type width,value_type height):
             _x(x),
             _y(y),
             _width(width),
@@ -58,14 +64,15 @@ class OSG_EXPORT Viewport : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        inline void setViewport(int x,int y,int width,int height)
+        inline void setViewport(value_type x,value_type y,value_type width,value_type height)
         {
             _x = x;
             _y = y;
             _width = width;
             _height = height;
         }
-        
+
+#if 0        
         void getViewport(int& x,int& y,int& width,int& height) const
         {
             x = _x;
@@ -74,24 +81,32 @@ class OSG_EXPORT Viewport : public StateAttribute
             height = _height;
         }
 
-        inline int& x() { return _x; }
-        inline int x() const { return _x; }
+        void getViewport(double& x,double& y,double& width,double& height) const
+        {
+            x = _x;
+            y = _y;
+            width = _width;
+            height = _height;
+        }
+#endif
+        inline value_type& x() { return _x; }
+        inline value_type x() const { return _x; }
 
-        inline int& y() { return _y; }
-        inline int y() const { return _y; }
+        inline value_type& y() { return _y; }
+        inline value_type y() const { return _y; }
 
-        inline int& width() { return _width; }
-        inline int width() const { return _width; }
+        inline value_type& width() { return _width; }
+        inline value_type width() const { return _width; }
 
-        inline int& height() { return _height; }
-        inline int height() const { return _height; }
+        inline value_type& height() { return _height; }
+        inline value_type height() const { return _height; }
 
-        inline bool valid() const { return _width!=0 && _height!=0; }
+        inline bool valid() const { return _width>0 && _height>0; }
 
         /** Return the aspectRatio of the viewport, which is equal to width/height.
           * If height is zero, the potental division by zero is avoided by simply returning 1.0f.
         */
-        inline float aspectRatio() const { if (_height!=0) return (float)_width/(float)_height; else return 1.0f; }
+        inline double aspectRatio() const { if (_height!=0) return (double)_width/(double)_height; else return 1.0; }
         
         /** Compute the Window Matrix which takes projected coords into Window coordinates.
           * To convert local coordinates into window coordinates use v_window = v_local * MVPW matrix,
@@ -101,7 +116,7 @@ class OSG_EXPORT Viewport : public StateAttribute
         */
         inline const osg::Matrix computeWindowMatrix() const
         {
-            return osg::Matrix::translate(1.0f,1.0f,1.0f)*osg::Matrix::scale(0.5f*width(),0.5f*height(),0.5f)*osg::Matrix::translate(x(),y(),0.0f);
+            return osg::Matrix::translate(1.0,1.0,1.0)*osg::Matrix::scale(0.5*width(),0.5*height(),0.5f)*osg::Matrix::translate(x(),y(),0.0f);
         }
 
         virtual void apply(State& state) const;
@@ -110,10 +125,10 @@ class OSG_EXPORT Viewport : public StateAttribute
     
         virtual ~Viewport();
 
-        int _x;
-        int _y;
-        int _width;
-        int _height;
+        value_type _x;
+        value_type _y;
+        value_type _width;
+        value_type _height;
 
 };
 

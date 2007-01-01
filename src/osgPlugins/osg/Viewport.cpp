@@ -25,28 +25,27 @@ RegisterDotOsgWrapperProxy g_ViewportProxy
 bool Viewport_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
-    int x = 0, y = 0, width = 0, height = 0;
+    double x = 0, y = 0, width = 0, height = 0;
 
-
-    if (fr[0].matchWord("x") && fr[1].getInt(x))
+    if (fr[0].matchWord("x") && fr[1].getFloat(x))
     {
         fr+=2;
         iteratorAdvanced = true;
     }
 
-    if (fr[0].matchWord("y") && fr[1].getInt(y))
+    if (fr[0].matchWord("y") && fr[1].getFloat(y))
     {
         fr+=2;
         iteratorAdvanced = true;
     }
 
-    if (fr[0].matchWord("width") && fr[1].getInt(width))
+    if (fr[0].matchWord("width") && fr[1].getFloat(width))
     {
         fr+=2;
         iteratorAdvanced = true;
     }
 
-    if (fr[0].matchWord("height") && fr[1].getInt(height))
+    if (fr[0].matchWord("height") && fr[1].getFloat(height))
     {
         fr+=2;
         iteratorAdvanced = true;

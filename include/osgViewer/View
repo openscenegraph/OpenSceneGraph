@@ -23,7 +23,7 @@
 namespace osgViewer {
 
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
-class OSGVIEWER_EXPORT View : public osg::View
+class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 {
     public:
 
@@ -50,12 +50,16 @@ class OSGVIEWER_EXPORT View : public osg::View
         /** Convinience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
         void setUpViewAcrossAllScreens();
         
+        virtual void requestRedraw();
+        virtual void requestContinuousUpdate(bool needed=true);
+        virtual void requestWarpPointer(float x,float y);
 
     public:
 
         void setUpRenderingSupport();
         
         void assignSceneDataToCameras();
+
 
     protected:
     

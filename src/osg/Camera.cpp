@@ -50,12 +50,26 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _bufferAttachmentMap(camera._bufferAttachmentMap),
     _postDrawCallback(camera._postDrawCallback)
 {
+    // need to copy/share graphics context?
 }
 
 
 Camera::~Camera()
 {
+    if (_graphicsContext.valid()) _graphicsContext->removeCamera(this);
 }
+
+void Camera::setGraphicsContext(GraphicsContext* context) 
+{
+    if (_graphicsContext == context) return;
+    
+    if (_graphicsContext.valid()) _graphicsContext->removeCamera(this);
+    
+    _graphicsContext = context;
+
+    if (_graphicsContext.valid()) _graphicsContext->addCamera(this);
+}
+
 
 bool Camera::isRenderToTextureCamera() const
 {

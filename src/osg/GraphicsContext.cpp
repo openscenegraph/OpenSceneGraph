@@ -13,7 +13,11 @@
 
 
 #include <osg/GraphicsContext>
+#include <osg/Camera>
+#include <osg/View>
+
 #include <osg/Notify>
+
 #include <map>
 #include <sstream>
 
@@ -361,4 +365,106 @@ void GraphicsContext::runOperations()
             }
         }
     }
+}
+
+void GraphicsContext::addCamera(osg::Camera* camera)
+{
+    _cameras.push_back(camera);
+}
+
+void GraphicsContext::removeCamera(osg::Camera* camera)
+{
+    for(Cameras::iterator itr = _cameras.begin();
+        itr != _cameras.end();
+        ++itr)
+    {
+        if (*itr == camera)
+        {
+            _cameras.erase(itr);
+            return;
+        }
+    }
+}
+
+void GraphicsContext::resized(int x, int y, int width, int height)
+{
+    if (!_traits) return;
+    
+    double widthChangeRatio = double(width) / double(_traits->width);
+    double heigtChangeRatio = double(height) / double(_traits->height);
+    double aspectRatioChange = widthChangeRatio / heigtChangeRatio; 
+    
+    for(Cameras::iterator itr = _cameras.begin();
+        itr != _cameras.end();
+        ++itr)
+    {
+        Camera* camera = (*itr);
+        Viewport* viewport = camera->getViewport();
+        if (viewport)
+        {
+            if (viewport->x()==0 && viewport->y()==0 &&
+                viewport->width()>=_traits->width && viewport->height()>=_traits->height)
+            {
+                viewport->setViewport(0,0,width,height);
+            }
+            else
+            {
+                viewport->x() = static_cast<osg::Viewport::value_type>(double(viewport->x())*widthChangeRatio);
+                viewport->y() = static_cast<osg::Viewport::value_type>(double(viewport->y())*heigtChangeRatio);
+                viewport->width() = static_cast<osg::Viewport::value_type>(double(viewport->width())*widthChangeRatio);
+                viewport->height() = static_cast<osg::Viewport::value_type>(double(viewport->height())*heigtChangeRatio);
+            }
+        }
+
+        // if aspect ratio adjusted change the project matrix to suit.
+        if (aspectRatioChange != 1.0)
+        {
+            osg::View* view = camera->getView();
+            osg::View::Slave* slave = view ? view->findSlaveForCamera(camera) : 0;
+
+            if (slave && camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+            {
+                slave->_projectionOffset *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+            }
+            else
+            {
+#if 0            
+                osg::Matrixd& pm = camera->getProjectionMatrix();
+                bool orthographicCamera = (pm(0,3)==0.0) && (pm(1,3)==0.0) && (pm(2,3)==0.0) && (pm(3,3)==1.0); 
+
+                if (orthographicCamera)
+                {
+                    double left, right, bottom, top, zNear, zFar;
+                    camera->getProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
+
+                    double mid = (right+left)*0.5;
+                    double halfWidth = (right-left)*0.5;
+                    left = mid - halfWidth * aspectRatioChange;
+                    right = mid + halfWidth * aspectRatioChange;
+                    camera->setProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
+                }
+                else
+                {
+                    double left, right, bottom, top, zNear, zFar;
+                    camera->getProjectionMatrixAsFrustum(left, right, bottom, top, zNear, zFar);
+
+                    double mid = (right+left)*0.5;
+                    double halfWidth = (right-left)*0.5;
+                    left = mid - halfWidth * aspectRatioChange;
+                    right = mid + halfWidth * aspectRatioChange;
+                    camera->setProjectionMatrixAsFrustum(left, right, bottom, top, zNear, zFar);
+                }
+#else
+                camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+#endif
+            }
+
+        }    
+
+    }
+    
+    _traits->x = x;
+    _traits->y = y;
+    _traits->width = width;
+    _traits->height = height;
 }

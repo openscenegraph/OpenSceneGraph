@@ -18,18 +18,9 @@
 #include <osgUtil/GLObjectsVisitor>
 #include <osg/GLExtensions>
 
+#include <osg/io_utils>
+
 using namespace osgViewer;
-
-class ActionAdapter : public osgGA::GUIActionAdapter
-{
-public:
-        virtual ~ActionAdapter() {}
-
-        virtual void requestRedraw() { /*osg::notify(osg::NOTICE)<<"requestRedraw()"<<std::endl;*/ }
-        virtual void requestContinuousUpdate(bool =true) { /*osg::notify(osg::NOTICE)<<"requestContinuousUpdate("<<needed<<")"<<std::endl;*/ }
-        virtual void requestWarpPointer(float x,float y) { osg::notify(osg::NOTICE)<<"requestWarpPointer("<<x<<","<<y<<")"<<std::endl; }
-
-};
 
 Viewer::Viewer():
     _firstFrame(true),
@@ -69,8 +60,7 @@ void Viewer::init()
     
     if (_cameraManipulator.valid())
     {
-        ActionAdapter aa;
-        _cameraManipulator->init(*initEvent, aa);
+        _cameraManipulator->init(*initEvent, *this);
     }
 }
 
@@ -157,12 +147,14 @@ void Viewer::realize()
 {
     osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
 
+    setCameraWithFocus(0);
+
     Contexts::iterator citr;
 
     Contexts contexts;
     getContexts(contexts);
 
-    bool multiThreaded = getNumSlaves() > 1;
+    bool multiThreaded = contexts.size() > 1;
     
     if (multiThreaded)
     {
@@ -223,7 +215,6 @@ void Viewer::realize()
     // initialize the global timer to be relative to the current time.
     osg::Timer::instance()->setStartTick();
 
-
     if (multiThreaded)
     {
         for(citr = contexts.begin();
@@ -238,7 +229,6 @@ void Viewer::realize()
             }
         }
     }
-
 }
 
 
@@ -281,6 +271,20 @@ void Viewer::frameEventTraversal()
     Contexts contexts;
     getContexts(contexts);
 
+    osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
+    osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
+    if (getCamera()->getViewport()) 
+    {
+        osg::Viewport* viewport = getCamera()->getViewport();
+        masterCameraVPW *= viewport->computeWindowMatrix();
+        eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
+    }
+    else
+    {
+        eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+    }
+
+
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
         ++citr)
@@ -289,11 +293,104 @@ void Viewer::frameEventTraversal()
         if (gw)
         {
             gw->checkEvents();
-            gw->getEventQueue()->takeEvents(events);
+            
+            osgGA::EventQueue::Events gw_events;
+            gw->getEventQueue()->takeEvents(gw_events);
+            
+            for(osgGA::EventQueue::Events::iterator itr = gw_events.begin();
+                itr != gw_events.end();
+                ++itr)
+            {
+                osgGA::GUIEventAdapter* event = itr->get();
+                
+                bool pointerEvent = false;
+
+                float x = event->getX();
+                float y = event->getY();
+                
+                bool invert_y = event->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+                if (invert_y) y = gw->getTraits()->height - y;
+                
+                switch(event->getEventType())
+                {
+                    case(osgGA::GUIEventAdapter::PUSH):
+                    case(osgGA::GUIEventAdapter::RELEASE):
+                    case(osgGA::GUIEventAdapter::DRAG):
+                    case(osgGA::GUIEventAdapter::MOVE):
+                    {
+                        pointerEvent = true;
+                        
+                        if (event->getEventType()!=osgGA::GUIEventAdapter::DRAG || !getCameraWithFocus())
+                        {
+                            osg::GraphicsContext::Cameras& cameras = gw->getCameras();
+                            for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
+                                citr != cameras.end();
+                                ++citr)
+                            {
+                                osg::Camera* camera = *citr;
+                                osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+                                if (viewport && 
+                                    x >= viewport->x() && y >= viewport->y() &&
+                                    x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
+                                {
+                                    setCameraWithFocus(camera);
+                                }
+                            }
+                        }
+                        
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                
+                if (pointerEvent)
+                {
+                    if (getCameraWithFocus())
+                    {
+                        osg::Viewport* viewport = getCameraWithFocus()->getViewport();
+                        osg::Matrix localCameraVPW = getCameraWithFocus()->getViewMatrix() * getCameraWithFocus()->getProjectionMatrix();
+                        if (viewport) localCameraVPW *= viewport->computeWindowMatrix();
+
+                        osg::Matrix matrix( osg::Matrix::inverse(localCameraVPW) * masterCameraVPW );
+
+                        osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
+
+                        x = new_coord.x();
+                        y = new_coord.y();                                
+
+                        event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
+                        event->setX(x);
+                        event->setY(y);
+                        event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
+                    }
+                    // pass along the new pointer events details to the eventState of the viewer 
+                    eventState->setX(x);
+                    eventState->setY(y);
+                    eventState->setButtonMask(event->getButtonMask());
+                    eventState->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+
+                }
+                else
+                {
+                    event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
+                    event->setX(eventState->getX());
+                    event->setY(eventState->getY());
+                    event->setButtonMask(eventState->getButtonMask());
+                    event->setMouseYOrientation(eventState->getMouseYOrientation());
+                }
+                //osg::notify(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
+                // osg::notify(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
+            }
+
+            events.insert(events.end(), gw_events.begin(), gw_events.end());
+
         }
     }
     
-    osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
+#if 0    
+    // pointer coordinate transform
     for(osgGA::EventQueue::Events::iterator itr = events.begin();
         itr != events.end();
         ++itr)
@@ -321,12 +418,13 @@ void Viewer::frameEventTraversal()
                 break;
         }
     }
+#else
+#endif    
 
     // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
     _eventQueue->frame( _scene->getFrameStamp()->getReferenceTime() );
-
     _eventQueue->takeEvents(events);
 
 
@@ -360,6 +458,9 @@ void Viewer::frameEventTraversal()
             case(osgGA::GUIEventAdapter::KEYUP):
                 osg::notify(osg::NOTICE)<<"  KEYUP '"<<(char)event->getKey()<<"'"<<std::endl;
                 break;
+            case(osgGA::GUIEventAdapter::RESIZE):
+                osg::notify(osg::NOTICE)<<"  RESIZE "<<std::endl;
+                break;
             case(osgGA::GUIEventAdapter::FRAME):
                 // osg::notify(osg::NOTICE)<<"  FRAME "<<std::endl;
                 break;
@@ -379,7 +480,7 @@ void Viewer::frameEventTraversal()
         switch(event->getEventType())
         {
             case(osgGA::GUIEventAdapter::KEYUP):
-                if (event->getKey()=='q') _done = true;
+                if (event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
                 break;
             default:
                 break;
@@ -387,8 +488,6 @@ void Viewer::frameEventTraversal()
     }
     
     if (_done) return;
-
-    ActionAdapter aa;
 
     for(osgGA::EventQueue::Events::iterator itr = events.begin();
         itr != events.end();
@@ -400,16 +499,17 @@ void Viewer::frameEventTraversal()
         
         if (_cameraManipulator.valid())
         {
-            _cameraManipulator->handle( *event, aa);
+            _cameraManipulator->handle( *event, *this);
         }
         
         for(EventHandlers::iterator hitr = _eventHandlers.begin();
             hitr != _eventHandlers.end() && !handled;
             ++hitr)
         {
-            handled = (*hitr)->handle( *event, aa, 0, 0);
+            handled = (*hitr)->handle( *event, *this, 0, 0);
         }
     }
+
 }
 
 void Viewer::frameUpdateTraversal()

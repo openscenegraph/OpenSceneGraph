@@ -876,6 +876,8 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
 
     XFlush(_display);
     XSync(_display, 0);
+    
+    getEventQueue()->mouseWarped(x,y);
 }
 
 struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface

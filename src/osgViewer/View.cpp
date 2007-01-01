@@ -280,6 +280,8 @@ void View::requestWarpPointer(float x,float y)
     osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
     
+    getEventQueue()->mouseWarped(x,y);
+    
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
     if (gw)
     {

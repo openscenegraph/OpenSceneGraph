@@ -1517,13 +1517,13 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
+    // todo for osgViewer
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
+    osg::Referenced::setThreadSafeReferenceCounting(true);
 
     // construct the viewer.
     osgViewer::Viewer viewer;
 
-    // todo for osgViewer
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
-    osg::Referenced::setThreadSafeReferenceCounting(true);
 
     // register the handler to add keyboard and mosue handling.
     GameEventHandler* seh = new GameEventHandler();

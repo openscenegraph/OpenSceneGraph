@@ -1560,6 +1560,8 @@ int main( int argc, char **argv )
     // creat the scene from the file list.
     osg::ref_ptr<osg::Node> rootNode = seh->createScene();
 
+    rootNode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
     //osgDB::writeNodeFile(*rootNode,"test.osg");
 
     // set the scene to render

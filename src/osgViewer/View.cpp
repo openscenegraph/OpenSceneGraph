@@ -147,7 +147,7 @@ void View::setUpViewAcrossAllScreens()
                 {
                     osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
 
-                    gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+                    gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(traits->x, traits->y, traits->width, traits->height );
                 }
                 else
                 {
@@ -193,7 +193,7 @@ void View::setUpViewAcrossAllScreens()
                 {
                     osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
 
-                    gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+                    gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(traits->x, traits->y, traits->width, traits->height );
                 }
                 else
                 {

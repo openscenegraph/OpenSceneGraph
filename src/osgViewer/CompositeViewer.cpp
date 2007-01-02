@@ -24,6 +24,10 @@ CompositeViewer::~CompositeViewer()
 {
 }
 
+void CompositeViewer::init()
+{
+}
+
 void CompositeViewer::frame()
 {
     osg::notify(osg::NOTICE)<<"CompositeViewer::frame() not implemented yet."<<std::endl;

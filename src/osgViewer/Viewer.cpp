@@ -24,7 +24,8 @@ using namespace osgViewer;
 
 Viewer::Viewer():
     _firstFrame(true),
-    _done(false)
+    _done(false),
+    _threadingModel(ThreadPerContext)
 {
 }
 
@@ -49,6 +50,11 @@ Viewer::~Viewer()
         _scene->setDatabasePager(0);
     }
 #endif    
+}
+
+void Viewer::setThreadingModel(ThreadingModel threadingModel)
+{
+    _threadingModel = threadingModel;
 }
 
 void Viewer::init()
@@ -187,15 +193,23 @@ void Viewer::realize()
     Contexts contexts;
     getContexts(contexts);
 
-    bool multiThreaded = contexts.size() > 1;
+    bool multiThreaded = contexts.size() > 1 && _threadingModel>=ThreadPerContext;
     
     if (multiThreaded)
     {
-        _startRenderingBarrier = new osg::BarrierOperation(contexts.size()+1, osg::BarrierOperation::NO_OPERATION);
-        _endRenderingDispatchBarrier = new osg::BarrierOperation(contexts.size()+1, osg::BarrierOperation::NO_OPERATION);
+        bool firstContextAsMainThread = _threadingModel==ThreadPerContext;
+        unsigned int numThreadsIncludingMainThread = firstContextAsMainThread ? contexts.size() : contexts.size()+1;
+    
+        osg::notify(osg::NOTICE)<<"numThreadsIncludingMainThread=="<<numThreadsIncludingMainThread<<std::endl;
+    
+        _startRenderingBarrier = new osg::BarrierOperation(numThreadsIncludingMainThread, osg::BarrierOperation::NO_OPERATION);
+        _endRenderingDispatchBarrier = new osg::BarrierOperation(numThreadsIncludingMainThread, osg::BarrierOperation::NO_OPERATION);
         osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
-        for(citr = contexts.begin();
+        citr = contexts.begin(); 
+        if (firstContextAsMainThread) ++citr;
+
+        for(;
             citr != contexts.end();
             ++citr)
         {
@@ -255,7 +269,7 @@ void Viewer::realize()
             ++citr)
         {
             osg::GraphicsContext* gc = (*citr);
-            if (!gc->getGraphicsThread()->isRunning())
+            if (gc->getGraphicsThread() && !gc->getGraphicsThread()->isRunning())
             {
                 gc->getGraphicsThread()->startThread();
                 OpenThreads::Thread::YieldCurrentThread();
@@ -569,49 +583,42 @@ void Viewer::frameRenderingTraversals()
         dp->signalBeginFrame(_scene->getFrameStamp());
     }
 
-    bool multiThreaded = _startRenderingBarrier.valid();
-    
-    if (multiThreaded)
+    // osg::notify(osg::NOTICE)<<std::endl<<"Joing _startRenderingBarrier block"<<std::endl;
+
+    Contexts contexts;
+    getContexts(contexts);
+
+    // dispatch the the rendering threads
+    if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
+
+    Contexts::iterator itr;
+    for(itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
     {
-        // sleep(1);
-    
-        // osg::notify(osg::NOTICE)<<std::endl<<"Joing _startRenderingBarrier block"<<std::endl;
-    
-        // dispatch the the rendering threads
-        _startRenderingBarrier->block();
-        
-        // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block"<<std::endl;
-
-        // wait till the rendering dispatch is done.
-        _endRenderingDispatchBarrier->block();
-
-        // osg::notify(osg::NOTICE)<<"Leaving _endRenderingDispatchBarrier block"<<std::endl<<std::endl;
-
-    }
-    else
-    {
-        Contexts contexts;
-        getContexts(contexts);
-
-        Contexts::iterator itr;
-        for(itr = contexts.begin();
-            itr != contexts.end();
-            ++itr)
-        {
-            if (_done) return;
+        if (_done) return;
+        if (!((*itr)->getGraphicsThread()))
+        { 
             (*itr)->makeCurrent();
             (*itr)->runOperations();
         }
+    }
 
+    // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block"<<std::endl;
 
-        for(itr = contexts.begin();
-            itr != contexts.end();
-            ++itr)
-        {
+    // wait till the rendering dispatch is done.
+    if (_endRenderingDispatchBarrier.valid()) _endRenderingDispatchBarrier->block();
+
+    for(itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        if (_done) return;
+        if (!((*itr)->getGraphicsThread()))
+        { 
             (*itr)->makeCurrent();
             (*itr)->swapBuffers();
         }
-
     }
 
     if (dp)

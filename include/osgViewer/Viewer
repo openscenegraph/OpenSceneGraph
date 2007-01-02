@@ -35,6 +35,19 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         void setDone(bool done) { _done = done; }
         
         bool done() { return _done; }
+        
+        enum ThreadingModel
+        {
+            SingleThreaded,
+            ThreadPerContext,
+            ThreadPerCamera
+        };
+        
+        /** Set the threading model the rendering traversals will use.*/
+        void setThreadingModel(ThreadingModel threadingModel);
+        
+        /** Get the threading model the rendering traversals will use.*/
+        ThreadingModel getThreadingModel() const { return _threadingModel; }
 
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). */
@@ -70,6 +83,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         bool _firstFrame;
         bool _done;
+        
+        ThreadingModel _threadingModel;
        
         osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
         osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;

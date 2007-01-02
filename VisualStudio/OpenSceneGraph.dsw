@@ -4007,7 +4007,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "osgWrapper osgUtil"=.\osgWrappers\osgUtil\wrapper_osgViewer.dsp - Package Owner=<4>
+Project: "osgWrapper osgViewer"=.\osgWrappers\osgViewer\wrapper_osgViewer.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

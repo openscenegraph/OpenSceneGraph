@@ -1580,6 +1580,16 @@ int main( int argc, char **argv )
 
     viewer.realize();
 
+    // switch off the cursor
+    osgViewer::Viewer::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
+    {
+        (*itr)->useCursor(false);
+    }
+
     // todo for osgViewer - implement warp pointer
     // viewer.requestWarpPointer(0.5f,0.5f);        
 

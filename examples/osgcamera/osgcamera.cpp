@@ -36,7 +36,7 @@ int main( int argc, char **argv )
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
     viewer.getCamera()->setClearColor(osg::Vec4f(0.6f,0.6f,0.8f,1.0f));
 
-#if 1
+#if 0
 
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi) 
@@ -99,8 +99,6 @@ int main( int argc, char **argv )
 #endif    
     
     viewer.realize();
-
-    gw->requestWarpPointer(100,100);
 
     bool limitNumberOfFrames = false;
     unsigned int numFrames = 0;

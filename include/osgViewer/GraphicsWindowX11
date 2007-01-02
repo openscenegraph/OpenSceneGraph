@@ -89,6 +89,21 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         // Override from GUIActionAdapter
         virtual void requestWarpPointer(float x,float y);
 
+        /** Switch on/off the cursor.*/
+        virtual void useCursor(bool cursorOn);
+        
+    public:
+    
+        // X11 specific aces functions
+
+        Display* getDisplay() { return _display; }
+        Window& getParent() { return _parent; }
+        Window& getWindow() { return _window; }
+
+        Cursor& getDefaultCursor() { return _defaultCursor; }
+        Cursor& getNullCursor() { return _nullCursor; }
+        Cursor& getCurrentCursor() { return _nullCursor; }
+
     protected:
     
         bool createVisualInfo();

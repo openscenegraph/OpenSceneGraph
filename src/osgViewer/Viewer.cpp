@@ -94,6 +94,39 @@ void Viewer::getContexts(Contexts& contexts)
     }
 }
 
+void Viewer::getWindows(Windows& windows)
+{
+    typedef std::set<osgViewer::GraphicsWindow*> WindowSet;
+    WindowSet windowSet;
+
+    if (_camera.valid() && _camera->getGraphicsContext())
+    {
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+        if (gw) windowSet.insert(gw);
+    }
+    
+    for(unsigned int i=0; i<getNumSlaves(); ++i)
+    {
+        Slave& slave = getSlave(i);
+        if (slave._camera.valid() && slave._camera->getGraphicsContext())
+        {
+            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(slave._camera->getGraphicsContext());
+            if (gw) windowSet.insert(gw);
+        }
+    }
+
+    windows.clear();
+    windows.reserve(windowSet.size());
+
+    for(WindowSet::iterator itr = windowSet.begin();
+        itr != windowSet.end();
+        ++itr)
+    {
+        windows.push_back(const_cast<osgViewer::GraphicsWindow*>(*itr));
+    }
+}
+
+
 OpenThreads::Mutex mutex;
 
 // Compile operation, that compile OpenGL objects.

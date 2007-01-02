@@ -51,6 +51,9 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow() {}
 
+        /** Switch on/off the cursor.*/
+        virtual void useCursor(bool /*cursorOn*/) {}
+
     public:
 
         /** Realise the GraphicsContext implementation, 

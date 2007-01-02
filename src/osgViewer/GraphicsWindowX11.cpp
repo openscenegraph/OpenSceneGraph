@@ -333,6 +333,25 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
         osg::notify(osg::NOTICE)<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
 }
 
+void GraphicsWindowX11::useCursor(bool cursorOn)
+{
+    if (cursorOn)
+    {
+        _currentCursor = _defaultCursor;
+    }
+    else
+    {
+        _currentCursor = _nullCursor;
+    }
+
+    if (_display && _window)
+    {
+        XDefineCursor( _display, _window, _currentCursor );
+        XFlush(_display);
+        XSync(_display,0);
+    }
+}
+
 void GraphicsWindowX11::init()
 {
     if (_initialized) return;
@@ -461,17 +480,7 @@ void GraphicsWindowX11::init()
         _nullCursor = XCreatePixmapCursor( _display, pixmap, pixmap, &ncol, &ncol, 0, 0 );
     }
 
-#if 1
-    _currentCursor = _defaultCursor;
-#else
-    _currentCursor = _nullCursor;
-#endif
-
-    {
-        XDefineCursor( _display, _window, _currentCursor );
-        XFlush(_display);
-        XSync(_display,0);
-    }
+    useCursor(true);
 
     XSelectInput( _display, _window, ExposureMask | StructureNotifyMask | 
                                      KeyPressMask | KeyReleaseMask |

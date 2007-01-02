@@ -58,13 +58,16 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
         const osg::Camera* getCameraWithFocus() const { return _cameraWithFocus.get(); }
         
+        typedef std::vector<osg::GraphicsContext*> Contexts;
+        void getContexts(Contexts& contexts);
+        
+        typedef std::vector<osgViewer::GraphicsWindow*> Windows;
+        void getWindows(Windows& windows);
+
     public:
     
         void init();
         
-        typedef std::vector<osg::GraphicsContext*> Contexts;
-        void getContexts(Contexts& contexts);
-
         bool _firstFrame;
         bool _done;
        

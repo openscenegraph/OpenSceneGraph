@@ -115,48 +115,100 @@ void View::setUpViewAcrossAllScreens()
     }
     else
     {
-        double rotate_x = - double(numScreens-1) * 0.5 * fovx;
-            
-        for(unsigned int i=0; i<numScreens; ++i, rotate_x += fovx)
+    
+        bool cylindericalScreen = false;
+        
+        if (cylindericalScreen)
         {
-            unsigned int width, height;
-            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
+            double rotate_x = - double(numScreens-1) * 0.5 * fovx;
 
-            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->screenNum = i;
-            traits->x = 0;
-            traits->y = 0;
-            traits->width = width;
-            traits->height = height;
-            traits->windowDecoration = false;
-            traits->doubleBuffer = true;
-            traits->sharedContext = 0;
-            
-            osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-            
-            osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-            camera->setGraphicsContext(gc.get());
-            
-            osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-            if (gw)
+            for(unsigned int i=0; i<numScreens; ++i, rotate_x += fovx)
             {
-                osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
-                
-                gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
-            }
-            
-            camera->setViewport(new osg::Viewport(0, 0, width, height));
-            
-            GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-            camera->setDrawBuffer(buffer);
-            camera->setReadBuffer(buffer);
+                unsigned int width, height;
+                wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
 
-            addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate( rotate_x, 0.0, 1.0, 0.0));
-            
+                osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+                traits->screenNum = i;
+                traits->x = 0;
+                traits->y = 0;
+                traits->width = width;
+                traits->height = height;
+                traits->windowDecoration = false;
+                traits->doubleBuffer = true;
+                traits->sharedContext = 0;
+
+                osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+
+                osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+                if (gw)
+                {
+                    osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+
+                    gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+                }
+
+                camera->setViewport(new osg::Viewport(0, 0, width, height));
+
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate( rotate_x, 0.0, 1.0, 0.0));
+
+            }
+        }
+        else
+        {
+            double translate_x = double(numScreens) - 1.0;
+
+            for(unsigned int i=0; i<numScreens; ++i, translate_x -= 2.0)
+            {
+                unsigned int width, height;
+                wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
+
+                osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+                traits->screenNum = i;
+                traits->x = 0;
+                traits->y = 0;
+                traits->width = width;
+                traits->height = height;
+                traits->windowDecoration = false;
+                traits->doubleBuffer = true;
+                traits->sharedContext = 0;
+
+                osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+                osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+                camera->setGraphicsContext(gc.get());
+
+                osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+                if (gw)
+                {
+                    osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+
+                    gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+                }
+
+                camera->setViewport(new osg::Viewport(0, 0, width, height));
+
+                GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+                camera->setDrawBuffer(buffer);
+                camera->setReadBuffer(buffer);
+
+                addSlave(camera.get(), osg::Matrixd::translate( translate_x, 0.0, 0.0), osg::Matrixd() );
+
+            }
         }
     }
     
@@ -277,6 +329,8 @@ void View::requestContinuousUpdate(bool)
 
 void View::requestWarpPointer(float x,float y)
 {
+    // osg::notify(osg::NOTICE)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
+
     osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
     
@@ -304,6 +358,11 @@ void View::requestWarpPointer(float x,float y)
 
     if (view_invert_y) y = - y;
     
+    // osg::notify(osg::NOTICE)<<"  remapped ("<<x<<","<<y<<")"<<std::endl;;
+    // osg::notify(osg::NOTICE)<<"  number of slaves = "<<getNumSlaves()<<std::endl;;
+    
+    double epsilon = 0.5;
+
     for(unsigned i=0; i<getNumSlaves(); ++i)
     {
         Slave& slave = getSlave(i);
@@ -319,10 +378,14 @@ void View::requestWarpPointer(float x,float y)
 
             osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
 
+            // osg::notify(osg::NOTICE)<<"  new_coord "<<new_coord<<std::endl;;
+
             if (viewport && 
-                new_coord.x() >= viewport->x() && new_coord.y() >= viewport->y() &&
-                new_coord.x() <= (viewport->x()+viewport->width()) && new_coord.y() <= (viewport->y()+viewport->height()) )
+                new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
+                new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
             {
+                // osg::notify(osg::NOTICE)<<"  in viewport "<<std::endl;;
+
                 gw = dynamic_cast<osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
                 if (gw)
                 {
@@ -338,11 +401,16 @@ void View::requestWarpPointer(float x,float y)
                     return;
                 }
             }
+            else
+            {
+                // osg::notify(osg::NOTICE)<<"  not in viewport "<<viewport->x()<<" "<<(viewport->x()+viewport->width())<<std::endl;;
+            }
 
 
         }
     }    
 
+    // osg::notify(osg::NOTICE)<<"  ** no warping applied. **"<<std::endl;
 
 
 }

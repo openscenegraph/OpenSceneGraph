@@ -1,12 +1,12 @@
-#include <osgGA/Version>
+#include <osgViewer/Version>
 
-const char* osgGAGetVersion()
+const char* osgViewerGetVersion()
 {
     return "1.2";
 }
 
 
-const char* osgGAGetLibraryName()
+const char* osgViewerGetLibraryName()
 {
-    return "OpenSceneGraph Gui Adapter Library";
+    return "OpenSceneGraph Viewer Library";
 }

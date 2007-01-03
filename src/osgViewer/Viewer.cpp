@@ -31,7 +31,8 @@ Viewer::Viewer():
 
 Viewer::~Viewer()
 {
-#if 0
+    //osg::notify(osg::NOTICE)<<"Viewer::~Viewer()"<<std::endl;
+
     Contexts contexts;
     getContexts(contexts);
 
@@ -49,7 +50,8 @@ Viewer::~Viewer()
         _scene->getDatabasePager()->cancel();
         _scene->setDatabasePager(0);
     }
-#endif    
+
+    //osg::notify(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
 }
 
 void Viewer::setThreadingModel(ThreadingModel threadingModel)
@@ -184,7 +186,7 @@ struct RunOperations : public osg::GraphicsOperation
 
 void Viewer::realize()
 {
-    osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
+    //osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
 
     setCameraWithFocus(0);
 
@@ -193,30 +195,42 @@ void Viewer::realize()
     Contexts contexts;
     getContexts(contexts);
 
+    int numProcessors = OpenThreads::GetNumberOfProcessors();
     bool multiThreaded = contexts.size() > 1 && _threadingModel>=ThreadPerContext;
+    bool affinity = true;
     
     if (multiThreaded)
     {
         bool firstContextAsMainThread = _threadingModel==ThreadPerContext;
         unsigned int numThreadsIncludingMainThread = firstContextAsMainThread ? contexts.size() : contexts.size()+1;
     
-        osg::notify(osg::NOTICE)<<"numThreadsIncludingMainThread=="<<numThreadsIncludingMainThread<<std::endl;
+        // osg::notify(osg::NOTICE)<<"numThreadsIncludingMainThread=="<<numThreadsIncludingMainThread<<std::endl;
     
         _startRenderingBarrier = new osg::BarrierOperation(numThreadsIncludingMainThread, osg::BarrierOperation::NO_OPERATION);
         _endRenderingDispatchBarrier = new osg::BarrierOperation(numThreadsIncludingMainThread, osg::BarrierOperation::NO_OPERATION);
         osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
         citr = contexts.begin(); 
-        if (firstContextAsMainThread) ++citr;
+        unsigned int processNum = 0;
 
+        if (firstContextAsMainThread)
+        {
+            if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(processNum % numProcessors);
+            ++processNum;
+            ++citr;
+        }
+        
         for(;
             citr != contexts.end();
-            ++citr)
+            ++citr,
+            ++processNum)
         {
             osg::GraphicsContext* gc = (*citr);
                         
             // create the a graphics thread for this context
             gc->createGraphicsThread();
+            
+            if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
             
             gc->getGraphicsThread()->add(new CompileOperation(getSceneData()));
             
@@ -264,6 +278,8 @@ void Viewer::realize()
 
     if (multiThreaded)
     {
+        //osg::notify(osg::NOTICE)<<"Ready to start threads"<<std::endl;
+    
         for(citr = contexts.begin();
             citr != contexts.end();
             ++citr)
@@ -271,10 +287,13 @@ void Viewer::realize()
             osg::GraphicsContext* gc = (*citr);
             if (gc->getGraphicsThread() && !gc->getGraphicsThread()->isRunning())
             {
+                //osg::notify(osg::NOTICE)<<"  gc->getGraphicsThread()->startThread() "<<gc->getGraphicsThread()<<std::endl;
                 gc->getGraphicsThread()->startThread();
                 OpenThreads::Thread::YieldCurrentThread();
             }
         }
+
+        //osg::notify(osg::NOTICE)<<"Started threads"<<std::endl;
     }
 }
 

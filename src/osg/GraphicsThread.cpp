@@ -86,9 +86,11 @@ GraphicsThread::GraphicsThread():
 
 GraphicsThread::~GraphicsThread()
 {
-    osg::notify(osg::INFO)<<"Destructing graphics thread"<<std::endl;
+    //osg::notify(osg::NOTICE)<<"Destructing graphics thread "<<this<<std::endl;
 
     cancel();
+
+    //osg::notify(osg::NOTICE)<<"Done Destructing graphics thread "<<this<<std::endl;
 }
 
 void GraphicsThread::setDone(bool done)
@@ -117,7 +119,7 @@ void GraphicsThread::setDone(bool done)
 
 int GraphicsThread::cancel()
 {
-    osg::notify(osg::INFO)<<"Cancelling graphics thread "<<this<<std::endl;
+    osg::notify(osg::INFO)<<"Cancelling graphics thread "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     int result = 0;
     if( isRunning() )
@@ -161,6 +163,8 @@ int GraphicsThread::cancel()
             OpenThreads::Thread::YieldCurrentThread();
         }
     }
+
+    osg::notify(osg::INFO)<<"  GraphicsThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     return result;
 }
@@ -279,7 +283,7 @@ void GraphicsThread::run()
     // create a local object to clean up once the thread is cancelled.
     ThreadExitTidyUp threadExitTypeUp(_graphicsContext, contextRealizedInThisThread);
 
-    osg::notify(osg::INFO)<<"Doing run"<<std::endl;
+    osg::notify(osg::INFO)<<"Doing run "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     bool firstTime = true;
 
@@ -366,7 +370,7 @@ void GraphicsThread::run()
 
     } while (!testCancel() && !_done);
 
-    osg::notify(osg::INFO)<<"exit loop "<<this<<std::endl;
+    osg::notify(osg::INFO)<<"exit loop "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
 }
  

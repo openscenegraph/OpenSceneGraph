@@ -223,6 +223,11 @@ static int remapX11Key(int key)
     return s_x11KeyboardMap.remapKey(key);
 }
 
+GraphicsWindowX11::~GraphicsWindowX11()
+{
+    close(true);
+}
+
 bool GraphicsWindowX11::createVisualInfo()
 {
     typedef std::vector<int> Attributes;
@@ -527,19 +532,48 @@ bool GraphicsWindowX11::realizeImplementation()
 
 void GraphicsWindowX11::makeCurrentImplementation()
 {
-    if (!_realized) return;
+    if (!_realized)
+    {
+        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        return;
+    }
 
     // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
     // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
 
     // checkEvents();
 
-    glXMakeCurrent( _display, _window, _glxContext );
+    // XFlush(_display);
+    // XSync(_display,0);
+
+    if (glXMakeCurrent( _display, _window, _glxContext ))
+    {
+        // osg::notify(osg::NOTICE)<<"makeCurrentImplementation sucessful"<<std::endl;
+    }
+    else
+    {
+
+        osg::notify(osg::NOTICE)<<"makeCurrentImplementation failed"<<std::endl;
+        
+        while(!glXMakeCurrent( _display, _window, _glxContext )) 
+        {
+            OpenThreads::Thread::YieldCurrentThread();
+            osg::notify(osg::NOTICE)<<"  makeCurrentImplementation failed again."<<std::endl;
+        }
+        
+        // osg::notify(osg::NOTICE)<<"  Succeeded at last."<<std::endl;
+
+    }
+    
+    
+
 }
 
 
 void GraphicsWindowX11::closeImplementation()
 {
+    // osg::notify(osg::NOTICE)<<"Closing GraphicsWindowX11"<<std::endl;
+
     if (_display && _window)
     {
         //glXDestroyContext(_display, _glxContext );
@@ -889,11 +923,19 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
     getEventQueue()->mouseWarped(x,y);
 }
 
+int X11ErrorHandling(Display* display, XErrorEvent* event)
+{
+    osg::notify(osg::NOTICE)<<"Got an X11ErrorHandling call"<<std::endl;
+}
+
+
 struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
 {
 
     X11WindowingSystemInterface()
     {
+        XSetErrorHandler(X11ErrorHandling);
+    
 #if 1    
         if (XInitThreads() == 0)
         {
@@ -905,6 +947,11 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
             osg::notify(osg::INFO) << "X11WindowingSystemInterface, xInitThreads() multi-threaded X support initialized.\n";
         }
 #endif        
+    }
+
+    ~X11WindowingSystemInterface()
+    {
+        XSetErrorHandler(0);
     }
 
     virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 

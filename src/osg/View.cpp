@@ -20,7 +20,11 @@ View::View()
     // osg::notify(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
 
     setCamera(new osg::Camera);
+#if 0    
     _camera->setProjectionMatrixAsPerspective(50.0f,1.4f,1.0f,10000.0f);
+#else
+    _camera->setProjectionMatrixAsFrustum(-0.325, 0.325, -0.26, 0.26, 1.0f,10000.0f);
+#endif
 }
 
 View::~View()

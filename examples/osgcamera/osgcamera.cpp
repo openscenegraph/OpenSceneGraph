@@ -172,7 +172,7 @@ int main( int argc, char **argv )
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
     viewer.getCamera()->setClearColor(osg::Vec4f(0.6f,0.6f,0.8f,1.0f));
 
-#if 1
+#if 0
 
     // singleWindowMultipleCameras(viewer);
     
@@ -187,7 +187,7 @@ int main( int argc, char **argv )
     
     viewer.realize();
 
-    bool limitNumberOfFrames = false;
+    bool limitNumberOfFrames = true;
     unsigned int numFrames = 0;
     unsigned int maxFrames = 10;
 

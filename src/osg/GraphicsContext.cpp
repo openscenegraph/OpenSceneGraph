@@ -141,10 +141,6 @@ bool GraphicsContext::realize()
 {
     if (realizeImplementation())
     {
-        if (_graphicsThread.valid() && !_graphicsThread->isRunning())
-        {
-            _graphicsThread->startThread();
-        }
         return true;
     }
     else
@@ -255,12 +251,6 @@ void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
     if (_graphicsThread.valid()) 
     {
         _graphicsThread->_graphicsContext = this;
-#if 0        
-        if (!_graphicsThread->isRunning())
-        {
-            _graphicsThread->startThread();
-        }
-#endif        
     }
 }
 

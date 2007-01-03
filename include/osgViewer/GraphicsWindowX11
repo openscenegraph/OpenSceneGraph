@@ -106,6 +106,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
 
     protected:
     
+        ~GraphicsWindowX11();
+    
         bool createVisualInfo();
         void init();
 

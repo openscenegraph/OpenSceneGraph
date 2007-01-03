@@ -129,7 +129,7 @@ int DatabasePager::cancel()
         _done = true;
 
         // cancel the thread..
-        result = Thread::cancel();
+        // result = Thread::cancel();
         //join();
 
         // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.

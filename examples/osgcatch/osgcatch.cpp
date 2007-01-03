@@ -1572,8 +1572,6 @@ int main( int argc, char **argv )
     double fovy, aspectRatio, zNear, zFar;
     viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
     seh->setFOVY(osg::DegreesToRadians(fovy));    
-    
-    viewer.getCamera()->setClearColor(osg::Vec4f(0.6f,0.6f,0.8f,1.0f));
 
     // todo for osgViewer - create default set up.
     viewer.setUpViewAcrossAllScreens();

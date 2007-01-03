@@ -124,6 +124,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Cursor          _defaultCursor;
         Cursor          _nullCursor;     
         Cursor          _currentCursor;
+
+        Atom            _deleteWindow;
         
         bool            _initialized;
         bool            _realized;

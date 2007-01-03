@@ -504,6 +504,9 @@ void GraphicsWindowX11::init()
         
     //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
 
+    _deleteWindow = XInternAtom (_display, "WM_DELETE_WINDOW", False);
+    XSetWMProtocols(_display, _window, &_deleteWindow, True); 
+
     _valid = true;
     _initialized = true;
 }
@@ -620,7 +623,8 @@ void GraphicsWindowX11::checkEvents()
     int windowWidth = _traits->width;
     int windowHeight = _traits->height;
 
-    // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
+     
+         // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
     while( XPending(_display) )
     {
         XEvent ev;
@@ -628,6 +632,13 @@ void GraphicsWindowX11::checkEvents()
 
         switch( ev.type )
         {
+            case ClientMessage:
+            {
+                if (ev.xclient.data.l[0] == _deleteWindow)
+                {
+                    osg::notify(osg::NOTICE)<<"DeleteWindow"<<std::endl;
+                }
+            }
             case Expose :
                 osg::notify(osg::INFO)<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
                 break;

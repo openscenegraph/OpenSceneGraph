@@ -183,6 +183,11 @@ void VertexProgram::apply(State& state) const
     }
 }
 
+void VertexProgram::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _vertexProgramIDList.resize(maxSize);
+}
+
 void VertexProgram::releaseGLObjects(State* state) const
 {
     if (!state) const_cast<VertexProgram*>(this)->dirtyVertexProgramObject();

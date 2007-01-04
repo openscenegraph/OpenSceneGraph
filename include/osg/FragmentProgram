@@ -220,6 +220,9 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
 
         virtual void compileGLObjects(State& state) const { apply(state); }
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         /** release an OpenGL objects in specified graphics context if State
             object is passed, otherwise release OpenGL objexts for all graphics context if
             State object pointer == NULL.*/

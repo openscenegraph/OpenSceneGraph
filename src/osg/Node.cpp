@@ -491,6 +491,14 @@ void Node::dirtyBound()
     }
 }
 
+void Node::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_stateset.valid()) _stateset->resizeGLObjectBuffers(maxSize);
+    if (_updateCallback.valid()) _updateCallback->resizeGLObjectBuffers(maxSize);
+    if (_eventCallback.valid()) _eventCallback->resizeGLObjectBuffers(maxSize);
+    if (_cullCallback.valid()) _cullCallback->resizeGLObjectBuffers(maxSize);
+}
+
 void Node::releaseGLObjects(osg::State* state) const
 {
     if (_stateset.valid()) _stateset->releaseGLObjects(state);

@@ -40,7 +40,7 @@ void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
     if (gw)
     {
-        osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+        osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
 
         gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
     }
@@ -80,17 +80,18 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
 
-    unsigned int numCameras = 2;
+    unsigned int numCameras = 4;
     double aspectRatioScale = (double)numCameras;
     double translate_x = double(numCameras)-1;
     for(unsigned int i=0; i<numCameras;++i, translate_x -= 2.0)
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->screenNum = i / 2;
         traits->x = (i*width)/numCameras;
         traits->y = 0;
         traits->width = width/numCameras-1;
         traits->height = height;
-    #if 1
+    #if 0
         traits->windowDecoration = false;
     #else
         traits->windowDecoration = true;
@@ -103,7 +104,7 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
         osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
         if (gw)
         {
-            osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+            osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
 
             gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, traits->width, traits->height );
         }
@@ -149,7 +150,7 @@ int main( int argc, char **argv )
         }
     }
 
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
+    // osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(4);
     osg::Referenced::setThreadSafeReferenceCounting(true);
 
     // load the scene.
@@ -171,7 +172,7 @@ int main( int argc, char **argv )
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
 
-#if 0
+#if 1
 
     // singleWindowMultipleCameras(viewer);
     
@@ -182,7 +183,10 @@ int main( int argc, char **argv )
 
     viewer.setUpViewAcrossAllScreens();
 
-#endif    
+#endif
+
+    loadedModel->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+
     
     viewer.realize();
 

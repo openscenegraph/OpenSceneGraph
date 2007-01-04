@@ -241,6 +241,13 @@ void Camera::detach(BufferComponent buffer)
     _bufferAttachmentMap.erase(buffer);
 }
 
+void Camera::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _renderingCache.resize(maxSize);
+    
+    Transform::resizeGLObjectBuffers(maxSize);
+}
+
 void Camera::releaseGLObjects(osg::State* state) const
 {
     if (state) const_cast<Camera*>(this)->_renderingCache[state->getContextID()] = 0;

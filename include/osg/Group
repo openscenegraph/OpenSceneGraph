@@ -142,6 +142,9 @@ class OSG_EXPORT Group : public Node
             return _children.size(); // node not found.
         }
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         /** If State is non-zero, this function releases any associated OpenGL objects for
            * the specified graphics context. Otherwise, releases OpenGL objexts
            * for all graphics contexts. */

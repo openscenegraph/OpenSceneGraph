@@ -121,6 +121,11 @@ DrawElementsUByte::~DrawElementsUByte()
     releaseGLObjects();
 }
 
+void DrawElementsUByte::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _vboList.resize(maxSize);
+}
+
 void DrawElementsUByte::releaseGLObjects(State* state) const
 {
     if (state)
@@ -207,6 +212,11 @@ void DrawElementsUByte::offsetIndices(int offset)
 DrawElementsUShort::~DrawElementsUShort()
 {
     releaseGLObjects();
+}
+
+void DrawElementsUShort::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _vboList.resize(maxSize);
 }
 
 void DrawElementsUShort::releaseGLObjects(State* state) const
@@ -296,6 +306,11 @@ void DrawElementsUShort::offsetIndices(int offset)
 DrawElementsUInt::~DrawElementsUInt()
 {
     releaseGLObjects();
+}
+
+void DrawElementsUInt::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _vboList.resize(maxSize);
 }
 
 void DrawElementsUInt::releaseGLObjects(State* state) const

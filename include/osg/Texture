@@ -451,6 +451,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Calls apply(state) to compile the texture. */
         virtual void compileGLObjects(State& state) const;
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         /** If State is non-zero, this function releases OpenGL objects for
           * the specified graphics context. Otherwise, releases OpenGL objexts
           * for all graphics contexts. */

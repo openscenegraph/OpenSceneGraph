@@ -479,6 +479,14 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
 }
 
+void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_stateset.valid()) _stateset->resizeGLObjectBuffers(maxSize);
+    if (_drawCallback.valid()) _drawCallback->resizeGLObjectBuffers(maxSize);
+
+    _globjList.resize(maxSize);
+}
+
 void Drawable::releaseGLObjects(State* state) const
 {
     if (_stateset.valid()) _stateset->releaseGLObjects(state);

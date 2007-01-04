@@ -379,6 +379,18 @@ BoundingSphere Group::computeBound() const
     return bsphere;
 }
 
+void Group::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    Node::resizeGLObjectBuffers(maxSize);
+
+    for(NodeList::const_iterator itr=_children.begin();
+        itr!=_children.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
+}
+
 void Group::releaseGLObjects(osg::State* state) const
 {
     Node::releaseGLObjects(state);

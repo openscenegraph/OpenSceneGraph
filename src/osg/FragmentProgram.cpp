@@ -183,6 +183,11 @@ void FragmentProgram::apply(State& state) const
     }
 }
 
+void FragmentProgram::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _fragmentProgramIDList.resize(maxSize);
+}
+
 void FragmentProgram::releaseGLObjects(State* state) const
 {
     if (!state) const_cast<FragmentProgram*>(this)->dirtyFragmentProgramObject();

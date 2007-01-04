@@ -579,7 +579,8 @@ void GraphicsWindowX11::closeImplementation()
 
     if (_display && _window)
     {
-        //glXDestroyContext(_display, _glxContext );
+        glXDestroyContext(_display, _glxContext );
+        
         XDestroyWindow(_display, _window);
 
         XFlush( _display );
@@ -588,6 +589,7 @@ void GraphicsWindowX11::closeImplementation()
 
     _window = 0;
     _parent = 0;
+    _glxContext = 0;
 
     if(_visualInfo)
     {

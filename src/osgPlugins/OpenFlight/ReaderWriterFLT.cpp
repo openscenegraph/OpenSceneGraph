@@ -27,8 +27,8 @@ using namespace osgDB;
 
 class ReadExternalsVisitor : public osg::NodeVisitor
 {
-    bool _cloneExternalReferences;
     osg::ref_ptr<ReaderWriter::Options> _options;
+    bool _cloneExternalReferences;
 
 public:
 

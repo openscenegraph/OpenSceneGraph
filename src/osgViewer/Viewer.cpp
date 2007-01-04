@@ -158,11 +158,15 @@ void Viewer::startThreading()
         stopThreading();
     }
 
+    osg::notify(osg::INFO)<<"Viewer::startThreading() - starting threading"<<std::endl;
+
     // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
     osg::Referenced::setThreadSafeReferenceCounting(true);
     
     if (getSceneData())
     {
+        osg::notify(osg::INFO)<<"Making scene thread safe"<<std::endl;
+
         // make sure that existing scene graph objects are allocated with thread safe ref/unref
         getSceneData()->setThreadSafeRefUnref(true);
         
@@ -170,7 +174,6 @@ void Viewer::startThreading()
         getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
     }
 
-    osg::notify(osg::NOTICE)<<"Viewer::startThreading() - starting threading"<<std::endl;
 
     Contexts contexts;
     getContexts(contexts);

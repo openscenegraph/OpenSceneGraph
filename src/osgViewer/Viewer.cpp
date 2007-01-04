@@ -322,6 +322,93 @@ void Viewer::getWindows(Windows& windows, bool onlyValid)
     }
 }
 
+// Draw operation, that does a draw on the scene graph.
+struct RenderingOperation : public osg::GraphicsOperation
+{
+    RenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
+        osg::GraphicsOperation("Render",true),
+        _sceneView(sceneView),
+        _databasePager(databasePager)
+    {
+        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+    }
+    
+    virtual void operator () (osg::GraphicsContext*)
+    {
+        if (!_sceneView) return;
+    
+
+        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+        
+        _sceneView->cull();
+        _sceneView->draw();
+
+        if (_databasePager.valid())
+        {
+            double availableTime = 0.004; // 4 ms
+            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+            _sceneView->flushDeletedGLObjects(availableTime);
+        }
+    }
+    
+    osg::observer_ptr<osgUtil::SceneView>    _sceneView;
+    osg::observer_ptr<osgDB::DatabasePager>  _databasePager;
+};
+
+void Viewer::setUpRenderingSupport()
+{
+    if (!_scene) return;
+    
+    osg::FrameStamp* frameStamp = _scene->getFrameStamp();
+
+    // what should we do with the old sceneViews?
+    _cameraSceneViewMap.clear();
+
+    Contexts contexts;
+    getContexts(contexts);
+
+    // clear out all the previously assigned operations
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        (*citr)->removeAllOperations();
+    }
+
+    if (_camera.valid() && _camera->getGraphicsContext())
+    {
+        osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+        _cameraSceneViewMap[_camera] = sceneView;
+
+        sceneView->setDefaults();
+        sceneView->setCamera(_camera.get());
+        sceneView->setState(_camera->getGraphicsContext()->getState());
+        sceneView->setSceneData(getSceneData());
+        sceneView->setFrameStamp(frameStamp);
+
+        _camera->getGraphicsContext()->add(new RenderingOperation(sceneView, _scene->getDatabasePager()));        
+    }
+    
+    for(unsigned i=0; i<getNumSlaves(); ++i)
+    {
+        Slave& slave = getSlave(i);
+        if (slave._camera.valid() && slave._camera->getGraphicsContext())
+        {
+            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+            _cameraSceneViewMap[slave._camera] = sceneView;
+
+            sceneView->setDefaults();
+            sceneView->setCamera(slave._camera.get());
+            sceneView->setState(slave._camera->getGraphicsContext()->getState());
+            sceneView->setSceneData(getSceneData());
+            sceneView->setFrameStamp(frameStamp);
+
+            slave._camera->getGraphicsContext()->add(new RenderingOperation(sceneView, _scene->getDatabasePager()));
+        }
+    }
+}
+
+
 void Viewer::realize()
 {
     //osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
@@ -344,6 +431,8 @@ void Viewer::realize()
         _done = true;
         return;
     }
+    
+    setUpRenderingSupport();
     
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();

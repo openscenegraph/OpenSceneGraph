@@ -94,6 +94,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         void startThreading();        
         void checkWindowStatus();
         
+        void setUpRenderingSupport();
+        
         bool _firstFrame;
         
         bool _done;

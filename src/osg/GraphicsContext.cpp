@@ -128,6 +128,7 @@ void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
 GraphicsContext::GraphicsContext():
     _threadOfLastMakeCurrent(0)
 {
+    setThreadSafeRefUnref(true);
     _operationsBlock = new Block;
 }
 

@@ -414,6 +414,9 @@ class OSG_EXPORT StateSet : public Object
           * Return true if all associated modes are valid.*/
         bool checkValidityOfAssociatedModes(State& state) const;
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
+
         /** call compile on all StateAttributes contained within this StateSet.*/
         void compileGLObjects(State& state) const;
 
@@ -422,6 +425,8 @@ class OSG_EXPORT StateSet : public Object
 
         /** call release on all StateAttributes contained within this StateSet.*/
         virtual void releaseGLObjects(State* state=0) const;
+
+
 
     protected :
 

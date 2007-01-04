@@ -1983,6 +1983,15 @@ void Program::compileGLObjects( osg::State& state ) const
     getPCP( contextID )->linkProgram();
 }
 
+void Program::setThreadSafeRefUnref(bool threadSafe)
+{
+    StateAttribute::setThreadSafeRefUnref(threadSafe);
+
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
+    {
+        if (_shaderList[i].valid()) _shaderList[i]->setThreadSafeRefUnref(threadSafe);
+    }
+}
 
 void Program::dirtyProgram()
 {

@@ -379,6 +379,18 @@ BoundingSphere Group::computeBound() const
     return bsphere;
 }
 
+void Group::setThreadSafeRefUnref(bool threadSafe)
+{
+    Node::setThreadSafeRefUnref(threadSafe);
+
+    for(NodeList::const_iterator itr=_children.begin();
+        itr!=_children.end();
+        ++itr)
+    {
+        (*itr)->setThreadSafeRefUnref(threadSafe);
+    }
+}
+
 void Group::resizeGLObjectBuffers(unsigned int maxSize)
 {
     Node::resizeGLObjectBuffers(maxSize);

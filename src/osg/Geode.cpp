@@ -209,6 +209,18 @@ void Geode::compileDrawables(RenderInfo& renderInfo)
     }
 }
 
+void Geode::setThreadSafeRefUnref(bool threadSafe)
+{
+    Node::setThreadSafeRefUnref(threadSafe);
+    
+    for(DrawableList::const_iterator itr=_drawables.begin();
+        itr!=_drawables.end();
+        ++itr)
+    {
+        (*itr)->setThreadSafeRefUnref(threadSafe);
+    }
+}
+
 void Geode::resizeGLObjectBuffers(unsigned int maxSize)
 {
     Node::resizeGLObjectBuffers(maxSize);

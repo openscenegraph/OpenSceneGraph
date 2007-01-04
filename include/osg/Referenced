@@ -53,7 +53,7 @@ class OSG_EXPORT Referenced
         inline Referenced& operator = (const Referenced&) { return *this; }
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-        void setThreadSafeRefUnref(bool threadSafe);
+        virtual void setThreadSafeRefUnref(bool threadSafe);
 
         /** Get whether a mutex is used to ensure ref() and unref() are thread safe.*/
         bool getThreadSafeRefUnref() const { return _refMutex!=0; }

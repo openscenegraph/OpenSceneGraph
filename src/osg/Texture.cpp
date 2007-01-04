@@ -1295,6 +1295,11 @@ void Texture::compileGLObjects(State& state) const
     apply(state);
 }
 
+void Texture::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _textureObjectBuffer.resize(maxSize);
+}
+
 void Texture::releaseGLObjects(State* state) const
 {
     if (!state) const_cast<Texture*>(this)->dirtyTextureObject();

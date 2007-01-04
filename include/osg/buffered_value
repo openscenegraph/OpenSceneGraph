@@ -48,6 +48,8 @@ class buffered_value
         inline bool empty() const { return _array.empty(); }
 
         inline unsigned int size() const { return _array.size(); }
+        
+        inline void resize(unsigned int newSize) { _array.resize(newSize,0); }
 
         inline T& operator[] (unsigned int pos)
         {
@@ -98,6 +100,8 @@ class buffered_object
         inline bool empty() const { return _array.empty(); }
 
         inline unsigned int size() const { return _array.size(); }
+
+        inline void resize(unsigned int newSize) { _array.resize(newSize); }
 
         inline T& operator[] (unsigned int pos)
         {

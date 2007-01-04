@@ -209,6 +209,18 @@ void Geode::compileDrawables(RenderInfo& renderInfo)
     }
 }
 
+void Geode::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    Node::resizeGLObjectBuffers(maxSize);
+
+    for(DrawableList::const_iterator itr=_drawables.begin();
+        itr!=_drawables.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
+}
+
 void Geode::releaseGLObjects(osg::State* state) const
 {
     Node::releaseGLObjects(state);

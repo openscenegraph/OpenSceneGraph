@@ -352,6 +352,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
  
         OpenThreads::Mutex* getDataChangeMutex() const { return &_dataChangeMutex; }
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         /** If State is non-zero, this function releases any associated OpenGL objects for
            * the specified graphics context. Otherwise, releases OpenGL objexts
            * for all graphics contexts. */

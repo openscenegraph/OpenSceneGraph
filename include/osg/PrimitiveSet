@@ -242,6 +242,9 @@ class OSG_EXPORT PrimitiveSet : public Object
         /** Get modified count value.*/
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
+
         /** If State is non-zero, this function releases OpenGL objects for
           * the specified graphics context. Otherwise, releases OpenGL objexts
           * for all graphics contexts. */
@@ -437,6 +440,9 @@ class OSG_EXPORT DrawElementsUByte : public PrimitiveSet, public VectorGLubyte
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         virtual void releaseGLObjects(State* state=0) const;
         
         virtual void computeRange() const
@@ -517,6 +523,9 @@ class OSG_EXPORT DrawElementsUShort : public PrimitiveSet, public VectorGLushort
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         virtual void releaseGLObjects(State* state=0) const;
         
         virtual void computeRange() const
@@ -594,6 +603,9 @@ class OSG_EXPORT DrawElementsUInt : public PrimitiveSet, public VectorGLuint
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         virtual void releaseGLObjects(State* state=0) const;
         

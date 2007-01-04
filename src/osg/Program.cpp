@@ -1994,6 +1994,16 @@ void Program::dirtyProgram()
 }
 
 
+void Program::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    for( unsigned int i=0; i < _shaderList.size(); ++i )
+    {
+        if (_shaderList[i].valid()) _shaderList[i]->resizeGLObjectBuffers(maxSize);
+    }
+
+    _pcpList.resize(maxSize);
+}
+
 void Program::releaseGLObjects(osg::State* state) const
 {
     for( unsigned int i=0; i < _shaderList.size(); ++i )

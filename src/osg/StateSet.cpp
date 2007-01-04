@@ -1202,6 +1202,28 @@ void StateSet::compileGLObjects(State& state) const
     }
 }
 
+void StateSet::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    for(AttributeList::const_iterator itr = _attributeList.begin();
+        itr!=_attributeList.end();
+        ++itr)
+    {
+        itr->second.first->resizeGLObjectBuffers(maxSize);
+    }
+
+    for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
+        taitr!=_textureAttributeList.end();
+        ++taitr)
+    {
+        for(AttributeList::const_iterator itr = taitr->begin();
+            itr!=taitr->end();
+            ++itr)
+        {
+            itr->second.first->resizeGLObjectBuffers(maxSize);
+        }
+    }
+}
+
 void StateSet::releaseGLObjects(State* state) const
 {
     for(AttributeList::const_iterator itr = _attributeList.begin();

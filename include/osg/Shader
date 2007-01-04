@@ -81,6 +81,9 @@ class OSG_EXPORT Shader : public osg::Object
         /** Get the Shader type as a descriptive string. */
         const char* getTypename() const;
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
         /** release OpenGL objects in specified graphics context if State
             object is passed, otherwise release OpenGL objects for all graphics context if
             State object pointer NULL.*/

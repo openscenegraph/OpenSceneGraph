@@ -196,6 +196,10 @@ Shader::Type Shader::getTypeId( const std::string& tname )
     return UNDEFINED;
 }
 
+void Shader::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _pcsList.resize(maxSize);
+}
 
 void Shader::releaseGLObjects(osg::State* state) const
 {

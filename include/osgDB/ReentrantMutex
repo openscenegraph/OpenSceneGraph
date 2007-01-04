@@ -42,7 +42,9 @@ class OSGDB_EXPORT ReentrantMutex : public OpenThreads::Mutex
         ReentrantMutex& operator =(const ReentrantMutex&) { return *(this); }
         
         OpenThreads::Thread* _threadHoldingMutex;
-        unsigned int         _lockCount;
+        
+        OpenThreads::Mutex  _lockCountMutex;
+        unsigned int        _lockCount;
 
 };
 
@@ -66,9 +68,14 @@ class OSGDB_EXPORT ReadWriteMutex
     
         ReadWriteMutex(const ReadWriteMutex&) {}
         ReadWriteMutex& operator = (const ReadWriteMutex&) { return *(this); }
-        
+
+#if 1
         ReentrantMutex  _readWriteMutex;        
         ReentrantMutex  _readCountMutex;
+#else
+        OpenThreads::Mutex  _readWriteMutex;        
+        OpenThreads::Mutex  _readCountMutex;
+#endif        
         unsigned int    _readCount;
         
 };

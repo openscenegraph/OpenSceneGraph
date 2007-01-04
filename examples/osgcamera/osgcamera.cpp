@@ -144,6 +144,24 @@ int main( int argc, char **argv )
         }
     }
 
+    osgViewer::Viewer viewer;
+    
+    while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded); }
+    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerContext); }
+    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerCamera); }
+    
+    bool limitNumberOfFrames = false;
+    unsigned int maxFrames = 10;
+    while (arguments.read("--run-till-frame-number",maxFrames)) { limitNumberOfFrames = true; }
+
+    // alternative viewer window setups.
+    while (arguments.read("-1")) { singleWindowMultipleCameras(viewer); }
+    while (arguments.read("-2")) { multipleWindowMultipleCameras(viewer); }
+
+
+    if (apm.valid()) viewer.setCameraManipulator(apm.get());
+    else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
+
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel) 
@@ -152,33 +170,11 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    osgViewer::Viewer viewer;
-    
-    while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded); }
-    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerContext); }
-    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerCamera); }
-
-//    viewer.setSceneData(loadedModel.get());
-
-    if (apm.valid()) viewer.setCameraManipulator(apm.get());
-    else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
-
-#if 1
-
-    // singleWindowMultipleCameras(viewer);
-    
-    multipleWindowMultipleCameras(viewer);
-
-#endif
-
     viewer.setSceneData(loadedModel.get());
 
     viewer.realize();
 
-    bool limitNumberOfFrames = false;
     unsigned int numFrames = 0;
-    unsigned int maxFrames = 10;
-
     while(!viewer.done() && !(limitNumberOfFrames && numFrames>=maxFrames))
     {
         viewer.frame();

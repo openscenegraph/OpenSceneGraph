@@ -62,9 +62,6 @@ void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::scale(aspectRatioScale,1.0,1.0));
     }
-
-    viewer.setUpRenderingSupport();
-    viewer.assignSceneDataToCameras();
 }
 
 void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
@@ -122,9 +119,6 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
 
         viewer.addSlave(camera.get(), osg::Matrix::scale(aspectRatioScale, 1.0, 1.0)*osg::Matrix::translate(translate_x, 0.0, 0.0), osg::Matrix() );
     }
-
-    viewer.setUpRenderingSupport();
-    viewer.assignSceneDataToCameras();
 }
 
 int main( int argc, char **argv )
@@ -164,27 +158,24 @@ int main( int argc, char **argv )
     while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerContext); }
     while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerCamera); }
 
-    viewer.setSceneData(loadedModel.get());
+//    viewer.setSceneData(loadedModel.get());
 
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
 
-#if 0
+#if 1
 
     // singleWindowMultipleCameras(viewer);
     
     multipleWindowMultipleCameras(viewer);
-    
-    
-#else
-
-    viewer.setUpViewAcrossAllScreens();
 
 #endif
-    
+
+    viewer.setSceneData(loadedModel.get());
+
     viewer.realize();
 
-    bool limitNumberOfFrames = true;
+    bool limitNumberOfFrames = false;
     unsigned int numFrames = 0;
     unsigned int maxFrames = 10;
 

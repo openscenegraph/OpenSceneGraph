@@ -325,12 +325,26 @@ void Viewer::getWindows(Windows& windows, bool onlyValid)
 void Viewer::realize()
 {
     //osg::notify(osg::INFO)<<"Viewer::realize()"<<std::endl;
-
+    
     setCameraWithFocus(0);
 
     Contexts contexts;
     getContexts(contexts);
+    
+    if (contexts.empty())
+    {
+        // no windows are already set up so set up a default view        
+        setUpViewAcrossAllScreens();
+        getContexts(contexts);
+    }
 
+    if (contexts.empty())
+    {
+        osg::notify(osg::NOTICE)<<"Viewer::realize() - failed to set up any windows"<<std::endl;
+        _done = true;
+        return;
+    }
+    
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
         ++citr)

@@ -69,7 +69,7 @@ class OSGDB_EXPORT ReadWriteMutex
         ReadWriteMutex(const ReadWriteMutex&) {}
         ReadWriteMutex& operator = (const ReadWriteMutex&) { return *(this); }
 
-#if 1
+#if 0
         ReentrantMutex  _readWriteMutex;        
         ReentrantMutex  _readCountMutex;
 #else

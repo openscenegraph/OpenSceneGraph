@@ -969,11 +969,11 @@ void SceneView::draw()
                 _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
                 _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
-                int separation = _displaySettings->getSplitStereoHorizontalSeparation();
+                double separation = _displaySettings->getSplitStereoHorizontalSeparation();
 
-                int left_half_width = (getViewport()->width()-separation)/2;
-                int right_half_begin = (getViewport()->width()+separation)/2;
-                int right_half_width = getViewport()->width()-right_half_begin;
+                double  left_half_width = (getViewport()->width()-separation)/2.0;
+                double right_half_begin = (getViewport()->width()+separation)/2.0;
+                double right_half_width = getViewport()->width()-right_half_begin;
 
                 osg::ref_ptr<osg::Viewport> viewportLeft = new osg::Viewport;
                 viewportLeft->setViewport(getViewport()->x(),getViewport()->y(),left_half_width,getViewport()->height());
@@ -981,8 +981,10 @@ void SceneView::draw()
                 osg::ref_ptr<osg::Viewport> viewportRight = new osg::Viewport;
                 viewportRight->setViewport(getViewport()->x()+right_half_begin,getViewport()->y(),right_half_width,getViewport()->height());
 
-
-                clearArea(getViewport()->x()+left_half_width,getViewport()->y(),separation,getViewport()->height(),_renderStageLeft->getClearColor());
+                clearArea(static_cast<int>(getViewport()->x()+left_half_width),
+                          static_cast<int>(getViewport()->y()),
+                          static_cast<int>(separation),
+                          static_cast<int>(getViewport()->height()),_renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
                 {
@@ -1035,11 +1037,11 @@ void SceneView::draw()
                 _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
                 _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
-                int separation = _displaySettings->getSplitStereoVerticalSeparation();
+                double separation = _displaySettings->getSplitStereoVerticalSeparation();
 
-                int bottom_half_height = (getViewport()->height()-separation)/2;
-                int top_half_begin = (getViewport()->height()+separation)/2;
-                int top_half_height = getViewport()->height()-top_half_begin;
+                double bottom_half_height = (getViewport()->height()-separation)/2.0;
+                double top_half_begin = (getViewport()->height()+separation)/2.0;
+                double top_half_height = getViewport()->height()-top_half_begin;
 
                 osg::ref_ptr<osg::Viewport> viewportTop = new osg::Viewport;
                 viewportTop->setViewport(getViewport()->x(),getViewport()->y()+top_half_begin,getViewport()->width(),top_half_height);
@@ -1047,7 +1049,11 @@ void SceneView::draw()
                 osg::ref_ptr<osg::Viewport> viewportBottom = new osg::Viewport;
                 viewportBottom->setViewport(getViewport()->x(),getViewport()->y(),getViewport()->width(),bottom_half_height);
 
-                clearArea(getViewport()->x(),getViewport()->y()+bottom_half_height,getViewport()->width(),separation,_renderStageLeft->getClearColor());
+                clearArea(static_cast<int>(getViewport()->x()),
+                          static_cast<int>(getViewport()->y()+bottom_half_height),
+                          static_cast<int>(getViewport()->width()),
+                          static_cast<int>(separation),
+                          _renderStageLeft->getClearColor());
 
                 if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
                 {
@@ -1141,15 +1147,20 @@ void SceneView::draw()
                     glPolygonStipple(patternVertEven);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-                    glRecti(getViewport()->x(), getViewport()->y(), getViewport()->width(), getViewport()->height());
+                    
+                    glRecti(static_cast<GLint>(getViewport()->x()),
+                            static_cast<GLint>(getViewport()->y()),
+                            static_cast<GLint>(getViewport()->width()),
+                            static_cast<GLint>(getViewport()->height()) );
+                            
                     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
                     glDisable(GL_POLYGON_STIPPLE);
                     glEnable(GL_LIGHTING);
                     glEnable(GL_DEPTH_TEST);
                     
                     _redrawInterlacedStereoStencilMask = false;
-                    _interlacedStereoStencilWidth = getViewport()->width();
-                    _interlacedStereoStencilHeight = getViewport()->height();
+                    _interlacedStereoStencilWidth = static_cast<int>(getViewport()->width());
+                    _interlacedStereoStencilHeight = static_cast<int>(getViewport()->height());
                 }
 
                 _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));
@@ -1206,15 +1217,20 @@ void SceneView::draw()
                     glPolygonStipple(patternHorzEven);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-                    glRecti(getViewport()->x(), getViewport()->y(), getViewport()->width(), getViewport()->height());
+
+                    glRecti(static_cast<GLint>(getViewport()->x()),
+                            static_cast<GLint>(getViewport()->y()),
+                            static_cast<GLint>(getViewport()->width()),
+                            static_cast<GLint>(getViewport()->height()) );
+                            
                     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
                     glDisable(GL_POLYGON_STIPPLE);
                     glEnable(GL_LIGHTING);
                     glEnable(GL_DEPTH_TEST);
                     
                     _redrawInterlacedStereoStencilMask = false;
-                    _interlacedStereoStencilWidth = getViewport()->width();
-                    _interlacedStereoStencilHeight = getViewport()->height();
+                    _interlacedStereoStencilWidth = static_cast<int>(getViewport()->width());
+                    _interlacedStereoStencilHeight = static_cast<int>(getViewport()->height());
                 }
 
                 _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));

@@ -224,8 +224,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     osg::Camera::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
 
     // compute the required dimensions
-    int width = _viewport->x() + _viewport->width();
-    int height = _viewport->y() + _viewport->height();
+    int width = static_cast<int>(_viewport->x() + _viewport->width());
+    int height = static_cast<int>(_viewport->y() + _viewport->height());
     int depth = 1;
     osg::Camera::BufferAttachmentMap::iterator itr;
     for(itr = bufferAttachements.begin();
@@ -635,60 +635,61 @@ void RenderStage::copyTexture(osg::RenderInfo& renderInfo)
     osg::TextureRectangle* textureRec = 0;
     osg::TextureCubeMap* textureCubeMap = 0;
 
-#if 1
     // use TexCopySubImage with the offset of the viewport into the texture
     // note, this path mirrors the pbuffer and fbo means for updating the texture.
     // Robert Osfield, 3rd August 2006.
     if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
     {
-        texture2D->copyTexSubImage2D(state,_viewport->x(),_viewport->y(), _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        texture2D->copyTexSubImage2D(state,
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->width()),
+                                     static_cast<int>(_viewport->height()));
     }
     else if ((textureRec = dynamic_cast<osg::TextureRectangle*>(_texture.get())) != 0)
     {
-        textureRec->copyTexSubImage2D(state,_viewport->x(),_viewport->y(), _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        textureRec->copyTexSubImage2D(state,
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->width()),
+                                     static_cast<int>(_viewport->height()));
     }
     else if ((texture1D = dynamic_cast<osg::Texture1D*>(_texture.get())) != 0)
     {
         // need to implement
-        texture1D->copyTexSubImage1D(state,_viewport->x(), _viewport->x(),_viewport->y(),_viewport->width());
+        texture1D->copyTexSubImage1D(state,
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->width()));
     }
     else if ((texture3D = dynamic_cast<osg::Texture3D*>(_texture.get())) != 0)
     {
         // need to implement
-        texture3D->copyTexSubImage3D(state, _viewport->x(), _viewport->y(), _face, _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
+        texture3D->copyTexSubImage3D(state, 
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     _face,
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->width()),
+                                     static_cast<int>(_viewport->height()));
     }
     else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
     {
         // need to implement
-        textureCubeMap->copyTexSubImageCubeMap(state, _face, _viewport->x(), _viewport->y(), _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
+        textureCubeMap->copyTexSubImageCubeMap(state, _face, 
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->x()),
+                                     static_cast<int>(_viewport->y()),
+                                     static_cast<int>(_viewport->width()),
+                                     static_cast<int>(_viewport->height()));
     }
-#else
-    // use CopySubImage with the offset set to 0,0
-    // original code path.
-    if ((texture2D = dynamic_cast<osg::Texture2D*>(_texture.get())) != 0)
-    {
-        texture2D->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
-    }
-    else if ((textureRec = dynamic_cast<osg::TextureRectangle*>(_texture.get())) != 0)
-    {
-        textureRec->copyTexImage2D(state,_viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
-    }
-    else if ((texture1D = dynamic_cast<osg::Texture1D*>(_texture.get())) != 0)
-    {
-        // need to implement
-        texture1D->copyTexImage1D(state,_viewport->x(),_viewport->y(),_viewport->width());
-    }
-    else if ((texture3D = dynamic_cast<osg::Texture3D*>(_texture.get())) != 0)
-    {
-        // need to implement
-        texture3D->copyTexSubImage3D(state, 0, 0, _face, _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height());
-    }
-    else if ((textureCubeMap = dynamic_cast<osg::TextureCubeMap*>(_texture.get())) != 0)
-    {
-        // need to implement
-        textureCubeMap->copyTexSubImageCubeMap(state, _face, 0, 0, _viewport->x(),_viewport->y(),_viewport->width(),_viewport->height());
-    }
-#endif    
 }
 
 void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, bool& doCopyTexture)
@@ -753,9 +754,11 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
               if (dataType==0) dataType =  _imageReadPixelDataType;
              if (dataType==0) dataType = GL_UNSIGNED_BYTE;       
 
-             itr->second._image->readPixels(_viewport->x(), _viewport->y(),
-                 _viewport->width(), _viewport->height(), 
-                 pixelFormat, dataType);
+             itr->second._image->readPixels(static_cast<int>(_viewport->x()),
+                                            static_cast<int>(_viewport->y()),
+                                            static_cast<int>(_viewport->width()),
+                                            static_cast<int>(_viewport->height()), 
+                                            pixelFormat, dataType);
 
          }
      }
@@ -922,7 +925,10 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
 
 #define USE_SISSOR_TEST
 #ifdef USE_SISSOR_TEST
-    glScissor( _viewport->x(), _viewport->y(), _viewport->width(), _viewport->height() );
+    glScissor( static_cast<int>(_viewport->x()),
+               static_cast<int>(_viewport->y()),
+               static_cast<int>(_viewport->width()),
+               static_cast<int>(_viewport->height()) );
     //cout << "    clearing "<<this<< "  "<<_viewport->x()<<","<< _viewport->y()<<","<< _viewport->width()<<","<< _viewport->height()<<std::endl;
     
     glEnable( GL_SCISSOR_TEST );

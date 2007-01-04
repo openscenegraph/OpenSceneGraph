@@ -25,6 +25,7 @@ using namespace osgViewer;
 Viewer::Viewer():
     _firstFrame(true),
     _done(false),
+    _keySetsDone(osgGA::GUIEventAdapter::KEY_Escape),
     _threadingModel(ThreadPerContext),
     _numThreadsOnBarrier(0)
 {
@@ -601,21 +602,25 @@ void Viewer::frameEventTraversal()
 #endif
 
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
-    for(osgGA::EventQueue::Events::iterator itr = events.begin();
-        itr != events.end();
-        ++itr)
+    
+    if (_keySetsDone!=0)
     {
-        osgGA::GUIEventAdapter* event = itr->get();
-        switch(event->getEventType())
+        for(osgGA::EventQueue::Events::iterator itr = events.begin();
+            itr != events.end();
+            ++itr)
         {
-            case(osgGA::GUIEventAdapter::KEYUP):
-                if (event->getKey()==osgGA::GUIEventAdapter::KEY_Escape) _done = true;
-                break;
-            default:
-                break;
+            osgGA::GUIEventAdapter* event = itr->get();
+            switch(event->getEventType())
+            {
+                case(osgGA::GUIEventAdapter::KEYUP):
+                    if (event->getKey()==_keySetsDone) _done = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
-    
+        
     if (_done) return;
 
     for(osgGA::EventQueue::Events::iterator itr = events.begin();

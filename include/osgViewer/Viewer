@@ -49,6 +49,15 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Get the threading model the rendering traversals will use.*/
         ThreadingModel getThreadingModel() const { return _threadingModel; }
 
+        /** Set the key value that the viewer checks on each frame to see if the viewer's done flag should be set to
+          * signal end of viewers main loop.
+          * Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape).
+          * Setting to 0 switches off the feature.*/
+        void setKeySetsDone(int key) { _keySetsDone = key; }
+
+        /** Set the key value that the viewer checks on each frame to see if the viewer's done flag.*/
+        int getKeySetsDone() const { return _keySetsDone; }
+
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). */
         virtual void frame();
@@ -86,7 +95,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         void checkWindowStatus();
         
         bool _firstFrame;
+        
         bool _done;
+        int _keySetsDone;
         
         ThreadingModel _threadingModel;
        

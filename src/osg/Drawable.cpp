@@ -479,6 +479,20 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
 }
 
+void Drawable::setThreadSafeRefUnref(bool threadSafe)
+{
+    Object::setThreadSafeRefUnref(threadSafe);
+
+    if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
+
+    if (_updateCallback.valid()) _updateCallback->setThreadSafeRefUnref(threadSafe);
+    if (_eventCallback.valid()) _eventCallback->setThreadSafeRefUnref(threadSafe);
+    if (_cullCallback.valid()) _cullCallback->setThreadSafeRefUnref(threadSafe);
+    if (_drawCallback.valid()) _drawCallback->setThreadSafeRefUnref(threadSafe);
+    
+    if (_userData.valid()) _userData->setThreadSafeRefUnref(threadSafe);
+}
+
 void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
 {
     if (_stateset.valid()) _stateset->resizeGLObjectBuffers(maxSize);

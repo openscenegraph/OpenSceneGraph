@@ -158,7 +158,19 @@ void Viewer::startThreading()
         stopThreading();
     }
 
-    osg::notify(osg::INFO)<<"Viewer::startThreading() - starting threading"<<std::endl;
+    // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
+    osg::Referenced::setThreadSafeReferenceCounting(true);
+    
+    if (getSceneData())
+    {
+        // make sure that existing scene graph objects are allocated with thread safe ref/unref
+        getSceneData()->setThreadSafeRefUnref(true);
+        
+        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+        getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+    }
+
+    osg::notify(osg::NOTICE)<<"Viewer::startThreading() - starting threading"<<std::endl;
 
     Contexts contexts;
     getContexts(contexts);
@@ -320,7 +332,6 @@ void Viewer::realize()
         ++citr)
     {
         (*citr)->realize();
-//        OpenThreads::Thread::YieldCurrentThread();
     }
     
     bool grabFocus = true;
@@ -336,8 +347,9 @@ void Viewer::realize()
                 gw->grabFocusIfPointerInWindow();    
             }
         }
-    }            
-
+    }
+    
+    
     startThreading();
 
     // initialize the global timer to be relative to the current time.

@@ -1180,6 +1180,30 @@ bool StateSet::checkValidityOfAssociatedModes(osg::State& state) const
     return modesValid;
 }
 
+void StateSet::setThreadSafeRefUnref(bool threadSafe)
+{
+    Object::setThreadSafeRefUnref(threadSafe);
+
+    for(AttributeList::const_iterator itr = _attributeList.begin();
+        itr!=_attributeList.end();
+        ++itr)
+    {
+        itr->second.first->setThreadSafeRefUnref(threadSafe);
+    }
+
+    for(TextureAttributeList::const_iterator taitr=_textureAttributeList.begin();
+        taitr!=_textureAttributeList.end();
+        ++taitr)
+    {
+        for(AttributeList::const_iterator itr = taitr->begin();
+            itr!=taitr->end();
+            ++itr)
+        {
+            itr->second.first->setThreadSafeRefUnref(threadSafe);
+        }
+    }
+}
+
 void StateSet::compileGLObjects(State& state) const
 {
     for(AttributeList::const_iterator itr = _attributeList.begin();

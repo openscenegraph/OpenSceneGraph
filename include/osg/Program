@@ -61,6 +61,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
           * performing any rebuild operations that might be pending. */
         virtual void apply(osg::State& state) const;
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
+
+        /** Compile program and associated shaders.*/
         virtual void compileGLObjects(osg::State& state) const;
 
         /** Resize any per context GLObject buffers to specified size. */

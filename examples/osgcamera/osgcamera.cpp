@@ -150,9 +150,6 @@ int main( int argc, char **argv )
         }
     }
 
-    // osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(4);
-    osg::Referenced::setThreadSafeReferenceCounting(true);
-
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel) 
@@ -172,7 +169,7 @@ int main( int argc, char **argv )
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
 
-#if 1
+#if 0
 
     // singleWindowMultipleCameras(viewer);
     
@@ -184,13 +181,10 @@ int main( int argc, char **argv )
     viewer.setUpViewAcrossAllScreens();
 
 #endif
-
-    loadedModel->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
-
     
     viewer.realize();
 
-    bool limitNumberOfFrames = false;
+    bool limitNumberOfFrames = true;
     unsigned int numFrames = 0;
     unsigned int maxFrames = 10;
 

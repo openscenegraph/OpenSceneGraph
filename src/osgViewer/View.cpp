@@ -22,7 +22,11 @@ using namespace osgViewer;
 View::View()
 {
     // osg::notify(osg::NOTICE)<<"Constructing osgViewer::View"<<std::endl;
-   setEventQueue(new osgGA::EventQueue);
+
+    // make sure View is safe to reference multi-threaded.
+    setThreadSafeRefUnref(true);
+
+    setEventQueue(new osgGA::EventQueue);
 }
 
 View::~View()

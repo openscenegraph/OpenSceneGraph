@@ -1518,7 +1518,6 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     
     // todo for osgViewer
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
     osg::Referenced::setThreadSafeReferenceCounting(true);
 
     // construct the viewer.

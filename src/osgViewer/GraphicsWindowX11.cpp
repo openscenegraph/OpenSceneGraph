@@ -585,6 +585,8 @@ void GraphicsWindowX11::closeImplementation()
 
         XFlush( _display );
         XSync( _display,0 );
+
+        XCloseDisplay( _display );
     }
 
     _window = 0;
@@ -626,6 +628,7 @@ void GraphicsWindowX11::checkEvents()
     int windowWidth = _traits->width;
     int windowHeight = _traits->height;
 
+    bool destroyWindowRequested = false;
      
          // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
     while( XPending(_display) )
@@ -640,7 +643,7 @@ void GraphicsWindowX11::checkEvents()
                 if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
                     osg::notify(osg::INFO)<<"DeleteWindow event recieved"<<std::endl;
-                    close();
+                    destroyWindowRequested = true;
                 }
             }
             case Expose :
@@ -842,6 +845,12 @@ void GraphicsWindowX11::checkEvents()
         resized(windowX, windowY, windowWidth, windowHeight); 
         getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight);
     }
+
+    if (destroyWindowRequested)
+    {
+        close();
+    }
+
 }
 
 void GraphicsWindowX11::grabFocus()

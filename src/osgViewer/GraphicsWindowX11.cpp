@@ -597,6 +597,7 @@ void GraphicsWindowX11::closeImplementation()
 
     _initialized = false;
     _realized = false;
+    _valid = false;
 }
 
 void GraphicsWindowX11::swapBuffersImplementation()
@@ -634,9 +635,10 @@ void GraphicsWindowX11::checkEvents()
         {
             case ClientMessage:
             {
-                if (ev.xclient.data.l[0] == _deleteWindow)
+                if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
-                    osg::notify(osg::NOTICE)<<"DeleteWindow"<<std::endl;
+                    osg::notify(osg::INFO)<<"DeleteWindow event recieved"<<std::endl;
+                    close();
                 }
             }
             case Expose :
@@ -644,20 +646,21 @@ void GraphicsWindowX11::checkEvents()
                 break;
 
             case GravityNotify :
-                osg::notify(osg::INFO)<<"GravityNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"GravityNotify event recieved"<<std::endl;
                 break;
 
             case UnmapNotify :
-                osg::notify(osg::INFO)<<"UnmapNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"UnmapNotify event recieved"<<std::endl;
                 break;
 
             case ReparentNotify:
-                osg::notify(osg::INFO)<<"ReparentNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"ReparentNotify event recieved"<<std::endl;
                 break;
 
             case DestroyNotify :
-                osg::notify(osg::NOTICE)<<"DestroyNotify"<<std::endl;
+                osg::notify(osg::INFO)<<"DestroyNotify event recieved"<<std::endl;
                 _realized =  false;
+                _valid = false;
                 break;
                 
             case ConfigureNotify :
@@ -936,7 +939,8 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
 
 int X11ErrorHandling(Display* display, XErrorEvent* event)
 {
-    osg::notify(osg::NOTICE)<<"Got an X11ErrorHandling call"<<std::endl;
+    osg::notify(osg::NOTICE)<<"Got an X11ErrorHandling call display="<<display<<" event="<<event<<std::endl;
+    return 0;
 }
 
 

@@ -72,14 +72,18 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         const osg::Camera* getCameraWithFocus() const { return _cameraWithFocus.get(); }
         
         typedef std::vector<osg::GraphicsContext*> Contexts;
-        void getContexts(Contexts& contexts);
+        void getContexts(Contexts& contexts, bool onlyValid=true);
         
         typedef std::vector<osgViewer::GraphicsWindow*> Windows;
-        void getWindows(Windows& windows);
+        void getWindows(Windows& windows, bool onlyValid=true);
 
-    public:
+    protected:
     
         void init();
+        
+        void stopThreading();
+        void startThreading();        
+        void checkWindowStatus();
         
         bool _firstFrame;
         bool _done;
@@ -88,6 +92,10 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
        
         osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
         osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;
+
+        unsigned int computeNumberOfThreadsIncludingMainRequired();
+
+        unsigned int _numThreadsOnBarrier;
         
         osg::observer_ptr<osg::Camera> _cameraWithFocus;
 

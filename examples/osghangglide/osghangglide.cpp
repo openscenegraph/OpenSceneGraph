@@ -111,12 +111,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 
-    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts(2);
-    osg::Referenced::setThreadSafeReferenceCounting(true);
-
     // construct the viewer.
     osgViewer::Viewer viewer;
-
 
     viewer.setCameraManipulator(new GliderManipulator());
 

@@ -1516,9 +1516,6 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
-    // todo for osgViewer
-    osg::Referenced::setThreadSafeReferenceCounting(true);
 
     // construct the viewer.
     osgViewer::Viewer viewer;

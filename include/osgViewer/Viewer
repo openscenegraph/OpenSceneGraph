@@ -66,7 +66,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
           * Also calls realize() if the viewer is not already realized,
           * and installs trackball manipulator if one is not already assigned.
           */
-        virtual void run();
+        virtual int run();
 
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). */

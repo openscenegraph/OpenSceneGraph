@@ -66,13 +66,13 @@ bool Viewer::isRealized() const
     return numRealizedWindows > 0;
 }
 
-void Viewer::run()
+int Viewer::run()
 {
     // if we don't have any scene graph assigned then just return
     if (!getSceneData())
     {
         osg::notify(osg::NOTICE)<<"Warning: Viewer::run() called without a scene graph being assigned to the viewer, cannot run."<<std::endl;
-        return;
+        return 1;
     }
 
     if (!getCameraManipulator())
@@ -89,6 +89,8 @@ void Viewer::run()
     {
         frame();
     }
+    
+    return 0;
 }
 
 void Viewer::setThreadingModel(ThreadingModel threadingModel)

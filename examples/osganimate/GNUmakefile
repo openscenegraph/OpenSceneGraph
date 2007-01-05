@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osganimate.cpp\
 
-LIBS     += -losgProducer -lProducer -losgSim -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgSim -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\

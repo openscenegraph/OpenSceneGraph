@@ -44,7 +44,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
             _nullCursor(0),
             _currentCursor(0),
             _initialized(false),
-            _realized(false)
+            _realized(false),
+            _timeOfLastCheckEvents(-1.0)
         {
             _traits = traits;
 
@@ -129,6 +130,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         
         bool            _initialized;
         bool            _realized;
+
+        double          _timeOfLastCheckEvents;
 };
 
 }

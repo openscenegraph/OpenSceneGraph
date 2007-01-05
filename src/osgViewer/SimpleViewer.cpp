@@ -126,14 +126,13 @@ void SimpleViewer::frame()
         _firstFrame = false;
     }
 
-    frameAdvance();
-    frameEventTraversal();
-    frameUpdateTraversal();
-    frameCullTraversal();
-    frameDrawTraversal();
+    advance();
+    eventTraversal();
+    updateTraversal();
+    renderingTraversal();
 }
 
-void SimpleViewer::frameAdvance()
+void SimpleViewer::advance()
 {
     _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
@@ -141,7 +140,7 @@ void SimpleViewer::frameAdvance()
     _sceneView->setFrameStamp(_frameStamp.get());
 }
 
-void SimpleViewer::frameEventTraversal()
+void SimpleViewer::eventTraversal()
 {
     _eventQueue->frame( _frameStamp->getReferenceTime() );
 
@@ -185,7 +184,7 @@ void SimpleViewer::frameEventTraversal()
     }
 }
 
-void SimpleViewer::frameUpdateTraversal()
+void SimpleViewer::updateTraversal()
 {
     double previousAspectRatio = ( static_cast<double>(_sceneView->getViewport()->width())/
                                    static_cast<double>(_sceneView->getViewport()->height()) );
@@ -245,13 +244,9 @@ void SimpleViewer::frameUpdateTraversal()
     _sceneView->update();
 }
 
-void SimpleViewer::frameCullTraversal()
+void SimpleViewer::renderingTraversal()
 {
     _sceneView->cull();
-}
-
-void SimpleViewer::frameDrawTraversal()
-{
     _sceneView->draw();
 
     if (_databasePager.valid())

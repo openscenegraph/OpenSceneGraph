@@ -69,16 +69,17 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         virtual int run();
 
         /** Render a complete new frame.
-          * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). */
+          * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
         virtual void frame();
 
-        virtual void frameAdvance();
+        virtual void advance();
 
-        virtual void frameEventTraversal();
+        virtual void eventTraversal();
 
-        virtual void frameUpdateTraversal();
+        virtual void updateTraversal();
         
-        virtual void frameRenderingTraversals();
+        virtual void renderingTraversals();
+
 
         /** Release all OpenGL objects associated with this viewer's scenegraph. Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained.*/ 
         virtual void releaseAllGLObjects();

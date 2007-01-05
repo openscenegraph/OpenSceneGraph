@@ -8,6 +8,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
+#include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 
 #include <osg/Quat>
@@ -486,6 +487,8 @@ int main( int argc, char **argv )
         original_fov = atan(tan(osg::DegreesToRadians(fovy)*0.5)*aspectRatio)*2.0;
         std::cout << "setting lens perspective : new "<<original_fov<<"  "<<fovy<<std::endl;
     }
+
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
 
     // create the windows and run the threads.

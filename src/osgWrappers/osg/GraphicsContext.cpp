@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/Camera>
+	
 TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras);
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)

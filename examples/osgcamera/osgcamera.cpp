@@ -1,8 +1,4 @@
-// C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
-//
-// Simple example of use of Producer::RenderSurface to create an OpenGL
-// graphics window, and OSG for rendering.
-
+#if 1
 
 #include <osgDB/ReadFile>
 #include <osgViewer/Viewer>
@@ -172,7 +168,7 @@ int main( int argc, char **argv )
 
     viewer.setSceneData(loadedModel.get());
 
-    viewer.realize();
+    // viewer.realize();
 
     unsigned int numFrames = 0;
     while(!viewer.done() && !(limitNumberOfFrames && numFrames>=maxFrames))
@@ -183,3 +179,15 @@ int main( int argc, char **argv )
 
     return 0;
 }
+#else
+
+#include <osgViewer/Viewer>
+#include <osgDB/ReadFile>
+
+int main( int, char **)
+{
+    osgViewer::Viewer viewer;
+    viewer.setSceneData(osgDB::readNodeFile("cow.osg"));
+    viewer.run();
+}
+#endif

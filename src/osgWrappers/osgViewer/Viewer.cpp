@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
 #include <osgViewer/Viewer>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -22,11 +23,23 @@
 
 TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::Viewer::Contexts);
 
+TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Viewer::Windows);
+
+BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
+	I_EnumLabel(osgViewer::Viewer::SingleThreaded);
+	I_EnumLabel(osgViewer::Viewer::ThreadPerContext);
+	I_EnumLabel(osgViewer::Viewer::ThreadPerCamera);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
 	               "",
 	               "");
+	I_Method0(bool, isRealized,
+	          __bool__isRealized,
+	          "Get whether at least of one of this viewers windows are realized. ",
+	          "");
 	I_Method0(void, realize,
 	          __void__realize,
 	          "set up windows and associated threads. ",
@@ -39,24 +52,44 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __bool__done,
 	          "",
 	          "");
+	I_Method1(void, setThreadingModel, IN, osgViewer::Viewer::ThreadingModel, threadingModel,
+	          __void__setThreadingModel__ThreadingModel,
+	          "Set the threading model the rendering traversals will use. ",
+	          "");
+	I_Method0(osgViewer::Viewer::ThreadingModel, getThreadingModel,
+	          __ThreadingModel__getThreadingModel,
+	          "Get the threading model the rendering traversals will use. ",
+	          "");
+	I_Method1(void, setKeySetsDone, IN, int, key,
+	          __void__setKeySetsDone__int,
+	          "Set the key value that the viewer checks on each frame to see if the viewer's done flag should be set to signal end of viewers main loop. ",
+	          "Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape). Setting to 0 switches off the feature. ");
+	I_Method0(int, getKeySetsDone,
+	          __int__getKeySetsDone,
+	          "Set the key value that the viewer checks on each frame to see if the viewer's done flag. ",
+	          "");
+	I_Method0(int, run,
+	          __int__run,
+	          "Execute a main frame loop. ",
+	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned.");
 	I_Method0(void, frame,
 	          __void__frame,
 	          "Render a complete new frame. ",
-	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). ");
-	I_Method0(void, frameAdvance,
-	          __void__frameAdvance,
+	          "Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). ");
+	I_Method0(void, advance,
+	          __void__advance,
 	          "",
 	          "");
-	I_Method0(void, frameEventTraversal,
-	          __void__frameEventTraversal,
+	I_Method0(void, eventTraversal,
+	          __void__eventTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameUpdateTraversal,
-	          __void__frameUpdateTraversal,
+	I_Method0(void, updateTraversal,
+	          __void__updateTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameRenderingTraversals,
-	          __void__frameRenderingTraversals,
+	I_Method0(void, renderingTraversals,
+	          __void__renderingTraversals,
 	          "",
 	          "");
 	I_Method0(void, releaseAllGLObjects,
@@ -67,22 +100,41 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__cleanup,
 	          "Clean up all OpenGL objects associated with this viewer's scenegraph. ",
 	          "");
-	I_Method0(void, init,
-	          __void__init,
+	I_Method1(void, setCameraWithFocus, IN, osg::Camera *, camera,
+	          __void__setCameraWithFocus__osg_Camera_P1,
 	          "",
 	          "");
-	I_Method1(void, getContexts, IN, osgViewer::Viewer::Contexts &, contexts,
-	          __void__getContexts__Contexts_R1,
+	I_Method0(osg::Camera *, getCameraWithFocus,
+	          __osg_Camera_P1__getCameraWithFocus,
 	          "",
 	          "");
+	I_Method0(const osg::Camera *, getCameraWithFocus,
+	          __C5_osg_Camera_P1__getCameraWithFocus,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, getContexts, IN, osgViewer::Viewer::Contexts &, contexts, , IN, bool, onlyValid, true,
+	                      __void__getContexts__Contexts_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::Viewer::Windows &, windows, , IN, bool, onlyValid, true,
+	                      __void__getWindows__Windows_R1__bool,
+	                      "",
+	                      "");
+	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
+	                 __osg_Camera_P1__getCameraWithFocus, 
+	                 __void__setCameraWithFocus__osg_Camera_P1);
 	I_SimpleProperty(bool, Done, 
 	                 0, 
 	                 __void__setDone__bool);
-	I_PublicMemberProperty(bool, _firstFrame);
-	I_PublicMemberProperty(bool, _done);
-	I_PublicMemberProperty(osg::ref_ptr< osg::BarrierOperation >, _startRenderingBarrier);
-	I_PublicMemberProperty(osg::ref_ptr< osg::BarrierOperation >, _endRenderingDispatchBarrier);
+	I_SimpleProperty(int, KeySetsDone, 
+	                 __int__getKeySetsDone, 
+	                 __void__setKeySetsDone__int);
+	I_SimpleProperty(osgViewer::Viewer::ThreadingModel, ThreadingModel, 
+	                 __ThreadingModel__getThreadingModel, 
+	                 __void__setThreadingModel__ThreadingModel);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >);
+
+STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >);
 

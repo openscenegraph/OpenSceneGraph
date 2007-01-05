@@ -196,11 +196,15 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
 	I_Method1(void, compileGLObjects, IN, osg::State &, x,
 	          __void__compileGLObjects__State_R1,
-	          "default to nothing to compile - all state is applied immediately. ",
+	          "Default to nothing to compile - all state is applied immediately. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          __void__resizeGLObjectBuffers__unsigned,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      __void__releaseGLObjects__State_P1,
-	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL. ",
+	                      "Release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL. ",
 	                      "");
 	I_SimpleProperty(osg::StateAttribute::Callback *, EventCallback, 
 	                 __Callback_P1__getEventCallback, 

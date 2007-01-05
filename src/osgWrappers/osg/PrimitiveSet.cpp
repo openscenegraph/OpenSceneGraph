@@ -275,10 +275,18 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	          __void__offsetIndices__int,
 	          "",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method0(void, computeRange,
+	          __void__computeRange,
+	          "",
+	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);
@@ -364,10 +372,18 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	          __void__offsetIndices__int,
 	          "",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method0(void, computeRange,
+	          __void__computeRange,
+	          "",
+	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);
@@ -453,10 +469,18 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 	          __void__offsetIndices__int,
 	          "",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method0(void, computeRange,
+	          __void__computeRange,
+	          "",
+	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);
@@ -685,10 +709,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	          __unsigned_int__getModifiedCount,
 	          "Get modified count value. ",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          __void__resizeGLObjectBuffers__unsigned,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method0(void, computeRange,
+	          __void__computeRange,
+	          "",
+	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);

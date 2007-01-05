@@ -62,12 +62,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __void__setMouseInputRange__float__float__float__float,
 	          "Set the mouse input range. ",
 	          "");
-	I_Method4(void, windowResize, IN, int, x, IN, int, y, IN, unsigned int, width, IN, unsigned int, height,
-	          __void__windowResize__int__int__unsigned_int__unsigned_int,
+	I_Method4(void, windowResize, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          __void__windowResize__int__int__int__int,
 	          "Method for adapting window resize event, placing this event on the back of the event queue. ",
 	          "");
-	I_Method5(void, windowResize, IN, int, x, IN, int, y, IN, unsigned int, width, IN, unsigned int, height, IN, double, time,
-	          __void__windowResize__int__int__unsigned_int__unsigned_int__double,
+	I_Method5(void, windowResize, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, double, time,
+	          __void__windowResize__int__int__int__int__double,
 	          "Method for adapting window resize event, placing this event on the back of the event queue, with specified time. ",
 	          "");
 	I_Method1(void, mouseScroll, IN, osgGA::GUIEventAdapter::ScrollingMotion, sm,

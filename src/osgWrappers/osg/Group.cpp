@@ -119,6 +119,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	          __unsigned_int__getChildIndex__C5_Node_P1,
 	          "Get the index number of child, return a value between 0 and _children.size()-1 if found, if not found then return _children.size(). ",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
@@ -134,6 +142,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	                __bool__addChild__Node_P1, 
 	                __bool__insertChild__unsigned_int__Node_P1, 
 	                __bool__removeChild__unsigned_int__unsigned_int);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osg::NodeList);

@@ -13,6 +13,7 @@
 #include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
 #include <osg/State>
+#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -21,6 +22,8 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras);
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_BaseType(osg::Referenced);
@@ -48,6 +51,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __C5_Traits_P1__getTraits,
 	          "Get the traits of the GraphicsContext. ",
 	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "Return whether a valid and usable GraphicsContext has been created. ",
+	          "");
 	I_Method1(void, setState, IN, osg::State *, state,
 	          __void__setState__State_P1,
 	          "Set the State object which tracks the current OpenGL state for this graphics context. ",
@@ -60,10 +67,26 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __C5_State_P1__getState,
 	          "Get the const State object which tracks the current OpenGL state for this graphics context. ",
 	          "");
-	I_Method0(bool, valid,
-	          __bool__valid,
-	          "Return whether a valid and usable GraphicsContext has been created. ",
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color,
+	          __void__setClearColor__C5_Vec4_R1,
+	          "Sets the clear color. ",
 	          "");
+	I_Method0(const osg::Vec4 &, getClearColor,
+	          __C5_Vec4_R1__getClearColor,
+	          "Returns the clear color. ",
+	          "");
+	I_Method1(void, setClearMask, IN, GLbitfield, mask,
+	          __void__setClearMask__GLbitfield,
+	          "Set the clear mask used in glClear(. ",
+	          ".). Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. ");
+	I_Method0(GLbitfield, getClearMask,
+	          __GLbitfield__getClearMask,
+	          "Get the clear mask. ",
+	          "");
+	I_Method0(void, clear,
+	          __void__clear,
+	          "Do an OpenGL clear of the full graphics context/window. ",
+	          "Note, must only be called from a thread with this context current. ");
 	I_Method0(bool, realize,
 	          __bool__realize,
 	          "Realise the GraphicsContext. ",
@@ -144,6 +167,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__swapBuffersImplementation,
 	          "Swap the front and back buffers implementation. ",
 	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
+	I_Method4(void, resized, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          __void__resized__int__int__int__int,
+	          "resized method should be called when the underlying window has been resized and the GraphicsWindow and associated Cameras must be updated to keep in sync with the new size. ",
+	          "");
+	I_Method0(osg::GraphicsContext::Cameras &, getCameras,
+	          __Cameras_R1__getCameras,
+	          "Get the the list of cameras associated with this graphics context. ",
+	          "");
+	I_Method0(const osg::GraphicsContext::Cameras &, getCameras,
+	          __C5_Cameras_R1__getCameras,
+	          "Get the the const list of cameras associated with this graphics context. ",
+	          "");
 	I_StaticMethod1(void, setWindowingSystemInterface, IN, osg::GraphicsContext::WindowingSystemInterface *, wsInterface,
 	                __void__setWindowingSystemInterface__WindowingSystemInterface_P1_S,
 	                "Set the querry the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
@@ -168,6 +203,15 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	                __void__decrementContextIDUsageCount__unsigned_int_S,
 	                "Decrement the usage count associate with a contextID. ",
 	                "Once the contextID goes to 0 the contextID is then free to be reused. ");
+	I_SimpleProperty(osg::GraphicsContext::Cameras &, Cameras, 
+	                 __Cameras_R1__getCameras, 
+	                 0);
+	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
+	                 __C5_Vec4_R1__getClearColor, 
+	                 __void__setClearColor__C5_Vec4_R1);
+	I_SimpleProperty(GLbitfield, ClearMask, 
+	                 __GLbitfield__getClearMask, 
+	                 __void__setClearMask__GLbitfield);
 	I_SimpleProperty(osg::GraphicsThread *, GraphicsThread, 
 	                 __GraphicsThread_P1__getGraphicsThread, 
 	                 __void__setGraphicsThread__GraphicsThread_P1);
@@ -206,10 +250,10 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_Constructor0(____Traits,
 	               "",
 	               "");
-	I_PublicMemberProperty(unsigned int, x);
-	I_PublicMemberProperty(unsigned int, y);
-	I_PublicMemberProperty(unsigned int, width);
-	I_PublicMemberProperty(unsigned int, height);
+	I_PublicMemberProperty(int, x);
+	I_PublicMemberProperty(int, y);
+	I_PublicMemberProperty(int, width);
+	I_PublicMemberProperty(int, height);
 	I_PublicMemberProperty(std::string, windowName);
 	I_PublicMemberProperty(bool, windowDecoration);
 	I_PublicMemberProperty(bool, supportsResize);
@@ -249,4 +293,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
 	          "",
 	          "");
 END_REFLECTOR
+
+STD_LIST_REFLECTOR(std::list< osg::Camera * >);
 

@@ -93,24 +93,20 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
 	          __void__frame,
 	          "Render a complete new frame. ",
 	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal(). Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code. ");
-	I_Method0(void, frameAdvance,
-	          __void__frameAdvance,
+	I_Method0(void, advance,
+	          __void__advance,
 	          "",
 	          "");
-	I_Method0(void, frameEventTraversal,
-	          __void__frameEventTraversal,
+	I_Method0(void, eventTraversal,
+	          __void__eventTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameUpdateTraversal,
-	          __void__frameUpdateTraversal,
+	I_Method0(void, updateTraversal,
+	          __void__updateTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameCullTraversal,
-	          __void__frameCullTraversal,
-	          "",
-	          "");
-	I_Method0(void, frameDrawTraversal,
-	          __void__frameDrawTraversal,
+	I_Method0(void, renderingTraversal,
+	          __void__renderingTraversal,
 	          "",
 	          "");
 	I_Method0(void, releaseAllGLObjects,

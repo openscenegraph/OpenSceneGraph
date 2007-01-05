@@ -56,6 +56,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__grabFocusIfPointerInWindow,
 	          "Get focus on if the pointer is in this window. ",
 	          "");
+	I_Method1(void, useCursor, IN, bool, x,
+	          __void__useCursor__bool,
+	          "Switch on/off the cursor. ",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          __bool__realizeImplementation,
 	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",

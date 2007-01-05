@@ -391,9 +391,17 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          __bool__checkValidityOfAssociatedModes__State_R1,
 	          "Check the modes associated with this StateSet are supported by current OpenGL drivers, and if not set the associated mode in osg::State to be black listed/invalid. ",
 	          "Return true if all associated modes are valid. ");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          __void__compileGLObjects__State_R1,
 	          "call compile on all StateAttributes contained within this StateSet. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,
@@ -441,6 +449,9 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_SimpleProperty(osg::StateSet::TextureModeList &, TextureModeList, 
 	                 __TextureModeList_R1__getTextureModeList, 
 	                 __void__setTextureModeList__TextureModeList_R1);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 	I_SimpleProperty(osg::StateSet::UniformList &, UniformList, 
 	                 __UniformList_R1__getUniformList, 
 	                 __void__setUniformList__UniformList_R1);

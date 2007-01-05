@@ -146,10 +146,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __C5_osg_Viewport_P1__getViewport,
 	          "Get the const viewport. ",
 	          "");
-	I_Method4(void, getViewport, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height,
-	          __void__getViewport__int_R1__int_R1__int_R1__int_R1,
-	          "Get the viewport of the scene view. ",
-	          "");
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, vs,
 	          __void__setDisplaySettings__osg_DisplaySettings_P1,
 	          "Set the DisplaySettings. ",

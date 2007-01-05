@@ -235,8 +235,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __double__time,
 	          "deprecated function for getting time of event. ",
 	          "");
-	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, unsigned int, width, , IN, unsigned int, height, , IN, bool, updateMouseRange, true,
-	                      __void__setWindowRectangle__int__int__unsigned_int__unsigned_int__bool,
+	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, int, width, , IN, int, height, , IN, bool, updateMouseRange, true,
+	                      __void__setWindowRectangle__int__int__int__int__bool,
 	                      "set window rectangle. ",
 	                      "");
 	I_Method0(int, getWindowX,
@@ -247,12 +247,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __int__getWindowY,
 	          "get window y origin. ",
 	          "");
-	I_Method0(unsigned int, getWindowWidth,
-	          __unsigned_int__getWindowWidth,
+	I_Method0(int, getWindowWidth,
+	          __int__getWindowWidth,
 	          "get window width. ",
 	          "");
-	I_Method0(unsigned int, getWindowHeight,
-	          __unsigned_int__getWindowHeight,
+	I_Method0(int, getWindowHeight,
+	          __int__getWindowHeight,
 	          "get window height. ",
 	          "");
 	I_Method1(void, setKey, IN, int, key,
@@ -411,11 +411,11 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_SimpleProperty(double, Time, 
 	                 __double__getTime, 
 	                 __void__setTime__double);
-	I_SimpleProperty(unsigned int, WindowHeight, 
-	                 __unsigned_int__getWindowHeight, 
+	I_SimpleProperty(int, WindowHeight, 
+	                 __int__getWindowHeight, 
 	                 0);
-	I_SimpleProperty(unsigned int, WindowWidth, 
-	                 __unsigned_int__getWindowWidth, 
+	I_SimpleProperty(int, WindowWidth, 
+	                 __int__getWindowWidth, 
 	                 0);
 	I_SimpleProperty(int, WindowX, 
 	                 __int__getWindowX, 

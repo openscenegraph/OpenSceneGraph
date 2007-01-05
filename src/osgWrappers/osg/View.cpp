@@ -64,8 +64,16 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	          __C5_Slave_R1__getSlave__unsigned_int,
 	          "",
 	          "");
+	I_Method1(osg::View::Slave *, findSlaveForCamera, IN, osg::Camera *, camera,
+	          __Slave_P1__findSlaveForCamera__osg_Camera_P1,
+	          "",
+	          "");
 	I_Method0(void, updateSlaves,
 	          __void__updateSlaves,
+	          "",
+	          "");
+	I_Method1(void, updateSlave, IN, unsigned int, i,
+	          __void__updateSlave__unsigned_int,
 	          "",
 	          "");
 	I_SimpleProperty(osg::Camera *, Camera, 

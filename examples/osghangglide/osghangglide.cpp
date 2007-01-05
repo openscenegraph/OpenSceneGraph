@@ -156,7 +156,7 @@ int main( int argc, char **argv )
         }
 
         unsigned int numCameras = 2;
-        double aspectRatioScale = 1.0/(double)numCameras;
+        double aspectRatioScale = 1.0;
         for(unsigned int i=0; i<numCameras;++i)
         {
             osg::ref_ptr<osg::Camera> camera = new osg::Camera;

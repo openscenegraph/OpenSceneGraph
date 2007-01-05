@@ -169,6 +169,9 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Get the traits of the GraphicsContext.*/
         inline const Traits* getTraits() const { return _traits.get(); }
 
+        /** Return whether a valid and usable GraphicsContext has been created.*/
+        virtual bool valid() const { return false; }
+
 
         /** Set the State object which tracks the current OpenGL state for this graphics context.*/
         inline void setState(State* state) { _state = state; }
@@ -178,10 +181,25 @@ class OSG_EXPORT GraphicsContext : public Referenced
         
         /** Get the const State object which tracks the current OpenGL state for this graphics context.*/
         inline const State* getState() const { return _state.get(); }
-        
 
-        /** Return whether a valid and usable GraphicsContext has been created.*/
-        virtual bool valid() const { return false; }
+
+        /** Sets the clear color. */
+        inline void setClearColor(const Vec4& color) { _clearColor = color; }
+
+        /** Returns the clear color. */
+        inline const Vec4& getClearColor() const { return _clearColor; }
+        
+        /** Set the clear mask used in glClear(..).
+          * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
+        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
+
+        /** Get the clear mask.*/
+        inline GLbitfield getClearMask() const { return _clearMask; }
+        
+        /** Do an OpenGL clear of the full graphics context/window.
+          * Note, must only be called from a thread with this context current.*/
+        virtual void clear();
+        
 
         /** Realise the GraphicsContext.*/
         bool realize();
@@ -288,6 +306,10 @@ class OSG_EXPORT GraphicsContext : public Referenced
 
         ref_ptr<Traits>         _traits;        
         ref_ptr<State>          _state;
+
+        Vec4                    _clearColor;
+        GLbitfield              _clearMask;
+
         OpenThreads::Mutex      _mutex;
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
         

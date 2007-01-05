@@ -161,6 +161,11 @@ int main( int argc, char **argv )
             osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
 
             gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+            
+            // need to ensure that the window is cleared make sure that the complete window is set the correct colour
+            // rather than just the parts of the window that are under the camera's viewports
+            gw->setClearColor(osg::Vec4f(0.2f,0.2f,0.6f,1.0f));
+            gw->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
         else
         {

@@ -93,6 +93,16 @@ int Viewer::run()
     return 0;
 }
 
+osg::FrameStamp*  Viewer::getFrameStamp()
+{
+    return _scene.valid() ? _scene->getFrameStamp() : 0;
+}
+
+const osg::FrameStamp*  Viewer::getFrameStamp() const
+{
+    return _scene.valid() ? _scene->getFrameStamp() : 0;
+}
+
 void Viewer::setThreadingModel(ThreadingModel threadingModel)
 {
     if (_threadingModel == threadingModel) return;

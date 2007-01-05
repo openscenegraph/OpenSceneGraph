@@ -37,8 +37,12 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         void setDone(bool done) { _done = done; }
         
-        bool done() { return _done; }
+        bool done() const { return _done; }
         
+        osg::FrameStamp* getFrameStamp();
+        
+        const osg::FrameStamp* getFrameStamp() const;
+
         enum ThreadingModel
         {
             SingleThreaded,

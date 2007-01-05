@@ -8,10 +8,12 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Quat>
 #include <osg/io_utils>
+
+#include <iostream>
 
 #if defined (WIN32) && !defined(__CYGWIN__)
 #include <winsock.h>
@@ -47,9 +49,9 @@ class CameraPacket {
             matrix = _matrix * osg::Matrix::rotate(osg::DegreesToRadians(angle_offset),0.0f,1.0f,0.0f);
         }
         
-        void readEventQueue(osgProducer::Viewer& viewer);
+        void readEventQueue(osgViewer::Viewer& viewer);
         
-        void writeEventQueue(osgProducer::Viewer& viewer);
+        void writeEventQueue(osgViewer::Viewer& viewer);
 
         void setMasterKilled(const bool flag) { _masterKilled = flag; }
         const bool getMasterKilled() const { return _masterKilled; }
@@ -379,21 +381,20 @@ class DataConverter
         }
 };
 
-void CameraPacket::readEventQueue(osgProducer::Viewer& viewer)
+void CameraPacket::readEventQueue(osgViewer::Viewer& viewer)
 {
     _events.clear();
 
-    viewer.getKeyboardMouseCallback()->copyEventQueue(_events);
+    viewer.getEventQueue()->copyEvents(_events);
 
     osg::notify(osg::INFO)<<"written events = "<<_events.size()<<std::endl;
 }
 
-void CameraPacket::writeEventQueue(osgProducer::Viewer& viewer)
+void CameraPacket::writeEventQueue(osgViewer::Viewer& viewer)
 {
     osg::notify(osg::INFO)<<"recieved events = "<<_events.size()<<std::endl;
 
-    // copy the events to osgProducer style events.
-    viewer.getKeyboardMouseCallback()->appendEventQueue(_events);
+    viewer.getEventQueue()->appendEvents(_events);
 }
 
 
@@ -421,13 +422,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-o <float>","Offset angle of camera");
     
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
 
     // read up the osgcluster specific arguments.
@@ -469,28 +464,32 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
-    
-    
+
     // load model.
     osg::ref_ptr<osg::Node> rootnode = osgDB::readNodeFiles(arguments);
 
-    
     // set the scene to render
     viewer.setSceneData(rootnode.get());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-
-    // set up the lens after realize as the Producer lens is not set up properly before this.... will need to inveestigate this at a later date.
     if (camera_fov>0.0f)
     {
-        float aspectRatio = tan( osg::DegreesToRadians(viewer.getLensVerticalFov()*0.5)) / tan(osg::DegreesToRadians(viewer.getLensHorizontalFov()*0.5));
-        float new_fovy = osg::RadiansToDegrees(atan( aspectRatio * tan( osg::DegreesToRadians(camera_fov*0.5))))*2.0f;
-        std::cout << "setting lens perspective : original "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
-        viewer.setLensPerspective(camera_fov,new_fovy,1.0f,1000.0f);
-        std::cout << "setting lens perspective : new "<<viewer.getLensHorizontalFov()<<"  "<<viewer.getLensVerticalFov()<<std::endl;
+        double fovy, aspectRatio, zNear, zFar;
+        viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio,zNear, zFar);
+        
+        double original_fov = atan(tan(osg::DegreesToRadians(fovy)*0.5)*aspectRatio)*2.0;
+        std::cout << "setting lens perspective : original "<<original_fov<<"  "<<fovy<<std::endl;
+        
+        fovy = atan(tan(osg::DegreesToRadians(camera_fov)*0.5)/aspectRatio)*2.0;
+        viewer.getCamera()->setProjectionMatrixAsPerspective(fovy, aspectRatio,zNear, zFar);
+    
+        viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio,zNear, zFar);
+        original_fov = atan(tan(osg::DegreesToRadians(fovy)*0.5)*aspectRatio)*2.0;
+        std::cout << "setting lens perspective : new "<<original_fov<<"  "<<fovy<<std::endl;
     }
+
+
+    // create the windows and run the threads.
+    viewer.realize();
 
 
     CameraPacket *cp = new CameraPacket;
@@ -508,11 +507,10 @@ int main( int argc, char **argv )
 
     while( !viewer.done() && !masterKilled )
     {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
         osg::Timer_t startTick = osg::Timer::instance()->tick();
                  
+        viewer.advance();
+
         // special handling for working as a cluster.
         switch (viewerMode)
         {
@@ -520,7 +518,7 @@ int main( int argc, char **argv )
             {
                 
                 // take camera zero as the guide.
-                osg::Matrix modelview(viewer.getCamera(0)->getViewMatrix());
+                osg::Matrix modelview(viewer.getCamera()->getViewMatrix());
                 
                 cp->setPacket(modelview,viewer.getFrameStamp());
                 
@@ -571,30 +569,22 @@ int main( int argc, char **argv )
 
         // update the scene by traversing it with the the update visitor which will
         // call all node update callbacks and animations.
-        viewer.update();
+        viewer.eventTraversal();
+        viewer.updateTraversal();
 
         if (viewerMode==SLAVE)
         {
             osg::Matrix modelview;
             cp->getModelView(modelview,camera_offset);
         
-            viewer.setView(modelview);
+            viewer.getCamera()->setViewMatrix(modelview);
         }
 
         // fire off the cull and draw traversals of the scene.
         if(!masterKilled)
-            viewer.frame();
+            viewer.renderingTraversals();
         
     }
-
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
 
     // if we are master clean up by telling all slaves that we're going down.
     if (viewerMode==MASTER)

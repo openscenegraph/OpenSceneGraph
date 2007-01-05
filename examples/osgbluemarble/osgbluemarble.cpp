@@ -23,26 +23,48 @@
 #include <osgUtil/Optimizer>
 #include <osgUtil/TriStripVisitor>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
-class GraphicsContext {
+#include <iostream>
+
+class MyGraphicsContext {
     public:
-        GraphicsContext()
+        MyGraphicsContext()
         {
-            rs = new Producer::RenderSurface;
-            rs->setWindowRectangle(0,0,1,1);
-            rs->useBorder(false);
-            rs->useConfigEventThread(false);
-            rs->realize();
-            std::cout<<"Realized window"<<std::endl;
-        }
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
 
-        virtual ~GraphicsContext()
-        {
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
+            {
+                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
+                
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            }
+
+            if (_gc.valid()) 
+            
+            
+            {
+                _gc->realize();
+                _gc->makeCurrent();
+                std::cout<<"Realized window"<<std::endl;
+            }
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
+        
     private:
-        Producer::ref_ptr<Producer::RenderSurface> rs;
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
 
 
@@ -419,7 +441,13 @@ int main( int argc, char **argv )
 
 
     // create a graphics context to allow us to use OpenGL to compress textures.    
-    GraphicsContext gfx;
+    MyGraphicsContext gfx;
+
+    if (!gfx.valid() && useCompressedTextures)
+    {
+        osg::notify(osg::NOTICE)<<"Disabling texture compression due to inability to create OpenGL graphics context."<<std::endl;
+        useCompressedTextures = false;
+    }
 
     createWorld(west_hemisphere,east_hemisphere,basename,(unsigned int)numLevels);
 

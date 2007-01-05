@@ -206,37 +206,14 @@ osg::Node* createModel(bool overlay)
 
 int main( int argc, char **argv )
 {
-    // use an ArgumentParser object to manage the program arguments.
+    
+    bool overlay = false;
     osg::ArgumentParser arguments(&argc,argv);
-
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of osg::AnimationPath and UpdateCallbacks for adding animation to your scenes.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-
+    while (arguments.read("--overlay")) overlay = true;
+    
     // initialize the viewer.
     osgViewer::Viewer viewer;
 
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-    
-    bool overlay = false;
-    while (arguments.read("--overlay")) overlay = true;
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
     // load the nodes from the commandline arguments.
     osg::Node* model = createModel(overlay);
     if (!model)

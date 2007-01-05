@@ -157,69 +157,14 @@ osg::Node* createScene()
     return root;
 }
 
-int main( int argc, char **argv )
+int main(int, char**)
 {
-
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to do Head Up Displays.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] [filename] ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
-
     // construct the viewer.
     osgViewer::Viewer viewer;
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
 
     // set the scene to render
     viewer.setSceneData(createScene());
     
+    // run the viewers frame loop
     return viewer.run();
-
-
-//     osg::Node* obj = new osg::Node;
-//     cout << "obj = "<<obj<<endl;
-//     cout << "sizeof(obj) = "<<sizeof(*obj)<<endl;
-//     cout << "sizeof(osg::Object) = "<<sizeof(osg::Object)<<endl;
-//     cout << "sizeof(osg::Referenced) = "<<sizeof(osg::Referenced)<<endl;
-//     cout << "vtbl = "<<*((unsigned int*)obj)<<endl;
-//     cout << "next = "<<*((unsigned int*)obj+1)<<endl;
-// 
-//     osg::Node* obj2 = new osg::Node;
-//     obj2->ref();
-//     obj2->ref();
-//     obj2->ref();
-//     cout << "obj = "<<obj2<<endl;
-//     cout << "sizeof(obj) = "<<sizeof(*obj)<<endl;
-//     cout << "sizeof(osg::Object) = "<<sizeof(osg::Object)<<endl;
-//     cout << "sizeof(osg::Referenced) = "<<sizeof(osg::Referenced)<<endl;
-//     cout << "vtbl = "<<*((unsigned int*)obj2)<<endl;
-//     cout << "next = "<<*((unsigned int*)obj2+1)<<endl;
-// 
-//     osg::Group* obj3 = new osg::Group;
-//     cout << "obj = "<<obj3<<endl;
-//     cout << "sizeof(obj) = "<<sizeof(*obj3)<<endl;
-//     cout << "sizeof(osg::Object) = "<<sizeof(osg::Object)<<endl;
-//     cout << "sizeof(osg::Referenced) = "<<sizeof(osg::Referenced)<<endl;
-//     cout << "vtbl = "<<*((unsigned int*)obj3)<<endl;
-//     cout << "next = "<<*((unsigned int*)obj3+1)<<endl;
 }

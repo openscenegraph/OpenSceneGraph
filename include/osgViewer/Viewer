@@ -29,6 +29,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         Viewer();
         virtual ~Viewer();
         
+        /** Get whether at least of one of this viewers windows are realized.*/
+        bool isRealized() const;
+
         /** set up windows and associated threads.*/
         void realize();
 
@@ -57,6 +60,13 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         /** Set the key value that the viewer checks on each frame to see if the viewer's done flag.*/
         int getKeySetsDone() const { return _keySetsDone; }
+
+        /** Execute a main frame loop.
+          * Equivialant to while (!viewer.done()) viewer.frame();
+          * Also calls realize() if the viewer is not already realized,
+          * and installs trackball manipulator if one is not already assigned.
+          */
+        virtual void run();
 
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameRenderingTraversals(). */

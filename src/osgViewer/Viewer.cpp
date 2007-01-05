@@ -14,9 +14,10 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgViewer/Viewer>
-#include <osgUtil/GLObjectsVisitor>
 #include <osg/GLExtensions>
+#include <osgUtil/GLObjectsVisitor>
+#include <osgGA/TrackballManipulator>
+#include <osgViewer/Viewer>
 
 #include <osg/io_utils>
 
@@ -44,6 +45,50 @@ Viewer::~Viewer()
     }
 
     //osg::notify(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
+}
+
+bool Viewer::isRealized() const
+{
+
+    Contexts contexts;
+    const_cast<Viewer*>(this)->getContexts(contexts);
+
+    unsigned int numRealizedWindows = 0;
+
+    // clear out all the previously assigned operations
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        if ((*citr)->isRealized()) ++numRealizedWindows;
+    }
+    
+    return numRealizedWindows > 0;
+}
+
+void Viewer::run()
+{
+    // if we don't have any scene graph assigned then just return
+    if (!getSceneData())
+    {
+        osg::notify(osg::NOTICE)<<"Warning: Viewer::run() called without a scene graph being assigned to the viewer, cannot run."<<std::endl;
+        return;
+    }
+
+    if (!getCameraManipulator())
+    {
+        setCameraManipulator(new osgGA::TrackballManipulator());
+    }
+
+    if (!isRealized())
+    {
+        realize();
+    }
+
+    while (!done())
+    {
+        frame();
+    }
 }
 
 void Viewer::setThreadingModel(ThreadingModel threadingModel)
@@ -474,6 +519,12 @@ void Viewer::frame()
     if (_firstFrame)
     {
         init();
+        
+        if (!isRealized())
+        {
+            realize();
+        }
+        
         _firstFrame = false;
     }
     frameAdvance();

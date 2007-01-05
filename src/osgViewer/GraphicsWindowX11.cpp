@@ -612,12 +612,19 @@ void GraphicsWindowX11::checkEvents()
 {
     if (!_realized) return;
 
+    double baseTime = _timeOfLastCheckEvents;
+    double eventTime = baseTime;
+    double resizeTime = eventTime;
+    _timeOfLastCheckEvents = getEventQueue()->getTime();
+
     int windowX = _traits->x;
     int windowY = _traits->y;
     int windowWidth = _traits->width;
     int windowHeight = _traits->height;
 
     bool destroyWindowRequested = false;
+    
+    Time firstEventTime = 0;
      
          // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
     while( XPending(_display) )
@@ -666,6 +673,8 @@ void GraphicsWindowX11::checkEvents()
                     windowWidth != ev.xconfigure.width ||
                     windowHeight != ev.xconfigure.height)
                 {
+                    resizeTime = eventTime;
+
                     windowX = ev.xconfigure.x;
                     windowY = ev.xconfigure.y;
                     windowWidth = ev.xconfigure.width;
@@ -680,27 +689,27 @@ void GraphicsWindowX11::checkEvents()
                 osg::notify(osg::INFO)<<"MapNotify"<<std::endl;
                 XWindowAttributes watt;
                 do
-                XGetWindowAttributes(_display, _window, &watt );
+                    XGetWindowAttributes(_display, _window, &watt );
                 while( watt.map_state != IsViewable );
                 
                 osg::notify(osg::INFO)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
 
                 if (windowWidth != watt.width || windowHeight != watt.height)
                 {
+                    resizeTime = eventTime;
+
                     windowWidth = watt.width;
                     windowHeight = watt.height;
                 }
-                
-                _traits->width = watt.width;
-                _traits->height = watt.height;
-                
 
                 break;
             }
 
            case MotionNotify :
            {
-                osg::notify(osg::INFO)<<"MotionNotify time="<<ev.xmotion.time<<std::endl;
+                if (firstEventTime==0) firstEventTime = ev.xmotion.time;
+                Time relativeTime = ev.xmotion.time - firstEventTime;
+                eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
            
                 int  wx, wy;
                 Window win = 0L;
@@ -750,7 +759,7 @@ void GraphicsWindowX11::checkEvents()
                 float mx = wx;
                 float my = wy;
                 transformMouseXY(mx, my);
-                getEventQueue()->mouseMotion(mx, my);
+                getEventQueue()->mouseMotion(mx, my, eventTime);
 
                 // osg::notify(osg::NOTICE)<<"MotionNotify wx="<<wx<<" wy="<<wy<<" mx="<<mx<<" my="<<my<<std::endl;
 
@@ -759,62 +768,78 @@ void GraphicsWindowX11::checkEvents()
             
             case ButtonPress :
             {
+                if (firstEventTime==0) firstEventTime = ev.xmotion.time;
+                Time relativeTime = ev.xmotion.time - firstEventTime;
+                eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
+
                 if( ev.xbutton.button == Button4 )
                 {
-                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP);
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP, eventTime);
                 }
                 else if( ev.xbutton.button == Button5)
                 {
-                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN);
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN, eventTime);
                 }
                 else
                 {
                     float mx = ev.xbutton.x;
                     float my = ev.xmotion.y;
                     transformMouseXY(mx, my);
-                    getEventQueue()->mouseButtonPress(mx, my, ev.xbutton.button);
+                    getEventQueue()->mouseButtonPress(mx, my, ev.xbutton.button, eventTime);
                 }
                 break;
             }
             
             case ButtonRelease :
             {
+                if (firstEventTime==0) firstEventTime = ev.xmotion.time;
+                Time relativeTime = ev.xmotion.time - firstEventTime;
+                eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
+
                 if( ev.xbutton.button == Button4 )
                 {
-                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP);
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_UP, eventTime);
                 }
                 else if( ev.xbutton.button == Button5)
                 {
-                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN);
+                    getEventQueue()->mouseScroll(osgGA::GUIEventAdapter::SCROLL_DOWN, eventTime);
                 }
                 else
                 {
                     float mx = ev.xbutton.x;
                     float my = ev.xmotion.y;
                     transformMouseXY(mx, my);
-                    getEventQueue()->mouseButtonRelease(mx, my, ev.xbutton.button);
+                    getEventQueue()->mouseButtonRelease(mx, my, ev.xbutton.button, eventTime);
                 }
                 break;
             }
             
             case KeyPress:
             {
+                if (firstEventTime==0) firstEventTime = ev.xmotion.time;
+                Time relativeTime = ev.xmotion.time - firstEventTime;
+                eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
+
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);
 
-                getEventQueue()->keyPress(keySymbol);
+                getEventQueue()->keyPress(keySymbol, eventTime);
                 getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 break;
             }
             
             case KeyRelease:
             {
+                if (firstEventTime==0) firstEventTime = ev.xmotion.time;
+                Time relativeTime = ev.xmotion.time - firstEventTime;
+                eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
+
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);
                 
-                getEventQueue()->keyRelease(keySymbol);
+                getEventQueue()->keyRelease(keySymbol, eventTime);
                 getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 break;
             }
@@ -832,7 +857,7 @@ void GraphicsWindowX11::checkEvents()
         windowHeight != _traits->height)
     {
         resized(windowX, windowY, windowWidth, windowHeight); 
-        getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight);
+        getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
     }
 
     if (destroyWindowRequested)

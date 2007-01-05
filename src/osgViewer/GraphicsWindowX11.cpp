@@ -544,11 +544,6 @@ void GraphicsWindowX11::makeCurrentImplementation()
     // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
     // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
 
-    // checkEvents();
-
-    // XFlush(_display);
-    // XSync(_display,0);
-
     if (glXMakeCurrent( _display, _window, _glxContext ))
     {
         // osg::notify(osg::NOTICE)<<"makeCurrentImplementation sucessful"<<std::endl;
@@ -611,12 +606,6 @@ void GraphicsWindowX11::swapBuffersImplementation()
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     glXSwapBuffers(_display, _window); 
-    
-#if 0   
-    checkEvents();
-#endif    
-
-    // glFlush();
 }
 
 void GraphicsWindowX11::checkEvents()

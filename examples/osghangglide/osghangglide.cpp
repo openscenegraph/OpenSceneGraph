@@ -114,105 +114,85 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
-    viewer.setCameraManipulator(new GliderManipulator());
-
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
     
-    // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
-    if (!rootnode) rootnode = createModel();
+    bool customWindows = false;
+    while(arguments.read("-1")) customWindows = true;
+    while(arguments.read("-2")) customWindows = false;
 
-    viewer.setSceneData( rootnode );
-
-#if 0
-
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (customWindows)
     {
-        osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return 0;
-    }
-    
-    unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (!wsi) 
+        {
+            osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+            return 0;
+        }
 
-    width -= 500;
-    height -= 500;
+        unsigned int width, height;
+        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->x = 500;
-    traits->y = 500;
-    traits->width = width;
-    traits->height = height;
-#if 0
-    traits->windowDecoration = false;
-#else
-    traits->windowDecoration = true;
-#endif            
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
+        width -= 500;
+        height -= 500;
 
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->x = 500;
+        traits->y = 500;
+        traits->width = width;
+        traits->height = height;
+    #if 0
+        traits->windowDecoration = false;
+    #else
+        traits->windowDecoration = true;
+    #endif            
+        traits->doubleBuffer = true;
+        traits->sharedContext = 0;
 
-    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-    if (gw)
-    {
-        osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+        osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
-        gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
-    }
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+        if (gw)
+        {
+            osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+
+            gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+        }
+
+        unsigned int numCameras = 2;
+        double aspectRatioScale = 1.0/(double)numCameras;
+        for(unsigned int i=0; i<numCameras;++i)
+        {
+            osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+            camera->setGraphicsContext(gc.get());
+            camera->setViewport(new osg::Viewport((i*width)/numCameras,(i*height)/numCameras, width/numCameras, height/numCameras));
+            GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+            camera->setDrawBuffer(buffer);
+            camera->setReadBuffer(buffer);
+
+            viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::scale(aspectRatioScale,1.0,1.0));
+        }
+    }    
     else
     {
-        osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
-    }
-
-    unsigned int numCameras = 2;
-    double aspectRatioScale = 1.0/(double)numCameras;
-    for(unsigned int i=0; i<numCameras;++i)
-    {
-        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport((i*width)/numCameras,(i*height)/numCameras, width/numCameras, height/numCameras));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
-
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::scale(aspectRatioScale,1.0,1.0));
-    }
-
-    viewer.setUpRenderingSupport();
-    viewer.assignSceneDataToCameras();
+        viewer.setUpViewAcrossAllScreens();
     
-#else
-
-    viewer.setUpViewAcrossAllScreens();
-    
-#endif    
-
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
     }
 
-    return 0;
+    // set up the camera manipulation with out custom manipultor
+    viewer.setCameraManipulator(new GliderManipulator());
+
+    // pass the scene graph to the viewer    
+    viewer.setSceneData( createModel() );
+
+    return viewer.run();
 }
 

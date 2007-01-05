@@ -63,11 +63,10 @@ class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
           * Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code.*/ 
         virtual void frame();
 
-        virtual void frameAdvance();
-        virtual void frameEventTraversal();
-        virtual void frameUpdateTraversal();
-        virtual void frameCullTraversal();
-        virtual void frameDrawTraversal();
+        virtual void advance();
+        virtual void eventTraversal();
+        virtual void updateTraversal();
+        virtual void renderingTraversal();
 
         /** Release all OpenGL objects associated with this viewer's scenegraph. Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained.*/ 
         virtual void releaseAllGLObjects();

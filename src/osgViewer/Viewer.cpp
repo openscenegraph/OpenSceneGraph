@@ -529,14 +529,14 @@ void Viewer::frame()
         
         _firstFrame = false;
     }
-    frameAdvance();
+    advance();
     
-    frameEventTraversal();
-    frameUpdateTraversal();
-    frameRenderingTraversals();
+    eventTraversal();
+    updateTraversal();
+    renderingTraversals();
 }
 
-void Viewer::frameAdvance()
+void Viewer::advance()
 {
     if (_done) return;
 
@@ -545,7 +545,7 @@ void Viewer::frameAdvance()
     _scene->frameAdvance();
 }
 
-void Viewer::frameEventTraversal()
+void Viewer::eventTraversal()
 {
     if (_done) return;
 
@@ -802,7 +802,7 @@ void Viewer::frameEventTraversal()
 
 }
 
-void Viewer::frameUpdateTraversal()
+void Viewer::updateTraversal()
 {
     if (_done) return;
 
@@ -816,7 +816,7 @@ void Viewer::frameUpdateTraversal()
     updateSlaves();
 }
 
-void Viewer::frameRenderingTraversals()
+void Viewer::renderingTraversals()
 {
     // check to see if windows are still valid
     checkWindowStatus();

@@ -272,6 +272,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	          __C5_ComputeBoundingSphereCallback_P1__getComputeBoundingSphereCallback,
 	          "Get the const compute bound callback. ",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          __void__resizeGLObjectBuffers__unsigned,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
@@ -320,6 +328,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_SimpleProperty(osg::StateSet *, StateSet, 
 	                 __osg_StateSet_P1__getStateSet, 
 	                 __void__setStateSet__osg_StateSet_P1);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 	I_SimpleProperty(osg::NodeCallback *, UpdateCallback, 
 	                 __NodeCallback_P1__getUpdateCallback, 
 	                 __void__setUpdateCallback__NodeCallback_P1);

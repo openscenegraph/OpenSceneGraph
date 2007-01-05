@@ -71,9 +71,17 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	          __void__apply__osg_State_R1,
 	          "If enabled, activate our program in the GL pipeline, performing any rebuild operations that might be pending. ",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          __void__compileGLObjects__osg_State_R1,
-	          "default to nothing to compile - all state is applied immediately. ",
+	          "Compile program and associated shaders. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
@@ -153,6 +161,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	                __bool__addShader__Shader_P1, 
 	                0, 
 	                0);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);

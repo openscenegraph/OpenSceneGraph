@@ -356,6 +356,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __OpenThreads_Mutex_P1__getDataChangeMutex,
 	          "",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",

@@ -212,6 +212,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          __void__compileGLObjects__RenderInfo_R1,
 	          "Immediately compile this Drawable into an OpenGL Display List. ",
 	          "Operation is ignored if _useDisplayList is false. ");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
@@ -392,6 +400,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_SimpleProperty(bool, SupportsDisplayList, 
 	                 __bool__getSupportsDisplayList, 
 	                 __void__setSupportsDisplayList__bool);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 	I_SimpleProperty(osg::Drawable::UpdateCallback *, UpdateCallback, 
 	                 __UpdateCallback_P1__getUpdateCallback, 
 	                 __void__setUpdateCallback__UpdateCallback_P1);

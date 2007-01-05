@@ -93,6 +93,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	          __C5_Referenced_P1__getUserData,
 	          "Get const user data. ",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          __void__resizeGLObjectBuffers__unsigned,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",

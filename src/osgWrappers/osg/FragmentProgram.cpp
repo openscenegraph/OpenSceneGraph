@@ -129,7 +129,11 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          __void__compileGLObjects__State_R1,
-	          "default to nothing to compile - all state is applied immediately. ",
+	          "Default to nothing to compile - all state is applied immediately. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,

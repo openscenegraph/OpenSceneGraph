@@ -328,6 +328,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __void__compileGLObjects__State_R1,
 	          "Calls apply(state) to compile the texture. ",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
@@ -732,6 +736,10 @@ BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
 	          "");
 	I_Method0(unsigned int, size,
 	          __unsigned_int__size,
+	          "",
+	          "");
+	I_Method1(void, resize, IN, unsigned int, newSize,
+	          __void__resize__unsigned_int,
 	          "",
 	          "");
 	I_SimpleProperty(const osg::Texture::TextureObjectList &, AllElementsTo, 

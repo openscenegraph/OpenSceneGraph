@@ -68,7 +68,7 @@ BEGIN_OBJECT_REFLECTOR(osgFX::Validator)
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          __void__compileGLObjects__osg_State_R1,
-	          "default to nothing to compile - all state is applied immediately. ",
+	          "Default to nothing to compile - all state is applied immediately. ",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
 	          __int__compare__C5_osg_StateAttribute_R1,

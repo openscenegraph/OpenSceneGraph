@@ -25,13 +25,15 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(double, osg::Viewport::value_type);
+
 BEGIN_OBJECT_REFLECTOR(osg::Viewport)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Viewport,
 	               "",
 	               "");
-	I_Constructor4(IN, int, x, IN, int, y, IN, int, width, IN, int, height,
-	               ____Viewport__int__int__int__int,
+	I_Constructor4(IN, osg::Viewport::value_type, x, IN, osg::Viewport::value_type, y, IN, osg::Viewport::value_type, width, IN, osg::Viewport::value_type, height,
+	               ____Viewport__value_type__value_type__value_type__value_type,
 	               "",
 	               "");
 	I_ConstructorWithDefaults2(IN, const osg::Viewport &, vp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
@@ -66,52 +68,48 @@ BEGIN_OBJECT_REFLECTOR(osg::Viewport)
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
-	I_Method4(void, setViewport, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
-	          __void__setViewport__int__int__int__int,
+	I_Method4(void, setViewport, IN, osg::Viewport::value_type, x, IN, osg::Viewport::value_type, y, IN, osg::Viewport::value_type, width, IN, osg::Viewport::value_type, height,
+	          __void__setViewport__value_type__value_type__value_type__value_type,
 	          "",
 	          "");
-	I_Method4(void, getViewport, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height,
-	          __void__getViewport__int_R1__int_R1__int_R1__int_R1,
+	I_Method0(osg::Viewport::value_type &, x,
+	          __value_type_R1__x,
 	          "",
 	          "");
-	I_Method0(int &, x,
-	          __int_R1__x,
+	I_Method0(osg::Viewport::value_type, x,
+	          __value_type__x,
 	          "",
 	          "");
-	I_Method0(int, x,
-	          __int__x,
+	I_Method0(osg::Viewport::value_type &, y,
+	          __value_type_R1__y,
 	          "",
 	          "");
-	I_Method0(int &, y,
-	          __int_R1__y,
+	I_Method0(osg::Viewport::value_type, y,
+	          __value_type__y,
 	          "",
 	          "");
-	I_Method0(int, y,
-	          __int__y,
+	I_Method0(osg::Viewport::value_type &, width,
+	          __value_type_R1__width,
 	          "",
 	          "");
-	I_Method0(int &, width,
-	          __int_R1__width,
+	I_Method0(osg::Viewport::value_type, width,
+	          __value_type__width,
 	          "",
 	          "");
-	I_Method0(int, width,
-	          __int__width,
+	I_Method0(osg::Viewport::value_type &, height,
+	          __value_type_R1__height,
 	          "",
 	          "");
-	I_Method0(int &, height,
-	          __int_R1__height,
-	          "",
-	          "");
-	I_Method0(int, height,
-	          __int__height,
+	I_Method0(osg::Viewport::value_type, height,
+	          __value_type__height,
 	          "",
 	          "");
 	I_Method0(bool, valid,
 	          __bool__valid,
 	          "",
 	          "");
-	I_Method0(float, aspectRatio,
-	          __float__aspectRatio,
+	I_Method0(double, aspectRatio,
+	          __double__aspectRatio,
 	          "Return the aspectRatio of the viewport, which is equal to width/height. ",
 	          "If height is zero, the potental division by zero is avoided by simply returning 1.0f.");
 	I_Method0(const osg::Matrix, computeWindowMatrix,

@@ -4,9 +4,9 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgcegui.cpp\
 
-LIBS     += -lCEGUIBase -lCEGUIOpenGLRenderer  -losgProducer -lProducer -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -lCEGUIBase -lCEGUIOpenGLRenderer  -losgViewer -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
-EXEC = osgviewer
+EXEC = osgcegui
 
 INC += -I/usr/local/include/CEGUI
 

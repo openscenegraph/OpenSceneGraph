@@ -23,22 +23,19 @@ void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
     traits->y = 0;
     traits->width = width;
     traits->height = height;
-#if 0
-    traits->windowDecoration = false;
-#else
     traits->windowDecoration = true;
-#endif            
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-    if (gw)
+    if (gc.valid())
     {
-        osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
+        osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
 
-        gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+        // need to ensure that the window is cleared make sure that the complete window is set the correct colour
+        // rather than just the parts of the window that are under the camera's viewports
+        gc->setClearColor(osg::Vec4f(0.2f,0.2f,0.6f,1.0f));
+        gc->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     else
     {
@@ -84,22 +81,14 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
         traits->y = 0;
         traits->width = width/numCameras-1;
         traits->height = height;
-    #if 0
-        traits->windowDecoration = false;
-    #else
         traits->windowDecoration = true;
-    #endif            
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-        if (gw)
+        if (gc.valid())
         {
-            osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
-
-            gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, traits->width, traits->height );
+            osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
         }
         else
         {

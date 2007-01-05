@@ -122,8 +122,7 @@ int main( int argc, char **argv )
     }
     
     bool customWindows = false;
-    while(arguments.read("-1")) customWindows = true;
-    while(arguments.read("-2")) customWindows = false;
+    while(arguments.read("-2")) customWindows = true;
 
     if (customWindows)
     {
@@ -134,38 +133,22 @@ int main( int argc, char **argv )
             return 0;
         }
 
-        unsigned int width, height;
-        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
-
-        width -= 500;
-        height -= 500;
-
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-        traits->x = 500;
-        traits->y = 500;
-        traits->width = width;
-        traits->height = height;
-    #if 0
-        traits->windowDecoration = false;
-    #else
+        traits->x = 250;
+        traits->y = 200;
+        traits->width = 800;
+        traits->height = 600;
         traits->windowDecoration = true;
-    #endif            
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
 
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
-        if (gw)
+        if (gc.valid())
         {
-            osg::notify(osg::NOTICE)<<"  GraphicsWindow has been created successfully."<<gw<<std::endl;
-
-            gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
-            
             // need to ensure that the window is cleared make sure that the complete window is set the correct colour
             // rather than just the parts of the window that are under the camera's viewports
-            gw->setClearColor(osg::Vec4f(0.2f,0.2f,0.6f,1.0f));
-            gw->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            gc->setClearColor(osg::Vec4f(0.2f,0.2f,0.6f,1.0f));
+            gc->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
         else
         {
@@ -178,7 +161,7 @@ int main( int argc, char **argv )
         {
             osg::ref_ptr<osg::Camera> camera = new osg::Camera;
             camera->setGraphicsContext(gc.get());
-            camera->setViewport(new osg::Viewport((i*width)/numCameras,(i*height)/numCameras, width/numCameras, height/numCameras));
+            camera->setViewport(new osg::Viewport((i* traits->width)/numCameras,(i* traits->height)/numCameras,  traits->width/numCameras,  traits->height/numCameras));
             GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
             camera->setDrawBuffer(buffer);
             camera->setReadBuffer(buffer);

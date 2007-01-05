@@ -1584,7 +1584,7 @@ int main( int argc, char **argv )
         (*itr)->useCursor(false);
     }
 
-    // todo for osgViewer - implement warp pointer
+    // todo for osgViewer - implement warp pointer that can be done relative to different coordinate frames
     // viewer.requestWarpPointer(0.5f,0.5f);        
 
     while( !viewer.done() )

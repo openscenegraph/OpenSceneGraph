@@ -11,7 +11,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 #include <osg/CoordinateSystemNode>
 #include <osgGA/GUIEventAdapter>
 
@@ -22,6 +22,8 @@
 #include <CEGUISchemeManager.h>
 #include <CEGUIWindowManager.h>
 #include <CEGUIExceptions.h>
+
+#include <iostream>
 
 class CEGUIDrawable : public osg::Drawable
 {
@@ -204,38 +206,10 @@ int main( int argc, char **argv )
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
-    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
-
-    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
-    
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    bool helpAll = arguments.read("--help-all");
-    unsigned int helpType = ((helpAll || arguments.read("-h") || arguments.read("--help"))? osg::ApplicationUsage::COMMAND_LINE_OPTION : 0 ) |
-                            ((helpAll ||  arguments.read("--help-env"))? osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE : 0 ) |
-                            ((helpAll ||  arguments.read("--help-keys"))? osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING : 0 );
-    if (helpType)
-    {
-        arguments.getApplicationUsage()->write(std::cout, helpType);
-        return 1;
-    }
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     osg::ref_ptr<CEGUIDrawable> cd = new CEGUIDrawable();
@@ -257,20 +231,6 @@ int main( int argc, char **argv )
     while(arguments.read("--layout",layout))
     {
         cd->loadLayout(layout);
-    }
-
-
-    // report any errors if they have occurred when parsing the program arguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
     }
 
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
@@ -312,32 +272,7 @@ int main( int argc, char **argv )
     // pass the loaded scene graph to the viewer.
     viewer.setSceneData(group.get());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    // run the viewer
+    return viewer.run();
 }
 

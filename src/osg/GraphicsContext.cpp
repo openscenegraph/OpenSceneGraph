@@ -126,6 +126,8 @@ void GraphicsContext::decrementContextIDUsageCount(unsigned int contextID)
 
 
 GraphicsContext::GraphicsContext():
+    _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
+    _clearMask(0),
     _threadOfLastMakeCurrent(0)
 {
     setThreadSafeRefUnref(true);
@@ -137,7 +139,18 @@ GraphicsContext::~GraphicsContext()
     close(false);
 }
 
-/** Realise the GraphicsContext.*/
+void GraphicsContext::clear()
+{
+    if (_clearMask==0 || !_traits) return;
+
+    glViewport(0, 0, _traits->width, _traits->height);
+    glScissor(0, 0, _traits->width, _traits->height);
+
+    glClearColor( _clearColor[0], _clearColor[1], _clearColor[2], _clearColor[3]);
+
+    glClear( _clearMask );
+}
+
 bool GraphicsContext::realize()
 {
     if (realizeImplementation())
@@ -212,6 +225,7 @@ void GraphicsContext::swapBuffers()
     if (isCurrent())
     {
         swapBuffersImplementation();
+        clear();
     }
     else if (_graphicsThread.valid() && 
              _threadOfLastMakeCurrent == _graphicsThread.get())
@@ -222,6 +236,7 @@ void GraphicsContext::swapBuffers()
     {
         makeCurrent();
         swapBuffersImplementation();
+        clear();
         releaseContext();
     }
 }

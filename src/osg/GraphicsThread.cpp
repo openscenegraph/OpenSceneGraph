@@ -379,6 +379,7 @@ void SwapBuffersOperation::operator () (GraphicsContext* context)
     if (context)
     {
         context->swapBuffersImplementation();
+        context->clear();
     }
 }
 

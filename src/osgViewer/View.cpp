@@ -218,6 +218,54 @@ void View::setUpViewAcrossAllScreens()
     assignSceneDataToCameras();
 }
 
+void View::setUpViewOnSingleScreen(unsigned int screenNum)
+{
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (!wsi) 
+    {
+        osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+        return;
+    }
+
+    unsigned int width, height;
+    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(screenNum), width, height);
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->x = 0;
+    traits->y = 0;
+    traits->width = width;
+    traits->height = height;
+#if 1
+    traits->windowDecoration = false;
+#else
+    traits->windowDecoration = true;
+#endif            
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+    _camera->setGraphicsContext(gc.get());
+
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+    if (gw)
+    {
+        osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
+        gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+    }
+
+    _camera->setViewport(new osg::Viewport(0, 0, width, height));
+
+    GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+
+    _camera->setDrawBuffer(buffer);
+    _camera->setReadBuffer(buffer);
+}
+
 void View::assignSceneDataToCameras()
 {
     osg::Node* sceneData = _scene.valid() ? _scene->getSceneData() : 0;

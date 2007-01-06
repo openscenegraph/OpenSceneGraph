@@ -49,6 +49,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         
         /** Convinience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
         void setUpViewAcrossAllScreens();
+
+        /** Convinience method for a single Camara associated with a single full screen GraphicsWindow.*/
+        void setUpViewOnSingleScreen(unsigned int screenNum=0);
         
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);

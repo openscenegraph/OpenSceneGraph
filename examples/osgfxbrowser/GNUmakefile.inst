@@ -5,7 +5,7 @@ CXXFILES =\
 	osgfxbrowser.cpp\
 	Frame.cpp\
 
-LIBS     += -losgProducer -lProducer -losgText -losgDB -losgText -losgUtil -losg -losgFX $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
+LIBS     += -losgViewer -losgText -losgDB -losgText -losgUtil -losg -losgFX $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
 
 EXEC = osgfxbrowser
 

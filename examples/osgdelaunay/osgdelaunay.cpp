@@ -16,7 +16,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 #include <osg/CoordinateSystemNode>
 #include <osgUtil/DelaunayTriangulator>
 #include <osg/Material>
@@ -26,8 +26,9 @@
 #include <osgUtil/Tesselator> // tesselator triangulates the constrained triangles
 
 #include <osgText/Text>
-#include <sstream>
 
+#include <sstream>
+#include <iostream>
 
 /** here are 2 common types of constraint
 *  Area - forces an area to be filled; replacement geometry is a canopy and optional wall
@@ -300,7 +301,8 @@ osg::Node* createHUD(const int ndcs,std::string what)
         text->setText(cue.str());
         text->setColor(osg::Vec4(1.0,1.0,0.8,1.0));
         position += delta*(ndcs+2);
-        
+
+#if 0        
         text = new  osgText::Text;
         geode->addDrawable( text );
         
@@ -309,7 +311,7 @@ osg::Node* createHUD(const int ndcs,std::string what)
         text->setText("(use 'W' wireframe & 'T' texture to visualise mesh)");
         text->setColor(osg::Vec4(1.0,1.0,0.8,1.0));
         position += delta;
-        
+#endif        
     }    
     {
         osgText::Text* text = new  osgText::Text;
@@ -704,8 +706,8 @@ class KeyboardEventHandler : public osgGA::GUIEventHandler
 { // extra event handler traps 'n' key to re-triangulate the basic terrain.
 public:
     
-    KeyboardEventHandler(osg::Node *nd,osgProducer::Viewer &vr):
-      _scene(nd), viewer(vr), iview(0) {}
+    KeyboardEventHandler(osgViewer::Viewer &vr):
+      viewer(vr), iview(0) {}
       
       virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
       {
@@ -713,13 +715,8 @@ public:
           {
           case(osgGA::GUIEventAdapter::KEYDOWN):
               {
-                  if (_scene && ea.getKey()=='n')
+                  if (ea.getKey()=='n')
                   {
-                      // re-tesselate the scene graph. 
-                      // the same contours are re-tesselated using a new method. Old contours 
-                      // & tesselation type are held internally in the derived Geode class tesselateDemoGeometry.
-                      //     cxTesselateVisitor tsv;
-                      //   _scene->accept(tsv);
                       iview++;
                       if (iview>10) iview=0;
                       osg::ref_ptr<osg::Node> loadedModel = makedelaunay(iview);
@@ -734,8 +731,7 @@ public:
           return false;
       }
       
-      osg::Node *_scene;
-      osgProducer::Viewer &viewer;
+      osgViewer::Viewer &viewer;
       int iview;
 };
 
@@ -1269,54 +1265,10 @@ int main( int argc, char **argv )
     
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example interactive demonstrates constrained delaunay traingulation of point dataset.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
-    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environment variables available");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings");
-    
-    
+
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-    
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-    
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-    
-    // if user request help write it out to cout.
-    bool helpAll = arguments.read("--help-all");
-    unsigned int helpType = ((helpAll || arguments.read("-h") || arguments.read("--help"))? osg::ApplicationUsage::COMMAND_LINE_OPTION : 0 ) |
-        ((helpAll ||  arguments.read("--help-env"))? osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE : 0 ) |
-        ((helpAll ||  arguments.read("--help-keys"))? osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING : 0 );
-    if (helpType)
-    {
-        arguments.getApplicationUsage()->write(std::cout, helpType);
-        return 1;
-    }
-    
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    if (arguments.argc()<1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-    
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    
+    osgViewer::Viewer viewer;
+
     // create the scene from internal specified terrain/constraints.
     osg::ref_ptr<osg::Node> loadedModel = makedelaunay(0);
     
@@ -1327,20 +1279,6 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-    
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-    }
-    
-    osg::Timer_t end_tick = osg::Timer::instance()->tick();
-    
-    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
-    
     // optimize the scene graph, remove rendundent nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
@@ -1350,33 +1288,7 @@ int main( int argc, char **argv )
     
     // copied from osgtessealte.cpp
     // add event handler for keyboard 'n' to retriangulate
-    viewer.getEventHandlerList().push_front(new KeyboardEventHandler(loadedModel.get(), viewer));
+    viewer.addEventHandler(new KeyboardEventHandler(viewer));
     
-    // create the windows and run the threads.
-    viewer.realize();
-    
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-        
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-        
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-    
-    return 0;
+    return viewer.run();
 }

@@ -5,7 +5,7 @@ CXXFILES =\
 	osgfxbrowser.cpp\
 	Frame.cpp\
 
-LIBS     += -losgProducer -lProducer -losgText -losgGA -losgDB -losgUtil -losg -losgFX $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
+LIBS     += -losgViewer -losgText -losgGA -losgDB -losgUtil -losg -losgFX $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
 
 INSTFILES = \
 	$(CXXFILES)\

@@ -4,11 +4,8 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgforest.cpp\
 
-LIBS     += -losgProducer -lProducer -losgText -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgText -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgforest
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules

@@ -6,7 +6,7 @@
 #include <osg/BlendFunc>
 #include <osg/LightSource>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
 
 class RotateCallback: public osg::NodeCallback {
 public:
@@ -259,13 +260,13 @@ EffectPanel* build_gui(osg::Group* root)
     return effect_panel.release();
 }
 
-void build_world(osg::Group* root, osg::Node* scene, osgProducer::Viewer& viewer)
+void build_world(osg::Group* root, osg::Node* scene, osgViewer::Viewer& viewer)
 {
     osg::ref_ptr<EffectPanel> effect_panel = build_gui(root);
     effect_panel->setScene(scene);
     effect_panel->rebuild();
 
-    viewer.getEventHandlerList().push_front(new EffectPanel::KeyboardHandler(effect_panel.get()));
+    viewer.addEventHandler(new EffectPanel::KeyboardHandler(effect_panel.get()));
 
     root->addChild(effect_panel->getRoot());
 }
@@ -288,13 +289,7 @@ int main(int argc, char *argv[])
 
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help")) {
@@ -358,31 +353,5 @@ int main(int argc, char *argv[])
     // set the scene to render
     viewer.setSceneData(root.get());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while(!viewer.done())
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-
-    }
-
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

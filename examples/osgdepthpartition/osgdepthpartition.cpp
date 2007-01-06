@@ -1,11 +1,3 @@
-//C++ source file - Open Producer - Copyright (C) 2002 Don Burns
-//Distributed under the terms of the GNU LIBRARY GENERAL PUBLIC LICENSE (LGPL)
-//as published by the Free Software Foundation.
-
-// Simple example of use of Producer::RenderSurface
-// The myGraphics class is a simple sample of how one would implement
-// graphics drawing with Producer::RenderSurface
-
 #include <osgUtil/UpdateVisitor>
 
 #include <osgDB/ReadFile>
@@ -13,7 +5,9 @@
 #include <osg/ShapeDrawable>
 #include <osg/PositionAttitudeTransform>
 
-#include <osgProducer/Viewer>
+#include <osgGA/TrackballManipulator>
+
+#include <osgViewer/Viewer>
 
 #include "DepthPartitionNode.h"
 
@@ -62,36 +56,9 @@ int main( int argc, char **argv )
 
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard example of using osgProducer::CameraGroup.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-
+    osgViewer::Viewer viewer;
 
     bool needToSetHomePosition = false;
 
@@ -113,37 +80,16 @@ int main( int argc, char **argv )
     // pass the loaded scene graph to the viewer.
     viewer.setSceneData(dpn.get());
 
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator);
+
     if (needToSetHomePosition)
     {
-        viewer.getKeySwitchMatrixManipulator()->setHomePosition(osg::Vec3d(0.0,-5.0*r_earth,0.0),osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,0.0,1.0));
-    }
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
+        viewer.getCameraManipulator()->setHomePosition(osg::Vec3d(0.0,-5.0*r_earth,0.0),osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,0.0,1.0));
     }
     
-    // wait for all cull and draw threads to complete before exit.
-    viewer.sync();
+    // depth partion node is only supports single window/single threaded at present.
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }
 

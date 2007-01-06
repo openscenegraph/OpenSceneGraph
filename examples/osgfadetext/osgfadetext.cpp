@@ -1,4 +1,4 @@
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Group>
 #include <osg/Geode>
@@ -19,25 +19,48 @@
 #include <osgSim/OverlayNode>
 #include <osgSim/SphereSegment>
 
-#include <osgGA/NodeTrackerManipulator>
+#include <osgGA/TerrainManipulator>
 
-class GraphicsContext {
+#include <iostream>
+
+class MyGraphicsContext {
     public:
-        GraphicsContext()
+        MyGraphicsContext()
         {
-            rs = new Producer::RenderSurface;
-            rs->setWindowRectangle(0,0,1,1);
-            rs->useBorder(false);
-            rs->useConfigEventThread(false);
-            rs->realize();
-        }
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
 
-        virtual ~GraphicsContext()
-        {
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
+            {
+                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
+                
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            }
+
+            if (_gc.valid()) 
+            
+            
+            {
+                _gc->realize();
+                _gc->makeCurrent();
+                std::cout<<"Realized window"<<std::endl;
+            }
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
+        
     private:
-        Producer::ref_ptr<Producer::RenderSurface> rs;
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
 
 osg::Node* createEarth()
@@ -59,8 +82,8 @@ osg::Node* createEarth()
             source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
             source->setCoordinateSystem(osgTerrain::DataSet::coordinateSystemStringToWTK("WGS84"));
 
-             source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION);
-             source->setGeoTransformFromRange(-180.0, 180.0, -90.0, 90.0);
+            source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION);
+            source->setGeoTransformFromRange(-180.0, 180.0, -90.0, 90.0);
 
             dataSet->addSource(source);
         }
@@ -73,7 +96,7 @@ osg::Node* createEarth()
         // load the source data and record sizes.
         dataSet->loadSources();
 
-        GraphicsContext context;
+        MyGraphicsContext context;
         dataSet->createDestination(30);
 
         if (dataSet->getDatabaseType()==osgTerrain::DataSet::LOD_DATABASE) dataSet->buildDestination();
@@ -152,46 +175,13 @@ osg::Node* createFadeText(osg::EllipsoidModel* ellipsoid)
 } 
 
 
-int main(int argc, char **argv)
+int main(int, char**)
 {
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of node tracker.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
-
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    viewer.getCullSettings().setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-    viewer.getCullSettings().setNearFarRatio(0.00001f);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
+    viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
+    viewer.getCamera()->setNearFarRatio(0.00001f);
     
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> root = createEarth();
@@ -207,33 +197,8 @@ int main(int argc, char **argv)
         // add fade text around the globe
         csn->addChild(createFadeText(csn->getEllipsoidModel()));
     }    
-        
 
-    // create the windows and run the threads.
-    viewer.realize();
+    viewer.setCameraManipulator(new osgGA::TerrainManipulator);
 
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

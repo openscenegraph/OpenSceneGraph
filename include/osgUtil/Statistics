@@ -154,7 +154,7 @@ inline unsigned int Statistics::_calculate_primitives_number_by_mode(GLenum mode
 }
 
 /** StatsVisitor for collecting statistics about scene graph.*/
-class StatsVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT StatsVisitor : public osg::NodeVisitor
 {
 public:
 

@@ -73,6 +73,9 @@ class OSG_EXPORT LightSource : public Group
         /** Set up the local StateSet. */
         void setLocalStateSetModes(StateAttribute::GLModeValue value = StateAttribute::ON);
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
+
         virtual BoundingSphere computeBound() const;
 
     protected:

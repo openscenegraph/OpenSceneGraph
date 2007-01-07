@@ -73,3 +73,10 @@ BoundingSphere LightSource::computeBound() const
 
     return bsphere;
 }
+
+void LightSource::setThreadSafeRefUnref(bool threadSafe)
+{
+    Group::setThreadSafeRefUnref(threadSafe);
+
+    if (_light.valid()) _light->setThreadSafeRefUnref(threadSafe);
+}

@@ -239,6 +239,12 @@ public:
         
         virtual void apply(osg::State& state) const;
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
     protected:
     
         virtual ~GlyphTexture();

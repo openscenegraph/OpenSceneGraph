@@ -171,8 +171,8 @@ osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
 echo osgteapot
 osgteapot
 
-echo osgtesselate
-osgtesselate
+echo osgtessellate
+osgtessellate
 
 echo osgtext
 osgtext

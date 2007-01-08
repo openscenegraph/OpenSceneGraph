@@ -38,7 +38,7 @@
 
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 
 #include "obj.h"
 
@@ -509,8 +509,8 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, bool& ro
             geometry->setStateSet(stateset);
         
             // tesseleate any large polygons
-            osgUtil::Tesselator tesselator;
-            tesselator.retesselatePolygons(*geometry);
+            osgUtil::Tessellator tessellator;
+            tessellator.retessellatePolygons(*geometry);
 
             // tri strip polygons to improve graphics peformance
             osgUtil::TriStripVisitor tsv;

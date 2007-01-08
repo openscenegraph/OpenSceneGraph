@@ -1138,8 +1138,8 @@
 		001DFFB8065AA3F1003310BF /* Matrixd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180A405D63B8900EB53E5 /* Matrixd.cpp */; };
 		001DFFCF065AA472003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		001DFFD0065AA472003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		002BE0680768EF1700D7268C /* Tesselator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860A05D71A7B00EB53E5 /* Tesselator.cpp */; };
-		002BE06A0768EF1C00D7268C /* Tesselator in Headers */ = {isa = PBXBuildFile; fileRef = BE11864805D71AD300EB53E5 /* Tesselator */; settings = {ATTRIBUTES = (Public, ); }; };
+		002BE0680768EF1700D7268C /* Tessellator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860A05D71A7B00EB53E5 /* Tessellator.cpp */; };
+		002BE06A0768EF1C00D7268C /* Tessellator in Headers */ = {isa = PBXBuildFile; fileRef = BE11864805D71AD300EB53E5 /* Tessellator */; settings = {ATTRIBUTES = (Public, ); }; };
 		002BE3810769069900D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		002BED3107691F7500D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		002BEF0C0769208400D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
@@ -1665,7 +1665,7 @@
 		008F451F06CC05A500F4220C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		008F452006CC05A500F4220C /* osgProducer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0098F3140652ED84007615E2 /* osgProducer.framework */; };
 		008F452106CC05A500F4220C /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
-		008F452B06CC06F100F4220C /* osgtesselate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F452806CC06F000F4220C /* osgtesselate.cpp */; };
+		008F452B06CC06F100F4220C /* osgtessellate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F452806CC06F000F4220C /* osgtessellate.cpp */; };
 		008F453906CC075600F4220C /* osgvolume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F453606CC075500F4220C /* osgvolume.cpp */; };
 		0096C51209195DBF00B255F2 /* PositionalStateContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C51009195DBE00B255F2 /* PositionalStateContainer.cpp */; };
 		0096C51309195DBF00B255F2 /* StateGraph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C51109195DBE00B255F2 /* StateGraph.cpp */; };
@@ -3736,7 +3736,7 @@
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 008F44F506CC057500F4220C;
-			remoteInfo = osgtesselate;
+			remoteInfo = osgtessellate;
 		};
 		008F453C06CC079900F4220C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -5656,10 +5656,10 @@
 		008F44D806CC03B500F4220C /* ReaderWriterROT.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterROT.cpp; path = ../../src/osgPlugins/rot/ReaderWriterROT.cpp; sourceTree = SOURCE_ROOT; };
 		008F44DC06CC03E400F4220C /* ReaderWriterSCALE.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterSCALE.cpp; path = ../../src/osgPlugins/scale/ReaderWriterSCALE.cpp; sourceTree = SOURCE_ROOT; };
 		008F44E006CC041C00F4220C /* ReaderWriterTRANS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterTRANS.cpp; path = ../../src/osgPlugins/trans/ReaderWriterTRANS.cpp; sourceTree = SOURCE_ROOT; };
-		008F450606CC057500F4220C /* osgtesselate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgtesselate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		008F450606CC057500F4220C /* osgtessellate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgtessellate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		008F451406CC059400F4220C /* osgcatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgcatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		008F452206CC05A500F4220C /* osgvolume.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgvolume.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		008F452806CC06F000F4220C /* osgtesselate.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgtesselate.cpp; sourceTree = "<group>"; };
+		008F452806CC06F000F4220C /* osgtessellate.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgtessellate.cpp; sourceTree = "<group>"; };
 		008F453606CC075500F4220C /* osgvolume.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgvolume.cpp; sourceTree = "<group>"; };
 		0096C50C09195D8B00B255F2 /* PositionalStateContainer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = PositionalStateContainer; path = ../../include/osgUtil/PositionalStateContainer; sourceTree = SOURCE_ROOT; };
 		0096C50D09195D8B00B255F2 /* StateGraph */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = StateGraph; path = ../../include/osgUtil/StateGraph; sourceTree = SOURCE_ROOT; };
@@ -6205,7 +6205,7 @@
 		BE11860705D71A7B00EB53E5 /* SceneView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = SceneView.cpp; path = ../../src/osgUtil/SceneView.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860805D71A7B00EB53E5 /* SmoothingVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = SmoothingVisitor.cpp; path = ../../src/osgUtil/SmoothingVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860905D71A7B00EB53E5 /* TangentSpaceGenerator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TangentSpaceGenerator.cpp; path = ../../src/osgUtil/TangentSpaceGenerator.cpp; sourceTree = SOURCE_ROOT; };
-		BE11860A05D71A7B00EB53E5 /* Tesselator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Tesselator.cpp; path = ../../src/osgUtil/Tesselator.cpp; sourceTree = SOURCE_ROOT; };
+		BE11860A05D71A7B00EB53E5 /* Tessellator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Tessellator.cpp; path = ../../src/osgUtil/Tessellator.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860B05D71A7B00EB53E5 /* TransformAttributeFunctor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransformAttributeFunctor.cpp; path = ../../src/osgUtil/TransformAttributeFunctor.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860C05D71A7B00EB53E5 /* TransformCallback.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransformCallback.cpp; path = ../../src/osgUtil/TransformCallback.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860D05D71A7B00EB53E5 /* TriStrip_graph_array.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TriStrip_graph_array.h; path = ../../src/osgUtil/TriStrip_graph_array.h; sourceTree = SOURCE_ROOT; };
@@ -6232,7 +6232,7 @@
 		BE11864505D71AD300EB53E5 /* SmoothingVisitor */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = SmoothingVisitor; path = ../../include/osgUtil/SmoothingVisitor; sourceTree = SOURCE_ROOT; };
 		BE11864605D71AD300EB53E5 /* Statistics */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Statistics; path = ../../include/osgUtil/Statistics; sourceTree = SOURCE_ROOT; };
 		BE11864705D71AD300EB53E5 /* TangentSpaceGenerator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TangentSpaceGenerator; path = ../../include/osgUtil/TangentSpaceGenerator; sourceTree = SOURCE_ROOT; };
-		BE11864805D71AD300EB53E5 /* Tesselator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Tesselator; path = ../../include/osgUtil/Tesselator; sourceTree = SOURCE_ROOT; };
+		BE11864805D71AD300EB53E5 /* Tessellator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Tessellator; path = ../../include/osgUtil/Tessellator; sourceTree = SOURCE_ROOT; };
 		BE11864905D71AD300EB53E5 /* TransformAttributeFunctor */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TransformAttributeFunctor; path = ../../include/osgUtil/TransformAttributeFunctor; sourceTree = SOURCE_ROOT; };
 		BE11864A05D71AD300EB53E5 /* TransformCallback */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TransformCallback; path = ../../include/osgUtil/TransformCallback; sourceTree = SOURCE_ROOT; };
 		BE11864B05D71AD300EB53E5 /* TriStripVisitor */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TriStripVisitor; path = ../../include/osgUtil/TriStripVisitor; sourceTree = SOURCE_ROOT; };
@@ -9276,7 +9276,7 @@
 				0007BCBE06C1AAF000C884E1 /* osgspheresegment */,
 				00EF4EBC06CB0DD2008ACEFF /* osgstereoimage */,
 				0007BCF406C1ADFB00C884E1 /* osgteapot */,
-				008F452506CC06EC00F4220C /* osgtesselate */,
+				008F452506CC06EC00F4220C /* osgtessellate */,
 				001D074C065ABAF2003310BF /* osgtext */,
 				00EF4F5F06CB125E008ACEFF /* osgtexture1D */,
 				00EF4F6606CB12FB008ACEFF /* osgtexture2D */,
@@ -10060,13 +10060,13 @@
 			path = ../../src/osgPlugins/trans;
 			sourceTree = SOURCE_ROOT;
 		};
-		008F452506CC06EC00F4220C /* osgtesselate */ = {
+		008F452506CC06EC00F4220C /* osgtessellate */ = {
 			isa = PBXGroup;
 			children = (
-				008F452806CC06F000F4220C /* osgtesselate.cpp */,
+				008F452806CC06F000F4220C /* osgtessellate.cpp */,
 			);
-			name = osgtesselate;
-			path = ../../examples/osgtesselate;
+			name = osgtessellate;
+			path = ../../examples/osgtessellate;
 			sourceTree = SOURCE_ROOT;
 		};
 		008F452C06CC072200F4220C /* osgcatch */ = {
@@ -10707,7 +10707,7 @@
 				00EF4F9A06CB15BD008ACEFF /* osgwindows.app */,
 				008F44C106CC023100F4220C /* osgdb_rot.so */,
 				008F44CA06CC023600F4220C /* osgdb_scale.so */,
-				008F450606CC057500F4220C /* osgtesselate.app */,
+				008F450606CC057500F4220C /* osgtessellate.app */,
 				008F451406CC059400F4220C /* osgcatch.app */,
 				008F452206CC05A500F4220C /* osgvolume.app */,
 				00E281D707676D1E005AEE61 /* osgdb_net.so */,
@@ -11169,7 +11169,7 @@
 				BE11860805D71A7B00EB53E5 /* SmoothingVisitor.cpp */,
 				0096C51109195DBE00B255F2 /* StateGraph.cpp */,
 				BE11860905D71A7B00EB53E5 /* TangentSpaceGenerator.cpp */,
-				BE11860A05D71A7B00EB53E5 /* Tesselator.cpp */,
+				BE11860A05D71A7B00EB53E5 /* Tessellator.cpp */,
 				BE11860B05D71A7B00EB53E5 /* TransformAttributeFunctor.cpp */,
 				BE11860C05D71A7B00EB53E5 /* TransformCallback.cpp */,
 				BE11860D05D71A7B00EB53E5 /* TriStrip_graph_array.h */,
@@ -11211,7 +11211,7 @@
 				0096C50D09195D8B00B255F2 /* StateGraph */,
 				BE11864605D71AD300EB53E5 /* Statistics */,
 				BE11864705D71AD300EB53E5 /* TangentSpaceGenerator */,
-				BE11864805D71AD300EB53E5 /* Tesselator */,
+				BE11864805D71AD300EB53E5 /* Tessellator */,
 				BE11864905D71AD300EB53E5 /* TransformAttributeFunctor */,
 				BE11864A05D71AD300EB53E5 /* TransformCallback */,
 				BE11864B05D71AD300EB53E5 /* TriStripVisitor */,
@@ -12884,7 +12884,7 @@
 				BE11866105D71AD300EB53E5 /* SmoothingVisitor in Headers */,
 				BE11866205D71AD300EB53E5 /* Statistics in Headers */,
 				BE11866305D71AD300EB53E5 /* TangentSpaceGenerator in Headers */,
-				002BE06A0768EF1C00D7268C /* Tesselator in Headers */,
+				002BE06A0768EF1C00D7268C /* Tessellator in Headers */,
 				BE11866505D71AD300EB53E5 /* TransformAttributeFunctor in Headers */,
 				BE11866605D71AD300EB53E5 /* TransformCallback in Headers */,
 				BE11866705D71AD300EB53E5 /* TriStripVisitor in Headers */,
@@ -14744,9 +14744,9 @@
 			productReference = 008F44D306CC023A00F4220C /* osgdb_trans.so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		008F44F506CC057500F4220C /* osgtesselate */ = {
+		008F44F506CC057500F4220C /* osgtessellate */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0011035D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgtesselate" */;
+			buildConfigurationList = 0011035D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgtessellate" */;
 			buildPhases = (
 				008F44FC06CC057500F4220C /* Headers */,
 				008F44FD06CC057500F4220C /* Resources */,
@@ -14757,9 +14757,9 @@
 			);
 			dependencies = (
 			);
-			name = osgtesselate;
+			name = osgtessellate;
 			productName = osgtext;
-			productReference = 008F450606CC057500F4220C /* osgtesselate.app */;
+			productReference = 008F450606CC057500F4220C /* osgtessellate.app */;
 			productType = "com.apple.product-type.application";
 		};
 		008F450906CC059400F4220C /* osgcatch */ = {
@@ -15942,7 +15942,7 @@
 				00EF4F4506CB11E2008ACEFF /* osgspotlight */,
 				00EF4EA206CB0D45008ACEFF /* osgstereoimage */,
 				0007BCE006C1ADB300C884E1 /* osgteapot */,
-				008F44F506CC057500F4220C /* osgtesselate */,
+				008F44F506CC057500F4220C /* osgtessellate */,
 				001D06A1065AB68B003310BF /* osgtext example */,
 				00EF4EC906CB0F19008ACEFF /* osgtexture1D */,
 				00EF4EE306CB11CA008ACEFF /* osgtexture2D */,
@@ -17946,7 +17946,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				008F452B06CC06F100F4220C /* osgtesselate.cpp in Sources */,
+				008F452B06CC06F100F4220C /* osgtessellate.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18515,7 +18515,7 @@
 				BE11863005D71A7C00EB53E5 /* Version.cpp in Sources */,
 				00CE2DF9065BCF43003C8656 /* Simplifier.cpp in Sources */,
 				008F444E06CBF90F00F4220C /* GLObjectsVisitor.cpp in Sources */,
-				002BE0680768EF1700D7268C /* Tesselator.cpp in Sources */,
+				002BE0680768EF1700D7268C /* Tessellator.cpp in Sources */,
 				0096C51209195DBF00B255F2 /* PositionalStateContainer.cpp in Sources */,
 				0096C51309195DBF00B255F2 /* StateGraph.cpp in Sources */,
 				00FB20780B0141180052DD79 /* IntersectionVisitor.cpp in Sources */,
@@ -19530,7 +19530,7 @@
 		};
 		008F453B06CC079900F4220C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 008F44F506CC057500F4220C /* osgtesselate */;
+			target = 008F44F506CC057500F4220C /* osgtessellate */;
 			targetProxy = 008F453A06CC079900F4220C /* PBXContainerItemProxy */;
 		};
 		008F453D06CC079900F4220C /* PBXTargetDependency */ = {
@@ -32114,7 +32114,7 @@
 					../../../Producer/include,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgtesselate-Info.plist";
+				INFOPLIST_FILE = "osgtessellate-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32124,7 +32124,7 @@
 					Producer,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgtesselate;
+				PRODUCT_NAME = osgtessellate;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
@@ -32154,7 +32154,7 @@
 					../../../Producer/include,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgtesselate-Info.plist";
+				INFOPLIST_FILE = "osgtessellate-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32164,7 +32164,7 @@
 					Producer,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgtesselate;
+				PRODUCT_NAME = osgtessellate;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
@@ -32189,7 +32189,7 @@
 					../../../Producer/include,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgtesselate-Info.plist";
+				INFOPLIST_FILE = "osgtessellate-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32199,7 +32199,7 @@
 					Producer,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgtesselate;
+				PRODUCT_NAME = osgtessellate;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -37915,7 +37915,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		0011035D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgtesselate" */ = {
+		0011035D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgtessellate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0011035E08736A190015C576 /* Development */,

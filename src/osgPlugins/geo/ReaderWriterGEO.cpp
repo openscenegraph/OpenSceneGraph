@@ -38,7 +38,7 @@
 #include <osgDB/WriteFile>
 #include <osgDB/Input>
 #include <osgDB/Output>
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 
 #include <stdio.h>
 
@@ -1914,14 +1914,14 @@ class ReaderGEO
                 }
             }
             if (geodeholder) {
-                osgUtil::Tesselator tesselator;
+                osgUtil::Tessellator tessellator;
                 for(unsigned int ige=0;ige<geodeholder->getNumChildren();++ige) {
                     osg::Geode *geode=dynamic_cast<osg::Geode*>(geodeholder->getChild(ige));
                     if (geode) {
                         for(unsigned int i=0;i<geode->getNumDrawables();++i)
                         {
                             osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode->getDrawable(i));
-                            if (geom) tesselator.retesselatePolygons(*geom);
+                            if (geom) tessellator.retessellatePolygons(*geom);
                         }
                     }
                 }

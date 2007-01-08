@@ -23,7 +23,7 @@
 #include <osg/Texture2D>
 #include <osg/Projection>
 #include <osg/MatrixTransform>
-#include <osgUtil/Tesselator> // tesselator triangulates the constrained triangles
+#include <osgUtil/Tessellator> // tessellator triangulates the constrained triangles
 
 #include <osgText/Text>
 
@@ -273,7 +273,7 @@ osg::Vec3d getpt(const int np)
     return osg::Vec3d(x,y,z);
 }
 osg::Node* createHUD(const int ndcs,std::string what)
-{ // add a string reporting the type of winding rule tesselation applied
+{ // add a string reporting the type of winding rule tessellation applied
     osg::Geode* geode = new osg::Geode();
     
     std::string timesFont("fonts/arial.ttf");
@@ -988,14 +988,14 @@ osg::Geometry *ArealConstraint::makeWallGeometry( osg::Vec3Array *pt)
     osg::DrawElementsUInt *trgeom=getTriangles();
     edges->addPrimitiveSet(trgeom);
     
-    osg::ref_ptr<osgUtil::Tesselator> tscx=new osgUtil::Tesselator; // this assembles all the constraints
-    tscx->setTesselationType(osgUtil::Tesselator::TESS_TYPE_GEOMETRY);
+    osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
+    tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(true);
-    tscx->setWindingType( osgUtil::Tesselator::TESS_WINDING_NONZERO); 
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NONZERO); 
     //  find all edges.
     const osg::Vec3Array *points=dynamic_cast<osg::Vec3Array*>(getVertexArray());
     
-    tscx->retesselatePolygons(*(edges)); // find all edges
+    tscx->retessellatePolygons(*(edges)); // find all edges
     
     if (walltexture!="") {
         osg::Image* image = osgDB::readImageFile(walltexture.c_str());

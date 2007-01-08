@@ -376,7 +376,7 @@
 #include <osgUtil/StateGraph>
 #include <osgUtil/Statistics>
 #include <osgUtil/TangentSpaceGenerator>
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TransformCallback>
 #include <osgUtil/TriStripVisitor>

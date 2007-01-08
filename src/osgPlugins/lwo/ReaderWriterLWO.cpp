@@ -34,7 +34,7 @@
 #include <osgDB/FileUtils>
 
 #include <osgUtil/SmoothingVisitor>
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 
 #include "Converter.h"
 #include "VertexMap.h"
@@ -333,7 +333,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
 
     osg::Geode* geode = new osg::Geode;
     
-    osgUtil::Tesselator tesselator;
+    osgUtil::Tessellator tessellator;
     
     // add everthing into the Geode.    
     osgUtil::SmoothingVisitor smoother;
@@ -345,7 +345,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
         if (gc._geom)
         {
             
-            tesselator.retesselatePolygons(*gc._geom);
+            tessellator.retessellatePolygons(*gc._geom);
         
             smoother.smooth(*gc._geom);
             

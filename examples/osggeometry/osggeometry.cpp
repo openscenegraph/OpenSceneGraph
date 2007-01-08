@@ -294,7 +294,7 @@ osg::Node* createScene()
         // note, anticlockwsie ordering.
         // note II, OpenGL polygons must be convex plan polygons, otherwise 
         // undefined results will occur.  If you have concave polygons or ones
-        // that cross over themselves then use the osgUtil::Tesselator to fix
+        // that cross over themselves then use the osgUtil::Tessellator to fix
         // the polygons into a set of valid polygons.
         osg::Vec3 myCoords[] =
         {

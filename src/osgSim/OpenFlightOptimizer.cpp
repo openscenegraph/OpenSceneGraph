@@ -9,7 +9,7 @@
 #include <osg/Notify>
 #include <osg/Geode>
 
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 #include <osgUtil/Optimizer>
 
 #include <vector>
@@ -87,8 +87,8 @@ void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
             if (hasPolygons(*geometry))
             {
                 // Tesselate
-                osgUtil::Tesselator tesselator;
-                tesselator.retesselatePolygons(*geometry);
+                osgUtil::Tessellator tessellator;
+                tessellator.retessellatePolygons(*geometry);
             }
         }
     }

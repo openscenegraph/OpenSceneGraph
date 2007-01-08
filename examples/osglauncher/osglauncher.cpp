@@ -19,7 +19,6 @@
 #include <osg/Projection>
 #include <osg/io_utils>
 
-#include <osgUtil/Tesselator>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/Optimizer>
 

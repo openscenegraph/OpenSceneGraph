@@ -8,7 +8,7 @@
 #include <osg/BlendFunc>
 #include <osg/ClearNode>
 
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 #include <osgUtil/CullVisitor>
 
 #include <osgText/Text>
@@ -115,8 +115,8 @@ osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const os
 
     geom->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON,0,vertices->getNumElements()));
     
-    osgUtil::Tesselator tesselator;
-    tesselator.retesselatePolygons(*geom);
+    osgUtil::Tessellator tessellator;
+    tessellator.retessellatePolygons(*geom);
 
     return geom;
     

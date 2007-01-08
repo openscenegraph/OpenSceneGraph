@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>osgtesselate</string>
+	<string>osgtessellate</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.MySoftwareCompany.osgtesselate</string>
+	<string>com.MySoftwareCompany.osgtessellate</string>
 	<key>CFBundleVersion</key>
 	<string>1.2.0</string>
 </dict>

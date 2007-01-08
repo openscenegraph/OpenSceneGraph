@@ -178,14 +178,18 @@ int main( int argc, char **argv )
 
 int main( int, char **)
 {
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("town.ive");
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("cow.osg");
 
     for(unsigned int i=0; i<5; ++i)
     {
+        osg::notify(osg::NOTICE)<<"New frame *******************************"<<std::endl;
+
         osgViewer::Viewer viewer;
         viewer.setSceneData(model.get());
         viewer.run();
+        osg::notify(osg::NOTICE)<<std::endl<<std::endl;
     }
+    return 0;
 }
 
 #endif

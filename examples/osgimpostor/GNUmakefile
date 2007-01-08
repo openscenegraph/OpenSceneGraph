@@ -5,7 +5,7 @@ CXXFILES =\
 	TestManipulator.cpp\
 	osgimpostor.cpp\
 
-LIBS     += -losgProducer -lProducer -losgText -losgSim -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgText -losgSim -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 INSTFILES = \
 	$(CXXFILES)\

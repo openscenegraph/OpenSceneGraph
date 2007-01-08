@@ -4,12 +4,9 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osglightpoint.cpp\
 
-LIBS     += -losgSim -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     +=  -losgViewer -losgSim-losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osglightpoint
 
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules

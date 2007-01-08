@@ -30,11 +30,6 @@ int main(int argc, char **argv)
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of node tracker.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
     
     if (!scene) 

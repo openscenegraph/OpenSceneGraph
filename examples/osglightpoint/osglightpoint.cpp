@@ -1,5 +1,5 @@
 #include <osg/GL>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/MatrixTransform>
 #include <osg/Billboard>
@@ -18,7 +18,7 @@
 
 #include <osgSim/LightPointNode>
 
-
+#include <iostream>
 
 #define INTERPOLATE(member) lp.member = start.member*rstart + end.member*rend;
 
@@ -189,7 +189,6 @@ static osg::Node* CreateBlinkSequenceLightNode()
 
 int main( int argc, char **argv )
 {
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
@@ -200,13 +199,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--sprites","Point sprites.");
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -218,16 +211,6 @@ int main( int argc, char **argv )
     usePointSprites = false;
     while (arguments.read("--sprites")) { usePointSprites = true; };
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
     osg::Group* rootnode = new osg::Group;
 
     // load the nodes from the commandline arguments.
@@ -242,31 +225,5 @@ int main( int argc, char **argv )
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );
     
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

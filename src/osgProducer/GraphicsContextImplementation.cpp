@@ -265,7 +265,7 @@ bool GraphicsContextImplementation::makeContextCurrentImplementation(osg::Graphi
 
 bool GraphicsContextImplementation::releaseContextImplementation()
 {
-    osg::notify(osg::NOTICE)<<"GraphicsContextImplementation::makeCurrentImplementation(): not implemented - release not supported under Producer."<<std::endl;
+    osg::notify(osg::NOTICE)<<"GraphicsContextImplementation::releaseContextImplementation(): not implemented - release not supported under Producer."<<std::endl;
     return false;
 }
 

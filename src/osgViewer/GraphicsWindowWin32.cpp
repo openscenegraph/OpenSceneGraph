@@ -46,11 +46,14 @@ class GraphicsContextWin32 : public osg::GraphicsContext
 
         /** Make this graphics context current implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; }
+        virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false; }
         
         /** Make this graphics context current with specified read context implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; }
+        virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false;}
+
+        /** Release the graphics context.*/
+        virtual bool releaseContextImplementation() {  osg::notify(osg::NOTICE)<<"GraphicsWindow::releaseContextImplementation(..) not implemented."<<std::endl; return false; }
 
         /** Pure virtual, Bind the graphics context to associated texture implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
@@ -84,9 +87,17 @@ bool GraphicsWindowWin32::realizeImplementation()
     return false;
 }
 
-void GraphicsWindowWin32::makeCurrentImplementation()
+bool GraphicsWindowWin32::makeCurrentImplementation()
 {
     osg::notify(osg::NOTICE)<<"GraphicWindowWin32::makeCurrentImplementation() Please implement me!"<<std::endl;
+    return false;
+}
+
+
+bool GraphicWindowWin32::releaseContextImplementation()
+{
+    osg::notify(osg::NOTICE)<<"GraphicWindowWin32::releaseContextImplementation() Please implement me!"<<std::endl;
+    return false;
 }
 
 void GraphicsWindowWin32::closeImplementation()

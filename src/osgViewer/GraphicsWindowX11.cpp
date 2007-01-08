@@ -63,11 +63,14 @@ class GraphicsContextX11 : public osg::GraphicsContext
 
         /** Make this graphics context current implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; }
+        virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false;}
         
         /** Make this graphics context current with specified read context implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; }
+        virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false; }
+
+        /** Release the graphics context.*/
+        virtual bool releaseContextImplementation() {  osg::notify(osg::NOTICE)<<"GraphicsWindow::releaseContextImplementation(..) not implemented."<<std::endl; return false; }
 
         /** Pure virtual, Bind the graphics context to associated texture implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
@@ -533,38 +536,33 @@ bool GraphicsWindowX11::realizeImplementation()
     return true;
 }
 
-void GraphicsWindowX11::makeCurrentImplementation()
+bool GraphicsWindowX11::makeCurrentImplementation()
 {
     if (!_realized)
     {
         osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
-        return;
+        return false;
     }
 
     // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
     // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
 
-    if (glXMakeCurrent( _display, _window, _glxContext ))
+    return glXMakeCurrent( _display, _window, _glxContext )==True;
+}
+
+
+bool GraphicsWindowX11::releaseContextImplementation()
+{
+    if (!_realized)
     {
-        // osg::notify(osg::NOTICE)<<"makeCurrentImplementation sucessful"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        return false;
     }
-    else
-    {
 
-        osg::notify(osg::NOTICE)<<"makeCurrentImplementation failed"<<std::endl;
-        
-        while(!glXMakeCurrent( _display, _window, _glxContext )) 
-        {
-            OpenThreads::Thread::YieldCurrentThread();
-            osg::notify(osg::NOTICE)<<"  makeCurrentImplementation failed again."<<std::endl;
-        }
-        
-        // osg::notify(osg::NOTICE)<<"  Succeeded at last."<<std::endl;
+    // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
 
-    }
-    
-    
-
+    return glXMakeCurrent( _display, None, NULL )==True;
 }
 
 
@@ -640,6 +638,7 @@ void GraphicsWindowX11::checkEvents()
                 {
                     osg::notify(osg::INFO)<<"DeleteWindow event recieved"<<std::endl;
                     destroyWindowRequested = true;
+                    getEventQueue()->closeWindow(eventTime);
                 }
             }
             case Expose :
@@ -859,12 +858,13 @@ void GraphicsWindowX11::checkEvents()
         resized(windowX, windowY, windowWidth, windowHeight); 
         getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
     }
-
+    
+#if 0
     if (destroyWindowRequested)
     {
         close();
     }
-
+#endif
 }
 
 void GraphicsWindowX11::grabFocus()

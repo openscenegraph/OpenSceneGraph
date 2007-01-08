@@ -150,6 +150,20 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         void keyRelease(int key, double time);
 
 
+        /** Method for adapting close window events.*/
+        void closeWindow() { closeWindow(getTime()); }
+
+        /** Method for adapting close window event with specified event time.*/
+        void closeWindow(double time);
+
+
+        /** Method for adapting application quit events.*/
+        void quitApplication() { quitApplication(getTime()); }
+
+        /** Method for adapting application quit events with specified event time.*/
+        void quitApplication(double time);
+
+
         /** Method for adapting frame events.*/
         void frame(double time);
         

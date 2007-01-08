@@ -218,13 +218,14 @@ void TextureObjectManager::flushAllTextureObjects(unsigned int contextID)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     Texture::TextureObjectList& tol = _textureObjectListMap[contextID];
-    osg::notify(osg::NOTICE)<<"Flushing texture objects num="<<tol.size()<<" contextID="<<contextID<<std::endl;
+
+    // osg::notify(osg::INFO)<<"Flushing texture objects num="<<tol.size()<<" contextID="<<contextID<<std::endl;
 
     for(Texture::TextureObjectList::iterator itr=tol.begin();
         itr!=tol.end();
         ++itr)
     {
-        osg::notify(osg::NOTICE)<<"  deleting texture object "<<(*itr)->_id<<std::endl;
+        // osg::notify(osg::NOTICE)<<"  deleting texture object "<<(*itr)->_id<<std::endl;
         glDeleteTextures( 1L, &((*itr)->_id));
     }
     tol.clear();
@@ -1304,8 +1305,8 @@ void Texture::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Texture::releaseGLObjects(State* state) const
 {
-    if (state) osg::notify(osg::NOTICE)<<"Texture::releaseGLObjects contextID="<<state->getContextID()<<std::endl;
-    else osg::notify(osg::NOTICE)<<"Texture::releaseGLObjects no State "<<std::endl;
+//    if (state) osg::notify(osg::NOTICE)<<"Texture::releaseGLObjects contextID="<<state->getContextID()<<std::endl;
+//    else osg::notify(osg::NOTICE)<<"Texture::releaseGLObjects no State "<<std::endl;
 
     if (!state) const_cast<Texture*>(this)->dirtyTextureObject();
     else

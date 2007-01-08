@@ -171,49 +171,41 @@ bool GraphicsContext::realize()
 
 void GraphicsContext::close(bool callCloseImplementation)
 {
-    osg::notify(osg::NOTICE)<<"close("<<callCloseImplementation<<")"<<this<<std::endl;
+    osg::notify(osg::INFO)<<"close("<<callCloseImplementation<<")"<<this<<std::endl;
 
     // switch off the graphics thread...
     setGraphicsThread(0);
     
     
+    bool sharedContextExists = false;
+    
+    if (_state.valid())
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
+        if (s_contextIDMap[_state->getContextID()]>1) sharedContextExists = true;
+    }
+
+    // release all the OpenGL objects in the scene graphs associted with this 
+    for(Cameras::iterator itr = _cameras.begin();
+        itr != _cameras.end();
+        ++itr)
+    {
+        Camera* camera = (*itr);
+        if (camera)
+        {
+            osg::notify(osg::INFO)<<"Releasing GL objects for Camera="<<camera<<" _state="<<_state.get()<<std::endl;
+            camera->releaseGLObjects(_state.get());
+        }
+    }
+
+
     if (callCloseImplementation && _state.valid() && isRealized())
     {
+        osg::notify(osg::INFO)<<"Closing still viable window "<<sharedContextExists<<" _state->getContextID()="<<_state->getContextID()<<std::endl;
 
-        bool sharedContextExists = false;
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-            if (s_contextIDMap[_state->getContextID()]>1) sharedContextExists = true;
-        }
-        
-        osg::notify(osg::NOTICE)<<"Closing still viable window "<<sharedContextExists<<" _state->getContextID()="<<_state->getContextID()<<std::endl;
-        
-
-#if 1
-
-        // release all the OpenGL objects in the scene graphs associted with this 
-        for(Cameras::iterator itr = _cameras.begin();
-            itr != _cameras.end();
-            ++itr)
-        {
-            Camera* camera = (*itr);
-            if (camera)
-            {
-                osg::notify(osg::NOTICE)<<"Releasing GL objects for Camera "<<camera<<std::endl;
-#if 1
-                camera->releaseGLObjects(_state.get());
-#else
-                camera->releaseGLObjects(0);
-#endif
-            }
-        }
-#endif
-
-#if 1
-        osg::notify(osg::NOTICE)<<"Doing makeCurrent "<<std::endl;
         makeCurrent();
         
-        osg::notify(osg::NOTICE)<<"Doing Flush"<<std::endl;
+        osg::notify(osg::INFO)<<"Doing Flush"<<std::endl;
 
         // flush all the OpenGL object buffer for this context.
         double availableTime = 100.0f;
@@ -229,8 +221,8 @@ void GraphicsContext::close(bool callCloseImplementation)
         osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
         osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
 
-        osg::notify(osg::NOTICE)<<"Done Flush "<<availableTime<<std::endl;
-#endif        
+        osg::notify(osg::INFO)<<"Done Flush "<<availableTime<<std::endl;
+
         _state->reset();
         
         releaseContext();
@@ -247,46 +239,37 @@ void GraphicsContext::close(bool callCloseImplementation)
 }
 
 
-void GraphicsContext::makeCurrent()
+bool GraphicsContext::makeCurrent()
 {
-    ReleaseContext_Block_MakeCurrentOperation* rcbmco = 0;
-
-    if (_graphicsThread.valid() && 
-        _threadOfLastMakeCurrent == _graphicsThread.get() &&
-        _threadOfLastMakeCurrent != OpenThreads::Thread::CurrentThread())
-    {
-        // create a relase contex, block and make current operation to stop the graphics thread while we use the graphics context for ourselves
-        rcbmco = new ReleaseContext_Block_MakeCurrentOperation;
-        _graphicsThread->add(rcbmco);
-    }
-
-    if (!isCurrent()) _mutex.lock();
-
-    makeCurrentImplementation();
+    bool result = makeCurrentImplementation();
     
-    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
-    
-    if (rcbmco)
+    if (result)
     {
-        // Let the "relase contex, block and make current operation" proceed, which will now move on to trying to aquire the graphics
-        // contex itself with a makeCurrent(), this will then block on the GraphicsContext mutex till releaseContext() releases it.
-        rcbmco->release();
+        _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
     }
+    
+    return result;
 }
 
-void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
+bool GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
 {
-    if (!isCurrent()) _mutex.lock();
+    bool result = makeContextCurrentImplementation(readContext);
 
-    makeContextCurrentImplementation(readContext);
-
-    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+    if (result)
+    {
+        _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+    }
+    
+    return result;
 }
 
-void GraphicsContext::releaseContext()
+bool GraphicsContext::releaseContext()
 {
-    _mutex.unlock();
-    _threadOfLastMakeCurrent = reinterpret_cast<OpenThreads::Thread*>(0xffff);
+    bool result = releaseContextImplementation();
+    
+    _threadOfLastMakeCurrent = (OpenThreads::Thread*)(-1);
+    
+    return result;
 }
 
 void GraphicsContext::swapBuffers()
@@ -306,7 +289,6 @@ void GraphicsContext::swapBuffers()
         makeCurrent();
         swapBuffersImplementation();
         clear();
-        releaseContext();
     }
 }
 

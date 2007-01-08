@@ -157,7 +157,9 @@ int main( int argc, char **argv )
 
     viewer.setSceneData(loadedModel.get());
 
-    // viewer.realize();
+    // viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
+    viewer.realize();
 
     unsigned int numFrames = 0;
     while(!viewer.done() && !(limitNumberOfFrames && numFrames>=maxFrames))
@@ -172,11 +174,18 @@ int main( int argc, char **argv )
 
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 int main( int, char **)
 {
-    osgViewer::Viewer viewer;
-    viewer.setSceneData(osgDB::readNodeFile("cow.osg"));
-    viewer.run();
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("town.ive");
+
+    for(unsigned int i=0; i<5; ++i)
+    {
+        osgViewer::Viewer viewer;
+        viewer.setSceneData(model.get());
+        viewer.run();
+    }
 }
+
 #endif

@@ -26,8 +26,14 @@ View::View()
 
 View::~View()
 {
-    // osg::notify(osg::NOTICE)<<"Destructing osg::View"<<std::endl;
+    osg::notify(osg::NOTICE)<<"Destructing osg::View"<<std::endl;
 
+    if (_camera.valid())
+    {
+        _camera->setView(0);
+        _camera->setCullCallback(0);
+    }
+    
     // detatch the cameras from this View to prevent dangling pointers
     for(Slaves::iterator itr = _slaves.begin();
         itr != _slaves.end();
@@ -38,7 +44,7 @@ View::~View()
         cd._camera->setCullCallback(0);
     }
     
-    // osg::notify(osg::NOTICE)<<"Done destructing osg::View"<<std::endl;
+    osg::notify(osg::NOTICE)<<"Done destructing osg::View"<<std::endl;
 }
 
 

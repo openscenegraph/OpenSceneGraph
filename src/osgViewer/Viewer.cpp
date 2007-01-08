@@ -44,7 +44,19 @@ Viewer::~Viewer()
         _scene->setDatabasePager(0);
     }
 
+    Contexts contexts;
+    getContexts(contexts);
+
+    // clear out all the previously assigned operations
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        (*citr)->close();
+    }
+
     //osg::notify(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
+    
 }
 
 bool Viewer::isRealized() const
@@ -858,6 +870,7 @@ void Viewer::renderingTraversals()
         { 
             (*itr)->makeCurrent();
             (*itr)->runOperations();
+            (*itr)->releaseContext();
         }
     }
 
@@ -876,6 +889,7 @@ void Viewer::renderingTraversals()
         { 
             (*itr)->makeCurrent();
             (*itr)->swapBuffers();
+            (*itr)->releaseContext();
         }
     }
 

@@ -36,6 +36,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
     
         GraphicsWindow() { _eventQueue = new osgGA::EventQueue; }
 
+
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
@@ -55,6 +56,9 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         virtual void useCursor(bool /*cursorOn*/) {}
 
     public:
+
+        /** Return whether a valid and usable GraphicsContext has been created.*/
+        virtual bool valid() const { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
 
         /** Realise the GraphicsContext implementation, 
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */

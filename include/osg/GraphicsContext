@@ -170,7 +170,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
         inline const Traits* getTraits() const { return _traits.get(); }
 
         /** Return whether a valid and usable GraphicsContext has been created.*/
-        virtual bool valid() const { return false; }
+        virtual bool valid() const = 0;
 
 
         /** Set the State object which tracks the current OpenGL state for this graphics context.*/
@@ -278,10 +278,32 @@ class OSG_EXPORT GraphicsContext : public Referenced
           * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
         virtual void swapBuffersImplementation() = 0;
 
-
         /** resized method should be called when the underlying window has been resized and the GraphicsWindow and associated Cameras must
             be updated to keep in sync with the new size. */
-        void resized(int x, int y, int width, int height);
+        void resized(int x, int y, int width, int height)
+        {
+            if (_resizedCallback.valid()) _resizedCallback->resizedImplementation(this, x, y, width, height);
+            else resizedImplementation(x, y, width, height);
+        }
+
+        struct ResizedCallback : public osg::Referenced
+        {
+            virtual void resizedImplementation(GraphicsContext* gc, int x, int y, int width, int height) = 0;
+        };
+
+        /** Set the resized callback which overrides the GraphicsConext::realizedImplementation(), allow developers to provide custom behavior
+          * in response to a window being resized.*/
+        void setResizedCallback(ResizedCallback* rc) { _resizedCallback = rc; }
+
+        /** Get the resized callback which overrides the GraphicsConext::realizedImplementation().*/
+        ResizedCallback* getResizedCallback() { return _resizedCallback.get(); }
+
+        /** Get the const resized callback which overrides the GraphicsConext::realizedImplementation().*/
+        const ResizedCallback* getResizedCallback() const { return _resizedCallback.get(); }
+
+        /** resized implementation, by default resizes the viewports and aspect ratios the cameras associated with the graphics Window. */
+        virtual void resizedImplementation(int x, int y, int width, int height);
+
 
         typedef std::list< osg::Camera* > Cameras;
 
@@ -321,6 +343,8 @@ class OSG_EXPORT GraphicsContext : public Referenced
         osg::ref_ptr<GraphicsOperation>     _currentOperation;
 
         ref_ptr<GraphicsThread>             _graphicsThread;
+        
+        ref_ptr<ResizedCallback>            _resizedCallback;
         
 };
 

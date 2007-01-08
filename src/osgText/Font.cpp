@@ -254,16 +254,48 @@ Font::Glyph* Font::getGlyph(unsigned int charcode)
     else return 0;
 }
 
-void Font::releaseGLObjects(osg::State* state) const
+void Font::setThreadSafeRefUnref(bool threadSafe)
 {
+    Object::setThreadSafeRefUnref(threadSafe);
+    
+    if (_texenv.valid()) _texenv->setThreadSafeRefUnref(threadSafe);
+    if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
+
     for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
         itr!=_glyphTextureList.end();
         ++itr)
     {
-        (*itr)->releaseGLObjects(state);
+        (*itr)->setThreadSafeRefUnref(threadSafe);
     }    
-    const_cast<Font*>(this)->_glyphTextureList.clear();
-    const_cast<Font*>(this)->_sizeGlyphMap.clear();
+}
+
+void Font::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_stateset.valid()) _stateset->resizeGLObjectBuffers(maxSize);
+
+    for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
+        itr!=_glyphTextureList.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }    
+}
+
+void Font::releaseGLObjects(osg::State* state) const
+{
+    if (_stateset.valid()) _stateset->releaseGLObjects(state);
+
+    for(GlyphTextureList::const_iterator itr=_glyphTextureList.begin();
+        itr!=_glyphTextureList.end();
+        ++itr)
+    {
+        osg::notify(osg::NOTICE)<<"  Texture::releaseGLObjects("<<state<<")"<<std::endl;
+        // (*itr)->releaseGLObjects(state);
+        (*itr)->releaseGLObjects(state);
+    }
+    
+    // const_cast<Font*>(this)->_glyphTextureList.clear();
+    // const_cast<Font*>(this)->_sizeGlyphMap.clear();
 }
 
 osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
@@ -610,7 +642,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
     }
     else
     {
-        //std::cout << "no need to subload "<<std::endl;
+        osg::notify(osg::NOTICE) << "no need to subload "<<std::endl;
     }
 
 

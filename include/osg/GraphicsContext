@@ -219,15 +219,18 @@ class OSG_EXPORT GraphicsContext : public Referenced
 
 
         /** Make this graphics context current.
-          * Implementated by first aquiring a lock of the GraphicsContext mutex, and then doing a call to makeCurrentImplementation(). */
-        void makeCurrent();
+          * Implementated by calling makeCurrentImplementation(). 
+          * Returns true on success. */
+        bool makeCurrent();
         
         /** Make this graphics context current with specified read context.
-          * Implementated by first aquiring a lock of the GraphicsContext mutex, and then doing a call to makeContextCurrentImplementation(). */
-        void makeContextCurrent(GraphicsContext* readContext);
+          * Implementated by calling makeContextCurrentImplementation().
+          * Returns true on success. */
+        bool makeContextCurrent(GraphicsContext* readContext);
         
-        /** Release the graphics context by unlocking the GraphicsContext mutex.*/
-        void releaseContext();
+        /** Release the graphics context.
+          * Returns true on success. */
+        bool releaseContext();
         
         /** Return true if the current thread has this OpenGL graphics context.*/
         inline bool isCurrent() const { return _threadOfLastMakeCurrent == OpenThreads::Thread::CurrentThread(); }
@@ -264,11 +267,14 @@ class OSG_EXPORT GraphicsContext : public Referenced
 
         /** Make this graphics context current implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void makeCurrentImplementation() = 0;
+        virtual bool makeCurrentImplementation() = 0;
         
         /** Make this graphics context current with specified read context implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
+        virtual bool makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
+
+        /** Release the graphics context implementation.*/
+        virtual bool releaseContextImplementation() = 0;
 
         /** Pure virtual, Bind the graphics context to associated texture implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
@@ -277,6 +283,8 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Swap the front and back buffers implementation.
           * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
         virtual void swapBuffersImplementation() = 0;
+
+
 
         /** resized method should be called when the underlying window has been resized and the GraphicsWindow and associated Cameras must
             be updated to keep in sync with the new size. */
@@ -332,7 +340,6 @@ class OSG_EXPORT GraphicsContext : public Referenced
         Vec4                    _clearColor;
         GLbitfield              _clearMask;
 
-        OpenThreads::Mutex      _mutex;
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
         
         typedef std::list< ref_ptr<GraphicsOperation> > OperationQueue;

@@ -325,6 +325,25 @@ void EventQueue::keyRelease(int key, double time)
     addEvent(event);
 }
 
+void EventQueue::closeWindow(double time)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::CLOSE_WINDOW);
+    event->setTime(time);
+  
+    addEvent(event);
+}
+
+void EventQueue::quitApplication(double time)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::QUIT_APPLICATION);
+    event->setTime(time);
+  
+    addEvent(event);
+}
+
+
 void EventQueue::frame(double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);

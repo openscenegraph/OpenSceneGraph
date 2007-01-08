@@ -56,7 +56,10 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
         virtual void closeImplementation();
 
         /** Make this graphics context current.*/
-        virtual void makeCurrentImplementation();
+        virtual bool makeCurrentImplementation();
+
+        /** Release the graphics context.*/
+        virtual bool releaseContextImplementation();
 
         /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();

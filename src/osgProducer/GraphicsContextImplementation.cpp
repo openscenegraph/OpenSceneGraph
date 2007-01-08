@@ -218,18 +218,18 @@ bool GraphicsContextImplementation::realizeImplementation()
     }
 }
 
-void GraphicsContextImplementation::makeCurrentImplementation()
+bool GraphicsContextImplementation::makeCurrentImplementation()
 {
     if (!_rs)
     {
         osg::notify(osg::NOTICE)<<"Error: GraphicsContextImplementation::makeCurrentImplementation() no RenderSurface."<<std::endl;
-        return;
+        return false;
     }
 
     if (!isRealized())
     {
         osg::notify(osg::NOTICE)<<"Error: GraphicsContextImplementation::makeCurrentImplementation() not Realized."<<std::endl;
-        return;
+        return false;
     }
 
 //    osg::notify(osg::INFO)<<"GraphicsContextImplementation::makeCurrentImplementation()"<<std::endl;
@@ -238,11 +238,13 @@ void GraphicsContextImplementation::makeCurrentImplementation()
 
     // comment out right now, as Producer's setReadDrawable() is doing a call for us.
     // _rs->makeCurrent();
+    
+    return true;
 }
 
-void GraphicsContextImplementation::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
+bool GraphicsContextImplementation::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
 {
-    if (!_rs) return;
+    if (!_rs) return false;
 
     GraphicsContextImplementation* readContextImplemention = dynamic_cast<GraphicsContextImplementation*>(readContext);
 
@@ -257,6 +259,8 @@ void GraphicsContextImplementation::makeContextCurrentImplementation(osg::Graphi
 
     // comment out right now, as Producer's setReadDrawable() is doing a call for us.
     // _rs->makeCurrent();
+    
+    return true;
 }
 
 void GraphicsContextImplementation::closeImplementation()

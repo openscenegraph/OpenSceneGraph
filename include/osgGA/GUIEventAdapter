@@ -53,7 +53,9 @@ public:
             SCROLL,
             PEN_PRESSURE,
             PEN_PROXIMITY_ENTER,
-            PEN_PROXIMITY_LEAVE
+            PEN_PROXIMITY_LEAVE,
+            CLOSE_WINDOW,
+            QUIT_APPLICATION
         };
 
         enum KeySymbol

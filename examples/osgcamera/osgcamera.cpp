@@ -70,13 +70,13 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
 
-    unsigned int numCameras = 4;
+    unsigned int numCameras = 6;
     double aspectRatioScale = (double)numCameras;
     double translate_x = double(numCameras)-1;
     for(unsigned int i=0; i<numCameras;++i, translate_x -= 2.0)
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-        traits->screenNum = i / 2;
+        traits->screenNum = i / 3;
         traits->x = (i*width)/numCameras;
         traits->y = 0;
         traits->width = width/numCameras-1;

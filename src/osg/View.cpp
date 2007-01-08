@@ -26,7 +26,7 @@ View::View()
 
 View::~View()
 {
-    osg::notify(osg::NOTICE)<<"Destructing osg::View"<<std::endl;
+    osg::notify(osg::INFO)<<"Destructing osg::View"<<std::endl;
 
     if (_camera.valid())
     {
@@ -44,7 +44,7 @@ View::~View()
         cd._camera->setCullCallback(0);
     }
     
-    osg::notify(osg::NOTICE)<<"Done destructing osg::View"<<std::endl;
+    osg::notify(osg::INFO)<<"Done destructing osg::View"<<std::endl;
 }
 
 

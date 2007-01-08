@@ -605,7 +605,8 @@ void Viewer::eventTraversal()
             osgGA::EventQueue::Events gw_events;
             gw->getEventQueue()->takeEvents(gw_events);
             
-            for(osgGA::EventQueue::Events::iterator itr = gw_events.begin();
+            osgGA::EventQueue::Events::iterator itr;
+            for(itr = gw_events.begin();
                 itr != gw_events.end();
                 ++itr)
             {
@@ -690,6 +691,32 @@ void Viewer::eventTraversal()
                 }
                 //osg::notify(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
                 // osg::notify(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
+            }
+
+            for(itr = gw_events.begin();
+                itr != gw_events.end();
+                ++itr)
+            {
+                osgGA::GUIEventAdapter* event = itr->get();
+                switch(event->getEventType())
+                {
+                    case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
+                    {
+                        stopThreading();
+                        
+                        gw->close();
+                        
+                        // setThreadingModel(ThreadPerCamera);
+                        
+                        setThreadingModel(SingleThreaded);
+                        
+                        startThreading();
+                        
+                        break;
+                    }
+                    default:
+                        break;
+                }
             }
 
             events.insert(events.end(), gw_events.begin(), gw_events.end());
@@ -792,6 +819,9 @@ void Viewer::eventTraversal()
             {
                 case(osgGA::GUIEventAdapter::KEYUP):
                     if (event->getKey()==_keySetsDone) _done = true;
+                    else if (event->getKey()=='s') { setThreadingModel(SingleThreaded); }
+                    else if (event->getKey()=='c') { setThreadingModel(ThreadPerCamera); }
+                    else if (event->getKey()=='w') { setThreadingModel(ThreadPerContext); }
                     break;
                 default:
                     break;

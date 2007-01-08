@@ -73,7 +73,7 @@ public:
 
     /** Add vertices and constraint loops from dco
      * Can be used to generate extra vertices where dco crosses 'this' using
-     * osgUtil::tesselator to insert overlap vertices.
+     * osgUtil::tessellator to insert overlap vertices.
      */
     void merge(DelaunayConstraint *dco);
 

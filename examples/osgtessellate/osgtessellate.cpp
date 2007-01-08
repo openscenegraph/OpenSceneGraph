@@ -10,8 +10,8 @@
 */
 
 /* osgTessellator
- * - this Tessellator is an extension of the basic one - rather than tesselating
- * individual polygons, we tesselate the entire geode with multiple contours.
+ * - this Tessellator is an extension of the basic one - rather than tessellating
+ * individual polygons, we tessellate the entire geode with multiple contours.
  * allows for overlapping contours etc.
  * the Tessellator has new member fuinctions
  setTessellationType(osgUtil::Tessellator::TESS_TYPE_xxx);
@@ -28,26 +28,26 @@
 
 #include <osgText/Text>
 
-#include <osgUtil/Tessellator> // to tesselate multiple contours
+#include <osgUtil/Tessellator> // to tessellate multiple contours
 
 
-class tesselateDemoGeometry : public osg::Geometry, public osgUtil::Tessellator {
+class tessellateDemoGeometry : public osg::Geometry, public osgUtil::Tessellator {
     // We add the Tessellator to the geometry because we want to access the
-    // tesselatable contours again;  you can apply a Tessellator to a Geometry 
-    // to produce exactly a required tesselation once only, and then 
-    // the contours could be discarded since the geometry does not need to be retesselated.
+    // tessellatable contours again;  you can apply a Tessellator to a Geometry 
+    // to produce exactly a required tessellation once only, and then 
+    // the contours could be discarded since the geometry does not need to be retessellated.
 public:
-    tesselateDemoGeometry() {};
+    tessellateDemoGeometry() {};
 
 protected:
-    virtual ~tesselateDemoGeometry() {};
+    virtual ~tessellateDemoGeometry() {};
 };
 
 osg::Geometry *makePolsTwo (void) 
 {
-    // an example of using current geometry contours to create next tesselation
+    // an example of using current geometry contours to create next tessellation
     // this polygon disappears once the contour rules make no polygons.
-    tesselateDemoGeometry *gtess= new tesselateDemoGeometry;
+    tessellateDemoGeometry *gtess= new tessellateDemoGeometry;
     int i;
     osg::Vec3Array *coords = new osg::Vec3Array;
     osg::Vec3Array *nrms = new osg::Vec3Array;
@@ -89,7 +89,7 @@ osg::Geometry *makePolsTwo (void)
     gtess->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     gtess->setTexCoordArray(0,tcs);
     
-    // demonstrate that the Tessellator makes textured tesselations
+    // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
     
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posy.jpg");
@@ -104,13 +104,13 @@ osg::Geometry *makePolsTwo (void)
     gtess->setStateSet( stateset );
     
     int nstart=0;
-    // The derived class tesselateDemoGeometry retains the original contours for re-use.
+    // The derived class tessellateDemoGeometry retains the original contours for re-use.
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nstart,8));nstart+=8;
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nstart,8));nstart+=8;
 
     gtess->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     gtess->setBoundaryOnly(true);
-    gtess->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tesselation - ODD.
+    gtess->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tessellation - ODD.
     
     return gtess;
 }
@@ -161,7 +161,7 @@ osg::Geometry *makeSideWall (const float xpos)
     }
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,nstart,5));nstart+=5;
     
-    // demonstrate that the Tessellator makes textured tesselations
+    // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
     
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posx.jpg");
@@ -177,11 +177,11 @@ osg::Geometry *makeSideWall (const float xpos)
     
 
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // the v1.2 multi-contour Tessellator.
-    // we use the geometry primitives to describe the contours which are tesselated.
+    // we use the geometry primitives to describe the contours which are tessellated.
     // Winding odd means leave hole in surface where there are 2,4,6... contours circling the point.
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(false);
-    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // so that first change in wind type makes the commonest tesselation - ODD.
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // so that first change in wind type makes the commonest tessellation - ODD.
     
     tscx->retessellatePolygons(*gtess);
     
@@ -189,9 +189,9 @@ osg::Geometry *makeSideWall (const float xpos)
 }
 
 osg::Geometry *makeFrontWall (const float zpos) {
-    // an example of using one tesselation to make a 'house' wall
+    // an example of using one tessellation to make a 'house' wall
     // describe the wall as a pentagon, then door & 4 windows are further contours
-    // tesselate the set of contours to make a 'house wall' from the Boolean-like operations.
+    // tessellate the set of contours to make a 'house wall' from the Boolean-like operations.
     int nstart=0; // counts vertices used for the geometry primitives
 
     osg::Geometry *gtess= new osg::Geometry;
@@ -258,7 +258,7 @@ osg::Geometry *makeFrontWall (const float zpos) {
     }
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,nstart,20));nstart+=20;
 
-    // demonstrate that the Tessellator makes textured tesselations
+    // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
     
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posy.jpg");
@@ -272,12 +272,12 @@ osg::Geometry *makeFrontWall (const float zpos) {
     }
     gtess->setStateSet( stateset );
     
-    // We use a Tessellator to produce the tesselation required once only 
+    // We use a Tessellator to produce the tessellation required once only 
     // and the contours are discarded.
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // the v1.2 multi-contour Tessellator.
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(false);
-    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // so that first change in wind type makes the commonest tesselation - ODD.
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // so that first change in wind type makes the commonest tessellation - ODD.
     
     tscx->retessellatePolygons(*gtess);
     
@@ -292,7 +292,7 @@ osg::Geode *makeHouse (void) {
     return gd;
 }
 osg::Geometry *makePols (void) {
-    tesselateDemoGeometry *gtess= new tesselateDemoGeometry;
+    tessellateDemoGeometry *gtess= new tessellateDemoGeometry;
     int i;
     osg::Vec3Array *coords = new osg::Vec3Array;
     osg::Vec3Array *nrms = new osg::Vec3Array;
@@ -452,7 +452,7 @@ osg::Geometry *makePols (void) {
     gtess->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     gtess->setTexCoordArray(0,tcs);
     
-    // demonstrate that the Tessellator makes textured tesselations
+    // demonstrate that the Tessellator makes textured tessellations
     osg::StateSet* stateset = new osg::StateSet();
     
     osg::Image* image = osgDB::readImageFile("Cubemap_snow/posz.jpg");
@@ -482,18 +482,18 @@ osg::Geometry *makePols (void) {
     // test for quad strip
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_STRIP,nstart,8));nstart+=8;
     
-    // We need to access the tesselatable contours again to demonstrate all types of tesselation.
+    // We need to access the tessellatable contours again to demonstrate all types of tessellation.
     // I could add the Tessellator to the geometry as userdata, but here
-    // I use the derived tesselateDemoGeometry to hold both the drawable geode and the original contours.
+    // I use the derived tessellateDemoGeometry to hold both the drawable geode and the original contours.
     
     gtess->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     gtess->setBoundaryOnly(true);
-    gtess->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tesselation - ODD.
+    gtess->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tessellation - ODD.
     
     return gtess;
 }
 osg::Node* createHUD()
-{ // add a string reporting the type of winding rule tesselation applied
+{ // add a string reporting the type of winding rule tessellation applied
     osg::Geode* geode = new osg::Geode();
     
     std::string timesFont("fonts/arial.ttf");
@@ -516,7 +516,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("Tesselation example - no tesselation (use 'W' wireframe to visualise)");
+        text->setText("Tessellation example - no tessellation (use 'W' wireframe to visualise)");
         text->setColor(osg::Vec4(1.0,1.0,0.8,1.0));
         position += delta;
         
@@ -527,7 +527,7 @@ osg::Node* createHUD()
 
         text->setFont(timesFont);
         text->setPosition(position);
-        text->setText("Press 'n' to use an alternative tesselation.");
+        text->setText("Press 'n' to use an alternative tessellation.");
         
     }    
 
@@ -546,7 +546,7 @@ osg::Node* createHUD()
 }
 
 
-osg::Group *makeTesselateExample (void) {
+osg::Group *makeTessellateExample (void) {
     osg::Group *grp=new osg::Group;
     osg::Geode *gd=new osg::Geode;
     gd->addDrawable(makePols());
@@ -558,19 +558,19 @@ osg::Group *makeTesselateExample (void) {
     return grp;
 }
 
-class setTesselateVisitor : public osg::NodeVisitor
-{ // searches a loaded model tree for tesselatable geometries.
-    // used with any database model which has a renderGroup (Geode) named 'tesselate'
+class setTessellateVisitor : public osg::NodeVisitor
+{ // searches a loaded model tree for tessellatable geometries.
+    // used with any database model which has a renderGroup (Geode) named 'tessellate'
     // or you can force a type of tess with special names or a sub-class of Geode could have extra information
-    // of course you can use any name to detect what is to be tesselated!
+    // of course you can use any name to detect what is to be tessellated!
     // all the polygons within the specific node are deemed to be contours, so
-    // any tesselation can be requested.
+    // any tessellation can be requested.
 public:
     
-    setTesselateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
+    setTessellateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
     }
     virtual void apply(osg::Geode& geode) {
-        if (geode.getName().compare(0,9,"tesselate")==0) {
+        if (geode.getName().compare(0,9,"tessellate")==0) {
             for(unsigned int i=0;i<geode.getNumDrawables();++i)
             {
                 osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
@@ -578,44 +578,44 @@ public:
                     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator();
                     if (tscx.valid()) {
                         tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-                        if (geode.getName()== "tesselate") {
-                            // add a Tessellator so that this geom is retesselated when N is pressed
+                        if (geode.getName()== "tessellate") {
+                            // add a Tessellator so that this geom is retessellated when N is pressed
                             tscx->setBoundaryOnly(true);
-                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tesselation - ODD.
+                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO); // so that first change in wind type makes the commonest tessellation - ODD.
                             geom->setUserData(tscx.get());
-                        } else if (geode.getName()== "tesselate odd") {
+                        } else if (geode.getName()== "tessellate odd") {
                             // OR you can just apply the Tessellator once only, using these different types
-                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // commonest tesselation - ODD.
+                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // commonest tessellation - ODD.
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate odd bound") {
+                        } else if (geode.getName()== "tessellate odd bound") {
                             tscx->setBoundaryOnly(true);
-                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // tesselation - ODD, only show boundary.
+                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // tessellation - ODD, only show boundary.
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate positive") {
-                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_POSITIVE); // tesselation - pos.
+                        } else if (geode.getName()== "tessellate positive") {
+                            tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_POSITIVE); // tessellation - pos.
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate positive bound") {
+                        } else if (geode.getName()== "tessellate positive bound") {
                             tscx->setBoundaryOnly(true);
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_POSITIVE);
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate negative") {
+                        } else if (geode.getName()== "tessellate negative") {
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NEGATIVE);
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate negative bound") {
+                        } else if (geode.getName()== "tessellate negative bound") {
                             tscx->setBoundaryOnly(true);
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NEGATIVE);
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate nonzero") {
+                        } else if (geode.getName()== "tessellate nonzero") {
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NONZERO);
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate nonzero bound") {
+                        } else if (geode.getName()== "tessellate nonzero bound") {
                             tscx->setBoundaryOnly(true);
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_NONZERO);
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate geq2") {
+                        } else if (geode.getName()== "tessellate geq2") {
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO);
                             tscx->retessellatePolygons(*geom);
-                        } else if (geode.getName()== "tesselate geq2 bound") {
+                        } else if (geode.getName()== "tessellate geq2 bound") {
                             tscx->setBoundaryOnly(true);
                             tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ABS_GEQ_TWO);
                             tscx->retessellatePolygons(*geom);
@@ -627,27 +627,27 @@ public:
     }    
 };
 
-class cxTesselateVisitor : public osg::NodeVisitor
-{ // special to this demo, traverses SG and finds nodes which have been tesselated
-    // for test/demo purposes these nodes are of type tesselateDemoGeometry
+class cxTessellateVisitor : public osg::NodeVisitor
+{ // special to this demo, traverses SG and finds nodes which have been tessellated
+    // for test/demo purposes these nodes are of type tessellateDemoGeometry
     // but you could store the Tessellator as UserData or however you like.
-    // the Tessellator holds copies of the original contours used in the tesselation
-    // In this visitor, I reuse the contours to make a different type of tesselation.
+    // the Tessellator holds copies of the original contours used in the tessellation
+    // In this visitor, I reuse the contours to make a different type of tessellation.
 public:
     
-    cxTesselateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
+    cxTessellateVisitor():osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {
     }
     virtual void apply(osg::Geode& geode) {
 
         for(unsigned int i=0;i<geode.getNumDrawables();++i)
         {
-            tesselateDemoGeometry *geom=dynamic_cast<tesselateDemoGeometry*>(geode.getDrawable(i));
+            tessellateDemoGeometry *geom=dynamic_cast<tessellateDemoGeometry*>(geode.getDrawable(i));
             if (geom) {
                 if (!geom->getBoundaryOnly()) { // turn on bounds only
                     // NB this shows only the true boundary of the curves, no internal edges                    
                     geom->setBoundaryOnly(true);
                     
-                } else { // change to next type of tesselation...
+                } else { // change to next type of tessellation...
                     geom->setBoundaryOnly(false);
                     switch (geom->getWindingType()) {
                     case         osgUtil::Tessellator::TESS_WINDING_ODD:
@@ -704,7 +704,7 @@ public:
 };
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler
-{ // extra event handler traps 'n' key to re-tesselate any tesselated geodes.
+{ // extra event handler traps 'n' key to re-tessellate any tessellated geodes.
 public:
     
     KeyboardEventHandler(osg::Node *nd):
@@ -718,10 +718,10 @@ public:
                 {
                     if (_scene && ea.getKey()=='n')
                     {
-                        // re-tesselate the scene graph. 
-                        // the same contours are re-tesselated using a new method. Old contours 
-                        // & tesselation type are held internally in the derived Geode class tesselateDemoGeometry.
-                        cxTesselateVisitor tsv;
+                        // re-tessellate the scene graph. 
+                        // the same contours are re-tessellated using a new method. Old contours 
+                        // & tessellation type are held internally in the derived Geode class tessellateDemoGeometry.
+                        cxTessellateVisitor tsv;
                         _scene->accept(tsv);
                        return true;
                     }
@@ -783,10 +783,10 @@ int main( int argc, char **argv )
     // if no model has been successfully loaded report failure.
     if (!loadedModel) 
     {
-        loadedModel=makeTesselateExample();
+        loadedModel=makeTessellateExample();
     } else { // if there is a loaded model:
-        // tesselate by searching for geode called tesselate & tesselate it
-        setTesselateVisitor tsv;
+        // tessellate by searching for geode called tessellate & tessellate it
+        setTessellateVisitor tsv;
         loadedModel->accept(tsv);
     }
 
@@ -815,7 +815,7 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
 
-    // add event handler for keyboard 'n' to retesselate
+    // add event handler for keyboard 'n' to retessellate
     viewer.getEventHandlerList().push_front(new KeyboardEventHandler(loadedModel.get()));
 
     // create the windows and run the threads.

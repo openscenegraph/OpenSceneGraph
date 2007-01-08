@@ -84,6 +84,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __void__setUpViewAcrossAllScreens,
 	          "Convinience method for creating slave Cameras and associated GraphicsWindows across all screens. ",
 	          "");
+	I_MethodWithDefaults1(void, setUpViewOnSingleScreen, IN, unsigned int, screenNum, 0,
+	                      __void__setUpViewOnSingleScreen__unsigned_int,
+	                      "Convinience method for a single Camara associated with a single full screen GraphicsWindow. ",
+	                      "");
 	I_Method0(void, requestRedraw,
 	          __void__requestRedraw,
 	          "requestRedraw() requests a single redraw. ",
@@ -112,5 +116,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);
+	I_SimpleProperty(unsigned int, UpViewOnSingleScreen, 
+	                 0, 
+	                 __void__setUpViewOnSingleScreen__unsigned_int);
 END_REFLECTOR
 

@@ -93,6 +93,10 @@ BEGIN_OBJECT_REFLECTOR(osg::LightSource)
 	                      __void__setLocalStateSetModes__StateAttribute_GLModeValue,
 	                      "Set up the local StateSet. ",
 	                      "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          __BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
@@ -106,5 +110,8 @@ BEGIN_OBJECT_REFLECTOR(osg::LightSource)
 	I_SimpleProperty(osg::LightSource::ReferenceFrame, ReferenceFrame, 
 	                 __ReferenceFrame__getReferenceFrame, 
 	                 __void__setReferenceFrame__ReferenceFrame);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 

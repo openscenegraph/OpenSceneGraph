@@ -51,7 +51,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	          "");
 	I_Method1(void, merge, IN, osgUtil::DelaunayConstraint *, dco,
 	          __void__merge__DelaunayConstraint_P1,
-	          "Add vertices and constraint loops from dco Can be used to generate extra vertices where dco crosses 'this' using osgUtil::tesselator to insert overlap vertices. ",
+	          "Add vertices and constraint loops from dco Can be used to generate extra vertices where dco crosses 'this' using osgUtil::tessellator to insert overlap vertices. ",
 	          "");
 	I_Method1(void, removeVerticesInside, IN, const osgUtil::DelaunayConstraint *, dco,
 	          __void__removeVerticesInside__C5_DelaunayConstraint_P1,

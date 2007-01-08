@@ -60,6 +60,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__useCursor__bool,
 	          "Switch on/off the cursor. ",
 	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "Return whether a valid and usable GraphicsContext has been created. ",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          __bool__realizeImplementation,
 	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
@@ -72,14 +76,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__closeImplementation,
 	          "Close the graphics context implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
-	I_Method0(void, makeCurrentImplementation,
-	          __void__makeCurrentImplementation,
+	I_Method0(bool, makeCurrentImplementation,
+	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
-	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, x,
-	          __void__makeContextCurrentImplementation__GraphicsContext_P1,
+	I_Method1(bool, makeContextCurrentImplementation, IN, osg::GraphicsContext *, x,
+	          __bool__makeContextCurrentImplementation__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	I_Method0(bool, releaseContextImplementation,
+	          __bool__releaseContextImplementation,
+	          "Release the graphics context. ",
+	          "");
 	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, x,
 	          __void__bindPBufferToTextureImplementation__GLenum,
 	          "Pure virtual, Bind the graphics context to associated texture implementation. ",

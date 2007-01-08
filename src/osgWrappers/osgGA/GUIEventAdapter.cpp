@@ -41,6 +41,8 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::EventType)
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PRESSURE);
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER);
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE);
+	I_EnumLabel(osgGA::GUIEventAdapter::CLOSE_WINDOW);
+	I_EnumLabel(osgGA::GUIEventAdapter::QUIT_APPLICATION);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::KeySymbol)

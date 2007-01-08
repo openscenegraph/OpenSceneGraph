@@ -154,6 +154,22 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __void__keyRelease__int__double,
 	          "Method for adapting keyboard press events. ",
 	          "Note, special keys such as Ctrl/Function keys should be adapted to GUIEventAdapter::KeySymbol mappings, with specified time. ");
+	I_Method0(void, closeWindow,
+	          __void__closeWindow,
+	          "Method for adapting close window events. ",
+	          "");
+	I_Method1(void, closeWindow, IN, double, time,
+	          __void__closeWindow__double,
+	          "Method for adapting close window event with specified event time. ",
+	          "");
+	I_Method0(void, quitApplication,
+	          __void__quitApplication,
+	          "Method for adapting application quit events. ",
+	          "");
+	I_Method1(void, quitApplication, IN, double, time,
+	          __void__quitApplication__double,
+	          "Method for adapting application quit events with specified event time. ",
+	          "");
 	I_Method1(void, frame, IN, double, time,
 	          __void__frame__double,
 	          "Method for adapting frame events. ",

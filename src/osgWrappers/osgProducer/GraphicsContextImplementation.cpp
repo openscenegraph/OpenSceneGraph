@@ -39,6 +39,10 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::GraphicsContextImplementation)
 	          __C5_Producer_RenderSurface_P1__getRenderSurface,
 	          "Return the const RenderSurface that implements the graphics context. ",
 	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "Return whether a valid and usable GraphicsContext has been created - assume success. ",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          __bool__realizeImplementation,
 	          "Realise the GraphicsContext. ",
@@ -51,13 +55,17 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::GraphicsContextImplementation)
 	          __void__closeImplementation,
 	          "Close the graphics context. ",
 	          "");
-	I_Method0(void, makeCurrentImplementation,
-	          __void__makeCurrentImplementation,
+	I_Method0(bool, makeCurrentImplementation,
+	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current. ",
 	          "");
-	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
-	          __void__makeContextCurrentImplementation__osg_GraphicsContext_P1,
+	I_Method1(bool, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
+	          __bool__makeContextCurrentImplementation__osg_GraphicsContext_P1,
 	          "Make this graphics context current with specified read context. ",
+	          "");
+	I_Method0(bool, releaseContextImplementation,
+	          __bool__releaseContextImplementation,
+	          "Release the graphics context. ",
 	          "");
 	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer,
 	          __void__bindPBufferToTextureImplementation__GLenum,

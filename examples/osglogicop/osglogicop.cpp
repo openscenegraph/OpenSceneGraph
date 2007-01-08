@@ -6,9 +6,11 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osgUtil/Optimizer>
+
+#include <iostream>
 
 const int _ops_nb=16;
 const osg::LogicOp::Opcode _operations[_ops_nb]=
@@ -118,28 +120,19 @@ void TechniqueEventHandler::getUsage(osg::ApplicationUsage& usage) const
 
 int main( int argc, char **argv )
 {
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates how to use glLogicOp for mixing rendered scene and the frame-buffer.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-   
-    // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
 
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel)
     {
+        osg::notify(osg::NOTICE)<<"Please specify model filename on the command line."<<std::endl;
         return 1;
     }
   
     osg::Group* root = new osg::Group;
     root->addChild(loadedModel);
-    
     
     osg::StateSet*  stateset =  new osg::StateSet;
     osg::LogicOp*   logicOp =   new osg::LogicOp(osg::LogicOp::OR_INVERTED);
@@ -152,41 +145,10 @@ int main( int argc, char **argv )
 
     loadedModel->setStateSet(stateset);
 
+    // construct the viewer.
+    osgViewer::Viewer viewer;
 
-
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    viewer.getEventHandlerList().push_front(new TechniqueEventHandler(logicOp));
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
- 
+    viewer.addEventHandler(new TechniqueEventHandler(logicOp));
     
     // run optimization over the scene graph
     osgUtil::Optimizer optimzer;
@@ -195,30 +157,5 @@ int main( int argc, char **argv )
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( root );
     
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

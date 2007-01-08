@@ -27,7 +27,7 @@
 
 #include <osgGA/TrackballManipulator>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -38,7 +38,7 @@ int runApp(std::string xapp);
 class PickHandler : public osgGA::GUIEventHandler {
 public: 
 
-    PickHandler(osgProducer::Viewer* viewer,osgText::Text* updateText):
+    PickHandler(osgViewer::Viewer* viewer,osgText::Text* updateText):
         _viewer(viewer),
         _updateText(updateText) {}
         
@@ -55,7 +55,7 @@ public:
     
 protected:
 
-    osgProducer::Viewer* _viewer;
+    osgViewer::Viewer* _viewer;
     osg::ref_ptr<osgText::Text>  _updateText;
 };
 
@@ -93,6 +93,7 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
 
 std::string PickHandler::pick(float x, float y)
 {
+#if 0
     osgUtil::IntersectVisitor::HitList hlist;
     if (_viewer->computeIntersections(x, y, hlist))
     {
@@ -103,6 +104,9 @@ std::string PickHandler::pick(float x, float y)
             if (hitr->_geode.valid() && !hitr->_geode->getName().empty()) return hitr->_geode->getName();
         }
     }
+#else
+    osg::notify(osg::NOTICE)<<"Picking not implemented yet "<<x<<", "<<y<<std::endl;
+#endif    
     return "";
 }
 
@@ -396,15 +400,12 @@ int main( int argc, char **argv )
     }
     
     // construct the viewer.
-    osgProducer::Viewer viewer;
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-   
     osg::ref_ptr<osgText::Text> updateText = new osgText::Text;
 
     // add the handler for doing the picking
-    viewer.getEventHandlerList().push_front(new PickHandler(&viewer,updateText.get()));
+    viewer.addEventHandler(new PickHandler(&viewer,updateText.get()));
 
     osg::Group* root = new osg::Group();
 
@@ -422,34 +423,15 @@ int main( int argc, char **argv )
     osg::Matrix lookAt;
     lookAt.makeLookAt(osg::Vec3(0.0f, -4.0f, 0.0f), centerScope, osg::Vec3(0.0f, 0.0f, 1.0f));
 
-    //viewer.setView(lookAt);
+    viewer.getCamera()->setViewMatrix(lookAt);
         
+    viewer.realize();
+
     while( !viewer.done() )
     {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-
-        // to be able to turn scene, place next call before viewer.update()
-        viewer.setView(lookAt);
-
-    
         // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
+        viewer.frame();        
     }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
 
     return 0;
 } // end main

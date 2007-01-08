@@ -1,4 +1,4 @@
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Projection>
 #include <osg/Geometry>
@@ -16,11 +16,12 @@
 #include <osg/Material>
 #include <osg/TexEnvCombine>
 #include <osg/TexEnv>
-
-#include <osg/Camera>
+#include <osg/AnimationPath>
 #include <osg/TexGenNode>
 
 #include <osgDB/ReadFile>
+
+#include <iostream>
 
 using namespace osg;
 
@@ -422,13 +423,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--no-base-texture", "Adde base texture to shadowed model.");
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments. getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     bool withBaseTexture = true;
     while(arguments.read("--with-base-texture")) { withBaseTexture = true; }
@@ -439,16 +434,6 @@ int main(int argc, char** argv)
     {
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-      arguments.writeErrorMessages(std::cout);
-      return 1;
     }
 
     ref_ptr<MatrixTransform> scene = new MatrixTransform;
@@ -473,34 +458,11 @@ int main(int argc, char** argv)
         shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),0);
     }
     
+    // viewer.setUpViewOnSingleScreen();
+
     scene->addChild(shadowedScene.get());
 
     viewer.setSceneData(scene.get());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while (!viewer.done())
-    {
-      // wait for all cull and draw threads to complete.
-      viewer.sync();
-
-      // update the scene by traversing it with the the update visitor which will
-      // call all node update callbacks and animations.
-      viewer.update();
-         
-      // fire off the cull and draw traversals of the scene.
-      viewer.frame();
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

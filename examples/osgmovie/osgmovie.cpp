@@ -1,6 +1,6 @@
 // -*-c++-*-
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osgDB/ReadFile>
 
@@ -18,26 +18,9 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/EventVisitor>
 
+#include <iostream>
+
 osg::ImageStream* s_imageStream = 0;
-class PostSwapFinishCallback : public Producer::Camera::Callback
-{
-public:
-
-    PostSwapFinishCallback() {}
-
-    virtual void operator()(const Producer::Camera& camera)
-    {
-        // osg::Timer_t start_tick = osg::Timer::instance()->tick();
-        
-        osgProducer::OsgSceneHandler* sh = const_cast<osgProducer::OsgSceneHandler*>(dynamic_cast<const osgProducer::OsgSceneHandler*>(camera.getSceneHandler()));
-    
-        if (s_imageStream && s_imageStream->getPixelBufferObject()) s_imageStream->getPixelBufferObject()->compileBuffer(*(sh->getSceneView()->getState()));
-        // glFinish();
-
-        //osg::notify(osg::NOTICE)<<"callback after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
-    }
-};
-
 class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
@@ -133,6 +116,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         case(osgGA::GUIEventAdapter::PUSH):
         case(osgGA::GUIEventAdapter::RELEASE):
         {
+#if 0
             osgProducer::Viewer* viewer = dynamic_cast<osgProducer::Viewer*>(&aa);
             osgUtil::IntersectVisitor::HitList hlist;
             if (viewer->computeIntersections(ea.getX(),ea.getY(), nv->getNodePath().back(), hlist))
@@ -205,13 +189,15 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                         }
     
                     }
-
                 } 
             }
             else
             {
                 osg::notify(osg::NOTICE)<<"No hit"<<std::endl;
             }
+#else
+            osg::notify(osg::NOTICE)<<"Need to implement picking."<<std::endl;
+#endif
             break;
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
@@ -330,21 +316,17 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example demonstrates the use of ImageStream for rendering movies as textures.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--texture2D","Use Texture2D rather than TextureRectangle.");
+    arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
     
     bool useTextureRectangle = true;
     bool useShader = false;
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
     
     while (arguments.read("--texture2D")) useTextureRectangle=false;
     while (arguments.read("--shader")) useShader=true;
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -422,10 +404,9 @@ int main(int argc, char** argv)
     if (geode->getNumDrawables()==0)
     {
         // nothing loaded.
+        arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-    
-    
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
@@ -445,53 +426,11 @@ int main(int argc, char** argv)
         return 1;
     }
 
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-    }
-/*
-    // set up a post swap callback to flush deleted GL objects and compile new GL objects            
-    for(unsigned int cameraNum=0;cameraNum<viewer.getNumberOfCameras();++cameraNum)
-    {
-        Producer::Camera* camera=viewer.getCamera(cameraNum);
-        camera->addPostSwapCallback(new PostSwapFinishCallback());
-    }
-*/
     // set the scene to render
     viewer.setSceneData(geode.get());
 
     // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-        
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 
 
 }

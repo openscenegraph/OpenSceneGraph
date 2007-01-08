@@ -1,4 +1,4 @@
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/MatrixTransform>
 #include <osg/Billboard>
@@ -23,12 +23,13 @@
 #include <osg/Geometry>
 #include <osg/ShapeDrawable>
 
+#include <iostream>
 
 class OccluderEventHandler : public osgGA::GUIEventHandler
 {
     public:
     
-        OccluderEventHandler(osgProducer::Viewer* viewer):_viewer(viewer) {}
+        OccluderEventHandler(osgViewer::Viewer* viewer):_viewer(viewer) {}
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
 
@@ -39,20 +40,20 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
         osg::Group* rootNode() { return dynamic_cast<osg::Group*>(_viewer->getSceneData()); }
         
         
-        osgProducer::Viewer*                    _viewer;
+        osgViewer::Viewer*                    _viewer;
         osg::ref_ptr<osg::Group>                _occluders;
         osg::ref_ptr<osg::ConvexPlanarOccluder> _convexPlanarOccluder;
 };
 
 bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
 {
+#if 0
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
             if (ea.getKey()=='a')
             {
-
                 float x = ea.getXnormalized();
                 float y = ea.getYnormalized();
  
@@ -96,6 +97,10 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
         default:
             return false;
     }
+#else
+    osg::notify(osg::NOTICE)<<"Computre intersections not implemented yet."<<std::endl;
+    return false;
+#endif
 }
 
 void OccluderEventHandler::addPoint(const osg::Vec3& pos)
@@ -284,21 +289,15 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-m","Mannually create occluders");
    
     // initialize the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    osgViewer::Viewer viewer;
 
     bool manuallyCreateOccluders = false;
     while (arguments.read("-m")) { manuallyCreateOccluders = true; }
 
     if (manuallyCreateOccluders)
     {
-        viewer.getEventHandlerList().push_front(new OccluderEventHandler(&viewer));
+        viewer.addEventHandler(new OccluderEventHandler(&viewer));
     }
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -307,20 +306,11 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-
     // load the nodes from the commandline arguments.
     osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
     if (!loadedmodel)
     {
+        osg::notify(osg::NOTICE)<<"Please sepecify and model filename on the command line."<<std::endl;
         return 1;
     }
     
@@ -345,33 +335,5 @@ int main( int argc, char **argv )
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode.get() );
 
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

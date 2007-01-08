@@ -289,8 +289,6 @@ void Font::releaseGLObjects(osg::State* state) const
         itr!=_glyphTextureList.end();
         ++itr)
     {
-        osg::notify(osg::NOTICE)<<"  Texture::releaseGLObjects("<<state<<")"<<std::endl;
-        // (*itr)->releaseGLObjects(state);
         (*itr)->releaseGLObjects(state);
     }
     
@@ -642,7 +640,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
     }
     else
     {
-        osg::notify(osg::NOTICE) << "no need to subload "<<std::endl;
+//        osg::notify(osg::INFO) << "no need to subload "<<std::endl;
     }
 
 

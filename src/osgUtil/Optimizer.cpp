@@ -47,7 +47,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -91,8 +91,8 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~COPY_SHARED_NODES")!=std::string::npos) options ^= COPY_SHARED_NODES;
         else if(str.find("COPY_SHARED_NODES")!=std::string::npos) options |= COPY_SHARED_NODES;
 
-        if(str.find("~TESSELATE_GEOMETRY")!=std::string::npos) options ^= TESSELATE_GEOMETRY;
-        else if(str.find("TESSELATE_GEOMETRY")!=std::string::npos) options |= TESSELATE_GEOMETRY;
+        if(str.find("~TESSELLATE_GEOMETRY")!=std::string::npos) options ^= TESSELLATE_GEOMETRY;
+        else if(str.find("TESSELLATE_GEOMETRY")!=std::string::npos) options |= TESSELLATE_GEOMETRY;
 
         if(str.find("~TRISTRIP_GEOMETRY")!=std::string::npos) options ^= TRISTRIP_GEOMETRY;
         else if(str.find("TRISTRIP_GEOMETRY")!=std::string::npos) options |= TRISTRIP_GEOMETRY;
@@ -131,11 +131,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         stats.print(osg::notify(osg::NOTICE));
     }
 
-    if (options & TESSELATE_GEOMETRY)
+    if (options & TESSELLATE_GEOMETRY)
     {
-        osg::notify(osg::INFO)<<"Optimizer::optimize() doing TESSELATE_GEOMETRY"<<std::endl;
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing TESSELLATE_GEOMETRY"<<std::endl;
 
-        TesselateVisitor tsv;
+        TessellateVisitor tsv;
         node->accept(tsv);        
     }
     
@@ -312,16 +312,16 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
 
 ////////////////////////////////////////////////////////////////////////////
-// Tesselate geometry - eg break complex POLYGONS into triangles, strips, fans..
+// Tessellate geometry - eg break complex POLYGONS into triangles, strips, fans..
 ////////////////////////////////////////////////////////////////////////////
-void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
+void Optimizer::TessellateVisitor::apply(osg::Geode& geode)
 {
     for(unsigned int i=0;i<geode.getNumDrawables();++i)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom) {
-            osgUtil::Tessellator tessellator;
-            tessellator.retessellatePolygons(*geom);
+            osgUtil::Tessellator Tessellator;
+            Tessellator.retessellatePolygons(*geom);
         }
     }
     traverse(geode);

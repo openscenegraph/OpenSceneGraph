@@ -174,9 +174,9 @@ class BSPLoad
 {
 public:
 
-  bool Load(const std::string& filename, int curveTesselation);
+  bool Load(const std::string& filename, int curveTessellation);
   void LoadVertices(std::ifstream& aFile);
-  void LoadFaces(std::ifstream& aFile, int curveTesselation);
+  void LoadFaces(std::ifstream& aFile, int curveTessellation);
   void LoadTextures(std::ifstream& aFile);
   void LoadLightmaps(std::ifstream& aFile);
   void LoadBSPData(std::ifstream& aFile);

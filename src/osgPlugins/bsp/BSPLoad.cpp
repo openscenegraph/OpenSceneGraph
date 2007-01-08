@@ -7,7 +7,7 @@
 
 
 
-bool BSPLoad::Load(const std::string& filename, int curveTesselation)
+bool BSPLoad::Load(const std::string& filename, int curveTessellation)
 {
   std::ifstream file(filename.c_str(),std::ios::binary);
   if(!file.is_open())
@@ -45,7 +45,7 @@ bool BSPLoad::Load(const std::string& filename, int curveTesselation)
 
 
   //Load in faces
-  LoadFaces(file, curveTesselation);
+  LoadFaces(file, curveTessellation);
   
   //Load textures
   LoadTextures(file);
@@ -96,7 +96,7 @@ void BSPLoad::LoadVertices(std::ifstream& aFile)
 
 
 
-void BSPLoad::LoadFaces(std::ifstream& aFile, int /*curveTesselation*/)
+void BSPLoad::LoadFaces(std::ifstream& aFile, int /*curveTessellation*/)
 {
   //calculate number of load faces
   int numTotalFaces=m_header.m_directoryEntries[bspFaces].m_length/sizeof(BSP_LOAD_FACE);

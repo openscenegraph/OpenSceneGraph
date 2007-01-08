@@ -32,8 +32,8 @@ void Optimizer::optimize(osg::Node* node)
         if(str.find("~DEFAULT")!=std::string::npos) options ^= DEFAULT_OPTIMIZATIONS;
         else if(str.find("DEFAULT")!=std::string::npos) options |= DEFAULT_OPTIMIZATIONS;
 
-        if(str.find("~TESSELATE_POLYGON")!=std::string::npos) options ^= TESSELATE_POLYGON;
-        else if(str.find("TESSELATE_POLYGON")!=std::string::npos) options |= TESSELATE_POLYGON;
+        if(str.find("~TESSELLATE_POLYGON")!=std::string::npos) options ^= TESSELLATE_POLYGON;
+        else if(str.find("TESSELLATE_POLYGON")!=std::string::npos) options |= TESSELLATE_POLYGON;
 
         if(str.find("~MAKE_LIT")!=std::string::npos) options ^= MAKE_LIT;
         else if(str.find("MAKE_LIT")!=std::string::npos) options |= MAKE_LIT;
@@ -51,11 +51,11 @@ void Optimizer::optimize(osg::Node* node)
 
 void Optimizer::optimize(osg::Node* node, unsigned int options)
 {
-    if (options & TESSELATE_POLYGON)
+    if (options & TESSELLATE_POLYGON)
     {
-        osg::notify(osg::INFO)<<"osgFlightUtil::Optimizer::optimize() doing TESSELATE_POLYGON"<<std::endl;
+        osg::notify(osg::INFO)<<"osgFlightUtil::Optimizer::optimize() doing TESSELLATE_POLYGON"<<std::endl;
 
-        TesselateVisitor visitor;
+        TessellateVisitor visitor;
         node->accept(visitor);
     }
 
@@ -77,7 +77,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 }
 
 
-void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
+void Optimizer::TessellateVisitor::apply(osg::Geode& geode)
 {
     for (unsigned int i=0; i<geode.getNumDrawables(); ++i)
     {
@@ -86,15 +86,15 @@ void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
         {
             if (hasPolygons(*geometry))
             {
-                // Tesselate
-                osgUtil::Tessellator tessellator;
-                tessellator.retessellatePolygons(*geometry);
+                // Tessellate
+                osgUtil::Tessellator Tessellator;
+                Tessellator.retessellatePolygons(*geometry);
             }
         }
     }
 }
 
-bool Optimizer::TesselateVisitor::hasPolygons(osg::Geometry& geometry)
+bool Optimizer::TessellateVisitor::hasPolygons(osg::Geometry& geometry)
 {
     for (unsigned int i=0; i<geometry.getNumPrimitiveSets(); ++i)
     {

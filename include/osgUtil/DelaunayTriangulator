@@ -73,7 +73,7 @@ public:
 
     /** Add vertices and constraint loops from dco
      * Can be used to generate extra vertices where dco crosses 'this' using
-     * osgUtil::tessellator to insert overlap vertices.
+     * osgUtil::Tessellator to insert overlap vertices.
      */
     void merge(DelaunayConstraint *dco);
 
@@ -89,7 +89,7 @@ public:
     virtual bool contains(const osg::Vec3 testpoint) const;
     virtual bool outside(const osg::Vec3 testpoint) const;
 
-    /** Tesselate the constraint loops so that the crossing points are interpolated
+    /** Tessellate the constraint loops so that the crossing points are interpolated
      * and added to the contraints for the triangulation. */
     void handleOverlaps(void);
 

@@ -240,7 +240,7 @@ class FLTReaderWriter : public ReaderWriter
             if (!document.getPreserveFace())
             {
                 osgUtil::Optimizer optimizer;
-                optimizer.optimize(document.getHeaderNode(),  osgUtil::Optimizer::SHARE_DUPLICATE_STATE | osgUtil::Optimizer::MERGE_GEOMETRY | osgUtil::Optimizer::MERGE_GEODES | osgUtil::Optimizer::TESSELATE_GEOMETRY );
+                optimizer.optimize(document.getHeaderNode(),  osgUtil::Optimizer::SHARE_DUPLICATE_STATE | osgUtil::Optimizer::MERGE_GEOMETRY | osgUtil::Optimizer::MERGE_GEODES | osgUtil::Optimizer::TESSELLATE_GEOMETRY );
             }
 
             return document.getHeaderNode();

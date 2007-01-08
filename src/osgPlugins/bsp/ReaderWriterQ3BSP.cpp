@@ -153,13 +153,13 @@ public:
     {
     }
 
-    bool Tesselate(int newTesselation,osg::Geometry* aGeometry);
+    bool Tessellate(int newTessellation,osg::Geometry* aGeometry);
 
     BSP_VERTEX m_controlPoints[9];  // Se accede a ellos en la carga
 
 protected:
         
-    int m_tesselation;
+    int m_tessellation;
     std::vector<BSP_VERTEX> m_vertices;
     std::vector<GLuint> m_indices;
 
@@ -319,7 +319,7 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
               
   
               osg::Geometry* patch_geom = new osg::Geometry;
-              //tesselate the patch
+              //tessellate the patch
 
               osg::StateSet* stateset = patch_geom->getOrCreateStateSet();
               if(texture)
@@ -334,7 +334,7 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
                 
               //patch_group->addChild(map_geode);
 
-              current_patch.m_quadraticPatches[y*numPatchesWide+x].Tesselate(8/*aCurveTesselation*/,patch_geom);
+              current_patch.m_quadraticPatches[y*numPatchesWide+x].Tessellate(8/*aCurveTessellation*/,patch_geom);
               map_geode->addDrawable(patch_geom);
             }
         }
@@ -555,27 +555,27 @@ bool ReaderWriterQ3BSP::loadLightMaps(const BSPLoad& aLoadData,std::vector<osg::
 }
 
 
-//Tesselate a biquadratic patch
-bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation,osg::Geometry* aGeometry)
+//Tessellate a biquadratic patch
+bool BSP_BIQUADRATIC_PATCH::Tessellate(int newTessellation,osg::Geometry* aGeometry)
 {
-    m_tesselation=newTesselation;
+    m_tessellation=newTessellation;
 
     float px, py;
     BSP_VERTEX temp[3];
-    m_vertices.resize((m_tesselation+1)*(m_tesselation+1));
+    m_vertices.resize((m_tessellation+1)*(m_tessellation+1));
 
-    for(int v=0; v<=m_tesselation; ++v)
+    for(int v=0; v<=m_tessellation; ++v)
       {
-        px=(float)v/m_tesselation;
+        px=(float)v/m_tessellation;
 
         m_vertices[v]=m_controlPoints[0]*((1.0f-px)*(1.0f-px))+
                       m_controlPoints[3]*((1.0f-px)*px*2)+
                       m_controlPoints[6]*(px*px);
       }
 
-    for(int u=1; u<=m_tesselation; ++u)
+    for(int u=1; u<=m_tessellation; ++u)
       {
-        py=(float)u/m_tesselation;
+        py=(float)u/m_tessellation;
 
         temp[0]=m_controlPoints[0]*((1.0f-py)*(1.0f-py))+
                 m_controlPoints[1]*((1.0f-py)*py*2)+
@@ -589,47 +589,47 @@ bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation,osg::Geometry* aGeometr
                 m_controlPoints[7]*((1.0f-py)*py*2)+
                 m_controlPoints[8]*(py*py);
 
-        for(int v=0; v<=m_tesselation; ++v)
+        for(int v=0; v<=m_tessellation; ++v)
           {
-            px=(float)v/m_tesselation;
+            px=(float)v/m_tessellation;
 
-            m_vertices[u*(m_tesselation+1)+v]=temp[0]*((1.0f-px)*(1.0f-px))+
+            m_vertices[u*(m_tessellation+1)+v]=temp[0]*((1.0f-px)*(1.0f-px))+
                                               temp[1]*((1.0f-px)*px*2)+
                                               temp[2]*(px*px);
           }
       }
 
     //Create indices
-    m_indices.resize(m_tesselation*(m_tesselation+1)*2);
+    m_indices.resize(m_tessellation*(m_tessellation+1)*2);
 
     int row;
-    for(row=0; row<m_tesselation; ++row)
+    for(row=0; row<m_tessellation; ++row)
       {
-        for(int point=0; point<=m_tesselation; ++point)
+        for(int point=0; point<=m_tessellation; ++point)
           {
             //calculate indices
             //reverse them to reverse winding
-            m_indices[(row*(m_tesselation+1)+point)*2+1]= row*(m_tesselation+1)+point;
-            m_indices[(row*(m_tesselation+1)+point)*2]=  (row+1)*(m_tesselation+1)+point;
+            m_indices[(row*(m_tessellation+1)+point)*2+1]= row*(m_tessellation+1)+point;
+            m_indices[(row*(m_tessellation+1)+point)*2]=  (row+1)*(m_tessellation+1)+point;
           }
       }
 
 
     //Fill in the arrays for multi_draw_arrays
-    m_trianglesPerRow.resize(m_tesselation);
-    m_rowIndexPointers.resize(m_tesselation);
+    m_trianglesPerRow.resize(m_tessellation);
+    m_rowIndexPointers.resize(m_tessellation);
 
-    for(row=0; row<m_tesselation; ++row)
+    for(row=0; row<m_tessellation; ++row)
       {
-        m_trianglesPerRow[row]=2*(m_tesselation+1);
-        m_rowIndexPointers[row]=&m_indices[row*2*(m_tesselation+1)];
+        m_trianglesPerRow[row]=2*(m_tessellation+1);
+        m_rowIndexPointers[row]=&m_indices[row*2*(m_tessellation+1)];
       }
 
 
-    osg::Vec3Array* patch_vertex_array = new osg::Vec3Array( (m_tesselation+1)*(m_tesselation+1) );
-    osg::Vec2Array* patch_textcoord_array = new osg::Vec2Array( (m_tesselation+1)*(m_tesselation+1) );
-    osg::Vec2Array* patch_lmapcoord_array = new osg::Vec2Array( (m_tesselation+1)*(m_tesselation+1) );
-    for(int i=0;i<(m_tesselation+1)*(m_tesselation+1);i++)
+    osg::Vec3Array* patch_vertex_array = new osg::Vec3Array( (m_tessellation+1)*(m_tessellation+1) );
+    osg::Vec2Array* patch_textcoord_array = new osg::Vec2Array( (m_tessellation+1)*(m_tessellation+1) );
+    osg::Vec2Array* patch_lmapcoord_array = new osg::Vec2Array( (m_tessellation+1)*(m_tessellation+1) );
+    for(int i=0;i<(m_tessellation+1)*(m_tessellation+1);i++)
       {
         (*patch_vertex_array)[i].set( m_vertices[ i ].m_position[0],
                                       m_vertices[ i ].m_position[1],
@@ -651,10 +651,10 @@ bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation,osg::Geometry* aGeometr
     aGeometry->setTexCoordArray(1,patch_lmapcoord_array);
 
 
-    for(row=0; row<m_tesselation; ++row)
+    for(row=0; row<m_tessellation; ++row)
       {
         osg::DrawElementsUInt* face_indices = new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP,
-                                                        m_tesselation*(m_tesselation+1)*2,
+                                                        m_tessellation*(m_tessellation+1)*2,
                                                         &m_indices[0]
                                                         );
         aGeometry->addPrimitiveSet(face_indices);

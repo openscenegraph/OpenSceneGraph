@@ -179,7 +179,7 @@ private:
     int _lightnum;
     StateSet *dstate; // used to represent the dw material in OSG
 };
-// structure to use as data for tesselation
+// structure to use as data for tessellation
 
 typedef struct {
     double pos[3]; // must be double for the tessellator to detect vertices
@@ -327,7 +327,7 @@ public:
         poses.nrmv=nrm;
         poses.idx=idx[j];
     }
-    void tesselate(const std::vector<Vec3> verts, const dwmaterial *themat, 
+    void tessellate(const std::vector<Vec3> verts, const dwmaterial *themat, 
           GLUtesselator *ts, _dwobj *dwob, const Matrix *tmat) const;
     void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
     inline const int getidx(int i) const { return idx[i];}
@@ -366,12 +366,12 @@ public:
     ~prims() {    /*delete [] primlengs; delete [] nrms;
         delete [] gsidx; delete [] nrmidx; delete [] txcoords;*/
     }
-    void addv(avertex *pos) { // tesselation callback
+    void addv(avertex *pos) { // tessellation callback
         vertices->push_back(osg::Vec3(pos->pos[0],pos->pos[1],pos->pos[2]));
         normals->push_back(pos->nrmv);
         txcoords->push_back(osg::Vec3(pos->uv[0],pos->uv[1],0.0f));
     }
-    void End() { // tesselation is done
+    void End() { // tessellation is done
         int nverts=vertices->size()-nbegin;
         osg::DrawArrays *drw=NULL;                                
             switch (primType) {
@@ -405,7 +405,7 @@ public:
                 break;
             }
     }
-    void begin(GLenum op) { // part of a tesselator callback - starts a new primitive of type op
+    void begin(GLenum op) { // part of a Tessellator callback - starts a new primitive of type op
         primType=op;
         nbegin=vertices->size();
     }
@@ -440,10 +440,10 @@ public:
         drw=new osg::DrawArrays(osg::PrimitiveSet::QUADS,n1,4);
         gset->addPrimitiveSet(drw);
     }
-    void tesselate(_face &fc, const std::vector<Vec3> verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
+    void tessellate(_face &fc, const std::vector<Vec3> verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
     {    // generates a set of primitives all of one type (eg tris, qstrip trifan...)
         fc.setNBegin(vertices->size());
-        fc.tesselate(verts, themat, ts, dwob, tmat);
+        fc.tessellate(verts, themat, ts, dwob, tmat);
     }
     void buildGeometry() { // at end of all faces, add collection of vertices to geometry
         gset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX); //BIND_PERPRIM); //
@@ -468,9 +468,9 @@ private:
     const Matrix *tmat; // local texture matrix, or may be NULL for default mapping
 };
 
-static prims *prd=NULL; // OK not nice to have a static but the OpenGL tesselator etc wants to be able to refer
+static prims *prd=NULL; // OK not nice to have a static but the OpenGL Tessellator etc wants to be able to refer
 // to things that are not available via an argument
-// tesselation subroutines - have 'C' prototypes, not a member of any class...
+// tessellation subroutines - have 'C' prototypes, not a member of any class...
 // But I want ot use the prims class to contain useful information such as texture matrix etc.
 void CALLBACK myFaceBegin(GLenum op)
 {// tess 'primitive begins' call back
@@ -493,7 +493,7 @@ void CALLBACK combineCallback( GLdouble coords[3], avertex *d[4],
 void CALLBACK error (GLenum errno)
 { // tess error code
     const unsigned char *errm=gluErrorString(errno);
-    printf("tesselator error %d %s\n", static_cast<int>(errno),errm);//, errm
+    printf("Tessellator error %d %s\n", static_cast<int>(errno),errm);//, errm
 }
     //==========
 void _face::linkholes(const std::vector<Vec3> verts, const dwmaterial *themat, const _face *f2) const
@@ -669,11 +669,11 @@ private:
     Matrix *mx; // current uvw transform for currently tessealting face
 };
 
-void _face::tesselate(const std::vector<Vec3> verts, const dwmaterial *themat, 
+void _face::tessellate(const std::vector<Vec3> verts, const dwmaterial *themat, 
                GLUtesselator *ts, _dwobj *dwob, const Matrix * /*tmat*/) const {
     int nvall=getallverts();
     int nused=0;
-    avertex *poses=new avertex[2*nvall]; // passed to tesselator to redraw
+    avertex *poses=new avertex[2*nvall]; // passed to Tessellator to redraw
     Matrix mx; // texture matrix transform to plane
     settrans(mx, nrm, verts,themat);
     dwob->setmx(&mx); // may be used by combine callback to define txcoord
@@ -761,7 +761,7 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             gluTessCallback(ts, GLU_TESS_COMBINE_DATA, (GLU_TESS_CALLBACK) combineCallback);
             //  for (int nvf=0; nvf<6; nvf++) { // for each length of face
             // for Geometry we dont need to collect prim types individually
-            //     prd.setmode(nvf , nfnvf); // filter out only this type of tesselated face
+            //     prd.setmode(nvf , nfnvf); // filter out only this type of tessellated face
             prd=new prims;
             prd->settmat(tmat);
             osg::Geometry *gset = new osg::Geometry;
@@ -771,9 +771,9 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             grp->addChild( geode ); // add to the world outside
             geode->addDrawable(gset);
             
-            // each face adds a primitive to the geometry, after it is tesselated
+            // each face adds a primitive to the geometry, after it is tessellated
             for (i=0; i<nfaces; i++) { // for each face, collect up
-                prd->tesselate(faces[i],verts, themat, ts, this);
+                prd->tessellate(faces[i],verts, themat, ts, this);
             }
             for (i=0; i<nopens; i++) { // for each hole, join up front & back with Quads
                 if (fc1 && fc2) {
@@ -787,7 +787,7 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
     } // nfaces>0
     verts.clear();
 }
-////////// tesselation complete
+////////// tessellation complete
 
 class ReaderWriterDW : public osgDB::ReaderWriter
 {

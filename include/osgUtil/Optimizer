@@ -77,7 +77,7 @@ class OSGUTIL_EXPORT Optimizer
             SPATIALIZE_GROUPS =         0x080,
             COPY_SHARED_NODES =         0x100,
             TRISTRIP_GEOMETRY =         0x200,
-            TESSELATE_GEOMETRY =        0x400,
+            TESSELLATE_GEOMETRY =       0x400,
             OPTIMIZE_TEXTURE_SETTINGS = 0x800,
             MERGE_GEODES =              0x1000,
             FLATTEN_BILLBOARDS =        0x2000,
@@ -353,16 +353,16 @@ class OSGUTIL_EXPORT Optimizer
 
         };
 
-        /** Tesselate all geodes, to remove POLYGONS.*/
-        class OSGUTIL_EXPORT TesselateVisitor : public BaseOptimizerVisitor
+        /** Tessellate all geodes, to remove POLYGONS.*/
+        class OSGUTIL_EXPORT TessellateVisitor : public BaseOptimizerVisitor
         {
             public:
 
                 typedef std::set<osg::Group*>  GroupList;
                 GroupList                      _groupList;
 
-                TesselateVisitor(Optimizer* optimizer=0):
-                    BaseOptimizerVisitor(optimizer, TESSELATE_GEOMETRY) {}
+                TessellateVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, TESSELLATE_GEOMETRY) {}
 
                 virtual void apply(osg::Geode& geode);
 

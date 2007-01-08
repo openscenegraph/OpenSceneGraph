@@ -388,6 +388,14 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          __void__accept__osg_PrimitiveFunctor_R1,
 	          "accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
@@ -497,6 +505,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_SimpleProperty(const osgText::Text::TextureGlyphQuadMap &, TextureGlyphQuadMap, 
 	                 __C5_TextureGlyphQuadMap_R1__getTextureGlyphQuadMap, 
 	                 0);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgText::Font::Glyph * >, osgText::Text::GlyphQuads::Glyphs);

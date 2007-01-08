@@ -24,10 +24,6 @@ Scene::Scene():
 
     _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
-
-    _eventQueue = new osgGA::EventQueue;
-
-    _eventVisitor = new osgGA::EventVisitor;
     
     setDatabasePager(new osgDB::DatabasePager);
 }
@@ -35,6 +31,12 @@ Scene::Scene():
 Scene::~Scene()
 {
 }
+
+void Scene::init()
+{
+    osg::notify(osg::NOTICE)<<"Scene::init() not implementated yet."<<std::endl;
+}
+
 
 void Scene::setSceneData(osg::Node* node)
 {
@@ -60,6 +62,11 @@ const osg::Node* Scene::getSceneData() const
 void Scene::setDatabasePager(osgDB::DatabasePager* dp)
 {
     _databasePager = dp;
+}
+
+void Scene::addEventHandler(osgGA::GUIEventHandler*)
+{
+    osg::notify(osg::NOTICE)<<"Scene::addEventHandler() not implementated yet."<<std::endl;
 }
 
 void Scene::frameAdvance()

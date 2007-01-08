@@ -16,6 +16,12 @@
 #include <osg/Camera>
 #include <osg/View>
 
+#include <osg/FrameBufferObject>
+#include <osg/Program>
+#include <osg/Drawable>
+#include <osg/FragmentProgram>
+#include <osg/VertexProgram>
+
 #include <osg/Notify>
 
 #include <map>
@@ -165,8 +171,70 @@ bool GraphicsContext::realize()
 
 void GraphicsContext::close(bool callCloseImplementation)
 {
+    osg::notify(osg::NOTICE)<<"close("<<callCloseImplementation<<")"<<this<<std::endl;
+
     // switch off the graphics thread...
     setGraphicsThread(0);
+    
+    
+    if (callCloseImplementation && _state.valid() && isRealized())
+    {
+
+        bool sharedContextExists = false;
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
+            if (s_contextIDMap[_state->getContextID()]>1) sharedContextExists = true;
+        }
+        
+        osg::notify(osg::NOTICE)<<"Closing still viable window "<<sharedContextExists<<" _state->getContextID()="<<_state->getContextID()<<std::endl;
+        
+
+#if 1
+
+        // release all the OpenGL objects in the scene graphs associted with this 
+        for(Cameras::iterator itr = _cameras.begin();
+            itr != _cameras.end();
+            ++itr)
+        {
+            Camera* camera = (*itr);
+            if (camera)
+            {
+                osg::notify(osg::NOTICE)<<"Releasing GL objects for Camera "<<camera<<std::endl;
+#if 1
+                camera->releaseGLObjects(_state.get());
+#else
+                camera->releaseGLObjects(0);
+#endif
+            }
+        }
+#endif
+
+#if 1
+        osg::notify(osg::NOTICE)<<"Doing makeCurrent "<<std::endl;
+        makeCurrent();
+        
+        osg::notify(osg::NOTICE)<<"Doing Flush"<<std::endl;
+
+        // flush all the OpenGL object buffer for this context.
+        double availableTime = 100.0f;
+        double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+
+        osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
+        osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
+        osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
+        osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
+        osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
+        osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
+        osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
+        osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
+        osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
+
+        osg::notify(osg::NOTICE)<<"Done Flush "<<availableTime<<std::endl;
+#endif        
+        _state->reset();
+        
+        releaseContext();
+    }
     
     if (callCloseImplementation) closeImplementation();
 
@@ -218,6 +286,7 @@ void GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
 void GraphicsContext::releaseContext()
 {
     _mutex.unlock();
+    _threadOfLastMakeCurrent = reinterpret_cast<OpenThreads::Thread*>(0xffff);
 }
 
 void GraphicsContext::swapBuffers()
@@ -392,7 +461,7 @@ void GraphicsContext::removeCamera(osg::Camera* camera)
     }
 }
 
-void GraphicsContext::resized(int x, int y, int width, int height)
+void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
 {
     if (!_traits) return;
     

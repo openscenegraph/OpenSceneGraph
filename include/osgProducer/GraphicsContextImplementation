@@ -43,6 +43,8 @@ class OSGPRODUCER_EXPORT GraphicsContextImplementation : public osg::GraphicsCon
         /** Return the const RenderSurface that implements the graphics context.*/
         const Producer::RenderSurface* getRenderSurface() const { return _rs.get(); }
 
+        /** Return whether a valid and usable GraphicsContext has been created - assume success.*/
+        virtual bool valid() const { return true; }
 
         /** Realise the GraphicsContext.*/
         virtual bool realizeImplementation();

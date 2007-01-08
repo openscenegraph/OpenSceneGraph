@@ -105,18 +105,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __bool__isRealized,
 	          "Return true if the graphics context has been realised and is ready to use. ",
 	          "");
-	I_Method0(void, makeCurrent,
-	          __void__makeCurrent,
+	I_Method0(bool, makeCurrent,
+	          __bool__makeCurrent,
 	          "Make this graphics context current. ",
-	          "Implementated by first aquiring a lock of the GraphicsContext mutex, and then doing a call to makeCurrentImplementation(). ");
-	I_Method1(void, makeContextCurrent, IN, osg::GraphicsContext *, readContext,
-	          __void__makeContextCurrent__GraphicsContext_P1,
+	          "Implementated by calling makeCurrentImplementation(). Returns true on success. ");
+	I_Method1(bool, makeContextCurrent, IN, osg::GraphicsContext *, readContext,
+	          __bool__makeContextCurrent__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context. ",
-	          "Implementated by first aquiring a lock of the GraphicsContext mutex, and then doing a call to makeContextCurrentImplementation(). ");
-	I_Method0(void, releaseContext,
-	          __void__releaseContext,
-	          "Release the graphics context by unlocking the GraphicsContext mutex. ",
-	          "");
+	          "Implementated by calling makeContextCurrentImplementation(). Returns true on success. ");
+	I_Method0(bool, releaseContext,
+	          __bool__releaseContext,
+	          "Release the graphics context. ",
+	          "Returns true on success. ");
 	I_Method0(bool, isCurrent,
 	          __bool__isCurrent,
 	          "Return true if the current thread has this OpenGL graphics context. ",
@@ -153,14 +153,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__closeImplementation,
 	          "Close the graphics context implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
-	I_Method0(void, makeCurrentImplementation,
-	          __void__makeCurrentImplementation,
+	I_Method0(bool, makeCurrentImplementation,
+	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
-	I_Method1(void, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
-	          __void__makeContextCurrentImplementation__GraphicsContext_P1,
+	I_Method1(bool, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
+	          __bool__makeContextCurrentImplementation__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	I_Method0(bool, releaseContextImplementation,
+	          __bool__releaseContextImplementation,
+	          "Release the graphics context implementation. ",
+	          "");
 	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer,
 	          __void__bindPBufferToTextureImplementation__GLenum,
 	          "Pure virtual, Bind the graphics context to associated texture implementation. ",
@@ -172,6 +176,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method4(void, resized, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
 	          __void__resized__int__int__int__int,
 	          "resized method should be called when the underlying window has been resized and the GraphicsWindow and associated Cameras must be updated to keep in sync with the new size. ",
+	          "");
+	I_Method1(void, setResizedCallback, IN, osg::GraphicsContext::ResizedCallback *, rc,
+	          __void__setResizedCallback__ResizedCallback_P1,
+	          "Set the resized callback which overrides the GraphicsConext::realizedImplementation(), allow developers to provide custom behavior in response to a window being resized. ",
+	          "");
+	I_Method0(osg::GraphicsContext::ResizedCallback *, getResizedCallback,
+	          __ResizedCallback_P1__getResizedCallback,
+	          "Get the resized callback which overrides the GraphicsConext::realizedImplementation(). ",
+	          "");
+	I_Method0(const osg::GraphicsContext::ResizedCallback *, getResizedCallback,
+	          __C5_ResizedCallback_P1__getResizedCallback,
+	          "Get the const resized callback which overrides the GraphicsConext::realizedImplementation(). ",
+	          "");
+	I_Method4(void, resizedImplementation, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          __void__resizedImplementation__int__int__int__int,
+	          "resized implementation, by default resizes the viewports and aspect ratios the cameras associated with the graphics Window. ",
 	          "");
 	I_Method0(osg::GraphicsContext::Cameras &, getCameras,
 	          __Cameras_R1__getCameras,
@@ -217,12 +237,26 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(osg::GraphicsThread *, GraphicsThread, 
 	                 __GraphicsThread_P1__getGraphicsThread, 
 	                 __void__setGraphicsThread__GraphicsThread_P1);
+	I_SimpleProperty(osg::GraphicsContext::ResizedCallback *, ResizedCallback, 
+	                 __ResizedCallback_P1__getResizedCallback, 
+	                 __void__setResizedCallback__ResizedCallback_P1);
 	I_SimpleProperty(osg::State *, State, 
 	                 __State_P1__getState, 
 	                 __void__setState__State_P1);
 	I_SimpleProperty(const osg::GraphicsContext::Traits *, Traits, 
 	                 __C5_Traits_P1__getTraits, 
 	                 0);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::ResizedCallback)
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____ResizedCallback,
+	               "",
+	               "");
+	I_Method5(void, resizedImplementation, IN, osg::GraphicsContext *, gc, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          __void__resizedImplementation__GraphicsContext_P1__int__int__int__int,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)

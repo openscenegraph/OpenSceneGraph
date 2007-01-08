@@ -154,6 +154,14 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	          __C5_FontImplementation_P1__getImplementation,
 	          "",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
@@ -191,6 +199,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_SimpleProperty(unsigned int, TextureWidthHint, 
 	                 __unsigned_int__getTextureWidthHint, 
 	                 0);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::FontImplementation)
@@ -396,9 +407,20 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	          __void__apply__osg_State_R1,
 	          "Bind the texture object. ",
 	          "If the texture object hasn't already been compiled, create the texture mipmap levels. ");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
 	I_SimpleProperty(unsigned int, GlyphImageMargin, 
 	                 __unsigned_int__getGlyphImageMargin, 
 	                 __void__setGlyphImageMargin__unsigned_int);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::KerningType)

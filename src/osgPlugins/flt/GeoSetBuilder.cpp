@@ -321,7 +321,7 @@ osg::Geode* GeoSetBuilder::createOsgGeoSets(osg::Geode* geode)
     optimizer.optimize(geode, osgUtil::Optimizer::SHARE_DUPLICATE_STATE |
                               osgUtil::Optimizer::MERGE_GEOMETRY |
                               osgUtil::Optimizer::CHECK_GEOMETRY |
-                              osgUtil::Optimizer::TESSELATE_GEOMETRY);
+                              osgUtil::Optimizer::TESSELLATE_GEOMETRY);
     return geode;
 }
 

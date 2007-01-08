@@ -24,7 +24,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgFlightUtil::Optimizer::OptimizationOptions)
-	I_EnumLabel(osgFlightUtil::Optimizer::TESSELATE_POLYGON);
+	I_EnumLabel(osgFlightUtil::Optimizer::TESSELLATE_POLYGON);
 	I_EnumLabel(osgFlightUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgFlightUtil::Optimizer::MAKE_LIT);
 	I_EnumLabel(osgFlightUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
@@ -71,9 +71,9 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TesselateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____TesselateVisitor,
+	I_Constructor0(____TessellateVisitor,
 	               "default to traversing all children. ",
 	               "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,

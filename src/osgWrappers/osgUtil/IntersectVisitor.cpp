@@ -40,7 +40,7 @@ TYPE_NAME_ALIAS(std::vector< int >, osgUtil::Hit::VecIndexList);
 BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
 	I_Constructor0(____Hit,
 	               "Describes a point in space produced by an intersection of a line with a scene. ",
-	               "A Hit is always on a surface as rendered by the Open Scene Graph scene (usually a triangle or other primitive, but a special hit handler could return a different value perhaps: a sphere shape might return a Hit on the true sphere rather than the approximate tesselated sphere rendered.");
+	               "A Hit is always on a surface as rendered by the Open Scene Graph scene (usually a triangle or other primitive, but a special hit handler could return a different value perhaps: a sphere shape might return a Hit on the true sphere rather than the approximate tessellated sphere rendered.");
 	I_Constructor1(IN, const osgUtil::Hit &, hit,
 	               ____Hit__C5_Hit_R1,
 	               "",

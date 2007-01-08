@@ -702,15 +702,11 @@ void Viewer::eventTraversal()
                 {
                     case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
                     {
-                        stopThreading();
+                        // stopThreading();
                         
                         gw->close();
                         
-                        // setThreadingModel(ThreadPerCamera);
-                        
-                        setThreadingModel(SingleThreaded);
-                        
-                        startThreading();
+                        // startThreading();
                         
                         break;
                     }

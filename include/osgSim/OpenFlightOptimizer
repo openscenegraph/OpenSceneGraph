@@ -38,11 +38,11 @@ class OSGSIM_EXPORT Optimizer
 
         enum OptimizationOptions
         {
-            TESSELATE_POLYGON =         0x001,
+            TESSELLATE_POLYGON =         0x001,
             MERGE_GEODES =              0x002,
             MAKE_LIT =                  0x004,
-            DEFAULT_OPTIMIZATIONS = TESSELATE_POLYGON | MERGE_GEODES,
-            ALL_OPTIMIZATIONS = TESSELATE_POLYGON | MERGE_GEODES
+            DEFAULT_OPTIMIZATIONS = TESSELLATE_POLYGON | MERGE_GEODES,
+            ALL_OPTIMIZATIONS = TESSELLATE_POLYGON | MERGE_GEODES
         };
 
         
@@ -59,12 +59,12 @@ class OSGSIM_EXPORT Optimizer
     
     public:
 
-        class OSGSIM_EXPORT TesselateVisitor : public osg::NodeVisitor
+        class OSGSIM_EXPORT TessellateVisitor : public osg::NodeVisitor
         {
             public:
 
                 /// default to traversing all children.
-                TesselateVisitor() :
+                TessellateVisitor() :
                     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
                 virtual void apply(osg::Geode& geode);

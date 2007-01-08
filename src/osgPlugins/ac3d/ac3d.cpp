@@ -735,7 +735,7 @@ class SurfaceBin : public PrimitiveBin {
         std::vector<VertexIndex> index;
     };
     std::vector<PolygonData> _polygons;
-    std::vector<PolygonData> _toTesselatePolygons;
+    std::vector<PolygonData> _toTessellatePolygons;
 
   public:
     SurfaceBin(unsigned flags, VertexSet *vertexSet) :
@@ -768,7 +768,7 @@ class SurfaceBin : public PrimitiveBin {
 
         // Compute the normal times the enclosed area.
         // During that check if the surface is convex. If so, put in the surface as such.
-        bool needTesselation = false;
+        bool needTessellation = false;
         osg::Vec3 prevEdgeNormal;
         osg::Vec3 weightedNormal(0, 0, 0);
         osg::Vec3 v0 = _vertexSet->getVertex(_refs[0].index);
@@ -776,11 +776,11 @@ class SurfaceBin : public PrimitiveBin {
             osg::Vec3 side1 = _vertexSet->getVertex(_refs[i-1].index) - v0;
             osg::Vec3 side2 = _vertexSet->getVertex(_refs[i].index) - v0;
             osg::Vec3 newNormal = side1^side2;
-            if (!needTesselation)
+            if (!needTessellation)
             {
                 if (3 < nRefs && newNormal*weightedNormal < 0)
                 {
-                    needTesselation = true;
+                    needTessellation = true;
                 }
                 if (i < 3)
                 {
@@ -793,7 +793,7 @@ class SurfaceBin : public PrimitiveBin {
                     osg::Vec3 edgeNormal = sideim1^sidei;
                     if (edgeNormal*prevEdgeNormal < 0)
                     {
-                        needTesselation = true;
+                        needTessellation = true;
                     }
                     prevEdgeNormal = edgeNormal;
                 }
@@ -802,14 +802,14 @@ class SurfaceBin : public PrimitiveBin {
             weightedNormal += newNormal;
         }
         
-        if (needTesselation)
+        if (needTessellation)
         {
-            unsigned polygonIndex = _toTesselatePolygons.size();
-            _toTesselatePolygons.resize(polygonIndex + 1);
+            unsigned polygonIndex = _toTessellatePolygons.size();
+            _toTessellatePolygons.resize(polygonIndex + 1);
             for (unsigned i = 0; i < nRefs; ++i) {
                 RefData refData(weightedNormal, _refs[i].texCoord, isSmooth());
                 VertexIndex vertexIndex = _vertexSet->addRefData(_refs[i].index, refData);
-                _toTesselatePolygons[polygonIndex].index.push_back(vertexIndex);
+                _toTessellatePolygons[polygonIndex].index.push_back(vertexIndex);
             }
         }
         else if (nRefs == 3)
@@ -888,23 +888,23 @@ class SurfaceBin : public PrimitiveBin {
         _geometry->setVertexArray(vertexArray);
         _geometry->setTexCoordArray(0, texcoordArray);
 
-        // At first handle the the polygons to tesselate, fix them and append the other polygons later
-        if (!_toTesselatePolygons.empty())
+        // At first handle the the polygons to tessellate, fix them and append the other polygons later
+        if (!_toTessellatePolygons.empty())
         {
-            for (unsigned i = 0; i < _toTesselatePolygons.size(); ++i)
+            for (unsigned i = 0; i < _toTessellatePolygons.size(); ++i)
             {
                 unsigned start = vertexArray->size();
-                for (unsigned j = 0; j < _toTesselatePolygons[i].index.size(); ++j)
+                for (unsigned j = 0; j < _toTessellatePolygons[i].index.size(); ++j)
                 {
-                    pushVertex(_toTesselatePolygons[i].index[j], vertexArray, normalArray, texcoordArray);
+                    pushVertex(_toTessellatePolygons[i].index[j], vertexArray, normalArray, texcoordArray);
                 }
-                unsigned count = _toTesselatePolygons[i].index.size();
+                unsigned count = _toTessellatePolygons[i].index.size();
                 osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::POLYGON, start, count);
                 _geometry->addPrimitiveSet(drawArray);
             }
 
-            osgUtil::Tessellator tessellator;
-            tessellator.retessellatePolygons(*_geometry);
+            osgUtil::Tessellator Tessellator;
+            Tessellator.retessellatePolygons(*_geometry);
         }
 
         // handle triangles

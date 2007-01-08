@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <set>
 #include <map> //GWM July 2005 map is used in constraints.
-#include <osgUtil/Tessellator> // tesselator triangulates the constrained triangles
+#include <osgUtil/Tessellator> // Tessellator triangulates the constrained triangles
 
 namespace osgUtil
 {
@@ -440,7 +440,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
     tscx->setTessellationNormal(osg::Vec3(0.0,0.0,1.0));
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(false);
-    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // the commonest tesselation is default, ODD. GE2 allows intersections of constraints to be found.
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // the commonest tessellation is default, ODD. GE2 allows intersections of constraints to be found.
     tscx->retessellatePolygons(*(gtess.get())); // this should insert extra vertices where constraints overlap
 
     // extract triangles from gtess
@@ -862,7 +862,7 @@ bool DelaunayTriangulator::triangulate()
     // http://www.geom.uiuc.edu/~samuelp/del_project.html
     // we could also implement the sourcecode in http://gts.sourceforge.net/reference/gts-delaunay-and-constrained-delaunay-triangulations.html
     // this uses the set of lines which are boundaries of the constraints, including points
-    // added to the contours by tesselation.
+    // added to the contours by tessellation.
     for (linelist::iterator dcitr=constraint_lines.begin();dcitr!=constraint_lines.end();dcitr++)
     {
         //DelaunayConstraint *dc=(*dcitr).get();
@@ -911,7 +911,7 @@ bool DelaunayTriangulator::triangulate()
                                 // The hole joins vertex ip1 to ip2, and one list of edges lies to the left
                                 // of the line ip1-ip2m the other to the right.
                                 // a list of vertices forming 2 halves of the removed triangles.
-                                // which in turn are filled in with the tesselator.
+                                // which in turn are filled in with the tessellator.
                                 for (titr=triangles.begin(); titr!=triangles.end(); )
                                 {
                                     int icut=titr->lineBisects(points_.get(),ip1,p2);
@@ -1269,7 +1269,7 @@ osg::Vec3Array* DelaunayConstraint::getPoints(const osg::Vec3Array *points)
 
 void DelaunayConstraint::handleOverlaps(void)
 {
-    // use tesselator to interpolate crossing vertices.
+    // use Tessellator to interpolate crossing vertices.
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(true);

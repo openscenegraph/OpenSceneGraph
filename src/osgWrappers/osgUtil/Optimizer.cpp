@@ -73,7 +73,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::SPATIALIZE_GROUPS);
 	I_EnumLabel(osgUtil::Optimizer::COPY_SHARED_NODES);
 	I_EnumLabel(osgUtil::Optimizer::TRISTRIP_GEOMETRY);
-	I_EnumLabel(osgUtil::Optimizer::TESSELATE_GEOMETRY);
+	I_EnumLabel(osgUtil::Optimizer::TESSELLATE_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS);
 	I_EnumLabel(osgUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgUtil::Optimizer::FLATTEN_BILLBOARDS);
@@ -500,19 +500,19 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TesselateVisitor::GroupList);
+TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TessellateVisitor::GroupList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TesselateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
-	                           ____TesselateVisitor__Optimizer_P1,
+	                           ____TessellateVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
-	I_PublicMemberProperty(osgUtil::Optimizer::TesselateVisitor::GroupList, _groupList);
+	I_PublicMemberProperty(osgUtil::Optimizer::TessellateVisitor::GroupList, _groupList);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)

@@ -360,7 +360,7 @@ Andes Engineering - http://www.andesengineering.com
         osgbluemarble     an example of how to build PagedLOD database for 
                           paging imagery
 
-        osgtesselate -    an example of how to use osgUtil::Tesselate to 
+        osgtessellate     an example of how to use osgUtil::Tesselate to 
                           tessellate polygonal boundaries
 
         osgsimulation     an example of how to use various features in osgSim.

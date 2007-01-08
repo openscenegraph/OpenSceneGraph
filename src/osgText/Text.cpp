@@ -1639,12 +1639,29 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
     
 }
 
+
+void Text::setThreadSafeRefUnref(bool threadSafe)
+{
+    Drawable::setThreadSafeRefUnref(threadSafe);
+
+    getActiveFont()->setThreadSafeRefUnref(threadSafe);
+}
+
+void Text::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    Drawable::resizeGLObjectBuffers(maxSize);
+
+    _autoTransformCache.resize(maxSize);
+    
+    getActiveFont()->resizeGLObjectBuffers(maxSize);
+}
+
+
 void Text::releaseGLObjects(osg::State* state) const
 {
     Drawable::releaseGLObjects(state);
     getActiveFont()->releaseGLObjects(state);
 }
-
 
 
 void Text::setBackdropType(BackdropType type)

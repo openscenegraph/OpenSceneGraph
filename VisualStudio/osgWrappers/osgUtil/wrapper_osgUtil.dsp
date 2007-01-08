@@ -192,7 +192,7 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\TangentSpaceGenerator.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgUtil\Tesselator.cpp
+SOURCE=..\..\..\src\osgWrappers\osgUtil\Tessellator.cpp
 # End Source File
 
 # Begin Source File

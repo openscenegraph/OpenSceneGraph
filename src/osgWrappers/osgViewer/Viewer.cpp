@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Camera>
+#include <osg/FrameStamp>
 #include <osgViewer/Viewer>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -50,6 +51,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          "");
 	I_Method0(bool, done,
 	          __bool__done,
+	          "",
+	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          __osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method1(void, setThreadingModel, IN, osgViewer::Viewer::ThreadingModel, threadingModel,
@@ -126,6 +135,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(bool, Done, 
 	                 0, 
 	                 __void__setDone__bool);
+	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
+	                 __osg_FrameStamp_P1__getFrameStamp, 
+	                 0);
 	I_SimpleProperty(int, KeySetsDone, 
 	                 __int__getKeySetsDone, 
 	                 __void__setKeySetsDone__int);

@@ -66,16 +66,15 @@ endif
 
 PLUGIN_DIRS = \
 	3dc \
-	bsp \
 	ac3d \
 	bmp \
+	bsp \
 	dds \
 	directx \
 	dw \
 	dxf \
 	ESRIShape \
 	flt \
-	OpenFlight \
 	hdr \
 	ive \
 	lib3ds \
@@ -86,6 +85,7 @@ PLUGIN_DIRS = \
 	net \
 	normals \
 	obj \
+	OpenFlight \
 	osg \
 	osga \
 	osgFX \
@@ -102,6 +102,7 @@ PLUGIN_DIRS = \
 	tga \
 	tgz \
 	trans \
+	txf \
 	txp \
 	zip \
 

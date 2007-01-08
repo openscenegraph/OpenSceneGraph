@@ -1475,8 +1475,8 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         const osg::Viewport* viewport = state.getCurrentViewport();
         if (viewport)
         {
-            width = viewport->width();
-            height = viewport->height();
+            width = static_cast<int>(viewport->width());
+            height = static_cast<int>(viewport->height());
         }
 
         bool doUpdate = atc._traversalNumber==-1;

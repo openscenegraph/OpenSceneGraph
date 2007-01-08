@@ -655,6 +655,18 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
 }
 
+void Font::GlyphTexture::setThreadSafeRefUnref(bool threadSafe)
+{
+    osg::Texture2D::setThreadSafeRefUnref(threadSafe);
+}
+
+void Font::GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::Texture2D::resizeGLObjectBuffers(maxSize);
+    _glyphsToSubload.resize(maxSize);
+}
+
+
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.
 Font::Glyph::Glyph() {}
 Font::Glyph::~Glyph() {}

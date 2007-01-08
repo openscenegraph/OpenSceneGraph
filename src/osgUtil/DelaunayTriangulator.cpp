@@ -12,7 +12,7 @@
 */
 
 #include <osgUtil/DelaunayTriangulator>
-// NB this algorithm makes heavy use of the osgUtil::Tesselator for constrained triangulation.
+// NB this algorithm makes heavy use of the osgUtil::Tessellator for constrained triangulation.
 // truly it is built on the shoulders of giants.
 
 #include <osg/GL>
@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <set>
 #include <map> //GWM July 2005 map is used in constraints.
-#include <osgUtil/Tesselator> // tesselator triangulates the constrained triangles
+#include <osgUtil/Tessellator> // tesselator triangulates the constrained triangles
 
 namespace osgUtil
 {
@@ -425,7 +425,7 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
     Triangle_list triangles; // returned list
     osg::ref_ptr<osg::Geometry> gtess=new osg::Geometry; // add all the contours to this for analysis
     osg::ref_ptr<osg::Vec3Array> constraintverts=new osg::Vec3Array;
-    osg::ref_ptr<osgUtil::Tesselator> tscx=new osgUtil::Tesselator; // this assembles all the constraints
+    osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
     
     for (std::vector<unsigned int>::iterator itint=vindexlist.begin(); itint!=vindexlist.end(); itint++)
     {
@@ -437,11 +437,11 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
 
     gtess->setVertexArray(constraintverts.get());
     gtess->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POLYGON,0,npts));
-    tscx->setTesselationNormal(osg::Vec3(0.0,0.0,1.0));
-    tscx->setTesselationType(osgUtil::Tesselator::TESS_TYPE_GEOMETRY);
+    tscx->setTessellationNormal(osg::Vec3(0.0,0.0,1.0));
+    tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(false);
-    tscx->setWindingType( osgUtil::Tesselator::TESS_WINDING_ODD); // the commonest tesselation is default, ODD. GE2 allows intersections of constraints to be found.
-    tscx->retesselatePolygons(*(gtess.get())); // this should insert extra vertices where constraints overlap
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); // the commonest tesselation is default, ODD. GE2 allows intersections of constraints to be found.
+    tscx->retessellatePolygons(*(gtess.get())); // this should insert extra vertices where constraints overlap
 
     // extract triangles from gtess
     
@@ -1270,15 +1270,15 @@ osg::Vec3Array* DelaunayConstraint::getPoints(const osg::Vec3Array *points)
 void DelaunayConstraint::handleOverlaps(void)
 {
     // use tesselator to interpolate crossing vertices.
-    osg::ref_ptr<osgUtil::Tesselator> tscx=new osgUtil::Tesselator; // this assembles all the constraints
-    tscx->setTesselationType(osgUtil::Tesselator::TESS_TYPE_GEOMETRY);
+    osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
+    tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(true);
-    tscx->setWindingType( osgUtil::Tesselator::TESS_WINDING_ODD); 
+    tscx->setWindingType( osgUtil::Tessellator::TESS_WINDING_ODD); 
     //  ODD chooses the winding =1, NOT overlapping areas of constraints.
     // nb this includes all the edges where delaunay constraints meet
     // draw a case to convince yourself!.
     
-    tscx->retesselatePolygons(*this); // find all edges
+    tscx->retessellatePolygons(*this); // find all edges
 }
 
 } // namespace osgutil

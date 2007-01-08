@@ -27,7 +27,7 @@
 #include <osg/Math>
 #include <osg/Notify>
 
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -903,8 +903,8 @@ class SurfaceBin : public PrimitiveBin {
                 _geometry->addPrimitiveSet(drawArray);
             }
 
-            osgUtil::Tesselator tesselator;
-            tesselator.retesselatePolygons(*_geometry);
+            osgUtil::Tessellator tessellator;
+            tessellator.retessellatePolygons(*_geometry);
         }
 
         // handle triangles

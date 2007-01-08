@@ -32,7 +32,7 @@
 
 #include <osgUtil/TransformAttributeFunctor>
 #include <osgUtil/TriStripVisitor>
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 #include <osgUtil/Statistics>
 
 #include <typeinfo>
@@ -320,8 +320,8 @@ void Optimizer::TesselateVisitor::apply(osg::Geode& geode)
     {
         osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
         if (geom) {
-            osgUtil::Tesselator tesselator;
-            tesselator.retesselatePolygons(*geom);
+            osgUtil::Tessellator tessellator;
+            tessellator.retessellatePolygons(*geom);
         }
     }
     traverse(geode);

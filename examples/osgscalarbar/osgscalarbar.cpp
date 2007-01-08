@@ -8,7 +8,6 @@
 #include <osg/ClearNode>
 #include <osg/Projection>
 
-#include <osgUtil/Tesselator>
 #include <osgUtil/CullVisitor>
 
 

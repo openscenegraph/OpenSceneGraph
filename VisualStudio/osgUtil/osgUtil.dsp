@@ -247,7 +247,7 @@ SOURCE=..\..\src\osgUtil\TangentSpaceGenerator.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgUtil\Tesselator.cpp
+SOURCE=..\..\src\osgUtil\Tessellator.cpp
 # End Source File
 # Begin Source File
 
@@ -379,7 +379,7 @@ SOURCE=..\..\include\osgUtil\TangentSpaceGenerator
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgUtil\Tesselator
+SOURCE=..\..\include\osgUtil\Tessellator
 # End Source File
 # Begin Source File
 

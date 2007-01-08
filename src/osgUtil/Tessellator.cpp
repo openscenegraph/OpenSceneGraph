@@ -14,13 +14,13 @@
 #include <osg/GLU>
 
 #include <osg/Notify>
-#include <osgUtil/Tesselator>
+#include <osgUtil/Tessellator>
 
 using namespace osg;
 using namespace osgUtil;
 
 
-Tesselator::Tesselator() :
+Tessellator::Tessellator() :
     _wtype(TESS_WINDING_ODD),
     _ttype(TESS_TYPE_POLYGONS),
     _boundaryOnly(false), _numberVerts(0) 
@@ -30,12 +30,12 @@ Tesselator::Tesselator() :
     _index=0;
 }
 
-Tesselator::~Tesselator()
+Tessellator::~Tessellator()
 {
     reset();
 }
 
-void Tesselator::beginTesselation()
+void Tessellator::beginTessellation()
 {
     reset();
 
@@ -51,7 +51,7 @@ void Tesselator::beginTesselation()
     gluTessBeginPolygon(_tobj,this);
 }    
     
-void Tesselator::beginContour()
+void Tessellator::beginContour()
 {
     if (_tobj)
     {
@@ -59,7 +59,7 @@ void Tesselator::beginContour()
     }
 }
       
-void Tesselator::addVertex(osg::Vec3* vertex)
+void Tessellator::addVertex(osg::Vec3* vertex)
 {
     if (_tobj)
     {
@@ -72,7 +72,7 @@ void Tesselator::addVertex(osg::Vec3* vertex)
     }
 }
 
-void Tesselator::endContour()
+void Tessellator::endContour()
 {
     if (_tobj)
     {
@@ -80,7 +80,7 @@ void Tesselator::endContour()
     }
 }
 
-void Tesselator::endTesselation()
+void Tessellator::endTessellation()
 {
     if (_tobj)
     {
@@ -96,7 +96,7 @@ void Tesselator::endTesselation()
     }
 }
 
-void Tesselator::reset()
+void Tessellator::reset()
 {
     if (_tobj)
     {
@@ -152,9 +152,9 @@ class InsertNewVertices : public osg::ArrayVisitor
 
 };
 
-void Tesselator::retesselatePolygons(osg::Geometry &geom)
+void Tessellator::retessellatePolygons(osg::Geometry &geom)
 {
-    // turn the contour list into primitives, a little like tesselator does but more generally
+    // turn the contour list into primitives, a little like Tessellator does but more generally
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     
     if (!vertices || vertices->empty() || geom.getPrimitiveSetList().empty()) return;
@@ -173,18 +173,18 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
         if (geom.getTexCoordIndices(unit)) return;
     }
 
-    if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE) _numberVerts=0; // 09.04.04 GWM reset tesselator
-    // the reset is needed by the flt loader which reuses a tesselator for triangulating polygons.
+    if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE) _numberVerts=0; // 09.04.04 GWM reset Tessellator
+    // the reset is needed by the flt loader which reuses a Tessellator for triangulating polygons.
     // as such it might be reset by other loaders/developers in future.
     _index=0; // reset the counter for indexed vertices
     _extraPrimitives = 0;
     if (!_numberVerts) {
         _numberVerts=geom.getVertexArray()->getNumElements();
-        // save the contours for complex (winding rule) tesselations
+        // save the contours for complex (winding rule) tessellations
         _Contours=geom.getPrimitiveSetList();
     }
 
-    // now cut out vertex attributes added on any previous tesselation
+    // now cut out vertex attributes added on any previous tessellation
     reduceArray(geom.getVertexArray(), _numberVerts);
     reduceArray(geom.getColorArray(), _numberVerts);
     reduceArray(geom.getNormalArray(), _numberVerts);
@@ -198,21 +198,21 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
     unsigned int nprimsetoriginal= geom.getNumPrimitiveSets();
     if (nprimsetoriginal) geom.removePrimitiveSet(0, nprimsetoriginal);
 
-    // the main difference from osgUtil::tesselator for Geometry sets of multiple contours is that the begin/end tesselation
+    // the main difference from osgUtil::Tessellator for Geometry sets of multiple contours is that the begin/end tessellation
     // occurs around the whole set of contours.
     if (_ttype==TESS_TYPE_GEOMETRY) {
-        beginTesselation();
+        beginTessellation();
         gluTessProperty(_tobj, GLU_TESS_WINDING_RULE, _wtype);
         gluTessProperty(_tobj, GLU_TESS_BOUNDARY_ONLY , _boundaryOnly);
     }
-    // process all the contours into the tesselator
+    // process all the contours into the Tessellator
     int noContours = _Contours.size();
     int currentPrimitive = 0;
     for(int primNo=0;primNo<noContours;++primNo)
     {
         osg::ref_ptr<osg::PrimitiveSet> primitive = _Contours[primNo].get();
         if (_ttype==TESS_TYPE_POLYGONS || _ttype==TESS_TYPE_DRAWABLE)
-        { // this recovers the 'old' tesselation which just retesselates single polygons.
+        { // this recovers the 'old' tessellation which just retessellates single polygons.
             if (primitive->getMode()==osg::PrimitiveSet::POLYGON || _ttype==TESS_TYPE_DRAWABLE)
             {
 
@@ -224,31 +224,31 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
                         itr!=drawArrayLengths->end();
                         ++itr)
                     {
-                        beginTesselation();
+                        beginTessellation();
                             unsigned int last = first + *itr;
                             addContour(primitive->getMode(),first,last,vertices);
                             first = last;
-                        endTesselation();
-                        collectTesselation(geom, currentPrimitive);
+                        endTessellation();
+                        collectTessellation(geom, currentPrimitive);
                         currentPrimitive++;
                     }
                 }
                 else
                 {
-                    if (primitive->getNumIndices()>3) { // April 2005 gwm only retesselate "complex" polygons
-                        beginTesselation();
+                    if (primitive->getNumIndices()>3) { // April 2005 gwm only retessellate "complex" polygons
+                        beginTessellation();
                         addContour(primitive.get(), vertices);
-                        endTesselation();
-                        collectTesselation(geom, currentPrimitive);
+                        endTessellation();
+                        collectTessellation(geom, currentPrimitive);
                         currentPrimitive++;
-                    } else { // April 2005 gwm triangles don't need to be retesselated
+                    } else { // April 2005 gwm triangles don't need to be retessellated
                         geom.addPrimitiveSet(primitive.get());
                     }
                 }
 
             }
             else
-            { // copy the contour primitive as it is not being tesselated
+            { // copy the contour primitive as it is not being tessellated
                 geom.addPrimitiveSet(primitive.get());
             }
         } else {
@@ -261,20 +261,20 @@ void Tesselator::retesselatePolygons(osg::Geometry &geom)
                 primitive->getMode()==osg::PrimitiveSet::TRIANGLE_STRIP)
             {
                 addContour(primitive.get(), vertices);
-            } else { // copy the contour primitive as it is not being tesselated
+            } else { // copy the contour primitive as it is not being tessellated
                 // in this case points, lines or line_strip
                 geom.addPrimitiveSet(primitive.get());
             }
         }
     }
     if (_ttype==TESS_TYPE_GEOMETRY) {
-        endTesselation();
+        endTessellation();
     
-        collectTesselation(geom, 0);    
+        collectTessellation(geom, 0);    
     }
 }
 
-void Tesselator::addContour(GLenum mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices)
+void Tessellator::addContour(GLenum mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices)
 {
     beginContour();
 
@@ -343,7 +343,7 @@ void Tesselator::addContour(GLenum mode, unsigned int first, unsigned int last, 
     endContour();
 }
 
-void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices)
+void Tessellator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertices)
 {
     // adds a single primitive as a contour.
     unsigned int nperprim=0; // number of vertices per primitive
@@ -413,13 +413,13 @@ void Tesselator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* vertic
             break;
         }
     default:
-        osg::notify(osg::NOTICE)<<"Tesselator::addContour(primitive, vertices) : Primitive type "<<primitive->getType()<<" not handled"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Tessellator::addContour(primitive, vertices) : Primitive type "<<primitive->getType()<<" not handled"<<std::endl;
         break;
     }
     
 }
 
-void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap)
+void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vertexPtrToIndexMap)
 {
     if (!_newVertexList.empty())
     {
@@ -505,12 +505,12 @@ void Tesselator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &vert
     
 }
 
-void Tesselator::begin(GLenum mode)
+void Tessellator::begin(GLenum mode)
 {
     _primList.push_back(new Prim(mode));
 }
 
-void Tesselator::vertex(osg::Vec3* vertex)
+void Tessellator::vertex(osg::Vec3* vertex)
 {
     if (!_primList.empty())
     {
@@ -520,7 +520,7 @@ void Tesselator::vertex(osg::Vec3* vertex)
     }
 }
 
-void Tesselator::combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4])
+void Tessellator::combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4])
 {
     _newVertexList.push_back(NewVertex(vertex,
                                     weight[0],(Vec3*)vertex_data[0],
@@ -529,46 +529,46 @@ void Tesselator::combine(osg::Vec3* vertex,void* vertex_data[4],GLfloat weight[4
                                      weight[3],(Vec3*)vertex_data[3]));
 }
 
-void Tesselator::end()
+void Tessellator::end()
 {
     // no need to do anything right now...
 }
 
-void Tesselator::error(GLenum errorCode)
+void Tessellator::error(GLenum errorCode)
 {
     _errorCode = errorCode;
 }
 
-void CALLBACK Tesselator::beginCallback(GLenum which, void* userData)
+void CALLBACK Tessellator::beginCallback(GLenum which, void* userData)
 {
-    ((Tesselator*)userData)->begin(which);
+    ((Tessellator*)userData)->begin(which);
 }
 
-void CALLBACK Tesselator::endCallback(void* userData)
+void CALLBACK Tessellator::endCallback(void* userData)
 {
-    ((Tesselator*)userData)->end();
+    ((Tessellator*)userData)->end();
 }
 
-void CALLBACK Tesselator::vertexCallback(GLvoid *data, void* userData)
+void CALLBACK Tessellator::vertexCallback(GLvoid *data, void* userData)
 {
-    ((Tesselator*)userData)->vertex((Vec3*)data);
+    ((Tessellator*)userData)->vertex((Vec3*)data);
 }
 
-void CALLBACK Tesselator::combineCallback(GLdouble coords[3], void* vertex_data[4],
+void CALLBACK Tessellator::combineCallback(GLdouble coords[3], void* vertex_data[4],
                               GLfloat weight[4], void** outData,
                               void* userData)
 {
     Vec3* newData = new osg::Vec3(coords[0],coords[1],coords[2]);
     *outData = newData;
-    ((Tesselator*)userData)->combine(newData,vertex_data,weight);
+    ((Tessellator*)userData)->combine(newData,vertex_data,weight);
 }
 
-void CALLBACK Tesselator::errorCallback(GLenum errorCode, void* userData)
+void CALLBACK Tessellator::errorCallback(GLenum errorCode, void* userData)
 {
-    ((Tesselator*)userData)->error(errorCode);
+    ((Tessellator*)userData)->error(errorCode);
 }
 
-void Tesselator::reduceArray(osg::Array * cold, const unsigned int nnu)
+void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
 { // shrinks size of array to N
     if (cold && cold->getNumElements()>nnu) {
         osg::Vec2Array* v2arr = NULL;
@@ -650,7 +650,7 @@ unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
     return totalNumberOfPrimitives;
 }
 //
-void Tesselator::collectTesselation(osg::Geometry &geom, unsigned int originalIndex)
+void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int originalIndex)
 {
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     VertexPtrToIndexMap vertexPtrToIndexMap;
@@ -693,7 +693,7 @@ void Tesselator::collectTesselation(osg::Geometry &geom, unsigned int originalIn
               
         }
         // GWM Dec 2003 - these holders need to go outside the loop to 
-        // retain the flat shaded colour &/or normal for each tesselated polygon
+        // retain the flat shaded colour &/or normal for each tessellated polygon
         osg::Vec3 norm(0.0f,0.0f,0.0f);
         osg::Vec4 primCol4(0.0f,0.0f,0.0f,1.0f);
         osg::Vec3 primCol3(0.0f,0.0f,0.0f);

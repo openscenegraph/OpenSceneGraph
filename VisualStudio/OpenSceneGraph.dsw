@@ -2490,7 +2490,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "Example osgtesselate"=.\examples\osgtesselate\osgtesselate.dsp - Package Owner=<4>
+Project: "Example osgtessellate"=.\examples\osgtessellate\osgtessellate.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

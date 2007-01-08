@@ -26,7 +26,7 @@ CXXFILES = \
 	StateGraph.cpp\
 	Statistics.cpp\
 	TangentSpaceGenerator.cpp\
-	Tesselator.cpp\
+	Tessellator.cpp\
 	TransformAttributeFunctor.cpp\
 	TransformCallback.cpp\
         TriStrip_tri_stripper.cpp\

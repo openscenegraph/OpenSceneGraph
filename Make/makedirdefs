@@ -262,7 +262,7 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgspotlight \
 	osgstereoimage \
 	osgteapot \
-	osgtesselate \
+	osgtessellate \
 	osgtext \
 	osgtexture1D \
 	osgtexture2D \

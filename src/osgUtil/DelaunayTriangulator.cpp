@@ -641,24 +641,26 @@ void DelaunayConstraint::removeVerticesInside(const DelaunayConstraint *dco)
 void DelaunayConstraint::merge(DelaunayConstraint *dco)
 {
     unsigned int ipr;
-    osg::Vec3Array* vmerge=dynamic_cast<osg::Vec3Array*>(getVertexArray());
-    if (!vmerge) vmerge=new osg::Vec3Array;
-    setVertexArray(vmerge);
-    for ( ipr=0; ipr<dco->getNumPrimitiveSets(); ipr++)
-    {
-        osg::PrimitiveSet* prset=dco->getPrimitiveSet(ipr);
-        osg::DrawArrays *drarr=dynamic_cast<osg::DrawArrays *> (prset);
-        if (drarr)
+    if (dco) { // 16 Dec 2006 just in case you pass in a NULL pointer
+        osg::Vec3Array* vmerge=dynamic_cast<osg::Vec3Array*>(getVertexArray());
+        if (!vmerge) vmerge=new osg::Vec3Array;
+        setVertexArray(vmerge);
+        for ( ipr=0; ipr<dco->getNumPrimitiveSets(); ipr++)
         {
-            // need to add the offset of vmerge->size to each prset indices.
-            unsigned int noff=vmerge->size();
-            unsigned int n1=drarr->getFirst(); // usually 0
-            unsigned int numv=drarr->getCount(); //
-            addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,n1+noff,numv));
+            osg::PrimitiveSet* prset=dco->getPrimitiveSet(ipr);
+            osg::DrawArrays *drarr=dynamic_cast<osg::DrawArrays *> (prset);
+            if (drarr)
+            {
+                // need to add the offset of vmerge->size to each prset indices.
+                unsigned int noff=vmerge->size();
+                unsigned int n1=drarr->getFirst(); // usually 0
+                unsigned int numv=drarr->getCount(); //
+                addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,n1+noff,numv));
+            }
         }
+        osg::Vec3Array* varr=dynamic_cast<osg::Vec3Array*>(dco->getVertexArray());
+        if (varr) vmerge->insert(vmerge->end(),varr->begin(),varr->end());
     }
-    osg::Vec3Array* varr=dynamic_cast<osg::Vec3Array*>(dco->getVertexArray());
-    if (varr) vmerge->insert(vmerge->end(),varr->begin(),varr->end());
 }
 
 void DelaunayTriangulator::_uniqueifyPoints()
@@ -771,9 +773,12 @@ bool DelaunayTriangulator::triangulate()
     // gwm added 1.05* to ensure that supervertices are outside the domain of points.
     // original value could make 2 coincident points for regular arrays of x,y,h data.
     // this mod allows regular spaced arrays to be used.
-    points_->push_back(osg::Vec3(minx - 1.05*(maxx - minx), miny - 0.01*(maxy - miny), 0));
-    points_->push_back(osg::Vec3(maxx + 0.01*(maxx - minx), miny - 0.01*(maxy - miny), 0));
-    points_->push_back(osg::Vec3(maxx + 0.01*(maxx - minx), maxy + 1.05*(maxy - miny), 0));
+    // 16 Dec 2006 this increase in size encourages the supervertex triangles to be long and thin
+    // thus ensuring that the convex hull of the terrain points are edges in the delaunay triangulation
+    // the values do however result in a small loss of numerical resolution.
+    points_->push_back(osg::Vec3(minx - 2.0*(maxx - minx), miny - 1.0*(maxy - miny), 0));
+    points_->push_back(osg::Vec3(maxx + 1.0*(maxx - minx), miny - 1.0*(maxy - miny), 0));
+    points_->push_back(osg::Vec3(maxx + 1.0*(maxx - minx), maxy + 2.0*(maxy - miny), 0));
 
     // add supertriangle to triangle list
     triangles.push_back(Triangle(last_valid_index+1, last_valid_index+2, last_valid_index+3, points));
@@ -1036,7 +1041,7 @@ bool DelaunayTriangulator::triangulate()
     }
         // remove 3 supertriangle vertices from points. They may not be the last vertices in points if
         // extra points have been inserted by the constraint re-triangulation.
-    points->erase(points->begin()+last_valid_index+1,points->begin()+last_valid_index+3);
+    points->erase(points->begin()+last_valid_index+1,points->begin()+last_valid_index+4);
     //last_valid_index = points->size()-1; // the last valid vertex is last point.
     // end of dec 2006 changes.
 
@@ -1051,9 +1056,10 @@ bool DelaunayTriangulator::triangulate()
     {
 
         // don't add this triangle to the primitive if it shares any vertex with
-        // the supertriangle
-          // Also don't add degenerate (zero radius) triangles
-        if (ti->a() <= last_valid_index && ti->b() <= last_valid_index && ti->c() <= last_valid_index && ti->get_circumcircle().z()>0.0)
+        // the supertriangle triangles have already been removed.
+        // Don't need this test: ti->a() <= last_valid_index && ti->b() <= last_valid_index && ti->c() <= last_valid_index &&
+          // Don't add degenerate (zero radius) triangles
+        if ( ti->get_circumcircle().z()>0.0)
         {
 
             if (normals_.valid())
@@ -1076,57 +1082,49 @@ bool DelaunayTriangulator::triangulate()
 
 void DelaunayTriangulator::removeInternalTriangles(DelaunayConstraint *dc )
 {
-    // Triangle_list *triangles
-    // remove triangle from terrain prim_tris_ internal to each constraintline
-    // and move to the constraint line to make an alternative geometry,
-    // possibly with alternative texture, and texture map
-    int ndel=0;
-    osg::Vec3Array::iterator normitr;
-    if( normals_.valid() )
-        normitr = normals_->begin();
-    
-    //        osg::notify(osg::WARN) << "DelaunayTriangulator: removeinternals, " << std::endl;
-    for (osg::DrawElementsUInt::iterator triit=prim_tris_->begin(); triit!=prim_tris_->end(); )
-    {
-        // triangle joins points_[itr, itr+1, itr+2]
-        Triangle tritest((*triit), *(triit+1), *(triit+2), points_.get());
-/*        if ((*triit==166 && *(triit+1)==162 && *(triit+2)==161) ||
-            (*triit==166 && *(triit+1)==165 && *(triit+2)==164) )
-        {
-            osg::Vec3 ctr=tritest.compute_centroid( points_.get());
-            osg::notify(osg::WARN) << "testverts: " << ((*points_)[(*triit)].x()) << "," << ((*points_)[*(triit)].y()) <<","<<((*points_)[*(triit)].z())<<std::endl;
-            osg::notify(osg::WARN) << "testverts: " << ((*points_)[*(triit+1)].x()) << "," << ((*points_)[*(triit+1)].y()) <<","<<((*points_)[*(triit+1)].z())<<std::endl;
-            osg::notify(osg::WARN) << "testverts: " << ((*points_)[*(triit+2)].x()) << "," << ((*points_)[*(triit+2)].y()) <<","<<((*points_)[*(triit+2)].z())<<std::endl;
-            osg::notify(osg::WARN) << "DelaunayTriangulator: why remove, " << (*triit) << "," << *(triit+1) <<","<<*(triit+2)<<
-                " " << (dc->windingNumber(ctr))<< std::endl;
-        }*/
-        if ( dc->contains(tritest.compute_centroid( points_.get()) ) )
-        {
-            // centroid is inside the triangle, so IF inside linear, remove
-            // osg::notify(osg::WARN) << "DelaunayTriangulator: remove, " << (*triit) << "," << *(triit+1) <<","<<*(triit+2)<< std::endl;
-            dc->addtriangle((*triit), *(triit+1), *(triit+2));
-            triit=prim_tris_->erase(triit);
-            triit=prim_tris_->erase(triit);
-            triit=prim_tris_->erase(triit);
-            if (normals_.valid())
-            {
-                // erase the corresponding normal
-                normitr=normals_->erase(normitr);
-            }
-            ndel++;
-        }
-        else
-        {
-            if (normals_.valid())
-            {
-                normitr++;
-            }
-            
-            triit+=3;
-        }
-    }
+    if (dc) { // 16.12.06 just in case....
+        // Triangle_list *triangles
+        // remove triangle from terrain prim_tris_ internal to each constraintline
+        // and move to the constraint line to make an alternative geometry,
+        // possibly with alternative texture, and texture map
+        int ndel=0;
+        osg::Vec3Array::iterator normitr;
+        if( normals_.valid() )
+            normitr = normals_->begin();
 
-    osg::notify(osg::INFO) << "end of test dc, deleted " << ndel << std::endl;
+        //        osg::notify(osg::WARN) << "DelaunayTriangulator: removeinternals, " << std::endl;
+        for (osg::DrawElementsUInt::iterator triit=prim_tris_->begin(); triit!=prim_tris_->end(); )
+        {
+            // triangle joins points_[itr, itr+1, itr+2]
+            Triangle tritest((*triit), *(triit+1), *(triit+2), points_.get());
+            if ( dc->contains(tritest.compute_centroid( points_.get()) ) )
+            {
+                // centroid is inside the triangle, so IF inside linear, remove
+                // osg::notify(osg::WARN) << "DelaunayTriangulator: remove, " << (*triit) << "," << *(triit+1) <<","<<*(triit+2)<< std::endl;
+                dc->addtriangle((*triit), *(triit+1), *(triit+2));
+                triit=prim_tris_->erase(triit);
+                triit=prim_tris_->erase(triit);
+                triit=prim_tris_->erase(triit);
+                if (normals_.valid())
+                {
+                    // erase the corresponding normal
+                    normitr=normals_->erase(normitr);
+                }
+                ndel++;
+            }
+            else
+            {
+                if (normals_.valid())
+                {
+                    normitr++;
+                }
+
+                triit+=3;
+            }
+        }
+
+        osg::notify(osg::INFO) << "end of test dc, deleted " << ndel << std::endl;
+    }
 }
 //=== DelaunayConstraint functions
 

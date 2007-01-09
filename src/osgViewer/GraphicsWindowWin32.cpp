@@ -94,7 +94,7 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
 }
 
 
-bool GraphicWindowWin32::releaseContextImplementation()
+bool GraphicsWindowWin32::releaseContextImplementation()
 {
     osg::notify(osg::NOTICE)<<"GraphicWindowWin32::releaseContextImplementation() Please implement me!"<<std::endl;
     return false;

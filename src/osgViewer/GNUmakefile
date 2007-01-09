@@ -11,12 +11,19 @@ CXXFILES = \
 	Version.cpp\
 
 
-CXXFILES += GraphicsWindowX11.cpp\
-
-# CXXFILES += GraphicsWindowWin32.cpp\
-
-# CXXFILES += GraphicsWindowCocoa.cpp\
-
+ifeq ($(OS),Darwin)
+   CXXFILES += GraphicsWindowCarbon.cpp
+else
+  ifeq ($(OS),MINGW)
+     CXXFILES += GraphicsWindowWin32.cpp
+  else
+    ifeq ($(OS),CYGWIN)
+       CXXFILES += GraphicsWindowWin32.cpp
+    else
+       CXXFILES += GraphicsWindowX11.cpp
+    endif
+  endif
+endif
 
 DEF     += -DOSGVIEWER_LIBRARY
 

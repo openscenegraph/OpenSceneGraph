@@ -1,0 +1,823 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifdef __APPLE__
+
+#include <osgViewer/GraphicsWindowCarbon>
+#include <Carbon/Carbon.h>
+#include <OpenGL/OpenGL.h>
+using namespace osgViewer;
+
+
+// Carbon-Eventhandler to handle the click in the close-widget and the resize of windows
+
+static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef myHandler, EventRef event, void* userData) 
+{
+    WindowRef           window;
+    Rect                bounds;
+    UInt32              whatHappened;
+    OSStatus            result = eventNotHandledErr; /* report failure by default */
+    
+
+    GraphicsWindowCarbon* w = (GraphicsWindowCarbon*)userData;
+    if (!w)
+        return result;
+    
+    GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
+                         sizeof(window), NULL, &window);
+ 
+    whatHappened = GetEventKind(event);
+    
+    
+    switch (whatHappened)
+        {
+            case kEventWindowBoundsChanging:
+                // left the code for live-resizing, but it is not used, because of window-refreshing issues...
+                GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &bounds );
+                
+                w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+                w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
+                w->requestRedraw();
+                result = noErr;
+                break;
+                    
+            case kEventWindowBoundsChanged:
+                InvalWindowRect(window, GetWindowPortBounds(window, &bounds));
+                GetWindowBounds(window, kWindowContentRgn, &bounds);
+                w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+                w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
+                result = noErr;
+                break;
+                
+            case kEventWindowClosed:
+                w->requestClose();
+                break;
+ 
+            default: 
+                /* If nobody handled the event, it gets propagated to the */
+                /* application-level handler. */
+                break;
+ 
+        }
+ 
+    return result;
+}
+
+static bool s_quit_requested = false;
+
+// Application eventhandler -- listens for a quit-event 
+static pascal OSStatus ApplicationEventHandler(EventHandlerCallRef inHandlerCallRef, EventRef inEvent, void *inUserData)
+{
+    
+    HICommand commandStruct;
+
+    OSErr  err = eventNotHandledErr;
+
+    GetEventParameter (inEvent, kEventParamDirectObject, typeHICommand, NULL, sizeof(HICommand), NULL, &commandStruct);
+
+    switch(commandStruct.commandID) {
+        case kHICommandQuit:
+            s_quit_requested = true;
+            err = noErr;
+            break;
+                    
+    }
+    
+    return err;
+}
+
+// AppleEventHandler, listens to the Quit-AppleEvent
+static pascal OSErr QuitAppleEventHandler(const AppleEvent *theAppleEvent, AppleEvent *reply, long handlerRefcon ) {
+    s_quit_requested = true;
+    return (noErr);
+}
+
+
+namespace osgViewer
+{
+
+// small helper class which maps the raw key codes to osgGA::GUIEventAdapter::Keys
+
+class OSXKeyboardMap {
+
+    public:
+        OSXKeyboardMap()
+        {
+            _keymap[53                ] =  osgGA::GUIEventAdapter::KEY_Escape;
+            _keymap[115                ] =  osgGA::GUIEventAdapter::KEY_Home;
+            _keymap[76                ] =  osgGA::GUIEventAdapter::KEY_KP_Enter;
+            _keymap[119                ] =  osgGA::GUIEventAdapter::KEY_End;
+            _keymap[36                ] =  osgGA::GUIEventAdapter::KEY_Return;
+            _keymap[116                ] =  osgGA::GUIEventAdapter::KEY_Page_Up;
+            _keymap[121                ] = osgGA::GUIEventAdapter::KEY_Page_Down;
+            _keymap[123                ] = osgGA::GUIEventAdapter::KEY_Left;
+            _keymap[124                ] = osgGA::GUIEventAdapter::KEY_Right;
+            _keymap[126                ] = osgGA::GUIEventAdapter::KEY_Up;
+            _keymap[125                ] = osgGA::GUIEventAdapter::KEY_Down;
+            _keymap[51                ] = osgGA::GUIEventAdapter::KEY_BackSpace;
+            _keymap[48                ] = osgGA::GUIEventAdapter::KEY_Tab;
+            _keymap[49                ] = osgGA::GUIEventAdapter::KEY_Space;
+            _keymap[117                ] = osgGA::GUIEventAdapter::KEY_Delete;
+            
+            _keymap[122                    ] = osgGA::GUIEventAdapter::KEY_F1;
+            _keymap[120                    ] = osgGA::GUIEventAdapter::KEY_F2;
+            _keymap[99                    ] = osgGA::GUIEventAdapter::KEY_F3;
+            _keymap[118                    ] = osgGA::GUIEventAdapter::KEY_F4;
+            _keymap[96                    ] = osgGA::GUIEventAdapter::KEY_F5;
+            _keymap[97                    ] = osgGA::GUIEventAdapter::KEY_F6;
+            _keymap[98                    ] = osgGA::GUIEventAdapter::KEY_F7;
+            _keymap[100                    ] = osgGA::GUIEventAdapter::KEY_F8;
+            _keymap[101                    ] = osgGA::GUIEventAdapter::KEY_F9;
+            _keymap[109                    ] = osgGA::GUIEventAdapter::KEY_F10;
+            _keymap[103                    ] = osgGA::GUIEventAdapter::KEY_F11;
+            _keymap[111                    ] = osgGA::GUIEventAdapter::KEY_F12;
+            
+            _keymap[75                    ] = osgGA::GUIEventAdapter::KEY_KP_Divide;
+            _keymap[67                    ] = osgGA::GUIEventAdapter::KEY_KP_Multiply;
+            _keymap[78                    ] = osgGA::GUIEventAdapter::KEY_KP_Subtract;
+            _keymap[69                    ] = osgGA::GUIEventAdapter::KEY_KP_Add;
+            _keymap[89                    ] = osgGA::GUIEventAdapter::KEY_KP_Home;
+            _keymap[91                    ] = osgGA::GUIEventAdapter::KEY_KP_Up;
+            _keymap[92                    ] = osgGA::GUIEventAdapter::KEY_KP_Page_Up;
+            _keymap[86                    ] = osgGA::GUIEventAdapter::KEY_KP_Left;
+            _keymap[87                    ] = osgGA::GUIEventAdapter::KEY_KP_Begin;
+            _keymap[88                    ] = osgGA::GUIEventAdapter::KEY_KP_Right;
+            _keymap[83                    ] = osgGA::GUIEventAdapter::KEY_KP_End;
+            _keymap[84                    ] = osgGA::GUIEventAdapter::KEY_KP_Down;
+            _keymap[85                    ] = osgGA::GUIEventAdapter::KEY_KP_Page_Down;
+            _keymap[82                    ] = osgGA::GUIEventAdapter::KEY_KP_Insert;
+            _keymap[65                    ] = osgGA::GUIEventAdapter::KEY_KP_Delete;
+
+        }
+        
+        ~OSXKeyboardMap() {
+        }
+        
+        unsigned int remapKey(unsigned int key, unsigned int rawkey)
+        {
+            KeyMap::iterator itr = _keymap.find(rawkey);
+            if (itr == _keymap.end()) return key;
+            else return itr->second;
+        }
+    private:
+        typedef std::map<unsigned int, osgGA::GUIEventAdapter::KeySymbol> KeyMap;
+        KeyMap _keymap;
+};
+
+/** remaps a native os x keycode to a GUIEventAdapter-keycode */
+static unsigned int remapOSXKey(unsigned int key, unsigned int rawkey)
+{
+    static OSXKeyboardMap s_OSXKeyboardMap;
+    return s_OSXKeyboardMap.remapKey(key,rawkey);
+}
+
+/** creates a pixelformat from a Trait */        
+static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits) {
+
+    std::vector<GLint> attributes;
+    
+    attributes.push_back(AGL_NO_RECOVERY);
+    attributes.push_back(AGL_RGBA);
+    attributes.push_back(AGL_COMPLIANT);
+    
+    if (traits->doubleBuffer) attributes.push_back(AGL_DOUBLEBUFFER);
+    if (traits->quadBufferStereo) attributes.push_back(AGL_STEREO);
+    
+    attributes.push_back(AGL_RED_SIZE); attributes.push_back(traits->red);
+    attributes.push_back(AGL_GREEN_SIZE); attributes.push_back(traits->green);
+    attributes.push_back(AGL_BLUE_SIZE); attributes.push_back(traits->blue);
+    attributes.push_back(AGL_DEPTH_SIZE); attributes.push_back(traits->depth);
+    
+    if (traits->alpha) { attributes.push_back(AGL_ALPHA_SIZE); attributes.push_back(traits->alpha); }
+    
+    if (traits->stencil) { attributes.push_back(AGL_STENCIL_SIZE); attributes.push_back(traits->stencil); }
+    
+    // TODO 
+    // missing accumulation-buffer-stuff
+
+#if defined(AGL_SAMPLE_BUFFERS_ARB) && defined (AGL_SAMPLES_ARB)
+
+    if (traits->sampleBuffers) { attributes.push_back(AGL_SAMPLE_BUFFERS_ARB); attributes.push_back(traits->sampleBuffers); }
+    if (traits->sampleBuffers) { attributes.push_back(AGL_SAMPLES_ARB); attributes.push_back(traits->samples); }
+
+#endif
+    attributes.push_back(AGL_NONE);
+    
+    return aglChoosePixelFormat(NULL, 0, &(attributes.front()));
+}
+
+/** This is the class we need to create for pbuffers, note its not a GraphicsWindow as it won't need any of the event handling and window mapping facilities.*/
+class GraphicsContextCarbon : public osg::GraphicsContext
+{
+    public:
+
+        GraphicsContextCarbon(osg::GraphicsContext::Traits* traits):
+            _valid(false)
+        {
+            _traits = traits;
+        }
+    
+        virtual bool valid() const { return _valid; }
+
+        /** Realise the GraphicsContext implementation, 
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
+
+        /** Return true if the graphics context has been realised, and is ready to use, implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool isRealizedImplementation() const  { osg::notify(osg::NOTICE)<<"GraphicsWindow::isRealizedImplementation() not implemented."<<std::endl; return false; }
+
+        /** Close the graphics context implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void closeImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::closeImplementation() not implemented."<<std::endl; }
+
+        /** Make this graphics context current implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false; }
+        
+        /** Make this graphics context current with specified read context implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false;}
+
+         /** Release the graphics context.*/
+        virtual bool releaseContextImplementation() {  osg::notify(osg::NOTICE)<<"GraphicsWindow::releaseContextImplementation(..) not implemented."<<std::endl; return false; }
+
+
+        /** Pure virtual, Bind the graphics context to associated texture implementation.
+          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        virtual void bindPBufferToTextureImplementation(GLenum /*buffer*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; }
+
+        /** Swap the front and back buffers implementation.
+          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
+        virtual void swapBuffersImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow:: swapBuffersImplementation() not implemented."<<std::endl; }
+        
+    protected:
+        
+        bool        _valid;
+
+};
+
+}
+
+void GraphicsWindowCarbon::setWindowDecoration(bool flag)
+{
+   _useWindowDecoration = flag;
+}
+
+void GraphicsWindowCarbon::init()
+{
+    _closeRequested = false;
+    _context = NULL;
+    _window = NULL;
+    _pixelFormat = createPixelFormat(_traits.get());
+    if (!_pixelFormat)
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::init could not create a valid pixelformat" << std::endl;
+    _valid = (_pixelFormat != NULL);
+    _initialized = true;
+}
+
+
+
+bool GraphicsWindowCarbon::realizeImplementation()
+{
+    
+    if (!_initialized) init();
+    if (!_initialized) return false;
+    if (!_traits) return false;
+    
+    setWindowDecoration(_traits->windowDecoration);
+    
+    // create the window
+    Rect bounds = {_traits->y, _traits->x, _traits->y + _traits->height, _traits->x + _traits->width};
+    OSStatus err = 0;
+    WindowAttributes attr;
+    
+    if (_useWindowDecoration)
+        if (_traits->supportsResize)
+            attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute);
+        else
+            attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute) & ~kWindowResizableAttribute;
+    else {
+        attr = kWindowStandardHandlerAttribute;
+        if (_traits->supportsResize)
+            attr |= kWindowResizableAttribute;
+    }
+    
+    err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
+    if (err) {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
+        return false;
+    }
+    
+    // register window event handler to receive resize-events
+    EventTypeSpec   windEventList[] = {{ kEventClassWindow, kEventWindowBoundsChanged},{ kEventClassWindow, kEventWindowClosed}};
+    InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  2, windEventList, this, NULL);
+    
+    // set the window title
+    if (!_traits->windowName.empty()) {
+        CFStringRef windowtitle = CFStringCreateWithBytes( kCFAllocatorDefault, (const UInt8*)(_traits->windowName.c_str()), _traits->windowName.length(),kCFStringEncodingUTF8, false );
+        SetWindowTitleWithCFString( _window, windowtitle );
+    }
+    
+    // create the context
+    _context = aglCreateContext (_pixelFormat, NULL);
+    if (!_context) {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation failed creating a context: " << aglGetError() << std::endl;
+        return false;
+    }
+       
+    makeCurrent();
+
+    // enable Multi-threaded OpenGL Execution:
+    CGLError cgerr = kCGLNoError;
+    CGLContextObj ctx = CGLGetCurrentContext();
+
+    cgerr =  CGLEnable( ctx, kCGLCEMPEngine);
+        
+    if (cgerr != kCGLNoError )
+    {
+        osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
+    } 
+    
+    aglSetDrawable(_context, GetWindowPort(_window));
+    ShowWindow(_window);
+    
+    //enable vsync
+    if (_traits->vsync) {
+        GLint swap = 1;
+        aglSetInteger (_context, AGL_SWAP_INTERVAL, &swap);
+    }
+
+    
+    _realized = true;
+    return _realized;
+}
+
+
+
+bool GraphicsWindowCarbon::makeCurrentImplementation()
+{
+        
+    return (aglSetCurrentContext(_context) == GL_TRUE);
+}
+
+bool GraphicsWindowCarbon::releaseContextImplementation()
+{
+    if (!_realized)
+    {
+        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        return false;
+    }
+
+    // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
+    return (aglSetCurrentContext(NULL) == GL_TRUE);
+}
+
+
+
+void GraphicsWindowCarbon::closeImplementation()
+{
+    _valid = false;
+    _realized = false;
+    
+    if (_pixelFormat)
+    {
+        aglDestroyPixelFormat(_pixelFormat);
+        _pixelFormat = NULL;
+    }
+    
+    if (_context) 
+    {
+        aglSetDrawable(_context, NULL);
+        aglSetCurrentContext(NULL);
+        aglDestroyContext(_context);
+        _context = NULL;
+    }
+    
+    if (_window) DisposeWindow(_window);
+    _window = NULL;
+}
+
+
+
+void GraphicsWindowCarbon::swapBuffersImplementation()
+{
+    aglSwapBuffers(_context);
+}
+
+
+
+void GraphicsWindowCarbon::resizedImplementation(int x, int y, int width, int height)
+{
+    aglUpdateContext(_context);
+}
+
+
+
+void GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
+{
+
+    // mouse down event   
+    Point wheresMyMouse;
+    GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
+    
+    EventMouseButton mouseButton = 0;
+    GetEventParameter (theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(mouseButton), NULL, &mouseButton);
+        
+    WindowRef win;
+    int fwres = FindWindow(wheresMyMouse, &win);
+
+    if ((fwres == inMenuBar) && (mouseButton >= 1)) {
+        MenuSelect(wheresMyMouse);
+        HiliteMenu(0);
+        return;
+    }
+    else if ((fwres != inContent) && (fwres > 0) && (mouseButton >= 1))
+    {
+        return;
+    }
+    else
+    {
+
+        // swap right and middle buttons so that middle button is 2, right button is 3.
+        if (mouseButton==3) mouseButton = 2;
+        else if (mouseButton==2) mouseButton = 3;
+        
+        // check tablet pointer device and map it to a musebutton
+        TabletProximityRec    theTabletRecord;    // The Tablet Proximity Record
+        // Extract the Tablet Proximity reccord from the event.
+        if(noErr == GetEventParameter(theEvent, kEventParamTabletProximityRec,
+                                      typeTabletProximityRec, NULL,
+                                      sizeof(TabletProximityRec),
+                                      NULL, (void *)&theTabletRecord))
+        {            
+            osgGA::GUIEventAdapter::TabletPointerType pointerType;
+            switch(theTabletRecord.pointerType)
+            {
+                case 1: // pen
+                    pointerType = osgGA::GUIEventAdapter::PEN;
+                    break;
+                    
+                case 2: // puck
+                    pointerType = osgGA::GUIEventAdapter::PUCK;
+                    break;
+                    
+                case 3: //eraser
+                    pointerType = osgGA::GUIEventAdapter::ERASER;
+                    break;
+
+                default:
+                   pointerType = osgGA::GUIEventAdapter::UNKNOWN;
+                   break;
+            }
+            
+            getEventQueue()->penProximity(pointerType, (theTabletRecord.enterProximity != 0));
+        }
+
+        switch(GetEventKind(theEvent))
+        {
+            case kEventMouseDown:
+                {
+                    float mx =wheresMyMouse.h;
+                    float my =wheresMyMouse.v;
+                    transformMouseXY(mx, my);
+                    getEventQueue()->mouseButtonPress(mx, my, mouseButton);
+                }
+                break;
+            case kEventMouseUp:
+                {
+                    float mx =wheresMyMouse.h;
+                    float my =wheresMyMouse.v;
+                    transformMouseXY(mx, my);
+                    getEventQueue()->mouseButtonRelease(mx, my, mouseButton);
+                }
+                break;
+                
+            case kEventMouseDragged:
+                {
+                    // get pressure from the pen, only when mouse/pen is dragged
+                    TabletPointRec    theTabletRecord;
+                    if(noErr == GetEventParameter(theEvent,  kEventParamTabletPointRec, typeTabletPointRec, NULL, 
+                                    sizeof(TabletPointRec), NULL, (void *)&theTabletRecord)) {
+                    
+                        getEventQueue()->penPressure(theTabletRecord.pressure / 65535.0f);
+            
+                    }
+                    
+                    float mx =wheresMyMouse.h;
+                    float my =wheresMyMouse.v;
+                    transformMouseXY(mx, my);
+                    getEventQueue()->mouseMotion(mx, my);
+                }
+                break;
+                
+            case kEventMouseMoved:
+                {
+                    float mx = wheresMyMouse.h;
+                    float my = wheresMyMouse.v;
+                    transformMouseXY(mx, my);
+                    getEventQueue()->mouseMotion(mx, my);
+                }
+                break;
+                
+            // mouse with scroll-wheels
+            case kEventMouseWheelMoved:
+                {
+                    EventMouseWheelAxis axis;
+                    SInt32 delta;
+                    if (noErr == GetEventParameter( theEvent, kEventParamMouseWheelAxis, typeMouseWheelAxis, NULL, sizeof(axis), NULL, &axis )) {
+                        if (noErr == GetEventParameter( theEvent, kEventParamMouseWheelDelta, typeLongInteger, NULL, sizeof(delta), NULL, &delta )) {
+                            switch (axis) {
+                                case kEventMouseWheelAxisX:
+                                    getEventQueue()->mouseScroll( (delta > 0) ? osgGA::GUIEventAdapter::SCROLL_RIGHT : osgGA::GUIEventAdapter::SCROLL_LEFT);
+                                    break;
+                                case kEventMouseWheelAxisY:
+                                    getEventQueue()->mouseScroll( (delta < 0) ? osgGA::GUIEventAdapter::SCROLL_DOWN : osgGA::GUIEventAdapter::SCROLL_UP);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                break;
+            
+            // new trackpads and mighty mouse, (not officially documented, see http://developer.apple.com/qa/qa2005/qa1453.html )
+            case 11:
+                {
+                    enum
+                        {
+                        kEventParamMouseWheelSmoothVerticalDelta       = 'saxy', // typeSInt32
+                        kEventParamMouseWheelSmoothHorizontalDelta     = 'saxx', // typeSInt32
+                        };
+                    
+                    SInt32 scroll_delta_x = 0;
+                    SInt32 scroll_delta_y = 0;
+                    OSErr err = noErr;
+                    err = GetEventParameter( theEvent, kEventParamMouseWheelSmoothVerticalDelta, typeLongInteger, NULL, sizeof(scroll_delta_y), NULL, &scroll_delta_y );
+                    err = GetEventParameter( theEvent, kEventParamMouseWheelSmoothHorizontalDelta, typeLongInteger, NULL, sizeof(scroll_delta_x), NULL, &scroll_delta_x );
+                    
+                    if ((scroll_delta_x != 0) || (scroll_delta_y != 0)) {
+                        getEventQueue()->mouseScroll2D( scroll_delta_x, scroll_delta_y);
+                    }
+                }
+                break;
+            
+            default:
+                return;
+        }
+    }
+}
+
+
+
+void GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
+{
+    
+    
+    OSStatus status; 
+
+    // Key modifiers, Numlock not supported...
+
+    UInt32 modifierKeys;
+    unsigned int modifierMask = 0;
+    GetEventParameter (theEvent,kEventParamKeyModifiers,typeUInt32, NULL,sizeof(modifierKeys), NULL,&modifierKeys);
+    
+    
+    if( modifierKeys & shiftKey )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
+    }
+    if( modifierKeys & alphaLock )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
+    }
+    if( modifierKeys & controlKey )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
+    }
+    if( modifierKeys & optionKey )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_ALT;
+    }
+    
+    // we map the command-key to the META-key
+    if( modifierKeys & cmdKey )
+    {
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_META;
+    }
+    
+    
+    UInt32 rawkey;
+    GetEventParameter (theEvent,kEventParamKeyCode,typeUInt32, NULL,sizeof(rawkey), NULL,&rawkey);
+    
+    // std::cout << "key code: " << rawkey << " modifiers: " << modifierKeys << std::endl;
+            
+    UInt32 dataSize;
+    /* jbw check return status so that we don't allocate a huge array */
+    status = GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, 0, &dataSize, NULL );
+    if (status != noErr) return;
+    if (dataSize<=1) return;
+    
+    UniChar* uniChars = new UniChar[dataSize+1];
+    GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, dataSize, NULL, (void*)uniChars );
+    
+    unsigned int keychar = remapOSXKey(static_cast<unsigned long>(uniChars[0]), rawkey);
+    
+    switch(GetEventKind(theEvent))
+    {
+        case kEventRawKeyDown:
+        case kEventRawKeyRepeat:
+        {
+            getEventQueue()->keyPress(keychar);
+            getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+            break;
+        }
+        
+        case kEventRawKeyUp:
+        {                 
+            getEventQueue()->keyRelease(keychar);
+            getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+            break;
+        }
+        
+        default:
+             break;
+    
+    }
+
+    delete[] uniChars;
+
+    return;
+}
+
+
+
+void GraphicsWindowCarbon::checkEvents()
+{
+    if (!_realized) return;
+    
+    EventRef theEvent;
+    EventTargetRef theTarget = GetEventDispatcherTarget();
+    while (ReceiveNextEvent(0, NULL, 0,true, &theEvent)== noErr)
+    {
+        switch(GetEventClass(theEvent))
+        {
+            case kEventClassTablet:
+            case kEventClassMouse:
+                handleMouseEvent(theEvent);
+                break;
+           
+            case kEventClassKeyboard:
+                handleKeyboardEvent(theEvent);
+                break;
+                
+            case kEventClassApplication:
+                switch (GetEventKind(theEvent)) {
+                    case kEventAppQuit:
+                        getEventQueue()->quitApplication();
+                        break;
+                }
+                break;
+            
+            case kEventClassAppleEvent: 
+                {
+                    EventRecord eventRecord;
+                    ConvertEventRefToEventRecord(theEvent, &eventRecord);
+                    AEProcessAppleEvent(&eventRecord);
+                    return;
+                }
+                break;
+
+        }
+        SendEventToEventTarget (theEvent, theTarget);
+        ReleaseEvent(theEvent);        
+    }  
+    if (_closeRequested)
+        close(true);
+        
+    if (s_quit_requested) {
+        getEventQueue()->quitApplication();
+        s_quit_requested = false;
+    }
+            
+}
+
+
+
+void GraphicsWindowCarbon::grabFocus()
+{
+    SelectWindow(_window);
+}
+
+
+
+void GraphicsWindowCarbon::grabFocusIfPointerInWindow()
+{
+   // TODO: implement
+}
+
+
+
+void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)
+{
+    if (getEventQueue()->getUseFixedMouseInputRange())
+    {
+        osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
+        x = eventState->getXmin() + (eventState->getXmax()-eventState->getXmin())*x/float(_traits->width);
+        y = eventState->getYmin() + (eventState->getYmax()-eventState->getYmin())*y/float(_traits->height);
+    }
+}
+
+
+
+struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
+{
+
+    OSXCarbonWindowingSystemInterface() :
+        _displayCount(0),
+        _displayIds(NULL)
+    {
+        if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
+            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: could not get # of screens" << std::endl;
+            
+        _displayIds = new CGDirectDisplayID[_displayCount];
+        if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
+            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
+        
+        // register application event handler and AppleEventHandler to get quit-events:
+        static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};
+        OSErr status = InstallEventHandler(GetApplicationEventTarget(), NewEventHandlerUPP(ApplicationEventHandler), 1, &menueventSpec, 0, NULL);
+        status = AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, NewAEEventHandlerUPP(QuitAppleEventHandler), 0, false);
+    }
+    
+    ~OSXCarbonWindowingSystemInterface() {
+        if (_displayIds)
+            delete[] _displayIds;
+        _displayIds = NULL;
+    }
+    
+    inline CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
+            return _displayIds[si.screenNum];
+    }
+
+    virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
+    {
+        return _displayCount;
+    }
+
+    virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
+    {
+        CGDirectDisplayID id = getDisplayID(si);
+        width = CGDisplayPixelsWide(id);
+        height = CGDisplayPixelsHigh(id);
+    }
+
+    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
+    {
+        if (traits->pbuffer)
+        {
+            osg::ref_ptr<osgViewer::GraphicsContextCarbon> pbuffer = new GraphicsContextCarbon(traits);
+            if (pbuffer->valid()) return pbuffer.release();
+            else return 0;
+        }
+        else
+        {
+            osg::ref_ptr<osgViewer::GraphicsWindowCarbon> window = new GraphicsWindowCarbon(traits);
+            if (window->valid()) return window.release();
+            else return 0;
+        }
+    }
+    
+    private:
+        CGDisplayCount        _displayCount;
+        CGDirectDisplayID*    _displayIds;
+};
+
+
+
+struct RegisterWindowingSystemInterfaceProxy
+{
+    RegisterWindowingSystemInterfaceProxy()
+    {
+        osg::GraphicsContext::setWindowingSystemInterface(new OSXCarbonWindowingSystemInterface);
+    }
+
+    ~RegisterWindowingSystemInterfaceProxy()
+    {
+        osg::GraphicsContext::setWindowingSystemInterface(0);
+    }
+};
+
+RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
+
+#endif

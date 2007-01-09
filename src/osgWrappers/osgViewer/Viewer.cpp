@@ -75,8 +75,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          "Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape). Setting to 0 switches off the feature. ");
 	I_Method0(int, getKeySetsDone,
 	          __int__getKeySetsDone,
-	          "Set the key value that the viewer checks on each frame to see if the viewer's done flag. ",
+	          "get the key value that the viewer checks on each frame to see if the viewer's done flag. ",
 	          "");
+	I_Method1(void, setQuitEventSetsDone, IN, bool, flag,
+	          __void__setQuitEventSetsDone__bool,
+	          "if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature ",
+	          "");
+	I_Method0(bool, getQuitEventSetsDone,
+	          __bool__getQuitEventSetsDone,
+	          "",
+	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
 	I_Method0(int, run,
 	          __int__run,
 	          "Execute a main frame loop. ",
@@ -141,6 +149,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(int, KeySetsDone, 
 	                 __int__getKeySetsDone, 
 	                 __void__setKeySetsDone__int);
+	I_SimpleProperty(bool, QuitEventSetsDone, 
+	                 __bool__getQuitEventSetsDone, 
+	                 __void__setQuitEventSetsDone__bool);
 	I_SimpleProperty(osgViewer::Viewer::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);

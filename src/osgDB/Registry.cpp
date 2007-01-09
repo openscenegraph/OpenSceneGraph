@@ -205,7 +205,8 @@ Registry::Registry()
     //addFileExtensionAlias("geo",  "lwo");
     addFileExtensionAlias("lw",   "lwo");
 
-    addFileExtensionAlias("wrl",   "iv");
+    // addFileExtensionAlias("wrl",   "iv");
+    addFileExtensionAlias("wrl",   "vrml");    
     
     // add alias for the text/freetype plugin.
     addFileExtensionAlias("ttf",   "freetype");  // true type

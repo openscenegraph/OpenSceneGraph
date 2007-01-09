@@ -92,20 +92,18 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
 
 std::string PickHandler::pick(float x, float y)
 {
-#if 0
-    osgUtil::IntersectVisitor::HitList hlist;
-    if (_viewer->computeIntersections(x, y, hlist))
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    if (_viewer->computeIntersections(x, y, intersections))
     {
-        for(osgUtil::IntersectVisitor::HitList::iterator hitr=hlist.begin();
-            hitr!=hlist.end();
+        for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
+            hitr != intersections.end();
             ++hitr)
         {
-            if (hitr->_geode.valid() && !hitr->_geode->getName().empty()) return hitr->_geode->getName();
+            osg::Node* node = hitr->nodePath.empty() ? 0 : hitr->nodePath.back();
+            if (node && !node->getName().empty()) return node->getName();
         }
     }
-#else
-    osg::notify(osg::NOTICE)<<"Picking not implemented yet "<<x<<", "<<y<<std::endl;
-#endif    
+
     return "";
 }
 
@@ -416,9 +414,6 @@ int main( int argc, char **argv )
     // add model to viewer.
     viewer.setSceneData( root );
 
-    // create the windows and run the threads.
-    viewer.realize();
-    
     osg::Matrix lookAt;
     lookAt.makeLookAt(osg::Vec3(0.0f, -4.0f, 0.0f), centerScope, osg::Vec3(0.0f, 0.0f, 1.0f));
 

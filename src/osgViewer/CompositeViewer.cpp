@@ -30,7 +30,7 @@ void CompositeViewer::init()
 
 void CompositeViewer::addView(osgViewer::View* view)
 {
-    osg::notify(osg::NOTICE)<<"CompositeViewer::addView(View*) not implemented yet."<<std::endl;
+    osg::notify(osg::NOTICE)<<"CompositeViewer::addView(View*) not implemented yet. view="<<view<<std::endl;
 }
 
 void CompositeViewer::frame()

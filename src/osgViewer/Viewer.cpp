@@ -490,6 +490,8 @@ void Viewer::realize()
     
     if (contexts.empty())
     {
+        osg::notify(osg::INFO)<<"Viewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
+    
         // no windows are already set up so set up a default view        
         setUpViewAcrossAllScreens();
         getContexts(contexts);

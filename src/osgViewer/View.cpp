@@ -17,6 +17,8 @@
 #include <osgUtil/SceneView>
 #include <osg/io_utils>
 
+#include <osgUtil/IntersectionVisitor>
+
 using namespace osgViewer;
 
 View::View()
@@ -85,11 +87,7 @@ void View::setUpViewAcrossAllScreens()
             traits->y = 0;
             traits->width = width;
             traits->height = height;
-#if 1
             traits->windowDecoration = false;
-#else
-            traits->windowDecoration = true;
-#endif            
             traits->doubleBuffer = true;
             traits->sharedContext = 0;
             
@@ -223,7 +221,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi) 
     {
-        osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+        osg::notify(osg::NOTICE)<<"View::setUpViewOnSingleScreen() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
     }
 
@@ -235,11 +233,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     traits->y = 0;
     traits->width = width;
     traits->height = height;
-#if 1
     traits->windowDecoration = false;
-#else
-    traits->windowDecoration = true;
-#endif            
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
 
@@ -250,7 +244,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
     if (gw)
     {
-        osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
+        osg::notify(osg::INFO)<<"View::setUpViewOnSingleScreen - GraphicsWindow has been created successfully."<<std::endl;
         gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(0, 0, width, height );
     }
     else
@@ -390,4 +384,36 @@ void View::requestWarpPointer(float x,float y)
     // osg::notify(osg::NOTICE)<<"  ** no warping applied. **"<<std::endl;
 
 
+}
+
+bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+{
+    if (!_camera.valid()) return false;
+    
+    osgUtil::LineSegmentIntersector::CoordinateFrame cf = _camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
+    osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(cf, x, y);
+    
+    osgUtil::IntersectionVisitor iv(picker);
+    iv.setTraversalMask(traversalMask);
+    _camera->accept(iv);
+
+    if (picker->containsIntersections())
+    {
+        intersections = picker->getIntersections();
+        return true;
+    }
+    else
+    {
+        intersections.clear();
+        return false;
+    }
+}
+
+bool View::computeIntersections(float x,float y, osg::Node* node, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+{
+    if (!_camera.valid()) return false;
+    
+    osg::notify(osg::NOTICE)<<"View::computeIntersections(x,y,node,intersections) not implemented"<<std::endl;
+    
+    return false;
 }

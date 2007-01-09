@@ -74,6 +74,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
                 level(0),
                 face(0),
                 mipMapGeneration(false),
+                vsync(true),
                 sharedContext(0) {}
                             
             // graphics context orginal and size
@@ -109,6 +110,9 @@ class OSG_EXPORT GraphicsContext : public Referenced
             unsigned int    level;
             unsigned int    face;
             unsigned int    mipMapGeneration;
+            
+            // V-sync
+            bool            vsync;
             
             // shared context
             GraphicsContext* sharedContext;

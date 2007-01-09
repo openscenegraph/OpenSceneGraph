@@ -62,8 +62,14 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
           * Setting to 0 switches off the feature.*/
         void setKeySetsDone(int key) { _keySetsDone = key; }
 
-        /** Set the key value that the viewer checks on each frame to see if the viewer's done flag.*/
+        /** get the key value that the viewer checks on each frame to see if the viewer's done flag.*/
         int getKeySetsDone() const { return _keySetsDone; }
+        
+        /** if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature */
+        void setQuitEventSetsDone(bool flag) { _quitEventSetsDone = flag; }
+        
+        /** @return true if the viewer respond to the QUIT_APPLICATION-event */
+        bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
 
         /** Execute a main frame loop.
           * Equivialant to while (!viewer.done()) viewer.frame();
@@ -115,6 +121,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         bool _done;
         int _keySetsDone;
+        bool _quitEventSetsDone;
         
         ThreadingModel _threadingModel;
        

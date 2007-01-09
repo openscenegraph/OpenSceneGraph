@@ -27,6 +27,7 @@ Viewer::Viewer():
     _firstFrame(true),
     _done(false),
     _keySetsDone(osgGA::GUIEventAdapter::KEY_Escape),
+    _quitEventSetsDone(true),
     _threadingModel(ThreadPerContext),
     _numThreadsOnBarrier(0)
 {
@@ -720,7 +721,7 @@ void Viewer::eventTraversal()
         }
     }
     
-#if 0    
+#if 0  
     // pointer coordinate transform
     for(osgGA::EventQueue::Events::iterator itr = events.begin();
         itr != events.end();
@@ -789,6 +790,11 @@ void Viewer::eventTraversal()
             case(osgGA::GUIEventAdapter::KEYUP):
                 osg::notify(osg::NOTICE)<<"  KEYUP '"<<(char)event->getKey()<<"'"<<std::endl;
                 break;
+*/            case(osgGA::GUIEventAdapter::RESIZE):
+                osg::notify(osg::NOTICE)<<"  RESIZE "<<event->getWindowX()<<"/"<<event->getWindowY()<<" x "<<event->getWindowWidth()<<"/"<<event->getWindowHeight() << std::endl;
+                break;
+            case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
+                osg::notify(osg::NOTICE)<<"  QUIT_APPLICATION " << std::endl;
             case(osgGA::GUIEventAdapter::RESIZE):
                 osg::notify(osg::NOTICE)<<"  RESIZE "<<std::endl;
                 break;
@@ -804,7 +810,7 @@ void Viewer::eventTraversal()
 
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
     
-    if (_keySetsDone!=0)
+    if ((_keySetsDone!=0) || (_quitEventSetsDone))
     {
         for(osgGA::EventQueue::Events::iterator itr = events.begin();
             itr != events.end();
@@ -819,6 +825,11 @@ void Viewer::eventTraversal()
                     else if (event->getKey()=='c') { setThreadingModel(ThreadPerCamera); }
                     else if (event->getKey()=='w') { setThreadingModel(ThreadPerContext); }
                     break;
+                
+                case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
+                    _done = true;
+                    break;
+                    
                 default:
                     break;
             }

@@ -45,29 +45,22 @@ class OccluderEventHandler : public osgGA::GUIEventHandler
         osg::ref_ptr<osg::ConvexPlanarOccluder> _convexPlanarOccluder;
 };
 
-bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
+bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {
-#if 0
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
             if (ea.getKey()=='a')
+
             {
-                float x = ea.getXnormalized();
-                float y = ea.getYnormalized();
- 
-                osgUtil::IntersectVisitor::HitList hitList;
-                if (!_viewer->computeIntersections(x,y,hitList))
+                osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+                osgUtil::LineSegmentIntersector::Intersections intersections;
+                if (view && view->computeIntersections(ea.getX(), ea.getY(), intersections))
                 {
-                     return true;
-                }
-
-                if (!hitList.empty())
-                {
-
-                    osgUtil::Hit& hit = hitList.front();
-                    addPoint(hit.getWorldIntersectPoint());
+                    const osgUtil::LineSegmentIntersector::Intersection& hit = *(intersections.begin());
+                    if (hit.matrix.valid()) addPoint(hit.localIntersectionPoint * (*hit.matrix));
+                    else addPoint(hit.localIntersectionPoint);
                 }
 
                 return true;
@@ -97,10 +90,6 @@ bool OccluderEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAct
         default:
             return false;
     }
-#else
-    osg::notify(osg::NOTICE)<<"Computre intersections not implemented yet."<<std::endl;
-    return false;
-#endif
 }
 
 void OccluderEventHandler::addPoint(const osg::Vec3& pos)

@@ -116,88 +116,84 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         case(osgGA::GUIEventAdapter::PUSH):
         case(osgGA::GUIEventAdapter::RELEASE):
         {
-#if 0
-            osgProducer::Viewer* viewer = dynamic_cast<osgProducer::Viewer*>(&aa);
-            osgUtil::IntersectVisitor::HitList hlist;
-            if (viewer->computeIntersections(ea.getX(),ea.getY(), nv->getNodePath().back(), hlist))
+
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+            osg::notify(osg::NOTICE)<<"osgmovie - view = "<<view<<std::endl;
+            osgUtil::LineSegmentIntersector::Intersections intersections;
+            if (view && view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath().back(), intersections))
             {
-                if (!hlist.empty())
+#if 1
+                osg::notify(osg::NOTICE)<<"osgmovie - Vertex interpolation not implemented yet"<<std::endl;
+#else
+                // use the nearest intersection                 
+                const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
+                osg::Drawable* drawable = intersection.drawable.get();
+                osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
+                osg::Vec3Array* vertices = geometry ? dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray()) : 0;
+                if (vertices)
                 {
-                    // use the nearest intersection                 
-                    osgUtil::Hit& hit = hlist.front();
-                    osg::Drawable* drawable = hit.getDrawable();
-                    osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
-                    osg::Vec3Array* vertices = geometry ? dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray()) : 0;
+                    // get the vertex indices.
+                    const osgUtil::LineSegmentIntersector::Intersection::IndexList& vil = intersection.indexList;
 
-                    if (vertices)
+                    if (vil.size()==3)
                     {
-                        // get the vertex indices.
-                        const osgUtil::Hit::VecIndexList& vil = hit.getVecIndexList();
+                        int i1 = vil[0];
+                        int i2 = vil[1];
+                        int i3 = vil[2];
+                        osg::Vec3 v1 = (*vertices)[i1];
+                        osg::Vec3 v2 = (*vertices)[i2];
+                        osg::Vec3 v3 = (*vertices)[i3];
+                        osg::Vec3 v = intersection.localIntersectionPoint;
                         
-                        if (vil.size()==3)
+                        osg::Vec3 p1 = intersection.getLocalLineSegment()->start();
+                        osg::Vec3 p2 = intersection.getLocalLineSegment()->end();
+
+                        osg::Vec3 p12 = p1-p2;
+                        osg::Vec3 v13 = v1-v3;
+                        osg::Vec3 v23 = v2-v3;
+                        osg::Vec3 p1v3 = p1-v3;
+
+                        osg::Matrix matrix(p12.x(), v13.x(), v23.x(), 0.0,
+                                           p12.y(), v13.y(), v23.y(), 0.0,
+                                           p12.z(), v13.z(), v23.z(), 0.0,
+                                           0.0,    0.0,    0.0,    1.0);
+
+                        osg::Matrix inverse;
+                        inverse.invert(matrix);
+
+                        osg::Vec3 ratio = inverse*p1v3;
+
+                        // extract the baricentric coordinates.                            
+                        float r1 = ratio.y();
+                        float r2 = ratio.z();
+                        float r3 = 1.0f-r1-r2;
+
+                        osg::Array* texcoords = (geometry->getNumTexCoordArrays()>0) ? geometry->getTexCoordArray(0) : 0;
+                        osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
+                        if (texcoords_Vec2Array)
                         {
+                            // we have tex coord array so now we can compute the final tex coord at the point of intersection.                                
+                            osg::Vec2 tc1 = (*texcoords_Vec2Array)[i1];
+                            osg::Vec2 tc2 = (*texcoords_Vec2Array)[i2];
+                            osg::Vec2 tc3 = (*texcoords_Vec2Array)[i3];
+                            osg::Vec2 tc = tc1*r1 + tc2*r2 + tc3*r3;
 
-                            int i1 = vil[0];
-                            int i2 = vil[1];
-                            int i3 = vil[2];
-                            osg::Vec3 v1 = (*vertices)[i1];
-                            osg::Vec3 v2 = (*vertices)[i2];
-                            osg::Vec3 v3 = (*vertices)[i3];
-                            osg::Vec3 v = hit.getLocalIntersectPoint();
-                            osg::Vec3 p1 = hit.getLocalLineSegment()->start();
-                            osg::Vec3 p2 = hit.getLocalLineSegment()->end();
-                            
-                            osg::Vec3 p12 = p1-p2;
-                            osg::Vec3 v13 = v1-v3;
-                            osg::Vec3 v23 = v2-v3;
-                            osg::Vec3 p1v3 = p1-v3;
-                            
-                            osg::Matrix matrix(p12.x(), v13.x(), v23.x(), 0.0,
-                                               p12.y(), v13.y(), v23.y(), 0.0,
-                                               p12.z(), v13.z(), v23.z(), 0.0,
-                                               0.0,    0.0,    0.0,    1.0);
-                                               
-                            osg::Matrix inverse;
-                            inverse.invert(matrix);
-                            
-                            osg::Vec3 ratio = inverse*p1v3;
+                            osg::notify(osg::NOTICE)<<"We hit tex coords "<<tc<<std::endl;
 
-                            // extract the baricentric coordinates.                            
-                            float r1 = ratio.y();
-                            float r2 = ratio.z();
-                            float r3 = 1.0f-r1-r2;
-
-                            osg::Array* texcoords = (geometry->getNumTexCoordArrays()>0) ? geometry->getTexCoordArray(0) : 0;
-                            osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
-                            if (texcoords_Vec2Array)
-                            {
-                                // we have tex coord array so now we can compute the final tex coord at the point of intersection.                                
-                                osg::Vec2 tc1 = (*texcoords_Vec2Array)[i1];
-                                osg::Vec2 tc2 = (*texcoords_Vec2Array)[i2];
-                                osg::Vec2 tc3 = (*texcoords_Vec2Array)[i3];
-                                osg::Vec2 tc = tc1*r1 + tc2*r2 + tc3*r3;
-                                
-                                osg::notify(osg::NOTICE)<<"We hit tex coords "<<tc<<std::endl;
-                                
-                            }
-                            
-                            
                         }
-                        else
-                        {
-                            osg::notify(osg::NOTICE)<<"Hit but insufficient indices to work with";
-                        }
-    
                     }
-                } 
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Intersection has insufficient indices to work with";
+                    }
+
+                }
+#endif
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"No hit"<<std::endl;
+                osg::notify(osg::NOTICE)<<"No intersection"<<std::endl;
             }
-#else
-            osg::notify(osg::NOTICE)<<"Need to implement picking."<<std::endl;
-#endif
             break;
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):

@@ -156,6 +156,10 @@ else
     endif
 endif
 
+ifeq ($(LIBVRML_INSTALLED),yes)
+    PLUGIN_DIRS += vrml
+endif
+
 
 ifeq ($(PERFORMER_INSTALLED),yes)
     PLUGIN_DIRS += pfb

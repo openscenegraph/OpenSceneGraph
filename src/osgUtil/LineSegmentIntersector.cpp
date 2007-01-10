@@ -220,7 +220,7 @@ LineSegmentIntersector::LineSegmentIntersector(CoordinateFrame cf, double x, dou
     switch(cf)
     {
         case WINDOW : _start.set(x,y,0.0); _end.set(x,y,1.0); break;
-        case PROJECTION : _start.set(x,y,1.0); _end.set(x,y,-1.0); break;
+        case PROJECTION : _start.set(x,y,-1.0); _end.set(x,y,1.0); break;
         case VIEW : _start.set(x,y,0.0); _end.set(x,y,1.0); break;
         case MODEL : _start.set(x,y,0.0); _end.set(x,y,1.0); break;
     }

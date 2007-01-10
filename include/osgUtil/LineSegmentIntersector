@@ -33,7 +33,7 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
         
         /** Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates
           * In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1).
-          * In PROJECTION coordinates (clip space cube) creates a start value of (x,y,1) and end value of (x,y,-1).
+          * In PROJECTION coordinates (clip space cube) creates a start value of (x,y,-1) and end value of (x,y,1).
           * In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1).*/
         LineSegmentIntersector(CoordinateFrame cf, double x, double y);
         

@@ -12,6 +12,7 @@
 */
 
 #include <osgViewer/Scene>
+#include <osgGA/EventVisitor>
 
 using namespace osgViewer;
 
@@ -64,11 +65,6 @@ void Scene::setDatabasePager(osgDB::DatabasePager* dp)
     _databasePager = dp;
 }
 
-void Scene::addEventHandler(osgGA::GUIEventHandler*)
-{
-    osg::notify(osg::NOTICE)<<"Scene::addEventHandler() not implementated yet."<<std::endl;
-}
-
 void Scene::frameAdvance()
 {
     // double previousTime = _frameStamp->getReferenceTime();
@@ -77,45 +73,6 @@ void Scene::frameAdvance()
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
     
     // osg::notify(osg::NOTICE)<<"Frame rate = "<<1.0/(_frameStamp->getReferenceTime()-previousTime)<<std::endl;
-}
-
-void Scene::frameEventTraversal()
-{
-    _eventQueue->frame( _frameStamp->getReferenceTime() );
-
-    osgGA::EventQueue::Events events;
-    _eventQueue->takeEvents(events);
-    
-    if (_eventVisitor.valid())
-    {
-        _eventVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
-    }
-    
-    for(osgGA::EventQueue::Events::iterator itr = events.begin();
-        itr != events.end();
-        ++itr)
-    {
-        osgGA::GUIEventAdapter* event = itr->get();
-    
-        bool handled = false;
-        
-        if (_eventVisitor.valid() && getSceneData())
-        {
-            _eventVisitor->reset();
-            _eventVisitor->addEvent( event );
-            
-            getSceneData()->accept(*_eventVisitor);
-            
-            if (_eventVisitor->getEventHandled())  handled = true;
-        }
-        
-        for(EventHandlers::iterator hitr = _eventHandlers.begin();
-            hitr != _eventHandlers.end() && !handled;
-            ++hitr)
-        {
-//            handled = (*hitr)->handle( *event, *this, 0, 0);
-        }
-    }
 }
 
 void Scene::frameUpdateTraversal()

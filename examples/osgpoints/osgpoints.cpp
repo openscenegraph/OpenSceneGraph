@@ -11,12 +11,14 @@
 
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Point>
 #include <osg/BlendFunc>
 #include <osg/Texture2D>
 #include <osg/PointSprite>
+
+#include <iostream>
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 {
@@ -109,13 +111,7 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     bool shader = false;
     while (arguments.read("--shader")) shader = true;
@@ -130,24 +126,11 @@ int main( int argc, char **argv )
     bool usePointSprites = false;
     while (arguments.read("--sprites")) { usePointSprites = true; };
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
-
-    osg::Timer timer;
-    osg::Timer_t start_tick = timer.tick();
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
@@ -158,10 +141,6 @@ int main( int argc, char **argv )
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-
-    osg::Timer_t end_tick = timer.tick();
-
-    std::cout << "Time to load = "<<timer.delta_s(start_tick,end_tick)<<std::endl;
 
     // optimize the scene graph, remove rendundent nodes and state etc.
     osgUtil::Optimizer optimizer;
@@ -192,7 +171,7 @@ int main( int argc, char **argv )
     
 
     // register the handler for modifying the point size
-    viewer.getEventHandlerList().push_front(new KeyboardEventHandler(viewer.getGlobalStateSet()));
+    viewer.addEventHandler(new KeyboardEventHandler(viewer.getCamera()->getOrCreateStateSet()));
 
 
     if (shader)
@@ -231,34 +210,6 @@ int main( int argc, char **argv )
 #endif
     }
 
-
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }
 

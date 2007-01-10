@@ -1,4 +1,4 @@
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Group>
 #include <osg/Geode>
@@ -9,6 +9,7 @@
 #include <osg/io_utils>
 
 #include <osgUtil/Optimizer>
+#include <osgUtil/IntersectVisitor>
 
 #include <osgDB/ReadFile>
 
@@ -239,7 +240,7 @@ public:
         {
             case(osgGA::GUIEventAdapter::PUSH):
             {
-                osgProducer::Viewer* viewer = dynamic_cast<osgProducer::Viewer*>(&aa);
+                osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
                 pick(viewer,ea);
             }
             return false;
@@ -249,18 +250,18 @@ public:
         }
     }
 
-    void pick(osgProducer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
+    void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
     {
         osg::Group* root = dynamic_cast<osg::Group*>(viewer->getSceneData());       
         if (!root) return;
 
-        osgUtil::IntersectVisitor::HitList hlist;
-        if (viewer->computeIntersections(ea.getX(),ea.getY(),hlist))
+        osgUtil::LineSegmentIntersector::Intersections intersections;
+        if (viewer->computeIntersections(ea.getX(),ea.getY(),intersections))
         {
-            osgUtil::Hit& hit = hlist.front();
+            const osgUtil::LineSegmentIntersector::Intersection& hit = *intersections.begin();
 
             bool handleMovingModels = false;
-            const osg::NodePath& nodePath = hit.getNodePath();
+            const osg::NodePath& nodePath = hit.nodePath;
             for(osg::NodePath::const_iterator nitr=nodePath.begin();
                 nitr!=nodePath.end();
                 ++nitr)
@@ -317,8 +318,8 @@ public:
                 // a pre-existing group along side the hit node, or if no pre existing group
                 // is found then this needs to be inserted above the hit node, and then the
                 // particle effect can be inserted into this.
-                osg::ref_ptr<osg::Geode> hitGeode = hit.getGeode();
-                osg::Node::ParentList parents = hitGeode->getParents();                
+                osg::ref_ptr<osg::Node> hitNode = hit.nodePath.back();
+                osg::Node::ParentList parents = hitNode->getParents();                
                 osg::Group* insertGroup = 0;
                 unsigned int numGroupsFound = 0;
                 for(osg::Node::ParentList::iterator itr=parents.begin();
@@ -346,9 +347,9 @@ public:
                         itr!=parents.end();
                         ++itr)
                     {
-                        (*itr)->replaceChild(hit.getGeode(),insertGroup);
+                        (*itr)->replaceChild(hit.nodePath.back(),insertGroup);
                     }
-                    insertGroup->addChild(hitGeode.get());
+                    insertGroup->addChild(hitNode.get());
                     insertGroup->addChild(effectsGroup);
                 }
 
@@ -423,49 +424,16 @@ void insertParticle(osg::Group* root, const osg::Vec3& center, float radius)
 // main()
 //////////////////////////////////////////////////////////////////////////////
 
-int main(int argc, char **argv)
+int main(int, char **)
 {
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of particle systems.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
-
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-    
     // register the pick handler
-    viewer.getEventHandlerList().push_front(new PickHandler());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
+    viewer.addEventHandler(new PickHandler());
     
     osg::Group *root = new osg::Group;
     build_world(root);
-
 
     osgUtil::Optimizer optimizer;
     optimizer.optimize(root);
@@ -473,36 +441,5 @@ int main(int argc, char **argv)
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);
         
-    // create the windows and run the threads.
-    viewer.realize();
-
-    // osg::Vec3 center = root->getBound().center();
-    // float radius = root->getBound().radius();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // insertParticle(root, center, radius);
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

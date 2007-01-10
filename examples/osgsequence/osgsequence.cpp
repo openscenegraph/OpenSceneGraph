@@ -19,8 +19,9 @@
 
 #include <osgDB/ReadFile>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
+#include <iostream>
 
 // create text drawable at 'pos'
 osg::Geode* createText(const std::string& str, const osg::Vec3& pos)
@@ -131,6 +132,8 @@ osg::Sequence* createSequence(osg::ArgumentParser& arguments)
     // real-time playback, repeat indefinitively
     seq->setDuration(1.0f, -1);
 
+    seq->setMode(osg::Sequence::START);
+
     return seq;
 }
 
@@ -149,7 +152,7 @@ public:
     {
         if (ea.getEventType() == osgGA::GUIEventAdapter::KEYDOWN) {
             switch (ea.getKey()) {
-            case 'S':
+            case 's':
                 {
                     osg::Sequence::SequenceMode mode = _seq->getMode();
                     if (mode == osg::Sequence::STOP) {
@@ -167,7 +170,7 @@ public:
                     _seq->setMode(mode);
                 }
                 break;
-            case 'L':
+            case 'l':
                 {
                     osg::Sequence::LoopMode mode;
                     int begin, end;
@@ -200,44 +203,9 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of osg::Sequence.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
    
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-    
+    osgViewer::Viewer viewer;
     // root
     osg::Group* rootNode = new osg::Group;
 
@@ -249,8 +217,8 @@ int main( int argc, char **argv )
         "- assigns a display duration to each child",
         "- can loop or swing through an interval of it's children",
         "- can repeat the interval a number of times or indefinitively",
-        "- press 'Shift-S' to start/pause/resume",
-        "- press 'Shift-L' to toggle loop/swing mode",
+        "- press 's' to start/pause/resume",
+        "- press 'l' to toggle loop/swing mode",
         NULL
     };
     rootNode->addChild(createHUD(createTextGroup(text)));
@@ -263,33 +231,7 @@ int main( int argc, char **argv )
     viewer.setSceneData(rootNode);
 
     // add event handler to control sequence
-    viewer.getEventHandlerList().push_front(new SequenceEventHandler(seq));
+    viewer.addEventHandler(new SequenceEventHandler(seq));
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

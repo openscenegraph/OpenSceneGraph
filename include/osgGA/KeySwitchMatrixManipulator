@@ -119,9 +119,9 @@ public:
 
         virtual void computeHomePosition();
 
-        virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->home(ee,aa); }
+        virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa) { if (_current.valid()) _current->home(ee,aa); }
 
-        virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { _current->init(ee,aa); }
+        virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { if (_current.valid()) _current->init(ee,aa); }
 
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 

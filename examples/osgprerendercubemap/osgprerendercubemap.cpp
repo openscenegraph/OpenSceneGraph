@@ -1,4 +1,4 @@
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Projection>
 #include <osg/Geometry>
@@ -17,9 +17,12 @@
 #include <osg/CullFace>
 #include <osg/Material>
 #include <osg/PositionAttitudeTransform>
+#include <osg/ArgumentParser>
 
 #include <osg/Camera>
 #include <osg/TexGenNode>
+
+#include <iostream>
 
 using namespace osg;
 
@@ -287,13 +290,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture");
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments. getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -331,37 +328,12 @@ int main(int argc, char** argv)
     ref_ptr<Group> reflectedSubgraph = _create_scene();    
     if (!reflectedSubgraph.valid()) return 1;
 
-    ref_ptr<Group> reflectedScene = createShadowedScene(reflectedSubgraph.get(), createReflector(), 0, viewer.getClearColor(),
+    ref_ptr<Group> reflectedScene = createShadowedScene(reflectedSubgraph.get(), createReflector(), 0, viewer.getCamera()->getClearColor(),
                                                         tex_width, tex_height, renderImplementation);
 
     scene->addChild(reflectedScene.get());
 
     viewer.setSceneData(scene.get());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while (!viewer.done())
-    {
-      // wait for all cull and draw threads to complete.
-      viewer.sync();
-
-      // update the scene by traversing it with the the update visitor which will
-      // call all node update callbacks and animations.
-      viewer.update();
-         
-      // fire off the cull and draw traversals of the scene.
-      viewer.frame();
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

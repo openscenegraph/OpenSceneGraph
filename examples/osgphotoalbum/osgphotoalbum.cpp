@@ -22,9 +22,11 @@
 
 #include <osgText/Text>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include "ImageReaderWriter.h"
+
+#include <iostream>
 
 using namespace osg;
 
@@ -675,19 +677,11 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    //viewer.setUpViewer(osgProducer::Viewer::ESCAPE_SETS_DONE);
-    viewer.setUpViewer();
+    osgViewer::Viewer viewer;
 
     // register the handler to add keyboard and mosue handling.
     SlideEventHandler* seh = new SlideEventHandler();
-    viewer.getEventHandlerList().push_front(seh);
-
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    viewer.addEventHandler(seh);
 
     // read any time delay argument.
     float timeDelayBetweenSlides = 5.0f;
@@ -740,17 +734,12 @@ int main( int argc, char **argv )
 
     // now the windows have been realized we switch off the cursor to prevent it
     // distracting the people seeing the stereo images.
-    float fovx = 1.25f;
-    float fovy = 1.0f;
-    for( unsigned int i = 0; i < viewer.getNumberOfCameras(); i++ )
-    {
-        Producer::Camera* cam = viewer.getCamera(i);
-        //Producer::RenderSurface* rs = cam->getRenderSurface();
-        //rs->useCursor(false);
-        fovx = cam->getLensHorizontalFov();
-        fovy = cam->getLensVerticalFov();
-    }
+    double fovy, aspectRatio, zNear, zFar;
+    viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
+    fovy = osg::DegreesToRadians(fovy);
+    double fovx = atan(tan(fovy*0.5)*aspectRatio)*2.0;
+    
     float radius = 1.0f;
     float width = 2*radius*tan(fovx*0.5f);
     float height = 2*radius*tan(fovy*0.5f);
@@ -768,42 +757,22 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(album->getScene());
 
-
     // set up the SlideEventHandler.
     seh->set(album.get(),timeDelayBetweenSlides,autoSteppingActive);
     
-
-    // create the windows and run the threads.
     viewer.realize();
     
-    osg::Matrix homePosition;
-    homePosition.makeLookAt(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(0.0f,1.0f,0.0f),osg::Vec3(0.0f,0.0f,1.0f));
-        
-    while( !viewer.done() )
+    // switch off the cursor
+    osgViewer::Viewer::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
     {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        //viewer.setView(homePosition);
-
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
+        (*itr)->useCursor(false);
     }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
 
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
 
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-    
-    return 0;
+    return viewer.run();
 }
 

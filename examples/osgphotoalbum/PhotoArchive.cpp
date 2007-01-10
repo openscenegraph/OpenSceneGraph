@@ -15,32 +15,54 @@
 #include <osg/GLU>
 #include <osg/Notify>
 #include <osgDB/ReadFile>
-#include <Producer/RenderSurface>
+
+#include <osg/GraphicsContext>
 
 #include <fstream>
+#include <iostream>
 
 
 
 const std::string FILE_IDENTIFER("osgphotoalbum photo archive");
 
-class GraphicsContext {
+class MyGraphicsContext {
     public:
-        GraphicsContext()
+        MyGraphicsContext()
         {
-            rs = new Producer::RenderSurface;
-            rs->setWindowRectangle(0,0,1,1);
-            rs->useBorder(false);
-            rs->useConfigEventThread(false);
-            rs->realize();
-            std::cout<<"Realized window"<<std::endl;
-        }
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
 
-        virtual ~GraphicsContext()
-        {
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
+            {
+                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
+                
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            }
+
+            if (_gc.valid()) 
+            
+            
+            {
+                _gc->realize();
+                _gc->makeCurrent();
+                std::cout<<"Realized window"<<std::endl;
+            }
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
+        
     private:
-        Producer::ref_ptr<Producer::RenderSurface> rs;
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
 
 PhotoArchive::PhotoArchive(const std::string& filename)
@@ -180,7 +202,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
     std::cout<<"Building photo archive containing "<<photoIndex.size()<<" pictures"<<std::endl;
 
     // create a graphics context so we can do data operations
-    GraphicsContext context;
+    MyGraphicsContext context;
 
     // open up the archive for writing to    
     std::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);

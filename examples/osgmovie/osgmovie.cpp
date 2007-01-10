@@ -118,13 +118,10 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         {
 
             osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
-            osg::notify(osg::NOTICE)<<"osgmovie - view = "<<view<<std::endl;
             osgUtil::LineSegmentIntersector::Intersections intersections;
-            if (view && view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath().back(), intersections))
+            if (view && view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath(), intersections))
             {
-#if 1
-                osg::notify(osg::NOTICE)<<"osgmovie - Vertex interpolation not implemented yet"<<std::endl;
-#else
+
                 // use the nearest intersection                 
                 const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
                 osg::Drawable* drawable = intersection.drawable.get();
@@ -133,40 +130,18 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 if (vertices)
                 {
                     // get the vertex indices.
-                    const osgUtil::LineSegmentIntersector::Intersection::IndexList& vil = intersection.indexList;
+                    const osgUtil::LineSegmentIntersector::Intersection::IndexList& indices = intersection.indexList;
+                    const osgUtil::LineSegmentIntersector::Intersection::RatioList& ratios = intersection.ratioList;
 
-                    if (vil.size()==3)
+                    if (indices.size()==3 && ratios.size()==3)
                     {
-                        int i1 = vil[0];
-                        int i2 = vil[1];
-                        int i3 = vil[2];
-                        osg::Vec3 v1 = (*vertices)[i1];
-                        osg::Vec3 v2 = (*vertices)[i2];
-                        osg::Vec3 v3 = (*vertices)[i3];
-                        osg::Vec3 v = intersection.localIntersectionPoint;
-                        
-                        osg::Vec3 p1 = intersection.getLocalLineSegment()->start();
-                        osg::Vec3 p2 = intersection.getLocalLineSegment()->end();
+                        unsigned int i1 = indices[0];
+                        unsigned int i2 = indices[1];
+                        unsigned int i3 = indices[2];
 
-                        osg::Vec3 p12 = p1-p2;
-                        osg::Vec3 v13 = v1-v3;
-                        osg::Vec3 v23 = v2-v3;
-                        osg::Vec3 p1v3 = p1-v3;
-
-                        osg::Matrix matrix(p12.x(), v13.x(), v23.x(), 0.0,
-                                           p12.y(), v13.y(), v23.y(), 0.0,
-                                           p12.z(), v13.z(), v23.z(), 0.0,
-                                           0.0,    0.0,    0.0,    1.0);
-
-                        osg::Matrix inverse;
-                        inverse.invert(matrix);
-
-                        osg::Vec3 ratio = inverse*p1v3;
-
-                        // extract the baricentric coordinates.                            
-                        float r1 = ratio.y();
-                        float r2 = ratio.z();
-                        float r3 = 1.0f-r1-r2;
+                        float r1 = ratios[0];
+                        float r2 = ratios[1];
+                        float r3 = ratios[2];
 
                         osg::Array* texcoords = (geometry->getNumTexCoordArrays()>0) ? geometry->getTexCoordArray(0) : 0;
                         osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
@@ -188,7 +163,6 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     }
 
                 }
-#endif
             }
             else
             {

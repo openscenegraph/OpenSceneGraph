@@ -324,12 +324,24 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 if (vertices)
                 {
                     osg::Vec3* first = &(vertices->front());
-                    if (triHit._v1) hit.indexList.push_back(triHit._v1-first);
-                    if (triHit._v2) hit.indexList.push_back(triHit._v2-first);
-                    if (triHit._v3) hit.indexList.push_back(triHit._v3-first);
+                    if (triHit._v1)
+                    {
+                        hit.indexList.push_back(triHit._v1-first);
+                        hit.ratioList.push_back(triHit._r1);
+                    }
+                    if (triHit._v2)
+                    {
+                        hit.indexList.push_back(triHit._v2-first);
+                        hit.ratioList.push_back(triHit._r2);
+                    }
+                    if (triHit._v3)
+                    {
+                        hit.indexList.push_back(triHit._v3-first);
+                        hit.ratioList.push_back(triHit._r3);
+                    }
                 }
             }
-
+            
             insertIntersection(hit);
 
         }

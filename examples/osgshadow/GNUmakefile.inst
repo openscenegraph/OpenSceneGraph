@@ -4,11 +4,8 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgshadow.cpp\
 
-LIBS     += -losgProducer -lProducer -losgShadow -losgText -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgShadow -losgText -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgshadow
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules

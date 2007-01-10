@@ -6,13 +6,17 @@
 #include <osg/Camera>
 #include <osg/Stencil>
 #include <osg/CullFace>
+#include <osg/Geometry>
 
-#include <osgProducer/Viewer>
+#include <osgGA/TrackballManipulator>
+
+#include <osgViewer/Viewer>
 
 #include <osgShadow/OccluderGeometry>
 
 #include <osgDB/ReadFile>
 
+#include <iostream>
 
 class ComputeBoundingBoxVisitor : public osg::NodeVisitor
 {
@@ -124,13 +128,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--no-base-texture", "Adde base texture to shadowed model.");
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments. getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -189,8 +187,8 @@ int main(int argc, char** argv)
         osg::Vec3 depthVec(0.0f, bb.radius(), 0.0f);
         osg::Vec3 centerBase( (bb.xMin()+bb.xMax())*0.5f, (bb.yMin()+bb.yMax())*0.5f, bb.zMin()-bb.radius()*0.1f );
         
-        geode->addDrawable( createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
-                                                        widthVec*3.0f, depthVec*3.0f) );
+        geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
+                                                             widthVec*3.0f, depthVec*3.0f) );
         newGroup->addChild(geode);
         
         model = newGroup.get();
@@ -381,14 +379,18 @@ int main(int argc, char** argv)
 
     viewer.setSceneData(group.get());
 
+
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+
+    osg::notify(osg::NOTICE)<<"Warning: Stencil buffer required, but not yet switched on."<<std::endl;
+
+
     // create the windows and run the threads.
     viewer.realize();
 
     while (!viewer.done())
     {
-      // wait for all cull and draw threads to complete.
-      viewer.sync();
-
         if (updateLightPosition)
         {
             float t = viewer.getFrameStamp()->getReferenceTime();
@@ -402,24 +404,10 @@ int main(int argc, char** argv)
             }
             light->setPosition(lightpos);
             occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
-       }
+        }
 
-      // update the scene by traversing it with the the update visitor which will
-      // call all node update callbacks and animations.
-      viewer.update();
-         
-      // fire off the cull and draw traversals of the scene.
-      viewer.frame();
+        viewer.frame();
     }
     
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
     return 0;
 }

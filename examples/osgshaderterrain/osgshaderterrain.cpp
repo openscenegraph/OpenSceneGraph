@@ -26,7 +26,9 @@
 
 #include <osgText/Text>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
+
+#include <iostream>
 
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
@@ -122,7 +124,7 @@ osg::Node* createScene()
             osg::Program* program = new osg::Program;
             stateset->setAttribute(program);
 
-#if 0
+#if 1
             // use inline shaders
             
             ///////////////////////////////////////////////////////////////////
@@ -141,7 +143,7 @@ osg::Node* createScene()
                "    texcoord.x *= terrainScaleDown.x;\n"
                "    texcoord.y *= terrainScaleDown.y;\n"
                "\n"
-               "    vec4 position;\n"ttm->
+               "    vec4 position;\n"
                "    position.x = gl_Vertex.x;\n"
                "    position.y = gl_Vertex.y;\n"
                "    position.z = texture2D(terrainTexture, texcoord).r;\n"
@@ -239,6 +241,7 @@ osg::Node* createScene()
     return scene;
 }
 
+#if 0
 class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
 {
     public:
@@ -277,54 +280,22 @@ class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
         std::string         _errorMessage;
         
 };
+#endif
 
-int main( int argc, char **argv )
+int main(int, char **)
 {
-
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates the osg::Shape classes.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--trees <number>","Set the number of trees to create");
-   
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-    
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
     osg::Node* node = createScene();
 
     // add model to viewer.
     viewer.setSceneData( node );
 
+#if 0
     // register a test extension callback to be called when app realizes and gets a valid graphics context
     osg::ref_ptr<TestSupportCallback> testSupportCallback = new TestSupportCallback();
     viewer.setRealizeCallback(testSupportCallback.get());
-
     // create the windows and run the threads.
     viewer.realize();
 
@@ -335,29 +306,12 @@ int main( int argc, char **argv )
 
         exit(1);
     }
+#else
 
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
+    osg::notify(osg::NOTICE)<<"osgshaderterrain OpenGL support test not implemented yet"<<std::endl;
     
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
+#endif
 
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
 
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

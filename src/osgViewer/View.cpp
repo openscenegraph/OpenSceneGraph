@@ -413,8 +413,6 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
 {
     if (!_camera.valid()) return false;
     
-    osg::notify(osg::NOTICE)<<"View::computeIntersections(x,y,node,intersections) not implemented"<<std::endl;
-    
     osg::Matrix matrix = osg::computeWorldToLocal(nodePath) *  _camera->getViewMatrix() * _camera->getProjectionMatrix();
     
     double zNear = -1.0;

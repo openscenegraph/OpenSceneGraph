@@ -45,7 +45,8 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
         
             bool operator < (const Intersection& rhs) const { return ratio < rhs.ratio; }
 
-            typedef std::vector<unsigned int> IndexList;
+            typedef std::vector<unsigned int>   IndexList;
+            typedef std::vector<double>         RatioList;
 
             double                          ratio;
             osg::NodePath                   nodePath;
@@ -54,6 +55,7 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
             osg::Vec3d                      localIntersectionPoint;
             osg::Vec3                       localIntersectionNormal;
             IndexList                       indexList;
+            RatioList                       ratioList;
             unsigned int                    primitiveIndex;
         };
         

@@ -24,7 +24,7 @@
 #include <osgGA/GUIActionAdapter>
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include "GL2Scene.h"
 
@@ -62,62 +62,19 @@ class KeyHandler: public osgGA::GUIEventHandler
 
 ///////////////////////////////////////////////////////////////////////////
 
-int main( int argc, char **argv )
+int main(int, char **)
 {
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser args(&argc,argv);
-    
-    // set up the usage document
-    args.getApplicationUsage()->setApplicationName(args.getApplicationName());
-    args.getApplicationUsage()->setDescription(args.getApplicationName() +
-            " demonstrates the OpenGL Shading Language using core OSG");
-    args.getApplicationUsage()->setCommandLineUsage(args.getApplicationName());
-    args.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-
-    args.getApplicationUsage()->addKeyboardMouseBinding( "x", "Reload and recompile shader source files." );
-    args.getApplicationUsage()->addKeyboardMouseBinding( "y", "Toggle shader enable" );
-
     // construct the viewer.
-    osgProducer::Viewer viewer(args);
-    viewer.setUpViewer( osgProducer::Viewer::STANDARD_SETTINGS );
-    viewer.getUsage( *args.getApplicationUsage() );
-
-    if( args.read("-h") || args.read("--help") )
-    {
-        args.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    args.reportRemainingOptionsAsUnrecognized();
-    if( args.errors() )
-    {
-        args.writeErrorMessages(std::cout);
-        return 1;
-    }
+    osgViewer::Viewer viewer;
 
     // create the scene
     GL2ScenePtr gl2Scene = new GL2Scene;
 
     viewer.setSceneData( gl2Scene->getRootNode().get() );
-    viewer.getEventHandlerList().push_front( new KeyHandler(gl2Scene) );
-    viewer.realize();
-    while( !viewer.done() )
-    {
-        viewer.sync();
-        viewer.update();
-        viewer.frame();
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
 
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
+    viewer.addEventHandler( new KeyHandler(gl2Scene) );
 
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-    return 0;
+    return viewer.run();
 }
 
 /*EOF*/

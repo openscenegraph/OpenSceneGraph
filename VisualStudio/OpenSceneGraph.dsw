@@ -1851,7 +1851,7 @@ Package=<4>
     Project_Dep_Name Core osgText
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name Core osgProducer
+    Project_Dep_Name Core osgViewer
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
@@ -1878,7 +1878,7 @@ Package=<4>
     Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name Core osgProducer
+    Project_Dep_Name Core osgViewer
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
@@ -1905,7 +1905,7 @@ Package=<4>
     Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name Core osgProducer
+    Project_Dep_Name Core osgViewer
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil
@@ -1932,7 +1932,7 @@ Package=<4>
     Project_Dep_Name Core osgGA
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name Core osgProducer
+    Project_Dep_Name Core osgViewer
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name Core osgUtil

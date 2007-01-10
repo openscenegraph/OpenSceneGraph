@@ -2,17 +2,10 @@ TOPDIR = ../..
 include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
-	osgviewer.cpp\
+	osgreflect.cpp\
 
-LIBS     += -losgProducer -lProducer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
-EXEC = osgviewer
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
-
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
+EXEC = osgreflect
 
 include $(TOPDIR)/Make/makerules

@@ -8,7 +8,9 @@ void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name,
     if(!cm) return;
 
     _manips[key]=std::make_pair(name,osg::ref_ptr<MatrixManipulator>(cm));
-    if(!_current.valid()){
+    
+    if(!_current)
+    {
         _current=cm;
         _current->setHomePosition(_homeEye,_homeCenter,_homeUp,_autoComputeHomePosition);
         _current->setNode(0);
@@ -158,12 +160,17 @@ const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey
 
 bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 {
-    if(ea.getEventType()==GUIEventAdapter::KEYDOWN){
+    if (!_current) return false;
+
+    if(ea.getEventType()==GUIEventAdapter::KEYDOWN)
+    {
 
         KeyManipMap::iterator it=_manips.find(ea.getKey());
-        if(it != _manips.end()){
+        if(it != _manips.end())
+        {
             osg::notify(osg::INFO)<<"Switching to manipulator: "<<(*it).second.first<<std::endl;
-            if ( !it->second.second->getNode() ) {
+            if ( !it->second.second->getNode() )
+            {
                 it->second.second->setNode(_current->getNode());
             }
             it->second.second->setByMatrix(_current->getMatrix());

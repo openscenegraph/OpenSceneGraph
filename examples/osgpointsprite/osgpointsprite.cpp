@@ -5,10 +5,12 @@
 #include <osg/Geometry>
 #include <osg/Texture2D>
 #include <osg/TexEnv>
-#include <osgDB/ReadFile>
-#include <osgProducer/Viewer>
 #include <osg/GLExtensions>
 #include <osg/TexEnv>
+
+#include <osgDB/ReadFile>
+
+#include <osgViewer/Viewer>
 
 osg::Geode *makeGalaxy(unsigned nvertices)
 {
@@ -75,33 +77,15 @@ osg::StateSet* makeStateSet(float size)
 
 int main(int, char *[])
 {
-    osgProducer::Viewer viewer;
+    osgViewer::Viewer viewer;
 
     /// Make the galaxy of points
     osg::Node *node = makeGalaxy(5000);
 
     node->setStateSet(makeStateSet(10.0f));
 
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
     viewer.setSceneData(node);
 
-    viewer.realize();
-    while (!viewer.done())
-    {
-        viewer.sync();
-        viewer.update();
-        viewer.frame();
-    }
-
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return(0);
+    return viewer.run();
 }
 

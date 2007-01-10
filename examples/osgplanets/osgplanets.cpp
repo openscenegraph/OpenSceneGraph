@@ -31,8 +31,9 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 
 static osg::Vec3 defaultPos( 0.0f, 0.0f, 0.0f );
@@ -582,13 +583,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-o <filename>","Write created model to file");
 
     // initialize the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::ESCAPE_SETS_DONE | osgProducer::Viewer::VIEWER_MANIPULATOR | osgProducer::Viewer::STATE_MANIPULATOR);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+    viewer.setCameraManipulator( keyswitchManipulator.get() );
 
     SolarSystem solarSystem;
 
@@ -897,7 +895,6 @@ int main( int argc, char **argv )
 
 
     // set up tracker manipulators, once for each astral body
-    
     {
         FindNamedNodeVisitor fnnv("Moon");
         root->accept(fnnv);
@@ -910,8 +907,9 @@ int main( int argc, char **argv )
             tm->setRotationMode( rotationMode );
             tm->setTrackNode( fnnv._foundNodes.front().get() );
 
-            unsigned int num = viewer.addCameraManipulator( tm );
-            viewer.selectCameraManipulator( num );
+            unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+            keyswitchManipulator->addMatrixManipulator( 'm', "moon", tm );
+            keyswitchManipulator->selectMatrixManipulator( num );
         }
     }    
 
@@ -927,8 +925,9 @@ int main( int argc, char **argv )
             tm->setRotationMode( rotationMode );
             tm->setTrackNode( fnnv._foundNodes.front().get() );
 
-            unsigned int num = viewer.addCameraManipulator( tm );
-            viewer.selectCameraManipulator( num );
+            unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+            keyswitchManipulator->addMatrixManipulator( 'e', "earth", tm);
+            keyswitchManipulator->selectMatrixManipulator( num );
         }
     }    
     
@@ -944,38 +943,13 @@ int main( int argc, char **argv )
             tm->setRotationMode( rotationMode );
             tm->setTrackNode( fnnv._foundNodes.front().get() );
 
-            unsigned int num = viewer.addCameraManipulator( tm );
-            viewer.selectCameraManipulator( num );
+            unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+            keyswitchManipulator->addMatrixManipulator( 's', "sun", tm);
+            keyswitchManipulator->selectMatrixManipulator( num );
         }
     }    
-    
-    // create the windows and run the threads.
-    viewer.realize();
-    
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
 
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
+    return viewer.run();
 
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
 }// end main
 

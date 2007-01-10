@@ -57,6 +57,12 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
             IndexList                       indexList;
             RatioList                       ratioList;
             unsigned int                    primitiveIndex;
+            
+            const osg::Vec3d& getLocalIntersectPoint() const { return localIntersectionPoint; }
+            osg::Vec3d getWorldIntersectPoint() const { return matrix.valid() ? localIntersectionPoint * (*matrix) : localIntersectionPoint; }
+            
+            const osg::Vec3& getLocalIntersectNormal() const { return localIntersectionNormal; }
+            osg::Vec3 getWorldIntersectNormal() const { return matrix.valid() ? osg::Matrix::transform3x3(osg::Matrix::inverse(*matrix),localIntersectionNormal) : localIntersectionNormal; }
         };
         
         typedef std::multiset<Intersection> Intersections;

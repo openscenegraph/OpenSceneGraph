@@ -13,11 +13,13 @@
 #include <osgDB/FileUtils>
 #include <osgUtil/Optimizer>
 #include <osgUtil/CullVisitor>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/MatrixTransform>
 #include <osgUtil/TransformCallback>
 #include <osgParticle/PrecipitationEffect>
+
+#include <iostream>
 
 class MyGustCallback : public osg::NodeCallback
 {
@@ -56,26 +58,23 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example provides an interactive viewer for visualising point clouds..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
-    arguments.getApplicationUsage()->addCommandLineOption("","");
+    arguments.getApplicationUsage()->addCommandLineOption("--snow <density>","Set the snow with a density between 0 and 1.0");
+    arguments.getApplicationUsage()->addCommandLineOption("--rain <density>","");
+    arguments.getApplicationUsage()->addCommandLineOption("--particleSize <size>","");
+    arguments.getApplicationUsage()->addCommandLineOption("--particleColour <red> <green> <blue> <alpha>","");
+    arguments.getApplicationUsage()->addCommandLineOption("--wind <x> <y> <z>","Set the wind speed in model coordinates");
+    arguments.getApplicationUsage()->addCommandLineOption("--particleSpeed <float>","Set the particle speed");
+    arguments.getApplicationUsage()->addCommandLineOption("--nearTransition <distance>","Set the near transistion distance");
+    arguments.getApplicationUsage()->addCommandLineOption("--farTransition  <distance>","Set the far transistion distance");
+    arguments.getApplicationUsage()->addCommandLineOption("--particleDensity <density>","Set the particle density");
+    arguments.getApplicationUsage()->addCommandLineOption("--cellSize <x> <y> <z>","Set the cell size in model coordinates");
+    arguments.getApplicationUsage()->addCommandLineOption("--fogDensity <density>","Set the fog density");
+    arguments.getApplicationUsage()->addCommandLineOption("--fogColour <red> <green> <blue> <alpha>","Set fog colour.");
+    arguments.getApplicationUsage()->addCommandLineOption("-useFarLineSegments","Switch on the use of line segments");
     
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     osg::ref_ptr<osgParticle::PrecipitationEffect> precipitationEffect = new osgParticle::PrecipitationEffect;
 
@@ -118,23 +117,13 @@ int main( int argc, char **argv )
     while (arguments.read("--useFarLineSegments")) { precipitationEffect->setUseFarLineSegments(true); }
 
     
-    viewer.setClearColor( precipitationEffect->getFog()->getColor() );
+    viewer.getCamera()->setClearColor( precipitationEffect->getFog()->getColor() );
 
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
         return 1;
     }
     
@@ -170,32 +159,6 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(group.get());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }
 

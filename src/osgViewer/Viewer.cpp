@@ -31,6 +31,8 @@ Viewer::Viewer():
     _threadingModel(ThreadPerContext),
     _numThreadsOnBarrier(0)
 {
+    _eventVisitor = new osgGA::EventVisitor;
+    _eventVisitor->setActionAdapter(this);
 }
 
 Viewer::~Viewer()
@@ -723,37 +725,6 @@ void Viewer::eventTraversal()
         }
     }
     
-#if 0  
-    // pointer coordinate transform
-    for(osgGA::EventQueue::Events::iterator itr = events.begin();
-        itr != events.end();
-        ++itr)
-    {
-        osgGA::GUIEventAdapter* event = itr->get();
-        
-        if (getEventQueue()->getUseFixedMouseInputRange())
-        {
-            event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
-        }
-        
-        switch(event->getEventType())
-        {
-            case(osgGA::GUIEventAdapter::PUSH):
-            case(osgGA::GUIEventAdapter::RELEASE):
-            case(osgGA::GUIEventAdapter::DRAG):
-            case(osgGA::GUIEventAdapter::MOVE):
-                eventState->setX(event->getX());
-                eventState->setY(event->getY());
-                eventState->setButtonMask(event->getButtonMask());
-                // osg::notify(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
-                // osg::notify(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
-                break;
-            default:
-                break;
-        }
-    }
-#else
-#endif    
 
     // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
@@ -792,7 +763,7 @@ void Viewer::eventTraversal()
             case(osgGA::GUIEventAdapter::KEYUP):
                 osg::notify(osg::NOTICE)<<"  KEYUP '"<<(char)event->getKey()<<"'"<<std::endl;
                 break;
-*/            case(osgGA::GUIEventAdapter::RESIZE):
+            case(osgGA::GUIEventAdapter::RESIZE):
                 osg::notify(osg::NOTICE)<<"  RESIZE "<<event->getWindowX()<<"/"<<event->getWindowY()<<" x "<<event->getWindowWidth()<<"/"<<event->getWindowHeight() << std::endl;
                 break;
             case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
@@ -858,6 +829,28 @@ void Viewer::eventTraversal()
             ++hitr)
         {
             handled = (*hitr)->handle( *event, *this, 0, 0);
+        }
+    }
+
+    if (_eventVisitor.valid())
+    {
+        _eventVisitor->setFrameStamp(_scene->getFrameStamp());
+        _eventVisitor->setTraversalNumber(_scene->getFrameStamp()->getFrameNumber());
+
+        for(osgGA::EventQueue::Events::iterator itr = events.begin();
+            itr != events.end();
+            ++itr)
+        {
+            osgGA::GUIEventAdapter* event = itr->get();
+
+            bool handled = false;
+
+            _eventVisitor->reset();
+            _eventVisitor->addEvent( event );
+
+            getSceneData()->accept(*_eventVisitor);
+
+            if (_eventVisitor->getEventHandled())  handled = true;
         }
     }
 

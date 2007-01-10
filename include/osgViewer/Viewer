@@ -16,6 +16,7 @@
 
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/View>
+#include <osgGA/EventVisitor>
 
 namespace osgViewer {
 
@@ -132,8 +133,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         unsigned int _numThreadsOnBarrier;
         
-        osg::observer_ptr<osg::Camera> _cameraWithFocus;
-
+        osg::observer_ptr<osg::Camera>      _cameraWithFocus;
+        
+        osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
 };
 
 

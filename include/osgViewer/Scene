@@ -41,22 +41,12 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
 
         osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
 
-        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
-        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
-        const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
-
-        typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
-        
-        void addEventHandler(osgGA::GUIEventHandler* eventHandler);
-        EventHandlers& getEventHandlers() { return _eventHandlers; }
-        const EventHandlers& getEventHandlers() const { return _eventHandlers; }
-
         void setDatabasePager(osgDB::DatabasePager* dp);
         osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
         const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
 
         virtual void frameAdvance();
-        virtual void frameEventTraversal();
+        
         virtual void frameUpdateTraversal();
 
     public:
@@ -72,13 +62,7 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
 
         osg::ref_ptr<osgUtil::UpdateVisitor>  _updateVisitor;
 
-        osg::ref_ptr<osgGA::EventQueue>     _eventQueue;
-        osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
-
         osg::ref_ptr<osgDB::DatabasePager>  _databasePager;
-
-        EventHandlers                       _eventHandlers;
-    
 };
 
 

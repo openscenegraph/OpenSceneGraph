@@ -64,12 +64,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
           * directly on to the computeIntersections method. */
         bool computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
         
-        /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified node.
-          * Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1,
-          * while if its has a viewport the coordintates will be relative to its viewport dimensions. 
-          * Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed
-          * directly on to the computeIntersections method. */
-        bool computeIntersections(float x,float y, osg::Node* node, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
+        /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. */
+        bool computeIntersections(float x,float y, osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
         
         
         virtual void requestRedraw();
@@ -91,7 +87,6 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
     
         typedef std::map<osg::ref_ptr<osg::Camera>, osg::ref_ptr<osgUtil::SceneView> > CameraSceneViewMap;
         CameraSceneViewMap _cameraSceneViewMap;
-
 };
 
 }

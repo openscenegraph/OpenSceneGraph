@@ -5,15 +5,12 @@ CXXFILES =\
 	OrientationConverter.cpp\
 	osgconv.cpp\
 
-LIBS     += -losgProducer -lProducer -losgText -losg -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgText -losg -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgconv
 
 INSTFILES =\
 	$(CXXFILES)\
 	Makefile.inst=Makefile
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules

@@ -13,6 +13,7 @@
     #pragma warning(disable : 4503)
 #endif // WIN32
 
+#include <osg/ApplicationUsage>
 #include <osg/Texture2D>
 #include <osg/Geometry>
 #include <osg/State>
@@ -32,29 +33,50 @@
 
 #include <osgFX/BumpMapping>
 
-#include <osgProducer/Viewer>
 #include <osg/Switch>
 
 #include <osgTerrain/DataSet>
 
-class GraphicsContext {
-    public:
-        GraphicsContext()
-        {
-            rs = new Producer::RenderSurface;
-            rs->setWindowRectangle(0,0,1,1);
-            rs->useBorder(false);
-            rs->useConfigEventThread(false);
-            rs->realize();
-            std::cout<<"Realized window"<<std::endl;
-        }
+#include <iostream>
 
-        virtual ~GraphicsContext()
+class MyGraphicsContext {
+    public:
+        MyGraphicsContext()
         {
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
+
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
+            {
+                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
+                
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            }
+
+            if (_gc.valid()) 
+            
+            
+            {
+                _gc->realize();
+                _gc->makeCurrent();
+                std::cout<<"Realized window"<<std::endl;
+            }
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
+        
     private:
-        Producer::ref_ptr<Producer::RenderSurface> rs;
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
 
 osg::Matrixd computeGeoTransForRange(double xMin, double xMax, double yMin, double yMax)
@@ -635,7 +657,12 @@ int main( int argc, char **argv )
     
     // generate the database
     {
-        GraphicsContext context;
+        MyGraphicsContext context;
+        if (!context.valid())
+        {
+            osg::notify(osg::NOTICE)<<"Error: Unable to create graphis context - cannot run osgdem"<<std::endl;
+            return 1;
+        }
 
         dataset->loadSources();
 

@@ -5,7 +5,7 @@ CXXFILES =\
 	osgdem.cpp\
 
 
-LIBS     += -losgProducer -lProducer -losgTerrain -losgFX -losgDB -losgText -losgUtil -losg $(GDAL_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgTerrain -losgFX -losgDB -losgText -losgUtil -losg $(GDAL_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgdem
 

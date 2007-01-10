@@ -19,32 +19,50 @@
 #include <osgUtil/Optimizer>
 #include <osgUtil/SmoothingVisitor>
 
-#include <osgProducer/Viewer>
-
 #include <iostream>
 
 #include "OrientationConverter.h"
 
 typedef std::vector<std::string> FileNameList;
 
-class GraphicsContext {
+class MyGraphicsContext {
     public:
-        GraphicsContext()
+        MyGraphicsContext()
         {
-            rs = new Producer::RenderSurface;
-            rs->setWindowRectangle(0,0,1,1);
-            rs->useBorder(false);
-            rs->useConfigEventThread(false);
-            rs->realize();
-            std::cout<<"Realized window"<<std::endl;
-        }
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
 
-        virtual ~GraphicsContext()
-        {
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
+            {
+                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
+                
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            }
+
+            if (_gc.valid()) 
+            
+            
+            {
+                _gc->realize();
+                _gc->makeCurrent();
+                std::cout<<"Realized window"<<std::endl;
+            }
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
+        
     private:
-        Producer::ref_ptr<Producer::RenderSurface> rs;
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
 
 class CompressTexturesVisitor : public osg::NodeVisitor
@@ -89,7 +107,12 @@ public:
     
     void compress()
     {
-        GraphicsContext context;
+        MyGraphicsContext context;
+        if (!context.valid())
+        {
+            osg::notify(osg::NOTICE)<<"Error: Unable to create graphis context - cannot run compression"<<std::endl;
+            return;
+        }
 
         osg::ref_ptr<osg::State> state = new osg::State;
 

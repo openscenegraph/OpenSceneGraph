@@ -8,7 +8,7 @@ CXXFILES =\
 HEADERFILES = \
 	OrientationConverter.h
 
-LIBS     += -losgProducer -lProducer -losgText -losg -losgUtil -losgGA -losgDB $(GL_LIBS) $(OTHER_LIBS)  
+LIBS     += -losgViewer -losgText -losg -losgUtil -losgGA -losgDB $(GL_LIBS) $(OTHER_LIBS)  
 
 INSTFILES = \
 	$(CXXFILES)\

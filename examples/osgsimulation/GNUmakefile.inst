@@ -4,11 +4,8 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgsimulation.cpp\
 
-LIBS     += -losgProducer -lProducer -losgDB -losgParticle -losgSim -losgText -losgUtil -losg $(GDAL_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
+LIBS     += -losgViewer -losgDB -losgParticle -losgSim -losgText -losgUtil -losg $(GDAL_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) 
 
 EXEC = osgsimulation
-
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
 
 include $(TOPDIR)/Make/makerules

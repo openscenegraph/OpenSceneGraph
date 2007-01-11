@@ -4,13 +4,14 @@
 // graphics window, and OSG for rendering.
 
 #include <osg/Timer>
+#include <osg/GraphicsContext>
+#include <osg/ApplicationUsage>
 #include <osgUtil/SceneView>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
-#include <osgProducer/Viewer>
-
 #include <sstream>
+#include <iostream>
 
 #define MIN_NEARFAROFFSET 0.1
 
@@ -108,26 +109,29 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    // create the window to draw to.
-    osg::ref_ptr<Producer::RenderSurface> renderSurface = new Producer::RenderSurface;
-    renderSurface->setWindowName("osgsimple");
-    renderSurface->setWindowRectangle(100,100,numberSlices,numberSlices);
-    renderSurface->useBorder(true);
 
-    // make sure we have a alpha channel in the colour buffer, to enable 
-    // alpha on read back.
-    Producer::VisualChooser* rs_vc = renderSurface->getVisualChooser();
-    if (!rs_vc)
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->x = 100;
+    traits->y = 100;
+    traits->width = numberSlices;
+    traits->height = numberSlices;
+    traits->alpha = 8;
+    traits->windowDecoration = true;
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+    traits->pbuffer = false;
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+    if (!gc || !gc->valid())
     {
-        rs_vc = new Producer::VisualChooser;
-        rs_vc->setSimpleConfiguration();
-        renderSurface->setVisualChooser(rs_vc);
+        osg::notify(osg::NOTICE)<<"Error: unable to create graphics window"<<std::endl;
+        return 1;
     }
-    rs_vc->setAlphaSize(8);
-
-    // create the graphics context.
-    renderSurface->realize();
     
+    gc->realize();
+    gc->makeCurrent();
+
     // create the view of the scene.
     osg::ref_ptr<osgUtil::SceneView> sceneView = new osgUtil::SceneView;
     sceneView->setDefaults();
@@ -157,7 +161,7 @@ int main( int argc, char **argv )
     osg::Image* tmpImage = new osg::Image;
     
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
-    for( unsigned int i = 0 ; i < sp->_sliceNumber && renderSurface->isRealized() ; ++i )
+    for( unsigned int i = 0 ; i < sp->_sliceNumber && gc->isRealized() ; ++i )
     {
         // set up the frame stamp for current frame to record the current time and frame number so that animtion code can advance correctly
         osg::ref_ptr<osg::FrameStamp> frameStamp = new osg::FrameStamp;
@@ -168,7 +172,7 @@ int main( int argc, char **argv )
         sceneView->setFrameStamp(frameStamp.get());
         
         // update the viewport dimensions, incase the window has been resized.
-        sceneView->setViewport(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight());
+        sceneView->setViewport(0,0,traits->width,traits->height);
         
         
         // set the view
@@ -189,7 +193,7 @@ int main( int argc, char **argv )
         sceneView->draw();
                 
         // Swap Buffers
-        renderSurface->swapBuffers();
+        gc->swapBuffers();
         
         std::cout << "before readPixels: _r = " << sp->_image->r() << std::endl;
         

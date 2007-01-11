@@ -12,8 +12,9 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier>
-#include <osgProducer/Viewer>
-
+#include <osgViewer/Viewer>
+#include <osgGA/TrackballManipulator>
+#include <iostream>
 
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 {
@@ -71,13 +72,7 @@ int main( int argc, char **argv )
     float maxError = 4.0f;
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // read the sample ratio if one is supplied
     while (arguments.read("--ratio",sampleRatio)) {}
@@ -90,20 +85,11 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
-
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
@@ -114,45 +100,27 @@ int main( int argc, char **argv )
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-    }
-
-    osg::Timer_t end_tick = osg::Timer::instance()->tick();
-
-    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
-
     
     //loadedModel->accept(simplifier);
 
     unsigned int keyFlag = 0;
-    viewer.getEventHandlerList().push_front(new KeyboardEventHandler(keyFlag));
+    viewer.addEventHandler(new KeyboardEventHandler(keyFlag));
 
     // set the scene to render
     viewer.setSceneData(loadedModel.get());
 
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
     // create the windows and run the threads.
     viewer.realize();
 
-    float multiplier = 0.99f;
+    float multiplier = 0.8f;
     float minRatio = 0.001f;
     float ratio = sampleRatio;
 
+
     while( !viewer.done() )
     {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
         // fire off the cull and draw traversals of the scene.
         viewer.frame();
     
@@ -178,15 +146,6 @@ int main( int argc, char **argv )
         }
     }
     
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
     return 0;
 }
 

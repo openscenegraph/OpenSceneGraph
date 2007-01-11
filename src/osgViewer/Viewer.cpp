@@ -453,6 +453,7 @@ void Viewer::setUpRenderingSupport()
         _cameraSceneViewMap[_camera] = sceneView;
 
         sceneView->setDefaults();
+        sceneView->setDisplaySettings(_displaySettings.get());
         sceneView->setCamera(_camera.get());
         sceneView->setState(_camera->getGraphicsContext()->getState());
         sceneView->setSceneData(getSceneData());
@@ -471,6 +472,7 @@ void Viewer::setUpRenderingSupport()
 
             sceneView->setDefaults();
             sceneView->setCamera(slave._camera.get());
+            sceneView->setDisplaySettings(_displaySettings.get());
             sceneView->setState(slave._camera->getGraphicsContext()->getState());
             sceneView->setSceneData(getSceneData());
             sceneView->setFrameStamp(frameStamp);

@@ -71,6 +71,8 @@ void View::setUpViewAcrossAllScreens()
         return;
     }
     
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+    
     double fovy, aspectRatio, zNear, zFar;        
     _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
@@ -87,6 +89,8 @@ void View::setUpViewAcrossAllScreens()
             traits->y = 0;
             traits->width = width;
             traits->height = height;
+            traits->alpha = ds->getMinimumNumAlphaBits();
+            traits->stencil = ds->getMinimumNumStencilBits();
             traits->windowDecoration = false;
             traits->doubleBuffer = true;
             traits->sharedContext = 0;
@@ -134,6 +138,8 @@ void View::setUpViewAcrossAllScreens()
                 traits->y = 0;
                 traits->width = width;
                 traits->height = height;
+                traits->alpha = ds->getMinimumNumAlphaBits();
+                traits->stencil = ds->getMinimumNumStencilBits();
                 traits->windowDecoration = false;
                 traits->doubleBuffer = true;
                 traits->sharedContext = 0;
@@ -180,6 +186,8 @@ void View::setUpViewAcrossAllScreens()
                 traits->y = 0;
                 traits->width = width;
                 traits->height = height;
+                traits->alpha = ds->getMinimumNumAlphaBits();
+                traits->stencil = ds->getMinimumNumStencilBits();
                 traits->windowDecoration = false;
                 traits->doubleBuffer = true;
                 traits->sharedContext = 0;
@@ -225,6 +233,8 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
         return;
     }
 
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(screenNum), width, height);
 
@@ -233,6 +243,8 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     traits->y = 0;
     traits->width = width;
     traits->height = height;
+    traits->alpha = ds->getMinimumNumAlphaBits();
+    traits->stencil = ds->getMinimumNumStencilBits();
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;

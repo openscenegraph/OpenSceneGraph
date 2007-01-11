@@ -376,6 +376,7 @@ int main(int argc, char** argv)
 
     }
 
+    osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
     viewer.setSceneData(group.get());
 

@@ -50,6 +50,17 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         EventHandlers& getEventHandlers() { return _eventHandlers; }
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
         
+        
+        /** Set the DsplaySettings object associated with this view.*/
+        void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
+        
+        /** Set the DsplaySettings object associated with this view.*/
+        osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
+        
+        /** Set the DsplaySettings object associated with this view.*/
+        const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
+
+        
         /** Convinience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
         void setUpViewAcrossAllScreens();
 
@@ -87,6 +98,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
     
         typedef std::map<osg::ref_ptr<osg::Camera>, osg::ref_ptr<osgUtil::SceneView> > CameraSceneViewMap;
         CameraSceneViewMap _cameraSceneViewMap;
+        
+        osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
 };
 
 }

@@ -475,8 +475,6 @@ int main( int argc, char **argv )
 
     //osgDB::writeNodeFile(*rootNode,"test.osg");
 
-    // set the scene to render
-    viewer.setSceneData(rootNode.get());
 
     viewer.getCamera()->setCullMask(0xffffffff);
     viewer.getCamera()->setCullMaskLeft(0x00000001);
@@ -484,6 +482,9 @@ int main( int argc, char **argv )
 
     // set up the use of stereo by default.
     osg::DisplaySettings::instance()->setStereo(true);
+
+    // set the scene to render
+    viewer.setSceneData(rootNode.get());
 
     // create the windows and run the threads.
     viewer.realize();

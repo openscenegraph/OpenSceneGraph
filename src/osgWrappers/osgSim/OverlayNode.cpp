@@ -15,6 +15,7 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/State>
 #include <osg/Vec4>
 #include <osgSim/OverlayNode>
 
@@ -127,6 +128,18 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const camera used to implement the render to texture of the overlay subgraph. ",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          __void__resizeGLObjectBuffers__unsigned,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 0);
@@ -148,5 +161,8 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_SimpleProperty(GLenum, TexEnvMode, 
 	                 __GLenum__getTexEnvMode, 
 	                 __void__setTexEnvMode__GLenum);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 

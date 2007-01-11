@@ -12,6 +12,7 @@
 
 #include <osg/Drawable>
 #include <osg/Node>
+#include <osg/Vec3>
 #include <osg/Vec3d>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/LineSegmentIntersector>
@@ -39,7 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	I_Constructor3(IN, osgUtil::Intersector::CoordinateFrame, cf, IN, double, x, IN, double, y,
 	               ____LineSegmentIntersector__CoordinateFrame__double__double,
 	               "Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1). ",
-	               "In PROJECTION coordinates (clip space cube) creates a start value of (x,y,1) and end value of (x,y,-1). In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1). ");
+	               "In PROJECTION coordinates (clip space cube) creates a start value of (x,y,-1) and end value of (x,y,1). In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1). ");
 	I_Method1(void, insertIntersection, IN, const osgUtil::LineSegmentIntersector::Intersection &, intersection,
 	          __void__insertIntersection__C5_Intersection_R1,
 	          "",
@@ -86,10 +87,40 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::LineSegmentIntersector::Intersection::IndexList);
 
+TYPE_NAME_ALIAS(std::vector< double >, osgUtil::LineSegmentIntersector::Intersection::RatioList);
+
 BEGIN_VALUE_REFLECTOR(osgUtil::LineSegmentIntersector::Intersection)
 	I_Constructor0(____Intersection,
 	               "",
 	               "");
+	I_Method0(const osg::Vec3d &, getLocalIntersectPoint,
+	          __C5_osg_Vec3d_R1__getLocalIntersectPoint,
+	          "",
+	          "");
+	I_Method0(osg::Vec3d, getWorldIntersectPoint,
+	          __osg_Vec3d__getWorldIntersectPoint,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getLocalIntersectNormal,
+	          __C5_osg_Vec3_R1__getLocalIntersectNormal,
+	          "",
+	          "");
+	I_Method0(osg::Vec3, getWorldIntersectNormal,
+	          __osg_Vec3__getWorldIntersectNormal,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, LocalIntersectNormal, 
+	                 __C5_osg_Vec3_R1__getLocalIntersectNormal, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3d &, LocalIntersectPoint, 
+	                 __C5_osg_Vec3d_R1__getLocalIntersectPoint, 
+	                 0);
+	I_SimpleProperty(osg::Vec3, WorldIntersectNormal, 
+	                 __osg_Vec3__getWorldIntersectNormal, 
+	                 0);
+	I_SimpleProperty(osg::Vec3d, WorldIntersectPoint, 
+	                 __osg_Vec3d__getWorldIntersectPoint, 
+	                 0);
 	I_PublicMemberProperty(double, ratio);
 	I_PublicMemberProperty(osg::NodePath, nodePath);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, drawable);
@@ -97,8 +128,11 @@ BEGIN_VALUE_REFLECTOR(osgUtil::LineSegmentIntersector::Intersection)
 	I_PublicMemberProperty(osg::Vec3d, localIntersectionPoint);
 	I_PublicMemberProperty(osg::Vec3, localIntersectionNormal);
 	I_PublicMemberProperty(osgUtil::LineSegmentIntersector::Intersection::IndexList, indexList);
+	I_PublicMemberProperty(osgUtil::LineSegmentIntersector::Intersection::RatioList, ratioList);
 	I_PublicMemberProperty(unsigned int, primitiveIndex);
 END_REFLECTOR
 
 STD_SET_REFLECTOR(std::multiset< osgUtil::LineSegmentIntersector::Intersection >);
+
+STD_VECTOR_REFLECTOR(std::vector< double >);
 

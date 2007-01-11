@@ -45,6 +45,39 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     init();
 }
 
+void OverlayNode::setThreadSafeRefUnref(bool threadSafe)
+{
+    osg::Group::setThreadSafeRefUnref(threadSafe);
+    
+    if (_camera.valid()) _camera->setThreadSafeRefUnref(threadSafe);
+    if (_overlaySubgraph.valid()) _overlaySubgraph->setThreadSafeRefUnref(threadSafe);
+    if (_texgenNode.valid()) _texgenNode->setThreadSafeRefUnref(threadSafe);
+    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->setThreadSafeRefUnref(threadSafe);
+    if (_texture.valid()) _texture->setThreadSafeRefUnref(threadSafe);
+}
+
+void OverlayNode::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    osg::Group::resizeGLObjectBuffers(maxSize);
+
+    if (_camera.valid()) _camera->resizeGLObjectBuffers(maxSize);
+    if (_overlaySubgraph.valid()) _overlaySubgraph->resizeGLObjectBuffers(maxSize);
+    if (_texgenNode.valid()) _texgenNode->resizeGLObjectBuffers(maxSize);
+    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->resizeGLObjectBuffers(maxSize);
+    if (_texture.valid()) _texture->resizeGLObjectBuffers(maxSize);
+}
+
+void OverlayNode::releaseGLObjects(osg::State* state) const
+{
+    osg::Group::releaseGLObjects(state);
+    
+    if (_camera.valid()) _camera->releaseGLObjects(state);
+    if (_overlaySubgraph.valid()) _overlaySubgraph->releaseGLObjects(state);
+    if (_texgenNode.valid()) _texgenNode->releaseGLObjects(state);
+    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->releaseGLObjects(state);
+    if (_texture.valid()) _texture->releaseGLObjects(state);
+}
+
 void OverlayNode::init()
 {
 

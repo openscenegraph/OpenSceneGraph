@@ -12,6 +12,7 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
+#include <iostream>
 
 int main( int argc, char **argv )
 {

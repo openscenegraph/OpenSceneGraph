@@ -11,20 +11,22 @@
 
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
+#include <iostream>
 
-class MotionBlurDrawCallback: public osgProducer::OsgSceneHandler::Callback
+class MotionBlurOperation: public osg::GraphicsOperation
 {
 public:
-    MotionBlurDrawCallback(double persistence)
-    :    cleared_(false),
+    MotionBlurOperation(double persistence):
+        osg::GraphicsOperation("MotionBlur",true),
+        cleared_(false),
         persistence_(persistence)
     {
     }
 
-    virtual void operator()(osgProducer::OsgSceneHandler &handler, Producer::Camera &camera)
+    virtual void operator () (osg::GraphicsContext* gc)
     {
-        double t = handler.getSceneView()->getFrameStamp()->getReferenceTime();
+        double t = gc->getState()->getFrameStamp()->getReferenceTime();
 
         if (!cleared_)
         {
@@ -37,9 +39,6 @@ public:
 
         double dt = fabs(t - t0_);
         t0_ = t;
-
-        // call the scene handler's draw function
-        handler.drawImplementation(camera);        
 
         // compute the blur factor
         double s = powf(0.2, dt / persistence_);
@@ -72,13 +71,7 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -90,21 +83,6 @@ int main( int argc, char **argv )
     double persistence = 0.25;
     arguments.read("-P", persistence) || arguments.read("--persistence", persistence);
 
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
-
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
@@ -115,25 +93,9 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-    }
-
-    osg::Timer_t end_tick = osg::Timer::instance()->tick();
-
-    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
 
     // set the display settings we can to request, OsgCameraGroup will read this.
     osg::DisplaySettings::instance()->setMinimumNumAccumBits(8,8,8,8);
-
-    // optimize the scene graph, remove rendundent nodes and state etc.
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
 
     // pass the loaded scene graph to the viewer.
     viewer.setSceneData(loadedModel.get());
@@ -141,35 +103,14 @@ int main( int argc, char **argv )
     // create the windows and run the threads.
     viewer.realize();
 
-    // set our motion blur callback as the draw callback for each scene handler
-    osgProducer::Viewer::SceneHandlerList &shl = viewer.getSceneHandlerList();
-    for (osgProducer::Viewer::SceneHandlerList::iterator i=shl.begin(); i!=shl.end(); ++i)
+    osgViewer::Viewer::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
     {
-        (*i)->setDrawCallback(new MotionBlurDrawCallback(persistence));
+        (*itr)->add(new MotionBlurOperation(persistence));
     }
 
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

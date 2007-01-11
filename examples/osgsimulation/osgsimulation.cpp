@@ -16,7 +16,7 @@
 
 #endif // WIN32
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Group>
 #include <osg/Geode>
@@ -38,23 +38,46 @@
 
 #include <osgGA/NodeTrackerManipulator>
 
-class GraphicsContext {
-    public:
-        GraphicsContext()
-        {
-            rs = new Producer::RenderSurface;
-            rs->setWindowRectangle(0,0,1,1);
-            rs->useBorder(false);
-            rs->useConfigEventThread(false);
-            rs->realize();
-        }
+#include <iostream>
 
-        virtual ~GraphicsContext()
+class MyGraphicsContext {
+    public:
+        MyGraphicsContext()
         {
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
+
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
+            {
+                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
+                
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+            }
+
+            if (_gc.valid()) 
+            
+            
+            {
+                _gc->realize();
+                _gc->makeCurrent();
+                std::cout<<"Realized window"<<std::endl;
+            }
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
+        
     private:
-        Producer::ref_ptr<Producer::RenderSurface> rs;
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
 
 osg::Node* createEarth()
@@ -90,7 +113,7 @@ osg::Node* createEarth()
         // load the source data and record sizes.
         dataSet->loadSources();
 
-        GraphicsContext context;
+        MyGraphicsContext context;
         dataSet->createDestination(30);
 
         if (dataSet->getDatabaseType()==osgTerrain::DataSet::LOD_DATABASE) dataSet->buildDestination();
@@ -217,16 +240,11 @@ int main(int argc, char **argv)
     
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
+    viewer.getCamera()->setNearFarRatio(0.00001f);
 
-    viewer.getCullSettings().setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-    viewer.getCullSettings().setNearFarRatio(0.00001f);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
 
     osg::Quat rotation;
     osg::Vec4 vec4;
@@ -381,8 +399,7 @@ int main(int argc, char **argv)
             tm->setRotationMode(rotationMode);
             tm->setTrackNode(scaler);
 
-            unsigned int num = viewer.addCameraManipulator(tm);
-            viewer.selectCameraManipulator(num);
+            viewer.setCameraManipulator(tm);
         }
         else
         {
@@ -391,33 +408,5 @@ int main(int argc, char **argv)
         
     }    
 
-        
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }

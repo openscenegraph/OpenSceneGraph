@@ -3,10 +3,6 @@
 // Simple example of use of Producer::RenderSurface + KeyboardMouseCallback + SimpleViewer
 // example that provides the user with control over view position with basic picking.
 
-#include <Producer/RenderSurface>
-#include <Producer/KeyboardMouse>
-#include <Producer/Trackball>
-
 #include <osg/Timer>
 #include <osg/io_utils>
 #include <osg/observer_ptr>
@@ -22,87 +18,11 @@
 #include <osgGA/StateSetManipulator>
 
 #include <osgViewer/SimpleViewer>
+#include <osgViewer/GraphicsWindow>
 
 #include <osgFX/Scribe>
 
-// ----------- Begining of glue classes to adapter Producer's keyboard mouse events to osgGA's abstraction events.
-class MyKeyboardMouseCallback : public Producer::KeyboardMouseCallback
-{
-public:
-
-    MyKeyboardMouseCallback(osgGA::EventQueue* eventQueue) :
-        _done(false),
-        _eventQueue(eventQueue)
-    {
-    }
-
-    virtual void shutdown()
-    {
-        _done = true; 
-    }
-
-    virtual void specialKeyPress( Producer::KeyCharacter key )
-    {
-        if (key==Producer::KeyChar_Escape)
-                    shutdown();
-
-        _eventQueue->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
-    }
-
-    virtual void specialKeyRelease( Producer::KeyCharacter key )
-    {
-        _eventQueue->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
-    }
-
-    virtual void keyPress( Producer::KeyCharacter key)
-    {
-        _eventQueue->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
-    }
-
-    virtual void keyRelease( Producer::KeyCharacter key)
-    {
-        _eventQueue->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
-    }
-
-    virtual void mouseMotion( float mx, float my ) 
-    {
-        _eventQueue->mouseMotion( mx, my );
-    }
-
-    virtual void buttonPress( float mx, float my, unsigned int mbutton ) 
-    {
-        _eventQueue->mouseButtonPress(mx, my, mbutton);
-    }
-    
-    virtual void buttonRelease( float mx, float my, unsigned int mbutton ) 
-    {
-        _eventQueue->mouseButtonRelease(mx, my, mbutton);
-    }
-
-    bool done() { return _done; }
-
-private:
-
-    bool                                _done;
-    osg::ref_ptr<osgGA::EventQueue>     _eventQueue;
-};
-
-class MyActionAdapter : public osgGA::GUIActionAdapter, public osg::Referenced
-{
-public:
-    // Override from GUIActionAdapter
-    virtual void requestRedraw() {}
-
-    // Override from GUIActionAdapter
-    virtual void requestContinuousUpdate(bool =true) {}
-
-    // Override from GUIActionAdapter
-    virtual void requestWarpPointer(float ,float ) {}
-    
-};
-
-// ----------- End of glue classes to adapter Producer's keyboard mouse events to osgGA's abstraction events.
-
+#include <iostream>
 
 class CreateModelToSaveVisitor : public osg::NodeVisitor
 {
@@ -135,8 +55,46 @@ public:
     bool _addToModel;
 };
 
+class ExitHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    ExitHandler():
+        _done(false) {}
+        
+    bool done() const { return _done; }    
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&)
+    {
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Escape)
+                {
+                    _done = true;
+                }
+                return false;
+            }
+            case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
+            case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
+            {
+                _done = true;
+            }
+            default: break;
+        }
+        
+        return false;
+    }
+    
+    bool _done;
+};
+
+
+
 // class to handle events with a pick
-class PickHandler : public osgGA::GUIEventHandler {
+class PickHandler : public osgGA::GUIEventHandler 
+{
 public: 
 
     PickHandler():
@@ -330,22 +288,32 @@ int main( int argc, char **argv )
     }
     
     // create the window to draw to.
-    osg::ref_ptr<Producer::RenderSurface> renderSurface = new Producer::RenderSurface;
-    renderSurface->setWindowName("osgkeyboardmouse");
-    renderSurface->setWindowRectangle(100,100,800,600);
-    renderSurface->useBorder(true);
-    renderSurface->realize();
-    
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->x = 200;
+    traits->y = 200;
+    traits->width = 800;
+    traits->height = 600;
+    traits->windowDecoration = true;
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+    if (!gw)
+    {
+        osg::notify(osg::NOTICE)<<"Error: unable to create graphics window."<<std::endl;
+        return 1;
+    }
+
+    gw->realize();
+    gw->makeCurrent();
 
     // create the view of the scene.
     osgViewer::SimpleViewer viewer;
     viewer.setSceneData(loadedModel.get());
     
-    // set up a KeyboardMouse to manage the events comming in from the RenderSurface
-    osg::ref_ptr<Producer::KeyboardMouse>  kbm = new Producer::KeyboardMouse(renderSurface.get());
-
-    // create a KeyboardMouseCallback to handle the mouse events within this applications
-    osg::ref_ptr<MyKeyboardMouseCallback> kbmcb = new MyKeyboardMouseCallback(viewer.getEventQueue());
+    viewer.setEventQueue(gw->getEventQueue());
+    viewer.getEventQueue()->windowResize(traits->x,traits->y,traits->width,traits->height);
 
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
     viewer.setCameraManipulator( new osgGA::TrackballManipulator );
@@ -356,35 +324,23 @@ int main( int argc, char **argv )
 
     // add the pick handler
     viewer.addEventHandler(new PickHandler());
-    
-    // set the window dimensions 
-    viewer.getEventQueue()->getCurrentEventState()->setWindowRectangle(100,100,800,600);
 
-    // set the mouse input range.
-    // Producer defaults to using non-dimensional units, so we pass this onto osgGA, most windowing toolkits use pixel coords so use the window size instead.
-    viewer.getEventQueue()->setUseFixedMouseInputRange(true);
-    viewer.getEventQueue()->setMouseInputRange(-1.0, -1.0, 1.0, 1.0);
 
-    // Producer has the y axis increase upwards, like OpenGL, and contary to most Windowing toolkits.
-    // we need to construct the event queue so that it knows about this convention.
-    viewer.getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
-    
+    // add the exit handler'
+    ExitHandler* exitHandler = new ExitHandler;
+    viewer.addEventHandler(exitHandler);
 
     viewer.init();
 
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
-    while( renderSurface->isRealized() && !kbmcb->done())
+    while( gw->isRealized() && !exitHandler->done())
     {
-        // update the window dimensions, in case the window has been resized.
-         viewer.getEventQueue()->windowResize(0,0,renderSurface->getWindowWidth(),renderSurface->getWindowHeight());
-
-        // pass any keyboard mouse events onto the local keyboard mouse callback.
-        kbm->update( *kbmcb );
+        gw->checkEvents();
         
         viewer.frame();
 
         // Swap Buffers
-        renderSurface->swapBuffers();
+        gw->swapBuffers();
     }
 
     return 0;

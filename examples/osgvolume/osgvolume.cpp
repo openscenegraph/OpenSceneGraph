@@ -25,7 +25,9 @@
 
 #include <osgUtil/CullVisitor>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
+
+#include <iostream>
 
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
@@ -1437,13 +1439,7 @@ int main( int argc, char **argv )
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
+    osgViewer::Viewer viewer;
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -1638,31 +1634,8 @@ int main( int argc, char **argv )
         // set the scene to render
         viewer.setSceneData(rootNode);
         
-        // create the windows and run the threads.
-        viewer.realize();
-
-        while( !viewer.done() )
-        {
-            // wait for all cull and draw threads to complete.
-            viewer.sync();
-
-            // update the scene by traversing it with the the update visitor which will
-            // call all node update callbacks and animations.
-            viewer.update();
-
-            // fire off the cull and draw traversals of the scene.
-            viewer.frame();
-
-        }
-        
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // run a clean up frame to delete all OpenGL objects.
-        viewer.cleanup_frame();
-
-        // wait for all the clean up frame to complete.
-        viewer.sync();
+        // the the viewers main frame loop
+        viewer.run();
     }    
     
     return 0;

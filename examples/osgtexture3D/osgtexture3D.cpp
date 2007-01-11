@@ -8,8 +8,9 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
+#include <iostream>
 
 //
 // A simple demo demonstrating different texturing modes, 
@@ -20,114 +21,123 @@
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
 
-class ConstructStateCallback : public osgProducer::OsgCameraGroup::RealizeCallback
-{
+class MyGraphicsContext {
     public:
-        ConstructStateCallback(osg::Node* node):_node(node),_initialized(false) {}
-        
-        osg::StateSet* constructState()
+        MyGraphicsContext()
         {
-        
-            // read 4 2d images
-            osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
-            osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
-            osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("Images/tank.rgb");
-            osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = true;
 
-            if (!image_0 || !image_1 || !image_2 || !image_3)
+            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (!_gc)
             {
-                std::cout << "Warning: could not open files."<<std::endl;
-                return new osg::StateSet;
+                traits->pbuffer = false;
+                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
             }
 
-            if (image_0->getPixelFormat()!=image_1->getPixelFormat() || image_0->getPixelFormat()!=image_2->getPixelFormat() || image_0->getPixelFormat()!=image_3->getPixelFormat())
+            if (_gc.valid()) 
             {
-                std::cout << "Warning: image pixel formats not compatible."<<std::endl;
-                return new osg::StateSet;
+                _gc->realize();
+                _gc->makeCurrent();
             }
-
-            // get max 3D texture size
-            GLint textureSize = osg::Texture3D::getExtensions(0,true)->maxTexture3DSize();
-            if (textureSize > 256)
-                textureSize = 256;
-
-            // scale them all to the same size.
-            image_0->scaleImage(textureSize,textureSize,1);
-            image_1->scaleImage(textureSize,textureSize,1);
-            image_2->scaleImage(textureSize,textureSize,1);
-            image_3->scaleImage(textureSize,textureSize,1);
-
-
-            // then allocated a 3d image to use for texturing.
-            osg::Image* image_3d = new osg::Image;
-            image_3d->allocateImage(textureSize,textureSize,4,
-                                    image_0->getPixelFormat(),image_0->getDataType());
-
-            // copy the 2d images into the 3d image.
-            image_3d->copySubImage(0,0,0,image_0.get());
-            image_3d->copySubImage(0,0,1,image_1.get());
-            image_3d->copySubImage(0,0,2,image_2.get());
-            image_3d->copySubImage(0,0,3,image_3.get());
-
-            image_3d->setInternalTextureFormat(image_0->getInternalTextureFormat());        
-
-            // set up the 3d texture itself,
-            // note, well set the filtering up so that mip mapping is disabled,
-            // gluBuild3DMipsmaps doesn't do a very good job of handled the
-            // inbalanced dimensions of the 256x256x4 texture.
-            osg::Texture3D* texture3D = new osg::Texture3D;
-            texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
-            texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
-            texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::REPEAT);
-            texture3D->setImage(image_3d);
-
-
-            // create a texgen to generate a R texture coordinate, the geometry
-            // itself will supply the S & T texture coordinates.
-            // in the animateStateSet callback well alter this R value to
-            // move the texture through the 3d texture, 3d texture filtering
-            // will do the blending for us.
-            osg::TexGen* texgen = new osg::TexGen;
-            texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-            texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,0.0f,0.2f));
-
-            // create the StateSet to store the texture data
-            osg::StateSet* stateset = new osg::StateSet;
-            stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
-            stateset->setTextureAttribute(0,texgen);
-            stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
-
-            return stateset;
-        }
-
-        virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
-        {
-            {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
-                if (!_initialized)
-                {
-
-                    // only initialize state once, only need for cases where multiple graphics contexts are
-                    // if which case this callback can get called multiple times.
-                    _initialized = true;
-
-                    if (_node) _node->setStateSet(constructState());
-                }            
-
-            }
-            
-            // now safe to con
-            sh.init();
-            
         }
         
+        bool valid() const { return _gc.valid() && _gc->isRealized(); }
         
-        OpenThreads::Mutex  _mutex;
-        osg::Node*          _node;
-        bool                _initialized;
-        
+    private:
+        osg::ref_ptr<osg::GraphicsContext> _gc;
 };
+
+
+osg::StateSet* createState()
+{
+    MyGraphicsContext gc;
+    if (!gc.valid()) 
+    {
+        osg::notify(osg::NOTICE)<<"Unable to create the graphics context required to build 3d image."<<std::endl;
+        return 0;
+    }
+
+    // read 4 2d images
+    osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
+    osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
+    osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("Images/tank.rgb");
+    osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
+
+    if (!image_0 || !image_1 || !image_2 || !image_3)
+    {
+        std::cout << "Warning: could not open files."<<std::endl;
+        return new osg::StateSet;
+    }
+
+    if (image_0->getPixelFormat()!=image_1->getPixelFormat() || image_0->getPixelFormat()!=image_2->getPixelFormat() || image_0->getPixelFormat()!=image_3->getPixelFormat())
+    {
+        std::cout << "Warning: image pixel formats not compatible."<<std::endl;
+        return new osg::StateSet;
+    }
+
+    // get max 3D texture size
+    GLint textureSize = osg::Texture3D::getExtensions(0,true)->maxTexture3DSize();
+    if (textureSize > 256)
+        textureSize = 256;
+
+    // scale them all to the same size.
+    image_0->scaleImage(textureSize,textureSize,1);
+    image_1->scaleImage(textureSize,textureSize,1);
+    image_2->scaleImage(textureSize,textureSize,1);
+    image_3->scaleImage(textureSize,textureSize,1);
+
+
+    // then allocated a 3d image to use for texturing.
+    osg::Image* image_3d = new osg::Image;
+    image_3d->allocateImage(textureSize,textureSize,4,
+                            image_0->getPixelFormat(),image_0->getDataType());
+
+    // copy the 2d images into the 3d image.
+    image_3d->copySubImage(0,0,0,image_0.get());
+    image_3d->copySubImage(0,0,1,image_1.get());
+    image_3d->copySubImage(0,0,2,image_2.get());
+    image_3d->copySubImage(0,0,3,image_3.get());
+
+    image_3d->setInternalTextureFormat(image_0->getInternalTextureFormat());        
+
+    // set up the 3d texture itself,
+    // note, well set the filtering up so that mip mapping is disabled,
+    // gluBuild3DMipsmaps doesn't do a very good job of handled the
+    // inbalanced dimensions of the 256x256x4 texture.
+    osg::Texture3D* texture3D = new osg::Texture3D;
+    texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
+    texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
+    texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::REPEAT);
+    texture3D->setImage(image_3d);
+
+
+    // create a texgen to generate a R texture coordinate, the geometry
+    // itself will supply the S & T texture coordinates.
+    // in the animateStateSet callback well alter this R value to
+    // move the texture through the 3d texture, 3d texture filtering
+    // will do the blending for us.
+    osg::TexGen* texgen = new osg::TexGen;
+    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+    texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,0.0f,0.2f));
+
+    // create the StateSet to store the texture data
+    osg::StateSet* stateset = new osg::StateSet;
+    stateset->setTextureMode(0,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+    stateset->setTextureAttribute(0,texgen);
+    stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
+
+    return stateset;
+}
+
 
 class UpdateStateCallback : public osg::NodeCallback
 {
@@ -213,90 +223,20 @@ osg::Node* createModel()
     // osg::Image::copySubImage() without using GLU which will get round
     // this current limitation.
     geode->setUpdateCallback(new UpdateStateCallback());
+    geode->setStateSet(createState());
     
     return geode;
 
 }
 
 
-int main( int argc, char **argv )
+int main(int , char **)
 {
-
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
-
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer;
 
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    // create a model from the images and pass it to the viewer.
+    viewer.setSceneData(createModel());
 
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    // create a model from the images.
-    osg::Node* rootNode = createModel();
-
-    if (rootNode) 
-    {
-
-        // set the scene to render
-        viewer.setSceneData(rootNode);
-        
-        // the construct state uses gl commands to resize images so we are forced
-        // to only call it once a valid graphics context has been established,
-        // for that we use a realize callback.
-        viewer.setRealizeCallback(new ConstructStateCallback(rootNode));
-
-        // create the windows and run the threads.
-        viewer.realize();
-
-        while( !viewer.done() )
-        {
-            // wait for all cull and draw threads to complete.
-            viewer.sync();
-
-            // update the scene by traversing it with the the update visitor which will
-            // call all node update callbacks and animations.
-            viewer.update();
-
-            // fire off the cull and draw traversals of the scene.
-            viewer.frame();
-
-        }
-        
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // run a clean up frame to delete all OpenGL objects.
-        viewer.cleanup_frame();
-
-        // wait for all the clean up frame to complete.
-        viewer.sync();
-    }    
-    
-    return 0;
+    return viewer.run();
 }

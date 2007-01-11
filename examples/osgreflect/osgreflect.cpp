@@ -356,7 +356,8 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 
-    osg::notify(osg::NOTICE)<<"Warning: NEED TO IMPLEMENT REQUEST OF STENCIL BUFFER!"<<std::endl;
+    // hint to tell viewer to request stencil buffer when setting up windows
+    osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
     return viewer.run();
 

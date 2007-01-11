@@ -376,6 +376,7 @@ int main(int argc, char** argv)
 
     }
 
+    // hint to tell viewer to request stencil buffer when setting up windows
     osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
     viewer.setSceneData(group.get());

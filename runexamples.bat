@@ -24,9 +24,6 @@ osgblendequation cessnafire.osg
 echo osgcallback
 osgcallback cow.osg
 
-echo osgcameragroup
-osgcameragroup dumptruck.osg
-
 echo osgcatch
 osgcatch
 

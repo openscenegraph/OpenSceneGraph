@@ -13,8 +13,6 @@
 #include <osg/FrameStamp>
 #include <osg/Node>
 #include <osgDB/DatabasePager>
-#include <osgGA/EventQueue>
-#include <osgGA/GUIEventHandler>
 #include <osgViewer/Scene>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,8 +22,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::Scene::EventHandlers);
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_VirtualBaseType(osg::Referenced);
@@ -48,30 +44,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
-	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
-	          __void__setEventQueue__osgGA_EventQueue_P1,
-	          "",
-	          "");
-	I_Method0(osgGA::EventQueue *, getEventQueue,
-	          __osgGA_EventQueue_P1__getEventQueue,
-	          "",
-	          "");
-	I_Method0(const osgGA::EventQueue *, getEventQueue,
-	          __C5_osgGA_EventQueue_P1__getEventQueue,
-	          "",
-	          "");
-	I_Method1(void, addEventHandler, IN, osgGA::GUIEventHandler *, eventHandler,
-	          __void__addEventHandler__osgGA_GUIEventHandler_P1,
-	          "",
-	          "");
-	I_Method0(osgViewer::Scene::EventHandlers &, getEventHandlers,
-	          __EventHandlers_R1__getEventHandlers,
-	          "",
-	          "");
-	I_Method0(const osgViewer::Scene::EventHandlers &, getEventHandlers,
-	          __C5_EventHandlers_R1__getEventHandlers,
-	          "",
-	          "");
 	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
 	          __void__setDatabasePager__osgDB_DatabasePager_P1,
 	          "",
@@ -88,10 +60,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __void__frameAdvance,
 	          "",
 	          "");
-	I_Method0(void, frameEventTraversal,
-	          __void__frameEventTraversal,
-	          "",
-	          "");
 	I_Method0(void, frameUpdateTraversal,
 	          __void__frameUpdateTraversal,
 	          "",
@@ -103,12 +71,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
 	                 __osgDB_DatabasePager_P1__getDatabasePager, 
 	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
-	I_SimpleProperty(osgViewer::Scene::EventHandlers &, EventHandlers, 
-	                 __EventHandlers_R1__getEventHandlers, 
-	                 0);
-	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
-	                 __osgGA_EventQueue_P1__getEventQueue, 
-	                 __void__setEventQueue__osgGA_EventQueue_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
 	                 0);

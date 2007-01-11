@@ -112,7 +112,5 @@ BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_PublicMemberProperty(osgUtil::PlaneIntersector::Intersection::Attributes, attributes);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< double >);
-
 STD_VECTOR_REFLECTOR(std::vector< osgUtil::PlaneIntersector::Intersection >);
 

@@ -10,10 +10,12 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/DisplaySettings>
 #include <osg/Node>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
+#include <osgUtil/LineSegmentIntersector>
 #include <osgViewer/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -80,6 +82,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
+	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
+	          __void__setDisplaySettings__osg_DisplaySettings_P1,
+	          "Set the DsplaySettings object associated with this view. ",
+	          "");
+	I_Method0(osg::DisplaySettings *, getDisplaySettings,
+	          __osg_DisplaySettings_P1__getDisplaySettings,
+	          "Set the DsplaySettings object associated with this view. ",
+	          "");
+	I_Method0(const osg::DisplaySettings *, getDisplaySettings,
+	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
+	          "Set the DsplaySettings object associated with this view. ",
+	          "");
 	I_Method0(void, setUpViewAcrossAllScreens,
 	          __void__setUpViewAcrossAllScreens,
 	          "Convinience method for creating slave Cameras and associated GraphicsWindows across all screens. ",
@@ -87,6 +101,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_MethodWithDefaults1(void, setUpViewOnSingleScreen, IN, unsigned int, screenNum, 0,
 	                      __void__setUpViewOnSingleScreen__unsigned_int,
 	                      "Convinience method for a single Camara associated with a single full screen GraphicsWindow. ",
+	                      "");
+	I_MethodWithDefaults4(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      __bool__computeIntersections__float__float__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
+	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified node. ",
+	                      "Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1, while if its has a viewport the coordintates will be relative to its viewport dimensions. Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed directly on to the computeIntersections method. ");
+	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osg::NodePath &, nodePath, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      __bool__computeIntersections__float__float__osg_NodePath_R1__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
+	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. ",
 	                      "");
 	I_Method0(void, requestRedraw,
 	          __void__requestRedraw,
@@ -107,6 +129,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
 	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);
+	I_SimpleProperty(osg::DisplaySettings *, DisplaySettings, 
+	                 __osg_DisplaySettings_P1__getDisplaySettings, 
+	                 __void__setDisplaySettings__osg_DisplaySettings_P1);
 	I_SimpleProperty(osgViewer::View::EventHandlers &, EventHandlers, 
 	                 __EventHandlers_R1__getEventHandlers, 
 	                 0);

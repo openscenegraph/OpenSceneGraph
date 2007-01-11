@@ -94,6 +94,10 @@ BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
 	          __C5_TexGen_P1__getTexGen,
 	          "Get the const TexGen. ",
 	          "");
+	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          __void__setThreadSafeRefUnref__bool,
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
 	I_SimpleProperty(osg::TexGenNode::ReferenceFrame, ReferenceFrame, 
 	                 __ReferenceFrame__getReferenceFrame, 
 	                 __void__setReferenceFrame__ReferenceFrame);
@@ -103,5 +107,8 @@ BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
 	I_SimpleProperty(unsigned int, TextureUnit, 
 	                 __unsigned_int__getTextureUnit, 
 	                 __void__setTextureUnit__unsigned_int);
+	I_SimpleProperty(bool, ThreadSafeRefUnref, 
+	                 0, 
+	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 

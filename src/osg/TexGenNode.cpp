@@ -56,3 +56,11 @@ void TexGenNode::setTexGen(TexGen* texgen)
 {
     _texgen = texgen;
 }
+
+
+void TexGenNode::setThreadSafeRefUnref(bool threadSafe)
+{
+    Group::setThreadSafeRefUnref(threadSafe);
+
+    if (_texgen.valid()) _texgen->setThreadSafeRefUnref(threadSafe);
+}

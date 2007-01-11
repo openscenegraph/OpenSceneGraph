@@ -60,6 +60,8 @@ class OSG_EXPORT TexGenNode : public Group
         /** Get the const TexGen. */
         inline const TexGen* getTexGen() const { return _texgen.get(); }
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
 
     protected:
 

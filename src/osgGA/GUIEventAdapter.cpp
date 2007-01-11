@@ -79,7 +79,7 @@ void GUIEventAdapter::setWindowRectangle(int x, int y, int width, int height, bo
     
     if (updateMouseRange)
     {
-        setInputRange(x, y, x+width, y+height);
+        setInputRange(0, 0, width, height);
     }
     
 }

@@ -1,6 +1,6 @@
 // C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
 //
-// Simple example of use of Producer::RenderSurface to create an OpenGL
+// Simple example of use of osg::GraphicContext to create an OpenGL
 // graphics window, and OSG for rendering.
 
 #include <osg/Timer>

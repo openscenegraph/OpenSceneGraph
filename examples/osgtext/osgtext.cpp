@@ -17,7 +17,7 @@
 #include <osgDB/WriteFile>
 #include <osgDB/Registry>
 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 
 #include <osg/Geode>
 #include <osg/Camera>
@@ -469,75 +469,19 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     return rootNode;    
 }
 
-int main( int argc, char **argv )
+int main(int , char **)
 {
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-    
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of text.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] [filename] ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    
-
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    if (arguments.read("-h") || arguments.read("--help"))
-    {
-        arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-
-    // read the scene from the list of file specified commandline args.
-    osg::ref_ptr<osg::Node> rootNode = osgDB::readNodeFiles(arguments);
+    osgViewer::Viewer viewer;
 
     // prepare scene.
     {
-
         osg::Vec3 center(0.0f,0.0f,0.0f);
         float radius = 1.0f;
         
-        if (rootNode.valid())
-        {
-            // optimize the scene graph, remove rendundent nodes and state etc.
-            osgUtil::Optimizer optimizer;
-            optimizer.optimize(rootNode.get());
-            
-            const osg::BoundingSphere& bs = rootNode->getBound();
-            center = bs.center();
-            radius = bs.radius();
-        }
-
         // make sure the root node is group so we can add extra nodes to it.
-        osg::Group* group = dynamic_cast<osg::Group*>(rootNode.get());
-        if (!group)
-        {
-            group = new osg::Group;
-            
-            if (rootNode.valid()) group->addChild(rootNode.get());
-            
-            rootNode = group;
-        }
-
+        osg::Group* group = new osg::Group;
+        
         {
             // create the hud.
             osg::Camera* camera = new osg::Camera;
@@ -553,55 +497,10 @@ int main( int argc, char **argv )
 
         group->addChild(create3DText(center,radius));
 
+        // set the scene to render
+        viewer.setSceneData(group);
     }
 
-    // set the scene to render
-    viewer.setSceneData(rootNode.get());
-
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-#if 0
-    // this optional compile block is done as a test against graphics
-    // drivers that claim support for generate mip map, but the actual
-    // implementation is flacky.  It is not compiled by default.
-
-    // go through each graphics context and switch off the generate mip map extension.
-    // note, this must be done after the realize so that init of texture state and as 
-    // result extension structures have been iniatilized.
-    for(unsigned int contextID = 0; 
-        contextID<viewer.getDisplaySettings()->getMaxNumberOfGraphicsContexts();
-        ++contextID)
-    {
-        osg::Texture::Extensions* textureExt = osg::Texture::getExtensions(contextID,false);
-        if (textureExt) textureExt->setGenerateMipMapSupported(false);
-    }
-#endif
-    
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }
 

@@ -1,7 +1,7 @@
 // C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
 //
-// Simple example of use of Producer::RenderSurface to create an OpenGL
-// graphics window, and OSG for rendering.
+// Simple example of use of osg::GraphicsContext to create an OpenGL
+// graphics window, and use the SimpleViewer  for OSG rendering.
 
 #include <osgUtil/SceneView>
 #include <osgDB/ReadFile>

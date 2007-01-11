@@ -208,7 +208,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgblendequation \
 	osgcallback \
 	osgcamera \
-	osgcameragroup \
 	osgcatch \
 	osgclip \
 	osgcluster \
@@ -259,7 +258,6 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgshadowtexture \
 	osgshape \
 	osgsimple \
-	osgsimplepager \
 	osgsimplifier \
 	osgslice \
 	osgspacewarp \
@@ -311,8 +309,4 @@ endif
 
 ifeq ($(FLTK_INSTALLED),yes)
     EXAMPLE_DIRS += osgsimpleviewerFLTK
-endif
-
-ifeq ($(PRODUCER_INSTALLED),yes)
-    EXAMPLE_DIRS += osgsimpleviewerProducer
 endif

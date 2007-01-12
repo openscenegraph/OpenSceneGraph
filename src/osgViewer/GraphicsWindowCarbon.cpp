@@ -12,7 +12,7 @@
 */
 
 #ifdef __APPLE__
-
+#include <osg/observer_ptr>
 #include <osgViewer/GraphicsWindowCarbon>
 #include <Carbon/Carbon.h>
 #include <OpenGL/OpenGL.h>
@@ -21,13 +21,14 @@ using namespace osgViewer;
 
 // Carbon-Eventhandler to handle the click in the close-widget and the resize of windows
 
-static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef myHandler, EventRef event, void* userData) 
+static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void* userData) 
 {
     WindowRef           window;
     Rect                bounds;
-    UInt32              whatHappened;
     OSStatus            result = eventNotHandledErr; /* report failure by default */
     
+    
+    result = CallNextEventHandler (nextHandler, event);
 
     GraphicsWindowCarbon* w = (GraphicsWindowCarbon*)userData;
     if (!w)
@@ -35,41 +36,53 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef myHandler,
     
     GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL,
                          sizeof(window), NULL, &window);
- 
-    whatHappened = GetEventKind(event);
-    
-    
-    switch (whatHappened)
-        {
-            case kEventWindowBoundsChanging:
-                // left the code for live-resizing, but it is not used, because of window-refreshing issues...
-                GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &bounds );
-                
-                w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
-                w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
-                w->requestRedraw();
+                         
+    switch(GetEventClass(event))
+    {
+        case kEventClassTablet:
+        case kEventClassMouse:
+            if (w->handleMouseEvent(event))
                 result = noErr;
-                break;
+            break;
+       
+        case kEventClassKeyboard:
+            if (w->handleKeyboardEvent(event))
+                result = noErr;
+            break;
+            
+        case kEventClassWindow: {
+        
+            switch (GetEventKind(event))
+                {
+                    case kEventWindowBoundsChanging:
+                        // left the code for live-resizing, but it is not used, because of window-refreshing issues...
+                        GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &bounds );
+                        
+                        w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+                        w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
+                        w->requestRedraw();
+                        result = noErr;
+                        break;
+                            
+                    case kEventWindowBoundsChanged:
+                        InvalWindowRect(window, GetWindowPortBounds(window, &bounds));
+                        GetWindowBounds(window, kWindowContentRgn, &bounds);
+                        w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+                        w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
+                        result = noErr;
+                        break;
                     
-            case kEventWindowBoundsChanged:
-                InvalWindowRect(window, GetWindowPortBounds(window, &bounds));
-                GetWindowBounds(window, kWindowContentRgn, &bounds);
-                w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
-                w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
-                result = noErr;
-                break;
-                
-            case kEventWindowClosed:
-                w->requestClose();
-                break;
- 
-            default: 
-                /* If nobody handled the event, it gets propagated to the */
-                /* application-level handler. */
-                break;
- 
-        }
- 
+                    case kEventWindowClosed:
+                        w->requestClose();
+                        break;
+         
+                    default: 
+                        break;
+                }
+            }
+        default:
+            break;
+    }
     return result;
 }
 
@@ -216,6 +229,9 @@ static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits) {
     return aglChoosePixelFormat(NULL, 0, &(attributes.front()));
 }
 
+
+#pragma mark * * * GraphicsContextCarbon * * * 
+
 /** This is the class we need to create for pbuffers, note its not a GraphicsWindow as it won't need any of the event handling and window mapping facilities.*/
 class GraphicsContextCarbon : public osg::GraphicsContext
 {
@@ -267,7 +283,205 @@ class GraphicsContextCarbon : public osg::GraphicsContext
 
 };
 
+#pragma mark * * * OSXWindowingSystemInterface * * * 
+
+class MenubarController : public osg::Referenced 
+{
+
+    public:
+        MenubarController() : osg::Referenced(), _list(), _menubarShown(false) {
+            // the following code will query the system for the available ect on the main-display (typically the displaying showing the menubar + the dock
+
+            GDHandle mainScreenDevice;
+            
+            DMGetGDeviceByDisplayID((DisplayIDType) CGMainDisplayID(), &mainScreenDevice, true);
+            GetAvailableWindowPositioningBounds (mainScreenDevice, &_availRect);
+            
+            // now we need the rect of the main-display including the menubar and the dock
+            _mainScreenBounds = CGDisplayBounds( CGMainDisplayID() );
+            
+            // hide the menubar initially
+            SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+        }
+        
+        static MenubarController* instance();
+        
+        void attachWindow(GraphicsWindowCarbon* win);
+        void update();
+        void detachWindow(GraphicsWindowCarbon* win);
+        
+    private: 
+        typedef std::list< osg::observer_ptr< GraphicsWindowCarbon > > WindowList;
+        WindowList    _list;
+        bool        _menubarShown;
+        Rect        _availRect;
+        CGRect        _mainScreenBounds;
+        
+};
+
+
+MenubarController* MenubarController::instance() 
+{
+    static osg::ref_ptr<MenubarController> s_menubar_controller = new MenubarController();
+    return s_menubar_controller.get();
 }
+
+
+void MenubarController::attachWindow(GraphicsWindowCarbon* win)
+{
+    _list.push_back(win);
+    update();
+}
+
+
+void MenubarController::detachWindow(GraphicsWindowCarbon* win) 
+{
+    for(WindowList::iterator i = _list.begin(); i != _list.end(); ) {
+        if ((*i).get() == win)
+            i = _list.erase(i);
+        else 
+            ++i;
+    }
+    update();
+}
+
+// iterate through all open windows and check, if they intersect the area occupied by the menubar/dock, and if so, hide the menubar/dock
+
+void MenubarController::update() 
+{
+    OSErr error(noErr);
+    unsigned int windowsCoveringMenubarArea = 0;    
+    unsigned int windowsIntersectingMainScreen = 0;
+    for(WindowList::iterator i = _list.begin(); i != _list.end(); ) {
+        if ((*i).valid()) {
+            GraphicsWindowCarbon* w = (*i).get();
+            Rect windowBounds;
+            error = GetWindowBounds(w->getNativeWindowRef(), kWindowStructureRgn, &windowBounds);
+            
+            bool intersect = !( (_mainScreenBounds.origin.x > windowBounds.right) ||
+                                (_mainScreenBounds.origin.x + _mainScreenBounds.size.width < windowBounds.left) ||
+                                (_mainScreenBounds.origin.y > windowBounds.bottom) ||
+                                (_mainScreenBounds.origin.y + _mainScreenBounds.size.height < windowBounds.top));
+            if (intersect && !error)
+            {
+                ++windowsIntersectingMainScreen;
+                
+                // the window intersects the main-screen, does it intersect with the menubar/dock?
+                if (((_availRect.top > _mainScreenBounds.origin.y) && (_availRect.top > windowBounds.top)) ||
+                    ((_availRect.left > _mainScreenBounds.origin.x) && (_availRect.left > windowBounds.left)) || 
+                    ((_availRect.right < _mainScreenBounds.origin.x + _mainScreenBounds.size.width) && (_availRect.right < windowBounds.right)) || 
+                    ((_availRect.bottom < _mainScreenBounds.origin.y + _mainScreenBounds.size.height) && (_availRect.bottom < windowBounds.bottom) ))
+                {
+                    ++windowsCoveringMenubarArea;
+                }
+            }
+            
+            ++i;
+        }
+        else
+            i= _list.erase(i);
+    }
+    
+    // see http://developer.apple.com/technotes/tn2002/tn2062.html for hiding the dock+menubar
+        
+    if (windowsCoveringMenubarArea && _menubarShown)
+        error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    
+    if (!windowsCoveringMenubarArea && !_menubarShown)
+        error = SetSystemUIMode(kUIModeNormal, 0);
+        _menubarShown = !windowsCoveringMenubarArea;
+    
+    // osg::notify(osg::DEBUG_INFO) << "MenubarController:: " << windowsCoveringMenubarArea << " windows covering the menubar/dock area, " << windowsIntersectingMainScreen << " intersecting mainscreen" << std::endl;
+}
+
+
+#pragma mark * * * OSXWindowingSystemInterface * * * 
+
+struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
+{
+    
+    /** ctor, get a list of all attached displays */
+    OSXCarbonWindowingSystemInterface() :
+        _displayCount(0),
+        _displayIds(NULL)
+    {
+        if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
+            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: could not get # of screens" << std::endl;
+            
+        _displayIds = new CGDirectDisplayID[_displayCount];
+        if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
+            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
+        
+        // register application event handler and AppleEventHandler to get quit-events:
+        static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};
+        OSErr status = InstallEventHandler(GetApplicationEventTarget(), NewEventHandlerUPP(ApplicationEventHandler), 1, &menueventSpec, 0, NULL);
+        status = AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, NewAEEventHandlerUPP(QuitAppleEventHandler), 0, false);
+    }
+    
+    /** dtor */
+    ~OSXCarbonWindowingSystemInterface() {
+        if (_displayIds)
+            delete[] _displayIds;
+        _displayIds = NULL;
+    }
+    
+    /** @return a CGDirectDisplayID for a ScreenIdentifier */
+    inline CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
+        return _displayIds[si.screenNum];
+    }
+
+    /** @return count of attached screens */
+    virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
+    {
+        return _displayCount;
+    }
+
+    /** returns the resolution of a specific display */
+    virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
+    {
+        CGDirectDisplayID id = getDisplayID(si);
+        width = CGDisplayPixelsWide(id);
+        height = CGDisplayPixelsHigh(id);
+    }
+    
+    /** return the top left coord of a specific screen in global screen space */
+    void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y) {
+        CGRect bounds = CGDisplayBounds( getDisplayID(si) );
+        x = bounds.origin.x;
+        y = bounds.origin.y;
+        
+        // osg::notify(osg::DEBUG_INFO) << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
+    }
+        
+    
+    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
+    {
+        if (traits->pbuffer)
+        {
+            osg::ref_ptr<osgViewer::GraphicsContextCarbon> pbuffer = new GraphicsContextCarbon(traits);
+            if (pbuffer->valid()) return pbuffer.release();
+            else return 0;
+        }
+        else
+        {
+            osg::ref_ptr<osgViewer::GraphicsWindowCarbon> window = new GraphicsWindowCarbon(traits);
+            if (window->valid()) return window.release();
+            else return 0;
+        }
+    }
+    
+    
+    
+    private:
+        CGDisplayCount        _displayCount;
+        CGDirectDisplayID*    _displayIds;
+};
+
+}
+
+
+#pragma mark * * * GraphicsWindowCarbon * * *
+
 
 void GraphicsWindowCarbon::setWindowDecoration(bool flag)
 {
@@ -297,31 +511,62 @@ bool GraphicsWindowCarbon::realizeImplementation()
     
     setWindowDecoration(_traits->windowDecoration);
     
+    // move the window to the right screen
+
+    OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    int screenLeft(0), screenTop(0);
+    if (wsi) {
+        
+        wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
+        _traits->y += screenTop;
+        _traits->x += screenLeft;
+    }
+    
     // create the window
     Rect bounds = {_traits->y, _traits->x, _traits->y + _traits->height, _traits->x + _traits->width};
     OSStatus err = 0;
     WindowAttributes attr;
     
-    if (_useWindowDecoration)
+    if (_useWindowDecoration) 
+    {
         if (_traits->supportsResize)
             attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute);
         else
             attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute) & ~kWindowResizableAttribute;
+         err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
+    }
     else {
         attr = kWindowStandardHandlerAttribute;
         if (_traits->supportsResize)
             attr |= kWindowResizableAttribute;
+         err = CreateNewWindow(kSimpleWindowClass, attr, &bounds, &_window);
     }
-    
-    err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
+       
     if (err) {
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
         return false;
     }
     
     // register window event handler to receive resize-events
-    EventTypeSpec   windEventList[] = {{ kEventClassWindow, kEventWindowBoundsChanged},{ kEventClassWindow, kEventWindowClosed}};
-    InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  2, windEventList, this, NULL);
+    EventTypeSpec   windEventList[] = {
+        { kEventClassWindow, kEventWindowBoundsChanged},
+        { kEventClassWindow, kEventWindowClosed},
+        
+        {kEventClassMouse, kEventMouseDown},
+        {kEventClassMouse, kEventMouseUp},
+        {kEventClassMouse, kEventMouseMoved},
+        {kEventClassMouse, kEventMouseDragged},
+        {kEventClassMouse, kEventMouseWheelMoved},
+
+        {kEventClassKeyboard, kEventRawKeyDown},
+        {kEventClassKeyboard, kEventRawKeyRepeat},
+        {kEventClassKeyboard, kEventRawKeyUp},
+        {kEventClassKeyboard, kEventRawKeyModifiersChanged},
+        {kEventClassKeyboard, kEventHotKeyPressed},
+        {kEventClassKeyboard, kEventHotKeyReleased},
+    };
+    
+    InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  GetEventTypeCount(windEventList), windEventList, this, NULL);
     
     // set the window title
     if (!_traits->windowName.empty()) {
@@ -358,6 +603,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
         aglSetInteger (_context, AGL_SWAP_INTERVAL, &swap);
     }
 
+    MenubarController::instance()->attachWindow(this);
     
     _realized = true;
     return _realized;
@@ -391,6 +637,8 @@ void GraphicsWindowCarbon::closeImplementation()
     _valid = false;
     _realized = false;
     
+    MenubarController::instance()->detachWindow(this);
+    
     if (_pixelFormat)
     {
         aglDestroyPixelFormat(_pixelFormat);
@@ -420,36 +668,41 @@ void GraphicsWindowCarbon::swapBuffersImplementation()
 
 void GraphicsWindowCarbon::resizedImplementation(int x, int y, int width, int height)
 {
+    GraphicsContext::resizedImplementation(x, y, width, height);
+
     aglUpdateContext(_context);
+    MenubarController::instance()->update();
 }
 
 
 
-void GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
+bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
 {
 
+    static unsigned int lastEmulatedMouseButton = 0;
     // mouse down event   
     Point wheresMyMouse;
-    GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
+    GetEventParameter (theEvent, kEventParamWindowMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
+    
+    Point wheresMyMouseGlobal;
+    GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouseGlobal);
     
     EventMouseButton mouseButton = 0;
     GetEventParameter (theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(mouseButton), NULL, &mouseButton);
-        
+    
+    UInt32 modifierKeys;
+    GetEventParameter (theEvent,kEventParamKeyModifiers,typeUInt32, NULL,sizeof(modifierKeys), NULL,&modifierKeys);
+    
+    
     WindowRef win;
-    int fwres = FindWindow(wheresMyMouse, &win);
-
-    if ((fwres == inMenuBar) && (mouseButton >= 1)) {
-        MenuSelect(wheresMyMouse);
-        HiliteMenu(0);
-        return;
-    }
-    else if ((fwres != inContent) && (fwres > 0) && (mouseButton >= 1))
+    int fwres = FindWindow(wheresMyMouseGlobal, &win);
+    if ((fwres != inContent) && (fwres > 0) && (mouseButton >= 1))
     {
-        return;
+        return false;
     }
     else
     {
-
+    
         // swap right and middle buttons so that middle button is 2, right button is 3.
         if (mouseButton==3) mouseButton = 2;
         else if (mouseButton==2) mouseButton = 3;
@@ -492,6 +745,21 @@ void GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     float mx =wheresMyMouse.h;
                     float my =wheresMyMouse.v;
                     transformMouseXY(mx, my);
+                    
+                    lastEmulatedMouseButton = 0;
+                    
+                    if (mouseButton == 1) 
+                    {
+                        if( modifierKeys & cmdKey )
+                        {
+                            mouseButton = lastEmulatedMouseButton = 3;
+                        }
+                        else if( modifierKeys & optionKey )
+                        {
+                            mouseButton = lastEmulatedMouseButton = 2;
+                        }
+                    }
+                    
                     getEventQueue()->mouseButtonPress(mx, my, mouseButton);
                 }
                 break;
@@ -500,7 +768,13 @@ void GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     float mx =wheresMyMouse.h;
                     float my =wheresMyMouse.v;
                     transformMouseXY(mx, my);
-                    getEventQueue()->mouseButtonRelease(mx, my, mouseButton);
+                    if (lastEmulatedMouseButton > 0) {
+                        getEventQueue()->mouseButtonRelease(mx, my, lastEmulatedMouseButton);
+                        lastEmulatedMouseButton = 0;
+                    }
+                    else {
+                        getEventQueue()->mouseButtonRelease(mx, my, mouseButton);
+                    }
                 }
                 break;
                 
@@ -573,14 +847,16 @@ void GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                 break;
             
             default:
-                return;
+                return false;
         }
     }
+    
+    return true;
 }
 
 
 
-void GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
+bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
 {
     
     
@@ -625,8 +901,8 @@ void GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
     UInt32 dataSize;
     /* jbw check return status so that we don't allocate a huge array */
     status = GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, 0, &dataSize, NULL );
-    if (status != noErr) return;
-    if (dataSize<=1) return;
+    if (status != noErr) return false;
+    if (dataSize<=1) return false;
     
     UniChar* uniChars = new UniChar[dataSize+1];
     GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, dataSize, NULL, (void*)uniChars );
@@ -657,7 +933,7 @@ void GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
 
     delete[] uniChars;
 
-    return;
+    return true;
 }
 
 
@@ -672,15 +948,26 @@ void GraphicsWindowCarbon::checkEvents()
     {
         switch(GetEventClass(theEvent))
         {
-            case kEventClassTablet:
-            case kEventClassMouse:
-                handleMouseEvent(theEvent);
-                break;
-           
-            case kEventClassKeyboard:
-                handleKeyboardEvent(theEvent);
-                break;
-                
+            case kEventClassMouse: 
+                    {
+                    // handle the menubar
+                    Point wheresMyMouse;
+                    GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
+                    
+                    EventMouseButton mouseButton = 0;
+                    GetEventParameter (theEvent, kEventParamMouseButton, typeMouseButton, NULL, sizeof(mouseButton), NULL, &mouseButton);
+                    
+                    WindowRef win;
+                    int fwres = FindWindow(wheresMyMouse, &win);
+
+                    if ((fwres == inMenuBar) && (mouseButton >= 1)) {
+                        MenuSelect(wheresMyMouse);
+                        HiliteMenu(0);
+                        return;
+                    }
+                    break;
+                }
+
             case kEventClassApplication:
                 switch (GetEventKind(theEvent)) {
                     case kEventAppQuit:
@@ -724,6 +1011,7 @@ void GraphicsWindowCarbon::grabFocus()
 void GraphicsWindowCarbon::grabFocusIfPointerInWindow()
 {
    // TODO: implement
+   osg::notify(osg::ALWAYS) << "GraphicsWindowCarbon::grabFocusIfPointerInWindow" << std::endl;
 }
 
 
@@ -740,68 +1028,6 @@ void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)
 
 
 
-struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
-{
-
-    OSXCarbonWindowingSystemInterface() :
-        _displayCount(0),
-        _displayIds(NULL)
-    {
-        if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
-            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: could not get # of screens" << std::endl;
-            
-        _displayIds = new CGDirectDisplayID[_displayCount];
-        if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
-            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
-        
-        // register application event handler and AppleEventHandler to get quit-events:
-        static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};
-        OSErr status = InstallEventHandler(GetApplicationEventTarget(), NewEventHandlerUPP(ApplicationEventHandler), 1, &menueventSpec, 0, NULL);
-        status = AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, NewAEEventHandlerUPP(QuitAppleEventHandler), 0, false);
-    }
-    
-    ~OSXCarbonWindowingSystemInterface() {
-        if (_displayIds)
-            delete[] _displayIds;
-        _displayIds = NULL;
-    }
-    
-    inline CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
-            return _displayIds[si.screenNum];
-    }
-
-    virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
-    {
-        return _displayCount;
-    }
-
-    virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
-    {
-        CGDirectDisplayID id = getDisplayID(si);
-        width = CGDisplayPixelsWide(id);
-        height = CGDisplayPixelsHigh(id);
-    }
-
-    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
-    {
-        if (traits->pbuffer)
-        {
-            osg::ref_ptr<osgViewer::GraphicsContextCarbon> pbuffer = new GraphicsContextCarbon(traits);
-            if (pbuffer->valid()) return pbuffer.release();
-            else return 0;
-        }
-        else
-        {
-            osg::ref_ptr<osgViewer::GraphicsWindowCarbon> window = new GraphicsWindowCarbon(traits);
-            if (window->valid()) return window.release();
-            else return 0;
-        }
-    }
-    
-    private:
-        CGDisplayCount        _displayCount;
-        CGDirectDisplayID*    _displayIds;
-};
 
 
 
@@ -809,7 +1035,7 @@ struct RegisterWindowingSystemInterfaceProxy
 {
     RegisterWindowingSystemInterfaceProxy()
     {
-        osg::GraphicsContext::setWindowingSystemInterface(new OSXCarbonWindowingSystemInterface);
+        osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::OSXCarbonWindowingSystemInterface());
     }
 
     ~RegisterWindowingSystemInterfaceProxy()

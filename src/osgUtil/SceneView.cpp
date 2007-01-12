@@ -155,7 +155,8 @@ void SceneView::setDefaults(unsigned int options)
     _camera->getProjectionMatrix().makePerspective(50.0f,1.4f,1.0f,10000.0f);
     _camera->getViewMatrix().makeIdentity();
 
-    _globalStateSet = new osg::StateSet;
+    if (!_globalStateSet) _globalStateSet = new osg::StateSet;
+    else _globalStateSet->clear();
 
     if ((options & HEADLIGHT) || (options & SKY_LIGHT))
     {
@@ -215,17 +216,6 @@ void SceneView::setDefaults(unsigned int options)
     _cullVisitor->setRenderStage(_renderStage.get());
 
     _globalStateSet->setGlobalDefaults();
-    
-    
-    // enable depth testing by default.
-    _globalStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-
-#if 0
-    // set up an alphafunc by default to speed up blending operations.
-    osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
-    alphafunc->setFunction(osg::AlphaFunc::GREATER,1.0f);
-    _globalStateSet->setAttributeAndModes(alphafunc, osg::StateAttribute::OFF);
-#endif
 
     // set up an texture environment by default to speed up blending operations.
      osg::TexEnv* texenv = new osg::TexEnv;

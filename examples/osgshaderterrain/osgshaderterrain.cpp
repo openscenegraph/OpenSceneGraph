@@ -241,46 +241,49 @@ osg::Node* createScene()
     return scene;
 }
 
-#if 0
-class TestSupportCallback : public osgProducer::OsgCameraGroup::RealizeCallback
+class TestSupportOperation: public osg::GraphicsOperation
 {
-    public:
-        TestSupportCallback():_supported(true),_errorMessage() {}
-        
-        virtual void operator()( osgProducer::OsgCameraGroup&, osgProducer::OsgSceneHandler& sh, const Producer::RenderSurface& )
+public:
+
+    TestSupportOperation():
+        osg::GraphicsOperation("TestSupportOperation",false),
+        _supported(true),
+        _errorMessage() {}
+
+    virtual void operator () (osg::GraphicsContext* gc)
+    {
+        osg::notify(osg::NOTICE)<<"Not called"<<std::endl;
+    
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+        unsigned int contextID = gc->getState()->getContextID();
+        osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
+        if( gl2ext )
         {
+            if( !gl2ext->isGlslSupported() )
             {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
-                unsigned int contextID = sh.getSceneView()->getState()->getContextID();
-                osg::GL2Extensions* gl2ext = osg::GL2Extensions::Get(contextID,true);
-                if( gl2ext )
-                {
-                    if( !gl2ext->isGlslSupported() )
-                    {
-                        _supported = false;
-                        _errorMessage = "ERROR: GLSL not supported by OpenGL driver.";
-                    }
-
-                    GLint numVertexTexUnits = 0;
-                    glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
-                    if( numVertexTexUnits <= 0 )
-                    {
-                        _supported = false;
-                        _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
-                    }
-                }
+                _supported = false;
+                _errorMessage = "ERROR: GLSL not supported by OpenGL driver.";
             }
-                        
-            sh.init();
+
+            GLint numVertexTexUnits = 0;
+            glGetIntegerv( GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &numVertexTexUnits );
+            if( numVertexTexUnits <= 0 )
+            {
+                _supported = false;
+                _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
+            }
         }
+
+        _supported = false;
+        _errorMessage = "ERROR: Pllalalal.";
+
+    }
         
-        OpenThreads::Mutex  _mutex;
-        bool                _supported;
-        std::string         _errorMessage;
-        
+    OpenThreads::Mutex  _mutex;
+    bool                _supported;
+    std::string         _errorMessage;
 };
-#endif
 
 int main(int, char **)
 {
@@ -292,26 +295,28 @@ int main(int, char **)
     // add model to viewer.
     viewer.setSceneData( node );
 
-#if 0
-    // register a test extension callback to be called when app realizes and gets a valid graphics context
-    osg::ref_ptr<TestSupportCallback> testSupportCallback = new TestSupportCallback();
-    viewer.setRealizeCallback(testSupportCallback.get());
+    viewer.setUpViewAcrossAllScreens();
+    
+    osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
+
+    osgViewer::Viewer::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
+    {
+        (*itr)->add(testSupportOperation.get());
+    }
+
     // create the windows and run the threads.
     viewer.realize();
-
-    // exit if we don't have the extensions this example needs.
-    if (!testSupportCallback->_supported)
-    {
-        osg::notify(osg::WARN)<<testSupportCallback->_errorMessage<<std::endl;
-
-        exit(1);
-    }
-#else
-
-    osg::notify(osg::NOTICE)<<"osgshaderterrain OpenGL support test not implemented yet"<<std::endl;
     
-#endif
+    if (!testSupportOperation->_supported)
+    {
+        osg::notify(osg::WARN)<<testSupportOperation->_errorMessage<<std::endl;
 
+        return 1;
+    }
 
     return viewer.run();
 }

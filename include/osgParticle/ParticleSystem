@@ -372,7 +372,7 @@ namespace osgParticle
             Particle* P = _deadparts.top();
 
             // create a new (alive) particle in the same place
-            *P = Particle(ptemplate? *ptemplate: _def_ptemp);
+            *P = ptemplate? *ptemplate: _def_ptemp;
 
             // remove the pointer from the death stack
             _deadparts.pop();
@@ -381,7 +381,7 @@ namespace osgParticle
         } else {
 
             // add a new particle to the vector
-            _particles.push_back(Particle(ptemplate? *ptemplate: _def_ptemp));
+            _particles.push_back(ptemplate? *ptemplate: _def_ptemp);
             return &_particles.back();
         }
     }

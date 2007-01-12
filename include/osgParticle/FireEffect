@@ -25,7 +25,7 @@ namespace osgParticle
     {
     public:
     
-        FireEffect(bool automaticSetup=true);
+        explicit FireEffect(bool automaticSetup=true);
     
         FireEffect(const osg::Vec3& position, float scale=1.0f, float intensity=1.0f);
         

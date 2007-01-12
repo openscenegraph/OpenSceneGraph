@@ -25,7 +25,7 @@ namespace osgParticle
     {
     public:
     
-        SmokeTrailEffect(bool automaticSetup=true);
+        explicit SmokeTrailEffect(bool automaticSetup=true);
     
         SmokeTrailEffect(const osg::Vec3& position, float scale=1.0f, float intensity=1.0f);
         

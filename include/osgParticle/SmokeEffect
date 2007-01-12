@@ -25,7 +25,7 @@ namespace osgParticle
     {
     public:
     
-        SmokeEffect(bool automaticSetup=true);
+        explicit SmokeEffect(bool automaticSetup=true);
     
         SmokeEffect(const osg::Vec3& position, float scale=1.0f, float intensity=1.0f);
         

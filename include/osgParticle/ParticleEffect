@@ -24,7 +24,7 @@ namespace osgParticle
     {
     public:
     
-        ParticleEffect(bool automaticSetup=true):
+        explicit ParticleEffect(bool automaticSetup=true):
             _automaticSetup(automaticSetup),
             _useLocalParticleSystem(true),
             _scale(1.0f),

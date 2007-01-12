@@ -541,6 +541,18 @@ void Viewer::realize()
 
     // initialize the global timer to be relative to the current time.
     osg::Timer::instance()->setStartTick();
+    
+    getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());;
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*citr);
+        if (gw)
+        {
+            gw->getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());
+        }
+    }
 
 }
 

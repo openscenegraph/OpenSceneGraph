@@ -1,6 +1,6 @@
 // C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
 //
-// Simple example of use of Producer::RenderSurface + KeyboardMouseCallback + SimpleViewer
+// Simple example of use of osgViewer::GraphicsWindow + SimpleViewer
 // example that provides the user with control over view position with basic picking.
 
 #include <osg/Timer>

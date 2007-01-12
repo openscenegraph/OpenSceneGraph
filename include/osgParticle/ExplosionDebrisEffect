@@ -25,7 +25,7 @@ namespace osgParticle
     {
     public:
     
-        ExplosionDebrisEffect(bool automaticSetup=true);
+        explicit ExplosionDebrisEffect(bool automaticSetup=true);
 
         ExplosionDebrisEffect(const osg::Vec3& position, float scale=1.0f, float intensity=1.0f);
         

@@ -11,15 +11,11 @@
 
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
 #include <osg/CoordinateSystemNode>
 
-int main( int argc, char **argv )
+#include <osgProducer/Viewer>
+int main_osgProducer(osg::ArgumentParser& arguments)
 {
-
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-    
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
@@ -126,5 +122,31 @@ int main( int argc, char **argv )
     viewer.sync();
 
     return 0;
+}
+
+#include <osgViewer/Viewer>
+int main_osgViewer(osg::ArgumentParser& arguments)
+{
+    osgViewer::Viewer viewer;
+    
+    viewer.setSceneData( osgDB::readNodeFiles(arguments));
+
+    return viewer.run();
+}
+
+int main( int argc, char **argv )
+{
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+
+    if (arguments.read("--osgProducer"))
+    {
+        return main_osgProducer(arguments);
+    }
+    else
+    {
+        return main_osgViewer(arguments);
+    }
+    
 }
 

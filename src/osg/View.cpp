@@ -12,6 +12,7 @@
 */
 #include <osg/View>
 #include <osg/Notify>
+#include <osg/TexEnv>
 
 using namespace osg;
 
@@ -20,8 +21,12 @@ View::View()
     // osg::notify(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
 
     setCamera(new osg::Camera);
+
     _camera->setProjectionMatrixAsFrustum(-0.325, 0.325, -0.26, 0.26, 1.0f,10000.0f);
     _camera->setClearColor(osg::Vec4f(0.2f, 0.2f, 0.4f, 1.0f));
+    
+    osg::StateSet* stateset = _camera->getOrCreateStateSet();
+    stateset->setGlobalDefaults();
 }
 
 View::~View()

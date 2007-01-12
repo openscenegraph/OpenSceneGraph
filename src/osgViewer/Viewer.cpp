@@ -454,6 +454,7 @@ void Viewer::setUpRenderingSupport()
         osgUtil::SceneView* sceneView = new osgUtil::SceneView;
         _cameraSceneViewMap[_camera] = sceneView;
 
+        sceneView->setGlobalStateSet(_camera->getStateSet());
         sceneView->setDefaults();
         sceneView->setDisplaySettings(ds);
         sceneView->setCamera(_camera.get());
@@ -472,6 +473,7 @@ void Viewer::setUpRenderingSupport()
             osgUtil::SceneView* sceneView = new osgUtil::SceneView;
             _cameraSceneViewMap[slave._camera] = sceneView;
 
+            sceneView->setGlobalStateSet(_camera->getStateSet());
             sceneView->setDefaults();
             sceneView->setCamera(slave._camera.get());
             sceneView->setDisplaySettings(ds);

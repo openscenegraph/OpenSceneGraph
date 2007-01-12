@@ -14,7 +14,6 @@
 #include <osgViewer/View>
 #include <osgViewer/GraphicsWindow>
 
-#include <osgUtil/SceneView>
 #include <osg/io_utils>
 
 #include <osgUtil/IntersectionVisitor>

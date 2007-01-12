@@ -82,6 +82,11 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         void requestClose() { _closeRequested = true; }
         
         virtual void resizedImplementation(int x, int y, int width, int height);
+        
+        WindowRef getNativeWindowRef() { return _window; }
+        
+        bool handleMouseEvent(EventRef theEvent);
+        bool handleKeyboardEvent(EventRef theEvent);
 
     protected:
     
@@ -99,11 +104,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         AGLContext      _context;
         AGLPixelFormat  _pixelFormat;
     
-    private:
-        
-        void handleMouseEvent(EventRef theEvent);
-        void handleKeyboardEvent(EventRef theEvent);
-        
+    private:        
         bool _closeRequested;
 };
 

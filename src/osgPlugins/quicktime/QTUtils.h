@@ -10,9 +10,17 @@
 #ifndef QTUTILS_HEADER_
 #define QTUTILS_HEADER_
 
+// Quicktime plugin is able to load regular 2D images 
+// besides movie streams. 
+// It is used as default image loader on __APPLE__
+// Uncomment this define to use it as image loader
+// on other platforms. 
+// #define QT_HANDLE_IMAGES_ALSO
+
 #ifdef __APPLE__
     #include <Quicktime/Quicktime.h>
     #include <Carbon/Carbon.h>
+    #define QT_HANDLE_IMAGES_ALSO
 #else
     #include <QTML.h>
     #include <Movies.h>

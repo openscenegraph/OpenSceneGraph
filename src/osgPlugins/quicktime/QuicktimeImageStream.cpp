@@ -38,22 +38,21 @@
 #define IDLE_TIMEOUT 150000L
 #define ERR_MSG(no,msg) osg::notify(osg::WARN) << "QT-ImageStream: " << msg << " failed with error " << no << std::endl;
 
-static OpenThreads::Mutex* s_qtMutex = new OpenThreads::Mutex;
-
 int QuicktimeImageStream::_qtInstanceCount = 0;
 
 // Constructor: setup and start thread
 QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 {
-   // ricky
+   /*
+   // ricky   
    if(_qtInstanceCount == 0)
-   {
-      OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
+   {      
       osg::notify(osg::NOTICE) << "quicktime Init" << std::endl;
       initQuicktime(); 
    }
-   ++ _qtInstanceCount;
+   ++ _qtInstanceCount;   
    // end ricky
+   */   
 
 
    _len = 0;
@@ -81,21 +80,20 @@ QuicktimeImageStream::~QuicktimeImageStream()
       quit(true);
    }
 
-   // ricky
+   /*   
+   // ricky   
    -- _qtInstanceCount;
    if(_qtInstanceCount == 0)
    {
-      OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
       osg::notify(osg::NOTICE) << "quicktime Exit" << std::endl;
       exitQuicktime(); 
-   }
+   }  
    // end ricky
+   */   
 
    // clean up quicktime movies.
-   {    
-      OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
-      delete _data;
-   }    
+   delete _data;
+   
 }
 
 
@@ -131,14 +129,10 @@ void QuicktimeImageStream::load(std::string fileName)
 {
    osg::notify(osg::DEBUG_INFO) << "QT-ImageStream: loading quicktime movie from " << fileName << std::endl;
 
-   OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
-
    _data->load(this, fileName);
 
    _len = _data->getMovieDuration();
    _current = 0;
-
-
 }
 
 void QuicktimeImageStream::quit(bool wiatForThreadToExit)
@@ -177,8 +171,6 @@ void QuicktimeImageStream::run()
       osg::notify(osg::DEBUG_INFO) << "movietime: " << _data->getMovieTime() << " rate: " << _data->getMovieRate() << " state " << cmd << " playing: " << playing << " done " << done << "  " << _wrIndex << "/" << _rdIndex << std::endl;        
       // Handle commands               
       {
-         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*s_qtMutex);
-
          if (cmd != THREAD_IDLE) {
             osg::notify(osg::DEBUG_INFO) << "new cmd: " << cmd << std::endl;
             switch (cmd) {
@@ -265,8 +257,9 @@ void QuicktimeImageStream::run()
                rewind();
             }        
             // orig
-            //pause();  
+            //pause();
 
+            //end ricky
          }
       }
 

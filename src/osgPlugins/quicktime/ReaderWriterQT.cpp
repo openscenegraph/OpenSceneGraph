@@ -3,6 +3,8 @@
 
 #include <osg/Geode>
 
+#include <osg/observer_ptr>
+
 #include "osg/GL"
 
 #include "osgDB/FileNameUtils"
@@ -22,6 +24,35 @@
 
 
 using namespace osg;
+
+// This class is used as a helper to de-initialize
+// properly quicktime, when the last media loaded 
+// with the quicktime plugin is released. 
+// All loaded media must be added to the observer 
+// (see ReaderWriterQT::readImage() function) 
+class QuicktimeExitObserver : public osg::Observer
+{
+public:
+
+   QuicktimeExitObserver () : _instanceCount(0){}
+   virtual ~QuicktimeExitObserver(){};
+
+   void addMedia(Image* ptr)
+   {
+      ptr->addObserver(this);
+      ++ _instanceCount;
+   }
+   
+   virtual void objectDeleted(void*) 
+   {
+      -- _instanceCount;
+      if(_instanceCount== 0)
+         exitQuicktime();
+   }
+
+private:
+   unsigned int _instanceCount;
+};
 
 
 
@@ -46,7 +77,9 @@ public:
    {
       // this should be the only image importer required on the Mac
       // dont know what else it supports, but these will do
-      return 
+      return
+
+         #ifdef QT_HANDLE_IMAGES_ALSO
          osgDB::equalCaseInsensitive(extension,"rgb") ||
          osgDB::equalCaseInsensitive(extension,"rgba") ||
          osgDB::equalCaseInsensitive(extension,"jpg") || 
@@ -58,27 +91,26 @@ public:
          osgDB::equalCaseInsensitive(extension,"pict") ||
          osgDB::equalCaseInsensitive(extension,"pct") ||
          osgDB::equalCaseInsensitive(extension,"tga") ||
-         osgDB::equalCaseInsensitive(extension,"psd") ||                
-         
+         osgDB::equalCaseInsensitive(extension,"psd") ||
+         #endif 
+
          acceptsMovieExtension(extension);
    }
 
-   virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options*) const
-   {                    
-
-      // ricky
-      // If using only the QuicktimeImageStream class for the movies, you can comment
-      // out this line, as the init function is called inside the QTImageStream 
-      // ctor. 
-      // It is left here for compatibility with the original plugin, to handle 
-      // regular 2D images as well.
-      initQuicktime();
-
+   virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+   {
       std::string ext = osgDB::getLowerCaseFileExtension(file);
       if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-      std::string fileName = osgDB::findDataFile( file );
+      std::string fileName = osgDB::findDataFile( file,  options);
       if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+      // Note from Riccardo Corsi 
+      // Quicktime initialization is done here, when a media is found
+      // and before any image or movie is loaded. 
+      // After the first call the function does nothing. 
+      // The cleaning up is left to the QuicktimeExitObserver (see below)
+      initQuicktime();
 
       // if the file is a movie file then load as an ImageStream.
       if (acceptsMovieExtension(ext))
@@ -90,9 +122,13 @@ public:
          // to get things off the ground.
          QuicktimeImageStream* moov = new QuicktimeImageStream(fileName);
          // moov->play();
+
+         // add the media to the observer for proper clean up on exit
+         _qtExitObserver.addMedia(moov);
+
          return moov;
       }
-
+ 
       long origWidth, origHeight,buffWidth,buffHeight,buffDepth,origDepth;
 
       // NOTE - implememntation means that this will always return 32 bits, so it is hard to work out if 
@@ -211,6 +247,10 @@ public:
                       osg::Image::USE_NEW_DELETE );
 
       notify(DEBUG_INFO) << "image read ok "<<buffWidth<<"  "<<buffHeight<<std::endl;
+
+      // add the media to the observer for proper clean up on exit
+      _qtExitObserver.addMedia(image);
+
       return image;
    }
 
@@ -411,11 +451,10 @@ public:
          return WriteResult::ERROR_IN_WRITING_FILE;
       }
 
-
    }
 
 
-
+   mutable QuicktimeExitObserver _qtExitObserver;
 };
 
 // now register with Registry to instantiate the above

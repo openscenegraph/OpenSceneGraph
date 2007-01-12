@@ -27,7 +27,7 @@ using namespace std;
                     #endif
                     OSErr err = EnterMovies();
                     if (err!=0)
-                       osg::notify(osg::FATAL) << "Error while initializing quicktime: " << err << endl;
+                       osg::notify(osg::FATAL) << "Error while initializing quicktime: " << err << endl; 
                     else
                        osg::notify(osg::DEBUG_INFO) << "Quicktime initialized successfully"  << endl;
                     registerQTReader();
@@ -45,6 +45,9 @@ using namespace std;
     protected:
         void registerQTReader() {
             osgDB::Registry* r = osgDB::Registry::instance();
+         r->addFileExtensionAlias("mov",  "qt");
+
+         #ifdef QT_HANDLE_IMAGES_ALSO
             r->addFileExtensionAlias("jpg",  "qt");
             r->addFileExtensionAlias("jpe",  "qt");
             r->addFileExtensionAlias("jpeg", "qt");
@@ -59,8 +62,9 @@ using namespace std;
             r->addFileExtensionAlias("mpg",  "qt");
             r->addFileExtensionAlias("mpv",  "qt");
             r->addFileExtensionAlias("dv",   "qt");
-            r->addFileExtensionAlias("mp4",   "qt");
-            r->addFileExtensionAlias("m4v",   "qt");
+            r->addFileExtensionAlias("mp4",  "qt");
+            r->addFileExtensionAlias("m4v",  "qt");         
+         #endif
         }
                 
     };

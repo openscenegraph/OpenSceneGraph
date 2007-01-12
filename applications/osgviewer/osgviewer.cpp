@@ -13,6 +13,10 @@
 #include <osgUtil/Optimizer>
 #include <osg/CoordinateSystemNode>
 
+///////////////////////////////////////////////////////////////////////////
+//
+// osgProducer version (see osgViewer version in next section below)
+
 #include <osgProducer/Viewer>
 int main_osgProducer(osg::ArgumentParser& arguments)
 {
@@ -124,12 +128,42 @@ int main_osgProducer(osg::ArgumentParser& arguments)
     return 0;
 }
 
+///////////////////////////////////////////////////////////////////////////
+//
+// osgViewer version
+
 #include <osgViewer/Viewer>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/StateSetManipulator>
+
+
 int main_osgViewer(osg::ArgumentParser& arguments)
 {
     osgViewer::Viewer viewer;
     
-    viewer.setSceneData( osgDB::readNodeFiles(arguments));
+    // set up the camera manipulators.
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
+    }
+
+    // add the state manipulator
+    {
+        osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
+        statesetManipulator->setStateSet(viewer.getCamera()->getOrCreateStateSet());
+
+        viewer.addEventHandler( statesetManipulator.get() );
+    }
+    
+    viewer.setSceneData( osgDB::readNodeFiles(arguments) );
 
     return viewer.run();
 }

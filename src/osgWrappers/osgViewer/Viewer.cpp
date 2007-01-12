@@ -32,6 +32,11 @@ BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
 	I_EnumLabel(osgViewer::Viewer::ThreadPerCamera);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::BarrierPosition)
+	I_EnumLabel(osgViewer::Viewer::BeforeSwapBuffers);
+	I_EnumLabel(osgViewer::Viewer::AfterSwapBuffers);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
@@ -69,13 +74,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __ThreadingModel__getThreadingModel,
 	          "Get the threading model the rendering traversals will use. ",
 	          "");
-	I_Method1(void, setKeySetsDone, IN, int, key,
-	          __void__setKeySetsDone__int,
-	          "Set the key value that the viewer checks on each frame to see if the viewer's done flag should be set to signal end of viewers main loop. ",
+	I_Method1(void, setEndBarrierPosition, IN, osgViewer::Viewer::BarrierPosition, bp,
+	          __void__setEndBarrierPosition__BarrierPosition,
+	          "Set the position of the end barrier. ",
+	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconcistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
+	I_Method0(osgViewer::Viewer::BarrierPosition, getEndBarrierPosition,
+	          __BarrierPosition__getEndBarrierPosition,
+	          "Get the end barrier position. ",
+	          "");
+	I_Method1(void, setKeyEventSetsDone, IN, int, key,
+	          __void__setKeyEventSetsDone__int,
+	          "Set the key event that the viewer checks on each frame to see if the viewer's done flag should be set to signal end of viewers main loop. ",
 	          "Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape). Setting to 0 switches off the feature. ");
-	I_Method0(int, getKeySetsDone,
-	          __int__getKeySetsDone,
-	          "get the key value that the viewer checks on each frame to see if the viewer's done flag. ",
+	I_Method0(int, getKeyEventSetsDone,
+	          __int__getKeyEventSetsDone,
+	          "get the key event that the viewer checks on each frame to see if the viewer's done flag. ",
 	          "");
 	I_Method1(void, setQuitEventSetsDone, IN, bool, flag,
 	          __void__setQuitEventSetsDone__bool,
@@ -143,12 +156,15 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(bool, Done, 
 	                 0, 
 	                 __void__setDone__bool);
+	I_SimpleProperty(osgViewer::Viewer::BarrierPosition, EndBarrierPosition, 
+	                 __BarrierPosition__getEndBarrierPosition, 
+	                 __void__setEndBarrierPosition__BarrierPosition);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
 	                 0);
-	I_SimpleProperty(int, KeySetsDone, 
-	                 __int__getKeySetsDone, 
-	                 __void__setKeySetsDone__int);
+	I_SimpleProperty(int, KeyEventSetsDone, 
+	                 __int__getKeyEventSetsDone, 
+	                 __void__setKeyEventSetsDone__int);
 	I_SimpleProperty(bool, QuitEventSetsDone, 
 	                 __bool__getQuitEventSetsDone, 
 	                 __void__setQuitEventSetsDone__bool);

@@ -234,9 +234,6 @@ void SimpleViewer::updateTraversal()
 
     if (_databasePager.valid())
     {    
-        // tell the DatabasePager the frame number of that the scene graph is being actively used to render a frame
-        _databasePager->signalBeginFrame(_frameStamp.get());
-
         // syncronize changes required by the DatabasePager thread to the scene graph
         _databasePager->updateSceneGraph(_frameStamp->getReferenceTime());
     }
@@ -246,6 +243,12 @@ void SimpleViewer::updateTraversal()
 
 void SimpleViewer::renderingTraversal()
 {
+    if (_databasePager.valid())
+    {    
+        // tell the DatabasePager the frame number of that the scene graph is being actively used to render a frame
+        _databasePager->signalBeginFrame(_frameStamp.get());
+    }
+    
     _sceneView->cull();
     _sceneView->draw();
 

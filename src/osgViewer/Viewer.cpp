@@ -26,9 +26,10 @@ using namespace osgViewer;
 Viewer::Viewer():
     _firstFrame(true),
     _done(false),
-    _keySetsDone(osgGA::GUIEventAdapter::KEY_Escape),
+    _keyEventSetsDone(osgGA::GUIEventAdapter::KEY_Escape),
     _quitEventSetsDone(true),
     _threadingModel(ThreadPerContext),
+    _endBarrierPosition(AfterSwapBuffers),
     _numThreadsOnBarrier(0)
 {
     _eventVisitor = new osgGA::EventVisitor;
@@ -125,6 +126,18 @@ void Viewer::setThreadingModel(ThreadingModel threadingModel)
     if (_threadingModel!=SingleThreaded) stopThreading();
     
     _threadingModel = threadingModel;
+
+    if (_threadingModel!=SingleThreaded) startThreading();
+}
+
+
+void Viewer::setEndBarrierPosition(BarrierPosition bp)
+{
+    if (_endBarrierPosition == bp) return;
+    
+    if (_threadingModel!=SingleThreaded) stopThreading();
+    
+    _endBarrierPosition = bp;
 
     if (_threadingModel!=SingleThreaded) startThreading();
 }
@@ -293,11 +306,20 @@ void Viewer::startThreading()
         // add the rendering operation itself.
         gc->getGraphicsThread()->add(new RunOperations(gc));
 
-        // add the endRenderingDispatchBarrier
-        gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
+        if (_endBarrierPosition==BeforeSwapBuffers)
+        {
+            // add the endRenderingDispatchBarrier
+            gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
+        }
 
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
+
+        if (_endBarrierPosition==AfterSwapBuffers)
+        {
+            // add the endRenderingDispatchBarrier
+            gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
+        }
 
     }
 
@@ -801,7 +823,7 @@ void Viewer::eventTraversal()
 
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
     
-    if ((_keySetsDone!=0) || (_quitEventSetsDone))
+    if ((_keyEventSetsDone!=0) || _quitEventSetsDone)
     {
         for(osgGA::EventQueue::Events::iterator itr = events.begin();
             itr != events.end();
@@ -811,14 +833,11 @@ void Viewer::eventTraversal()
             switch(event->getEventType())
             {
                 case(osgGA::GUIEventAdapter::KEYUP):
-                    if (event->getKey()==_keySetsDone) _done = true;
-                    else if (event->getKey()=='s') { setThreadingModel(SingleThreaded); }
-                    else if (event->getKey()=='c') { setThreadingModel(ThreadPerCamera); }
-                    else if (event->getKey()=='w') { setThreadingModel(ThreadPerContext); }
+                    if (_keyEventSetsDone && event->getKey()==_keyEventSetsDone) _done = true;
                     break;
                 
                 case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
-                    _done = true;
+                    if (_quitEventSetsDone) _done = true;
                     break;
                     
                 default:

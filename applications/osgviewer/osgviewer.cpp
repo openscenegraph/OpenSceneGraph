@@ -29,7 +29,6 @@ int main_osgProducer(osg::ArgumentParser& arguments)
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
     arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
-
     arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
     
 
@@ -140,8 +139,101 @@ int main_osgProducer(osg::ArgumentParser& arguments)
 #include <osgGA/StateSetManipulator>
 #include <osgGA/AnimationPathManipulator>
 
+class ThreadingHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    ThreadingHandler() {}
+        
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        if (!viewer) return false;
+    
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()=='m')
+                {
+                    switch(viewer->getThreadingModel())
+                    {
+                        case(osgViewer::Viewer::SingleThreaded):
+                            viewer->setThreadingModel(osgViewer::Viewer::ThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'ThreadPerContext' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::ThreadPerContext):
+                            viewer->setThreadingModel(osgViewer::Viewer::ThreadPerCamera);
+                            osg::notify(osg::NOTICE)<<"Threading model 'ThreadPerCamera' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::ThreadPerCamera):
+                            viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+                            osg::notify(osg::NOTICE)<<"Threading model 'SingleTheaded' selected."<<std::endl;
+                            break;
+                    }
+                    return true;
+                }
+                if (ea.getKey()=='e')
+                {
+                    switch(viewer->getEndBarrierPosition())
+                    {
+                        case(osgViewer::Viewer::BeforeSwapBuffers):
+                            viewer->setEndBarrierPosition(osgViewer::Viewer::AfterSwapBuffers);
+                            osg::notify(osg::NOTICE)<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::AfterSwapBuffers):
+                            viewer->setEndBarrierPosition(osgViewer::Viewer::BeforeSwapBuffers);
+                            osg::notify(osg::NOTICE)<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
+                            break;
+                    }
+                    return true;
+                }
+            }
+            default: break;
+        }
+        
+        return false;
+    }
+    
+    bool _done;
+};
+
 int main_osgViewer(osg::ArgumentParser& arguments)
 {
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
+    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
+    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
+
+    // if user request help write it out to cout.
+    bool helpAll = arguments.read("--help-all");
+    unsigned int helpType = ((helpAll || arguments.read("-h") || arguments.read("--help"))? osg::ApplicationUsage::COMMAND_LINE_OPTION : 0 ) |
+                            ((helpAll ||  arguments.read("--help-env"))? osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE : 0 ) |
+                            ((helpAll ||  arguments.read("--help-keys"))? osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING : 0 );
+    if (helpType)
+    {
+        arguments.getApplicationUsage()->write(std::cout, helpType);
+        return 1;
+    }
+
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
+
     osgViewer::Viewer viewer;
     
     // set up the camera manipulators.
@@ -176,7 +268,35 @@ int main_osgViewer(osg::ArgumentParser& arguments)
         viewer.addEventHandler( statesetManipulator.get() );
     }
     
-    viewer.setSceneData( osgDB::readNodeFiles(arguments) );
+    // add the thread model handler
+    {
+        viewer.addEventHandler(new ThreadingHandler);
+    }
+
+    // load the data
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    if (!loadedModel) 
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        return 1;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+
+
+    // optimize the scene graph, remove redundant nodes and state etc.
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(loadedModel.get());
+
+    viewer.setSceneData( loadedModel.get() );
 
     return viewer.run();
 }

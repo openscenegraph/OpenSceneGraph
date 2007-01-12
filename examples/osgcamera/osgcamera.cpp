@@ -123,7 +123,7 @@ int main( int argc, char **argv )
     while (arguments.read("-p",pathfile))
     {
         apm = new osgGA::AnimationPathManipulator(pathfile);
-        if(!apm.valid() || !(apm->valid()) ) 
+        if (!apm.valid() || !(apm->valid()) ) 
         {
             apm = 0;
         }

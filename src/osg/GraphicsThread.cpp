@@ -369,6 +369,8 @@ void GraphicsThread::run()
         // osg::notify(osg::NOTICE)<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
 
     } while (!testCancel() && !_done);
+    
+    _graphicsContext->releaseContext();
 
     osg::notify(osg::INFO)<<"exit loop "<<this<<" isRunning()="<<isRunning()<<std::endl;
 

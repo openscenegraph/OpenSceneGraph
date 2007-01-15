@@ -79,13 +79,12 @@ void Scene::frameUpdateTraversal()
 {
     if (!getSceneData()) return;
     
+    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+    
     getSceneData()->accept(*_updateVisitor);
     
     if (_databasePager.valid())
     {    
-        // tell the DatabasePager the frame number of that the scene graph is being actively used to render a frame
-        _databasePager->signalBeginFrame(_frameStamp.get());
-
         // syncronize changes required by the DatabasePager thread to the scene graph
         _databasePager->updateSceneGraph(_frameStamp->getReferenceTime());
     }

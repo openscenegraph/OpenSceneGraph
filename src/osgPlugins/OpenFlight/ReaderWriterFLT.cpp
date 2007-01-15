@@ -95,7 +95,7 @@ class FLTReaderWriter : public ReaderWriter
 
             // in local cache?
             {
-                osg::Node* node = flt::Registry::instance()->getFromLocalCache(fileName);
+                osg::Node* node = flt::Registry::instance()->getExternalFromLocalCache(fileName);
                 if (node)
                     return ReadResult(node, ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
             }
@@ -122,7 +122,7 @@ class FLTReaderWriter : public ReaderWriter
             if (rr.success())
             {
                 // add to local cache.
-                flt::Registry::instance()->addToLocalCache(fileName,rr.getNode());
+                flt::Registry::instance()->addExternalToLocalCache(fileName,rr.getNode());
         
                 bool keepExternalReferences = false;
                 if (options)

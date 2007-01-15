@@ -246,7 +246,7 @@ protected:
 
     virtual ~TexturePalette() {}
 
-    osg::Texture2D::WrapMode convertWrapMode(int32 attrWrapMode, const Document& document)
+    osg::Texture2D::WrapMode convertWrapMode(int32 attrWrapMode, const Document& document) const
     {
         osg::Texture2D::WrapMode osgWrapMode = osg::Texture2D::REPEAT;
         switch (attrWrapMode)
@@ -268,33 +268,19 @@ protected:
         return osgWrapMode;
     }
 
-    virtual void readRecord(RecordInputStream& in, Document& document)
+    osg::StateSet* readTexture(const std::string& filename, const Document& document) const
     {
-        if (document.getTexturePoolParent())
-            // Using parent's texture pool -- ignore this record.
-            return;
+        osg::Image* image = osgDB::readImageFile(filename,document.getOptions());
+        if (!image) return NULL;
 
-        int maxLength = (document.version() < VERSION_14) ? 80 : 200;
-        std::string filename = in.readString(maxLength);
-        int32 index = in.readInt32(-1);
-        /*int32 x =*/ in.readInt32();
-        /*int32 y =*/ in.readInt32();
-
-        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename,document.getOptions());
-        if (!image.valid())
-        {
-            osg::notify(osg::WARN) << "Can't find texture (" << index << ") " << filename << std::endl;
-            return;
-        }
-
-        // Create stateset
-        osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
+        // Create stateset to hold texture and attributes.
+        osg::StateSet* stateset = new osg::StateSet;
 
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::REPEAT);
         texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::REPEAT);
         texture->setResizeNonPowerOfTwoHint(true);
-        texture->setImage(image.get());
+        texture->setImage(image);
         stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
 
         // Read attribute file
@@ -383,8 +369,44 @@ protected:
             stateset->setTextureAttribute(0, texenv);
         }
 
+        return stateset;
+    }
+
+    virtual void readRecord(RecordInputStream& in, Document& document)
+    {
+        if (document.getTexturePoolParent())
+            // Using parent's texture pool -- ignore this record.
+            return;
+
+        int maxLength = (document.version() < VERSION_14) ? 80 : 200;
+        std::string filename = in.readString(maxLength);
+        int32 index = in.readInt32(-1);
+        /*int32 x =*/ in.readInt32();
+        /*int32 y =*/ in.readInt32();
+
+        // Need full path for unique key in local texture cache.
+        std::string pathname = osgDB::findDataFile(filename,document.getOptions());
+        if (pathname.empty())
+        {
+            osg::notify(osg::WARN) << "Can't find texture (" << index << ") " << filename << std::endl;
+            return;
+        }
+
+        // Is texture in local cache?
+        osg::StateSet* stateset = flt::Registry::instance()->getTextureFromLocalCache(pathname);
+
+        // Read file if not in cache.
+        if (!stateset)
+        {
+            stateset = readTexture(pathname,document);
+
+            // Add to texture cache.
+            flt::Registry::instance()->addTextureToLocalCache(pathname,stateset);
+        }
+
+        // Add to texture pool.
         TexturePool* tp = document.getOrCreateTexturePool();
-        (*tp)[index] = stateset.get();
+        (*tp)[index] = stateset;
     }
 };
 

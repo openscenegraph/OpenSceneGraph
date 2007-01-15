@@ -34,8 +34,10 @@ class Registry : public osg::Referenced
         void addToExternalReadQueue(const std::string& filename, osg::Group* parent);
 
         // Local cache
-        void addToLocalCache(const std::string& filename, osg::Node* node);
-        osg::Node* getFromLocalCache(const std::string& filename);
+        void addExternalToLocalCache(const std::string& filename, osg::Node* node);
+        osg::Node* getExternalFromLocalCache(const std::string& filename);
+        void addTextureToLocalCache(const std::string& filename, osg::StateSet* stateset);
+        osg::StateSet* getTextureFromLocalCache(const std::string& filename);
         void clearLocalCache();
 
     protected:
@@ -47,8 +49,13 @@ class Registry : public osg::Referenced
 
         ExternalQueue      _externalReadQueue;
 
+        // External cache
         typedef std::map<std::string, osg::ref_ptr<osg::Node> > ExternalCacheMap;
-        ExternalCacheMap   _externalCacheMap;
+        ExternalCacheMap _externalCacheMap;
+
+        // Texture cache
+        typedef std::map<std::string, osg::ref_ptr<osg::StateSet> > TextureCacheMap;
+        TextureCacheMap    _textureCacheMap;
 };
 
 inline void Registry::addToExternalReadQueue(const std::string& filename, osg::Group* parent)
@@ -56,12 +63,12 @@ inline void Registry::addToExternalReadQueue(const std::string& filename, osg::G
     _externalReadQueue.push( FilenameParentPair(filename,parent) );
 }
 
-inline void Registry::addToLocalCache(const std::string& filename, osg::Node* node)
+inline void Registry::addExternalToLocalCache(const std::string& filename, osg::Node* node)
 {
     _externalCacheMap[filename] = node;
 }
 
-inline osg::Node* Registry::getFromLocalCache(const std::string& filename)
+inline osg::Node* Registry::getExternalFromLocalCache(const std::string& filename)
 {
     ExternalCacheMap::iterator itr = _externalCacheMap.find(filename);
     if (itr != _externalCacheMap.end())
@@ -69,9 +76,23 @@ inline osg::Node* Registry::getFromLocalCache(const std::string& filename)
     return NULL;
 }
 
+inline void Registry::addTextureToLocalCache(const std::string& filename, osg::StateSet* stateset)
+{
+    _textureCacheMap[filename] = stateset;
+}
+
+inline osg::StateSet* Registry::getTextureFromLocalCache(const std::string& filename)
+{
+    TextureCacheMap::iterator itr = _textureCacheMap.find(filename);
+    if (itr != _textureCacheMap.end())
+        return (*itr).second.get();
+    return NULL;
+}
+
 inline void Registry::clearLocalCache()
 {
     _externalCacheMap.clear();
+    _textureCacheMap.clear();
 }
 
 /** Proxy class for automatic registration of reader/writers with the Registry.*/

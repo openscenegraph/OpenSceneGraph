@@ -20,8 +20,6 @@
 
 namespace osgViewer {
 
-// WARNING ** Under development do not use, yet :-) 
-
 /** Viewer holds a single view on to a single scene..*/
 class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 {
@@ -40,9 +38,18 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         bool done() const { return _done; }
         
-        osg::FrameStamp* getFrameStamp();
-        
-        const osg::FrameStamp* getFrameStamp() const;
+        void Viewer::setStartTick(osg::Timer_t tick);
+        osg::Timer_t getStartTick() const { return _startTick; }
+
+        void setReferenceTime(double time=0.0);
+
+        void setFrameStamp(osg::FrameStamp* frameStamp);
+        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
+        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
+
+
+
+        virtual void setSceneData(osg::Node* node);
 
         enum ThreadingModel
         {
@@ -124,15 +131,16 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         typedef std::vector<osgViewer::GraphicsWindow*> Windows;
         void getWindows(Windows& windows, bool onlyValid=true);
 
+        void stopThreading();
+        void startThreading();        
+        void setUpRenderingSupport();
+
     protected:
     
         void init();
         
-        void stopThreading();
-        void startThreading();        
         void checkWindowStatus();
         
-        void setUpRenderingSupport();
         
         bool _firstFrame;
         
@@ -150,6 +158,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         unsigned int _numThreadsOnBarrier;
         
+        osg::Timer_t                        _startTick;
+        osg::ref_ptr<osg::FrameStamp>       _frameStamp;
+
         osg::observer_ptr<osg::Camera>      _cameraWithFocus;
         
         osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;

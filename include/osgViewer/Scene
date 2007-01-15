@@ -39,7 +39,9 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
         osg::Node* getSceneData();
         const osg::Node* getSceneData() const;
 
+        void setFrameStamp(osg::FrameStamp* frameStamp);
         osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
+        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
         void setDatabasePager(osgDB::DatabasePager* dp);
         osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }

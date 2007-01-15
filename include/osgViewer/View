@@ -32,7 +32,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         View();
 
-        void setSceneData(osg::Node* node);
+        virtual void setSceneData(osg::Node* node);
         osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
 

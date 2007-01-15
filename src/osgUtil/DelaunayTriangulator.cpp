@@ -23,7 +23,7 @@
 #include <algorithm>
 #include <set>
 #include <map> //GWM July 2005 map is used in constraints.
-#include <osgUtil/Tessellator> // Tessellator triangulates the constrained triangles
+#include <osgUtil/Tessellator> // tessellator triangulates the constrained triangles
 
 namespace osgUtil
 {
@@ -690,7 +690,46 @@ void DelaunayTriangulator::_uniqueifyPoints()
     std::copy( temppts->begin(), temppts->end(), ci );
 }
 
-
+osgUtil::DelaunayConstraint *getconvexhull(osg::Vec3Array *points)
+{ // fits the 'rubberband' around the 2D points for uses as a delaunay constraint.
+    osg::ref_ptr<osgUtil::DelaunayConstraint> dcconvexhull=new osgUtil::DelaunayConstraint; // make
+    // convex hull around all the points
+    // start from first point (at minx); proceed to last x and back
+    osg::Vec3Array *verts=new osg::Vec3Array; // the hull points
+    verts->push_back(*(points->begin()) ); // min x/y point is guaranteed to be on the hull
+    verts->push_back(*(points->begin()+1) ); // second low x/y point is first length to be tested
+    for (osg::Vec3Array::iterator vit=(points->begin()+2); vit!=points->end(); vit++) {
+        // check if point lies outside the current last line segment
+        bool ok=1;
+        while (ok && verts->size()>1) {
+            osg::Vec3 lastseg=*(verts->end()-2)-*(verts->end()-1);
+            osg::Vec3 thisseg=(*vit)-*(verts->end()-1);
+            float cosang=(lastseg^thisseg).z();
+            if (cosang <0.0) { // pop off last point - *vit is further out hull
+                verts->pop_back();
+            } else { ok=0;}
+        }
+        verts->push_back(*vit ); // next low x/y point is next length to be tested
+        // check if the previous external angle is >180 - then remove previous point
+    }
+    for (osg::Vec3Array::reverse_iterator rvit=points->rbegin()+1; rvit!=points->rend(); rvit++) {
+        // check if point lies outside the current last line segment
+        bool ok=1;
+        while (ok && verts->size()>1) {
+            osg::Vec3 lastseg=*(verts->end()-2)-*(verts->end()-1);
+            osg::Vec3 thisseg=(*rvit)-*(verts->end()-1);
+            float cosang=(lastseg^thisseg).z();
+            if (cosang <0.0) { // pop off last point - *rvit is further out hull
+                verts->pop_back();
+            } else { ok=0;}
+        }
+        if ((*rvit)!=*(verts->begin())) verts->push_back(*rvit ); // next low x/y point is next length to be tested
+        // check if the previous external angle is >180 - then remove previous point
+    }
+    dcconvexhull->setVertexArray(verts);
+    dcconvexhull->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,verts->size()) );
+    return dcconvexhull.release();
+}
 
 bool DelaunayTriangulator::triangulate()
 {
@@ -748,6 +787,9 @@ bool DelaunayTriangulator::triangulate()
     // pre-sort sample points
     osg::notify(osg::INFO) << "DelaunayTriangulator: pre-sorting sample points\n";
     std::sort(points->begin(), points->end(), Sample_point_compare);    
+    // 24.12.06 add convex hull of points to force sensible outline.
+    osg::ref_ptr<osgUtil::DelaunayConstraint> dcconvexhull=getconvexhull(points);
+    addInputConstraint(dcconvexhull.get());
 
     // set the last valid index for the point list
     GLuint last_valid_index = points->size() - 1;    
@@ -756,8 +798,7 @@ bool DelaunayTriangulator::triangulate()
     float minx = (*points)[0].x();
     float maxx = (*points)[last_valid_index].x();
 
-
-    // find the minimum and maximum x values in the point list    
+    // find the minimum and maximum y values in the point list    
     float miny = (*points)[0].y();
     float maxy = miny;
     
@@ -776,12 +817,14 @@ bool DelaunayTriangulator::triangulate()
     // 16 Dec 2006 this increase in size encourages the supervertex triangles to be long and thin
     // thus ensuring that the convex hull of the terrain points are edges in the delaunay triangulation
     // the values do however result in a small loss of numerical resolution.
-    points_->push_back(osg::Vec3(minx - 2.0*(maxx - minx), miny - 1.0*(maxy - miny), 0));
-    points_->push_back(osg::Vec3(maxx + 1.0*(maxx - minx), miny - 1.0*(maxy - miny), 0));
-    points_->push_back(osg::Vec3(maxx + 1.0*(maxx - minx), maxy + 2.0*(maxy - miny), 0));
-
-    // add supertriangle to triangle list
+    points_->push_back(osg::Vec3(minx - .10*(maxx - minx), miny - .10*(maxy - miny), 0));
+    points_->push_back(osg::Vec3(maxx + .10*(maxx - minx), miny - .10*(maxy - miny), 0));
+    points_->push_back(osg::Vec3(maxx + .10*(maxx - minx), maxy + .10*(maxy - miny), 0));
+    points_->push_back(osg::Vec3(minx - .10*(maxx - minx), maxy + .10*(maxy - miny), 0));
+                                                                   
+    // add supertriangles to triangle list                           
     triangles.push_back(Triangle(last_valid_index+1, last_valid_index+2, last_valid_index+3, points));
+    triangles.push_back(Triangle(last_valid_index+4, last_valid_index+1, last_valid_index+3, points));
 
     
     // begin triangulation    
@@ -806,7 +849,7 @@ bool DelaunayTriangulator::triangulate()
             next_j = j;
             ++next_j;
 
-            // compute the circumcircle
+            // get the circumcircle (x,y centre & radius)
             osg::Vec3 cc = j->get_circumcircle();
 
             // OPTIMIZATION: since points are pre-sorted by the X component,
@@ -816,7 +859,8 @@ bool DelaunayTriangulator::triangulate()
             // original code used r^2 and needed to test xdist*xdist>cc.z && i->x()>cc.x().
             if ((xdist ) > cc.z() )
             {
-                discarded_tris.push_back(*j);
+                discarded_tris.push_back(*j); // these are not needed for further tests as no more
+                // points will ever lie inside this triangle.
                 triangles.erase(j);
             }
             else
@@ -994,14 +1038,15 @@ bool DelaunayTriangulator::triangulate()
                                 for (tri=triangles.begin(); tri!=triangles.end(); )
                                 {
                                     bool deleted=false;
-                                    for (std::vector<const Triangle *>::const_iterator deleteTri=trisToDelete.begin(); 
-                                    deleteTri!=trisToDelete.end(); deleteTri++)
+                                    for (std::vector<const Triangle *>::iterator deleteTri=trisToDelete.begin(); 
+                                    deleteTri!=trisToDelete.end(); )
                                     {
                                         if (&(*tri)==*deleteTri)
                                         {
                                             deleted=true;
                                             tri=triangles.erase(tri);
-                                        }
+                                            deleteTri=trisToDelete.erase(deleteTri); // 24.12.06 remove from delete list.
+                                        } else {deleteTri++; }
                                     }
                                     if (!deleted) ++tri;
                                 }
@@ -1019,7 +1064,7 @@ bool DelaunayTriangulator::triangulate()
     // then these may not be the last vertices in the list.
 //    } else { // remove 3 super-triangle vertices more completely, moving any reference indices down.
     Triangle_list::iterator tri;
-    GLuint supertriend = last_valid_index+3;
+    GLuint supertriend = last_valid_index+4;
     for (tri=triangles.begin(); tri!=triangles.end();)
     { // look for triangles using the supertriangle indices or >super indices and move down by 3.
         if ((tri->a() > last_valid_index && tri->a() <= supertriend) ||
@@ -1027,21 +1072,21 @@ bool DelaunayTriangulator::triangulate()
             (tri->c() > last_valid_index && tri->c() <= supertriend )) {
             tri=triangles.erase(tri);
         } else { // move down by 3 tests
-            if (tri->a() > last_valid_index) { // move down 3
-                tri->incrementa(-3);
+            if (tri->a() > last_valid_index) { // move index down 4
+                tri->incrementa(-4);
             }
-            if (tri->b() > last_valid_index) { // move down 3
-                tri->incrementb(-3);
+            if (tri->b() > last_valid_index) { // move down 4
+                tri->incrementb(-4);
             }
-            if (tri->b() > last_valid_index) { // move down 3
-                tri->incrementc(-3);
+            if (tri->c() > last_valid_index) { // move down 4 -- correction 21.12.06- was b() should test index c()
+                tri->incrementc(-4);
             }
-            ++tri; // only increment tri here as the other path increments when set tri=triangles.erase.
+            ++tri; // only increment tri here as the other path increments tri when tri=triangles.erase.
         }
     }
         // remove 3 supertriangle vertices from points. They may not be the last vertices in points if
         // extra points have been inserted by the constraint re-triangulation.
-    points->erase(points->begin()+last_valid_index+1,points->begin()+last_valid_index+4);
+    points->erase(points->begin()+last_valid_index+1,points->begin()+last_valid_index+5);
     //last_valid_index = points->size()-1; // the last valid vertex is last point.
     // end of dec 2006 changes.
 
@@ -1267,7 +1312,7 @@ osg::Vec3Array* DelaunayConstraint::getPoints(const osg::Vec3Array *points)
 
 void DelaunayConstraint::handleOverlaps(void)
 {
-    // use Tessellator to interpolate crossing vertices.
+    // use tessellator to interpolate crossing vertices.
     osg::ref_ptr<osgUtil::Tessellator> tscx=new osgUtil::Tessellator; // this assembles all the constraints
     tscx->setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
     tscx->setBoundaryOnly(true);

@@ -6,6 +6,114 @@
 #include <osgGA/AnimationPathManipulator>
 #include <iostream>
 
+class ThreadingHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    ThreadingHandler() {}
+        
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        if (!viewer) return false;
+    
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()=='m')
+                {
+                    switch(viewer->getThreadingModel())
+                    {
+                        case(osgViewer::Viewer::SingleThreaded):
+                            viewer->setThreadingModel(osgViewer::Viewer::ThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'ThreadPerContext' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::ThreadPerContext):
+                            viewer->setThreadingModel(osgViewer::Viewer::ThreadPerCamera);
+                            osg::notify(osg::NOTICE)<<"Threading model 'ThreadPerCamera' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::ThreadPerCamera):
+                            viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+                            osg::notify(osg::NOTICE)<<"Threading model 'SingleTheaded' selected."<<std::endl;
+                            break;
+                    }
+                    return true;
+                }
+                if (ea.getKey()=='e')
+                {
+                    switch(viewer->getEndBarrierPosition())
+                    {
+                        case(osgViewer::Viewer::BeforeSwapBuffers):
+                            viewer->setEndBarrierPosition(osgViewer::Viewer::AfterSwapBuffers);
+                            osg::notify(osg::NOTICE)<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::AfterSwapBuffers):
+                            viewer->setEndBarrierPosition(osgViewer::Viewer::BeforeSwapBuffers);
+                            osg::notify(osg::NOTICE)<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
+                            break;
+                    }
+                    return true;
+                }
+            }
+            default: break;
+        }
+        
+        return false;
+    }
+    
+    bool _done;
+};
+
+
+class ModelHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    ModelHandler():
+        _position(0) {}
+    
+    typedef std::vector<std::string> Filenames;
+    Filenames _filenames;
+    unsigned int _position;
+    
+    void add(const std::string& filename) { _filenames.push_back(filename); }
+        
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        if (!viewer) return false;
+    
+        if (_filenames.empty()) return false;
+    
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()=='l')
+                {                    
+                    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile( _filenames[_position] );
+                    ++_position;
+                    if (_position>=_filenames.size()) _position = 0;
+                    
+                    if (model.valid())
+                    {
+                        viewer->setSceneData(model.get());
+                    }
+                    
+                    return true;
+                }
+            }
+            default: break;
+        }
+        
+        return false;
+    }
+    
+    bool _done;
+};
+
+
 void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
@@ -147,6 +255,18 @@ int main( int argc, char **argv )
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
 
+#if 0
+
+    ModelHandler* modelHandler = new ModelHandler;
+    for(int i=1; i<arguments.argc();++i)
+    {
+        modelHandler->add(arguments[i]);
+    }
+    
+    viewer.addEventHandler(modelHandler);
+
+#else
+
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel) 
@@ -156,8 +276,7 @@ int main( int argc, char **argv )
     }
 
     viewer.setSceneData(loadedModel.get());
-
-    // viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+#endif
 
     viewer.realize();
 

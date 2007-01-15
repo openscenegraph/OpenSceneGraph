@@ -33,6 +33,12 @@ Scene::~Scene()
 {
 }
 
+void Scene::setFrameStamp(osg::FrameStamp* frameStamp)
+{
+    _frameStamp = frameStamp;
+    _updateVisitor->setFrameStamp(_frameStamp.get());
+}
+
 void Scene::init()
 {
     osg::notify(osg::NOTICE)<<"Scene::init() not implementated yet."<<std::endl;

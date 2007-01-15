@@ -32,6 +32,10 @@ Viewer::Viewer():
     _endBarrierPosition(AfterSwapBuffers),
     _numThreadsOnBarrier(0)
 {
+    _frameStamp = new osg::FrameStamp;
+    _frameStamp->setFrameNumber(0);
+    _frameStamp->setReferenceTime(0);
+
     _eventVisitor = new osgGA::EventVisitor;
     _eventVisitor->setActionAdapter(this);
 }
@@ -109,14 +113,50 @@ int Viewer::run()
     return 0;
 }
 
-osg::FrameStamp*  Viewer::getFrameStamp()
+void Viewer::setStartTick(osg::Timer_t tick)
 {
-    return _scene.valid() ? _scene->getFrameStamp() : 0;
+    _startTick = tick;
+    
+    Contexts contexts;
+    getContexts(contexts,false);
+
+    getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());;
+    for(Contexts::iterator citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*citr);
+        if (gw)
+        {
+            gw->getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());
+        }
+    }
 }
 
-const osg::FrameStamp*  Viewer::getFrameStamp() const
+
+void Viewer::setReferenceTime(double time)
 {
-    return _scene.valid() ? _scene->getFrameStamp() : 0;
+    osg::Timer_t tick = osg::Timer::instance()->tick();
+    double currentTime = osg::Timer::instance()->delta_s(_startTick, tick);
+    double delta_ticks = (time-currentTime)*(osg::Timer::instance()->getSecondsPerTick());
+    if (delta_ticks>=0) tick += osg::Timer_t(delta_ticks);
+    else tick -= osg::Timer_t(-delta_ticks);
+
+    // assign the new start tick
+    setStartTick(tick);
+}
+
+
+void Viewer::setSceneData(osg::Node* node)
+{
+    _scene = new osgViewer::Scene;
+    _scene->setSceneData(node);
+    _scene->setFrameStamp(_frameStamp.get());
+    
+    setReferenceTime(0.0);
+    
+    assignSceneDataToCameras();
+    setUpRenderingSupport();
 }
 
 void Viewer::setThreadingModel(ThreadingModel threadingModel)
@@ -184,7 +224,7 @@ struct CompileOperation : public osg::GraphicsOperation
         compileVisitor.setState(context->getState());
 
         // do the compile traversal
-        _scene->accept(compileVisitor);
+        if (_scene.valid()) _scene->accept(compileVisitor);
 
         // osg::notify(osg::NOTICE)<<"Done Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
     }
@@ -281,7 +321,6 @@ void Viewer::startThreading()
 
     if (firstContextAsMainThread)
     {
-        if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(processNum % numProcessors);
         ++processNum;
         ++citr;
     }
@@ -323,6 +362,10 @@ void Viewer::startThreading()
 
     }
 
+    if (firstContextAsMainThread)
+    {
+        if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(0);
+    }
 
     for(citr = contexts.begin();
         citr != contexts.end();
@@ -451,9 +494,7 @@ struct RenderingOperation : public osg::GraphicsOperation
 
 void Viewer::setUpRenderingSupport()
 {
-    if (!_scene) return;
-    
-    osg::FrameStamp* frameStamp = _scene->getFrameStamp();
+    osg::FrameStamp* frameStamp = getFrameStamp();
 
     // what should we do with the old sceneViews?
     _cameraSceneViewMap.clear();
@@ -470,6 +511,7 @@ void Viewer::setUpRenderingSupport()
     }
 
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+    osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
 
     if (_camera.valid() && _camera->getGraphicsContext())
     {
@@ -484,7 +526,7 @@ void Viewer::setUpRenderingSupport()
         sceneView->setSceneData(getSceneData());
         sceneView->setFrameStamp(frameStamp);
 
-        _camera->getGraphicsContext()->add(new RenderingOperation(sceneView, _scene->getDatabasePager()));        
+        _camera->getGraphicsContext()->add(new RenderingOperation(sceneView, dp));        
     }
     
     for(unsigned i=0; i<getNumSlaves(); ++i)
@@ -503,7 +545,7 @@ void Viewer::setUpRenderingSupport()
             sceneView->setSceneData(getSceneData());
             sceneView->setFrameStamp(frameStamp);
 
-            slave._camera->getGraphicsContext()->add(new RenderingOperation(sceneView, _scene->getDatabasePager()));
+            slave._camera->getGraphicsContext()->add(new RenderingOperation(sceneView, dp));
         }
     }
 }
@@ -563,19 +605,9 @@ void Viewer::realize()
 
     // initialize the global timer to be relative to the current time.
     osg::Timer::instance()->setStartTick();
-    
-    getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());;
-    for(Contexts::iterator citr = contexts.begin();
-        citr != contexts.end();
-        ++citr)
-    {
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*citr);
-        if (gw)
-        {
-            gw->getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());
-        }
-    }
 
+    // pass on the start tick to all the associated eventqueues
+    setStartTick(osg::Timer::instance()->getStartTick());
 }
 
 
@@ -607,9 +639,8 @@ void Viewer::advance()
 {
     if (_done) return;
 
-    // osg::notify(osg::NOTICE)<<"Viewer::frameAdvance()."<<std::endl;
-
-    _scene->frameAdvance();
+    _frameStamp->setReferenceTime( osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()) );
+    _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
 }
 
 void Viewer::eventTraversal()
@@ -663,7 +694,7 @@ void Viewer::eventTraversal()
                 float y = event->getY();
                 
                 bool invert_y = event->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
-                if (invert_y) y = gw->getTraits()->height - y;
+                if (invert_y && gw->getTraits()) y = gw->getTraits()->height - y;
                 
                 switch(event->getEventType())
                 {
@@ -769,7 +800,7 @@ void Viewer::eventTraversal()
     // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
-    _eventQueue->frame( _scene->getFrameStamp()->getReferenceTime() );
+    if (_scene.valid()) _eventQueue->frame( getFrameStamp()->getReferenceTime() );
     _eventQueue->takeEvents(events);
 
 
@@ -869,10 +900,10 @@ void Viewer::eventTraversal()
         }
     }
 
-    if (_eventVisitor.valid())
+    if (_eventVisitor.valid() && _scene.valid())
     {
-        _eventVisitor->setFrameStamp(_scene->getFrameStamp());
-        _eventVisitor->setTraversalNumber(_scene->getFrameStamp()->getFrameNumber());
+        _eventVisitor->setFrameStamp(getFrameStamp());
+        _eventVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());
 
         for(osgGA::EventQueue::Events::iterator itr = events.begin();
             itr != events.end();
@@ -914,10 +945,10 @@ void Viewer::renderingTraversals()
 
     if (_done) return;
 
-    osgDB::DatabasePager* dp = _scene->getDatabasePager();
+    osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
     if (dp)
     {
-        dp->signalBeginFrame(_scene->getFrameStamp());
+        dp->signalBeginFrame(getFrameStamp());
     }
 
     // osg::notify(osg::NOTICE)<<std::endl<<"Joing _startRenderingBarrier block"<<std::endl;

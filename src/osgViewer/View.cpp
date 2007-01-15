@@ -311,26 +311,49 @@ void View::requestContinuousUpdate(bool)
 
 void View::requestWarpPointer(float x,float y)
 {
-    // osg::notify(osg::NOTICE)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
-
-    osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
-    bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
-    
-    getEventQueue()->mouseWarped(x,y);
-    
-    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-    if (gw)
+    float local_x, local_y;
+    const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
+    if (camera)
     {
-        bool gw_invert_y = gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+        const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
+        if (gw)
+        {
+            if (gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
+            {
+                local_y = gw->getTraits()->height - local_y;
+            }
+            const_cast<osgViewer::GraphicsWindow*>(gw)->requestWarpPointer(local_x, local_y);
+        }
+    }
+}
 
-        x = x * float(gw->getTraits()->width) / (eventState->getXmax()-eventState->getXmin());
-        y = y * float(gw->getTraits()->height) / (eventState->getYmax()-eventState->getYmin());
+const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
+{
+    const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
+    bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+   
+    double epsilon = 0.5;
 
-        if (view_invert_y != gw_invert_y) y = gw->getTraits()->height - y;
+    if (_camera->getGraphicsContext() && _camera->getViewport())
+    {
+        const osg::Viewport* viewport = _camera->getViewport();
         
-        gw->requestWarpPointer(x, y);
+        osg::Vec2d new_coord(x, y);
         
-        return;
+        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+        if (gw && gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
+        {
+            new_coord.y() = gw->getTraits()->height - new_coord.y();
+        }
+        
+        if (viewport && 
+            new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
+            new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
+        {
+            local_x = new_coord.x();
+            local_y = new_coord.y();
+            return _camera.get();
+        }
     }
 
     osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
@@ -343,15 +366,14 @@ void View::requestWarpPointer(float x,float y)
     // osg::notify(osg::NOTICE)<<"  remapped ("<<x<<","<<y<<")"<<std::endl;;
     // osg::notify(osg::NOTICE)<<"  number of slaves = "<<getNumSlaves()<<std::endl;;
     
-    double epsilon = 0.5;
 
     for(unsigned i=0; i<getNumSlaves(); ++i)
     {
-        Slave& slave = getSlave(i);
+        const Slave& slave = getSlave(i);
         if (slave._camera.valid())
         {
-            osg::Camera* camera = slave._camera.get();
-            osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+            const osg::Camera* camera = slave._camera.get();
+            const osg::Viewport* viewport = camera ? camera->getViewport() : 0;
 
             osg::Matrix localCameraVPW = camera->getViewMatrix() * camera->getProjectionMatrix();
             if (viewport) localCameraVPW *= viewport->computeWindowMatrix();
@@ -367,46 +389,40 @@ void View::requestWarpPointer(float x,float y)
                 new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
             {
                 // osg::notify(osg::NOTICE)<<"  in viewport "<<std::endl;;
+                
+                local_x = new_coord.x();
+                local_y = new_coord.y();
 
-                gw = dynamic_cast<osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
-                if (gw)
-                {
-                    x = new_coord.x();
-                    y = new_coord.y();
-
-                    bool gw_invert_y = gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
-                    
-                    if (gw_invert_y) y = gw->getTraits()->height - y;
-
-                    gw->requestWarpPointer(x, y);
-
-                    return;
-                }
+                return camera;
             }
             else
             {
                 // osg::notify(osg::NOTICE)<<"  not in viewport "<<viewport->x()<<" "<<(viewport->x()+viewport->width())<<std::endl;;
             }
 
-
         }
-    }    
-
-    // osg::notify(osg::NOTICE)<<"  ** no warping applied. **"<<std::endl;
-
-
+    }
+    
+    local_x = x;
+    local_y = y;
+    
+    return 0;
 }
 
 bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
 {
     if (!_camera.valid()) return false;
+
+    float local_x, local_y = 0.0;    
+    const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
+    if (!camera) camera = _camera.get();
     
-    osgUtil::LineSegmentIntersector::CoordinateFrame cf = _camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
-    osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(cf, x, y);
-    
+    osgUtil::LineSegmentIntersector::CoordinateFrame cf = camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
+    osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(cf, local_x, local_y);
+
     osgUtil::IntersectionVisitor iv(picker);
     iv.setTraversalMask(traversalMask);
-    _camera->accept(iv);
+    const_cast<osg::Camera*>(camera)->accept(iv);
 
     if (picker->containsIntersections())
     {
@@ -418,28 +434,34 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
         intersections.clear();
         return false;
     }
+
+    return false;
 }
 
 bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
 {
     if (!_camera.valid()) return false;
     
-    osg::Matrix matrix = osg::computeWorldToLocal(nodePath) *  _camera->getViewMatrix() * _camera->getProjectionMatrix();
+    float local_x, local_y = 0.0;    
+    const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
+    if (!camera) camera = _camera.get();
     
+    osg::Matrix matrix = osg::computeWorldToLocal(nodePath) *  camera->getViewMatrix() * camera->getProjectionMatrix();
+
     double zNear = -1.0;
     double zFar = 1.0;
-    if (_camera->getViewport())
+    if (camera->getViewport())
     {
-        matrix.postMult(_camera->getViewport()->computeWindowMatrix());
+        matrix.postMult(camera->getViewport()->computeWindowMatrix());
         zNear = 0.0;
         zFar = 1.0;
     }
-    
+
     osg::Matrix inverse;
     inverse.invert(matrix);
 
-    osg::Vec3d startVertex = osg::Vec3d(x,y,zNear) * inverse;
-    osg::Vec3d endVertex = osg::Vec3d(x,y,zFar) * inverse;
+    osg::Vec3d startVertex = osg::Vec3d(local_x,local_y,zNear) * inverse;
+    osg::Vec3d endVertex = osg::Vec3d(local_x,local_y,zFar) * inverse;
     
     osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::MODEL, startVertex, endVertex);
     

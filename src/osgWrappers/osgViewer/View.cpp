@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
 #include <osg/DisplaySettings>
 #include <osg/Node>
 #include <osgGA/EventQueue>
@@ -102,6 +103,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                      __void__setUpViewOnSingleScreen__unsigned_int,
 	                      "Convinience method for a single Camara associated with a single full screen GraphicsWindow. ",
 	                      "");
+	I_Method4(const osg::Camera *, getCameraContainingPosition, IN, float, x, IN, float, y, IN, float &, local_x, IN, float &, local_y,
+	          __C5_osg_Camera_P1__getCameraContainingPosition__float__float__float_R1__float_R1,
+	          "Get the camera which contains the pointer position x,y specified master cameras window/eye coords. ",
+	          "Also passes back the local window coords for the graphics context associated with the camera passed back. ");
 	I_MethodWithDefaults4(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
 	                      __bool__computeIntersections__float__float__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
 	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified node. ",

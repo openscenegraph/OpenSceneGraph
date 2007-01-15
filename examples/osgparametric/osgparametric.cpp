@@ -11,7 +11,6 @@
 #include <osgDB/ReadFile>
 
 #include <osgUtil/Optimizer>
-#include <osgUtil/TriStripVisitor>
 
 #include <osgViewer/Viewer>
 
@@ -60,26 +59,10 @@ char vertexShaderSource_texture[] =
     "\n"
     "    gl_TexCoord[0] = gl_Vertex; \n"
     "    vec4 vert = gl_Vertex; \n"
-    "    vert.z = texture2D( vertexTexture, gl_TexCoord[0].xy).x*0.1; \n"
+    "    vert.z = texture2D( vertexTexture, gl_TexCoord[0].xy).x*0.0001; \n"
     "    gl_Position = gl_ModelViewProjectionMatrix * vert;\n"
     "}\n";
 
-//////////////////////////////////////////////////////////////////
-// vertex shader using texture read
-char vertexShaderSource_texture2[] = 
-    "uniform sampler2D vertexTexture; \n"
-    "uniform sampler2D vertexTexture2; \n"
-    "uniform float osg_FrameTime;\n"
-    "\n"
-    "void main(void) \n"
-    "{ \n"
-    "\n"
-    "    gl_TexCoord[0] = gl_Vertex; \n"
-    "    vec4 vert = gl_Vertex; \n"
-    "    float r = 1.0 + 0.5 * sin(osg_FrameTime);\n"
-    "    vert.z = (texture2D( vertexTexture, gl_TexCoord[0].xy).x * (1-r) + texture2D( vertexTexture2, gl_TexCoord[0].xy).x * r)*0.1; \n"
-    "    gl_Position = gl_ModelViewProjectionMatrix * vert;\n"
-    "}\n";
 
 //////////////////////////////////////////////////////////////////
 // fragment shader
@@ -92,33 +75,7 @@ char fragmentShaderSource[] =
     "    gl_FragColor = texture2D( baseTexture, gl_TexCoord[0].xy); \n"
     "}\n";
 
-#if 0
-char fragmentShaderNormalSource[] = 
-    "uniform sampler2D baseTexture; \n"
-    "uniform sampler2D vertexTexture; \n"
-    "\n"
-    "void main(void) \n"
-    "{ \n"
-    "    const float dx = 0.0010;  \n"
-    "    const float dy = 0.0010;  \n"
-    "    float dz_dx = texture2D( vertexTexture, gl_TexCoord[0].xy + vec2(dx,0.0)).x - texture2D( vertexTexture, gl_TexCoord[0].xy + vec2(-dx,0.0)).x; \n"
-    "    float dz_dy = texture2D( vertexTexture, gl_TexCoord[0].xy + vec2(0.0,dy)).x - texture2D( vertexTexture, gl_TexCoord[0].xy + vec2(0.0,-dy)).x; \n"
-    "    vec3 normal = normalize(vec3(-dz_dx, -dz_dy, dx*50));\n"
-    " \n"
-    "    gl_FragColor = vec4(normal.z,normal.z,normal.z,1.0); \n"
-    "}\n";
-#else
-char fragmentShaderNormalSource[] = 
-    "uniform sampler2D baseTexture; \n"
-    "uniform sampler2D vertexTexture; \n"
-    "\n"
-    "void main(void) \n"
-    "{ \n"
-    "    vec3 normal = normalize(texture2D( baseTexture, gl_TexCoord[0].xy).xyz);\n"
-    " \n"
-    "    gl_FragColor = vec4(normal.z,normal.z,normal.z,1.0); \n"
-    "}\n";
-#endif
+
 
 class UniformVarying : public osg::Uniform::Callback
 {
@@ -130,7 +87,7 @@ class UniformVarying : public osg::Uniform::Callback
     }
 };
 
-osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName, const std::string& terrainFileName2, unsigned int cacheSize, unsigned int maxSize, bool joinStrips, const std::string& mesh)
+osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName)
 {
     osg::Geode* geode = new osg::Geode;
     
@@ -176,6 +133,8 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         }
         else if (shader=="texture")
         {
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_texture);
+            program->addShader(vertex_shader);
 
             osg::Image* image = 0;
 
@@ -209,54 +168,17 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
 
             vertexTexture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
             vertexTexture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
-            
             vertexTexture->setInternalFormat(GL_LUMINANCE_FLOAT32_ATI);
-            
-            vertexTexture->setResizeNonPowerOfTwoHint(false);
             stateset->setTextureAttributeAndModes(1,vertexTexture);
 
             osg::Uniform* vertexTextureSampler = new osg::Uniform("vertexTexture",1);
             stateset->addUniform(vertexTextureSampler);
 
-            if (!terrainFileName2.empty())
-            {
-                osg::Image* image2 = osgDB::readImageFile(terrainFileName2);
-                osg::Texture2D* vertexTexture2 = new osg::Texture2D(image2);
-
-
-                vertexTexture2->setFilter(osg::Texture::MIN_FILTER,osg::Texture::NEAREST);
-                vertexTexture2->setFilter(osg::Texture::MAG_FILTER,osg::Texture::NEAREST);
-
-                vertexTexture2->setInternalFormat(GL_LUMINANCE_FLOAT32_ATI);
-
-                vertexTexture2->setResizeNonPowerOfTwoHint(false);
-                stateset->setTextureAttributeAndModes(2,vertexTexture2);
-
-                osg::Uniform* vertexTextureSampler2 = new osg::Uniform("vertexTexture2",2);
-                stateset->addUniform(vertexTextureSampler2);
-
-            }
-
         }
 
-        if (terrainFileName2.empty())
-        {
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderNormalSource);
-            program->addShader(fragment_shader);
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+        program->addShader(fragment_shader);
 
-            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_texture);
-            program->addShader(vertex_shader);
-        }
-        else
-        {
-
-            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
-            program->addShader(fragment_shader);
-
-            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource_texture2);
-            program->addShader(vertex_shader);
-        }
-        
         osg::Texture2D* texture = new osg::Texture2D(osgDB::readImageFile(textureFileName));
         stateset->setTextureAttributeAndModes(0,texture);
 
@@ -289,215 +211,20 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
 
     geom->setVertexArray(vertices);
 
-    unsigned int totalIndices = 0;
-    if (mesh=="triangles" || mesh=="tristrip")
+    for(iy=0; iy<num_y-1; ++iy)
     {
-        if (cacheSize)
+        unsigned int element_no = 0;
+        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, num_x*2);
+        unsigned int index = iy * num_x;
+        for(unsigned int ix = 0; ix<num_x; ++ix)
         {
-            unsigned int index=0;
-            osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
-            geom->addPrimitiveSet(elements);    
-            elements->dirty();
-            
-            for(unsigned int is=0; is<num_x; is += cacheSize-1)
-            {
-            
-                for(iy=0; iy<num_y-1; ++iy)
-                {
-                    unsigned int num_in_stripe = osg::minimum(cacheSize, num_x-is);
-                    
-                    bool rightToLeft = true;
-
-                    if (elements->size() > maxSize)
-                    {
-                        osg::notify(osg::NOTICE)<<"elements->size() = "<<elements->size()<<std::endl;
-                        totalIndices += elements->size();
-
-                        index=0;
-                        elements = new osg::DrawElementsUInt(GL_TRIANGLES);
-                        geom->addPrimitiveSet(elements);    
-                        elements->dirty();
-
-                    }
-
-                    if (rightToLeft)
-                    {
-
-                        index = iy * num_x + is;
-
-                        for(unsigned int ix = 0; ix<num_in_stripe-1; ++ix)
-                        {
-                            (*elements).push_back(index + num_x);
-                            (*elements).push_back(index);
-                            (*elements).push_back(index+1);
-
-                            (*elements).push_back(index + num_x);
-                            (*elements).push_back(index+1);
-                            (*elements).push_back(index + num_x + 1);
-
-                            ++index;
-                        }
-                    }
-                    else
-                    {
-                        index = iy * num_x + is + (num_x-2);
-
-                        for(unsigned int ix = 0; ix<num_in_stripe-1; ++ix)
-                        {
-                            (*elements).push_back(index + num_x);
-                            (*elements).push_back(index);
-                            (*elements).push_back(index+1);
-
-                            (*elements).push_back(index + num_x);
-                            (*elements).push_back(index+1);
-                            (*elements).push_back(index + num_x + 1);
-
-                            --index;
-                        }
-                    }
-                    
-                    rightToLeft = !rightToLeft;                    
-                    
-                }
-                
-            }
-            totalIndices += elements->size();
-            osg::notify(osg::NOTICE)<<"elements->size() = "<<elements->size()<<std::endl;
+            (*elements)[element_no++] = index + num_x;
+            (*elements)[element_no++] = index++;
         }
-        else
-        {
-            osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES, (num_x-1)*(num_y-1)*6);
-            elements->dirty();
-            unsigned int element_no = 0;
-            for(iy=0; iy<num_y-1; ++iy)
-            {
-                unsigned int index = iy * num_x;
-                for(unsigned int ix = 0; ix<num_x-1; ++ix)
-                {
-                    (*elements)[element_no++] = index + num_x;
-                    (*elements)[element_no++] = index;
-                    (*elements)[element_no++] = index+1;
-
-                    (*elements)[element_no++] = index + num_x;
-                    (*elements)[element_no++] = index+1;
-                    (*elements)[element_no++] = index + num_x + 1;
-                    
-                    ++index;
-                }
-            }
-            geom->addPrimitiveSet(elements);    
-            osg::notify(osg::NOTICE)<<"elements->size() = "<<elements->size()<<std::endl;
-        }
+        geom->addPrimitiveSet(elements);    
     }
-    else
-    {
     
-        if (cacheSize)
-        {
-            bool needToJoin = false;
-            unsigned int index=0;
-            osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP);
-            geom->addPrimitiveSet(elements);    
-            elements->dirty();
-
-            for(unsigned int is=0; is<num_x; is += cacheSize-1)
-            {
-            
-                for(iy=0; iy<num_y-1; ++iy)
-                {
-                    unsigned int num_in_stripe = osg::minimum(cacheSize, num_x-is);
-                    
-                    bool rightToLeft = true;
-
-                    if (elements->size() > maxSize)
-                    {
-                        osg::notify(osg::NOTICE)<<"elements->size() = "<<elements->size()<<std::endl;
-
-                        totalIndices += elements->size();
-
-                        needToJoin = false;
-                        index=0;
-                        elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP);
-                        geom->addPrimitiveSet(elements);    
-                        elements->dirty();
-
-                    }
-
-                    if (needToJoin) (*elements).push_back(elements->back());
-                    
-                    if (rightToLeft)
-                    {
-
-                        index = iy * num_x + is;
-
-                        if (needToJoin) (*elements).push_back(index + num_x);
-
-                        for(unsigned int ix = 0; ix<num_in_stripe; ++ix)
-                        {
-                            (*elements).push_back(index + num_x);
-                            (*elements).push_back(index++);
-                        }
-                    }
-                    else
-                    {
-                        index = iy * num_x + is + (num_x-1);
-
-                        if (needToJoin) (*elements).push_back(index);
-
-                        for(unsigned int ix = 0; ix<num_in_stripe; ++ix)
-                        {
-                            (*elements).push_back(index);
-                            (*elements).push_back(index-- + num_x);
-                        }
-                    }
-                    
-                    rightToLeft = !rightToLeft;                    
-                    
-                    needToJoin = true;
-                }
-                
-            }
-            totalIndices += elements->size();
-        }
-        else
-        {
-            osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP);
-            elements->dirty();
-            geom->addPrimitiveSet(elements);    
-            bool needToJoin = false;
-            unsigned int index=0;
-            for(iy=0; iy<num_y-1; ++iy)
-            {
-
-                if (needToJoin) (*elements).push_back(index-1);
-
-                index = iy * num_x;
-
-                if (needToJoin) (*elements).push_back(index + num_x);
-
-                for(unsigned int ix = 0; ix<num_x; ++ix)
-                {
-                    (*elements).push_back(index + num_x);
-                    (*elements).push_back(index++);
-                }
-                needToJoin = true;
-
-            }
-        }
-    }
-
-    osg::notify(osg::NOTICE)<<"totalIndices = "<<totalIndices<<std::endl;
-
-    if (mesh=="tristrip")
-    {   osgUtil::TriStripVisitor stripper;
-        stripper.stripify(*geom);
-    }
-
-#if 0
-    geom->setUseVertexBufferObjects(true);
-#else
-    geom->setUseVertexBufferObjects(false);
-#endif
+    // geom->setUseVertexBufferObjects(true);
 
     return geode;
 }
@@ -524,21 +251,6 @@ int main(int argc, char *argv[])
     std::string terrainFileName("");
     while(arguments.read("-d",terrainFileName)) {}
 
-    std::string terrainFileName2("");
-    while(arguments.read("-d2",terrainFileName2)) {}
-
-    unsigned int cacheSize = 0;
-    while(arguments.read("--cache",cacheSize)) {}
-
-    unsigned int maxSize = 2048;
-    while(arguments.read("--max",maxSize)) {}
-
-    std::string mesh("strip");
-    while(arguments.read("--mesh",mesh)) {}
-
-    bool joinStrips = false;
-    while(arguments.read("--join")) { joinStrips = true; }
-
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -547,7 +259,7 @@ int main(int argc, char *argv[])
     }
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel(shader,textureFileName,terrainFileName,terrainFileName2, cacheSize, maxSize, joinStrips,mesh);
+    osg::Node* model = createModel(shader,textureFileName,terrainFileName);
     if (!model)
     {
         return 1;

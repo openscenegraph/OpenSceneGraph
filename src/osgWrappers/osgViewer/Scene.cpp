@@ -40,8 +40,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __C5_osg_Node_P1__getSceneData,
 	          "",
 	          "");
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, frameStamp,
+	          __void__setFrameStamp__osg_FrameStamp_P1,
+	          "",
+	          "");
 	I_Method0(osg::FrameStamp *, getFrameStamp,
 	          __osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
@@ -73,7 +81,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
-	                 0);
+	                 __void__setFrameStamp__osg_FrameStamp_P1);
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);

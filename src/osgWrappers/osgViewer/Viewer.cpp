@@ -12,6 +12,8 @@
 
 #include <osg/Camera>
 #include <osg/FrameStamp>
+#include <osg/Node>
+#include <osg/Timer>
 #include <osgViewer/Viewer>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -58,12 +60,32 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __bool__done,
 	          "",
 	          "");
+	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
+	          __void__setStartTick__osg_Timer_t,
+	          "",
+	          "");
+	I_Method0(osg::Timer_t, getStartTick,
+	          __osg_Timer_t__getStartTick,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setReferenceTime, IN, double, time, 0.0,
+	                      __void__setReferenceTime__double,
+	                      "",
+	                      "");
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, frameStamp,
+	          __void__setFrameStamp__osg_FrameStamp_P1,
+	          "",
+	          "");
 	I_Method0(osg::FrameStamp *, getFrameStamp,
 	          __osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method0(const osg::FrameStamp *, getFrameStamp,
 	          __C5_osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method1(void, setSceneData, IN, osg::Node *, node,
+	          __void__setSceneData__osg_Node_P1,
 	          "",
 	          "");
 	I_Method1(void, setThreadingModel, IN, osgViewer::Viewer::ThreadingModel, threadingModel,
@@ -150,6 +172,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__getWindows__Windows_R1__bool,
 	                      "",
 	                      "");
+	I_Method0(void, stopThreading,
+	          __void__stopThreading,
+	          "",
+	          "");
+	I_Method0(void, startThreading,
+	          __void__startThreading,
+	          "",
+	          "");
+	I_Method0(void, setUpRenderingSupport,
+	          __void__setUpRenderingSupport,
+	          "",
+	          "");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);
@@ -161,13 +195,22 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 __void__setEndBarrierPosition__BarrierPosition);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
-	                 0);
+	                 __void__setFrameStamp__osg_FrameStamp_P1);
 	I_SimpleProperty(int, KeyEventSetsDone, 
 	                 __int__getKeyEventSetsDone, 
 	                 __void__setKeyEventSetsDone__int);
 	I_SimpleProperty(bool, QuitEventSetsDone, 
 	                 __bool__getQuitEventSetsDone, 
 	                 __void__setQuitEventSetsDone__bool);
+	I_SimpleProperty(double, ReferenceTime, 
+	                 0, 
+	                 __void__setReferenceTime__double);
+	I_SimpleProperty(osg::Node *, SceneData, 
+	                 0, 
+	                 __void__setSceneData__osg_Node_P1);
+	I_SimpleProperty(osg::Timer_t, StartTick, 
+	                 __osg_Timer_t__getStartTick, 
+	                 __void__setStartTick__osg_Timer_t);
 	I_SimpleProperty(osgViewer::Viewer::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);

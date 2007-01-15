@@ -138,6 +138,7 @@ int main_osgProducer(osg::ArgumentParser& arguments)
 #include <osgGA/KeySwitchMatrixManipulator>
 #include <osgGA/StateSetManipulator>
 #include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
 
 class ThreadingHandler : public osgGA::GUIEventHandler 
 {
@@ -243,17 +244,19 @@ int main_osgViewer(osg::ArgumentParser& arguments)
         keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
         keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
 
         std::string pathfile;
-        osg::ref_ptr<osgGA::AnimationPathManipulator> apm = 0;
+        char keyForAnimationPath = '5';
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
             if (apm || !apm->valid()) 
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
-                keyswitchManipulator->addMatrixManipulator( '4', "Path", apm );
+                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
                 keyswitchManipulator->selectMatrixManipulator(num);
+                ++keyForAnimationPath;
             }
         }
 

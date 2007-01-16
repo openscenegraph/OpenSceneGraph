@@ -39,7 +39,6 @@ CompositeViewer::CompositeViewer():
     setEventQueue(new osgGA::EventQueue);
 
     _eventVisitor = new osgGA::EventVisitor;
-    _eventVisitor->setActionAdapter(this);
 }
 
 CompositeViewer::~CompositeViewer()
@@ -962,6 +961,8 @@ void CompositeViewer::eventTraversal()
         ++veitr)
     {
         View* view = veitr->first;
+        _eventVisitor->setActionAdapter(view);
+        
         for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
             itr != veitr->second.end();
             ++itr)
@@ -984,30 +985,33 @@ void CompositeViewer::eventTraversal()
         }
     }
 
-#if 0
-    if (_eventVisitor.valid() && _scene.valid())
+    if (_eventVisitor.valid())
     {
         _eventVisitor->setFrameStamp(getFrameStamp());
         _eventVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());
 
-        for(osgGA::EventQueue::Events::iterator itr = events.begin();
-            itr != events.end();
-            ++itr)
+        for(ViewEventsMap::iterator veitr = viewEventsMap.begin();
+            veitr != viewEventsMap.end();
+            ++veitr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
+            View* view = veitr->first;
+            for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
+                itr != veitr->second.end();
+                ++itr)
+            {
+                osgGA::GUIEventAdapter* event = itr->get();
 
-            bool handled = false;
+                bool handled = false;
 
-            _eventVisitor->reset();
-            _eventVisitor->addEvent( event );
+                _eventVisitor->reset();
+                _eventVisitor->addEvent( event );
 
-            getSceneData()->accept(*_eventVisitor);
+                view->getSceneData()->accept(*_eventVisitor);
 
-            if (_eventVisitor->getEventHandled())  handled = true;
+                if (_eventVisitor->getEventHandled())  handled = true;
+            }
         }
     }
-#endif
-
 }
 
 void CompositeViewer::updateTraversal()
@@ -1111,17 +1115,4 @@ void CompositeViewer::renderingTraversals()
             dp->signalEndFrame();
         }
     }
-}
-
-void CompositeViewer::requestRedraw()
-{
-}
-
-void CompositeViewer::requestContinuousUpdate(bool)
-{
-}
-
-void CompositeViewer::requestWarpPointer(float x,float y)
-{
-    osg::notify(osg::NOTICE)<<"CompositeViewer::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
 }

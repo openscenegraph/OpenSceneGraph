@@ -312,7 +312,7 @@ osg::Geode* createTeapot()
     return geode;
 }
 
-int main( int argc, char **argv )
+int main(int , char **)
 {
     // construct the viewer.
     osgViewer::Viewer viewer;

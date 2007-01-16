@@ -44,7 +44,7 @@ CompositeViewer::CompositeViewer():
 
 CompositeViewer::~CompositeViewer()
 {
-    osg::notify(osg::NOTICE)<<"CompositeViewer::~CompositeViewer()"<<std::endl;
+    osg::notify(osg::INFO)<<"CompositeViewer::~CompositeViewer()"<<std::endl;
 
     stopThreading();
     
@@ -74,7 +74,7 @@ CompositeViewer::~CompositeViewer()
         (*citr)->close();
     }
 
-    osg::notify(osg::NOTICE)<<"finish CompositeViewer::~CompsiteViewer()"<<std::endl;
+    osg::notify(osg::INFO)<<"finished CompositeViewer::~CompsiteViewer()"<<std::endl;
 }
 
 
@@ -415,7 +415,7 @@ void CompositeViewer::init()
         itr != _views.end();
         ++itr)
     {
-        // (*itr)->init();
+        (*itr)->init();
     }
 }
 

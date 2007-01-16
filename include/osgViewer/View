@@ -98,9 +98,11 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
     public:
         
         void assignSceneDataToCameras();
+        void init();
 
     protected:
     
+
         virtual ~View();
 
         osg::ref_ptr<osgViewer::Scene>          _scene;

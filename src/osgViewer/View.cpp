@@ -314,6 +314,7 @@ void View::requestWarpPointer(float x,float y)
 {
     osg::notify(osg::NOTICE)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
 
+    
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (camera)
@@ -321,10 +322,12 @@ void View::requestWarpPointer(float x,float y)
         const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(camera->getGraphicsContext());
         if (gw)
         {
+            getEventQueue()->mouseWarped(x,y);
             if (gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
             {
                 local_y = gw->getTraits()->height - local_y;
             }
+            const_cast<osgViewer::GraphicsWindow*>(gw)->getEventQueue()->mouseWarped(local_x,local_y);
             const_cast<osgViewer::GraphicsWindow*>(gw)->requestWarpPointer(local_x, local_y);
         }
     }

@@ -32,6 +32,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         View();
 
+        Scene* getScene() { return _scene.get(); }
+        const Scene* getScene() const { return _scene.get(); }
+
         virtual void setSceneData(osg::Node* node);
         osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
@@ -68,6 +71,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         void setUpViewOnSingleScreen(unsigned int screenNum=0);
         
         
+        /** Return true if this view contains a specified camera.*/
+        bool containsCamera(const osg::Camera* camera) const;
+        
         /** Get the camera which contains the pointer position x,y specified master cameras window/eye coords.
           * Also passes back the local window coords for the graphics context associated with the camera passed back. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;
@@ -102,9 +108,6 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
     
-        typedef std::map<osg::ref_ptr<osg::Camera>, osg::ref_ptr<osgUtil::SceneView> > CameraSceneViewMap;
-        CameraSceneViewMap _cameraSceneViewMap;
-        
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
 };
 

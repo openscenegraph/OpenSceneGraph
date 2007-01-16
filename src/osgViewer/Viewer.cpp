@@ -120,7 +120,7 @@ void Viewer::setStartTick(osg::Timer_t tick)
     Contexts contexts;
     getContexts(contexts,false);
 
-    getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());;
+    getEventQueue()->setStartTick(_startTick);
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
         ++citr)
@@ -128,7 +128,7 @@ void Viewer::setStartTick(osg::Timer_t tick)
         osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*citr);
         if (gw)
         {
-            gw->getEventQueue()->setStartTick(osg::Timer::instance()->getStartTick());
+            gw->getEventQueue()->setStartTick(_startTick);
         }
     }
 }
@@ -205,9 +205,9 @@ void Viewer::stopThreading()
 }
 
 // Compile operation, that compile OpenGL objects.
-struct CompileOperation : public osg::GraphicsOperation
+struct ViewerCompileOperation : public osg::GraphicsOperation
 {
-    CompileOperation(osg::Node* scene):
+    ViewerCompileOperation(osg::Node* scene):
         osg::GraphicsOperation("Compile",false),
         _scene(scene)
     {
@@ -234,11 +234,10 @@ struct CompileOperation : public osg::GraphicsOperation
 
 
 // Draw operation, that does a draw on the scene graph.
-struct RunOperations : public osg::GraphicsOperation
+struct ViewerRunOperations : public osg::GraphicsOperation
 {
-    RunOperations(osg::GraphicsContext* gc):
-        osg::GraphicsOperation("RunOperation",true),
-        _originalContext(gc)
+    ViewerRunOperations():
+        osg::GraphicsOperation("RunOperation",true)
     {
     }
     
@@ -246,8 +245,6 @@ struct RunOperations : public osg::GraphicsOperation
     {
         gc->runOperations();
     }
-    
-    osg::GraphicsContext* _originalContext;
 };
 
 unsigned int Viewer::computeNumberOfThreadsIncludingMainRequired()
@@ -337,13 +334,13 @@ void Viewer::startThreading()
 
         if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
 
-        gc->getGraphicsThread()->add(new CompileOperation(getSceneData()));
+        gc->getGraphicsThread()->add(new ViewerCompileOperation(getSceneData()));
 
         // add the startRenderingBarrier
         gc->getGraphicsThread()->add(_startRenderingBarrier.get());
 
         // add the rendering operation itself.
-        gc->getGraphicsThread()->add(new RunOperations(gc));
+        gc->getGraphicsThread()->add(new ViewerRunOperations());
 
         if (_endBarrierPosition==BeforeSwapBuffers)
         {
@@ -460,9 +457,9 @@ void Viewer::getWindows(Windows& windows, bool onlyValid)
 }
 
 // Draw operation, that does a draw on the scene graph.
-struct RenderingOperation : public osg::GraphicsOperation
+struct ViewerRenderingOperation : public osg::GraphicsOperation
 {
-    RenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
+    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
         osg::GraphicsOperation("Render",true),
         _sceneView(sceneView),
         _databasePager(databasePager)
@@ -526,7 +523,7 @@ void Viewer::setUpRenderingSupport()
         sceneView->setSceneData(getSceneData());
         sceneView->setFrameStamp(frameStamp);
 
-        _camera->getGraphicsContext()->add(new RenderingOperation(sceneView, dp));        
+        _camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));        
     }
     
     for(unsigned i=0; i<getNumSlaves(); ++i)
@@ -545,7 +542,7 @@ void Viewer::setUpRenderingSupport()
             sceneView->setSceneData(getSceneData());
             sceneView->setFrameStamp(frameStamp);
 
-            slave._camera->getGraphicsContext()->add(new RenderingOperation(sceneView, dp));
+            slave._camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));
         }
     }
 }
@@ -800,7 +797,7 @@ void Viewer::eventTraversal()
     // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
-    if (_scene.valid()) _eventQueue->frame( getFrameStamp()->getReferenceTime() );
+    _eventQueue->frame( getFrameStamp()->getReferenceTime() );
     _eventQueue->takeEvents(events);
 
 
@@ -839,8 +836,6 @@ void Viewer::eventTraversal()
                 break;
             case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
                 osg::notify(osg::NOTICE)<<"  QUIT_APPLICATION " << std::endl;
-            case(osgGA::GUIEventAdapter::RESIZE):
-                osg::notify(osg::NOTICE)<<"  RESIZE "<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::FRAME):
                 // osg::notify(osg::NOTICE)<<"  FRAME "<<std::endl;
@@ -998,14 +993,3 @@ void Viewer::renderingTraversals()
         dp->signalEndFrame();
     }
 }
-
-void Viewer::releaseAllGLObjects()
-{
-    osg::notify(osg::NOTICE)<<"Viewer::releaseAllGLObjects() not implemented yet."<<std::endl;
-}
-
-void Viewer::cleanup()
-{
-    osg::notify(osg::NOTICE)<<"Viewer::cleanup() not implemented yet."<<std::endl;
-}
-

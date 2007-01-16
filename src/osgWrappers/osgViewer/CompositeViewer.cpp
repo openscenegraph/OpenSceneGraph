@@ -10,6 +10,12 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
+#include <osg/FrameStamp>
+#include <osg/Node>
+#include <osg/Timer>
+#include <osgGA/EventQueue>
+#include <osgUtil/LineSegmentIntersector>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
 
@@ -21,8 +27,26 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::CompositeViewer::Contexts);
+
+TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::CompositeViewer::Windows);
+
+TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::CompositeViewer::Scenes);
+
+BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::ThreadingModel)
+	I_EnumLabel(osgViewer::CompositeViewer::SingleThreaded);
+	I_EnumLabel(osgViewer::CompositeViewer::ThreadPerContext);
+	I_EnumLabel(osgViewer::CompositeViewer::ThreadPerCamera);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::BarrierPosition)
+	I_EnumLabel(osgViewer::CompositeViewer::BeforeSwapBuffers);
+	I_EnumLabel(osgViewer::CompositeViewer::AfterSwapBuffers);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_BaseType(osg::Referenced);
+	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____CompositeViewer,
 	               "",
 	               "");
@@ -42,42 +66,212 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __unsigned_int__getNumViews,
 	          "",
 	          "");
+	I_Method0(bool, isRealized,
+	          __bool__isRealized,
+	          "Get whether at least of one of this viewers windows are realized. ",
+	          "");
+	I_Method0(void, realize,
+	          __void__realize,
+	          "set up windows and associated threads. ",
+	          "");
+	I_Method1(void, setDone, IN, bool, done,
+	          __void__setDone__bool,
+	          "",
+	          "");
+	I_Method0(bool, done,
+	          __bool__done,
+	          "",
+	          "");
+	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
+	          __void__setStartTick__osg_Timer_t,
+	          "",
+	          "");
+	I_Method0(osg::Timer_t, getStartTick,
+	          __osg_Timer_t__getStartTick,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setReferenceTime, IN, double, time, 0.0,
+	                      __void__setReferenceTime__double,
+	                      "",
+	                      "");
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, frameStamp,
+	          __void__setFrameStamp__osg_FrameStamp_P1,
+	          "",
+	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          __osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          __C5_osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method1(void, setThreadingModel, IN, osgViewer::CompositeViewer::ThreadingModel, threadingModel,
+	          __void__setThreadingModel__ThreadingModel,
+	          "Set the threading model the rendering traversals will use. ",
+	          "");
+	I_Method0(osgViewer::CompositeViewer::ThreadingModel, getThreadingModel,
+	          __ThreadingModel__getThreadingModel,
+	          "Get the threading model the rendering traversals will use. ",
+	          "");
+	I_Method1(void, setEndBarrierPosition, IN, osgViewer::CompositeViewer::BarrierPosition, bp,
+	          __void__setEndBarrierPosition__BarrierPosition,
+	          "Set the position of the end barrier. ",
+	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconcistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
+	I_Method0(osgViewer::CompositeViewer::BarrierPosition, getEndBarrierPosition,
+	          __BarrierPosition__getEndBarrierPosition,
+	          "Get the end barrier position. ",
+	          "");
+	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
+	          __void__setEventQueue__osgGA_EventQueue_P1,
+	          "",
+	          "");
+	I_Method0(osgGA::EventQueue *, getEventQueue,
+	          __osgGA_EventQueue_P1__getEventQueue,
+	          "",
+	          "");
+	I_Method0(const osgGA::EventQueue *, getEventQueue,
+	          __C5_osgGA_EventQueue_P1__getEventQueue,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventSetsDone, IN, int, key,
+	          __void__setKeyEventSetsDone__int,
+	          "Set the key event that the viewer checks on each frame to see if the viewer's done flag should be set to signal end of viewers main loop. ",
+	          "Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape). Setting to 0 switches off the feature. ");
+	I_Method0(int, getKeyEventSetsDone,
+	          __int__getKeyEventSetsDone,
+	          "get the key event that the viewer checks on each frame to see if the viewer's done flag. ",
+	          "");
+	I_Method1(void, setQuitEventSetsDone, IN, bool, flag,
+	          __void__setQuitEventSetsDone__bool,
+	          "if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature ",
+	          "");
+	I_Method0(bool, getQuitEventSetsDone,
+	          __bool__getQuitEventSetsDone,
+	          "",
+	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
+	I_Method0(int, run,
+	          __int__run,
+	          "Execute a main frame loop. ",
+	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned.");
 	I_Method0(void, frame,
 	          __void__frame,
 	          "Render a complete new frame. ",
-	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal(). Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code. ");
-	I_Method0(void, frameAdvance,
-	          __void__frameAdvance,
+	          "Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). ");
+	I_Method0(void, advance,
+	          __void__advance,
 	          "",
 	          "");
-	I_Method0(void, frameEventTraversal,
-	          __void__frameEventTraversal,
+	I_Method0(void, eventTraversal,
+	          __void__eventTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameUpdateTraversal,
-	          __void__frameUpdateTraversal,
+	I_Method0(void, updateTraversal,
+	          __void__updateTraversal,
 	          "",
 	          "");
-	I_Method0(void, frameCullTraversal,
-	          __void__frameCullTraversal,
+	I_Method0(void, renderingTraversals,
+	          __void__renderingTraversals,
 	          "",
 	          "");
-	I_Method0(void, frameDrawTraversal,
-	          __void__frameDrawTraversal,
+	I_Method1(void, setCameraWithFocus, IN, osg::Camera *, camera,
+	          __void__setCameraWithFocus__osg_Camera_P1,
 	          "",
 	          "");
-	I_Method0(void, releaseAllGLObjects,
-	          __void__releaseAllGLObjects,
-	          "Release all OpenGL objects associated with this viewer's scenegraph. ",
-	          "Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained. ");
-	I_Method0(void, cleanup,
-	          __void__cleanup,
-	          "Clean up all OpenGL objects associated with this viewer's scenegraph. ",
-	          "Note, must only be called from the graphics context associated with this viewer. ");
-	I_Method0(void, init,
-	          __void__init,
+	I_Method0(osg::Camera *, getCameraWithFocus,
+	          __osg_Camera_P1__getCameraWithFocus,
 	          "",
 	          "");
+	I_Method0(const osg::Camera *, getCameraWithFocus,
+	          __C5_osg_Camera_P1__getCameraWithFocus,
+	          "",
+	          "");
+	I_Method0(osgViewer::View *, getViewWithFocus,
+	          __osgViewer_View_P1__getViewWithFocus,
+	          "",
+	          "");
+	I_Method0(const osgViewer::View *, getViewWithFocus,
+	          __C5_osgViewer_View_P1__getViewWithFocus,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, getContexts, IN, osgViewer::CompositeViewer::Contexts &, contexts, , IN, bool, onlyValid, true,
+	                      __void__getContexts__Contexts_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::CompositeViewer::Windows &, windows, , IN, bool, onlyValid, true,
+	                      __void__getWindows__Windows_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getScenes, IN, osgViewer::CompositeViewer::Scenes &, scenes, , IN, bool, onlyValid, true,
+	                      __void__getScenes__Scenes_R1__bool,
+	                      "",
+	                      "");
+	I_Method0(void, stopThreading,
+	          __void__stopThreading,
+	          "",
+	          "");
+	I_Method0(void, startThreading,
+	          __void__startThreading,
+	          "",
+	          "");
+	I_Method0(void, setUpRenderingSupport,
+	          __void__setUpRenderingSupport,
+	          "",
+	          "");
+	I_Method4(const osg::Camera *, getCameraContainingPosition, IN, float, x, IN, float, y, IN, float &, local_x, IN, float &, local_y,
+	          __C5_osg_Camera_P1__getCameraContainingPosition__float__float__float_R1__float_R1,
+	          "Get the camera which contains the pointer position x,y specified master cameras window/eye coords. ",
+	          "Also passes back the local window coords for the graphics context associated with the camera passed back. ");
+	I_MethodWithDefaults4(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      __bool__computeIntersections__float__float__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
+	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified node. ",
+	                      "Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1, while if its has a viewport the coordintates will be relative to its viewport dimensions. Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed directly on to the computeIntersections method. ");
+	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osg::NodePath &, nodePath, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      __bool__computeIntersections__float__float__osg_NodePath_R1__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
+	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. ",
+	                      "");
+	I_Method0(void, requestRedraw,
+	          __void__requestRedraw,
+	          "requestRedraw() requests a single redraw. ",
+	          "");
+	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true,
+	                      __void__requestContinuousUpdate__bool,
+	                      "requestContinousUpdate(bool) is for en/disabling a throw or idle callback to be requested by a GUIEventHandler (typically a MatrixManipulator, though other GUIEventHandler's may also provide functionality). ",
+	                      "GUI toolkits can respond to this immediately by registering an idle/timed callback, or can delay setting the callback and update at their own leisure.");
+	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, y,
+	          __void__requestWarpPointer__float__float,
+	          "requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer to a specified x,y location on the window. ",
+	          "This is used by some camera manipulators to initialise the mouse pointer when mouse position relative to a controls neutral mouse position is required, i.e when mimicking a aircrafts joystick.");
+	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
+	                 __osg_Camera_P1__getCameraWithFocus, 
+	                 __void__setCameraWithFocus__osg_Camera_P1);
+	I_SimpleProperty(bool, Done, 
+	                 0, 
+	                 __void__setDone__bool);
+	I_SimpleProperty(osgViewer::CompositeViewer::BarrierPosition, EndBarrierPosition, 
+	                 __BarrierPosition__getEndBarrierPosition, 
+	                 __void__setEndBarrierPosition__BarrierPosition);
+	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
+	                 __osgGA_EventQueue_P1__getEventQueue, 
+	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
+	                 __osg_FrameStamp_P1__getFrameStamp, 
+	                 __void__setFrameStamp__osg_FrameStamp_P1);
+	I_SimpleProperty(int, KeyEventSetsDone, 
+	                 __int__getKeyEventSetsDone, 
+	                 __void__setKeyEventSetsDone__int);
+	I_SimpleProperty(bool, QuitEventSetsDone, 
+	                 __bool__getQuitEventSetsDone, 
+	                 __void__setQuitEventSetsDone__bool);
+	I_SimpleProperty(double, ReferenceTime, 
+	                 0, 
+	                 __void__setReferenceTime__double);
+	I_SimpleProperty(osg::Timer_t, StartTick, 
+	                 __osg_Timer_t__getStartTick, 
+	                 __void__setStartTick__osg_Timer_t);
+	I_SimpleProperty(osgViewer::CompositeViewer::ThreadingModel, ThreadingModel, 
+	                 __ThreadingModel__getThreadingModel, 
+	                 __void__setThreadingModel__ThreadingModel);
 	I_ArrayProperty(osgViewer::View *, View, 
 	                __osgViewer_View_P1__getView__unsigned, 
 	                0, 
@@ -85,5 +279,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                __void__addView__osgViewer_View_P1, 
 	                0, 
 	                0);
+	I_SimpleProperty(osgViewer::View *, ViewWithFocus, 
+	                 __osgViewer_View_P1__getViewWithFocus, 
+	                 0);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >);
+
+STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >);
+
+STD_VECTOR_REFLECTOR(std::vector< osgViewer::Scene * >);
 

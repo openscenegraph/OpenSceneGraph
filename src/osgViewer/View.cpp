@@ -238,6 +238,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(screenNum), width, height);
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->screenNum = screenNum;
     traits->x = 0;
     traits->y = 0;
     traits->width = width;
@@ -325,6 +326,18 @@ void View::requestWarpPointer(float x,float y)
             const_cast<osgViewer::GraphicsWindow*>(gw)->requestWarpPointer(local_x, local_y);
         }
     }
+}
+
+bool View::containsCamera(const osg::Camera* camera) const
+{
+    if (_camera == camera) return true;
+    
+    for(unsigned i=0; i<getNumSlaves(); ++i)
+    {
+        const Slave& slave = getSlave(i);
+        if (slave._camera == camera) return true;
+    }
+    return false;
 }
 
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const

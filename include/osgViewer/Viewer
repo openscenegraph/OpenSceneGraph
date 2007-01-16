@@ -38,7 +38,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         bool done() const { return _done; }
         
-        void Viewer::setStartTick(osg::Timer_t tick);
+        void setStartTick(osg::Timer_t tick);
         osg::Timer_t getStartTick() const { return _startTick; }
 
         void setReferenceTime(double time=0.0);
@@ -46,7 +46,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         void setFrameStamp(osg::FrameStamp* frameStamp);
         osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
         const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
-
 
 
         virtual void setSceneData(osg::Node* node);
@@ -113,13 +112,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         virtual void updateTraversal();
         
         virtual void renderingTraversals();
-
-
-        /** Release all OpenGL objects associated with this viewer's scenegraph. Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained.*/ 
-        virtual void releaseAllGLObjects();
-
-        /** Clean up all OpenGL objects associated with this viewer's scenegraph.*/ 
-        virtual void cleanup();
         
         void setCameraWithFocus(osg::Camera* camera) { _cameraWithFocus = camera; }
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
@@ -138,9 +130,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
     protected:
     
         void init();
-        
         void checkWindowStatus();
-        
         
         bool _firstFrame;
         
@@ -158,6 +148,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         unsigned int _numThreadsOnBarrier;
         
+        typedef std::map<osg::ref_ptr<osg::Camera>, osg::ref_ptr<osgUtil::SceneView> > CameraSceneViewMap;
+        CameraSceneViewMap _cameraSceneViewMap;
+
         osg::Timer_t                        _startTick;
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;
 

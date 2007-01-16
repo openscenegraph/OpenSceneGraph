@@ -13,7 +13,6 @@
 
 #include <osgUtil/Optimizer>
 #include <osgDB/ReadFile>
-#include <osgViewer/Viewer>
 
 #include <osg/Material>
 #include <osg/Geode>
@@ -27,37 +26,10 @@
 
 #include <osgText/Text>
 
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
 
-osg::Node* createRearView(osg::Node* subgraph, const osg::Vec4& clearColour)
-{
-    osg::Camera* camera = new osg::Camera;
-
-    // set the viewport
-    camera->setViewport(10,10,400,200);
-
-    // set the view matrix
-    camera->setCullingActive(false);    
-    camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
-    camera->setTransformOrder(osg::Camera::POST_MULTIPLY);
-
-    camera->setProjectionMatrix(osg::Matrixd::scale(-1.0f,1.0f,1.0f));
-    camera->setViewMatrix(osg::Matrixd::rotate(osg::inDegrees(180.0f),0.0f,1.0f,0.0f));
-
-    // set clear the color and depth buffer
-    camera->setClearColor(clearColour);
-    camera->setClearMask(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-    // draw subgraph after main camera view.
-    camera->setRenderOrder(osg::Camera::POST_RENDER);
-
-    // add the subgraph to draw.
-    camera->addChild(subgraph);
-    
-    // switch of back face culling as we've swapped over the projection matrix making back faces become front faces.
-    camera->getOrCreateStateSet()->setAttribute(new osg::FrontFace(osg::FrontFace::CLOCKWISE));
-    
-    return camera;
-}
+#include <osgViewer/CompositeViewer>
 
 int main( int argc, char **argv )
 {
@@ -65,27 +37,94 @@ int main( int argc, char **argv )
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
-    // construct the viewer.
-    osgViewer::Viewer viewer;
-    
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
 
-    osg::ref_ptr<osg::Group> group  = new osg::Group;
+    if (!scene) return 1;
+
+    // construct the viewer.
+    osgViewer::CompositeViewer viewer;
     
-    // add the HUD subgraph.    
-    if (scene.valid()) group->addChild(scene.get());
+    if (arguments.read("-1"))
+    {    
+#if 1    
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (!wsi) 
+        {
+            osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+            return 1;
+        }
 
-    osg::Vec4 colour =  viewer.getCamera()->getClearColor();
-    colour.r() *= 0.5f;
-    colour.g() *= 0.5f;
-    colour.b() *= 0.5f;
+        unsigned int width, height;
+        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
-    // note tone down the normal back ground colour to make it obvious that there is a seperate camera inserted.
-    group->addChild(createRearView(scene.get(), colour));
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->x = 0;
+        traits->y = 0;
+        traits->width = width;
+        traits->height = height;
+        traits->windowDecoration = true;
+        traits->doubleBuffer = true;
+        traits->sharedContext = 0;
 
-    // set the scene to render
-    viewer.setSceneData(group.get());
+        osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+        if (gc.valid())
+        {
+            osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
 
+            // need to ensure that the window is cleared make sure that the complete window is set the correct colour
+            // rather than just the parts of the window that are under the camera's viewports
+            gc->setClearColor(osg::Vec4f(0.2f,0.2f,0.6f,1.0f));
+            gc->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+        }
+
+        osgViewer::View* view_one = new osgViewer::View;
+        view_one->setSceneData(scene.get());
+        view_one->getCamera()->setViewport(new osg::Viewport(0,0, width/2, height/2));
+        view_one->getCamera()->setGraphicsContext(gc.get());
+        view_one->setCameraManipulator(new osgGA::TrackballManipulator);
+        viewer.addView(view_one);
+
+        osgViewer::View* view_two = new osgViewer::View;
+        view_two->setSceneData(scene.get());
+        view_two->getCamera()->setViewport(new osg::Viewport(width/2,0, width/2, height/2));
+        view_two->getCamera()->setGraphicsContext(gc.get());
+        view_two->setCameraManipulator(new osgGA::TrackballManipulator);
+        viewer.addView(view_two);
+#endif
+        osgViewer::View* view_three = new osgViewer::View;
+        view_three->setSceneData(osgDB::readNodeFile("town.ive"));
+        view_three->setUpViewAcrossAllScreens();
+#if 0        
+        view_three->getCamera()->setViewport(new osg::Viewport(0, height/2, width, height/2));
+        view_three->getCamera()->setGraphicsContext(gc.get());
+#endif        
+        view_three->setCameraManipulator(new osgGA::FlightManipulator);
+        viewer.addView(view_three);
+    }
+    else
+    {
+        osgViewer::View* view_one = new osgViewer::View;
+        view_one->setUpViewOnSingleScreen(0);
+        view_one->setSceneData(scene.get());
+        view_one->setCameraManipulator(new osgGA::TrackballManipulator);
+        viewer.addView(view_one);
+
+        osgViewer::View* view_two = new osgViewer::View;
+        view_two->setUpViewOnSingleScreen(1);
+        view_two->setSceneData(scene.get());
+        view_two->setCameraManipulator(new osgGA::TrackballManipulator);
+        viewer.addView(view_two);
+    }
+    
+    
+    while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::CompositeViewer::SingleThreaded); }
+    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerContext); }
+    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerCamera); }
+ 
     return viewer.run();
 }

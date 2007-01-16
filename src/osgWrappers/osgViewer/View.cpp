@@ -144,6 +144,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __void__assignSceneDataToCameras,
 	          "",
 	          "");
+	I_Method0(void, init,
+	          __void__init,
+	          "",
+	          "");
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
 	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);

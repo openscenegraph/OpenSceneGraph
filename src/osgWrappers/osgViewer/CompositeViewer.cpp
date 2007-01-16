@@ -12,10 +12,8 @@
 
 #include <osg/Camera>
 #include <osg/FrameStamp>
-#include <osg/Node>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
-#include <osgUtil/LineSegmentIntersector>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
 
@@ -46,7 +44,6 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_BaseType(osg::Referenced);
-	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____CompositeViewer,
 	               "",
 	               "");
@@ -218,30 +215,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __void__setUpRenderingSupport,
 	          "",
 	          "");
-	I_Method4(const osg::Camera *, getCameraContainingPosition, IN, float, x, IN, float, y, IN, float &, local_x, IN, float &, local_y,
-	          __C5_osg_Camera_P1__getCameraContainingPosition__float__float__float_R1__float_R1,
-	          "Get the camera which contains the pointer position x,y specified master cameras window/eye coords. ",
-	          "Also passes back the local window coords for the graphics context associated with the camera passed back. ");
-	I_MethodWithDefaults4(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
-	                      __bool__computeIntersections__float__float__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
-	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified node. ",
-	                      "Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1, while if its has a viewport the coordintates will be relative to its viewport dimensions. Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed directly on to the computeIntersections method. ");
-	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osg::NodePath &, nodePath, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
-	                      __bool__computeIntersections__float__float__osg_NodePath_R1__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
-	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. ",
-	                      "");
-	I_Method0(void, requestRedraw,
-	          __void__requestRedraw,
-	          "requestRedraw() requests a single redraw. ",
-	          "");
-	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true,
-	                      __void__requestContinuousUpdate__bool,
-	                      "requestContinousUpdate(bool) is for en/disabling a throw or idle callback to be requested by a GUIEventHandler (typically a MatrixManipulator, though other GUIEventHandler's may also provide functionality). ",
-	                      "GUI toolkits can respond to this immediately by registering an idle/timed callback, or can delay setting the callback and update at their own leisure.");
-	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, y,
-	          __void__requestWarpPointer__float__float,
-	          "requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer to a specified x,y location on the window. ",
-	          "This is used by some camera manipulators to initialise the mouse pointer when mouse position relative to a controls neutral mouse position is required, i.e when mimicking a aircrafts joystick.");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);

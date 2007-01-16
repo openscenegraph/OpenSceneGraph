@@ -28,8 +28,10 @@
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <osgViewer/CompositeViewer>
+
 
 int main( int argc, char **argv )
 {
@@ -47,7 +49,7 @@ int main( int argc, char **argv )
     
     if (arguments.read("-1"))
     {    
-#if 1    
+
         osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
         if (!wsi) 
         {
@@ -82,43 +84,95 @@ int main( int argc, char **argv )
             osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
         }
 
-        osgViewer::View* view_one = new osgViewer::View;
-        view_one->setSceneData(scene.get());
-        view_one->getCamera()->setViewport(new osg::Viewport(0,0, width/2, height/2));
-        view_one->getCamera()->setGraphicsContext(gc.get());
-        view_one->setCameraManipulator(new osgGA::TrackballManipulator);
-        viewer.addView(view_one);
+        // view one
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setSceneData(scene.get());
+            view->getCamera()->setViewport(new osg::Viewport(0,0, width/2, height/2));
+            view->getCamera()->setGraphicsContext(gc.get());
+            view->setCameraManipulator(new osgGA::TrackballManipulator);
+            viewer.addView(view);
 
-        osgViewer::View* view_two = new osgViewer::View;
-        view_two->setSceneData(scene.get());
-        view_two->getCamera()->setViewport(new osg::Viewport(width/2,0, width/2, height/2));
-        view_two->getCamera()->setGraphicsContext(gc.get());
-        view_two->setCameraManipulator(new osgGA::TrackballManipulator);
-        viewer.addView(view_two);
-#endif
-        osgViewer::View* view_three = new osgViewer::View;
-        view_three->setSceneData(osgDB::readNodeFile("town.ive"));
-        view_three->setUpViewAcrossAllScreens();
-#if 0        
-        view_three->getCamera()->setViewport(new osg::Viewport(0, height/2, width, height/2));
-        view_three->getCamera()->setGraphicsContext(gc.get());
-#endif        
-        view_three->setCameraManipulator(new osgGA::FlightManipulator);
-        viewer.addView(view_three);
+            // add the state manipulator
+            osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
+            statesetManipulator->setStateSet(view->getCamera()->getOrCreateStateSet());
+
+            view->addEventHandler( statesetManipulator.get() );
+        }
+
+        // view two
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setSceneData(scene.get());
+            view->getCamera()->setViewport(new osg::Viewport(width/2,0, width/2, height/2));
+            view->getCamera()->setGraphicsContext(gc.get());
+            view->setCameraManipulator(new osgGA::TrackballManipulator);
+            viewer.addView(view);
+        }
+
+        // view three
+        if (false)
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setSceneData(osgDB::readNodeFile("town.ive"));
+
+            view->setUpViewAcrossAllScreens();
+            viewer.addView(view);
+        }
+        else
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setSceneData(osgDB::readNodeFile("town.ive"));
+
+            view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(width) / double(height/2), 1.0, 1000.0);
+            view->getCamera()->setViewport(new osg::Viewport(0, height/2, width, height/2));
+            view->getCamera()->setGraphicsContext(gc.get());
+            view->setCameraManipulator(new osgGA::FlightManipulator);
+            viewer.addView(view);
+        }
+
     }
-    else
-    {
-        osgViewer::View* view_one = new osgViewer::View;
-        view_one->setUpViewOnSingleScreen(0);
-        view_one->setSceneData(scene.get());
-        view_one->setCameraManipulator(new osgGA::TrackballManipulator);
-        viewer.addView(view_one);
 
-        osgViewer::View* view_two = new osgViewer::View;
-        view_two->setUpViewOnSingleScreen(1);
-        view_two->setSceneData(scene.get());
-        view_two->setCameraManipulator(new osgGA::TrackballManipulator);
-        viewer.addView(view_two);
+    if (arguments.read("-2"))
+    {
+        {
+            osgViewer::View* view = new osgViewer::View;
+            view->setSceneData(osgDB::readNodeFile("town.ive"));
+
+            view->setUpViewAcrossAllScreens();
+            view->setCameraManipulator(new osgGA::FlightManipulator);
+            viewer.addView(view);
+        }
+    }
+
+    if (arguments.read("-3") || viewer.getNumViews()==0)
+    {
+
+        // view one
+        {
+            osgViewer::View* view = new osgViewer::View;
+            viewer.addView(view);
+
+            view->setUpViewOnSingleScreen(0);
+            view->setSceneData(scene.get());
+            view->setCameraManipulator(new osgGA::TrackballManipulator);
+
+            // add the state manipulator
+            osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
+            statesetManipulator->setStateSet(view->getCamera()->getOrCreateStateSet());
+
+            view->addEventHandler( statesetManipulator.get() );
+        }
+        
+        // view two
+        {
+            osgViewer::View* view = new osgViewer::View;
+            viewer.addView(view);
+
+            view->setUpViewOnSingleScreen(1);
+            view->setSceneData(scene.get());
+            view->setCameraManipulator(new osgGA::TrackballManipulator);
+        }
     }
     
     

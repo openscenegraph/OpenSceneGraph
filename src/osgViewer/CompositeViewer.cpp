@@ -734,8 +734,10 @@ void CompositeViewer::eventTraversal()
     // osg::notify(osg::NOTICE)<<"CompositeViewer::frameEventTraversal()."<<std::endl;
     
     // need to copy events from the GraphicsWindow's into local EventQueue;
-    osgGA::EventQueue::Events events;
-
+    
+    typedef std::map<osgViewer::View*, osgGA::EventQueue::Events> ViewEventsMap;
+    ViewEventsMap viewEventsMap;
+    
     Contexts contexts;
     getContexts(contexts);
 
@@ -894,7 +896,7 @@ void CompositeViewer::eventTraversal()
                 }
             }
 
-            events.insert(events.end(), gw_events.begin(), gw_events.end());
+            viewEventsMap[masterView].insert( viewEventsMap[masterView].end(), gw_events.begin(), gw_events.end() );
 
         }
     }
@@ -903,6 +905,16 @@ void CompositeViewer::eventTraversal()
     // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
+    for(Views::iterator vitr = _views.begin();
+        vitr != _views.end();
+        ++vitr)
+    {
+        View* view = vitr->get();
+        view->getEventQueue()->frame( getFrameStamp()->getReferenceTime() );
+        view->getEventQueue()->takeEvents(viewEventsMap[view]);
+    }
+    
+#if 0
     _eventQueue->getCurrentEventState()->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
     _eventQueue->getCurrentEventState()->setX(eventState->getX());
     _eventQueue->getCurrentEventState()->setY(eventState->getY());
@@ -911,138 +923,64 @@ void CompositeViewer::eventTraversal()
 
     _eventQueue->frame( getFrameStamp()->getReferenceTime() );
     _eventQueue->takeEvents(events);
-
-
-
-#if 0
-    // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
-    for(osgGA::EventQueue::Events::iterator itr = events.begin();
-        itr != events.end();
-        ++itr)
-    {
-        osgGA::GUIEventAdapter* event = itr->get();
-        switch(event->getEventType())
-        {
-            case(osgGA::GUIEventAdapter::PUSH):
-                osg::notify(osg::NOTICE)<<"  PUSH "<<event->getButton()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::RELEASE):
-                osg::notify(osg::NOTICE)<<"  RELEASE "<<event->getButton()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::DRAG):
-                osg::notify(osg::NOTICE)<<"  DRAG "<<event->getButtonMask()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::MOVE):
-                osg::notify(osg::NOTICE)<<"  MOVE "<<event->getButtonMask()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::SCROLL):
-                osg::notify(osg::NOTICE)<<"  SCROLL "<<event->getScrollingMotion()<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::KEYDOWN):
-                osg::notify(osg::NOTICE)<<"  KEYDOWN '"<<(char)event->getKey()<<"'"<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::KEYUP):
-                osg::notify(osg::NOTICE)<<"  KEYUP '"<<(char)event->getKey()<<"'"<<std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::RESIZE):
-                osg::notify(osg::NOTICE)<<"  RESIZE "<<event->getWindowX()<<"/"<<event->getWindowY()<<" x "<<event->getWindowWidth()<<"/"<<event->getWindowHeight() << std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
-                osg::notify(osg::NOTICE)<<"  QUIT_APPLICATION " << std::endl;
-                break;
-            case(osgGA::GUIEventAdapter::FRAME):
-                // osg::notify(osg::NOTICE)<<"  FRAME "<<std::endl;
-                break;
-            default:
-                // osg::notify(osg::NOTICE)<<"  Event not handled"<<std::endl;
-                break;
-        }
-    }
 #endif
+
 
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
     
     if ((_keyEventSetsDone!=0) || _quitEventSetsDone)
     {
-        for(osgGA::EventQueue::Events::iterator itr = events.begin();
-            itr != events.end();
-            ++itr)
+        for(ViewEventsMap::iterator veitr = viewEventsMap.begin();
+            veitr != viewEventsMap.end();
+            ++veitr)
         {
-            osgGA::GUIEventAdapter* event = itr->get();
-            switch(event->getEventType())
+            for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
+                itr != veitr->second.end();
+                ++itr)
             {
-                case(osgGA::GUIEventAdapter::KEYUP):
-                    if (_keyEventSetsDone && event->getKey()==_keyEventSetsDone) _done = true;
-                    break;
-                
-                case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
-                    if (_quitEventSetsDone) _done = true;
-                    break;
-                    
-                default:
-                    break;
+                osgGA::GUIEventAdapter* event = itr->get();
+                switch(event->getEventType())
+                {
+                    case(osgGA::GUIEventAdapter::KEYUP):
+                        if (_keyEventSetsDone && event->getKey()==_keyEventSetsDone) _done = true;
+                        break;
+
+                    case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
+                        if (_quitEventSetsDone) _done = true;
+                        break;
+
+                    default:
+                        break;
+                }
             }
         }
     }
         
     if (_done) return;
 
-    if (getViewWithFocus())
+    for(ViewEventsMap::iterator veitr = viewEventsMap.begin();
+        veitr != viewEventsMap.end();
+        ++veitr)
     {
-        View* view = getViewWithFocus();
-        for(osgGA::EventQueue::Events::iterator itr = events.begin();
-            itr != events.end();
+        View* view = veitr->first;
+        for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
+            itr != veitr->second.end();
             ++itr)
         {
             osgGA::GUIEventAdapter* event = itr->get();
 
-            if (event->getEventType()!=osgGA::GUIEventAdapter::FRAME)
-            {
-                bool handled = false;
+            bool handled = false;
 
-                if (view->getCameraManipulator())
-                {
-                    view->getCameraManipulator()->handle( *event, *this);
-                }
-#if 0
-                for(EventHandlers::iterator hitr = view->getEventHandlers().begin();
-                    hitr != view->getEventHandlers().end() && !handled;
-                    ++hitr)
-                {
-                    handled = (*hitr)->handle( *event, *this, 0, 0);
-                }
-#endif
+            if (view->getCameraManipulator())
+            {
+                view->getCameraManipulator()->handle( *event, *view);
             }
-        }
-    }
-    
-    for(Views::iterator vitr = _views.begin();
-        vitr != _views.end();
-        ++vitr)
-    {
-        View* view = vitr->get();
-        for(osgGA::EventQueue::Events::iterator itr = events.begin();
-            itr != events.end();
-            ++itr)
-        {
-            osgGA::GUIEventAdapter* event = itr->get();
 
-            if (event->getEventType()==osgGA::GUIEventAdapter::FRAME)
+            for(View::EventHandlers::iterator hitr = view->getEventHandlers().begin();
+                hitr != view->getEventHandlers().end() && !handled;
+                ++hitr)
             {
-                bool handled = false;
-
-                if (view->getCameraManipulator())
-                {
-                    view->getCameraManipulator()->handle( *event, *this);
-                }
-#if 0
-                for(EventHandlers::iterator hitr = view->getEventHandlers().begin();
-                    hitr != view->getEventHandlers().end() && !handled;
-                    ++hitr)
-                {
-                    handled = (*hitr)->handle( *event, *this, 0, 0);
-                }
-#endif
+                handled = (*hitr)->handle( *event, *view, 0, 0);
             }
         }
     }
@@ -1186,4 +1124,5 @@ void CompositeViewer::requestContinuousUpdate(bool)
 
 void CompositeViewer::requestWarpPointer(float x,float y)
 {
+    osg::notify(osg::NOTICE)<<"CompositeViewer::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
 }

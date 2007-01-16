@@ -18,6 +18,7 @@
 
 using namespace osgProducer;
 
+#if 0
 namespace osgProducer
 {
     struct MyWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
@@ -58,7 +59,7 @@ namespace osgProducer
     
     RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
 };
-    
+#endif    
 
 
 GraphicsContextImplementation::GraphicsContextImplementation(Traits* traits)

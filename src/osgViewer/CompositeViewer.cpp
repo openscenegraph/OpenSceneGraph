@@ -213,7 +213,6 @@ struct CompositeViewerCompileOperation : public osg::GraphicsOperation
     CompositeViewerCompileOperation():
         osg::GraphicsOperation("Compile",false)
     {
-        osg::notify(osg::NOTICE)<<"Constructed CompileOperation"<<std::endl;
     }
     
     virtual void operator () (osg::GraphicsContext* context)

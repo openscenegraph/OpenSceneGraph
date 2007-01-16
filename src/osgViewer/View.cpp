@@ -447,8 +447,20 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (!camera) camera = _camera.get();
     
+
     osgUtil::LineSegmentIntersector::CoordinateFrame cf = camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
     osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(cf, local_x, local_y);
+
+#if 0
+    osg::notify(osg::NOTICE)<<"View::computeIntersections(x="<<x<<", y="<<y<<", local_x="<<local_x<<", local_y="<<local_y<<") "<<cf<<std::endl;
+    osg::notify(osg::NOTICE)<<"  viewport ("<<camera->getViewport()->x()<<","<<camera->getViewport()->y()<<","<<camera->getViewport()->width()<<","<<camera->getViewport()->height()<<")"<<std::endl;
+
+    const osg::GraphicsContext::Traits* traits = camera->getGraphicsContext() ? camera->getGraphicsContext()->getTraits() : 0;
+    if (traits)
+    {
+        osg::notify(osg::NOTICE)<<"  window ("<<traits->x<<","<<traits->y<<","<<traits->width<<","<<traits->height<<")"<<std::endl;
+    }
+#endif
 
     osgUtil::IntersectionVisitor iv(picker);
     iv.setTraversalMask(traversalMask);

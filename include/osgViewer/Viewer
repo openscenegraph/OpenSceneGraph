@@ -129,7 +129,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
     protected:
     
-        void init();
         void checkWindowStatus();
         
         bool _firstFrame;

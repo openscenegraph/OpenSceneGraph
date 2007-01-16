@@ -392,20 +392,6 @@ void Viewer::checkWindowStatus()
 }
 
 
-
-void Viewer::init()
-{
-    osg::notify(osg::INFO)<<"Viewer::init()"<<std::endl;
-    
-    osg::ref_ptr<osgGA::GUIEventAdapter> initEvent = _eventQueue->createEvent();
-    initEvent->setEventType(osgGA::GUIEventAdapter::FRAME);
-    
-    if (_cameraManipulator.valid())
-    {
-        _cameraManipulator->init(*initEvent, *this);
-    }
-}
-
 void Viewer::getContexts(Contexts& contexts, bool onlyValid)
 {
     typedef std::set<osg::GraphicsContext*> ContextSet;

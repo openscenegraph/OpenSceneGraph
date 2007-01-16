@@ -35,6 +35,19 @@ View::~View()
     // osg::notify(osg::NOTICE)<<"Destructing osgViewer::View"<<std::endl;
 }
 
+void View::init()
+{
+    osg::notify(osg::INFO)<<"View::init()"<<std::endl;
+    
+    osg::ref_ptr<osgGA::GUIEventAdapter> initEvent = _eventQueue->createEvent();
+    initEvent->setEventType(osgGA::GUIEventAdapter::FRAME);
+    
+    if (_cameraManipulator.valid())
+    {
+        _cameraManipulator->init(*initEvent, *this);
+    }
+}
+
 void View::setSceneData(osg::Node* node)
 {
     _scene = new osgViewer::Scene;
@@ -312,8 +325,7 @@ void View::requestContinuousUpdate(bool)
 
 void View::requestWarpPointer(float x,float y)
 {
-    osg::notify(osg::NOTICE)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
-
+    osg::notify(osg::INFO)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
     
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
@@ -333,7 +345,7 @@ void View::requestWarpPointer(float x,float y)
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"View::requestWarpPointer failed no camera containing pointer"<<std::endl;
+        osg::notify(osg::INFO)<<"View::requestWarpPointer failed no camera containing pointer"<<std::endl;
     }
 }
 
@@ -353,6 +365,8 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 {
     const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
+
+    osg::notify(osg::INFO)<<"View::getCameraContainingPosition("<<x<<","<<y<<",..,..) view_invert_y="<<view_invert_y<<std::endl;
    
     double epsilon = 0.5;
 
@@ -361,12 +375,6 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
         const osg::Viewport* viewport = _camera->getViewport();
         
         osg::Vec2d new_coord(x, y);
-        
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-        if (gw && gw->getEventQueue()->getCurrentEventState()->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS)
-        {
-            new_coord.y() = gw->getTraits()->height - new_coord.y();
-        }
         
         if (viewport && 
             new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&

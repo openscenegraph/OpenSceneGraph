@@ -249,6 +249,7 @@ int main( int argc, char **argv )
             
         }
 
+        // view three
         {
             osgViewer::View* view = new osgViewer::View;
             viewer.addView(view);
@@ -267,5 +268,6 @@ int main( int argc, char **argv )
     while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerContext); }
     while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerCamera); }
  
-    return viewer.run();
+     // run the viewer's main frame loop
+     return viewer.run();
 }

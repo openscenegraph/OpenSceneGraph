@@ -312,6 +312,8 @@ void View::requestContinuousUpdate(bool)
 
 void View::requestWarpPointer(float x,float y)
 {
+    osg::notify(osg::NOTICE)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
+
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (camera)
@@ -325,6 +327,10 @@ void View::requestWarpPointer(float x,float y)
             }
             const_cast<osgViewer::GraphicsWindow*>(gw)->requestWarpPointer(local_x, local_y);
         }
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"View::requestWarpPointer failed no camera containing pointer"<<std::endl;
     }
 }
 

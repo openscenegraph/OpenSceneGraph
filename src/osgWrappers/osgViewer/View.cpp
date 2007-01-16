@@ -17,6 +17,7 @@
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
 #include <osgUtil/LineSegmentIntersector>
+#include <osgViewer/Scene>
 #include <osgViewer/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -35,6 +36,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Constructor0(____View,
 	               "",
 	               "");
+	I_Method0(osgViewer::Scene *, getScene,
+	          __Scene_P1__getScene,
+	          "",
+	          "");
+	I_Method0(const osgViewer::Scene *, getScene,
+	          __C5_Scene_P1__getScene,
+	          "",
+	          "");
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
 	          __void__setSceneData__osg_Node_P1,
 	          "",
@@ -103,6 +112,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                      __void__setUpViewOnSingleScreen__unsigned_int,
 	                      "Convinience method for a single Camara associated with a single full screen GraphicsWindow. ",
 	                      "");
+	I_Method1(bool, containsCamera, IN, const osg::Camera *, camera,
+	          __bool__containsCamera__C5_osg_Camera_P1,
+	          "Return true if this view contains a specified camera. ",
+	          "");
 	I_Method4(const osg::Camera *, getCameraContainingPosition, IN, float, x, IN, float, y, IN, float &, local_x, IN, float &, local_y,
 	          __C5_osg_Camera_P1__getCameraContainingPosition__float__float__float_R1__float_R1,
 	          "Get the camera which contains the pointer position x,y specified master cameras window/eye coords. ",
@@ -143,6 +156,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(osgViewer::Scene *, Scene, 
+	                 __Scene_P1__getScene, 
+	                 0);
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);

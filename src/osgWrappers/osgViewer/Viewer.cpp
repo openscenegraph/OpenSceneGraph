@@ -144,14 +144,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__renderingTraversals,
 	          "",
 	          "");
-	I_Method0(void, releaseAllGLObjects,
-	          __void__releaseAllGLObjects,
-	          "Release all OpenGL objects associated with this viewer's scenegraph. ",
-	          "Note, does not deleted the actual OpenGL objects, it just releases them to the pending GL object delete lists which will need flushing once a valid graphics context is obtained. ");
-	I_Method0(void, cleanup,
-	          __void__cleanup,
-	          "Clean up all OpenGL objects associated with this viewer's scenegraph. ",
-	          "");
 	I_Method1(void, setCameraWithFocus, IN, osg::Camera *, camera,
 	          __void__setCameraWithFocus__osg_Camera_P1,
 	          "",
@@ -215,8 +207,4 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);
 END_REFLECTOR
-
-STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >);
-
-STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >);
 

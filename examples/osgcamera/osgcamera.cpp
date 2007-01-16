@@ -252,14 +252,8 @@ int main( int argc, char **argv )
     while (arguments.read("-1")) { singleWindowMultipleCameras(viewer); }
     while (arguments.read("-2")) { multipleWindowMultipleCameras(viewer); }
 
-#if 0
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
-#else
-
-    viewer.setCameraManipulator( new osgGA::FlightManipulator() );
-
-#endif
 
 
 #if 0

@@ -41,6 +41,13 @@ extern OSGDB_EXPORT bool containsServerAddress(const std::string& filename);
 extern OSGDB_EXPORT std::string getServerAddress(const std::string& filename);
 extern OSGDB_EXPORT std::string getServerFileName(const std::string& filename);
 
+/** Concatenates two paths */
+extern OSGDB_EXPORT std::string concatPaths(const std::string& left, const std::string& right);
+
+/** Removes .. and . dirs in a path */
+extern OSGDB_EXPORT std::string getRealPath(const std::string& path);
+
+
 }
 
 #endif

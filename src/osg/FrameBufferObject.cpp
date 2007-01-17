@@ -26,10 +26,10 @@
 
 using namespace osg;
 
+static buffered_object< ref_ptr<FBOExtensions> > s_extensions;
 
 FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInitalized)
 {
-    static buffered_object< ref_ptr<FBOExtensions> > s_extensions;
     if (!s_extensions[contextID] && createIfNotInitalized) s_extensions[contextID] = new FBOExtensions(contextID);
     return s_extensions[contextID].get();
 }

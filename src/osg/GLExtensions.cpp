@@ -28,6 +28,18 @@
 #include <windows.h>
 #endif
 
+typedef std::set<std::string>  ExtensionSet;
+static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
+static osg::buffered_object<std::string> s_glRendererList;
+static osg::buffered_value<int> s_glInitializedList;
+
+static osg::buffered_object<ExtensionSet> s_gluExtensionSetList;
+static osg::buffered_object<std::string> s_gluRendererList;
+static osg::buffered_value<int> s_gluInitializedList;
+
+static const char* envVar = getenv("OSG_GL_EXTENSION_DISABLE");
+static std::string s_GLExtensionDisableString(envVar?envVar:"Nothing defined");
+
 float osg::getGLVersionNumber()
 {
     // needs to be extended to do proper things with subversions like 1.5.1, etc.
@@ -38,18 +50,13 @@ float osg::getGLVersionNumber()
 
 bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
 {
-    typedef std::set<std::string>  ExtensionSet;
-    static osg::buffered_object<ExtensionSet> s_extensionSetList;
-    static osg::buffered_object<std::string> s_rendererList;
-    static osg::buffered_value<int> s_initializedList;
-
-    ExtensionSet& extensionSet = s_extensionSetList[contextID];
-    std::string& rendererString = s_rendererList[contextID];
+    ExtensionSet& extensionSet = s_glExtensionSetList[contextID];
+    std::string& rendererString = s_glRendererList[contextID];
 
     // if not already set up, initialize all the per graphic context values.
-    if (!s_initializedList[contextID])
+    if (!s_glInitializedList[contextID])
     {
-        s_initializedList[contextID] = 1;
+        s_glInitializedList[contextID] = 1;
     
         // set up the renderer
         const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -194,26 +201,19 @@ void osg::setGLExtensionDisableString(const std::string& disableString)
 
 std::string& osg::getGLExtensionDisableString()
 {
-    static const char* envVar = getenv("OSG_GL_EXTENSION_DISABLE");
-    static std::string s_GLExtensionDisableString(envVar?envVar:"Nothing defined");
     return s_GLExtensionDisableString;
 }
 
 
 bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
 {
-    typedef std::set<std::string>  ExtensionSet;
-    static osg::buffered_object<ExtensionSet> s_extensionSetList;
-    static osg::buffered_object<std::string> s_rendererList;
-    static osg::buffered_value<int> s_initializedList;
-
-    ExtensionSet& extensionSet = s_extensionSetList[contextID];
-    std::string& rendererString = s_rendererList[contextID];
+    ExtensionSet& extensionSet = s_gluExtensionSetList[contextID];
+    std::string& rendererString = s_gluRendererList[contextID];
 
     // if not already set up, initialize all the per graphic context values.
-    if (!s_initializedList[contextID])
+    if (!s_gluInitializedList[contextID])
     {
-        s_initializedList[contextID] = 1;
+        s_gluInitializedList[contextID] = 1;
     
         // set up the renderer
         const GLubyte* renderer = glGetString(GL_RENDERER);

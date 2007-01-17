@@ -45,21 +45,6 @@ using namespace osg;
 
 ApplicationUsageProxy Texture_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_TEXTURE_SIZE","Set the maximum size of textures.");
 
-unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
-unsigned int Texture::s_numberNewTextureInLastFrame = 0;
-unsigned int Texture::s_numberDeletedTextureInLastFrame = 0;
-
-unsigned int s_minimumNumberOfTextureObjectsToRetainInCache = 0;
-void Texture::setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum)
-{
-    s_minimumNumberOfTextureObjectsToRetainInCache = minimum;
-}
-
-unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
-{
-    return s_minimumNumberOfTextureObjectsToRetainInCache;
-}
-
 class TextureObjectManager : public osg::Referenced
 {
 public:
@@ -129,6 +114,27 @@ public:
     // mutex to keep access serialized.
     OpenThreads::Mutex      _mutex;
 };
+
+unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
+unsigned int Texture::s_numberNewTextureInLastFrame = 0;
+unsigned int Texture::s_numberDeletedTextureInLastFrame = 0;
+
+unsigned int s_minimumNumberOfTextureObjectsToRetainInCache = 0;
+
+typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
+static BufferedExtensions s_extensions;
+
+static ref_ptr<TextureObjectManager> s_textureObjectManager = new TextureObjectManager;
+
+void Texture::setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum)
+{
+    s_minimumNumberOfTextureObjectsToRetainInCache = minimum;
+}
+
+unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
+{
+    return s_minimumNumberOfTextureObjectsToRetainInCache;
+}
 
 Texture::TextureObject* TextureObjectManager::generateTextureObject(unsigned int /*contextID*/,GLenum target)
 {
@@ -290,7 +296,6 @@ void TextureObjectManager::flushTextureObjects(unsigned int contextID,double cur
 
 static TextureObjectManager* getTextureObjectManager()
 {
-    static ref_ptr<TextureObjectManager> s_textureObjectManager = new TextureObjectManager;
     return s_textureObjectManager.get();
 }
 
@@ -1321,9 +1326,6 @@ void Texture::releaseGLObjects(State* state) const
         }
     }
 }
-
-typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
-static BufferedExtensions s_extensions;
 
 Texture::Extensions* Texture::getExtensions(unsigned int contextID,bool createIfNotInitalized)
 {

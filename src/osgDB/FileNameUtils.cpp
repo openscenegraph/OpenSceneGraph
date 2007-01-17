@@ -202,17 +202,43 @@ std::string osgDB::getServerFileName(const std::string& filename)
     return filename;
 }
 
+std::string osgDB::concatPaths(const std::string& left, const std::string& right)
+{
+#ifdef WIN32
+    const char delimiterNative  = '\\';
+    const char delimiterForeign = '/';
+#else
+    const char delimiterNative  = '/';
+    const char delimiterForeign = '\\';
+#endif
 
-// // here a little test I wrote to make sure a couple of the above methods are
-// // working fine.
-// void test()
-// {
-//     std::string test("/here/we/are.exe");
-//     std::string test2("\\there\\you\\go.dll");
-//     std::cout << "getFilePath("<<test<<") "<<osgDB::getFilePath(test)<<std::endl;
-//     std::cout << "getFilePath("<<test2<<") "<<osgDB::getFilePath(test2)<<std::endl;
-//     std::cout << "getSimpleFileName("<<test<<") "<<osgDB::getSimpleFileName(test)<<std::endl;
-//     std::cout << "getSimpleFileName("<<test2<<") "<<osgDB::getSimpleFileName(test2)<<std::endl;
-//     std::cout << "getStrippedName("<<test<<") "<<osgDB::getStrippedName(test)<<std::endl;
-//     std::cout << "getStrippedName("<<test2<<") "<<osgDB::getStrippedName(test2)<<std::endl;
-// }
+    char lastChar = left[left.size() - 1];
+
+    if(lastChar == delimiterNative)
+    {
+        return left + right;
+    }
+    else if(lastChar == delimiterForeign)
+    {
+        return left.substr(0, left.size() - 1) + delimiterNative + right;
+    }
+    else // lastChar != a delimiter
+    {
+        return left + delimiterNative + right;
+    }
+}
+
+std::string osgDB::getRealPath(const std::string& path)
+{
+#ifdef WIN32
+    TCHAR retbuf[MAX_PATH + sizeof(TCHAR)];
+    GetFullPathName(path.c_str(), sizeof(retbuf), retbuf, 0);
+    return std::string(retbuf);
+#else
+    char resolved_path[PATH_MAX];
+    char* result = realpath(path.c_str(), resolved_path);
+    
+    if (result) return std::string(resolved_path);
+    else return path;
+#endif 
+}

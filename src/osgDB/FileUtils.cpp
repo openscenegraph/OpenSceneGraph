@@ -203,7 +203,10 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
         ++itr)
     {
         osg::notify(osg::DEBUG_INFO) << "itr='" <<*itr<< "'\n";
-        std::string path = itr->empty() ? filename : *itr + '/'+ filename;
+        std::string path = itr->empty() ? filename : concatPaths(*itr, filename);
+        
+        path = getRealPath(path);
+
         osg::notify(osg::DEBUG_INFO) << "FindFileInPath() : trying " << path << " ...\n";
         if(fileExists(path)) 
         {

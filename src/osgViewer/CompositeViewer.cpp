@@ -573,6 +573,8 @@ void CompositeViewer::setUpRenderingSupport()
             sceneView->setSceneData(view->getSceneData());
             sceneView->setFrameStamp(frameStamp);
 
+            if (dp) dp->setCompileGLObjectsForContextID(view->getCamera()->getGraphicsContext()->getState()->getContextID(), true);
+
             view->getCamera()->getGraphicsContext()->add(new CompositeViewerRenderingOperation(sceneView, dp));
         }
 
@@ -591,6 +593,8 @@ void CompositeViewer::setUpRenderingSupport()
                 sceneView->setState(slave._camera->getGraphicsContext()->getState());
                 sceneView->setSceneData(view->getSceneData());
                 sceneView->setFrameStamp(frameStamp);
+
+                if (dp) dp->setCompileGLObjectsForContextID(slave._camera->getGraphicsContext()->getState()->getContextID(), true);
 
                 slave._camera->getGraphicsContext()->add(new CompositeViewerRenderingOperation(sceneView, dp));
             }

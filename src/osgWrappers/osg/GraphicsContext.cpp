@@ -309,6 +309,7 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_PublicMemberProperty(unsigned int, face);
 	I_PublicMemberProperty(unsigned int, mipMapGeneration);
 	I_PublicMemberProperty(bool, vsync);
+	I_PublicMemberProperty(bool, useCursor);
 	I_PublicMemberProperty(osg::GraphicsContext *, sharedContext);
 END_REFLECTOR
 
@@ -323,6 +324,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
 	                      "");
 	I_Method3(void, getScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, unsigned int &, width, IN, unsigned int &, height,
 	          __void__getScreenResolution__C5_ScreenIdentifier_R1__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method3(bool, setScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, unsigned, int, IN, unsigned, int,
+	          __bool__setScreenResolution__C5_ScreenIdentifier_R1__unsigned__unsigned,
+	          "",
+	          "");
+	I_Method2(bool, setScreenRefreshRate, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, double, x,
+	          __bool__setScreenRefreshRate__C5_ScreenIdentifier_R1__double,
 	          "",
 	          "");
 	I_Method1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,

@@ -463,12 +463,12 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         _sceneView->cull();
         _sceneView->draw();
 
+        double availableTime = 0.004; // 4 ms
         if (_databasePager.valid())
         {
-            double availableTime = 0.004; // 4 ms
             _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
-            _sceneView->flushDeletedGLObjects(availableTime);
         }
+        _sceneView->flushDeletedGLObjects(availableTime);
     }
     
     osg::observer_ptr<osgUtil::SceneView>    _sceneView;
@@ -508,6 +508,8 @@ void Viewer::setUpRenderingSupport()
         sceneView->setState(_camera->getGraphicsContext()->getState());
         sceneView->setSceneData(getSceneData());
         sceneView->setFrameStamp(frameStamp);
+        
+        if (dp) dp->setCompileGLObjectsForContextID(_camera->getGraphicsContext()->getState()->getContextID(), true);
 
         _camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));        
     }
@@ -527,6 +529,8 @@ void Viewer::setUpRenderingSupport()
             sceneView->setState(slave._camera->getGraphicsContext()->getState());
             sceneView->setSceneData(getSceneData());
             sceneView->setFrameStamp(frameStamp);
+
+            if (dp) dp->setCompileGLObjectsForContextID(slave._camera->getGraphicsContext()->getState()->getContextID(), true);
 
             slave._camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));
         }

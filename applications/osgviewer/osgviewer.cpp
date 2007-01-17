@@ -12,6 +12,7 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osg/CoordinateSystemNode>
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////
 //

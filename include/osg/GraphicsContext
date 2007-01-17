@@ -75,6 +75,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
                 face(0),
                 mipMapGeneration(false),
                 vsync(true),
+                useCursor(true),
                 sharedContext(0) {}
                             
             // graphics context orginal and size
@@ -114,6 +115,9 @@ class OSG_EXPORT GraphicsContext : public Referenced
             // V-sync
             bool            vsync;
             
+            // enable cursor
+            bool            useCursor;
+            
             // shared context
             GraphicsContext* sharedContext;
         };
@@ -125,7 +129,11 @@ class OSG_EXPORT GraphicsContext : public Referenced
             virtual unsigned int getNumScreens(const ScreenIdentifier& screenIdentifier = ScreenIdentifier()) = 0;
 
             virtual void getScreenResolution(const ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height) = 0;
+
+            virtual bool setScreenResolution(const ScreenIdentifier& /*screenIdentifier*/, unsigned int /*width*/, unsigned int /*height*/) { return false; }
         
+            virtual bool setScreenRefreshRate(const ScreenIdentifier& /*screenIdentifier*/, double /*refreshRate*/) { return false; }
+
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
             
             virtual ~WindowingSystemInterface() {};

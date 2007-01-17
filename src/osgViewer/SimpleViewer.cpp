@@ -29,12 +29,15 @@ SimpleViewer::SimpleViewer():
     _eventVisitor = new osgGA::EventVisitor;
     
     setDatabasePager(new osgDB::DatabasePager);
+
+    _databasePager->setCompileGLObjectsForContextID(_sceneView->getState()->getContextID(), true);
 }
 
 SimpleViewer::~SimpleViewer()
 {
     _sceneView->releaseAllGLObjects();
     osg::GraphicsContext::decrementContextIDUsageCount(_sceneView->getState()->getContextID());
+    _databasePager->setCompileGLObjectsForContextID(_sceneView->getState()->getContextID(), false);
 }
 
 void SimpleViewer::setSceneData(osg::Node* node)
@@ -53,6 +56,7 @@ void SimpleViewer::setSceneData(osg::Node* node)
     {    
         // register any PagedLOD that need to be tracked in the scene graph
         _databasePager->registerPagedLODs(node);
+
     }
 }
 

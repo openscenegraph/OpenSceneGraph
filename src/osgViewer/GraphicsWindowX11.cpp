@@ -358,6 +358,9 @@ void GraphicsWindowX11::useCursor(bool cursorOn)
         XFlush(_display);
         XSync(_display,0);
     }
+
+    _traits->useCursor = cursorOn;
+
 }
 
 void GraphicsWindowX11::init()
@@ -488,7 +491,7 @@ void GraphicsWindowX11::init()
         _nullCursor = XCreatePixmapCursor( _display, pixmap, pixmap, &ncol, &ncol, 0, 0 );
     }
 
-    useCursor(true);
+    useCursor(_traits->useCursor);
 
     XSelectInput( _display, _window, ExposureMask | StructureNotifyMask | 
                                      KeyPressMask | KeyReleaseMask |

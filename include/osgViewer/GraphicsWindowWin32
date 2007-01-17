@@ -21,6 +21,11 @@
 
 #include <osgViewer/GraphicsWindow>
 
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT    0x0500
+#endif
+#include <windows.h>
+
 namespace osgViewer
 {
 
@@ -28,21 +33,9 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
 {
     public:
 
-        GraphicsWindowWin32(osg::GraphicsContext::Traits* traits):
-            _valid(false),
-            _initialized(false),
-            _realized(false)
-        {
-            _traits = traits;
-
-            init();
-            
-            if (valid())
-            {
-                setState( new osg::State );
-                getState()->setContextID( osg::GraphicsContext::createNewContextID() );
-            }
-        }
+        GraphicsWindowWin32(osg::GraphicsContext::Traits* traits);
+        
+        ~GraphicsWindowWin32();
     
         virtual bool valid() const { return _valid; }
 
@@ -75,16 +68,47 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow();
-
+        
+        /** Handle a native (Win32) windowing event as received from the system */
+        virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+        
     protected:
     
         void init();
         
+        void registerWindowClass();
+        
+        HWND createWindow();
+        void destroyWindow( bool deleteNativeWindow = true );
+        
+        bool determineWindowPositionAndStyle( bool decorated, int& x, int& y, unsigned int& w, unsigned int& h, unsigned int& style, unsigned int& extendedStyle );
+        
+        bool setPixelFormat();
+        
+        void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask );
+                
         void transformMouseXY(float& x, float& y);
-
-        bool            _valid;
+        
+        HWND            _hwnd;
+        HDC                _hdc;
+        HGLRC            _hglrc;
+        
+        double          _timeOfLastCheckEvents;
+        
+        int                _screenOriginX;
+        int                _screenOriginY;
+        unsigned int    _screenWidth;
+        unsigned int    _screenHeight;
+        
+        int                _windowOriginXToRealize;
+        int                _windowOriginYToRealize;
+        unsigned int    _windowWidthToRealize;
+        unsigned int    _windowHeightToRealize;
+               
         bool            _initialized;
+        bool            _valid;
         bool            _realized;
+        bool            _destroying;
 };
 
 }

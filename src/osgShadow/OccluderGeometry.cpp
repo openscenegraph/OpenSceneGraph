@@ -11,6 +11,10 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#define GL_GLEXT_PROTOTYPES 1
+#include <GL/gl.h>
+#include <GL/glext.h>
+
 #include <osgShadow/OccluderGeometry>
 
 #include <osg/Notify>
@@ -22,6 +26,7 @@
 #include <osg/Timer>
 
 #include <algorithm>
+
 
 using namespace osgShadow;
 
@@ -762,7 +767,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         // directional light.
         osg::Vec3 lightdirection( -lightpos.x(), -lightpos.y(), -lightpos.z());
         
-        osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
         
         // choose the base plane
         const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
@@ -822,12 +827,12 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
 
         osg::Plane basePlane(0.0, 0.0, 1.0, 0.0);
 
-        osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
         UIntList silhouetteIndices;
         computeLightPositionSlihouetteEdges(lightposition, silhouetteIndices);
         
-        osg::notify(osg::NOTICE)<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
-        osg::notify(osg::NOTICE)<<"lightpos  = "<<std::endl;
+        // osg::notify(osg::NOTICE)<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
+        // osg::notify(osg::NOTICE)<<"lightpos  = "<<std::endl;
         const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
 
         for(UIntList::iterator itr = silhouetteIndices.begin();
@@ -881,7 +886,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     svg.dirtyBound();
 
     osg::Timer_t t1 = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<"computeShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"computeShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
@@ -918,7 +923,8 @@ osg::BoundingBox OccluderGeometry::computeBound() const
 //
 //  ShadowVolumeGeometry
 //
-ShadowVolumeGeometry::ShadowVolumeGeometry()
+ShadowVolumeGeometry::ShadowVolumeGeometry():
+    _drawMode(GEOMETRY)
 {
 }
 
@@ -929,23 +935,60 @@ ShadowVolumeGeometry::ShadowVolumeGeometry(const ShadowVolumeGeometry& oc, const
 
 void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    renderInfo.getState()->disableAllVertexArrays();
-
-    renderInfo.getState()->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
-    
-    if (!_normals.empty())
+    if (_drawMode==GEOMETRY)
     {
-        renderInfo.getState()->setNormalPointer( GL_FLOAT, 0, &(_normals.front()) );
+        osg::State* state = renderInfo.getState();
+        
+        state->disableAllVertexArrays();
+
+        state->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
+
+        if (!_normals.empty())
+        {
+            state->setNormalPointer( GL_FLOAT, 0, &(_normals.front()) );
+        }
+        else
+        {
+            glNormal3f(0.0f, 0.0f, 0.0f);
+        }
+
+
+        glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
+
+        glDrawArrays( GL_QUADS, 0, _vertices.size() );
     }
-    else
+    else if (_drawMode==STENCIL_TWO_PASS)
     {
-        glNormal3f(0.0f, 0.0f, 0.0f);
+        osg::State* state = renderInfo.getState();
+        
+        state->disableAllVertexArrays();
+        state->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
+
+        // draw front faces of shadow volume
+        glCullFace(GL_BACK);
+        glStencilOp( GL_KEEP, GL_KEEP, GL_INCR);
+
+        glDrawArrays( GL_QUADS, 0, _vertices.size() );
+        
+        // draw back faces of shadow volume
+        glCullFace(GL_FRONT);
+        glStencilOp( GL_KEEP, GL_KEEP, GL_DECR);
+
+        glDrawArrays( GL_QUADS, 0, _vertices.size() );
+        
+        state->haveAppliedAttribute(osg::StateAttribute::CULLFACE);
+        state->haveAppliedAttribute(osg::StateAttribute::STENCIL);
+
     }
+    else // stencil two sided, note state all set up separately.
+    {
+        osg::State* state = renderInfo.getState();
+        
+        state->disableAllVertexArrays();
+        state->setVertexPointer( 3, GL_FLOAT, 0, &(_vertices.front()) );
 
-
-    glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
-    
-    glDrawArrays( GL_QUADS, 0, _vertices.size() );
+        glDrawArrays( GL_QUADS, 0, _vertices.size() );
+    }
 }
 
 osg::BoundingBox ShadowVolumeGeometry::computeBound() const

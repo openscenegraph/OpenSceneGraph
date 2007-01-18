@@ -528,6 +528,10 @@ SOURCE=..\..\src\osg\Stencil.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\StencilTwoSided.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Switch.cpp
 # End Source File
 # Begin Source File
@@ -1037,6 +1041,10 @@ SOURCE=..\..\Include\Osg\StateSet
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\Stencil
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\StencilTwoSided
 # End Source File
 # Begin Source File
 

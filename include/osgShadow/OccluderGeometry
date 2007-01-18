@@ -197,7 +197,16 @@ class OSGSHADOW_EXPORT ShadowVolumeGeometry : public osg::Drawable
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ShadowVolumeGeometry*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osgShadow"; }
         virtual const char* className() const { return "ShadowVolumeGeometry"; }
+
+        enum DrawMode
+        {
+            GEOMETRY,
+            STENCIL_TWO_PASS,
+            STENCIL_TWO_SIDED
+        };
         
+        void setDrawMode(DrawMode mode) { _drawMode = mode; }
+        DrawMode getDrawMode() const { return _drawMode; }
 
         typedef std::vector<osg::Vec3> Vec3List;
         typedef std::vector<GLuint> UIntList;
@@ -223,6 +232,7 @@ class OSGSHADOW_EXPORT ShadowVolumeGeometry : public osg::Drawable
 
         virtual ~ShadowVolumeGeometry() {}
 
+        DrawMode _drawMode;
         Vec3List _vertices;
         Vec3List _normals;
         UIntList _indices;

@@ -18,6 +18,12 @@
 
 namespace osg {
 
+#ifndef GL_INCR_WRAP
+#define GL_INCR_WRAP 0x8507
+#define GL_DECR_WRAP 0x8508
+#endif
+
+
 /** Encapsulate OpenGL glStencilFunc/Op/Mask functions.
 */     
 class OSG_EXPORT Stencil : public StateAttribute
@@ -102,7 +108,9 @@ class OSG_EXPORT Stencil : public StateAttribute
             REPLACE = GL_REPLACE,
             INCR = GL_INCR,
             DECR = GL_DECR,
-            INVERT = GL_INVERT
+            INVERT = GL_INVERT,
+            INCR_WRAP = GL_INCR_WRAP,
+            DECR_WRAP = GL_DECR_WRAP
         };
         
         /** set the operations to apply when the various stencil and depth 

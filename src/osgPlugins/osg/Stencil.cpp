@@ -158,6 +158,8 @@ bool Stencil_matchOperationStr(const char* str,Stencil::Operation& op)
     else if (strcmp(str,"INCR")==0) op = Stencil::INCR;
     else if (strcmp(str,"DECR")==0) op = Stencil::DECR;
     else if (strcmp(str,"INVERT")==0) op = Stencil::INVERT;
+    else if (strcmp(str,"INCR_WRAP")==0) op = Stencil::INCR_WRAP;
+    else if (strcmp(str,"DECR_WRAP")==0) op = Stencil::DECR_WRAP;
     else return false;
     return true;
 }
@@ -172,6 +174,8 @@ const char* Stencil_getOperationStr(Stencil::Operation op)
         case(Stencil::INCR): return "INCR";
         case(Stencil::DECR): return "DECR";
         case(Stencil::INVERT): return "INVERT";
+        case(Stencil::INCR_WRAP): return "INCR_WRAP";
+        case(Stencil::DECR_WRAP): return "DECR_WRAP";
     }
     return "";
 }

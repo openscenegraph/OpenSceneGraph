@@ -12,6 +12,10 @@
 */
 #include <osgDB/FileNameUtils>
 
+#ifdef WIN32
+    #include <windows.h>
+#endif
+
 #if defined(__sgi)
     #include <ctype.h>
 #elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)

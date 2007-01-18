@@ -156,6 +156,48 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
 {
   public:
 
+    // A class representing an OpenGL rendering context
+    class OpenGLContext
+    {
+        public:
+
+        OpenGLContext() : _previous(0), _hdc(0), _hglrc(0), _restorePreviousOnExit(false)
+        {}
+
+        OpenGLContext( HDC hdc, HGLRC hglrc ) : _previous(0), _hdc(hdc), _hglrc(hglrc), _restorePreviousOnExit(false)
+        {}
+
+        OpenGLContext( const OpenGLContext& context )
+        : _previous(context._previous),
+          _hdc(context._hdc),
+          _hglrc(context._hglrc),
+          _restorePreviousOnExit(context._restorePreviousOnExit)
+        {}
+
+        ~OpenGLContext();
+
+        HDC deviceContext() { return _hdc; }
+
+        bool makeCurrent( bool restorePreviousOnExit );
+
+      protected:
+
+        //
+        // Data members
+        //
+
+        HGLRC _previous;                // previously current rendering context
+        HDC   _hdc;                        // handle to device context
+        HGLRC _hglrc;                    // handle to OpenGL rendering context
+        bool  _restorePreviousOnExit;    // restore original context on exit
+
+        private:
+
+        // no implementation for assignment operator
+        OpenGLContext& operator=( const OpenGLContext& context );
+
+    };
+
     static std::string osgGraphicsWindowClassName;     //!< Name of Win32 window class used by OSG graphics window instances
 
     Win32WindowingSystem();
@@ -195,7 +237,7 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     virtual osgViewer::GraphicsWindowWin32* getGraphicsWindowFor( HWND hwnd );
 
     // Return a valid sample OpenGL Device Context and Rendering Context that can be used with wglXYZ extensions
-    virtual void getSampleOpenGLContext( HDC& deviceContext, HGLRC& renderingContext );
+    virtual OpenGLContext getSampleOpenGLContext();
 
   protected:
 
@@ -466,6 +508,41 @@ static LRESULT CALLBACK WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 }
 
 //////////////////////////////////////////////////////////////////////////////
+//              Win32WindowingSystem::OpenGLContext implementation
+//////////////////////////////////////////////////////////////////////////////
+
+Win32WindowingSystem::OpenGLContext::~OpenGLContext()
+{
+    if (_restorePreviousOnExit && _previous!=_hglrc && !::wglMakeCurrent(_hdc, _previous))
+    {
+        reportError("Win32WindowingSystem::OpenGLContext() - Unable to restore current OpenGL rendering context", ::GetLastError());
+    }
+
+    _previous = 0;
+    _hdc      = 0;
+    _hglrc    = 0;
+}
+
+bool Win32WindowingSystem::OpenGLContext::makeCurrent( bool restorePreviousOnExit )
+{
+    if (_hdc==0 || _hglrc==0) return false;
+
+    _previous = restorePreviousOnExit ? ::wglGetCurrentContext() : 0;
+
+    if (_hglrc==_previous) return true;
+
+    if (!::wglMakeCurrent(_hdc, _hglrc))
+    {
+        reportError("Win32WindowingSystem::OpenGLContext() - Unable to set current OpenGL rendering context", ::GetLastError());
+        return false;
+    }
+
+    _restorePreviousOnExit = restorePreviousOnExit;
+
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 //              Win32WindowingSystem implementation
 //////////////////////////////////////////////////////////////////////////////
 
@@ -557,12 +634,9 @@ void Win32WindowingSystem::unregisterWindowClass()
     }
 }
 
-void Win32WindowingSystem::getSampleOpenGLContext( HDC& deviceContext, HGLRC& renderingContext )
+Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext()
 {
-    deviceContext    = _dummyGLWindowDC;
-    renderingContext = _dummyGLRC;
-
-    if (_dummyGLWindowDC) return;
+    if (_dummyGLWindowDC) return OpenGLContext(_dummyGLWindowDC, _dummyGLRC);
 
     registerWindowClass();
 
@@ -581,7 +655,7 @@ void Win32WindowingSystem::getSampleOpenGLContext( HDC& deviceContext, HGLRC& re
     if (hwnd==0)
     {
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to create window", ::GetLastError());
-        return;
+        return OpenGLContext();
     }
 
     //
@@ -610,7 +684,7 @@ void Win32WindowingSystem::getSampleOpenGLContext( HDC& deviceContext, HGLRC& re
     {
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to get window device context", ::GetLastError());
         ::DestroyWindow(hwnd);
-        return;
+        return OpenGLContext();
     }
 
     int pixelFormatIndex = ::ChoosePixelFormat(hdc, &pixelFormat);
@@ -619,7 +693,7 @@ void Win32WindowingSystem::getSampleOpenGLContext( HDC& deviceContext, HGLRC& re
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to choose pixel format", ::GetLastError());
         ::ReleaseDC(hwnd, hdc);
         ::DestroyWindow(hwnd);
-        return;
+        return OpenGLContext();
     }
 
     if (!::SetPixelFormat(hdc, pixelFormatIndex, &pixelFormat))
@@ -627,7 +701,7 @@ void Win32WindowingSystem::getSampleOpenGLContext( HDC& deviceContext, HGLRC& re
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to set pixel format", ::GetLastError());
         ::ReleaseDC(hwnd, hdc);
         ::DestroyWindow(hwnd);
-        return;
+        return OpenGLContext();
     }
 
     HGLRC hglrc = ::wglCreateContext(hdc);
@@ -636,24 +710,14 @@ void Win32WindowingSystem::getSampleOpenGLContext( HDC& deviceContext, HGLRC& re
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to create an OpenGL rendering context", ::GetLastError());
         ::ReleaseDC(hwnd, hdc);
         ::DestroyWindow(hwnd);
-        return;
-    }
-    
-    if (!::wglMakeCurrent(hdc, hglrc))
-    {
-        reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to set the OpenGL rendering context", ::GetLastError());
-        ::wglDeleteContext(hglrc);
-        ::ReleaseDC(hwnd, hdc);
-        ::DestroyWindow(hwnd);
-        return;
+        return OpenGLContext();
     }
 
     _dummyGLWindow   = hwnd;
     _dummyGLWindowDC = hdc;
     _dummyGLRC       = hglrc;
 
-    deviceContext    = _dummyGLWindowDC;
-    renderingContext = _dummyGLRC;
+    return OpenGLContext(_dummyGLWindowDC, _dummyGLRC);
 }
 
 void Win32WindowingSystem::releaseSampleOpenGLContext()
@@ -674,7 +738,7 @@ void Win32WindowingSystem::releaseSampleOpenGLContext()
     if (_dummyGLWindow)
     {
         ::DestroyWindow(_dummyGLWindow);
-        _dummyGLWindow   = 0;
+        _dummyGLWindow = 0;
     }
 }
 
@@ -947,7 +1011,7 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& 
     Win32WindowingSystem* windowManager = Win32WindowingSystem::getInterface();
 
     windowManager->getScreenPosition(screenId, _screenOriginX, _screenOriginY, _screenWidth, _screenHeight);
-    if (_screenWidth==0 || _screenHeight==0) return 0;
+    if (_screenWidth==0 || _screenHeight==0) return false;
 
     x = _traits->x + _screenOriginX;
     y = _traits->y + _screenOriginY;
@@ -1001,10 +1065,8 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& 
 
 bool GraphicsWindowWin32::setPixelFormat()
 {
-    HDC   hdc;
-    HGLRC hglrc;
-
-    Win32WindowingSystem::getInterface()->getSampleOpenGLContext(hdc, hglrc);
+    Win32WindowingSystem::OpenGLContext glContext = Win32WindowingSystem::getInterface()->getSampleOpenGLContext();
+    if (!glContext.makeCurrent(true)) return false;
 
     //
     // Access the entry point for the wglChoosePixelFormatARB function
@@ -1059,7 +1121,7 @@ bool GraphicsWindowWin32::setPixelFormat()
     int pixelFormatIndex = 0;
     unsigned int numMatchingPixelFormats = 0;
 
-    if (!wglChoosePixelFormatARB(hdc,
+    if (!wglChoosePixelFormatARB(glContext.deviceContext(),
                                  attributes.get(),
                                  NULL,
                                  1,

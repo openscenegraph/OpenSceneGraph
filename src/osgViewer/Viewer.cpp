@@ -708,6 +708,8 @@ void Viewer::eventTraversal()
 {
     if (_done) return;
 
+    double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
     // osg::notify(osg::NOTICE)<<"Viewer::frameEventTraversal()."<<std::endl;
     
     // need to copy events from the GraphicsWindow's into local EventQueue;
@@ -981,11 +983,26 @@ void Viewer::eventTraversal()
         }
     }
 
+
+    
+    if (getStats())
+    {
+        double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time ", beginEventTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time ", endEventTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
+    }
+
+
 }
 
 void Viewer::updateTraversal()
 {
     if (_done) return;
+
+    double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     if (_scene.valid()) _scene->frameUpdateTraversal();
 
@@ -995,6 +1012,16 @@ void Viewer::updateTraversal()
     }
 
     updateSlaves();
+
+    if (getStats())
+    {
+        double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time ", beginUpdateTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time ", endUpdateTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
+    }
 }
 
 void Viewer::renderingTraversals()
@@ -1003,6 +1030,8 @@ void Viewer::renderingTraversals()
     checkWindowStatus();
 
     if (_done) return;
+
+    double beginRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
     if (dp)
@@ -1055,5 +1084,15 @@ void Viewer::renderingTraversals()
     if (dp)
     {
         dp->signalEndFrame();
+    }
+
+    if (getStats())
+    {
+        double endRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
     }
 }

@@ -43,6 +43,21 @@
 #endif
 
 
+#ifndef GL_TIME_ELAPSED
+    #define GL_TIME_ELAPSED                    0x88BF
+#endif
+
+#ifndef GL_EXT_timer_query
+    #ifdef _WIN32
+        typedef          __int64 GLint64EXT;
+        typedef unsigned __int64 GLuint64EXT;
+    #else
+        typedef long long int GLint64EXT;
+        typedef unsigned long long int GLuint64EXT;
+    #endif
+#endif
+
+
 namespace osg {
 
 
@@ -576,6 +591,9 @@ class OSG_EXPORT Drawable : public Object
             void setARBOcclusionQuerySupported(bool flag) { _isARBOcclusionQuerySupported=flag; }
             bool isARBOcclusionQuerySupported() const { return _isARBOcclusionQuerySupported; }
 
+            void setTimerQuerySupported(bool flag) { _isTimerQuerySupported = flag; }
+            bool isTimerQuerySupported() const { return _isTimerQuerySupported; }
+
             void glSecondaryColor3ubv(const GLubyte* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
 
@@ -624,6 +642,7 @@ class OSG_EXPORT Drawable : public Object
             void glDeleteQueries(GLsizei n, const GLuint *ids) const;
             void glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const;
             void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
+            void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const;
 
         protected:
 
@@ -660,6 +679,7 @@ class OSG_EXPORT Drawable : public Object
             typedef void (APIENTRY * EndOcclusionQueryProc) ();
             typedef void (APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
             typedef void (APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
+            typedef void (APIENTRY * GetOcclusionQueryui64vProc) ( GLuint id, GLenum pname, GLuint64EXT *params );
 
             typedef void (APIENTRY *GenQueriesProc) (GLsizei n, GLuint *ids);
             typedef void (APIENTRY *DeleteQueriesProc) (GLsizei n, const GLuint *ids);
@@ -669,6 +689,7 @@ class OSG_EXPORT Drawable : public Object
             typedef void (APIENTRY *GetQueryivProc) (GLenum target, GLenum pname, GLint *params);
             typedef void (APIENTRY *GetQueryObjectivProc) (GLuint id, GLenum pname, GLint *params);
             typedef void (APIENTRY *GetQueryObjectuivProc) (GLuint id, GLenum pname, GLuint *params);
+            typedef void (APIENTRY *GetQueryObjectui64vProc) (GLuint id, GLenum pname, GLuint64EXT *params);
 
             ~Extensions() {}
 
@@ -678,6 +699,7 @@ class OSG_EXPORT Drawable : public Object
             bool _isMultiTexSupported;
             bool _isOcclusionQuerySupported;
             bool _isARBOcclusionQuerySupported;
+            bool _isTimerQuerySupported;
 
             FogCoordProc _glFogCoordfv;
 
@@ -725,6 +747,7 @@ class OSG_EXPORT Drawable : public Object
             GetQueryivProc _gl_get_queryiv_arb;
             GetQueryObjectivProc _gl_get_query_objectiv_arb;
             GetQueryObjectuivProc  _gl_get_query_objectuiv_arb;
+            GetQueryObjectui64vProc  _gl_get_query_objectui64v;
 
         };
 

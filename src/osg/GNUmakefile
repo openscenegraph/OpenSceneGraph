@@ -92,6 +92,7 @@ CXXFILES =\
 	Shape.cpp\
 	ShapeDrawable.cpp\
 	State.cpp\
+	Stats.cpp\
 	StateAttribute.cpp\
 	StateSet.cpp\
 	Stencil.cpp\

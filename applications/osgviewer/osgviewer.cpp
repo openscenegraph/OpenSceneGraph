@@ -200,6 +200,39 @@ public:
     bool _done;
 };
 
+class StatsHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    StatsHandler() {}
+        
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        if (!viewer) return false;
+    
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()=='s')
+                {
+                    if (viewer->getStats())
+                    {
+                        viewer->getStats()->report(osg::notify(osg::NOTICE));
+                    }
+                    return true;
+                }
+            }
+            default: break;
+        }
+        
+        return false;
+    }
+    
+    bool _done;
+};
+
 int main_osgViewer(osg::ArgumentParser& arguments)
 {
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
@@ -273,9 +306,10 @@ int main_osgViewer(osg::ArgumentParser& arguments)
     }
     
     // add the thread model handler
-    {
-        viewer.addEventHandler(new ThreadingHandler);
-    }
+    viewer.addEventHandler(new ThreadingHandler);
+
+    // add the stats handler
+    viewer.addEventHandler(new StatsHandler);
 
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);

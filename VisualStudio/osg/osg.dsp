@@ -524,6 +524,10 @@ SOURCE=..\..\src\osg\StateSet.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\Stats.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Stencil.cpp
 # End Source File
 # Begin Source File
@@ -1037,6 +1041,10 @@ SOURCE=..\..\Include\Osg\StateAttribute
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\StateSet
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\Stats
 # End Source File
 # Begin Source File
 

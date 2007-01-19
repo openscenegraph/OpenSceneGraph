@@ -6,10 +6,7 @@
  * included with this distribution, and on the openscenegraph.org website.
  * 
  * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY
-{
-}
- without even the implied warranty of
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
@@ -38,6 +35,8 @@ Viewer::Viewer():
 
     _eventVisitor = new osgGA::EventVisitor;
     _eventVisitor->setActionAdapter(this);
+    
+    setStats(new osg::Stats("Viewer"));
 }
 
 Viewer::~Viewer()
@@ -459,16 +458,73 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
     
 
         // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
-        
-        _sceneView->cull();
-        _sceneView->draw();
 
-        double availableTime = 0.004; // 4 ms
-        if (_databasePager.valid())
+         _sceneView->cull();
+        
+
+#if 0        
+        osg::State* state = _sceneView->getState();
+        osg::Stats* stats = _sceneView->getCamera()->getStats();
+        const osg::Drawable::Extensions* extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
+        bool aquireGPUStats = extensions && extensions->isTimerQuerySupported();
+
+
+        if (aquireGPUStats)
         {
-            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+            const osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(state->getContextID(),true);
+            bool aquireGPUStats = extensions->isTimerQuerySupported() && stats;
+
+            GLuint queries[2];
+            GLint available = 0;
+
+            // Create a query object.
+            extensions->glGenQueries(2, queries);
+
+            extensions->glBeginQuery(GL_TIME_ELAPSED, queries[0]);
+
+            _sceneView->draw();
+
+            extensions->glEndQuery(GL_TIME_ELAPSED);
+            extensions->glBeginQuery(GL_TIME_ELAPSED, queries[1]);
+
+            double availableTime = 0.004; // 4 ms
+            if (_databasePager.valid())
+            {
+                _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+            }
+            _sceneView->flushDeletedGLObjects(availableTime);
+
+            extensions->glEndQuery(GL_TIME_ELAPSED);
+
+            // Wait for all results to become available
+            while (!available) {
+                extensions->glGetQueryObjectiv(queries[1], GL_QUERY_RESULT_AVAILABLE, &available);
+            }
+
+            GLuint64EXT timeElapsed = 0;
+            extensions->glGetQueryObjectui64v(queries[0], GL_QUERY_RESULT, &timeElapsed);
+            stats->setAttribute(state->getFrameStamp()->getFrameNumber(), "GPU draw elapsed time", double(timeElapsed)*1e-9);
+
+            extensions->glGetQueryObjectui64v(queries[1], GL_QUERY_RESULT, &timeElapsed);
+            stats->setAttribute(state->getFrameStamp()->getFrameNumber(), "GPU compile & flush elapsed time", double(timeElapsed)*1e-9);
+
         }
-        _sceneView->flushDeletedGLObjects(availableTime);
+        else
+#endif
+
+        {
+            _sceneView->draw();
+
+            double availableTime = 0.004; // 4 ms
+            if (_databasePager.valid())
+            {
+                _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+            }
+            _sceneView->flushDeletedGLObjects(availableTime);
+        }
+        
+        
+        
     }
     
     osg::observer_ptr<osgUtil::SceneView>    _sceneView;
@@ -498,6 +554,8 @@ void Viewer::setUpRenderingSupport()
 
     if (_camera.valid() && _camera->getGraphicsContext())
     {
+        _camera->setStats(new osg::Stats("Viewer"));
+
         osgUtil::SceneView* sceneView = new osgUtil::SceneView;
         _cameraSceneViewMap[_camera] = sceneView;
 
@@ -519,6 +577,8 @@ void Viewer::setUpRenderingSupport()
         Slave& slave = getSlave(i);
         if (slave._camera.valid() && slave._camera->getGraphicsContext())
         {
+            _camera->setStats(new osg::Stats("Slave Camera"));
+
             osgUtil::SceneView* sceneView = new osgUtil::SceneView;
             _cameraSceneViewMap[slave._camera] = sceneView;
 
@@ -626,8 +686,22 @@ void Viewer::advance()
 {
     if (_done) return;
 
+    double prevousReferenceTime = _frameStamp->getReferenceTime();
+    int previousFrameNumber = _frameStamp->getFrameNumber();
+
     _frameStamp->setReferenceTime( osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()) );
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
+    
+    if (getStats())
+    {
+        // update previous frame stats
+        double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
+        getStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
+        getStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
+    }
 }
 
 void Viewer::eventTraversal()

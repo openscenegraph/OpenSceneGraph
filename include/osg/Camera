@@ -21,6 +21,7 @@
 #include <osg/Texture>
 #include <osg/Image>
 #include <osg/GraphicsContext>
+#include <osg/Stats>
 
 #include <OpenThreads/Mutex>
 
@@ -53,6 +54,16 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const View* getView() const { return _view; }
 
 
+        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        void setStats(osg::Stats* stats) { _stats = stats; }
+
+        /** Get the Stats object.*/
+        osg::Stats* getStats() { return _stats.get(); }
+
+        /** Get the const Stats object.*/
+        const osg::Stats* getStats() const { return _stats.get(); }
+
+
         /** Sets the clear color. */
         inline void setClearColor(const Vec4& color) { _clearColor = color; }
 
@@ -78,8 +89,6 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the ColorMask. */
         ColorMask* getColorMask() { return _colorMask.get(); }
-
-
 
 
         /** Set the viewport of the camera to use specified osg::Viewport. */
@@ -376,6 +385,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
 
         View*                       _view;
+
+        osg::ref_ptr<osg::Stats>    _stats;
         
         Vec4                        _clearColor;
         GLbitfield                  _clearMask;

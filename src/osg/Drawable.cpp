@@ -818,6 +818,8 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _isFogCoordSupported = rhs._isFogCoordSupported;
     _isMultiTexSupported = rhs._isMultiTexSupported;
     _isOcclusionQuerySupported = rhs._isOcclusionQuerySupported;
+    _isTimerQuerySupported = rhs._isTimerQuerySupported;
+    
     _glFogCoordfv = rhs._glFogCoordfv;
     _glSecondaryColor3ubv = rhs._glSecondaryColor3ubv;
     _glSecondaryColor3fv = rhs._glSecondaryColor3fv;
@@ -852,6 +854,7 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _gl_get_queryiv_arb = rhs._gl_get_queryiv_arb;
     _gl_get_query_objectiv_arb = rhs._gl_get_query_objectiv_arb;
     _gl_get_query_objectuiv_arb = rhs._gl_get_query_objectuiv_arb;
+    _gl_get_query_objectui64v = rhs._gl_get_query_objectui64v;
 }
 
 
@@ -863,6 +866,8 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isMultiTexSupported) _isMultiTexSupported = false;
     if (!rhs._isOcclusionQuerySupported) _isOcclusionQuerySupported = false;
     if (!rhs._isARBOcclusionQuerySupported) _isARBOcclusionQuerySupported = false;
+
+    if (!rhs._isTimerQuerySupported) _isTimerQuerySupported = false;
 
     if (!rhs._glFogCoordfv) _glFogCoordfv = 0;
     if (!rhs._glSecondaryColor3ubv) _glSecondaryColor3ubv = 0;
@@ -908,6 +913,7 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._gl_get_queryiv_arb) _gl_get_queryiv_arb = 0;
     if (!rhs._gl_get_query_objectiv_arb) _gl_get_query_objectiv_arb = 0;
     if (!rhs._gl_get_query_objectuiv_arb) _gl_get_query_objectuiv_arb = 0;
+    if (!rhs._gl_get_query_objectui64v) _gl_get_query_objectui64v = 0;
 }
 
 void Drawable::Extensions::setupGLExtenions(unsigned int contextID)
@@ -918,6 +924,9 @@ void Drawable::Extensions::setupGLExtenions(unsigned int contextID)
     _isMultiTexSupported = isGLExtensionSupported(contextID,"GL_ARB_multitexture");
     _isOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query" );
     _isARBOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query" );
+
+    _isTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query" );;
+
 
     _glFogCoordfv = ((FogCoordProc)osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT"));
     _glSecondaryColor3ubv = ((SecondaryColor3ubvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT"));
@@ -963,6 +972,7 @@ void Drawable::Extensions::setupGLExtenions(unsigned int contextID)
     _gl_get_queryiv_arb = (GetQueryivProc)osg::getGLExtensionFuncPtr("glGetQueryiv", "glGetQueryivARB");
     _gl_get_query_objectiv_arb = (GetQueryObjectivProc)osg::getGLExtensionFuncPtr("glGetQueryObjectiv","glGetQueryObjectivARB");
     _gl_get_query_objectuiv_arb = (GetQueryObjectuivProc)osg::getGLExtensionFuncPtr("glGetQueryObjectuiv","glGetQueryObjectuivARB");
+    _gl_get_query_objectui64v = (GetQueryObjectui64vProc)osg::getGLExtensionFuncPtr("glGetQueryObjectui64v","glGetQueryObjectui64vEXT");
 }
 
 void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const
@@ -1360,4 +1370,12 @@ void Drawable::Extensions::glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *
     _gl_get_query_objectuiv_arb(id, pname, params);
   else
     osg::notify(osg::WARN) << "Error: glGetQueryObjectuiv not supported by OpenGL driver" << std::endl;
+}
+
+void Drawable::Extensions::glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const
+{
+  if (_gl_get_query_objectuiv_arb)
+    _gl_get_query_objectui64v(id, pname, params);
+  else
+    osg::notify(osg::WARN) << "Error: glGetQueryObjectui64v not supported by OpenGL driver" << std::endl;
 }

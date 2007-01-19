@@ -1,0 +1,80 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2007 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_STATS
+#define OSG_STATS 1
+
+#include <osg/Referenced>
+
+#include <string>
+#include <map>
+#include <vector>
+#include <ostream>
+
+namespace osg {
+
+class Stats : public osg::Referenced
+{
+    public:
+
+        Stats(const std::string& name, unsigned int numberOfFrames=100);
+        
+        void setName(const std::string& name) { _name = name; }
+        const std::string& getName() const { return _name; }
+        
+        void allocate(unsigned int numberOfFrames);
+        
+        int getEarliestFrameNumber() const { return _latestFrameNumber < static_cast<int>(_attributeMapList.size()) ? 0 : _latestFrameNumber - _attributeMapList.size() + 1; }
+        int getLatestFrameNumber() const { return _latestFrameNumber; }
+        
+        typedef std::map<std::string, double> AttributeMap;
+        typedef std::vector<AttributeMap> AttributeMapList;
+
+        bool setAttribute(int frameNumber, const std::string& attributeName, double value);
+        bool getAttribute(int frameNumber, const std::string& attributeName, double& value) const;        
+        
+        AttributeMap& getAttributeMap(int frameNumber);
+        const AttributeMap& getAttributeMap(int frameNumber) const;
+        
+        void report(std::ostream& out);
+        
+    protected:
+    
+        virtual ~Stats() {}
+        
+        int getIndex(int frameNumber) const
+        {
+            // reject frame that are in the future
+            if (frameNumber > _latestFrameNumber) return -1;
+            
+            // reject frames that are too early
+            if (frameNumber < getEarliestFrameNumber()) return -1;
+            
+            if (frameNumber >= _baseFrameNumber) return frameNumber - _baseFrameNumber;
+            else return _attributeMapList.size() - (_baseFrameNumber-frameNumber);
+        }
+
+        std::string         _name;
+        
+        int                 _baseFrameNumber;
+        int                 _latestFrameNumber;
+        
+        AttributeMapList    _attributeMapList;
+        AttributeMap        _invalidAttributeMap;
+        
+};
+
+
+}
+
+#endif

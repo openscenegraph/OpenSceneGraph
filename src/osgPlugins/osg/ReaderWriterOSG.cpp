@@ -105,7 +105,7 @@ class OSGReaderWriter : public ReaderWriter
                     }
                     if (opt=="OutputTextureFiles")
                     {
-                        fout.setOutputTextureFiles(false);
+                        fout.setOutputTextureFiles(true);
                     }
                 }
             }

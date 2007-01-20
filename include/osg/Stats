@@ -23,7 +23,7 @@
 
 namespace osg {
 
-class Stats : public osg::Referenced
+class OSG_EXPORT Stats : public osg::Referenced
 {
     public:
 

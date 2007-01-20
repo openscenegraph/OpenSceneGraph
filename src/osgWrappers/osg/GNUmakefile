@@ -99,7 +99,9 @@ CXXFILES =\
 	State.cpp\
 	StateAttribute.cpp\
 	StateSet.cpp\
+	Stats.cpp\
 	Stencil.cpp\
+	StencilTwoSided.cpp\
 	Switch.cpp\
 	TexEnv.cpp\
 	TexEnvCombine.cpp\

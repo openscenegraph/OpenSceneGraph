@@ -42,6 +42,8 @@ BEGIN_ENUM_REFLECTOR(osg::Stencil::Operation)
 	I_EnumLabel(osg::Stencil::INCR);
 	I_EnumLabel(osg::Stencil::DECR);
 	I_EnumLabel(osg::Stencil::INVERT);
+	I_EnumLabel(osg::Stencil::INCR_WRAP);
+	I_EnumLabel(osg::Stencil::DECR_WRAP);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Stencil)

@@ -213,7 +213,7 @@ public:
     
         switch(ea.getEventType())
         {
-            case(osgGA::GUIEventAdapter::KEYUP):
+            case(osgGA::GUIEventAdapter::KEYDOWN):
             {
                 if (ea.getKey()=='s')
                 {

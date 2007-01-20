@@ -21,6 +21,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/State>
+#include <osg/Stats>
 #include <osg/Texture>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -115,6 +116,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_Method0(const osg::View *, getView,
 	          __C5_View_P1__getView,
 	          "Get the const View that this Camera is part of. ",
+	          "");
+	I_Method1(void, setStats, IN, osg::Stats *, stats,
+	          __void__setStats__osg_Stats_P1,
+	          "Set the Stats object used for collect various frame related timing and scene graph stats. ",
+	          "");
+	I_Method0(osg::Stats *, getStats,
+	          __osg_Stats_P1__getStats,
+	          "Get the Stats object. ",
+	          "");
+	I_Method0(const osg::Stats *, getStats,
+	          __C5_osg_Stats_P1__getStats,
+	          "Get the const Stats object. ",
 	          "");
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color,
 	          __void__setClearColor__C5_Vec4_R1,
@@ -421,6 +434,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	                  __osg_Object_P1__getRenderingCache__unsigned_int, 
 	                  __void__setRenderingCache__unsigned_int__osg_Object_P1, 
 	                  0);
+	I_SimpleProperty(osg::Stats *, Stats, 
+	                 __osg_Stats_P1__getStats, 
+	                 __void__setStats__osg_Stats_P1);
 	I_SimpleProperty(osg::Camera::TransformOrder, TransformOrder, 
 	                 __TransformOrder__getTransformOrder, 
 	                 __void__setTransformOrder__TransformOrder);

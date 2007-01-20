@@ -107,6 +107,12 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::ShadowVolumeGeometry::Vec3L
 
 TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::ShadowVolumeGeometry::UIntList);
 
+BEGIN_ENUM_REFLECTOR(osgShadow::ShadowVolumeGeometry::DrawMode)
+	I_EnumLabel(osgShadow::ShadowVolumeGeometry::GEOMETRY);
+	I_EnumLabel(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS);
+	I_EnumLabel(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ShadowVolumeGeometry,
@@ -136,6 +142,14 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setDrawMode, IN, osgShadow::ShadowVolumeGeometry::DrawMode, mode,
+	          __void__setDrawMode__DrawMode,
+	          "",
+	          "");
+	I_Method0(osgShadow::ShadowVolumeGeometry::DrawMode, getDrawMode,
+	          __DrawMode__getDrawMode,
+	          "",
+	          "");
 	I_Method1(void, setVertices, IN, const osgShadow::ShadowVolumeGeometry::Vec3List &, vertices,
 	          __void__setVertices__C5_Vec3List_R1,
 	          "",
@@ -168,6 +182,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	          __osg_BoundingBox__computeBound,
 	          "Compute the bounding box around occluder geometry. ",
 	          "");
+	I_SimpleProperty(osgShadow::ShadowVolumeGeometry::DrawMode, DrawMode, 
+	                 __DrawMode__getDrawMode, 
+	                 __void__setDrawMode__DrawMode);
 	I_SimpleProperty(const osgShadow::ShadowVolumeGeometry::Vec3List &, Normals, 
 	                 __C5_Vec3List_R1__getNormals, 
 	                 __void__setNormals__C5_Vec3List_R1);

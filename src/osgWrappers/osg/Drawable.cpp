@@ -728,6 +728,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	          __bool__isARBOcclusionQuerySupported,
 	          "",
 	          "");
+	I_Method1(void, setTimerQuerySupported, IN, bool, flag,
+	          __void__setTimerQuerySupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTimerQuerySupported,
+	          __bool__isTimerQuerySupported,
+	          "",
+	          "");
 	I_Method1(void, glSecondaryColor3ubv, IN, const GLubyte *, coord,
 	          __void__glSecondaryColor3ubv__C5_GLubyte_P1,
 	          "",
@@ -888,6 +896,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	          __void__glGetQueryObjectuiv__GLuint__GLenum__GLuint_P1,
 	          "",
 	          "");
+	I_Method3(void, glGetQueryObjectui64v, IN, GLuint, id, IN, GLenum, pname, IN, GLuint64EXT *, params,
+	          __void__glGetQueryObjectui64v__GLuint__GLenum__GLuint64EXT_P1,
+	          "",
+	          "");
 	I_SimpleProperty(bool, ARBOcclusionQuerySupported, 
 	                 0, 
 	                 __void__setARBOcclusionQuerySupported__bool);
@@ -903,6 +915,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	I_SimpleProperty(bool, SecondaryColorSupported, 
 	                 0, 
 	                 __void__setSecondaryColorSupported__bool);
+	I_SimpleProperty(bool, TimerQuerySupported, 
+	                 0, 
+	                 __void__setTimerQuerySupported__bool);
 	I_SimpleProperty(bool, VertexProgramSupported, 
 	                 0, 
 	                 __void__setVertexProgramSupported__bool);

@@ -484,7 +484,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\StateSet.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Stats.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Stencil.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\StencilTwoSided.cpp
 # End Source File
 
 # Begin Source File

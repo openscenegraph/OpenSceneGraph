@@ -13,6 +13,7 @@
 #include <osg/Camera>
 #include <osg/Matrix>
 #include <osg/Matrixd>
+#include <osg/Stats>
 #include <osg/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -28,6 +29,18 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_Constructor0(____View,
 	               "",
 	               "");
+	I_Method1(void, setStats, IN, osg::Stats *, stats,
+	          __void__setStats__osg_Stats_P1,
+	          "Set the Stats object used for collect various frame related timing and scene graph stats. ",
+	          "");
+	I_Method0(osg::Stats *, getStats,
+	          __osg_Stats_P1__getStats,
+	          "Get the Stats object. ",
+	          "");
+	I_Method0(const osg::Stats *, getStats,
+	          __C5_osg_Stats_P1__getStats,
+	          "Get the const Stats object. ",
+	          "");
 	I_Method1(void, setCamera, IN, osg::Camera *, camera,
 	          __void__setCamera__osg_Camera_P1,
 	          "Set the master camera of the view. ",
@@ -86,6 +99,9 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	                0, 
 	                0, 
 	                __bool__removeSlave__unsigned_int);
+	I_SimpleProperty(osg::Stats *, Stats, 
+	                 __osg_Stats_P1__getStats, 
+	                 __void__setStats__osg_Stats_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::View::Slave)

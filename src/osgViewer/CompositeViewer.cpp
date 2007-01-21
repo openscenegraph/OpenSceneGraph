@@ -857,11 +857,13 @@ void CompositeViewer::eventTraversal()
                             {
                                 osg::Camera* camera = *citr;
                                 osg::Viewport* viewport = camera ? camera->getViewport() : 0;
-                                if (viewport && 
+                                if (camera->getView() &&                                
+                                    viewport && 
                                     x >= viewport->x() && y >= viewport->y() &&
                                     x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
                                 {
                                     setCameraWithFocus(camera);
+                                    
                                     if (getViewWithFocus()!=masterView)
                                     {
                                         // need to reset the masterView

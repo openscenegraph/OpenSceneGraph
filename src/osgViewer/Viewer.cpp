@@ -821,12 +821,15 @@ void Viewer::eventTraversal()
                                 ++citr)
                             {
                                 osg::Camera* camera = *citr;
-                                osg::Viewport* viewport = camera ? camera->getViewport() : 0;
-                                if (viewport && 
-                                    x >= viewport->x() && y >= viewport->y() &&
-                                    x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
+                                if (camera->getView()==this)
                                 {
-                                    setCameraWithFocus(camera);
+                                    osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+                                    if (viewport && 
+                                        x >= viewport->x() && y >= viewport->y() &&
+                                        x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
+                                    {
+                                        setCameraWithFocus(camera);
+                                    }
                                 }
                             }
                         }

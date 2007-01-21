@@ -172,11 +172,6 @@ public:
                     return true;
                 }
             }
-            case(osgGA::GUIEventAdapter::FRAME):
-            {
-                update(viewer);
-                return true;
-            }
             default: break;
         }
         
@@ -209,10 +204,11 @@ public:
     
     struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
     {
-        TextDrawCallback(osg::Stats* stats, const std::string name, int frameDelta):
+        TextDrawCallback(osg::Stats* stats, const std::string name, int frameDelta, double multiplier = 1.0):
             _stats(stats),
             _attributeName(name),
-            _frameDelta(frameDelta) {}
+            _frameDelta(frameDelta),
+            _multiplier(multiplier) {}
     
         /** do customized draw code.*/
         virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
@@ -224,7 +220,7 @@ public:
             double value;
             if (_stats->getAttribute( frameNumber+_frameDelta, _attributeName, value))
             {
-                sprintf(_tmpText,"%4.2f",value);
+                sprintf(_tmpText,"%4.2f",value * _multiplier);
                 text->setText(_tmpText);
             }
                         
@@ -234,6 +230,7 @@ public:
         osg::Stats*     _stats;
         std::string     _attributeName;
         int             _frameDelta;
+        double          _multiplier;
         mutable char    _tmpText[128];
     };
 
@@ -259,41 +256,33 @@ public:
         osg::Vec4 colorDraw( 1.0f,1.0f,0.0f,1.0f);
         osg::Vec4 colorGPU( 1.0f,0.5f,0.0f,1.0f);
 
-
         // frame rate stats
         {
             osg::Geode* geode = new osg::Geode();
 
-            std::string font("fonts/arial.ttf");
+            osg::ref_ptr<osgText::Text> frameRateLabel = new osgText::Text;
+            geode->addDrawable( frameRateLabel.get() );
 
-            // turn lighting off for the text and disable depth test to ensure its always ontop.
+            frameRateLabel->setColor(colorFR);
+            frameRateLabel->setFont(font);
+            frameRateLabel->setCharacterSize(characterSize);
+            frameRateLabel->setPosition(pos);
+            frameRateLabel->setText("Frame Rate: ");
 
-            {
-                _frameRateLabel = new osgText::Text;
-                geode->addDrawable( _frameRateLabel.get() );
+            pos.x() = frameRateLabel->getBound().xMax();
 
-                _frameRateLabel->setColor(colorFR);
-                _frameRateLabel->setFont(font);
-                _frameRateLabel->setCharacterSize(characterSize);
-                _frameRateLabel->setPosition(pos);
-                _frameRateLabel->setText("Frame Rate: ");
-                
-                pos.x() = _frameRateLabel->getBound().xMax();
+            _frameRateValue = new osgText::Text;
+            geode->addDrawable( _frameRateValue.get() );
 
-                _frameRateValue = new osgText::Text;
-                geode->addDrawable( _frameRateValue.get() );
+            _frameRateValue->setColor(colorFR);
+            _frameRateValue->setFont(font);
+            _frameRateValue->setCharacterSize(characterSize);
+            _frameRateValue->setPosition(pos);
+            _frameRateValue->setText("0.0");
 
-                _frameRateValue->setColor(colorFR);
-                _frameRateValue->setFont(font);
-                _frameRateValue->setCharacterSize(characterSize);
-                _frameRateValue->setPosition(pos);
-                _frameRateValue->setText("0.0");
+            _frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1));
 
-                _frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1));
-
-                pos.y() -= characterSize*1.5f;
-;
-            }
+            pos.y() -= characterSize*1.5f;
             
             _frameRateChildNum = _switch->getNumChildren();
             _switch->addChild(geode, false);
@@ -302,20 +291,93 @@ public:
 
         // viewer stats
         {
-            pos.x() = leftPos;
-
             osg::Geode* geode = new osg::Geode();
 
-            {
-                osgText::Text* text = new  osgText::Text;
-                geode->addDrawable( text );
 
-                text->setFont(font);
-                text->setPosition(pos);
-                text->setText("Viewer Stats ");
+            {
+                pos.x() = leftPos;
+
+                osg::ref_ptr<osgText::Text> eventLabel = new osgText::Text;
+                geode->addDrawable( eventLabel.get() );
+
+                eventLabel->setColor(colorUpdate);
+                eventLabel->setFont(font);
+                eventLabel->setCharacterSize(characterSize);
+                eventLabel->setPosition(pos);
+                eventLabel->setText("Event: ");
+
+                pos.x() = eventLabel->getBound().xMax();
+
+                _eventValue = new osgText::Text;
+                geode->addDrawable( _eventValue.get() );
+
+                _eventValue->setColor(colorUpdate);
+                _eventValue->setFont(font);
+                _eventValue->setCharacterSize(characterSize);
+                _eventValue->setPosition(pos);
+                _eventValue->setText("0.0");
+
+                _eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, 1000.0));
 
                 pos.y() -= characterSize*1.5f;
-            }    
+            }
+            
+            {
+                pos.x() = leftPos;
+
+                osg::ref_ptr<osgText::Text> updateLabel = new osgText::Text;
+                geode->addDrawable( updateLabel.get() );
+
+                updateLabel->setColor(colorUpdate);
+                updateLabel->setFont(font);
+                updateLabel->setCharacterSize(characterSize);
+                updateLabel->setPosition(pos);
+                updateLabel->setText("Update: ");
+
+                pos.x() = updateLabel->getBound().xMax();
+
+                _updateValue = new osgText::Text;
+                geode->addDrawable( _updateValue.get() );
+
+                _updateValue->setColor(colorUpdate);
+                _updateValue->setFont(font);
+                _updateValue->setCharacterSize(characterSize);
+                _updateValue->setPosition(pos);
+                _updateValue->setText("0.0");
+
+                _updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, 1000.0));
+
+                pos.y() -= characterSize*1.5f;
+            }
+            
+            
+            {
+                pos.x() = leftPos;
+
+                osg::ref_ptr<osgText::Text> updateLabel = new osgText::Text;
+                geode->addDrawable( updateLabel.get() );
+
+                updateLabel->setColor(colorDraw);
+                updateLabel->setFont(font);
+                updateLabel->setCharacterSize(characterSize);
+                updateLabel->setPosition(pos);
+                updateLabel->setText("Rendering: ");
+
+                pos.x() = updateLabel->getBound().xMax();
+
+                _renderingValue = new osgText::Text;
+                geode->addDrawable( _renderingValue.get() );
+
+                _renderingValue->setColor(colorDraw);
+                _renderingValue->setFont(font);
+                _renderingValue->setCharacterSize(characterSize);
+                _renderingValue->setPosition(pos);
+                _renderingValue->setText("0.0");
+
+                _renderingValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Rendering traversals time taken",-1, 1000.0));
+
+                pos.y() -= characterSize*1.5f;
+            }
 
             _viewerChildNum = _switch->getNumChildren();
             _switch->addChild(geode, false);
@@ -332,8 +394,10 @@ public:
                 geode->addDrawable( text );
 
                 text->setFont(font);
+                text->setFont(font);
+                text->setCharacterSize(characterSize);
                 text->setPosition(pos);
-                text->setText("Scene Stats ");
+                text->setText("Scene Stats to do...");
 
                 pos.y() -= characterSize*1.5f;
             }    
@@ -343,35 +407,16 @@ public:
         }
     }
     
-    void update(osgViewer::Viewer* viewer)
-    {
-        return ;
-
-        osg::Stats* stats = viewer->getStats();
-        if (!stats || _statsType==NO_STATS) return;
-                
-        int frameNumber = viewer->getFrameStamp()->getFrameNumber();
-        
-        char tmpText[128];
-        double frameRate = 0.0;
-        
-        osg::Timer_t startTick = osg::Timer::instance()->tick();
-        if (stats->getAttribute(frameNumber-1, "Frame rate", frameRate))
-        {
-            sprintf(tmpText,"%4.2f",frameRate);
-            _frameRateValue->setText(tmpText);
-        }
-        
-    }
-
 
     int                             _statsType;
     osg::ref_ptr<osg::Camera>       _camera;
     osg::ref_ptr<osg::Switch>       _switch;
     
     unsigned int                    _frameRateChildNum;
-    osg::ref_ptr<osgText::Text>     _frameRateLabel;
     osg::ref_ptr<osgText::Text>     _frameRateValue;
+    osg::ref_ptr<osgText::Text>     _eventValue;
+    osg::ref_ptr<osgText::Text>     _updateValue;
+    osg::ref_ptr<osgText::Text>     _renderingValue;
 
     unsigned int                    _viewerChildNum;
     

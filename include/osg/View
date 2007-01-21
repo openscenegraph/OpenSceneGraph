@@ -43,7 +43,7 @@ class OSG_EXPORT View : public virtual osg::Referenced
 
 
         /** Set the master camera of the view. */        
-        void setCamera(osg::Camera* camera) { _camera = camera; }
+        void setCamera(osg::Camera* camera);
 
         /** Get the master camera of the view. */        
         osg::Camera* getCamera() { return _camera.get(); }

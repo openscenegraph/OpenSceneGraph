@@ -533,6 +533,57 @@ struct CompositeViewerRenderingOperation : public osg::GraphicsOperation
 
 void CompositeViewer::setUpRenderingSupport()
 {
+#if 1
+    _cameraSceneViewMap.clear();
+
+    Contexts contexts;
+    getContexts(contexts);
+    
+    osg::FrameStamp* frameStamp = getFrameStamp();
+
+    for(Contexts::iterator gcitr = contexts.begin();
+        gcitr != contexts.end();
+        ++gcitr)
+    {
+        (*gcitr)->removeAllOperations();
+
+        osg::GraphicsContext* gc = *gcitr;
+        osg::GraphicsContext::Cameras& cameras = gc->getCameras();
+        osg::State* state = gc->getState();
+        
+        for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
+            citr != cameras.end();
+            ++citr)
+        {
+            osg::Camera* camera = *citr;
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(camera->getView());
+            osgViewer::Scene* scene = view ? view->getScene() : 0;
+            
+            osg::DisplaySettings* ds = view ? view->getDisplaySettings() : 0;
+            if (!ds) ds = osg::DisplaySettings::instance();
+        
+            osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
+
+            camera->setStats(new osg::Stats("Camera"));
+
+            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+            _cameraSceneViewMap[camera] = sceneView;
+
+            sceneView->setGlobalStateSet(view ? view->getCamera()->getStateSet() : 0);
+            sceneView->setDefaults();
+            sceneView->setDisplaySettings(ds);
+            sceneView->setCamera(camera);
+            sceneView->setState(state);
+            sceneView->setFrameStamp(frameStamp);
+
+            if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
+
+            gc->add(new CompositeViewerRenderingOperation(sceneView, dp));
+            
+        }
+    }
+
+#else
     osg::FrameStamp* frameStamp = getFrameStamp();
 
     // what should we do with the old sceneViews?
@@ -548,8 +599,6 @@ void CompositeViewer::setUpRenderingSupport()
     {
         (*citr)->removeAllOperations();
     }
-
-
 
     for(Views::iterator itr = _views.begin();
         itr != _views.end();
@@ -601,7 +650,7 @@ void CompositeViewer::setUpRenderingSupport()
         }
 
     }
-
+#endif
 }
 
 

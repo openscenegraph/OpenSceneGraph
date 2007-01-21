@@ -184,25 +184,22 @@ endif
 APPLICATION_DIRS = \
     osgversion
 
+APPLICATION_DIRS += osgarchive \
+    osgconv \
+    osgviewer \
+
+ifeq ($(GDAL_INSTALLED),yes)
+    APPLICATION_DIRS += osgdem
+endif
+
 ifeq ($(PRODUCER_INSTALLED),yes)
 
-    APPLICATION_DIRS += osgarchive \
-        osgconv \
-        osgviewer \
-
-    ifeq ($(GDAL_INSTALLED),yes)
-        APPLICATION_DIRS += osgdem
-    endif
+    APPLICATION_DIRS += osgproducerviewer
 
 endif
 
-
-EXAMPLE_DIRS = 
-
-
-ifeq ($(PRODUCER_INSTALLED),yes)
-
-    EXAMPLE_DIRS += osganimate \
+EXAMPLE_DIRS = \
+	osganimate \
 	osgautotransform \
 	osgbillboard \
 	osgblendequation \
@@ -276,17 +273,16 @@ ifeq ($(PRODUCER_INSTALLED),yes)
 	osgvolume \
 	osgwindows \
 
-    ifeq ($(COMPILE_INTROSPECTION),yes)
-        EXAMPLE_DIRS += osgintrospection
-    endif
 
-    ifeq ($(GDAL_INSTALLED),yes)
-        EXAMPLE_DIRS += osgphotoalbum
-        EXAMPLE_DIRS += osgbluemarble
-        EXAMPLE_DIRS += osgsimulation
-        EXAMPLE_DIRS += osgfadetext
-    endif
+ifeq ($(COMPILE_INTROSPECTION),yes)
+    EXAMPLE_DIRS += osgintrospection
+endif
 
+ifeq ($(GDAL_INSTALLED),yes)
+    EXAMPLE_DIRS += osgphotoalbum
+    EXAMPLE_DIRS += osgbluemarble
+    EXAMPLE_DIRS += osgsimulation
+    EXAMPLE_DIRS += osgfadetext
 endif
 
 ifeq ($(GLUT_INSTALLED),yes)

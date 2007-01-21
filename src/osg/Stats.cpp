@@ -74,7 +74,7 @@ bool Stats::getAttribute(int frameNumber, const std::string& attributeName, doub
     
     const AttributeMap& attributeMap = _attributeMapList[index];
     AttributeMap::const_iterator itr = attributeMap.find(attributeName);
-    if (itr != attributeMap.end()) return false;
+    if (itr == attributeMap.end()) return false;
 
     value = itr->second;    
     return true;

@@ -53,6 +53,15 @@ View::~View()
 }
 
 
+void View::setCamera(osg::Camera* camera)
+{
+    if (_camera.valid()) _camera->setView(0);
+    
+    _camera = camera;
+
+    if (_camera.valid()) _camera->setView(this);
+}
+
 void View::updateSlaves()
 {
     for(unsigned int i=0; i<_slaves.size(); ++i)

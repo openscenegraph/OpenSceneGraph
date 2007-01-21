@@ -11,10 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/gl.h>
-#include <GL/glext.h>
-
 #include <osgShadow/OccluderGeometry>
 
 #include <osg/Notify>

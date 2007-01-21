@@ -12,127 +12,12 @@
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
 #include <osg/CoordinateSystemNode>
-#include <iostream>
 
-///////////////////////////////////////////////////////////////////////////
-//
-// osgProducer version (see osgViewer version in next section below)
-
-#include <osgProducer/Viewer>
-int main_osgProducer(osg::ArgumentParser& arguments)
-{
-    // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
-    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
-    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
-    arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
-    
-
-    // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
-
-    // get details on keyboard and mouse bindings used by the viewer.
-    viewer.getUsage(*arguments.getApplicationUsage());
-
-    // if user request help write it out to cout.
-    bool helpAll = arguments.read("--help-all");
-    unsigned int helpType = ((helpAll || arguments.read("-h") || arguments.read("--help"))? osg::ApplicationUsage::COMMAND_LINE_OPTION : 0 ) |
-                            ((helpAll ||  arguments.read("--help-env"))? osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE : 0 ) |
-                            ((helpAll ||  arguments.read("--help-keys"))? osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING : 0 );
-    if (helpType)
-    {
-        arguments.getApplicationUsage()->write(std::cout, helpType);
-        return 1;
-    }
-
-    // report any errors if they have occurred when parsing the program arguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
-
-    // read the scene from the list of file specified command line args.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-
-    // if no model has been successfully loaded report failure.
-    if (!loadedModel) 
-    {
-        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occurred when parsing the program arguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-    }
-
-    osg::Timer_t end_tick = osg::Timer::instance()->tick();
-
-    std::cout << "Time to load = "<<osg::Timer::instance()->delta_s(start_tick,end_tick)<<std::endl;
-
-
-    // optimize the scene graph, remove redundant nodes and state etc.
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
-
-    // pass the loaded scene graph to the viewer.
-    viewer.setSceneData(loadedModel.get());
-
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
-}
-
-///////////////////////////////////////////////////////////////////////////
-//
-// osgViewer version
+#include <osg/Switch>
+#include <osgText/Text>
 
 #include <osgViewer/Viewer>
+
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
@@ -140,6 +25,8 @@ int main_osgProducer(osg::ArgumentParser& arguments)
 #include <osgGA/StateSetManipulator>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
+
+#include <iostream>
 
 class ThreadingHandler : public osgGA::GUIEventHandler 
 {
@@ -204,7 +91,20 @@ class StatsHandler : public osgGA::GUIEventHandler
 {
 public: 
 
-    StatsHandler() {}
+    StatsHandler():
+        _statsType(NO_STATS),
+        _frameRateChildNum(0),
+        _viewerChildNum(0),
+        _sceneChildNum(0) {}
+
+    enum StatsType
+    {
+        NO_STATS = 0,
+        FRAME_RATE = 1,
+        VIEWER_STATS = 2,
+        SCENE_STATS = 3,
+        LAST = 4
+    };
         
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
@@ -219,22 +119,271 @@ public:
                 {
                     if (viewer->getStats())
                     {
+                        if (!_camera.valid())
+                        {
+                            setUpCamera(viewer);
+                            setUpScene(viewer);
+                        }
+
+                        ++_statsType;
+                        
+                        if (_statsType==LAST) _statsType = NO_STATS;
+                        
+                        switch(_statsType)
+                        {
+                            case(NO_STATS):
+                            {
+                                _camera->setNodeMask(0x0); 
+                                _switch->setAllChildrenOff();
+                                break;
+                            }
+                            case(FRAME_RATE):
+                            {
+                                _camera->setNodeMask(0xffffffff);
+                                _switch->setValue(_frameRateChildNum, true);
+                                break;
+                            }
+                            case(VIEWER_STATS):
+                            {
+                                _camera->setNodeMask(0xffffffff);
+                                _switch->setValue(_viewerChildNum, true);
+                                break;
+                            }
+                            case(SCENE_STATS):
+                            {
+                                _switch->setValue(_sceneChildNum, true);
+                                _camera->setNodeMask(0xffffffff);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+
+                        
+                    }
+                    return true;
+                }
+                if (ea.getKey()=='S')
+                {
+                    if (viewer->getStats())
+                    {
                         viewer->getStats()->report(osg::notify(osg::NOTICE));
                     }
                     return true;
                 }
             }
+            case(osgGA::GUIEventAdapter::FRAME):
+            {
+                update(viewer);
+                return true;
+            }
             default: break;
         }
         
         return false;
+        
+    }
+
+    void setUpCamera(osgViewer::Viewer* viewer)
+    {
+        osgViewer::Viewer::Windows windows;
+        viewer->getWindows(windows);
+        
+        if (windows.empty()) return;
+        
+        osgViewer::GraphicsWindow* window = windows.front();
+        
+        _camera = new osg::Camera;
+        _camera->setGraphicsContext(window);
+        _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
+        
+        _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
+        _camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+        _camera->setViewMatrix(osg::Matrix::identity());
+
+        // only clear the depth buffer
+        _camera->setClearMask(0);
+        
+        viewer->setUpRenderingSupport();
     }
     
-    bool _done;
+    struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
+    {
+        TextDrawCallback(osg::Stats* stats, const std::string name, int frameDelta):
+            _stats(stats),
+            _attributeName(name),
+            _frameDelta(frameDelta) {}
+    
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
+        {
+            osgText::Text* text = (osgText::Text*)drawable;
+            
+            int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+            
+            double value;
+            if (_stats->getAttribute( frameNumber+_frameDelta, _attributeName, value))
+            {
+                sprintf(_tmpText,"%4.2f",value);
+                text->setText(_tmpText);
+            }
+                        
+            text->drawImplementation(renderInfo);
+        }
+
+        osg::Stats*     _stats;
+        std::string     _attributeName;
+        int             _frameDelta;
+        mutable char    _tmpText[128];
+    };
+
+    void setUpScene(osgViewer::Viewer* viewer)
+    {
+        _switch = new osg::Switch;
+        _camera->addChild(_switch.get());
+
+        osg::StateSet* stateset = _switch->getOrCreateStateSet();
+        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+        stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+
+        std::string font("fonts/arial.ttf");
+
+        float leftPos = 10.0f;
+        float characterSize = 20.0f;
+
+        osg::Vec3 pos(leftPos,1000.0f,0.0f);
+
+        osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
+        osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
+        osg::Vec4 colorCull( 0.0f,1.0f,1.0f,1.0f);
+        osg::Vec4 colorDraw( 1.0f,1.0f,0.0f,1.0f);
+        osg::Vec4 colorGPU( 1.0f,0.5f,0.0f,1.0f);
+
+
+        // frame rate stats
+        {
+            osg::Geode* geode = new osg::Geode();
+
+            std::string font("fonts/arial.ttf");
+
+            // turn lighting off for the text and disable depth test to ensure its always ontop.
+
+            {
+                _frameRateLabel = new osgText::Text;
+                geode->addDrawable( _frameRateLabel.get() );
+
+                _frameRateLabel->setColor(colorFR);
+                _frameRateLabel->setFont(font);
+                _frameRateLabel->setCharacterSize(characterSize);
+                _frameRateLabel->setPosition(pos);
+                _frameRateLabel->setText("Frame Rate: ");
+                
+                pos.x() = _frameRateLabel->getBound().xMax();
+
+                _frameRateValue = new osgText::Text;
+                geode->addDrawable( _frameRateValue.get() );
+
+                _frameRateValue->setColor(colorFR);
+                _frameRateValue->setFont(font);
+                _frameRateValue->setCharacterSize(characterSize);
+                _frameRateValue->setPosition(pos);
+                _frameRateValue->setText("0.0");
+
+                _frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1));
+
+                pos.y() -= characterSize*1.5f;
+;
+            }
+            
+            _frameRateChildNum = _switch->getNumChildren();
+            _switch->addChild(geode, false);
+        }
+        
+
+        // viewer stats
+        {
+            pos.x() = leftPos;
+
+            osg::Geode* geode = new osg::Geode();
+
+            {
+                osgText::Text* text = new  osgText::Text;
+                geode->addDrawable( text );
+
+                text->setFont(font);
+                text->setPosition(pos);
+                text->setText("Viewer Stats ");
+
+                pos.y() -= characterSize*1.5f;
+            }    
+
+            _viewerChildNum = _switch->getNumChildren();
+            _switch->addChild(geode, false);
+        }
+
+        // scene stats
+        {
+            pos.x() = leftPos;
+
+            osg::Geode* geode = new osg::Geode();
+
+            {
+                osgText::Text* text = new  osgText::Text;
+                geode->addDrawable( text );
+
+                text->setFont(font);
+                text->setPosition(pos);
+                text->setText("Scene Stats ");
+
+                pos.y() -= characterSize*1.5f;
+            }    
+
+            _sceneChildNum = _switch->getNumChildren();
+            _switch->addChild(geode, false);
+        }
+    }
+    
+    void update(osgViewer::Viewer* viewer)
+    {
+        return ;
+
+        osg::Stats* stats = viewer->getStats();
+        if (!stats || _statsType==NO_STATS) return;
+                
+        int frameNumber = viewer->getFrameStamp()->getFrameNumber();
+        
+        char tmpText[128];
+        double frameRate = 0.0;
+        
+        osg::Timer_t startTick = osg::Timer::instance()->tick();
+        if (stats->getAttribute(frameNumber-1, "Frame rate", frameRate))
+        {
+            sprintf(tmpText,"%4.2f",frameRate);
+            _frameRateValue->setText(tmpText);
+        }
+        
+    }
+
+
+    int                             _statsType;
+    osg::ref_ptr<osg::Camera>       _camera;
+    osg::ref_ptr<osg::Switch>       _switch;
+    
+    unsigned int                    _frameRateChildNum;
+    osg::ref_ptr<osgText::Text>     _frameRateLabel;
+    osg::ref_ptr<osgText::Text>     _frameRateValue;
+
+    unsigned int                    _viewerChildNum;
+    
+    unsigned int                    _sceneChildNum;
+    
 };
 
-int main_osgViewer(osg::ArgumentParser& arguments)
+int main(int argc, char** argv)
 {
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
+
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
@@ -338,20 +487,3 @@ int main_osgViewer(osg::ArgumentParser& arguments)
 
     return viewer.run();
 }
-
-int main( int argc, char **argv )
-{
-    // use an ArgumentParser object to manage the program arguments.
-    osg::ArgumentParser arguments(&argc,argv);
-
-    if (arguments.read("--osgProducer"))
-    {
-        return main_osgProducer(arguments);
-    }
-    else
-    {
-        return main_osgViewer(arguments);
-    }
-    
-}
-

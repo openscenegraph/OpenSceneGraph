@@ -533,28 +533,72 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
 
 void Viewer::setUpRenderingSupport()
 {
-    osg::FrameStamp* frameStamp = getFrameStamp();
-
-    // what should we do with the old sceneViews?
+#if 1
     _cameraSceneViewMap.clear();
 
     Contexts contexts;
     getContexts(contexts);
-
-    // clear out all the previously assigned operations
-    for(Contexts::iterator citr = contexts.begin();
-        citr != contexts.end();
-        ++citr)
-    {
-        (*citr)->removeAllOperations();
-    }
-
+    
+    osg::FrameStamp* frameStamp = getFrameStamp();
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
     osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
 
+    for(Contexts::iterator gcitr = contexts.begin();
+        gcitr != contexts.end();
+        ++gcitr)
+    {
+        (*gcitr)->removeAllOperations();
+
+        osg::GraphicsContext* gc = *gcitr;
+        osg::GraphicsContext::Cameras& cameras = gc->getCameras();
+        osg::State* state = gc->getState();
+        
+        for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
+            citr != cameras.end();
+            ++citr)
+        {
+            osg::Camera* camera = *citr;
+            
+            camera->setStats(new osg::Stats("Camera"));
+
+            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+            _cameraSceneViewMap[camera] = sceneView;
+
+            sceneView->setGlobalStateSet(_camera->getStateSet());
+            sceneView->setDefaults();
+            sceneView->setDisplaySettings(ds);
+            sceneView->setCamera(camera);
+            sceneView->setState(state);
+            sceneView->setFrameStamp(frameStamp);
+
+            if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
+
+            gc->add(new ViewerRenderingOperation(sceneView, dp));        
+            
+        }
+    }
+
+#else
+    _cameraSceneViewMap.clear();
+
+    Contexts contexts;
+    getContexts(contexts);
+    
+    osg::FrameStamp* frameStamp = getFrameStamp();
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+    osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
+
+    // clear out all the previously assigned operations
+    for(Contexts::iterator gcitr = contexts.begin();
+        gcitr != contexts.end();
+        ++gcitr)
+    {
+        (*gcitr)->removeAllOperations();
+    }
+
     if (_camera.valid() && _camera->getGraphicsContext())
     {
-        _camera->setStats(new osg::Stats("Viewer"));
+        _camera->setStats(new osg::Stats("Camera"));
 
         osgUtil::SceneView* sceneView = new osgUtil::SceneView;
         _cameraSceneViewMap[_camera] = sceneView;
@@ -595,6 +639,7 @@ void Viewer::setUpRenderingSupport()
             slave._camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));
         }
     }
+#endif
 }
 
 

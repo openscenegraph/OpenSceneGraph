@@ -477,6 +477,8 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
 
 void SceneView::cull()
 {
+    if (_camera->getNodeMask()==0) return;
+
     _renderInfo.setView(_camera->getView());
 
     // update the active uniforms
@@ -693,7 +695,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
     renderStage->setViewport(getViewport());
     renderStage->setClearColor(getClearColor());
-
+    renderStage->setClearMask(_camera->getClearMask());
 
     switch(_lightingMode)
     {
@@ -812,6 +814,7 @@ void SceneView::flushDeletedGLObjects(double& availableTime)
 
 void SceneView::draw()
 {
+    if (_camera->getNodeMask()==0) return;
 
     osg::State* state = _renderInfo.getState();
 

@@ -309,7 +309,11 @@ void Viewer::startThreading()
 
     _numThreadsOnBarrier = numThreadsIncludingMainThread;
     _startRenderingBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
+#if 1
     _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
+#else    
+    _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::GL_FINISH);
+#endif
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
     Contexts::iterator citr = contexts.begin(); 
@@ -475,7 +479,11 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
          
 
         const osg::Drawable::Extensions* extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
+#if 0
         bool aquireGPUStats = extensions && extensions->isTimerQuerySupported();
+#else
+        bool aquireGPUStats = false;
+#endif
 
         if (aquireGPUStats)
         {
@@ -511,7 +519,7 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
                 // Create a query object.
                 extensions->glGenQueries(1, &_query);
             }
-
+            
             extensions->glBeginQuery(GL_TIME_ELAPSED, _query);
 
             _sceneView->draw();
@@ -543,11 +551,11 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         
         if (stats)
         {
-            stats->setAttribute(frameNumber, "Cull traversal start time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
             stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
             stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
 
-            stats->setAttribute(frameNumber, "Draw traversal start time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
             stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
             stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(afterCullTick, afterDrawTick));
         }
@@ -1069,8 +1077,8 @@ void Viewer::eventTraversal()
         double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
         // update current frames stats
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time ", beginEventTraversal);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time ", endEventTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time", beginEventTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time", endEventTraversal);
         getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
     }
 
@@ -1097,8 +1105,8 @@ void Viewer::updateTraversal()
         double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
         // update current frames stats
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time ", beginUpdateTraversal);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time ", endUpdateTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time", beginUpdateTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time", endUpdateTraversal);
         getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
     }
 }

@@ -453,9 +453,79 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         _sceneView(sceneView),
         _databasePager(databasePager),
         _startTick(startTick),
-        _checkForQuery(false)
+        _initialized(false),
+        _aquireGPUStats(false),
+        _extensions(0)
     {
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+    }
+    
+    typedef std::pair<GLuint, int> QueryFrameNumberPair;
+    typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
+    typedef std::vector<GLuint> QueryList;
+
+    inline void checkQuery(osg::Stats* stats)
+    {
+        for(QueryFrameNumberList::iterator itr = _queryFrameNumberList.begin();
+            itr != _queryFrameNumberList.end();
+            )
+        {
+            GLuint query = itr->first;
+            GLint available = 0;
+            _extensions->glGetQueryObjectiv(query, GL_QUERY_RESULT_AVAILABLE, &available);
+            if (available)
+            {
+                GLuint64EXT timeElapsed = 0;
+                _extensions->glGetQueryObjectui64v(query, GL_QUERY_RESULT, &timeElapsed);
+
+                double timeElapsedSeconds = double(timeElapsed)*1e-9;
+                double currentTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+                double estimatedEndTime = (_previousQueryTime + currentTime) * 0.5;
+                double estimatedBeginTime = estimatedEndTime - timeElapsedSeconds;
+
+                stats->setAttribute(itr->second, "GPU draw begin time", estimatedBeginTime);
+                stats->setAttribute(itr->second, "GPU draw end time", estimatedEndTime);
+                stats->setAttribute(itr->second, "GPU draw time taken", timeElapsedSeconds);
+                
+
+                itr = _queryFrameNumberList.erase(itr);
+                _availableQueryObjects.push_back(query);
+            }
+            else
+            {
+                ++itr;
+            }
+            
+        }
+        _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+    }
+    
+    inline GLuint createQueryObject()
+    {
+        if (_availableQueryObjects.empty())
+        {
+            GLuint query;
+            _extensions->glGenQueries(1, &query);
+            return query;
+        }
+        else
+        {
+            GLuint query = _availableQueryObjects.back();
+            _availableQueryObjects.pop_back();
+            return query;
+        }
+    }
+    
+    inline void beginQuery(int frameNumber)
+    {
+        GLuint query = createQueryObject();
+        _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
+        _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));        
+    }
+    
+    inline void endQuery()
+    {
+        _extensions->glEndQuery(GL_TIME_ELAPSED);
     }
     
     virtual void operator () (osg::GraphicsContext*)
@@ -468,87 +538,54 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         osg::State* state = _sceneView->getState();
         const osg::FrameStamp* fs = state->getFrameStamp();
         int frameNumber = fs ? fs->getFrameNumber() : 0;
-        
-        // osg::notify(osg::NOTICE)<<"Frame number "<<frameNumber<<std::endl;
 
-        osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
-
-        _sceneView->cull();
-
-        osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
-         
-
-        const osg::Drawable::Extensions* extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
-#if 0
-        bool aquireGPUStats = extensions && extensions->isTimerQuerySupported();
-#else
-        bool aquireGPUStats = false;
-#endif
-
-        if (aquireGPUStats)
+        if (!_initialized)
         {
-            if (_checkForQuery)
-            {
-                // Wait for all results to become available
-                GLint available = 0;
-                extensions->glGetQueryObjectiv(_query, GL_QUERY_RESULT_AVAILABLE, &available);
-
-                if (!available) 
-                {
-                    osg::notify(osg::INFO)<<"Stats not available - forcing a glFinish"<<std::endl;
-                    glFinish();
-                    extensions->glGetQueryObjectiv(_query, GL_QUERY_RESULT_AVAILABLE, &available);
-                }
-
-                if (available)
-                {                
-                    GLuint64EXT timeElapsed = 0;
-                    extensions->glGetQueryObjectui64v(_query, GL_QUERY_RESULT, &timeElapsed);
-                    stats->setAttribute(frameNumber-1, "GPU draw time taken", double(timeElapsed)*1e-9);
-                }
-                else
-                {
-                    osg::notify(osg::INFO)<<"Stats not available - query has been lost."<<std::endl;
-                    
-                    // regenerate the query object as it seems to have been lost
-                    extensions->glGenQueries(1, &_query);
-                }
-            }
-            else
-            {
-                // Create a query object.
-                extensions->glGenQueries(1, &_query);
-            }
-            
-            extensions->glBeginQuery(GL_TIME_ELAPSED, _query);
-
-            _sceneView->draw();
-
-            double availableTime = 0.004; // 4 ms
-            if (_databasePager.valid())
-            {
-                _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
-            }
-            _sceneView->flushDeletedGLObjects(availableTime);
-
-            extensions->glEndQuery(GL_TIME_ELAPSED);
-            
-            _checkForQuery = true;
+            _initialized = true;
+            _extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
+            _aquireGPUStats = _extensions && _extensions->isTimerQuerySupported();
+            _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
         }
-        else
-        {
-            _sceneView->draw();
+        
+//        _aquireGPUStats = false;
 
-            double availableTime = 0.004; // 4 ms
-            if (_databasePager.valid())
-            {
-                _databasePager->compileGLObjects(*(state), availableTime);
-            }
-            _sceneView->flushDeletedGLObjects(availableTime);
+
+        if (_aquireGPUStats) 
+        {
+            checkQuery(stats);
+        }
+        
+        // do cull taversal
+        osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+        _sceneView->cull();
+        osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
+
+
+        // do draw traveral
+        if (_aquireGPUStats) 
+        {
+            checkQuery(stats);
+            beginQuery(frameNumber);
+        }
+                
+        _sceneView->draw();
+
+        double availableTime = 0.004; // 4 ms
+        if (_databasePager.valid())
+        {
+            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+        }
+        _sceneView->flushDeletedGLObjects(availableTime);
+
+        if (_aquireGPUStats)
+        {
+            endQuery();
+            checkQuery(stats);
         }
         
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
         
+
         if (stats)
         {
             stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
@@ -566,8 +603,13 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
     osg::observer_ptr<osgDB::DatabasePager>     _databasePager;
 
     osg::Timer_t                                _startTick;
-    bool                                        _checkForQuery;
-    GLuint                                      _query; 
+    
+    bool                                        _initialized;
+    bool                                        _aquireGPUStats;
+    const osg::Drawable::Extensions*            _extensions;
+    QueryFrameNumberList                        _queryFrameNumberList;
+    QueryList                                   _availableQueryObjects;
+    double                                      _previousQueryTime;
 };
 
 void Viewer::setUpRenderingSupport()

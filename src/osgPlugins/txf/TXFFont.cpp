@@ -91,9 +91,33 @@ osgText::Font::Glyph*
 TXFFont::getGlyph(unsigned int charcode)
 {
     GlyphMap::iterator i = _chars.find(charcode);
-    if (i == _chars.end())
-        return 0;
-    return i->second.get();
+    if (i != _chars.end())
+        return i->second.get();
+
+    // ok, not available, we have an additional chance with some translations
+    // That is to make the loader compatible with an other prominent one
+    if (charcode >= 'A' && charcode <= 'Z')
+    {
+        i = _chars.find(charcode - 'A' + 'a');
+        if (i != _chars.end())
+        {
+            _chars[charcode] = i->second;
+            addGlyph(i->second->s(), i->second->t(), charcode, i->second.get());
+            return i->second.get();
+        }
+    }
+    else if (charcode >= 'a' && charcode <= 'z')
+    {
+        i = _chars.find(charcode - 'a' + 'A');
+        if (i != _chars.end())
+        {
+            _chars[charcode] = i->second;
+            addGlyph(i->second->s(), i->second->t(), charcode, i->second.get());
+            return i->second.get();
+        }
+    }
+
+    return 0;
 }
 
 bool
@@ -208,6 +232,10 @@ TXFFont::loadFont(std::istream& stream)
 
     for (unsigned i = 0; i < glyphs.size(); ++i)
     {
+        // have a special one for that
+        if (glyphs[i].ch == ' ')
+            continue;
+
         // add the characters ...
         osgText::Font::Glyph* glyph = new osgText::Font::Glyph;
 
@@ -239,8 +267,7 @@ TXFFont::loadFont(std::istream& stream)
 
         float texToVertX = float(glyphs[i].width)/width;
         float texToVertY = float(glyphs[i].height)/height;
-
-        glyph->setHorizontalAdvance(glyphs[i].advance);
+        glyph->setHorizontalAdvance(glyphs[i].advance + 0.1f*maxheight);
         glyph->setHorizontalBearing(osg::Vec2((glyphs[i].x_off - 0.5f)*texToVertX,
                                               (glyphs[i].y_off - 0.5f)*texToVertY));
         glyph->setVerticalAdvance(sourceHeight);
@@ -250,6 +277,31 @@ TXFFont::loadFont(std::istream& stream)
         _chars[glyphs[i].ch] = glyph;
         addGlyph(width, height, glyphs[i].ch, glyph);
     }
+
+    // insert a trivial blank character
+    osgText::Font::Glyph* glyph = new osgText::Font::Glyph;
+
+    unsigned margin = _facade->getGlyphImageMargin();
+    unsigned width = 1 + 2*margin;
+    unsigned height = 1 + 2*margin;
+    
+    glyph->allocateImage(width, height, 1, GL_ALPHA, GL_UNSIGNED_BYTE);
+    glyph->setInternalTextureFormat(GL_ALPHA);
+
+    for (unsigned k = 0; k < width; ++k)
+    {
+        for (unsigned l = 0; l < height; ++l)
+        {
+            *glyph->data(k, l) = 0;
+        }
+    }
+
+    glyph->setHorizontalAdvance(0.5f*_facade->getFontHeight());
+    glyph->setHorizontalBearing(osg::Vec2(0, 0));
+    glyph->setVerticalAdvance(_facade->getFontHeight());
+    glyph->setVerticalBearing(osg::Vec2(0, 0));
+    _chars[' '] = glyph;
+    addGlyph(width, height, ' ', glyph);
 
     return true;
 }

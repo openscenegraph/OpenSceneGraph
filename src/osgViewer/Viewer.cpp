@@ -444,10 +444,12 @@ void Viewer::getWindows(Windows& windows, bool onlyValid)
 // Draw operation, that does a draw on the scene graph.
 struct ViewerRenderingOperation : public osg::GraphicsOperation
 {
-    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
+    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
         osg::GraphicsOperation("Render",true),
         _sceneView(sceneView),
-        _databasePager(databasePager)
+        _databasePager(databasePager),
+        _startTick(startTick),
+        _checkForQuery(false)
     {
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
     }
@@ -455,37 +457,64 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
     virtual void operator () (osg::GraphicsContext*)
     {
         if (!_sceneView) return;
-    
 
         // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
 
-         _sceneView->cull();
-        
-
-#if 0        
-        osg::State* state = _sceneView->getState();
         osg::Stats* stats = _sceneView->getCamera()->getStats();
+        osg::State* state = _sceneView->getState();
+        const osg::FrameStamp* fs = state->getFrameStamp();
+        int frameNumber = fs ? fs->getFrameNumber() : 0;
+        
+        // osg::notify(osg::NOTICE)<<"Frame number "<<frameNumber<<std::endl;
+
+        osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+
+        _sceneView->cull();
+
+        osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
+         
+
         const osg::Drawable::Extensions* extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
         bool aquireGPUStats = extensions && extensions->isTimerQuerySupported();
 
-
         if (aquireGPUStats)
         {
-            const osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(state->getContextID(),true);
-            bool aquireGPUStats = extensions->isTimerQuerySupported() && stats;
+            if (_checkForQuery)
+            {
+                // Wait for all results to become available
+                GLint available = 0;
+                extensions->glGetQueryObjectiv(_query, GL_QUERY_RESULT_AVAILABLE, &available);
 
-            GLuint queries[2];
-            GLint available = 0;
+                if (!available) 
+                {
+                    osg::notify(osg::INFO)<<"Stats not available - forcing a glFinish"<<std::endl;
+                    glFinish();
+                    extensions->glGetQueryObjectiv(_query, GL_QUERY_RESULT_AVAILABLE, &available);
+                }
 
-            // Create a query object.
-            extensions->glGenQueries(2, queries);
+                if (available)
+                {                
+                    GLuint64EXT timeElapsed = 0;
+                    extensions->glGetQueryObjectui64v(_query, GL_QUERY_RESULT, &timeElapsed);
+                    stats->setAttribute(frameNumber-1, "GPU draw time taken", double(timeElapsed)*1e-9);
+                }
+                else
+                {
+                    osg::notify(osg::INFO)<<"Stats not available - query has been lost."<<std::endl;
+                    
+                    // regenerate the query object as it seems to have been lost
+                    extensions->glGenQueries(1, &_query);
+                }
+            }
+            else
+            {
+                // Create a query object.
+                extensions->glGenQueries(1, &_query);
+            }
 
-            extensions->glBeginQuery(GL_TIME_ELAPSED, queries[0]);
+            extensions->glBeginQuery(GL_TIME_ELAPSED, _query);
 
             _sceneView->draw();
-
-            extensions->glEndQuery(GL_TIME_ELAPSED);
-            extensions->glBeginQuery(GL_TIME_ELAPSED, queries[1]);
 
             double availableTime = 0.004; // 4 ms
             if (_databasePager.valid())
@@ -495,40 +524,42 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
             _sceneView->flushDeletedGLObjects(availableTime);
 
             extensions->glEndQuery(GL_TIME_ELAPSED);
-
-            // Wait for all results to become available
-            while (!available) {
-                extensions->glGetQueryObjectiv(queries[1], GL_QUERY_RESULT_AVAILABLE, &available);
-            }
-
-            GLuint64EXT timeElapsed = 0;
-            extensions->glGetQueryObjectui64v(queries[0], GL_QUERY_RESULT, &timeElapsed);
-            stats->setAttribute(state->getFrameStamp()->getFrameNumber(), "GPU draw elapsed time", double(timeElapsed)*1e-9);
-
-            extensions->glGetQueryObjectui64v(queries[1], GL_QUERY_RESULT, &timeElapsed);
-            stats->setAttribute(state->getFrameStamp()->getFrameNumber(), "GPU compile & flush elapsed time", double(timeElapsed)*1e-9);
-
+            
+            _checkForQuery = true;
         }
         else
-#endif
-
         {
             _sceneView->draw();
 
             double availableTime = 0.004; // 4 ms
             if (_databasePager.valid())
             {
-                _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+                _databasePager->compileGLObjects(*(state), availableTime);
             }
             _sceneView->flushDeletedGLObjects(availableTime);
         }
         
+        osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
         
+        if (stats)
+        {
+            stats->setAttribute(frameNumber, "Cull traversal start time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
+
+            stats->setAttribute(frameNumber, "Draw traversal start time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
+            stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(afterCullTick, afterDrawTick));
+        }
         
     }
     
-    osg::observer_ptr<osgUtil::SceneView>    _sceneView;
-    osg::observer_ptr<osgDB::DatabasePager>  _databasePager;
+    osg::observer_ptr<osgUtil::SceneView>       _sceneView;
+    osg::observer_ptr<osgDB::DatabasePager>     _databasePager;
+
+    osg::Timer_t                                _startTick;
+    bool                                        _checkForQuery;
+    GLuint                                      _query; 
 };
 
 void Viewer::setUpRenderingSupport()
@@ -573,7 +604,7 @@ void Viewer::setUpRenderingSupport()
 
             if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
 
-            gc->add(new ViewerRenderingOperation(sceneView, dp));        
+            gc->add(new ViewerRenderingOperation(sceneView, dp, _startTick));
             
         }
     }

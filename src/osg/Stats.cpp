@@ -96,19 +96,35 @@ const Stats::AttributeMap& Stats::getAttributeMap(int frameNumber) const
     return _attributeMapList[index];
 }
 
-void Stats::report(std::ostream& out)
+void Stats::report(std::ostream& out, const char* indent) const
 {
+    if (indent) out<<indent;
     out<<"Stats "<<_name<<std::endl;
     for(int i = getEarliestFrameNumber(); i<= getLatestFrameNumber(); ++i)
     {
         out<<" FrameNumber "<<i<<std::endl;
-        osg::Stats::AttributeMap& attributes = getAttributeMap(i);
-        for(osg::Stats::AttributeMap::iterator itr = attributes.begin();
+        const osg::Stats::AttributeMap& attributes = getAttributeMap(i);
+        for(osg::Stats::AttributeMap::const_iterator itr = attributes.begin();
             itr != attributes.end();
             ++itr)
         {
+            if (indent) out<<indent;
             out<<"    "<<itr->first<<"\t"<<itr->second<<std::endl;
         }
 
+    }
+}
+
+void Stats::report(std::ostream& out, unsigned int frameNumber, const char* indent) const
+{
+    if (indent) out<<indent;
+    out<<"Stats "<<_name<<" FrameNumber "<<frameNumber<<std::endl;
+    const osg::Stats::AttributeMap& attributes = getAttributeMap(frameNumber);
+    for(osg::Stats::AttributeMap::const_iterator itr = attributes.begin();
+        itr != attributes.end();
+        ++itr)
+    {
+        if (indent) out<<indent;
+        out<<"    "<<itr->first<<"\t"<<itr->second<<std::endl;
     }
 }

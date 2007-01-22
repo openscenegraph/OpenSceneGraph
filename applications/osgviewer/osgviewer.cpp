@@ -167,7 +167,41 @@ public:
                 {
                     if (viewer->getStats())
                     {
-                        viewer->getStats()->report(osg::notify(osg::NOTICE));
+                        osg::notify(osg::NOTICE)<<std::endl<<"Stats report:"<<std::endl;
+                        typedef std::vector<osg::Stats*> StatsList;
+                        StatsList statsList;
+                        statsList.push_back(viewer->getStats());
+                        
+                        osgViewer::Viewer::Contexts contexts;
+                        viewer->getContexts(contexts);
+                        for(osgViewer::Viewer::Contexts::iterator gcitr = contexts.begin();
+                            gcitr != contexts.end();
+                            ++gcitr)
+                        {
+                            osg::GraphicsContext::Cameras& cameras = (*gcitr)->getCameras();
+                            for(osg::GraphicsContext::Cameras::iterator itr = cameras.begin();
+                                itr != cameras.end();
+                                ++itr)
+                            {
+                                if ((*itr)->getStats())
+                                {
+                                    statsList.push_back((*itr)->getStats());
+                                }
+                            }
+                        }
+                        
+                        for(int i = viewer->getStats()->getEarliestFrameNumber(); i<= viewer->getStats()->getLatestFrameNumber()-1; ++i)
+                        {
+                            for(StatsList::iterator itr = statsList.begin();
+                                itr != statsList.end();
+                                ++itr)
+                            {
+                                if (itr==statsList.begin()) (*itr)->report(osg::notify(osg::NOTICE), i);
+                                else (*itr)->report(osg::notify(osg::NOTICE), i, "    ");
+                            }
+                            osg::notify(osg::NOTICE)<<std::endl;
+                        }
+                        
                     }
                     return true;
                 }

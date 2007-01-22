@@ -46,7 +46,8 @@ class OSG_EXPORT Stats : public osg::Referenced
         AttributeMap& getAttributeMap(int frameNumber);
         const AttributeMap& getAttributeMap(int frameNumber) const;
         
-        void report(std::ostream& out);
+        void report(std::ostream& out, const char* indent=0) const ;
+        void report(std::ostream& out, unsigned int frameNumber, const char* indent=0) const;
         
     protected:
     

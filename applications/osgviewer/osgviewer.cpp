@@ -397,11 +397,7 @@ public:
             }
         }
 
-#if 0
         bool aquireGPUStats = numCamrasWithTimerQuerySupport==cameras.size();
-#else
-        bool aquireGPUStats = false;
-#endif
 
         float leftPos = 10.0f;
         float startBlocks = aquireGPUStats ? 250.0f : 150.0f;
@@ -411,8 +407,6 @@ public:
 
         osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
         osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
-
-
 
 
         // frame rate stats
@@ -632,33 +626,6 @@ public:
             drawValue->setDrawCallback(new TextDrawCallback(stats,"Draw traversal time taken",-1, 1000.0));
 
 
-            if (aquireGPUStats)
-            {
-                pos.x() = drawValue->getBound().xMax() + 30.0f;
-
-                osg::ref_ptr<osgText::Text> gpuLabel = new osgText::Text;
-                geode->addDrawable( gpuLabel.get() );
-
-                gpuLabel->setColor(colorGPU);
-                gpuLabel->setFont(font);
-                gpuLabel->setCharacterSize(characterSize);
-                gpuLabel->setPosition(pos);
-                gpuLabel->setText("GPU: ");
-
-                pos.x() = gpuLabel->getBound().xMax();
-
-                osg::ref_ptr<osgText::Text> gpuValue = new osgText::Text;
-                geode->addDrawable( gpuValue.get() );
-
-                gpuValue->setColor(colorGPU);
-                gpuValue->setFont(font);
-                gpuValue->setCharacterSize(characterSize);
-                gpuValue->setPosition(pos);
-                gpuValue->setText("0.0");
-
-                gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, 1000.0));
-            }
-
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorDraw, 10);
             geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewerStats, stats, "Draw traversal begin time", "Draw traversal end time", -1, 10, 10000.0));
@@ -666,6 +633,41 @@ public:
 
             pos.y() -= characterSize*1.5f;
         }
+
+        if (aquireGPUStats)
+        {
+            pos.x() = leftPos;
+
+            osg::ref_ptr<osgText::Text> gpuLabel = new osgText::Text;
+            geode->addDrawable( gpuLabel.get() );
+
+            gpuLabel->setColor(colorGPU);
+            gpuLabel->setFont(font);
+            gpuLabel->setCharacterSize(characterSize);
+            gpuLabel->setPosition(pos);
+            gpuLabel->setText("GPU: ");
+
+            pos.x() = gpuLabel->getBound().xMax();
+
+            osg::ref_ptr<osgText::Text> gpuValue = new osgText::Text;
+            geode->addDrawable( gpuValue.get() );
+
+            gpuValue->setColor(colorGPU);
+            gpuValue->setFont(font);
+            gpuValue->setCharacterSize(characterSize);
+            gpuValue->setPosition(pos);
+            gpuValue->setText("0.0");
+
+            gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, 1000.0));
+
+            pos.x() = startBlocks;
+            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPU, 10);
+            geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewerStats, stats, "GPU draw begin time", "GPU draw end time", -1, 10, 10000.0));
+            geode->addDrawable(geometry);
+
+            pos.y() -= characterSize*1.5f;
+        }
+
 
 
 

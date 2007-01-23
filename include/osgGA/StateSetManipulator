@@ -33,8 +33,7 @@ class OSGGA_EXPORT StateSetManipulator : public GUIEventHandler
 {
 public:
 
-        StateSetManipulator();
-        virtual ~StateSetManipulator();
+        StateSetManipulator(osg::StateSet* stateset=0);
 
         virtual const char* className() const { return "StateSetManipulator"; }
 
@@ -72,9 +71,11 @@ public:
 
 protected:
 
-        // Reference pointer to a STATESTATE
-        osg::ref_ptr<osg::StateSet> _drawState;
+        virtual ~StateSetManipulator();
 
+        osg::ref_ptr<osg::StateSet> _stateset;
+
+        bool _initialized;
         bool _backface;
         bool _lighting;
         bool _texture;

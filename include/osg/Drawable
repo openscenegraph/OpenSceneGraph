@@ -47,6 +47,12 @@
     #define GL_TIME_ELAPSED                    0x88BF
 #endif
 
+#ifndef GL_QUERY_RESULT
+    #define GL_QUERY_RESULT                     0x8866
+    #define GL_QUERY_RESULT_AVAILABLE           0x8867
+#endif
+
+
 #ifndef GL_EXT_timer_query
     #ifdef _WIN32
         typedef          __int64 GLint64EXT;

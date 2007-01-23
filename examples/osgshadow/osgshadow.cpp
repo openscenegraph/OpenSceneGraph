@@ -13,10 +13,10 @@
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
 #include <osgGA/KeySwitchMatrixManipulator>
-#include <osgGA/StateSetManipulator>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 #include <osgGA/AnimationPathManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/StatsHandler>
@@ -149,6 +149,9 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
 
+    // hint to tell viewer to request stencil buffer when setting up windows
+    osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -175,6 +178,9 @@ int main(int argc, char** argv)
     bool doShadow = true;
     while (arguments.read("--noShadow")) doShadow = false;
     
+    int screenNum = -1;
+    while (arguments.read("--screen", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
+
     osgShadow::ShadowVolumeGeometry::DrawMode drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
     while (arguments.read("--two-sided")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
     while (arguments.read("--two-pass")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS;
@@ -205,6 +211,10 @@ int main(int argc, char** argv)
 
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
+
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
     // add stats
     viewer.addEventHandler( new osgViewer::StatsHandler() );
@@ -437,15 +447,13 @@ int main(int argc, char** argv)
                 camera->addChild(second_model_group);
             }
                     
-        }    
+        }
 
     }
 
-    // hint to tell viewer to request stencil buffer when setting up windows
-    osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
     viewer.setSceneData(group.get());
-
+    
     // create the windows and run the threads.
     viewer.realize();
 

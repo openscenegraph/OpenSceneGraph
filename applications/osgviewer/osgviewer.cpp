@@ -157,12 +157,7 @@ int main(int argc, char** argv)
     }
 
     // add the state manipulator
-    {
-        osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
-        statesetManipulator->setStateSet(viewer.getCamera()->getOrCreateStateSet());
-
-        viewer.addEventHandler( statesetManipulator.get() );
-    }
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     
     // add the thread model handler
     viewer.addEventHandler(new ThreadingHandler);

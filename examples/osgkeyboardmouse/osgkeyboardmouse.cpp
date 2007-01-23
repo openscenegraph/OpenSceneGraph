@@ -55,6 +55,51 @@ public:
     bool _addToModel;
 };
 
+class DeleteSelectedNodesVisitor : public osg::NodeVisitor
+{
+public:
+
+    DeleteSelectedNodesVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)        
+    {
+    }
+    
+    virtual void apply(osg::Node& node)
+    {
+        osgFX::Scribe* scribe = dynamic_cast<osgFX::Scribe*>(&node);
+        if (scribe)
+        {
+            _selectedNodes.push_back(scribe);
+        }
+        else
+        {
+            traverse(node);
+        }
+    }
+    
+    void pruneSelectedNodes()
+    {
+        for(SelectedNodes::iterator itr = _selectedNodes.begin();
+            itr != _selectedNodes.end();
+            ++itr)
+        {
+            osg::Node* node = itr->get();
+            osg::Node::ParentList parents = node->getParents();
+            for(osg::Node::ParentList::iterator pitr = parents.begin();
+                pitr != parents.end();
+                ++pitr)
+            {
+                osg::Group* parent = *pitr;
+                parent->removeChild(node);
+            }
+        }
+    }
+    
+    typedef std::vector< osg::ref_ptr<osgFX::Scribe> > SelectedNodes;
+    SelectedNodes _selectedNodes;
+    
+};
+
 class ExitHandler : public osgGA::GUIEventHandler 
 {
 public: 
@@ -105,14 +150,27 @@ public:
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
         osgViewer::SimpleViewer* viewer = dynamic_cast<osgViewer::SimpleViewer*>(&aa);
+        if (!viewer) return false;
 
         switch(ea.getEventType())
         {
             case(osgGA::GUIEventAdapter::KEYUP):
             {
-                if (ea.getKey()=='s' && viewer)
+                if (ea.getKey()=='s')
                 {
                     saveSelectedModel(viewer->getSceneData());
+                }                
+                else if (ea.getKey()=='o')
+                {
+                    osg::notify(osg::NOTICE)<<"Saved model to file 'saved_model.osg'"<<std::endl;
+                    osgDB::writeNodeFile(*(viewer->getSceneData()), "saved_model.osg");
+                }
+                else if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Delete || ea.getKey()==osgGA::GUIEventAdapter::KEY_BackSpace)
+                {
+                    osg::notify(osg::NOTICE)<<"Delete"<<std::endl;
+                    DeleteSelectedNodesVisitor dsnv;
+                    viewer->getSceneData()->accept(dsnv);
+                    dsnv.pruneSelectedNodes();
                 }
                 return false;
             }
@@ -121,10 +179,6 @@ public:
             {
                 _mx = ea.getX();
                 _my = ea.getY();
-                
-                osg::notify(osg::NOTICE)<<"_mx="<<_mx<<" _my="<<_my<<std::endl;
-                osg::notify(osg::NOTICE)<<"  range ="<<ea.getXmin()<<", "<<ea.getXmax()<<std::endl;
-                
                 return false;
             }
             case(osgGA::GUIEventAdapter::RELEASE):

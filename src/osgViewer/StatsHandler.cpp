@@ -387,6 +387,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
 
     osg::StateSet* stateset = _switch->getOrCreateStateSet();
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+    stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
 
     std::string font("fonts/arial.ttf");
@@ -424,13 +425,14 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
     bool aquireGPUStats = numCamrasWithTimerQuerySupport==cameras.size();
 
     float leftPos = 10.0f;
-    float startBlocks = aquireGPUStats ? 250.0f : 150.0f;
+    float startBlocks = 150.0f;
     float characterSize = 20.0f;
 
     osg::Vec3 pos(leftPos,1000.0f,0.0f);
 
     osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
     osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
+    osg::Vec4 colorUpdateAlpha( 0.0f,1.0f,0.0f,0.5f);
 
 
     // frame rate stats
@@ -475,7 +477,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
         osg::Geode* geode = new osg::Geode();
         group->addChild(geode);
 
-        float topOfViewerStats = pos.y() + characterSize * 1.5;
+        float topOfViewerStats = pos.y() + characterSize;
 
         {
             pos.x() = leftPos;
@@ -503,7 +505,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
             eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, 1000.0));
 
             pos.x() = startBlocks;
-            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdate, _numBlocks);
+            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
             geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Event traversal begin time", "Event traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
@@ -536,7 +538,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
             updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, 1000.0));
 
             pos.x() = startBlocks;
-            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdate, _numBlocks);
+            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
             geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Update traversal begin time", "Update traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
@@ -563,7 +565,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
             osg::Vec4 colourTicks(1.0f,1.0f,1.0f, 0.5f);
 
             pos.x() = startBlocks;
-            pos.y() += characterSize*0.5;
+            pos.y() += characterSize;
             float height = topOfViewerStats - pos.y();
 
             osg::Geometry* ticks = createTick(pos, 5.0f, colourTicks, 100);
@@ -612,8 +614,11 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
     float leftPos = pos.x();
 
     osg::Vec4 colorCull( 0.0f,1.0f,1.0f,1.0f);
+    osg::Vec4 colorCullAlpha( 0.0f,1.0f,1.0f,0.5f);
     osg::Vec4 colorDraw( 1.0f,1.0f,0.0f,1.0f);
+    osg::Vec4 colorDrawAlpha( 1.0f,1.0f,0.0f,0.5f);
     osg::Vec4 colorGPU( 1.0f,0.5f,0.0f,1.0f);
+    osg::Vec4 colorGPUAlpha( 1.0f,0.5f,0.0f,0.5f);
 
     {
         pos.x() = leftPos;
@@ -641,7 +646,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         cullValue->setDrawCallback(new TextDrawCallback(stats,"Cull traversal time taken",-1, 1000.0));
 
         pos.x() = startBlocks;
-        osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorCull, _numBlocks);
+        osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorCullAlpha, _numBlocks);
         geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats, "Cull traversal begin time", "Cull traversal end time", -1, _numBlocks));
         geode->addDrawable(geometry);
 
@@ -675,7 +680,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
 
 
         pos.x() = startBlocks;
-        osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorDraw, _numBlocks);
+        osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorDrawAlpha, _numBlocks);
         geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats, "Draw traversal begin time", "Draw traversal end time", -1, _numBlocks));
         geode->addDrawable(geometry);
 
@@ -709,7 +714,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, 1000.0));
 
         pos.x() = startBlocks;
-        osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPU, _numBlocks);
+        osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPUAlpha, _numBlocks);
         geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats, "GPU draw begin time", "GPU draw end time", -1, _numBlocks));
         geode->addDrawable(geometry);
 

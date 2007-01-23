@@ -3,12 +3,13 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
-	SimpleViewer.cpp\
-	View.cpp\
-	Scene.cpp\
-	Viewer.cpp\
 	CompositeViewer.cpp\
+	Scene.cpp\
+	SimpleViewer.cpp\
+	StatsHandler.cpp\
 	Version.cpp\
+	View.cpp\
+	Viewer.cpp\
 
 
 ifeq ($(OS),Darwin)

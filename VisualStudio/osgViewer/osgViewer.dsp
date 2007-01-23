@@ -179,6 +179,10 @@ SOURCE=..\..\src\osgViewer\CompositeViewer.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgViewer\StatsHandler.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgViewer\Version.cpp
 # End Source File
 # End Group
@@ -216,6 +220,10 @@ SOURCE=..\..\Include\osgViewer\CompositeViewer
 # Begin Source File
 
 SOURCE=..\..\Include\osgViewer\SimpleViewer
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\osgViewer\StatsHandler
 # End Source File
 # Begin Source File
 

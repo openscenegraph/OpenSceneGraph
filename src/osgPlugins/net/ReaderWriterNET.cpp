@@ -156,9 +156,9 @@ class NetReader : public osgDB::ReaderWriter
             std::string localCacheDir;
             int port = 80;
 
-			//CARLO: proxy modf 
-			std::string proxyHost;
-			int proxyPort = 8080;
+            //CARLO: proxy modf 
+            std::string proxyHost;
+            int proxyPort = 8080;
 
             enum CacheMode {
                 Read      = 1,
@@ -166,7 +166,7 @@ class NetReader : public osgDB::ReaderWriter
                 ReadWrite = 3
             };
 
-			std::string cacheFile;
+            std::string cacheFile;
             CacheMode cacheMode = ReadWrite;
 
             if (options)
@@ -186,13 +186,13 @@ class NetReader : public osgDB::ReaderWriter
                     {
                         port = atoi( opt.substr(index+1).c_str() );
                     }
-					else if( opt.substr( 0, index ) == "proxy_hostname" ||
+                    else if( opt.substr( 0, index ) == "proxy_hostname" ||
                              opt.substr( 0, index ) == "PROXY_HOSTNAME" ) //CARLO: proxy modf
                     {
                         proxyHost = opt.substr(index+1);
-						osg::notify(osg::WARN) << "proxy host " << proxyHost << std::endl;
+                        osg::notify(osg::WARN) << "proxy host " << proxyHost << std::endl;
                     }
-					else if( opt.substr( 0, index ) == "proxy_port" ||
+                    else if( opt.substr( 0, index ) == "proxy_port" ||
                              opt.substr( 0, index ) == "PROXY_PORT" )
                     {
                         proxyPort = atoi( opt.substr(index+1).c_str() );
@@ -226,19 +226,19 @@ class NetReader : public osgDB::ReaderWriter
                 }
             }
 
-			//if(proxy.empty()) //CARLO: proxy modf
+            //if(proxy.empty()) //CARLO: proxy modf
             // Env variables should override plug-in options.
-			{
-				char * env_proxyHost = getenv("OSG_PROXY_HOST"); //Checking proxy environment variables 
-				char * env_proxyPort = getenv("OSG_PROXY_PORT");
+            {
+                char * env_proxyHost = getenv("OSG_PROXY_HOST"); //Checking proxy environment variables 
+                char * env_proxyPort = getenv("OSG_PROXY_PORT");
 
-				if( env_proxyHost )
-				{
-					proxyHost = std::string(env_proxyHost);
-					if( env_proxyPort )
-						proxyPort = atoi(std::string(env_proxyPort).c_str());
-				}
-			}
+                if( env_proxyHost )
+                {
+                    proxyHost = std::string(env_proxyHost);
+                    if( env_proxyPort )
+                        proxyPort = atoi(std::string(env_proxyPort).c_str());
+                }
+            }
 
             ReadResult readResult = ReadResult::FILE_NOT_HANDLED;
 
@@ -303,43 +303,43 @@ class NetReader : public osgDB::ReaderWriter
             // Fetch from the network
             osg::ref_ptr<iosockinet> sio = new iosockinet(sockbuf::sock_stream);
 
-		    std::string requestAdd;
+            std::string requestAdd;
 
-			if(!proxyHost.empty())
-			{
-				try {
-					sio->rdbuf()->connect( proxyHost.c_str(), proxyPort );
-					osg::notify(osg::DEBUG_FP) << "osgPlugin .net reader: connected to Proxy " << proxyHost << " with Port " << proxyPort <<  std::endl;
-				}
-				catch( sockerr e )
-				{
-					osg::notify(osg::WARN) << "osgPlugin .net reader: Unable to connect to Proxy " << proxyHost << std::endl;
-				    return ReadResult::FILE_NOT_FOUND;
-				}
-				
-				requestAdd = std::string("http://") + hostname + "/" + fileName;
-			}
-			else
-			{
-				try {
-					sio->rdbuf()->connect( hostname.c_str(), port );
-					osg::notify(osg::DEBUG_FP) << "osgPlugin .net reader: connected to Hostname " << hostname << " with Port " << port <<  std::endl;
-				}
-				catch( sockerr e )
-				{
-				    osg::notify(osg::WARN) << "osgPlugin .net reader: Unable to connect to host " << hostname << std::endl;
-				    return ReadResult::FILE_NOT_FOUND;
-				}
-		        requestAdd = "/" + fileName; 
-			}
+            if(!proxyHost.empty())
+            {
+                try {
+                    sio->rdbuf()->connect( proxyHost.c_str(), proxyPort );
+                    osg::notify(osg::DEBUG_FP) << "osgPlugin .net reader: connected to Proxy " << proxyHost << " with Port " << proxyPort <<  std::endl;
+                }
+                catch( sockerr e )
+                {
+                    osg::notify(osg::WARN) << "osgPlugin .net reader: Unable to connect to Proxy " << proxyHost << std::endl;
+                    return ReadResult::FILE_NOT_FOUND;
+                }
+                
+                requestAdd = std::string("http://") + hostname + "/" + fileName;
+            }
+            else
+            {
+                try {
+                    sio->rdbuf()->connect( hostname.c_str(), port );
+                    osg::notify(osg::DEBUG_FP) << "osgPlugin .net reader: connected to Hostname " << hostname << " with Port " << port <<  std::endl;
+                }
+                catch( sockerr e )
+                {
+                    osg::notify(osg::WARN) << "osgPlugin .net reader: Unable to connect to host " << hostname << std::endl;
+                    return ReadResult::FILE_NOT_FOUND;
+                }
+                requestAdd = "/" + fileName; 
+            }
 
-		    *sio << 
-				    "GET " << requestAdd << " HTTP/1.1\n" 
-				    "User-Agent: OSGNetPlugin/1.0\n"
-				    "Accept: */*\n"
-				    "Host: " << hostname << "\n"
-				    "Connection: close\n"
-					"\n";	
+            *sio << 
+                    "GET " << requestAdd << " HTTP/1.1\n" 
+                    "User-Agent: OSGNetPlugin/1.0\n"
+                    "Accept: */*\n"
+                    "Host: " << hostname << "\n"
+                    "Connection: close\n"
+                    "\n";    
 
             sio->flush();
                                                                                                            

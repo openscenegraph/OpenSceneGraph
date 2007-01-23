@@ -1,0 +1,70 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_STATSHANDLER
+#define OSGVIEWER_STATSHANDLER 1
+
+#include <osgViewer/Viewer>
+#include <osgText/Text>
+#include <osg/Geometry>
+
+namespace osgViewer {
+
+class StatsHandler : public osgGA::GUIEventHandler 
+{
+    public: 
+
+        StatsHandler();
+
+        enum StatsType
+        {
+            NO_STATS = 0,
+            FRAME_RATE = 1,
+            VIEWER_STATS = 2,
+            SCENE_STATS = 3,
+            LAST = 4
+        };
+
+        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        double getBlockMultiplier() const { return _blockMultiplier; }
+
+    protected:
+
+        void setUpHUDCamera(osgViewer::Viewer* viewer);
+
+        osg::Geometry* createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks);
+
+        osg::Geometry* createFrameMarkers(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks);
+
+        osg::Geometry* createTick(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numTicks);
+
+        osg::Node* createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
+
+        void setUpScene(osgViewer::Viewer* viewer);
+
+        int                             _statsType;
+        osg::ref_ptr<osg::Camera>       _camera;
+        osg::ref_ptr<osg::Switch>       _switch;
+
+        unsigned int                    _frameRateChildNum;
+        unsigned int                    _viewerChildNum;
+        unsigned int                    _sceneChildNum;
+        unsigned int                    _numBlocks;
+        double                          _blockMultiplier;
+    
+};
+
+}
+
+#endif

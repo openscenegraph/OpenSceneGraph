@@ -66,10 +66,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	          __C5_AttributeMap_R1__getAttributeMap__int,
 	          "",
 	          "");
-	I_Method1(void, report, IN, std::ostream &, out,
-	          __void__report__std_ostream_R1,
-	          "",
-	          "");
+	I_MethodWithDefaults2(void, report, IN, std::ostream &, out, , IN, const char *, indent, 0,
+	                      __void__report__std_ostream_R1__C5_char_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(void, report, IN, std::ostream &, out, , IN, unsigned int, frameNumber, , IN, const char *, indent, 0,
+	                      __void__report__std_ostream_R1__unsigned_int__C5_char_P1,
+	                      "",
+	                      "");
 	I_SimpleProperty(int, EarliestFrameNumber, 
 	                 __int__getEarliestFrameNumber, 
 	                 0);

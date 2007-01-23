@@ -27,9 +27,10 @@
 
 BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_BaseType(osgGA::GUIEventHandler);
-	I_Constructor0(____StateSetManipulator,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osg::StateSet *, stateset, 0,
+	                           ____StateSetManipulator__osg_StateSet_P1,
+	                           "",
+	                           "");
 	I_Method0(const char *, className,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",

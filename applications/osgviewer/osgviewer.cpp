@@ -95,7 +95,9 @@ public:
         _statsType(NO_STATS),
         _frameRateChildNum(0),
         _viewerChildNum(0),
-        _sceneChildNum(0) {}
+        _sceneChildNum(0),
+        _numBlocks(8),
+        _blockMultiplier(10000.0) {}
 
     enum StatsType
     {
@@ -274,15 +276,15 @@ public:
 
     struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
     {
-        BlockDrawCallback(float xPos, osg::Stats* viewerStats, osg::Stats* stats, const std::string& beginName, const std::string& endName, int frameDelta, int numFrames, double multiplier = 1.0):
+        BlockDrawCallback(StatsHandler* statsHandler, float xPos, osg::Stats* viewerStats, osg::Stats* stats, const std::string& beginName, const std::string& endName, int frameDelta, int numFrames):
+            _statsHandler(statsHandler), 
             _xPos(xPos),
             _viewerStats(viewerStats),
             _stats(stats),
             _beginName(beginName),
             _endName(endName),
             _frameDelta(frameDelta),
-            _numFrames(numFrames),
-            _multiplier(multiplier) {}
+            _numFrames(numFrames) {}
     
         /** do customized draw code.*/
         virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
@@ -307,16 +309,17 @@ public:
                 if (_stats->getAttribute( i, _beginName, beginValue) &&
                     _stats->getAttribute( i, _endName, endValue) )
                 {
-                    (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime)*_multiplier;
-                    (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime)*_multiplier;
-                    (*vertices)[vi++].x() = _xPos + (endValue - referenceTime)*_multiplier;
-                    (*vertices)[vi++].x() = _xPos + (endValue - referenceTime)*_multiplier;
+                    (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->_blockMultiplier;
+                    (*vertices)[vi++].x() = _xPos + (beginValue - referenceTime) * _statsHandler->_blockMultiplier;
+                    (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->_blockMultiplier;
+                    (*vertices)[vi++].x() = _xPos + (endValue - referenceTime) * _statsHandler->_blockMultiplier;
                 }
             }
                                     
             drawable->drawImplementation(renderInfo);
         }
 
+        StatsHandler*   _statsHandler;
         float           _xPos;
         osg::Stats*     _viewerStats;
         osg::Stats*     _stats;
@@ -324,7 +327,6 @@ public:
         std::string     _endName;
         int             _frameDelta;
         int             _numFrames;
-        double          _multiplier;
     };
     
     osg::Geometry* createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
@@ -335,7 +337,7 @@ public:
         
         osg::Vec3Array* vertices = new osg::Vec3Array;
         geometry->setVertexArray(vertices);
-        vertices->reserve(numBlocks);
+        vertices->reserve(numBlocks*4);
         
         for(unsigned int i=0; i<numBlocks; ++i)
         {
@@ -351,6 +353,108 @@ public:
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
         
         geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, numBlocks*4));
+        
+        return geometry;       
+    }
+
+
+    struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
+    {
+        FrameMarkerDrawCallback(StatsHandler* statsHandler, float xPos, osg::Stats* viewerStats, int frameDelta, int numFrames):
+            _statsHandler(statsHandler), 
+            _xPos(xPos),
+            _viewerStats(viewerStats),
+            _frameDelta(frameDelta),
+            _numFrames(numFrames) {}
+    
+        /** do customized draw code.*/
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
+        {
+            osg::Geometry* geom = (osg::Geometry*)drawable;
+            osg::Vec3Array* vertices = (osg::Vec3Array*)geom->getVertexArray();
+            
+            int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();            
+            
+            int startFrame = frameNumber + _frameDelta - _numFrames + 1;
+            int endFrame = frameNumber + _frameDelta;
+            double referenceTime;
+            if (!_viewerStats->getAttribute( startFrame, "Reference time", referenceTime))
+            {
+                return;
+            }
+
+            unsigned int vi = 0;
+            double currentReferenceTime;
+            for(int i = startFrame; i <= endFrame; ++i)
+            {            
+                if (_viewerStats->getAttribute( i, "Reference time", currentReferenceTime))
+                {
+                    (*vertices)[vi++].x() = _xPos + (currentReferenceTime - referenceTime) * _statsHandler->_blockMultiplier;
+                    (*vertices)[vi++].x() = _xPos + (currentReferenceTime - referenceTime) * _statsHandler->_blockMultiplier;
+                }
+            }
+                                    
+            drawable->drawImplementation(renderInfo);
+        }
+
+        StatsHandler*   _statsHandler;
+        float           _xPos;
+        osg::Stats*     _viewerStats;
+        std::string     _endName;
+        int             _frameDelta;
+        int             _numFrames;
+    };
+    
+
+    osg::Geometry* createFrameMarkers(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
+    {
+        osg::Geometry* geometry = new osg::Geometry;
+
+        geometry->setUseDisplayList(false);
+        
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        geometry->setVertexArray(vertices);
+        vertices->reserve(numBlocks*2);
+        
+        for(unsigned int i=0; i<numBlocks; ++i)
+        {
+            vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.01, height, 0.0));
+            vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.01, 0.0, 0.0));
+        }
+        
+        osg::Vec4Array* colours = new osg::Vec4Array;
+        colours->push_back(colour);
+        geometry->setColorArray(colours);
+        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numBlocks*2));
+        
+        return geometry;       
+    }
+
+    osg::Geometry* createTick(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numTicks)
+    {
+        osg::Geometry* geometry = new osg::Geometry;
+
+        geometry->setUseDisplayList(false);
+        
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        geometry->setVertexArray(vertices);
+        vertices->reserve(numTicks*2);
+        
+        for(unsigned int i=0; i<numTicks; ++i)
+        {
+            float tickHeight = (i%10) ? height : height * 2.0;
+            vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.001, tickHeight , 0.0));
+            vertices->push_back(pos+osg::Vec3(double(i)*_blockMultiplier*0.001, 0.0, 0.0));
+        }
+        
+        osg::Vec4Array* colours = new osg::Vec4Array;
+        colours->push_back(colour);
+        geometry->setColorArray(colours);
+        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINES, 0, numTicks*2));
         
         return geometry;       
     }
@@ -450,6 +554,9 @@ public:
 
             osg::Geode* geode = new osg::Geode();
             group->addChild(geode);
+
+            float topOfViewerStats = pos.y() + characterSize * 1.5;
+
             {
                 pos.x() = leftPos;
 
@@ -476,8 +583,8 @@ public:
                 eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, 1000.0));
                 
                 pos.x() = startBlocks;
-                osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdate, 10);
-                geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewer->getStats(), viewer->getStats(), "Event traversal begin time", "Event traversal end time", -1, 10, 10000.0));
+                osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdate, _numBlocks);
+                geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Event traversal begin time", "Event traversal end time", -1, _numBlocks));
                 geode->addDrawable(geometry);
 
                 pos.y() -= characterSize*1.5f;
@@ -509,8 +616,8 @@ public:
                 updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, 1000.0));
 
                 pos.x() = startBlocks;
-                osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdate, 10);
-                geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewer->getStats(), viewer->getStats(), "Update traversal begin time", "Update traversal end time", -1, 10, 10000.0));
+                osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdate, _numBlocks);
+                geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Update traversal begin time", "Update traversal end time", -1, _numBlocks));
                 geode->addDrawable(geometry);
 
                 pos.y() -= characterSize*1.5f;
@@ -519,13 +626,34 @@ public:
             pos.x() = leftPos;
 
             
+            // add camera stats
             for(Cameras::iterator citr = cameras.begin();
                 citr != cameras.end();
                 ++citr)
             {
                 group->addChild(createCameraStats(font, pos, startBlocks, aquireGPUStats, characterSize, viewer->getStats(), *citr));
             }
-            
+
+
+            // add frame ticks
+            {
+                osg::Geode* geode = new osg::Geode;
+                group->addChild(geode);
+                
+                osg::Vec4 colourTicks(1.0f,1.0f,1.0f, 0.5f);
+                
+                pos.x() = startBlocks;
+                pos.y() += characterSize*0.5;
+                float height = topOfViewerStats - pos.y();
+
+                osg::Geometry* ticks = createTick(pos, 5.0f, colourTicks, 100);
+                geode->addDrawable(ticks);
+                
+                osg::Geometry* frameMarkers = createFrameMarkers(pos, height, colourTicks, _numBlocks + 1);
+                frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getStats(), 0, _numBlocks + 1));
+                geode->addDrawable(frameMarkers);
+            }
+
         }
 
         // scene stats
@@ -593,8 +721,8 @@ public:
             cullValue->setDrawCallback(new TextDrawCallback(stats,"Cull traversal time taken",-1, 1000.0));
 
             pos.x() = startBlocks;
-            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorCull, 10);
-            geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewerStats, stats, "Cull traversal begin time", "Cull traversal end time", -1, 10, 10000.0));
+            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorCull, _numBlocks);
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats, "Cull traversal begin time", "Cull traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
@@ -627,8 +755,8 @@ public:
 
 
             pos.x() = startBlocks;
-            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorDraw, 10);
-            geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewerStats, stats, "Draw traversal begin time", "Draw traversal end time", -1, 10, 10000.0));
+            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorDraw, _numBlocks);
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats, "Draw traversal begin time", "Draw traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
@@ -661,14 +789,12 @@ public:
             gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, 1000.0));
 
             pos.x() = startBlocks;
-            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPU, 10);
-            geometry->setDrawCallback(new BlockDrawCallback(startBlocks, viewerStats, stats, "GPU draw begin time", "GPU draw end time", -1, 10, 10000.0));
+            osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPU, _numBlocks);
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewerStats, stats, "GPU draw begin time", "GPU draw end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
         }
-
-
 
 
         pos.x() = leftPos;
@@ -683,6 +809,8 @@ public:
     unsigned int                    _frameRateChildNum;
     unsigned int                    _viewerChildNum;
     unsigned int                    _sceneChildNum;
+    unsigned int                    _numBlocks;
+    double                          _blockMultiplier;
     
 };
 

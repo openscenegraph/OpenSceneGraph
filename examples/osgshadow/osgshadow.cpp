@@ -457,7 +457,7 @@ int main(int argc, char** argv)
     // create the windows and run the threads.
     viewer.realize();
 
-    osgDB::writeNodeFile(*group,"test.osg");
+    // osgDB::writeNodeFile(*group,"test.osg");
 
     while (!viewer.done())
     {

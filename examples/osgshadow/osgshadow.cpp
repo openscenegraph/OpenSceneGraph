@@ -129,7 +129,102 @@ protected:
     osg::BoundingBox    _bb;
 };
 
+osg::Node* createTestModel()
+{
+    osg::Geode* geode = new osg::Geode;
+    
+    osg::Geometry* geometry = new osg::Geometry;
+    geode->addDrawable(geometry);
+    
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices);
+    
+    osg::Vec3Array* normals = new osg::Vec3Array;
+    geometry->setNormalArray(normals);
+    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    
+    osg::Vec4Array* colours = new osg::Vec4Array;
+    geometry->setColorArray(colours);
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    
+    
+    osg::Vec3 origin(0.0f,0.0f,0.0f);
+    osg::Vec3 dx(2.0f,0.0f,0.0f);
+    osg::Vec3 dy(0.0f,1.0f,0.0f);
+    osg::Vec3 dz(0.0f,0.0f,1.0f);
+    
+    osg::Vec3 px(1.0f,0.0,0.0f);
+    osg::Vec3 nx(-1.0f,0.0,0.0f);
+    osg::Vec3 py(0.0f,1.0f,0.0f);
+    osg::Vec3 ny(0.0f,-1.0f,0.0f);
+    osg::Vec3 pz(0.0f,0.0f,1.0f);
+    osg::Vec3 nz(0.0f,0.0f,-1.0f);
 
+    // front face    
+    vertices->push_back(origin);
+    vertices->push_back(origin+dx);
+    vertices->push_back(origin+dx+dz);
+    vertices->push_back(origin+dz);
+    normals->push_back(ny);
+    normals->push_back(ny);
+    normals->push_back(ny);
+    normals->push_back(ny);
+    
+    // front face    
+    vertices->push_back(origin+dy);
+    vertices->push_back(origin+dy+dz);
+    vertices->push_back(origin+dy+dx+dz);
+    vertices->push_back(origin+dy+dx);
+    normals->push_back(py);
+    normals->push_back(py);
+    normals->push_back(py);
+    normals->push_back(py);
+    
+    // left face    
+    vertices->push_back(origin+dy);
+    vertices->push_back(origin);
+    vertices->push_back(origin+dz);
+    vertices->push_back(origin+dy+dz);
+    normals->push_back(nx);
+    normals->push_back(nx);
+    normals->push_back(nx);
+    normals->push_back(nx);
+
+    // right face    
+    vertices->push_back(origin+dx+dy);
+    vertices->push_back(origin+dx+dy+dz);
+    vertices->push_back(origin+dx+dz);
+    vertices->push_back(origin+dx);
+    normals->push_back(px);
+    normals->push_back(px);
+    normals->push_back(px);
+    normals->push_back(px);
+
+    // top face    
+    vertices->push_back(origin+dz);
+    vertices->push_back(origin+dz+dx);
+    vertices->push_back(origin+dz+dx+dy);
+    vertices->push_back(origin+dz+dy);
+    normals->push_back(pz);
+    normals->push_back(pz);
+    normals->push_back(pz);
+    normals->push_back(pz);
+
+    // bottom face    
+    vertices->push_back(origin);
+    vertices->push_back(origin+dy);
+    vertices->push_back(origin+dx+dy);
+    vertices->push_back(origin+dx);
+    normals->push_back(nz);
+    normals->push_back(nz);
+    normals->push_back(nz);
+    normals->push_back(nz);
+
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, vertices->size()));
+
+    return geode;
+}
 
 int main(int argc, char** argv)
 {
@@ -233,8 +328,7 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (!model)
     {
-        osg::notify(osg::NOTICE)<<"No model loaded, please specify a model to load."<<std::endl;
-        return 1;
+        model = createTestModel();
     }
 
     // get the bounds of the model.    

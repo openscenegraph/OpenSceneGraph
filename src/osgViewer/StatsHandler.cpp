@@ -17,6 +17,8 @@ namespace osgViewer
 {
 
 StatsHandler::StatsHandler():
+    _keyEventTogglesOnScreenStats('s'),
+    _keyEventPrintsOutStats('S'),
     _statsType(NO_STATS),
     _frameRateChildNum(0),
     _viewerChildNum(0),
@@ -35,7 +37,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
     {
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()=='s')
+            if (ea.getKey()==_keyEventTogglesOnScreenStats)
             {
                 if (viewer->getStats())
                 {
@@ -83,7 +85,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                 }
                 return true;
             }
-            if (ea.getKey()=='S')
+            if (ea.getKey()==_keyEventPrintsOutStats)
             {
                 if (viewer->getStats())
                 {

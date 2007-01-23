@@ -34,6 +34,12 @@ class StatsHandler : public osgGA::GUIEventHandler
             SCENE_STATS = 3,
             LAST = 4
         };
+        
+        void setKeyEventTogglesOnScreenStats(int key) { _keyEventTogglesOnScreenStats = key; }
+        int getKeyEventTogglesOnScreenStats() const { return _keyEventTogglesOnScreenStats; }
+        
+        void setKeyEventPrintsOutStats(int key) { _keyEventPrintsOutStats = key; }
+        int getKeyEventPrintsOutStats() const { return _keyEventPrintsOutStats; }
 
         bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
@@ -52,6 +58,9 @@ class StatsHandler : public osgGA::GUIEventHandler
         osg::Node* createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
 
         void setUpScene(osgViewer::Viewer* viewer);
+
+        int                             _keyEventTogglesOnScreenStats;
+        int                             _keyEventPrintsOutStats;
 
         int                             _statsType;
         osg::ref_ptr<osg::Camera>       _camera;

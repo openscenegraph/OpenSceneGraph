@@ -17,9 +17,9 @@ SRC_DIRS = \
 	osgUtil \
 	osgDB \
 	osgGA \
+	osgText \
         osgViewer \
 	osgParticle \
-	osgText \
         osgFX \
         osgShadow \
 	osgSim

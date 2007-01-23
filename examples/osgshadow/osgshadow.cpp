@@ -169,8 +169,9 @@ int main(int argc, char** argv)
     bool doShadow = true;
     while (arguments.read("--noShadow")) doShadow = false;
     
-    osgShadow::ShadowVolumeGeometry::DrawMode drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS;
+    osgShadow::ShadowVolumeGeometry::DrawMode drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
     while (arguments.read("--two-sided")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
+    while (arguments.read("--two-pass")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS;
     
 
     // set up the camera manipulators.

@@ -140,8 +140,14 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " is the example which demonstrates using of GL_ARB_shadow extension implemented in osg::Texture class");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName());
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help", "Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("--with-base-texture", "Adde base texture to shadowed model.");
-    arguments.getApplicationUsage()->addCommandLineOption("--no-base-texture", "Adde base texture to shadowed model.");
+    arguments.getApplicationUsage()->addCommandLineOption("--positionalLight", "Use a positional light.");
+    arguments.getApplicationUsage()->addCommandLineOption("--directionalLight", "Use a direction light.");
+    arguments.getApplicationUsage()->addCommandLineOption("--addOccluderToScene", "Add the occluders geometry.");
+    arguments.getApplicationUsage()->addCommandLineOption("--noUpdate", "Disable the updating the of light source.");
+    arguments.getApplicationUsage()->addCommandLineOption("--base", "Add a base geometry to test shadows.");
+    arguments.getApplicationUsage()->addCommandLineOption("--noShadow", "Disable the shadows.");
+    arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
+    arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
 
     // construct the viewer.
     osgViewer::Viewer viewer;

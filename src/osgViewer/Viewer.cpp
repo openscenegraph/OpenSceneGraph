@@ -1075,18 +1075,16 @@ void Viewer::eventTraversal()
     {
         osgGA::GUIEventAdapter* event = itr->get();
 
-        bool handled = false;
-        
         if (_cameraManipulator.valid())
         {
-            _cameraManipulator->handle( *event, *this);
+            if (_cameraManipulator->handle( *event, *this)) event->setHandled(true);
         }
         
         for(EventHandlers::iterator hitr = _eventHandlers.begin();
-            hitr != _eventHandlers.end() && !handled;
+            hitr != _eventHandlers.end();
             ++hitr)
         {
-            handled = (*hitr)->handle( *event, *this, 0, 0);
+            if ((*hitr)->handle( *event, *this, 0, 0)) event->setHandled(true);
         }
     }
 
@@ -1101,17 +1099,12 @@ void Viewer::eventTraversal()
         {
             osgGA::GUIEventAdapter* event = itr->get();
 
-            bool handled = false;
-
             _eventVisitor->reset();
             _eventVisitor->addEvent( event );
 
             getSceneData()->accept(*_eventVisitor);
-
-            if (_eventVisitor->getEventHandled())  handled = true;
         }
     }
-
 
     
     if (getStats())

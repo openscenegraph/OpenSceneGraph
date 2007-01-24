@@ -162,29 +162,26 @@ void SimpleViewer::eventTraversal()
     {
         osgGA::GUIEventAdapter* event = itr->get();
     
-        bool handled = false;
+        if (_cameraManipulator.valid())
+        {
+            if (_cameraManipulator->handle( *event, *this )) event->setHandled(true);
+        }
         
+        for(EventHandlers::iterator hitr = _eventHandlers.begin();
+            hitr != _eventHandlers.end();
+            ++hitr)
+        {
+            if ((*hitr)->handle( *event, *this, 0, 0)) event->setHandled(true);
+        }
+
         if (_eventVisitor.valid() && getSceneData())
         {
             _eventVisitor->reset();
             _eventVisitor->addEvent( event );
             
             getSceneData()->accept(*_eventVisitor);
-            
-            if (_eventVisitor->getEventHandled())  handled = true;
         }
         
-        if (_cameraManipulator.valid())
-        {
-            _cameraManipulator->handle( *event, *this );
-        }
-        
-        for(EventHandlers::iterator hitr = _eventHandlers.begin();
-            hitr != _eventHandlers.end() && !handled;
-            ++hitr)
-        {
-            handled = (*hitr)->handle( *event, *this, 0, 0);
-        }
     }
 }
 

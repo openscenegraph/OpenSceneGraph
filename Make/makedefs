@@ -218,7 +218,7 @@ ifeq ($(OS),SunOS)
   INSTDEVCMD        = cp
   INST_LOCATION     ?= /opt/OpenSceneGraph
   MAKEDIST          = $(TOPDIR)/Make/makepkg
-  OTHER_LIBS        = -lOpenThreads
+  OTHER_LIBS        = -lOpenThreads -lmtsk
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`

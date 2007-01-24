@@ -28,11 +28,11 @@ void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
             if (handle(*(*itr), *(ev->getActionAdapter()), node, nv))
             {
-                return;
+                (*itr)->setHandled(true);
             }
         }
     }
-    traverse(node,nv);
+    if (node->getNumChildrenRequiringEventTraversal()>0) traverse(node,nv);
 }
 
 void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)

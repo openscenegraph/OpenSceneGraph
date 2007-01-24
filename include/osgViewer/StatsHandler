@@ -20,7 +20,7 @@
 
 namespace osgViewer {
 
-class StatsHandler : public osgGA::GUIEventHandler 
+class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler 
 {
     public: 
 

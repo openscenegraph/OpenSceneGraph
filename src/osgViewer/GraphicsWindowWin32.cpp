@@ -12,7 +12,7 @@
  *
  * This file is Copyright (C) 2007 - André Garneau (andre@pixdev.com) and licensed under OSGPL.
  *
- * Note, some elements of GraphicsWindowWin32 have used the Producer implementation as a reference.
+ * Some elements of GraphicsWindowWin32 have used the Producer implementation as a reference.
  * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
@@ -81,8 +81,8 @@ namespace osgViewer
 #define WGL_SWAP_UNDEFINED_ARB                  0x202A
 #define WGL_TYPE_RGBA_ARB                       0x202B
 #define WGL_TYPE_COLORINDEX_ARB                 0x202C
-#define WGL_SAMPLE_BUFFERS_ARB                    0x2041
-#define WGL_SAMPLES_ARB                            0x2042
+#define WGL_SAMPLE_BUFFERS_ARB                  0x2041
+#define WGL_SAMPLES_ARB                         0x2042
 
 //
 // Entry points used from the WGL extensions
@@ -108,13 +108,13 @@ template <typename T> class WGLAttributes
       WGLAttributes()  {}
       ~WGLAttributes() {}
 
-      void begin()                                { m_parameters.clear(); }
-      void set( const T& id, const T& value )    { add(id); add(value); }
+      void begin()                              { m_parameters.clear(); }
+      void set( const T& id, const T& value )   { add(id); add(value); }
       void enable( const T& id )                { add(id); add(true); }
-      void disable( const T& id )                { add(id); add(false); }
+      void disable( const T& id )               { add(id); add(false); }
       void end()                                { add(0); }
 
-      const T* get()                            { return &m_parameters.front(); }
+      const T* get() const                      { return &m_parameters.front(); }
 
   protected:
 
@@ -159,26 +159,38 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     // A class representing an OpenGL rendering context
     class OpenGLContext
     {
-        public:
+      public:
 
-        OpenGLContext() : _previous(0), _hdc(0), _hglrc(0), _restorePreviousOnExit(false)
+        OpenGLContext()
+        : _previousHdc(0),
+          _previousHglrc(0),
+          _hwnd(0),
+          _hdc(0),
+          _hglrc(0),
+          _restorePreviousOnExit(false)
         {}
 
-        OpenGLContext( HDC hdc, HGLRC hglrc ) : _previous(0), _hdc(hdc), _hglrc(hglrc), _restorePreviousOnExit(false)
-        {}
-
-        OpenGLContext( const OpenGLContext& context )
-        : _previous(context._previous),
-          _hdc(context._hdc),
-          _hglrc(context._hglrc),
-          _restorePreviousOnExit(context._restorePreviousOnExit)
+        OpenGLContext( HWND hwnd, HDC hdc, HGLRC hglrc )
+        : _previousHdc(0),
+          _previousHglrc(0),
+          _hwnd(hwnd),
+          _hdc(hdc),
+          _hglrc(hglrc),
+          _restorePreviousOnExit(false)
         {}
 
         ~OpenGLContext();
 
+        void set( HWND hwnd, HDC hdc, HGLRC hglrc )
+        {
+            _hwnd  = hwnd;
+            _hdc   = hdc;
+            _hglrc = hglrc;
+        }
+
         HDC deviceContext() { return _hdc; }
 
-        bool makeCurrent( bool restorePreviousOnExit );
+        bool makeCurrent( HDC restoreOnHdc, bool restorePreviousOnExit );
 
       protected:
 
@@ -186,19 +198,22 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
         // Data members
         //
 
-        HGLRC _previous;                // previously current rendering context
-        HDC   _hdc;                        // handle to device context
-        HGLRC _hglrc;                    // handle to OpenGL rendering context
-        bool  _restorePreviousOnExit;    // restore original context on exit
+        HDC   _previousHdc;                // previously HDC to restore rendering context on
+        HGLRC _previousHglrc;           // previously current rendering context
+        HWND  _hwnd;                    // handle to OpenGL window
+        HDC   _hdc;                     // handle to device context
+        HGLRC _hglrc;                   // handle to OpenGL rendering context
+        bool  _restorePreviousOnExit;   // restore original context on exit
 
         private:
 
-        // no implementation for assignment operator
-        OpenGLContext& operator=( const OpenGLContext& context );
-
+        // no implementation for these
+        OpenGLContext( const OpenGLContext& );
+        OpenGLContext& operator=( const OpenGLContext& );
     };
 
-    static std::string osgGraphicsWindowClassName;     //!< Name of Win32 window class used by OSG graphics window instances
+    static std::string osgGraphicsWindowWithCursorClass;    //!< Name of Win32 window class (with cursor) used by OSG graphics window instances
+    static std::string osgGraphicsWindowWithoutCursorClass; //!< Name of Win32 window class (without cursor) used by OSG graphics window instances
 
     Win32WindowingSystem();
     ~Win32WindowingSystem();
@@ -216,6 +231,12 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     // Return the resolution of specified screen
     // (0,0) is returned if screen is unknown
     virtual void getScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height );
+
+    // Set the resolution for given screen
+    virtual bool setScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height );
+
+    // Set the refresh rate for given screen
+    virtual bool setScreenRefreshRate( const osg::GraphicsContext::ScreenIdentifier& si, double refreshRate );
 
     // Return the screen position and width/height.
     // all zeros returned if screen is unknown
@@ -236,8 +257,8 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     // Get the application window object associated with a native window
     virtual osgViewer::GraphicsWindowWin32* getGraphicsWindowFor( HWND hwnd );
 
-    // Return a valid sample OpenGL Device Context and Rendering Context that can be used with wglXYZ extensions
-    virtual OpenGLContext getSampleOpenGLContext();
+    // Return a valid sample OpenGL Device Context and current rendering context that can be used with wglXYZ extensions
+    virtual bool getSampleOpenGLContext( OpenGLContext& context, HDC windowHDC, int windowOriginX, int windowOriginY );
 
   protected:
 
@@ -251,23 +272,21 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     // Enumerate all display devices and return in passed container
     void enumerateDisplayDevices( DisplayDevices& displayDevices ) const;
 
-    bool getScreenInformation( const osg::GraphicsContext::ScreenIdentifier& si, DEVMODE& deviceMode );
+    // Get the screen device current mode information
+    bool getScreenInformation( const osg::GraphicsContext::ScreenIdentifier& si, DISPLAY_DEVICE& displayDevice, DEVMODE& deviceMode );
 
-    // Register the window class used by OSG graphics window instances
-    void registerWindowClass();
+    // Change the screen settings (resolution, refresh rate, etc.)
+    bool changeScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, DISPLAY_DEVICE& displayDevice, DEVMODE& deviceMode );
 
-    // Unregister the window class used by OSG graphics window instances
-    void unregisterWindowClass();
+    // Register the window classes used by OSG graphics window instances
+    void registerWindowClasses();
 
-    // Release sample GL context
-    void releaseSampleOpenGLContext();
+    // Unregister the window classes used by OSG graphics window instances
+    void unregisterWindowClasses();
 
     // Data members
     WindowHandles       _activeWindows;                //!< handles to active windows
-    HWND                _dummyGLWindow;                //!< dummy GL window used to provide a valid context for wglXYZ calls
-    HDC                    _dummyGLWindowDC;            //!< dummy GL window device context
-    HGLRC                _dummyGLRC;                    //!< dummy GL rendering context
-    bool                _windowClassRegistered;        //!< true after windowing interface has been initialized successfully
+    bool                _windowClassesRegistered;      //!< true after window classes have been registered
 
  private:
 
@@ -332,9 +351,25 @@ class GraphicsContextWin32 : public osg::GraphicsContext
 //                             Error reporting
 //////////////////////////////////////////////////////////////////////////////
 
+static void reportError( const std::string& msg )
+{
+    osg::notify(osg::WARN) << "Error: " << msg.c_str() << std::endl;
+}
+
 static void reportError( const std::string& msg, unsigned int errorCode )
 {
-    osg::notify(osg::WARN) << "Windows System Error #"   << errorCode << " :  " << msg.c_str();
+    //
+    // Some APIs are documented as returning the error in ::GetLastError but apparently do not
+    // Skip "Reason" field if the errorCode is still success
+    //
+
+    if (errorCode==0)
+    {
+        reportError(msg);
+        return;
+    }
+
+    osg::notify(osg::WARN) << "Windows Error #"   << errorCode << ": " << msg.c_str();
 
     LPVOID lpMsgBuf;
 
@@ -346,7 +381,7 @@ static void reportError( const std::string& msg, unsigned int errorCode )
                       0,
                       NULL)!=0)
     {
-        osg::notify(osg::WARN) << ". Reason : " << LPTSTR(lpMsgBuf) << std::endl;
+        osg::notify(osg::WARN) << ". Reason: " << LPTSTR(lpMsgBuf) << std::endl;
         ::LocalFree(lpMsgBuf);
     }
     else
@@ -355,9 +390,12 @@ static void reportError( const std::string& msg, unsigned int errorCode )
     }
 }
 
-static void reportError( const std::string& msg )
+static void reportErrorForScreen( const std::string& msg, const osg::GraphicsContext::ScreenIdentifier& si, unsigned int errorCode )
 {
-    osg::notify(osg::WARN) << "Error: " << msg.c_str() << std::endl;
+    std::ostringstream str;
+
+    str << "[Screen #" << si.screenNum << "] " << msg;
+    reportError(str.str(), errorCode);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -513,23 +551,42 @@ static LRESULT CALLBACK WindowProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
 
 Win32WindowingSystem::OpenGLContext::~OpenGLContext()
 {
-    if (_restorePreviousOnExit && _previous!=_hglrc && !::wglMakeCurrent(_hdc, _previous))
+    if (_restorePreviousOnExit && _previousHglrc!=_hglrc && !::wglMakeCurrent(_previousHdc, _previousHglrc))
     {
         reportError("Win32WindowingSystem::OpenGLContext() - Unable to restore current OpenGL rendering context", ::GetLastError());
     }
 
-    _previous = 0;
-    _hdc      = 0;
-    _hglrc    = 0;
+    _previousHdc   = 0;
+    _previousHglrc = 0;
+
+    if (_hglrc)
+    {
+        ::wglMakeCurrent(_hdc, NULL);
+        ::wglDeleteContext(_hglrc);
+        _hglrc = 0;
+    }
+
+    if (_hdc)
+    {
+        ::ReleaseDC(_hwnd, _hdc);
+        _hdc = 0;
+    }
+
+    if (_hwnd)
+    {
+        ::DestroyWindow(_hwnd);
+        _hwnd = 0;
+    }
 }
 
-bool Win32WindowingSystem::OpenGLContext::makeCurrent( bool restorePreviousOnExit )
+bool Win32WindowingSystem::OpenGLContext::makeCurrent( HDC restoreOnHdc, bool restorePreviousOnExit )
 {
     if (_hdc==0 || _hglrc==0) return false;
 
-    _previous = restorePreviousOnExit ? ::wglGetCurrentContext() : 0;
+    _previousHglrc = restorePreviousOnExit ? ::wglGetCurrentContext() : 0;
+    _previousHdc   = restoreOnHdc;
 
-    if (_hglrc==_previous) return true;
+    if (_hglrc==_previousHglrc) return true;
 
     if (!::wglMakeCurrent(_hdc, _hglrc))
     {
@@ -546,20 +603,17 @@ bool Win32WindowingSystem::OpenGLContext::makeCurrent( bool restorePreviousOnExi
 //              Win32WindowingSystem implementation
 //////////////////////////////////////////////////////////////////////////////
 
-std::string Win32WindowingSystem::osgGraphicsWindowClassName;
+std::string Win32WindowingSystem::osgGraphicsWindowWithCursorClass;
+std::string Win32WindowingSystem::osgGraphicsWindowWithoutCursorClass;
 
 Win32WindowingSystem::Win32WindowingSystem()
-: _dummyGLWindow(0),
-  _dummyGLWindowDC(0),
-  _dummyGLRC(0),
-  _windowClassRegistered(false)
+: _windowClassesRegistered(false)
 {
 }
 
 Win32WindowingSystem::~Win32WindowingSystem()
 {
-    releaseSampleOpenGLContext();
-    unregisterWindowClass();
+    unregisterWindowClasses();
 }
 
 void Win32WindowingSystem::enumerateDisplayDevices( DisplayDevices& displayDevices ) const
@@ -574,80 +628,102 @@ void Win32WindowingSystem::enumerateDisplayDevices( DisplayDevices& displayDevic
         // Do not track devices used for remote access (Terminal Services pseudo-displays, etc.)
         if (displayDevice.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) continue;
 
-        //!@todo when the GraphicsContextWin32 class is implemented, remove this line
-        // For the time-being only return display devices that are attached to the desktop
+        // Only return display devices that are attached to the desktop
         if (!(displayDevice.StateFlags & DISPLAY_DEVICE_ATTACHED_TO_DESKTOP)) continue;
 
         displayDevices.push_back(displayDevice);
     }
 }
 
-void Win32WindowingSystem::registerWindowClass()
+void Win32WindowingSystem::registerWindowClasses()
 {
-    if (_windowClassRegistered) return;
+    if (_windowClassesRegistered) return;
 
     //
-    // Register the window class used by OSG GraphicsWindowWin32 instances
+    // Register the window classes used by OSG GraphicsWindowWin32 instances
     //
 
     std::ostringstream str;
-    str << "OpenSceneGraph Graphics Window for Win32 [" << ::GetCurrentProcessId() << "]";
+    str << "OSG Graphics Window for Win32 [" << ::GetCurrentProcessId() << "]";
 
-    osgGraphicsWindowClassName = str.str();
+    osgGraphicsWindowWithCursorClass    = str.str() + "{ with cursor }";
+    osgGraphicsWindowWithoutCursorClass = str.str() + "{ without cursor }";
 
     WNDCLASSEX wc;
 
     HINSTANCE hinst = ::GetModuleHandle(NULL);
 
-    wc.cbSize         = sizeof(wc);
+    //
+    // First class: class for OSG Graphics Window with a cursor enabled
+    //
+
+    wc.cbSize        = sizeof(wc);
     wc.style         = CS_DBLCLKS | CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-    wc.lpfnWndProc     = WindowProc;
-    wc.cbClsExtra     = 0;
-    wc.cbWndExtra     = 0;
+    wc.lpfnWndProc   = WindowProc;
+    wc.cbClsExtra    = 0;
+    wc.cbWndExtra    = 0;
     wc.hInstance     = hinst;
     wc.hIcon         = ::LoadIcon(hinst, "OSG_ICON");
-    wc.hCursor         = ::LoadCursor(NULL, IDC_ARROW);
+    wc.hCursor       = ::LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = NULL;
     wc.lpszMenuName  = 0;
-    wc.lpszClassName = osgGraphicsWindowClassName.c_str();
-    wc.hIconSm         = NULL;
+    wc.lpszClassName = osgGraphicsWindowWithCursorClass.c_str();
+    wc.hIconSm       = NULL;
 
     if (::RegisterClassEx(&wc)==0)
     {
         unsigned int lastError = ::GetLastError();
         if (lastError!=ERROR_CLASS_ALREADY_EXISTS)
         {
-            reportError("Win32WindowingSystem::registerWindowClass() - Unable to register window class", lastError);
+            reportError("Win32WindowingSystem::registerWindowClasses() - Unable to register first window class", lastError);
             return;
         }
     }
 
-    _windowClassRegistered = true;
+    //
+    // Second class: class for OSG Graphics Window without a cursor
+    //
+
+    wc.hCursor       = NULL;
+    wc.lpszClassName = osgGraphicsWindowWithoutCursorClass.c_str();
+
+    if (::RegisterClassEx(&wc)==0)
+    {
+        unsigned int lastError = ::GetLastError();
+        if (lastError!=ERROR_CLASS_ALREADY_EXISTS)
+        {
+            reportError("Win32WindowingSystem::registerWindowClasses() - Unable to register second window class", lastError);
+            return;
+        }
+    }
+
+    _windowClassesRegistered = true;
 }
 
-void Win32WindowingSystem::unregisterWindowClass()
+void Win32WindowingSystem::unregisterWindowClasses()
 {
-    if (_windowClassRegistered)
+    if (_windowClassesRegistered)
     {
-        ::UnregisterClass(osgGraphicsWindowClassName.c_str(), ::GetModuleHandle(NULL));
-        _windowClassRegistered = false;
+        ::UnregisterClass(osgGraphicsWindowWithCursorClass.c_str(),    ::GetModuleHandle(NULL));
+        ::UnregisterClass(osgGraphicsWindowWithoutCursorClass.c_str(), ::GetModuleHandle(NULL));
+        _windowClassesRegistered = false;
     }
 }
 
-Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext()
+bool Win32WindowingSystem::getSampleOpenGLContext( OpenGLContext& context, HDC windowHDC, int windowOriginX, int windowOriginY )
 {
-    if (_dummyGLWindowDC) return OpenGLContext(_dummyGLWindowDC, _dummyGLRC);
+    context.set(0, 0, 0);
 
-    registerWindowClass();
+    registerWindowClasses();
 
     HWND hwnd = ::CreateWindowEx(WS_EX_OVERLAPPEDWINDOW,
-                                 osgGraphicsWindowClassName.c_str(),
+                                 osgGraphicsWindowWithoutCursorClass.c_str(),
                                  NULL,
                                  WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_DISABLED,
-                                 0, 
-                                 0, 
-                                 256, 
-                                 256, 
+                                 windowOriginX, 
+                                 windowOriginY, 
+                                 1, 
+                                 1, 
                                  NULL,
                                  NULL,
                                  ::GetModuleHandle(NULL),
@@ -655,7 +731,7 @@ Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext
     if (hwnd==0)
     {
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to create window", ::GetLastError());
-        return OpenGLContext();
+        return false;
     }
 
     //
@@ -684,7 +760,7 @@ Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext
     {
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to get window device context", ::GetLastError());
         ::DestroyWindow(hwnd);
-        return OpenGLContext();
+        return false;
     }
 
     int pixelFormatIndex = ::ChoosePixelFormat(hdc, &pixelFormat);
@@ -693,7 +769,7 @@ Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to choose pixel format", ::GetLastError());
         ::ReleaseDC(hwnd, hdc);
         ::DestroyWindow(hwnd);
-        return OpenGLContext();
+        return false;
     }
 
     if (!::SetPixelFormat(hdc, pixelFormatIndex, &pixelFormat))
@@ -701,7 +777,7 @@ Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to set pixel format", ::GetLastError());
         ::ReleaseDC(hwnd, hdc);
         ::DestroyWindow(hwnd);
-        return OpenGLContext();
+        return false;
     }
 
     HGLRC hglrc = ::wglCreateContext(hdc);
@@ -710,45 +786,22 @@ Win32WindowingSystem::OpenGLContext Win32WindowingSystem::getSampleOpenGLContext
         reportError("Win32WindowingSystem::getSampleOpenGLContext() - Unable to create an OpenGL rendering context", ::GetLastError());
         ::ReleaseDC(hwnd, hdc);
         ::DestroyWindow(hwnd);
-        return OpenGLContext();
+        return false;
     }
 
-    _dummyGLWindow   = hwnd;
-    _dummyGLWindowDC = hdc;
-    _dummyGLRC       = hglrc;
+    context.set(hwnd, hdc, hglrc);
 
-    return OpenGLContext(_dummyGLWindowDC, _dummyGLRC);
-}
+    if (!context.makeCurrent(windowHDC, true)) return false;
 
-void Win32WindowingSystem::releaseSampleOpenGLContext()
-{
-    if (_dummyGLRC)
-    {
-        ::wglMakeCurrent(_dummyGLWindowDC, NULL);
-        ::wglDeleteContext(_dummyGLRC);
-        _dummyGLRC = 0;
-    }
-
-    if (_dummyGLWindowDC)
-    {
-        ::ReleaseDC(_dummyGLWindow, _dummyGLWindowDC);
-        _dummyGLWindowDC = 0;
-    }
-
-    if (_dummyGLWindow)
-    {
-        ::DestroyWindow(_dummyGLWindow);
-        _dummyGLWindow = 0;
-    }
+    return true;
 }
 
 unsigned int Win32WindowingSystem::getNumScreens( const osg::GraphicsContext::ScreenIdentifier& si ) 
 {
-    //!@todo change when implementing the GraphicsContextWin32 class.
     return si.displayNum==0 ? ::GetSystemMetrics(SM_CMONITORS) : 0;
 }
 
-bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::ScreenIdentifier& si, DEVMODE& deviceMode )
+bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::ScreenIdentifier& si, DISPLAY_DEVICE& displayDevice, DEVMODE& deviceMode )
 {
     if (si.displayNum>0)
     {
@@ -765,10 +818,12 @@ bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::Scr
         return false;
     }
 
+    displayDevice = displayDevices[si.screenNum];
+
     deviceMode.dmSize        = sizeof(deviceMode);
     deviceMode.dmDriverExtra = 0;
 
-    if (!::EnumDisplaySettings(displayDevices[si.screenNum].DeviceName, ENUM_CURRENT_SETTINGS, &deviceMode))
+    if (!::EnumDisplaySettings(displayDevice.DeviceName, ENUM_CURRENT_SETTINGS, &deviceMode))
     {
         std::ostringstream str;
         str << "Win32WindowingSystem::getScreenInformation() - Unable to query information for screen number " << si.screenNum;
@@ -781,9 +836,10 @@ bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::Scr
 
 void Win32WindowingSystem::getScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height )
 {
-    DEVMODE deviceMode;
+    DISPLAY_DEVICE displayDevice;
+    DEVMODE        deviceMode;
 
-    if (getScreenInformation(si, deviceMode))
+    if (getScreenInformation(si, displayDevice, deviceMode))
     {
         width  = deviceMode.dmPelsWidth;
         height = deviceMode.dmPelsHeight;
@@ -795,11 +851,71 @@ void Win32WindowingSystem::getScreenResolution( const osg::GraphicsContext::Scre
     }
 }
 
+bool Win32WindowingSystem::changeScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, DISPLAY_DEVICE& displayDevice, DEVMODE& deviceMode )
+{
+    //
+    // Start by testing if the change would be successful (without applying it)
+    //
+
+    unsigned int result = ::ChangeDisplaySettingsEx(displayDevice.DeviceName, &deviceMode, NULL, CDS_TEST, NULL);
+    if (result==DISP_CHANGE_SUCCESSFUL)
+    {
+        result = ::ChangeDisplaySettingsEx(displayDevice.DeviceName, &deviceMode, NULL, 0, NULL);
+        if (result==DISP_CHANGE_SUCCESSFUL) return true;
+    }
+
+    std::string msg = "Win32WindowingSystem::changeScreenSettings() - Unable to change the screen settings.";
+
+    switch( result )
+    {
+        case DISP_CHANGE_BADMODE     : msg += " The specified graphics mode is not supported."; break;
+        case DISP_CHANGE_FAILED      : msg += " The display driver failed the specified graphics mode."; break;
+           case DISP_CHANGE_RESTART     : msg += " The computer must be restarted for the graphics mode to work."; break;
+        default : break;
+    }
+
+    reportErrorForScreen(msg, si, result);
+    return false;
+}
+
+bool Win32WindowingSystem::setScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height )
+{
+    DISPLAY_DEVICE displayDevice;
+    DEVMODE        deviceMode;
+
+    if (!getScreenInformation(si, displayDevice, deviceMode)) return false;
+
+    deviceMode.dmFields     = DM_PELSWIDTH | DM_PELSHEIGHT;
+    deviceMode.dmPelsWidth  = width;
+    deviceMode.dmPelsHeight = height;
+    
+    return changeScreenSettings(si, displayDevice, deviceMode);
+}
+
+bool Win32WindowingSystem::setScreenRefreshRate( const osg::GraphicsContext::ScreenIdentifier& si, double refreshRate )
+{
+    DISPLAY_DEVICE displayDevice;
+    DEVMODE        deviceMode;
+
+    unsigned int width, height;
+    getScreenResolution(si, width, height);
+
+    if (!getScreenInformation(si, displayDevice, deviceMode)) return false;
+
+    deviceMode.dmFields           = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
+    deviceMode.dmPelsWidth        = width;
+    deviceMode.dmPelsHeight       = height;
+    deviceMode.dmDisplayFrequency = refreshRate;
+    
+    return changeScreenSettings(si, displayDevice, deviceMode);
+}
+
 void Win32WindowingSystem::getScreenPosition( const osg::GraphicsContext::ScreenIdentifier& si, int& originX, int& originY, unsigned int& width, unsigned int& height )
 {
-    DEVMODE deviceMode;
+    DISPLAY_DEVICE displayDevice;
+    DEVMODE        deviceMode;
 
-    if (getScreenInformation(si, deviceMode))
+    if (getScreenInformation(si, displayDevice, deviceMode))
     {
         originX = deviceMode.dmPosition.x;
         originY = deviceMode.dmPosition.y;
@@ -825,7 +941,7 @@ osg::GraphicsContext* Win32WindowingSystem::createGraphicsContext( osg::Graphics
     }
     else
     {
-        registerWindowClass();
+        registerWindowClasses();
 
         osg::ref_ptr<osgViewer::GraphicsWindowWin32> window = new GraphicsWindowWin32(traits);
         if (window->valid()) return window.release();
@@ -878,6 +994,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _initialized(false),
   _valid(false),
   _realized(false),
+  _recreateWindow(false),
   _destroying(false)
 {
     _traits = traits;
@@ -888,7 +1005,6 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
     {
         setState( new osg::State );
         getState()->setContextID( osg::GraphicsContext::createNewContextID() );
-        Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
     }
 }
 
@@ -925,7 +1041,8 @@ HWND GraphicsWindowWin32::createWindow()
     }
 
     _hwnd = ::CreateWindowEx(extendedStyle,
-                             Win32WindowingSystem::osgGraphicsWindowClassName.c_str(),
+                             _traits->useCursor ? Win32WindowingSystem::osgGraphicsWindowWithCursorClass.c_str() :
+                                                  Win32WindowingSystem::osgGraphicsWindowWithoutCursorClass.c_str(),
                              _traits->windowName.c_str(),
                              windowStyle,
                              _windowOriginXToRealize, 
@@ -938,14 +1055,14 @@ HWND GraphicsWindowWin32::createWindow()
                              NULL);
     if (_hwnd==0)
     {
-        reportError("GraphicsWindowWin32::createWindow() - Unable to create window", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::createWindow() - Unable to create window", _traits->screenNum, ::GetLastError());
         return 0;
     }
 
     _hdc = ::GetDC(_hwnd);
     if (_hdc==0)
     {
-        reportError("GraphicsWindowWin32::createWindow() - Unable to get window device context", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::createWindow() - Unable to get window device context", _traits->screenNum, ::GetLastError());
         destroyWindow();
         _hwnd = 0;
         return 0;
@@ -963,6 +1080,7 @@ HWND GraphicsWindowWin32::createWindow()
         return 0;
     }
 
+    Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
     return _hwnd;
 }
 
@@ -970,8 +1088,6 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
 {
     if (_destroying) return;
     _destroying = true;
-
-    close();
 
     if (_hdc)
     {
@@ -997,6 +1113,29 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
     _initialized = false;
     _realized    = false;
     _valid       = false;
+    _destroying  = false;
+}
+
+void GraphicsWindowWin32::recreateWindow()
+{
+#ifdef NEXT_RELEASE_ONLY
+    _recreateWindow = false;
+
+    Win32WindowingSystem::getInterface()->unregisterWindow(_hwnd);
+
+    //
+    // Delete the original window after now one to prevent window "flashing" on screen
+    //
+
+    HWND hwnd = _hwnd;
+    _hwnd = 0;                    // pretend native window has already been destroyed
+
+    close(true, false);
+    init();
+    realize();
+
+    ::DestroyWindow(hwnd);        // destroy native window
+#endif
 }
 
 bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& x, int& y, unsigned int& w, unsigned int& h, unsigned int& style, unsigned int& extendedStyle )
@@ -1050,7 +1189,7 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& 
 
         if (!::AdjustWindowRectEx(&corners, style, FALSE, extendedStyle))
         {
-            reportError("GraphicsWindowWin32::determineWindowPositionAndStyle() - Unable to adjust window rectangle", ::GetLastError());
+            reportErrorForScreen("GraphicsWindowWin32::determineWindowPositionAndStyle() - Unable to adjust window rectangle", _traits->screenNum, ::GetLastError());
             return false;
         }
 
@@ -1063,28 +1202,10 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& 
     return true;
 }
 
-bool GraphicsWindowWin32::setPixelFormat()
+static void PreparePixelFormatSpecifications( const osg::GraphicsContext::Traits& traits,
+                                              WGLIntegerAttributes&               attributes,
+                                              bool                                allowSwapExchangeARB )
 {
-    Win32WindowingSystem::OpenGLContext glContext = Win32WindowingSystem::getInterface()->getSampleOpenGLContext();
-    if (!glContext.makeCurrent(true)) return false;
-
-    //
-    // Access the entry point for the wglChoosePixelFormatARB function
-    //
-
-    WGLChoosePixelFormatARB wglChoosePixelFormatARB = (WGLChoosePixelFormatARB)wglGetProcAddress("wglChoosePixelFormatARB");
-    if (wglChoosePixelFormatARB==0)
-    {
-        reportError("GraphicsWindowWin32::setPixelFormat() - wglChoosePixelFormatARB extension not found", ::GetLastError());
-        return false;
-    }
-
-    //
-    // Build the specifications of the requested pixel format
-    //
-
-    WGLIntegerAttributes attributes;
-
     attributes.begin();
 
     attributes.enable(WGL_DRAW_TO_WINDOW_ARB);
@@ -1093,49 +1214,88 @@ bool GraphicsWindowWin32::setPixelFormat()
     attributes.set(WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB);
     attributes.set(WGL_PIXEL_TYPE_ARB,   WGL_TYPE_RGBA_ARB);
 
-    attributes.set(WGL_COLOR_BITS_ARB,   _traits->red + _traits->green + _traits->blue);
-    attributes.set(WGL_RED_BITS_ARB,     _traits->red);
-    attributes.set(WGL_GREEN_BITS_ARB,   _traits->green);
-    attributes.set(WGL_BLUE_BITS_ARB,    _traits->blue);
-    attributes.set(WGL_DEPTH_BITS_ARB,   _traits->depth);
+    attributes.set(WGL_COLOR_BITS_ARB,   traits.red + traits.green + traits.blue);
+    attributes.set(WGL_RED_BITS_ARB,     traits.red);
+    attributes.set(WGL_GREEN_BITS_ARB,   traits.green);
+    attributes.set(WGL_BLUE_BITS_ARB,    traits.blue);
+    attributes.set(WGL_DEPTH_BITS_ARB,   traits.depth);
 
-    if (_traits->doubleBuffer)
+    if (traits.doubleBuffer)
     {
         attributes.enable(WGL_DOUBLE_BUFFER_ARB);
-        attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+        if (allowSwapExchangeARB) attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
     }
 
-    if (_traits->alpha)         attributes.set(WGL_ALPHA_BITS_ARB,     _traits->alpha);
-    if (_traits->stencil)       attributes.set(WGL_STENCIL_BITS_ARB,   _traits->stencil);
-    if (_traits->sampleBuffers) attributes.set(WGL_SAMPLE_BUFFERS_ARB, _traits->sampleBuffers);
-    if (_traits->samples)       attributes.set(WGL_SAMPLES_ARB,        _traits->samples);
+    if (traits.alpha)         attributes.set(WGL_ALPHA_BITS_ARB,     traits.alpha);
+    if (traits.stencil)       attributes.set(WGL_STENCIL_BITS_ARB,   traits.stencil);
+    if (traits.sampleBuffers) attributes.set(WGL_SAMPLE_BUFFERS_ARB, traits.sampleBuffers);
+    if (traits.samples)       attributes.set(WGL_SAMPLES_ARB,        traits.samples);
 
-    if (_traits->quadBufferStereo) attributes.enable(WGL_STEREO_ARB);
+    if (traits.quadBufferStereo) attributes.enable(WGL_STEREO_ARB);
 
     attributes.end();
+}
 
+static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAttributes& formatSpecifications )
+{
     //
-    // Choose the closest pixel format from the specified traits
+    // Access the entry point for the wglChoosePixelFormatARB function
     //
+
+    WGLChoosePixelFormatARB wglChoosePixelFormatARB = (WGLChoosePixelFormatARB)wglGetProcAddress("wglChoosePixelFormatARB");
+    if (wglChoosePixelFormatARB==0)
+    {
+        reportErrorForScreen("ChooseMatchingPixelFormat() - wglChoosePixelFormatARB extension not found", screenNum, ::GetLastError());
+        return -1;
+    }
 
     int pixelFormatIndex = 0;
     unsigned int numMatchingPixelFormats = 0;
 
-    if (!wglChoosePixelFormatARB(glContext.deviceContext(),
-                                 attributes.get(),
+    if (!wglChoosePixelFormatARB(hdc,
+                                 formatSpecifications.get(),
                                  NULL,
                                  1,
                                  &pixelFormatIndex,
                                  &numMatchingPixelFormats))
     {
-        reportError("GraphicsWindowWin32::setPixelFormat() - Unable to choose the requested pixel format", ::GetLastError());
-        return false;
+        reportErrorForScreen("ChooseMatchingPixelFormat() - Unable to choose the requested pixel format", screenNum, ::GetLastError());
+        return -1;
     }
 
-    if (numMatchingPixelFormats==0)
+    return numMatchingPixelFormats==0 ? -1 : pixelFormatIndex;
+}
+
+bool GraphicsWindowWin32::setPixelFormat()
+{
+    Win32WindowingSystem::OpenGLContext openGLContext;
+    if (!Win32WindowingSystem::getInterface()->getSampleOpenGLContext(openGLContext, _hdc, _screenOriginX, _screenOriginY)) return false;
+
+    //
+    // Build the specifications of the requested pixel format
+    //
+
+    WGLIntegerAttributes formatSpecs;
+    ::PreparePixelFormatSpecifications(*_traits, formatSpecs, true);
+
+    //
+    // Choose the closest matching pixel format from the specified traits
+    //
+
+    int pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+    if (pixelFormatIndex<0)
     {
-        reportError("GraphicsWindowWin32::setPixelFormat() - No matching pixel format found based on traits specified", ::GetLastError());
-        return false;
+        ::PreparePixelFormatSpecifications(*_traits, formatSpecs, false);
+        pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+        if (pixelFormatIndex<0)
+        {
+            reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - No matching pixel format found based on traits specified", _traits->screenNum, 0);
+            return false;
+        }
+
+        osg::notify(osg::WARN) << "GraphicsWindowWin32::setPixelFormat() - Found a matching pixel format but without the WGL_SWAP_METHOD_ARB specification for screen #"
+                               << _traits->screenNum
+                               << std::endl;
     }
 
     //
@@ -1149,7 +1309,7 @@ bool GraphicsWindowWin32::setPixelFormat()
 
     if (!::SetPixelFormat(_hdc, pixelFormatIndex, &pfd))
     {
-        reportError("GraphicsWindowWin32::setPixelFormat() - Unable to set pixel format", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - Unable to set pixel format", _traits->screenNum, ::GetLastError());
         return false;
     }
 
@@ -1160,7 +1320,7 @@ bool GraphicsWindowWin32::setPixelFormat()
     _hglrc = ::wglCreateContext(_hdc);
     if (_hglrc==0)
     {
-        reportError("GraphicsWindowWin32::setPixelFormat() - Unable to create OpenGL rendering context", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
         return false;
     }
 
@@ -1181,7 +1341,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
 
     if (!determineWindowPositionAndStyle(decorated, x, y, w, h, windowStyle, extendedStyle))
     {
-        reportError("GraphicsWindowWin32::setWindowDecoration() - Unable to determine the window position and style");
+        reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to determine the window position and style", _traits->screenNum, 0);
         return;
     }
 
@@ -1194,7 +1354,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     unsigned int error  = ::GetLastError();
     if (result==0 && error)
     {
-        reportError("GraphicsWindowWin32::setWindowDecoration() - Unable to set window style", error);
+        reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set window style", _traits->screenNum, error);
         return;
     }
 
@@ -1207,7 +1367,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     error  = ::GetLastError();
     if (result==0 && error)
     {
-        reportError("GraphicsWindowWin32::setWindowDecoration() - Unable to set window extented style", error);
+        reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set window extented style", _traits->screenNum, error);
         return;
     }
 
@@ -1217,7 +1377,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
 
     if (!::SetWindowPos(_hwnd, HWND_TOP, x, y, w, h, SWP_FRAMECHANGED | SWP_NOZORDER | SWP_SHOWWINDOW))
     {
-        reportError("GraphicsWindowWin32::setWindowDecoration() - Unable to set new window position and size", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set new window position and size", _traits->screenNum, ::GetLastError());
         return;
     }
 
@@ -1257,13 +1417,13 @@ bool GraphicsWindowWin32::realizeImplementation()
                         _windowHeightToRealize,
                         SWP_SHOWWINDOW))
     {
-        reportError("GraphicsWindowWin32::realizeImplementation() - Unable to show window", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to show window", _traits->screenNum, ::GetLastError());
         return false;
     }
-
+ 
     if (!::UpdateWindow(_hwnd))
     {
-        reportError("GraphicsWindowWin32::realizeImplementation() - Unable to update window", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to update window", _traits->screenNum, ::GetLastError());
         return false;
     }
 
@@ -1276,13 +1436,13 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
 {
     if (!_realized)
     {
-        reportError("GraphicsWindowWin32::makeCurrentImplementation() - Window not realized; cannot do makeCurrent.");
+        reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Window not realized; cannot do makeCurrent.", _traits->screenNum, 0);
         return false;
     }
 
     if (!::wglMakeCurrent(_hdc, _hglrc))
     {
-        reportError("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", _traits->screenNum, ::GetLastError());
         return false;
     }
 
@@ -1293,7 +1453,7 @@ bool GraphicsWindowWin32::releaseContextImplementation()
 {
     if (!::wglMakeCurrent(_hdc, NULL))
     {
-        reportError("GraphicsWindowWin32::releaseContextImplementation() - Unable to release current OpenGL rendering context", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::releaseContextImplementation() - Unable to release current OpenGL rendering context", _traits->screenNum, ::GetLastError());
         return false;
     }
 
@@ -1314,7 +1474,7 @@ void GraphicsWindowWin32::swapBuffersImplementation()
     if (!_realized) return;
     if (!::SwapBuffers(_hdc))
     {
-        reportError("GraphicsWindowWin32::swapBuffersImplementation() - Unable to swap display buffers", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::swapBuffersImplementation() - Unable to swap display buffers", _traits->screenNum, ::GetLastError());
     }
 }
 
@@ -1328,6 +1488,8 @@ void GraphicsWindowWin32::checkEvents()
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
     }
+
+    if (_recreateWindow) recreateWindow();
 }
 
 void GraphicsWindowWin32::grabFocus()
@@ -1343,14 +1505,14 @@ void GraphicsWindowWin32::grabFocusIfPointerInWindow()
     POINT mousePos;
     if (!::GetCursorPos(&mousePos))
     {
-        reportError("GraphicsWindowWin32::grabFocusIfPointerInWindow() - Unable to get cursor position", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::grabFocusIfPointerInWindow() - Unable to get cursor position", _traits->screenNum, ::GetLastError());
         return;
     }
 
     RECT windowRect;
     if (!::GetWindowRect(_hwnd, &windowRect))
     {
-        reportError("GraphicsWindowWin32::grabFocusIfPointerInWindow() - Unable to get window position", ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::grabFocusIfPointerInWindow() - Unable to get window position", _traits->screenNum, ::GetLastError());
         return;
     }
 
@@ -1359,6 +1521,36 @@ void GraphicsWindowWin32::grabFocusIfPointerInWindow()
     {
         grabFocus();
     }
+}
+
+void GraphicsWindowWin32::requestWarpPointer( float x, float y )
+{
+    if (!_realized)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Window not realized; cannot warp pointer", _traits->screenNum, 0);
+        return;
+    }
+
+    RECT windowRect;
+
+    if (!::GetWindowRect(_hwnd, &windowRect))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to get window rectangle", _traits->screenNum, ::GetLastError());
+        return;
+    }
+
+    if (!::SetCursorPos(windowRect.left + x, windowRect.top + y))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to set cursor position", _traits->screenNum, ::GetLastError());
+        return;
+    }
+   
+    getEventQueue()->mouseWarped(x,y);
+}
+
+void GraphicsWindowWin32::useCursor( bool cursorOn )
+{
+    _traits->useCursor = cursorOn;
 }
 
 void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )
@@ -1414,9 +1606,50 @@ void GraphicsWindowWin32::transformMouseXY( float& x, float& y )
     if (getEventQueue()->getUseFixedMouseInputRange())
     {
         osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
+
         x = eventState->getXmin() + (eventState->getXmax()-eventState->getXmin())*x/float(_traits->width);
         y = eventState->getYmin() + (eventState->getYmax()-eventState->getYmin())*y/float(_traits->height);
     }
+}
+
+int GraphicsWindowWin32::getScreenNumberContainingWindow( int& _screenOriginX, int& _screenOriginY )
+{
+    RECT clientArea;
+
+    clientArea.left   = _traits->x + _screenOriginX;
+    clientArea.top    = _traits->y + _screenOriginY;
+    clientArea.right  = _traits->x + _screenOriginX + _traits->width  - 1;
+    clientArea.bottom = _traits->y + _screenOriginY + _traits->height - 1;
+
+    HMONITOR hMonitor = ::MonitorFromRect(&clientArea, MONITOR_DEFAULTTONULL);
+    if (hMonitor==NULL) return _traits->screenNum;
+
+    MONITORINFO monitorInfo;
+
+    monitorInfo.cbSize = sizeof(monitorInfo);
+    if (!::GetMonitorInfo(hMonitor, &monitorInfo))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::getScreenNumberContainingWindow() - Unable to get monitor information", _traits->screenNum, ::GetLastError());
+        return _traits->screenNum;
+    }
+
+    Win32WindowingSystem* windowManager = Win32WindowingSystem::getInterface();
+
+    for (int screenNum=windowManager->getNumScreens(osg::GraphicsContext::ScreenIdentifier())-1; screenNum>=0; --screenNum)
+    {
+        int x, y;
+        unsigned w, h;
+
+        windowManager->getScreenPosition(osg::GraphicsContext::ScreenIdentifier(screenNum), x, y, w, h);
+        if (x==monitorInfo.rcWork.left && y==monitorInfo.rcWork.top)
+        {
+            _screenOriginX = x;
+            _screenOriginY = y;
+            return screenNum;
+        }
+    }
+
+    return _traits->screenNum;
 }
 
 LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -1461,6 +1694,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         /////////////////////
 
             {
+                ::SetCapture(hwnd);
+
                 int button;
 
                 if (uMsg==WM_LBUTTONDOWN)      button = 1;
@@ -1481,6 +1716,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         /////////////////////
             
             {
+                ::ReleaseCapture();
+
                 int button;
 
                 if (uMsg==WM_LBUTTONUP)      button = 1;
@@ -1548,6 +1785,31 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             }
             break;
 
+#ifdef NEXT_RELEASE_ONLY
+        //////////////////////
+        case WM_EXITSIZEMOVE :
+        //////////////////////
+
+            {
+                int vx = _traits->x + _screenOriginX;
+                int vy = _traits->y + _screenOriginY;
+
+                int screenNum = getScreenNumberContainingWindow(_screenOriginX, _screenOriginY);
+                if (screenNum!=_traits->screenNum)
+                {
+                    _recreateWindow = true;
+
+                    _traits->screenNum = screenNum;
+                    int x = vx - _screenOriginX;
+                    int y = vy - _screenOriginY;
+
+                    resized(x, y, _traits->width, _traits->height); 
+                    getEventQueue()->windowResize(x, y, _traits->width, _traits->height, _timeOfLastCheckEvents);
+                }
+            }
+            break;
+#endif
+
         ////////////////////
         case WM_KEYDOWN    :
         case WM_SYSKEYDOWN :
@@ -1576,6 +1838,14 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             }
             break;
 
+        ///////////////////
+        case WM_SETCURSOR :
+        ///////////////////
+
+            if (_traits->useCursor) return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+            ::SetCursor(NULL);
+            return TRUE;
+
         /////////////////
         case WM_CLOSE   :
         /////////////////
@@ -1591,6 +1861,13 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             getEventQueue()->closeWindow(eventTime);
             ::PostQuitMessage(0);
             break;
+
+        //////////////
+        case WM_QUIT :
+        //////////////
+
+            close();
+            return wParam;
 
         /////////////////
         default         :

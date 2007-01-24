@@ -16,6 +16,7 @@
 using namespace osgGA;
 
 GUIEventAdapter::GUIEventAdapter():
+    _handled(false),
     _eventType(NONE),
     _time(0.0),
     _windowX(0),
@@ -42,6 +43,7 @@ GUIEventAdapter::GUIEventAdapter():
 
 GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
     osg::Referenced(),
+    _handled(rhs._handled),
     _eventType(rhs._eventType),
     _time(rhs._time),
     _windowX(rhs._windowX),

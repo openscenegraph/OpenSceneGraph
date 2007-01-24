@@ -257,6 +257,12 @@ public:
         GUIEventAdapter();
 
         GUIEventAdapter(const GUIEventAdapter& rhs);
+        
+        /** Set whether this event has been handled by an event handler or not.*/
+        void setHandled(bool handled) { _handled = handled; }
+
+        /** Get whether this event has been handled by an event handler or not.*/
+        bool getHandled() const { return _handled; }
 
         /** Get the Type of the GUI GUIEventAdapter.*/
         void setEventType(EventType Type) { _eventType = Type; }
@@ -393,7 +399,8 @@ public:
 
         /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter();
-        
+
+        bool _handled;        
         EventType _eventType;
         double _time;
 

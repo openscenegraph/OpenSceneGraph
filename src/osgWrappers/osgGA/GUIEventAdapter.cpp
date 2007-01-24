@@ -217,6 +217,14 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	               ____GUIEventAdapter__C5_GUIEventAdapter_R1,
 	               "",
 	               "");
+	I_Method1(void, setHandled, IN, bool, handled,
+	          __void__setHandled__bool,
+	          "Set whether this event has been handled by an event handler or not. ",
+	          "");
+	I_Method0(bool, getHandled,
+	          __bool__getHandled,
+	          "Get whether this event has been handled by an event handler or not. ",
+	          "");
 	I_Method1(void, setEventType, IN, osgGA::GUIEventAdapter::EventType, Type,
 	          __void__setEventType__EventType,
 	          "Get the Type of the GUI GUIEventAdapter. ",
@@ -386,6 +394,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_SimpleProperty(osgGA::GUIEventAdapter::EventType, EventType, 
 	                 __EventType__getEventType, 
 	                 __void__setEventType__EventType);
+	I_SimpleProperty(bool, Handled, 
+	                 __bool__getHandled, 
+	                 __void__setHandled__bool);
 	I_SimpleProperty(int, Key, 
 	                 __int__getKey, 
 	                 __void__setKey__int);

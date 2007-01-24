@@ -1024,18 +1024,16 @@ void CompositeViewer::eventTraversal()
         {
             osgGA::GUIEventAdapter* event = itr->get();
 
-            bool handled = false;
-
             if (view->getCameraManipulator())
             {
-                view->getCameraManipulator()->handle( *event, *view);
+                if (view->getCameraManipulator()->handle( *event, *view)) event->setHandled(true);
             }
 
             for(View::EventHandlers::iterator hitr = view->getEventHandlers().begin();
-                hitr != view->getEventHandlers().end() && !handled;
+                hitr != view->getEventHandlers().end();
                 ++hitr)
             {
-                handled = (*hitr)->handle( *event, *view, 0, 0);
+                if ((*hitr)->handle( *event, *view, 0, 0)) event->setHandled(true);
             }
         }
     }
@@ -1056,14 +1054,10 @@ void CompositeViewer::eventTraversal()
             {
                 osgGA::GUIEventAdapter* event = itr->get();
 
-                bool handled = false;
-
                 _eventVisitor->reset();
                 _eventVisitor->addEvent( event );
 
                 view->getSceneData()->accept(*_eventVisitor);
-
-                if (_eventVisitor->getEventHandled())  handled = true;
             }
         }
     }

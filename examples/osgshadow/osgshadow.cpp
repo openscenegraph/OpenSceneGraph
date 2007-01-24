@@ -8,6 +8,7 @@
 #include <osg/StencilTwoSided>
 #include <osg/CullFace>
 #include <osg/Geometry>
+#include <osg/Switch>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -129,7 +130,17 @@ protected:
     osg::BoundingBox    _bb;
 };
 
-osg::Node* createTestModel()
+enum Faces
+{
+    FRONT_FACE = 1,
+    BACK_FACE = 2,
+    LEFT_FACE = 4,
+    RIGHT_FACE = 8,
+    TOP_FACE = 16,
+    BOTTOM_FACE = 32        
+};
+
+osg::Node* createCube(unsigned int mask)
 {
     osg::Geode* geode = new osg::Geode;
     
@@ -161,69 +172,152 @@ osg::Node* createTestModel()
     osg::Vec3 pz(0.0f,0.0f,1.0f);
     osg::Vec3 nz(0.0f,0.0f,-1.0f);
 
-    // front face    
-    vertices->push_back(origin);
-    vertices->push_back(origin+dx);
-    vertices->push_back(origin+dx+dz);
-    vertices->push_back(origin+dz);
-    normals->push_back(ny);
-    normals->push_back(ny);
-    normals->push_back(ny);
-    normals->push_back(ny);
+    if (mask & FRONT_FACE)
+    {
+        // front face    
+        vertices->push_back(origin);
+        vertices->push_back(origin+dx);
+        vertices->push_back(origin+dx+dz);
+        vertices->push_back(origin+dz);
+        normals->push_back(ny);
+        normals->push_back(ny);
+        normals->push_back(ny);
+        normals->push_back(ny);
+    }
+
+    if (mask & BACK_FACE)
+    {
+        // back face    
+        vertices->push_back(origin+dy);
+        vertices->push_back(origin+dy+dz);
+        vertices->push_back(origin+dy+dx+dz);
+        vertices->push_back(origin+dy+dx);
+        normals->push_back(py);
+        normals->push_back(py);
+        normals->push_back(py);
+        normals->push_back(py);
+    }
+
+    if (mask & LEFT_FACE)
+    {
+        // left face    
+        vertices->push_back(origin+dy);
+        vertices->push_back(origin);
+        vertices->push_back(origin+dz);
+        vertices->push_back(origin+dy+dz);
+        normals->push_back(nx);
+        normals->push_back(nx);
+        normals->push_back(nx);
+        normals->push_back(nx);
+    }
+
+    if (mask & RIGHT_FACE)
+    {
+        // right face    
+        vertices->push_back(origin+dx+dy);
+        vertices->push_back(origin+dx+dy+dz);
+        vertices->push_back(origin+dx+dz);
+        vertices->push_back(origin+dx);
+        normals->push_back(px);
+        normals->push_back(px);
+        normals->push_back(px);
+        normals->push_back(px);
+    }
+
+    if (mask & TOP_FACE)
+    {
+        // top face    
+        vertices->push_back(origin+dz);
+        vertices->push_back(origin+dz+dx);
+        vertices->push_back(origin+dz+dx+dy);
+        vertices->push_back(origin+dz+dy);
+        normals->push_back(pz);
+        normals->push_back(pz);
+        normals->push_back(pz);
+        normals->push_back(pz);
+    }
+
+    if (mask & BOTTOM_FACE)
+    {
+        // bottom face    
+        vertices->push_back(origin);
+        vertices->push_back(origin+dy);
+        vertices->push_back(origin+dx+dy);
+        vertices->push_back(origin+dx);
+        normals->push_back(nz);
+        normals->push_back(nz);
+        normals->push_back(nz);
+        normals->push_back(nz);
+    }
     
-    // front face    
-    vertices->push_back(origin+dy);
-    vertices->push_back(origin+dy+dz);
-    vertices->push_back(origin+dy+dx+dz);
-    vertices->push_back(origin+dy+dx);
-    normals->push_back(py);
-    normals->push_back(py);
-    normals->push_back(py);
-    normals->push_back(py);
-    
-    // left face    
-    vertices->push_back(origin+dy);
-    vertices->push_back(origin);
-    vertices->push_back(origin+dz);
-    vertices->push_back(origin+dy+dz);
-    normals->push_back(nx);
-    normals->push_back(nx);
-    normals->push_back(nx);
-    normals->push_back(nx);
-
-    // right face    
-    vertices->push_back(origin+dx+dy);
-    vertices->push_back(origin+dx+dy+dz);
-    vertices->push_back(origin+dx+dz);
-    vertices->push_back(origin+dx);
-    normals->push_back(px);
-    normals->push_back(px);
-    normals->push_back(px);
-    normals->push_back(px);
-
-    // top face    
-    vertices->push_back(origin+dz);
-    vertices->push_back(origin+dz+dx);
-    vertices->push_back(origin+dz+dx+dy);
-    vertices->push_back(origin+dz+dy);
-    normals->push_back(pz);
-    normals->push_back(pz);
-    normals->push_back(pz);
-    normals->push_back(pz);
-
-    // bottom face    
-    vertices->push_back(origin);
-    vertices->push_back(origin+dy);
-    vertices->push_back(origin+dx+dy);
-    vertices->push_back(origin+dx);
-    normals->push_back(nz);
-    normals->push_back(nz);
-    normals->push_back(nz);
-    normals->push_back(nz);
-
     geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, vertices->size()));
 
     return geode;
+}
+
+class SwitchHandler : public osgGA::GUIEventHandler
+{
+public:
+
+    SwitchHandler():
+        _childNum(0),
+        _frameNum(0) {}
+    
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
+    {
+        osg::Switch* sw = dynamic_cast<osg::Switch*>(object);
+        if (!sw) return false;
+        
+        if (nv->getFrameStamp())
+        {
+            if (nv->getFrameStamp()->getFrameNumber()==_frameNum) return false;
+            _frameNum = nv->getFrameStamp()->getFrameNumber();
+        }
+        
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                if (ea.getKey()=='n')
+                {
+                
+                    ++_childNum;
+                    if (_childNum >= sw->getNumChildren()) _childNum = 0;
+
+                    osg::notify(osg::NOTICE)<<"selecting "<<_childNum<<std::endl;
+
+                    sw->setSingleChildOn(_childNum);
+                    return true;
+                }                
+                break;
+            }
+            default:
+                break;
+        }
+        return false;
+    }
+
+protected:
+
+    virtual ~SwitchHandler() {}
+    unsigned int    _childNum;
+    int             _frameNum;
+
+};
+
+osg::Node* createTestModel()
+{
+    osg::Switch* sw = new osg::Switch;
+    sw->setEventCallback(new SwitchHandler);
+    
+    sw->addChild(createCube(FRONT_FACE), true);
+    sw->addChild(createCube(FRONT_FACE | BACK_FACE), false);
+    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE), false);
+    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE), false);
+    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE), false);
+    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE | BOTTOM_FACE), false);
+    
+    return sw;
 }
 
 int main(int argc, char** argv)

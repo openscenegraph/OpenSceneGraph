@@ -69,6 +69,12 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow();
         
+        /** Override from GUIActionAdapter.*/
+        virtual void requestWarpPointer(float x,float y);
+        
+        /** Switch on/off the cursor.*/
+        virtual void useCursor(bool /*cursorOn*/);
+        
         /** Handle a native (Win32) windowing event as received from the system */
         virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         
@@ -80,6 +86,7 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         
         HWND createWindow();
         void destroyWindow( bool deleteNativeWindow = true );
+        void recreateWindow();
         
         bool determineWindowPositionAndStyle( bool decorated, int& x, int& y, unsigned int& w, unsigned int& h, unsigned int& style, unsigned int& extendedStyle );
         
@@ -89,25 +96,29 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                 
         void transformMouseXY(float& x, float& y);
         
+        int getScreenNumberContainingWindow( int& _screenOriginX, int& _screenOriginY );
+        
         HWND            _hwnd;
-        HDC                _hdc;
-        HGLRC            _hglrc;
+        HDC             _hdc;
+        HGLRC           _hglrc;
         
         double          _timeOfLastCheckEvents;
         
-        int                _screenOriginX;
-        int                _screenOriginY;
+        int             _screenOriginX;
+        int             _screenOriginY;
         unsigned int    _screenWidth;
         unsigned int    _screenHeight;
         
-        int                _windowOriginXToRealize;
-        int                _windowOriginYToRealize;
+        int             _windowOriginXToRealize;
+        int             _windowOriginYToRealize;
         unsigned int    _windowWidthToRealize;
         unsigned int    _windowHeightToRealize;
                
         bool            _initialized;
         bool            _valid;
         bool            _realized;
+        
+        bool            _recreateWindow;
         bool            _destroying;
 };
 

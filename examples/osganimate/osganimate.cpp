@@ -235,8 +235,12 @@ int main( int argc, char **argv )
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
-    viewer.realize();
+#if 0
 
+    // use of custom simulation time.
+    
+    viewer.realize();
+    
     double simulationTime = 100.0;
     
     while (!viewer.done())
@@ -244,4 +248,13 @@ int main( int argc, char **argv )
         viewer.frame(simulationTime);
         simulationTime -= 0.01;
     }
+    
+    return 0;
+#else
+
+    // normal viewer usage.
+
+    return viewer.run();
+
+#endif
 }

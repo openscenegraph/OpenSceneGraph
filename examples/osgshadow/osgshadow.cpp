@@ -260,19 +260,14 @@ class SwitchHandler : public osgGA::GUIEventHandler
 public:
 
     SwitchHandler():
-        _childNum(0),
-        _frameNum(0) {}
+        _childNum(0) {}
     
-    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* /*nv*/)
     {
         osg::Switch* sw = dynamic_cast<osg::Switch*>(object);
         if (!sw) return false;
-        
-        if (nv->getFrameStamp())
-        {
-            if (nv->getFrameStamp()->getFrameNumber()==_frameNum) return false;
-            _frameNum = nv->getFrameStamp()->getFrameNumber();
-        }
+
+        if (ea.getHandled()) return false;
         
         switch(ea.getEventType())
         {
@@ -280,11 +275,8 @@ public:
             {
                 if (ea.getKey()=='n')
                 {
-                
                     ++_childNum;
                     if (_childNum >= sw->getNumChildren()) _childNum = 0;
-
-                    osg::notify(osg::NOTICE)<<"selecting "<<_childNum<<std::endl;
 
                     sw->setSingleChildOn(_childNum);
                     return true;
@@ -301,7 +293,6 @@ protected:
 
     virtual ~SwitchHandler() {}
     unsigned int    _childNum;
-    int             _frameNum;
 
 };
 
@@ -319,6 +310,50 @@ osg::Node* createTestModel()
     
     return sw;
 }
+
+
+
+class ShadowCallback : public osg::NodeCallback
+{
+public:
+    ShadowCallback() {}
+    
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    { 
+        osg::notify(osg::NOTICE)<<"We're in callback"<<std::endl;
+        
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+        if (!cv) 
+        {
+            traverse(node,nv);
+            return;
+        }
+        
+        osgUtil::RenderBin* original_bin = cv->getCurrentRenderBin();
+        
+        osgUtil::RenderBin* new_bin = original_bin->find_or_insert(999,"RenderBin");
+
+        cv->setCurrentRenderBin(new_bin);
+
+        traverse(node,nv);
+        
+        osg::notify(osg::NOTICE)<<"new_bin->getStateGraphList().size()= "<<new_bin->getStateGraphList().size()<<std::endl;
+        osg::notify(osg::NOTICE)<<"new_bin->getRenderBinList().size()= "<<new_bin->getRenderBinList().size()<<std::endl;
+        osg::notify(osg::NOTICE)<<"new_bin->getRenderLeafList().size()= "<<new_bin->getRenderLeafList().size()<<std::endl;
+        
+        for(osgUtil::RenderBin::RenderBinList::iterator itr = new_bin->getRenderBinList().begin();
+            itr != new_bin->getRenderBinList().end();
+            ++itr)
+        {
+            osg::notify(osg::NOTICE)<<"bin num = "<<itr->first<<std::endl;
+        }
+        
+        cv->setCurrentRenderBin(original_bin);
+
+    }
+};
+
+
 
 int main(int argc, char** argv)
 {
@@ -367,6 +402,9 @@ int main(int argc, char** argv)
     bool doShadow = true;
     while (arguments.read("--noShadow")) doShadow = false;
     
+    bool cullCallback = false;
+    while (arguments.read("-c")) cullCallback = true;
+
     int screenNum = -1;
     while (arguments.read("--screen", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
 
@@ -501,6 +539,66 @@ int main(int argc, char** argv)
         ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
     }
+    else if (cullCallback)
+    {
+    
+        int shadowVolumeBin = 1000;
+    
+        group->setCullCallback(new ShadowCallback());
+
+        group->addChild(model.get());
+
+        {
+            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+            group->addChild(geode.get());
+
+            occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
+            shadowVolume->setDrawMode(drawMode);
+
+
+            if (drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
+            {
+                osg::notify(osg::NOTICE)<<"STENCIL_TWO_SIDED seleteced"<<std::endl;
+
+                osg::StencilTwoSided* stencil = new osg::StencilTwoSided;
+                stencil->setFunction(osg::StencilTwoSided::BACK, osg::StencilTwoSided::ALWAYS,0,~0u);
+                stencil->setOperation(osg::StencilTwoSided::BACK, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::DECR_WRAP);
+                stencil->setFunction(osg::StencilTwoSided::FRONT, osg::StencilTwoSided::ALWAYS,0,~0u);
+                stencil->setOperation(osg::StencilTwoSided::FRONT, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::INCR_WRAP);
+
+
+                osg::ColorMask* colourMask = new osg::ColorMask(false, false, false, false);
+
+                osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
+                ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
+                ss_sv1->setAttributeAndModes(stencil,osg::StateAttribute::ON);
+                ss_sv1->setAttribute(colourMask);
+                ss_sv1->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
+
+
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES seleteced"<<std::endl;
+
+                osg::Stencil* stencil = new osg::Stencil;
+                stencil->setFunction(osg::Stencil::ALWAYS,0,~0u);
+                stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
+
+                osg::ColorMask* colourMask = new osg::ColorMask(false, false, false, false);
+
+                osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
+                ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
+                ss_sv1->setAttributeAndModes(stencil,osg::StateAttribute::ON);
+                ss_sv1->setAttribute(colourMask);
+                ss_sv1->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
+
+                geode->addDrawable(shadowVolume.get());
+            }
+
+        }
+
+    }    
     else
     {
         osg::Vec4 ambient(0.2,0.2,0.2,1.0);
@@ -651,7 +749,7 @@ int main(int argc, char** argv)
     {
         if (updateLightPosition)
         {
-            float t = viewer.getFrameStamp()->getReferenceTime();
+            float t = viewer.getFrameStamp()->getSimulationTime();
             if (postionalLight)
             {
                 lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()  ,1.0f);

@@ -61,9 +61,9 @@ class OSGVIEWER_EXPORT SimpleViewer : public virtual osgViewer::GraphicsWindow
         /** Render a complete new frame.
           * Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal().
           * Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code.*/ 
-        virtual void frame();
+        virtual void frame(double simulationTime=USE_REFERENCE_TIME);
 
-        virtual void advance();
+        virtual void advance(double simulationTime=USE_REFERENCE_TIME);
         virtual void eventTraversal();
         virtual void updateTraversal();
         virtual void renderingTraversal();

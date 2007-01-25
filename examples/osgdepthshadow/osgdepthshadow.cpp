@@ -62,7 +62,7 @@ LightTransformCallback::operator()(Node* node, NodeVisitor* nv)
       const FrameStamp* fs = nv->getFrameStamp();
       if (!fs) return; // not frame stamp, no handle on the time so can't move.
         
-      double new_time = fs->getReferenceTime();
+      double new_time = fs->getSimulationTime();
       if (nv->getTraversalNumber() != _previous_traversal_number)
         {
           _angle += _angular_velocity * (new_time - _previous_time);

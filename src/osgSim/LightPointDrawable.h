@@ -83,20 +83,20 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         virtual void drawImplementation(osg::State& state) const;
 
 
-        void setReferenceTime(double time)
+        void setSimulationTime(double time)
         {
-            _referenceTime = time;
-            _referenceTimeInterval = 0.0;
+            _simulationTime = time;
+            _simulationTimeInterval = 0.0;
         }
 
-        void updateReferenceTime(double time)
+        void updateSimulationTime(double time)
         {
-            _referenceTimeInterval = osg::clampAbove(time-_referenceTime,0.0);
-            _referenceTime = time;
+            _simulationTimeInterval = osg::clampAbove(time-_simulationTime,0.0);
+            _simulationTime = time;
         }
         
-        double getReferenceTime() const { return _referenceTime; }
-        double getReferenceTimeInterval() const { return _referenceTimeInterval; }
+        double getSimulationTime() const { return _simulationTime; }
+        double getSimulationTimeInterval() const { return _simulationTimeInterval; }
         
         virtual osg::BoundingBox computeBound() const;
 
@@ -106,8 +106,8 @@ class OSGSIM_EXPORT LightPointDrawable : public osg::Drawable
         
         osg::Endian                     _endian;
                
-        double                          _referenceTime;
-        double                          _referenceTimeInterval;
+        double                          _simulationTime;
+        double                          _simulationTimeInterval;
         
         typedef std::vector<ColorPosition>  LightPointList;
         typedef std::vector<LightPointList> SizedLightPointList;

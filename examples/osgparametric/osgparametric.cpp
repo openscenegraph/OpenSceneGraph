@@ -82,7 +82,7 @@ class UniformVarying : public osg::Uniform::Callback
     virtual void operator () (osg::Uniform* uniform, osg::NodeVisitor* nv)
     {
         const osg::FrameStamp* fs = nv->getFrameStamp();
-        float value = sinf(fs->getReferenceTime());
+        float value = sinf(fs->getSimulationTime());
         uniform->set(osg::Vec4(value,-value,-value,value));
     }
 };

@@ -73,7 +73,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
 
 
                     // retrieve the current time
-                    double t = nv.getFrameStamp()->getReferenceTime();
+                    double t = nv.getFrameStamp()->getSimulationTime();
 
                     // reset this processor if we've reached the reset point
                     if ((_currentTime >= _resetTime) && (_resetTime > 0))

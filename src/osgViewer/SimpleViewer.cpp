@@ -25,6 +25,7 @@ SimpleViewer::SimpleViewer():
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
+    _frameStamp->setSimulationTime(0);
 
     _eventVisitor = new osgGA::EventVisitor;
     
@@ -122,7 +123,7 @@ void SimpleViewer::init()
     }
 }
 
-void SimpleViewer::frame()
+void SimpleViewer::frame(double simulationTime)
 {
     if (_firstFrame)
     {
@@ -130,16 +131,26 @@ void SimpleViewer::frame()
         _firstFrame = false;
     }
 
-    advance();
+    advance(simulationTime);
     eventTraversal();
     updateTraversal();
     renderingTraversal();
 }
 
-void SimpleViewer::advance()
+void SimpleViewer::advance(double simulationTime)
 {
-    _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
+
+    _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
+
+    if (simulationTime==USE_REFERENCE_TIME)
+    {
+        _frameStamp->setSimulationTime(_frameStamp->getReferenceTime());
+    }
+    else
+    {
+        _frameStamp->setSimulationTime(simulationTime);
+    }
 
     _sceneView->setFrameStamp(_frameStamp.get());
 }

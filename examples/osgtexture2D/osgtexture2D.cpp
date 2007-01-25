@@ -63,7 +63,7 @@ public:
     {
         if (nv->getFrameStamp())
         {
-            double currTime = nv->getFrameStamp()->getReferenceTime();
+            double currTime = nv->getFrameStamp()->getSimulationTime();
             if (currTime-_prevTime>_delay) 
             {
                 // update filter modes and text.
@@ -222,7 +222,7 @@ public:
     {
         if (nv->getFrameStamp())
         {
-            double currTime = nv->getFrameStamp()->getReferenceTime();
+            double currTime = nv->getFrameStamp()->getSimulationTime();
             if (currTime-_prevTime>_delay) 
             {
                 // update filter modes and text.
@@ -379,7 +379,7 @@ public:
     {
         if (nv->getFrameStamp())
         {
-            double currTime = nv->getFrameStamp()->getReferenceTime();
+            double currTime = nv->getFrameStamp()->getSimulationTime();
             if (currTime-_prevTime>_delay) 
             {
                 // update filter modes and text.
@@ -532,7 +532,7 @@ public:
     {
         if (nv->getFrameStamp())
         {
-            double currTime = nv->getFrameStamp()->getReferenceTime();
+            double currTime = nv->getFrameStamp()->getSimulationTime();
             if (currTime-_prevTime>_delay) 
             {
                 // update filter modes and text.

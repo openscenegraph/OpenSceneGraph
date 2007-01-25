@@ -41,10 +41,10 @@ class ModelTransformCallback : public osg::NodeCallback
             {
                 if (_firstTime==0.0) 
                 {
-                    _firstTime = frameStamp->getReferenceTime();
+                    _firstTime = frameStamp->getSimulationTime();
                 }
                 
-                double phase = (frameStamp->getReferenceTime()-_firstTime)/_period;
+                double phase = (frameStamp->getSimulationTime()-_firstTime)/_period;
                 phase -= floor(phase);
                 phase *= (2.0 * osg::PI);
             

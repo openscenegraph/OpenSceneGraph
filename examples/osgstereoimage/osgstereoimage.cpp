@@ -208,7 +208,7 @@ void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
 {
     if (_autoSteppingActive && nv->getFrameStamp())
     {
-        double time = nv->getFrameStamp()->getReferenceTime();
+        double time = nv->getFrameStamp()->getSimulationTime();
         
         if (_firstTraversal)
         {

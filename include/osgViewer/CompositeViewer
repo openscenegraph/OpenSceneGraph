@@ -19,8 +19,6 @@
 
 namespace osgViewer {
 
-// WARNING ** Under development do not use, yet :-) 
-
 /** CompsiteViewer holds a or more views to a one more scenes.*/
 class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
 {
@@ -113,9 +111,9 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
 
         /** Render a complete new frame.
           * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
-        virtual void frame();
+        virtual void frame(double simulationTime=USE_REFERENCE_TIME);
 
-        virtual void advance();
+        virtual void advance(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void eventTraversal();
 

@@ -247,7 +247,7 @@ class AnimateCallback: public osg::Uniform::Callback
         {
             if( _enabled )
             {
-                float angle = 2.0 * nv->getFrameStamp()->getReferenceTime();
+                float angle = 2.0 * nv->getFrameStamp()->getSimulationTime();
                 float sine = sinf( angle );        // -1 -> 1
                 float v01 = 0.5f * sine + 0.5f;        //  0 -> 1
                 float v10 = 1.0f - v01;                //  1 -> 0

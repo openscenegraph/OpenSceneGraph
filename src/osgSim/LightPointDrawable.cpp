@@ -20,8 +20,8 @@ using namespace osgSim;
 LightPointDrawable::LightPointDrawable():
     osg::Drawable(),
     _endian(osg::getCpuByteOrder()),
-    _referenceTime(0.0),
-    _referenceTimeInterval(0.0)
+    _simulationTime(0.0),
+    _simulationTimeInterval(0.0)
 {
 
     setSupportsDisplayList(false);
@@ -45,8 +45,8 @@ LightPointDrawable::LightPointDrawable():
 
 LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::CopyOp& copyop):
     osg::Drawable(lpd,copyop),
-    _referenceTime(lpd._referenceTime),
-    _referenceTimeInterval(lpd._referenceTimeInterval),
+    _simulationTime(lpd._simulationTime),
+    _simulationTimeInterval(lpd._simulationTimeInterval),
     _sizedOpaqueLightPointList(lpd._sizedOpaqueLightPointList),
     _sizedAdditiveLightPointList(lpd._sizedAdditiveLightPointList),
     _sizedBlendedLightPointList(lpd._sizedBlendedLightPointList)

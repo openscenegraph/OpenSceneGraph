@@ -103,9 +103,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         /** Render a complete new frame.
           * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
-        virtual void frame();
+        virtual void frame(double simulationTime=USE_REFERENCE_TIME);
 
-        virtual void advance();
+        virtual void advance(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void eventTraversal();
 

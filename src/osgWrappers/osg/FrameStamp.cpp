@@ -45,6 +45,14 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
 	          __double__getReferenceTime,
 	          "",
 	          "");
+	I_Method1(void, setSimulationTime, IN, double, refTime,
+	          __void__setSimulationTime__double,
+	          "",
+	          "");
+	I_Method0(double, getSimulationTime,
+	          __double__getSimulationTime,
+	          "",
+	          "");
 	I_Method1(void, setCalendarTime, IN, const tm &, calendarTime,
 	          __void__setCalendarTime__C5_tm_R1,
 	          "",
@@ -62,5 +70,8 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
 	I_SimpleProperty(double, ReferenceTime, 
 	                 __double__getReferenceTime, 
 	                 __void__setReferenceTime__double);
+	I_SimpleProperty(double, SimulationTime, 
+	                 __double__getSimulationTime, 
+	                 __void__setSimulationTime__double);
 END_REFLECTOR
 

@@ -734,6 +734,7 @@ void OsgCameraGroup::sync()
     {
         double time_since_start = _timer.delta_s(_start_tick,_timer.tick());
         _frameStamp->setReferenceTime(time_since_start);
+        _frameStamp->setSimulationTime(_frameStamp->getReferenceTime());
     }
     else
     {   
@@ -741,6 +742,7 @@ void OsgCameraGroup::sync()
         double estimatedSwapTimeForFrame = _timer.delta_s(_start_tick,endOfNewFrameTick);
 
         _frameStamp->setReferenceTime(estimatedSwapTimeForFrame);
+        _frameStamp->setSimulationTime(_frameStamp->getReferenceTime());
     }
 }        
 

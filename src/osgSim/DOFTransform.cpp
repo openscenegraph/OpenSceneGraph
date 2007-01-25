@@ -72,7 +72,7 @@ void DOFTransform::traverse(osg::NodeVisitor& nv)
         // can be shared between multiple parents.
         if ((nv.getTraversalNumber()!=_previousTraversalNumber) && nv.getFrameStamp())
         {
-            double newTime = nv.getFrameStamp()->getReferenceTime();
+            double newTime = nv.getFrameStamp()->getSimulationTime();
 
             animate((float)(newTime-_previousTime));
 

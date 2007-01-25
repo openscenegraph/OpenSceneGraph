@@ -230,7 +230,7 @@ void AnimationPathCallback::operator()(Node* node, NodeVisitor* nv)
         nv->getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
         nv->getFrameStamp())
     {
-        double time = nv->getFrameStamp()->getReferenceTime();
+        double time = nv->getFrameStamp()->getSimulationTime();
         _latestTime = time;
 
         if (!_pause)

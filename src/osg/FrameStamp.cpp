@@ -18,6 +18,7 @@ FrameStamp::FrameStamp():Referenced()
 {
     _frameNumber=0;
     _referenceTime=0;
+    _simulationTime=0;
 
     tm_sec=0;            /* Seconds.        [0-60] (1 leap second) */
     tm_min=0;            /* Minutes.        [0-59] */

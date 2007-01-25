@@ -200,7 +200,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             
             if (cv->getFrameStamp())
             {
-                drawable->setReferenceTime(cv->getFrameStamp()->getReferenceTime());
+                drawable->setSimulationTime(cv->getFrameStamp()->getSimulationTime());
             }
         }
 
@@ -224,7 +224,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // need to update the drawable's frame count.
             if (cv->getFrameStamp())
             {
-                drawable->updateReferenceTime(cv->getFrameStamp()->getReferenceTime());
+                drawable->updateSimulationTime(cv->getFrameStamp()->getSimulationTime());
             }
 
         }
@@ -246,8 +246,8 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         const float minimumIntensity = 1.0f/256.0f;
         const osg::Vec3 eyePoint = cv->getEyeLocal();
         
-        double time=drawable->getReferenceTime();
-        double timeInterval=drawable->getReferenceTimeInterval();
+        double time=drawable->getSimulationTime();
+        double timeInterval=drawable->getSimulationTimeInterval();
         
         const osg::Polytope clipvol(cv->getCurrentCullingSet().getFrustum());
         const bool computeClipping = false;//(clipvol.getCurrentMask()!=0);

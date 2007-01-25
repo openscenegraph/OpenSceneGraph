@@ -124,14 +124,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __int__run,
 	          "Execute a main frame loop. ",
 	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned.");
-	I_Method0(void, frame,
-	          __void__frame,
-	          "Render a complete new frame. ",
-	          "Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). ");
-	I_Method0(void, advance,
-	          __void__advance,
-	          "",
-	          "");
+	I_MethodWithDefaults1(void, frame, IN, double, simulationTime, USE_REFERENCE_TIME,
+	                      __void__frame__double,
+	                      "Render a complete new frame. ",
+	                      "Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). ");
+	I_MethodWithDefaults1(void, advance, IN, double, simulationTime, USE_REFERENCE_TIME,
+	                      __void__advance__double,
+	                      "",
+	                      "");
 	I_Method0(void, eventTraversal,
 	          __void__eventTraversal,
 	          "",

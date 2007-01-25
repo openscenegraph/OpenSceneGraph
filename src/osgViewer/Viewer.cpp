@@ -32,6 +32,7 @@ Viewer::Viewer():
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
+    _frameStamp->setSimulationTime(0);
 
     _eventVisitor = new osgGA::EventVisitor;
     _eventVisitor->setActionAdapter(this);
@@ -784,7 +785,7 @@ void Viewer::realize()
 }
 
 
-void Viewer::frame()
+void Viewer::frame(double simulationTime)
 {
     if (_done) return;
 
@@ -801,22 +802,32 @@ void Viewer::frame()
         
         _firstFrame = false;
     }
-    advance();
+    advance(simulationTime);
     
     eventTraversal();
     updateTraversal();
     renderingTraversals();
 }
 
-void Viewer::advance()
+void Viewer::advance(double simulationTime)
 {
     if (_done) return;
 
     double prevousReferenceTime = _frameStamp->getReferenceTime();
     int previousFrameNumber = _frameStamp->getFrameNumber();
 
-    _frameStamp->setReferenceTime( osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()) );
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
+
+    _frameStamp->setReferenceTime( osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()) );
+
+    if (simulationTime==USE_REFERENCE_TIME)
+    {
+        _frameStamp->setSimulationTime(_frameStamp->getReferenceTime());
+    }
+    else
+    {
+        _frameStamp->setSimulationTime(simulationTime);
+    }
     
     if (getStats())
     {

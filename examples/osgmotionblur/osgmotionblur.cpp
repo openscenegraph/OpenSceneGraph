@@ -26,7 +26,7 @@ public:
 
     virtual void operator () (osg::GraphicsContext* gc)
     {
-        double t = gc->getState()->getFrameStamp()->getReferenceTime();
+        double t = gc->getState()->getFrameStamp()->getSimulationTime();
 
         if (!cleared_)
         {

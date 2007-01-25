@@ -233,5 +233,15 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootnode);
 
-    return viewer.run();
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+    viewer.realize();
+
+    double simulationTime = 100.0;
+    
+    while (!viewer.done())
+    {
+        viewer.frame(simulationTime);
+        simulationTime -= 0.01;
+    }
 }

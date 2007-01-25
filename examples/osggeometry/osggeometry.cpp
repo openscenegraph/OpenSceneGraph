@@ -524,7 +524,7 @@ class MyTransformCallback : public osg::NodeCallback
             osg::MatrixTransform* transform = dynamic_cast<osg::MatrixTransform*>(node);                
             if (nv && transform && nv->getFrameStamp())
             {
-                double time = nv->getFrameStamp()->getReferenceTime();
+                double time = nv->getFrameStamp()->getSimulationTime();
                 transform->setMatrix(osg::Matrix::translate(0.0f,1.0f+cosf(time*_angular_velocity),0.0f));
             }
             

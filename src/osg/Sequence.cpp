@@ -127,7 +127,7 @@ void Sequence::traverse(NodeVisitor& nv)
         if (framestamp)
         {
     
-            double t = framestamp->getReferenceTime();
+            double t = framestamp->getSimulationTime();
             if (_last == -1.0)
                 _last = t;
 

@@ -198,7 +198,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
     
         if (nv.getFrameStamp())
         {
-            double currentTime = nv.getFrameStamp()->getReferenceTime();
+            double currentTime = nv.getFrameStamp()->getSimulationTime();
             static double previousTime = currentTime;
             double delta = currentTime - previousTime;
             _origin += _wind * delta;
@@ -515,8 +515,8 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "uniform vec4 particleColour;\n"
             "uniform float particleSize;\n"
             "\n"
-            "uniform float osg_FrameTime;\n"
-            "uniform float osg_DeltaFrameTime;\n"
+            "uniform float osg_SimulationTime;\n"
+            "uniform float osg_DeltaSimulationTime;\n"
             "\n"
             "varying vec4 colour;\n"
             "varying vec2 texCoord;\n"
@@ -528,10 +528,10 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    texCoord = gl_MultiTexCoord0.xy;\n"
             "\n"
             "    vec4 v_previous = gl_Vertex;\n"
-            "    v_previous.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
+            "    v_previous.z = fract( (osg_SimulationTime - startTime)*inversePeriod - offset);\n"
             "    \n"
             "    vec4 v_current =  v_previous;\n"
-            "    v_current.z += (osg_DeltaFrameTime*inversePeriod);\n"
+            "    v_current.z += (osg_DeltaSimulationTime*inversePeriod);\n"
             "    \n"
             "\n"
             "    colour = particleColour;\n"
@@ -589,8 +589,8 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "uniform vec4 particleColour;\n"
             "uniform float particleSize;\n"
             "\n"
-            "uniform float osg_FrameTime;\n"
-            "uniform float osg_DeltaFrameTime;\n"
+            "uniform float osg_SimulationTime;\n"
+            "uniform float osg_DeltaSimulationTime;\n"
             "uniform mat4 previousModelViewMatrix;\n"
             "\n"
             "varying vec4 colour;\n"
@@ -603,10 +603,10 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    texCoord = gl_MultiTexCoord0.xy;\n"
             "\n"
             "    vec4 v_previous = gl_Vertex;\n"
-            "    v_previous.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
+            "    v_previous.z = fract( (osg_SimulationTime - startTime)*inversePeriod - offset);\n"
             "    \n"
             "    vec4 v_current =  v_previous;\n"
-            "    v_current.z += (osg_DeltaFrameTime*inversePeriod);\n"
+            "    v_current.z += (osg_DeltaSimulationTime*inversePeriod);\n"
             "    \n"
             "    colour = particleColour;\n"
             "    \n"
@@ -659,7 +659,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "uniform vec4 particleColour;\n"
             "uniform float particleSize;\n"
             "\n"
-            "uniform float osg_FrameTime;\n"
+            "uniform float osg_SimulationTime;\n"
             "\n"
             "varying vec4 colour;\n"
             "\n"
@@ -669,7 +669,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    float startTime = gl_MultiTexCoord1.x;\n"
             "\n"
             "    vec4 v_current = gl_Vertex;\n"
-            "    v_current.z = fract( (osg_FrameTime - startTime)*inversePeriod - offset);\n"
+            "    v_current.z = fract( (osg_SimulationTime - startTime)*inversePeriod - offset);\n"
             "   \n"
             "    colour = particleColour;\n"
             "\n"

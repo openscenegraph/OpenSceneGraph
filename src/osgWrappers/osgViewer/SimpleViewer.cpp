@@ -89,14 +89,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
 	          __C5_EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
-	I_Method0(void, frame,
-	          __void__frame,
-	          "Render a complete new frame. ",
-	          "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal(). Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code. ");
-	I_Method0(void, advance,
-	          __void__advance,
-	          "",
-	          "");
+	I_MethodWithDefaults1(void, frame, IN, double, simulationTime, USE_REFERENCE_TIME,
+	                      __void__frame__double,
+	                      "Render a complete new frame. ",
+	                      "Calls frameAdvance(), frameEventTraversal(), frameUpateTraversal(), frameCullTraversal() and frameDrawTraversal(). Note, no internal makeCurrent() is issued before, or swap buffers called after frame(), these operations are the responsibility of the calling code. ");
+	I_MethodWithDefaults1(void, advance, IN, double, simulationTime, USE_REFERENCE_TIME,
+	                      __void__advance__double,
+	                      "",
+	                      "");
 	I_Method0(void, eventTraversal,
 	          __void__eventTraversal,
 	          "",

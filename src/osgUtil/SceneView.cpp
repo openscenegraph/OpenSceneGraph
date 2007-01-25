@@ -111,6 +111,7 @@ SceneView::SceneView(DisplaySettings* ds)
     _activeUniforms = DEFAULT_UNIFORMS;
     
     _previousFrameTime = 0;
+    _previousSimulationTime = 0;
     
     _redrawInterlacedStereoStencilMask = true;
     _interlacedStereoStencilWidth = 0;
@@ -139,6 +140,7 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     _activeUniforms = rhs._activeUniforms;
     
     _previousFrameTime = rhs._previousFrameTime;
+    _previousSimulationTime = rhs._previousSimulationTime;
     
     _redrawInterlacedStereoStencilMask = rhs._redrawInterlacedStereoStencilMask;
     _interlacedStereoStencilWidth = rhs._interlacedStereoStencilWidth;
@@ -329,6 +331,21 @@ void SceneView::updateUniforms()
         
         osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_DeltaFrameTime",osg::Uniform::FLOAT);
         uniform->set(delta_frame_time);
+    }
+    
+    if ((_activeUniforms & SIMULATION_TIME_UNIFORM) && _frameStamp.valid())
+    {
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_SimulationTime",osg::Uniform::FLOAT);
+        uniform->set(static_cast<float>(_frameStamp->getSimulationTime()));
+    }
+    
+    if ((_activeUniforms & DELTA_SIMULATION_TIME_UNIFORM) && _frameStamp.valid())
+    {
+        float delta_simulation_time = (_previousSimulationTime != 0.0) ? static_cast<float>(_frameStamp->getSimulationTime()-_previousSimulationTime) : 0.0f;
+        _previousSimulationTime = _frameStamp->getSimulationTime();
+        
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_DeltaSimulationTime",osg::Uniform::FLOAT);
+        uniform->set(delta_simulation_time);
     }
     
     if (_activeUniforms & VIEW_MATRIX_UNIFORM)

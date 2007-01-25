@@ -49,14 +49,14 @@ class MyGeometryCallback :
         virtual void update(osg::NodeVisitor* nv,osg::Drawable* drawable)
         {
             const osg::FrameStamp* fs = nv->getFrameStamp();
-            double referenceTime = fs->getReferenceTime();
+            double simulationTime = fs->getSimulationTime();
             if (_firstCall)
             {
                 _firstCall = false;
-                _startTime = referenceTime;
+                _startTime = simulationTime;
             }
             
-            _time = referenceTime-_startTime;
+            _time = simulationTime-_startTime;
             
             drawable->accept(*this);
             drawable->dirtyBound();

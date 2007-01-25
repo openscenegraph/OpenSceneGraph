@@ -236,12 +236,14 @@ class DataConverter
 
             writeUInt(fs.getFrameNumber());
             writeDouble(fs.getReferenceTime());
+            writeDouble(fs.getSimulationTime());
         }
 
         void read(osg::FrameStamp& fs)
         {
             fs.setFrameNumber(readUInt());
             fs.setReferenceTime(readDouble());
+            fs.setSimulationTime(readDouble());
 
             osg::notify(osg::NOTICE)<<"readFramestamp = "<<fs.getFrameNumber()<<" "<<fs.getReferenceTime()<<std::endl;
         }

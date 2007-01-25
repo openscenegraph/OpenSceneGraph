@@ -32,7 +32,7 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
             {
                 _frameNumber = nv.getFrameStamp()->getFrameNumber();
 
-                double t = nv.getFrameStamp()->getReferenceTime();
+                double t = nv.getFrameStamp()->getSimulationTime();
                 if (_t0 != -1.0)
                 {
                     ParticleSystem_Vector::iterator i;

@@ -93,7 +93,7 @@ void geoHeaderGeo::update(const osg::FrameStamp *_frameStamp)
     osg::Timer_t _frameTick = _timer.tick();
     _lastFrameTick=_frameTick;
     
-    double time = _frameStamp->getReferenceTime();
+    double time = _frameStamp->getSimulationTime();
     intVars->update( _frameStamp);
     moveit(time);
 }
@@ -132,7 +132,7 @@ public:
             //    so that it visits 'invisible' nodes to update visibility. Or could use
             // a visitor with setTraversalMode(TraversalMode==TRAVERSE_ALL_CHILDREN)?
         traverse(node,nv);
-        //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
+        //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getSimulationTime() <<std::endl;
     }
 private:
 };
@@ -2066,7 +2066,7 @@ void userVars::addUserVar(const georecord &gr) {
 }
 
 void internalVars::update(const osg::FrameStamp *_frameStamp) {
-    double stmptime=_frameStamp->getReferenceTime();
+    double stmptime=_frameStamp->getSimulationTime();
     int iord=0;
     for (std::vector<geoValue>::const_iterator itr=vars.begin(); //gfl.begin();
     itr!=vars.end(); // gfl.end();
@@ -2088,12 +2088,12 @@ void internalVars::update(const osg::FrameStamp *_frameStamp) {
                     newtime = localtime( &long_time ); // * Convert to local time.
                     timestart=newtime->tm_hour*3600 +newtime->tm_min*60+ newtime->tm_sec;
                 }
-                double timeofday=timestart+_frameStamp->getReferenceTime();
+                double timeofday=timestart+_frameStamp->getSimulationTime();
                 vars[iord].setVal(timeofday);
             }
             break;
         case GEO_DB_INTERNAL_VAR_ELAPSED_TIME:
-            vars[iord].setVal(_frameStamp->getReferenceTime());
+            vars[iord].setVal(_frameStamp->getSimulationTime());
             break;
         case GEO_DB_INTERNAL_VAR_SINE:
             vars[iord].setVal(sin(stmptime));
@@ -2105,35 +2105,35 @@ void internalVars::update(const osg::FrameStamp *_frameStamp) {
             vars[iord].setVal(tan(stmptime));
             break;
         case GEO_DB_INTERNAL_VAR_MOUSE_X: // this is all windowing system dependent
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_MOUSE_Y:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_LEFT_MOUSE:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_MIDDLE_MOUSE:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_RIGHT_MOUSE:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_FLOAT:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_INT:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_BOOL:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         case GEO_DB_INTERNAL_VAR_TEMP_STRING:
-            //    vars[iord]=_frameStamp->getReferenceTime();
+            //    vars[iord]=_frameStamp->getSimulationTime();
             break;
         }
     }
-    //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getReferenceTime() <<std::endl;
+    //    std::cout<<"update callback - post traverse"<< (float)_frameStamp->getSimulationTime() <<std::endl;
 }
 
 void geoField::parseExt(std::ifstream &fin) const { // Feb 2003 parse onme extension fields

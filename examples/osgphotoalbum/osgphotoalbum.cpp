@@ -424,7 +424,7 @@ void Page::traverse(osg::NodeVisitor& nv)
         const osg::FrameStamp* framestamp = nv.getFrameStamp();
         if (framestamp)
         {
-            double t = framestamp->getReferenceTime();
+            double t = framestamp->getSimulationTime();
             
             if (_rotation!=_targetRotation)
             {

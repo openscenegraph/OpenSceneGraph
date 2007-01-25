@@ -35,6 +35,7 @@ CompositeViewer::CompositeViewer():
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
+    _frameStamp->setSimulationTime(0);
 
     setEventQueue(new osgGA::EventQueue);
 
@@ -722,7 +723,7 @@ void CompositeViewer::realize()
 }
 
 
-void CompositeViewer::frame()
+void CompositeViewer::frame(double simulationTime)
 {
     if (_done) return;
 
@@ -739,19 +740,29 @@ void CompositeViewer::frame()
         
         _firstFrame = false;
     }
-    advance();
+    advance(simulationTime);
     
     eventTraversal();
     updateTraversal();
     renderingTraversals();
 }
 
-void CompositeViewer::advance()
+void CompositeViewer::advance(double simulationTime)
 {
     if (_done) return;
 
-    _frameStamp->setReferenceTime( osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()) );
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
+
+    _frameStamp->setReferenceTime( osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick()) );
+
+    if (simulationTime==USE_REFERENCE_TIME)
+    {
+        _frameStamp->setSimulationTime(_frameStamp->getReferenceTime());
+    }
+    else
+    {
+        _frameStamp->setSimulationTime(simulationTime);
+    }
 }
 
 void CompositeViewer::setCameraWithFocus(osg::Camera* camera)

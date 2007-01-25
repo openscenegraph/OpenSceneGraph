@@ -37,7 +37,7 @@ void TransformCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
         const osg::FrameStamp* fs = nv->getFrameStamp();
         if (!fs) return; // not frame stamp, no handle on the time so can't move.
         
-        double newTime = fs->getReferenceTime();
+        double newTime = fs->getSimulationTime();
 
         // ensure that we do not operate on this node more than
         // once during this traversal.  This is an issue since node

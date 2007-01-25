@@ -133,14 +133,18 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         
         enum ActiveUniforms
         {
-            FRAME_NUMBER_UNIFORM            = 0x1,
-            FRAME_TIME_UNIFORM              = 0x2,
-            DELTA_FRAME_TIME_UNIFORM        = 0x4,
-            VIEW_MATRIX_UNIFORM             = 0x8,
-            VIEW_MATRIX_INVERSE_UNIFORM     = 0x10,
+            FRAME_NUMBER_UNIFORM            = 1,
+            FRAME_TIME_UNIFORM              = 2,
+            DELTA_FRAME_TIME_UNIFORM        = 4,
+            SIMULATION_TIME_UNIFORM         = 8,
+            DELTA_SIMULATION_TIME_UNIFORM   = 16,
+            VIEW_MATRIX_UNIFORM             = 32,
+            VIEW_MATRIX_INVERSE_UNIFORM     = 64,
             DEFAULT_UNIFORMS                = FRAME_NUMBER_UNIFORM |
                                               FRAME_TIME_UNIFORM |
                                               DELTA_FRAME_TIME_UNIFORM |
+                                              SIMULATION_TIME_UNIFORM |
+                                              DELTA_SIMULATION_TIME_UNIFORM |
                                               VIEW_MATRIX_UNIFORM |
                                               VIEW_MATRIX_INVERSE_UNIFORM,
             ALL_UNIFORMS                    = 0xFFFFFFFF
@@ -505,6 +509,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         
         int                                         _activeUniforms;        
         double                                      _previousFrameTime;
+        double                                      _previousSimulationTime;
         
         bool                                        _redrawInterlacedStereoStencilMask;
         int                                         _interlacedStereoStencilWidth;

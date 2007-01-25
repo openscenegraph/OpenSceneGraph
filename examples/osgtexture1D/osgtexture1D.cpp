@@ -127,7 +127,7 @@ class AnimateStateCallback : public osg::NodeCallback
             if (stateset && nv->getFrameStamp())
             {
                 // we have an exisitng stateset, so lets animate it.
-                animateState(stateset,nv->getFrameStamp()->getReferenceTime());
+                animateState(stateset,nv->getFrameStamp()->getSimulationTime());
             }
 
             // note, callback is repsonsible for scenegraph traversal so

@@ -130,7 +130,6 @@ osg::Node* createScene()
             ///////////////////////////////////////////////////////////////////
             // vertex shader using just Vec4 coefficients
             char vertexShaderSource[] = 
-               "uniform float osg_FrameTime;\n"
                "uniform sampler2D terrainTexture;\n"
                "uniform vec3 terrainOrigin;\n"
                "uniform vec3 terrainScaleDown;\n"

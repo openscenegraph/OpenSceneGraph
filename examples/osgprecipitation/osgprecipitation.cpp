@@ -32,7 +32,7 @@ class MyGustCallback : public osg::NodeCallback
         {
             osgParticle::PrecipitationEffect* pe = dynamic_cast<osgParticle::PrecipitationEffect*>(node);
             
-            float value = sin(nv->getFrameStamp()->getReferenceTime());
+            float value = sin(nv->getFrameStamp()->getSimulationTime());
             if (value<-0.5)
             {
                 pe->snow(1.0);

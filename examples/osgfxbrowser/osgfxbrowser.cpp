@@ -34,7 +34,7 @@ public:
     {
         osg::MatrixTransform *xform = dynamic_cast<osg::MatrixTransform *>(node);
         if (xform && enabled_) {
-            double t = nv->getFrameStamp()->getReferenceTime();
+            double t = nv->getFrameStamp()->getSimulationTime();
             xform->setMatrix(osg::Matrix::rotate(t, osg::Vec3(0, 0, 1)));
         }
         traverse(node, nv);

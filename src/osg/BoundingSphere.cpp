@@ -54,31 +54,50 @@ void BoundingSphere::expandRadiusBy(const Vec3& v)
 
 void BoundingSphere::expandBy(const BoundingSphere& sh)
 {
-    if (sh.valid())
-    {
-        if (valid())
-        {
-            Vec3 dv = sh._center-_center;
-            float dv_len = dv.length();
-            
-            if(dv_len == 0 && sh._radius>_radius) {
-               _radius = sh._radius;
-            } 
-            else if (dv_len+sh._radius>_radius)
-            {
-                Vec3 e1 = _center-(dv*(_radius/dv_len));
-                Vec3 e2 = sh._center+(dv*(sh._radius/dv_len));
-                _center = (e1+e2)*0.5f;
-                _radius = (e2-_center).length();
 
-            }                    // else do nothing as vertex is within sphere.
-        }
-        else
-        {
-            _center = sh._center;
-            _radius = sh._radius;
-        }
+    // This sphere is not set so use the inbound sphere
+    if (!valid())
+    {
+        _center = sh._center;
+        _radius = sh._radius;
+
+        return;
     }
+
+    
+    // Calculate d == The distance between the sphere centers   
+    double d = ( _center - sh.center() ).length();
+
+    // New sphere is already inside this one
+    if ( d + sh.radius() <= _radius )  
+    {
+        return;
+    }
+
+    //  New sphere completely contains this one 
+    if ( d + _radius <= sh.radius() )  
+    {
+        _center = sh._center;
+        _radius = sh._radius;
+        return;
+    }
+
+    
+    // Build a new sphere that completely contains the other two:
+    //
+    // The center point lies halfway along the line between the furthest
+    // points on the edges of the two spheres.
+    //
+    // Computing those two points is ugly - so we'll use similar triangles
+    double new_radius = (_radius + d + sh.radius() ) * 0.5;
+    double ratio = ( new_radius - _radius ) / d ;
+
+    _center[0] += ( sh.center()[0] - _center[0] ) * ratio;
+    _center[1] += ( sh.center()[1] - _center[1] ) * ratio;
+    _center[2] += ( sh.center()[2] - _center[2] ) * ratio;
+
+    _radius = new_radius;
+
 }
 
 

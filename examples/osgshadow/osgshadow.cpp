@@ -316,7 +316,32 @@ osg::Node* createTestModel()
 class ShadowCallback : public osg::NodeCallback
 {
 public:
-    ShadowCallback() {}
+
+    osg::Vec4 _lightpos;
+    osg::ref_ptr<osg::StateSet> _ss1;
+
+    ShadowCallback()
+    {
+        osg::Vec4 ambient(0.2,0.2,0.2,1.0);
+        osg::Vec4 diffuse(0.8,0.8,0.8,1.0);
+        osg::Vec4 zero_colour(0.0,0.0,0.0,1.0);
+    
+        // first group, render the depth buffer + ambient light contribution
+        {
+            _ss1 = new osg::StateSet;
+
+            osg::LightModel* lm1 = new osg::LightModel;
+            lm1->setAmbientIntensity(ambient);
+            _ss1->setAttribute(lm1);
+
+            osg::Light* light1 = new osg::Light;
+            light1->setAmbient(ambient);
+            light1->setDiffuse(zero_colour);
+            light1->setPosition(_lightpos);
+            _ss1->setAttributeAndModes(light1, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            _ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+        }
+    }
     
     virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
     { 
@@ -329,17 +354,20 @@ public:
             return;
         }
         
-        osgUtil::RenderBin* original_bin = cv->getCurrentRenderBin();
+        osg::ref_ptr<osgUtil::RenderBin> original_bin = cv->getCurrentRenderBin();
         
-        osgUtil::RenderBin* new_bin = original_bin->find_or_insert(999,"RenderBin");
+        osg::ref_ptr<osgUtil::RenderBin> new_bin = original_bin->find_or_insert(999,"RenderBin");
 
-        cv->setCurrentRenderBin(new_bin);
+        cv->setCurrentRenderBin(new_bin.get());
 
         traverse(node,nv);
         
+        cv->setCurrentRenderBin(original_bin.get());
+
         osg::notify(osg::NOTICE)<<"new_bin->getStateGraphList().size()= "<<new_bin->getStateGraphList().size()<<std::endl;
         osg::notify(osg::NOTICE)<<"new_bin->getRenderBinList().size()= "<<new_bin->getRenderBinList().size()<<std::endl;
         osg::notify(osg::NOTICE)<<"new_bin->getRenderLeafList().size()= "<<new_bin->getRenderLeafList().size()<<std::endl;
+        
         
         for(osgUtil::RenderBin::RenderBinList::iterator itr = new_bin->getRenderBinList().begin();
             itr != new_bin->getRenderBinList().end();
@@ -348,7 +376,48 @@ public:
             osg::notify(osg::NOTICE)<<"bin num = "<<itr->first<<std::endl;
         }
         
-        cv->setCurrentRenderBin(original_bin);
+        
+        osgUtil::RenderBin::RenderBinList::iterator itr =  new_bin->getRenderBinList().find(1000);
+        osg::ref_ptr<osgUtil::RenderBin> shadowVolumeBin;
+        if (itr != new_bin->getRenderBinList().end())
+        {
+            shadowVolumeBin = itr->second;
+            
+            if (shadowVolumeBin.valid())
+            {
+                osg::notify(osg::NOTICE)<<"Found shadow volume bin, now removing it"<<std::endl;
+                new_bin->getRenderBinList().erase(itr);
+            }
+        }
+        
+        for(osgUtil::RenderBin::RenderBinList::iterator itr = new_bin->getRenderBinList().begin();
+            itr != new_bin->getRenderBinList().end();
+            ++itr)
+        {
+            osg::notify(osg::NOTICE)<<"bin num = "<<itr->first<<std::endl;
+        }
+
+        osg::notify(osg::NOTICE)<<"after new_bin->getStateGraphList().size()= "<<new_bin->getStateGraphList().size()<<std::endl;
+        osg::notify(osg::NOTICE)<<"after new_bin->getRenderBinList().size()= "<<new_bin->getRenderBinList().size()<<std::endl;
+        osg::notify(osg::NOTICE)<<"after new_bin->getRenderLeafList().size()= "<<new_bin->getRenderLeafList().size()<<std::endl;
+
+
+        original_bin->setStateSet(_ss1.get());
+
+        osgUtil::RenderStage* orig_rs = cv->getRenderStage();
+        osgUtil::RenderStage* new_rs = new osgUtil::RenderStage;
+        orig_rs->addPostRenderStage(new_rs);
+        
+        new_rs->setViewport(orig_rs->getViewport());
+        new_rs->setClearColor(orig_rs->getClearColor());
+        new_rs->setClearMask(GL_STENCIL_BUFFER_BIT);
+        
+        if (shadowVolumeBin.valid())
+        {
+            new_rs->getRenderBinList()[0] = shadowVolumeBin;
+            new_rs->getRenderBinList()[1] = new_bin;
+        }
+
 
     }
 };

@@ -109,6 +109,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
         osg::RenderInfo             _renderInfo;
         DrawableAppliedSet          _drawablesAppliedSet;
         StatesSetAppliedSet         _stateSetAppliedSet;
+        osg::ref_ptr<osg::Program>  _lastCompiledProgram;
 
 };
 

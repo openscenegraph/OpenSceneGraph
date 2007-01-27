@@ -490,6 +490,7 @@ public:
             new_rs->setDrawBuffer(orig_rs->getDrawBuffer());
             new_rs->setReadBuffer(orig_rs->getReadBuffer());
             new_rs->setColorMask(orig_rs->getColorMask());
+            
             new_rs->setPositionalStateContainer(orig_rs->getPositionalStateContainer());
 
             if (shadowVolumeBin.valid())

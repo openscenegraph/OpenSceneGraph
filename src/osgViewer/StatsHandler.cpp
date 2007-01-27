@@ -13,6 +13,8 @@
 
 #include <osgViewer/StatsHandler>
 
+#include <osg/PolygonMode>
+
 namespace osgViewer
 {
 
@@ -389,6 +391,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+    stateset->setAttribute(new osg::PolygonMode(), osg::StateAttribute::PROTECTED);
 
     std::string font("fonts/arial.ttf");
 

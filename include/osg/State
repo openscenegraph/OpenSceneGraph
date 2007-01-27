@@ -124,6 +124,18 @@ class OSG_EXPORT State : public Referenced
         /** pop all statesets off state stack, ensuring it is empty ready for the next frame.
           * Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
         void popAllStateSets();
+        
+        /** Get the number of StateSet's on the StateSet stack.*/
+        unsigned int getStateSetStackSize() { return _stateStateStack.size(); }
+        
+        /** Pop StateSet's for the StateSet stack till its size equals the specified size.*/
+        void popStateSetStackToSize(unsigned int size) { while (_stateStateStack.size()>size) popStateSet(); }
+
+        typedef std::vector<const StateSet*> StateSetStack;
+
+        /** Get the StateSet stack.*/
+        StateSetStack& getStateSetStack() { return _stateStateStack; }
+        
 
         /** Copy the modes and attributes which capture the current state.*/
         void captureCurrentState(StateSet& stateset) const;
@@ -906,7 +918,6 @@ class OSG_EXPORT State : public Referenced
 
         typedef std::map<std::string,UniformStack>                      UniformMap;
 
-        typedef std::vector<const StateSet*>                            StateSetStack;
         typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
         
         typedef std::set<osg::ref_ptr<const Program::PerContextProgram> > AppliedProgramObjectSet;

@@ -61,8 +61,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	          __void__reset,
 	          "",
 	          "");
+	I_Method0(osgUtil::PositionalStateContainer::AttrMatrixList &, getAttrMatrixList,
+	          __AttrMatrixList_R1__getAttrMatrixList,
+	          "",
+	          "");
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
 	          __void__addPositionedAttribute__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
+	          "",
+	          "");
+	I_Method0(osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap &, getTexUnitAttrMatrixListMap,
+	          __TexUnitAttrMatrixListMap_R1__getTexUnitAttrMatrixListMap,
 	          "",
 	          "");
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
@@ -73,6 +81,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	                      __void__draw__osg_State_R1__RenderLeaf_P1R1__C5_osg_Matrix_P1,
 	                      "",
 	                      "");
+	I_SimpleProperty(osgUtil::PositionalStateContainer::AttrMatrixList &, AttrMatrixList, 
+	                 __AttrMatrixList_R1__getAttrMatrixList, 
+	                 0);
+	I_SimpleProperty(osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap &, TexUnitAttrMatrixListMap, 
+	                 __TexUnitAttrMatrixListMap_R1__getTexUnitAttrMatrixListMap, 
+	                 0);
 	I_PublicMemberProperty(osgUtil::PositionalStateContainer::AttrMatrixList, _attrList);
 	I_PublicMemberProperty(osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap, _texAttrListMap);
 END_REFLECTOR

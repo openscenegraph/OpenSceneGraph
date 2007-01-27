@@ -29,6 +29,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack);
+
 BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 	I_EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
 	I_EnumLabel(osg::State::ONCE_PER_FRAME);
@@ -72,6 +74,18 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__popAllStateSets,
 	          "pop all statesets off state stack, ensuring it is empty ready for the next frame. ",
 	          "Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply(). ");
+	I_Method0(unsigned int, getStateSetStackSize,
+	          __unsigned_int__getStateSetStackSize,
+	          "Get the number of StateSet's on the StateSet stack. ",
+	          "");
+	I_Method1(void, popStateSetStackToSize, IN, unsigned int, size,
+	          __void__popStateSetStackToSize__unsigned_int,
+	          "Pop StateSet's for the StateSet stack till its size equals the specified size. ",
+	          "");
+	I_Method0(osg::State::StateSetStack &, getStateSetStack,
+	          __StateSetStack_R1__getStateSetStack,
+	          "Get the StateSet stack. ",
+	          "");
 	I_Method1(void, captureCurrentState, IN, osg::StateSet &, stateset,
 	          __void__captureCurrentState__StateSet_R1,
 	          "Copy the modes and attributes which capture the current state. ",
@@ -504,8 +518,16 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(const osg::Matrix &, ProjectionMatrix, 
 	                 __C5_osg_Matrix_R1__getProjectionMatrix, 
 	                 0);
+	I_SimpleProperty(osg::State::StateSetStack &, StateSetStack, 
+	                 __StateSetStack_R1__getStateSetStack, 
+	                 0);
+	I_SimpleProperty(unsigned int, StateSetStackSize, 
+	                 __unsigned_int__getStateSetStackSize, 
+	                 0);
 	I_SimpleProperty(osg::Polytope, ViewFrustum, 
 	                 __Polytope__getViewFrustum, 
 	                 0);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >);
 

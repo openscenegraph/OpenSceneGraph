@@ -367,11 +367,13 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
 
     // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
 
-    if (_stateset.valid())
+    unsigned int stateSetStackSize = state.getStateSetStackSize();
+
+    previous = 0;
+
+    if (_stateset.valid()) 
     {
         // first need to flush the stack
-        previous = 0;
-        state.popAllStateSets();
 
         // now its safe to push RenderBin's StateSet as we now know its the root.        
         state.pushStateSet(_stateset.get());
@@ -424,10 +426,16 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
         rbitr->second->draw(renderInfo,previous);
     }
 
+    if (stateSetStackSize!=state.getStateSetStackSize())
+    {
+        state.popStateSetStackToSize(stateSetStackSize);
+    }
+
+    previous = 0;
+
     if (_stateset.valid())
     {
-        state.popAllStateSets();
-        previous = 0;
+
     }
 
     //osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;

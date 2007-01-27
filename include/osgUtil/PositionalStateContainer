@@ -44,10 +44,14 @@ class OSGUTIL_EXPORT PositionalStateContainer : public osg::Object
         typedef std::vector< AttrMatrixPair >                                            AttrMatrixList;
         typedef std::map< unsigned int, AttrMatrixList >                                 TexUnitAttrMatrixListMap;
 
+        AttrMatrixList& getAttrMatrixList() { return _attrList; }
+
         virtual void addPositionedAttribute(osg::RefMatrix* matrix,const osg::StateAttribute* attr)
         {
             _attrList.push_back(AttrMatrixPair(attr,matrix));
         }
+
+        TexUnitAttrMatrixListMap& getTexUnitAttrMatrixListMap() { return _texAttrListMap; }
 
         virtual void addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix,const osg::StateAttribute* attr)
         {

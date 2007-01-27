@@ -153,7 +153,8 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         RenderBinList                   _bins;
         StateGraphList                  _stateGraphList;
         RenderLeafList                  _renderLeafList;
-           
+
+        bool                            _sorted;           
         SortMode                        _sortMode;
         osg::ref_ptr<SortCallback>      _sortCallback;
 

@@ -120,6 +120,7 @@ RenderBin::RenderBin()
     _binNum = 0;
     _parent = NULL;
     _stage = NULL;
+    _sorted = false;
     _sortMode = getDefaultRenderBinSortMode();
 }
 
@@ -128,6 +129,7 @@ RenderBin::RenderBin(SortMode mode)
     _binNum = 0;
     _parent = NULL;
     _stage = NULL;
+    _sorted = false;
     _sortMode = mode;
 
 #if 1
@@ -154,6 +156,7 @@ RenderBin::RenderBin(const RenderBin& rhs,const CopyOp& copyop):
         _bins(rhs._bins),
         _stateGraphList(rhs._stateGraphList),
         _renderLeafList(rhs._renderLeafList),
+        _sorted(rhs._sorted),
         _sortMode(rhs._sortMode),
         _sortCallback(rhs._sortCallback),
         _drawCallback(rhs._drawCallback),
@@ -169,11 +172,15 @@ RenderBin::~RenderBin()
 void RenderBin::reset()
 {
     _stateGraphList.clear();
+    _renderLeafList.clear();
     _bins.clear();
+    _sorted = false;
 }
 
 void RenderBin::sort()
 {
+    if (_sorted) return;
+
     for(RenderBinList::iterator itr = _bins.begin();
         itr!=_bins.end();
         ++itr)
@@ -186,6 +193,8 @@ void RenderBin::sort()
         _sortCallback->sortImplementation(this);
     }
     else sortImplementation();
+    
+    _sorted = true;
 }
 
 void RenderBin::setSortMode(SortMode mode)
@@ -292,7 +301,7 @@ void RenderBin::sortBackToFront()
 
 void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
 {
-    _renderLeafList.clear();
+    // _renderLeafList.clear();
 
     int totalsize=0;
     StateGraphList::iterator itr;
@@ -379,6 +388,7 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
         state.pushStateSet(_stateset.get());
     }
 
+
     // draw first set of draw bins.
     RenderBinList::iterator rbitr;
     for(rbitr = _bins.begin();
@@ -387,7 +397,6 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
     {
         rbitr->second->draw(renderInfo,previous);
     }
-    
 
     // draw fine grained ordering.
     for(RenderLeafList::iterator rlitr= _renderLeafList.begin();
@@ -433,12 +442,7 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
 
     previous = 0;
 
-    if (_stateset.valid())
-    {
-
-    }
-
-    //osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;
 }
 
 // stats

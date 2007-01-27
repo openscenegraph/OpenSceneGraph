@@ -317,7 +317,9 @@ class ShadowCallback : public osg::NodeCallback
 {
 public:
 
-    osg::Vec4 _lightpos;
+    osg::ref_ptr<osg::Light>    _ambientLight;
+    osg::ref_ptr<osg::Light>    _diffuseLight;
+    
     osg::ref_ptr<osg::StateSet> _ss1;
     osg::ref_ptr<osg::StateSet> _mainShadowStateSet;
     osg::ref_ptr<osg::StateSet> _shadowVolumeStateSet;
@@ -325,15 +327,11 @@ public:
 
     ShadowCallback(osgShadow::ShadowVolumeGeometry::DrawMode drawMode)
     {
-        osg::Vec4 ambient(0.2,0.2,0.2,1.0);
-        osg::Vec4 diffuse(0.8,0.8,0.8,1.0);
-        osg::Vec4 zero_colour(0.0,0.0,0.0,1.0);
-        _lightpos.set(0.0,1.0,0.0,0.0);
-    
         // first group, render the depth buffer + ambient light contribution
         {
             _ss1 = new osg::StateSet;
 
+#if 0
             osg::LightModel* lm1 = new osg::LightModel;
             lm1->setAmbientIntensity(ambient);
             _ss1->setAttribute(lm1);
@@ -343,6 +341,8 @@ public:
             light1->setDiffuse(zero_colour);
             light1->setPosition(_lightpos);
             _ss1->setAttributeAndModes(light1, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+#endif            
+            
             _ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
         }
 
@@ -408,13 +408,10 @@ public:
             _shadowedSceneStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
             // _shadowedSceneStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
-
+#if 0
             osg::LightModel* lm1 = new osg::LightModel;
             lm1->setAmbientIntensity(zero_colour);
             _shadowedSceneStateSet->setAttribute(lm1);
-
-            osg::LightSource* lightsource = new osg::LightSource;
-//            lightsource->setLight(light.get());
 
             osg::Light* light = new osg::Light;
             light->setAmbient(zero_colour);
@@ -423,6 +420,7 @@ public:
 
             _shadowedSceneStateSet->setMode(GL_LIGHT0, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
             _shadowedSceneStateSet->setAttribute(light);
+#endif
 
             // set up the stencil ops so that only operator on this mirrors stencil value.
             osg::Stencil* stencil = new osg::Stencil;
@@ -457,7 +455,7 @@ public:
         
         osg::ref_ptr<osgUtil::RenderBin> original_bin = cv->getCurrentRenderBin();
         
-        osg::ref_ptr<osgUtil::RenderBin> new_bin = original_bin->find_or_insert(999,"RenderBin");
+        osg::ref_ptr<osgUtil::RenderBin> new_bin = original_bin->find_or_insert(0,"RenderBin");
 
         cv->setCurrentRenderBin(new_bin.get());
 
@@ -465,24 +463,6 @@ public:
         
         cv->setCurrentRenderBin(original_bin.get());
 
-#if 0
-        osg::notify(osg::NOTICE)<<"new_bin->getStateGraphList().size()= "<<new_bin->getStateGraphList().size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"new_bin->getRenderBinList().size()= "<<new_bin->getRenderBinList().size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"new_bin->getRenderLeafList().size()= "<<new_bin->getRenderLeafList().size()<<std::endl;
-        
-        
-        for(osgUtil::RenderBin::RenderBinList::iterator itr = new_bin->getRenderBinList().begin();
-            itr != new_bin->getRenderBinList().end();
-            ++itr)
-        {
-            osg::notify(osg::NOTICE)<<"    bin num = "<<itr->first<<std::endl;
-            osg::notify(osg::NOTICE)<<"    new_bin->getStateGraphList().size()= "<<itr->second->getStateGraphList().size()<<std::endl;
-            osg::notify(osg::NOTICE)<<"    new_bin->getRenderBinList().size()= "<<itr->second->getRenderBinList().size()<<std::endl;
-            osg::notify(osg::NOTICE)<<"    new_bin->getRenderLeafList().size()= "<<itr->second->getRenderLeafList().size()<<std::endl;
-            
-        }
-#endif        
-        
         osgUtil::RenderBin::RenderBinList::iterator itr =  new_bin->getRenderBinList().find(1000);
         osg::ref_ptr<osgUtil::RenderBin> shadowVolumeBin;
         if (itr != new_bin->getRenderBinList().end())
@@ -496,65 +476,33 @@ public:
             }
         }
         
-#if 0
-        for(osgUtil::RenderBin::RenderBinList::iterator itr = new_bin->getRenderBinList().begin();
-            itr != new_bin->getRenderBinList().end();
-            ++itr)
-        {
-            osg::notify(osg::NOTICE)<<"bin num = "<<itr->first<<std::endl;
-        }
-
-        osg::notify(osg::NOTICE)<<"after new_bin->getStateGraphList().size()= "<<new_bin->getStateGraphList().size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"after new_bin->getRenderBinList().size()= "<<new_bin->getRenderBinList().size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"after new_bin->getRenderLeafList().size()= "<<new_bin->getRenderLeafList().size()<<std::endl;
-#endif
-
-
-        original_bin->setStateSet(_ss1.get());
-
-        osgUtil::RenderStage* orig_rs = cv->getRenderStage();
-        osgUtil::RenderStage* new_rs = new osgUtil::RenderStage;
-        orig_rs->addPostRenderStage(new_rs);
-        
-        new_rs->setViewport(orig_rs->getViewport());
-        new_rs->setClearColor(orig_rs->getClearColor());
-        new_rs->setClearMask(GL_STENCIL_BUFFER_BIT);
-        new_rs->setDrawBuffer(orig_rs->getDrawBuffer());
-        new_rs->setReadBuffer(orig_rs->getReadBuffer());
-        new_rs->setColorMask(orig_rs->getColorMask());
-        new_rs->setPositionalStateContainer(orig_rs->getPositionalStateContainer());
-
         if (shadowVolumeBin.valid())
-        {
-            // new_rs->setStateSet(_mainShadowStateSet.get());
-            new_rs->getRenderBinList()[0] = shadowVolumeBin;
-            shadowVolumeBin->setStateSet(_shadowVolumeStateSet.get());
-            
-            osg::ref_ptr<osgUtil::RenderBin> nested_bin = new_rs->find_or_insert(1,"RenderBin");
-            nested_bin->getRenderBinList()[0] = new_bin;            
-            nested_bin->setStateSet(_shadowedSceneStateSet.get());
-        }
+        {        
+            original_bin->setStateSet(_ss1.get());
 
-#if 0        
-        osg::notify(osg::NOTICE)<<"After setup"<<std::endl;
-        osg::notify(osg::NOTICE)<<"new_bin->getStateGraphList().size()= "<<new_bin->getStateGraphList().size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"new_bin->getRenderBinList().size()= "<<new_bin->getRenderBinList().size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"new_bin->getRenderLeafList().size()= "<<new_bin->getRenderLeafList().size()<<std::endl;
-        
-        
-        for(osgUtil::RenderBin::RenderBinList::iterator itr = new_bin->getRenderBinList().begin();
-            itr != new_bin->getRenderBinList().end();
-            ++itr)
-        {
-            osg::notify(osg::NOTICE)<<"    bin num = "<<itr->first<<std::endl;
-            osg::notify(osg::NOTICE)<<"    new_bin->getStateGraphList().size()= "<<itr->second->getStateGraphList().size()<<std::endl;
-            osg::notify(osg::NOTICE)<<"    new_bin->getRenderBinList().size()= "<<itr->second->getRenderBinList().size()<<std::endl;
-            osg::notify(osg::NOTICE)<<"    new_bin->getRenderLeafList().size()= "<<itr->second->getRenderLeafList().size()<<std::endl;
-            
-        }
-        osg::notify(osg::NOTICE)<<std::endl;
-#endif
+            osgUtil::RenderStage* orig_rs = cv->getRenderStage();
+            osgUtil::RenderStage* new_rs = new osgUtil::RenderStage;
+            orig_rs->addPostRenderStage(new_rs);
 
+            new_rs->setViewport(orig_rs->getViewport());
+            new_rs->setClearColor(orig_rs->getClearColor());
+            new_rs->setClearMask(GL_STENCIL_BUFFER_BIT);
+            new_rs->setDrawBuffer(orig_rs->getDrawBuffer());
+            new_rs->setReadBuffer(orig_rs->getReadBuffer());
+            new_rs->setColorMask(orig_rs->getColorMask());
+            new_rs->setPositionalStateContainer(orig_rs->getPositionalStateContainer());
+
+            if (shadowVolumeBin.valid())
+            {
+                // new_rs->setStateSet(_mainShadowStateSet.get());
+                new_rs->getRenderBinList()[0] = shadowVolumeBin;
+                shadowVolumeBin->setStateSet(_shadowVolumeStateSet.get());
+
+                osg::ref_ptr<osgUtil::RenderBin> nested_bin = new_rs->find_or_insert(1,"RenderBin");
+                nested_bin->getRenderBinList()[0] = new_bin;            
+                nested_bin->setStateSet(_shadowedSceneStateSet.get());
+            }
+        }
     }
 };
 
@@ -730,6 +678,7 @@ int main(int argc, char** argv)
 
 
     osg::ref_ptr<osg::Light> light = new osg::Light;
+    light->setPosition(lightpos);
 
     if (!doShadow)
     {
@@ -753,13 +702,16 @@ int main(int argc, char** argv)
 
         group->addChild(model.get());
 
+        osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
+        ls->setLight(light.get());
+        group->addChild(ls.get());
+
         {
             osg::ref_ptr<osg::Geode> geode = new osg::Geode;
             group->addChild(geode.get());
 
             occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
             shadowVolume->setDrawMode(drawMode);
-
 
             if (drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
             {

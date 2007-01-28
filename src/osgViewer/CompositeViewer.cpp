@@ -694,7 +694,17 @@ void CompositeViewer::realize()
         citr != contexts.end();
         ++citr)
     {
-        (*citr)->realize();
+        osg::GraphicsContext* gc = *citr;
+        gc->realize();
+        
+        if (_realizeOperation.valid())
+        {
+            gc->makeCurrent();
+            
+            (*_realizeOperation)(gc);
+            
+            gc->releaseContext();
+        }
     }
     
     bool grabFocus = true;

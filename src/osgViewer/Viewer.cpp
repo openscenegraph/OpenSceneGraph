@@ -756,7 +756,17 @@ void Viewer::realize()
         citr != contexts.end();
         ++citr)
     {
-        (*citr)->realize();
+        osg::GraphicsContext* gc = *citr;
+        gc->realize();
+        
+        if (_realizeOperation.valid())
+        {
+            gc->makeCurrent();
+            
+            (*_realizeOperation)(gc);
+            
+            gc->releaseContext();
+        }
     }
     
     bool grabFocus = true;
@@ -774,14 +784,14 @@ void Viewer::realize()
         }
     }
     
-    
-    startThreading();
-
     // initialize the global timer to be relative to the current time.
     osg::Timer::instance()->setStartTick();
 
     // pass on the start tick to all the associated eventqueues
     setStartTick(osg::Timer::instance()->getStartTick());
+
+    startThreading();
+
 }
 
 

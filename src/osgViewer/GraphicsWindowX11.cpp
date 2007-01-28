@@ -400,11 +400,22 @@ void GraphicsWindowX11::init()
 
     if (!createVisualInfo())
     {
-        osg::notify(osg::NOTICE)<<"Error: Not able to create requested visual." << std::endl;
-        XCloseDisplay( _display );
-        _display = 0;
-        _valid = false;
-        return;
+        _traits->red /= 2; 
+        _traits->green /= 2; 
+        _traits->blue /= 2; 
+        _traits->alpha /= 2; 
+        _traits->depth /= 2; 
+        
+        osg::notify(osg::INFO)<<"Relaxing traits"<<std::endl;
+
+        if (!createVisualInfo())
+        {
+            osg::notify(osg::NOTICE)<<"Error: Not able to create requested visual." << std::endl;
+            XCloseDisplay( _display );
+            _display = 0;
+            _valid = false;
+            return;
+        }    
     }
     
     // need to pick up from traits

@@ -24,8 +24,8 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgUtil::LeafDepthSortFunctor)
-	I_Constructor0(____LeafDepthSortFunctor,
+BEGIN_VALUE_REFLECTOR(osgUtil::LessDepthSortFunctor)
+	I_Constructor0(____LessDepthSortFunctor,
 	               "",
 	               "");
 END_REFLECTOR

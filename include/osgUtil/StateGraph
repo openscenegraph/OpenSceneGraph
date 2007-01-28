@@ -28,11 +28,11 @@
 
 namespace osgUtil {
 
-struct LeafDepthSortFunctor
+struct LessDepthSortFunctor
 {
     bool operator() (const osg::ref_ptr<RenderLeaf>& lhs,const osg::ref_ptr<RenderLeaf>& rhs)
     {
-        return (lhs->_depth>rhs->_depth);
+        return (lhs->_depth < rhs->_depth);
     }
 };
 
@@ -140,7 +140,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
         inline void sortFrontToBack()
         {
-            std::sort(_leaves.begin(),_leaves.end(),LeafDepthSortFunctor());
+            std::sort(_leaves.begin(),_leaves.end(),LessDepthSortFunctor());
         }
 
         /** Reset the internal contents of a StateGraph, including deleting all children.*/

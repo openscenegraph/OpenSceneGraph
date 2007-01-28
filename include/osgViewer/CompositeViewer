@@ -138,11 +138,21 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         typedef std::vector<osgViewer::Scene*> Scenes;
         void getScenes(Scenes& scenes, bool onlyValid=true);
 
-        void stopThreading();
-        void startThreading();        
-        void setUpRenderingSupport();
 
-    public:
+        /** Set the graphics operation to call on realization of the viewers graphics windows.*/
+        void setRealizeOperation(osg::GraphicsOperation* op) { _realizeOperation = op; }
+
+        /** Get the graphics operation to call on realization of the viewers graphics windows.*/
+        osg::GraphicsOperation* getRealizeOperation() { return _realizeOperation.get(); }
+
+        /** Stop any threads begin run by viewer.*/
+        void stopThreading();
+
+        /** Start any threads required by the viewer, as per viewers ThreadingModel.*/
+        void startThreading();        
+
+        /** Set up the GraphicsOperations to render the various viewer cameras on the viewers graphics windows.*/
+        void setUpRenderingSupport();
 
 
     protected:
@@ -180,6 +190,8 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         
         osg::ref_ptr<osgGA::EventQueue>     _eventQueue;
         osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
+
+        osg::ref_ptr<osg::GraphicsOperation> _realizeOperation;
 };
 
 

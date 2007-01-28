@@ -36,6 +36,9 @@
 #include <osgParticle/SmokeEffect>
 #include <osgParticle/FireEffect>
 
+#include <osgViewer/Viewer>
+
+#include <iostream>
 #include <sstream>
 
 typedef std::vector<std::string> FileList;
@@ -1351,10 +1354,26 @@ void GameEventHandler::createNewCatchable()
     _gameGroup->addChild(catchableObject->_object.get());
 }
 
+class CompileStateCallback : public osg::GraphicsOperation
+{
+    public:
+        CompileStateCallback(GameEventHandler* eh):
+            osg::GraphicsOperation("CompileStateCallback", false),
+            _gameEventHandler(eh) {}
+        
+        virtual void operator()(osg::GraphicsContext* gc)
+        { 
+            // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-
-#include <osgViewer/Viewer>
-#include <iostream>
+            if (_gameEventHandler)
+            {
+                _gameEventHandler->compileGLObjects(*gc->getState());
+            }
+        }
+        
+        OpenThreads::Mutex  _mutex;
+        GameEventHandler*  _gameEventHandler;
+};
 
 int main( int argc, char **argv )
 {
@@ -1417,7 +1436,7 @@ int main( int argc, char **argv )
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 
-    // viewer.setRealizeCallback(new CompileStateCallback(seh));
+    viewer.setRealizeOperation(new CompileStateCallback(seh));
 
     double fovy, aspectRatio, zNear, zFar;
     viewer.getCamera()->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);

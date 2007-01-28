@@ -70,8 +70,6 @@ class OSGTEXT_EXPORT String : public VectorUInt
         String(const wchar_t* text) { set(text); }
         String(const std::string& text,Encoding encoding) { set(text,encoding); }
 
-        virtual ~String() {}
-
         String& operator = (const String& str);
 
         void set(const std::string& str);

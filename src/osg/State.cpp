@@ -53,6 +53,8 @@ State::State()
     _glVertexAttribPointer = 0;
     _glEnableVertexAttribArray = 0;
     _glDisableVertexAttribArray = 0;
+
+    _dynamicObjectCount  = 0;
 }
 
 State::~State()

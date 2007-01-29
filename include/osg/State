@@ -753,6 +753,47 @@ class OSG_EXPORT State : public Referenced
           * if true steps should be taken to complete rendering early.*/
         bool getAbortRendering() const { return _abortRenderingPtr!=0?(*_abortRenderingPtr):false; }
 
+
+        struct DynamicObjectRenderingCompletedCallback : public osg::Referenced
+        {
+            virtual void completed(osg::State*) = 0;
+        };
+        
+        /** Set the callback to be called when the dynamic object count hits 0.*/
+        void setDynamicObjectRenderingCompletedCallback(DynamicObjectRenderingCompletedCallback* cb){ _completeDynamicObjectRenderingCallback = cb; }
+        
+        /** Get the callback to be called when the dynamic object count hits 0.*/
+        DynamicObjectRenderingCompletedCallback* getDynamicObjectRenderingCompletedCallback() { return _completeDynamicObjectRenderingCallback.get(); }
+        
+        /** Set the number of dynamic objects that will be rendered in this graphics context this frame.*/
+        void setDynamicObjectCount(unsigned int count, bool callCallbackOnZero = false)
+        {
+            if (_dynamicObjectCount != count)
+            {
+                _dynamicObjectCount = count;
+                if (_dynamicObjectCount==0 && callCallbackOnZero && _completeDynamicObjectRenderingCallback.valid())
+                {
+                    _completeDynamicObjectRenderingCallback->completed(this);
+                }
+            }
+        }
+
+        /** Get the number of dynamic objects that will be rendered in this graphics context this frame.*/
+        unsigned int getDynamicObjectCount() const { return _dynamicObjectCount; }
+        
+        /** Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the 
+          * DynamicObjectRenderingCompletedCallback to inform of completion.*/
+        inline void decrementDynamicObjectCount()
+        {
+            --_dynamicObjectCount;
+            if (_dynamicObjectCount==0 && _completeDynamicObjectRenderingCallback.valid())
+            {
+                _completeDynamicObjectRenderingCallback->completed(this);
+            }
+        } 
+
+
+
         enum CheckForGLErrors
         {
             /** NEVER_CHECK_GL_ERRORS hints that OpenGL need not be checked for, this 
@@ -1028,6 +1069,9 @@ class OSG_EXPORT State : public Referenced
         DisableVertexAttribProc     _glDisableVertexAttribArray;
         void initializeExtensionProcs();
 
+        unsigned int                                            _dynamicObjectCount;
+        osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
+        
 };
 
 inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)

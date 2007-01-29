@@ -522,3 +522,60 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
         return false;
     }
 }
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// EndOfDynamicDrawBlock
+//
+EndOfDynamicDrawBlock::EndOfDynamicDrawBlock():
+    _blockCount(0)
+{
+}
+
+void EndOfDynamicDrawBlock::completed(osg::State* state)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+    if (_blockCount>0)
+    {
+        --_blockCount;
+
+        if (_blockCount==0)
+        {
+            // osg::notify(osg::NOTICE)<<"Released"<<std::endl;
+            _cond.broadcast();
+        }
+    }
+}
+
+void EndOfDynamicDrawBlock::block()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+    if (_blockCount)
+        _cond.wait(&_mut);
+}
+
+void EndOfDynamicDrawBlock::release()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+    if (_blockCount)
+    {
+        _blockCount = 0;
+        _cond.broadcast();
+    }
+}
+
+void EndOfDynamicDrawBlock::set(unsigned int blockCount)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
+    if (blockCount!=_blockCount)
+    {
+        if (blockCount==0) _cond.broadcast();
+        _blockCount = blockCount;
+    }
+}
+
+EndOfDynamicDrawBlock::~EndOfDynamicDrawBlock()
+{
+    release();
+}

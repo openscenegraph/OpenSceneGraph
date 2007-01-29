@@ -58,6 +58,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         
         osg::ref_ptr<osg::Referenced>       _userData;
 
+        bool                                _dynamic;
 
         StateGraph():
             osg::Referenced(false),
@@ -66,7 +67,8 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             _depth(0),
             _averageDistance(0),
             _minimumDistance(0),
-            _userData(NULL)
+            _userData(NULL),
+            _dynamic(false)
         {
         }
 
@@ -77,9 +79,13 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             _depth(0),
             _averageDistance(0),
             _minimumDistance(0),
-            _userData(NULL)
+            _userData(NULL),
+            _dynamic(false)
         {
             if (_parent) _depth = _parent->_depth + 1;
+            
+            if (_parent && _parent->_dynamic) _dynamic = true;
+            else _dynamic = stateset->getDataVariance()==osg::Object::DYNAMIC;
         }
             
         ~StateGraph() {}
@@ -176,6 +182,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 _minimumDistance = FLT_MAX; // signify dirty.
                 _leaves.push_back(leaf);
                 leaf->_parent = this;
+                if (_dynamic) leaf->_dynamic = true;
             }
         }
 

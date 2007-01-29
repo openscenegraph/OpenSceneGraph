@@ -39,16 +39,20 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _drawable(drawable),
             _projection(projection),
             _modelview(modelview),
-            _depth(depth) {}
+            _depth(depth)
+        {
+            _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
+        }
 
         
         inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f)
         {
             _parent = 0;
             _drawable = drawable;
-                _projection = projection,
-                _modelview = modelview,
+            _projection = projection,
+            _modelview = modelview,
             _depth = depth;
+            _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
         }
         
         inline void reset()
@@ -58,6 +62,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _projection = 0;
             _modelview = 0;
             _depth = 0.0f;
+            _dynamic = false;
         }
     
         virtual void render(osg::RenderInfo& renderInfo,RenderLeaf* previous);
@@ -72,6 +77,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         osg::ref_ptr<osg::RefMatrix>    _projection;
         osg::ref_ptr<osg::RefMatrix>    _modelview;
         float                           _depth;
+        bool                            _dynamic;
 
     private:
 

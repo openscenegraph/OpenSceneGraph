@@ -47,7 +47,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -108,6 +108,9 @@ void Optimizer::optimize(osg::Node* node)
         
         if(str.find("~TEXTURE_ATLAS_BUILDER")!=std::string::npos) options ^= TEXTURE_ATLAS_BUILDER;
         else if(str.find("TEXTURE_ATLAS_BUILDER")!=std::string::npos) options |= TEXTURE_ATLAS_BUILDER;
+        
+        if(str.find("~STATIC_OBJECT_DETECTION")!=std::string::npos) options ^= STATIC_OBJECT_DETECTION;
+        else if(str.find("STATIC_OBJECT_DETECTION")!=std::string::npos) options |= STATIC_OBJECT_DETECTION;
 
     }
     else
@@ -299,7 +302,13 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         node->accept(sv);
         sv.divide();
     }
-    
+
+    if (options & STATIC_OBJECT_DETECTION)
+    {
+        StaticObjectDetectionVisitor sodv;
+        node->accept(sodv);
+    }
+
     if (osg::getNotifyLevel()>=osg::INFO)
     {
         stats.reset();
@@ -4104,3 +4113,45 @@ void Optimizer::TextureAtlasVisitor::optimize()
     }
 }
 
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// StaticObjectDectionVisitor
+////////////////////////////////////////////////////////////////////////////
+
+void Optimizer::StaticObjectDetectionVisitor::apply(osg::Node& node)
+{
+    if (node.getStateSet()) applyStateSet(*node.getStateSet());
+
+    traverse(node);
+}
+
+void Optimizer::StaticObjectDetectionVisitor::apply(osg::Geode& geode)
+{
+    if (geode.getStateSet()) applyStateSet(*geode.getStateSet());
+
+    for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+    {
+        applyDrawable(*geode.getDrawable(i));
+    }
+}
+
+void Optimizer::StaticObjectDetectionVisitor::applyStateSet(osg::StateSet& stateset)
+{
+    stateset.setDataVariance(osg::Object::STATIC);
+}
+
+
+void Optimizer::StaticObjectDetectionVisitor::applyDrawable(osg::Drawable& drawable)
+{
+    if (drawable.getStateSet()) applyStateSet(*drawable.getStateSet());
+
+    osg::Object::DataVariance dataVariance = osg::Object::STATIC;
+    
+    if (drawable.getDrawCallback()) dataVariance = osg::Object::DYNAMIC;
+    if (drawable.getCullCallback()) dataVariance = osg::Object::DYNAMIC;
+    if (drawable.getDrawCallback()) dataVariance = osg::Object::DYNAMIC;
+    
+    drawable.setDataVariance(dataVariance);
+}

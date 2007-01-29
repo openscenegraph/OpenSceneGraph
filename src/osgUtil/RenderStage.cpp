@@ -1031,3 +1031,27 @@ void RenderStage::attach(osg::Camera::BufferComponent buffer, osg::Image* image)
 {
     _bufferAttachmentMap[buffer]._image = image;
 }
+
+unsigned int RenderStage::computeNumberOfDynamicRenderLeaves() const
+{
+    unsigned int count = 0;
+
+    for(RenderStageList::const_iterator pre_itr = _preRenderList.begin();
+        pre_itr != _preRenderList.end();
+        ++pre_itr)
+    {
+        count += pre_itr->second->computeNumberOfDynamicRenderLeaves();
+    }
+
+    count += RenderBin::computeNumberOfDynamicRenderLeaves();
+
+    for(RenderStageList::const_iterator post_itr = _postRenderList.begin();
+        post_itr != _postRenderList.end();
+        ++post_itr)
+    {
+        count += post_itr->second->computeNumberOfDynamicRenderLeaves();
+    }
+    
+    return count;
+}
+

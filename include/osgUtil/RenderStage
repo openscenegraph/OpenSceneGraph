@@ -201,9 +201,10 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Extract stats for current draw list. */
         bool getStats(Statistics& stats) const; 
  
+        /** Compute the number of dynamic RenderLeaves.*/
+        virtual unsigned int computeNumberOfDynamicRenderLeaves() const;
 
-
-       struct Attachment
+        struct Attachment
         {
             osg::ref_ptr<osg::Image>                _image;
             GLenum                                  _imageReadPixelFormat;

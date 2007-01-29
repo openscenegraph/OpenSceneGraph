@@ -26,6 +26,7 @@ Viewer::Viewer():
     _keyEventSetsDone(osgGA::GUIEventAdapter::KEY_Escape),
     _quitEventSetsDone(true),
     _threadingModel(ThreadPerContext),
+    _useMainThreadForRenderingTraversal(false),
     _endBarrierPosition(AfterSwapBuffers),
     _numThreadsOnBarrier(0)
 {

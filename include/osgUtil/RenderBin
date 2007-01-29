@@ -140,6 +140,9 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         /** Extract stats for current draw list. */
         bool getStats(Statistics& primStats) const;
+        
+        /** Compute the number of dynamic RenderLeaves.*/
+        virtual unsigned int computeNumberOfDynamicRenderLeaves() const;
 
         void copyLeavesFromStateGraphListToRenderLeafList();
 

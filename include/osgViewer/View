@@ -25,6 +25,30 @@
 
 namespace osgViewer {
 
+class OSGVIEWER_EXPORT EndOfDynamicDrawBlock : public osg::State::DynamicObjectRenderingCompletedCallback
+{
+    public:
+    
+        EndOfDynamicDrawBlock();
+    
+        void completed(osg::State* state);
+
+        void block();
+
+        void release();
+
+        void set(unsigned int blockCount);
+
+    protected:
+
+        ~EndOfDynamicDrawBlock();
+
+        OpenThreads::Mutex _mut;
+        OpenThreads::Condition _cond;
+        unsigned int _blockCount;
+};
+
+
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
 class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 {

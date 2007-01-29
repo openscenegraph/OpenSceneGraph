@@ -82,6 +82,7 @@ class OSGUTIL_EXPORT Optimizer
             MERGE_GEODES =              0x1000,
             FLATTEN_BILLBOARDS =        0x2000,
             TEXTURE_ATLAS_BUILDER =     0x4000,
+            STATIC_OBJECT_DETECTION =   0x8000,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -89,7 +90,8 @@ class OSGUTIL_EXPORT Optimizer
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
                                 CHECK_GEOMETRY |
-                                OPTIMIZE_TEXTURE_SETTINGS,
+                                OPTIMIZE_TEXTURE_SETTINGS |
+                                STATIC_OBJECT_DETECTION,
             ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -102,7 +104,8 @@ class OSGUTIL_EXPORT Optimizer
                                 COPY_SHARED_NODES |
                                 TRISTRIP_GEOMETRY |
                                 OPTIMIZE_TEXTURE_SETTINGS |
-                                TEXTURE_ATLAS_BUILDER
+                                TEXTURE_ATLAS_BUILDER |
+                                STATIC_OBJECT_DETECTION
         };
 
         /** Reset internal data to initial state - the getPermissibleOptionsMap is cleared.*/
@@ -740,6 +743,27 @@ class OSGUTIL_EXPORT Optimizer
 
         };
 
+        /** Optimize the setting of StateSet and Geometry objects in scene so that they have a STATIC DataVariance
+          * when they don't have any callbacks associated with them. */
+        class OSGUTIL_EXPORT StaticObjectDetectionVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                StaticObjectDetectionVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, STATIC_OBJECT_DETECTION) {}
+
+                virtual void apply(osg::Node& node);
+
+                virtual void apply(osg::Geode& geode);
+
+            protected:
+
+                void applyStateSet(osg::StateSet& stateset);
+                
+                void applyDrawable(osg::Drawable& drawable);
+
+        };
 };
 
 inline bool BaseOptimizerVisitor::isOperationPermissibleForObject(const osg::StateSet* object) const

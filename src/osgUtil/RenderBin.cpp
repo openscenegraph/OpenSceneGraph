@@ -301,7 +301,7 @@ void RenderBin::sortBackToFront()
 
 void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
 {
-    // _renderLeafList.clear();
+    _renderLeafList.clear();
 
     int totalsize=0;
     StateGraphList::iterator itr;
@@ -508,4 +508,53 @@ bool RenderBin::getStats(Statistics& stats) const
     }
 
     return statsCollected;
+}
+
+unsigned int RenderBin::computeNumberOfDynamicRenderLeaves() const
+{
+    unsigned int count = 0;
+
+    // draw first set of draw bins.
+    RenderBinList::const_iterator rbitr;
+    for(rbitr = _bins.begin();
+        rbitr!=_bins.end() && rbitr->first<0;
+        ++rbitr)
+    {
+        count += rbitr->second->computeNumberOfDynamicRenderLeaves();
+    }
+
+    // draw fine grained ordering.
+    for(RenderLeafList::const_iterator rlitr= _renderLeafList.begin();
+        rlitr!= _renderLeafList.end();
+        ++rlitr)
+    {
+        RenderLeaf* rl = *rlitr;
+        if (rl->_dynamic) ++count;
+    }
+
+
+    // draw coarse grained ordering.
+    for(StateGraphList::const_iterator oitr=_stateGraphList.begin();
+        oitr!=_stateGraphList.end();
+        ++oitr)
+    {
+
+        for(StateGraph::LeafList::const_iterator dw_itr = (*oitr)->_leaves.begin();
+            dw_itr != (*oitr)->_leaves.end();
+            ++dw_itr)
+        {
+            RenderLeaf* rl = dw_itr->get();
+            if (rl->_dynamic) ++count;
+        }
+    }
+
+    // draw post bins.
+    for(;
+        rbitr!=_bins.end();
+        ++rbitr)
+    {
+        count += rbitr->second->computeNumberOfDynamicRenderLeaves();
+    }
+    
+    return count;
 }

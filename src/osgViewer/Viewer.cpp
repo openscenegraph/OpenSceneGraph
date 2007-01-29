@@ -170,6 +170,16 @@ void Viewer::setThreadingModel(ThreadingModel threadingModel)
     if (_threadingModel!=SingleThreaded) startThreading();
 }
 
+void Viewer::setUseMainThreadForRenderingTraversals(bool flag)
+{
+    if (_useMainThreadForRenderingTraversal==flag) return;
+
+    if (_threadingModel!=SingleThreaded) stopThreading();
+    
+    _useMainThreadForRenderingTraversal = flag;
+    
+    if (_threadingModel!=SingleThreaded) startThreading();
+}
 
 void Viewer::setEndBarrierPosition(BarrierPosition bp)
 {
@@ -259,11 +269,8 @@ unsigned int Viewer::computeNumberOfThreadsIncludingMainRequired()
         return 1;
     }
 
-    bool firstContextAsMainThread = _threadingModel == ThreadPerContext;
-    
-    return firstContextAsMainThread ? contexts.size() : contexts.size()+1;
+    return _useMainThreadForRenderingTraversal ? contexts.size() : contexts.size()+1;
 }
-
 
 void Viewer::startThreading()
 {
@@ -310,11 +317,21 @@ void Viewer::startThreading()
 
     _numThreadsOnBarrier = numThreadsIncludingMainThread;
     _startRenderingBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
-#if 1
-    _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
-#else    
-    _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::GL_FINISH);
-#endif
+
+
+    if (_threadingModel==ThreadPerContext)
+    {
+    #if 1
+        _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
+    #else    
+        _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::GL_FINISH);
+    #endif
+    }
+    else
+    {
+        _endDynamicDrawBlock = new EndOfDynamicDrawBlock;
+    }
+
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
     Contexts::iterator citr = contexts.begin(); 
@@ -326,12 +343,15 @@ void Viewer::startThreading()
         ++citr;
     }
 
+
     for(;
         citr != contexts.end();
         ++citr,
         ++processNum)
     {
         osg::GraphicsContext* gc = (*citr);
+        
+        gc->getState()->setDynamicObjectRenderingCompletedCallback(_endDynamicDrawBlock.get());
 
         // create the a graphics thread for this context
         gc->createGraphicsThread();
@@ -346,7 +366,7 @@ void Viewer::startThreading()
         // add the rendering operation itself.
         gc->getGraphicsThread()->add(new ViewerRunOperations());
 
-        if (_endBarrierPosition==BeforeSwapBuffers)
+        if (_endBarrierPosition==BeforeSwapBuffers && _endRenderingDispatchBarrier.valid())
         {
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
@@ -355,7 +375,7 @@ void Viewer::startThreading()
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
 
-        if (_endBarrierPosition==AfterSwapBuffers)
+        if (_endBarrierPosition==AfterSwapBuffers && _endRenderingDispatchBarrier.valid())
         {
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
@@ -561,6 +581,10 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         _sceneView->cull();
         osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
 
+        if (state->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
+        {
+            state->getDynamicObjectRenderingCompletedCallback()->completed(state);
+        }
 
         // do draw traveral
         if (_aquireGPUStats) 
@@ -1187,11 +1211,24 @@ void Viewer::renderingTraversals()
 
     Contexts contexts;
     getContexts(contexts);
+    
+    Contexts::iterator itr;
+    if (_endDynamicDrawBlock.valid())
+    {
+        unsigned int numToBlock = 0;
+        for(itr = contexts.begin();
+            itr != contexts.end();
+            ++itr)
+        {
+            if (((*itr)->getGraphicsThread())) ++numToBlock;
+        }
+
+        _endDynamicDrawBlock->set(numToBlock);
+    }
 
     // dispatch the the rendering threads
     if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
 
-    Contexts::iterator itr;
     for(itr = contexts.begin();
         itr != contexts.end();
         ++itr)
@@ -1206,6 +1243,14 @@ void Viewer::renderingTraversals()
     }
 
     // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block"<<std::endl;
+
+    // wait till the dynamic draw is complete.
+    if (_endDynamicDrawBlock.valid()) 
+    {
+        // osg::Timer_t startTick = osg::Timer::instance()->tick();
+        _endDynamicDrawBlock->block();
+        // osg::notify(osg::NOTICE)<<"Time waiting "<<osg::Timer::instance()->delta_m(startTick, osg::Timer::instance()->tick())<<std::endl;;
+    }
 
     // wait till the rendering dispatch is done.
     if (_endRenderingDispatchBarrier.valid()) _endRenderingDispatchBarrier->block();

@@ -80,7 +80,7 @@ bool osg::isTextureMode(StateAttribute::GLMode mode)
 
 StateSet::StateSet()
 {
-    setDataVariance(osg::StateAttribute::STATIC);
+    setDataVariance(osg::Object::STATIC);
 
     _renderingHint = DEFAULT_BIN;
     

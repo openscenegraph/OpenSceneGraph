@@ -777,6 +777,11 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     // a clean has been used instead to try to minimize the amount of
     // allocation and deleteing of the StateGraph nodes.
     rendergraph->prune();
+    
+    // set the number of dynamic objects in the scene.    
+    getState()->setDynamicObjectCount( getState()->getDynamicObjectCount() + renderStage->computeNumberOfDynamicRenderLeaves());
+
+    // osg::notify(osg::NOTICE)<<"SceneView  cull() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;
 }
 
 void SceneView::releaseAllGLObjects()
@@ -1319,6 +1324,9 @@ void SceneView::draw()
             state->setCheckForGLErrors(osg::State::ONCE_PER_ATTRIBUTE);
         }
     }
+
+    // osg::notify(osg::NOTICE)<<"SceneView  draw() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;
+
 }
 
 /** Calculate, via glUnProject, the object coordinates of a window point.

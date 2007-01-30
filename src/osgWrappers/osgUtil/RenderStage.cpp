@@ -306,6 +306,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	          __bool__getStats__Statistics_R1,
 	          "Extract stats for current draw list. ",
 	          "");
+	I_Method0(unsigned int, computeNumberOfDynamicRenderLeaves,
+	          __unsigned_int__computeNumberOfDynamicRenderLeaves,
+	          "Compute the number of dynamic RenderLeaves. ",
+	          "");
 	I_Method2(void, attach, IN, osg::Camera::BufferComponent, buffer, IN, osg::Image *, image,
 	          __void__attach__osg_Camera_BufferComponent__osg_Image_P1,
 	          "",

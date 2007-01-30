@@ -123,6 +123,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	I_PublicMemberProperty(float, _averageDistance);
 	I_PublicMemberProperty(float, _minimumDistance);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, _userData);
+	I_PublicMemberProperty(bool, _dynamic);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)

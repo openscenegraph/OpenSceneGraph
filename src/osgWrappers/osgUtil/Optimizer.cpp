@@ -78,6 +78,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgUtil::Optimizer::FLATTEN_BILLBOARDS);
 	I_EnumLabel(osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER);
+	I_EnumLabel(osgUtil::Optimizer::STATIC_OBJECT_DETECTION);
 	I_EnumLabel(osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
@@ -496,6 +497,22 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	          "");
 	I_Method0(void, optimize,
 	          __void__optimize,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
+	I_BaseType(osgUtil::BaseOptimizerVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           ____StaticObjectDetectionVisitor__Optimizer_P1,
+	                           "default to traversing all children. ",
+	                           "");
+	I_Method1(void, apply, IN, osg::Node &, node,
+	          __void__apply__osg_Node_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 END_REFLECTOR

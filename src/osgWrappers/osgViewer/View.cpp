@@ -13,6 +13,7 @@
 #include <osg/Camera>
 #include <osg/DisplaySettings>
 #include <osg/Node>
+#include <osg/State>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
@@ -27,6 +28,29 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
+	I_BaseType(osg::State::DynamicObjectRenderingCompletedCallback);
+	I_Constructor0(____EndOfDynamicDrawBlock,
+	               "",
+	               "");
+	I_Method1(void, completed, IN, osg::State *, state,
+	          __void__completed__osg_State_P1,
+	          "",
+	          "");
+	I_Method0(void, block,
+	          __void__block,
+	          "",
+	          "");
+	I_Method0(void, release,
+	          __void__release,
+	          "",
+	          "");
+	I_Method1(void, set, IN, unsigned int, blockCount,
+	          __void__set__unsigned_int,
+	          "",
+	          "");
+END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers);
 

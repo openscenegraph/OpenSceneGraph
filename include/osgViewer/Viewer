@@ -129,6 +129,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         typedef std::vector<osgViewer::GraphicsWindow*> Windows;
         void getWindows(Windows& windows, bool onlyValid=true);
+        
+        typedef std::vector<osg::Camera*> Cameras;
+        void getCameras(Cameras& cameras, bool onlyActive=true);
 
         /** Set the graphics operation to call on realization of the viewers graphics windows.*/
         void setRealizeOperation(osg::GraphicsOperation* op) { _realizeOperation = op; }

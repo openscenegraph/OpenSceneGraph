@@ -27,7 +27,7 @@ class OSG_EXPORT Stats : public osg::Referenced
 {
     public:
 
-        Stats(const std::string& name, unsigned int numberOfFrames=100);
+        Stats(const std::string& name, unsigned int numberOfFrames=50);
         
         void setName(const std::string& name) { _name = name; }
         const std::string& getName() const { return _name; }
@@ -42,10 +42,23 @@ class OSG_EXPORT Stats : public osg::Referenced
 
         bool setAttribute(int frameNumber, const std::string& attributeName, double value);
         bool getAttribute(int frameNumber, const std::string& attributeName, double& value) const;        
+
+        bool getAveragedAttribute(const std::string& attributeName, double& value) const;        
+        bool getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value) const;        
         
         AttributeMap& getAttributeMap(int frameNumber);
         const AttributeMap& getAttributeMap(int frameNumber) const;
         
+        typedef std::map<std::string, bool> CollectMap;
+        
+        void collectStats(const std::string& str, bool flag) { _collectMap[str] = flag; }
+        
+        inline bool collectStats(const std::string& str) const
+        {
+            CollectMap::const_iterator itr = _collectMap.find(str); 
+            return (itr !=  _collectMap.end()) ? itr->second : false;
+        }
+
         void report(std::ostream& out, const char* indent=0) const ;
         void report(std::ostream& out, unsigned int frameNumber, const char* indent=0) const;
         
@@ -72,6 +85,8 @@ class OSG_EXPORT Stats : public osg::Referenced
         
         AttributeMapList    _attributeMapList;
         AttributeMap        _invalidAttributeMap;
+        
+        CollectMap          _collectMap;
         
 };
 

@@ -190,14 +190,14 @@ void StatsHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
 
 struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    TextDrawCallback(osg::Stats* stats, const std::string& name, int frameDelta, double multiplier = 1.0):
+    TextDrawCallback(osg::Stats* stats, const std::string& name, int frameDelta, bool averageInInverseSpace, double multiplier):
         _stats(stats),
         _attributeName(name),
         _frameDelta(frameDelta),
+        _averageInInverseSpace(averageInInverseSpace),
         _multiplier(multiplier),
         _tickLastUpdated(0)
     {
-        _tickLastUpdated = osg::Timer::instance()->tick();
     }
 
     /** do customized draw code.*/
@@ -212,7 +212,7 @@ struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
         {
             _tickLastUpdated = tick;
             double value;
-            if (_stats->getAveragedAttribute( _attributeName, value))
+            if (_stats->getAveragedAttribute( _attributeName, value, _averageInInverseSpace))
             {
                 sprintf(_tmpText,"%4.2f",value * _multiplier);
                 text->setText(_tmpText);
@@ -229,6 +229,7 @@ struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
     osg::Stats*     _stats;
     std::string     _attributeName;
     int             _frameDelta;
+    bool            _averageInInverseSpace;
     double          _multiplier;
     mutable char    _tmpText[128];
     mutable osg::Timer_t    _tickLastUpdated;
@@ -502,7 +503,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
         frameRateValue->setPosition(pos);
         frameRateValue->setText("0.0");
 
-        frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1));
+        frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1, true, 1.0));
 
         pos.y() -= characterSize*1.5f;
 
@@ -543,7 +544,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
             eventValue->setPosition(pos);
             eventValue->setText("0.0");
 
-            eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, 1000.0));
+            eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
@@ -576,7 +577,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
             updateValue->setPosition(pos);
             updateValue->setText("0.0");
 
-            updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, 1000.0));
+            updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
@@ -684,7 +685,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         cullValue->setPosition(pos);
         cullValue->setText("0.0");
 
-        cullValue->setDrawCallback(new TextDrawCallback(stats,"Cull traversal time taken",-1, 1000.0));
+        cullValue->setDrawCallback(new TextDrawCallback(stats,"Cull traversal time taken",-1, false, 1000.0));
 
         pos.x() = startBlocks;
         osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorCullAlpha, _numBlocks);
@@ -717,7 +718,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         drawValue->setPosition(pos);
         drawValue->setText("0.0");
 
-        drawValue->setDrawCallback(new TextDrawCallback(stats,"Draw traversal time taken",-1, 1000.0));
+        drawValue->setDrawCallback(new TextDrawCallback(stats,"Draw traversal time taken",-1, false, 1000.0));
 
 
         pos.x() = startBlocks;
@@ -752,7 +753,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         gpuValue->setPosition(pos);
         gpuValue->setText("0.0");
 
-        gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, 1000.0));
+        gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, false, 1000.0));
 
         pos.x() = startBlocks;
         osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPUAlpha, _numBlocks);

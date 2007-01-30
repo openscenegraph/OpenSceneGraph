@@ -48,5 +48,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _projection);
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _modelview);
 	I_PublicMemberProperty(float, _depth);
+	I_PublicMemberProperty(bool, _dynamic);
 END_REFLECTOR
 

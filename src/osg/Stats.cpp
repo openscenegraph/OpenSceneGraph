@@ -80,6 +80,37 @@ bool Stats::getAttribute(int frameNumber, const std::string& attributeName, doub
     return true;
 }
 
+bool Stats::getAveragedAttribute(const std::string& attributeName, double& value) const
+{
+    return getAveragedAttribute(getEarliestFrameNumber(), getLatestFrameNumber(), attributeName, value);
+}
+
+bool Stats::getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value) const
+{
+    if (endFrameNumber<startFrameNumber)
+    {
+        std::swap(endFrameNumber, startFrameNumber);
+    }
+
+    double total = 0.0;
+    double numValidSamples = 0.0;
+    for(int i = startFrameNumber; i<=endFrameNumber; ++i)
+    {
+        double v = 0.0;
+        if (getAttribute(i,attributeName,v))
+        {
+            total += v;
+            numValidSamples += 1.0;
+        }
+    }
+    if (numValidSamples>0.0)
+    {
+        value = total/numValidSamples;
+        return true;
+    }
+    else return false;
+}
+
 Stats::AttributeMap& Stats::getAttributeMap(int frameNumber)
 {
     int index = getIndex(frameNumber);

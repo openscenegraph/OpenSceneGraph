@@ -52,23 +52,51 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     ++_statsType;
 
                     if (_statsType==LAST) _statsType = NO_STATS;
+                    
+                    osgViewer::Viewer::Cameras cameras;
+                    viewer->getCameras(cameras);
 
                     switch(_statsType)
                     {
                         case(NO_STATS):
                         {
+                            viewer->getStats()->collectStats("frame_rate",false);
+                            viewer->getStats()->collectStats("event",false);
+                            viewer->getStats()->collectStats("update",false);
+
+                            for(osgViewer::Viewer::Cameras::iterator itr = cameras.begin();
+                                itr != cameras.end();
+                                ++itr)
+                            {
+                                if ((*itr)->getStats()) (*itr)->getStats()->collectStats("rendering",false);
+                                if ((*itr)->getStats()) (*itr)->getStats()->collectStats("gpu",false);
+                            }
+                            
                             _camera->setNodeMask(0x0); 
                             _switch->setAllChildrenOff();
                             break;
                         }
                         case(FRAME_RATE):
                         {
+                            viewer->getStats()->collectStats("frame_rate",true);
+                            
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_frameRateChildNum, true);
                             break;
                         }
                         case(VIEWER_STATS):
                         {
+                            viewer->getStats()->collectStats("event",true);
+                            viewer->getStats()->collectStats("update",true);
+
+                            for(osgViewer::Viewer::Cameras::iterator itr = cameras.begin();
+                                itr != cameras.end();
+                                ++itr)
+                            {
+                                if ((*itr)->getStats()) (*itr)->getStats()->collectStats("rendering",true);
+                                if ((*itr)->getStats()) (*itr)->getStats()->collectStats("gpu",true);
+                            }
+                            
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_viewerChildNum, true);
                             break;
@@ -166,26 +194,35 @@ struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
         _stats(stats),
         _attributeName(name),
         _frameDelta(frameDelta),
-        _multiplier(multiplier) {}
+        _multiplier(multiplier),
+        _tickLastUpdated(0)
+    {
+        _tickLastUpdated = osg::Timer::instance()->tick();
+    }
 
     /** do customized draw code.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
         osgText::Text* text = (osgText::Text*)drawable;
 
-        int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+        osg::Timer_t tick = osg::Timer::instance()->tick();
+        double delta = osg::Timer::instance()->delta_m(_tickLastUpdated, tick);
 
-        double value;
-        if (_stats->getAttribute( frameNumber+_frameDelta, _attributeName, value))
+        if (delta>50) // update every 50ms
         {
-            sprintf(_tmpText,"%4.2f",value * _multiplier);
-            text->setText(_tmpText);
+            _tickLastUpdated = tick;
+            double value;
+            if (_stats->getAveragedAttribute( _attributeName, value))
+            {
+                sprintf(_tmpText,"%4.2f",value * _multiplier);
+                text->setText(_tmpText);
+            }
+            else
+            {
+                text->setText("");
+            }
         }
-        else
-        {
-            text->setText("");
-        }
-
+        
         text->drawImplementation(renderInfo);
     }
 
@@ -194,6 +231,7 @@ struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
     int             _frameDelta;
     double          _multiplier;
     mutable char    _tmpText[128];
+    mutable osg::Timer_t    _tickLastUpdated;
 };
 
 struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback

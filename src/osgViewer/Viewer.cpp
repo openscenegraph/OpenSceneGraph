@@ -467,6 +467,22 @@ void Viewer::getWindows(Windows& windows, bool onlyValid)
     }
 }
 
+void Viewer::getCameras(Cameras& cameras, bool onlyActive)
+{
+    cameras.clear();
+    
+    if (onlyActive || _camera->getGraphicsContext()) cameras.push_back(_camera.get());
+
+    for(Slaves::iterator itr = _slaves.begin();
+        itr != _slaves.end();
+        ++itr)
+    {
+        if (onlyActive || itr->_camera->getGraphicsContext()) cameras.push_back(itr->_camera.get());
+    }
+        
+}
+
+
 // Draw operation, that does a draw on the scene graph.
 struct ViewerRenderingOperation : public osg::GraphicsOperation
 {
@@ -476,6 +492,7 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         _databasePager(databasePager),
         _startTick(startTick),
         _initialized(false),
+        _timerQuerySupported(false),
         _aquireGPUStats(false),
         _extensions(0)
     {
@@ -565,12 +582,11 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         {
             _initialized = true;
             _extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
-            _aquireGPUStats = _extensions && _extensions->isTimerQuerySupported();
+            _timerQuerySupported = _extensions && _extensions->isTimerQuerySupported();
             _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
         }
         
-//        _aquireGPUStats = false;
-
+        _aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
 
         if (_aquireGPUStats) 
         {
@@ -612,7 +628,7 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
         
 
-        if (stats)
+        if (stats && stats->collectStats("rendering"))
         {
             stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
             stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
@@ -631,6 +647,7 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
     osg::Timer_t                                _startTick;
     
     bool                                        _initialized;
+    bool                                        _timerQuerySupported;
     bool                                        _aquireGPUStats;
     const osg::Drawable::Extensions*            _extensions;
     QueryFrameNumberList                        _queryFrameNumberList;
@@ -864,7 +881,7 @@ void Viewer::advance(double simulationTime)
         _frameStamp->setSimulationTime(simulationTime);
     }
     
-    if (getStats())
+    if (getStats() && getStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
         double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
@@ -1153,7 +1170,7 @@ void Viewer::eventTraversal()
     }
 
     
-    if (getStats())
+    if (getStats() && getStats()->collectStats("event"))
     {
         double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
@@ -1181,7 +1198,7 @@ void Viewer::updateTraversal()
 
     updateSlaves();
 
-    if (getStats())
+    if (getStats() && getStats()->collectStats("update"))
     {
         double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
@@ -1275,7 +1292,7 @@ void Viewer::renderingTraversals()
         dp->signalEndFrame();
     }
 
-    if (getStats())
+    if (getStats() && getStats()->collectStats("update"))
     {
         double endRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 

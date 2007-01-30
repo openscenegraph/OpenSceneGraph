@@ -438,6 +438,26 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __bool__getAbortRendering,
 	          "Get flag for early termination of the draw traversal, if true steps should be taken to complete rendering early. ",
 	          "");
+	I_Method1(void, setDynamicObjectRenderingCompletedCallback, IN, osg::State::DynamicObjectRenderingCompletedCallback *, cb,
+	          __void__setDynamicObjectRenderingCompletedCallback__DynamicObjectRenderingCompletedCallback_P1,
+	          "Set the callback to be called when the dynamic object count hits 0. ",
+	          "");
+	I_Method0(osg::State::DynamicObjectRenderingCompletedCallback *, getDynamicObjectRenderingCompletedCallback,
+	          __DynamicObjectRenderingCompletedCallback_P1__getDynamicObjectRenderingCompletedCallback,
+	          "Get the callback to be called when the dynamic object count hits 0. ",
+	          "");
+	I_MethodWithDefaults2(void, setDynamicObjectCount, IN, unsigned int, count, , IN, bool, callCallbackOnZero, false,
+	                      __void__setDynamicObjectCount__unsigned_int__bool,
+	                      "Set the number of dynamic objects that will be rendered in this graphics context this frame. ",
+	                      "");
+	I_Method0(unsigned int, getDynamicObjectCount,
+	          __unsigned_int__getDynamicObjectCount,
+	          "Get the number of dynamic objects that will be rendered in this graphics context this frame. ",
+	          "");
+	I_Method0(void, decrementDynamicObjectCount,
+	          __void__decrementDynamicObjectCount,
+	          "Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the DynamicObjectRenderingCompletedCallback to inform of completion. ",
+	          "");
 	I_Method1(void, setCheckForGLErrors, IN, osg::State::CheckForGLErrors, check,
 	          __void__setCheckForGLErrors__CheckForGLErrors,
 	          "Set whether and how often OpenGL errors should be checked for. ",
@@ -482,6 +502,12 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::DisplaySettings *, DisplaySettings, 
 	                 0, 
 	                 __void__setDisplaySettings__DisplaySettings_P1);
+	I_SimpleProperty(unsigned int, DynamicObjectCount, 
+	                 __unsigned_int__getDynamicObjectCount, 
+	                 0);
+	I_SimpleProperty(osg::State::DynamicObjectRenderingCompletedCallback *, DynamicObjectRenderingCompletedCallback, 
+	                 __DynamicObjectRenderingCompletedCallback_P1__getDynamicObjectRenderingCompletedCallback, 
+	                 __void__setDynamicObjectRenderingCompletedCallback__DynamicObjectRenderingCompletedCallback_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 0, 
 	                 __void__setFrameStamp__FrameStamp_P1);
@@ -527,6 +553,17 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::Polytope, ViewFrustum, 
 	                 __Polytope__getViewFrustum, 
 	                 0);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallback)
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____DynamicObjectRenderingCompletedCallback,
+	               "",
+	               "");
+	I_Method1(void, completed, IN, osg::State *, x,
+	          __void__completed__osg_State_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >);

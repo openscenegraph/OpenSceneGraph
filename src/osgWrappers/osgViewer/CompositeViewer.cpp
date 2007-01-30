@@ -12,6 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/FrameStamp>
+#include <osg/GraphicsThread>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
 #include <osgViewer/CompositeViewer>
@@ -203,17 +204,25 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                      __void__getScenes__Scenes_R1__bool,
 	                      "",
 	                      "");
+	I_Method1(void, setRealizeOperation, IN, osg::GraphicsOperation *, op,
+	          __void__setRealizeOperation__osg_GraphicsOperation_P1,
+	          "Set the graphics operation to call on realization of the viewers graphics windows. ",
+	          "");
+	I_Method0(osg::GraphicsOperation *, getRealizeOperation,
+	          __osg_GraphicsOperation_P1__getRealizeOperation,
+	          "Get the graphics operation to call on realization of the viewers graphics windows. ",
+	          "");
 	I_Method0(void, stopThreading,
 	          __void__stopThreading,
-	          "",
+	          "Stop any threads begin run by viewer. ",
 	          "");
 	I_Method0(void, startThreading,
 	          __void__startThreading,
-	          "",
+	          "Start any threads required by the viewer, as per viewers ThreadingModel. ",
 	          "");
 	I_Method0(void, setUpRenderingSupport,
 	          __void__setUpRenderingSupport,
-	          "",
+	          "Set up the GraphicsOperations to render the various viewer cameras on the viewers graphics windows. ",
 	          "");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
@@ -236,6 +245,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(bool, QuitEventSetsDone, 
 	                 __bool__getQuitEventSetsDone, 
 	                 __void__setQuitEventSetsDone__bool);
+	I_SimpleProperty(osg::GraphicsOperation *, RealizeOperation, 
+	                 __osg_GraphicsOperation_P1__getRealizeOperation, 
+	                 __void__setRealizeOperation__osg_GraphicsOperation_P1);
 	I_SimpleProperty(double, ReferenceTime, 
 	                 0, 
 	                 __void__setReferenceTime__double);

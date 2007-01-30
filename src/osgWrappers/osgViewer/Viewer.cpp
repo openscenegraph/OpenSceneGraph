@@ -29,6 +29,8 @@ TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::Viewer::Contex
 
 TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Viewer::Windows);
 
+TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::Viewer::Cameras);
+
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
 	I_EnumLabel(osgViewer::Viewer::SingleThreaded);
 	I_EnumLabel(osgViewer::Viewer::ThreadPerContext);
@@ -173,6 +175,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__getWindows__Windows_R1__bool,
 	                      "",
 	                      "");
+	I_MethodWithDefaults2(void, getCameras, IN, osgViewer::Viewer::Cameras &, cameras, , IN, bool, onlyActive, true,
+	                      __void__getCameras__Cameras_R1__bool,
+	                      "",
+	                      "");
 	I_Method1(void, setRealizeOperation, IN, osg::GraphicsOperation *, op,
 	          __void__setRealizeOperation__osg_GraphicsOperation_P1,
 	          "Set the graphics operation to call on realization of the viewers graphics windows. ",
@@ -230,4 +236,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 __bool__getUseMainThreadForRenderingTraversals, 
 	                 __void__setUseMainThreadForRenderingTraversals__bool);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Camera * >);
 

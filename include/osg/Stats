@@ -43,8 +43,8 @@ class OSG_EXPORT Stats : public osg::Referenced
         bool setAttribute(int frameNumber, const std::string& attributeName, double value);
         bool getAttribute(int frameNumber, const std::string& attributeName, double& value) const;        
 
-        bool getAveragedAttribute(const std::string& attributeName, double& value) const;        
-        bool getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value) const;        
+        bool getAveragedAttribute(const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;
+        bool getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;        
         
         AttributeMap& getAttributeMap(int frameNumber);
         const AttributeMap& getAttributeMap(int frameNumber) const;

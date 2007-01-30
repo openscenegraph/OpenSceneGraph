@@ -80,12 +80,12 @@ bool Stats::getAttribute(int frameNumber, const std::string& attributeName, doub
     return true;
 }
 
-bool Stats::getAveragedAttribute(const std::string& attributeName, double& value) const
+bool Stats::getAveragedAttribute(const std::string& attributeName, double& value, bool averageInInverseSpace) const
 {
-    return getAveragedAttribute(getEarliestFrameNumber(), getLatestFrameNumber(), attributeName, value);
+    return getAveragedAttribute(getEarliestFrameNumber(), getLatestFrameNumber(), attributeName, value, averageInInverseSpace);
 }
 
-bool Stats::getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value) const
+bool Stats::getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value, bool averageInInverseSpace) const
 {
     if (endFrameNumber<startFrameNumber)
     {
@@ -99,13 +99,15 @@ bool Stats::getAveragedAttribute(int startFrameNumber, int endFrameNumber, const
         double v = 0.0;
         if (getAttribute(i,attributeName,v))
         {
-            total += v;
+            if (averageInInverseSpace) total += 1.0/v;
+            else total += v;
             numValidSamples += 1.0;
         }
     }
     if (numValidSamples>0.0)
     {
-        value = total/numValidSamples;
+        if (averageInInverseSpace) value = numValidSamples/total;
+        else value = total/numValidSamples;
         return true;
     }
     else return false;

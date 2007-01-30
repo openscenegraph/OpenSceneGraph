@@ -38,7 +38,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
     
     
         ReaderWriter() {}
-        ReaderWriter(const ReaderWriter& rw,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+        ReaderWriter(const ReaderWriter& rw,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             osg::Object(rw,copyop) {}
 
         virtual ~ReaderWriter();
@@ -85,7 +85,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 Options():_objectCacheHint(CACHE_ARCHIVES) {}
                 Options(const std::string& str):_str(str) {}
                 
-                Options(const Options& options,const osg::CopyOp copyop=osg::CopyOp::SHALLOW_COPY):
+                Options(const Options& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
                     osg::Object(options,copyop),
                     _str(options._str),
                     _databasePaths(options._databasePaths),
@@ -219,7 +219,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
             CREATE
         };
 
-        /** open an archive for reading, writing or or to create an empty archive for writing to.*/ 
+        /** open an archive for reading, writing, or to create an empty archive for writing to.*/ 
         virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
         /** open an archive for reading.*/ 

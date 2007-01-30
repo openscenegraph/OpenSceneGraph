@@ -119,11 +119,20 @@ public:
     /** Set the maximum height of the text box.
       * With horizontal layouts any characters which do not fit are wrapped around.
       * 0 or negative values indicate that no maximum height is set, lines can be as long as 
-      * they need be to fit thre required text*/
+      * they need be to fit the required text*/
     void setMaximumHeight(float maximumHeight);
     
     /** Get the maximum height of the text box.*/
     float getMaximumHeight() const { return _maximumHeight; }
+
+    /** Set the line spacing of the text box, given as a percentage of
+      * the character height. The default value is 0 for backward 
+      * compatibility. For longer paragraphs of text, a value of at 
+      * least 25% (i.e. set line spacing to 0.25) is recommended. */
+    void setLineSpacing(float lineSpacing);
+
+    /** Get the line spacing of the text box. */
+    float getLineSpacing() const { return _lineSpacing; }
 
 
 
@@ -522,6 +531,7 @@ protected:
     CharacterSizeMode                       _characterSizeMode;
     float                                   _maximumWidth;
     float                                   _maximumHeight;
+    float                                   _lineSpacing;
 
     String                                  _text;
     osg::Vec3                               _position;

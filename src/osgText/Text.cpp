@@ -39,6 +39,7 @@ Text::Text():
     _characterSizeMode(OBJECT_COORDS),
     _maximumWidth(0.0f),
     _maximumHeight(0.0f),
+    _lineSpacing(0.0f),
     _alignment(BASE_LINE),
     _autoRotateToScreen(false),
     _layout(LEFT_TO_RIGHT),
@@ -72,6 +73,7 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _characterSizeMode(text._characterSizeMode),
     _maximumWidth(text._maximumWidth),
     _maximumHeight(text._maximumHeight),
+    _lineSpacing(text._lineSpacing),
     _text(text._text),
     _position(text._position),
     _alignment(text._alignment),
@@ -145,6 +147,12 @@ void Text::setMaximumWidth(float maximumWidth)
 void  Text::setMaximumHeight(float maximumHeight)
 {
     _maximumHeight = maximumHeight;
+    computeGlyphRepresentation();
+}
+
+void Text::setLineSpacing(float lineSpacing)
+{
+    _lineSpacing = lineSpacing;
     computeGlyphRepresentation();
 }
     
@@ -693,7 +701,7 @@ void Text::computeGlyphRepresentation()
         {
           case LEFT_TO_RIGHT:
           {
-            startOfLine_coords.y() -= _characterHeight;
+            startOfLine_coords.y() -= _characterHeight * (1.0 + _lineSpacing);
             cursor = startOfLine_coords;
             previous_charcode = 0;
             _lineCount++;
@@ -701,7 +709,7 @@ void Text::computeGlyphRepresentation()
           }
           case RIGHT_TO_LEFT:
           {
-            startOfLine_coords.y() -= _characterHeight;
+            startOfLine_coords.y() -= _characterHeight * (1.0 + _lineSpacing);
             cursor = startOfLine_coords;
             previous_charcode = 0;
             _lineCount++;
@@ -709,7 +717,7 @@ void Text::computeGlyphRepresentation()
           }
           case VERTICAL:
           {
-            startOfLine_coords.x() += _characterHeight/_characterAspectRatio;
+            startOfLine_coords.x() += _characterHeight/_characterAspectRatio * (1.0 + _lineSpacing);
             cursor = startOfLine_coords;
             previous_charcode = 0;
             // because _lineCount is the max vertical no. of characters....

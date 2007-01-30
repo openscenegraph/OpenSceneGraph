@@ -409,23 +409,45 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
     }
 
 
+    bool draw_forward = (_sortMode!=SORT_BY_STATE) || (state.getFrameStamp()->getFrameNumber() % 2)==0;
+
     // draw coarse grained ordering.
-    for(StateGraphList::iterator oitr=_stateGraphList.begin();
-        oitr!=_stateGraphList.end();
-        ++oitr)
+    if (draw_forward)
     {
-
-        for(StateGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
-            dw_itr != (*oitr)->_leaves.end();
-            ++dw_itr)
+        for(StateGraphList::iterator oitr=_stateGraphList.begin();
+            oitr!=_stateGraphList.end();
+            ++oitr)
         {
-            RenderLeaf* rl = dw_itr->get();
-            rl->render(renderInfo,previous);
-            previous = rl;
 
+            for(StateGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+                dw_itr != (*oitr)->_leaves.end();
+                ++dw_itr)
+            {
+                RenderLeaf* rl = dw_itr->get();
+                rl->render(renderInfo,previous);
+                previous = rl;
+
+            }
         }
     }
+    else
+    {
+        for(StateGraphList::reverse_iterator oitr=_stateGraphList.rbegin();
+            oitr!=_stateGraphList.rend();
+            ++oitr)
+        {
 
+            for(StateGraph::LeafList::iterator dw_itr = (*oitr)->_leaves.begin();
+                dw_itr != (*oitr)->_leaves.end();
+                ++dw_itr)
+            {
+                RenderLeaf* rl = dw_itr->get();
+                rl->render(renderInfo,previous);
+                previous = rl;
+
+            }
+        }
+    }
 
     // draw post bins.
     for(;

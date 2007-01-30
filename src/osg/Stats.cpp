@@ -16,6 +16,13 @@
 
 using namespace osg;
 
+Stats::Stats(const std::string& name):
+    _name(name)
+{
+    allocate(25);
+}
+
+
 Stats::Stats(const std::string& name, unsigned int numberOfFrames):
     _name(name)
 {

@@ -28,10 +28,14 @@ TYPE_NAME_ALIAS(std::map< std::string COMMA  bool >, osg::Stats::CollectMap);
 
 BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults2(IN, const std::string &, name, , IN, unsigned int, numberOfFrames, 50,
-	                           ____Stats__C5_std_string_R1__unsigned_int,
-	                           "",
-	                           "");
+	I_Constructor1(IN, const std::string &, name,
+	               ____Stats__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const std::string &, name, IN, unsigned int, numberOfFrames,
+	               ____Stats__C5_std_string_R1__unsigned_int,
+	               "",
+	               "");
 	I_Method1(void, setName, IN, const std::string &, name,
 	          __void__setName__C5_std_string_R1,
 	          "",
@@ -60,14 +64,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	          __bool__getAttribute__int__C5_std_string_R1__double_R1,
 	          "",
 	          "");
-	I_Method2(bool, getAveragedAttribute, IN, const std::string &, attributeName, IN, double &, value,
-	          __bool__getAveragedAttribute__C5_std_string_R1__double_R1,
-	          "",
-	          "");
-	I_Method4(bool, getAveragedAttribute, IN, int, startFrameNumber, IN, int, endFrameNumber, IN, const std::string &, attributeName, IN, double &, value,
-	          __bool__getAveragedAttribute__int__int__C5_std_string_R1__double_R1,
-	          "",
-	          "");
+	I_MethodWithDefaults3(bool, getAveragedAttribute, IN, const std::string &, attributeName, , IN, double &, value, , IN, bool, averageInInverseSpace, false,
+	                      __bool__getAveragedAttribute__C5_std_string_R1__double_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults5(bool, getAveragedAttribute, IN, int, startFrameNumber, , IN, int, endFrameNumber, , IN, const std::string &, attributeName, , IN, double &, value, , IN, bool, averageInInverseSpace, false,
+	                      __bool__getAveragedAttribute__int__int__C5_std_string_R1__double_R1__bool,
+	                      "",
+	                      "");
 	I_Method1(osg::Stats::AttributeMap &, getAttributeMap, IN, int, frameNumber,
 	          __AttributeMap_R1__getAttributeMap__int,
 	          "",

@@ -662,8 +662,7 @@ int main(int argc, char** argv)
     
     osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
 
-    // shadowVolume->setUseDisplayList(!updateLightPosition);
-    shadowVolume->setUseDisplayList(false);
+    shadowVolume->setUseDisplayList(!updateLightPosition);
 
     osg::Vec4 lightpos;
     

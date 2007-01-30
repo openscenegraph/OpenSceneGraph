@@ -409,7 +409,7 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
     }
 
 
-    bool draw_forward = (_sortMode!=SORT_BY_STATE) || (state.getFrameStamp()->getFrameNumber() % 2)==0;
+    bool draw_forward = true; //(_sortMode!=SORT_BY_STATE) || (state.getFrameStamp()->getFrameNumber() % 2)==0;
 
     // draw coarse grained ordering.
     if (draw_forward)

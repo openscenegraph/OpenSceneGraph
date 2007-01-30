@@ -219,10 +219,18 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method1(void, setMaximumHeight, IN, float, maximumHeight,
 	          __void__setMaximumHeight__float,
 	          "Set the maximum height of the text box. ",
-	          "With horizontal layouts any characters which do not fit are wrapped around. 0 or negative values indicate that no maximum height is set, lines can be as long as they need be to fit thre required text ");
+	          "With horizontal layouts any characters which do not fit are wrapped around. 0 or negative values indicate that no maximum height is set, lines can be as long as they need be to fit the required text ");
 	I_Method0(float, getMaximumHeight,
 	          __float__getMaximumHeight,
 	          "Get the maximum height of the text box. ",
+	          "");
+	I_Method1(void, setLineSpacing, IN, float, lineSpacing,
+	          __void__setLineSpacing__float,
+	          "Set the line spacing of the text box, given as a percentage of the character height. ",
+	          "The default value is 0 for backward compatibility. For longer paragraphs of text, a value of at least 25% (i.e. set line spacing to 0.25) is recommended. ");
+	I_Method0(float, getLineSpacing,
+	          __float__getLineSpacing,
+	          "Get the line spacing of the text box. ",
 	          "");
 	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
 	          __void__setPosition__C5_osg_Vec3_R1,
@@ -487,6 +495,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_SimpleProperty(unsigned int, LineCount, 
 	                 __unsigned_int__getLineCount, 
 	                 0);
+	I_SimpleProperty(float, LineSpacing, 
+	                 __float__getLineSpacing, 
+	                 __void__setLineSpacing__float);
 	I_SimpleProperty(float, MaximumHeight, 
 	                 __float__getMaximumHeight, 
 	                 __void__setMaximumHeight__float);

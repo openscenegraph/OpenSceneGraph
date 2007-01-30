@@ -27,7 +27,9 @@ class OSG_EXPORT Stats : public osg::Referenced
 {
     public:
 
-        Stats(const std::string& name, unsigned int numberOfFrames=50);
+        Stats(const std::string& name);
+
+        Stats(const std::string& name, unsigned int numberOfFrames);
         
         void setName(const std::string& name) { _name = name; }
         const std::string& getName() const { return _name; }

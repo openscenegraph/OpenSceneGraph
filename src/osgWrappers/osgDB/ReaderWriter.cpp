@@ -37,8 +37,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_Constructor0(____ReaderWriter,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter &, rw, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ReaderWriter__C5_ReaderWriter_R1__C5_osg_CopyOp,
+	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter &, rw, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ReaderWriter__C5_ReaderWriter_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
@@ -67,7 +67,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	          "");
 	I_MethodWithDefaults4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, x, , IN, osgDB::ReaderWriter::ArchiveStatus, x, , IN, unsigned, int, 4096, IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      __ReadResult__openArchive__C5_std_string_R1__ArchiveStatus__unsigned__C5_Options_P1,
-	                      "open an archive for reading, writing or or to create an empty archive for writing to. ",
+	                      "open an archive for reading, writing, or to create an empty archive for writing to. ",
 	                      "");
 	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, openArchive, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      __ReadResult__openArchive__std_istream_R1__C5_Options_P1,
@@ -158,8 +158,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	               ____Options__C5_std_string_R1,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter::Options &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____Options__C5_Options_R1__C5_osg_CopyOp,
+	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter::Options &, options, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Options__C5_Options_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,

@@ -24,9 +24,11 @@ TYPE_NAME_ALIAS(std::map< std::string COMMA  double >, osg::Stats::AttributeMap)
 
 TYPE_NAME_ALIAS(std::vector< osg::Stats::AttributeMap >, osg::Stats::AttributeMapList);
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  bool >, osg::Stats::CollectMap);
+
 BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults2(IN, const std::string &, name, , IN, unsigned int, numberOfFrames, 100,
+	I_ConstructorWithDefaults2(IN, const std::string &, name, , IN, unsigned int, numberOfFrames, 50,
 	                           ____Stats__C5_std_string_R1__unsigned_int,
 	                           "",
 	                           "");
@@ -58,12 +60,28 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	          __bool__getAttribute__int__C5_std_string_R1__double_R1,
 	          "",
 	          "");
+	I_Method2(bool, getAveragedAttribute, IN, const std::string &, attributeName, IN, double &, value,
+	          __bool__getAveragedAttribute__C5_std_string_R1__double_R1,
+	          "",
+	          "");
+	I_Method4(bool, getAveragedAttribute, IN, int, startFrameNumber, IN, int, endFrameNumber, IN, const std::string &, attributeName, IN, double &, value,
+	          __bool__getAveragedAttribute__int__int__C5_std_string_R1__double_R1,
+	          "",
+	          "");
 	I_Method1(osg::Stats::AttributeMap &, getAttributeMap, IN, int, frameNumber,
 	          __AttributeMap_R1__getAttributeMap__int,
 	          "",
 	          "");
 	I_Method1(const osg::Stats::AttributeMap &, getAttributeMap, IN, int, frameNumber,
 	          __C5_AttributeMap_R1__getAttributeMap__int,
+	          "",
+	          "");
+	I_Method2(void, collectStats, IN, const std::string &, str, IN, bool, flag,
+	          __void__collectStats__C5_std_string_R1__bool,
+	          "",
+	          "");
+	I_Method1(bool, collectStats, IN, const std::string &, str,
+	          __bool__collectStats__C5_std_string_R1,
 	          "",
 	          "");
 	I_MethodWithDefaults2(void, report, IN, std::ostream &, out, , IN, const char *, indent, 0,
@@ -84,6 +102,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	                 __C5_std_string_R1__getName, 
 	                 __void__setName__C5_std_string_R1);
 END_REFLECTOR
+
+STD_MAP_REFLECTOR(std::map< std::string COMMA  bool >);
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  double >);
 

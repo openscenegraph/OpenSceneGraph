@@ -482,23 +482,18 @@ void Viewer::getCameras(Cameras& cameras, bool onlyActive)
         
 }
 
-
-// Draw operation, that does a draw on the scene graph.
-struct ViewerRenderingOperation : public osg::GraphicsOperation
+class ViewerQuerySupport
 {
-    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
-        osg::GraphicsOperation("Render",true),
-        _sceneView(sceneView),
-        _databasePager(databasePager),
+public:
+    ViewerQuerySupport(osg::Timer_t startTick):
         _startTick(startTick),
         _initialized(false),
         _timerQuerySupported(false),
-        _aquireGPUStats(false),
-        _extensions(0)
+        _extensions(0),
+        _previousQueryTime(0.0)
     {
-        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
     }
-    
+        
     typedef std::pair<GLuint, int> QueryFrameNumberPair;
     typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
     typedef std::vector<GLuint> QueryList;
@@ -567,6 +562,39 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         _extensions->glEndQuery(GL_TIME_ELAPSED);
     }
     
+    void initialize(osg::State* state)
+    {
+        if (_initialized) return;
+
+        _initialized = true;
+        _extensions = osg::Drawable::getExtensions(state->getContextID(),true);
+        _timerQuerySupported = _extensions && _extensions->isTimerQuerySupported();
+        _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+    }
+    
+    osg::Timer_t                                _startTick;
+    bool                                        _initialized;
+    bool                                        _timerQuerySupported;
+    const osg::Drawable::Extensions*            _extensions;
+    QueryFrameNumberList                        _queryFrameNumberList;
+    QueryList                                   _availableQueryObjects;
+    double                                      _previousQueryTime;
+
+};
+
+
+// Draw operation, that does a draw on the scene graph.
+struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
+{
+    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
+        osg::GraphicsOperation("Render",true),
+        ViewerQuerySupport(startTick),
+        _sceneView(sceneView),
+        _databasePager(databasePager)
+    {
+        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+    }
+    
     virtual void operator () (osg::GraphicsContext*)
     {
         if (!_sceneView) return;
@@ -580,15 +608,12 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
 
         if (!_initialized)
         {
-            _initialized = true;
-            _extensions = stats ? osg::Drawable::getExtensions(state->getContextID(),true) : 0;
-            _timerQuerySupported = _extensions && _extensions->isTimerQuerySupported();
-            _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+            initialize(state);
         }
         
-        _aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
+        bool aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
 
-        if (_aquireGPUStats) 
+        if (aquireGPUStats) 
         {
             checkQuery(stats);
         }
@@ -604,7 +629,7 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         }
 
         // do draw traveral
-        if (_aquireGPUStats) 
+        if (aquireGPUStats) 
         {
             checkQuery(stats);
             beginQuery(frameNumber);
@@ -619,14 +644,13 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
         }
         _sceneView->flushDeletedGLObjects(availableTime);
 
-        if (_aquireGPUStats)
+        if (aquireGPUStats)
         {
             endQuery();
             checkQuery(stats);
         }
         
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
-        
 
         if (stats && stats->collectStats("rendering"))
         {
@@ -644,15 +668,6 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation
     osg::observer_ptr<osgUtil::SceneView>       _sceneView;
     osg::observer_ptr<osgDB::DatabasePager>     _databasePager;
 
-    osg::Timer_t                                _startTick;
-    
-    bool                                        _initialized;
-    bool                                        _timerQuerySupported;
-    bool                                        _aquireGPUStats;
-    const osg::Drawable::Extensions*            _extensions;
-    QueryFrameNumberList                        _queryFrameNumberList;
-    QueryList                                   _availableQueryObjects;
-    double                                      _previousQueryTime;
 };
 
 void Viewer::setUpRenderingSupport()

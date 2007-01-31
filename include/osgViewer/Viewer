@@ -170,8 +170,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         unsigned int _numThreadsOnBarrier;
         
-        typedef std::map<osg::ref_ptr<osg::Camera>, osg::ref_ptr<osgUtil::SceneView> > CameraSceneViewMap;
-        CameraSceneViewMap _cameraSceneViewMap;
+        typedef std::list< osg::ref_ptr<osgUtil::SceneView> > SceneViews;
+        SceneViews _sceneViews;
 
         osg::Timer_t                        _startTick;
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;

@@ -20,6 +20,508 @@
 
 using namespace osgViewer;
 
+class ViewerQuerySupport
+{
+public:
+    ViewerQuerySupport(osg::Timer_t startTick):
+        _startTick(startTick),
+        _initialized(false),
+        _timerQuerySupported(false),
+        _extensions(0),
+        _previousQueryTime(0.0)
+    {
+    }
+        
+    typedef std::pair<GLuint, int> QueryFrameNumberPair;
+    typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
+    typedef std::vector<GLuint> QueryList;
+
+    inline void checkQuery(osg::Stats* stats)
+    {
+        for(QueryFrameNumberList::iterator itr = _queryFrameNumberList.begin();
+            itr != _queryFrameNumberList.end();
+            )
+        {
+            GLuint query = itr->first;
+            GLint available = 0;
+            _extensions->glGetQueryObjectiv(query, GL_QUERY_RESULT_AVAILABLE, &available);
+            if (available)
+            {
+                GLuint64EXT timeElapsed = 0;
+                _extensions->glGetQueryObjectui64v(query, GL_QUERY_RESULT, &timeElapsed);
+
+                double timeElapsedSeconds = double(timeElapsed)*1e-9;
+                double currentTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+                double estimatedEndTime = (_previousQueryTime + currentTime) * 0.5;
+                double estimatedBeginTime = estimatedEndTime - timeElapsedSeconds;
+
+                stats->setAttribute(itr->second, "GPU draw begin time", estimatedBeginTime);
+                stats->setAttribute(itr->second, "GPU draw end time", estimatedEndTime);
+                stats->setAttribute(itr->second, "GPU draw time taken", timeElapsedSeconds);
+                
+
+                itr = _queryFrameNumberList.erase(itr);
+                _availableQueryObjects.push_back(query);
+            }
+            else
+            {
+                ++itr;
+            }
+            
+        }
+        _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+    }
+    
+    inline GLuint createQueryObject()
+    {
+        if (_availableQueryObjects.empty())
+        {
+            GLuint query;
+            _extensions->glGenQueries(1, &query);
+            return query;
+        }
+        else
+        {
+            GLuint query = _availableQueryObjects.back();
+            _availableQueryObjects.pop_back();
+            return query;
+        }
+    }
+    
+    inline void beginQuery(int frameNumber)
+    {
+        GLuint query = createQueryObject();
+        _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
+        _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));        
+    }
+    
+    inline void endQuery()
+    {
+        _extensions->glEndQuery(GL_TIME_ELAPSED);
+    }
+    
+    void initialize(osg::State* state)
+    {
+        if (_initialized) return;
+
+        _initialized = true;
+        _extensions = osg::Drawable::getExtensions(state->getContextID(),true);
+        _timerQuerySupported = _extensions && _extensions->isTimerQuerySupported();
+        _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+    }
+    
+    osg::Timer_t                                _startTick;
+    bool                                        _initialized;
+    bool                                        _timerQuerySupported;
+    const osg::Drawable::Extensions*            _extensions;
+    QueryFrameNumberList                        _queryFrameNumberList;
+    QueryList                                   _availableQueryObjects;
+    double                                      _previousQueryTime;
+
+};
+
+
+// Draw operation, that does a draw on the scene graph.
+struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
+{
+    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
+        osg::GraphicsOperation("Render",true),
+        ViewerQuerySupport(startTick),
+        _sceneView(sceneView),
+        _databasePager(databasePager)
+    {
+        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+    }
+    
+    virtual void operator () (osg::GraphicsContext*)
+    {
+        if (!_sceneView) return;
+
+        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+
+        osg::Stats* stats = _sceneView->getCamera()->getStats();
+        osg::State* state = _sceneView->getState();
+        const osg::FrameStamp* fs = state->getFrameStamp();
+        int frameNumber = fs ? fs->getFrameNumber() : 0;
+
+        if (!_initialized)
+        {
+            initialize(state);
+        }
+        
+        bool aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
+
+        if (aquireGPUStats) 
+        {
+            checkQuery(stats);
+        }
+        
+        // do cull taversal
+        osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+        _sceneView->cull();
+        osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
+
+#if 0
+        if (_sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
+        {
+            osg::notify(osg::NOTICE)<<"Completed in ViewerRenderingOperation"<<std::endl;
+            state->getDynamicObjectRenderingCompletedCallback()->completed(state);
+        }
+#endif
+        
+        state->setDynamicObjectCount(_sceneView->getDynamicObjectCount());
+
+        // do draw traveral
+        if (aquireGPUStats) 
+        {
+            checkQuery(stats);
+            beginQuery(frameNumber);
+        }
+                
+        _sceneView->draw();
+
+        double availableTime = 0.004; // 4 ms
+        if (_databasePager.valid())
+        {
+            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+        }
+        _sceneView->flushDeletedGLObjects(availableTime);
+
+        if (aquireGPUStats)
+        {
+            endQuery();
+            checkQuery(stats);
+        }
+        
+        osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
+
+        if (stats && stats->collectStats("rendering"))
+        {
+            stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
+
+            stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
+            stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(afterCullTick, afterDrawTick));
+        }
+        
+    }
+    
+    osg::observer_ptr<osgUtil::SceneView>       _sceneView;
+    osg::observer_ptr<osgDB::DatabasePager>     _databasePager;
+
+};
+
+
+// Draw operation, that does a draw on the scene graph.
+struct ViewerDoubleBufferedRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
+{
+    ViewerDoubleBufferedRenderingOperation(bool graphicsThreadDoesCull, osgUtil::SceneView* sv0, osgUtil::SceneView* sv1, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
+        osg::GraphicsOperation("Render",true),
+        ViewerQuerySupport(startTick),
+        _graphicsThreadDoesCull(graphicsThreadDoesCull),
+        _done(false),
+        _databasePager(databasePager)
+    {
+        _sceneView[0] = sv0;
+        _sceneView[0]->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+
+        _sceneView[1] = sv1;
+        _sceneView[1]->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+        
+        _currentCull = 0;
+        _currentDraw = 0;
+        
+        // lock the mutex for the current cull SceneView to
+        // prevent the draw traversal from reading from it before the cull traversal has been completed.
+        if (!_graphicsThreadDoesCull) _mutex[_currentCull].lock();
+    
+        osg::notify(osg::NOTICE)<<"constructed)"<<std::endl;
+    }
+    
+    void setGraphicsThreadDoesCull(bool flag)
+    {
+        if (_graphicsThreadDoesCull==flag) return;
+        
+        _graphicsThreadDoesCull = flag;
+        
+        _currentCull = 0;
+        _currentDraw = 0;
+
+        if (_graphicsThreadDoesCull)
+        {
+            // need to disable any locks held by the cull
+            _mutex[0].unlock();
+            _mutex[1].unlock();
+        }
+        else
+        {
+            // need to set a lock for cull
+            _mutex[_currentCull].lock();
+        }
+    }
+    
+    bool getGraphicsThreadDoesCull() const { return _graphicsThreadDoesCull; }
+
+    void cull()
+    {
+        // osg::notify(osg::NOTICE)<<"cull()"<<std::endl;
+
+        if (_done || _graphicsThreadDoesCull) return;
+
+        // note we assume lock has already been aquired.
+        osgUtil::SceneView* sceneView = _sceneView[_currentCull].get();
+        
+        if (sceneView)
+        {
+            // osg::notify(osg::NOTICE)<<"Culling buffer "<<_currentCull<<std::endl;
+        
+            osg::Stats* stats = sceneView->getCamera()->getStats();
+            osg::State* state = sceneView->getState();
+            const osg::FrameStamp* fs = state->getFrameStamp();
+            int frameNumber = fs ? fs->getFrameNumber() : 0;
+
+            _frameNumber[_currentCull] = frameNumber;
+
+            // do cull taversal
+            osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+            sceneView->cull();
+            osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
+
+#if 0
+            if (sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
+            {
+                // osg::notify(osg::NOTICE)<<"Completed in cull"<<std::endl;
+                state->getDynamicObjectRenderingCompletedCallback()->completed(state);
+            }
+#endif
+            if (stats && stats->collectStats("rendering"))
+            {
+                stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
+                stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+                stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
+            }
+        }
+
+
+        // relase the mutex associated with this cull traversal, let the draw commense.
+        _mutex[_currentCull].unlock();
+        
+        // swap which SceneView we need to do cull traversal on next.
+        _currentCull = 1 - _currentCull;
+        
+        // aquire the lock for it for the new cull traversal
+        _mutex[_currentCull].lock();
+    }
+    
+    void draw()
+    {
+        // osg::notify(osg::NOTICE)<<"draw()"<<std::endl;
+
+        osgUtil::SceneView* sceneView = _sceneView[_currentDraw].get();
+        
+        if (sceneView || _done)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
+
+            // osg::notify(osg::NOTICE)<<"Drawing buffer "<<_currentDraw<<std::endl;
+
+            if (_done)
+            {
+                osg::notify(osg::INFO)<<"ViewerDoubleBufferedRenderingOperation::release() causing draw to exit"<<std::endl;
+                return;
+            }
+            
+            if (_graphicsThreadDoesCull)
+            {
+                osg::notify(osg::INFO)<<"ViewerDoubleBufferedRenderingOperation::draw() completing early due to change in _graphicsThreadDoesCull flag."<<std::endl;
+                return;
+            }
+
+            // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+
+            osg::Stats* stats = sceneView->getCamera()->getStats();
+            osg::State* state = sceneView->getState();
+            int frameNumber = _frameNumber[_currentDraw];
+
+            if (!_initialized)
+            {
+                initialize(state);
+            }
+
+            state->setDynamicObjectCount(sceneView->getDynamicObjectCount());
+
+            if (sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
+            {
+                // osg::notify(osg::NOTICE)<<"Completed in cull"<<std::endl;
+                state->getDynamicObjectRenderingCompletedCallback()->completed(state);
+            }
+
+            osg::Timer_t beforeDrawTick = osg::Timer::instance()->tick();
+
+            bool aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
+
+            if (aquireGPUStats) 
+            {
+                checkQuery(stats);
+            }
+
+            // do draw traveral
+            if (aquireGPUStats) 
+            {
+                checkQuery(stats);
+                beginQuery(frameNumber);
+            }
+
+            sceneView->draw();
+
+            double availableTime = 0.004; // 4 ms
+            if (_databasePager.valid())
+            {
+                _databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
+            }
+
+            sceneView->flushDeletedGLObjects(availableTime);
+
+            if (aquireGPUStats)
+            {
+                endQuery();
+                checkQuery(stats);
+            }
+
+            glFlush();
+
+
+            osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
+
+            if (stats && stats->collectStats("rendering"))
+            {
+                stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeDrawTick));
+                stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
+                stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(beforeDrawTick, afterDrawTick));
+            }
+        }
+                
+        _currentDraw = 1-_currentDraw;
+        
+    }
+    
+    void cull_draw()
+    {
+        osgUtil::SceneView* sceneView = _sceneView[_currentDraw].get();
+        if (!sceneView || _done) return;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
+
+        if (_done)
+        {
+            osg::notify(osg::INFO)<<"ViewerDoubleBufferedRenderingOperation::release() causing cull_draw to exit"<<std::endl;
+            return;
+        }
+
+        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+
+        osg::Stats* stats = sceneView->getCamera()->getStats();
+        osg::State* state = sceneView->getState();
+        const osg::FrameStamp* fs = state->getFrameStamp();
+        int frameNumber = fs ? fs->getFrameNumber() : 0;
+
+        if (!_initialized)
+        {
+            initialize(state);
+        }
+        
+        bool aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
+
+        if (aquireGPUStats) 
+        {
+            checkQuery(stats);
+        }
+        
+        // do cull taversal
+        osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+        sceneView->cull();
+        osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
+
+        if (state->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
+        {
+            state->getDynamicObjectRenderingCompletedCallback()->completed(state);
+        }
+
+        // do draw traveral
+        if (aquireGPUStats) 
+        {
+            checkQuery(stats);
+            beginQuery(frameNumber);
+        }
+                
+        sceneView->draw();
+
+        double availableTime = 0.004; // 4 ms
+        if (_databasePager.valid())
+        {
+            _databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
+        }
+        sceneView->flushDeletedGLObjects(availableTime);
+
+        if (aquireGPUStats)
+        {
+            endQuery();
+            checkQuery(stats);
+        }
+        
+        osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
+
+        if (stats && stats->collectStats("rendering"))
+        {
+            stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
+
+            stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+            stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
+            stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(afterCullTick, afterDrawTick));
+        }
+    }
+
+    virtual void operator () (osg::GraphicsContext*)
+    {
+        //osg::notify(osg::NOTICE)<<"GraphicsCall "<<std::endl;
+        // if (_done) return;
+
+        if (_graphicsThreadDoesCull)
+        {
+            cull_draw();
+        }
+        else
+        {
+            draw();
+        }
+    }
+    
+    virtual void release()
+    {
+        osg::notify(osg::INFO)<<"ViewerDoubleBufferedRenderingOperation::release()"<<std::endl;
+        _done = true;
+        _mutex[0].unlock();
+        _mutex[1].unlock();
+    }
+
+    bool                                    _graphicsThreadDoesCull;
+    bool                                    _done;
+    unsigned int                            _currentCull;
+    unsigned int                            _currentDraw;
+    
+    OpenThreads::Mutex                      _mutex[2];
+    osg::observer_ptr<osgUtil::SceneView>   _sceneView[2];
+    int                                     _frameNumber[2];
+    osg::observer_ptr<osgDB::DatabasePager> _databasePager;
+
+
+};
+
+
 Viewer::Viewer():
     _firstFrame(true),
     _done(false),
@@ -202,6 +704,30 @@ void Viewer::stopThreading()
     Contexts contexts;
     getContexts(contexts);
 
+    Contexts::iterator citr;
+
+    // reset any double buffer graphics objects
+    for(citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        osg::GraphicsContext* gc = (*citr);
+        
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
+        for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
+            oitr != operations.end();
+            ++oitr)
+        {
+            ViewerDoubleBufferedRenderingOperation* vdbro = dynamic_cast<ViewerDoubleBufferedRenderingOperation*>(oitr->get());
+            if (vdbro)
+            {
+                vdbro->release();
+            }
+        }
+
+    }
+
     // delete all the graphics threads.    
     for(Contexts::iterator itr = contexts.begin();
         itr != contexts.end();
@@ -210,9 +736,34 @@ void Viewer::stopThreading()
         (*itr)->setGraphicsThread(0);
     }
 
+    // reset any double buffer graphics objects
+    for(citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        osg::GraphicsContext* gc = (*citr);
+        
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
+        for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
+            oitr != operations.end();
+            ++oitr)
+        {
+            ViewerDoubleBufferedRenderingOperation* vdbro = dynamic_cast<ViewerDoubleBufferedRenderingOperation*>(oitr->get());
+            if (vdbro)
+            {
+                vdbro->setGraphicsThreadDoesCull( true );
+                vdbro->_done = false;
+            }
+        }
+
+    }
+
     _startRenderingBarrier = 0;
     _endRenderingDispatchBarrier = 0;
     _numThreadsOnBarrier = 0;
+    _endDynamicDrawBlock = 0;
+    osg::notify(osg::INFO)<<"Viewer::stopThreading() - stopped threading :-)"<<std::endl;
 }
 
 // Compile operation, that compile OpenGL objects.
@@ -265,7 +816,7 @@ unsigned int Viewer::computeNumberOfThreadsIncludingMainRequired()
 
     if (contexts.empty()) return 0;
 
-    if (contexts.size()==1 || _threadingModel==SingleThreaded)
+    if (_threadingModel==SingleThreaded)
     {
         return 1;
     }
@@ -275,13 +826,19 @@ unsigned int Viewer::computeNumberOfThreadsIncludingMainRequired()
 
 void Viewer::startThreading()
 {
+    osg::notify(osg::INFO)<<"Starting threading"<<std::endl;
+
     unsigned int numThreadsIncludingMainThread = computeNumberOfThreadsIncludingMainRequired();
 
     // return if we don't need multiple threads.
-    if (numThreadsIncludingMainThread <= 1) return;
+    // if (numThreadsIncludingMainThread <= 1) return;
     
     // return if threading is already up and running
-    if (numThreadsIncludingMainThread == _numThreadsOnBarrier) return;
+    if (numThreadsIncludingMainThread == _numThreadsOnBarrier)
+    {
+        osg::notify(osg::NOTICE)<<"Thread already started?"<<std::endl;
+        return;
+    }
     
     if (_numThreadsOnBarrier!=0) 
     {
@@ -309,6 +866,8 @@ void Viewer::startThreading()
     Contexts contexts;
     getContexts(contexts);
 
+    
+
     int numProcessors = OpenThreads::GetNumberOfProcessors();
     bool affinity = true;
     
@@ -317,25 +876,57 @@ void Viewer::startThreading()
     // osg::notify(osg::NOTICE)<<"numThreadsIncludingMainThread=="<<numThreadsIncludingMainThread<<std::endl;
 
     _numThreadsOnBarrier = numThreadsIncludingMainThread;
-    _startRenderingBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
+    
 
+    Contexts::iterator citr;
+
+    unsigned int numViewerDoubleBufferedRenderingOperation = 0;
+
+    // reset any double buffer graphics objects
+    for(citr = contexts.begin();
+        citr != contexts.end();
+        ++citr)
+    {
+        osg::GraphicsContext* gc = (*citr);
+        
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
+        for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
+            oitr != operations.end();
+            ++oitr)
+        {
+            ViewerDoubleBufferedRenderingOperation* vdbro = dynamic_cast<ViewerDoubleBufferedRenderingOperation*>(oitr->get());
+            if (vdbro)
+            {
+                vdbro->setGraphicsThreadDoesCull( _threadingModel != ThreadPerCamera );
+                vdbro->_done = false;
+                ++numViewerDoubleBufferedRenderingOperation;
+            }
+        }
+
+    }
 
     if (_threadingModel==ThreadPerContext)
     {
+        _startRenderingBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
+
     #if 1
         _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
     #else    
         _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::GL_FINISH);
     #endif
+        _endDynamicDrawBlock = 0;
     }
-    else
+    else if (_threadingModel==ThreadPerCamera)
     {
-        _endDynamicDrawBlock = new EndOfDynamicDrawBlock;
+        _startRenderingBarrier = 0;
+        _endRenderingDispatchBarrier = 0;
+        _endDynamicDrawBlock = new EndOfDynamicDrawBlock(numViewerDoubleBufferedRenderingOperation);
     }
 
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
-    Contexts::iterator citr = contexts.begin(); 
+    citr = contexts.begin(); 
     unsigned int processNum = 0;
 
     if (firstContextAsMainThread)
@@ -343,7 +934,6 @@ void Viewer::startThreading()
         ++processNum;
         ++citr;
     }
-
 
     for(;
         citr != contexts.end();
@@ -362,7 +952,7 @@ void Viewer::startThreading()
         gc->getGraphicsThread()->add(new ViewerCompileOperation(getSceneData()));
 
         // add the startRenderingBarrier
-        gc->getGraphicsThread()->add(_startRenderingBarrier.get());
+        if (_startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());
 
         // add the rendering operation itself.
         gc->getGraphicsThread()->add(new ViewerRunOperations());
@@ -396,11 +986,14 @@ void Viewer::startThreading()
         osg::GraphicsContext* gc = (*citr);
         if (gc->getGraphicsThread() && !gc->getGraphicsThread()->isRunning())
         {
-            //osg::notify(osg::NOTICE)<<"  gc->getGraphicsThread()->startThread() "<<gc->getGraphicsThread()<<std::endl;
+            osg::notify(osg::INFO)<<"  gc->getGraphicsThread()->startThread() "<<gc->getGraphicsThread()<<std::endl;
             gc->getGraphicsThread()->startThread();
             // OpenThreads::Thread::YieldCurrentThread();
         }
     }
+
+    osg::notify(osg::INFO)<<"Set up threading"<<std::endl;
+
 }
 
 void Viewer::checkWindowStatus()
@@ -482,197 +1075,9 @@ void Viewer::getCameras(Cameras& cameras, bool onlyActive)
         
 }
 
-class ViewerQuerySupport
-{
-public:
-    ViewerQuerySupport(osg::Timer_t startTick):
-        _startTick(startTick),
-        _initialized(false),
-        _timerQuerySupported(false),
-        _extensions(0),
-        _previousQueryTime(0.0)
-    {
-    }
-        
-    typedef std::pair<GLuint, int> QueryFrameNumberPair;
-    typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
-    typedef std::vector<GLuint> QueryList;
-
-    inline void checkQuery(osg::Stats* stats)
-    {
-        for(QueryFrameNumberList::iterator itr = _queryFrameNumberList.begin();
-            itr != _queryFrameNumberList.end();
-            )
-        {
-            GLuint query = itr->first;
-            GLint available = 0;
-            _extensions->glGetQueryObjectiv(query, GL_QUERY_RESULT_AVAILABLE, &available);
-            if (available)
-            {
-                GLuint64EXT timeElapsed = 0;
-                _extensions->glGetQueryObjectui64v(query, GL_QUERY_RESULT, &timeElapsed);
-
-                double timeElapsedSeconds = double(timeElapsed)*1e-9;
-                double currentTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
-                double estimatedEndTime = (_previousQueryTime + currentTime) * 0.5;
-                double estimatedBeginTime = estimatedEndTime - timeElapsedSeconds;
-
-                stats->setAttribute(itr->second, "GPU draw begin time", estimatedBeginTime);
-                stats->setAttribute(itr->second, "GPU draw end time", estimatedEndTime);
-                stats->setAttribute(itr->second, "GPU draw time taken", timeElapsedSeconds);
-                
-
-                itr = _queryFrameNumberList.erase(itr);
-                _availableQueryObjects.push_back(query);
-            }
-            else
-            {
-                ++itr;
-            }
-            
-        }
-        _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
-    }
-    
-    inline GLuint createQueryObject()
-    {
-        if (_availableQueryObjects.empty())
-        {
-            GLuint query;
-            _extensions->glGenQueries(1, &query);
-            return query;
-        }
-        else
-        {
-            GLuint query = _availableQueryObjects.back();
-            _availableQueryObjects.pop_back();
-            return query;
-        }
-    }
-    
-    inline void beginQuery(int frameNumber)
-    {
-        GLuint query = createQueryObject();
-        _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
-        _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));        
-    }
-    
-    inline void endQuery()
-    {
-        _extensions->glEndQuery(GL_TIME_ELAPSED);
-    }
-    
-    void initialize(osg::State* state)
-    {
-        if (_initialized) return;
-
-        _initialized = true;
-        _extensions = osg::Drawable::getExtensions(state->getContextID(),true);
-        _timerQuerySupported = _extensions && _extensions->isTimerQuerySupported();
-        _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
-    }
-    
-    osg::Timer_t                                _startTick;
-    bool                                        _initialized;
-    bool                                        _timerQuerySupported;
-    const osg::Drawable::Extensions*            _extensions;
-    QueryFrameNumberList                        _queryFrameNumberList;
-    QueryList                                   _availableQueryObjects;
-    double                                      _previousQueryTime;
-
-};
-
-
-// Draw operation, that does a draw on the scene graph.
-struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
-{
-    ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
-        osg::GraphicsOperation("Render",true),
-        ViewerQuerySupport(startTick),
-        _sceneView(sceneView),
-        _databasePager(databasePager)
-    {
-        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
-    }
-    
-    virtual void operator () (osg::GraphicsContext*)
-    {
-        if (!_sceneView) return;
-
-        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
-
-        osg::Stats* stats = _sceneView->getCamera()->getStats();
-        osg::State* state = _sceneView->getState();
-        const osg::FrameStamp* fs = state->getFrameStamp();
-        int frameNumber = fs ? fs->getFrameNumber() : 0;
-
-        if (!_initialized)
-        {
-            initialize(state);
-        }
-        
-        bool aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
-
-        if (aquireGPUStats) 
-        {
-            checkQuery(stats);
-        }
-        
-        // do cull taversal
-        osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
-        _sceneView->cull();
-        osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
-
-        if (state->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
-        {
-            state->getDynamicObjectRenderingCompletedCallback()->completed(state);
-        }
-
-        // do draw traveral
-        if (aquireGPUStats) 
-        {
-            checkQuery(stats);
-            beginQuery(frameNumber);
-        }
-                
-        _sceneView->draw();
-
-        double availableTime = 0.004; // 4 ms
-        if (_databasePager.valid())
-        {
-            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
-        }
-        _sceneView->flushDeletedGLObjects(availableTime);
-
-        if (aquireGPUStats)
-        {
-            endQuery();
-            checkQuery(stats);
-        }
-        
-        osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
-
-        if (stats && stats->collectStats("rendering"))
-        {
-            stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
-            stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
-            stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
-
-            stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
-            stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
-            stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(afterCullTick, afterDrawTick));
-        }
-        
-    }
-    
-    osg::observer_ptr<osgUtil::SceneView>       _sceneView;
-    osg::observer_ptr<osgDB::DatabasePager>     _databasePager;
-
-};
-
 void Viewer::setUpRenderingSupport()
 {
-    _cameraSceneViewMap.clear();
+    _sceneViews.clear();
 
     Contexts contexts;
     getContexts(contexts);
@@ -681,40 +1086,124 @@ void Viewer::setUpRenderingSupport()
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
     osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
 
-    for(Contexts::iterator gcitr = contexts.begin();
-        gcitr != contexts.end();
-        ++gcitr)
+    bool graphicsThreadDoesCull = _threadingModel!=ThreadPerCamera;
+    unsigned int numViewerDoubleBufferedRenderingOperation = 0;
+    
+    Cameras localCameras;
+    getCameras(localCameras);
+
+    if (true)//(_threadingModel==ThreadPerCamera)
     {
-        (*gcitr)->removeAllOperations();
-
-        osg::GraphicsContext* gc = *gcitr;
-        osg::GraphicsContext::Cameras& cameras = gc->getCameras();
-        osg::State* state = gc->getState();
-        
-        for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
-            citr != cameras.end();
-            ++citr)
+        for(Contexts::iterator gcitr = contexts.begin();
+            gcitr != contexts.end();
+            ++gcitr)
         {
-            osg::Camera* camera = *citr;
-            
-            camera->setStats(new osg::Stats("Camera"));
+            (*gcitr)->removeAllOperations();
 
-            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
-            _cameraSceneViewMap[camera] = sceneView;
-
-            sceneView->setGlobalStateSet(_camera->getStateSet());
-            sceneView->setDefaults();
-            sceneView->setDisplaySettings(ds);
-            sceneView->setCamera(camera);
-            sceneView->setState(state);
-            sceneView->setFrameStamp(frameStamp);
-
+            osg::GraphicsContext* gc = *gcitr;
+            osg::GraphicsContext::Cameras& cameras = gc->getCameras();
+            osg::State* state = gc->getState();
             if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
 
-            gc->add(new ViewerRenderingOperation(sceneView, dp, _startTick));
-            
+            for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
+                citr != cameras.end();
+                ++citr)
+            {
+                osg::Camera* camera = *citr;
+                camera->setStats(new osg::Stats("Camera"));
+                
+                bool localCamera = std::find(localCameras.begin(),localCameras.end(),camera) != localCameras.end();
+                if (localCamera)
+                {
+                    osgUtil::SceneView* sceneViewList[2];
+
+                    for(int i=0; i<2; ++i)
+                    {
+                        osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+
+                        _sceneViews.push_back(sceneView);                    
+                        sceneViewList[i] = sceneView;
+
+                        sceneView->setGlobalStateSet(_camera->getStateSet());
+                        sceneView->setDefaults();
+                        sceneView->setDisplaySettings(ds);
+                        sceneView->setCamera(camera);
+                        sceneView->setState(state);
+                        sceneView->setFrameStamp(frameStamp);
+                    }
+
+
+                    osg::notify(osg::NOTICE)<<"localCamera"<<std::endl;
+                    ViewerDoubleBufferedRenderingOperation* vdbro = new ViewerDoubleBufferedRenderingOperation(graphicsThreadDoesCull, sceneViewList[0], sceneViewList[1], dp, _startTick);
+                    gc->add(vdbro);
+                    ++numViewerDoubleBufferedRenderingOperation;
+                }
+                else
+                {
+                    osg::notify(osg::NOTICE)<<"non local Camera"<<std::endl;
+
+                    osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+
+                    _sceneViews.push_back(sceneView);                    
+
+                    sceneView->setGlobalStateSet(_camera->getStateSet());
+                    sceneView->setDefaults();
+                    sceneView->setDisplaySettings(ds);
+                    sceneView->setCamera(camera);
+                    sceneView->setState(state);
+                    sceneView->setFrameStamp(frameStamp);
+
+                    ViewerRenderingOperation* vro = new ViewerRenderingOperation(sceneView, dp, _startTick);
+                    gc->add(vro);
+                }
+
+            }
         }
     }
+    else
+    {
+        for(Contexts::iterator gcitr = contexts.begin();
+            gcitr != contexts.end();
+            ++gcitr)
+        {
+            (*gcitr)->removeAllOperations();
+
+            osg::GraphicsContext* gc = *gcitr;
+            osg::GraphicsContext::Cameras& cameras = gc->getCameras();
+            osg::State* state = gc->getState();
+
+            for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
+                citr != cameras.end();
+                ++citr)
+            {
+                osg::Camera* camera = *citr;
+
+                camera->setStats(new osg::Stats("Camera"));
+
+                osgUtil::SceneView* sceneView = new osgUtil::SceneView;
+                _sceneViews.push_back(sceneView);
+
+                sceneView->setGlobalStateSet(_camera->getStateSet());
+                sceneView->setDefaults();
+                sceneView->setDisplaySettings(ds);
+                sceneView->setCamera(camera);
+                sceneView->setState(state);
+                sceneView->setFrameStamp(frameStamp);
+
+                if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
+
+                gc->add(new ViewerRenderingOperation(sceneView, dp, _startTick));
+
+                ++numViewerDoubleBufferedRenderingOperation;
+            }
+        }
+    }
+
+    if (_endDynamicDrawBlock.valid())
+    {
+        _endDynamicDrawBlock->setNumOfBlocks(numViewerDoubleBufferedRenderingOperation);
+    }
+
 }
 
 
@@ -732,7 +1221,12 @@ void Viewer::realize()
         osg::notify(osg::INFO)<<"Viewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
     
         // no windows are already set up so set up a default view        
+#if 0
         setUpViewAcrossAllScreens();
+#else        
+        setUpViewOnSingleScreen(0);
+#endif
+
         getContexts(contexts);
     }
 
@@ -1182,21 +1676,39 @@ void Viewer::renderingTraversals()
     getContexts(contexts);
     
     Contexts::iterator itr;
-    if (_endDynamicDrawBlock.valid())
-    {
-        unsigned int numToBlock = 0;
-        for(itr = contexts.begin();
-            itr != contexts.end();
-            ++itr)
-        {
-            if (((*itr)->getGraphicsThread())) ++numToBlock;
-        }
-
-        _endDynamicDrawBlock->set(numToBlock);
-    }
 
     // dispatch the the rendering threads
     if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
+
+    if (_endDynamicDrawBlock.valid())
+    {
+        _endDynamicDrawBlock->reset();
+    }
+    
+    // reset any double buffer graphics objects
+    for(itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        osg::GraphicsContext* gc = (*itr);
+        
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
+        for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
+            oitr != operations.end();
+            ++oitr)
+        {
+            ViewerDoubleBufferedRenderingOperation* vdbro = dynamic_cast<ViewerDoubleBufferedRenderingOperation*>(oitr->get());
+            if (vdbro)
+            {
+                if (!vdbro->getGraphicsThreadDoesCull())
+                {
+                    vdbro->cull();
+                }
+            }
+        }
+
+    }
 
     for(itr = contexts.begin();
         itr != contexts.end();

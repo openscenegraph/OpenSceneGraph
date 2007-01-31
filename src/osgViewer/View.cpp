@@ -504,7 +504,8 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
 //
 // EndOfDynamicDrawBlock
 //
-EndOfDynamicDrawBlock::EndOfDynamicDrawBlock():
+EndOfDynamicDrawBlock::EndOfDynamicDrawBlock(unsigned int numberOfBlocks):
+    _numberOfBlocks(numberOfBlocks),
     _blockCount(0)
 {
 }
@@ -541,17 +542,23 @@ void EndOfDynamicDrawBlock::release()
     }
 }
 
-void EndOfDynamicDrawBlock::set(unsigned int blockCount)
+void EndOfDynamicDrawBlock::reset()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (blockCount!=_blockCount)
+    if (_numberOfBlocks!=_blockCount)
     {
-        if (blockCount==0) _cond.broadcast();
-        _blockCount = blockCount;
+        if (_numberOfBlocks==0) _cond.broadcast();
+        _blockCount = _numberOfBlocks;
     }
+}
+
+void EndOfDynamicDrawBlock::setNumOfBlocks(unsigned int blockCount)
+{
+    _numberOfBlocks = blockCount;
 }
 
 EndOfDynamicDrawBlock::~EndOfDynamicDrawBlock()
 {
+    _blockCount = 0;
     release();
 }

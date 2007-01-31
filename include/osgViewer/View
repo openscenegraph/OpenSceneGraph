@@ -29,15 +29,17 @@ class OSGVIEWER_EXPORT EndOfDynamicDrawBlock : public osg::State::DynamicObjectR
 {
     public:
     
-        EndOfDynamicDrawBlock();
+        EndOfDynamicDrawBlock(unsigned int);
     
         void completed(osg::State* state);
 
         void block();
+        
+        void reset();
 
         void release();
 
-        void set(unsigned int blockCount);
+        void setNumOfBlocks(unsigned int blockCount);
 
     protected:
 
@@ -45,6 +47,7 @@ class OSGVIEWER_EXPORT EndOfDynamicDrawBlock : public osg::State::DynamicObjectR
 
         OpenThreads::Mutex _mut;
         OpenThreads::Condition _cond;
+        unsigned int _numberOfBlocks;
         unsigned int _blockCount;
 };
 

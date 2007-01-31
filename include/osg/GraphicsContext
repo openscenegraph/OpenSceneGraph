@@ -176,6 +176,21 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Run the operations. */
         void runOperations();
 
+        typedef std::list< ref_ptr<GraphicsOperation> > OperationQueue;
+        
+        /** Get the operations queue, not you must use the OperationsMutex when accessing the queue.*/
+        OperationQueue& getOperationsQueue() { return _operations; }
+
+        /** Get the operations queue mutex.*/
+        OpenThreads::Mutex& getOperationsMutex() { return _operationsMutex; }
+
+        /** Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block.*/
+        osg::Block* getOperationsBlock() { return _operationsBlock.get(); }
+
+        /** Get the current operations that is being run.*/
+        GraphicsOperation* getCurrentOperation() { return _currentOperation.get(); }
+
+
     public:
     
         /** Get the traits of the GraphicsContext.*/
@@ -353,8 +368,6 @@ class OSG_EXPORT GraphicsContext : public Referenced
         GLbitfield              _clearMask;
 
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
-        
-        typedef std::list< ref_ptr<GraphicsOperation> > OperationQueue;
         
         OpenThreads::Mutex                  _operationsMutex;
         osg::ref_ptr<osg::Block>            _operationsBlock;

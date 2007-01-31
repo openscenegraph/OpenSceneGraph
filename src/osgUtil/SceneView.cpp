@@ -116,6 +116,8 @@ SceneView::SceneView(DisplaySettings* ds)
     _redrawInterlacedStereoStencilMask = true;
     _interlacedStereoStencilWidth = 0;
     _interlacedStereoStencilHeight = 0;
+
+    _dynamicObjectCount = 0;
 }
 
 SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
@@ -145,6 +147,8 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     _redrawInterlacedStereoStencilMask = rhs._redrawInterlacedStereoStencilMask;
     _interlacedStereoStencilWidth = rhs._interlacedStereoStencilWidth;
     _interlacedStereoStencilHeight = rhs._interlacedStereoStencilHeight;
+
+    _dynamicObjectCount = 0;
 }
 
 SceneView::~SceneView()
@@ -254,7 +258,6 @@ void SceneView::setSceneData(osg::Node* node)
 
 void SceneView::init()
 {
-
     _initCalled = true;
 
     // force the initialization of the OpenGL extension string
@@ -494,6 +497,8 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
 
 void SceneView::cull()
 {
+    _dynamicObjectCount = 0;
+
     if (_camera->getNodeMask()==0) return;
 
     _renderInfo.setView(_camera->getView());
@@ -779,9 +784,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     rendergraph->prune();
     
     // set the number of dynamic objects in the scene.    
-    getState()->setDynamicObjectCount( getState()->getDynamicObjectCount() + renderStage->computeNumberOfDynamicRenderLeaves());
-
-    // osg::notify(osg::NOTICE)<<"SceneView  cull() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;
+    _dynamicObjectCount += renderStage->computeNumberOfDynamicRenderLeaves();
 }
 
 void SceneView::releaseAllGLObjects()

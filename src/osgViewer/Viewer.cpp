@@ -672,7 +672,6 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQu
 
 void Viewer::setUpRenderingSupport()
 {
-#if 1
     _cameraSceneViewMap.clear();
 
     Contexts contexts;
@@ -716,69 +715,6 @@ void Viewer::setUpRenderingSupport()
             
         }
     }
-
-#else
-    _cameraSceneViewMap.clear();
-
-    Contexts contexts;
-    getContexts(contexts);
-    
-    osg::FrameStamp* frameStamp = getFrameStamp();
-    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
-    osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
-
-    // clear out all the previously assigned operations
-    for(Contexts::iterator gcitr = contexts.begin();
-        gcitr != contexts.end();
-        ++gcitr)
-    {
-        (*gcitr)->removeAllOperations();
-    }
-
-    if (_camera.valid() && _camera->getGraphicsContext())
-    {
-        _camera->setStats(new osg::Stats("Camera"));
-
-        osgUtil::SceneView* sceneView = new osgUtil::SceneView;
-        _cameraSceneViewMap[_camera] = sceneView;
-
-        sceneView->setGlobalStateSet(_camera->getStateSet());
-        sceneView->setDefaults();
-        sceneView->setDisplaySettings(ds);
-        sceneView->setCamera(_camera.get());
-        sceneView->setState(_camera->getGraphicsContext()->getState());
-        sceneView->setSceneData(getSceneData());
-        sceneView->setFrameStamp(frameStamp);
-        
-        if (dp) dp->setCompileGLObjectsForContextID(_camera->getGraphicsContext()->getState()->getContextID(), true);
-
-        _camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));        
-    }
-    
-    for(unsigned i=0; i<getNumSlaves(); ++i)
-    {
-        Slave& slave = getSlave(i);
-        if (slave._camera.valid() && slave._camera->getGraphicsContext())
-        {
-            _camera->setStats(new osg::Stats("Slave Camera"));
-
-            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
-            _cameraSceneViewMap[slave._camera] = sceneView;
-
-            sceneView->setGlobalStateSet(_camera->getStateSet());
-            sceneView->setDefaults();
-            sceneView->setCamera(slave._camera.get());
-            sceneView->setDisplaySettings(ds);
-            sceneView->setState(slave._camera->getGraphicsContext()->getState());
-            sceneView->setSceneData(getSceneData());
-            sceneView->setFrameStamp(frameStamp);
-
-            if (dp) dp->setCompileGLObjectsForContextID(slave._camera->getGraphicsContext()->getState()->getContextID(), true);
-
-            slave._camera->getGraphicsContext()->add(new ViewerRenderingOperation(sceneView, dp));
-        }
-    }
-#endif
 }
 
 

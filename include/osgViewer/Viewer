@@ -158,9 +158,11 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         int _keyEventSetsDone;
         bool _quitEventSetsDone;
         
-        ThreadingModel  _threadingModel;
-        bool            _useMainThreadForRenderingTraversal;
-        BarrierPosition _endBarrierPosition;
+        ThreadingModel      _threadingModel;
+        bool                _threadsRunning;
+        
+        bool                _useMainThreadForRenderingTraversal;
+        BarrierPosition     _endBarrierPosition;
 
         osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
         osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;

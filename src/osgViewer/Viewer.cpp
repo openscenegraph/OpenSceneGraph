@@ -237,7 +237,7 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::GraphicsOperation, p
         // prevent the draw traversal from reading from it before the cull traversal has been completed.
         if (!_graphicsThreadDoesCull) _mutex[_currentCull].lock();
     
-        osg::notify(osg::NOTICE)<<"constructed)"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"constructed"<<std::endl;
     }
     
     void setGraphicsThreadDoesCull(bool flag)
@@ -527,7 +527,10 @@ Viewer::Viewer():
     _done(false),
     _keyEventSetsDone(osgGA::GUIEventAdapter::KEY_Escape),
     _quitEventSetsDone(true),
+//    _threadingModel(SingleThreaded),
     _threadingModel(ThreadPerContext),
+//    _threadingModel(ThreadPerCamera),
+    _threadsRunning(false),
     _useMainThreadForRenderingTraversal(false),
     _endBarrierPosition(AfterSwapBuffers),
     _numThreadsOnBarrier(0)
@@ -666,7 +669,7 @@ void Viewer::setThreadingModel(ThreadingModel threadingModel)
 {
     if (_threadingModel == threadingModel) return;
     
-    if (_threadingModel!=SingleThreaded) stopThreading();
+    if (_threadsRunning) stopThreading();
     
     _threadingModel = threadingModel;
 
@@ -677,7 +680,7 @@ void Viewer::setUseMainThreadForRenderingTraversals(bool flag)
 {
     if (_useMainThreadForRenderingTraversal==flag) return;
 
-    if (_threadingModel!=SingleThreaded) stopThreading();
+    if (_threadsRunning) stopThreading();
     
     _useMainThreadForRenderingTraversal = flag;
     
@@ -688,7 +691,7 @@ void Viewer::setEndBarrierPosition(BarrierPosition bp)
 {
     if (_endBarrierPosition == bp) return;
     
-    if (_threadingModel!=SingleThreaded) stopThreading();
+    if (_threadsRunning) stopThreading();
     
     _endBarrierPosition = bp;
 
@@ -697,7 +700,7 @@ void Viewer::setEndBarrierPosition(BarrierPosition bp)
 
 void Viewer::stopThreading()
 {
-    if (_numThreadsOnBarrier==0) return;
+    if (!_threadsRunning) return;
 
     osg::notify(osg::INFO)<<"Viewer::stopThreading() - stopping threading"<<std::endl;
 
@@ -759,6 +762,7 @@ void Viewer::stopThreading()
 
     }
 
+    _threadsRunning = false;
     _startRenderingBarrier = 0;
     _endRenderingDispatchBarrier = 0;
     _numThreadsOnBarrier = 0;
@@ -826,6 +830,8 @@ unsigned int Viewer::computeNumberOfThreadsIncludingMainRequired()
 
 void Viewer::startThreading()
 {
+    if (_threadsRunning) return;
+
     osg::notify(osg::INFO)<<"Starting threading"<<std::endl;
 
     unsigned int numThreadsIncludingMainThread = computeNumberOfThreadsIncludingMainRequired();
@@ -834,6 +840,7 @@ void Viewer::startThreading()
     // if (numThreadsIncludingMainThread <= 1) return;
     
     // return if threading is already up and running
+#if 0
     if (numThreadsIncludingMainThread == _numThreadsOnBarrier)
     {
         osg::notify(osg::NOTICE)<<"Thread already started?"<<std::endl;
@@ -845,6 +852,7 @@ void Viewer::startThreading()
         // we already have threads running but not the right number, so stop them and then create new threads.
         stopThreading();
     }
+#endif
 
     osg::notify(osg::INFO)<<"Viewer::startThreading() - starting threading"<<std::endl;
 
@@ -992,6 +1000,8 @@ void Viewer::startThreading()
         }
     }
 
+    _threadsRunning = true;
+
     osg::notify(osg::INFO)<<"Set up threading"<<std::endl;
 
 }
@@ -1077,6 +1087,9 @@ void Viewer::getCameras(Cameras& cameras, bool onlyActive)
 
 void Viewer::setUpRenderingSupport()
 {
+    bool threadsRunningBeforeSetUpRenderingSupport = _threadsRunning;
+    if (_threadsRunning) stopThreading();
+
     _sceneViews.clear();
 
     Contexts contexts;
@@ -1133,14 +1146,14 @@ void Viewer::setUpRenderingSupport()
                     }
 
 
-                    osg::notify(osg::NOTICE)<<"localCamera"<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"localCamera"<<std::endl;
                     ViewerDoubleBufferedRenderingOperation* vdbro = new ViewerDoubleBufferedRenderingOperation(graphicsThreadDoesCull, sceneViewList[0], sceneViewList[1], dp, _startTick);
                     gc->add(vdbro);
                     ++numViewerDoubleBufferedRenderingOperation;
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE)<<"non local Camera"<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"non local Camera"<<std::endl;
 
                     osgUtil::SceneView* sceneView = new osgUtil::SceneView;
 
@@ -1204,6 +1217,7 @@ void Viewer::setUpRenderingSupport()
         _endDynamicDrawBlock->setNumOfBlocks(numViewerDoubleBufferedRenderingOperation);
     }
 
+    if (threadsRunningBeforeSetUpRenderingSupport) startThreading();
 }
 
 
@@ -1221,7 +1235,7 @@ void Viewer::realize()
         osg::notify(osg::INFO)<<"Viewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
     
         // no windows are already set up so set up a default view        
-#if 0
+#if 1
         setUpViewAcrossAllScreens();
 #else        
         setUpViewOnSingleScreen(0);

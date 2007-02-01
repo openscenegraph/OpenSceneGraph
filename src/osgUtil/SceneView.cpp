@@ -633,9 +633,6 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
     if (!_camera || !getViewport()) return;
 
-    if (!_initCalled) init();
-
-
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
 
@@ -840,6 +837,8 @@ void SceneView::flushDeletedGLObjects(double& availableTime)
 void SceneView::draw()
 {
     if (_camera->getNodeMask()==0) return;
+
+    if (!_initCalled) init();
 
     osg::State* state = _renderInfo.getState();
 

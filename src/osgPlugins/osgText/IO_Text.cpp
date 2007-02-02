@@ -94,6 +94,17 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr[0].matchWord("lineSpacing"))
+    {
+        float height;
+        if (fr[1].getFloat(height))
+        {
+            text.setLineSpacing(height);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+
     if (fr.matchSequence("alignment %w"))
     {
         std::string str = fr[1].getStr();
@@ -277,6 +288,11 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     if (text.getMaximumHeight()>0.0f)
     {
         fw.indent() << "maximumHeight " << text.getMaximumHeight() << std::endl;
+    }
+
+    if (text.getLineSpacing()>0.0f)
+    {
+        fw.indent() << "lineSpacing " << text.getLineSpacing() << std::endl;
     }
     
     // alignment

@@ -62,6 +62,9 @@ void Text::write(DataOutputStream* out){
     out->writeUInt(getCharacterSizeMode());
     out->writeFloat(getMaximumWidth());
     out->writeFloat(getMaximumHeight());
+    
+    out->writeFloat(getLineSpacing());
+    
     out->writeUInt(getAlignment());
 
     out->writeQuat(getRotation()); //FIXME: controllare che ci sia
@@ -150,6 +153,11 @@ void Text::read(DataInputStream* in){
 
     setMaximumWidth(in->readFloat());
     setMaximumHeight(in->readFloat());
+
+    if ( in->getVersion() >= VERSION_0020 )
+    {
+        setLineSpacing(in->readFloat());
+    }
 
     setAlignment((osgText::Text::AlignmentType) in->readUInt());
 

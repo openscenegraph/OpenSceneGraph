@@ -30,6 +30,7 @@
 #include <OpenThreads/Mutex>
 #endif
 
+
 namespace osg {
 
 #ifndef OSG_JAVA_BUILD
@@ -104,7 +105,10 @@ class OSG_EXPORT Referenced
 
        
     protected:
+    
         virtual ~Referenced();
+        
+        void deletUsingDeleteHandler() const;
         
         mutable OpenThreads::Mutex*     _refMutex;
 
@@ -112,32 +116,6 @@ class OSG_EXPORT Referenced
         
         void*                          _observers;
         
-};
-
-
-/** Class for override the default delete behavior so that users can implment their own object
-  * deletion schemes.  This might be done to help implement protection of multiple threads from deleting
-  * objects unintentionally.
-  * Note, the DeleteHandler cannot itself be reference counted, otherwise it
-  * would be responsible for deleting itself!
-  * An static auto_ptr<> is used internally in Referenced.cpp to manage the 
-  * DeleteHandler's memory.*/
-class DeleteHandler
-{
-    public:
-
-        virtual ~DeleteHandler() {}
-
-        /** flush any cache of objects that need to be deleted by doing an actual delete.*/
-        virtual void flush() {}
-        
-        inline void doDelete(const Referenced* object) { delete object; }
-         
-        /** Request the deletion of an object. 
-          * Depending on users implementation of DeleteHandler, the delete of the object may occur 
-          * straight away or be delayed until doDelete is called.
-          * The default implementation does a delete straight away.*/
-        virtual void requestDelete(const Referenced* object) { doDelete(object); }
 };
 
 inline void Referenced::ref() const
@@ -170,13 +148,14 @@ inline void Referenced::unref() const
 
     if (needDelete)
     {
-        if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
+        if (getDeleteHandler()) deletUsingDeleteHandler();
         else delete this;
     }
 }
 
 
 #else 
+
 /** Java wrappers use the CBridgable base-class for referencing
   * and garbage collection.
   */

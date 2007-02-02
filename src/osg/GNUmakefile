@@ -33,6 +33,7 @@ CXXFILES =\
 	CullingSet.cpp\
 	CullSettings.cpp\
 	CullStack.cpp\
+	DeleteHandler.cpp\
 	Depth.cpp\
 	DisplaySettings.cpp\
 	Drawable.cpp\

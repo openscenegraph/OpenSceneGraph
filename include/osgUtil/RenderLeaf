@@ -72,8 +72,19 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
 
     public:
     
+    
+    
         StateGraph*                     _parent;
+
+#if 1
         osg::Drawable*                  _drawable;
+        osg::Drawable* getDrawable() { return _drawable; }
+        osg::Drawable* getDrawable() const { return _drawable; }
+#else
+        osg::ref_ptr<osg::Drawable>     _drawable;
+        osg::Drawable* getDrawable() { return _drawable.get(); }
+        osg::Drawable* getDrawable() const { return _drawable.get(); }
+#endif        
         osg::ref_ptr<osg::RefMatrix>    _projection;
         osg::ref_ptr<osg::RefMatrix>    _modelview;
         float                           _depth;

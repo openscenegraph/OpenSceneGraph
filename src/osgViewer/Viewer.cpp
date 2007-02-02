@@ -12,6 +12,7 @@
 */
 
 #include <osg/GLExtensions>
+#include <osg/DeleteHandler>
 #include <osgUtil/GLObjectsVisitor>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
@@ -19,6 +20,7 @@
 #include <osg/io_utils>
 
 using namespace osgViewer;
+
 
 class ViewerQuerySupport
 {
@@ -544,6 +546,8 @@ Viewer::Viewer():
     _eventVisitor->setActionAdapter(this);
     
     setStats(new osg::Stats("Viewer"));
+    
+    osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
 }
 
 Viewer::~Viewer()
@@ -569,6 +573,11 @@ Viewer::~Viewer()
         (*citr)->close();
     }
 
+    if (osg::Referenced::getDeleteHandler())
+    {
+        osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+        osg::Referenced::getDeleteHandler()->flushAll();
+    }
     //osg::notify(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
     
 }
@@ -1350,6 +1359,13 @@ void Viewer::advance(double simulationTime)
         // update current frames stats
         getStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
     }
+
+    if (osg::Referenced::getDeleteHandler())
+    {
+        osg::Referenced::getDeleteHandler()->flush();
+        osg::Referenced::getDeleteHandler()->setFrameNumber(_frameStamp->getFrameNumber());
+    }
+
 }
 
 void Viewer::eventTraversal()

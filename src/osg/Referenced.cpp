@@ -22,6 +22,8 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
+#include <osg/DeleteHandler>
+
 #ifndef OSG_JAVA_BUILD       
 
 namespace osg
@@ -177,43 +179,7 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
     }
 }
 
-/*
-void Referenced::ref() const
-{ 
-    if (_refMutex)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        ++_refCount;
-    }
-    else
-    {
-        ++_refCount;
-    }
 
-}
-
-void Referenced::unref() const
-{
-    bool needDelete = false;
-    if (_refMutex)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        --_refCount;
-        needDelete = _refCount<=0;
-    }
-    else
-    {
-        --_refCount;
-        needDelete = _refCount<=0;
-    }
-    
-    if (needDelete)
-    {
-        if (getDeleteHandler()) getDeleteHandler()->requestDelete(this);
-        else delete this;
-    }
-}
-*/
 void Referenced::unref_nodelete() const
 {
     if (_refMutex)
@@ -255,6 +221,11 @@ void Referenced::removeObserver(Observer* observer)
     {
         if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer);
     }
+}
+
+void Referenced::deletUsingDeleteHandler() const
+{
+    getDeleteHandler()->requestDelete(this);
 }
 
 }; // end of namespace osg

@@ -31,7 +31,8 @@
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
 	I_BaseType(osg::State::DynamicObjectRenderingCompletedCallback);
-	I_Constructor0(____EndOfDynamicDrawBlock,
+	I_Constructor1(IN, unsigned, int,
+	               ____EndOfDynamicDrawBlock__unsigned,
 	               "",
 	               "");
 	I_Method1(void, completed, IN, osg::State *, state,
@@ -42,14 +43,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
 	          __void__block,
 	          "",
 	          "");
+	I_Method0(void, reset,
+	          __void__reset,
+	          "",
+	          "");
 	I_Method0(void, release,
 	          __void__release,
 	          "",
 	          "");
-	I_Method1(void, set, IN, unsigned int, blockCount,
-	          __void__set__unsigned_int,
+	I_Method1(void, setNumOfBlocks, IN, unsigned int, blockCount,
+	          __void__setNumOfBlocks__unsigned_int,
 	          "",
 	          "");
+	I_SimpleProperty(unsigned int, NumOfBlocks, 
+	                 0, 
+	                 __void__setNumOfBlocks__unsigned_int);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers);

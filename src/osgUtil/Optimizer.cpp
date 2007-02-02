@@ -2826,6 +2826,7 @@ struct LessGeode
     bool operator() (const osg::Geode* lhs,const osg::Geode* rhs) const
     {
         if (lhs->getStateSet()<rhs->getStateSet()) return true;
+        if (lhs->getNodeMask()<rhs->getNodeMask()) return true;
         return false;
     }
 };

@@ -103,6 +103,29 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     if (_mode & COMPILE_STATE_ATTRIBUTES && _renderInfo.getState())
     {
         stateset.compileGLObjects(*_renderInfo.getState());
+        
+        osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
+        if (program) _lastCompiledProgram = program;
+
+        if (_lastCompiledProgram.valid() && !stateset.getUniformList().empty())
+        {
+            osg::Program::PerContextProgram* pcp = _lastCompiledProgram->getPCP(_renderInfo.getState()->getContextID());
+            if (pcp)
+            {
+                pcp->useProgram();
+                
+                _renderInfo.getState()->setLastAppliedProgramObject(pcp);
+            
+                osg::StateSet::UniformList& ul = stateset.getUniformList();
+                for(osg::StateSet::UniformList::iterator itr = ul.begin();
+                    itr != ul.end();
+                    ++itr)
+                {
+                    pcp->apply(*(itr->second.first));
+                }
+            }
+        }
+        
     }
 
     if (_mode & RELEASE_STATE_ATTRIBUTES)

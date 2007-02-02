@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgProducer::GraphicsContextImplementation)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::GraphicsContextImplementation)
 	I_BaseType(osg::GraphicsContext);
 	I_Constructor1(IN, osg::GraphicsContext::Traits *, traits,
 	               ____GraphicsContextImplementation__Traits_P1,

@@ -14,7 +14,9 @@
 #ifndef OSG_GRAPHICSTHREAD
 #define OSG_GRAPHICSTHREAD 1
 
-#include <osg/State>
+#include <osg/observer_ptr>
+#include <osg/Object>
+
 #include <OpenThreads/Thread>
 #include <OpenThreads/Barrier>
 #include <OpenThreads/Condition>
@@ -23,9 +25,6 @@
 
 namespace osg {
 
-// forward declare GraphicsContext
-class GraphicsContext;    
-    
 class Block: virtual public osg::Referenced {
     public:
         Block():_released(false) {}
@@ -76,13 +75,13 @@ class Block: virtual public osg::Referenced {
 };
 
 /** Base class for implementing graphics operations.*/
-struct GraphicsOperation : virtual public Referenced
+struct Operation : virtual public Referenced
 {
-    GraphicsOperation(const std::string& name, bool keep):
+    Operation(const std::string& name, bool keep):
         _name(name),
         _keep(keep) {}
         
-    virtual ~GraphicsOperation() {}
+    virtual ~Operation() {}
 
     /** Set the human readable name of the operation.*/
     void setName(const std::string& name) { _name = name; }
@@ -100,25 +99,31 @@ struct GraphicsOperation : virtual public Referenced
     virtual void release() {}
 
     /** Do the actual task of this operation.*/ 
-    virtual void operator () (GraphicsContext*) {}
+    virtual void operator () (Object*) = 0;
 
     std::string _name;
     bool        _keep;
 };
 
 /** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
-class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
+class OSG_EXPORT OperationsThread : public Referenced, public OpenThreads::Thread
 {
     public:
-        GraphicsThread();
+        OperationsThread();
+
+        void setParent(Object* parent) { _parent = parent; }
+
+        Object* getParent() { return _parent.get(); }
+        
+        const Object* getParent() const { return _parent.get(); }
 
         
         /** Add operation to end of OperationQueue, this will be 
           * executed by the graphics thread once this operation gets to the head of the queue.*/
-        void add(GraphicsOperation* operation, bool waitForCompletion=false);
+        void add(Operation* operation, bool waitForCompletion=false);
         
         /** Remove operation from OperationQueue.*/
-        void remove(GraphicsOperation* operation);
+        void remove(Operation* operation);
 
         /** Remove named operation from OperationQueue.*/
         void remove(const std::string& name);
@@ -127,7 +132,7 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
         void removeAllOperations();
         
         /** Get the operation currently being run.*/
-        osg::ref_ptr<GraphicsOperation> getCurrentOperation() { return _currentOperation; }
+        osg::ref_ptr<Operation> getCurrentOperation() { return _currentOperation; }
 
         /** Run does the graphics thread run loop.*/        
         virtual void run();
@@ -141,34 +146,33 @@ class OSG_EXPORT GraphicsThread : public Referenced, public OpenThreads::Thread
 
     protected:
     
-        virtual ~GraphicsThread();
+        virtual ~OperationsThread();
         
-        friend class GraphicsContext;
-        GraphicsContext*    _graphicsContext;
+        observer_ptr<Object>   _parent;
 
-        typedef std::list< ref_ptr<GraphicsOperation> > OperationQueue;
+        typedef std::list< ref_ptr<Operation> > OperationQueue;
 
         bool                        _done;
 
         OpenThreads::Mutex          _operationsMutex;
         osg::ref_ptr<osg::Block>    _operationsBlock;
         OperationQueue              _operations;
-        osg::ref_ptr<GraphicsOperation>     _currentOperation;
+        osg::ref_ptr<Operation>     _currentOperation;
 
 };
 
 
 /** SwapBufferOperation calls swap buffers on the GraphicsContext.*/
-struct OSG_EXPORT SwapBuffersOperation : public GraphicsOperation
+struct OSG_EXPORT SwapBuffersOperation : public Operation
 {
     SwapBuffersOperation():
-        GraphicsOperation("SwapBuffers",true) {}
+        Operation("SwapBuffers",true) {}
 
-    virtual void operator () (GraphicsContext* context);
+    virtual void operator () (Object* context);
 };
 
 /** BarrierOperation allows one to syncronize multiple GraphicsThreads with each other.*/
-struct OSG_EXPORT BarrierOperation : public GraphicsOperation, public OpenThreads::Barrier
+struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barrier
 {
     enum PreBlockOp
     {
@@ -178,27 +182,27 @@ struct OSG_EXPORT BarrierOperation : public GraphicsOperation, public OpenThread
     };
 
     BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION):
-        GraphicsOperation("Barrier", true),
+        Operation("Barrier", true),
         OpenThreads::Barrier(numThreads),
         _preBlockOp(op) {}
 
     virtual void release();
 
-    virtual void operator () (GraphicsContext* context);
+    virtual void operator () (Object* context);
     
     PreBlockOp _preBlockOp;
 };
 
 /** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to aquire, 
   * then blocks waiting for context to be released, once the block is release the context is re-aqquired.*/
-struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsOperation, public Block
+struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public Operation, public Block
 {
     ReleaseContext_Block_MakeCurrentOperation():
-        GraphicsOperation("ReleaseContext_Block_MakeCurrent", false) {}
+        Operation("ReleaseContext_Block_MakeCurrent", false) {}
 
     virtual void release();
 
-    virtual void operator () (GraphicsContext* context);
+    virtual void operator () (Object* context);
 };
 
 }

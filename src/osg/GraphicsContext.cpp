@@ -140,6 +140,15 @@ GraphicsContext::GraphicsContext():
     _operationsBlock = new Block;
 }
 
+GraphicsContext::GraphicsContext(const GraphicsContext&, const osg::CopyOp&):
+    _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
+    _clearMask(0),
+    _threadOfLastMakeCurrent(0)
+{
+    setThreadSafeRefUnref(true);
+    _operationsBlock = new Block;
+}
+
 GraphicsContext::~GraphicsContext()
 {
     close(false);
@@ -298,11 +307,11 @@ void GraphicsContext::createGraphicsThread()
 {
     if (!_graphicsThread)
     {
-        setGraphicsThread(new GraphicsThread);
+        setGraphicsThread(new OperationsThread);
     }
 }
 
-void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
+void GraphicsContext::setGraphicsThread(OperationsThread* gt)
 {
     if (_graphicsThread==gt) return; 
 
@@ -310,18 +319,18 @@ void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
     {
         // need to kill the thread in some way...
         _graphicsThread->cancel();
-        _graphicsThread->_graphicsContext = 0;
+        _graphicsThread->setParent(0);
     }
 
     _graphicsThread = gt;
     
     if (_graphicsThread.valid()) 
     {
-        _graphicsThread->_graphicsContext = this;
+        _graphicsThread->setParent(this);
     }
 }
 
-void GraphicsContext::add(GraphicsOperation* operation)
+void GraphicsContext::add(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
@@ -334,7 +343,7 @@ void GraphicsContext::add(GraphicsOperation* operation)
     _operationsBlock->set(true);
 }
 
-void GraphicsContext::remove(GraphicsOperation* operation)
+void GraphicsContext::remove(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
 

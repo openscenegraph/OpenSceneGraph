@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/DeleteHandler>
 #include <osg/Referenced>
 #include <osg/observer_ptr>
 
@@ -20,24 +21,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_VALUE_REFLECTOR(osg::DeleteHandler)
-	I_Constructor0(____DeleteHandler,
-	               "",
-	               "");
-	I_Method0(void, flush,
-	          __void__flush,
-	          "flush any cache of objects that need to be deleted by doing an actual delete. ",
-	          "");
-	I_Method1(void, doDelete, IN, const osg::Referenced *, object,
-	          __void__doDelete__C5_Referenced_P1,
-	          "",
-	          "");
-	I_Method1(void, requestDelete, IN, const osg::Referenced *, object,
-	          __void__requestDelete__C5_Referenced_P1,
-	          "Request the deletion of an object. ",
-	          "Depending on users implementation of DeleteHandler, the delete of the object may occur straight away or be delayed until doDelete is called. The default implementation does a delete straight away. ");
-END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Constructor0(____Referenced,

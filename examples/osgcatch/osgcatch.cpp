@@ -1354,20 +1354,21 @@ void GameEventHandler::createNewCatchable()
     _gameGroup->addChild(catchableObject->_object.get());
 }
 
-class CompileStateCallback : public osg::GraphicsOperation
+class CompileStateCallback : public osg::Operation
 {
     public:
         CompileStateCallback(GameEventHandler* eh):
-            osg::GraphicsOperation("CompileStateCallback", false),
+            osg::Operation("CompileStateCallback", false),
             _gameEventHandler(eh) {}
         
-        virtual void operator()(osg::GraphicsContext* gc)
-        { 
-            // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        virtual void operator () (osg::Object* object)
+        {
+            osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+            if (!context) return;
 
             if (_gameEventHandler)
             {
-                _gameEventHandler->compileGLObjects(*gc->getState());
+                _gameEventHandler->compileGLObjects(*(context->getState()));
             }
         }
         

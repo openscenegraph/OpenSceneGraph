@@ -43,6 +43,17 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	          __void__render__osg_RenderInfo_R1__RenderLeaf_P1,
 	          "",
 	          "");
+	I_Method0(osg::Drawable *, getDrawable,
+	          __osg_Drawable_P1__getDrawable,
+	          "",
+	          "");
+	I_Method0(osg::Drawable *, getDrawable,
+	          __osg_Drawable_P1__getDrawable,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Drawable *, Drawable, 
+	                 __osg_Drawable_P1__getDrawable, 
+	                 0);
 	I_PublicMemberProperty(osgUtil::StateGraph *, _parent);
 	I_PublicMemberProperty(osg::Drawable *, _drawable);
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _projection);

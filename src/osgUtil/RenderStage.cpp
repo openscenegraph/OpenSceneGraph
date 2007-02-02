@@ -790,15 +790,18 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     }
 }
 
-struct DrawInnerOperation : public osg::GraphicsOperation
+struct DrawInnerOperation : public osg::Operation
 {
     DrawInnerOperation(RenderStage* stage, osg::RenderInfo& renderInfo) : 
-        osg::GraphicsOperation("DrawInnerStage",false),
+        osg::Operation("DrawInnerStage",false),
         _stage(stage),
         _renderInfo(renderInfo) {}
 
-    virtual void operator() (osg::GraphicsContext* context)
+    virtual void operator () (osg::Object* object)
     {
+        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!context) return;
+
         // osg::notify(osg::NOTICE)<<"DrawInnerOperation operator"<<std::endl;
         if (_stage && context)
         {
@@ -834,7 +837,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     osg::State* useState = &state;
     osg::GraphicsContext* callingContext = state.getGraphicsContext();
     osg::GraphicsContext* useContext = callingContext;
-    osg::GraphicsThread* useThread = 0;
+    osg::OperationsThread* useThread = 0;
     osg::RenderInfo useRenderInfo(renderInfo);
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)

@@ -23,7 +23,7 @@ namespace osg {
 class Camera;
 
 /** Base class for providing Windowing API agnostic access to creating and managing graphics context.*/
-class OSG_EXPORT GraphicsContext : public Referenced
+class OSG_EXPORT GraphicsContext : public Object
 {
     public:
     
@@ -162,10 +162,10 @@ class OSG_EXPORT GraphicsContext : public Referenced
     public:
     
         /** Add operation to end of OperationQueue.*/
-        void add(GraphicsOperation* operation);
+        void add(Operation* operation);
         
         /** Remove operation from OperationQueue.*/
-        void remove(GraphicsOperation* operation);
+        void remove(Operation* operation);
 
         /** Remove named operation from OperationQueue.*/
         void remove(const std::string& name);
@@ -176,7 +176,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
         /** Run the operations. */
         void runOperations();
 
-        typedef std::list< ref_ptr<GraphicsOperation> > OperationQueue;
+        typedef std::list< ref_ptr<Operation> > OperationQueue;
         
         /** Get the operations queue, not you must use the OperationsMutex when accessing the queue.*/
         OperationQueue& getOperationsQueue() { return _operations; }
@@ -188,7 +188,7 @@ class OSG_EXPORT GraphicsContext : public Referenced
         osg::Block* getOperationsBlock() { return _operationsBlock.get(); }
 
         /** Get the current operations that is being run.*/
-        GraphicsOperation* getCurrentOperation() { return _currentOperation.get(); }
+        Operation* getCurrentOperation() { return _currentOperation.get(); }
 
 
     public:
@@ -271,13 +271,13 @@ class OSG_EXPORT GraphicsContext : public Referenced
         void createGraphicsThread();
 
         /** Assign a graphics thread to the graphics context, so that the thread handles all OpenGL operations.*/
-        void setGraphicsThread(GraphicsThread* gt);
+        void setGraphicsThread(OperationsThread* gt);
 
         /** Get the graphics thread assigned the graphics context.*/
-        GraphicsThread* getGraphicsThread() { return _graphicsThread.get(); }
+        OperationsThread* getGraphicsThread() { return _graphicsThread.get(); }
 
         /** Get the const graphics thread assigned the graphics context.*/
-        const GraphicsThread* getGraphicsThread() const { return _graphicsThread.get(); }
+        const OperationsThread* getGraphicsThread() const { return _graphicsThread.get(); }
 
 
         /** Realise the GraphicsContext implementation, 
@@ -351,9 +351,16 @@ class OSG_EXPORT GraphicsContext : public Referenced
     protected:
         
         GraphicsContext();
+        GraphicsContext(const GraphicsContext&, const osg::CopyOp&);
 
         virtual ~GraphicsContext();
-        
+
+        virtual Object* cloneType() const { return 0; }
+        virtual Object* clone(const CopyOp&) const { return 0; }
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsContext*>(object)!=0; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "GraphicsContext"; }
+
         void addCamera(osg::Camera* camera);
         void removeCamera(osg::Camera* camera);
         
@@ -372,9 +379,9 @@ class OSG_EXPORT GraphicsContext : public Referenced
         OpenThreads::Mutex                  _operationsMutex;
         osg::ref_ptr<osg::Block>            _operationsBlock;
         OperationQueue                      _operations;
-        osg::ref_ptr<GraphicsOperation>     _currentOperation;
+        osg::ref_ptr<Operation>             _currentOperation;
 
-        ref_ptr<GraphicsThread>             _graphicsThread;
+        ref_ptr<OperationsThread>           _graphicsThread;
         
         ref_ptr<ResizedCallback>            _resizedCallback;
         

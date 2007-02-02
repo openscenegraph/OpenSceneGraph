@@ -1,6 +1,7 @@
 #include <osg/LightSource>
 #include <osg/ApplicationUsage>
 #include <osg/AlphaFunc>
+#include <osg/DeleteHandler>
 #include <osg/io_utils>
 
 #include <osgUtil/UpdateVisitor>
@@ -260,6 +261,12 @@ Viewer::Viewer(osg::ArgumentParser& arguments):
 
 Viewer::~Viewer()
 {
+    setSceneData(0);
+    
+    if (osg::Referenced::getDeleteHandler()) 
+    {
+        osg::Referenced::getDeleteHandler()->flushAll();
+    }
 }
 
 osg::NodePath Viewer::getCoordinateSystemNodePath() const

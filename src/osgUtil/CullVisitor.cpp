@@ -1068,6 +1068,38 @@ void CullVisitor::apply(osg::ClearNode& node)
 
 }
 
+namespace osgUtil
+{
+
+class RenderStageCache : public osg::Object
+{
+    public:
+    
+        RenderStageCache() {}
+        RenderStageCache(const RenderStageCache&, const osg::CopyOp&) {}
+        
+        META_Object(osgUtil, RenderStageCache);
+        
+        void setRenderStage(CullVisitor* cv, RenderStage* rs)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            _renderStageMap[cv] = rs;
+        }        
+
+        RenderStage* getRenderStage(osgUtil::CullVisitor* cv)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            return _renderStageMap[cv].get();
+        }
+        
+        typedef std::map<CullVisitor*, osg::ref_ptr<RenderStage> > RenderStageMap;
+        
+        OpenThreads::Mutex  _mutex;
+        RenderStageMap      _renderStageMap;
+};
+
+}
+
 void CullVisitor::apply(osg::Camera& camera)
 {
     // push the node's state.
@@ -1136,12 +1168,21 @@ void CullVisitor::apply(osg::Camera& camera)
 
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderStage> rtts = dynamic_cast<osgUtil::RenderStage*>(camera.getRenderingCache(contextID));
+        osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderingCache(contextID));
+        if (!rsCache)
+        {
+            rsCache = new osgUtil::RenderStageCache;
+            camera.setRenderingCache(contextID, rsCache.get());
+        }
+        
+        osg::ref_ptr<osgUtil::RenderStage> rtts = rsCache->getRenderStage(this);
         if (!rtts)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(camera.getDataChangeMutex()));
         
             rtts = new osgUtil::RenderStage;
+            rsCache->setRenderStage(this,rtts.get());
+
             rtts->setCamera(&camera);
 
             if (camera.getDrawBuffer() != GL_NONE)
@@ -1164,7 +1205,6 @@ void CullVisitor::apply(osg::Camera& camera)
                 rtts->setReadBuffer(previous_stage->getReadBuffer());
             }
 
-            camera.setRenderingCache(contextID, rtts.get());
         }
         else
         {

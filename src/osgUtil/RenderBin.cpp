@@ -481,7 +481,7 @@ bool RenderBin::getStats(Statistics& stats) const
         ++dw_itr)
     {
         const RenderLeaf* rl = *dw_itr;
-        const Drawable* dw= rl->_drawable;
+        const Drawable* dw= rl->getDrawable();
         stats.addDrawable(); // number of geosets
         if (rl->_modelview.get())
         {
@@ -506,7 +506,7 @@ bool RenderBin::getStats(Statistics& stats) const
             ++dw_itr)
         {
             const RenderLeaf* rl = dw_itr->get();
-            const Drawable* dw= rl->_drawable;
+            const Drawable* dw= rl->getDrawable();
             stats.addDrawable(); // number of geosets
             if (rl->_modelview.get()) stats.addMatrix(); // number of matrices
             if (dw)

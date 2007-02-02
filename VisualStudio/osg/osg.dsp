@@ -280,6 +280,10 @@ SOURCE=..\..\src\osg\CullStack.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\DeleteHandler.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Depth.cpp
 # End Source File
 # Begin Source File
@@ -745,6 +749,10 @@ SOURCE=..\..\Include\Osg\CullSettings
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\CullStack
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\DeleteHandler
 # End Source File
 # Begin Source File
 

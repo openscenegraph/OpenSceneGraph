@@ -501,6 +501,8 @@ int main(int , char **)
         viewer.setSceneData(group);
     }
 
+    osgDB::writeNodeFile(*viewer.getSceneData(),"text.osg");
+
     return viewer.run();
 }
 

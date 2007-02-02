@@ -134,10 +134,10 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         void getCameras(Cameras& cameras, bool onlyActive=true);
 
         /** Set the graphics operation to call on realization of the viewers graphics windows.*/
-        void setRealizeOperation(osg::GraphicsOperation* op) { _realizeOperation = op; }
+        void setRealizeOperation(osg::Operation* op) { _realizeOperation = op; }
 
         /** Get the graphics operation to call on realization of the viewers graphics windows.*/
-        osg::GraphicsOperation* getRealizeOperation() { return _realizeOperation.get(); }
+        osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
 
         /** Stop any threads begin run by viewer.*/
         void stopThreading();
@@ -145,7 +145,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Start any threads required by the viewer, as per viewers ThreadingModel.*/
         void startThreading();        
 
-        /** Set up the GraphicsOperations to render the various viewer cameras on the viewers graphics windows.*/
+        /** Set up the Operations to render the various viewer cameras on the viewers graphics windows.*/
         void setUpRenderingSupport();
 
     protected:
@@ -182,7 +182,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
         
-        osg::ref_ptr<osg::GraphicsOperation> _realizeOperation;
+        osg::ref_ptr<osg::Operation>        _realizeOperation;
 };
 
 

@@ -208,19 +208,20 @@ void CompositeViewer::stopThreading()
 }
 
 // Compile operation, that compile OpenGL objects.
-struct CompositeViewerCompileOperation : public osg::GraphicsOperation
+struct CompositeViewerCompileOperation : public osg::Operation
 {
     CompositeViewerCompileOperation():
-        osg::GraphicsOperation("Compile",false)
+        osg::Operation("Compile",false)
     {
     }
     
-    virtual void operator () (osg::GraphicsContext* context)
+    virtual void operator () (osg::Object* object)
     {
+        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!context) return;
+
         // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
         // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-
-        // context->makeCurrentImplementation();
 
         osgUtil::GLObjectsVisitor compileVisitor;
         compileVisitor.setState(context->getState());
@@ -238,19 +239,20 @@ struct CompositeViewerCompileOperation : public osg::GraphicsOperation
 
 
 // Draw operation, that does a draw on the scene graph.
-struct CompositeViewerRunOperations : public osg::GraphicsOperation
+struct CompositeViewerRunOperations : public osg::Operation
 {
     CompositeViewerRunOperations():
-        osg::GraphicsOperation("RunOperation",true)
+        osg::Operation("RunOperation",true)
     {
     }
     
-    virtual void operator () (osg::GraphicsContext* gc)
+    virtual void operator () (osg::Object* object)
     {
-        gc->runOperations();
+        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!context) return;
+
+        context->runOperations();
     }
-    
-    osg::GraphicsContext* _originalContext;
 };
 
 unsigned int CompositeViewer::computeNumberOfThreadsIncludingMainRequired()
@@ -500,17 +502,17 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
 
 
 // Draw operation, that does a draw on the scene graph.
-struct CompositeViewerRenderingOperation : public osg::GraphicsOperation
+struct CompositeViewerRenderingOperation : public osg::Operation
 {
     CompositeViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
-        osg::GraphicsOperation("Render",true),
+        osg::Operation("Render",true),
         _sceneView(sceneView),
         _databasePager(databasePager)
     {
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
     }
     
-    virtual void operator () (osg::GraphicsContext*)
+    virtual void operator () (osg::Object*)
     {
         if (!_sceneView) return;
     

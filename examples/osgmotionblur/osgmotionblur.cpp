@@ -14,18 +14,21 @@
 #include <osgViewer/Viewer>
 #include <iostream>
 
-class MotionBlurOperation: public osg::GraphicsOperation
+class MotionBlurOperation: public osg::Operation
 {
 public:
     MotionBlurOperation(double persistence):
-        osg::GraphicsOperation("MotionBlur",true),
+        osg::Operation("MotionBlur",true),
         cleared_(false),
         persistence_(persistence)
     {
     }
 
-    virtual void operator () (osg::GraphicsContext* gc)
+    virtual void operator () (osg::Object* object)
     {
+        osg::GraphicsContext* gc = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!gc) return;
+    
         double t = gc->getState()->getFrameStamp()->getSimulationTime();
 
         if (!cleared_)

@@ -10,8 +10,8 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
+#include <osg/Object>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -28,7 +28,7 @@ BEGIN_ENUM_REFLECTOR(osg::BarrierOperation::PreBlockOp)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
-	I_BaseType(osg::GraphicsOperation);
+	I_BaseType(osg::Operation);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
 	                           ____BarrierOperation__int__PreBlockOp,
 	                           "",
@@ -63,10 +63,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Block)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsOperation)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
-	               ____GraphicsOperation__C5_std_string_R1__bool,
+	               ____Operation__C5_std_string_R1__bool,
 	               "",
 	               "");
 	I_Method1(void, setName, IN, const std::string &, name,
@@ -99,17 +99,29 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsOperation)
 	I_PublicMemberProperty(bool, _keep);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
+BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 	I_BaseType(osg::Referenced);
-	I_Constructor0(____GraphicsThread,
+	I_Constructor0(____OperationsThread,
 	               "",
 	               "");
-	I_MethodWithDefaults2(void, add, IN, osg::GraphicsOperation *, operation, , IN, bool, waitForCompletion, false,
-	                      __void__add__GraphicsOperation_P1__bool,
+	I_Method1(void, setParent, IN, osg::Object *, parent,
+	          __void__setParent__Object_P1,
+	          "",
+	          "");
+	I_Method0(osg::Object *, getParent,
+	          __Object_P1__getParent,
+	          "",
+	          "");
+	I_Method0(const osg::Object *, getParent,
+	          __C5_Object_P1__getParent,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, add, IN, osg::Operation *, operation, , IN, bool, waitForCompletion, false,
+	                      __void__add__Operation_P1__bool,
 	                      "Add operation to end of OperationQueue, this will be executed by the graphics thread once this operation gets to the head of the queue. ",
 	                      "");
-	I_Method1(void, remove, IN, osg::GraphicsOperation *, operation,
-	          __void__remove__GraphicsOperation_P1,
+	I_Method1(void, remove, IN, osg::Operation *, operation,
+	          __void__remove__Operation_P1,
 	          "Remove operation from OperationQueue. ",
 	          "");
 	I_Method1(void, remove, IN, const std::string &, name,
@@ -120,8 +132,8 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
 	          __void__removeAllOperations,
 	          "Remove all operations from OperationQueue. ",
 	          "");
-	I_Method0(osg::ref_ptr< osg::GraphicsOperation >, getCurrentOperation,
-	          __osg_ref_ptrT1_GraphicsOperation___getCurrentOperation,
+	I_Method0(osg::ref_ptr< osg::Operation >, getCurrentOperation,
+	          __osg_ref_ptrT1_Operation___getCurrentOperation,
 	          "Get the operation currently being run. ",
 	          "");
 	I_Method0(void, run,
@@ -140,16 +152,19 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
 	          __int__cancel,
 	          "Cancel this graphics thread. ",
 	          "");
-	I_SimpleProperty(osg::ref_ptr< osg::GraphicsOperation >, CurrentOperation, 
-	                 __osg_ref_ptrT1_GraphicsOperation___getCurrentOperation, 
+	I_SimpleProperty(osg::ref_ptr< osg::Operation >, CurrentOperation, 
+	                 __osg_ref_ptrT1_Operation___getCurrentOperation, 
 	                 0);
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);
+	I_SimpleProperty(osg::Object *, Parent, 
+	                 __Object_P1__getParent, 
+	                 __void__setParent__Object_P1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
-	I_BaseType(osg::GraphicsOperation);
+	I_BaseType(osg::Operation);
 	I_BaseType(osg::Block);
 	I_Constructor0(____ReleaseContext_Block_MakeCurrentOperation,
 	               "",
@@ -161,42 +176,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
-	I_BaseType(osg::GraphicsOperation);
+	I_BaseType(osg::Operation);
 	I_Constructor0(____SwapBuffersOperation,
 	               "",
 	               "");
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GraphicsOperation >)
-	I_Constructor0(____ref_ptr,
-	               "",
-	               "");
-	I_Constructor1(IN, osg::GraphicsOperation *, ptr,
-	               ____ref_ptr__T_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::ref_ptr< osg::GraphicsOperation > &, rp,
-	               ____ref_ptr__C5_ref_ptr_R1,
-	               "",
-	               "");
-	I_Method0(osg::GraphicsOperation *, get,
-	          __T_P1__get,
-	          "",
-	          "");
-	I_Method0(bool, valid,
-	          __bool__valid,
-	          "",
-	          "");
-	I_Method0(osg::GraphicsOperation *, release,
-	          __T_P1__release,
-	          "",
-	          "");
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::GraphicsOperation > &, rp,
-	          __void__swap__ref_ptr_R1,
-	          "",
-	          "");
-	I_SimpleProperty(osg::GraphicsOperation *, , 
-	                 __T_P1__get, 
-	                 0);
 END_REFLECTOR
 

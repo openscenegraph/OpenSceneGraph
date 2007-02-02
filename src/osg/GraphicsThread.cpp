@@ -19,47 +19,10 @@
 using namespace osg;
 using namespace OpenThreads;
 
-struct ThreadExitTidyUp
-{
-    ThreadExitTidyUp(osg::GraphicsContext* context, bool closeContextOnExit):
-        _context(context),
-        _closeContextOnExit(closeContextOnExit)
-    {
-        osg::notify(osg::INFO)<<"starting thread context "<<_context<<std::endl;
-    }
-
-    ~ThreadExitTidyUp()
-    {
-        osg::notify(osg::INFO)<<"exit thread"<<std::endl;
-        if (_context)
-        {
-            if (_closeContextOnExit)
-            {
-                osg::notify(osg::INFO)<<"    - close context "<<_context<<std::endl;
-
-                _context->closeImplementation();
-
-                osg::notify(osg::INFO)<<"    - done close context "<<_context<<std::endl;
-            }
-            else
-            {
-                osg::notify(osg::INFO)<<"    - releaseContext "<<_context<<std::endl;
-
-                //_context->releaseContext();
-            }
-        }
-    }
-    
-    osg::GraphicsContext* _context;
-    bool _closeContextOnExit;
-    
-    
-};
-
-struct BlockOperation : public GraphicsOperation, public Block
+struct BlockOperation : public Operation, public Block
 {
     BlockOperation():
-        GraphicsOperation("Block",false)
+        Operation("Block",false)
     {
         reset();
     }
@@ -69,7 +32,7 @@ struct BlockOperation : public GraphicsOperation, public Block
         Block::release();
     }
 
-    virtual void operator () (GraphicsContext*)
+    virtual void operator () (Object*)
     {
         glFlush();
         Block::release();
@@ -77,14 +40,14 @@ struct BlockOperation : public GraphicsOperation, public Block
 };
 
 
-GraphicsThread::GraphicsThread():
-    _graphicsContext(0),
+OperationsThread::OperationsThread():
+    _parent(0),
     _done(false)
 {
     _operationsBlock = new Block;
 }
 
-GraphicsThread::~GraphicsThread()
+OperationsThread::~OperationsThread()
 {
     //osg::notify(osg::NOTICE)<<"Destructing graphics thread "<<this<<std::endl;
 
@@ -93,7 +56,7 @@ GraphicsThread::~GraphicsThread()
     //osg::notify(osg::NOTICE)<<"Done Destructing graphics thread "<<this<<std::endl;
 }
 
-void GraphicsThread::setDone(bool done)
+void OperationsThread::setDone(bool done)
 {
     if (_done==done) return;
 
@@ -117,9 +80,9 @@ void GraphicsThread::setDone(bool done)
 
 }
 
-int GraphicsThread::cancel()
+int OperationsThread::cancel()
 {
-    osg::notify(osg::INFO)<<"Cancelling graphics thread "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    osg::notify(osg::INFO)<<"Cancelling OperationsThred "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     int result = 0;
     if( isRunning() )
@@ -159,17 +122,17 @@ int GraphicsThread::cancel()
 
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
-            osg::notify(osg::INFO)<<"   Waiting for GraphicsThread to cancel "<<this<<std::endl;
+            osg::notify(osg::INFO)<<"   Waiting for OperationsThread to cancel "<<this<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
     }
 
-    osg::notify(osg::INFO)<<"  GraphicsThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    osg::notify(osg::INFO)<<"  OperationsThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     return result;
 }
 
-void GraphicsThread::add(GraphicsOperation* operation, bool waitForCompletion)
+void OperationsThread::add(Operation* operation, bool waitForCompletion)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
@@ -198,7 +161,7 @@ void GraphicsThread::add(GraphicsOperation* operation, bool waitForCompletion)
     }
 }
 
-void GraphicsThread::remove(GraphicsOperation* operation)
+void OperationsThread::remove(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
 
@@ -213,7 +176,7 @@ void GraphicsThread::remove(GraphicsOperation* operation)
     }
 }
 
-void GraphicsThread::remove(const std::string& name)
+void OperationsThread::remove(const std::string& name)
 {
     osg::notify(osg::INFO)<<"Doing remove named operation"<<std::endl;
     
@@ -234,7 +197,7 @@ void GraphicsThread::remove(const std::string& name)
     }
 }
 
-void GraphicsThread::removeAllOperations()
+void OperationsThread::removeAllOperations()
 {
     osg::notify(osg::INFO)<<"Doing remove all operations"<<std::endl;
 
@@ -248,40 +211,16 @@ void GraphicsThread::removeAllOperations()
 }
 
 
-void GraphicsThread::run()
+void OperationsThread::run()
 {
     bool contextRealizedInThisThread = false;
 
     // make the graphics context current.
-    if (_graphicsContext)
-    {
-        if (!_graphicsContext->isRealized())
-        {
-#if 0
-
-            osg::notify(osg::NOTICE)<<"Forced to do a realize in GraphicsThread::run."<<std::endl;
-            _graphicsContext->realize();
-
-            contextRealizedInThisThread = true;
-#else            
-           while (!_graphicsContext->isRealized() && !_done)
-           {
-                osg::notify(osg::INFO)<<"Waiting in GraphicsThread::run for GraphicsContext to realize."<<std::endl;
-                YieldCurrentThread();
-           }
-           osg::notify(osg::INFO)<<"GraphicsThread::run now released as GraphicsContext has been realized."<<std::endl;
-#endif            
-        }
-    
-        osg::notify(osg::INFO)<<"Doing make current"<<std::endl;
-        
-        _graphicsContext->makeCurrentImplementation();
+    GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());
+    if (graphicsContext)
+    {        
+        graphicsContext->makeCurrentImplementation();
     }
-
-    // _graphicsContext->makeCurrentImplementation();
-
-    // create a local object to clean up once the thread is cancelled.
-    ThreadExitTidyUp threadExitTypeUp(_graphicsContext, contextRealizedInThisThread);
 
     osg::notify(osg::INFO)<<"Doing run "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
@@ -350,7 +289,7 @@ void GraphicsThread::run()
             osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
 
             // call the graphics operation.
-            (*_currentOperation)(_graphicsContext);
+            (*_currentOperation)(_parent.get());
 
             {            
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
@@ -369,15 +308,19 @@ void GraphicsThread::run()
         // osg::notify(osg::NOTICE)<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
 
     } while (!testCancel() && !_done);
-    
-    _graphicsContext->releaseContext();
+
+    if (graphicsContext)
+    {    
+        graphicsContext->releaseContext();
+    }
 
     osg::notify(osg::INFO)<<"exit loop "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
 }
  
-void SwapBuffersOperation::operator () (GraphicsContext* context)
+void SwapBuffersOperation::operator () (Object* object)
 {
+    GraphicsContext* context = dynamic_cast<GraphicsContext*>(object);
     if (context)
     {
         context->swapBuffersImplementation();
@@ -390,7 +333,7 @@ void BarrierOperation::release()
     Barrier::release();
 }
 
-void BarrierOperation::operator () (GraphicsContext*)
+void BarrierOperation::operator () (Object*)
 {
     if (_preBlockOp==GL_FLUSH) glFlush();
     if (_preBlockOp==GL_FINISH) glFinish();
@@ -404,8 +347,9 @@ void ReleaseContext_Block_MakeCurrentOperation::release()
 }
 
 
-void ReleaseContext_Block_MakeCurrentOperation::operator () (GraphicsContext* context)
+void ReleaseContext_Block_MakeCurrentOperation::operator () (Object* object)
 {
+    GraphicsContext* context = dynamic_cast<GraphicsContext*>(object);
     if (!context) return;
     
     // release the graphics context.

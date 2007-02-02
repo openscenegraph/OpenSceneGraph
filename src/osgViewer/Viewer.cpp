@@ -124,10 +124,10 @@ public:
 
 
 // Draw operation, that does a draw on the scene graph.
-struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
+struct ViewerRenderingOperation : public osg::Operation, public ViewerQuerySupport
 {
     ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
-        osg::GraphicsOperation("Render",true),
+        osg::Operation("Render",true),
         ViewerQuerySupport(startTick),
         _sceneView(sceneView),
         _databasePager(databasePager)
@@ -135,7 +135,7 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQu
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
     }
     
-    virtual void operator () (osg::GraphicsContext*)
+    virtual void operator () (osg::Object*)
     {
         if (!_sceneView) return;
 
@@ -217,10 +217,10 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQu
 
 
 // Draw operation, that does a draw on the scene graph.
-struct ViewerDoubleBufferedRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
+struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public ViewerQuerySupport
 {
     ViewerDoubleBufferedRenderingOperation(bool graphicsThreadDoesCull, osgUtil::SceneView* sv0, osgUtil::SceneView* sv1, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
-        osg::GraphicsOperation("Render",true),
+        osg::Operation("Render",true),
         ViewerQuerySupport(startTick),
         _graphicsThreadDoesCull(graphicsThreadDoesCull),
         _done(false),
@@ -487,8 +487,11 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::GraphicsOperation, p
         }
     }
 
-    virtual void operator () (osg::GraphicsContext*)
+    virtual void operator () (osg::Object* object)
     {
+        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!context) return;
+
         //osg::notify(osg::NOTICE)<<"GraphicsCall "<<std::endl;
         // if (_done) return;
 
@@ -780,16 +783,19 @@ void Viewer::stopThreading()
 }
 
 // Compile operation, that compile OpenGL objects.
-struct ViewerCompileOperation : public osg::GraphicsOperation
+struct ViewerCompileOperation : public osg::Operation
 {
     ViewerCompileOperation(osg::Node* scene):
-        osg::GraphicsOperation("Compile",false),
+        osg::Operation("Compile",false),
         _scene(scene)
     {
     }
     
-    virtual void operator () (osg::GraphicsContext* context)
+    virtual void operator () (osg::Object* object)
     {
+        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!context) return;
+
         // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
         // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
@@ -809,16 +815,19 @@ struct ViewerCompileOperation : public osg::GraphicsOperation
 
 
 // Draw operation, that does a draw on the scene graph.
-struct ViewerRunOperations : public osg::GraphicsOperation
+struct ViewerRunOperations : public osg::Operation
 {
     ViewerRunOperations():
-        osg::GraphicsOperation("RunOperation",true)
+        osg::Operation("RunOperation",true)
     {
     }
     
-    virtual void operator () (osg::GraphicsContext* gc)
+    virtual void operator () (osg::Object* object)
     {
-        gc->runOperations();
+        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!context) return;
+
+        context->runOperations();
     }
 };
 

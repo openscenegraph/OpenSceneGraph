@@ -34,6 +34,7 @@ CXXFILES =\
 	CullSettings.cpp\
 	CullStack.cpp\
 	CullingSet.cpp\
+	DeleteHandler.cpp\
 	Depth.cpp\
 	DisplaySettings.cpp\
 	DrawPixels.cpp\

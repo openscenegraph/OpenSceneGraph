@@ -224,6 +224,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\CullingSet.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\DeleteHandler.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Depth.cpp
 # End Source File
 

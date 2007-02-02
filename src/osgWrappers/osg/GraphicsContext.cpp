@@ -25,16 +25,18 @@
 
 #include <osg/Camera>
 	
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContext::OperationQueue);
+
 TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras);
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
-	I_BaseType(osg::Referenced);
-	I_Method1(void, add, IN, osg::GraphicsOperation *, operation,
-	          __void__add__GraphicsOperation_P1,
+	I_BaseType(osg::Object);
+	I_Method1(void, add, IN, osg::Operation *, operation,
+	          __void__add__Operation_P1,
 	          "Add operation to end of OperationQueue. ",
 	          "");
-	I_Method1(void, remove, IN, osg::GraphicsOperation *, operation,
-	          __void__remove__GraphicsOperation_P1,
+	I_Method1(void, remove, IN, osg::Operation *, operation,
+	          __void__remove__Operation_P1,
 	          "Remove operation from OperationQueue. ",
 	          "");
 	I_Method1(void, remove, IN, const std::string &, name,
@@ -48,6 +50,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method0(void, runOperations,
 	          __void__runOperations,
 	          "Run the operations. ",
+	          "");
+	I_Method0(osg::GraphicsContext::OperationQueue &, getOperationsQueue,
+	          __OperationQueue_R1__getOperationsQueue,
+	          "Get the operations queue, not you must use the OperationsMutex when accessing the queue. ",
+	          "");
+	I_Method0(OpenThreads::Mutex &, getOperationsMutex,
+	          __OpenThreads_Mutex_R1__getOperationsMutex,
+	          "Get the operations queue mutex. ",
+	          "");
+	I_Method0(osg::Block *, getOperationsBlock,
+	          __osg_Block_P1__getOperationsBlock,
+	          "Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block. ",
+	          "");
+	I_Method0(osg::Operation *, getCurrentOperation,
+	          __Operation_P1__getCurrentOperation,
+	          "Get the current operations that is being run. ",
 	          "");
 	I_Method0(const osg::GraphicsContext::Traits *, getTraits,
 	          __C5_Traits_P1__getTraits,
@@ -129,16 +147,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__createGraphicsThread,
 	          "Create a graphics thread to the graphics context, so that the thread handles all OpenGL operations. ",
 	          "");
-	I_Method1(void, setGraphicsThread, IN, osg::GraphicsThread *, gt,
-	          __void__setGraphicsThread__GraphicsThread_P1,
+	I_Method1(void, setGraphicsThread, IN, osg::OperationsThread *, gt,
+	          __void__setGraphicsThread__OperationsThread_P1,
 	          "Assign a graphics thread to the graphics context, so that the thread handles all OpenGL operations. ",
 	          "");
-	I_Method0(osg::GraphicsThread *, getGraphicsThread,
-	          __GraphicsThread_P1__getGraphicsThread,
+	I_Method0(osg::OperationsThread *, getGraphicsThread,
+	          __OperationsThread_P1__getGraphicsThread,
 	          "Get the graphics thread assigned the graphics context. ",
 	          "");
-	I_Method0(const osg::GraphicsThread *, getGraphicsThread,
-	          __C5_GraphicsThread_P1__getGraphicsThread,
+	I_Method0(const osg::OperationsThread *, getGraphicsThread,
+	          __C5_OperationsThread_P1__getGraphicsThread,
 	          "Get the const graphics thread assigned the graphics context. ",
 	          "");
 	I_Method0(bool, realizeImplementation,
@@ -234,9 +252,21 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(GLbitfield, ClearMask, 
 	                 __GLbitfield__getClearMask, 
 	                 __void__setClearMask__GLbitfield);
-	I_SimpleProperty(osg::GraphicsThread *, GraphicsThread, 
-	                 __GraphicsThread_P1__getGraphicsThread, 
-	                 __void__setGraphicsThread__GraphicsThread_P1);
+	I_SimpleProperty(osg::Operation *, CurrentOperation, 
+	                 __Operation_P1__getCurrentOperation, 
+	                 0);
+	I_SimpleProperty(osg::OperationsThread *, GraphicsThread, 
+	                 __OperationsThread_P1__getGraphicsThread, 
+	                 __void__setGraphicsThread__OperationsThread_P1);
+	I_SimpleProperty(osg::Block *, OperationsBlock, 
+	                 __osg_Block_P1__getOperationsBlock, 
+	                 0);
+	I_SimpleProperty(OpenThreads::Mutex &, OperationsMutex, 
+	                 __OpenThreads_Mutex_R1__getOperationsMutex, 
+	                 0);
+	I_SimpleProperty(osg::GraphicsContext::OperationQueue &, OperationsQueue, 
+	                 __OperationQueue_R1__getOperationsQueue, 
+	                 0);
 	I_SimpleProperty(osg::GraphicsContext::ResizedCallback *, ResizedCallback, 
 	                 __ResizedCallback_P1__getResizedCallback, 
 	                 __void__setResizedCallback__ResizedCallback_P1);
@@ -340,5 +370,40 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
 	          "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Operation >)
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Operation *, ptr,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Operation > &, rp,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Operation *, get,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Operation *, release,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Operation > &, rp,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Operation *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
 STD_LIST_REFLECTOR(std::list< osg::Camera * >);
+
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Operation > >);
 

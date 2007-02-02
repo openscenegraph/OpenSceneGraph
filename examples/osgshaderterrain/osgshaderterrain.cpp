@@ -240,18 +240,19 @@ osg::Node* createScene()
     return scene;
 }
 
-class TestSupportOperation: public osg::GraphicsOperation
+class TestSupportOperation: public osg::Operation
 {
 public:
 
     TestSupportOperation():
-        osg::GraphicsOperation("TestSupportOperation",false),
+        osg::Operation("TestSupportOperation",false),
         _supported(true),
         _errorMessage() {}
 
-    virtual void operator () (osg::GraphicsContext* gc)
+    virtual void operator () (osg::Object* object)
     {
-        osg::notify(osg::NOTICE)<<"Not called"<<std::endl;
+        osg::GraphicsContext* gc = dynamic_cast<osg::GraphicsContext*>(object);
+        if (!gc) return;
     
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -273,10 +274,11 @@ public:
                 _errorMessage = "ERROR: vertex texturing not supported by OpenGL driver.";
             }
         }
-
-        _supported = false;
-        _errorMessage = "ERROR: Pllalalal.";
-
+        else
+        {
+            _supported = false;
+            _errorMessage = "ERROR: GLSL not supported.";
+        }
     }
         
     OpenThreads::Mutex  _mutex;
@@ -297,16 +299,10 @@ int main(int, char **)
     viewer.setUpViewAcrossAllScreens();
     
     osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
-
-    osgViewer::Viewer::Windows windows;
-    viewer.getWindows(windows);
-    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
-        itr != windows.end();
-        ++itr)
-    {
-        (*itr)->add(testSupportOperation.get());
-    }
-
+#if 0 
+    // temporily commenting out as its causing the viewer to crash... no clue yet to why   
+    viewer.setRealizeOperation(testSupportOperation.get());
+#endif
     // create the windows and run the threads.
     viewer.realize();
     

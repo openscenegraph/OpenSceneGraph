@@ -29,7 +29,7 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContex
 
 TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
+BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_BaseType(osg::Object);
 	I_Method1(void, add, IN, osg::Operation *, operation,
 	          __void__add__Operation_P1,
@@ -55,8 +55,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __OperationQueue_R1__getOperationsQueue,
 	          "Get the operations queue, not you must use the OperationsMutex when accessing the queue. ",
 	          "");
-	I_Method0(OpenThreads::Mutex &, getOperationsMutex,
-	          __OpenThreads_Mutex_R1__getOperationsMutex,
+	I_Method0(OpenThreads::Mutex *, getOperationsMutex,
+	          __OpenThreads_Mutex_P1__getOperationsMutex,
 	          "Get the operations queue mutex. ",
 	          "");
 	I_Method0(osg::Block *, getOperationsBlock,
@@ -261,8 +261,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(osg::Block *, OperationsBlock, 
 	                 __osg_Block_P1__getOperationsBlock, 
 	                 0);
-	I_SimpleProperty(OpenThreads::Mutex &, OperationsMutex, 
-	                 __OpenThreads_Mutex_R1__getOperationsMutex, 
+	I_SimpleProperty(OpenThreads::Mutex *, OperationsMutex, 
+	                 __OpenThreads_Mutex_P1__getOperationsMutex, 
 	                 0);
 	I_SimpleProperty(osg::GraphicsContext::OperationQueue &, OperationsQueue, 
 	                 __OperationQueue_R1__getOperationsQueue, 

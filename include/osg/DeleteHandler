@@ -71,6 +71,9 @@ class OSG_EXPORT DeleteHandler
 
     protected:
 
+        DeleteHandler(const DeleteHandler&) {}
+        DeleteHandler operator = (const DeleteHandler&) { return *this; }
+
         int                 _numFramesToRetainObjects;
         int                 _currentFrameNumber;
         OpenThreads::Mutex  _mutex;

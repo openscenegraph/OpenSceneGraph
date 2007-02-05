@@ -38,6 +38,7 @@ class DataInputStream : public std::istream
         osg::Vec4f readColor32();
         osg::Vec2f readVec2f();
         osg::Vec3f readVec3f();
+        osg::Vec4f readVec4f();
         osg::Vec3d readVec3d();
 
         std::istream& forward(std::istream::off_type off);

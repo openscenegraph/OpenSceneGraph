@@ -12,6 +12,7 @@
 #include <osg/Sequence>
 #include <osg/LOD>
 #include <osg/ProxyNode>
+#include <osg/LightSource>
 #include <osgDB/FileUtils>
 #include <osgSim/DOFTransform>
 #include <osgSim/MultiSwitch>
@@ -640,18 +641,27 @@ protected:
             if (document.version() == 1541)
                 mask = ~0;
 
-            // Only override light points and shader palettes if 
-            //   we are the correct version.
-            bool parentLightPoints( (document.version() >= VERSION_15_8) &&
-                ((mask & LIGHT_POINT_PALETTE_OVERRIDE) == 0) );
-            bool parentShaders( (document.version() >= VERSION_16_0) &&
-                ((mask & SHADER_PALETTE_OVERRIDE) == 0) );
-            _external->setUserData(new ParentPools(
-                ((mask & COLOR_PALETTE_OVERRIDE) ? NULL : document.getColorPool()),
-                ((mask & MATERIAL_PALETTE_OVERRIDE) ? NULL : document.getOrCreateMaterialPool()),
-                ((mask & TEXTURE_PALETTE_OVERRIDE) ? NULL : document.getOrCreateTexturePool()),
-                ((!parentLightPoints) ? NULL : document.getOrCreateLightPointAppearancePool()),
-                ((!parentShaders) ? NULL : document.getOrCreateShaderPool()) ));
+            ParentPools* parentPools = new ParentPools;
+
+            if ((mask & COLOR_PALETTE_OVERRIDE) == 0)
+                parentPools->setColorPool(document.getColorPool());
+
+            if ((mask & MATERIAL_PALETTE_OVERRIDE) == 0)
+                parentPools->setMaterialPool(document.getMaterialPool());
+
+            if ((mask & TEXTURE_PALETTE_OVERRIDE) == 0)
+                parentPools->setTexturePool(document.getTexturePool());
+
+            if ((document.version() >= VERSION_15_1) && ((mask & LIGHT_SOURCE_PALETTE_OVERRIDE) == 0))
+                parentPools->setLightSourcePool(document.getLightSourcePool());
+
+            if ((document.version() >= VERSION_15_8) && ((mask & LIGHT_POINT_PALETTE_OVERRIDE) == 0))
+                parentPools->setLPAppearancePool(document.getLightPointAppearancePool());
+
+            if ((document.version() >= VERSION_16_0) && ((mask & SHADER_PALETTE_OVERRIDE) == 0))
+                parentPools->setShaderPool(document.getShaderPool());
+
+            _external->setUserData(parentPools);
         }
 
         // Add this implementation to parent implementation.
@@ -883,6 +893,90 @@ protected:
 };
 
 RegisterRecordProxy<Object> g_Object(OBJECT_OP);
+
+
+/** LightSource
+*/
+class LightSource : public PrimaryRecord
+{
+    static const unsigned int ENABLED = 0x80000000u >> 0;
+    static const unsigned int GLOBAL  = 0x80000000u >> 1;
+    static const unsigned int EXPORT  = 0x80000000u >> 3;
+
+    osg::ref_ptr<osg::LightSource> _lightSource;
+
+public:
+
+    LightSource() {}
+
+    META_Record(LightSource)
+
+    META_setID(_lightSource)
+    META_setComment(_lightSource)
+    META_setMatrix(_lightSource)
+
+protected:
+
+    virtual ~LightSource() {}
+
+    virtual void readRecord(RecordInputStream& in, Document& document)
+    {
+        std::string id = in.readString(8);
+        in.forward(4);
+        int32 index = in.readInt32();
+        in.forward(4);
+        uint32 flags = in.readUInt32();
+        in.forward(4);
+        osg::Vec3d pos = in.readVec3d();
+        float32 yaw = in.readFloat32();
+        float32 pitch = in.readFloat32();
+
+        _lightSource = new osg::LightSource;  
+        _lightSource->setName(id);
+
+        LightSourcePool* pool = document.getOrCreateLightSourcePool();
+        osg::Light* lightFromPool = pool->get(index);
+        if (lightFromPool)
+        {
+            // Make a clone of light in pool.
+            osg::Light* light = new osg::Light(*lightFromPool);
+
+            // TODO: Find a better way to set light number.
+            light->setLightNum(1);
+
+            // Position
+            float w = lightFromPool->getPosition().w();
+            if (w > 0.0) // positional light?
+                light->setPosition(osg::Vec4(pos,w));
+
+            // Apply yaw and pitch for infinite and spot light.
+            if ((w==0.0) || (light->getSpotCutoff()<180.0))
+            {
+                // TODO: What direction is zero yaw and pitch?
+                osg::Quat rotation( osg::Quat(osg::inDegrees(yaw),osg::Vec3(0.0,0.0,1.0)) * osg::Quat(osg::inDegrees(pitch),osg::Vec3(1.0,0.0,0.0)) );
+                light->setDirection(rotation*osg::Vec3(0.0,1.0,0.0));
+            }
+
+            _lightSource->setLight(light);
+            _lightSource->setLocalStateSetModes((flags & ENABLED) ? osg::StateAttribute::ON : osg::StateAttribute::OFF); 
+
+            // Global light.
+            if (flags & GLOBAL)
+            {
+                // Apply light source to header node.
+                osg::Node* header = document.getHeaderNode();
+                if (header)
+                    _lightSource->setStateSetModes(*(header->getOrCreateStateSet()),osg::StateAttribute::ON);
+            }
+        }
+
+        if (_parent.valid())
+            _parent->addChild(*_lightSource);
+    }
+};
+
+RegisterRecordProxy<LightSource> g_LightSource(LIGHT_SOURCE_OP);
+
 
 } // end namespace
 

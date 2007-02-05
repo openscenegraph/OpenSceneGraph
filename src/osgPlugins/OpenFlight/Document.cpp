@@ -26,6 +26,7 @@ Document::Document() :
     _colorPoolParent(false),
     _texturePoolParent(false),
     _materialPoolParent(false),
+    _lightSourcePoolParent(false),
     _lightPointAppearancePoolParent(false),
     _shaderPoolParent(false)
 {

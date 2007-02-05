@@ -13,6 +13,7 @@
 #include <osg/Vec4>
 #include <osg/StateSet>
 #include <osg/Material>
+#include <osg/Light>
 #include <osg/Program>
 #include "types.h"
 
@@ -117,6 +118,26 @@ protected:
 };
 
 
+class LightSourcePool : public osg::Referenced , public std::map<int,osg::ref_ptr<osg::Light> >
+{
+public:
+
+    LightSourcePool() {}
+
+    osg::Light* get(int index)
+    {
+        iterator itr = find(index);
+        if (itr != end())
+            return (*itr).second.get();
+        return NULL;
+    }
+
+protected:
+
+    virtual ~LightSourcePool() {}
+};
+
+
 struct LPAppearance : public osg::Referenced
 {
     std::string name;
@@ -204,31 +225,32 @@ protected:
 
 // This object records parent palettes for external record support.
 // When an external record is parsed, this object is instatiated and populated with
-// the parent model's paettes, then stored as UserData on the ProxyNode.
-// When the ReadExternalsVisitor hits the ProcyNode, it moves this object
+// the parent model's palettes, then stored as UserData on the ProxyNode.
+// When the ReadExternalsVisitor hits the ProxyNode, it moves this object
 // into the ReaderWriter Options' UserData before calling osgDB::ReadNode,
-// enabling  access to the parent palattes during load of the ext ref model.
+// enabling  access to the parent palettes during load of the ext ref model.
 class ParentPools : public osg::Referenced
 {
 public:
 
-    ParentPools(
-        ColorPool* color,
-        MaterialPool* material,
-        TexturePool* texture,
-        LightPointAppearancePool* lpAppearance,
-        ShaderPool* shader )
-      : osg::Referenced(),
-        _colorPool( color ),
-        _materialPool( material ),
-        _texturePool( texture ),
-        _lpAppearancePool( lpAppearance ),
-        _shaderPool( shader ) {}
+    ParentPools() {}
 
+    void setColorPool(ColorPool* pool) { _colorPool=pool; }
     ColorPool* getColorPool() const { return _colorPool.get(); }
+
+    void setTexturePool(TexturePool* pool) { _texturePool=pool; }
     TexturePool* getTexturePool() const { return _texturePool.get(); }
+
+    void setMaterialPool(MaterialPool* pool) { _materialPool=pool; }
     MaterialPool* getMaterialPool() const { return _materialPool.get(); }
+
+    void setLightSourcePool(LightSourcePool* pool) { _lightSourcePool=pool; }
+    LightSourcePool* getLightSourcePool() const { return _lightSourcePool.get(); }
+
+    void setLPAppearancePool(LightPointAppearancePool* pool) { _lpAppearancePool=pool; }
     LightPointAppearancePool* getLPAppearancePool() const { return _lpAppearancePool.get(); }
+
+    void setShaderPool(ShaderPool* pool) { _shaderPool=pool; }
     ShaderPool* getShaderPool() const { return _shaderPool.get(); }
 
 protected:
@@ -238,6 +260,7 @@ protected:
     osg::ref_ptr<ColorPool> _colorPool;
     osg::ref_ptr<MaterialPool> _materialPool;
     osg::ref_ptr<TexturePool> _texturePool;
+    osg::ref_ptr<LightSourcePool> _lightSourcePool;
     osg::ref_ptr<LightPointAppearancePool> _lpAppearancePool;
     osg::ref_ptr<ShaderPool> _shaderPool;
 };

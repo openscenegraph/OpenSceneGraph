@@ -218,6 +218,8 @@ class FLTReaderWriter : public ReaderWriter
                         document.setTexturePool( pools->getTexturePool(), true );
                     if (pools->getMaterialPool())
                         document.setMaterialPool( pools->getMaterialPool(), true );
+                    if (pools->getLightSourcePool())
+                        document.setLightSourcePool( pools->getLightSourcePool(), true );
                     if (pools->getLPAppearancePool())
                         document.setLightPointAppearancePool( pools->getLPAppearancePool(), true );
                     if (pools->getShaderPool())

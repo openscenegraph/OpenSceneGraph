@@ -5,6 +5,7 @@
 //
 
 #include <assert.h>
+#include <osg/Light>
 #include <osg/Texture2D>
 #include <osg/TexEnv>
 #include <osg/BlendFunc>
@@ -475,11 +476,72 @@ public:
 
     META_Record(LightSourcePalette)
 
+    enum LightType 
+    {
+        INFINITE_LIGHT = 0,
+        LOCAL_LIGHT = 1,
+        SPOT_LIGHT = 2
+    };
+
 protected:
 
     virtual ~LightSourcePalette() {}
 
-    virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
+    virtual void readRecord(RecordInputStream& in, Document& document)
+    {
+        if (document.getLightSourcePoolParent())
+            // Using parent's texture pool -- ignore this record.
+            return;
+
+        int32 index = in.readInt32(-1);
+        in.forward(2*4);
+        std::string name = in.readString(20);
+        in.forward(4);
+        osg::Vec4f ambient = in.readVec4f();
+        osg::Vec4f diffuse = in.readVec4f();
+        osg::Vec4f specular = in.readVec4f();
+        int32 type = in.readInt32();
+        in.forward(4*10);
+        float32 spotExponent = in.readFloat32();
+        float32 spotCutoff = in.readFloat32();
+        float32 yaw = in.readFloat32();
+        float32 pitch = in.readFloat32();
+        float32 constantAttenuation = in.readFloat32();
+        float32 linearAttenuation = in.readFloat32();
+        float32 quadraticAttenuation = in.readFloat32();
+        int32 active = in.readInt32();
+
+        osg::ref_ptr<osg::Light> light = new osg::Light;
+        light->setAmbient(ambient);
+        light->setDiffuse(diffuse);
+        light->setSpecular(specular);
+
+        switch (type)
+        {
+        case INFINITE_LIGHT:
+            light->setPosition(osg::Vec4(0.0f,0.0f,1.0f,0.0f));
+            break;
+        case LOCAL_LIGHT:
+            light->setPosition(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+            light->setConstantAttenuation(constantAttenuation);
+            light->setLinearAttenuation(linearAttenuation);
+            light->setQuadraticAttenuation(quadraticAttenuation);
+            break;
+        case SPOT_LIGHT:
+            light->setPosition(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+            light->setDirection(osg::Vec3(0.0f,1.0f,0.0f));
+            light->setConstantAttenuation(constantAttenuation);
+            light->setLinearAttenuation(linearAttenuation);
+            light->setQuadraticAttenuation(quadraticAttenuation);
+            light->setSpotExponent(spotExponent);
+            light->setSpotCutoff(spotCutoff);
+            break;
+        }
+
+        // Add to pool
+        LightSourcePool* pool = document.getOrCreateLightSourcePool();
+        (*pool)[index] = light.get();
+    }
 };
 
 RegisterRecordProxy<LightSourcePalette> g_LightSourcePalette(LIGHT_SOURCE_PALETTE_OP);

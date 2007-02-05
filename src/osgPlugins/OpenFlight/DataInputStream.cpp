@@ -147,6 +147,19 @@ osg::Vec3f DataInputStream::readVec3f()
 }
 
 
+osg::Vec4f DataInputStream::readVec4f()
+{
+    float32 x = readFloat32();
+    float32 y = readFloat32();
+    float32 z = readFloat32();
+    float32 w = readFloat32();
+
+    osg::Vec4f vec(x,y,z,w);
+
+    return vec;
+}
+
+
 osg::Vec3d DataInputStream::readVec3d()
 {
     float64 x = readFloat64();

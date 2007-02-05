@@ -125,18 +125,27 @@ class Document
         bool getColorPoolParent() const { return _colorPoolParent; }
 
         void setTexturePool(TexturePool* tp, bool parent=false) { _texturePool = tp; _texturePoolParent=parent; }
+        TexturePool* getTexturePool() { return _texturePool.get(); }
         TexturePool* getOrCreateTexturePool();
         bool getTexturePoolParent() const { return _texturePoolParent; }
 
         void setMaterialPool(MaterialPool* mp, bool parent=false) { _materialPool = mp; _materialPoolParent=parent; }
+        MaterialPool* getMaterialPool() { return _materialPool.get(); }
         MaterialPool* getOrCreateMaterialPool();
         bool getMaterialPoolParent() const { return _materialPoolParent; }
 
+        void setLightSourcePool(LightSourcePool* lsp, bool parent=false) { _lightSourcePool = lsp; _lightSourcePoolParent=parent; }
+        LightSourcePool* getLightSourcePool() { return _lightSourcePool.get(); }
+        LightSourcePool* getOrCreateLightSourcePool();
+        bool getLightSourcePoolParent() const { return _lightSourcePoolParent; }
+
         void setLightPointAppearancePool(LightPointAppearancePool* lpap, bool parent=false) { _lightPointAppearancePool = lpap; _lightPointAppearancePoolParent=parent; }
+        LightPointAppearancePool* getLightPointAppearancePool() { return _lightPointAppearancePool.get(); }
         LightPointAppearancePool* getOrCreateLightPointAppearancePool();
         bool getLightPointAppearancePoolParent() const { return _lightPointAppearancePoolParent; }
 
         void setShaderPool(ShaderPool* cp, bool parent=false) { _shaderPool = cp; _shaderPoolParent=parent; }
+        ShaderPool* getShaderPool() { return _shaderPool.get(); }
         ShaderPool* getOrCreateShaderPool();
         bool getShaderPoolParent() const { return _shaderPoolParent; }
 
@@ -191,11 +200,13 @@ class Document
         osg::ref_ptr<ColorPool> _colorPool;
         osg::ref_ptr<TexturePool> _texturePool;
         osg::ref_ptr<MaterialPool> _materialPool;
+        osg::ref_ptr<LightSourcePool> _lightSourcePool;
         osg::ref_ptr<LightPointAppearancePool> _lightPointAppearancePool;
         osg::ref_ptr<ShaderPool> _shaderPool;
         bool _colorPoolParent;
         bool _texturePoolParent;
         bool _materialPoolParent;
+        bool _lightSourcePoolParent;
         bool _lightPointAppearancePoolParent;
         bool _shaderPoolParent;
 
@@ -223,6 +234,14 @@ inline MaterialPool* Document::getOrCreateMaterialPool()
     if (!_materialPool.valid())
         _materialPool = new MaterialPool;
     return _materialPool.get();
+}
+
+
+inline LightSourcePool* Document::getOrCreateLightSourcePool()
+{
+    if (!_lightSourcePool.valid())
+        _lightSourcePool = new LightSourcePool;
+    return _lightSourcePool.get();
 }
 
 

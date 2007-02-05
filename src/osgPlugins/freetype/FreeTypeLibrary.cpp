@@ -13,13 +13,15 @@
 
 #include "FreeTypeLibrary.h"
 #include <osg/Notify>
+#include <ft2build.h>
+#include FT_TRUETYPE_IDS_H
 
 FreeTypeLibrary::FreeTypeLibrary()
 {
     FT_Error error = FT_Init_FreeType( &_ftlibrary );
     if (error)
     {
-        osg::notify(osg::WARN)<<"Warning: an error occured during FT_Init_FreeType(..) initialisation .. "<<std::endl;
+        osg::notify(osg::WARN)<<"Warning: an error occurred during FT_Init_FreeType(..) initialisation .. "<<std::endl;
     }
 
 }
@@ -29,7 +31,7 @@ FreeTypeLibrary::~FreeTypeLibrary()
     // need to remove the implementations from the Fonts here
     // just in case the Fonts continue to have external references
     // to them, otherwise they will try to point to an object thats
-    // definiation has been unloaded along with the unload of the FreeType
+    // definition has been unloaded along with the unload of the FreeType
     // plugin.
     while(!_fontImplementationSet.empty())
     {
@@ -65,6 +67,11 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
         osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..d"<<std::endl;
         return 0;
     }
+    
+    //
+    // GT: Fix to handle symbol fonts in MS Windows
+    //
+    verifyCharacterMap(face);
     
     FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face);
     osgText::Font* font = new osgText::Font(fontImp);
@@ -113,10 +120,36 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
         return 0;
     }
     
+    //
+    // GT: Fix to handle symbol fonts in MS Windows
+    //
+    verifyCharacterMap(face);
+    
     FreeTypeFont* fontImp = new FreeTypeFont(buffer,face);
     osgText::Font* font = new osgText::Font(fontImp);
     
     _fontImplementationSet.insert(fontImp);
 
     return font;
+}
+
+void FreeTypeLibrary::verifyCharacterMap(FT_Face face)
+{
+    //
+    // GT: Verify the correct character mapping for MS windows 
+    // as symbol fonts were being returned incorrectly
+    //
+    FT_CharMap charmap;
+    if (face->charmap == NULL)
+    {
+        for (int n = 0; n < face->num_charmaps; n++) 
+        { 
+            charmap = face->charmaps[n]; 
+            if (charmap->platform_id == TT_PLATFORM_MICROSOFT) 
+            { 
+                FT_Set_Charmap(face, charmap);
+                break; 
+            } 
+        }
+    }
 }

@@ -56,6 +56,8 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
 
 Camera::~Camera()
 {
+    setCameraThread(0);
+    
     if (_graphicsContext.valid()) _graphicsContext->removeCamera(this);
 }
 
@@ -300,4 +302,32 @@ bool Camera::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
     }
     return true;
 }
+
+void Camera::createCameraThread()
+{
+    if (!_cameraThread)
+    {
+        setCameraThread(new OperationsThread);
+    }
+}
+
+void Camera::setCameraThread(OperationsThread* gt)
+{
+    if (_cameraThread==gt) return; 
+
+    if (_cameraThread.valid()) 
+    {
+        // need to kill the thread in some way...
+        _cameraThread->cancel();
+        _cameraThread->setParent(0);
+    }
+
+    _cameraThread = gt;
+    
+    if (_cameraThread.valid()) 
+    {
+        _cameraThread->setParent(this);
+    }
+}
+
 

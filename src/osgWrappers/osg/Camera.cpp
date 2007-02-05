@@ -14,6 +14,7 @@
 #include <osg/ColorMask>
 #include <osg/CopyOp>
 #include <osg/GraphicsContext>
+#include <osg/GraphicsThread>
 #include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Matrixd>
@@ -329,6 +330,22 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_BufferAttachmentMap_R1__getBufferAttachmentMap,
 	          "Get the const BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads. ",
 	          "");
+	I_Method0(void, createCameraThread,
+	          __void__createCameraThread,
+	          "Create a operation thread for this camera. ",
+	          "");
+	I_Method1(void, setCameraThread, IN, osg::OperationsThread *, gt,
+	          __void__setCameraThread__OperationsThread_P1,
+	          "Assign a operation thread to the camera. ",
+	          "");
+	I_Method0(osg::OperationsThread *, getCameraThread,
+	          __OperationsThread_P1__getCameraThread,
+	          "Get the operation thread assigned to this camera. ",
+	          "");
+	I_Method0(const osg::OperationsThread *, getCameraThread,
+	          __C5_OperationsThread_P1__getCameraThread,
+	          "Get the const operation thread assigned to this camera. ",
+	          "");
 	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context,
 	          __void__setGraphicsContext__GraphicsContext_P1,
 	          "Set the GraphicsContext that provides the mechansim for managing the OpenGL graphics context associated with this camera. ",
@@ -388,6 +405,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::BufferAttachmentMap &, BufferAttachmentMap, 
 	                 __BufferAttachmentMap_R1__getBufferAttachmentMap, 
 	                 0);
+	I_SimpleProperty(osg::OperationsThread *, CameraThread, 
+	                 __OperationsThread_P1__getCameraThread, 
+	                 __void__setCameraThread__OperationsThread_P1);
 	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
 	                 __C5_Vec4_R1__getClearColor, 
 	                 __void__setClearColor__C5_Vec4_R1);

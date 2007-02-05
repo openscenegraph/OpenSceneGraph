@@ -474,6 +474,58 @@ void Registry::addFileExtensionAlias(const std::string mapExt, const std::string
     _extAliasMap[mapExt] = toExt;
 }
 
+bool Registry::readPluginAliasConfigurationFile( const std::string& file )
+{
+    std::string fileName = osgDB::findDataFile( file );
+    if (fileName.empty())
+    {
+        osg::notify( osg::WARN) << "Can't find plugin alias config file \"" << file << "\"." << std::endl;
+        return false;
+    }
+
+    std::ifstream ifs;
+    ifs.open( fileName.c_str() );
+    if (!ifs.good())
+    {
+        osg::notify( osg::WARN) << "Can't open plugin alias config file \"" << fileName << "\"." << std::endl;
+        return false;
+    }
+
+    int lineNum( 0 );
+    while (ifs.good())
+    {
+        std::string raw;
+        ++lineNum;
+        std::getline( ifs, raw );
+        std::string ln = trim( raw );
+        if (ln.empty()) continue;
+        if (ln[0] == '#') continue;
+
+        std::string::size_type spIdx = ln.find_first_of( " \t" );
+        if (spIdx == ln.npos)
+        {
+            // mapExt and toExt must be on the same line, separated by a space.
+            osg::notify( osg::WARN) << file << ", line " << lineNum << ": Syntax error: missing space in \"" << raw << "\"." << std::endl;
+            continue;
+        }
+
+        const std::string mapExt = trim( ln.substr( 0, spIdx ) );
+        const std::string toExt = trim( ln.substr( spIdx+1 ) );
+        addFileExtensionAlias( mapExt, toExt );
+    }
+    return true;
+}
+
+std::string Registry::trim( const std::string& str )
+{
+    if (!str.size()) return str;
+    std::string::size_type first = str.find_first_not_of( " \t" );
+    std::string::size_type last = str.find_last_not_of( "  \t\r\n" );
+    if ((first==str.npos) || (last==str.npos)) return std::string( "" );
+    return str.substr( first, last-first+1 );
+}
+
+
 std::string Registry::createLibraryNameForFile(const std::string& fileName)
 {
     std::string ext = getLowerCaseFileExtension(fileName);

@@ -81,6 +81,11 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * by the libdb_tiff readerwriter plugin.*/
         void addFileExtensionAlias(const std::string mapExt, const std::string toExt);
 
+        /** Reads a file that configures extension mappings. File is ASCII text
+          * and each line contains the parameyters to the addFileExtensionAlias
+          * method. Lines can be commented out with an initial '#' character.*/
+        bool readPluginAliasConfigurationFile( const std::string& file );
+
         void addDotOsgWrapper(DotOsgWrapper* wrapper);
         void removeDotOsgWrapper(DotOsgWrapper* wrapper);
 
@@ -469,6 +474,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
     
         // map to alias to extensions to plugins.
         ExtensionAliasMap  _extAliasMap;
+
+        // Utility: Removes whitespace from both ends of a string.
+        static std::string trim( const std::string& str );
         
         // options to pass to reader writers.
         osg::ref_ptr<ReaderWriter::Options>     _options;

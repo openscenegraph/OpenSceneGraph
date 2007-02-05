@@ -728,7 +728,7 @@ void Viewer::stopThreading()
     {
         osg::GraphicsContext* gc = (*citr);
         
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( *(gc->getOperationsMutex()) );
         osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
         for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
             oitr != operations.end();
@@ -758,7 +758,7 @@ void Viewer::stopThreading()
     {
         osg::GraphicsContext* gc = (*citr);
         
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( *(gc->getOperationsMutex()) );
         osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
         for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
             oitr != operations.end();
@@ -915,7 +915,7 @@ void Viewer::startThreading()
     {
         osg::GraphicsContext* gc = (*citr);
         
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( *(gc->getOperationsMutex()) );
         osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
         for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
             oitr != operations.end();
@@ -1731,7 +1731,7 @@ void Viewer::renderingTraversals()
     {
         osg::GraphicsContext* gc = (*itr);
         
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( gc->getOperationsMutex() );
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( *(gc->getOperationsMutex()) );
         osg::GraphicsContext::OperationQueue& operations = gc->getOperationsQueue();
         for(osg::GraphicsContext::OperationQueue::iterator oitr = operations.begin();
             oitr != operations.end();

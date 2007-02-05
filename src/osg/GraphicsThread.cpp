@@ -213,8 +213,6 @@ void OperationsThread::removeAllOperations()
 
 void OperationsThread::run()
 {
-    bool contextRealizedInThisThread = false;
-
     // make the graphics context current.
     GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());
     if (graphicsContext)

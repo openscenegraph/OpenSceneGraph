@@ -64,6 +64,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void__addFileExtensionAlias__C5_std_string__C5_std_string,
 	          "register an .fileextension alias to mapExt toExt, the later should the the extension name of the readerwriter plugin library. ",
 	          "For example to map .tif files to the tiff loader, use addExtAlias(\"tif\",\"tiff\") which will enable .tif to be read by the libdb_tiff readerwriter plugin. ");
+	I_Method1(bool, readPluginAliasConfigurationFile, IN, const std::string &, file,
+	          __bool__readPluginAliasConfigurationFile__C5_std_string_R1,
+	          "Reads a file that configures extension mappings. ",
+	          "File is ASCII text and each line contains the parameyters to the addFileExtensionAlias method. Lines can be commented out with an initial '#' character. ");
 	I_Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
 	          __void__addDotOsgWrapper__DotOsgWrapper_P1,
 	          "",

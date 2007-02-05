@@ -38,7 +38,7 @@ FreeTypeFont::~FreeTypeFont()
         FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
         if (freeTypeLibrary)
         {
-            // remove myself from the local regsitry to ensure that
+            // remove myself from the local registry to ensure that
             // not dangling pointers remain
             freeTypeLibrary->removeFontImplmentation(this);
         
@@ -69,9 +69,9 @@ void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)
         osg::notify(osg::WARN)<<"         sizes capped ("<<width<<","<<height<<") to fit int current glyph texture size."<<std::endl;
     }
 
-    FT_Error error = FT_Set_Pixel_Sizes( _face,   /* handle to face object            */
-                                         width,      /* pixel_width                      */
-                                         height );   /* pixel_height */
+    FT_Error error = FT_Set_Pixel_Sizes( _face,      /* handle to face object  */
+                                         width,      /* pixel_width            */
+                                         height );   /* pixel_height            */
 
     if (error)
     {
@@ -87,7 +87,22 @@ void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)
 
 osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 {
-    FT_Error error = FT_Load_Char( _face, charcode, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP );
+    //
+    // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being  
+    // returned, for symbol fonts in windows (FT_ENCONDING_MS_SYMBOL in freetype) the correct 
+    // values are from 0xF000 to 0xF0FF not from 0x000 to 0x00FF (0 to 255) as you would expect.  
+    // Microsoft uses a private field for its symbol fonts
+    //
+    unsigned int charindex = charcode;
+    if (_face->charmap != NULL)
+    {
+        if (_face->charmap->encoding == FT_ENCODING_MS_SYMBOL)
+        {
+            charindex |= 0xF000;
+        }
+    }
+
+    FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP );
     if (error)
     {
         osg::notify(osg::WARN) << "FT_Load_Char(...) error "<<error<<std::endl;

@@ -36,6 +36,9 @@ public:
 
 protected:
 
+    /** Verify the correct character mapping for MS windows */
+    void  verifyCharacterMap(FT_Face face);
+
     /** protected constructor to ensure the only way to create the 
       * library is via the singleton instance method.*/
     FreeTypeLibrary();

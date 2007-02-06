@@ -199,9 +199,9 @@ static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits) {
 
     std::vector<GLint> attributes;
     
-    attributes.push_back(AGL_NO_RECOVERY);
+    if (!traits->pbuffer) attributes.push_back(AGL_NO_RECOVERY);
     attributes.push_back(AGL_RGBA);
-    attributes.push_back(AGL_COMPLIANT);
+    if (!traits->pbuffer) attributes.push_back(AGL_COMPLIANT);
     
     if (traits->doubleBuffer) attributes.push_back(AGL_DOUBLEBUFFER);
     if (traits->quadBufferStereo) attributes.push_back(AGL_STEREO);
@@ -238,35 +238,71 @@ class GraphicsContextCarbon : public osg::GraphicsContext
     public:
 
         GraphicsContextCarbon(osg::GraphicsContext::Traits* traits):
-            _valid(false)
+            _valid(false),
+            _realized(false),
+            _context(NULL)
         {
             _traits = traits;
+            
+            _valid = true;
         }
     
         virtual bool valid() const { return _valid; }
 
         /** Realise the GraphicsContext implementation, 
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
+        virtual bool realizeImplementation() 
+        {
+            AGLPixelFormat pixelformat = createPixelFormat(_traits.get());
+            
+            if (!pixelformat) {
+                osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
+                return false;
+            }
+            _context = aglCreateContext (pixelformat, NULL);
+            if (!_context) {
+                osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
+                return false;
+            }
+            
+            aglDestroyPixelFormat(pixelformat);
+            
+            _realized = aglCreatePBuffer (_traits->width, _traits->height, _traits->target, GL_RGBA, _traits->level, &(_pbuffer));
+            if (!_realized) {
+                osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglCreatePBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
+            }
+            return _realized;
+        }
 
         /** Return true if the graphics context has been realised, and is ready to use, implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool isRealizedImplementation() const  { osg::notify(osg::NOTICE)<<"GraphicsWindow::isRealizedImplementation() not implemented."<<std::endl; return false; }
+        virtual bool isRealizedImplementation() const  { return _realized; }
 
         /** Close the graphics context implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void closeImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::closeImplementation() not implemented."<<std::endl; }
+        virtual void closeImplementation()  
+        { 
+            if (_pbuffer) aglDestroyPBuffer(_pbuffer);
+            if (_context) aglDestroyContext(_context);
+            _valid = _realized = false;
+        }
 
         /** Make this graphics context current implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false; }
+        virtual bool makeCurrentImplementation() 
+        { 
+            return (_realized) ? (aglSetCurrentContext(_context) == GL_TRUE) : false;
+        }
         
         /** Make this graphics context current with specified read context implementation.
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
         virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false;}
 
          /** Release the graphics context.*/
-        virtual bool releaseContextImplementation() {  osg::notify(osg::NOTICE)<<"GraphicsWindow::releaseContextImplementation(..) not implemented."<<std::endl; return false; }
+        virtual bool releaseContextImplementation() 
+        {  
+             return (aglSetCurrentContext(NULL) == GL_TRUE);
+        }
 
 
         /** Pure virtual, Bind the graphics context to associated texture implementation.
@@ -275,15 +311,21 @@ class GraphicsContextCarbon : public osg::GraphicsContext
 
         /** Swap the front and back buffers implementation.
           * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
-        virtual void swapBuffersImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow:: swapBuffersImplementation() not implemented."<<std::endl; }
+        virtual void swapBuffersImplementation()  
+        { 
+             aglSwapBuffers(_context);
+        }
         
     protected:
         
         bool        _valid;
+        bool        _realized;
+        AGLContext    _context;
+        AGLPbuffer    _pbuffer;
 
 };
 
-#pragma mark * * * OSXWindowingSystemInterface * * * 
+#pragma mark * * * MenubarController * * * 
 
 class MenubarController : public osg::Referenced 
 {
@@ -405,6 +447,10 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
         _displayCount(0),
         _displayIds(NULL)
     {
+        ProcessSerialNumber sn = { 0, kCurrentProcess };
+        TransformProcessType(&sn,kProcessTransformToForegroundApplication);
+        SetFrontProcess(&sn);
+        
         if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
             osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: could not get # of screens" << std::endl;
             
@@ -583,17 +629,19 @@ bool GraphicsWindowCarbon::realizeImplementation()
        
     makeCurrent();
 
-    // enable Multi-threaded OpenGL Execution:
-    CGLError cgerr = kCGLNoError;
-    CGLContextObj ctx = CGLGetCurrentContext();
+    // disabling Multi-threaded OpenGL Execution because it slows down rendering, perhaps we should add a new attribute to traits?
+    /*
+        // enable Multi-threaded OpenGL Execution:
+        CGLError cgerr = kCGLNoError;
+        CGLContextObj ctx = CGLGetCurrentContext();
 
-    cgerr =  CGLEnable( ctx, kCGLCEMPEngine);
-        
-    if (cgerr != kCGLNoError )
-    {
-        osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
-    } 
-    
+        cgerr =  CGLEnable( ctx, kCGLCEMPEngine);
+            
+        if (cgerr != kCGLNoError )
+        {
+            osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
+        } 
+    */
     aglSetDrawable(_context, GetWindowPort(_window));
     ShowWindow(_window);
     

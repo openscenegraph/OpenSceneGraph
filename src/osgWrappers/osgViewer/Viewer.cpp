@@ -31,10 +31,16 @@ TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Viewer::W
 
 TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::Viewer::Cameras);
 
+TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::Viewer::Threads);
+
+TYPE_NAME_ALIAS(std::vector< osg::OperationsThread * >, osgViewer::Viewer::OperationsThreads);
+
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
 	I_EnumLabel(osgViewer::Viewer::SingleThreaded);
-	I_EnumLabel(osgViewer::Viewer::ThreadPerContext);
-	I_EnumLabel(osgViewer::Viewer::ThreadPerCamera);
+	I_EnumLabel(osgViewer::Viewer::CullDrawThreadPerContext);
+	I_EnumLabel(osgViewer::Viewer::DrawThreadPerContext);
+	I_EnumLabel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
+	I_EnumLabel(osgViewer::Viewer::AutomaticSelection);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::BarrierPosition)
@@ -106,6 +112,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_Method0(bool, getUseMainThreadForRenderingTraversals,
 	          __bool__getUseMainThreadForRenderingTraversals,
 	          "Get whether the main thread, calling frame(), should be used for the rendering traversals. ",
+	          "");
+	I_Method0(osgViewer::Viewer::ThreadingModel, suggestBestThreadingModel,
+	          __ThreadingModel__suggestBestThreadingModel,
+	          "Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available. ",
 	          "");
 	I_Method1(void, setEndBarrierPosition, IN, osgViewer::Viewer::BarrierPosition, bp,
 	          __void__setEndBarrierPosition__BarrierPosition,
@@ -179,6 +189,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__getCameras__Cameras_R1__bool,
 	                      "",
 	                      "");
+	I_MethodWithDefaults2(void, getAllThreads, IN, osgViewer::Viewer::Threads &, threads, , IN, bool, onlyActive, true,
+	                      __void__getAllThreads__Threads_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getOperationsThreads, IN, osgViewer::Viewer::OperationsThreads &, threads, , IN, bool, onlyActive, true,
+	                      __void__getOperationsThreads__OperationsThreads_R1__bool,
+	                      "",
+	                      "");
 	I_Method1(void, setRealizeOperation, IN, osg::Operation *, op,
 	          __void__setRealizeOperation__osg_Operation_P1,
 	          "Set the graphics operation to call on realization of the viewers graphics windows. ",
@@ -237,5 +255,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 __void__setUseMainThreadForRenderingTraversals__bool);
 END_REFLECTOR
 
+STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >);
+
 STD_VECTOR_REFLECTOR(std::vector< osg::Camera * >);
+
+STD_VECTOR_REFLECTOR(std::vector< osg::OperationsThread * >);
 

@@ -511,6 +511,7 @@ class Win32KeyboardMap
             _keymap[VK_NUMPAD3      ] = osgGA::GUIEventAdapter::KEY_KP_Page_Down;
             _keymap[VK_NUMPAD0      ] = osgGA::GUIEventAdapter::KEY_KP_Insert;
             _keymap[VK_DECIMAL      ] = osgGA::GUIEventAdapter::KEY_KP_Delete;
+            _keymap[VK_CLEAR        ] = osgGA::GUIEventAdapter::KEY_Clear;
         }
 
         ~Win32KeyboardMap() {}
@@ -1557,37 +1558,63 @@ void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol
 {
     modifierMask = 0;
 
+    bool rightSide = (lParam & 0x01000000)!=0;
+    int virtualKey = ::MapVirtualKeyEx((lParam>>16) & 0xff, 3, ::GetKeyboardLayout(0));
+
     BYTE keyState[256];
-    if (!::GetKeyboardState(keyState))
+
+    if (virtualKey==0 || !::GetKeyboardState(keyState))
     {
         keySymbol = 0;
         return;
     }
 
-    bool rightSide = (lParam & 0x01000000)!=0;
-
-    if (keyState[VK_SHIFT] & 0x80)
+    switch (virtualKey)
     {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
-        modifierMask |= rightSide ? osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT : osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT;
+        //////////////////
+        case VK_LSHIFT   :
+        //////////////////
+
+            modifierMask |= osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT;
+            break;
+
+        //////////////////
+        case VK_RSHIFT   :
+        //////////////////
+
+            modifierMask |= osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT;
+            break;
+
+        //////////////////
+        case VK_CONTROL  :
+        case VK_LCONTROL :
+        //////////////////
+
+            virtualKey    = rightSide ? VK_RCONTROL : VK_LCONTROL;
+            modifierMask |= rightSide ? osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL : osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL;
+            break;
+
+        //////////////////
+        case VK_MENU     :
+        case VK_LMENU    :
+        //////////////////
+
+            virtualKey    = rightSide ? VK_RMENU : VK_LMENU;
+            modifierMask |= rightSide ? osgGA::GUIEventAdapter::MODKEY_RIGHT_ALT : osgGA::GUIEventAdapter::MODKEY_LEFT_ALT;
+            break;
+
+        //////////////////
+        default          :
+        //////////////////
+
+            virtualKey = wParam;
+            break;
     }
 
     if (keyState[VK_CAPITAL] & 0x01) modifierMask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
     if (keyState[VK_NUMLOCK] & 0x01) modifierMask |= osgGA::GUIEventAdapter::MODKEY_NUM_LOCK;
 
-    if (keyState[VK_CONTROL] & 0x80)
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
-        modifierMask |= rightSide ? osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL : osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL;
-    }
-
-    if (lParam & 0x20000000)
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_LEFT_ALT;
-        modifierMask |= rightSide ? osgGA::GUIEventAdapter::MODKEY_RIGHT_ALT : osgGA::GUIEventAdapter::MODKEY_LEFT_ALT;
-    }
-
-    keySymbol = remapWin32Key(wParam);
+    keySymbol = remapWin32Key(virtualKey);
 
     if (keySymbol==osgGA::GUIEventAdapter::KEY_Return && rightSide)
     {

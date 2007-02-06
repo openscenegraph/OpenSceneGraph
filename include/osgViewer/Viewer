@@ -53,8 +53,10 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         enum ThreadingModel
         {
             SingleThreaded,
-            ThreadPerContext,
-            ThreadPerCamera
+            CullDrawThreadPerContext,
+            DrawThreadPerContext,
+            CullThreadPerCameraDrawThreadPerContext,
+            AutomaticSelection
         };
         
         /** Set the threading model the rendering traversals will use.*/
@@ -69,6 +71,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Get whether the main thread, calling frame(), should be used for the rendering traversals.*/
         bool getUseMainThreadForRenderingTraversals() const { return _useMainThreadForRenderingTraversal; }
 
+        /** Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available.*/
+        ThreadingModel suggestBestThreadingModel();
 
         enum BarrierPosition
         {
@@ -177,6 +181,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
                 _currentContext = 0;
             }
         }
+        
         
         bool _firstFrame;
         

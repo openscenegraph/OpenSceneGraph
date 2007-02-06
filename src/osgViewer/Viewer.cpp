@@ -987,7 +987,7 @@ void Viewer::startThreading()
 
 
     int numProcessors = OpenThreads::GetNumberOfProcessors();
-    bool affinity = false;//true;
+    bool affinity = true;
     
     Contexts::iterator citr;
 
@@ -1044,6 +1044,9 @@ void Viewer::startThreading()
 
     osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
 
+    typedef std::map<OpenThreads::Thread*, int> ThreadAffinityMap;
+    ThreadAffinityMap threadAffinityMap;
+
     unsigned int processNum = 1;
     for(citr = contexts.begin();
         citr != contexts.end();
@@ -1058,6 +1061,8 @@ void Viewer::startThreading()
 
 #if 1
         if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
+
+        threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
 #else
         if (affinity) gc->getGraphicsThread()->setProcessorAffinity(1);
 #endif
@@ -1106,6 +1111,7 @@ void Viewer::startThreading()
 
 #if 1
             if (affinity) camera->getCameraThread()->setProcessorAffinity(processNum % numProcessors);
+            threadAffinityMap[camera->getCameraThread()] = processNum % numProcessors;
 #else
             if (affinity) camera->getCameraThread()->setProcessorAffinity(1);
 #endif            
@@ -1137,7 +1143,7 @@ void Viewer::startThreading()
 
         for(camItr = cameras.begin();
             camItr != cameras.end();
-            ++camItr, ++processNum)
+            ++camItr)
         {
             osg::Camera* camera = *camItr;
             if (camera->getCameraThread() && !camera->getCameraThread()->isRunning())
@@ -1149,6 +1155,22 @@ void Viewer::startThreading()
     }
     
     if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(0);
+
+
+#if 0
+    if (affinity)
+    {
+        for(ThreadAffinityMap::iterator titr = threadAffinityMap.begin();
+            titr != threadAffinityMap.end();
+            ++titr)
+        {
+            titr->first->setProcessorAffinity(titr->second);
+        }
+    }
+    
+    if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(0);
+#endif
+
 
     for(citr = contexts.begin();
         citr != contexts.end();

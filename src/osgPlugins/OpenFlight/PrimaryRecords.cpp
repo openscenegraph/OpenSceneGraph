@@ -953,7 +953,8 @@ protected:
             if ((w==0.0) || (light->getSpotCutoff()<180.0))
             {
                 // TODO: What direction is zero yaw and pitch?
-                osg::Quat rotation( osg::Quat(osg::inDegrees(yaw),osg::Vec3(0.0,0.0,1.0)) * osg::Quat(osg::inDegrees(pitch),osg::Vec3(1.0,0.0,0.0)) );
+                osg::Quat rotation = ( osg::Quat(osg::inDegrees(double(yaw)),osg::Vec3(0.0,0.0,1.0)) *
+                                       osg::Quat(osg::inDegrees(double(pitch)),osg::Vec3(1.0,0.0,0.0)) );
                 light->setDirection(rotation*osg::Vec3(0.0,1.0,0.0));
             }
 

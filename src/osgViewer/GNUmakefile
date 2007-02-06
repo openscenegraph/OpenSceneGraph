@@ -13,7 +13,16 @@ CXXFILES = \
 
 
 ifeq ($(OS),Darwin)
-   CXXFILES += GraphicsWindowCarbon.cpp
+  ifeq ($(USE_AGL),yes)
+     CXXFILES += GraphicsWindowCarbon.cpp
+  else 
+    ifeq ($(USE_CGL),yes)
+       CXXFILES += GraphicsWindowCarbon.cpp
+    else
+       CXXFILES += GraphicsWindowX11.cpp
+       LIBS     += $(X_LIBS)
+    endif
+  endif
 else
   ifeq ($(OS),MINGW)
      CXXFILES += GraphicsWindowWin32.cpp

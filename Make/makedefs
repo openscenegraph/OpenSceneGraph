@@ -496,6 +496,8 @@ ifeq ($(OS),Darwin)
       LDFLAGS        += $(FINC) 
       X_INC          = 
       X_LIBS         = 
+      GL_LIBS        = -framework OpenGL $(CARBON_LIB)
+      GLUT_LIBS      = -framework GLUT
 
   else
       ifeq ($(USE_CGL),yes)
@@ -505,6 +507,8 @@ ifeq ($(OS),Darwin)
          LDFLAGS        += $(FINC) 
          X_INC          = 
          X_LIBS         = 
+         GL_LIBS        = -framework OpenGL $(CARBON_LIB)
+         GLUT_LIBS      = -framework GLUT
 
       else
 
@@ -512,6 +516,8 @@ ifeq ($(OS),Darwin)
          LDFLAGS        += $(FINC) -L$(SDKPATH)/usr/include -L$(SDKPATH)/usr/X11R6/lib -L/sw/lib
          X_INC          = -I$(SDKPATH)/usr/X11R6/include
          X_LIBS         = -lX11 
+         GL_LIBS        = -lGL -lGLU
+         GLUT_LIBS      = -lGLUT
 
       endif
   endif
@@ -528,8 +534,6 @@ ifeq ($(OS),Darwin)
   DYNAMICLIBRARYLIB =
   OSG_LIBS          = -losgGA -losgDB -losgUtil -losg 
   CARBON_LIB        = -framework Carbon
-  GL_LIBS           = -framework OpenGL $(CARBON_LIB)
-  GLUT_LIBS         = -framework GLUT
   SOCKET_LIBS       = 
   OTHER_LIBS        = -lm -lstdc++ -lobjc -lOpenThreads
   LIB_EXT           = dylib

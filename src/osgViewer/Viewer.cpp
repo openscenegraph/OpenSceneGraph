@@ -541,9 +541,10 @@ Viewer::Viewer():
     _done(false),
     _keyEventSetsDone(osgGA::GUIEventAdapter::KEY_Escape),
     _quitEventSetsDone(true),
-    _threadingModel(SingleThreaded),
-//    _threadingModel(ThreadPerContext),
-//    _threadingModel(ThreadPerCamera),
+//    _threadingModel(SingleThreaded),
+//    _threadingModel(CullDrawThreadPerContext),
+//    _threadingModel(CullThreadPerCameraDrawThreadPerContext),
+    _threadingModel(AutomaticSelection),
     _threadsRunning(false),
     _useMainThreadForRenderingTraversal(true),
     _endBarrierPosition(AfterSwapBuffers),
@@ -570,7 +571,7 @@ Viewer::~Viewer()
     Threads threads;
     getAllThreads(threads);
 
-    osg::notify(osg::NOTICE)<<"start destrcutor getThreads = "<<threads.size()<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::~Viewer():: start destructor getThreads = "<<threads.size()<<std::endl;
 
 
     stopThreading();
@@ -601,7 +602,7 @@ Viewer::~Viewer()
     
     getAllThreads(threads);
 
-    osg::notify(osg::NOTICE)<<"end destrcutor getThreads = "<<threads.size()<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::~Viewer() end destrcutor getThreads = "<<threads.size()<<std::endl;
 
 }
 
@@ -734,7 +735,7 @@ void Viewer::stopThreading()
 {
     if (!_threadsRunning) return;
 
-    osg::notify(osg::NOTICE)<<"Viewer::stopThreading() - stopping threading"<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::stopThreading() - stopping threading"<<std::endl;
 
     Contexts contexts;
     getContexts(contexts);
@@ -811,7 +812,7 @@ void Viewer::stopThreading()
     _endRenderingDispatchBarrier = 0;
     _numThreadsOnBarrier = 0;
     _endDynamicDrawBlock = 0;
-    osg::notify(osg::NOTICE)<<"Viewer::stopThreading() - stopped threading :-)"<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::stopThreading() - stopped threading."<<std::endl;
 }
 
 // Compile operation, that compile OpenGL objects.
@@ -863,28 +864,70 @@ struct ViewerRunOperations : public osg::Operation
     }
 };
 
+Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
+{
+    Contexts contexts;
+    getContexts(contexts);
+    
+    if (contexts.empty()) return SingleThreaded;
+
+
+    Cameras cameras;
+    getCameras(cameras);
+
+    if (cameras.empty()) return SingleThreaded;
+
+
+    int numProcessors = OpenThreads::GetNumberOfProcessors();
+    
+    if (contexts.size()==1)
+    {
+        if (numProcessors==1) return SingleThreaded;
+        else return DrawThreadPerContext;
+    }
+
+    if (numProcessors >= static_cast<int>(cameras.size()+contexts.size()))
+    {
+        return CullThreadPerCameraDrawThreadPerContext;
+    }
+
+#if 1
+        return DrawThreadPerContext;
+#else
+        return CullDrawThreadPerContext;
+#endif
+}
+
 unsigned int Viewer::computeNumberOfThreadsIncludingMainRequired()
 {
     unsigned int numThreadsOnBarrier = 1;
-    switch(_threadingModel)
+
+    ThreadingModel threadingModel = _threadingModel==AutomaticSelection ? suggestBestThreadingModel() : _threadingModel;
+    
+    switch(threadingModel)
     {
         case(SingleThreaded): 
             numThreadsOnBarrier = 1;
             break;
-        case(ThreadPerContext): 
+        case(CullDrawThreadPerContext): 
         {
             Contexts contexts;
             getContexts(contexts);
             numThreadsOnBarrier = contexts.size()+1;
             break;
-        }   
-        case(ThreadPerCamera): 
+        }
+        case(DrawThreadPerContext): 
+            numThreadsOnBarrier = 1;
+            break;
+        case(CullThreadPerCameraDrawThreadPerContext): 
         {
             Cameras cameras;
             getCameras(cameras);
             numThreadsOnBarrier = _useMainThreadForRenderingTraversal ? cameras.size() : cameras.size()+1;
             break;
         }
+        default:
+            osg::notify(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
     }
     return numThreadsOnBarrier;
 }
@@ -898,6 +941,8 @@ void Viewer::startThreading()
     // release any context held by the main thread.
     releaseContext();
 
+    _threadingModel = _threadingModel==AutomaticSelection ? suggestBestThreadingModel() : _threadingModel;
+
     Contexts contexts;
     getContexts(contexts);
 
@@ -910,12 +955,18 @@ void Viewer::startThreading()
         case(SingleThreaded): 
             _numThreadsOnBarrier = 1;
             return;
-        case(ThreadPerContext): 
+        case(CullDrawThreadPerContext): 
             _numThreadsOnBarrier = contexts.size()+1;
             break;
-        case(ThreadPerCamera): 
+        case(DrawThreadPerContext): 
+            _numThreadsOnBarrier = 1;
+            break;
+        case(CullThreadPerCameraDrawThreadPerContext): 
             _numThreadsOnBarrier = _useMainThreadForRenderingTraversal ? cameras.size() : cameras.size()+1;
             break;
+        default:
+            osg::notify(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
+            return;
     }
 
     // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
@@ -932,7 +983,7 @@ void Viewer::startThreading()
         getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
     }
     
-    osg::notify(osg::NOTICE)<<"_numThreadsOnBarrier = "<<_numThreadsOnBarrier<<std::endl;
+    osg::notify(osg::INFO)<<"_numThreadsOnBarrier = "<<_numThreadsOnBarrier<<std::endl;
 
 
     int numProcessors = OpenThreads::GetNumberOfProcessors();
@@ -941,6 +992,8 @@ void Viewer::startThreading()
     Contexts::iterator citr;
 
     unsigned int numViewerDoubleBufferedRenderingOperation = 0;
+
+    bool graphicsThreadsDoesCull = _threadingModel == CullDrawThreadPerContext;
 
     // reset any double buffer graphics objects
     for(citr = contexts.begin();
@@ -958,7 +1011,7 @@ void Viewer::startThreading()
             ViewerDoubleBufferedRenderingOperation* vdbro = dynamic_cast<ViewerDoubleBufferedRenderingOperation*>(oitr->get());
             if (vdbro)
             {
-                vdbro->setGraphicsThreadDoesCull( _threadingModel != ThreadPerCamera );
+                vdbro->setGraphicsThreadDoesCull( graphicsThreadsDoesCull );
                 vdbro->_done = false;
                 ++numViewerDoubleBufferedRenderingOperation;
             }
@@ -966,13 +1019,14 @@ void Viewer::startThreading()
 
     }
 
-    if (_threadingModel==ThreadPerContext)
+    if (_threadingModel==CullDrawThreadPerContext)
     {
         _startRenderingBarrier = 0;
         _endRenderingDispatchBarrier = 0;
         _endDynamicDrawBlock = 0;
     }
-    else if (_threadingModel==ThreadPerCamera)
+    else if (_threadingModel==DrawThreadPerContext || 
+             _threadingModel==CullThreadPerCameraDrawThreadPerContext)
     {
         _startRenderingBarrier = 0;
         _endRenderingDispatchBarrier = 0;
@@ -1011,12 +1065,12 @@ void Viewer::startThreading()
         gc->getGraphicsThread()->add(new ViewerCompileOperation(getSceneData()));
 
         // add the startRenderingBarrier
-        if (_threadingModel==ThreadPerContext && _startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());
+        if (_threadingModel==CullDrawThreadPerContext && _startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());
 
         // add the rendering operation itself.
         gc->getGraphicsThread()->add(new ViewerRunOperations());
 
-        if (_threadingModel==ThreadPerContext && _endBarrierPosition==BeforeSwapBuffers && _endRenderingDispatchBarrier.valid())
+        if (_threadingModel==CullDrawThreadPerContext && _endBarrierPosition==BeforeSwapBuffers && _endRenderingDispatchBarrier.valid())
         {
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
@@ -1027,7 +1081,7 @@ void Viewer::startThreading()
         // add the swap buffers
         gc->getGraphicsThread()->add(swapOp.get());
 
-        if (_threadingModel==ThreadPerContext && _endBarrierPosition==AfterSwapBuffers && _endRenderingDispatchBarrier.valid())
+        if (_threadingModel==CullDrawThreadPerContext && _endBarrierPosition==AfterSwapBuffers && _endRenderingDispatchBarrier.valid())
         {
             // add the endRenderingDispatchBarrier
             gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
@@ -1038,7 +1092,7 @@ void Viewer::startThreading()
     }
 
     
-    if (_threadingModel==ThreadPerCamera && _numThreadsOnBarrier>1)
+    if (_threadingModel==CullThreadPerCameraDrawThreadPerContext && _numThreadsOnBarrier>1)
     {
         Cameras::iterator camItr = cameras.begin();
         if (_useMainThreadForRenderingTraversal) ++camItr;
@@ -1050,7 +1104,7 @@ void Viewer::startThreading()
             osg::Camera* camera = *camItr;
             camera->createCameraThread();
 
-#if 0
+#if 1
             if (affinity) camera->getCameraThread()->setProcessorAffinity(processNum % numProcessors);
 #else
             if (affinity) camera->getCameraThread()->setProcessorAffinity(1);
@@ -1263,13 +1317,13 @@ void Viewer::setUpRenderingSupport()
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
     osgDB::DatabasePager* dp = _scene.valid() ? _scene->getDatabasePager() : 0;
 
-    bool graphicsThreadDoesCull = _threadingModel!=ThreadPerCamera;
+    bool graphicsThreadDoesCull = _threadingModel!=CullThreadPerCameraDrawThreadPerContext;
     unsigned int numViewerDoubleBufferedRenderingOperation = 0;
     
     Cameras localCameras;
     getCameras(localCameras);
 
-    if (true)//(_threadingModel==ThreadPerCamera)
+    if (true)//(_threadingModel==CullThreadPerCameraDrawThreadPerContext)
     {
         for(Contexts::iterator gcitr = contexts.begin();
             gcitr != contexts.end();

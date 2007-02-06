@@ -27,16 +27,24 @@ public:
                     switch(viewer->getThreadingModel())
                     {
                         case(osgViewer::Viewer::SingleThreaded):
-                            viewer->setThreadingModel(osgViewer::Viewer::ThreadPerContext);
-                            osg::notify(osg::NOTICE)<<"Threading model 'ThreadPerContext' selected."<<std::endl;
+                            viewer->setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
                             break;
-                        case(osgViewer::Viewer::ThreadPerContext):
-                            viewer->setThreadingModel(osgViewer::Viewer::ThreadPerCamera);
-                            osg::notify(osg::NOTICE)<<"Threading model 'ThreadPerCamera' selected."<<std::endl;
+                        case(osgViewer::Viewer::CullDrawThreadPerContext):
+                            viewer->setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
                             break;
-                        case(osgViewer::Viewer::ThreadPerCamera):
+                        case(osgViewer::Viewer::DrawThreadPerContext):
+                            viewer->setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'CullThreadPerCameraDrawThreadPerContext' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext):
                             viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-                            osg::notify(osg::NOTICE)<<"Threading model 'SingleTheaded' selected."<<std::endl;
+                            osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::AutomaticSelection):
+                            viewer->setThreadingModel(viewer->suggestBestThreadingModel());
+                            osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
                             break;
                     }
                     return true;
@@ -241,8 +249,9 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
     
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded); }
-    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerContext); }
-    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::ThreadPerCamera); }
+    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext); }
+    while (arguments.read("-d")) { viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext); }
+    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext); }
     
     bool limitNumberOfFrames = false;
     unsigned int maxFrames = 10;

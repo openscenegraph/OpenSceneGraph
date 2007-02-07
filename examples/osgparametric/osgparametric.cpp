@@ -114,6 +114,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
             osg::Uniform* coeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
             coeff->setUpdateCallback(new UniformVarying);
             stateset->addUniform(coeff);
+            stateset->setDataVariance(osg::Object::DYNAMIC);
         }
         else if (shader=="matrix")
         {

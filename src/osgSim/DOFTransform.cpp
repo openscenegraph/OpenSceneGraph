@@ -34,7 +34,6 @@ DOFTransform::DOFTransform():
     _increasingFlags(0xffff),
     _multOrder(PRH)
 {
-    setNumChildrenRequiringUpdateTraversal(1);
 }
 
 DOFTransform::DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop):
@@ -60,7 +59,7 @@ DOFTransform::DOFTransform(const DOFTransform& dof, const osg::CopyOp& copyop):
     _increasingFlags(dof._increasingFlags),
     _multOrder(dof._multOrder)
 {
-    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+    if (_animationOn) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
 void DOFTransform::traverse(osg::NodeVisitor& nv)
@@ -458,6 +457,20 @@ void DOFTransform::updateCurrentScale(const osg::Vec3& scale)
     }
 
     dirtyBound();
+}
+
+void DOFTransform::setAnimationOn(bool do_animate)
+{
+    if (_animationOn == do_animate) return;
+    
+    int delta = 0;
+
+    if (_animationOn) --delta;
+    if (do_animate) ++delta;
+
+    _animationOn = do_animate;
+    
+    if (_animationOn) setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+delta);
 }
 
 void DOFTransform::animate(float deltaTime)

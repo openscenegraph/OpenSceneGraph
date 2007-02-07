@@ -30,6 +30,7 @@
 BEGIN_ENUM_REFLECTOR(osg::Transform::ReferenceFrame)
 	I_EnumLabel(osg::Transform::RELATIVE_RF);
 	I_EnumLabel(osg::Transform::ABSOLUTE_RF);
+	I_EnumLabel(osg::Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Transform)
@@ -92,7 +93,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Transform)
 	I_Method1(void, setReferenceFrame, IN, osg::Transform::ReferenceFrame, rf,
 	          __void__setReferenceFrame__ReferenceFrame,
 	          "Set the transform's ReferenceFrame, either to be relative to its parent reference frame, or relative to an absolute coordinate frame. ",
-	          "RELATIVE_RF is the default. Note: Setting the ReferenceFrame to be ABSOLUTE_RF will also set the CullingActive flag on the transform, and hence all of its parents, to false, thereby disabling culling of it and all its parents. This is neccessary to prevent inappropriate culling, but may impact cull times if the absolute transform is deep in the scene graph. It is therefore recommended to only use absolute Transforms at the top of the scene, for such things as heads up displays.");
+	          "RELATIVE_RF is the default. Note: Setting the ReferenceFrame to be ABSOLUTE_RF will also set the CullingActive flag on the transform, and hence all of its parents, to false, thereby disabling culling of it and all its parents. This is neccessary to prevent inappropriate culling, but may impact cull times if the absolute transform is deep in the scene graph. It is therefore recommended to only use absolute Transforms at the top of the scene, for such things as heads up displays. ABSOLUTE_RF_INHERIT_VIEWPOINT is the same as ABSOLUTE_RF except it adds the ability to use the parents view points position in world coordinates as its local viewpoint in the new coordinates frame. This is useful for Render to texture Cameras that wish to use the main views LOD range computation (which uses the viewpoint rather than the eye point) rather than use the local eye point defined by the this Transforms' abosolute view matrix.");
 	I_Method0(osg::Transform::ReferenceFrame, getReferenceFrame,
 	          __ReferenceFrame__getReferenceFrame,
 	          "",

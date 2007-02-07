@@ -17,6 +17,7 @@
 #include <osg/Matrix>
 #include <osg/Node>
 #include <osg/ShadowVolumeOccluder>
+#include <osg/Transform>
 #include <osg/Vec3>
 #include <osg/Viewport>
 

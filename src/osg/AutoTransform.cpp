@@ -90,103 +90,106 @@ void AutoTransform::computeMatrix() const
 
 void AutoTransform::accept(NodeVisitor& nv)
 {
-    // if app traversal update the frame count.
-    if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR)
+    if (nv.validNodeMask(*this)) 
     {
-    }
-    else
-    if (nv.getVisitorType()==NodeVisitor::CULL_VISITOR)
-    {
-
-        CullStack* cs = dynamic_cast<CullStack*>(&nv);
-        if (cs)
+        // if app traversal update the frame count.
+        if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR)
+        {
+        }
+        else
+        if (nv.getVisitorType()==NodeVisitor::CULL_VISITOR)
         {
 
-            Viewport::value_type width = _previousWidth;
-            Viewport::value_type height = _previousHeight;
-
-            osg::Viewport* viewport = cs->getViewport();
-            if (viewport)
+            CullStack* cs = dynamic_cast<CullStack*>(&nv);
+            if (cs)
             {
-                width = viewport->width();
-                height = viewport->height();
+
+                Viewport::value_type width = _previousWidth;
+                Viewport::value_type height = _previousHeight;
+
+                osg::Viewport* viewport = cs->getViewport();
+                if (viewport)
+                {
+                    width = viewport->width();
+                    height = viewport->height();
+                }
+
+                osg::Vec3 eyePoint = cs->getEyeLocal(); 
+                osg::Vec3 localUp = cs->getUpLocal(); 
+                osg::Vec3 position = getPosition();
+
+                const osg::Matrix& projection = cs->getProjectionMatrix();
+
+                bool doUpdate = _firstTimeToInitEyePoint;
+                if (!_firstTimeToInitEyePoint)
+                {
+                    osg::Vec3 dv = _previousEyePoint-eyePoint;
+                    if (dv.length2()>getAutoUpdateEyeMovementTolerance()*(eyePoint-getPosition()).length2())
+                    {
+                        doUpdate = true;
+                    }
+                    osg::Vec3 dupv = _previousLocalUp-localUp;
+                    // rotating the camera only affects ROTATE_TO_*
+                    if (_autoRotateMode &&
+                        dupv.length2()>getAutoUpdateEyeMovementTolerance())
+                    {
+                        doUpdate = true;
+                    }
+                    else if (width!=_previousWidth || height!=_previousHeight)
+                    {
+                        doUpdate = true;
+                    }
+                    else if (projection != _previousProjection) 
+                    {
+                        doUpdate = true;
+                    }                
+                    else if (position != _previousPosition) 
+                    { 
+                        doUpdate = true; 
+                    } 
+                }
+                _firstTimeToInitEyePoint = false;
+
+                if (doUpdate)
+                {            
+
+                    if (getAutoScaleToScreen())
+                    {
+                        float size = 1.0f/cs->pixelSize(getPosition(),0.48f);
+                        setScale(size);
+                    }
+
+                    if (_autoRotateMode==ROTATE_TO_SCREEN)
+                    {
+                        osg::Quat rotation = cs->getModelViewMatrix().getRotate();
+                        setRotation(rotation.inverse());
+                    }
+                    else if (_autoRotateMode==ROTATE_TO_CAMERA)
+                    {
+                        osg::Vec3 PosToEye = _position - eyePoint;
+                        osg::Matrix lookto = osg::Matrix::lookAt(
+                            osg::Vec3(0,0,0), PosToEye, localUp);
+                        Quat q;
+                        q.set(osg::Matrix::inverse(lookto));
+                        setRotation(q);
+                    }
+
+                    _previousEyePoint = eyePoint;
+                    _previousLocalUp = localUp;
+                    _previousWidth = width;
+                    _previousHeight = height;
+                    _previousProjection = projection;
+                    _previousPosition = position;
+
+                    _matrixDirty = true;
+                }
+
             }
-
-            osg::Vec3 eyePoint = cs->getEyeLocal(); 
-            osg::Vec3 localUp = cs->getUpLocal(); 
-            osg::Vec3 position = getPosition();
-
-            const osg::Matrix& projection = cs->getProjectionMatrix();
-
-            bool doUpdate = _firstTimeToInitEyePoint;
-            if (!_firstTimeToInitEyePoint)
-            {
-                osg::Vec3 dv = _previousEyePoint-eyePoint;
-                if (dv.length2()>getAutoUpdateEyeMovementTolerance()*(eyePoint-getPosition()).length2())
-                {
-                    doUpdate = true;
-                }
-                osg::Vec3 dupv = _previousLocalUp-localUp;
-                // rotating the camera only affects ROTATE_TO_*
-                if (_autoRotateMode &&
-                    dupv.length2()>getAutoUpdateEyeMovementTolerance())
-                {
-                    doUpdate = true;
-                }
-                else if (width!=_previousWidth || height!=_previousHeight)
-                {
-                    doUpdate = true;
-                }
-                else if (projection != _previousProjection) 
-                {
-                    doUpdate = true;
-                }                
-                else if (position != _previousPosition) 
-                { 
-                    doUpdate = true; 
-                } 
-            }
-            _firstTimeToInitEyePoint = false;
-
-            if (doUpdate)
-            {            
-
-                if (getAutoScaleToScreen())
-                {
-                    float size = 1.0f/cs->pixelSize(getPosition(),0.48f);
-                    setScale(size);
-                }
-
-                if (_autoRotateMode==ROTATE_TO_SCREEN)
-                {
-                    osg::Quat rotation = cs->getModelViewMatrix().getRotate();
-                    setRotation(rotation.inverse());
-                }
-                else if (_autoRotateMode==ROTATE_TO_CAMERA)
-                {
-                    osg::Vec3 PosToEye = _position - eyePoint;
-                    osg::Matrix lookto = osg::Matrix::lookAt(
-                        osg::Vec3(0,0,0), PosToEye, localUp);
-                    Quat q;
-                    q.set(osg::Matrix::inverse(lookto));
-                    setRotation(q);
-                }
-
-                _previousEyePoint = eyePoint;
-                _previousLocalUp = localUp;
-                _previousWidth = width;
-                _previousHeight = height;
-                _previousProjection = projection;
-                _previousPosition = position;
-
-                _matrixDirty = true;
-            }
-
         }
+
+        // now do the proper accept
+        Transform::accept(nv);
     }
-    
-    // now do the proper accept
-    Transform::accept(nv);
 }
 
 BoundingSphere AutoTransform::computeBound() const

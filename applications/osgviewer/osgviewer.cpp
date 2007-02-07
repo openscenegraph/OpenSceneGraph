@@ -46,6 +46,25 @@ public:
             {
                 if (ea.getKey()=='m')
                 {
+#if 1
+                    switch(viewer->getThreadingModel())
+                    {
+                        case(osgViewer::Viewer::SingleThreaded):
+                            viewer->setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::CullDrawThreadPerContext):
+                            viewer->setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
+                            osg::notify(osg::NOTICE)<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
+                            break;
+                        case(osgViewer::Viewer::DrawThreadPerContext):
+                            viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+                            osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
+                            break;
+                        default:
+                            break;
+                    }
+#else                
                     switch(viewer->getThreadingModel())
                     {
                         case(osgViewer::Viewer::SingleThreaded):
@@ -69,6 +88,7 @@ public:
                             osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
                             break;
                     }
+#endif
                     return true;
                 }
                 if (ea.getKey()=='e')

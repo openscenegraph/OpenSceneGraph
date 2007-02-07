@@ -13,6 +13,9 @@
 #include <osg/CullStack>
 #include <osg/Timer>
 
+#include <osg/Notify>
+#include <osg/io_utils>
+
 using namespace osg;
 
 CullStack::CullStack()
@@ -187,8 +190,10 @@ void CullStack::popProjectionMatrix()
     popCullingSet();
 }
 
-void CullStack::pushModelViewMatrix(RefMatrix* matrix)
+void CullStack::pushModelViewMatrix(RefMatrix* matrix, Transform::ReferenceFrame referenceFrame)
 {
+    osg::RefMatrix* originalModelView = _modelviewStack.empty() ? 0 : _modelviewStack.back().get();
+
     _modelviewStack.push_back(matrix);
     
     pushCullingSet();
@@ -196,8 +201,37 @@ void CullStack::pushModelViewMatrix(RefMatrix* matrix)
     osg::Matrix inv;
     inv.invert(*matrix);
 
-    _eyePointStack.push_back(inv.getTrans());
-    _viewPointStack.push_back(getReferenceViewPoint() * inv);
+    
+    switch(referenceFrame)
+    {
+        case(Transform::RELATIVE_RF):
+            _eyePointStack.push_back(inv.getTrans());
+            _referenceViewPoints.push_back(getReferenceViewPoint());
+            _viewPointStack.push_back(getReferenceViewPoint() * inv);
+            break;
+        case(Transform::ABSOLUTE_RF):
+            _eyePointStack.push_back(inv.getTrans());
+            _referenceViewPoints.push_back(osg::Vec3(0.0,0.0,0.0));
+            _viewPointStack.push_back(_eyePointStack.back());
+            break;
+        case(Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT):
+        {
+            _eyePointStack.push_back(inv.getTrans());
+            
+            osg::Vec3 referenceViewPoint = getReferenceViewPoint();
+            if (originalModelView)
+            {
+                osg::Matrix viewPointTransformMatrix;
+                viewPointTransformMatrix.invert(*originalModelView);
+                viewPointTransformMatrix.postMult(*matrix);
+                referenceViewPoint = referenceViewPoint * viewPointTransformMatrix;
+            }
+
+            _referenceViewPoints.push_back(referenceViewPoint);
+            _viewPointStack.push_back(getReferenceViewPoint() * inv);
+            break;
+        }
+    }
 
 
     osg::Vec3 lookVector = getLookVectorLocal();                   
@@ -215,6 +249,7 @@ void CullStack::popModelViewMatrix()
     _modelviewStack.pop_back();
     
     _eyePointStack.pop_back();
+    _referenceViewPoints.pop_back();
     _viewPointStack.pop_back();
 
     popCullingSet();

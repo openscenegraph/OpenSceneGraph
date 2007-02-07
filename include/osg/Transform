@@ -90,7 +90,8 @@ class OSG_EXPORT Transform : public Group
         enum ReferenceFrame
         {
             RELATIVE_RF,
-            ABSOLUTE_RF
+            ABSOLUTE_RF,
+            ABSOLUTE_RF_INHERIT_VIEWPOINT
         };
         
         /** Set the transform's ReferenceFrame, either to be relative to its
@@ -104,6 +105,12 @@ class OSG_EXPORT Transform : public Group
           * deep in the scene graph.  It is therefore recommended to only use
           * absolute Transforms at the top of the scene, for such things as
           * heads up displays.
+          * ABSOLUTE_RF_INHERIT_VIEWPOINT is the same as ABSOLUTE_RF except it
+          * adds the ability to use the parents view points position in world coordinates
+          * as its local viewpoint in the new coordinates frame.  This is useful for
+          * Render to texture Cameras that wish to use the main views LOD range computation 
+          * (which uses the viewpoint rather than the eye point) rather than use the local
+          * eye point defined by the this Transforms' abosolute view matrix.
         */
         void setReferenceFrame(ReferenceFrame rf);
         

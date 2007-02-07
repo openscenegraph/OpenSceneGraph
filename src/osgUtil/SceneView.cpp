@@ -659,7 +659,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
         _collectOccludersVisistor->pushViewport(getViewport());
         _collectOccludersVisistor->pushProjectionMatrix(proj.get());
-        _collectOccludersVisistor->pushModelViewMatrix(mv.get());
+        _collectOccludersVisistor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
 
         // traverse the scene graph to search for occluder in there new positions.
         for(unsigned int i=0; i< _camera->getNumChildren(); ++i)
@@ -736,7 +736,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
     cullVisitor->pushViewport(getViewport());
     cullVisitor->pushProjectionMatrix(proj.get());
-    cullVisitor->pushModelViewMatrix(mv.get());
+    cullVisitor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
     
 
     // traverse the scene graph to generate the rendergraph.

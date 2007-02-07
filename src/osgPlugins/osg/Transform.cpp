@@ -50,13 +50,19 @@ bool Transform_readLocalData(Object& obj, Input& fr)
 
     if (fr[0].matchWord("referenceFrame"))
     {
-        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE") )
+        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE") || fr[1].matchWord("ABSOLUTE_RF"))
         {
             transform.setReferenceFrame(Transform::ABSOLUTE_RF);
             fr += 2;
             iteratorAdvanced = true;
         }
-        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE"))
+        if (fr[1].matchWord("RELATIVE_TO_ABSOLUTE") || fr[1].matchWord("ABSOLUTE_RF_INHERIT_VIEWPOINT") )
+        {
+            transform.setReferenceFrame(Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT);
+            fr += 2;
+            iteratorAdvanced = true;
+        }
+        if (fr[1].matchWord("RELATIVE_TO_PARENTS") || fr[1].matchWord("RELATIVE") || fr[1].matchWord("RELATIVE_RF"))
         {
             transform.setReferenceFrame(Transform::RELATIVE_RF);
             fr += 2;
@@ -77,6 +83,9 @@ bool Transform_writeLocalData(const Object& obj, Output& fw)
     {
         case Transform::ABSOLUTE_RF:
             fw << "ABSOLUTE\n";
+            break;
+        case Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT:
+            fw << "ABSOLUTE_RF_INHERIT_VIEWPOINT\n";
             break;
         case Transform::RELATIVE_RF:
         default:

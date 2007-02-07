@@ -89,7 +89,7 @@ void CollectOccludersVisitor::apply(osg::Transform& node)
 
     ref_ptr<osg::RefMatrix> matrix = createOrReuseMatrix(getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
-    pushModelViewMatrix(matrix.get());
+    pushModelViewMatrix(matrix.get(), node.getReferenceFrame());
     
     handle_cull_callbacks_and_traverse(node);
 

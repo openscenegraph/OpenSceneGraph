@@ -804,28 +804,31 @@ void PickVisitor::apply(osg::Camera& camera)
 {
     if (!camera.isRenderToTextureCamera())
     {
-        if (camera.getReferenceFrame()==osg::Camera::ABSOLUTE_RF)
+        if (camera.getReferenceFrame()==osg::Camera::RELATIVE_RF)
+        {
+            if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
+            {
+                runNestedPickVisitor( camera,
+                                      camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                                      _lastProjectionMatrix * camera.getProjectionMatrix(), 
+                                      _lastViewMatrix * camera.getViewMatrix(),
+                                      _mx, _my );
+            }
+            else // PRE_MULTIPLY
+            {
+                runNestedPickVisitor( camera,
+                                      camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
+                                      camera.getProjectionMatrix() * _lastProjectionMatrix, 
+                                      camera.getViewMatrix() * _lastViewMatrix,
+                                      _mx, _my );
+            }
+        }
+        else
         {
             runNestedPickVisitor( camera,
                                   camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
                                   camera.getProjectionMatrix(), 
                                   camera.getViewMatrix(),
-                                  _mx, _my );
-        }
-        else if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
-        {
-            runNestedPickVisitor( camera,
-                                  camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                                  _lastProjectionMatrix * camera.getProjectionMatrix(), 
-                                  _lastViewMatrix * camera.getViewMatrix(),
-                                  _mx, _my );
-        }
-        else // PRE_MULTIPLY
-        {
-            runNestedPickVisitor( camera,
-                                  camera.getViewport() ? camera.getViewport() : _lastViewport.get(),
-                                  camera.getProjectionMatrix() * _lastProjectionMatrix, 
-                                  camera.getViewMatrix() * _lastViewMatrix,
                                   _mx, _my );
         }
     }

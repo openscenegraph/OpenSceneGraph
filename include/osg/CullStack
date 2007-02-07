@@ -18,6 +18,7 @@
 #include <osg/CullSettings>
 #include <osg/Viewport>
 #include <osg/fast_back_stack>
+#include <osg/Transform>
 
 namespace osg {
 
@@ -47,7 +48,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         void pushProjectionMatrix(osg::RefMatrix* matrix);
         void popProjectionMatrix();
 
-        void pushModelViewMatrix(osg::RefMatrix* matrix);
+        void pushModelViewMatrix(osg::RefMatrix* matrix, Transform::ReferenceFrame referenceFrame);
         void popModelViewMatrix();
 
         inline float getFrustumVolume() { if (_frustumVolume<0.0f) computeFrustumVolume(); return _frustumVolume; }

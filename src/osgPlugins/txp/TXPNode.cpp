@@ -103,9 +103,10 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
         
             osg::ref_ptr<TileMapper> tileMapper = new TileMapper;
             tileMapper->setLODScale(cv->getLODScale());
+            tileMapper->pushReferenceViewPoint(cv->getReferenceViewPoint());
             tileMapper->pushViewport(cv->getViewport());
             tileMapper->pushProjectionMatrix(&(cv->getProjectionMatrix()));
-            tileMapper->pushModelViewMatrix(&(cv->getModelViewMatrix()));
+            tileMapper->pushModelViewMatrix(&(cv->getModelViewMatrix()), osg::Transform::RELATIVE_RF);
 
             // traverse the scene graph to search for valid tiles
             accept(*tileMapper);
@@ -113,6 +114,7 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
             tileMapper->popModelViewMatrix();
             tileMapper->popProjectionMatrix();
             tileMapper->popViewport();
+            tileMapper->popReferenceViewPoint();
 
             //std::cout<<"   found " << tileMapper._tileMap.size() << std::endl;
             

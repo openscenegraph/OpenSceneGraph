@@ -789,7 +789,7 @@ class CollectLowestTransformsVisitor : public BaseOptimizerVisitor
                 if (transform)
                 {
                     if (transform->getDataVariance()==osg::Transform::DYNAMIC) _moreThanOneMatrixRequired=true;
-                    else if (transform->getReferenceFrame()==osg::Transform::ABSOLUTE_RF) _moreThanOneMatrixRequired=true;
+                    else if (transform->getReferenceFrame()!=osg::Transform::RELATIVE_RF) _moreThanOneMatrixRequired=true;
                     else
                     {
                         if (_transformSet.empty()) transform->computeLocalToWorldMatrix(_firstMatrix,0);

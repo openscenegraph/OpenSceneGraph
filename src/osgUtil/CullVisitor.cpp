@@ -961,7 +961,7 @@ void CullVisitor::apply(Transform& node)
 
     ref_ptr<RefMatrix> matrix = createOrReuseMatrix(getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
-    pushModelViewMatrix(matrix.get());
+    pushModelViewMatrix(matrix.get(), node.getReferenceFrame());
     
     handle_cull_callbacks_and_traverse(node);
 
@@ -1117,40 +1117,29 @@ void CullVisitor::apply(osg::Camera& camera)
     osg::RefMatrix* projection = 0;
     osg::RefMatrix* modelview = 0;
 
-    if (camera.getReferenceFrame()==osg::Transform::ABSOLUTE_RF)
+    if (camera.getReferenceFrame()==osg::Transform::RELATIVE_RF)
     {
+        if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
+        {
+            projection = createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix());
+            modelview = createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix());
+        }
+        else // pre multiply 
+        {
+            projection = createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix());
+            modelview = createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix());
+        }
+    }
+    else
+    {
+        // an absolute reference frame
         projection = createOrReuseMatrix(camera.getProjectionMatrix());
         modelview = createOrReuseMatrix(camera.getViewMatrix());
     }
-    else if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
-    {
-        projection = createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix());
-        modelview = createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix());
-    }
-    else // pre multiply 
-    {
-        projection = createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix());
-        modelview = createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix());
-    }
 
-
-    bool localReferenceViewPoint = true;
-    if (localReferenceViewPoint)
-    { 
-        // put the reference view point into the new camera eye coordinates
-        osg::Vec3 referenceViewPoint = getReferenceViewPoint();
-        if (originalModelView.valid())
-        {
-            osg::Matrix matrix;
-            matrix.invert(originalModelView); // note should this be view.getCamera()->getViewMatrix() ??
-            matrix.postMult(*modelview);
-            referenceViewPoint = referenceViewPoint * matrix;
-        }
-        pushReferenceViewPoint(referenceViewPoint);
-    }
 
     pushProjectionMatrix(projection);
-    pushModelViewMatrix(modelview);
+    pushModelViewMatrix(modelview, camera.getReferenceFrame());
 
 
     if (camera.getRenderOrder()==osg::Camera::NESTED_RENDER)
@@ -1276,12 +1265,6 @@ void CullVisitor::apply(osg::Camera& camera)
                 break;
         }
 
-    }
-
-    if (localReferenceViewPoint)
-    {
-        // restore the previous reference view point    
-        popReferenceViewPoint();
     }
     
     // restore the previous model view matrix.

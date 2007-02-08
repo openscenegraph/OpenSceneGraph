@@ -281,7 +281,8 @@ unsigned long DataInputStream::readULong(){
     return l;
 }
 
-double DataInputStream::readDouble(){
+double DataInputStream::readDouble()
+{
     double d;
     _istream->read((char*)&d, DOUBLESIZE);
     if (_istream->rdstate() & _istream->failbit)
@@ -292,11 +293,13 @@ double DataInputStream::readDouble(){
     return d;
 }
 
-std::string DataInputStream::readString(){
+std::string DataInputStream::readString()
+{
     std::string s;
     int size = readInt();
     if (size == 0)
-        return NULL;
+        return std::string();
+        
     s.resize(size);
     _istream->read((char*)s.c_str(), size);
     //if (_istream->rdstate() & _istream->failbit)
@@ -307,7 +310,8 @@ std::string DataInputStream::readString(){
     return s;
 }
 
-void DataInputStream::readCharArray(char* data, int size){
+void DataInputStream::readCharArray(char* data, int size)
+{
     _istream->read(data, size);
     if (_istream->rdstate() & _istream->failbit)
         throw Exception("DataInputStream::readCharArray(): Failed to read char value.");

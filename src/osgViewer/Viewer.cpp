@@ -807,6 +807,17 @@ void Viewer::stopThreading()
 
     }
 
+    int numProcessors = OpenThreads::GetNumberOfProcessors();
+    bool affinity = numProcessors>1;    
+    if (affinity) 
+    {
+        OpenThreads::SetProcessorAffinityOfCurrentThread(0);
+        if (_scene.valid() && _scene->getDatabasePager())
+        {
+            _scene->getDatabasePager()->setProcessorAffinity(1);
+        }
+    }
+
     _threadsRunning = false;
     _startRenderingBarrier = 0;
     _endRenderingDispatchBarrier = 0;
@@ -987,7 +998,7 @@ void Viewer::startThreading()
 
 
     int numProcessors = OpenThreads::GetNumberOfProcessors();
-    bool affinity = true;
+    bool affinity = numProcessors>1;    
     
     Contexts::iterator citr;
 
@@ -1154,8 +1165,18 @@ void Viewer::startThreading()
         }
     }
     
-    if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(0);
-
+    if (affinity) 
+    {
+        OpenThreads::SetProcessorAffinityOfCurrentThread(0);
+        if (_scene.valid() && _scene->getDatabasePager())
+        {
+#if 0        
+            //_scene->getDatabasePager()->setProcessorAffinity(1);
+#else
+            _scene->getDatabasePager()->setProcessorAffinity(0);
+#endif
+        }
+    }
 
 #if 0
     if (affinity)
@@ -1167,8 +1188,6 @@ void Viewer::startThreading()
             titr->first->setProcessorAffinity(titr->second);
         }
     }
-    
-    if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(0);
 #endif
 
 

@@ -46,6 +46,9 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
         ShadowTechnique* getShadowTechnique() { return _shadowTechnique.get(); }
         const ShadowTechnique* getShadowTechnique() const { return _shadowTechnique.get(); }
 
+        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        void cleanSceneGraph();
+
         /** Dirty any cache data structures held in the attached ShadowTechnqiue.*/        
         void dirty();
         

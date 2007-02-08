@@ -53,7 +53,11 @@ void ShadowedScene::setShadowTechnique(ShadowTechnique* technique)
 {
     if (_shadowTechnique == technique) return;
     
-    if (_shadowTechnique.valid()) _shadowTechnique->_shadowedScene = 0;
+    if (_shadowTechnique.valid()) 
+    {
+        _shadowTechnique->cleanSceneGraph();
+        _shadowTechnique->_shadowedScene = 0;
+    }
     
     _shadowTechnique = technique;
     

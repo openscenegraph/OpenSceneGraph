@@ -38,19 +38,26 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
 
         ShadowedScene* getShadowedScene() { return _shadowedScene; }
         
+        /** initialize the ShadowedScene and local cached data structures.*/
         virtual void init();
         
+        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
         virtual void update(osg::NodeVisitor& nv);
         
+        /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
         virtual void cull(osg::NodeVisitor& nv);
         
+        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        virtual void cleanSceneGraph();
+
         virtual void traverse(osg::NodeVisitor& nv);
         
+        /** Dirty so that cached data structurese are updated.*/
         virtual void dirty() { _dirty = true; }
 
     protected :
 
-        virtual ~ShadowTechnique() {}
+        virtual ~ShadowTechnique();
         
         friend class ShadowedScene;
         

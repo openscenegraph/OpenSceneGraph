@@ -12,16 +12,46 @@
 */
 
 #include <osgShadow/ShadowVolume>
+#include <osgShadow/ShadowedScene>
 #include <osg/Notify>
 
 using namespace osgShadow;
 
 ShadowVolume::ShadowVolume()    
 {
-    osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowVolume technique not implemented yet."<<std::endl;
+    osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowVolume technique in development."<<std::endl;
 }
 
 ShadowVolume::ShadowVolume(const ShadowVolume& copy, const osg::CopyOp& copyop):
     ShadowTechnique(copy,copyop)
 {
 }
+
+ShadowVolume::~ShadowVolume()
+{
+}
+
+void ShadowVolume::init()
+{
+    osg::notify(osg::NOTICE)<<className()<<"::init() not implemened yet, but almost"<<std::endl;
+    
+    _dirty = false;
+}
+
+void ShadowVolume::update(osg::NodeVisitor& nv)
+{
+    osg::notify(osg::NOTICE)<<className()<<"::update(osg::NodeVisitor&) not implemened yet, but almost."<<std::endl;
+    _shadowedScene->osg::Group::traverse(nv);
+}
+
+void ShadowVolume::cull(osg::NodeVisitor& nv)
+{
+    osg::notify(osg::NOTICE)<<className()<<"::cull(osg::NodeVisitor&) not implemened yet, but almost."<<std::endl;
+    _shadowedScene->osg::Group::traverse(nv);
+}
+
+void ShadowVolume::cleanSceneGraph()
+{
+    osg::notify(osg::NOTICE)<<className()<<"::cleanSceneGraph()) not implemened yet, but almost."<<std::endl;
+}
+

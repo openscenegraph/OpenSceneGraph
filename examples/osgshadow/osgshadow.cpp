@@ -23,6 +23,8 @@
 #include <osgViewer/StatsHandler>
 
 #include <osgShadow/OccluderGeometry>
+#include <osgShadow/ShadowedScene>
+#include <osgShadow/ShadowVolume>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -566,6 +568,9 @@ int main(int argc, char** argv)
     while (arguments.read("--two-sided")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
     while (arguments.read("--two-pass")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS;
     
+    bool ShadowVolume = false;
+    while (arguments.read("--ShadowVolume")) ShadowVolume = true;
+
 
     // set up the camera manipulators.
     {
@@ -680,7 +685,17 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Light> light = new osg::Light;
     light->setPosition(lightpos);
 
-    if (!doShadow)
+    if (ShadowVolume)
+    {
+        osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
+        
+        shadowedScene->setShadowTechnique(new osgShadow::ShadowVolume);
+
+        shadowedScene->addChild(model.get());
+        
+        group->addChild(shadowedScene.get());
+    }
+    else if (!doShadow)
     {
         group->addChild(model.get());
 

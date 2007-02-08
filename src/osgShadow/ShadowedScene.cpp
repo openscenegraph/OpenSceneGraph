@@ -32,26 +32,42 @@ ShadowedScene::ShadowedScene(const ShadowedScene& copy, const osg::CopyOp& copyo
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
+ShadowedScene::~ShadowedScene()
+{
+    setShadowTechnique(0);
+}
+
 void ShadowedScene::traverse(osg::NodeVisitor& nv)
 {
-    if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+    if (_shadowTechnique.valid())
     {
-        Group::traverse(nv);
-        return;
+        _shadowTechnique->traverse(nv);
     }
+    else
+    {
+        osg::Group::traverse(nv);
+    }
+}
 
-    if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
-    {
-        Group::traverse(nv);
-        return;
-    }
-
-    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
-    if (!cv)
-    {
-        Group::traverse(nv);
-        return;
-    }
+void ShadowedScene::setShadowTechnique(ShadowTechnique* technique)
+{
+    if (_shadowTechnique == technique) return;
     
-    Group::traverse(nv);
+    if (_shadowTechnique.valid()) _shadowTechnique->_shadowedScene = 0;
+    
+    _shadowTechnique = technique;
+    
+    if (_shadowTechnique.valid())
+    {
+        _shadowTechnique->_shadowedScene = this;
+        _shadowTechnique->dirty();
+    }
+}
+
+void ShadowedScene::dirty()
+{
+    if (_shadowTechnique.valid())
+    {
+        _shadowTechnique->dirty();
+    }
 }

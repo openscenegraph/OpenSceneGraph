@@ -297,16 +297,16 @@ std::string DataInputStream::readString()
 {
     std::string s;
     int size = readInt();
-    if (size == 0)
-        return std::string();
-        
-    s.resize(size);
-    _istream->read((char*)s.c_str(), size);
-    //if (_istream->rdstate() & _istream->failbit)
-    //   throw Exception("DataInputStream::readString(): Failed to read string value.");
+    if (size != 0)
+    {
+        s.resize(size);
+        _istream->read((char*)s.c_str(), size);
+        //if (_istream->rdstate() & _istream->failbit)
+        //   throw Exception("DataInputStream::readString(): Failed to read string value.");
 
-    if (_verboseOutput) std::cout<<"read/writeString() ["<<s<<"]"<<std::endl;
-    
+        if (_verboseOutput) std::cout<<"read/writeString() ["<<s<<"]"<<std::endl;
+    }
+        
     return s;
 }
 

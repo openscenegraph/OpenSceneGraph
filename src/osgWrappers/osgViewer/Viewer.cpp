@@ -205,13 +205,17 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __osg_Operation_P1__getRealizeOperation,
 	          "Get the graphics operation to call on realization of the viewers graphics windows. ",
 	          "");
+	I_Method0(void, setUpThreading,
+	          __void__setUpThreading,
+	          "Set up the threading and processor affinity as per the viewers threading model. ",
+	          "");
 	I_Method0(void, stopThreading,
 	          __void__stopThreading,
 	          "Stop any threads begin run by viewer. ",
 	          "");
 	I_Method0(void, startThreading,
 	          __void__startThreading,
-	          "Start any threads required by the viewer, as per viewers ThreadingModel. ",
+	          "Start any threads required by the viewer. ",
 	          "");
 	I_Method0(void, setUpRenderingSupport,
 	          __void__setUpRenderingSupport,

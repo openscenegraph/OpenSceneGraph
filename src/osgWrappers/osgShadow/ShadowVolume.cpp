@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgShadow/ShadowVolume>
 
@@ -51,5 +52,21 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(void, init,
+	          __void__init,
+	          "initialize the ShadowedScene and local cached data structures. ",
+	          "");
+	I_Method1(void, update, IN, osg::NodeVisitor &, nv,
+	          __void__update__osg_NodeVisitor_R1,
+	          "run the update traversal of the ShadowedScene and update any loca chached data structures. ",
+	          "");
+	I_Method1(void, cull, IN, osg::NodeVisitor &, nv,
+	          __void__cull__osg_NodeVisitor_R1,
+	          "run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique. ",
+	          "");
+	I_Method0(void, cleanSceneGraph,
+	          __void__cleanSceneGraph,
+	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
+	          "");
 END_REFLECTOR
 

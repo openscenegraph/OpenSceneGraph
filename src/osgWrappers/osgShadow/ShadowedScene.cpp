@@ -89,6 +89,14 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	          __C5_ShadowTechnique_P1__getShadowTechnique,
 	          "",
 	          "");
+	I_Method0(void, cleanSceneGraph,
+	          __void__cleanSceneGraph,
+	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
+	          "");
+	I_Method0(void, dirty,
+	          __void__dirty,
+	          "Dirty any cache data structures held in the attached ShadowTechnqiue. ",
+	          "");
 	I_SimpleProperty(unsigned int, CastsShadowTraversalMask, 
 	                 __unsigned_int__getCastsShadowTraversalMask, 
 	                 __void__setCastsShadowTraversalMask__unsigned_int);

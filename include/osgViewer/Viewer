@@ -149,13 +149,14 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Get the graphics operation to call on realization of the viewers graphics windows.*/
         osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
 
+        /** Set up the threading and processor affinity as per the viewers threading model.*/
+        void setUpThreading();      
+
         /** Stop any threads begin run by viewer.*/
         void stopThreading();
 
-        /** Start any threads required by the viewer, as per viewers ThreadingModel.*/
+        /** Start any threads required by the viewer.*/
         void startThreading();        
-
-
 
         /** Set up the Operations to render the various viewer cameras on the viewers graphics windows.*/
         void setUpRenderingSupport();
@@ -199,9 +200,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;
         osg::ref_ptr<EndOfDynamicDrawBlock> _endDynamicDrawBlock;
 
-        unsigned int computeNumberOfThreadsIncludingMainRequired();
-
-        unsigned int _numThreadsOnBarrier;
+        unsigned int _numWindowsOpenAtLastSetUpThreading;
         
         typedef std::list< osg::ref_ptr<osgUtil::SceneView> > SceneViews;
         SceneViews _sceneViews;

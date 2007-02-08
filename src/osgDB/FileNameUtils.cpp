@@ -88,7 +88,7 @@ std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
 
 bool osgDB::isFileNameNativeStyle(const std::string& fileName)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     return fileName.find('/') == std::string::npos; // return true if no unix style slash exist
 #else
     return fileName.find('\\') == std::string::npos; // return true if no windows style slash exist
@@ -97,7 +97,7 @@ bool osgDB::isFileNameNativeStyle(const std::string& fileName)
 
 std::string osgDB::convertFileNameToNativeStyle(const std::string& fileName)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     return convertFileNameToWindowsStyle(fileName);
 #else
     return convertFileNameToUnixStyle(fileName);
@@ -208,7 +208,7 @@ std::string osgDB::getServerFileName(const std::string& filename)
 
 std::string osgDB::concatPaths(const std::string& left, const std::string& right)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__CYGWIN__)
     const char delimiterNative  = '\\';
     const char delimiterForeign = '/';
 #else
@@ -234,7 +234,7 @@ std::string osgDB::concatPaths(const std::string& left, const std::string& right
 
 std::string osgDB::getRealPath(const std::string& path)
 {
-#ifdef WIN32
+#if defined(WIN32)  && !defined(__CYGWIN__)
     TCHAR retbuf[MAX_PATH + sizeof(TCHAR)];
     GetFullPathName(path.c_str(), sizeof(retbuf), retbuf, 0);
     return std::string(retbuf);

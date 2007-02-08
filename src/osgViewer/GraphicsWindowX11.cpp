@@ -979,6 +979,31 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
 int X11ErrorHandling(Display* display, XErrorEvent* event)
 {
     osg::notify(osg::NOTICE)<<"Got an X11ErrorHandling call display="<<display<<" event="<<event<<std::endl;
+
+    char buffer[256];
+    XGetErrorText( display, event->error_code, buffer, 256);
+
+    osg::notify(osg::NOTICE) << buffer << std::endl;
+    osg::notify(osg::NOTICE) << "Major opcode: " << (int)event->request_code << std::endl;
+    osg::notify(osg::NOTICE) << "Minor opcode: " << (int)event->minor_code << std::endl;
+    osg::notify(osg::NOTICE) << "Error code: " << (int)event->error_code << std::endl;
+    osg::notify(osg::NOTICE) << "Request serial: " << event->serial << std::endl;
+    osg::notify(osg::NOTICE) << "Current serial: " << NextRequest( display ) - 1 << std::endl;
+
+    switch( event->error_code )
+    {
+        case BadValue:
+            osg::notify(osg::NOTICE) << "  Value: " << event->resourceid << std::endl;
+            break;
+
+        case BadAtom:
+            osg::notify(osg::NOTICE) << "  AtomID: " << event->resourceid << std::endl;
+            break;
+
+        default:
+            osg::notify(osg::NOTICE) << "  ResourceID: " << event->resourceid << std::endl;
+            break;
+    }
     return 0;
 }
 

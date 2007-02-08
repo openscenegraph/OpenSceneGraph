@@ -30,6 +30,10 @@ ShadowTechnique::ShadowTechnique(const ShadowTechnique& copy, const osg::CopyOp&
 {
 }
 
+ShadowTechnique::~ShadowTechnique()
+{
+}
+
 void ShadowTechnique::init()
 {
     osg::notify(osg::NOTICE)<<className()<<"::init() not implemened yet"<<std::endl;
@@ -47,6 +51,11 @@ void ShadowTechnique::cull(osg::NodeVisitor& nv)
 {
     osg::notify(osg::NOTICE)<<className()<<"::cull(osg::NodeVisitor&) not implemened yet."<<std::endl;
     _shadowedScene->osg::Group::traverse(nv);
+}
+
+void ShadowTechnique::cleanSceneGraph()
+{
+    osg::notify(osg::NOTICE)<<className()<<"::cleanSceneGraph()) not implemened yet."<<std::endl;
 }
 
 void ShadowTechnique::traverse(osg::NodeVisitor& nv)

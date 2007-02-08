@@ -228,6 +228,9 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         _done(false),
         _databasePager(databasePager)
     {
+        _lockHeld[0]  = false;
+        _lockHeld[1]  = false;
+
         _sceneView[0] = sv0;
         _sceneView[0]->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
 
@@ -239,7 +242,11 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         
         // lock the mutex for the current cull SceneView to
         // prevent the draw traversal from reading from it before the cull traversal has been completed.
-        if (!_graphicsThreadDoesCull) _mutex[_currentCull].lock();
+        if (!_graphicsThreadDoesCull)
+        {
+             _mutex[_currentCull].lock();
+             _lockHeld[_currentCull] = true;
+        }
     
         // osg::notify(osg::NOTICE)<<"constructed"<<std::endl;
     }
@@ -258,13 +265,23 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         if (_graphicsThreadDoesCull)
         {
             // need to disable any locks held by the cull
-            _mutex[0].unlock();
-            _mutex[1].unlock();
+            if (_lockHeld[0])
+            {
+                _lockHeld[0] = false;
+                _mutex[0].unlock();
+            }
+
+            if (_lockHeld[1])
+            {
+                _lockHeld[1] = false;
+                _mutex[1].unlock();
+            }
         }
         else
         {
             // need to set a lock for cull
             _mutex[_currentCull].lock();
+            _lockHeld[_currentCull] = true;
         }
     }
     
@@ -311,7 +328,8 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         }
 
 
-        // relase the mutex associated with this cull traversal, let the draw commense.
+        // relase the mutex associated with this cull traversal, let the draw commence.
+        _lockHeld[_currentCull] = false;
         _mutex[_currentCull].unlock();
         
         // swap which SceneView we need to do cull traversal on next.
@@ -319,6 +337,7 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         
         // aquire the lock for it for the new cull traversal
         _mutex[_currentCull].lock();
+        _lockHeld[_currentCull] = true;
     }
     
     void draw()
@@ -518,8 +537,18 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
     {
         osg::notify(osg::INFO)<<"ViewerDoubleBufferedRenderingOperation::release()"<<std::endl;
         _done = true;
-        _mutex[0].unlock();
-        _mutex[1].unlock();
+
+        if (_lockHeld[0])
+        {
+            _lockHeld[0] = false;
+            _mutex[0].unlock();
+        }
+
+        if (_lockHeld[1])
+        {
+            _lockHeld[1] = false;
+            _mutex[1].unlock();
+        }
     }
 
     bool                                    _graphicsThreadDoesCull;
@@ -528,6 +557,7 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
     unsigned int                            _currentDraw;
     
     OpenThreads::Mutex                      _mutex[2];
+    bool                                    _lockHeld[2];
     osg::observer_ptr<osgUtil::SceneView>   _sceneView[2];
     int                                     _frameNumber[2];
     osg::observer_ptr<osgDB::DatabasePager> _databasePager;

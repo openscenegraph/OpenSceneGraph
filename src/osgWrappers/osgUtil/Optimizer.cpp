@@ -21,6 +21,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/Object>
+#include <osg/PagedLOD>
 #include <osg/PrimitiveSet>
 #include <osg/ProxyNode>
 #include <osg/StateAttribute>
@@ -275,6 +276,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
 	          "");
 	I_Method1(void, apply, IN, osg::ProxyNode &, node,
 	          __void__apply__osg_ProxyNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::PagedLOD &, node,
+	          __void__apply__osg_PagedLOD_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Transform &, transform,

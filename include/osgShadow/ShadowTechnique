@@ -35,10 +35,27 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         ShadowTechnique(const ShadowTechnique& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
             
         META_Object(osgShadow, ShadowTechnique);
+
+        ShadowedScene* getShadowedScene() { return _shadowedScene; }
         
+        virtual void init();
+        
+        virtual void update(osg::NodeVisitor& nv);
+        
+        virtual void cull(osg::NodeVisitor& nv);
+        
+        virtual void traverse(osg::NodeVisitor& nv);
+        
+        virtual void dirty() { _dirty = true; }
+
     protected :
 
         virtual ~ShadowTechnique() {}
+        
+        friend class ShadowedScene;
+        
+        ShadowedScene*  _shadowedScene;
+        bool            _dirty;
         
 };
 

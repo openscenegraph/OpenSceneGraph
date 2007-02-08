@@ -26,7 +26,8 @@ namespace osgShadow {
 /** ShadowedScene provides a mechansim for decorating a scene that the needs to have shadows cast upon it.*/
 class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
 {
-    public :
+    public:
+    
         ShadowedScene();
 
         ShadowedScene(const ShadowedScene& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -44,11 +45,13 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
         void setShadowTechnique(ShadowTechnique* technique);
         ShadowTechnique* getShadowTechnique() { return _shadowTechnique.get(); }
         const ShadowTechnique* getShadowTechnique() const { return _shadowTechnique.get(); }
-        
-        
-    protected :
 
-        virtual ~ShadowedScene() {}
+        /** Dirty any cache data structures held in the attached ShadowTechnqiue.*/        
+        void dirty();
+        
+    protected:
+
+        virtual ~ShadowedScene();
 
         unsigned int _recievesShadowTraversalMask;
         unsigned int _castsShadowTraversalMask;

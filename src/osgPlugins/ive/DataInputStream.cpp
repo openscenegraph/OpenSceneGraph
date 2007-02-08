@@ -295,6 +295,8 @@ double DataInputStream::readDouble(){
 std::string DataInputStream::readString(){
     std::string s;
     int size = readInt();
+    if (size == 0)
+        return NULL;
     s.resize(size);
     _istream->read((char*)s.c_str(), size);
     //if (_istream->rdstate() & _istream->failbit)
@@ -472,6 +474,8 @@ osg::Array* DataInputStream::readArray(){
 osg::IntArray* DataInputStream::readIntArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::IntArray* a = new osg::IntArray(size);
     
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
@@ -491,6 +495,8 @@ osg::IntArray* DataInputStream::readIntArray()
 osg::UByteArray* DataInputStream::readUByteArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::UByteArray* a = new osg::UByteArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE*size);
@@ -506,6 +512,8 @@ osg::UByteArray* DataInputStream::readUByteArray()
 osg::UShortArray* DataInputStream::readUShortArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::UShortArray* a = new osg::UShortArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE*size);
@@ -526,6 +534,8 @@ osg::UShortArray* DataInputStream::readUShortArray()
 osg::UIntArray* DataInputStream::readUIntArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::UIntArray* a = new osg::UIntArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
@@ -546,6 +556,8 @@ osg::UIntArray* DataInputStream::readUIntArray()
 osg::Vec4ubArray* DataInputStream::readVec4ubArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec4ubArray* a = new osg::Vec4ubArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
@@ -561,6 +573,8 @@ osg::Vec4ubArray* DataInputStream::readVec4ubArray()
 osg::FloatArray* DataInputStream::readFloatArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     
     osg::FloatArray* a = new osg::FloatArray(size);
     
@@ -582,6 +596,9 @@ osg::FloatArray* DataInputStream::readFloatArray()
 osg::Vec2Array* DataInputStream::readVec2Array()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
+
     osg::Vec2Array* a = new osg::Vec2Array(size);
     
     _istream->read((char*)&((*a)[0]), FLOATSIZE*2*size);
@@ -605,6 +622,8 @@ osg::Vec2Array* DataInputStream::readVec2Array()
 osg::Vec3Array* DataInputStream::readVec3Array()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec3Array* a = new osg::Vec3Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*3*size);
@@ -628,6 +647,8 @@ osg::Vec3Array* DataInputStream::readVec3Array()
 
 osg::Vec4Array* DataInputStream::readVec4Array(){
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec4Array* a = new osg::Vec4Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*4*size);
@@ -649,6 +670,8 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
 osg::Vec2bArray* DataInputStream::readVec2bArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec2bArray* a = new osg::Vec2bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 2 * size);
@@ -664,6 +687,8 @@ osg::Vec2bArray* DataInputStream::readVec2bArray()
 osg::Vec3bArray* DataInputStream::readVec3bArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec3bArray* a = new osg::Vec3bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 3 * size);
@@ -679,6 +704,8 @@ osg::Vec3bArray* DataInputStream::readVec3bArray()
 osg::Vec4bArray* DataInputStream::readVec4bArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec4bArray* a = new osg::Vec4bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 4 * size);
@@ -694,6 +721,8 @@ osg::Vec4bArray* DataInputStream::readVec4bArray()
 osg::Vec2sArray* DataInputStream::readVec2sArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec2sArray* a = new osg::Vec2sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 2 * size);
@@ -718,6 +747,8 @@ osg::Vec2sArray* DataInputStream::readVec2sArray()
 osg::Vec3sArray* DataInputStream::readVec3sArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec3sArray* a = new osg::Vec3sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 3 * size);
@@ -743,6 +774,8 @@ osg::Vec3sArray* DataInputStream::readVec3sArray()
 osg::Vec4sArray* DataInputStream::readVec4sArray()
 {
     int size = readInt();
+    if (size == 0)
+        return NULL;
     osg::Vec4sArray* a = new osg::Vec4sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 4 * size);

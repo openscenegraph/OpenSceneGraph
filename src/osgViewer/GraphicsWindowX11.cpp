@@ -593,18 +593,24 @@ void GraphicsWindowX11::closeImplementation()
         XFlush( _display );
         XSync( _display,0 );
 
-        XCloseDisplay( _display );
     }
-
+    
     _window = 0;
     _parent = 0;
     _glxContext = 0;
 
-    if(_visualInfo)
+    if (_visualInfo)
     {
         XFree(_visualInfo);
         _visualInfo = 0;
     }
+
+    if (_display)
+    {
+        XCloseDisplay( _display );
+        _display = 0;
+    }
+
 
     _initialized = false;
     _realized = false;

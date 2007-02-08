@@ -170,7 +170,7 @@ void CompositeViewer::setThreadingModel(ThreadingModel threadingModel)
     
     _threadingModel = threadingModel;
 
-    if (_threadingModel!=SingleThreaded) startThreading();
+    if (isRealized() && _threadingModel!=SingleThreaded) startThreading();
 }
 
 

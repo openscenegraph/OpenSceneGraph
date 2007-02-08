@@ -22,6 +22,7 @@ StatsHandler::StatsHandler():
     _keyEventTogglesOnScreenStats('s'),
     _keyEventPrintsOutStats('S'),
     _statsType(NO_STATS),
+    _threadingModel(osgViewer::Viewer::SingleThreaded),
     _frameRateChildNum(0),
     _viewerChildNum(0),
     _sceneChildNum(0),
@@ -34,6 +35,12 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 {
     osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
     if (!viewer) return false;
+    
+    if (_threadingModelText.valid() && viewer->getThreadingModel()!=_threadingModel)
+    {
+        _threadingModel = viewer->getThreadingModel();
+        updateThreadingModelText();
+    }
 
     switch(ea.getEventType())
     {
@@ -163,6 +170,18 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 
     return false;
 
+}
+
+void StatsHandler::updateThreadingModelText()
+{
+    switch(_threadingModel)
+    {
+        case(osgViewer::Viewer::SingleThreaded): _threadingModelText->setText("ThreadingModel: SingleThreaded"); break;
+        case(osgViewer::Viewer::CullDrawThreadPerContext): _threadingModelText->setText("ThreadingModel: CullDrawThreadPerContext"); break;
+        case(osgViewer::Viewer::DrawThreadPerContext): _threadingModelText->setText("ThreadingModel: DrawThreadPerContext"); break;
+        case(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext): _threadingModelText->setText("ThreadingModel: CullThreadPerCameraDrawThreadPerContext"); break;
+        case(osgViewer::Viewer::AutomaticSelection): _threadingModelText->setText("ThreadingModel: AutomaticSelection"); break;
+    }
 }
 
 void StatsHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
@@ -518,6 +537,24 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
 
         osg::Geode* geode = new osg::Geode();
         group->addChild(geode);
+
+        
+        {
+            pos.x() = leftPos;
+
+            _threadingModelText = new osgText::Text;
+            geode->addDrawable( _threadingModelText.get() );
+
+            _threadingModelText->setColor(colorFR);
+            _threadingModelText->setFont(font);
+            _threadingModelText->setCharacterSize(characterSize);
+            _threadingModelText->setPosition(pos);
+
+            updateThreadingModelText();
+
+            pos.y() -= characterSize*1.5f;
+        }
+        
 
         float topOfViewerStats = pos.y() + characterSize;
 

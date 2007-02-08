@@ -58,19 +58,24 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         osg::Node* createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
 
         void setUpScene(osgViewer::Viewer* viewer);
+        
+        void updateThreadingModelText();
 
-        int                             _keyEventTogglesOnScreenStats;
-        int                             _keyEventPrintsOutStats;
+        int                                 _keyEventTogglesOnScreenStats;
+        int                                 _keyEventPrintsOutStats;
 
-        int                             _statsType;
-        osg::ref_ptr<osg::Camera>       _camera;
-        osg::ref_ptr<osg::Switch>       _switch;
+        int                                 _statsType;
+        osg::ref_ptr<osg::Camera>           _camera;
+        osg::ref_ptr<osg::Switch>           _switch;
+        
+        osgViewer::Viewer::ThreadingModel   _threadingModel;
+        osg::ref_ptr<osgText::Text>         _threadingModelText;
 
-        unsigned int                    _frameRateChildNum;
-        unsigned int                    _viewerChildNum;
-        unsigned int                    _sceneChildNum;
-        unsigned int                    _numBlocks;
-        double                          _blockMultiplier;
+        unsigned int                        _frameRateChildNum;
+        unsigned int                        _viewerChildNum;
+        unsigned int                        _sceneChildNum;
+        unsigned int                        _numBlocks;
+        double                              _blockMultiplier;
     
 };
 

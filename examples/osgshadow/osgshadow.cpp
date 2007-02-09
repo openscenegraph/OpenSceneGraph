@@ -681,7 +681,6 @@ int main(int argc, char** argv)
     }
 
 
-
     osg::ref_ptr<osg::Light> light = new osg::Light;
     light->setPosition(lightpos);
 

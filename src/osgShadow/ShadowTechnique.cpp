@@ -47,10 +47,10 @@ void ShadowTechnique::update(osg::NodeVisitor& nv)
      _shadowedScene->osg::Group::traverse(nv);
 }
 
-void ShadowTechnique::cull(osg::NodeVisitor& nv)
+void ShadowTechnique::cull(osgUtil::CullVisitor& cv)
 {
-    osg::notify(osg::NOTICE)<<className()<<"::cull(osg::NodeVisitor&) not implemened yet."<<std::endl;
-    _shadowedScene->osg::Group::traverse(nv);
+    osg::notify(osg::NOTICE)<<className()<<"::cull(osgUtl::CullVisitor&) not implemened yet."<<std::endl;
+    _shadowedScene->osg::Group::traverse(cv);
 }
 
 void ShadowTechnique::cleanSceneGraph()
@@ -70,7 +70,9 @@ void ShadowTechnique::traverse(osg::NodeVisitor& nv)
     }
     else if (nv.getVisitorType() == osg::NodeVisitor::CULL_VISITOR)
     {
-        cull(nv);
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        if (cv) cull(*cv);
+        else _shadowedScene->osg::Group::traverse(nv);
     }
     else
     {

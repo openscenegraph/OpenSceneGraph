@@ -36,6 +36,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         GraphicsWindowX11(osg::GraphicsContext::Traits* traits):
             _valid(false),
             _display(0),
+            _eventDisplay(0),
             _parent(0),
             _window(0),
             _visualInfo(0),
@@ -101,6 +102,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         // X11 specific aces functions
 
         Display* getDisplay() { return _display; }
+        Display* getEventDisplay() { return _eventDisplay; }
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
 
@@ -120,6 +122,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         
         bool            _valid;
         Display*        _display;
+        Display*        _eventDisplay;
         Window          _parent;
         Window          _window;
         XVisualInfo*    _visualInfo;

@@ -275,8 +275,10 @@ bool GraphicsWindowX11::createVisualInfo()
 
 void GraphicsWindowX11::setWindowDecoration(bool flag)
 {
+    Display* display = _display;
+
     Atom atom;
-    if( (atom = XInternAtom( _display, "_MOTIF_WM_HINTS", 0 )) != None )
+    if( (atom = XInternAtom( display, "_MOTIF_WM_HINTS", 0 )) != None )
     {
 // Hack for sending 64 bit atom to Xserver
 #if defined( _MIPS_SIM) && (_MIPS_SIM == _MIPS_SIM_ABI64) || defined ( __ia64 ) || defined (__amd64 ) || defined(__x86_64__)
@@ -322,16 +324,16 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
         wmHints.input_mode  = 0;
 #endif
 
-        XUnmapWindow(_display, _window );
-        XChangeProperty( _display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
-        XMapWindow(_display, _window );
+        XUnmapWindow(display, _window );
+        XChangeProperty( display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
+        XMapWindow(display, _window );
 
-        XFlush(_display);
-        XSync(_display,0);
+        XFlush(display);
+        XSync(display,0);
 
 #if 0
         // now update the window dimensions to account for any size changes made by the window manager,
-        XGetWindowAttributes( _display, _window, &watt );
+        XGetWindowAttributes( display, _window, &watt );
         _traits->width = watt.width;
         _traits->height = watt.height;
 #endif
@@ -343,6 +345,8 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
 
 void GraphicsWindowX11::useCursor(bool cursorOn)
 {
+    Display* display = _display;
+
     if (cursorOn)
     {
         _currentCursor = _defaultCursor;
@@ -352,11 +356,11 @@ void GraphicsWindowX11::useCursor(bool cursorOn)
         _currentCursor = _nullCursor;
     }
 
-    if (_display && _window)
+    if (display && _window)
     {
-        XDefineCursor( _display, _window, _currentCursor );
-        XFlush(_display);
-        XSync(_display,0);
+        XDefineCursor( display, _window, _currentCursor );
+        XFlush(display);
+        XSync(display,0);
     }
 
     _traits->useCursor = cursorOn;
@@ -470,6 +474,9 @@ void GraphicsWindowX11::init()
         return;
     }
 
+    _eventDisplay = XOpenDisplay(_traits->displayName().c_str());
+
+
     // This positions the window at _windowX, _windowY
     XSizeHints sh;
     sh.flags = 0;
@@ -504,9 +511,9 @@ void GraphicsWindowX11::init()
 
     useCursor(_traits->useCursor);
 
-    XSelectInput( _display, _window, ExposureMask | StructureNotifyMask | 
-                                     KeyPressMask | KeyReleaseMask |
-                                     PointerMotionMask  | ButtonPressMask | ButtonReleaseMask);
+    _deleteWindow = XInternAtom (_display, "WM_DELETE_WINDOW", False);
+    XSetWMProtocols(_display, _window, &_deleteWindow, 1); 
+
 
     XFlush( _display );
     XSync( _display, 0 );
@@ -521,8 +528,13 @@ void GraphicsWindowX11::init()
         
     //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;
 
-    _deleteWindow = XInternAtom (_display, "WM_DELETE_WINDOW", False);
-    XSetWMProtocols(_display, _window, &_deleteWindow, True); 
+
+    XSelectInput( _eventDisplay, _window, ExposureMask | StructureNotifyMask | 
+                                     KeyPressMask | KeyReleaseMask |
+                                     PointerMotionMask  | ButtonPressMask | ButtonReleaseMask);
+
+    XFlush( _eventDisplay );
+    XSync( _eventDisplay, 0 );
 
     _valid = true;
     _initialized = true;
@@ -584,15 +596,26 @@ void GraphicsWindowX11::closeImplementation()
 {
     // osg::notify(osg::NOTICE)<<"Closing GraphicsWindowX11"<<std::endl;
 
-    if (_display && _window)
+    if (_eventDisplay)
     {
-        glXDestroyContext(_display, _glxContext );
-        
-        XDestroyWindow(_display, _window);
+        XCloseDisplay( _eventDisplay );
+        _eventDisplay = 0;
+    }
+
+    if (_display)
+    {
+        if (_glxContext)
+        {
+            glXDestroyContext(_display, _glxContext );
+        }
+    
+        if (_window)
+        {
+            XDestroyWindow(_display, _window);
+        }
 
         XFlush( _display );
         XSync( _display,0 );
-
     }
     
     _window = 0;
@@ -605,12 +628,12 @@ void GraphicsWindowX11::closeImplementation()
         _visualInfo = 0;
     }
 
+
     if (_display)
     {
         XCloseDisplay( _display );
         _display = 0;
     }
-
 
     _initialized = false;
     _realized = false;
@@ -624,11 +647,31 @@ void GraphicsWindowX11::swapBuffersImplementation()
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     glXSwapBuffers(_display, _window); 
+
+    while( XPending(_display) )
+    {
+        XEvent ev;
+        XNextEvent( _display, &ev );
+
+        switch( ev.type )
+        {
+            case ClientMessage:
+            {
+                if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
+                {
+                    osg::notify(osg::INFO)<<"DeleteWindow event recieved"<<std::endl;
+                    getEventQueue()->closeWindow();
+                }
+            }
+        }
+    }
 }
 
 void GraphicsWindowX11::checkEvents()
 {
     if (!_realized) return;
+
+    Display* display = _eventDisplay;
 
     double baseTime = _timeOfLastCheckEvents;
     double eventTime = baseTime;
@@ -645,18 +688,19 @@ void GraphicsWindowX11::checkEvents()
     Time firstEventTime = 0;
      
          // osg::notify(osg::NOTICE)<<"Check events"<<std::endl;    
-    while( XPending(_display) )
+    while( XPending(display) )
     {
         XEvent ev;
-        XNextEvent( _display, &ev );
+        XNextEvent( display, &ev );
 
         switch( ev.type )
         {
             case ClientMessage:
             {
+                osg::notify(osg::NOTICE)<<"ClientMessage event recieved"<<std::endl;
                 if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
-                    osg::notify(osg::INFO)<<"DeleteWindow event recieved"<<std::endl;
+                    osg::notify(osg::NOTICE)<<"DeleteWindow event recieved"<<std::endl;
                     destroyWindowRequested = true;
                     getEventQueue()->closeWindow(eventTime);
                 }
@@ -678,7 +722,7 @@ void GraphicsWindowX11::checkEvents()
                 break;
 
             case DestroyNotify :
-                osg::notify(osg::INFO)<<"DestroyNotify event recieved"<<std::endl;
+                osg::notify(osg::NOTICE)<<"DestroyNotify event recieved"<<std::endl;
                 _realized =  false;
                 _valid = false;
                 break;
@@ -708,7 +752,7 @@ void GraphicsWindowX11::checkEvents()
                 osg::notify(osg::INFO)<<"MapNotify"<<std::endl;
                 XWindowAttributes watt;
                 do
-                    XGetWindowAttributes(_display, _window, &watt );
+                    XGetWindowAttributes(display, _window, &watt );
                 while( watt.map_state != IsViewable );
                 
                 osg::notify(osg::INFO)<<"MapNotify x="<<watt.x<<" y="<<watt.y<<" width="<<watt.width<<", height="<<watt.height<<std::endl;
@@ -750,25 +794,25 @@ void GraphicsWindowX11::checkEvents()
                     int screenOrigin_x = 0;
                     int screenOrigin_y = 0;
                     int i;
-                    for(i= 0; i < ScreenCount(_display); i++ )
+                    for(i= 0; i < ScreenCount(display); i++ )
                     {
-                        if( XQueryPointer( _display, RootWindow(_display, i),
+                        if( XQueryPointer( display, RootWindow(display, i),
                               &root, &win, &rx, &ry, &wx, &wy, &buttons) )
                         {
                             break;
                         }
 
-                        screenOrigin_x += DisplayWidth(_display, i);
+                        screenOrigin_x += DisplayWidth(display, i);
                     }
 
                     for(i= 0; i < static_cast<int>(_traits->screenNum); i++ )
                     {
-                        screenOrigin_x -= DisplayWidth(_display, i);
+                        screenOrigin_x -= DisplayWidth(display, i);
                     }
 
                     int dest_x_return, dest_y_return;
                     Window child_return;
-                    XTranslateCoordinates(_display, _window, _parent, 0, 0, &dest_x_return, &dest_y_return, &child_return);
+                    XTranslateCoordinates(display, _window, _parent, 0, 0, &dest_x_return, &dest_y_return, &child_return);
 
                     wx += (screenOrigin_x - dest_x_return);
                     wy += (screenOrigin_y - dest_y_return);
@@ -889,8 +933,8 @@ void GraphicsWindowX11::checkEvents()
 
 void GraphicsWindowX11::grabFocus()
 {
-    XSetInputFocus( _display, _window, RevertToNone, CurrentTime );
-    XFlush(_display); XSync(_display,0);
+    XSetInputFocus( _eventDisplay, _window, RevertToNone, CurrentTime );
+    XFlush(_eventDisplay); XSync(_eventDisplay,0);
 }
 
 void GraphicsWindowX11::grabFocusIfPointerInWindow()
@@ -899,10 +943,18 @@ void GraphicsWindowX11::grabFocusIfPointerInWindow()
     int wx, wy, rx, ry;
     unsigned int buttons;
 
-    if( XQueryPointer( _display, _window,
+    if( XQueryPointer( _eventDisplay, _window,
           &root, &win, &rx, &ry, &wx, &wy, &buttons))
     {
+#if 0
+        if (wx>=0 && wx<_traits->width &&
+            wy>=0 && wy<_traits->height)
+        {
+            grabFocus();
+        }
+#else        
         grabFocus();
+#endif
     }
 }
 
@@ -952,7 +1004,7 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
 
     keySymbol = keybuf[0];
     
-    KeySym ks = XKeycodeToKeysym( _display, keyevent.keycode, 0 );
+    KeySym ks = XKeycodeToKeysym( _eventDisplay, keyevent.keycode, 0 );
     int remappedKey = remapX11Key(ks);
     if (remappedKey & 0xff00) 
     {
@@ -970,14 +1022,14 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
 
 void GraphicsWindowX11::requestWarpPointer(float x,float y)
 {
-    XWarpPointer( _display, 
+    XWarpPointer( _eventDisplay, 
                   None,
                   _window, 
                   0, 0, 0, 0,
                   static_cast<int>(x), static_cast<int>(y) );
 
-    XFlush(_display);
-    XSync(_display, 0);
+    XFlush(_eventDisplay);
+    XSync(_eventDisplay, 0);
     
     getEventQueue()->mouseWarped(x,y);
 }
@@ -1021,7 +1073,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
     {
         XSetErrorHandler(X11ErrorHandling);
     
-#if 1    
+#if 0
         if (XInitThreads() == 0)
         {
             osg::notify(osg::NOTICE) << "Error: XInitThreads() failed. Aborting." << std::endl;

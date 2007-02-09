@@ -1,15 +1,5 @@
 #include <osg/ArgumentParser>
 
-#include <osg/LightModel>
-#include <osg/Depth>
-#include <osg/BlendFunc>
-#include <osg/Camera>
-#include <osg/Stencil>
-#include <osg/StencilTwoSided>
-#include <osg/CullFace>
-#include <osg/Geometry>
-#include <osg/Switch>
-
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
@@ -22,7 +12,6 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/StatsHandler>
 
-#include <osgShadow/OccluderGeometry>
 #include <osgShadow/ShadowedScene>
 #include <osgShadow/ShadowVolume>
 
@@ -313,204 +302,6 @@ osg::Node* createTestModel()
     return sw;
 }
 
-
-
-class ShadowCallback : public osg::NodeCallback
-{
-public:
-
-    osg::ref_ptr<osg::Light>    _ambientLight;
-    osg::ref_ptr<osg::Light>    _diffuseLight;
-    
-    osg::ref_ptr<osg::StateSet> _ss1;
-    osg::ref_ptr<osg::StateSet> _mainShadowStateSet;
-    osg::ref_ptr<osg::StateSet> _shadowVolumeStateSet;
-    osg::ref_ptr<osg::StateSet> _shadowedSceneStateSet;
-
-    ShadowCallback(osgShadow::ShadowVolumeGeometry::DrawMode drawMode)
-    {
-        // first group, render the depth buffer + ambient light contribution
-        {
-            _ss1 = new osg::StateSet;
-
-#if 0
-            osg::LightModel* lm1 = new osg::LightModel;
-            lm1->setAmbientIntensity(ambient);
-            _ss1->setAttribute(lm1);
-
-            osg::Light* light1 = new osg::Light;
-            light1->setAmbient(ambient);
-            light1->setDiffuse(zero_colour);
-            light1->setPosition(_lightpos);
-            _ss1->setAttributeAndModes(light1, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-#endif            
-            
-            _ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        }
-
-        {
-            _mainShadowStateSet = new osg::StateSet;
-
-            osg::Depth* depth = new osg::Depth;
-            depth->setWriteMask(false);
-            depth->setFunction(osg::Depth::LEQUAL);
-            _mainShadowStateSet->setAttribute(depth);
-            _mainShadowStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        }
-
-        {
-            _shadowVolumeStateSet = new osg::StateSet;
-            
-            osg::Depth* depth = new osg::Depth;
-            depth->setWriteMask(false);
-            depth->setFunction(osg::Depth::LEQUAL);
-            _shadowVolumeStateSet->setAttribute(depth);
-            _shadowVolumeStateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
-            _shadowVolumeStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-
-
-            if (drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
-            {
-                osg::StencilTwoSided* stencil = new osg::StencilTwoSided;
-                stencil->setFunction(osg::StencilTwoSided::BACK, osg::StencilTwoSided::ALWAYS,0,~0u);
-                stencil->setOperation(osg::StencilTwoSided::BACK, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::DECR_WRAP);
-                stencil->setFunction(osg::StencilTwoSided::FRONT, osg::StencilTwoSided::ALWAYS,0,~0u);
-                stencil->setOperation(osg::StencilTwoSided::FRONT, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::INCR_WRAP);
-
-                osg::ColorMask* colourMask = new osg::ColorMask(false, false, false, false);
-
-                _shadowVolumeStateSet->setAttributeAndModes(stencil,osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-                _shadowVolumeStateSet->setAttribute(colourMask, osg::StateAttribute::OVERRIDE);
-                _shadowVolumeStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
-
-
-            }
-            else
-            {
-                osg::Stencil* stencil = new osg::Stencil;
-                stencil->setFunction(osg::Stencil::ALWAYS,0,~0u);
-                stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
-
-                osg::ColorMask* colourMask = new osg::ColorMask(false, false, false, false);
-
-                _shadowVolumeStateSet->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-                _shadowVolumeStateSet->setAttribute(colourMask);
-                _shadowVolumeStateSet->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
-            }
-        }
-
-
-        {
-            _shadowedSceneStateSet = new osg::StateSet;
-
-            osg::Depth* depth = new osg::Depth;
-            depth->setWriteMask(false);
-            depth->setFunction(osg::Depth::LEQUAL);
-            _shadowedSceneStateSet->setAttribute(depth);
-            _shadowedSceneStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
-            // _shadowedSceneStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
-#if 0
-            osg::LightModel* lm1 = new osg::LightModel;
-            lm1->setAmbientIntensity(zero_colour);
-            _shadowedSceneStateSet->setAttribute(lm1);
-
-            osg::Light* light = new osg::Light;
-            light->setAmbient(zero_colour);
-            light->setDiffuse(diffuse);
-            light->setPosition(_lightpos);
-
-            _shadowedSceneStateSet->setMode(GL_LIGHT0, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            _shadowedSceneStateSet->setAttribute(light);
-#endif
-
-            // set up the stencil ops so that only operator on this mirrors stencil value.
-            osg::Stencil* stencil = new osg::Stencil;
-            stencil->setFunction(osg::Stencil::EQUAL,0,~0u);
-            stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
-            _shadowedSceneStateSet->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-
-            osg::BlendFunc* blend = new osg::BlendFunc;
-            blend->setFunction(osg::BlendFunc::ONE, osg::BlendFunc::ONE);
-            _shadowedSceneStateSet->setAttributeAndModes(blend, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            // _shadowedSceneStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        }
-
-        _ss1->setThreadSafeRefUnref(true);
-        _mainShadowStateSet->setThreadSafeRefUnref(true);
-        _shadowVolumeStateSet->setThreadSafeRefUnref(true);
-        _shadowedSceneStateSet->setThreadSafeRefUnref(true);
-
-    }
-    
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-    { 
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
-        if (!cv) 
-        {
-            traverse(node,nv);
-            return;
-        }
-
-        // osg::notify(osg::NOTICE)<<std::endl<<std::endl<<"Cull callback"<<std::endl;
-
-        
-        osg::ref_ptr<osgUtil::RenderBin> original_bin = cv->getCurrentRenderBin();
-        
-        osg::ref_ptr<osgUtil::RenderBin> new_bin = original_bin->find_or_insert(0,"RenderBin");
-
-        cv->setCurrentRenderBin(new_bin.get());
-
-        traverse(node,nv);
-        
-        cv->setCurrentRenderBin(original_bin.get());
-
-        osgUtil::RenderBin::RenderBinList::iterator itr =  new_bin->getRenderBinList().find(1000);
-        osg::ref_ptr<osgUtil::RenderBin> shadowVolumeBin;
-        if (itr != new_bin->getRenderBinList().end())
-        {
-            shadowVolumeBin = itr->second;
-            
-            if (shadowVolumeBin.valid())
-            {
-                // osg::notify(osg::NOTICE)<<"Found shadow volume bin, now removing it"<<std::endl;
-                new_bin->getRenderBinList().erase(itr);
-            }
-        }
-        
-        if (shadowVolumeBin.valid())
-        {        
-            original_bin->setStateSet(_ss1.get());
-
-            osgUtil::RenderStage* orig_rs = cv->getRenderStage();
-            osgUtil::RenderStage* new_rs = new osgUtil::RenderStage;
-            orig_rs->addPostRenderStage(new_rs);
-
-            new_rs->setViewport(orig_rs->getViewport());
-            new_rs->setClearColor(orig_rs->getClearColor());
-            new_rs->setClearMask(GL_STENCIL_BUFFER_BIT);
-            new_rs->setDrawBuffer(orig_rs->getDrawBuffer());
-            new_rs->setReadBuffer(orig_rs->getReadBuffer());
-            new_rs->setColorMask(orig_rs->getColorMask());
-            
-            new_rs->setPositionalStateContainer(orig_rs->getPositionalStateContainer());
-
-            if (shadowVolumeBin.valid())
-            {
-                // new_rs->setStateSet(_mainShadowStateSet.get());
-                new_rs->getRenderBinList()[0] = shadowVolumeBin;
-                shadowVolumeBin->setStateSet(_shadowVolumeStateSet.get());
-
-                osg::ref_ptr<osgUtil::RenderBin> nested_bin = new_rs->find_or_insert(1,"RenderBin");
-                nested_bin->getRenderBinList()[0] = new_bin;            
-                nested_bin->setStateSet(_shadowedSceneStateSet.get());
-            }
-        }
-    }
-};
-
-
-
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -542,12 +333,18 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    // default to single threaded during dev work.
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    
+    while (arguments.read("--SingleThreaded")) viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    while (arguments.read("--CullDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
+    while (arguments.read("--DrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
+    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
+
+
     bool postionalLight = false;
     while (arguments.read("--positionalLight")) postionalLight = true;
     while (arguments.read("--directionalLight")) postionalLight = false;
-
-    bool addOccluderToScene = false;
-    while (arguments.read("--addOccluderToScene")) addOccluderToScene = true;
 
     bool updateLightPosition = true;
     while (arguments.read("--noUpdate")) updateLightPosition = false;
@@ -555,11 +352,6 @@ int main(int argc, char** argv)
     bool createBase = false;
     while (arguments.read("--base")) createBase = true;
 
-    bool doShadow = true;
-    while (arguments.read("--noShadow")) doShadow = false;
-    
-    bool cullCallback = false;
-    while (arguments.read("-c")) cullCallback = true;
 
     int screenNum = -1;
     while (arguments.read("--screen", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
@@ -567,9 +359,6 @@ int main(int argc, char** argv)
     osgShadow::ShadowVolumeGeometry::DrawMode drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
     while (arguments.read("--two-sided")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
     while (arguments.read("--two-pass")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS;
-    
-    bool ShadowVolume = false;
-    while (arguments.read("--ShadowVolume")) ShadowVolume = true;
 
 
     // set up the camera manipulators.
@@ -597,7 +386,6 @@ int main(int argc, char** argv)
 
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
-
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
@@ -645,30 +433,6 @@ int main(int argc, char** argv)
         model = newGroup.get();
     }
 
-    // get the bounds of the model.
-    cbbv.reset();
-    model->accept(cbbv);
-    bb = cbbv.getBoundingBox();
-    
-    osg::ref_ptr<osg::Group> group = new osg::Group;
-
-    // set up the occluder
-    osg::ref_ptr<osgShadow::OccluderGeometry> occluder = new osgShadow::OccluderGeometry;
-    occluder->computeOccluderGeometry(model.get());
-//    cbbv.getPolytope(occluder->getBoundingPolytope(),0.001);
-    cbbv.getBase(occluder->getBoundingPolytope(),0.001);
-
-    if (addOccluderToScene)
-    {
-        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        geode->addDrawable(occluder.get());
-        group->addChild(geode.get());
-    }
-    
-    osg::ref_ptr<osgShadow::ShadowVolumeGeometry> shadowVolume = new osgShadow::ShadowVolumeGeometry;
-
-    shadowVolume->setUseDisplayList(!updateLightPosition);
-
     osg::Vec4 lightpos;
     
     if (postionalLight)
@@ -681,212 +445,19 @@ int main(int argc, char** argv)
     }
 
 
-    osg::ref_ptr<osg::Light> light = new osg::Light;
-    light->setPosition(lightpos);
-
-    if (ShadowVolume)
-    {
-        osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
-        
-        shadowedScene->setShadowTechnique(new osgShadow::ShadowVolume);
-
-        shadowedScene->addChild(model.get());
-        
-        group->addChild(shadowedScene.get());
-    }
-    else if (!doShadow)
-    {
-        group->addChild(model.get());
-
-        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
-        geode->addDrawable(shadowVolume.get());
-        group->addChild(geode.get());
-
-        osg::StateSet* ss = geode->getOrCreateStateSet();
-        ss->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
-    }
-    else if (cullCallback)
-    {
+    osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
     
-        int shadowVolumeBin = 1000;
-    
-        group->setCullCallback(new ShadowCallback(drawMode));
+    osg::ref_ptr<osgShadow::ShadowVolume> shadowVolume = new osgShadow::ShadowVolume;
+    shadowedScene->setShadowTechnique(shadowVolume.get());
+    shadowVolume->setDynamicShadowVolumes(updateLightPosition);
 
-        group->addChild(model.get());
+    osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
+    ls->getLight()->setPosition(lightpos);
 
-        osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
-        ls->setLight(light.get());
-        group->addChild(ls.get());
+    shadowedScene->addChild(model.get());
+    shadowedScene->addChild(ls.get());
 
-        {
-            osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-            group->addChild(geode.get());
-
-            occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
-            shadowVolume->setDrawMode(drawMode);
-
-            if (drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
-            {
-                osg::notify(osg::NOTICE)<<"STENCIL_TWO_SIDED seleteced"<<std::endl;
-
-                osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
-                ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
-                geode->addDrawable(shadowVolume.get());
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES seleteced"<<std::endl;
-
-                osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
-                ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
-                geode->addDrawable(shadowVolume.get());
-            }
-
-        }
-
-    }    
-    else
-    {
-        osg::Vec4 ambient(0.2,0.2,0.2,1.0);
-        osg::Vec4 diffuse(0.8,0.8,0.8,1.0);
-        osg::Vec4 zero_colour(0.0,0.0,0.0,1.0);
-    
-        // first group, render the depth buffer + ambient light contribution
-        {
-
-            osg::Group* first_model_group = new osg::Group;
-            first_model_group->addChild(model.get());
-            group->addChild(first_model_group);
-
-            osg::StateSet* ss1 = first_model_group->getOrCreateStateSet();
-
-            osg::LightModel* lm1 = new osg::LightModel;
-            lm1->setAmbientIntensity(ambient);
-            ss1->setAttribute(lm1);
-
-            osg::Light* light1 = new osg::Light;
-            light1->setAmbient(ambient);
-            light1->setDiffuse(zero_colour);
-            light1->setPosition(lightpos);
-            ss1->setAttributeAndModes(light1, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-        
-        }    
-    
-        // second group
-        {
-            // use a camera here just to implement a seperate post rendering stage.
-            osg::Camera* camera = new osg::Camera;
-            camera->setRenderOrder(osg::Camera::POST_RENDER);
-            camera->setClearMask(GL_STENCIL_BUFFER_BIT);
-            group->addChild(camera);
-
-            osg::StateSet* ss_camera = camera->getOrCreateStateSet();
-
-            osg::Depth* depth = new osg::Depth;
-            depth->setWriteMask(false);
-            depth->setFunction(osg::Depth::LEQUAL);
-            ss_camera->setAttribute(depth);
-
-            {
-                osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-                occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
-                shadowVolume->setDrawMode(drawMode);
-                
-
-                if (drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
-                {
-                    osg::notify(osg::NOTICE)<<"STENCIL_TWO_SIDED seleteced"<<std::endl;
-
-                    osg::StencilTwoSided* stencil = new osg::StencilTwoSided;
-                    stencil->setFunction(osg::StencilTwoSided::BACK, osg::StencilTwoSided::ALWAYS,0,~0u);
-                    stencil->setOperation(osg::StencilTwoSided::BACK, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::DECR_WRAP);
-                    stencil->setFunction(osg::StencilTwoSided::FRONT, osg::StencilTwoSided::ALWAYS,0,~0u);
-                    stencil->setOperation(osg::StencilTwoSided::FRONT, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::KEEP, osg::StencilTwoSided::INCR_WRAP);
-
-
-                    osg::ColorMask* colourMask = new osg::ColorMask(false, false, false, false);
-
-                    osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
-                    ss_sv1->setRenderBinDetails(0, "RenderBin");
-                    ss_sv1->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-                    ss_sv1->setAttribute(colourMask);
-                    ss_sv1->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
-                    
-                    geode->addDrawable(shadowVolume.get());
-                    
-                    camera->addChild(geode.get());
-
-                }
-                else
-                {
-                    osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES seleteced"<<std::endl;
-
-                    osg::Stencil* stencil = new osg::Stencil;
-                    stencil->setFunction(osg::Stencil::ALWAYS,0,~0u);
-                    stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
-
-                    osg::ColorMask* colourMask = new osg::ColorMask(false, false, false, false);
-
-                    osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
-                    ss_sv1->setRenderBinDetails(0, "RenderBin");
-                    ss_sv1->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-                    ss_sv1->setAttribute(colourMask);
-                    ss_sv1->setMode(GL_CULL_FACE,osg::StateAttribute::ON);
-                    
-                    geode->addDrawable(shadowVolume.get());
-                    
-                    camera->addChild(geode.get());
-                }
-
-            }
-
-
-            // render scene graph adding contribution of light
-            {
-                osg::Group* second_model_group = new osg::Group;
-                second_model_group->addChild(model.get());
-
-
-                osg::StateSet* ss1 = second_model_group->getOrCreateStateSet();
-                ss1->setRenderBinDetails(5, "RenderBin");
-
-                osg::LightModel* lm1 = new osg::LightModel;
-                lm1->setAmbientIntensity(zero_colour);
-                ss1->setAttribute(lm1);
-
-
-                osg::LightSource* lightsource = new osg::LightSource;
-                lightsource->setLight(light.get());
-                light->setAmbient(zero_colour);
-                light->setDiffuse(diffuse);
-                light->setPosition(lightpos);
-                second_model_group->addChild(lightsource);
-
-                ss1->setMode(GL_LIGHT0, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
-                // set up the stencil ops so that only operator on this mirrors stencil value.
-                osg::Stencil* stencil = new osg::Stencil;
-                stencil->setFunction(osg::Stencil::EQUAL,0,~0u);
-                stencil->setOperation(osg::Stencil::KEEP, osg::Stencil::KEEP, osg::Stencil::KEEP);
-                ss1->setAttributeAndModes(stencil,osg::StateAttribute::ON);
-
-                osg::BlendFunc* blend = new osg::BlendFunc;
-                blend->setFunction(osg::BlendFunc::ONE, osg::BlendFunc::ONE);
-                ss1->setAttributeAndModes(blend, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-                ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
-                camera->addChild(second_model_group);
-            }
-                    
-        }
-
-    }
-
-
-    viewer.setSceneData(group.get());
+    viewer.setSceneData(shadowedScene.get());
     
     // create the windows and run the threads.
     viewer.realize();
@@ -904,10 +475,9 @@ int main(int argc, char** argv)
             }
             else
             {
-                lightpos.set(sinf(t),cosf(t),0.8f,0.0f);
+                lightpos.set(sinf(t),cosf(t),1.0f,0.0f);
             }
-            light->setPosition(lightpos);
-            occluder->computeShadowVolumeGeometry(lightpos, *shadowVolume);
+            ls->getLight()->setPosition(lightpos);
         }
 
         viewer.frame();

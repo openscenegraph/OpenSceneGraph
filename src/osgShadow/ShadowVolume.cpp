@@ -23,7 +23,7 @@
 #include <osg/StencilTwoSided>
 #include <osg/CullFace>
 #include <osg/Geometry>
-#include <osg/Switch>
+#include <osg/io_utils>
 
 using namespace osgShadow;
 
@@ -139,14 +139,16 @@ protected:
 //   ShadowVolume
 //
 ShadowVolume::ShadowVolume():
-    _drawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED) 
+    _drawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED),
+    _dynamicShadowVolumes(false)
 {
     osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowVolume technique in development."<<std::endl;
 }
 
 ShadowVolume::ShadowVolume(const ShadowVolume& sv, const osg::CopyOp& copyop):
     ShadowTechnique(sv,copyop),
-    _drawMode(sv._drawMode)
+    _drawMode(sv._drawMode),
+    _dynamicShadowVolumes(sv._dynamicShadowVolumes)
 {
 }
 
@@ -154,16 +156,33 @@ ShadowVolume::~ShadowVolume()
 {
 }
 
+void ShadowVolume::setDrawMode(osgShadow::ShadowVolumeGeometry::DrawMode drawMode)
+{
+    if (_drawMode == drawMode) return;
+    
+    _drawMode = drawMode;
+    
+    dirty();
+}
+
+void ShadowVolume::setDynamicShadowVolumes(bool dynamicShadowVolumes)
+{
+    _dynamicShadowVolumes = dynamicShadowVolumes;
+}
+
+
 void ShadowVolume::init()
 {
     if (!_shadowedScene) return;
-    
-    bool updateLightPosition = false;
     
     // get the bounds of the model.    
     ComputeBoundingBoxVisitor cbbv;
     _shadowedScene->osg::Group::traverse(cbbv);
 
+
+    osg::Vec4 ambient(0.2,0.2,0.2,1.0);
+    osg::Vec4 diffuse(0.8,0.8,0.8,1.0);
+    osg::Vec4 zero_colour(0.0,0.0,0.0,1.0);
 
     osg::Vec4 lightpos;
     lightpos.set(0.5f,0.25f,0.8f,0.0f);
@@ -177,7 +196,7 @@ void ShadowVolume::init()
 
     // set up shadow volume
     _shadowVolume = new osgShadow::ShadowVolumeGeometry;
-    _shadowVolume->setUseDisplayList(!updateLightPosition);
+    _shadowVolume->setUseDisplayList(!_dynamicShadowVolumes);
     _occluder->computeShadowVolumeGeometry(lightpos, *_shadowVolume);
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -201,25 +220,20 @@ void ShadowVolume::init()
         geode->addDrawable(_shadowVolume.get());
     }
     
-    
-
     {
 
         // first group, render the depth buffer + ambient light contribution
         {
             _ss1 = new osg::StateSet;
 
-#if 0
             osg::LightModel* lm1 = new osg::LightModel;
             lm1->setAmbientIntensity(ambient);
             _ss1->setAttribute(lm1);
 
-            osg::Light* light1 = new osg::Light;
-            light1->setAmbient(ambient);
-            light1->setDiffuse(zero_colour);
-            light1->setPosition(_lightpos);
-            _ss1->setAttributeAndModes(light1, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-#endif            
+            _ambientLight = new osg::Light;
+            _ambientLight->setAmbient(ambient);
+            _ambientLight->setDiffuse(zero_colour);
+            _ss1->setAttributeAndModes(_ambientLight.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
             
             _ss1->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
         }
@@ -286,19 +300,16 @@ void ShadowVolume::init()
             _shadowedSceneStateSet->setMode(GL_DEPTH_TEST, osg::StateAttribute::ON);
             // _shadowedSceneStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
-#if 0
             osg::LightModel* lm1 = new osg::LightModel;
             lm1->setAmbientIntensity(zero_colour);
             _shadowedSceneStateSet->setAttribute(lm1);
 
-            osg::Light* light = new osg::Light;
-            light->setAmbient(zero_colour);
-            light->setDiffuse(diffuse);
-            light->setPosition(_lightpos);
+            _diffuseLight = new osg::Light;
+            _diffuseLight->setAmbient(zero_colour);
+            _diffuseLight->setDiffuse(diffuse);
 
             _shadowedSceneStateSet->setMode(GL_LIGHT0, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            _shadowedSceneStateSet->setAttribute(light);
-#endif
+            _shadowedSceneStateSet->setAttribute(_diffuseLight.get());
 
             // set up the stencil ops so that only operator on this mirrors stencil value.
             osg::Stencil* stencil = new osg::Stencil;
@@ -367,9 +378,43 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         new_rs->setDrawBuffer(orig_rs->getDrawBuffer());
         new_rs->setReadBuffer(orig_rs->getReadBuffer());
         new_rs->setColorMask(orig_rs->getColorMask());
+        
+        osg::Vec4 lightpos;
+        
+        osg::ref_ptr<osgUtil::PositionalStateContainer> ps = new osgUtil::PositionalStateContainer;
+        new_rs->setPositionalStateContainer(ps.get());
 
-        new_rs->setPositionalStateContainer(orig_rs->getPositionalStateContainer());
-
+        osgUtil::PositionalStateContainer::AttrMatrixList& aml = orig_rs->getPositionalStateContainer()->getAttrMatrixList();
+        for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
+            itr != aml.end();
+            ++itr)
+        {
+            const osg::Light* light = dynamic_cast<const osg::Light*>(itr->first.get());
+            if (light)
+            {
+                osg::RefMatrix* matrix = itr->second.get();
+                if (matrix) lightpos = light->getPosition() * (*matrix);
+                else lightpos = light->getPosition();
+            }
+            else
+            {
+                ps->addPositionedAttribute(itr->second.get(), itr->first.get()); 
+            }
+        }
+        
+        _ambientLight->setPosition(lightpos);
+        orig_rs->addPositionedAttribute(0,_ambientLight.get());
+        
+        _diffuseLight->setPosition(lightpos);
+        ps->addPositionedAttribute(0, _diffuseLight.get());
+        
+        if (_lightpos != lightpos && _dynamicShadowVolumes)
+        {
+            _lightpos = lightpos;
+            osg::notify(osg::NOTICE)<<"Need to update ShadowVolume and project the lightpos into the shadow volumes coordinate frame"<<std::endl;
+            _occluder->computeShadowVolumeGeometry(lightpos, *_shadowVolume);
+        }
+        
         if (shadowVolumeBin.valid())
         {
             // new_rs->setStateSet(_mainShadowStateSet.get());
@@ -377,7 +422,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
             shadowVolumeBin->setStateSet(_shadowVolumeStateSet.get());
 
             osg::ref_ptr<osgUtil::RenderBin> nested_bin = new_rs->find_or_insert(1,"RenderBin");
-            nested_bin->getRenderBinList()[0] = new_bin;            
+            nested_bin->getRenderBinList()[0] = new_bin;
             nested_bin->setStateSet(_shadowedSceneStateSet.get());
         }
     }

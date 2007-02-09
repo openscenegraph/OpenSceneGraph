@@ -674,11 +674,18 @@ int Viewer::run()
         realize();
     }
 
+#if 1
     while (!done())
     {
         frame();
     }
-    
+#else
+    int runTillFrameNumber = 10;
+    while (!done() && getFrameStamp()->getFrameNumber()<runTillFrameNumber)
+    {
+        frame();
+    }
+#endif    
     return 0;
 }
 

@@ -33,6 +33,13 @@ class OSGSHADOW_EXPORT ShadowVolume : public ShadowTechnique
             
         META_Object(osgShadow, ShadowVolume);
         
+
+        void setDrawMode(osgShadow::ShadowVolumeGeometry::DrawMode drawMode);
+        osgShadow::ShadowVolumeGeometry::DrawMode getDrawMode() const { return _drawMode; }
+
+        void setDynamicShadowVolumes(bool dynamicShadowVolumes);
+        bool getDynamicShadowVolumes() const { return _dynamicShadowVolumes; }
+
         /** initialize the ShadowedScene and local cached data structures.*/
         virtual void init();
         
@@ -44,15 +51,21 @@ class OSGSHADOW_EXPORT ShadowVolume : public ShadowTechnique
         
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
+        
 
     protected :
 
         virtual ~ShadowVolume();
         
-        osgShadow::ShadowVolumeGeometry::DrawMode _drawMode;
+        osgShadow::ShadowVolumeGeometry::DrawMode       _drawMode;
+        bool                                            _dynamicShadowVolumes;
 
         osg::ref_ptr<osgShadow::OccluderGeometry> _occluder;
-        osg::ref_ptr<osgShadow::ShadowVolumeGeometry> _shadowVolume;
+        
+        OpenThreads::Mutex                              _shadowVolumeMutex;
+        osg::ref_ptr<osgShadow::ShadowVolumeGeometry>   _shadowVolume;
+        
+        osg::Vec4                   _lightpos;
         
         osg::ref_ptr<osg::Light>    _ambientLight;
         osg::ref_ptr<osg::Light>    _diffuseLight;

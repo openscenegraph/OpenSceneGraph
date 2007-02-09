@@ -15,8 +15,11 @@
 #define OSGSHADOW_SHADOWVOLUME 1
 
 #include <osg/Camera>
+#include <osg/Light>
+#include <osg/Geode>
 
 #include <osgShadow/ShadowTechnique>
+#include <osgShadow/OccluderGeometry>
 
 namespace osgShadow {
 
@@ -37,7 +40,7 @@ class OSGSHADOW_EXPORT ShadowVolume : public ShadowTechnique
         virtual void update(osg::NodeVisitor& nv);
         
         /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
-        virtual void cull(osg::NodeVisitor& nv);
+        virtual void cull(osgUtil::CullVisitor& cv);
         
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
@@ -46,6 +49,20 @@ class OSGSHADOW_EXPORT ShadowVolume : public ShadowTechnique
 
         virtual ~ShadowVolume();
         
+        osgShadow::ShadowVolumeGeometry::DrawMode _drawMode;
+
+        osg::ref_ptr<osgShadow::OccluderGeometry> _occluder;
+        osg::ref_ptr<osgShadow::ShadowVolumeGeometry> _shadowVolume;
+        
+        osg::ref_ptr<osg::Light>    _ambientLight;
+        osg::ref_ptr<osg::Light>    _diffuseLight;
+
+        osg::ref_ptr<osg::StateSet> _ss1;
+        osg::ref_ptr<osg::StateSet> _mainShadowStateSet;
+        osg::ref_ptr<osg::StateSet> _shadowVolumeStateSet;
+        osg::ref_ptr<osg::StateSet> _shadowedSceneStateSet;
+
+
 };
 
 }

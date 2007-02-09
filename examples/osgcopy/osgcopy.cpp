@@ -127,6 +127,50 @@ class MyCopyOp : public osg::CopyOp
         mutable int _step;
 };
 
+// this CopyOp class will preserve the multi-parent structure of the copied 
+// object, instead of expanding it into a tree. Works with the 
+// DEEP_COPY_NODES flag.
+class GraphCopyOp : public osg::CopyOp
+{
+    public:
+    
+        inline GraphCopyOp(CopyFlags flags=SHALLOW_COPY):
+            osg::CopyOp(flags) { _nodeCopyMap.clear();}
+            
+        virtual osg::Node* operator() (const osg::Node* node) const
+        {
+            if (node && _flags&DEEP_COPY_NODES)
+            {
+                if ( node->getNumParents() > 1 )
+                {
+                    if ( _nodeCopyMap.find(node) != _nodeCopyMap.end() )
+                    {
+                        std::cout<<"Copy of node "<<node<<" "<<node->getName()<<", "
+                            << _nodeCopyMap[node]<<", will be reused"<<std::endl;
+                        return (osg::Node*)(_nodeCopyMap[node]);
+                    }
+                    else
+                    {
+                        osg::Node* newNode = dynamic_cast<osg::Node*>( node->clone(*this) );
+                        _nodeCopyMap[node] = newNode;
+                        return newNode;
+                    }
+                }
+                else
+                    return dynamic_cast<osg::Node*>( node->clone(*this) );
+            }
+            else
+                return const_cast<osg::Node*>(node);
+        }
+         
+    protected:
+    
+        // must be mutable since CopyOp is passed around as const to
+        // the various clone/copy constructors.
+        mutable std::map<const osg::Node*,osg::Node*> _nodeCopyMap;
+
+};
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -151,23 +195,32 @@ int main( int argc, char **argv )
     
     // do a deep copy, using MyCopyOp to reveal whats going on under the good,
     // in your own code you'd typically just use the basic osg::CopyOp something like
-    // osg::Node* mycopy = dynamic_cast<osg::Node*>(rootnode->clone(osg::CopyOp::DEEP_COPY_ALL));
+    osg::ref_ptr<osg::Node> mycopy = dynamic_cast<osg::Node*>(rootnode->clone(osg::CopyOp::DEEP_COPY_ALL));
     std::cout << "Doing a deep copy of scene graph"<<std::endl;
+
     // note, we need the dyanmic_cast because MS Visual Studio can't handle covarient
     // return types, so that clone has return just Object*.  bahh hum bug
-    osg::Node* deep_copy = dynamic_cast<osg::Node*>(rootnode->clone(MyCopyOp(osg::CopyOp::DEEP_COPY_ALL)));
+    osg::ref_ptr<osg::Node> deep_copy = dynamic_cast<osg::Node*>(rootnode->clone(MyCopyOp(osg::CopyOp::DEEP_COPY_ALL)));
     
     std::cout << "----------------------------------------------------------------"<<std::endl;
 
+    // do a graph preserving deep copy.
+    std::cout << "Doing a graph preserving deep copy of scene graph nodes"<<std::endl;
+    osg::ref_ptr<osg::Node> graph_copy = dynamic_cast<osg::Node*>(rootnode->clone(GraphCopyOp(osg::CopyOp::DEEP_COPY_NODES)));
+
+
     // do a shallow copy.
     std::cout << "Doing a shallow copy of scene graph"<<std::endl;
-    osg::Node* shallow_copy = dynamic_cast<osg::Node*>(rootnode->clone(MyCopyOp(osg::CopyOp::SHALLOW_COPY)));
+    osg::ref_ptr<osg::Node> shallow_copy = dynamic_cast<osg::Node*>(rootnode->clone(MyCopyOp(osg::CopyOp::SHALLOW_COPY)));
 
 
     // write out the various scene graphs so that they can be browsed, either
     // in an editor or using a graphics diff tool gdiff/xdiff/xxdiff.
     std::cout << std::endl << "Writing out the original scene graph as 'original.osg'"<<std::endl;
     osgDB::writeNodeFile(*rootnode,"original.osg");
+
+    std::cout << std::endl << "Writing out the graph preserving scene graph as 'graph_copy.osg'"<<std::endl;
+    osgDB::writeNodeFile(*graph_copy,"graph_copy.osg");
 
     std::cout << "Writing out the deep copied scene graph as 'deep_copy.osg'"<<std::endl;
     osgDB::writeNodeFile(*deep_copy,"deep_copy.osg");
@@ -203,6 +256,8 @@ int main( int argc, char **argv )
      
     // set the scene to render
     viewer.setSceneData(rootnode);
+
+    // viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     return viewer.run();
 }

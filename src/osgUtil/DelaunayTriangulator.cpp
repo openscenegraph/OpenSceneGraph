@@ -1120,7 +1120,7 @@ bool DelaunayTriangulator::triangulate()
 
     prim_tris_ = new osg::DrawElementsUInt(GL_TRIANGLES, pt_indices.size(), &(pt_indices.front()));
 
-    osg::notify(osg::WARN) << "DelaunayTriangulator: process done, " << prim_tris_->getNumPrimitives() << " triangles remain\n";
+    osg::notify(osg::INFO) << "DelaunayTriangulator: process done, " << prim_tris_->getNumPrimitives() << " triangles remain\n";
     
     return true;
 }

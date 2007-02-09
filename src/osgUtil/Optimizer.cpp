@@ -1181,7 +1181,6 @@ bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* node
         titr!=_transformSet.end();
         ++titr)
     {
-        osg::notify(osg::NOTICE)<<"Disabling transform"<<std::endl;
         cltv.disableTransform(*titr);
     }
     

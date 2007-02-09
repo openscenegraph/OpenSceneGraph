@@ -226,7 +226,6 @@ class NetReader : public osgDB::ReaderWriter
                 }
             }
 
-            //if(proxy.empty()) //CARLO: proxy modf
             // Env variables should override plug-in options.
             {
                 char * env_proxyHost = getenv("OSG_PROXY_HOST"); //Checking proxy environment variables 
@@ -265,6 +264,14 @@ class NetReader : public osgDB::ReaderWriter
                     return ReadResult::FILE_NOT_HANDLED;
                 else
                     fileName = inFileName;
+            }
+
+            //Find the Port Number specified in URL
+            index = hostname.find_last_of(":");
+            if( index != -1 )
+            {
+                port = atoi( hostname.substr( index + 1 ).c_str() );
+                hostname = hostname.substr( 0, index );            
             }
 
             // Let's also strip the possible .net extension
@@ -317,7 +324,15 @@ class NetReader : public osgDB::ReaderWriter
                     return ReadResult::FILE_NOT_FOUND;
                 }
                 
-                requestAdd = std::string("http://") + hostname + "/" + fileName;
+                if(port != 80) //Default HTTP Port
+                {
+                    std::ostringstream portstream;
+                    portstream << port << std::flush; 
+
+                    requestAdd = std::string("http://") + hostname + std::string(":") + portstream.str() + std::string("/") + fileName;
+                }
+                else 
+                    requestAdd = std::string("http://") + hostname + std::string("/") + fileName;
             }
             else
             {

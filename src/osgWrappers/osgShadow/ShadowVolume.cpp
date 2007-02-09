@@ -14,6 +14,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgShadow/ShadowVolume>
+#include <osgUtil/CullVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -60,8 +61,8 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
 	          __void__update__osg_NodeVisitor_R1,
 	          "run the update traversal of the ShadowedScene and update any loca chached data structures. ",
 	          "");
-	I_Method1(void, cull, IN, osg::NodeVisitor &, nv,
-	          __void__cull__osg_NodeVisitor_R1,
+	I_Method1(void, cull, IN, osgUtil::CullVisitor &, cv,
+	          __void__cull__osgUtil_CullVisitor_R1,
 	          "run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique. ",
 	          "");
 	I_Method0(void, cleanSceneGraph,

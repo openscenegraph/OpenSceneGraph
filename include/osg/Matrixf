@@ -123,7 +123,19 @@ class OSG_EXPORT Matrixf
                          value_type angle3, const Vec3d& axis3);
 
         
-        
+        /** decompose the matrix into translation, rotation, scale and scale orietation.*/        
+        void decompose( osg::Vec3f& translation,
+                        osg::Quat& rotation, 
+                        osg::Vec3f& scale, 
+                        osg::Quat& so ) const;
+
+        /** decompose the matrix into translation, rotation, scale and scale orietation.*/        
+        void decompose( osg::Vec3d& translation,
+                        osg::Quat& rotation, 
+                        osg::Vec3d& scale, 
+                        osg::Quat& so ) const;
+
+
         /** Set to an orthographic projection.
          * See glOrtho for further details.
         */

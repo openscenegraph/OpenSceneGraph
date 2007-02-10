@@ -91,8 +91,6 @@ class OSG_EXPORT Matrixd
         value_type * ptr() { return (value_type*)_mat; }
         const value_type * ptr() const { return (const value_type *)_mat; }
 
-        void makeIdentity();
-        
         bool isIdentity() const
         {
             return _mat[0][0]==1.0 && _mat[0][1]==0.0 && _mat[0][2]==0.0 &&  _mat[0][3]==0.0 &&
@@ -100,6 +98,8 @@ class OSG_EXPORT Matrixd
                    _mat[2][0]==0.0 && _mat[2][1]==0.0 && _mat[2][2]==1.0 &&  _mat[2][3]==0.0 &&
                    _mat[3][0]==0.0 && _mat[3][1]==0.0 && _mat[3][2]==0.0 &&  _mat[3][3]==1.0;
         }
+
+        void makeIdentity();
         
         void makeScale( const Vec3f& );
         void makeScale( const Vec3d& );
@@ -122,8 +122,20 @@ class OSG_EXPORT Matrixd
                          value_type angle2, const Vec3d& axis2,
                          value_type angle3, const Vec3d& axis3);
 
-        
-        
+
+        /** decompose the matrix into translation, rotation, scale and scale orietation.*/        
+        void decompose( osg::Vec3f& translation,
+                        osg::Quat& rotation, 
+                        osg::Vec3f& scale, 
+                        osg::Quat& so ) const;
+
+        /** decompose the matrix into translation, rotation, scale and scale orietation.*/        
+        void decompose( osg::Vec3d& translation,
+                        osg::Quat& rotation, 
+                        osg::Vec3d& scale, 
+                        osg::Quat& so ) const;
+
+
         /** Set to an orthographic projection.
          * See glOrtho for further details.
         */

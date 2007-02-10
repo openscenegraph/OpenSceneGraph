@@ -400,6 +400,10 @@ SOURCE=..\..\src\osg\Matrixf.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\MatrixDecomposition.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\MatrixTransform.cpp
 # End Source File
 # Begin Source File

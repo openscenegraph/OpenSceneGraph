@@ -63,6 +63,7 @@ CXXFILES =\
 	Material.cpp\
 	Matrixd.cpp\
 	Matrixf.cpp\
+	MatrixDecomposition.cpp\
 	MatrixTransform.cpp\
 	Multisample.cpp\
 	NodeCallback.cpp\

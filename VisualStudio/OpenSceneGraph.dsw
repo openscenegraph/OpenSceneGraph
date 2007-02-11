@@ -3902,6 +3902,33 @@ Package=<4>
 
 ###############################################################################
 
+Project: "osgWrapper osgManipulator"=.\osgWrappers\osgManipulator\wrapper_osgManipulator.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Core osg
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgManipulator
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgGA
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgUtil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Core osgIntrospection
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "osgWrapper osgParticle"=.\osgWrappers\osgParticle\wrapper_osgParticle.dsp - Package Owner=<4>
 
 Package=<5>

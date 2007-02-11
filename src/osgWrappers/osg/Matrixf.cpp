@@ -162,6 +162,14 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	          __void__makeRotate__value_type__C5_Vec3d_R1__value_type__C5_Vec3d_R1__value_type__C5_Vec3d_R1,
 	          "",
 	          "");
+	I_Method4(void, decompose, IN, osg::Vec3f &, translation, IN, osg::Quat &, rotation, IN, osg::Vec3f &, scale, IN, osg::Quat &, so,
+	          __void__decompose__osg_Vec3f_R1__osg_Quat_R1__osg_Vec3f_R1__osg_Quat_R1,
+	          "decompose the matrix into translation, rotation, scale and scale orietation. ",
+	          "");
+	I_Method4(void, decompose, IN, osg::Vec3d &, translation, IN, osg::Quat &, rotation, IN, osg::Vec3d &, scale, IN, osg::Quat &, so,
+	          __void__decompose__osg_Vec3d_R1__osg_Quat_R1__osg_Vec3d_R1__osg_Quat_R1,
+	          "decompose the matrix into translation, rotation, scale and scale orietation. ",
+	          "");
 	I_Method6(void, makeOrtho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar,
 	          __void__makeOrtho__double__double__double__double__double__double,
 	          "Set to an orthographic projection. ",

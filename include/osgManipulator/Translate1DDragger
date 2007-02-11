@@ -33,10 +33,7 @@ class OSGMANIPULATOR_EXPORT Translate1DDragger : public Dragger
         Translate1DDragger(const osg::Vec3& s, const osg::Vec3& e);
 
         /** Handle pick events on dragger and generate TranslateInLine commands. */
-        virtual bool handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-                            const osgUtil::IntersectVisitor::HitList& hitList, 
-                            const osgUtil::IntersectVisitor::HitList::iterator& hit,
-                            const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
+        virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();

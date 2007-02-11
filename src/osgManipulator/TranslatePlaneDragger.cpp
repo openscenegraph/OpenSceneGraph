@@ -43,14 +43,10 @@ TranslatePlaneDragger::~TranslatePlaneDragger()
 {
 }
 
-bool TranslatePlaneDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-                                   const osgUtil::IntersectVisitor::HitList& hl,
-                                   const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-                                   const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool TranslatePlaneDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-        return false;
+    if (!pointer.contains(this)) return false;
 
     if ((ea.getButtonMask() & osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON) &&
         ea.getEventType() == osgGA::GUIEventAdapter::PUSH)
@@ -59,12 +55,12 @@ bool TranslatePlaneDragger::handle(int pixel_x, int pixel_y, const osgUtil::Scen
     bool handled = false;
     if (_usingTranslate1DDragger)
     {
-        if (_translate1DDragger->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+        if (_translate1DDragger->handle(pointer, ea, aa))
             handled = true;
     }
     else
     {
-        if (_translate2DDragger->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+        if (_translate2DDragger->handle(pointer, ea, aa))
             handled = true;
     }
 

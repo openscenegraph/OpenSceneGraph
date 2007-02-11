@@ -41,15 +41,12 @@ Translate1DDragger::~Translate1DDragger()
 {
 }
 
-bool Translate1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-        const osgUtil::IntersectVisitor::HitList&, const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-        const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
     if (_checkForNodeInNodePath)
     {
-        if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-            return false;
+        if (!pointer.contains(this)) return false;
     }
 
     switch (ea.getEventType())
@@ -63,7 +60,7 @@ bool Translate1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneVi
                 osg::Matrix localToWorld = osg::computeLocalToWorld(nodePathToRoot);
                 _projector->setLocalToWorld(localToWorld);
 
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, _startProjectedPoint))
+                if (_projector->project(pointer, _startProjectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<TranslateInLineCommand> cmd = new TranslateInLineCommand(_projector->getLineStart(),
@@ -90,7 +87,7 @@ bool Translate1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneVi
         case (osgGA::GUIEventAdapter::DRAG):
             {
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<TranslateInLineCommand> cmd = new TranslateInLineCommand(_projector->getLineStart(),
@@ -115,7 +112,7 @@ bool Translate1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneVi
         case (osgGA::GUIEventAdapter::RELEASE):
             {
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     osg::ref_ptr<TranslateInLineCommand> cmd = new TranslateInLineCommand(_projector->getLineStart(),
                             _projector->getLineEnd());

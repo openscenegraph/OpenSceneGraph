@@ -35,13 +35,10 @@ RotateSphereDragger::~RotateSphereDragger()
 {
 }
 
-bool RotateSphereDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-        const osgUtil::IntersectVisitor::HitList&, const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-        const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-        return false;
+    if (!pointer.contains(this)) return false;
 
     switch (ea.getEventType())
     {
@@ -57,13 +54,13 @@ bool RotateSphereDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneV
                 _startLocalToWorld = _projector->getLocalToWorld();
                 _startWorldToLocal = _projector->getWorldToLocal();
 
-                if (_projector->isPointInFront(hitIter->getLocalIntersectPoint(), sv, _startLocalToWorld))
+                if (_projector->isPointInFront(pointer, _startLocalToWorld))
                     _projector->setFront(true);
                 else
                     _projector->setFront(false);
 
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<Rotate3DCommand> cmd = new Rotate3DCommand();
@@ -98,7 +95,7 @@ bool RotateSphereDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneV
                 _projector->setLocalToWorld(localToWorld);
 
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     osg::Vec3 prevProjectedPoint = _prevWorldProjPt * _projector->getWorldToLocal();
                     osg::Quat deltaRotation = _projector->getRotation(prevProjectedPoint, _prevPtOnSphere,

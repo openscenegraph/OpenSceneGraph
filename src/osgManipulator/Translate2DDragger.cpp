@@ -43,14 +43,10 @@ Translate2DDragger::~Translate2DDragger()
 {
 }
 
-bool Translate2DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-                                const osgUtil::IntersectVisitor::HitList&,
-                                const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-                                const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-	return false;
+    if (!pointer.contains(this)) return false;
 
     switch (ea.getEventType())
     {
@@ -63,7 +59,7 @@ bool Translate2DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneVi
                 osg::Matrix localToWorld = osg::computeLocalToWorld(nodePathToRoot);
                 _projector->setLocalToWorld(localToWorld);
                 
-                if (_projector->project(osg::Vec2((float)pixel_x, (float)pixel_y), sv, _startProjectedPoint))
+                if (_projector->project(pointer, _startProjectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<TranslateInPlaneCommand> cmd = new TranslateInPlaneCommand(_projector->getPlane());
@@ -92,7 +88,7 @@ bool Translate2DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneVi
         case (osgGA::GUIEventAdapter::DRAG):
             {
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<TranslateInPlaneCommand> cmd = new TranslateInPlaneCommand(_projector->getPlane());

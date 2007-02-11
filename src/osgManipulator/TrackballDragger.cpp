@@ -124,7 +124,7 @@ void TrackballDragger::setupDefaultGeometry()
         osg::ShapeDrawable* cylinderDrawable = new osg::ShapeDrawable(cylinder,hints);
         geode->addDrawable(cylinderDrawable);
         setDrawableToAlwaysCull(*cylinderDrawable);
-        geode->addDrawable(createCircleGeometry(1.0f, 25));
+        geode->addDrawable(createCircleGeometry(1.0f, 100));
     }
 
     // Draw in line mode.

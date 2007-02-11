@@ -1,0 +1,134 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+//osgManipulator - Copyright (C) 2007 Fugro-Jason B.V.
+
+#ifndef OSGMANIPULATOR_DRAGGER
+#define OSGMANIPULATOR_DRAGGER 1
+
+#include <osgManipulator/Selection>
+
+#include <osg/BoundingSphere>
+#include <osgUtil/SceneView>
+#include <osgUtil/IntersectVisitor>
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIActionAdapter>
+
+namespace osgManipulator
+{
+
+class CommandManager;
+class CompositeDragger;
+
+/**
+ * Base class for draggers. Concrete draggers implement the pick event handler
+ * and generate motion commands (translate, rotate, ...) and sends these 
+ * command to the CommandManager. The CommandManager dispatches the commands 
+ * to all the Selections that are connected to the Dragger that generates the
+ * commands.
+ */
+class OSGMANIPULATOR_EXPORT Dragger : public Selection
+{
+    public:
+
+        /** Set/Get the CommandManager. Draggers use CommandManager to dispatch commands. */
+        virtual void setCommandManager(CommandManager* cm) { _commandManager = cm; }
+        CommandManager* getCommandManager() { return _commandManager; }
+        const CommandManager* getCommandManager() const { return _commandManager; }
+
+        /**
+	 * Set/Get parent dragger. For simple draggers parent points to itself.
+	 * For composite draggers parent points to the parent dragger that uses
+	 * this dragger.
+	 */
+        virtual void setParentDragger(Dragger* parent) { _parentDragger = parent; }
+        Dragger* getParentDragger() { return _parentDragger; }
+        const Dragger* getParentDragger() const { return _parentDragger; }
+	
+        /** Returns 0 if this Dragger is not a CompositeDragger. */
+        virtual const CompositeDragger* getComposite() const { return 0; }
+
+        /** Returns 0 if this Dragger is not a CompositeDragger. */
+        virtual CompositeDragger* getComposite() { return 0; }
+
+        virtual bool handle(int, int, const osgUtil::SceneView&, 
+                            const osgUtil::IntersectVisitor::HitList&, 
+                            const osgUtil::IntersectVisitor::HitList::iterator&,
+                            const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) { return false; }
+
+    protected:
+
+        Dragger();
+        virtual ~Dragger();
+        
+        CommandManager* _commandManager;
+
+        Dragger*	_parentDragger;
+       
+};
+
+
+/**
+ * CompositeDragger allows to create complex draggers that are composed of a 
+ * hierarchy of Draggers.
+ */
+class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
+{
+    public:
+
+        typedef std::vector< osg::ref_ptr<Dragger> > DraggerList;
+        
+        virtual const CompositeDragger* getComposite() const { return this; }
+        virtual CompositeDragger* getComposite() { return this; }
+
+        virtual void setCommandManager(CommandManager* cm);
+
+        virtual void setParentDragger(Dragger* parent);
+
+        virtual bool handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
+                            const osgUtil::IntersectVisitor::HitList& hitList, 
+                            const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
+                            const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        // Composite-specific methods below
+        virtual bool addDragger(Dragger* dragger);
+        virtual bool removeDragger(Dragger* dragger);
+        unsigned int getNumDraggers() const { return _draggerList.size(); }
+        Dragger* getDragger(unsigned int i) { return _draggerList[i].get(); }
+        const Dragger* getDragger(unsigned int i) const { return _draggerList[i].get(); }
+        bool containsDragger(const Dragger* dragger) const;
+        DraggerList::iterator findDragger(const Dragger* dragger);
+
+    protected:
+
+        CompositeDragger() {}
+        virtual ~CompositeDragger() {}
+        
+        DraggerList _draggerList;
+};
+
+/**
+ * Culls the drawable all the time. Used by draggers to have invisible geometry
+ * around lines and points so that they can be picked. For example, a dragger
+ * could have a line with an invisible cylinder around it to enable picking on 
+ * that line.
+ */
+void setDrawableToAlwaysCull(osg::Drawable& drawable);
+
+/**
+ * Convenience function for setting the material color on a node.
+ */
+void setMaterialColor(const osg::Vec4& color, osg::Node& node);
+
+}
+
+#endif

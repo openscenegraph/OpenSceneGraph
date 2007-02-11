@@ -22,7 +22,8 @@ SRC_DIRS = \
 	osgParticle \
         osgFX \
         osgShadow \
-	osgSim
+	osgSim \
+	osgManipulator
         
 ifeq ($(PRODUCER_INSTALLED),yes)
 SRC_DIRS += osgProducer
@@ -272,6 +273,7 @@ EXAMPLE_DIRS = \
 	osgvertexprogram \
 	osgvolume \
 	osgwindows \
+	osgmanipulator \
 
 
 ifeq ($(COMPILE_INTROSPECTION),yes)

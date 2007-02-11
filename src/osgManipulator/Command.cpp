@@ -1,0 +1,321 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+//osgManipulator - Copyright (C) 2007 Fugro-Jason B.V.
+
+#include <osgManipulator/Command>
+#include <osgManipulator/Selection>
+#include <osgManipulator/Constraint>
+
+#include <algorithm>
+
+using namespace osgManipulator;
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Motion Command base class.
+//
+
+MotionCommand::MotionCommand() : _stage(NONE)
+{
+}
+
+MotionCommand::~MotionCommand()
+{
+}
+
+void MotionCommand::addSelection(Selection* selection)
+{
+    _selectionList.push_back(selection);
+}
+
+void MotionCommand::removeSelection(Selection* selection)
+{
+    _selectionList.erase(std::remove(_selectionList.begin(), _selectionList.end(), selection),
+                         _selectionList.end());
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Translate in line command.
+//
+
+TranslateInLineCommand::TranslateInLineCommand()
+{
+    _line = new osg::LineSegment;
+}
+
+TranslateInLineCommand::TranslateInLineCommand(const osg::Vec3& s, const osg::Vec3& e)
+{
+    _line = new osg::LineSegment(s,e);
+}
+
+TranslateInLineCommand::~TranslateInLineCommand()
+{
+}
+
+bool TranslateInLineCommand::execute()
+{
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*this);
+    }
+    return true;
+}
+
+bool TranslateInLineCommand::unexecute()
+{
+    osg::ref_ptr<TranslateInLineCommand> inverse = new TranslateInLineCommand();
+    *inverse = *this;
+    inverse->setTranslation(-_translation);
+    
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*inverse);
+    }
+    return true;
+}
+
+void TranslateInLineCommand::applyConstraint(const Constraint* constraint)
+{
+    if (constraint) constraint->constrain(*this);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Translate in plane command.
+//
+
+TranslateInPlaneCommand::TranslateInPlaneCommand()
+{
+}
+
+TranslateInPlaneCommand::TranslateInPlaneCommand(const osg::Plane& plane) : _plane(plane)
+{
+}
+
+TranslateInPlaneCommand::~TranslateInPlaneCommand()
+{
+}
+
+bool TranslateInPlaneCommand::execute()
+{
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*this);
+    }
+    return true;
+}
+
+bool TranslateInPlaneCommand::unexecute()
+{
+    osg::ref_ptr<TranslateInPlaneCommand> inverse = new TranslateInPlaneCommand();
+    *inverse = *this;
+    inverse->setTranslation(-_translation);
+    
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*inverse);
+    }
+    return true;
+}
+
+void TranslateInPlaneCommand::applyConstraint(const Constraint* constraint)
+{
+    if (constraint) constraint->constrain(*this);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Scale 1D command.
+//
+
+Scale1DCommand::Scale1DCommand() : _scale(1.0f)
+{
+}
+
+Scale1DCommand::~Scale1DCommand()
+{
+}
+
+bool Scale1DCommand::execute()
+{
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*this);
+    }
+    return true;
+}
+
+bool Scale1DCommand::unexecute()
+{
+    osg::ref_ptr<Scale1DCommand> inverse = new Scale1DCommand();
+    *inverse = *this;
+    if (_scale) inverse->setScale(1.0/_scale);
+
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*inverse);
+    }
+    return true;
+}
+
+void Scale1DCommand::applyConstraint(const Constraint* constraint)
+{
+    if (constraint) constraint->constrain(*this);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Scale 2D command.
+//
+
+Scale2DCommand::Scale2DCommand() : _scale(1.0,1.0)
+{
+}
+
+Scale2DCommand::~Scale2DCommand()
+{
+}
+
+bool Scale2DCommand::execute()
+{
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*this);
+    }
+    return true;
+}
+
+bool Scale2DCommand::unexecute()
+{
+    osg::ref_ptr<Scale2DCommand> inverse = new Scale2DCommand();
+    *inverse = *this;
+    if (_scale[0] && _scale[1])
+        inverse->setScale(osg::Vec2(1.0/_scale[0],1.0/_scale[1]));
+    
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*inverse);
+    }
+    return true;
+}
+
+void Scale2DCommand::applyConstraint(const Constraint* constraint)
+{
+    if (constraint) constraint->constrain(*this);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Scale uniform command.
+//
+
+ScaleUniformCommand::ScaleUniformCommand() : _scale(1.0f)
+{
+}
+
+ScaleUniformCommand::~ScaleUniformCommand()
+{
+}
+
+bool ScaleUniformCommand::execute()
+{
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*this);
+    }
+    return true;
+}
+
+bool ScaleUniformCommand::unexecute()
+{
+    osg::ref_ptr<ScaleUniformCommand> inverse = new ScaleUniformCommand();
+    *inverse = *this;
+    if (_scale) inverse->setScale(1.0/_scale);
+    
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*inverse);
+    }
+    return true;
+}
+
+void ScaleUniformCommand::applyConstraint(const Constraint* constraint)
+{
+    if (constraint) constraint->constrain(*this);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// Rotate 3D command.
+//
+
+Rotate3DCommand::Rotate3DCommand()
+{
+}
+
+Rotate3DCommand::~Rotate3DCommand()
+{
+}
+
+bool Rotate3DCommand::execute()
+{
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*this);
+    }
+    return true;
+}
+
+bool Rotate3DCommand::unexecute()
+{
+    osg::ref_ptr<Rotate3DCommand> inverse = new Rotate3DCommand();
+    *inverse = *this;
+    inverse->setRotation(_rotation.inverse());
+    
+    for (SelectionList::iterator iter = getSelectionList().begin(); 
+	    iter != getSelectionList().end();
+	    ++iter)
+    {
+        (*iter)->receive(*inverse);
+    }
+    return true;
+}
+
+void Rotate3DCommand::applyConstraint(const Constraint* constraint)
+{
+    if (constraint) constraint->constrain(*this);
+}

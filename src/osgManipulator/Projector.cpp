@@ -331,7 +331,7 @@ SphereProjector::SphereProjector() : _sphere(new osg::Sphere), _front(true)
 {
 }
 
-SphereProjector::SphereProjector(osg::Sphere& sphere) : _sphere(&sphere), _front(true)
+SphereProjector::SphereProjector(osg::Sphere* sphere) : _sphere(sphere), _front(true)
 {
 }
 
@@ -366,7 +366,7 @@ bool SphereProjector::project(const osg::Vec2& pointToProject, const osgUtil::Sc
 
 bool SphereProjector::isPointInFront(const osg::Vec3& point, const osgUtil::SceneView& sv, const osg::Matrix& localToWorld) const
 {
-    osg::Vec3 centerToPoint = getSphere().getCenter() - point;
+    osg::Vec3 centerToPoint = getSphere()->getCenter() - point;
     if (centerToPoint * getEyeDirection(sv.getViewMatrix(), localToWorld) < 0.0)
         return false;
     return true;
@@ -377,7 +377,7 @@ SpherePlaneProjector::SpherePlaneProjector()
 {
 }
 
-SpherePlaneProjector::SpherePlaneProjector(osg::Sphere& sphere) : SphereProjector(sphere)
+SpherePlaneProjector::SpherePlaneProjector(osg::Sphere* sphere) : SphereProjector(sphere)
 {
 }
 
@@ -393,15 +393,15 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
     {
         osg::Quat rotation;
         if (_front)
-            rotation.makeRotate(p1 - getSphere().getCenter(), p2 - getSphere().getCenter());
+            rotation.makeRotate(p1 - getSphere()->getCenter(), p2 - getSphere()->getCenter());
         else
-            rotation.makeRotate(p2 - getSphere().getCenter(), p1 - getSphere().getCenter());
+            rotation.makeRotate(p2 - getSphere()->getCenter(), p1 - getSphere()->getCenter());
         return rotation;
     }
     else if (!p1OnSphere && !p2OnSphere)
     {
         osg::Quat rotation;
-        rotation.makeRotate(p1 - getSphere().getCenter(), p2 - getSphere().getCenter());
+        rotation.makeRotate(p1 - getSphere()->getCenter(), p2 - getSphere()->getCenter());
 
         osg::Vec3 axis; double angle;
         rotation.getRotate(angle, axis);
@@ -414,11 +414,11 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
 
         osg::Quat rollRotation(angle, realAxis);
 
-        osg::Vec3 diff1 = p1 - getSphere().getCenter();
-        osg::Vec3 diff2 = p2 - getSphere().getCenter();
+        osg::Vec3 diff1 = p1 - getSphere()->getCenter();
+        osg::Vec3 diff2 = p2 - getSphere()->getCenter();
         float d = diff2.length() - diff1.length();
 
-        float theta = d / getSphere().getRadius();
+        float theta = d / getSphere()->getRadius();
         if (fabs(theta) < 0.000001 || fabs(theta) > 1.0)
             return rollRotation;
 
@@ -432,19 +432,19 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
     }
     else
     {
-        const osg::Vec3& planePoint = getSphere().getCenter();
+        const osg::Vec3& planePoint = getSphere()->getCenter();
 
         osg::Vec3 intersection, dontCare;
         if (p1OnSphere)
-            getSphereLineIntersection(getSphere(), p2, planePoint, intersection, dontCare);
+            getSphereLineIntersection(*getSphere(), p2, planePoint, intersection, dontCare);
         else
-            getSphereLineIntersection(getSphere(), p1, planePoint, intersection, dontCare);
+            getSphereLineIntersection(*getSphere(), p1, planePoint, intersection, dontCare);
 
         osg::Quat rotation;
         if (p1OnSphere)
-            rotation.makeRotate(p1 - getSphere().getCenter(), intersection - getSphere().getCenter());
+            rotation.makeRotate(p1 - getSphere()->getCenter(), intersection - getSphere()->getCenter());
         else
-            rotation.makeRotate(intersection - getSphere().getCenter(), p2 - getSphere().getCenter());
+            rotation.makeRotate(intersection - getSphere()->getCenter(), p2 - getSphere()->getCenter());
         return rotation;
     }
 }
@@ -475,7 +475,7 @@ bool SpherePlaneProjector::project(const osg::Vec2& pointToProject, const osgUti
         hitSphere = getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, dontCare, sphereIntersection);
 
     // Compute plane oriented to the eye.
-    _plane = computePlaneThruPointAndOrientedToEye(sv.getViewMatrix(), getLocalToWorld(), getSphere().getCenter(), _front);
+    _plane = computePlaneThruPointAndOrientedToEye(sv.getViewMatrix(), getLocalToWorld(), getSphere()->getCenter(), _front);
 
     // Find the intersection on the plane.
     osg::Vec3 planeIntersection;
@@ -491,11 +491,11 @@ bool SpherePlaneProjector::project(const osg::Vec2& pointToProject, const osgUti
     }
 
     // Distance from the plane intersection point to the center of the sphere.
-    float dist = (planeIntersection - getSphere().getCenter()).length();
+    float dist = (planeIntersection - getSphere()->getCenter()).length();
 
     // If the distance is less that the sphere radius choose the sphere intersection else choose
     // the plane intersection.
-    if (dist < getSphere().getRadius())
+    if (dist < getSphere()->getRadius())
     {
         if (! hitSphere) return false;
         projectedPoint = sphereIntersection;
@@ -513,7 +513,7 @@ CylinderProjector::CylinderProjector() : _cylinder(new osg::Cylinder()), _cylind
 {
 }
 
-CylinderProjector::CylinderProjector(osg::Cylinder& cylinder) : _front(true)
+CylinderProjector::CylinderProjector(osg::Cylinder* cylinder) : _front(true)
 {
     setCylinder(cylinder);
 }
@@ -548,7 +548,7 @@ bool CylinderProjector::project(const osg::Vec2& pointToProject, const osgUtil::
 bool CylinderProjector::isPointInFront(const osg::Vec3& point, const osgUtil::SceneView& sv, const osg::Matrix& localToWorld) const
 {
     osg::Vec3 closestPointOnAxis;
-    computeClosestPointOnLine(getCylinder().getCenter(), getCylinder().getCenter() + _cylinderAxis,
+    computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
                               point, closestPointOnAxis);
 
     osg::Vec3 perpPoint = point - closestPointOnAxis;
@@ -561,7 +561,7 @@ CylinderPlaneProjector::CylinderPlaneProjector()
 {
 }
 
-CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder& cylinder) : CylinderProjector(cylinder)
+CylinderPlaneProjector::CylinderPlaneProjector(osg::Cylinder* cylinder) : CylinderProjector(cylinder)
 {
 }
 
@@ -603,7 +603,7 @@ bool CylinderPlaneProjector::project(const osg::Vec2& pointToProject, const osgU
 
     // Compute plane oriented to the eye.
     _plane = computePlaneParallelToAxisAndOrientedToEye(sv.getViewMatrix(), getLocalToWorld(), _cylinderAxis,
-                                                        getCylinder().getRadius(), _planeLineStart, _planeLineEnd,
+                                                        getCylinder()->getRadius(), _planeLineStart, _planeLineEnd,
 						       	_front);
 
     // Find the intersection on the plane.
@@ -616,13 +616,13 @@ bool CylinderPlaneProjector::project(const osg::Vec2& pointToProject, const osgU
         getPlaneLineIntersection(_plane.asVec4(), cylIntersection, cylIntersection + _plane.getNormal(), projectIntersection);
 
         osg::Vec3 closestPointToCylAxis;
-        computeClosestPointOnLine(getCylinder().getCenter(), getCylinder().getCenter() + _cylinderAxis,
+        computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
                                   projectIntersection, closestPointToCylAxis);
 
         // Distance from the plane intersection point to the closest point on the cylinder axis.
         float dist = (projectIntersection - closestPointToCylAxis).length();
 
-        if (dist < getCylinder().getRadius())
+        if (dist < getCylinder()->getRadius())
         {
             if (!hitCylinder) return false;
             projectedPoint = cylIntersection;
@@ -648,9 +648,9 @@ osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnCyl,
     if (p1OnCyl && p2OnCyl)
     {
         osg::Vec3 closestPointToCylAxis1, closestPointToCylAxis2;
-        computeClosestPointOnLine(getCylinder().getCenter(), getCylinder().getCenter() + _cylinderAxis * getCylinder().getHeight(),
+        computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis * getCylinder()->getHeight(),
                                   p1, closestPointToCylAxis1);
-        computeClosestPointOnLine(getCylinder().getCenter(), getCylinder().getCenter() + _cylinderAxis * getCylinder().getHeight(),
+        computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis * getCylinder()->getHeight(),
                                   p2, closestPointToCylAxis2);
 
         osg::Vec3 v1 = p1 - closestPointToCylAxis1;
@@ -680,7 +680,7 @@ osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnCyl,
         osg::Vec3 diff = v2 - v1;
         float d = diff.length();
 
-        float angle = (getCylinder().getRadius() == 0.0) ? 0.0 : (d / getCylinder().getRadius());
+        float angle = (getCylinder()->getRadius() == 0.0) ? 0.0 : (d / getCylinder()->getRadius());
         osg::Vec3 rotAxis = _plane.getNormal() ^ v1;
 
         if (v2.length() > v1.length())
@@ -699,7 +699,7 @@ osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnCyl,
         osg::Vec3 dirToOffCylinderPt = offCylinderPt - linePtNearest;
         dirToOffCylinderPt.normalize();
 
-        osg::Vec3 ptOnCylinder = linePtNearest + dirToOffCylinderPt * getCylinder().getRadius();
+        osg::Vec3 ptOnCylinder = linePtNearest + dirToOffCylinderPt * getCylinder()->getRadius();
 
         if (p1OnCyl)
             return (getRotation(p1, true, ptOnCylinder, true) *

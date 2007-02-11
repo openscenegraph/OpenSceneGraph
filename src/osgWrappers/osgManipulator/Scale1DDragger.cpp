@@ -14,9 +14,8 @@
 #include <osg/Vec4>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
+#include <osgManipulator/Dragger>
 #include <osgManipulator/Scale1DDragger>
-#include <osgUtil/IntersectVisitor>
-#include <osgUtil/SceneView>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -37,8 +36,8 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	                           ____Scale1DDragger__ScaleMode,
 	                           "",
 	                           "");
-	I_Method7(bool, handle, IN, int, pixel_x, IN, int, pixel_y, IN, const osgUtil::SceneView &, sv, IN, const osgUtil::IntersectVisitor::HitList &, hitList, IN, const osgUtil::IntersectVisitor::HitList::iterator &, hitIter, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
-	          __bool__handle__int__int__C5_osgUtil_SceneView_R1__C5_osgUtil_IntersectVisitor_HitList_R1__C5_osgUtil_IntersectVisitor_HitList_iterator_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	I_Method3(bool, handle, IN, const osgManipulator::Dragger::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Handle pick events on dragger and generate TranslateInLine commands. ",
 	          "");
 	I_Method0(void, setupDefaultGeometry,

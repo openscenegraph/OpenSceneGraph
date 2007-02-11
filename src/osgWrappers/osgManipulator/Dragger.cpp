@@ -10,12 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Matrix>
+#include <osg/Node>
+#include <osg/Vec2>
+#include <osg/Vec3>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgManipulator/CommandManager>
 #include <osgManipulator/Dragger>
-#include <osgUtil/IntersectVisitor>
-#include <osgUtil/SceneView>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -45,8 +47,8 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	          __void__setParentDragger__Dragger_P1,
 	          "Set/Get parent dragger. ",
 	          "For simple draggers parent points to itself. For composite draggers parent points to the parent dragger that uses this dragger.");
-	I_Method7(bool, handle, IN, int, pixel_x, IN, int, pixel_y, IN, const osgUtil::SceneView &, sv, IN, const osgUtil::IntersectVisitor::HitList &, hitList, IN, const osgUtil::IntersectVisitor::HitList::iterator &, hitIter, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
-	          __bool__handle__int__int__C5_osgUtil_SceneView_R1__C5_osgUtil_IntersectVisitor_HitList_R1__C5_osgUtil_IntersectVisitor_HitList_iterator_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	I_Method3(bool, handle, IN, const osgManipulator::Dragger::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "",
 	          "");
 	I_Method1(bool, addDragger, IN, osgManipulator::Dragger *, dragger,
@@ -129,8 +131,8 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __CompositeDragger_P1__getComposite,
 	          "Returns 0 if this Dragger is not a CompositeDragger. ",
 	          "");
-	I_Method7(bool, handle, IN, int, x, IN, int, x, IN, const osgUtil::SceneView &, x, IN, const osgUtil::IntersectVisitor::HitList &, x, IN, const osgUtil::IntersectVisitor::HitList::iterator &, x, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
-	          __bool__handle__int__int__C5_osgUtil_SceneView_R1__C5_osgUtil_IntersectVisitor_HitList_R1__C5_osgUtil_IntersectVisitor_HitList_iterator_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	I_Method3(bool, handle, IN, const osgManipulator::Dragger::PointerInfo &, x, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
+	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "",
 	          "");
 	I_SimpleProperty(osgManipulator::CommandManager *, CommandManager, 
@@ -142,6 +144,59 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_SimpleProperty(osgManipulator::Dragger *, ParentDragger, 
 	                 __Dragger_P1__getParentDragger, 
 	                 __void__setParentDragger__Dragger_P1);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgManipulator::Dragger::PointerInfo)
+	I_Constructor0(____PointerInfo,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgManipulator::Dragger::PointerInfo &, rhs,
+	               ____PointerInfo__C5_PointerInfo_R1,
+	               "",
+	               "");
+	I_Method0(bool, completed,
+	          __bool__completed,
+	          "",
+	          "");
+	I_Method0(void, next,
+	          __void__next,
+	          "",
+	          "");
+	I_Method0(osg::Vec2, pointToProject,
+	          __osg_Vec2__pointToProject,
+	          "",
+	          "");
+	I_Method0(osg::Vec3, getLocalIntersectPoint,
+	          __osg_Vec3__getLocalIntersectPoint,
+	          "",
+	          "");
+	I_Method3(bool, projectWindowXYIntoObject, IN, const osg::Vec2 &, windowCoord, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	          __bool__projectWindowXYIntoObject__C5_osg_Vec2_R1__osg_Vec3_R1__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method2(bool, projectWindowXYIntoObject, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	          __bool__projectWindowXYIntoObject__osg_Vec3_R1__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix &, getViewMatrix,
+	          __C5_osg_Matrix_R1__getViewMatrix,
+	          "",
+	          "");
+	I_Method1(bool, contains, IN, const osg::Node *, node,
+	          __bool__contains__C5_osg_Node_P1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Vec3, LocalIntersectPoint, 
+	                 __osg_Vec3__getLocalIntersectPoint, 
+	                 0);
+	I_SimpleProperty(const osg::Matrix &, ViewMatrix, 
+	                 __C5_osg_Matrix_R1__getViewMatrix, 
+	                 0);
+	I_PublicMemberProperty(int, pixel_x);
+	I_PublicMemberProperty(int, pixel_y);
+	I_PublicMemberProperty(osgUtil::SceneView *, sv);
+	I_PublicMemberProperty(osgUtil::IntersectVisitor::HitList, hitList);
+	I_PublicMemberProperty(osgUtil::IntersectVisitor::HitList::iterator, hitIter);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)

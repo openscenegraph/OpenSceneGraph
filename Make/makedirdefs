@@ -51,6 +51,7 @@ WRAPPER_DIRS = \
 	osgDB \
 	osgFX \
 	osgText \
+	osgManipulator \
 	osgGA
 
 ifeq ($(PRODUCER_INSTALLED),yes)

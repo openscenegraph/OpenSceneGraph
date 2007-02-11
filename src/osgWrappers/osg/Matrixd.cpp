@@ -98,12 +98,12 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	          __C5_value_type_P1__ptr,
 	          "",
 	          "");
-	I_Method0(void, makeIdentity,
-	          __void__makeIdentity,
-	          "",
-	          "");
 	I_Method0(bool, isIdentity,
 	          __bool__isIdentity,
+	          "",
+	          "");
+	I_Method0(void, makeIdentity,
+	          __void__makeIdentity,
 	          "",
 	          "");
 	I_Method1(void, makeScale, IN, const osg::Vec3f &, x,
@@ -161,6 +161,14 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	I_Method6(void, makeRotate, IN, osg::Matrixd::value_type, angle1, IN, const osg::Vec3d &, axis1, IN, osg::Matrixd::value_type, angle2, IN, const osg::Vec3d &, axis2, IN, osg::Matrixd::value_type, angle3, IN, const osg::Vec3d &, axis3,
 	          __void__makeRotate__value_type__C5_Vec3d_R1__value_type__C5_Vec3d_R1__value_type__C5_Vec3d_R1,
 	          "",
+	          "");
+	I_Method4(void, decompose, IN, osg::Vec3f &, translation, IN, osg::Quat &, rotation, IN, osg::Vec3f &, scale, IN, osg::Quat &, so,
+	          __void__decompose__osg_Vec3f_R1__osg_Quat_R1__osg_Vec3f_R1__osg_Quat_R1,
+	          "decompose the matrix into translation, rotation, scale and scale orietation. ",
+	          "");
+	I_Method4(void, decompose, IN, osg::Vec3d &, translation, IN, osg::Quat &, rotation, IN, osg::Vec3d &, scale, IN, osg::Quat &, so,
+	          __void__decompose__osg_Vec3d_R1__osg_Quat_R1__osg_Vec3d_R1__osg_Quat_R1,
+	          "decompose the matrix into translation, rotation, scale and scale orietation. ",
 	          "");
 	I_Method6(void, makeOrtho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar,
 	          __void__makeOrtho__double__double__double__double__double__double,

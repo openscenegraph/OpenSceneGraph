@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osgShadow/OccluderGeometry>
 #include <osgShadow/ShadowVolume>
 #include <osgUtil/CullVisitor>
 
@@ -53,6 +54,22 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setDrawMode, IN, osgShadow::ShadowVolumeGeometry::DrawMode, drawMode,
+	          __void__setDrawMode__osgShadow_ShadowVolumeGeometry_DrawMode,
+	          "",
+	          "");
+	I_Method0(osgShadow::ShadowVolumeGeometry::DrawMode, getDrawMode,
+	          __osgShadow_ShadowVolumeGeometry_DrawMode__getDrawMode,
+	          "",
+	          "");
+	I_Method1(void, setDynamicShadowVolumes, IN, bool, dynamicShadowVolumes,
+	          __void__setDynamicShadowVolumes__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDynamicShadowVolumes,
+	          __bool__getDynamicShadowVolumes,
+	          "",
+	          "");
 	I_Method0(void, init,
 	          __void__init,
 	          "initialize the ShadowedScene and local cached data structures. ",
@@ -69,5 +86,11 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
 	          __void__cleanSceneGraph,
 	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
 	          "");
+	I_SimpleProperty(osgShadow::ShadowVolumeGeometry::DrawMode, DrawMode, 
+	                 __osgShadow_ShadowVolumeGeometry_DrawMode__getDrawMode, 
+	                 __void__setDrawMode__osgShadow_ShadowVolumeGeometry_DrawMode);
+	I_SimpleProperty(bool, DynamicShadowVolumes, 
+	                 __bool__getDynamicShadowVolumes, 
+	                 __void__setDynamicShadowVolumes__bool);
 END_REFLECTOR
 

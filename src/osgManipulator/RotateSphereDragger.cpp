@@ -157,6 +157,6 @@ bool RotateSphereDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneV
 void RotateSphereDragger::setupDefaultGeometry()
 {
     osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(new osg::ShapeDrawable(const_cast<osg::Sphere*>(&_projector->getSphere())));
+    geode->addDrawable(new osg::ShapeDrawable(const_cast<osg::Sphere*>(_projector->getSphere())));
     addChild(geode);
 }

@@ -155,6 +155,6 @@ bool RotateCylinderDragger::handle(int pixel_x, int pixel_y, const osgUtil::Scen
 void RotateCylinderDragger::setupDefaultGeometry()
 {
     osg::Geode* geode = new osg::Geode;
-    geode->addDrawable(new osg::ShapeDrawable(const_cast<osg::Cylinder*>(&_projector->getCylinder())));
+    geode->addDrawable(new osg::ShapeDrawable(const_cast<osg::Cylinder*>(_projector->getCylinder())));
     addChild(geode);
 }

@@ -149,10 +149,10 @@ class OSGMANIPULATOR_EXPORT SphereProjector : public Projector
 
         SphereProjector();
 
-        SphereProjector(osg::Sphere& sphere);
+        SphereProjector(osg::Sphere* sphere);
 
-        inline void setSphere(osg::Sphere& sphere) { _sphere = &sphere; }
-        inline const osg::Sphere& getSphere() const { return *_sphere; }
+        inline void setSphere(osg::Sphere* sphere) { _sphere = sphere; }
+        inline const osg::Sphere* getSphere() const { return _sphere.get(); }
 
         /**
          * Calculates the object coordinates (projectedPoint) of a window 
@@ -187,7 +187,7 @@ class OSGMANIPULATOR_EXPORT SpherePlaneProjector : public SphereProjector
 
         SpherePlaneProjector();
 
-        SpherePlaneProjector(osg::Sphere& sphere);
+        SpherePlaneProjector(osg::Sphere* sphere);
 
         /**
          * Calculates the object coordinates (projectedPoint) of a window 
@@ -223,15 +223,15 @@ class OSGMANIPULATOR_EXPORT CylinderProjector : public Projector
 
         CylinderProjector();
 
-        CylinderProjector(osg::Cylinder& cylinder);
+        CylinderProjector(osg::Cylinder* cylinder);
 
-        inline void setCylinder(osg::Cylinder& cylinder)
+        inline void setCylinder(osg::Cylinder* cylinder)
         {
-            _cylinder = &cylinder;
-            _cylinderAxis = osg::Vec3(0.0,0.0,1.0) * osg::Matrix(cylinder.getRotation());
+            _cylinder = cylinder;
+            _cylinderAxis = osg::Vec3(0.0,0.0,1.0) * osg::Matrix(cylinder->getRotation());
             _cylinderAxis.normalize();
         }
-        inline const osg::Cylinder& getCylinder() const { return *_cylinder; }
+        inline const osg::Cylinder* getCylinder() const { return _cylinder.get(); }
 
         /**
          * Calculates the object coordinates (projectedPoint) of a window 
@@ -267,7 +267,7 @@ class OSGMANIPULATOR_EXPORT CylinderPlaneProjector : public CylinderProjector
 
         CylinderPlaneProjector();
 
-        CylinderPlaneProjector(osg::Cylinder& cylinder);
+        CylinderPlaneProjector(osg::Cylinder* cylinder);
 
         /**
          * Calculates the object coordinates (projectedPoint) of a window 

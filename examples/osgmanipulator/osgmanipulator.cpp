@@ -201,8 +201,9 @@ class PickModeHandler : public osgGA::GUIEventHandler
 
             for(unsigned int i=0;i<_viewer->getNumberOfCameras();++i)
             {
+                
                 if ((ea.getEventType() == osgGA::GUIEventAdapter::PUSH) &&
-                    _viewer->computeIntersections(ea.getX(), ea.getY(), i, hitList))
+                    _viewer->computeIntersections(ea.getX(), ea.getY(), i, _pointer.hitList))
                 {
                     float pixel_x,pixel_y;
                     if (computePixelCoords(_viewer,ea.getX(),ea.getY(),i,pixel_x,pixel_y))
@@ -212,17 +213,21 @@ class PickModeHandler : public osgGA::GUIEventHandler
                         osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
                         osgUtil::SceneView* sv = sh ? sh->getSceneView() : 0;
                         if (! sv) continue;
+                        
+                        _pointer.pixel_x = int(pixel_x+0.5);
+                        _pointer.pixel_y = int(pixel_y+0.5);
+                        _pointer.sv = sv;
+                        _pointer.hitIter = _pointer.hitList.begin();
 
-                        for (osg::NodePath::iterator itr = hitList.front().getNodePath().begin();
-                             itr != hitList.front().getNodePath().end();
+                        for (osg::NodePath::iterator itr = _pointer.hitList.front().getNodePath().begin();
+                             itr != _pointer.hitList.front().getNodePath().end();
                              ++itr)
                         {
                             osgManipulator::Dragger* dragger = dynamic_cast<osgManipulator::Dragger*>(*itr);
                             if (dragger)
                             {
-                                dragger->handle(int(pixel_x+0.5), int(pixel_y+0.5), *sv,
-                                                hitList, hitList.begin(),
-                                                ea, aa);
+
+                                dragger->handle(_pointer, ea, aa);
                                 _activeDragger = dragger;
                                 break;
                             }                   
@@ -244,9 +249,14 @@ class PickModeHandler : public osgGA::GUIEventHandler
                                 osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
                                 osgUtil::SceneView* sv = sh ? sh->getSceneView() : 0;
                                 if (_activeDragger && sv)
-                                    _activeDragger->handle(int(pixel_x+0.5), int(pixel_y+0.5), *sv,
-                                                           hitList, hitList.begin(),
-                                                           ea, aa);
+                                {
+                                    _pointer.pixel_x = int(pixel_x+0.5);
+                                    _pointer.pixel_y = int(pixel_y+0.5);
+                                    _pointer.sv = sv;
+                                    _pointer.hitIter = _pointer.hitList.begin();
+
+                                    _activeDragger->handle(_pointer, ea, aa);
+                                }
                             }
                         }
                         break;
@@ -257,7 +267,7 @@ class PickModeHandler : public osgGA::GUIEventHandler
                 if (ea.getEventType() == osgGA::GUIEventAdapter::RELEASE)
                 {
                     _activeDragger = 0;
-                    hitList.clear();
+                    _pointer.hitList.clear();
                 }
             }
             return true;
@@ -267,7 +277,7 @@ class PickModeHandler : public osgGA::GUIEventHandler
         osgProducer::Viewer* _viewer;
         unsigned int _mode;
         osgManipulator::Dragger* _activeDragger;
-        osgUtil::IntersectVisitor::HitList hitList;
+        osgManipulator::Dragger::PointerInfo _pointer;
 };
 
 int main( int argc, char **argv )

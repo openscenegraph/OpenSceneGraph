@@ -59,11 +59,47 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
 
         /** Returns 0 if this Dragger is not a CompositeDragger. */
         virtual CompositeDragger* getComposite() { return 0; }
+        
+        struct OSGMANIPULATOR_EXPORT PointerInfo
+        {
+            PointerInfo();
 
-        virtual bool handle(int, int, const osgUtil::SceneView&, 
-                            const osgUtil::IntersectVisitor::HitList&, 
-                            const osgUtil::IntersectVisitor::HitList::iterator&,
-                            const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) { return false; }
+            PointerInfo(const PointerInfo& rhs):
+                pixel_x(rhs.pixel_x),
+                pixel_y(rhs.pixel_y),
+                sv(rhs.sv),
+                hitList(rhs.hitList)
+            {
+                hitIter = hitList.begin();
+            }
+            
+
+            bool completed() const { return hitIter==hitList.end(); }
+            
+            void next() 
+            {
+                if (!completed()) ++hitIter;
+            }
+            
+            int pixel_x, pixel_y;
+            osgUtil::SceneView* sv;
+            osgUtil::IntersectVisitor::HitList hitList;
+            osgUtil::IntersectVisitor::HitList::iterator hitIter;
+            
+            osg::Vec2 pointToProject() const { return osg::Vec2(pixel_x, pixel_y); }
+            osg::Vec3 getLocalIntersectPoint() const { return hitIter->getLocalIntersectPoint(); }
+            
+            bool projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const { return sv->projectWindowXYIntoObject(static_cast<int>(windowCoord.x()), static_cast<int>(windowCoord.y()), nearPoint, farPoint); }
+            bool projectWindowXYIntoObject(osg::Vec3& nearPoint, osg::Vec3& farPoint) const { return sv->projectWindowXYIntoObject(pixel_x, pixel_y, nearPoint, farPoint); }
+
+            const osg::Matrix& getViewMatrix() const { return sv->getViewMatrix(); }
+
+            
+            bool contains(const osg::Node* node) const;
+            
+        };
+
+        virtual bool handle(const PointerInfo&, const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) { return false; }
 
     protected:
 
@@ -94,10 +130,7 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 
         virtual void setParentDragger(Dragger* parent);
 
-        virtual bool handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-                            const osgUtil::IntersectVisitor::HitList& hitList, 
-                            const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-                            const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+        virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
         // Composite-specific methods below
         virtual bool addDragger(Dragger* dragger);

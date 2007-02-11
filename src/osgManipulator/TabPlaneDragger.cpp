@@ -217,39 +217,39 @@ TabPlaneDragger::~TabPlaneDragger()
 {
 }
 
-bool TabPlaneDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-        const osgUtil::IntersectVisitor::HitList& hl, const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-        const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool TabPlaneDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     if (ea.getButtonMask() & osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON) return false;
 
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-        return false;
+    if (!pointer.contains(this)) return false;
 
     // Since the translate plane and the handleNode lie on the same plane the hit could've been on either one. But we
     // need to handle the scaling draggers before the translation. Check if the node path has the scaling nodes else 
     // check for the scaling nodes in next hit.
-    if (_cornerScaleDragger->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+    if (_cornerScaleDragger->handle(pointer, ea, aa))
         return true;
-    if (_horzEdgeScaleDragger->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+    if (_horzEdgeScaleDragger->handle(pointer, ea, aa))
         return true;
-    if (_vertEdgeScaleDragger->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+    if (_vertEdgeScaleDragger->handle(pointer, ea, aa))
         return true;
     
-    osgUtil::IntersectVisitor::HitList::iterator nextHit = hitIter + 1;
-    while (nextHit != hl.end())
+    PointerInfo nextPointer(pointer);
+    nextPointer.next();
+    
+    while (!nextPointer.completed())
     {
-        if (_cornerScaleDragger->handle(pixel_x, pixel_y, sv, hl, nextHit, ea, aa))
+        if (_cornerScaleDragger->handle(nextPointer, ea, aa))
             return true;
-        if (_horzEdgeScaleDragger->handle(pixel_x, pixel_y, sv, hl, nextHit, ea, aa))
+        if (_horzEdgeScaleDragger->handle(nextPointer, ea, aa))
             return true;
-        if (_vertEdgeScaleDragger->handle(pixel_x, pixel_y, sv, hl, nextHit, ea, aa))
+        if (_vertEdgeScaleDragger->handle(nextPointer, ea, aa))
             return true;
-        ++nextHit;
+
+        nextPointer.next();
     }
 
-    if (_translateDragger->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+    if (_translateDragger->handle(pointer, ea, aa))
         return true;
 
     return false;

@@ -243,7 +243,7 @@ LineProjector::~LineProjector()
 {
 }
 
-bool LineProjector::project(const osg::Vec2& pointToProject, const osgUtil::SceneView& sv, osg::Vec3& projectedPoint) const
+bool LineProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_line->valid())
     {
@@ -257,8 +257,8 @@ bool LineProjector::project(const osg::Vec2& pointToProject, const osgUtil::Scen
 
     // Project the objectLine onto the window.
     osg::ref_ptr<osg::LineSegment> windowLine = new osg::LineSegment;
-    sv.projectObjectIntoWindow(objectLine->start(), windowLine->start());
-    sv.projectObjectIntoWindow(objectLine->end(), windowLine->end());
+    pi.sv->projectObjectIntoWindow(objectLine->start(), windowLine->start());
+    pi.sv->projectObjectIntoWindow(objectLine->end(), windowLine->end());
 
     windowLine->start().z() = windowLine->end().z() = 0.0f;
 
@@ -271,14 +271,14 @@ bool LineProjector::project(const osg::Vec2& pointToProject, const osgUtil::Scen
     osg::Vec2 windowLineEnd(windowLine->end().x(),windowLine->end().y());
     osg::Vec2 windowLineDirection = windowLineEnd - windowLineStart;
     windowLineDirection.normalize();
-    float dotProduct = (windowLineDirection) * (pointToProject - windowLineStart);
+    float dotProduct = (windowLineDirection) * (pi.pointToProject() - windowLineStart);
 
     // Get the closest point on the windowLine from (x,y).
     osg::Vec2 closestWindowPt = windowLineStart + windowLineDirection * dotProduct;
 
     // Project the closest point back into the scene and into local space.
     osg::ref_ptr<osg::LineSegment> projectedLocalLine = new osg::LineSegment;
-    sv.projectWindowXYIntoObject((int)closestWindowPt.x(), (int)closestWindowPt.y(), projectedLocalLine->start(), projectedLocalLine->end());
+    pi.projectWindowXYIntoObject(closestWindowPt, projectedLocalLine->start(), projectedLocalLine->end());
     projectedLocalLine->mult(*projectedLocalLine, getWorldToLocal());
 
     // Find the closest point between _line and projectedLocalLine on _line and that's the result.
@@ -305,7 +305,7 @@ PlaneProjector::~PlaneProjector()
 {
 }
 
-bool PlaneProjector::project(const osg::Vec2& pointToProject, const osgUtil::SceneView& sv, osg::Vec3& projectedPoint) const
+bool PlaneProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_plane.valid())
     {
@@ -315,7 +315,7 @@ bool PlaneProjector::project(const osg::Vec2& pointToProject, const osgUtil::Sce
 
     // Get the near and far points for the mouse point.
     osg::Vec3 nearPoint, farPoint;
-    sv.projectWindowXYIntoObject((int)pointToProject[0],(int)pointToProject[1],nearPoint,farPoint);
+    pi.projectWindowXYIntoObject(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
     osg::Vec3 objectNearPoint, objectFarPoint;
@@ -340,7 +340,7 @@ SphereProjector::~SphereProjector()
 {
 }
 
-bool SphereProjector::project(const osg::Vec2& pointToProject, const osgUtil::SceneView& sv, osg::Vec3& projectedPoint) const
+bool SphereProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_sphere->valid())
     {
@@ -350,7 +350,7 @@ bool SphereProjector::project(const osg::Vec2& pointToProject, const osgUtil::Sc
 
     // Get the near and far points for the mouse point.
     osg::Vec3 nearPoint, farPoint;
-    sv.projectWindowXYIntoObject((int)pointToProject[0],(int)pointToProject[1],nearPoint,farPoint);
+    pi.projectWindowXYIntoObject(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
     osg::Vec3 objectNearPoint, objectFarPoint;
@@ -364,10 +364,10 @@ bool SphereProjector::project(const osg::Vec2& pointToProject, const osgUtil::Sc
     return getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, dontCare, projectedPoint);
 }
 
-bool SphereProjector::isPointInFront(const osg::Vec3& point, const osgUtil::SceneView& sv, const osg::Matrix& localToWorld) const
+bool SphereProjector::isPointInFront(const Dragger::PointerInfo& pi, const osg::Matrix& localToWorld) const
 {
-    osg::Vec3 centerToPoint = getSphere()->getCenter() - point;
-    if (centerToPoint * getEyeDirection(sv.getViewMatrix(), localToWorld) < 0.0)
+    osg::Vec3 centerToPoint = getSphere()->getCenter() - pi.getLocalIntersectPoint();
+    if (centerToPoint * getEyeDirection(pi.sv->getViewMatrix(), localToWorld) < 0.0)
         return false;
     return true;
 }
@@ -449,17 +449,19 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
     }
 }
 
-bool SpherePlaneProjector::project(const osg::Vec2& pointToProject, const osgUtil::SceneView& sv, osg::Vec3& projectedPoint) const
+bool SpherePlaneProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_sphere->valid())
     {
         osg::notify(osg::WARN) << "Warning: Invalid sphere. SpherePlaneProjector::project() failed." << std::endl;
         return false;
     }
+    
+    const osg::Vec2 pointToProject = pi.pointToProject();
 
     // Get the near and far points for the mouse point.
     osg::Vec3 nearPoint, farPoint;
-    sv.projectWindowXYIntoObject((int)pointToProject[0],(int)pointToProject[1],nearPoint,farPoint);
+    pi.projectWindowXYIntoObject(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
     osg::Vec3 objectNearPoint, objectFarPoint;
@@ -475,7 +477,7 @@ bool SpherePlaneProjector::project(const osg::Vec2& pointToProject, const osgUti
         hitSphere = getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, dontCare, sphereIntersection);
 
     // Compute plane oriented to the eye.
-    _plane = computePlaneThruPointAndOrientedToEye(sv.getViewMatrix(), getLocalToWorld(), getSphere()->getCenter(), _front);
+    _plane = computePlaneThruPointAndOrientedToEye(pi.getViewMatrix(), getLocalToWorld(), getSphere()->getCenter(), _front);
 
     // Find the intersection on the plane.
     osg::Vec3 planeIntersection;
@@ -522,7 +524,7 @@ CylinderProjector::~CylinderProjector()
 {
 }
 
-bool CylinderProjector::project(const osg::Vec2& pointToProject, const osgUtil::SceneView& sv, osg::Vec3& projectedPoint) const
+bool CylinderProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_cylinder.valid())
     {
@@ -533,7 +535,7 @@ bool CylinderProjector::project(const osg::Vec2& pointToProject, const osgUtil::
 
     // Get the near and far points for the mouse point.
     osg::Vec3 nearPoint, farPoint;
-    sv.projectWindowXYIntoObject((int)pointToProject[0],(int)pointToProject[1],nearPoint,farPoint);
+    pi.projectWindowXYIntoObject(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
     osg::Vec3 objectNearPoint, objectFarPoint;
@@ -545,14 +547,14 @@ bool CylinderProjector::project(const osg::Vec2& pointToProject, const osgUtil::
     return getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, projectedPoint, dontCare);
 }
 
-bool CylinderProjector::isPointInFront(const osg::Vec3& point, const osgUtil::SceneView& sv, const osg::Matrix& localToWorld) const
+bool CylinderProjector::isPointInFront(const Dragger::PointerInfo& pi, const osg::Matrix& localToWorld) const
 {
     osg::Vec3 closestPointOnAxis;
     computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
-                              point, closestPointOnAxis);
+                              pi.getLocalIntersectPoint(), closestPointOnAxis);
 
-    osg::Vec3 perpPoint = point - closestPointOnAxis;
-    if (perpPoint * getEyeDirection(sv.getViewMatrix(), localToWorld) < 0.0)
+    osg::Vec3 perpPoint = pi.getLocalIntersectPoint() - closestPointOnAxis;
+    if (perpPoint * getEyeDirection(pi.getViewMatrix(), localToWorld) < 0.0)
         return false;
     return true;
 }
@@ -569,7 +571,7 @@ CylinderPlaneProjector::~CylinderPlaneProjector()
 {
 }
 
-bool CylinderPlaneProjector::project(const osg::Vec2& pointToProject, const osgUtil::SceneView& sv, osg::Vec3& projectedPoint) const
+bool CylinderPlaneProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_cylinder.valid())
     {
@@ -580,7 +582,7 @@ bool CylinderPlaneProjector::project(const osg::Vec2& pointToProject, const osgU
 
     // Get the near and far points for the mouse point.
     osg::Vec3 nearPoint, farPoint;
-    sv.projectWindowXYIntoObject((int)pointToProject[0],(int)pointToProject[1],nearPoint,farPoint);
+    pi.projectWindowXYIntoObject(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
     osg::Vec3 objectNearPoint, objectFarPoint;
@@ -602,7 +604,7 @@ bool CylinderPlaneProjector::project(const osg::Vec2& pointToProject, const osgU
     }
 
     // Compute plane oriented to the eye.
-    _plane = computePlaneParallelToAxisAndOrientedToEye(sv.getViewMatrix(), getLocalToWorld(), _cylinderAxis,
+    _plane = computePlaneParallelToAxisAndOrientedToEye(pi.getViewMatrix(), getLocalToWorld(), _cylinderAxis,
                                                         getCylinder()->getRadius(), _planeLineStart, _planeLineEnd,
 						       	_front);
 

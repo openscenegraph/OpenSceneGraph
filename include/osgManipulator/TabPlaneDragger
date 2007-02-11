@@ -31,10 +31,7 @@ class OSGMANIPULATOR_EXPORT TabPlaneDragger : public CompositeDragger
 
         TabPlaneDragger();
 
-        virtual bool handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-                            const osgUtil::IntersectVisitor::HitList& hitList, 
-                            const osgUtil::IntersectVisitor::HitList::iterator& hit,
-                            const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
+        virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry(bool twoSidedHandle = true);

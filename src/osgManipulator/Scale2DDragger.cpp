@@ -56,13 +56,10 @@ Scale2DDragger::~Scale2DDragger()
 {
 }
 
-bool Scale2DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-        const osgUtil::IntersectVisitor::HitList&, const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-        const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-        return false;
+    if (!pointer.contains(this)) return false;
 
     switch (ea.getEventType())
     {
@@ -75,33 +72,29 @@ bool Scale2DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& 
                 osg::Matrix localToWorld = osg::computeLocalToWorld(nodePathToRoot);
                 _projector->setLocalToWorld(localToWorld);
 
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, _startProjectedPoint))
+                if (_projector->project(pointer, _startProjectedPoint))
                 {
                     _scaleCenter.set(0.0,0.0);
 
-                    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), _topLeftHandleNode.get()) 
-                        != (*hitIter)._nodePath.end())
+                    if (pointer.contains(_topLeftHandleNode.get())) 
                     {
                         _referencePoint = _topLeftHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                             _scaleCenter = _bottomRightHandlePosition;
                     }
-                    else if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), _bottomLeftHandleNode.get()) 
-                             != (*hitIter)._nodePath.end())
+                    else if (pointer.contains(_bottomLeftHandleNode.get())) 
                     {
                         _referencePoint = _bottomLeftHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                             _scaleCenter = _topRightHandlePosition;
                     }
-                    else if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), _bottomRightHandleNode.get()) 
-                             != (*hitIter)._nodePath.end())
+                    else if (pointer.contains(_bottomRightHandleNode.get())) 
                     {
                         _referencePoint = _bottomRightHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                             _scaleCenter = _topLeftHandlePosition;
                     }
-                    else if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), _topRightHandleNode.get()) 
-                             != (*hitIter)._nodePath.end())
+                    else if (pointer.contains(_topRightHandleNode.get())) 
                     {
                         _referencePoint = _topRightHandlePosition;
                         if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
@@ -134,7 +127,7 @@ bool Scale2DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& 
         case (osgGA::GUIEventAdapter::DRAG):
             {
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     // Compute scale.
                     osg::Vec2 scale = computeScale(_startProjectedPoint,projectedPoint,_scaleCenter);

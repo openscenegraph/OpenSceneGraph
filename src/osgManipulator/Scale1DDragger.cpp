@@ -47,13 +47,10 @@ Scale1DDragger::~Scale1DDragger()
 {
 }
 
-bool Scale1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-        const osgUtil::IntersectVisitor::HitList&, const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-        const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
-        return false;
+    if (!pointer.contains(this)) return false;
 
     switch (ea.getEventType())
     {
@@ -66,16 +63,14 @@ bool Scale1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& 
                 osg::Matrix localToWorld = osg::computeLocalToWorld(nodePathToRoot);
                 _projector->setLocalToWorld(localToWorld);
 
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, _startProjectedPoint))
+                if (_projector->project(pointer, _startProjectedPoint))
                 {
                     _scaleCenter = 0.0f;
                     if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                     {
-                        if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), _leftHandleNode.get()) 
-                                != (*hitIter)._nodePath.end())
+                        if ( pointer.contains(_leftHandleNode.get()) )
                             _scaleCenter = _projector->getLineEnd()[0];
-                        else if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), _rightHandleNode.get()) 
-                                != (*hitIter)._nodePath.end())
+                        else if ( pointer.contains( _rightHandleNode.get()) ) 
                             _scaleCenter = _projector->getLineStart()[0];
                     }
 
@@ -103,7 +98,7 @@ bool Scale1DDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& 
         case (osgGA::GUIEventAdapter::DRAG):
             {
                 osg::Vec3 projectedPoint;
-                if (_projector->project(osg::Vec2(pixel_x, pixel_y), sv, projectedPoint))
+                if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<Scale1DCommand> cmd = new Scale1DCommand();

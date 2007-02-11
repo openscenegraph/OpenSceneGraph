@@ -26,17 +26,30 @@ Dragger::~Dragger()
 {
 }
 
-bool CompositeDragger::handle(int pixel_x, int pixel_y, const osgUtil::SceneView& sv, 
-        const osgUtil::IntersectVisitor::HitList& hl, const osgUtil::IntersectVisitor::HitList::iterator& hitIter,
-        const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+Dragger::PointerInfo::PointerInfo():
+    pixel_x(0),
+    pixel_y(0),
+    sv(0),
+    hitIter(0)
+{    
+}
+
+bool Dragger::PointerInfo::contains(const osg::Node* node) const
+{
+    if (node) return std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), node) != (*hitIter)._nodePath.end();
+    else return false;
+}
+
+
+bool CompositeDragger::handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
-    if (std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), this) == (*hitIter)._nodePath.end())
+    if (!pi.contains(this))
         return false;
 
     for (DraggerList::iterator itr=_draggerList.begin(); itr!=_draggerList.end(); ++itr)
     {
-        if ((*itr)->handle(pixel_x, pixel_y, sv, hl, hitIter, ea, aa))
+        if ((*itr)->handle(pi, ea, aa))
             return true;
     }
     return false;

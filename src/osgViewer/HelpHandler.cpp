@@ -164,6 +164,20 @@ void HelpHandler::setUpScene(osgViewer::Viewer* viewer)
         pos.y() -= characterSize*1.5f;
 
     }
+
+    osg::BoundingBox bb = geode->getBoundingBox();
+    if (bb.valid())
+    {
+        float width = bb.xMax() - bb.xMin();
+        float height = bb.yMax() - bb.yMin();
+        float ratio = 1.0;
+        if (width > 1024.0f) ratio = 1024.0f/width;
+        if (height*ratio > 800.0f) ratio = 800.0f/height;
+        
+        _camera->setViewMatrix(osg::Matrix::translate(-bb.center()) * 
+                               osg::Matrix::scale(ratio,ratio,ratio) * 
+                               osg::Matrix::translate(osg::Vec3(640.0f, 520.0f, 0.0f)));
+    }
 }
 
 

@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ApplicationUsage>
 #include <osg/Camera>
 #include <osg/FrameStamp>
 #include <osg/GraphicsThread>
@@ -220,6 +221,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_Method0(void, setUpRenderingSupport,
 	          __void__setUpRenderingSupport,
 	          "Set up the Operations to render the various viewer cameras on the viewers graphics windows. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this viewer. ",
 	          "");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 

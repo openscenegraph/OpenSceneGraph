@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ApplicationUsage>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgViewer/StatsHandler>
@@ -58,6 +59,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	I_Method0(double, getBlockMultiplier,
 	          __double__getBlockMultiplier,
 	          "",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
 	I_SimpleProperty(double, BlockMultiplier, 
 	                 __double__getBlockMultiplier, 

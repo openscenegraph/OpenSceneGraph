@@ -4,6 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	CompositeViewer.cpp\
 	GraphicsWindow.cpp\
+	HelpHandler.cpp\
 	Scene.cpp\
 	SimpleViewer.cpp\
 	StatsHandler.cpp\

@@ -18,6 +18,7 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/StatsHandler>
+#include <osgViewer/HelpHandler>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -113,6 +114,15 @@ public:
         return false;
     }
     
+    /** Get the keyboard and mouse usage of this manipulator.*/
+    virtual void getUsage(osg::ApplicationUsage& usage) const
+    {
+        usage.addKeyboardMouseBinding("m","Toggle threading model.");
+        usage.addKeyboardMouseBinding("e","Toggle the placement of the end of frame barrier.");
+    }
+
+
+
     bool _done;
 };
 
@@ -197,6 +207,8 @@ int main(int argc, char** argv)
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
+    // add the help handler
+    viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
 
     while (arguments.read("--SingleThreaded")) viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     while (arguments.read("--CullDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);

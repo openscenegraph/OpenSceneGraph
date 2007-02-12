@@ -806,4 +806,11 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
     return group;
 }
 
+
+void StatsHandler::getUsage(osg::ApplicationUsage& usage) const
+{
+    usage.addKeyboardMouseBinding("s","Onscreen stats.");
+    usage.addKeyboardMouseBinding("S","Output stats to console.");
+}
+
 }

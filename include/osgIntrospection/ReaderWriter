@@ -57,22 +57,22 @@ namespace osgIntrospection
         };
 
         /// Writes a textual representation of the value's content to a stream.
-        virtual std::ostream &writeTextValue(std::ostream &, const Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_WRITE, v.getType().getStdTypeInfo()); }
+        virtual std::ostream &writeTextValue(std::ostream &, const Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_WRITE, v.getType().getExtendedTypeInfo()); }
 
         /// Reads a textual representation of the value's content from a stream.
-        virtual std::istream &readTextValue(std::istream &, Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getStdTypeInfo()); }
+        virtual std::istream &readTextValue(std::istream &, Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getExtendedTypeInfo()); }
 
         /// Writes a textual representation of the value's content to a stream.
       virtual std::wostream &writeTextValue(std::wostream & wos, const Value& v, const Options* op = 0) const { std::ostringstream os; writeTextValue(os, v, op); wos << os; return (wos);}
 
         /// Reads a textual representation of the value's content from a stream.
-        virtual std::wistream &readTextValue(std::wistream& , Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getStdTypeInfo()); }
+        virtual std::wistream &readTextValue(std::wistream& , Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::TEXT_READ, v.getType().getExtendedTypeInfo()); }
 
         /// Writes a binary representation of the value's content to a stream.
-        virtual std::ostream &writeBinaryValue(std::ostream &, const Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_WRITE, v.getType().getStdTypeInfo()); }
+        virtual std::ostream &writeBinaryValue(std::ostream &, const Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_WRITE, v.getType().getExtendedTypeInfo()); }
 
         /// Reads a binary representation of the value's content from a stream.
-        virtual std::istream &readBinaryValue(std::istream &, Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_READ, v.getType().getStdTypeInfo()); }
+        virtual std::istream &readBinaryValue(std::istream &, Value& v, const Options* = 0) const { throw StreamingNotSupportedException(StreamingNotSupportedException::BINARY_READ, v.getType().getExtendedTypeInfo()); }
 
         /// Virtual destructor.
         virtual ~ReaderWriter() {}

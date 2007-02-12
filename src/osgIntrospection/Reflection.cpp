@@ -39,18 +39,18 @@ Reflection::StaticData& Reflection::getOrCreateStaticData()
     if (!_static_data) 
     {                
         _static_data = new StaticData;
-        std::auto_ptr<Type> tvoid(new Type(typeid(void)));
-        _static_data->typemap.insert(std::make_pair(&typeid(void), tvoid.get()));
+        std::auto_ptr<Type> tvoid(new Type(extended_typeid<void>()));
+        _static_data->typemap.insert(std::make_pair(extended_typeid<void>(), tvoid.get()));
         _static_data->type_void = tvoid.release();            
     }
     return *_static_data;
 }
 
-const Type& Reflection::getType(const std::type_info& ti)
+const Type& Reflection::getType(const ExtendedTypeInfo &ti)
 {
     const TypeMap& types = getTypes();
 
-    TypeMap::const_iterator i = types.find(&ti);
+    TypeMap::const_iterator i = types.find(ti);
     if (i == types.end())
     {
         return *registerType(ti);
@@ -79,17 +79,17 @@ const Type& Reflection::type_void()
     return *getOrCreateStaticData().type_void;
 }
 
-Type* Reflection::registerType(const std::type_info& ti)
+Type* Reflection::registerType(const ExtendedTypeInfo &ti)
 {
     std::auto_ptr<Type> type(new Type(ti));
-    getOrCreateStaticData().typemap.insert(std::make_pair(&ti, type.get()));
+    getOrCreateStaticData().typemap.insert(std::make_pair(ti, type.get()));
     return type.release();
 }
 
-Type* Reflection::getOrRegisterType(const std::type_info& ti, bool replace_if_defined)
+Type* Reflection::getOrRegisterType(const ExtendedTypeInfo &ti, bool replace_if_defined)
 {
     TypeMap& tm = getOrCreateStaticData().typemap;
-    TypeMap::iterator i = tm.find(&ti);
+    TypeMap::iterator i = tm.find(ti);
 
     if (i != tm.end())
     {

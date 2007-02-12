@@ -119,6 +119,10 @@ SOURCE=..\..\src\osgIntrospection\Reflection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgIntrospection\Reflector.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgIntrospection\Type.cpp
 # End Source File
 # Begin Source File

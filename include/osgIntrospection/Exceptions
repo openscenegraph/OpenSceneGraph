@@ -16,7 +16,7 @@
 #define OSGINTROSPECTION_EXCEPTIONS_
 
 #include <string>
-#include <typeinfo>
+#include <osgIntrospection/ExtendedTypeInfo>
 
 namespace osgIntrospection
 {
@@ -38,7 +38,7 @@ namespace osgIntrospection
 
     struct TypeNotDefinedException: public ReflectionException
     {
-        TypeNotDefinedException(const std::type_info& ti)
+        TypeNotDefinedException(const ExtendedTypeInfo &ti)
         :    ReflectionException("type `" + std::string(ti.name()) + "' is declared but not defined")
         {
         }
@@ -46,7 +46,7 @@ namespace osgIntrospection
 
     struct TypeIsAbstractException: public ReflectionException
     {
-        TypeIsAbstractException(const std::type_info& ti)
+        TypeIsAbstractException(const ExtendedTypeInfo &ti)
         :    ReflectionException("cannot create instances of abstract type `" + std::string(ti.name()) + "'")
         {
         }
@@ -54,7 +54,7 @@ namespace osgIntrospection
     
     struct ConstructorNotFoundException: public ReflectionException
     {
-        ConstructorNotFoundException(const std::type_info& ti)
+        ConstructorNotFoundException(const ExtendedTypeInfo &ti)
         :    ReflectionException("could not find a suitable constructor in type `" + std::string(ti.name()) + "'")
         {
         }
@@ -136,13 +136,13 @@ namespace osgIntrospection
             BINARY_READ
         };
 
-        StreamingNotSupportedException(OperationType op, const std::type_info& type)
+        StreamingNotSupportedException(OperationType op, const ExtendedTypeInfo &type)
         :    ReflectionException(build_msg(op, type))
         {
         }
 
     private:
-        std::string build_msg(OperationType op, const std::type_info& type)
+        std::string build_msg(OperationType op, const ExtendedTypeInfo &type)
         {
             std::string opstr;
             switch (op)
@@ -160,7 +160,7 @@ namespace osgIntrospection
 
     struct TypeConversionException: public ReflectionException
     {
-        TypeConversionException(const std::type_info& type1, const std::type_info& type2)
+        TypeConversionException(const ExtendedTypeInfo &type1, const ExtendedTypeInfo &type2)
         :    ReflectionException("cannot convert from type `" + std::string(type1.name()) + "' to type `" + std::string(type2.name()) + "'")
         {
         }
@@ -220,7 +220,7 @@ namespace osgIntrospection
     
     struct ComparisonNotPermittedException: ReflectionException
     {
-        ComparisonNotPermittedException(const std::type_info& ti)
+        ComparisonNotPermittedException(const ExtendedTypeInfo &ti)
         :    ReflectionException("comparison not permitted on type `" + std::string(ti.name()) + "'")
         {
         }
@@ -228,7 +228,7 @@ namespace osgIntrospection
     
     struct ComparisonOperatorNotSupportedException: ReflectionException
     {
-        ComparisonOperatorNotSupportedException(const std::type_info& ti, const std::string& op)
+        ComparisonOperatorNotSupportedException(const ExtendedTypeInfo &ti, const std::string& op)
         :    ReflectionException("comparison operator `" + op + "' is not supported on type `" + std::string(ti.name()) + "'")
         {
         }

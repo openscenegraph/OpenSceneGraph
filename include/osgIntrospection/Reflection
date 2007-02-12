@@ -16,6 +16,7 @@
 #define OSGINTROSPECTION_REFLECTION_
 
 #include <osgIntrospection/Export>
+#include <osgIntrospection/ExtendedTypeInfo>
 
 #include <typeinfo>
 #include <map>
@@ -24,7 +25,7 @@
 /// This macro emulates the behavior of the standard typeid operator,
 /// returning the Type object associated to the type of the given
 /// expression.
-#define typeof(expr)  osgIntrospection::Reflection::getType(typeid(expr))
+#define typeof(type)  osgIntrospection::Reflection::getType(extended_typeid<type>())
 
 namespace osgIntrospection
 {
@@ -34,20 +35,9 @@ namespace osgIntrospection
     
     typedef std::vector<const Converter* > ConverterList;
 
-    /// This predicate compares two instances of std::type_info for equality.
-    /// Note that we can't rely on default pointer comparison because it is
-    /// not guaranteed that &typeid(T) always returns the same pointer for a
-    /// given T (thanks Andrew Koenig).
-    struct TypeInfoCmp
-    {
-        bool operator()(const std::type_info* t1, const std::type_info* t2) const
-        {
-            return t1->before(*t2) != 0;
-        }
-    };
-
-    /// A map of types, indexed by their associated type_info structure.
-    typedef std::map<const std::type_info* , Type* , TypeInfoCmp> TypeMap;
+    /// A map of types, indexed by their associated ExtendedTypeInfo
+    /// structure.
+    typedef std::map<ExtendedTypeInfo, Type*> TypeMap;
 
 
     /// This class provides basic reflection services such as registration
@@ -55,13 +45,13 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT Reflection
     {
     public:
-        /// Returns the Type object associated to the given type_info
-        /// structure. If the type hasn't been created yet it is 
-        /// automatically created and added to the global type map. 
-        /// Please note that such type will have the status of
+        /// Returns the Type object associated to the given
+        /// ExtendedTypeInfo structure. If the type hasn't been created
+        /// yet it is automatically created and added to the global type
+        /// map.  Please note that such type will have the status of
         /// "declared", you still need to give details about it through
         /// a Reflector class before you can query it.
-        static const Type& getType(const std::type_info& ti);
+        static const Type& getType(const ExtendedTypeInfo &ti);
 
         /// Finds a Type object given its qualified name, which must
         /// be identical to the qualified name returned by that Type's
@@ -98,8 +88,8 @@ namespace osgIntrospection
         };
 
         static StaticData& getOrCreateStaticData();
-        static Type* registerType(const std::type_info& ti);
-        static Type* getOrRegisterType(const std::type_info& ti, bool replace_if_defined = false);
+        static Type* registerType(const ExtendedTypeInfo &ti);
+        static Type* getOrRegisterType(const ExtendedTypeInfo &ti, bool replace_if_defined = false);
         static void registerConverter(const Type& source, const Type& dest, const Converter* cvt);
 
     private:

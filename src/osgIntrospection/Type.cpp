@@ -69,7 +69,7 @@ bool Type::isSubclassOf(const Type& type) const
     check_defined();
     for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
-        if (**i == type.getStdTypeInfo())
+        if ((*i)->getExtendedTypeInfo() == type.getExtendedTypeInfo())
             return true;
         if ((*i)->isSubclassOf(type))
             return true;

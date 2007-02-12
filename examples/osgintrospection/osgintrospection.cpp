@@ -66,7 +66,7 @@ void print_types()
     for (TypeList::const_iterator i=types.begin(); i!=types.end(); ++i)
     {
         // ignore pointer types and undefined types
-        if (!(*i)->isDefined() || (*i)->isPointer())
+        if (!(*i)->isDefined() || (*i)->isPointer() || (*i)->isReference())
             continue;
 
         // print the type name

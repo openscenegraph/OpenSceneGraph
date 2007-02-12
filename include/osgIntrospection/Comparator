@@ -56,7 +56,7 @@ namespace osgIntrospection
 
         virtual bool isLessThanOrEqualTo(const Value& , const Value& ) const
         {
-            throw ComparisonOperatorNotSupportedException(typeid(T), "less than or equal to");
+            throw ComparisonOperatorNotSupportedException(extended_typeid<T>(), "less than or equal to");
         }
         
         virtual ~PartialOrderComparator() {}

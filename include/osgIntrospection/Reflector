@@ -48,8 +48,9 @@ namespace osgIntrospection
     /// methods.
     ///
     /// NOTE: when you create a Reflector for type T, it will automatically
-    /// create descriptions for types T* and const T*. You should NEVER
-    /// create reflectors for pointer types explicitely.
+    /// create descriptions for types T*, const T*, T&, and const T&. You
+    /// should NEVER create reflectors for pointer or reference types
+    /// explicitly.
     ///
     template<typename T>
     class Reflector
@@ -128,6 +129,7 @@ namespace osgIntrospection
         };
         
         void init();
+        void init_reference_types();
         static std::string purify(const std::string& s);
         static void split_qualified_name(const std::string& q, std::string& n, std::string& ns);
 
@@ -712,7 +714,7 @@ namespace osgIntrospection
 
     template<typename T>
     Reflector<T>::Reflector(const std::string& name, const std::string& ns, bool abstract)
-    :    _type(Reflection::getOrRegisterType(typeid(T), true))
+    :    _type(Reflection::getOrRegisterType(extended_typeid<T>(), true))
     {
         if (!_type->_name.empty())
             _type->_aliases.push_back(ns.empty()? purify(name): purify(ns+"::"+name));
@@ -727,7 +729,7 @@ namespace osgIntrospection
 
     template<typename T>
     Reflector<T>::Reflector(const std::string& qname, bool abstract)
-    :    _type(Reflection::getOrRegisterType(typeid(T), true))
+    :    _type(Reflection::getOrRegisterType(extended_typeid<T>(), true))
     {
         if (!_type->_name.empty())
             _type->_aliases.push_back(purify(qname));
@@ -745,7 +747,7 @@ namespace osgIntrospection
         // pointer type
         if (!_type->_pointed_type)
         {
-            Type* ptype = Reflection::getOrRegisterType(typeid(T*), true);
+            Type* ptype = Reflection::getOrRegisterType(extended_typeid<T*>(), true);
             ptype->_name = _type->_name;
             ptype->_namespace = _type->_namespace;
             ptype->_pointed_type = _type;
@@ -758,7 +760,7 @@ namespace osgIntrospection
         // const pointer type
         if (!_type->_pointed_type || !_type->_is_const)
         {
-            Type* cptype = Reflection::getOrRegisterType(typeid(const T*), true);
+            Type* cptype = Reflection::getOrRegisterType(extended_typeid<const T*>(), true);
             cptype->_name = _type->_name;
             cptype->_namespace = _type->_namespace;
             cptype->_is_const = true;
@@ -769,8 +771,38 @@ namespace osgIntrospection
             cptype->_cmp = new TotalOrderComparator<const T*>();
         }
 
+        init_reference_types();
+
         _type->_is_defined = true;
     }
+    
+    template<typename T>
+    void Reflector<T>::init_reference_types()
+    {
+        // reference type
+        if (!_type->_referenced_type)
+        {
+            Type* ptype = Reflection::getOrRegisterType(extended_typeid<T&>(), true);
+            ptype->_name = _type->_name;
+            ptype->_namespace = _type->_namespace;
+            ptype->_referenced_type = _type;
+            ptype->_is_defined = true;
+        }
+
+        // const reference type
+        if (!_type->_referenced_type || !_type->_is_const)
+        {
+            Type* cptype = Reflection::getOrRegisterType(extended_typeid<const T&>(), true);
+            cptype->_name = _type->_name;
+            cptype->_namespace = _type->_namespace;
+            cptype->_is_const = true;
+            cptype->_referenced_type = _type;
+            cptype->_is_defined = true;
+        }
+    }
+    
+    template<>
+    void Reflector<void>::init_reference_types();
     
     template<typename T>
     std::string Reflector<T>::purify(const std::string& s)

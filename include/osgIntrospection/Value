@@ -17,6 +17,7 @@
 
 #include <osgIntrospection/Export>
 #include <osgIntrospection/Reflection>
+#include <osgIntrospection/type_traits>
 
 #include <vector>
 #include <memory>
@@ -250,7 +251,7 @@ namespace osgIntrospection
 
             virtual const Type* type() const
             {
-                return &typeof(static_cast<Instance<T> *>(inst_)->_data);
+                return &typeof(T);
             }
 
             virtual bool nullptr() const
@@ -296,13 +297,13 @@ namespace osgIntrospection
 
             virtual const Type* type() const
             {
-                return &typeof(static_cast<Instance<T> *>(inst_)->_data);
+                return &typeof(T);
             }
 
             virtual const Type* ptype() const
             {
                 if (!static_cast<Instance<T> *>(inst_)->_data) return 0;
-                return &typeof(*static_cast<Instance<T> *>(inst_)->_data);
+                return &typeof(typename remove_pointer<T>::type);
             }
 
             virtual bool nullptr() const

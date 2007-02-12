@@ -29,7 +29,7 @@ Value Value::convertTo(const Type& outtype) const
 {
     Value v = tryConvertTo(outtype);
     if (v.isEmpty())
-        throw TypeConversionException(_type->getStdTypeInfo(), outtype.getStdTypeInfo());
+        throw TypeConversionException(_type->getExtendedTypeInfo(), outtype.getExtendedTypeInfo());
     return v;
 }
 
@@ -92,7 +92,7 @@ std::string Value::toString() const
             throw StreamWriteErrorException();
      return oss.str();
     }
-    throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, _type->getStdTypeInfo());
+    throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, _type->getExtendedTypeInfo());
     }
 
 std::wstring Value::toWString() const
@@ -107,7 +107,7 @@ std::wstring Value::toWString() const
             throw StreamWriteErrorException();
         return woss.str();
     }
-    throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, _type->getStdTypeInfo());
+    throw StreamingNotSupportedException(StreamingNotSupportedException::ANY, _type->getExtendedTypeInfo());
 }
 
 void Value::check_empty() const
@@ -137,7 +137,7 @@ bool Value::operator ==(const Value& other) const
     const Comparator* cmp = cmp1? cmp1: cmp2;
     
     if (!cmp)
-        throw ComparisonNotPermittedException(_type->getStdTypeInfo());
+        throw ComparisonNotPermittedException(_type->getExtendedTypeInfo());
 
     if (cmp1 == cmp2)
         return cmp->isEqualTo(*this, other);
@@ -156,7 +156,7 @@ bool Value::operator <=(const Value& other) const
     const Comparator* cmp = cmp1? cmp1: cmp2;
     
     if (!cmp)
-        throw ComparisonNotPermittedException(_type->getStdTypeInfo());
+        throw ComparisonNotPermittedException(_type->getExtendedTypeInfo());
 
     if (cmp1 == cmp2)
         return cmp->isLessThanOrEqualTo(*this, other);
@@ -185,7 +185,7 @@ bool Value::operator <(const Value& other) const
     const Comparator* cmp = cmp1? cmp1: cmp2;
     
     if (!cmp)
-        throw ComparisonNotPermittedException(_type->getStdTypeInfo());
+        throw ComparisonNotPermittedException(_type->getExtendedTypeInfo());
 
     if (cmp1 == cmp2)
         return cmp->isLessThanOrEqualTo(*this, other) && !cmp->isEqualTo(*this, other);
@@ -208,7 +208,7 @@ bool Value::operator >=(const Value& other) const
     const Comparator* cmp = cmp1? cmp1: cmp2;
     
     if (!cmp)
-        throw ComparisonNotPermittedException(_type->getStdTypeInfo());
+        throw ComparisonNotPermittedException(_type->getExtendedTypeInfo());
 
     if (cmp1 == cmp2)
         return !cmp->isLessThanOrEqualTo(*this, other) || cmp->isEqualTo(*this, other);

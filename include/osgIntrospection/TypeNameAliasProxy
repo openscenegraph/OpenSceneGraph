@@ -29,7 +29,7 @@ namespace osgIntrospection
     {
         TypeNameAliasProxy(const std::string& name)
         {
-            Type* type = Reflection::getOrRegisterType(typeid(C));
+            Type* type = Reflection::getOrRegisterType(extended_typeid<C>());
             if (std::find(type->_aliases.begin(), type->_aliases.end(), name) == type->_aliases.end())
                 type->_aliases.push_back(name);
         }

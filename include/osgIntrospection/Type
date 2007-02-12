@@ -18,6 +18,7 @@
 #include <osgIntrospection/Exceptions>
 #include <osgIntrospection/Value>
 #include <osgIntrospection/CustomAttributeProvider>
+#include <osgIntrospection/ExtendedTypeInfo>
 
 #include <string>
 #include <typeinfo>
@@ -70,6 +71,10 @@ namespace osgIntrospection
         /// Returns a reference to the std::type_info instance associated 
         /// to this Type.
         inline const std::type_info& getStdTypeInfo() const;
+
+        /// Returns a reference to the ExtendedTypeInfo associated 
+        /// to this Type.
+        inline ExtendedTypeInfo getExtendedTypeInfo() const;
 
         /// Returns true if this Type is defined, false if it's just 
         /// declared. See class Reflector if you want to create a new Type.
@@ -140,6 +145,21 @@ namespace osgIntrospection
         /// Returns the pointed type. If the reflected type is not a pointer,
         /// the object returned is typeof(void).
         inline const Type& getPointedType() const;
+
+        /// Returns true if the reflected type is a reference, false otherwise.
+        inline bool isReference() const;
+
+        /// Returns true if the reflected type is a reference AND it is const, 
+        /// false otherwise.
+        inline bool isConstReference() const;
+
+        /// Returns true if the reflected type is a reference AND it is not 
+        /// const, false otherwise.
+        inline bool isNonConstReference() const;
+
+        /// Returns the referenced type. If the reflected type is not a reference,
+        /// the object returned is typeof(void).
+        inline const Type& getReferencedType() const;
 
         /// Returns the list of properties defined for this type. The list
         /// does not include properties inherited from base types.
@@ -221,11 +241,12 @@ namespace osgIntrospection
         inline Value createInstance() const;
 
     protected:
-        Type(const std::type_info& ti)
+        Type(const ExtendedTypeInfo &ti)
         :    _ti(ti), 
             _is_const(false), 
             _is_abstract(false),
             _pointed_type(0), 
+            _referenced_type(0), 
             _is_defined(false), 
             _rw(0),
             _cmp(0)
@@ -244,7 +265,7 @@ namespace osgIntrospection
 
         Type(const Type& copy): CustomAttributeProvider(copy), _ti(copy._ti) {}
 
-        const std::type_info& _ti;
+        ExtendedTypeInfo _ti;
 
         std::string _name;
         std::string _namespace;
@@ -254,6 +275,7 @@ namespace osgIntrospection
         bool _is_const;
         bool _is_abstract;
         const Type* _pointed_type;
+        const Type* _referenced_type;
 
         ConstructorInfoList _cons;
         PropertyInfoList _props;
@@ -311,6 +333,11 @@ namespace osgIntrospection
 
     inline const std::type_info& Type::getStdTypeInfo() const
     {
+        return _ti.getStdTypeInfo();
+    }
+
+    inline ExtendedTypeInfo Type::getExtendedTypeInfo() const
+    {
         return _ti;
     }
 
@@ -339,6 +366,8 @@ namespace osgIntrospection
         qname.append(_name);
         if (_pointed_type)
             qname.append(" *");
+        else if (_referenced_type)
+            qname.append(" &");
         return qname;
     }
 
@@ -368,6 +397,18 @@ namespace osgIntrospection
     {
         check_defined();
         return !_is_const && _pointed_type;
+    }
+
+    inline bool Type::isConstReference() const
+    {
+        check_defined();
+        return _is_const && _referenced_type;
+    }
+
+    inline bool Type::isNonConstReference() const
+    {
+        check_defined();
+        return !_is_const && _referenced_type;
     }
 
     inline bool Type::isAbstract() const
@@ -406,9 +447,15 @@ namespace osgIntrospection
         return _pointed_type != 0;
     }
 
+    inline bool Type::isReference() const
+    {
+        check_defined();
+        return _referenced_type != 0;
+    }
+
     inline bool Type::isVoid() const
     {
-        return (_ti == typeid(void)) != 0;
+        return (_ti == extended_typeid<void>()) != 0;
     }
 
     inline const Type& Type::getPointedType() const
@@ -416,6 +463,14 @@ namespace osgIntrospection
         check_defined();
         if (_pointed_type)
             return *_pointed_type;
+        return Reflection::type_void();
+    }
+
+    inline const Type& Type::getReferencedType() const
+    {
+        check_defined();
+        if (_referenced_type)
+            return *_referenced_type;
         return Reflection::type_void();
     }
 

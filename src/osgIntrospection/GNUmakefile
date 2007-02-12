@@ -8,6 +8,7 @@ CXXFILES =\
 	MethodInfo.cpp\
 	PropertyInfo.cpp\
 	Reflection.cpp\
+	Reflector.cpp\
 	Type.cpp\
 	Utility.cpp\
 	Value.cpp\

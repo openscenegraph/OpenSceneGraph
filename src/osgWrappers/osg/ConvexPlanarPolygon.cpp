@@ -28,18 +28,22 @@ BEGIN_VALUE_REFLECTOR(osg::ConvexPlanarPolygon)
 	               "",
 	               "");
 	I_Method1(void, add, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __void__add__C5_Vec3_R1,
 	          "",
 	          "");
 	I_Method1(void, setVertexList, IN, const osg::ConvexPlanarPolygon::VertexList &, vertexList,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexList__C5_VertexList_R1,
 	          "",
 	          "");
 	I_Method0(osg::ConvexPlanarPolygon::VertexList &, getVertexList,
+	          Properties::NON_VIRTUAL,
 	          __VertexList_R1__getVertexList,
 	          "",
 	          "");
 	I_Method0(const osg::ConvexPlanarPolygon::VertexList &, getVertexList,
+	          Properties::NON_VIRTUAL,
 	          __C5_VertexList_R1__getVertexList,
 	          "",
 	          "");

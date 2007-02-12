@@ -46,7 +46,7 @@ BEGIN_ENUM_REFLECTOR(osg::Stencil::Operation)
 	I_EnumLabel(osg::Stencil::DECR_WRAP);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Stencil)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Stencil)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Stencil,
 	               "",
@@ -56,102 +56,127 @@ BEGIN_OBJECT_REFLECTOR(osg::Stencil)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "Return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "Return the name of the attribute's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "Return the name of the attribute's class type. ",
 	          "");
 	I_Method0(osg::StateAttribute::Type, getType,
+	          Properties::VIRTUAL,
 	          __Type__getType,
 	          "Return the Type identifier of the attribute's class type. ",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::VIRTUAL,
 	          __int__compare__C5_StateAttribute_R1,
 	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          Properties::VIRTUAL,
 	          __bool__getModeUsage__ModeUsage_R1,
 	          "",
 	          "");
 	I_Method3(void, setFunction, IN, osg::Stencil::Function, func, IN, int, ref, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setFunction__Function__int__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, setFunction, IN, osg::Stencil::Function, func,
+	          Properties::NON_VIRTUAL,
 	          __void__setFunction__Function,
 	          "",
 	          "");
 	I_Method0(osg::Stencil::Function, getFunction,
+	          Properties::NON_VIRTUAL,
 	          __Function__getFunction,
 	          "",
 	          "");
 	I_Method1(void, setFunctionRef, IN, int, ref,
+	          Properties::NON_VIRTUAL,
 	          __void__setFunctionRef__int,
 	          "",
 	          "");
 	I_Method0(int, getFunctionRef,
+	          Properties::NON_VIRTUAL,
 	          __int__getFunctionRef,
 	          "",
 	          "");
 	I_Method1(void, setFunctionMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setFunctionMask__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getFunctionMask,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getFunctionMask,
 	          "",
 	          "");
 	I_Method3(void, setOperation, IN, osg::Stencil::Operation, sfail, IN, osg::Stencil::Operation, zfail, IN, osg::Stencil::Operation, zpass,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperation__Operation__Operation__Operation,
 	          "set the operations to apply when the various stencil and depth tests fail or pass. ",
 	          "First parameter is to control the operation when the stencil test fails. The second parameter is to control the operation when the stencil test passes, but depth test fails. The third parameter controls the operation when both the stencil test and depth pass. Ordering of parameter is the same as if using glStencilOp(,,). ");
 	I_Method1(void, setStencilFailOperation, IN, osg::Stencil::Operation, sfail,
+	          Properties::NON_VIRTUAL,
 	          __void__setStencilFailOperation__Operation,
 	          "set the operation when the stencil test fails. ",
 	          "");
 	I_Method0(osg::Stencil::Operation, getStencilFailOperation,
+	          Properties::NON_VIRTUAL,
 	          __Operation__getStencilFailOperation,
 	          "get the operation when the stencil test fails. ",
 	          "");
 	I_Method1(void, setStencilPassAndDepthFailOperation, IN, osg::Stencil::Operation, zfail,
+	          Properties::NON_VIRTUAL,
 	          __void__setStencilPassAndDepthFailOperation__Operation,
 	          "set the operation when the stencil test passes but the depth test fails. ",
 	          "");
 	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthFailOperation,
+	          Properties::NON_VIRTUAL,
 	          __Operation__getStencilPassAndDepthFailOperation,
 	          "get the operation when the stencil test passes but the depth test fails. ",
 	          "");
 	I_Method1(void, setStencilPassAndDepthPassOperation, IN, osg::Stencil::Operation, zpass,
+	          Properties::NON_VIRTUAL,
 	          __void__setStencilPassAndDepthPassOperation__Operation,
 	          "set the operation when both the stencil test and the depth test pass. ",
 	          "");
 	I_Method0(osg::Stencil::Operation, getStencilPassAndDepthPassOperation,
+	          Properties::NON_VIRTUAL,
 	          __Operation__getStencilPassAndDepthPassOperation,
 	          "get the operation when both the stencil test and the depth test pass. ",
 	          "");
 	I_Method1(void, setWriteMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setWriteMask__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getWriteMask,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getWriteMask,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");

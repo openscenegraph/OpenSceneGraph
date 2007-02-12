@@ -20,12 +20,13 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateAxisDragger)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslateAxisDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TranslateAxisDragger,
 	               "",
 	               "");
 	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
 	          __void__setupDefaultGeometry,
 	          "Setup default geometry for dragger. ",
 	          "");

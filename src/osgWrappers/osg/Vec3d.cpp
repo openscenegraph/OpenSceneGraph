@@ -33,6 +33,7 @@ BEGIN_VALUE_REFLECTOR(osg::Vec3d)
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::Vec3f &, vec,
+	               Properties::NON_EXPLICIT,
 	               ____Vec3d__C5_Vec3f_R1,
 	               "",
 	               "");
@@ -45,62 +46,77 @@ BEGIN_VALUE_REFLECTOR(osg::Vec3d)
 	               "",
 	               "");
 	I_Method0(osg::Vec3d::value_type *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __value_type_P1__ptr,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3d::value_type *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __C5_value_type_P1__ptr,
 	          "",
 	          "");
 	I_Method3(void, set, IN, osg::Vec3d::value_type, x, IN, osg::Vec3d::value_type, y, IN, osg::Vec3d::value_type, z,
+	          Properties::NON_VIRTUAL,
 	          __void__set__value_type__value_type__value_type,
 	          "",
 	          "");
 	I_Method1(void, set, IN, const osg::Vec3d &, rhs,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_Vec3d_R1,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type &, x,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__x,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type &, y,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__y,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type &, z,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__z,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type, x,
+	          Properties::NON_VIRTUAL,
 	          __value_type__x,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type, y,
+	          Properties::NON_VIRTUAL,
 	          __value_type__y,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type, z,
+	          Properties::NON_VIRTUAL,
 	          __value_type__z,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(bool, isNaN,
+	          Properties::NON_VIRTUAL,
 	          __bool__isNaN,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d::value_type, length,
+	          Properties::NON_VIRTUAL,
 	          __value_type__length,
 	          "Length of the vector = sqrt( vec . ",
 	          "vec ) ");
 	I_Method0(osg::Vec3d::value_type, length2,
+	          Properties::NON_VIRTUAL,
 	          __value_type__length2,
 	          "Length squared of the vector = vec . ",
 	          "vec ");
 	I_Method0(osg::Vec3d::value_type, normalize,
+	          Properties::NON_VIRTUAL,
 	          __value_type__normalize,
 	          "Normalize the vector so that it has length unity. ",
 	          "Returns the previous length of the vector.");

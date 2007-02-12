@@ -35,46 +35,57 @@ BEGIN_VALUE_REFLECTOR(osg::Vec4ub)
 	               "",
 	               "");
 	I_Method0(unsigned char *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_P1__ptr,
 	          "",
 	          "");
 	I_Method0(const unsigned char *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __C5_unsigned_char_P1__ptr,
 	          "",
 	          "");
 	I_Method4(void, set, IN, unsigned char, r, IN, unsigned char, g, IN, unsigned char, b, IN, unsigned char, a,
+	          Properties::NON_VIRTUAL,
 	          __void__set__unsigned_char__unsigned_char__unsigned_char__unsigned_char,
 	          "",
 	          "");
 	I_Method0(unsigned char &, r,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_R1__r,
 	          "",
 	          "");
 	I_Method0(unsigned char &, g,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_R1__g,
 	          "",
 	          "");
 	I_Method0(unsigned char &, b,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_R1__b,
 	          "",
 	          "");
 	I_Method0(unsigned char &, a,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_R1__a,
 	          "",
 	          "");
 	I_Method0(unsigned char, r,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char__r,
 	          "",
 	          "");
 	I_Method0(unsigned char, g,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char__g,
 	          "",
 	          "");
 	I_Method0(unsigned char, b,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char__b,
 	          "",
 	          "");
 	I_Method0(unsigned char, a,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char__a,
 	          "",
 	          "");

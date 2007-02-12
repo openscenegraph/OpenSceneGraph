@@ -208,180 +208,223 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::TabletPointerType)
 	I_EnumLabel(osgGA::GUIEventAdapter::ERASER);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____GUIEventAdapter,
 	               "",
 	               "");
 	I_Constructor1(IN, const osgGA::GUIEventAdapter &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____GUIEventAdapter__C5_GUIEventAdapter_R1,
 	               "",
 	               "");
 	I_Method1(void, setHandled, IN, bool, handled,
+	          Properties::NON_VIRTUAL,
 	          __void__setHandled__bool,
 	          "Set whether this event has been handled by an event handler or not. ",
 	          "");
 	I_Method0(bool, getHandled,
+	          Properties::NON_VIRTUAL,
 	          __bool__getHandled,
 	          "Get whether this event has been handled by an event handler or not. ",
 	          "");
 	I_Method1(void, setEventType, IN, osgGA::GUIEventAdapter::EventType, Type,
+	          Properties::NON_VIRTUAL,
 	          __void__setEventType__EventType,
 	          "Get the Type of the GUI GUIEventAdapter. ",
 	          "");
 	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType,
+	          Properties::VIRTUAL,
 	          __EventType__getEventType,
 	          "Get the Type of the GUI GUIEventAdapter. ",
 	          "");
 	I_Method1(void, setTime, IN, double, time,
+	          Properties::NON_VIRTUAL,
 	          __void__setTime__double,
 	          "set time in seconds of event. ",
 	          "");
 	I_Method0(double, getTime,
+	          Properties::NON_VIRTUAL,
 	          __double__getTime,
 	          "get time in seconds of event. ",
 	          "");
 	I_Method0(double, time,
+	          Properties::NON_VIRTUAL,
 	          __double__time,
 	          "deprecated function for getting time of event. ",
 	          "");
 	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, int, width, , IN, int, height, , IN, bool, updateMouseRange, true,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setWindowRectangle__int__int__int__int__bool,
 	                      "set window rectangle. ",
 	                      "");
 	I_Method0(int, getWindowX,
+	          Properties::NON_VIRTUAL,
 	          __int__getWindowX,
 	          "get window x origin. ",
 	          "");
 	I_Method0(int, getWindowY,
+	          Properties::NON_VIRTUAL,
 	          __int__getWindowY,
 	          "get window y origin. ",
 	          "");
 	I_Method0(int, getWindowWidth,
+	          Properties::NON_VIRTUAL,
 	          __int__getWindowWidth,
 	          "get window width. ",
 	          "");
 	I_Method0(int, getWindowHeight,
+	          Properties::NON_VIRTUAL,
 	          __int__getWindowHeight,
 	          "get window height. ",
 	          "");
 	I_Method1(void, setKey, IN, int, key,
+	          Properties::NON_VIRTUAL,
 	          __void__setKey__int,
 	          "set key pressed. ",
 	          "");
 	I_Method0(int, getKey,
+	          Properties::VIRTUAL,
 	          __int__getKey,
 	          "get key pressed, return -1 if inappropriate for this GUIEventAdapter. ",
 	          "");
 	I_Method1(void, setButton, IN, int, button,
+	          Properties::NON_VIRTUAL,
 	          __void__setButton__int,
 	          "set button pressed/released. ",
 	          "");
 	I_Method0(int, getButton,
+	          Properties::NON_VIRTUAL,
 	          __int__getButton,
 	          "button pressed/released, return -1 if inappropriate for this GUIEventAdapter. ",
 	          "");
 	I_Method4(void, setInputRange, IN, float, Xmin, IN, float, Ymin, IN, float, Xmax, IN, float, Ymax,
+	          Properties::NON_VIRTUAL,
 	          __void__setInputRange__float__float__float__float,
 	          "set mouse input range. ",
 	          "");
 	I_Method0(float, getXmin,
+	          Properties::NON_VIRTUAL,
 	          __float__getXmin,
 	          "get mouse minimum x. ",
 	          "");
 	I_Method0(float, getXmax,
+	          Properties::NON_VIRTUAL,
 	          __float__getXmax,
 	          "get mouse maximum x. ",
 	          "");
 	I_Method0(float, getYmin,
+	          Properties::NON_VIRTUAL,
 	          __float__getYmin,
 	          "get mmouse minimum y. ",
 	          "");
 	I_Method0(float, getYmax,
+	          Properties::NON_VIRTUAL,
 	          __float__getYmax,
 	          "get mouse maYimum y. ",
 	          "");
 	I_Method1(void, setX, IN, float, x,
+	          Properties::NON_VIRTUAL,
 	          __void__setX__float,
 	          "set current mouse x position. ",
 	          "");
 	I_Method0(float, getX,
+	          Properties::NON_VIRTUAL,
 	          __float__getX,
 	          "get current mouse x position. ",
 	          "");
 	I_Method1(void, setY, IN, float, y,
+	          Properties::NON_VIRTUAL,
 	          __void__setY__float,
 	          "set current mouse y position. ",
 	          "");
 	I_Method0(float, getY,
+	          Properties::NON_VIRTUAL,
 	          __float__getY,
 	          "get current mouse y position. ",
 	          "");
 	I_Method1(void, setButtonMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setButtonMask__unsigned_int,
 	          "set current mouse button state ",
 	          "");
 	I_Method0(unsigned int, getButtonMask,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getButtonMask,
 	          "get current mouse button state ",
 	          "");
 	I_Method1(void, setModKeyMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setModKeyMask__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getModKeyMask,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getModKeyMask,
 	          "",
 	          "");
 	I_Method0(float, getPenPressure,
+	          Properties::NON_VIRTUAL,
 	          __float__getPenPressure,
 	          "get the pressure, from a tablet input device (range 0 - 1) ",
 	          "");
 	I_Method1(void, setPenPressure, IN, float, pressure,
+	          Properties::NON_VIRTUAL,
 	          __void__setPenPressure__float,
 	          "sets the pressure from a tablet ",
 	          "");
 	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType,
+	          Properties::NON_VIRTUAL,
 	          __TabletPointerType__getTabletPointerType,
 	          "get the current used tablet pointer type ",
 	          "");
 	I_Method1(void, setTabletPointerType, IN, osgGA::GUIEventAdapter::TabletPointerType, pt,
+	          Properties::NON_VIRTUAL,
 	          __void__setTabletPointerType__TabletPointerType,
 	          "set the current used tablet pointer type ",
 	          "");
 	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion,
+	          Properties::NON_VIRTUAL,
 	          __void__setScrollingMotion__ScrollingMotion,
 	          "",
 	          "");
 	I_Method0(float, getScrollingDeltaX,
+	          Properties::NON_VIRTUAL,
 	          __float__getScrollingDeltaX,
 	          "get the scrolling x-delta ",
 	          "");
 	I_Method0(float, getScrollingDeltaY,
+	          Properties::NON_VIRTUAL,
 	          __float__getScrollingDeltaY,
 	          "get the scrolling y-delta ",
 	          "");
 	I_Method2(void, setScrollingMotionDelta, IN, float, x, IN, float, y,
+	          Properties::NON_VIRTUAL,
 	          __void__setScrollingMotionDelta__float__float,
 	          "sets the scrolling delta to x,y and the type of scrolling to SCROLL_2D ",
 	          "");
 	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion,
+	          Properties::NON_VIRTUAL,
 	          __ScrollingMotion__getScrollingMotion,
 	          "",
 	          "");
 	I_Method0(float, getXnormalized,
+	          Properties::NON_VIRTUAL,
 	          __float__getXnormalized,
 	          "return the getX() value normalised to the range of -1 to 1. ",
 	          "-1 would be the left hand side of the window. 0.0 would be the middle of the window. +1 would be the right hand side of the window. ");
 	I_Method0(float, getYnormalized,
+	          Properties::NON_VIRTUAL,
 	          __float__getYnormalized,
 	          "return the getY() value normalised to the range of -1 to 1. ",
 	          "-1 would be the bottom of the window. 0.0 would be the middle of the window. +1 would be the top of the window. ");
 	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo,
+	          Properties::NON_VIRTUAL,
 	          __void__setMouseYOrientation__MouseYOrientation,
 	          "",
 	          "");
 	I_Method0(osgGA::GUIEventAdapter::MouseYOrientation, getMouseYOrientation,
+	          Properties::NON_VIRTUAL,
 	          __MouseYOrientation__getMouseYOrientation,
 	          "",
 	          "");

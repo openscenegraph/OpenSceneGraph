@@ -31,50 +31,62 @@ BEGIN_VALUE_REFLECTOR(osg::Vec2s)
 	               "",
 	               "");
 	I_Method0(osg::Vec2s::value_type *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __value_type_P1__ptr,
 	          "",
 	          "");
 	I_Method0(const osg::Vec2s::value_type *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __C5_value_type_P1__ptr,
 	          "",
 	          "");
 	I_Method2(void, set, IN, osg::Vec2s::value_type, x, IN, osg::Vec2s::value_type, y,
+	          Properties::NON_VIRTUAL,
 	          __void__set__value_type__value_type,
 	          "",
 	          "");
 	I_Method1(void, set, IN, const osg::Vec2s &, rhs,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_Vec2s_R1,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type &, x,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__x,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type &, y,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__y,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type, x,
+	          Properties::NON_VIRTUAL,
 	          __value_type__x,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type, y,
+	          Properties::NON_VIRTUAL,
 	          __value_type__y,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type &, r,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__r,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type &, g,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__g,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type, r,
+	          Properties::NON_VIRTUAL,
 	          __value_type__r,
 	          "",
 	          "");
 	I_Method0(osg::Vec2s::value_type, g,
+	          Properties::NON_VIRTUAL,
 	          __value_type__g,
 	          "",
 	          "");

@@ -35,7 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::Sequence::SequenceMode)
 	I_EnumLabel(osg::Sequence::RESUME);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Sequence)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Sequence)
 	I_BaseType(osg::Group);
 	I_Constructor0(____Sequence,
 	               "",
@@ -45,82 +45,102 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "clone an object of the same type as the node. ",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "return a clone of a node, with Object* return type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__traverse__NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
 	I_Method1(void, setValue, IN, int, value,
+	          Properties::NON_VIRTUAL,
 	          __void__setValue__int,
 	          "",
 	          "");
 	I_Method0(int, getValue,
+	          Properties::NON_VIRTUAL,
 	          __int__getValue,
 	          "",
 	          "");
 	I_Method2(void, setTime, IN, int, frame, IN, float, t,
+	          Properties::NON_VIRTUAL,
 	          __void__setTime__int__float,
 	          "Set time in seconds for child. ",
 	          "");
 	I_Method1(float, getTime, IN, int, frame,
+	          Properties::NON_VIRTUAL,
 	          __float__getTime__int,
 	          "Get time for child. ",
 	          "");
 	I_Method1(void, setDefaultTime, IN, float, t,
+	          Properties::NON_VIRTUAL,
 	          __void__setDefaultTime__float,
 	          "Set default time in seconds for new child. ",
 	          "");
 	I_Method0(float, getDefaultTime,
+	          Properties::NON_VIRTUAL,
 	          __float__getDefaultTime,
 	          "Get default time in seconds for new child. ",
 	          "");
 	I_Method0(unsigned int, getNumFrames,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumFrames,
 	          "Get number of frames. ",
 	          "");
 	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end,
+	          Properties::NON_VIRTUAL,
 	          __void__setInterval__LoopMode__int__int,
 	          "Set sequence mode & interval (range of children to be displayed). ",
 	          "");
 	I_Method3(void, getInterval, IN, osg::Sequence::LoopMode &, mode, IN, int &, begin, IN, int &, end,
+	          Properties::NON_VIRTUAL,
 	          __void__getInterval__LoopMode_R1__int_R1__int_R1,
 	          "Get sequence mode & interval. ",
 	          "");
 	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setDuration__float__int,
 	                      "Set duration: speed-up & number of repeats. ",
 	                      "");
 	I_Method2(void, getDuration, IN, float &, speed, IN, int &, nreps,
+	          Properties::NON_VIRTUAL,
 	          __void__getDuration__float_R1__int_R1,
 	          "Get duration & number of repeats. ",
 	          "");
 	I_Method1(void, setMode, IN, osg::Sequence::SequenceMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setMode__SequenceMode,
 	          "Set sequence mode. ",
 	          "Start/stop & pause/resume. ");
 	I_Method0(osg::Sequence::SequenceMode, getMode,
+	          Properties::NON_VIRTUAL,
 	          __SequenceMode__getMode,
 	          "Get sequence mode. ",
 	          "");

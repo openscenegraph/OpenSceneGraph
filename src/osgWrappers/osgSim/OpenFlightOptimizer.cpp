@@ -31,52 +31,58 @@ BEGIN_ENUM_REFLECTOR(osgFlightUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgFlightUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgFlightUtil::Optimizer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer)
 	I_Constructor0(____Optimizer,
 	               "",
 	               "");
 	I_Method1(void, optimize, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
 	          __void__optimize__osg_Node_P1,
 	          "Traverse the node and its subgraph with a series of optimization visitors, specified by the OptimizationOptions. ",
 	          "");
 	I_Method2(void, optimize, IN, osg::Node *, node, IN, unsigned int, options,
+	          Properties::VIRTUAL,
 	          __void__optimize__osg_Node_P1__unsigned_int,
 	          "Traverse the node and its subgraph with a series of optimization visitors, specified by the OptimizationOptions. ",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MakeLitVisitor,
 	               "default to traversing all children. ",
 	               "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
 	               "");
 	I_Method1(void, apply, IN, osg::Group &, group,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
 	I_Method1(void, mergeGeodes, IN, osg::Group &, group,
+	          Properties::NON_VIRTUAL,
 	          __void__mergeGeodes__osg_Group_R1,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____TessellateVisitor,
 	               "default to traversing all children. ",
 	               "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");

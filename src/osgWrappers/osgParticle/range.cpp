@@ -40,18 +40,22 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< float >)
 	               "Construct and initialize min and max directly. ",
 	               "");
 	I_Method2(void, set, IN, const float &, mn, IN, const float &, mx,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_ValueType_R1__C5_ValueType_R1,
 	          "Set min and max. ",
 	          "");
 	I_Method0(float, get_random,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random,
 	          "Get a random value between min and max. ",
 	          "");
 	I_Method0(float, get_random_sqrtf,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random_sqrtf,
 	          "Get a random square root value between min and max. ",
 	          "");
 	I_Method0(float, mid,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__mid,
 	          "",
 	          "");
@@ -68,18 +72,22 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec2 >)
 	               "Construct and initialize min and max directly. ",
 	               "");
 	I_Method2(void, set, IN, const osg::Vec2 &, mn, IN, const osg::Vec2 &, mx,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_ValueType_R1__C5_ValueType_R1,
 	          "Set min and max. ",
 	          "");
 	I_Method0(osg::Vec2, get_random,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random,
 	          "Get a random value between min and max. ",
 	          "");
 	I_Method0(osg::Vec2, get_random_sqrtf,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random_sqrtf,
 	          "Get a random square root value between min and max. ",
 	          "");
 	I_Method0(osg::Vec2, mid,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__mid,
 	          "",
 	          "");
@@ -96,18 +104,22 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec3 >)
 	               "Construct and initialize min and max directly. ",
 	               "");
 	I_Method2(void, set, IN, const osg::Vec3 &, mn, IN, const osg::Vec3 &, mx,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_ValueType_R1__C5_ValueType_R1,
 	          "Set min and max. ",
 	          "");
 	I_Method0(osg::Vec3, get_random,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random,
 	          "Get a random value between min and max. ",
 	          "");
 	I_Method0(osg::Vec3, get_random_sqrtf,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random_sqrtf,
 	          "Get a random square root value between min and max. ",
 	          "");
 	I_Method0(osg::Vec3, mid,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__mid,
 	          "",
 	          "");
@@ -124,18 +136,22 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec4 >)
 	               "Construct and initialize min and max directly. ",
 	               "");
 	I_Method2(void, set, IN, const osg::Vec4 &, mn, IN, const osg::Vec4 &, mx,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_ValueType_R1__C5_ValueType_R1,
 	          "Set min and max. ",
 	          "");
 	I_Method0(osg::Vec4, get_random,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random,
 	          "Get a random value between min and max. ",
 	          "");
 	I_Method0(osg::Vec4, get_random_sqrtf,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__get_random_sqrtf,
 	          "Get a random square root value between min and max. ",
 	          "");
 	I_Method0(osg::Vec4, mid,
+	          Properties::NON_VIRTUAL,
 	          __ValueType__mid,
 	          "",
 	          "");

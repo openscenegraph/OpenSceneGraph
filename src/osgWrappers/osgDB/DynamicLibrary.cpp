@@ -24,21 +24,25 @@ TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::HANDLE);
 
 TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS);
 
-BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	I_BaseType(osg::Referenced);
 	I_Method0(const std::string &, getName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getName,
 	          "return name of library stripped of path. ",
 	          "");
 	I_Method0(const std::string &, getFullName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFullName,
 	          "return name of library including full path to it. ",
 	          "");
 	I_Method0(osgDB::DynamicLibrary::HANDLE, getHandle,
+	          Properties::NON_VIRTUAL,
 	          __HANDLE__getHandle,
 	          "return handle to .dso/.dll dynamic library itself. ",
 	          "");
 	I_Method1(osgDB::DynamicLibrary::PROC_ADDRESS, getProcAddress, IN, const std::string &, procName,
+	          Properties::NON_VIRTUAL,
 	          __PROC_ADDRESS__getProcAddress__C5_std_string_R1,
 	          "return address of function located in library. ",
 	          "");

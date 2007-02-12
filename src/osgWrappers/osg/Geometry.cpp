@@ -38,7 +38,7 @@ BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_EnumLabel(osg::Geometry::BIND_PER_VERTEX);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Geometry)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Geometry)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____Geometry,
 	               "",
@@ -48,494 +48,617 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(osg::Geometry *, asGeometry,
+	          Properties::VIRTUAL,
 	          __Geometry_P1__asGeometry,
 	          "Convert 'this' into a Geometry pointer if Drawable is a Geometry, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<Geometry*>(this). ");
 	I_Method0(const osg::Geometry *, asGeometry,
+	          Properties::VIRTUAL,
 	          __C5_Geometry_P1__asGeometry,
 	          "Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<const Geometry*>(this). ");
 	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
 	          __bool__empty,
 	          "",
 	          "");
 	I_Method1(void, setVertexArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexArray__Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Array *, getVertexArray,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getVertexArray,
 	          "",
 	          "");
 	I_Method0(const osg::Array *, getVertexArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getVertexArray,
 	          "",
 	          "");
 	I_Method1(void, setVertexIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexIndices__IndexArray_P1,
 	          "",
 	          "");
 	I_Method0(osg::IndexArray *, getVertexIndices,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getVertexIndices,
 	          "",
 	          "");
 	I_Method0(const osg::IndexArray *, getVertexIndices,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getVertexIndices,
 	          "",
 	          "");
 	I_Method1(void, setVertexData, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexData__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayData &, getVertexData,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getVertexData,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayData &, getVertexData,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getVertexData,
 	          "",
 	          "");
 	I_Method1(void, setNormalBinding, IN, osg::Geometry::AttributeBinding, ab,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormalBinding__AttributeBinding,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::AttributeBinding, getNormalBinding,
+	          Properties::NON_VIRTUAL,
 	          __AttributeBinding__getNormalBinding,
 	          "",
 	          "");
 	I_Method1(void, setNormalArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormalArray__Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Array *, getNormalArray,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getNormalArray,
 	          "",
 	          "");
 	I_Method0(const osg::Array *, getNormalArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getNormalArray,
 	          "",
 	          "");
 	I_Method1(void, setNormalIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormalIndices__IndexArray_P1,
 	          "",
 	          "");
 	I_Method0(osg::IndexArray *, getNormalIndices,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getNormalIndices,
 	          "",
 	          "");
 	I_Method0(const osg::IndexArray *, getNormalIndices,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getNormalIndices,
 	          "",
 	          "");
 	I_Method1(void, setNormalData, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormalData__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayData &, getNormalData,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getNormalData,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayData &, getNormalData,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getNormalData,
 	          "",
 	          "");
 	I_Method1(void, setColorBinding, IN, osg::Geometry::AttributeBinding, ab,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorBinding__AttributeBinding,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::AttributeBinding, getColorBinding,
+	          Properties::NON_VIRTUAL,
 	          __AttributeBinding__getColorBinding,
 	          "",
 	          "");
 	I_Method1(void, setColorArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorArray__Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Array *, getColorArray,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getColorArray,
 	          "",
 	          "");
 	I_Method0(const osg::Array *, getColorArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getColorArray,
 	          "",
 	          "");
 	I_Method1(void, setColorIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorIndices__IndexArray_P1,
 	          "",
 	          "");
 	I_Method0(osg::IndexArray *, getColorIndices,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getColorIndices,
 	          "",
 	          "");
 	I_Method0(const osg::IndexArray *, getColorIndices,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getColorIndices,
 	          "",
 	          "");
 	I_Method1(void, setColorData, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorData__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayData &, getColorData,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getColorData,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayData &, getColorData,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getColorData,
 	          "",
 	          "");
 	I_Method1(void, setSecondaryColorBinding, IN, osg::Geometry::AttributeBinding, ab,
+	          Properties::NON_VIRTUAL,
 	          __void__setSecondaryColorBinding__AttributeBinding,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::AttributeBinding, getSecondaryColorBinding,
+	          Properties::NON_VIRTUAL,
 	          __AttributeBinding__getSecondaryColorBinding,
 	          "",
 	          "");
 	I_Method1(void, setSecondaryColorArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setSecondaryColorArray__Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Array *, getSecondaryColorArray,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getSecondaryColorArray,
 	          "",
 	          "");
 	I_Method0(const osg::Array *, getSecondaryColorArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getSecondaryColorArray,
 	          "",
 	          "");
 	I_Method1(void, setSecondaryColorIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setSecondaryColorIndices__IndexArray_P1,
 	          "",
 	          "");
 	I_Method0(osg::IndexArray *, getSecondaryColorIndices,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getSecondaryColorIndices,
 	          "",
 	          "");
 	I_Method0(const osg::IndexArray *, getSecondaryColorIndices,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getSecondaryColorIndices,
 	          "",
 	          "");
 	I_Method1(void, setSecondaryColorData, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setSecondaryColorData__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayData &, getSecondaryColorData,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getSecondaryColorData,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayData &, getSecondaryColorData,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getSecondaryColorData,
 	          "",
 	          "");
 	I_Method1(void, setFogCoordBinding, IN, osg::Geometry::AttributeBinding, ab,
+	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordBinding__AttributeBinding,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::AttributeBinding, getFogCoordBinding,
+	          Properties::NON_VIRTUAL,
 	          __AttributeBinding__getFogCoordBinding,
 	          "",
 	          "");
 	I_Method1(void, setFogCoordArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordArray__Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Array *, getFogCoordArray,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getFogCoordArray,
 	          "",
 	          "");
 	I_Method0(const osg::Array *, getFogCoordArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getFogCoordArray,
 	          "",
 	          "");
 	I_Method1(void, setFogCoordIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordIndices__IndexArray_P1,
 	          "",
 	          "");
 	I_Method0(osg::IndexArray *, getFogCoordIndices,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getFogCoordIndices,
 	          "",
 	          "");
 	I_Method0(const osg::IndexArray *, getFogCoordIndices,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getFogCoordIndices,
 	          "",
 	          "");
 	I_Method1(void, setFogCoordData, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordData__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayData &, getFogCoordData,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getFogCoordData,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayData &, getFogCoordData,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getFogCoordData,
 	          "",
 	          "");
 	I_Method2(void, setTexCoordArray, IN, unsigned int, unit, IN, osg::Array *, x,
+	          Properties::NON_VIRTUAL,
 	          __void__setTexCoordArray__unsigned_int__Array_P1,
 	          "",
 	          "");
 	I_Method1(osg::Array *, getTexCoordArray, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getTexCoordArray__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Array *, getTexCoordArray, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getTexCoordArray__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setTexCoordIndices, IN, unsigned int, unit, IN, osg::IndexArray *, x,
+	          Properties::NON_VIRTUAL,
 	          __void__setTexCoordIndices__unsigned_int__IndexArray_P1,
 	          "",
 	          "");
 	I_Method1(osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getTexCoordIndices__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getTexCoordIndices__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setTexCoordData, IN, unsigned int, index, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setTexCoordData__unsigned_int__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method1(osg::Geometry::ArrayData &, getTexCoordData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getTexCoordData__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Geometry::ArrayData &, getTexCoordData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getTexCoordData__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumTexCoordArrays,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumTexCoordArrays,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayList &, getTexCoordArrayList,
+	          Properties::NON_VIRTUAL,
 	          __ArrayList_R1__getTexCoordArrayList,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayList &, getTexCoordArrayList,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayList_R1__getTexCoordArrayList,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribArray, IN, unsigned int, index, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexAttribArray__unsigned_int__Array_P1,
 	          "",
 	          "");
 	I_Method1(osg::Array *, getVertexAttribArray, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __Array_P1__getVertexAttribArray__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Array *, getVertexAttribArray, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getVertexAttribArray__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribIndices, IN, unsigned int, index, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexAttribIndices__unsigned_int__IndexArray_P1,
 	          "",
 	          "");
 	I_Method1(osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __IndexArray_P1__getVertexAttribIndices__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __C5_IndexArray_P1__getVertexAttribIndices__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribBinding, IN, unsigned int, index, IN, osg::Geometry::AttributeBinding, ab,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexAttribBinding__unsigned_int__AttributeBinding,
 	          "",
 	          "");
 	I_Method1(osg::Geometry::AttributeBinding, getVertexAttribBinding, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __AttributeBinding__getVertexAttribBinding__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribNormalize, IN, unsigned int, index, IN, GLboolean, norm,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexAttribNormalize__unsigned_int__GLboolean,
 	          "",
 	          "");
 	I_Method1(GLboolean, getVertexAttribNormalize, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __GLboolean__getVertexAttribNormalize__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribData, IN, unsigned int, index, IN, const osg::Geometry::ArrayData &, arrayData,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertexAttribData__unsigned_int__C5_ArrayData_R1,
 	          "",
 	          "");
 	I_Method1(osg::Geometry::ArrayData &, getVertexAttribData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __ArrayData_R1__getVertexAttribData__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Geometry::ArrayData &, getVertexAttribData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayData_R1__getVertexAttribData__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumVertexAttribArrays,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumVertexAttribArrays,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::ArrayList &, getVertexAttribArrayList,
+	          Properties::NON_VIRTUAL,
 	          __ArrayList_R1__getVertexAttribArrayList,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::ArrayList &, getVertexAttribArrayList,
+	          Properties::NON_VIRTUAL,
 	          __C5_ArrayList_R1__getVertexAttribArrayList,
 	          "",
 	          "");
 	I_Method1(void, setPrimitiveSetList, IN, const osg::Geometry::PrimitiveSetList &, primitives,
+	          Properties::NON_VIRTUAL,
 	          __void__setPrimitiveSetList__C5_PrimitiveSetList_R1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry::PrimitiveSetList &, getPrimitiveSetList,
+	          Properties::NON_VIRTUAL,
 	          __PrimitiveSetList_R1__getPrimitiveSetList,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry::PrimitiveSetList &, getPrimitiveSetList,
+	          Properties::NON_VIRTUAL,
 	          __C5_PrimitiveSetList_R1__getPrimitiveSetList,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumPrimitiveSets,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumPrimitiveSets,
 	          "",
 	          "");
 	I_Method1(osg::PrimitiveSet *, getPrimitiveSet, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
 	          __PrimitiveSet_P1__getPrimitiveSet__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::PrimitiveSet *, getPrimitiveSet, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
 	          __C5_PrimitiveSet_P1__getPrimitiveSet__unsigned_int,
 	          "",
 	          "");
 	I_Method1(bool, addPrimitiveSet, IN, osg::PrimitiveSet *, primitiveset,
+	          Properties::NON_VIRTUAL,
 	          __bool__addPrimitiveSet__PrimitiveSet_P1,
 	          "Add a primitive set to the geometry. ",
 	          "");
 	I_Method2(bool, setPrimitiveSet, IN, unsigned int, i, IN, osg::PrimitiveSet *, primitiveset,
+	          Properties::NON_VIRTUAL,
 	          __bool__setPrimitiveSet__unsigned_int__PrimitiveSet_P1,
 	          "Set a primitive set to the specified position in geometry's primitive set list. ",
 	          "");
 	I_Method2(bool, insertPrimitiveSet, IN, unsigned int, i, IN, osg::PrimitiveSet *, primitiveset,
+	          Properties::NON_VIRTUAL,
 	          __bool__insertPrimitiveSet__unsigned_int__PrimitiveSet_P1,
 	          "Insert a primitive set to the specified position in geometry's primitive set list. ",
 	          "");
 	I_MethodWithDefaults2(bool, removePrimitiveSet, IN, unsigned int, i, , IN, unsigned int, numElementsToRemove, 1,
+	                      Properties::NON_VIRTUAL,
 	                      __bool__removePrimitiveSet__unsigned_int__unsigned_int,
 	                      "Remove primitive set(s) from the specified position in geometry's primitive set list. ",
 	                      "");
 	I_Method1(unsigned int, getPrimitiveSetIndex, IN, const osg::PrimitiveSet *, primitiveset,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPrimitiveSetIndex__C5_PrimitiveSet_P1,
 	          "Get the index number of a primitive set, return a value between 0 and getNumPrimitiveSet()-1 if found, if not found then return getNumPrimitiveSet(). ",
 	          "When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet())");
 	I_Method1(void, setFastPathHint, IN, bool, on,
+	          Properties::NON_VIRTUAL,
 	          __void__setFastPathHint__bool,
 	          "Set whether fast paths should be used when supported. ",
 	          "");
 	I_Method0(bool, getFastPathHint,
+	          Properties::NON_VIRTUAL,
 	          __bool__getFastPathHint,
 	          "Get whether fast paths should be used when supported. ",
 	          "");
 	I_Method0(bool, areFastPathsUsed,
+	          Properties::NON_VIRTUAL,
 	          __bool__areFastPathsUsed,
 	          "Return true if OpenGL fast paths will be used with drawing this Geometry. ",
 	          "Fast paths use vertex arrays, and glDrawArrays/glDrawElements. Slow paths use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed arrays will drop the rendering path off the fast path.");
 	I_Method0(bool, computeFastPathsUsed,
+	          Properties::NON_VIRTUAL,
 	          __bool__computeFastPathsUsed,
 	          "",
 	          "");
 	I_Method0(bool, verifyBindings,
+	          Properties::NON_VIRTUAL,
 	          __bool__verifyBindings,
 	          "",
 	          "");
 	I_Method0(void, computeCorrectBindingsAndArraySizes,
+	          Properties::NON_VIRTUAL,
 	          __void__computeCorrectBindingsAndArraySizes,
 	          "",
 	          "");
 	I_Method0(bool, suitableForOptimization,
+	          Properties::NON_VIRTUAL,
 	          __bool__suitableForOptimization,
 	          "",
 	          "");
 	I_Method1(void, copyToAndOptimize, IN, osg::Geometry &, target,
+	          Properties::NON_VIRTUAL,
 	          __void__copyToAndOptimize__Geometry_R1,
 	          "",
 	          "");
 	I_Method0(void, computeInternalOptimizedGeometry,
+	          Properties::NON_VIRTUAL,
 	          __void__computeInternalOptimizedGeometry,
 	          "",
 	          "");
 	I_Method0(void, removeInternalOptimizedGeometry,
+	          Properties::NON_VIRTUAL,
 	          __void__removeInternalOptimizedGeometry,
 	          "",
 	          "");
 	I_Method1(void, setInternalOptimizedGeometry, IN, osg::Geometry *, geometry,
+	          Properties::NON_VIRTUAL,
 	          __void__setInternalOptimizedGeometry__osg_Geometry_P1,
 	          "",
 	          "");
 	I_Method0(osg::Geometry *, getInternalOptimizedGeometry,
+	          Properties::NON_VIRTUAL,
 	          __osg_Geometry_P1__getInternalOptimizedGeometry,
 	          "",
 	          "");
 	I_Method0(const osg::Geometry *, getInternalOptimizedGeometry,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Geometry_P1__getInternalOptimizedGeometry,
 	          "",
 	          "");
 	I_Method0(unsigned int, getGLObjectSizeHint,
+	          Properties::VIRTUAL,
 	          __unsigned_int__getGLObjectSizeHint,
 	          "Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable. ",
 	          "This size is used a hint for reuse of deleteed display lists/vertex buffer objects. ");
 	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	          Properties::VIRTUAL,
 	          __void__drawImplementation__State_R1,
 	          "Draw Geometry directly ignoring an OpenGL display list which could be attached. ",
 	          "This is the internal draw method which does the drawing itself, and is the method to override when deriving from Geometry for user-drawn objects.");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_AttributeFunctor_R1,
 	          "Return true, osg::Geometry does support accept(AttributeFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, af,
+	          Properties::VIRTUAL,
 	          __void__accept__AttributeFunctor_R1,
 	          "Accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_ConstAttributeFunctor_R1,
 	          "Return true, osg::Geometry does support accept(ConstAttributeFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
+	          Properties::VIRTUAL,
 	          __void__accept__ConstAttributeFunctor_R1,
 	          "Accept a ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_PrimitiveFunctor_R1,
 	          "Return true, osg::Geometry does support accept(PrimitiveFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf,
+	          Properties::VIRTUAL,
 	          __void__accept__PrimitiveFunctor_R1,
 	          "Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_PrimitiveIndexFunctor_R1,
 	          "Return true, osg::Geometry does support accept(PrimitiveIndexFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, pf,
+	          Properties::VIRTUAL,
 	          __void__accept__PrimitiveIndexFunctor_R1,
 	          "Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. ",
 	          "");
@@ -696,6 +819,7 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
 	                           "",
 	                           "");
 	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
 	          __bool__empty,
 	          "",
 	          "");
@@ -723,6 +847,7 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
 	                           "",
 	                           "");
 	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
 	          __bool__empty,
 	          "",
 	          "");
@@ -738,26 +863,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
 	               "",
 	               "");
 	I_Constructor1(IN, osg::PrimitiveSet *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osg::PrimitiveSet > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osg::PrimitiveSet *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osg::PrimitiveSet *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osg::PrimitiveSet > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

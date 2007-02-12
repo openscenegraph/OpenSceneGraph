@@ -32,6 +32,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Polytope >, osg::ShadowVolumeOccluder::HoleLis
 
 BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)
 	I_Constructor1(IN, const osg::ShadowVolumeOccluder &, svo,
+	               Properties::NON_EXPLICIT,
 	               ____ShadowVolumeOccluder__C5_ShadowVolumeOccluder_R1,
 	               "",
 	               "");
@@ -39,70 +40,87 @@ BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)
 	               "",
 	               "");
 	I_MethodWithDefaults4(bool, computeOccluder, IN, const osg::NodePath &, nodePath, , IN, const osg::ConvexPlanarOccluder &, occluder, , IN, osg::CullStack &, cullStack, , IN, bool, createDrawables, false,
+	                      Properties::NON_VIRTUAL,
 	                      __bool__computeOccluder__C5_NodePath_R1__C5_ConvexPlanarOccluder_R1__CullStack_R1__bool,
 	                      "compute the shadow volume occluder. ",
 	                      "");
 	I_Method0(void, disableResultMasks,
+	          Properties::NON_VIRTUAL,
 	          __void__disableResultMasks,
 	          "",
 	          "");
 	I_Method0(void, pushCurrentMask,
+	          Properties::NON_VIRTUAL,
 	          __void__pushCurrentMask,
 	          "",
 	          "");
 	I_Method0(void, popCurrentMask,
+	          Properties::NON_VIRTUAL,
 	          __void__popCurrentMask,
 	          "",
 	          "");
 	I_Method1(bool, matchProjectionMatrix, IN, const osg::Matrix &, matrix,
+	          Properties::NON_VIRTUAL,
 	          __bool__matchProjectionMatrix__C5_osg_Matrix_R1,
 	          "return true if the matrix passed in matches the projection matrix that this ShadowVolumeOccluder is associated with. ",
 	          "");
 	I_Method1(void, setNodePath, IN, osg::NodePath &, nodePath,
+	          Properties::NON_VIRTUAL,
 	          __void__setNodePath__NodePath_R1,
 	          "Set the NodePath which describes which node in the scene graph that this occluder is attached to. ",
 	          "");
 	I_Method0(osg::NodePath &, getNodePath,
+	          Properties::NON_VIRTUAL,
 	          __NodePath_R1__getNodePath,
 	          "",
 	          "");
 	I_Method0(const osg::NodePath &, getNodePath,
+	          Properties::NON_VIRTUAL,
 	          __C5_NodePath_R1__getNodePath,
 	          "",
 	          "");
 	I_Method0(float, getVolume,
+	          Properties::NON_VIRTUAL,
 	          __float__getVolume,
 	          "get the volume of the occluder minus its holes, in eye coords, the volume is normalized by dividing by the volume of the view frustum in eye coords. ",
 	          "");
 	I_Method0(osg::Polytope &, getOccluder,
+	          Properties::NON_VIRTUAL,
 	          __Polytope_R1__getOccluder,
 	          "return the occluder polytope. ",
 	          "");
 	I_Method0(const osg::Polytope &, getOccluder,
+	          Properties::NON_VIRTUAL,
 	          __C5_Polytope_R1__getOccluder,
 	          "return the const occluder polytope. ",
 	          "");
 	I_Method0(osg::ShadowVolumeOccluder::HoleList &, getHoleList,
+	          Properties::NON_VIRTUAL,
 	          __HoleList_R1__getHoleList,
 	          "return the list of holes. ",
 	          "");
 	I_Method0(const osg::ShadowVolumeOccluder::HoleList &, getHoleList,
+	          Properties::NON_VIRTUAL,
 	          __C5_HoleList_R1__getHoleList,
 	          "return the const list of holes. ",
 	          "");
 	I_Method1(bool, contains, IN, const std::vector< osg::Vec3 > &, vertices,
+	          Properties::NON_VIRTUAL,
 	          __bool__contains__C5_std_vectorT1_Vec3__R1,
 	          "return true if the specified vertex list is contained entirely within this shadow occluder volume. ",
 	          "");
 	I_Method1(bool, contains, IN, const osg::BoundingSphere &, bound,
+	          Properties::NON_VIRTUAL,
 	          __bool__contains__C5_BoundingSphere_R1,
 	          "return true if the specified bounding sphere is contained entirely within this shadow occluder volume. ",
 	          "");
 	I_Method1(bool, contains, IN, const osg::BoundingBox &, bound,
+	          Properties::NON_VIRTUAL,
 	          __bool__contains__C5_BoundingBox_R1,
 	          "return true if the specified bounding box is contained entirely within this shadow occluder volume. ",
 	          "");
 	I_Method1(void, transformProvidingInverse, IN, const osg::Matrix &, matrix,
+	          Properties::NON_VIRTUAL,
 	          __void__transformProvidingInverse__C5_osg_Matrix_R1,
 	          "",
 	          "");

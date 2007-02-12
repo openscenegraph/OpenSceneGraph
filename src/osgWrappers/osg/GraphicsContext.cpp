@@ -32,190 +32,237 @@ TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras);
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_BaseType(osg::Object);
 	I_Method1(void, add, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
 	          __void__add__Operation_P1,
 	          "Add operation to end of OperationQueue. ",
 	          "");
 	I_Method1(void, remove, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
 	          __void__remove__Operation_P1,
 	          "Remove operation from OperationQueue. ",
 	          "");
 	I_Method1(void, remove, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
 	          __void__remove__C5_std_string_R1,
 	          "Remove named operation from OperationQueue. ",
 	          "");
 	I_Method0(void, removeAllOperations,
+	          Properties::NON_VIRTUAL,
 	          __void__removeAllOperations,
 	          "Remove all operations from OperationQueue. ",
 	          "");
 	I_Method0(void, runOperations,
+	          Properties::NON_VIRTUAL,
 	          __void__runOperations,
 	          "Run the operations. ",
 	          "");
 	I_Method0(osg::GraphicsContext::OperationQueue &, getOperationsQueue,
+	          Properties::NON_VIRTUAL,
 	          __OperationQueue_R1__getOperationsQueue,
 	          "Get the operations queue, not you must use the OperationsMutex when accessing the queue. ",
 	          "");
 	I_Method0(OpenThreads::Mutex *, getOperationsMutex,
+	          Properties::NON_VIRTUAL,
 	          __OpenThreads_Mutex_P1__getOperationsMutex,
 	          "Get the operations queue mutex. ",
 	          "");
 	I_Method0(osg::Block *, getOperationsBlock,
+	          Properties::NON_VIRTUAL,
 	          __osg_Block_P1__getOperationsBlock,
 	          "Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block. ",
 	          "");
 	I_Method0(osg::Operation *, getCurrentOperation,
+	          Properties::NON_VIRTUAL,
 	          __Operation_P1__getCurrentOperation,
 	          "Get the current operations that is being run. ",
 	          "");
 	I_Method0(const osg::GraphicsContext::Traits *, getTraits,
+	          Properties::NON_VIRTUAL,
 	          __C5_Traits_P1__getTraits,
 	          "Get the traits of the GraphicsContext. ",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::PURE_VIRTUAL,
 	          __bool__valid,
 	          "Return whether a valid and usable GraphicsContext has been created. ",
 	          "");
 	I_Method1(void, setState, IN, osg::State *, state,
+	          Properties::NON_VIRTUAL,
 	          __void__setState__State_P1,
 	          "Set the State object which tracks the current OpenGL state for this graphics context. ",
 	          "");
 	I_Method0(osg::State *, getState,
+	          Properties::NON_VIRTUAL,
 	          __State_P1__getState,
 	          "Get the State object which tracks the current OpenGL state for this graphics context. ",
 	          "");
 	I_Method0(const osg::State *, getState,
+	          Properties::NON_VIRTUAL,
 	          __C5_State_P1__getState,
 	          "Get the const State object which tracks the current OpenGL state for this graphics context. ",
 	          "");
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearColor__C5_Vec4_R1,
 	          "Sets the clear color. ",
 	          "");
 	I_Method0(const osg::Vec4 &, getClearColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_Vec4_R1__getClearColor,
 	          "Returns the clear color. ",
 	          "");
 	I_Method1(void, setClearMask, IN, GLbitfield, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearMask__GLbitfield,
 	          "Set the clear mask used in glClear(. ",
 	          ".). Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. ");
 	I_Method0(GLbitfield, getClearMask,
+	          Properties::NON_VIRTUAL,
 	          __GLbitfield__getClearMask,
 	          "Get the clear mask. ",
 	          "");
 	I_Method0(void, clear,
+	          Properties::VIRTUAL,
 	          __void__clear,
 	          "Do an OpenGL clear of the full graphics context/window. ",
 	          "Note, must only be called from a thread with this context current. ");
 	I_Method0(bool, realize,
+	          Properties::NON_VIRTUAL,
 	          __bool__realize,
 	          "Realise the GraphicsContext. ",
 	          "");
 	I_MethodWithDefaults1(void, close, IN, bool, callCloseImplementation, true,
+	                      Properties::NON_VIRTUAL,
 	                      __void__close__bool,
 	                      "close the graphics context. ",
 	                      "close(bool) stops any associated graphics threads, releases the contextID for the GraphicsContext then optional calls closeImplementation() to do the actual deletion of the graphics. This call is made optional as there are times when the graphics context has already been deleted externally and only the OSG side of the its data need to be closed down. ");
 	I_Method0(void, swapBuffers,
+	          Properties::NON_VIRTUAL,
 	          __void__swapBuffers,
 	          "swap the front and back buffers. ",
 	          "");
 	I_Method0(bool, isRealized,
+	          Properties::NON_VIRTUAL,
 	          __bool__isRealized,
 	          "Return true if the graphics context has been realised and is ready to use. ",
 	          "");
 	I_Method0(bool, makeCurrent,
+	          Properties::NON_VIRTUAL,
 	          __bool__makeCurrent,
 	          "Make this graphics context current. ",
 	          "Implementated by calling makeCurrentImplementation(). Returns true on success. ");
 	I_Method1(bool, makeContextCurrent, IN, osg::GraphicsContext *, readContext,
+	          Properties::NON_VIRTUAL,
 	          __bool__makeContextCurrent__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context. ",
 	          "Implementated by calling makeContextCurrentImplementation(). Returns true on success. ");
 	I_Method0(bool, releaseContext,
+	          Properties::NON_VIRTUAL,
 	          __bool__releaseContext,
 	          "Release the graphics context. ",
 	          "Returns true on success. ");
 	I_Method0(bool, isCurrent,
+	          Properties::NON_VIRTUAL,
 	          __bool__isCurrent,
 	          "Return true if the current thread has this OpenGL graphics context. ",
 	          "");
 	I_Method1(void, bindPBufferToTexture, IN, GLenum, buffer,
+	          Properties::NON_VIRTUAL,
 	          __void__bindPBufferToTexture__GLenum,
 	          "Bind the graphics context to associated texture. ",
 	          "");
 	I_Method0(void, createGraphicsThread,
+	          Properties::NON_VIRTUAL,
 	          __void__createGraphicsThread,
 	          "Create a graphics thread to the graphics context, so that the thread handles all OpenGL operations. ",
 	          "");
 	I_Method1(void, setGraphicsThread, IN, osg::OperationsThread *, gt,
+	          Properties::NON_VIRTUAL,
 	          __void__setGraphicsThread__OperationsThread_P1,
 	          "Assign a graphics thread to the graphics context, so that the thread handles all OpenGL operations. ",
 	          "");
 	I_Method0(osg::OperationsThread *, getGraphicsThread,
+	          Properties::NON_VIRTUAL,
 	          __OperationsThread_P1__getGraphicsThread,
 	          "Get the graphics thread assigned the graphics context. ",
 	          "");
 	I_Method0(const osg::OperationsThread *, getGraphicsThread,
+	          Properties::NON_VIRTUAL,
 	          __C5_OperationsThread_P1__getGraphicsThread,
 	          "Get the const graphics thread assigned the graphics context. ",
 	          "");
 	I_Method0(bool, realizeImplementation,
+	          Properties::PURE_VIRTUAL,
 	          __bool__realizeImplementation,
 	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
 	          "");
 	I_Method0(bool, isRealizedImplementation,
+	          Properties::PURE_VIRTUAL,
 	          __bool__isRealizedImplementation,
 	          "Return true if the graphics context has been realised, and is ready to use, implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
 	I_Method0(void, closeImplementation,
+	          Properties::PURE_VIRTUAL,
 	          __void__closeImplementation,
 	          "Close the graphics context implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
 	I_Method0(bool, makeCurrentImplementation,
+	          Properties::PURE_VIRTUAL,
 	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
 	I_Method1(bool, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
+	          Properties::PURE_VIRTUAL,
 	          __bool__makeContextCurrentImplementation__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
 	I_Method0(bool, releaseContextImplementation,
+	          Properties::PURE_VIRTUAL,
 	          __bool__releaseContextImplementation,
 	          "Release the graphics context implementation. ",
 	          "");
 	I_Method1(void, bindPBufferToTextureImplementation, IN, GLenum, buffer,
+	          Properties::PURE_VIRTUAL,
 	          __void__bindPBufferToTextureImplementation__GLenum,
 	          "Pure virtual, Bind the graphics context to associated texture implementation. ",
 	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
 	I_Method0(void, swapBuffersImplementation,
+	          Properties::PURE_VIRTUAL,
 	          __void__swapBuffersImplementation,
 	          "Swap the front and back buffers implementation. ",
 	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
 	I_Method4(void, resized, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::NON_VIRTUAL,
 	          __void__resized__int__int__int__int,
 	          "resized method should be called when the underlying window has been resized and the GraphicsWindow and associated Cameras must be updated to keep in sync with the new size. ",
 	          "");
 	I_Method1(void, setResizedCallback, IN, osg::GraphicsContext::ResizedCallback *, rc,
+	          Properties::NON_VIRTUAL,
 	          __void__setResizedCallback__ResizedCallback_P1,
 	          "Set the resized callback which overrides the GraphicsConext::realizedImplementation(), allow developers to provide custom behavior in response to a window being resized. ",
 	          "");
 	I_Method0(osg::GraphicsContext::ResizedCallback *, getResizedCallback,
+	          Properties::NON_VIRTUAL,
 	          __ResizedCallback_P1__getResizedCallback,
 	          "Get the resized callback which overrides the GraphicsConext::realizedImplementation(). ",
 	          "");
 	I_Method0(const osg::GraphicsContext::ResizedCallback *, getResizedCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_ResizedCallback_P1__getResizedCallback,
 	          "Get the const resized callback which overrides the GraphicsConext::realizedImplementation(). ",
 	          "");
 	I_Method4(void, resizedImplementation, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::VIRTUAL,
 	          __void__resizedImplementation__int__int__int__int,
 	          "resized implementation, by default resizes the viewports and aspect ratios the cameras associated with the graphics Window. ",
 	          "");
 	I_Method0(osg::GraphicsContext::Cameras &, getCameras,
+	          Properties::NON_VIRTUAL,
 	          __Cameras_R1__getCameras,
 	          "Get the the list of cameras associated with this graphics context. ",
 	          "");
 	I_Method0(const osg::GraphicsContext::Cameras &, getCameras,
+	          Properties::NON_VIRTUAL,
 	          __C5_Cameras_R1__getCameras,
 	          "Get the the const list of cameras associated with this graphics context. ",
 	          "");
@@ -284,6 +331,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::ResizedCallback)
 	               "",
 	               "");
 	I_Method5(void, resizedImplementation, IN, osg::GraphicsContext *, gc, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::PURE_VIRTUAL,
 	          __void__resizedImplementation__GraphicsContext_P1__int__int__int__int,
 	          "",
 	          "");
@@ -294,6 +342,7 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	               "",
 	               "");
 	I_Constructor1(IN, unsigned int, in_screenNum,
+	               Properties::NON_EXPLICIT,
 	               ____ScreenIdentifier__unsigned_int,
 	               "",
 	               "");
@@ -302,6 +351,7 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	               "",
 	               "");
 	I_Method0(std::string, displayName,
+	          Properties::NON_VIRTUAL,
 	          __std_string__displayName,
 	          "",
 	          "");
@@ -310,7 +360,7 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	I_PublicMemberProperty(unsigned int, screenNum);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osg::GraphicsContext::ScreenIdentifier);
 	I_Constructor0(____Traits,
@@ -349,22 +399,27 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
 	               "",
 	               "");
 	I_MethodWithDefaults1(unsigned int, getNumScreens, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, osg::GraphicsContext::ScreenIdentifier(),
+	                      Properties::PURE_VIRTUAL,
 	                      __unsigned_int__getNumScreens__C5_ScreenIdentifier_R1,
 	                      "",
 	                      "");
 	I_Method3(void, getScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, unsigned int &, width, IN, unsigned int &, height,
+	          Properties::PURE_VIRTUAL,
 	          __void__getScreenResolution__C5_ScreenIdentifier_R1__unsigned_int_R1__unsigned_int_R1,
 	          "",
 	          "");
 	I_Method3(bool, setScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, unsigned, int, IN, unsigned, int,
+	          Properties::VIRTUAL,
 	          __bool__setScreenResolution__C5_ScreenIdentifier_R1__unsigned__unsigned,
 	          "",
 	          "");
 	I_Method2(bool, setScreenRefreshRate, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, double, x,
+	          Properties::VIRTUAL,
 	          __bool__setScreenRefreshRate__C5_ScreenIdentifier_R1__double,
 	          "",
 	          "");
 	I_Method1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
+	          Properties::PURE_VIRTUAL,
 	          __GraphicsContext_P1__createGraphicsContext__Traits_P1,
 	          "",
 	          "");
@@ -375,26 +430,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Operation >)
 	               "",
 	               "");
 	I_Constructor1(IN, osg::Operation *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osg::Operation > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osg::Operation *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osg::Operation *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osg::Operation > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

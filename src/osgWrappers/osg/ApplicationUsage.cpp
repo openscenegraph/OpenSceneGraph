@@ -28,108 +28,133 @@ BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_EnumLabel(osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ApplicationUsage)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ApplicationUsage,
 	               "",
 	               "");
 	I_Constructor1(IN, const std::string &, commandLineUsage,
+	               Properties::NON_EXPLICIT,
 	               ____ApplicationUsage__C5_std_string_R1,
 	               "",
 	               "");
 	I_Method1(void, setApplicationName, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
 	          __void__setApplicationName__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getApplicationName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getApplicationName,
 	          "",
 	          "");
 	I_Method1(void, setDescription, IN, const std::string &, desc,
+	          Properties::NON_VIRTUAL,
 	          __void__setDescription__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getDescription,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getDescription,
 	          "",
 	          "");
 	I_Method3(void, addUsageExplanation, IN, osg::ApplicationUsage::Type, type, IN, const std::string &, option, IN, const std::string &, explanation,
+	          Properties::NON_VIRTUAL,
 	          __void__addUsageExplanation__Type__C5_std_string_R1__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, setCommandLineUsage, IN, const std::string &, explanation,
+	          Properties::NON_VIRTUAL,
 	          __void__setCommandLineUsage__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getCommandLineUsage,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getCommandLineUsage,
 	          "",
 	          "");
 	I_MethodWithDefaults3(void, addCommandLineOption, IN, const std::string &, option, , IN, const std::string &, explanation, , IN, const std::string &, defaultValue, "",
+	                      Properties::NON_VIRTUAL,
 	                      __void__addCommandLineOption__C5_std_string_R1__C5_std_string_R1__C5_std_string_R1,
 	                      "",
 	                      "");
 	I_Method1(void, setCommandLineOptions, IN, const osg::ApplicationUsage::UsageMap &, usageMap,
+	          Properties::NON_VIRTUAL,
 	          __void__setCommandLineOptions__C5_UsageMap_R1,
 	          "",
 	          "");
 	I_Method0(const osg::ApplicationUsage::UsageMap &, getCommandLineOptions,
+	          Properties::NON_VIRTUAL,
 	          __C5_UsageMap_R1__getCommandLineOptions,
 	          "",
 	          "");
 	I_Method1(void, setCommandLineOptionsDefaults, IN, const osg::ApplicationUsage::UsageMap &, usageMap,
+	          Properties::NON_VIRTUAL,
 	          __void__setCommandLineOptionsDefaults__C5_UsageMap_R1,
 	          "",
 	          "");
 	I_Method0(const osg::ApplicationUsage::UsageMap &, getCommandLineOptionsDefaults,
+	          Properties::NON_VIRTUAL,
 	          __C5_UsageMap_R1__getCommandLineOptionsDefaults,
 	          "",
 	          "");
 	I_MethodWithDefaults3(void, addEnvironmentalVariable, IN, const std::string &, option, , IN, const std::string &, explanation, , IN, const std::string &, defaultValue, "",
+	                      Properties::NON_VIRTUAL,
 	                      __void__addEnvironmentalVariable__C5_std_string_R1__C5_std_string_R1__C5_std_string_R1,
 	                      "",
 	                      "");
 	I_Method1(void, setEnvironmentalVariables, IN, const osg::ApplicationUsage::UsageMap &, usageMap,
+	          Properties::NON_VIRTUAL,
 	          __void__setEnvironmentalVariables__C5_UsageMap_R1,
 	          "",
 	          "");
 	I_Method0(const osg::ApplicationUsage::UsageMap &, getEnvironmentalVariables,
+	          Properties::NON_VIRTUAL,
 	          __C5_UsageMap_R1__getEnvironmentalVariables,
 	          "",
 	          "");
 	I_Method1(void, setEnvironmentalVariablesDefaults, IN, const osg::ApplicationUsage::UsageMap &, usageMap,
+	          Properties::NON_VIRTUAL,
 	          __void__setEnvironmentalVariablesDefaults__C5_UsageMap_R1,
 	          "",
 	          "");
 	I_Method0(const osg::ApplicationUsage::UsageMap &, getEnvironmentalVariablesDefaults,
+	          Properties::NON_VIRTUAL,
 	          __C5_UsageMap_R1__getEnvironmentalVariablesDefaults,
 	          "",
 	          "");
 	I_Method2(void, addKeyboardMouseBinding, IN, const std::string &, option, IN, const std::string &, explanation,
+	          Properties::NON_VIRTUAL,
 	          __void__addKeyboardMouseBinding__C5_std_string_R1__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, setKeyboardMouseBindings, IN, const osg::ApplicationUsage::UsageMap &, usageMap,
+	          Properties::NON_VIRTUAL,
 	          __void__setKeyboardMouseBindings__C5_UsageMap_R1,
 	          "",
 	          "");
 	I_Method0(const osg::ApplicationUsage::UsageMap &, getKeyboardMouseBindings,
+	          Properties::NON_VIRTUAL,
 	          __C5_UsageMap_R1__getKeyboardMouseBindings,
 	          "",
 	          "");
 	I_MethodWithDefaults5(void, getFormattedString, IN, std::string &, str, , IN, const osg::ApplicationUsage::UsageMap &, um, , IN, unsigned int, widthOfOutput, 80, IN, bool, showDefaults, false, IN, const osg::ApplicationUsage::UsageMap &, ud, osg::ApplicationUsage::UsageMap(),
+	                      Properties::NON_VIRTUAL,
 	                      __void__getFormattedString__std_string_R1__C5_UsageMap_R1__unsigned_int__bool__C5_UsageMap_R1,
 	                      "",
 	                      "");
 	I_MethodWithDefaults5(void, write, IN, std::ostream &, output, , IN, const osg::ApplicationUsage::UsageMap &, um, , IN, unsigned int, widthOfOutput, 80, IN, bool, showDefaults, false, IN, const osg::ApplicationUsage::UsageMap &, ud, osg::ApplicationUsage::UsageMap(),
+	                      Properties::NON_VIRTUAL,
 	                      __void__write__std_ostream_R1__C5_UsageMap_R1__unsigned_int__bool__C5_UsageMap_R1,
 	                      "",
 	                      "");
 	I_MethodWithDefaults4(void, write, IN, std::ostream &, output, , IN, unsigned int, type, osg::ApplicationUsage::COMMAND_LINE_OPTION, IN, unsigned int, widthOfOutput, 80, IN, bool, showDefaults, false,
+	                      Properties::NON_VIRTUAL,
 	                      __void__write__std_ostream_R1__unsigned_int__unsigned_int__bool,
 	                      "",
 	                      "");
 	I_Method1(void, writeEnvironmentSettings, IN, std::ostream &, output,
+	          Properties::NON_VIRTUAL,
 	          __void__writeEnvironmentSettings__std_ostream_R1,
 	          "",
 	          "");

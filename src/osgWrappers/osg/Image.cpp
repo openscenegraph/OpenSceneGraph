@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
 	I_EnumLabel(osg::Image::USE_MALLOC_FREE);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Image)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Image)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Image,
 	               "",
@@ -41,222 +41,277 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(int, compare, IN, const osg::Image &, rhs,
+	          Properties::VIRTUAL,
 	          __int__compare__C5_Image_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
 	I_Method1(void, setFileName, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getFileName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFileName,
 	          "",
 	          "");
 	I_Method1(void, setAllocationMode, IN, osg::Image::AllocationMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setAllocationMode__AllocationMode,
 	          "Set the method used for deleting data once it goes out of scope. ",
 	          "");
 	I_Method0(osg::Image::AllocationMode, getAllocationMode,
+	          Properties::NON_VIRTUAL,
 	          __AllocationMode__getAllocationMode,
 	          "Get the method used for deleting data once it goes out of scope. ",
 	          "");
 	I_MethodWithDefaults6(void, allocateImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, int, packing, 1,
+	                      Properties::NON_VIRTUAL,
 	                      __void__allocateImage__int__int__int__GLenum__GLenum__int,
 	                      "Allocate a pixel block of specified size and type. ",
 	                      "");
 	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setImage__int__int__int__GLint__GLenum__GLenum__unsigned_char_P1__AllocationMode__int,
 	                      "Set the image dimensions, format and data. ",
 	                      "");
 	I_Method6(void, readPixels, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, GLenum, pixelFormat, IN, GLenum, type,
+	          Properties::NON_VIRTUAL,
 	          __void__readPixels__int__int__int__int__GLenum__GLenum,
 	          "Read pixels from current frame buffer at specified position and size, using glReadPixels. ",
 	          "Create memory for storage if required, reuse existing pixel coords if possible.");
 	I_MethodWithDefaults3(void, readImageFromCurrentTexture, IN, unsigned int, contextID, , IN, bool, copyMipMapsIfAvailable, , IN, GLenum, type, GL_UNSIGNED_BYTE,
+	                      Properties::NON_VIRTUAL,
 	                      __void__readImageFromCurrentTexture__unsigned_int__bool__GLenum,
 	                      "Read the contents of the current bound texture, handling compressed pixelFormats if present. ",
 	                      "Create memory for storage if required, reuse existing pixel coords if possible.");
 	I_Method3(void, scaleImage, IN, int, s, IN, int, t, IN, int, r,
+	          Properties::NON_VIRTUAL,
 	          __void__scaleImage__int__int__int,
 	          "Scale image to specified size. ",
 	          "");
 	I_Method4(void, scaleImage, IN, int, s, IN, int, t, IN, int, r, IN, GLenum, newDataType,
+	          Properties::NON_VIRTUAL,
 	          __void__scaleImage__int__int__int__GLenum,
 	          "Scale image to specified size and with specified data type. ",
 	          "");
 	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, osg::Image *, source,
+	          Properties::NON_VIRTUAL,
 	          __void__copySubImage__int__int__int__osg_Image_P1,
 	          "Copy a source Image into a subpart of this Image at specified position. ",
 	          "Typically used to copy to an already allocated image, such as creating a 3D image from a stack 2D images. If this Image is empty then image data is created to accomodate the source image in its offset position. If source is NULL then no operation happens, this Image is left unchanged.");
 	I_Method0(int, s,
+	          Properties::NON_VIRTUAL,
 	          __int__s,
 	          "Width of image. ",
 	          "");
 	I_Method0(int, t,
+	          Properties::NON_VIRTUAL,
 	          __int__t,
 	          "Height of image. ",
 	          "");
 	I_Method0(int, r,
+	          Properties::NON_VIRTUAL,
 	          __int__r,
 	          "Depth of image. ",
 	          "");
 	I_Method1(void, setInternalTextureFormat, IN, GLint, internalFormat,
+	          Properties::NON_VIRTUAL,
 	          __void__setInternalTextureFormat__GLint,
 	          "",
 	          "");
 	I_Method0(GLint, getInternalTextureFormat,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getInternalTextureFormat,
 	          "",
 	          "");
 	I_Method1(void, setPixelFormat, IN, GLenum, pixelFormat,
+	          Properties::NON_VIRTUAL,
 	          __void__setPixelFormat__GLenum,
 	          "",
 	          "");
 	I_Method0(GLenum, getPixelFormat,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getPixelFormat,
 	          "",
 	          "");
 	I_Method1(void, setDataType, IN, GLenum, dataType,
+	          Properties::NON_VIRTUAL,
 	          __void__setDataType__GLenum,
 	          "",
 	          "");
 	I_Method0(GLenum, getDataType,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getDataType,
 	          "",
 	          "");
 	I_Method1(void, setPacking, IN, unsigned int, packing,
+	          Properties::NON_VIRTUAL,
 	          __void__setPacking__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getPacking,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPacking,
 	          "",
 	          "");
 	I_Method0(unsigned int, getPixelSizeInBits,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPixelSizeInBits,
 	          "Return the number of bits required for each pixel. ",
 	          "");
 	I_Method0(unsigned int, getRowSizeInBytes,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getRowSizeInBytes,
 	          "Return the number of bytes each row of pixels occupies once it has been packed. ",
 	          "");
 	I_Method0(unsigned int, getImageSizeInBytes,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getImageSizeInBytes,
 	          "Return the number of bytes each image (_s*_t) of pixels occupies. ",
 	          "");
 	I_Method0(unsigned int, getTotalSizeInBytes,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getTotalSizeInBytes,
 	          "Return the number of bytes the whole row/image/volume of pixels occupies. ",
 	          "");
 	I_Method0(unsigned int, getTotalSizeInBytesIncludingMipmaps,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getTotalSizeInBytesIncludingMipmaps,
 	          "Return the number of bytes the whole row/image/volume of pixels occupies, including all mip maps if included. ",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "Return true if the Image represent a valid and usable imagery. ",
 	          "");
 	I_Method0(unsigned char *, data,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_P1__data,
 	          "Raw image data. ",
 	          "");
 	I_Method0(const unsigned char *, data,
+	          Properties::NON_VIRTUAL,
 	          __C5_unsigned_char_P1__data,
 	          "Raw const image data. ",
 	          "");
 	I_MethodWithDefaults3(unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __unsigned_char_P1__data__int__int__int,
 	                      "",
 	                      "");
 	I_MethodWithDefaults3(const unsigned char *, data, IN, int, column, , IN, int, row, 0, IN, int, image, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __C5_unsigned_char_P1__data__int__int__int,
 	                      "",
 	                      "");
 	I_Method0(void, flipHorizontal,
+	          Properties::NON_VIRTUAL,
 	          __void__flipHorizontal,
 	          "Flip the image horizontally. ",
 	          "");
 	I_Method0(void, flipVertical,
+	          Properties::NON_VIRTUAL,
 	          __void__flipVertical,
 	          "Flip the image vertically. ",
 	          "");
 	I_Method1(void, ensureValidSizeForTexturing, IN, GLint, maxTextureSize,
+	          Properties::NON_VIRTUAL,
 	          __void__ensureValidSizeForTexturing__GLint,
 	          "Ensure image dimensions are a power of two. ",
 	          "Mipmapped textures require the image dimensions to be power of two and are within the maxiumum texture size for the host machine.");
 	I_Method0(void, dirty,
+	          Properties::NON_VIRTUAL,
 	          __void__dirty,
 	          "Dirty the image, which increments the modified count, to force osg::Texture to reload the image. ",
 	          "");
 	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          Properties::NON_VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
 	          "Used by osg::Texture when using texture subloading. ");
 	I_Method0(unsigned int, getModifiedCount,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getModifiedCount,
 	          "Get modified count value. ",
 	          "Used by osg::Texture when using texture subloading. ");
 	I_Method0(bool, isMipmap,
+	          Properties::NON_VIRTUAL,
 	          __bool__isMipmap,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumMipmapLevels,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumMipmapLevels,
 	          "",
 	          "");
 	I_Method1(void, setMipmapLevels, IN, const osg::Image::MipmapDataType &, mipmapDataVector,
+	          Properties::NON_VIRTUAL,
 	          __void__setMipmapLevels__C5_MipmapDataType_R1,
 	          "Send offsets into data. ",
 	          "It is assumed that first mipmap offset (index 0) is 0. ");
 	I_Method0(const osg::Image::MipmapDataType &, getMipmapLevels,
+	          Properties::NON_VIRTUAL,
 	          __C5_MipmapDataType_R1__getMipmapLevels,
 	          "",
 	          "");
 	I_Method1(unsigned int, getMipmapOffset, IN, unsigned int, mipmapLevel,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMipmapOffset__unsigned_int,
 	          "",
 	          "");
 	I_Method1(unsigned char *, getMipmapData, IN, unsigned int, mipmapLevel,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_char_P1__getMipmapData__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const unsigned char *, getMipmapData, IN, unsigned int, mipmapLevel,
+	          Properties::NON_VIRTUAL,
 	          __C5_unsigned_char_P1__getMipmapData__unsigned_int,
 	          "",
 	          "");
 	I_Method0(bool, isImageTranslucent,
+	          Properties::NON_VIRTUAL,
 	          __bool__isImageTranslucent,
 	          "Return true if this image is translucent - i.e. ",
 	          "it has alpha values that are less 1.0 (when normalized). ");
 	I_Method1(void, setPixelBufferObject, IN, osg::PixelBufferObject *, buffer,
+	          Properties::NON_VIRTUAL,
 	          __void__setPixelBufferObject__PixelBufferObject_P1,
 	          "Set the optional PixelBufferObject used to map the image memory efficiently to graphics memory. ",
 	          "");
 	I_Method0(osg::PixelBufferObject *, getPixelBufferObject,
+	          Properties::NON_VIRTUAL,
 	          __PixelBufferObject_P1__getPixelBufferObject,
 	          "Get the PixelBufferObject. ",
 	          "");
 	I_Method0(const osg::PixelBufferObject *, getPixelBufferObject,
+	          Properties::NON_VIRTUAL,
 	          __C5_PixelBufferObject_P1__getPixelBufferObject,
 	          "Get the const PixelBufferObject. ",
 	          "");

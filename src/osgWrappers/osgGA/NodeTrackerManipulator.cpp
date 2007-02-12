@@ -39,108 +39,133 @@ BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::RotationMode)
 	I_EnumLabel(osgGA::NodeTrackerManipulator::ELEVATION_AZIM);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____NodeTrackerManipulator,
 	               "",
 	               "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(void, setTrackNodePath, IN, const osg::NodePath &, nodePath,
+	          Properties::NON_VIRTUAL,
 	          __void__setTrackNodePath__C5_osg_NodePath_R1,
 	          "",
 	          "");
 	I_Method1(void, setTrackNodePath, IN, const osgGA::NodeTrackerManipulator::ObserveredNodePath &, nodePath,
+	          Properties::NON_VIRTUAL,
 	          __void__setTrackNodePath__C5_ObserveredNodePath_R1,
 	          "",
 	          "");
 	I_Method0(osgGA::NodeTrackerManipulator::ObserveredNodePath &, getTrackNodePath,
+	          Properties::NON_VIRTUAL,
 	          __ObserveredNodePath_R1__getTrackNodePath,
 	          "",
 	          "");
 	I_Method1(void, setTrackNode, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
 	          __void__setTrackNode__osg_Node_P1,
 	          "",
 	          "");
 	I_Method0(osg::Node *, getTrackNode,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getTrackNode,
 	          "",
 	          "");
 	I_Method0(const osg::Node *, getTrackNode,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Node_P1__getTrackNode,
 	          "",
 	          "");
 	I_Method1(void, setTrackerMode, IN, osgGA::NodeTrackerManipulator::TrackerMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setTrackerMode__TrackerMode,
 	          "",
 	          "");
 	I_Method0(osgGA::NodeTrackerManipulator::TrackerMode, getTrackerMode,
+	          Properties::NON_VIRTUAL,
 	          __TrackerMode__getTrackerMode,
 	          "",
 	          "");
 	I_Method1(void, setRotationMode, IN, osgGA::NodeTrackerManipulator::RotationMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setRotationMode__RotationMode,
 	          "",
 	          "");
 	I_Method0(osgGA::NodeTrackerManipulator::RotationMode, getRotationMode,
+	          Properties::NON_VIRTUAL,
 	          __RotationMode__getRotationMode,
 	          "",
 	          "");
 	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
 	          __void__setByMatrix__C5_osg_Matrixd_R1,
 	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
 	          "");
 	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
 	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
 	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
 	          "");
 	I_Method0(osg::Matrixd, getMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrixd__getMatrix,
 	          "get the position of the manipulator as 4x4 Matrix. ",
 	          "");
 	I_Method0(osg::Matrixd, getInverseMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrixd__getInverseMatrix,
 	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
 	          "");
 	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          Properties::VIRTUAL,
 	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
 	          "Get the FusionDistanceMode. ",
 	          "Used by SceneView for setting up setereo convergence. ");
 	I_Method0(float, getFusionDistanceValue,
+	          Properties::VIRTUAL,
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
 	          "Used by SceneView for setting up setereo convergence. ");
 	I_Method1(void, setNode, IN, osg::Node *, x,
+	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,
 	          "Attach a node to the manipulator. ",
 	          "Automatically detaches previously attached node. setNode(NULL) detaches previously nodes. Is ignored by manipulators which do not require a reference model. ");
 	I_Method0(const osg::Node *, getNode,
+	          Properties::VIRTUAL,
 	          __C5_osg_Node_P1__getNode,
 	          "Return node if attached. ",
 	          "");
 	I_Method0(osg::Node *, getNode,
+	          Properties::VIRTUAL,
 	          __osg_Node_P1__getNode,
 	          "Return node if attached. ",
 	          "");
 	I_Method0(void, computeHomePosition,
+	          Properties::VIRTUAL,
 	          __void__computeHomePosition,
 	          "Compute the home position. ",
 	          "");
 	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
 	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Move the camera to the default position. ",
 	          "May be ignored by manipulators if home functionality is not appropriate. ");
 	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
 	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Start/restart the manipulator. ",
 	          "");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
 	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "handle events, return true if handled, false otherwise. ",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");

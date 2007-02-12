@@ -20,11 +20,12 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::Observer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Observer)
 	I_Constructor0(____Observer,
 	               "",
 	               "");
 	I_Method1(void, objectDeleted, IN, void *, x,
+	          Properties::VIRTUAL,
 	          __void__objectDeleted__void_P1,
 	          "",
 	          "");

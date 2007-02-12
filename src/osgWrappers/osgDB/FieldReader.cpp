@@ -21,35 +21,42 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgDB::FieldReader)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::FieldReader)
 	I_Constructor0(____FieldReader,
 	               "",
 	               "");
 	I_Constructor1(IN, const osgDB::FieldReader &, ic,
+	               Properties::NON_EXPLICIT,
 	               ____FieldReader__C5_FieldReader_R1,
 	               "",
 	               "");
 	I_Method1(void, attach, IN, std::istream *, input,
+	          Properties::NON_VIRTUAL,
 	          __void__attach__std_istream_P1,
 	          "",
 	          "");
 	I_Method0(void, detach,
+	          Properties::NON_VIRTUAL,
 	          __void__detach,
 	          "",
 	          "");
 	I_Method0(bool, eof,
+	          Properties::VIRTUAL,
 	          __bool__eof,
 	          "",
 	          "");
 	I_Method1(bool, readField, IN, osgDB::Field &, fieldPtr,
+	          Properties::NON_VIRTUAL,
 	          __bool__readField__Field_R1,
 	          "",
 	          "");
 	I_Method0(void, ignoreField,
+	          Properties::NON_VIRTUAL,
 	          __void__ignoreField,
 	          "",
 	          "");
 	I_Method0(int, getNoNestedBrackets,
+	          Properties::NON_VIRTUAL,
 	          __int__getNoNestedBrackets,
 	          "no of unmatched `{' encountered so far in file ",
 	          "");

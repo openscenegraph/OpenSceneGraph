@@ -24,20 +24,23 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::TabPlaneDragger)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TabPlaneDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabPlaneDragger,
 	               "",
 	               "");
 	I_Method3(bool, handle, IN, const osgManipulator::Dragger::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, setupDefaultGeometry, IN, bool, twoSidedHandle, true,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setupDefaultGeometry__bool,
 	                      "Setup default geometry for dragger. ",
 	                      "");
 	I_Method1(void, setPlaneColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setPlaneColor__C5_osg_Vec4_R1,
 	          "",
 	          "");

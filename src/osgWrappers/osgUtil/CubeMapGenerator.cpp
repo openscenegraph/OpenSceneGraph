@@ -26,6 +26,7 @@
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CubeMapGenerator)
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
+	                           Properties::EXPLICIT,
 	                           ____CubeMapGenerator__int,
 	                           "",
 	                           "");
@@ -34,14 +35,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CubeMapGenerator)
 	                           "",
 	                           "");
 	I_Method1(osg::Image *, getImage, IN, osg::TextureCubeMap::Face, face,
+	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImage__osg_TextureCubeMap_Face,
 	          "",
 	          "");
 	I_Method1(const osg::Image *, getImage, IN, osg::TextureCubeMap::Face, face,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Image_P1__getImage__osg_TextureCubeMap_Face,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, generateMap, IN, bool, use_osg_system, true,
+	                      Properties::NON_VIRTUAL,
 	                      __void__generateMap__bool,
 	                      "Generate the six cube images. ",
 	                      "If use_osg_system is true, then the OSG's coordinate system is used instead of the default OpenGL one.");

@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::BumpMapping)
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____BumpMapping,
 	               "",
@@ -36,102 +36,127 @@ BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "clone an object of the same type as the node. ",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "return a clone of a node, with Object* return type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method0(const char *, effectName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__effectName,
 	          "get the name of this Effect ",
 	          "");
 	I_Method0(const char *, effectDescription,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__effectDescription,
 	          "get a brief description of this Effect ",
 	          "");
 	I_Method0(const char *, effectAuthor,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__effectAuthor,
 	          "get the effect author's name ",
 	          "");
 	I_Method0(int, getLightNumber,
+	          Properties::NON_VIRTUAL,
 	          __int__getLightNumber,
 	          "get the OpenGL light number ",
 	          "");
 	I_Method1(void, setLightNumber, IN, int, n,
+	          Properties::NON_VIRTUAL,
 	          __void__setLightNumber__int,
 	          "set the OpenGL light number that will be used in lighting computations ",
 	          "");
 	I_Method0(int, getDiffuseTextureUnit,
+	          Properties::NON_VIRTUAL,
 	          __int__getDiffuseTextureUnit,
 	          "get the texture unit that contains diffuse color texture. ",
 	          "Default is 1 ");
 	I_Method1(void, setDiffuseTextureUnit, IN, int, n,
+	          Properties::NON_VIRTUAL,
 	          __void__setDiffuseTextureUnit__int,
 	          "set the texture unit that contains diffuse color texture. ",
 	          "Default is 1 ");
 	I_Method0(int, getNormalMapTextureUnit,
+	          Properties::NON_VIRTUAL,
 	          __int__getNormalMapTextureUnit,
 	          "get the texture unit that contains normal map texture. ",
 	          "Default is 0 ");
 	I_Method1(void, setNormalMapTextureUnit, IN, int, n,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormalMapTextureUnit__int,
 	          "set the texture unit that contains normal map texture. ",
 	          "Default is 0 ");
 	I_Method0(osg::Texture2D *, getOverrideDiffuseTexture,
+	          Properties::NON_VIRTUAL,
 	          __osg_Texture2D_P1__getOverrideDiffuseTexture,
 	          "get the diffuse color texture that overrides children's texture ",
 	          "");
 	I_Method0(const osg::Texture2D *, getOverrideDiffuseTexture,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Texture2D_P1__getOverrideDiffuseTexture,
 	          "get the const diffuse color texture that overrides children's texture ",
 	          "");
 	I_Method1(void, setOverrideDiffuseTexture, IN, osg::Texture2D *, texture,
+	          Properties::NON_VIRTUAL,
 	          __void__setOverrideDiffuseTexture__osg_Texture2D_P1,
 	          "set the diffuse color texture that overrides children's texture ",
 	          "");
 	I_Method0(osg::Texture2D *, getOverrideNormalMapTexture,
+	          Properties::NON_VIRTUAL,
 	          __osg_Texture2D_P1__getOverrideNormalMapTexture,
 	          "get the normal map texture that overrides children's texture ",
 	          "");
 	I_Method0(const osg::Texture2D *, getOverrideNormalMapTexture,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Texture2D_P1__getOverrideNormalMapTexture,
 	          "get the const normal map texture that overrides children's texture ",
 	          "");
 	I_Method1(void, setOverrideNormalMapTexture, IN, osg::Texture2D *, texture,
+	          Properties::NON_VIRTUAL,
 	          __void__setOverrideNormalMapTexture__osg_Texture2D_P1,
 	          "set the normal map texture that overrides children's texture ",
 	          "");
 	I_Method1(void, prepareGeometry, IN, osg::Geometry *, geo,
+	          Properties::NON_VIRTUAL,
 	          __void__prepareGeometry__osg_Geometry_P1,
 	          "prepare a Geometry for bump lighting. ",
 	          "Tangent-space basis vectors are generated and attached to the geometry as vertex attribute arrays.");
 	I_Method1(void, prepareNode, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
 	          __void__prepareNode__osg_Node_P1,
 	          "prepare a Node for bump lighting, calling prepareGeometry() for each Geometry ",
 	          "");
 	I_Method0(void, prepareChildren,
+	          Properties::NON_VIRTUAL,
 	          __void__prepareChildren,
 	          "prepare children for bump lighting. ",
 	          "Actually calls prepareNode() for each child ");
 	I_Method0(void, setUpDemo,
+	          Properties::VIRTUAL,
 	          __void__setUpDemo,
 	          "set up a demo environment with predefined diffuse and normal maps, as well as texture coordinates ",
 	          "");

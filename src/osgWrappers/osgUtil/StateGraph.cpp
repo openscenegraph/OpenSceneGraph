@@ -34,7 +34,7 @@ TYPE_NAME_ALIAS(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::St
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >, osgUtil::StateGraph::LeafList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____StateGraph,
 	               "",
@@ -44,58 +44,72 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	               "",
 	               "");
 	I_Method0(osgUtil::StateGraph *, cloneType,
+	          Properties::NON_VIRTUAL,
 	          __StateGraph_P1__cloneType,
 	          "",
 	          "");
 	I_Method1(void, setUserData, IN, osg::Referenced *, obj,
+	          Properties::NON_VIRTUAL,
 	          __void__setUserData__osg_Referenced_P1,
 	          "",
 	          "");
 	I_Method0(osg::Referenced *, getUserData,
+	          Properties::NON_VIRTUAL,
 	          __osg_Referenced_P1__getUserData,
 	          "",
 	          "");
 	I_Method0(const osg::Referenced *, getUserData,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Referenced_P1__getUserData,
 	          "",
 	          "");
 	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
 	          __bool__empty,
 	          "return true if all of drawables, lights and children are empty. ",
 	          "");
 	I_Method0(bool, leaves_empty,
+	          Properties::NON_VIRTUAL,
 	          __bool__leaves_empty,
 	          "",
 	          "");
 	I_Method0(float, getAverageDistance,
+	          Properties::NON_VIRTUAL,
 	          __float__getAverageDistance,
 	          "",
 	          "");
 	I_Method0(float, getMinimumDistance,
+	          Properties::NON_VIRTUAL,
 	          __float__getMinimumDistance,
 	          "",
 	          "");
 	I_Method0(void, sortFrontToBack,
+	          Properties::NON_VIRTUAL,
 	          __void__sortFrontToBack,
 	          "",
 	          "");
 	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
 	          __void__reset,
 	          "Reset the internal contents of a StateGraph, including deleting all children. ",
 	          "");
 	I_Method0(void, clean,
+	          Properties::NON_VIRTUAL,
 	          __void__clean,
 	          "Recursively clean the StateGraph of all its drawables, lights and depths. ",
 	          "Leaves children intact, and ready to be populated again. ");
 	I_Method0(void, prune,
+	          Properties::NON_VIRTUAL,
 	          __void__prune,
 	          "Recursively prune the StateGraph of empty children. ",
 	          "");
 	I_Method1(osgUtil::StateGraph *, find_or_insert, IN, const osg::StateSet *, stateset,
+	          Properties::NON_VIRTUAL,
 	          __StateGraph_P1__find_or_insert__C5_osg_StateSet_P1,
 	          "",
 	          "");
 	I_Method1(void, addLeaf, IN, osgUtil::RenderLeaf *, leaf,
+	          Properties::NON_VIRTUAL,
 	          __void__addLeaf__RenderLeaf_P1,
 	          "add a render leaf. ",
 	          "");
@@ -131,26 +145,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgUtil::RenderLeaf *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderLeaf > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::RenderLeaf *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderLeaf *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::RenderLeaf > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
@@ -164,26 +184,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::StateGraph >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgUtil::StateGraph *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::StateGraph > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::StateGraph *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgUtil::StateGraph *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::StateGraph > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

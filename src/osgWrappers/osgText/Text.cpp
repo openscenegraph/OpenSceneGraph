@@ -107,7 +107,7 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::ColorGradientMode)
 	I_EnumLabel(osgText::Text::OVERALL);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgText::Text)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Text)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____Text,
 	               "",
@@ -117,306 +117,382 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_MethodWithDefaults1(void, setFont, IN, osgText::Font *, font, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setFont__Font_P1,
 	                      "Set the Font to use to render the text. ",
 	                      "setFont(0) sets the use of the default font. ");
 	I_Method1(void, setFont, IN, const std::string &, fontfile,
+	          Properties::NON_VIRTUAL,
 	          __void__setFont__C5_std_string_R1,
 	          "Set the font, loaded from the specified front file, to use to render the text, setFont(\"\") sets the use of the default font. ",
 	          "See the osgText::readFontFile function for how the font file will be located. ");
 	I_Method0(const osgText::Font *, getFont,
+	          Properties::NON_VIRTUAL,
 	          __C5_Font_P1__getFont,
 	          "Get the font. ",
 	          "Return 0 if default is being used. ");
 	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height,
+	          Properties::NON_VIRTUAL,
 	          __void__setFontResolution__unsigned_int__unsigned_int,
 	          "Set the Font reference width and height resolution in texels. ",
 	          "Note, the size may not be supported by current font, the closest supported font size will be selected. ");
 	I_Method0(unsigned int, getFontWidth,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getFontWidth,
 	          "",
 	          "");
 	I_Method0(unsigned int, getFontHeight,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getFontHeight,
 	          "",
 	          "");
 	I_Method1(void, setText, IN, const osgText::String &, text,
+	          Properties::NON_VIRTUAL,
 	          __void__setText__C5_String_R1,
 	          "Set the text using a osgText::String. ",
 	          "");
 	I_Method1(void, setText, IN, const std::string &, text,
+	          Properties::NON_VIRTUAL,
 	          __void__setText__C5_std_string_R1,
 	          "Set the text using a std::string, which is converted to an internal TextString. ",
 	          "");
 	I_Method2(void, setText, IN, const std::string &, text, IN, osgText::String::Encoding, encoding,
+	          Properties::NON_VIRTUAL,
 	          __void__setText__C5_std_string_R1__String_Encoding,
 	          "Set the text using a Unicode encoded std::string, which is converted to an internal TextString. ",
 	          "The encoding parameter specificies which Unicode encodeding is used in the std::string. ");
 	I_Method1(void, setText, IN, const wchar_t *, text,
+	          Properties::NON_VIRTUAL,
 	          __void__setText__C5_wchar_t_P1,
 	          "Set the text using a wchar_t string, which is converted to an internal TextString. ",
 	          "");
 	I_Method0(osgText::String &, getText,
+	          Properties::NON_VIRTUAL,
 	          __String_R1__getText,
 	          "Get the text string. ",
 	          "Note, if you modify the string you must call Text::update() for the internal glyph reprentation to be updated. ");
 	I_Method0(const osgText::String &, getText,
+	          Properties::NON_VIRTUAL,
 	          __C5_String_R1__getText,
 	          "Get the const text string. ",
 	          "");
 	I_Method0(void, update,
+	          Properties::NON_VIRTUAL,
 	          __void__update,
 	          "update internal glyph respresnetation used for rendering, and bounding volume. ",
 	          "");
 	I_MethodWithDefaults2(void, setCharacterSize, IN, float, height, , IN, float, aspectRatio, 1.0f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setCharacterSize__float__float,
 	                      "Set the rendered character size in object coordinates. ",
 	                      "");
 	I_Method0(float, getCharacterHeight,
+	          Properties::NON_VIRTUAL,
 	          __float__getCharacterHeight,
 	          "",
 	          "");
 	I_Method0(float, getCharacterAspectRatio,
+	          Properties::NON_VIRTUAL,
 	          __float__getCharacterAspectRatio,
 	          "",
 	          "");
 	I_Method1(void, setCharacterSizeMode, IN, osgText::Text::CharacterSizeMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setCharacterSizeMode__CharacterSizeMode,
 	          "Set how the CharacterSize value relates to the final rendered character. ",
 	          "");
 	I_Method0(osgText::Text::CharacterSizeMode, getCharacterSizeMode,
+	          Properties::NON_VIRTUAL,
 	          __CharacterSizeMode__getCharacterSizeMode,
 	          "Get the CharacterSizeMode. ",
 	          "");
 	I_Method1(void, setMaximumWidth, IN, float, maximumWidth,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumWidth__float,
 	          "Set the maximum width of the text box. ",
 	          "With horizontal layouts any characters which do not fit are wrapped around. 0 or negative values indicate that no maximum width is set, lines can be as long as they need be to fit thre required text ");
 	I_Method0(float, getMaximumWidth,
+	          Properties::NON_VIRTUAL,
 	          __float__getMaximumWidth,
 	          "Get the maximim width of the text box. ",
 	          "");
 	I_Method1(void, setMaximumHeight, IN, float, maximumHeight,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumHeight__float,
 	          "Set the maximum height of the text box. ",
 	          "With horizontal layouts any characters which do not fit are wrapped around. 0 or negative values indicate that no maximum height is set, lines can be as long as they need be to fit the required text ");
 	I_Method0(float, getMaximumHeight,
+	          Properties::NON_VIRTUAL,
 	          __float__getMaximumHeight,
 	          "Get the maximum height of the text box. ",
 	          "");
 	I_Method1(void, setLineSpacing, IN, float, lineSpacing,
+	          Properties::NON_VIRTUAL,
 	          __void__setLineSpacing__float,
 	          "Set the line spacing of the text box, given as a percentage of the character height. ",
 	          "The default value is 0 for backward compatibility. For longer paragraphs of text, a value of at least 25% (i.e. set line spacing to 0.25) is recommended. ");
 	I_Method0(float, getLineSpacing,
+	          Properties::NON_VIRTUAL,
 	          __float__getLineSpacing,
 	          "Get the line spacing of the text box. ",
 	          "");
 	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
+	          Properties::NON_VIRTUAL,
 	          __void__setPosition__C5_osg_Vec3_R1,
 	          "Set the position of text. ",
 	          "");
 	I_Method0(const osg::Vec3 &, getPosition,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getPosition,
 	          "Get the position of text. ",
 	          "");
 	I_Method1(void, setAlignment, IN, osgText::Text::AlignmentType, alignment,
+	          Properties::NON_VIRTUAL,
 	          __void__setAlignment__AlignmentType,
 	          "",
 	          "");
 	I_Method0(osgText::Text::AlignmentType, getAlignment,
+	          Properties::NON_VIRTUAL,
 	          __AlignmentType__getAlignment,
 	          "",
 	          "");
 	I_Method1(void, setAxisAlignment, IN, osgText::Text::AxisAlignment, axis,
+	          Properties::NON_VIRTUAL,
 	          __void__setAxisAlignment__AxisAlignment,
 	          "",
 	          "");
 	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
+	          Properties::NON_VIRTUAL,
 	          __void__setRotation__C5_osg_Quat_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Quat &, getRotation,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Quat_R1__getRotation,
 	          "",
 	          "");
 	I_Method1(void, setAutoRotateToScreen, IN, bool, autoRotateToScreen,
+	          Properties::NON_VIRTUAL,
 	          __void__setAutoRotateToScreen__bool,
 	          "",
 	          "");
 	I_Method0(bool, getAutoRotateToScreen,
+	          Properties::NON_VIRTUAL,
 	          __bool__getAutoRotateToScreen,
 	          "",
 	          "");
 	I_Method1(void, setLayout, IN, osgText::Text::Layout, layout,
+	          Properties::NON_VIRTUAL,
 	          __void__setLayout__Layout,
 	          "",
 	          "");
 	I_Method0(osgText::Text::Layout, getLayout,
+	          Properties::NON_VIRTUAL,
 	          __Layout__getLayout,
 	          "",
 	          "");
 	I_Method1(void, setColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setColor__C5_osg_Vec4_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColor,
 	          "",
 	          "");
 	I_Method1(void, setDrawMode, IN, unsigned int, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setDrawMode__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getDrawMode,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getDrawMode,
 	          "",
 	          "");
 	I_Method1(void, setBackdropType, IN, osgText::Text::BackdropType, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setBackdropType__BackdropType,
 	          "BackdropType gives you a background shadow text behind your regular text. ",
 	          "This helps give text extra contrast which can be useful when placing text against noisy backgrounds. The color of the background shadow text is specified by setBackdropColor(). DROP_SHADOW_BOTTOM_RIGHT will draw backdrop text to the right and down of the normal text. Other DROW_SHADOW_* modes do the same for their repective directions. OUTLINE will draw backdrop text so that it appears the text has an outline or border around the normal text. This mode is particularly useful against really noisy backgrounds that may put text on top of things that have all types of colors which you don't have control over. Some real world examples of this general technique in use that I know of are Google Earth, Sid Meier's Pirates (2004 Remake), and Star Control 2 (PC 1993). The default is NONE.");
 	I_Method0(osgText::Text::BackdropType, getBackdropType,
+	          Properties::NON_VIRTUAL,
 	          __BackdropType__getBackdropType,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, setBackdropOffset, IN, float, offset, 0.07f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setBackdropOffset__float,
 	                      "Sets the amount text is offset to create the backdrop/shadow effect. ",
 	                      "Set the value too high and for example, in OUTLINE mode you will get a \"Brady Bunch\" effect where you see duplicates of the text in a 3x3 grid. Set the value too small and you won't see anything. The values represent percentages. 1.0 means 100% so a value of 1.0 in DROW_SHADOW_LEFT_CENTER mode would cause each glyph to be echoed next to it self. So the letter 'e' might look like 'ee'. Good values tend to be in the 0.03 to 0.10 range (but will be subject to your specific font and display characteristics). Note that the text bounding boxes are updated to include backdrop offsets. However, other metric information such as getCharacterHeight() are unaffected by this. This means that individual glyph spacing (kerning?) are unchanged even when this mode is used. The default is 0.07 (7% offset).");
 	I_Method2(void, setBackdropOffset, IN, float, horizontal, IN, float, vertical,
+	          Properties::NON_VIRTUAL,
 	          __void__setBackdropOffset__float__float,
 	          "This overloaded version lets you specify the offset for the horizontal and vertical components separately. ",
 	          "");
 	I_Method0(float, getBackdropHorizontalOffset,
+	          Properties::NON_VIRTUAL,
 	          __float__getBackdropHorizontalOffset,
 	          "",
 	          "");
 	I_Method0(float, getBackdropVerticalOffset,
+	          Properties::NON_VIRTUAL,
 	          __float__getBackdropVerticalOffset,
 	          "",
 	          "");
 	I_Method1(void, setBackdropColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setBackdropColor__C5_osg_Vec4_R1,
 	          "This specifies the color of the backdrop text. ",
 	          "The default is black.");
 	I_Method0(const osg::Vec4 &, getBackdropColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getBackdropColor,
 	          "",
 	          "");
 	I_Method1(void, setBackdropImplementation, IN, osgText::Text::BackdropImplementation, implementation,
+	          Properties::NON_VIRTUAL,
 	          __void__setBackdropImplementation__BackdropImplementation,
 	          "This specifies the underlying backdrop rendering implementation. ",
 	          "Unfortunately, at this time, there is no \"perfect\" rendering solution so this function is provided to let you 'pick your poison'. Each implementation has trade-offs.POLYGON_OFFSET: This uses glPolygonOffset to draw the text multiple times to create the drop-shadow and outline effects. glPolygonOffset is used to prevent z-fighting of the overlapping text. This probably should have been the best option, but all the ATI cards we have encountered so far have serious problems with this. We see little white holes/artifacts in the rendered glyph textures which move around depending on the viewing angle. For moving text, the moving holes give an extremely unpleasant flickering effect. Pumping up the \"units\" parameter in glPolygonOffset can minimize this problem, but two other bad side-effects occur if you do this. First, high values will cause problems with clipping, particularly when there are objects behind the text. The drop-shadows or outline may be culled because their computed offset is behind the object or z-far plane. Second, there is an additional problem associated with the Z-slope. High values can make large chunks of the backdrop suddenly disappear. This can be reduced by the \"factor\" parameter. Making the \"factor\" value small, can help, but experimentally, we've found that it creates a new, different kind of z-fighting problem. So there is no perfect solution. With units, you trade off the 'holes' for the large-section clipping. Experimentally, we have found units values from 150-512 to be tolerable to acceptable with respect to the 'holes'. A factor of .1 seems to bring down the large clipping problem without creating a new z-fighting problem. (You can experiment with these numbers by playing with the osg:PolygonOffset multipliers which this backend tries to respect.)If ATI ever fixes their cards/drivers, then this might become the best option.NO_DEPTH_BUFFER Instead of using glPolygonOffset to prevent z-fighting, this mode just disables the depth buffer when rendering the text. This allows the text to be rendered without any z-fighting. The downside to this mode is that render order begins to matter and the text will not necessarily correctly appear above or behind other objects in the scene based on depth values. This mode is best for text that only needs to be ontop and not obscured by any objects.DEPTH_RANGE This mode is inspired by Paul Martz's OpenGL FAQ, item 13.050. This uses glDepthRange as a substitute for glPolygonOffset. Strangely, experiments on ATI cards seem to produce cleaner results than when using glPolygonOffset. The trade-off for this is that the backdrop still may be placed too far back and might be culled by objects directly behind the object or by the far z-plane. If ATI ever fixes the glPolygonOffset problem, polygon offset is probably a slightly better solution because you can use smaller offsets. But with the current ATI problem, this option may be preferable.STENCIL_BUFFER (Assuming the backend is written correctly,) the Stencil Buffer is the most \"correct\" and reliable way of producing backdrop text. The stencil buffer is a multipass system that allows writing to the same z-values without needing to resort to offsets. This implementation should not have any of the problems associated with the 3 previous implementations. But the trade-off for this mode is that without hardware acceleration for the stencil buffer, rendering will be extremely slow. (There is also potentially more overhead for this algorithm so it could be slower than the other implementations. Benchmarking would be required to determine if the speed differences are significant on your particular hardware.) This mode is best for when quality is important and stencil buffer hardware acceleration is available.");
 	I_Method0(osgText::Text::BackdropImplementation, getBackdropImplementation,
+	          Properties::NON_VIRTUAL,
 	          __BackdropImplementation__getBackdropImplementation,
 	          "",
 	          "");
 	I_Method1(void, setColorGradientMode, IN, osgText::Text::ColorGradientMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorGradientMode__ColorGradientMode,
 	          "This sets different types of text coloring modes. ",
 	          "When the coloring mode is not set to SOLID, the colors specified in setColorGradientCorners() determine the colors for the text. When the gradient mode is OVERALL, the coloring scheme attempts to approximate the effect as if the entire text box/region were a single polygon and you had applied colors to each of the four corners with GL_SMOOTH enabled. In this mode, OpenGL interpolates the colors across the polygon, and this is what OVERALL tries to emulate. This can be used to give nice embellishments on things like logos and names. PER_CHARACTER is similar to OVERALL except that it applies the color interpolation to the four corners of each character instead of across the overall text box. The default is SOLID (a.k.a. off).");
 	I_Method0(osgText::Text::ColorGradientMode, getColorGradientMode,
+	          Properties::NON_VIRTUAL,
 	          __ColorGradientMode__getColorGradientMode,
 	          "",
 	          "");
 	I_Method4(void, setColorGradientCorners, IN, const osg::Vec4 &, topLeft, IN, const osg::Vec4 &, bottomLeft, IN, const osg::Vec4 &, bottomRight, IN, const osg::Vec4 &, topRight,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorGradientCorners__C5_osg_Vec4_R1__C5_osg_Vec4_R1__C5_osg_Vec4_R1__C5_osg_Vec4_R1,
 	          "Used only for gradient mode, let's you specify the colors of the 4 corners. ",
 	          "If ColorGradients are off, these values are ignored (and the value from setColor() is the only one that is relevant.");
 	I_Method0(const osg::Vec4 &, getColorGradientTopLeft,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColorGradientTopLeft,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getColorGradientBottomLeft,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColorGradientBottomLeft,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getColorGradientBottomRight,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColorGradientBottomRight,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getColorGradientTopRight,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColorGradientTopRight,
 	          "",
 	          "");
 	I_Method1(void, setKerningType, IN, osgText::KerningType, kerningType,
+	          Properties::NON_VIRTUAL,
 	          __void__setKerningType__KerningType,
 	          "",
 	          "");
 	I_Method0(osgText::KerningType, getKerningType,
+	          Properties::NON_VIRTUAL,
 	          __KerningType__getKerningType,
 	          "",
 	          "");
 	I_Method0(unsigned int, getLineCount,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getLineCount,
 	          "Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns 0 otherwise. ",
 	          "");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
+	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "Draw the text. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_osg_Drawable_AttributeFunctor_R1,
 	          "return false, osgText::Text does not support accept(AttributeFunctor&). ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_osg_Drawable_ConstAttributeFunctor_R1,
 	          "return true, osgText::Text does support accept(ConstAttributeFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
+	          Properties::VIRTUAL,
 	          __void__accept__osg_Drawable_ConstAttributeFunctor_R1,
 	          "accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
+	          Properties::VIRTUAL,
 	          __bool__supports__C5_osg_PrimitiveFunctor_R1,
 	          "return true, osgText::Text does support accept(PrimitiveFunctor&) . ",
 	          "");
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf,
+	          Properties::VIRTUAL,
 	          __void__accept__osg_PrimitiveFunctor_R1,
 	          "accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
 	          "");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          Properties::VIRTUAL,
 	          __void__setThreadSafeRefUnref__bool,
 	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned_int,
 	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_Method1(const osgText::Text::GlyphQuads *, getGlyphQuads, IN, osgText::Font::GlyphTexture *, texture,
+	          Properties::NON_VIRTUAL,
 	          __C5_GlyphQuads_P1__getGlyphQuads__Font_GlyphTexture_P1,
 	          "Direct Access to GlyphQuads. ",
 	          "");
 	I_Method0(const osgText::Text::TextureGlyphQuadMap &, getTextureGlyphQuadMap,
+	          Properties::NON_VIRTUAL,
 	          __C5_TextureGlyphQuadMap_R1__getTextureGlyphQuadMap,
 	          "",
 	          "");
 	I_Method0(osg::BoundingBox, computeBound,
+	          Properties::VIRTUAL,
 	          __osg_BoundingBox__computeBound,
 	          "Compute the bounding box around Drawables's geometry. ",
 	          "");
@@ -538,42 +614,52 @@ BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 	               "",
 	               "");
 	I_Method0(osgText::Text::GlyphQuads::Glyphs, getGlyphs,
+	          Properties::NON_VIRTUAL,
 	          __Glyphs__getGlyphs,
 	          "",
 	          "");
 	I_Method0(const osgText::Text::GlyphQuads::Glyphs, getGlyphs,
+	          Properties::NON_VIRTUAL,
 	          __C5_Glyphs__getGlyphs,
 	          "",
 	          "");
 	I_Method0(osgText::Text::GlyphQuads::Coords2 &, getCoords,
+	          Properties::NON_VIRTUAL,
 	          __Coords2_R1__getCoords,
 	          "",
 	          "");
 	I_Method0(const osgText::Text::GlyphQuads::Coords2 &, getCoords,
+	          Properties::NON_VIRTUAL,
 	          __C5_Coords2_R1__getCoords,
 	          "",
 	          "");
 	I_Method1(osgText::Text::GlyphQuads::Coords3 &, getTransformedCoords, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
 	          __Coords3_R1__getTransformedCoords__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osgText::Text::GlyphQuads::Coords3 &, getTransformedCoords, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
 	          __C5_Coords3_R1__getTransformedCoords__unsigned_int,
 	          "",
 	          "");
 	I_Method0(osgText::Text::GlyphQuads::TexCoords &, getTexCoords,
+	          Properties::NON_VIRTUAL,
 	          __TexCoords_R1__getTexCoords,
 	          "",
 	          "");
 	I_Method0(const osgText::Text::GlyphQuads::TexCoords &, getTexCoords,
+	          Properties::NON_VIRTUAL,
 	          __C5_TexCoords_R1__getTexCoords,
 	          "",
 	          "");
 	I_Method0(osgText::Text::GlyphQuads::LineNumbers &, getLineNumbers,
+	          Properties::NON_VIRTUAL,
 	          __LineNumbers_R1__getLineNumbers,
 	          "",
 	          "");
 	I_Method0(const osgText::Text::GlyphQuads::LineNumbers &, getLineNumbers,
+	          Properties::NON_VIRTUAL,
 	          __C5_LineNumbers_R1__getLineNumbers,
 	          "",
 	          "");
@@ -602,26 +688,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgText::Font::GlyphTexture *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgText::Font::GlyphTexture > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgText::Font::GlyphTexture *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgText::Font::GlyphTexture *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgText::Font::GlyphTexture > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

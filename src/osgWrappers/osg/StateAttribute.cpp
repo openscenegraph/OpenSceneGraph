@@ -103,106 +103,132 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::PURE_VIRTUAL,
 	          __Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::PURE_VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_Object_P1,
 	          "Return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "Return the name of the attribute's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "Return the name of the attribute's class type. ",
 	          "");
 	I_Method0(osg::StateAttribute::Type, getType,
+	          Properties::PURE_VIRTUAL,
 	          __Type__getType,
 	          "Return the Type identifier of the attribute's class type. ",
 	          "");
 	I_Method0(unsigned int, getMember,
+	          Properties::VIRTUAL,
 	          __unsigned_int__getMember,
 	          "Return the member identifier within the attribute's class type. ",
 	          "Used for light number/clip plane number etc. ");
 	I_Method0(osg::StateAttribute::TypeMemberPair, getTypeMemberPair,
+	          Properties::NON_VIRTUAL,
 	          __TypeMemberPair__getTypeMemberPair,
 	          "Return the TypeMemberPair that uniquely identifies this type member. ",
 	          "");
 	I_Method0(bool, isTextureAttribute,
+	          Properties::VIRTUAL,
 	          __bool__isTextureAttribute,
 	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::PURE_VIRTUAL,
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
 	I_Method0(const osg::StateAttribute::ParentList &, getParents,
+	          Properties::NON_VIRTUAL,
 	          __C5_ParentList_R1__getParents,
 	          "Get the parent list of this StateAttribute. ",
 	          "");
 	I_Method1(osg::StateSet *, getParent, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __StateSet_P1__getParent__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::StateSet *, getParent, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_StateSet_P1__getParent__unsigned_int,
 	          "Get a single const parent of this StateAttribute. ",
 	          " param i index of the parent to get.   return the parent i.");
 	I_Method0(unsigned int, getNumParents,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of this StateAttribute. ",
 	          "the number of parents of this StateAttribute. ");
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
+	          Properties::VIRTUAL,
 	          __bool__getModeUsage__ModeUsage_R1,
 	          "Return the modes associated with this StateAttribute. ",
 	          "");
 	I_Method1(bool, checkValidityOfAssociatedModes, IN, osg::State &, x,
+	          Properties::VIRTUAL,
 	          __bool__checkValidityOfAssociatedModes__osg_State_R1,
 	          "Check the modes associated with this StateAttribute are supported by current OpenGL drivers, and if not set the associated mode in osg::State to be black listed/invalid. ",
 	          "Return true if all associated modes are valid. ");
 	I_Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc,
+	          Properties::NON_VIRTUAL,
 	          __void__setUpdateCallback__Callback_P1,
 	          "Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal. ",
 	          "");
 	I_Method0(osg::StateAttribute::Callback *, getUpdateCallback,
+	          Properties::NON_VIRTUAL,
 	          __Callback_P1__getUpdateCallback,
 	          "Get the non const UpdateCallback. ",
 	          "");
 	I_Method0(const osg::StateAttribute::Callback *, getUpdateCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_Callback_P1__getUpdateCallback,
 	          "Get the const UpdateCallback. ",
 	          "");
 	I_Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec,
+	          Properties::NON_VIRTUAL,
 	          __void__setEventCallback__Callback_P1,
 	          "Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal. ",
 	          "");
 	I_Method0(osg::StateAttribute::Callback *, getEventCallback,
+	          Properties::NON_VIRTUAL,
 	          __Callback_P1__getEventCallback,
 	          "Get the non const EventCallback. ",
 	          "");
 	I_Method0(const osg::StateAttribute::Callback *, getEventCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_Callback_P1__getEventCallback,
 	          "Get the const EventCallback. ",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, x,
+	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
 	I_Method1(void, compileGLObjects, IN, osg::State &, x,
+	          Properties::VIRTUAL,
 	          __void__compileGLObjects__State_R1,
 	          "Default to nothing to compile - all state is applied immediately. ",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned,
 	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "Release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL. ",
 	                      "");
@@ -233,7 +259,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",
@@ -243,22 +269,27 @@ BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
 	               "",
 	               "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
@@ -269,10 +300,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
 	               "",
 	               "");
 	I_Method1(void, usesMode, IN, osg::StateAttribute::GLMode, mode,
+	          Properties::PURE_VIRTUAL,
 	          __void__usesMode__GLMode,
 	          "",
 	          "");
 	I_Method1(void, usesTextureMode, IN, osg::StateAttribute::GLMode, mode,
+	          Properties::PURE_VIRTUAL,
 	          __void__usesTextureMode__GLMode,
 	          "",
 	          "");

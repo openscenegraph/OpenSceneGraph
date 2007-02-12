@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osg::Projection)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Projection)
 	I_BaseType(osg::Group);
 	I_Constructor0(____Projection,
 	               "",
@@ -34,46 +34,57 @@ BEGIN_OBJECT_REFLECTOR(osg::Projection)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Constructor1(IN, const osg::Matrix &, matix,
+	               Properties::NON_EXPLICIT,
 	               ____Projection__C5_Matrix_R1,
 	               "",
 	               "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "clone an object of the same type as the node. ",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "return a clone of a node, with Object* return type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method1(void, setMatrix, IN, const osg::Matrix &, mat,
+	          Properties::NON_VIRTUAL,
 	          __void__setMatrix__C5_Matrix_R1,
 	          "Set the transform's matrix. ",
 	          "");
 	I_Method0(const osg::Matrix &, getMatrix,
+	          Properties::NON_VIRTUAL,
 	          __C5_Matrix_R1__getMatrix,
 	          "Get the transform's matrix. ",
 	          "");
 	I_Method1(void, preMult, IN, const osg::Matrix &, mat,
+	          Properties::NON_VIRTUAL,
 	          __void__preMult__C5_Matrix_R1,
 	          "preMult transform. ",
 	          "");
 	I_Method1(void, postMult, IN, const osg::Matrix &, mat,
+	          Properties::NON_VIRTUAL,
 	          __void__postMult__C5_Matrix_R1,
 	          "postMult transform. ",
 	          "");

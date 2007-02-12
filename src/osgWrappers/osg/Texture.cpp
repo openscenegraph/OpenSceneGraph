@@ -89,262 +89,327 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::PURE_VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::PURE_VIRTUAL,
 	          __osg_Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "Return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "Return the name of the attribute's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "Return the name of the attribute's class type. ",
 	          "");
 	I_Method0(osg::StateAttribute::Type, getType,
+	          Properties::VIRTUAL,
 	          __Type__getType,
 	          "Return the Type identifier of the attribute's class type. ",
 	          "");
 	I_Method0(bool, isTextureAttribute,
+	          Properties::VIRTUAL,
 	          __bool__isTextureAttribute,
 	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
 	          "");
 	I_Method0(GLenum, getTextureTarget,
+	          Properties::PURE_VIRTUAL,
 	          __GLenum__getTextureTarget,
 	          "",
 	          "");
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          Properties::VIRTUAL,
 	          __bool__getModeUsage__ModeUsage_R1,
 	          "",
 	          "");
 	I_Method0(int, getTextureWidth,
+	          Properties::VIRTUAL,
 	          __int__getTextureWidth,
 	          "",
 	          "");
 	I_Method0(int, getTextureHeight,
+	          Properties::VIRTUAL,
 	          __int__getTextureHeight,
 	          "",
 	          "");
 	I_Method0(int, getTextureDepth,
+	          Properties::VIRTUAL,
 	          __int__getTextureDepth,
 	          "",
 	          "");
 	I_Method2(void, setWrap, IN, osg::Texture::WrapParameter, which, IN, osg::Texture::WrapMode, wrap,
+	          Properties::NON_VIRTUAL,
 	          __void__setWrap__WrapParameter__WrapMode,
 	          "Sets the texture wrap mode. ",
 	          "");
 	I_Method1(osg::Texture::WrapMode, getWrap, IN, osg::Texture::WrapParameter, which,
+	          Properties::NON_VIRTUAL,
 	          __WrapMode__getWrap__WrapParameter,
 	          "Gets the texture wrap mode. ",
 	          "");
 	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setBorderColor__C5_Vec4_R1,
 	          "Sets the border color. ",
 	          "Only used when wrap mode is CLAMP_TO_BORDER. ");
 	I_Method0(const osg::Vec4 &, getBorderColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_Vec4_R1__getBorderColor,
 	          "Gets the border color. ",
 	          "");
 	I_Method1(void, setBorderWidth, IN, GLint, width,
+	          Properties::NON_VIRTUAL,
 	          __void__setBorderWidth__GLint,
 	          "Sets the border width. ",
 	          "");
 	I_Method0(GLint, getBorderWidth,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getBorderWidth,
 	          "",
 	          "");
 	I_Method2(void, setFilter, IN, osg::Texture::FilterParameter, which, IN, osg::Texture::FilterMode, filter,
+	          Properties::NON_VIRTUAL,
 	          __void__setFilter__FilterParameter__FilterMode,
 	          "Sets the texture filter mode. ",
 	          "");
 	I_Method1(osg::Texture::FilterMode, getFilter, IN, osg::Texture::FilterParameter, which,
+	          Properties::NON_VIRTUAL,
 	          __FilterMode__getFilter__FilterParameter,
 	          "Gets the texture filter mode. ",
 	          "");
 	I_Method1(void, setMaxAnisotropy, IN, float, anis,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaxAnisotropy__float,
 	          "Sets the maximum anisotropy value, default value is 1.0 for no anisotropic filtering. ",
 	          "If hardware does not support anisotropic filtering, use normal filtering (equivilant to a max anisotropy value of 1.0. Valid range is 1.0f upwards. The maximum value depends on the graphics system. ");
 	I_Method0(float, getMaxAnisotropy,
+	          Properties::NON_VIRTUAL,
 	          __float__getMaxAnisotropy,
 	          "Gets the maximum anisotropy value. ",
 	          "");
 	I_Method1(void, setUseHardwareMipMapGeneration, IN, bool, useHardwareMipMapGeneration,
+	          Properties::NON_VIRTUAL,
 	          __void__setUseHardwareMipMapGeneration__bool,
 	          "Sets the hardware mipmap generation hint. ",
 	          "If enabled, it will only be used if supported in the graphics system. ");
 	I_Method0(bool, getUseHardwareMipMapGeneration,
+	          Properties::NON_VIRTUAL,
 	          __bool__getUseHardwareMipMapGeneration,
 	          "Gets the hardware mipmap generation hint. ",
 	          "");
 	I_Method1(void, setUnRefImageDataAfterApply, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setUnRefImageDataAfterApply__bool,
 	          "Sets whether or not the apply() function will unreference the image data. ",
 	          "If enabled, and the image data is only referened by this Texture, apply() will delete the image data. ");
 	I_Method0(bool, getUnRefImageDataAfterApply,
+	          Properties::NON_VIRTUAL,
 	          __bool__getUnRefImageDataAfterApply,
 	          "Gets whether or not apply() unreferences image data. ",
 	          "");
 	I_Method1(void, setClientStorageHint, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setClientStorageHint__bool,
 	          "Sets whether to use client storage for the texture, if supported by the graphics system. ",
 	          "Note: If enabled, and the graphics system supports it, the osg::Image(s) associated with this texture cannot be deleted, so the UnRefImageDataAfterApply flag would be ignored. ");
 	I_Method0(bool, getClientStorageHint,
+	          Properties::NON_VIRTUAL,
 	          __bool__getClientStorageHint,
 	          "Gets whether to use client storage for the texture. ",
 	          "");
 	I_Method1(void, setResizeNonPowerOfTwoHint, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setResizeNonPowerOfTwoHint__bool,
 	          "Sets whether to force the texture to resize images that have dimensions that are not a power of two. ",
 	          "If enabled, NPOT images will be resized, whether or not NPOT textures are supported by the hardware. If disabled, NPOT images will not be resized if supported by hardware. ");
 	I_Method0(bool, getResizeNonPowerOfTwoHint,
+	          Properties::NON_VIRTUAL,
 	          __bool__getResizeNonPowerOfTwoHint,
 	          "Gets whether texture will force non power to two images to be resized. ",
 	          "");
 	I_Method1(void, setInternalFormatMode, IN, osg::Texture::InternalFormatMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setInternalFormatMode__InternalFormatMode,
 	          "Sets the internal texture format mode. ",
 	          "Note: If the texture format is USE_IMAGE_DATA_FORMAT, USE_ARB_COMPRESSION, or USE_S3TC_COMPRESSION, the internal format mode is set automatically and will overwrite the previous _internalFormat. ");
 	I_Method0(osg::Texture::InternalFormatMode, getInternalFormatMode,
+	          Properties::NON_VIRTUAL,
 	          __InternalFormatMode__getInternalFormatMode,
 	          "Gets the internal texture format mode. ",
 	          "");
 	I_Method1(void, setInternalFormat, IN, GLint, internalFormat,
+	          Properties::NON_VIRTUAL,
 	          __void__setInternalFormat__GLint,
 	          "Sets the internal texture format. ",
 	          "Implicitly sets the internalFormatMode to USE_USER_DEFINED_FORMAT. ");
 	I_Method0(GLint, getInternalFormat,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getInternalFormat,
 	          "Gets the internal texture format. ",
 	          "");
 	I_Method0(bool, isCompressedInternalFormat,
+	          Properties::NON_VIRTUAL,
 	          __bool__isCompressedInternalFormat,
 	          "Return true if the internal format is one of the compressed formats. ",
 	          "");
 	I_Method1(void, setSourceFormat, IN, GLenum, sourceFormat,
+	          Properties::NON_VIRTUAL,
 	          __void__setSourceFormat__GLenum,
 	          "Sets the external source image format, used as a fallback when no osg::Image is attached to provide the source image format. ",
 	          "");
 	I_Method0(GLenum, getSourceFormat,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getSourceFormat,
 	          "Gets the external source image format. ",
 	          "");
 	I_Method1(void, setSourceType, IN, GLenum, sourceType,
+	          Properties::NON_VIRTUAL,
 	          __void__setSourceType__GLenum,
 	          "Sets the external source data type, used as a fallback when no osg::Image is attached to provide the source image format. ",
 	          "");
 	I_Method0(GLenum, getSourceType,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getSourceType,
 	          "Gets the external source data type. ",
 	          "");
 	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
 	          __TextureObject_P1__getTextureObject__unsigned_int,
 	          "Returns a pointer to the texture object for the current context. ",
 	          "");
 	I_Method0(void, dirtyTextureObject,
+	          Properties::NON_VIRTUAL,
 	          __void__dirtyTextureObject,
 	          "Forces a recompile on next apply() of associated OpenGL texture objects. ",
 	          "");
 	I_Method0(bool, areAllTextureObjectsLoaded,
+	          Properties::NON_VIRTUAL,
 	          __bool__areAllTextureObjectsLoaded,
 	          "Returns true if the texture objects for all the required graphics contexts are loaded. ",
 	          "");
 	I_Method1(unsigned int &, getTextureParameterDirty, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int_R1__getTextureParameterDirty__unsigned_int,
 	          "Gets the dirty flag for the current contextID. ",
 	          "");
 	I_Method0(void, dirtyTextureParameters,
+	          Properties::NON_VIRTUAL,
 	          __void__dirtyTextureParameters,
 	          "Force a reset on next apply() of associated OpenGL texture parameters. ",
 	          "");
 	I_Method1(void, setShadowComparison, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setShadowComparison__bool,
 	          "Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. ",
 	          "");
 	I_Method1(void, setShadowCompareFunc, IN, osg::Texture::ShadowCompareFunc, func,
+	          Properties::NON_VIRTUAL,
 	          __void__setShadowCompareFunc__ShadowCompareFunc,
 	          "Sets shadow texture comparison function. ",
 	          "");
 	I_Method0(osg::Texture::ShadowCompareFunc, getShadowCompareFunc,
+	          Properties::NON_VIRTUAL,
 	          __ShadowCompareFunc__getShadowCompareFunc,
 	          "",
 	          "");
 	I_Method1(void, setShadowTextureMode, IN, osg::Texture::ShadowTextureMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setShadowTextureMode__ShadowTextureMode,
 	          "Sets shadow texture mode after comparison. ",
 	          "");
 	I_Method0(osg::Texture::ShadowTextureMode, getShadowTextureMode,
+	          Properties::NON_VIRTUAL,
 	          __ShadowTextureMode__getShadowTextureMode,
 	          "",
 	          "");
 	I_Method1(void, setShadowAmbient, IN, float, shadow_ambient,
+	          Properties::NON_VIRTUAL,
 	          __void__setShadowAmbient__float,
 	          "Sets the TEXTURE_COMPARE_FAIL_VALUE_ARB texture parameter. ",
 	          "See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow_ambient.txt. ");
 	I_Method0(float, getShadowAmbient,
+	          Properties::NON_VIRTUAL,
 	          __float__getShadowAmbient,
 	          "",
 	          "");
 	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image,
+	          Properties::PURE_VIRTUAL,
 	          __void__setImage__unsigned_int__Image_P1,
 	          "Sets the texture image for the specified face. ",
 	          "");
 	I_Method1(osg::Image *, getImage, IN, unsigned int, face,
+	          Properties::PURE_VIRTUAL,
 	          __Image_P1__getImage__unsigned_int,
 	          "Gets the texture image for the specified face. ",
 	          "");
 	I_Method1(const osg::Image *, getImage, IN, unsigned int, face,
+	          Properties::PURE_VIRTUAL,
 	          __C5_Image_P1__getImage__unsigned_int,
 	          "Gets the const texture image for specified face. ",
 	          "");
 	I_Method0(unsigned int, getNumImages,
+	          Properties::PURE_VIRTUAL,
 	          __unsigned_int__getNumImages,
 	          "Gets the number of images that can be assigned to this Texture. ",
 	          "");
 	I_Method1(void, setReadPBuffer, IN, osg::GraphicsContext *, context,
+	          Properties::NON_VIRTUAL,
 	          __void__setReadPBuffer__GraphicsContext_P1,
 	          "Set the PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
 	          "");
 	I_Method0(osg::GraphicsContext *, getReadPBuffer,
+	          Properties::NON_VIRTUAL,
 	          __GraphicsContext_P1__getReadPBuffer,
 	          "Get the PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
 	          "");
 	I_Method0(const osg::GraphicsContext *, getReadPBuffer,
+	          Properties::NON_VIRTUAL,
 	          __C5_GraphicsContext_P1__getReadPBuffer,
 	          "Get the const PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
 	          __void__apply__State_R1,
 	          "Texture is a pure virtual base class, apply must be overriden. ",
 	          "");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          Properties::VIRTUAL,
 	          __void__compileGLObjects__State_R1,
 	          "Calls apply(state) to compile the texture. ",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned_int,
 	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels,
+	          Properties::NON_VIRTUAL,
 	          __void__applyTexImage2D_load__State_R1__GLenum__C5_Image_P1__GLsizei__GLsizei__GLsizei,
 	          "Helper method. ",
 	          "Creates the texture, but doesn't set or use a texture binding. Note: Don't call this method directly unless you're implementing a subload callback. ");
 	I_Method7(void, applyTexImage2D_subload, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, inInternalFormat, IN, GLsizei, numMipmapLevels,
+	          Properties::NON_VIRTUAL,
 	          __void__applyTexImage2D_subload__State_R1__GLenum__C5_Image_P1__GLsizei__GLsizei__GLint__GLsizei,
 	          "Helper method. ",
 	          "Subloads images into the texture, but doesn't set or use a texture binding. Note: Don't call this method directly unless you're implementing a subload callback. ");
 	I_Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm,
+	          Properties::NON_VIRTUAL,
 	          __void__takeTextureObjects__TextureObjectListMap_R1,
 	          "Takes the active texture objects from the Texture and places them in the specified TextureObjectListMap. ",
 	          "");
@@ -468,153 +533,190 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                  0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
+	               Properties::NON_EXPLICIT,
 	               ____Extensions__unsigned_int,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::Texture::Extensions &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____Extensions__C5_Extensions_R1,
 	               "",
 	               "");
 	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs,
+	          Properties::NON_VIRTUAL,
 	          __void__lowestCommonDenominator__C5_Extensions_R1,
 	          "",
 	          "");
 	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
 	          __void__setupGLExtensions__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, setMultiTexturingSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setMultiTexturingSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isMultiTexturingSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isMultiTexturingSupported,
 	          "",
 	          "");
 	I_Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureFilterAnisotropicSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isTextureFilterAnisotropicSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isTextureFilterAnisotropicSupported,
 	          "",
 	          "");
 	I_Method1(void, setTextureCompressionARBSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureCompressionARBSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isTextureCompressionARBSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isTextureCompressionARBSupported,
 	          "",
 	          "");
 	I_Method1(void, setTextureCompressionS3TCSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureCompressionS3TCSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isTextureCompressionS3TCSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isTextureCompressionS3TCSupported,
 	          "",
 	          "");
 	I_Method1(void, setTextureMirroredRepeatSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureMirroredRepeatSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isTextureMirroredRepeatSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isTextureMirroredRepeatSupported,
 	          "",
 	          "");
 	I_Method1(void, setTextureEdgeClampSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureEdgeClampSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isTextureEdgeClampSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isTextureEdgeClampSupported,
 	          "",
 	          "");
 	I_Method1(void, setTextureBorderClampSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureBorderClampSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isTextureBorderClampSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isTextureBorderClampSupported,
 	          "",
 	          "");
 	I_Method1(void, setGenerateMipMapSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setGenerateMipMapSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isGenerateMipMapSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isGenerateMipMapSupported,
 	          "",
 	          "");
 	I_Method1(void, setShadowSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setShadowSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isShadowSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isShadowSupported,
 	          "",
 	          "");
 	I_Method1(void, setShadowAmbientSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setShadowAmbientSupported__bool,
 	          "",
 	          "");
 	I_Method0(bool, isShadowAmbientSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isShadowAmbientSupported,
 	          "",
 	          "");
 	I_Method1(void, setMaxTextureSize, IN, GLint, maxsize,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaxTextureSize__GLint,
 	          "",
 	          "");
 	I_Method0(GLint, maxTextureSize,
+	          Properties::NON_VIRTUAL,
 	          __GLint__maxTextureSize,
 	          "",
 	          "");
 	I_Method1(void, setNumTextureUnits, IN, GLint, nunits,
+	          Properties::NON_VIRTUAL,
 	          __void__setNumTextureUnits__GLint,
 	          "",
 	          "");
 	I_Method0(GLint, numTextureUnits,
+	          Properties::NON_VIRTUAL,
 	          __GLint__numTextureUnits,
 	          "",
 	          "");
 	I_Method0(bool, isCompressedTexImage2DSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isCompressedTexImage2DSupported,
 	          "",
 	          "");
 	I_Method1(void, setCompressedTexImage2DProc, IN, void *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __void__setCompressedTexImage2DProc__void_P1,
 	          "",
 	          "");
 	I_Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
+	          Properties::NON_VIRTUAL,
 	          __void__glCompressedTexImage2D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
 	          "",
 	          "");
 	I_Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __void__setCompressedTexSubImage2DProc__void_P1,
 	          "",
 	          "");
 	I_Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data,
+	          Properties::NON_VIRTUAL,
 	          __void__glCompressedTexSubImage2D__GLenum__GLint__GLint__GLint__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
 	          "",
 	          "");
 	I_Method1(void, setGetCompressedTexImageProc, IN, void *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __void__setGetCompressedTexImageProc__void_P1,
 	          "",
 	          "");
 	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data,
+	          Properties::NON_VIRTUAL,
 	          __void__glGetCompressedTexImage__GLenum__GLint__GLvoid_P1,
 	          "",
 	          "");
 	I_Method0(bool, isClientStorageSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isClientStorageSupported,
 	          "",
 	          "");
 	I_Method1(bool, isNonPowerOfTwoTextureSupported, IN, GLenum, filter,
+	          Properties::NON_VIRTUAL,
 	          __bool__isNonPowerOfTwoTextureSupported__GLenum,
 	          "",
 	          "");
@@ -665,7 +767,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	                 __void__setTextureMirroredRepeatSupported__bool);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_BaseType(osg::Referenced);
 	I_Constructor2(IN, GLuint, id, IN, GLenum, target,
 	               ____TextureObject__GLuint__GLenum,
@@ -676,26 +778,32 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	               "",
 	               "");
 	I_Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          Properties::NON_VIRTUAL,
 	          __bool__match__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
 	          "",
 	          "");
 	I_Method0(void, bind,
+	          Properties::NON_VIRTUAL,
 	          __void__bind,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, setAllocated, IN, bool, allocated, true,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setAllocated__bool,
 	                      "",
 	                      "");
 	I_Method6(void, setAllocated, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          Properties::NON_VIRTUAL,
 	          __void__setAllocated__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
 	          "",
 	          "");
 	I_Method0(bool, isAllocated,
+	          Properties::NON_VIRTUAL,
 	          __bool__isAllocated,
 	          "",
 	          "");
 	I_Method0(bool, isReusable,
+	          Properties::NON_VIRTUAL,
 	          __bool__isReusable,
 	          "",
 	          "");
@@ -719,26 +827,32 @@ BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
 	               "",
 	               "");
 	I_Constructor1(IN, unsigned int, size,
+	               Properties::NON_EXPLICIT,
 	               ____buffered_object__unsigned_int,
 	               "",
 	               "");
 	I_Method1(void, setAllElementsTo, IN, const osg::Texture::TextureObjectList &, t,
+	          Properties::NON_VIRTUAL,
 	          __void__setAllElementsTo__C5_T_R1,
 	          "",
 	          "");
 	I_Method0(void, clear,
+	          Properties::NON_VIRTUAL,
 	          __void__clear,
 	          "",
 	          "");
 	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
 	          __bool__empty,
 	          "",
 	          "");
 	I_Method0(unsigned int, size,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__size,
 	          "",
 	          "");
 	I_Method1(void, resize, IN, unsigned int, newSize,
+	          Properties::NON_VIRTUAL,
 	          __void__resize__unsigned_int,
 	          "",
 	          "");
@@ -752,26 +866,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 	               "",
 	               "");
 	I_Constructor1(IN, osg::Texture::TextureObject *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObject > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osg::Texture::TextureObject *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osg::Texture::TextureObject *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osg::Texture::TextureObject > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

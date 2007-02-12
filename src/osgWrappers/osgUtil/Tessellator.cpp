@@ -40,72 +40,88 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Tessellator::TessellationType)
 	I_EnumLabel(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____Tessellator,
 	               "",
 	               "");
 	I_Method1(void, setBoundaryOnly, IN, const bool, tt,
+	          Properties::NON_VIRTUAL,
 	          __void__setBoundaryOnly__C5_bool,
 	          "Set and get tessellation request boundary only on/off. ",
 	          "");
 	I_Method0(const bool, getBoundaryOnly,
+	          Properties::NON_VIRTUAL,
 	          __C5_bool__getBoundaryOnly,
 	          "",
 	          "");
 	I_Method1(void, setWindingType, IN, const osgUtil::Tessellator::WindingType, wt,
+	          Properties::NON_VIRTUAL,
 	          __void__setWindingType__C5_WindingType,
 	          "Set and get tessellation windong rule. ",
 	          "");
 	I_Method0(const osgUtil::Tessellator::WindingType, getWindingType,
+	          Properties::NON_VIRTUAL,
 	          __C5_WindingType__getWindingType,
 	          "",
 	          "");
 	I_Method1(void, setTessellationType, IN, const osgUtil::Tessellator::TessellationType, tt,
+	          Properties::NON_VIRTUAL,
 	          __void__setTessellationType__C5_TessellationType,
 	          "Set and get tessellation type. ",
 	          "");
 	I_Method0(const osgUtil::Tessellator::TessellationType, getTessellationType,
+	          Properties::NON_VIRTUAL,
 	          __C5_TessellationType__getTessellationType,
 	          "",
 	          "");
 	I_Method1(void, retessellatePolygons, IN, osg::Geometry &, cxgeom,
+	          Properties::NON_VIRTUAL,
 	          __void__retessellatePolygons__osg_Geometry_R1,
 	          "Change the contours lists of the geometry into tessellated primitives (the list of primitives in the original geometry is stored in the Tessellator for possible re-use. ",
 	          "The name remains retessellatePolygons although it now handles trifans, strips, quads etc. as well as Polygons so as to not break old codes relying on this function name. ");
 	I_Method1(void, setTessellationNormal, IN, const osg::Vec3, norm,
+	          Properties::NON_VIRTUAL,
 	          __void__setTessellationNormal__C5_osg_Vec3,
 	          "Define the normal to the tessellated polygon - this provides a hint how to tessellate the contours; see gluTessNormal in red book or man pages. ",
 	          "GWM July 2005. Can improve teselation \"For example, if you know that all polygons lie in the x-y plane, call gluTessNormal(tess, 0.0, 0.0, 1.0) before rendering any polygons.\"");
 	I_Method0(osg::Geometry::PrimitiveSetList, getContours,
+	          Properties::NON_VIRTUAL,
 	          __osg_Geometry_PrimitiveSetList__getContours,
 	          "",
 	          "");
 	I_Method0(void, beginTessellation,
+	          Properties::NON_VIRTUAL,
 	          __void__beginTessellation,
 	          "",
 	          "");
 	I_Method0(void, beginContour,
+	          Properties::NON_VIRTUAL,
 	          __void__beginContour,
 	          "",
 	          "");
 	I_Method1(void, addVertex, IN, osg::Vec3 *, vertex,
+	          Properties::NON_VIRTUAL,
 	          __void__addVertex__osg_Vec3_P1,
 	          "",
 	          "");
 	I_Method0(void, endContour,
+	          Properties::NON_VIRTUAL,
 	          __void__endContour,
 	          "",
 	          "");
 	I_Method0(void, endTessellation,
+	          Properties::NON_VIRTUAL,
 	          __void__endTessellation,
 	          "",
 	          "");
 	I_Method0(osgUtil::Tessellator::PrimList &, getPrimList,
+	          Properties::NON_VIRTUAL,
 	          __PrimList_R1__getPrimList,
 	          "",
 	          "");
 	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
@@ -131,9 +147,10 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::Prim::VecList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator::Prim)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Tessellator::Prim)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, GLenum, mode,
+	               Properties::NON_EXPLICIT,
 	               ____Prim__GLenum,
 	               "",
 	               "");
@@ -146,26 +163,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tessellator::Prim >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgUtil::Tessellator::Prim *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Tessellator::Prim > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::Tessellator::Prim *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgUtil::Tessellator::Prim *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::Tessellator::Prim > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

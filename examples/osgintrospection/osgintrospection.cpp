@@ -120,6 +120,10 @@ void print_types()
 
                 std::cout << "\t    ";
 
+                // display if the method is virtual
+                if (mi.isVirtual())
+                    std::cout << "virtual ";
+
                 // display the method's return type if defined
                 if (mi.getReturnType().isDefined())
                     std::cout << mi.getReturnType().getQualifiedName() << " ";
@@ -159,6 +163,8 @@ void print_types()
                 std::cout << ")";
                 if (mi.isConst())
                     std::cout << " const";
+                if (mi.isPureVirtual())
+                    std::cout << " = 0";
                 std::cout << "\n";
             }
         }

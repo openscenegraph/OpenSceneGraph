@@ -42,8 +42,8 @@ namespace osgIntrospection
     template<typename C, typename IC, typename P0> 
     struct TypedConstructorInfo1: ConstructorInfo
     {
-        TypedConstructorInfo1(const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
-        :    ConstructorInfo(typeof(C), plist, briefHelp, detailedHelp)
+        TypedConstructorInfo1(const ParameterInfoList& plist, bool isExplicit, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    ConstructorInfo(typeof(C), plist, isExplicit, briefHelp, detailedHelp)
         {
         }
 

@@ -26,9 +26,21 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT ConstructorInfo: public CustomAttributeProvider
     {
     public:
+        // Standard constructor.
         ConstructorInfo(const Type& decltype, const ParameterInfoList& params, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
         :   _decltype(decltype),
-        _params(params),
+            _params(params),
+            _explicit(false),
+            _briefHelp(briefHelp),
+            _detailedHelp(detailedHelp)
+        {
+        }
+
+        // Constructor allowing explicit state specification.
+        ConstructorInfo(const Type& decltype, const ParameterInfoList& params, bool isExplicit, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :   _decltype(decltype),
+            _params(params),
+            _explicit(isExplicit),
             _briefHelp(briefHelp),
             _detailedHelp(detailedHelp)
         {
@@ -66,6 +78,12 @@ namespace osgIntrospection
             return _params;
         }
 
+        /// Returns true if this constructor is explicit.
+        inline bool isExplicit() const
+        {
+            return _explicit;
+        }
+
         /// Invokes the reflected constructor dynamically passing it the 
         /// arguments as a list of Value objects.
         virtual Value createInstance(ValueList& args) const = 0;
@@ -76,6 +94,7 @@ namespace osgIntrospection
     private:
         const Type& _decltype;
         ParameterInfoList _params;
+        bool _explicit;
 
         std::string _briefHelp;
         std::string _detailedHelp;

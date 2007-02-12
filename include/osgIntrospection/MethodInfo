@@ -37,8 +37,19 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT MethodInfo: public CustomAttributeProvider
     {
     public:
+        /// Possible virtual states of the function.
+        enum VirtualState
+        {
+            NON_VIRTUAL         = 0x0,
+            VIRTUAL             = 0x1,
+            PURE_VIRTUAL        = 0x3
+        };
+
         /// Direct initialization constructor.
-      inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
+        inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
+
+        /// Direct initialization constructor for static functions (no virtual specifier).
+        inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
 
         /// Destructor
         inline ~MethodInfo();
@@ -68,6 +79,12 @@ namespace osgIntrospection
         
         /// Returns whether the reflected method is static or not.
         virtual bool isStatic() const = 0;
+        
+        /// Returns whether the reflected method is virtual or not.
+        virtual bool isVirtual() const;
+        
+        /// Returns whether the reflected method is pure virtual or not.
+        virtual bool isPureVirtual() const;
         
         /// Returns whether this method would override the given
         /// method.
@@ -105,6 +122,7 @@ namespace osgIntrospection
         const Type& _decltype;
         const Type& _rtype;
         ParameterInfoList _params;
+        VirtualState _virtualState;
     
         std::string _briefHelp;
         std::string _detailedHelp;
@@ -112,11 +130,24 @@ namespace osgIntrospection
 
     // INLINE METHODS
 
-  inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp, std::string detailedHelp)
+    inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp, std::string detailedHelp)
     :   CustomAttributeProvider(),
         _decltype(decltype), 
         _rtype(rtype),
         _params(plist),
+        _virtualState(virtualState),
+        _briefHelp(briefHelp),
+        _detailedHelp(detailedHelp)
+    {
+        _name = strip_namespace(qname);
+    }
+
+    inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp, std::string detailedHelp)
+    :   CustomAttributeProvider(),
+        _decltype(decltype), 
+        _rtype(rtype),
+        _params(plist),
+        _virtualState(NON_VIRTUAL),
         _briefHelp(briefHelp),
         _detailedHelp(detailedHelp)
     {
@@ -159,6 +190,16 @@ namespace osgIntrospection
     inline const std::string& MethodInfo::getDetailedHelp() const
     {
         return _detailedHelp;
+    }
+
+    inline bool MethodInfo::isVirtual() const
+    {
+        return (_virtualState & VIRTUAL) == VIRTUAL;
+    }
+
+    inline bool MethodInfo::isPureVirtual() const
+    {
+        return (_virtualState & PURE_VIRTUAL) == PURE_VIRTUAL;
     }
 
     inline Value MethodInfo::invoke(const Value& , ValueList& ) const

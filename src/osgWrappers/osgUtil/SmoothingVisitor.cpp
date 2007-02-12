@@ -22,12 +22,13 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____SmoothingVisitor,
 	               "default to traversing all children. ",
 	               "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "apply smoothing method to all geode geosets. ",
 	          "");

@@ -50,8 +50,9 @@ BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_ALL);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::CopyOp)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CopyOp)
 	I_ConstructorWithDefaults1(IN, osg::CopyOp::CopyFlags, flags, osg::CopyOp::SHALLOW_COPY,
+	                           Properties::NON_EXPLICIT,
 	                           ____CopyOp__CopyFlags,
 	                           "",
 	                           "");

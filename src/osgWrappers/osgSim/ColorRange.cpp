@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ColorRange)
 	I_BaseType(osgSim::ScalarsToColors);
 	I_Constructor2(IN, float, min, IN, float, max,
 	               ____ColorRange__float__float,
@@ -32,10 +32,12 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
 	               "Constructor for a ColorRange. ",
 	               " param min minimum scalar value  max maximum scalar value  colors optional range of colors, ");
 	I_Method1(void, setColors, IN, const std::vector< osg::Vec4 > &, colors,
+	          Properties::NON_VIRTUAL,
 	          __void__setColors__C5_std_vectorT1_osg_Vec4__R1,
 	          "Set the range of colors. ",
 	          "");
 	I_Method1(osg::Vec4, getColor, IN, float, scalar,
+	          Properties::VIRTUAL,
 	          __osg_Vec4__getColor__float,
 	          "Get the color for a given scalar value. ",
 	          "");

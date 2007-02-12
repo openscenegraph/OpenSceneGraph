@@ -39,25 +39,29 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::BaseOptimizerVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::BaseOptimizerVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor2(IN, osgUtil::Optimizer *, optimizer, IN, unsigned int, operation,
 	               ____BaseOptimizerVisitor__Optimizer_P1__unsigned_int,
 	               "",
 	               "");
 	I_Method1(bool, isOperationPermissibleForObject, IN, const osg::StateSet *, object,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_StateSet_P1,
 	          "",
 	          "");
 	I_Method1(bool, isOperationPermissibleForObject, IN, const osg::StateAttribute *, object,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_StateAttribute_P1,
 	          "",
 	          "");
 	I_Method1(bool, isOperationPermissibleForObject, IN, const osg::Drawable *, object,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_Drawable_P1,
 	          "",
 	          "");
 	I_Method1(bool, isOperationPermissibleForObject, IN, const osg::Node *, object,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_Node_P1,
 	          "",
 	          "");
@@ -84,71 +88,87 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer)
 	I_Constructor0(____Optimizer,
 	               "",
 	               "");
 	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
 	          __void__reset,
 	          "Reset internal data to initial state - the getPermissibleOptionsMap is cleared. ",
 	          "");
 	I_Method1(void, optimize, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
 	          __void__optimize__osg_Node_P1,
 	          "Traverse the node and its subgraph with a series of optimization visitors, specified by the OptimizationOptions. ",
 	          "");
 	I_Method2(void, optimize, IN, osg::Node *, node, IN, unsigned int, options,
+	          Properties::VIRTUAL,
 	          __void__optimize__osg_Node_P1__unsigned_int,
 	          "Traverse the node and its subgraph with a series of optimization visitors, specified by the OptimizationOptions. ",
 	          "");
 	I_Method1(void, setIsOperationPermissibleForObjectCallback, IN, osgUtil::Optimizer::IsOperationPermissibleForObjectCallback *, callback,
+	          Properties::NON_VIRTUAL,
 	          __void__setIsOperationPermissibleForObjectCallback__IsOperationPermissibleForObjectCallback_P1,
 	          "Set the callback for customizing what operations are permitted on objects in the scene graph. ",
 	          "");
 	I_Method0(osgUtil::Optimizer::IsOperationPermissibleForObjectCallback *, getIsOperationPermissibleForObjectCallback,
+	          Properties::NON_VIRTUAL,
 	          __IsOperationPermissibleForObjectCallback_P1__getIsOperationPermissibleForObjectCallback,
 	          "Get the callback for customizing what operations are permitted on objects in the scene graph. ",
 	          "");
 	I_Method0(const osgUtil::Optimizer::IsOperationPermissibleForObjectCallback *, getIsOperationPermissibleForObjectCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_IsOperationPermissibleForObjectCallback_P1__getIsOperationPermissibleForObjectCallback,
 	          "Get the callback for customizing what operations are permitted on objects in the scene graph. ",
 	          "");
 	I_Method2(void, setPermissibleOptimizationsForObject, IN, const osg::Object *, object, IN, unsigned int, options,
+	          Properties::NON_VIRTUAL,
 	          __void__setPermissibleOptimizationsForObject__C5_osg_Object_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method1(unsigned int, getPermissibleOptimizationsForObject, IN, const osg::Object *, object,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPermissibleOptimizationsForObject__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObject, IN, const osg::StateSet *, object, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_StateSet_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObject, IN, const osg::StateAttribute *, object, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_StateAttribute_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObject, IN, const osg::Drawable *, object, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_Drawable_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObject, IN, const osg::Node *, object, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObject__C5_osg_Node_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObjectImplementation, IN, const osg::StateSet *, stateset, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_osg_StateSet_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObjectImplementation, IN, const osg::StateAttribute *, attribute, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_osg_StateAttribute_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObjectImplementation, IN, const osg::Drawable *, drawable, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_osg_Drawable_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, isOperationPermissibleForObjectImplementation, IN, const osg::Node *, node, IN, unsigned int, option,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_osg_Node_P1__unsigned_int,
 	          "",
 	          "");
@@ -161,17 +181,20 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer)
 	                  0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CheckGeometryVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CheckGeometryVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____CheckGeometryVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method1(void, checkGeode, IN, osg::Geode &, geode,
+	          Properties::NON_VIRTUAL,
 	          __void__checkGeode__osg_Geode_R1,
 	          "",
 	          "");
@@ -179,34 +202,40 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::CombineLODsVisitor::GroupList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____CombineLODsVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::LOD &, lod,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_LOD_R1,
 	          "",
 	          "");
 	I_Method0(void, combineLODs,
+	          Properties::NON_VIRTUAL,
 	          __void__combineLODs,
 	          "",
 	          "");
 	I_PublicMemberProperty(osgUtil::Optimizer::CombineLODsVisitor::GroupList, _groupList);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____CombineStaticTransformsVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::MatrixTransform &, transform,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_MatrixTransform_R1,
 	          "",
 	          "");
 	I_Method1(bool, removeTransforms, IN, osg::Node *, nodeWeCannotRemove,
+	          Properties::NON_VIRTUAL,
 	          __bool__removeTransforms__osg_Node_P1,
 	          "",
 	          "");
@@ -214,17 +243,20 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____CopySharedSubgraphsVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method0(void, copySharedNodes,
+	          Properties::NON_VIRTUAL,
 	          __void__copySharedNodes,
 	          "",
 	          "");
@@ -235,125 +267,150 @@ TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osgUtil::Optimizer::FlattenBillboa
 
 TYPE_NAME_ALIAS(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >, osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____FlattenBillboardVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "Method to call to reset visitor. ",
 	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
 	I_Method1(void, apply, IN, osg::Billboard &, billboard,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Billboard_R1,
 	          "",
 	          "");
 	I_Method0(void, process,
+	          Properties::NON_VIRTUAL,
 	          __void__process,
 	          "",
 	          "");
 	I_PublicMemberProperty(osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap, _billboards);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____FlattenStaticTransformsVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Node &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Billboard &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Billboard_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::ProxyNode &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_ProxyNode_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::PagedLOD &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_PagedLOD_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Transform &, transform,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Transform_R1,
 	          "",
 	          "");
 	I_Method1(bool, removeTransforms, IN, osg::Node *, nodeWeCannotRemove,
+	          Properties::NON_VIRTUAL,
 	          __bool__removeTransforms__osg_Node_P1,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallback)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallback)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____IsOperationPermissibleForObjectCallback,
 	               "",
 	               "");
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::StateSet *, stateset, IN, unsigned int, option,
+	          Properties::VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_Optimizer_P1__C5_osg_StateSet_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::StateAttribute *, attribute, IN, unsigned int, option,
+	          Properties::VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_Optimizer_P1__C5_osg_StateAttribute_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::Drawable *, drawable, IN, unsigned int, option,
+	          Properties::VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_Optimizer_P1__C5_osg_Drawable_P1__unsigned_int,
 	          "",
 	          "");
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::Node *, node, IN, unsigned int, option,
+	          Properties::VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_Optimizer_P1__C5_osg_Node_P1__unsigned_int,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____MergeGeodesVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method1(void, apply, IN, osg::Group &, group,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
 	I_Method1(bool, mergeGeodes, IN, osg::Group &, group,
+	          Properties::NON_VIRTUAL,
 	          __bool__mergeGeodes__osg_Group_R1,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____MergeGeometryVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method1(void, setTargetMaximumNumberOfVertices, IN, unsigned int, num,
+	          Properties::NON_VIRTUAL,
 	          __void__setTargetMaximumNumberOfVertices__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getTargetMaximumNumberOfVertices,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getTargetMaximumNumberOfVertices,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Billboard &, x,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Billboard_R1,
 	          "",
 	          "");
 	I_Method1(bool, mergeGeode, IN, osg::Geode &, geode,
+	          Properties::NON_VIRTUAL,
 	          __bool__mergeGeode__osg_Geode_R1,
 	          "",
 	          "");
@@ -392,21 +449,25 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____RemoveEmptyNodesVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Group &, group,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
 	I_Method0(void, removeEmptyNodes,
+	          Properties::NON_VIRTUAL,
 	          __void__removeEmptyNodes,
 	          "",
 	          "");
@@ -415,17 +476,20 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____RemoveLoadedProxyNodesVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::ProxyNode &, group,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_ProxyNode_R1,
 	          "",
 	          "");
 	I_Method0(void, removeRedundantNodes,
+	          Properties::NON_VIRTUAL,
 	          __void__removeRedundantNodes,
 	          "",
 	          "");
@@ -434,25 +498,30 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____RemoveRedundantNodesVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Group &, group,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Transform &, transform,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Transform_R1,
 	          "",
 	          "");
 	I_Method1(bool, isOperationPermissible, IN, osg::Node &, node,
+	          Properties::NON_VIRTUAL,
 	          __bool__isOperationPermissible__osg_Node_R1,
 	          "",
 	          "");
 	I_Method0(void, removeRedundantNodes,
+	          Properties::NON_VIRTUAL,
 	          __void__removeRedundantNodes,
 	          "",
 	          "");
@@ -461,62 +530,74 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____SpatializeGroupsVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Group &, group,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
 	I_MethodWithDefaults1(bool, divide, IN, unsigned int, maxNumTreesPerCell, 8,
+	                      Properties::NON_VIRTUAL,
 	                      __bool__divide__unsigned_int,
 	                      "",
 	                      "");
 	I_Method2(bool, divide, IN, osg::Group *, group, IN, unsigned int, maxNumTreesPerCell,
+	          Properties::NON_VIRTUAL,
 	          __bool__divide__osg_Group_P1__unsigned_int,
 	          "",
 	          "");
 	I_PublicMemberProperty(osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList, _groupsToDivideList);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____StateVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "empty visitor, make it ready for next traversal. ",
 	          "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method0(void, optimize,
+	          Properties::NON_VIRTUAL,
 	          __void__optimize,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____StaticObjectDetectionVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
@@ -524,13 +605,15 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TessellateVisitor::GroupList);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TessellateVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____TessellateVisitor__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
@@ -542,86 +625,107 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
 	               "",
 	               "");
 	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
 	I_Method2(void, setMaximumAtlasSize, IN, unsigned int, width, IN, unsigned int, height,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumAtlasSize__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMaximumAtlasWidth,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMaximumAtlasWidth,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMaximumAtlasHeight,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMaximumAtlasHeight,
 	          "",
 	          "");
 	I_Method1(void, setMargin, IN, unsigned int, margin,
+	          Properties::NON_VIRTUAL,
 	          __void__setMargin__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMargin,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMargin,
 	          "",
 	          "");
 	I_Method1(void, addSource, IN, const osg::Image *, image,
+	          Properties::NON_VIRTUAL,
 	          __void__addSource__C5_osg_Image_P1,
 	          "",
 	          "");
 	I_Method1(void, addSource, IN, const osg::Texture2D *, texture,
+	          Properties::NON_VIRTUAL,
 	          __void__addSource__C5_osg_Texture2D_P1,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumSources,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumSources,
 	          "",
 	          "");
 	I_Method1(const osg::Image *, getSourceImage, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Image_P1__getSourceImage__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Texture2D *, getSourceTexture, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Texture2D_P1__getSourceTexture__unsigned_int,
 	          "",
 	          "");
 	I_Method0(void, buildAtlas,
+	          Properties::NON_VIRTUAL,
 	          __void__buildAtlas,
 	          "",
 	          "");
 	I_Method1(osg::Image *, getImageAtlas, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImageAtlas__unsigned_int,
 	          "",
 	          "");
 	I_Method1(osg::Texture2D *, getTextureAtlas, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __osg_Texture2D_P1__getTextureAtlas__unsigned_int,
 	          "",
 	          "");
 	I_Method1(osg::Matrix, getTextureMatrix, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __osg_Matrix__getTextureMatrix__unsigned_int,
 	          "",
 	          "");
 	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Image *, image,
+	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImageAtlas__C5_osg_Image_P1,
 	          "",
 	          "");
 	I_Method1(osg::Texture2D *, getTextureAtlas, IN, const osg::Image *, image,
+	          Properties::NON_VIRTUAL,
 	          __osg_Texture2D_P1__getTextureAtlas__C5_osg_Image_P1,
 	          "",
 	          "");
 	I_Method1(osg::Matrix, getTextureMatrix, IN, const osg::Image *, image,
+	          Properties::NON_VIRTUAL,
 	          __osg_Matrix__getTextureMatrix__C5_osg_Image_P1,
 	          "",
 	          "");
 	I_Method1(osg::Image *, getImageAtlas, IN, const osg::Texture2D *, textue,
+	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImageAtlas__C5_osg_Texture2D_P1,
 	          "",
 	          "");
 	I_Method1(osg::Texture2D *, getTextureAtlas, IN, const osg::Texture2D *, texture,
+	          Properties::NON_VIRTUAL,
 	          __osg_Texture2D_P1__getTextureAtlas__C5_osg_Texture2D_P1,
 	          "",
 	          "");
 	I_Method1(osg::Matrix, getTextureMatrix, IN, const osg::Texture2D *, texture,
+	          Properties::NON_VIRTUAL,
 	          __osg_Matrix__getTextureMatrix__C5_osg_Texture2D_P1,
 	          "",
 	          "");
@@ -636,29 +740,35 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____TextureAtlasVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method0(osgUtil::Optimizer::TextureAtlasBuilder &, getTextureAtlasBuilder,
+	          Properties::NON_VIRTUAL,
 	          __TextureAtlasBuilder_R1__getTextureAtlasBuilder,
 	          "",
 	          "");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "empty visitor, make it ready for next traversal. ",
 	          "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method0(void, optimize,
+	          Properties::NON_VIRTUAL,
 	          __void__optimize,
 	          "",
 	          "");
@@ -667,25 +777,29 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults7(IN, bool, changeAutoUnRef, , IN, bool, valueAutoUnRef, , IN, bool, changeClientImageStorage, , IN, bool, valueClientImageStorage, , IN, bool, changeAnisotropy, , IN, float, valueAnisotropy, , IN, osgUtil::Optimizer *, optimizer, 0,
 	                           ____TextureVisitor__bool__bool__bool__bool__bool__float__Optimizer_P1,
 	                           "",
 	                           "");
 	I_Method1(void, apply, IN, osg::Geode &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::StateSet &, stateset,
+	          Properties::NON_VIRTUAL,
 	          __void__apply__osg_StateSet_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Texture &, texture,
+	          Properties::NON_VIRTUAL,
 	          __void__apply__osg_Texture_R1,
 	          "",
 	          "");

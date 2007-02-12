@@ -40,53 +40,65 @@ BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 	I_EnumLabel(osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES,
+	                           Properties::NON_EXPLICIT,
 	                           ____GLObjectsVisitor__Mode,
 	                           "Construct a GLObjectsVisitor to traverse all children, operating on node according to specified mode, such as to compile or release display list/texture objects etc. ",
 	                           "Default mode is to compile GL objects.");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "Method to call to reset visitor. ",
 	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
 	I_Method1(void, setMode, IN, osgUtil::GLObjectsVisitor::Mode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setMode__Mode,
 	          "Set the operational mode of what operations to do on the scene graph. ",
 	          "");
 	I_Method0(osgUtil::GLObjectsVisitor::Mode, getMode,
+	          Properties::NON_VIRTUAL,
 	          __Mode__getMode,
 	          "Get the operational mode. ",
 	          "");
 	I_Method1(void, setState, IN, osg::State *, state,
+	          Properties::NON_VIRTUAL,
 	          __void__setState__osg_State_P1,
 	          "Set the State to use during traversal. ",
 	          "");
 	I_Method0(osg::State *, getState,
+	          Properties::NON_VIRTUAL,
 	          __osg_State_P1__getState,
 	          "",
 	          "");
 	I_Method1(void, setRenderInfo, IN, osg::RenderInfo &, renderInfo,
+	          Properties::NON_VIRTUAL,
 	          __void__setRenderInfo__osg_RenderInfo_R1,
 	          "",
 	          "");
 	I_Method0(osg::RenderInfo &, getRenderInfo,
+	          Properties::NON_VIRTUAL,
 	          __osg_RenderInfo_R1__getRenderInfo,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "Simply traverse using standard NodeVisitor traverse method. ",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "For each Geode visited set the display list usage according to the _displayListMode. ",
 	          "");
 	I_Method1(void, apply, IN, osg::Drawable &, drawable,
+	          Properties::NON_VIRTUAL,
 	          __void__apply__osg_Drawable_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::StateSet &, stateset,
+	          Properties::NON_VIRTUAL,
 	          __void__apply__osg_StateSet_R1,
 	          "",
 	          "");

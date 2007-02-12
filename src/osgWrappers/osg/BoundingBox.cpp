@@ -35,110 +35,137 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	               "Creates a bounding box initialized to the given extents. ",
 	               "");
 	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
 	          __void__init,
 	          "Clear the bounding box. ",
 	          "Erases existing minimum and maximum extents. ");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "Returns true if the bounding box extents are valid, false otherwise. ",
 	          "");
 	I_Method6(void, set, IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax,
+	          Properties::NON_VIRTUAL,
 	          __void__set__float__float__float__float__float__float,
 	          "Sets the bounding box extents. ",
 	          "");
 	I_Method2(void, set, IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
 	          "Sets the bounding box extents. ",
 	          "");
 	I_Method0(float &, xMin,
+	          Properties::NON_VIRTUAL,
 	          __float_R1__xMin,
 	          "",
 	          "");
 	I_Method0(float, xMin,
+	          Properties::NON_VIRTUAL,
 	          __float__xMin,
 	          "",
 	          "");
 	I_Method0(float &, yMin,
+	          Properties::NON_VIRTUAL,
 	          __float_R1__yMin,
 	          "",
 	          "");
 	I_Method0(float, yMin,
+	          Properties::NON_VIRTUAL,
 	          __float__yMin,
 	          "",
 	          "");
 	I_Method0(float &, zMin,
+	          Properties::NON_VIRTUAL,
 	          __float_R1__zMin,
 	          "",
 	          "");
 	I_Method0(float, zMin,
+	          Properties::NON_VIRTUAL,
 	          __float__zMin,
 	          "",
 	          "");
 	I_Method0(float &, xMax,
+	          Properties::NON_VIRTUAL,
 	          __float_R1__xMax,
 	          "",
 	          "");
 	I_Method0(float, xMax,
+	          Properties::NON_VIRTUAL,
 	          __float__xMax,
 	          "",
 	          "");
 	I_Method0(float &, yMax,
+	          Properties::NON_VIRTUAL,
 	          __float_R1__yMax,
 	          "",
 	          "");
 	I_Method0(float, yMax,
+	          Properties::NON_VIRTUAL,
 	          __float__yMax,
 	          "",
 	          "");
 	I_Method0(float &, zMax,
+	          Properties::NON_VIRTUAL,
 	          __float_R1__zMax,
 	          "",
 	          "");
 	I_Method0(float, zMax,
+	          Properties::NON_VIRTUAL,
 	          __float__zMax,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3, center,
+	          Properties::NON_VIRTUAL,
 	          __C5_Vec3__center,
 	          "Calculates and returns the bounding box center. ",
 	          "");
 	I_Method0(float, radius,
+	          Properties::NON_VIRTUAL,
 	          __float__radius,
 	          "Calculates and returns the bounding box radius. ",
 	          "");
 	I_Method0(float, radius2,
+	          Properties::NON_VIRTUAL,
 	          __float__radius2,
 	          "Calculates and returns the squared length of the bounding box radius. ",
 	          "Note, radius2() is faster to calculate than radius(). ");
 	I_Method1(const osg::Vec3, corner, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
 	          __C5_Vec3__corner__unsigned_int,
 	          "Returns a specific corner of the bounding box. ",
 	          "pos specifies the corner as a number between 0 and 7. Each bit selects an axis, X, Y, or Z from least- to most-significant. Unset bits select the minimum value for that axis, and set bits select the maximum. ");
 	I_Method1(void, expandBy, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__C5_Vec3_R1,
 	          "Expands the bounding box to include the given coordinate. ",
 	          "If the box is uninitialized, set its min and max extents to v. ");
 	I_Method3(void, expandBy, IN, float, x, IN, float, y, IN, float, z,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__float__float__float,
 	          "Expands the bounding box to include the given coordinate. ",
 	          "If the box is uninitialized, set its min and max extents to Vec3(x,y,z). ");
 	I_Method1(void, expandBy, IN, const osg::BoundingBox &, bb,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__C5_BoundingBox_R1,
 	          "Expands this bounding box to include the given bounding box. ",
 	          "If this box is uninitialized, set it equal to bb. ");
 	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__C5_BoundingSphere_R1,
 	          "Expands this bounding box to include the given sphere. ",
 	          "If this box is uninitialized, set it to include sh. ");
 	I_Method1(osg::BoundingBox, intersect, IN, const osg::BoundingBox &, bb,
+	          Properties::NON_VIRTUAL,
 	          __BoundingBox__intersect__C5_BoundingBox_R1,
 	          "Returns the intesection of this bounding box and the specified bounding box. ",
 	          "");
 	I_Method1(bool, intersects, IN, const osg::BoundingBox &, bb,
+	          Properties::NON_VIRTUAL,
 	          __bool__intersects__C5_BoundingBox_R1,
 	          "Return true if this bounding box intersects the specified bounding box. ",
 	          "");
 	I_Method1(bool, contains, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __bool__contains__C5_Vec3_R1,
 	          "Returns true if this bounding box contains the specified coordinate. ",
 	          "");

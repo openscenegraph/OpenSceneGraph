@@ -64,155 +64,192 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::CullingModeValues)
 	I_EnumLabel(osg::CullSettings::ENABLE_ALL_CULLING);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::CullSettings)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CullSettings)
 	I_Constructor0(____CullSettings,
 	               "",
 	               "");
 	I_Constructor1(IN, osg::ArgumentParser &, arguments,
+	               Properties::NON_EXPLICIT,
 	               ____CullSettings__ArgumentParser_R1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::CullSettings &, cs,
+	               Properties::NON_EXPLICIT,
 	               ____CullSettings__C5_CullSettings_R1,
 	               "",
 	               "");
 	I_Method0(void, setDefaults,
+	          Properties::NON_VIRTUAL,
 	          __void__setDefaults,
 	          "",
 	          "");
 	I_Method1(void, setInheritanceMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setInheritanceMask__unsigned_int,
 	          "Set the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object. ",
 	          "");
 	I_Method0(unsigned int, getInheritanceMask,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getInheritanceMask,
 	          "Get the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object. ",
 	          "");
 	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, settings,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullSettings__C5_CullSettings_R1,
 	          "Set the local cull settings values from specified CullSettings object. ",
 	          "");
 	I_Method1(void, inheritCullSettings, IN, const osg::CullSettings &, settings,
+	          Properties::NON_VIRTUAL,
 	          __void__inheritCullSettings__C5_CullSettings_R1,
 	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");
 	I_Method2(void, inheritCullSettings, IN, const osg::CullSettings &, settings, IN, unsigned int, inheritanceMask,
+	          Properties::NON_VIRTUAL,
 	          __void__inheritCullSettings__C5_CullSettings_R1__unsigned_int,
 	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");
 	I_Method0(void, readEnvironmentalVariables,
+	          Properties::NON_VIRTUAL,
 	          __void__readEnvironmentalVariables,
 	          "read the environmental variables. ",
 	          "");
 	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, arguments,
+	          Properties::NON_VIRTUAL,
 	          __void__readCommandLine__ArgumentParser_R1,
 	          "read the commandline arguments. ",
 	          "");
 	I_Method1(void, setImpostorsActive, IN, bool, active,
+	          Properties::NON_VIRTUAL,
 	          __void__setImpostorsActive__bool,
 	          "Switch the creation of Impostors on or off. ",
 	          "Setting active to false forces the CullVisitor to use the Impostor LOD children for rendering. Setting active to true forces the CullVisitor to create the appropriate pre-rendering stages which render to the ImpostorSprite's texture. ");
 	I_Method0(bool, getImpostorsActive,
+	          Properties::NON_VIRTUAL,
 	          __bool__getImpostorsActive,
 	          "Get whether impostors are active or not. ",
 	          "");
 	I_Method1(void, setImpostorPixelErrorThreshold, IN, float, numPixels,
+	          Properties::NON_VIRTUAL,
 	          __void__setImpostorPixelErrorThreshold__float,
 	          "Set the impostor error threshold. ",
 	          "Used in calculation of whether impostors remain valid. ");
 	I_Method0(float, getImpostorPixelErrorThreshold,
+	          Properties::NON_VIRTUAL,
 	          __float__getImpostorPixelErrorThreshold,
 	          "Get the impostor error threshold. ",
 	          "");
 	I_Method1(void, setDepthSortImpostorSprites, IN, bool, doDepthSort,
+	          Properties::NON_VIRTUAL,
 	          __void__setDepthSortImpostorSprites__bool,
 	          "Set whether ImpostorSprite's should be placed in a depth sorted bin for rendering. ",
 	          "");
 	I_Method0(bool, getDepthSortImpostorSprites,
+	          Properties::NON_VIRTUAL,
 	          __bool__getDepthSortImpostorSprites,
 	          "Get whether ImpostorSprite's are depth sorted bin for rendering. ",
 	          "");
 	I_Method1(void, setNumberOfFrameToKeepImpostorSprites, IN, int, numFrames,
+	          Properties::NON_VIRTUAL,
 	          __void__setNumberOfFrameToKeepImpostorSprites__int,
 	          "Set the number of frames that an ImpostorSprite is kept whilst not being beyond, before being recycled. ",
 	          "");
 	I_Method0(int, getNumberOfFrameToKeepImpostorSprites,
+	          Properties::NON_VIRTUAL,
 	          __int__getNumberOfFrameToKeepImpostorSprites,
 	          "Get the number of frames that an ImpostorSprite is kept whilst not being beyond, before being recycled. ",
 	          "");
 	I_Method1(void, setComputeNearFarMode, IN, osg::CullSettings::ComputeNearFarMode, cnfm,
+	          Properties::NON_VIRTUAL,
 	          __void__setComputeNearFarMode__ComputeNearFarMode,
 	          "",
 	          "");
 	I_Method0(osg::CullSettings::ComputeNearFarMode, getComputeNearFarMode,
+	          Properties::NON_VIRTUAL,
 	          __ComputeNearFarMode__getComputeNearFarMode,
 	          "",
 	          "");
 	I_Method1(void, setNearFarRatio, IN, double, ratio,
+	          Properties::NON_VIRTUAL,
 	          __void__setNearFarRatio__double,
 	          "",
 	          "");
 	I_Method0(double, getNearFarRatio,
+	          Properties::NON_VIRTUAL,
 	          __double__getNearFarRatio,
 	          "",
 	          "");
 	I_Method1(void, setCullingMode, IN, osg::CullSettings::CullingMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullingMode__CullingMode,
 	          "Set the culling mode for the CullVisitor to use. ",
 	          "");
 	I_Method0(osg::CullSettings::CullingMode, getCullingMode,
+	          Properties::NON_VIRTUAL,
 	          __CullingMode__getCullingMode,
 	          "Returns the current CullingMode. ",
 	          "");
 	I_Method1(void, setCullMask, IN, osg::Node::NodeMask, nm,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullMask__osg_Node_NodeMask,
 	          "",
 	          "");
 	I_Method0(osg::Node::NodeMask, getCullMask,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_NodeMask__getCullMask,
 	          "",
 	          "");
 	I_Method1(void, setCullMaskLeft, IN, osg::Node::NodeMask, nm,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullMaskLeft__osg_Node_NodeMask,
 	          "",
 	          "");
 	I_Method0(osg::Node::NodeMask, getCullMaskLeft,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_NodeMask__getCullMaskLeft,
 	          "",
 	          "");
 	I_Method1(void, setCullMaskRight, IN, osg::Node::NodeMask, nm,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullMaskRight__osg_Node_NodeMask,
 	          "",
 	          "");
 	I_Method0(osg::Node::NodeMask, getCullMaskRight,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_NodeMask__getCullMaskRight,
 	          "",
 	          "");
 	I_Method1(void, setLODScale, IN, float, bias,
+	          Properties::NON_VIRTUAL,
 	          __void__setLODScale__float,
 	          "Set the LOD bias for the CullVisitor to use. ",
 	          "");
 	I_Method0(float, getLODScale,
+	          Properties::NON_VIRTUAL,
 	          __float__getLODScale,
 	          "Get the LOD bias. ",
 	          "");
 	I_Method1(void, setSmallFeatureCullingPixelSize, IN, float, value,
+	          Properties::NON_VIRTUAL,
 	          __void__setSmallFeatureCullingPixelSize__float,
 	          "Set the Small Feature Culling Pixel Size. ",
 	          "");
 	I_Method0(float, getSmallFeatureCullingPixelSize,
+	          Properties::NON_VIRTUAL,
 	          __float__getSmallFeatureCullingPixelSize,
 	          "Get the Small Feature Culling Pixel Size. ",
 	          "");
 	I_Method1(void, setClampProjectionMatrixCallback, IN, osg::CullSettings::ClampProjectionMatrixCallback *, cpmc,
+	          Properties::NON_VIRTUAL,
 	          __void__setClampProjectionMatrixCallback__ClampProjectionMatrixCallback_P1,
 	          "set the ClampProjectionMatrixCallback. ",
 	          "");
 	I_Method0(osg::CullSettings::ClampProjectionMatrixCallback *, getClampProjectionMatrixCallback,
+	          Properties::NON_VIRTUAL,
 	          __ClampProjectionMatrixCallback_P1__getClampProjectionMatrixCallback,
 	          "get the non const ClampProjectionMatrixCallback. ",
 	          "");
 	I_Method0(const osg::CullSettings::ClampProjectionMatrixCallback *, getClampProjectionMatrixCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_ClampProjectionMatrixCallback_P1__getClampProjectionMatrixCallback,
 	          "get the const ClampProjectionMatrixCallback. ",
 	          "");
@@ -269,10 +306,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CullSettings::ClampProjectionMatrixCallback
 	               "",
 	               "");
 	I_Method3(bool, clampProjectionMatrixImplementation, IN, osg::Matrixf &, projection, IN, double &, znear, IN, double &, zfar,
+	          Properties::PURE_VIRTUAL,
 	          __bool__clampProjectionMatrixImplementation__osg_Matrixf_R1__double_R1__double_R1,
 	          "",
 	          "");
 	I_Method3(bool, clampProjectionMatrixImplementation, IN, osg::Matrixd &, projection, IN, double &, znear, IN, double &, zfar,
+	          Properties::PURE_VIRTUAL,
 	          __bool__clampProjectionMatrixImplementation__osg_Matrixd_R1__double_R1__double_R1,
 	          "",
 	          "");

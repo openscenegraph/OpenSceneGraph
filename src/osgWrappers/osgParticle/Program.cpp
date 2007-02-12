@@ -33,18 +33,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Program)
 	                           "",
 	                           "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");

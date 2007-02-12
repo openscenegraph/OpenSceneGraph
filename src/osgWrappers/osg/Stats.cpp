@@ -26,9 +26,10 @@ TYPE_NAME_ALIAS(std::vector< osg::Stats::AttributeMap >, osg::Stats::AttributeMa
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  bool >, osg::Stats::CollectMap);
 
-BEGIN_OBJECT_REFLECTOR(osg::Stats)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Stats)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, const std::string &, name,
+	               Properties::NON_EXPLICIT,
 	               ____Stats__C5_std_string_R1,
 	               "",
 	               "");
@@ -37,62 +38,77 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	               "",
 	               "");
 	I_Method1(void, setName, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
 	          __void__setName__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getName,
 	          "",
 	          "");
 	I_Method1(void, allocate, IN, unsigned int, numberOfFrames,
+	          Properties::NON_VIRTUAL,
 	          __void__allocate__unsigned_int,
 	          "",
 	          "");
 	I_Method0(int, getEarliestFrameNumber,
+	          Properties::NON_VIRTUAL,
 	          __int__getEarliestFrameNumber,
 	          "",
 	          "");
 	I_Method0(int, getLatestFrameNumber,
+	          Properties::NON_VIRTUAL,
 	          __int__getLatestFrameNumber,
 	          "",
 	          "");
 	I_Method3(bool, setAttribute, IN, int, frameNumber, IN, const std::string &, attributeName, IN, double, value,
+	          Properties::NON_VIRTUAL,
 	          __bool__setAttribute__int__C5_std_string_R1__double,
 	          "",
 	          "");
 	I_Method3(bool, getAttribute, IN, int, frameNumber, IN, const std::string &, attributeName, IN, double &, value,
+	          Properties::NON_VIRTUAL,
 	          __bool__getAttribute__int__C5_std_string_R1__double_R1,
 	          "",
 	          "");
 	I_MethodWithDefaults3(bool, getAveragedAttribute, IN, const std::string &, attributeName, , IN, double &, value, , IN, bool, averageInInverseSpace, false,
+	                      Properties::NON_VIRTUAL,
 	                      __bool__getAveragedAttribute__C5_std_string_R1__double_R1__bool,
 	                      "",
 	                      "");
 	I_MethodWithDefaults5(bool, getAveragedAttribute, IN, int, startFrameNumber, , IN, int, endFrameNumber, , IN, const std::string &, attributeName, , IN, double &, value, , IN, bool, averageInInverseSpace, false,
+	                      Properties::NON_VIRTUAL,
 	                      __bool__getAveragedAttribute__int__int__C5_std_string_R1__double_R1__bool,
 	                      "",
 	                      "");
 	I_Method1(osg::Stats::AttributeMap &, getAttributeMap, IN, int, frameNumber,
+	          Properties::NON_VIRTUAL,
 	          __AttributeMap_R1__getAttributeMap__int,
 	          "",
 	          "");
 	I_Method1(const osg::Stats::AttributeMap &, getAttributeMap, IN, int, frameNumber,
+	          Properties::NON_VIRTUAL,
 	          __C5_AttributeMap_R1__getAttributeMap__int,
 	          "",
 	          "");
 	I_Method2(void, collectStats, IN, const std::string &, str, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__collectStats__C5_std_string_R1__bool,
 	          "",
 	          "");
 	I_Method1(bool, collectStats, IN, const std::string &, str,
+	          Properties::NON_VIRTUAL,
 	          __bool__collectStats__C5_std_string_R1,
 	          "",
 	          "");
 	I_MethodWithDefaults2(void, report, IN, std::ostream &, out, , IN, const char *, indent, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__report__std_ostream_R1__C5_char_P1,
 	                      "",
 	                      "");
 	I_MethodWithDefaults3(void, report, IN, std::ostream &, out, , IN, unsigned int, frameNumber, , IN, const char *, indent, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__report__std_ostream_R1__unsigned_int__C5_char_P1,
 	                      "",
 	                      "");

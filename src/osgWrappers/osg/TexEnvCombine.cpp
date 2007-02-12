@@ -59,7 +59,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::OperandParam)
 	I_EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_ALPHA);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexEnvCombine,
 	               "",
@@ -69,182 +69,227 @@ BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "Return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "Return the name of the attribute's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "Return the name of the attribute's class type. ",
 	          "");
 	I_Method0(osg::StateAttribute::Type, getType,
+	          Properties::VIRTUAL,
 	          __Type__getType,
 	          "Return the Type identifier of the attribute's class type. ",
 	          "");
 	I_Method0(bool, isTextureAttribute,
+	          Properties::VIRTUAL,
 	          __bool__isTextureAttribute,
 	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::VIRTUAL,
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
 	I_Method1(void, setCombine_RGB, IN, GLint, cm,
+	          Properties::NON_VIRTUAL,
 	          __void__setCombine_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setCombine_Alpha, IN, GLint, cm,
+	          Properties::NON_VIRTUAL,
 	          __void__setCombine_Alpha__GLint,
 	          "",
 	          "");
 	I_Method0(GLint, getCombine_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getCombine_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getCombine_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getCombine_Alpha,
 	          "",
 	          "");
 	I_Method1(void, setSource0_RGB, IN, GLint, sp,
+	          Properties::NON_VIRTUAL,
 	          __void__setSource0_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setSource1_RGB, IN, GLint, sp,
+	          Properties::NON_VIRTUAL,
 	          __void__setSource1_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setSource2_RGB, IN, GLint, sp,
+	          Properties::NON_VIRTUAL,
 	          __void__setSource2_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setSource0_Alpha, IN, GLint, sp,
+	          Properties::NON_VIRTUAL,
 	          __void__setSource0_Alpha__GLint,
 	          "",
 	          "");
 	I_Method1(void, setSource1_Alpha, IN, GLint, sp,
+	          Properties::NON_VIRTUAL,
 	          __void__setSource1_Alpha__GLint,
 	          "",
 	          "");
 	I_Method1(void, setSource2_Alpha, IN, GLint, sp,
+	          Properties::NON_VIRTUAL,
 	          __void__setSource2_Alpha__GLint,
 	          "",
 	          "");
 	I_Method0(GLint, getSource0_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getSource0_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getSource1_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getSource1_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getSource2_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getSource2_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getSource0_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getSource0_Alpha,
 	          "",
 	          "");
 	I_Method0(GLint, getSource1_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getSource1_Alpha,
 	          "",
 	          "");
 	I_Method0(GLint, getSource2_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getSource2_Alpha,
 	          "",
 	          "");
 	I_Method1(void, setOperand0_RGB, IN, GLint, op,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperand0_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setOperand1_RGB, IN, GLint, op,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperand1_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setOperand2_RGB, IN, GLint, op,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperand2_RGB__GLint,
 	          "",
 	          "");
 	I_Method1(void, setOperand0_Alpha, IN, GLint, op,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperand0_Alpha__GLint,
 	          "",
 	          "");
 	I_Method1(void, setOperand1_Alpha, IN, GLint, op,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperand1_Alpha__GLint,
 	          "",
 	          "");
 	I_Method1(void, setOperand2_Alpha, IN, GLint, op,
+	          Properties::NON_VIRTUAL,
 	          __void__setOperand2_Alpha__GLint,
 	          "",
 	          "");
 	I_Method0(GLint, getOperand0_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getOperand0_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getOperand1_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getOperand1_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getOperand2_RGB,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getOperand2_RGB,
 	          "",
 	          "");
 	I_Method0(GLint, getOperand0_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getOperand0_Alpha,
 	          "",
 	          "");
 	I_Method0(GLint, getOperand1_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getOperand1_Alpha,
 	          "",
 	          "");
 	I_Method0(GLint, getOperand2_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __GLint__getOperand2_Alpha,
 	          "",
 	          "");
 	I_Method1(void, setScale_RGB, IN, float, scale,
+	          Properties::NON_VIRTUAL,
 	          __void__setScale_RGB__float,
 	          "",
 	          "");
 	I_Method1(void, setScale_Alpha, IN, float, scale,
+	          Properties::NON_VIRTUAL,
 	          __void__setScale_Alpha__float,
 	          "",
 	          "");
 	I_Method0(float, getScale_RGB,
+	          Properties::NON_VIRTUAL,
 	          __float__getScale_RGB,
 	          "",
 	          "");
 	I_Method0(float, getScale_Alpha,
+	          Properties::NON_VIRTUAL,
 	          __float__getScale_Alpha,
 	          "",
 	          "");
 	I_Method1(void, setConstantColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setConstantColor__C5_Vec4_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getConstantColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_Vec4_R1__getConstantColor,
 	          "",
 	          "");
 	I_Method1(void, setConstantColorAsLightDirection, IN, const osg::Vec3 &, direction,
+	          Properties::NON_VIRTUAL,
 	          __void__setConstantColorAsLightDirection__C5_Vec3_R1,
 	          "Set the constant color attribute to the given light direction for use with DOT3 combine operation. ",
 	          "");
 	I_Method0(osg::Vec3, getConstantColorAsLightDirection,
+	          Properties::NON_VIRTUAL,
 	          __Vec3__getConstantColorAsLightDirection,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");

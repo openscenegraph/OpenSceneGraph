@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_BaseType(osgSim::ElevationRange);
@@ -39,22 +39,27 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
@@ -65,20 +70,23 @@ BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
 	               "",
 	               "");
 	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setAzimuthRange__float__float__float,
 	                      "",
 	                      "");
 	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle,
+	          Properties::NON_VIRTUAL,
 	          __void__getAzimuthRange__float_R1__float_R1__float_R1,
 	          "",
 	          "");
 	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
 	          __float__azimSector__C5_osg_Vec3_R1,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::AzimSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_Constructor0(____AzimSector,
@@ -93,28 +101,33 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ConeSector)
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____ConeSector,
 	               "",
@@ -128,42 +141,52 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis,
+	          Properties::NON_VIRTUAL,
 	          __void__setAxis__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getAxis,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getAxis,
 	          "",
 	          "");
 	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setAngle__float__float,
 	                      "",
 	                      "");
 	I_Method0(float, getAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getAngle,
 	          "",
 	          "");
 	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getFadeAngle,
 	          "",
 	          "");
@@ -178,7 +201,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____DirectionalSector,
 	               "",
@@ -192,66 +215,82 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
+	          Properties::NON_VIRTUAL,
 	          __void__setDirection__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getDirection,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getDirection,
 	          "",
 	          "");
 	I_Method1(void, setHorizLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
 	          __void__setHorizLobeAngle__float,
 	          "",
 	          "");
 	I_Method0(float, getHorizLobeAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getHorizLobeAngle,
 	          "",
 	          "");
 	I_Method1(void, setLobeRollAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
 	          __void__setLobeRollAngle__float,
 	          "",
 	          "");
 	I_Method0(float, getLobeRollAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getLobeRollAngle,
 	          "",
 	          "");
 	I_Method1(void, setVertLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertLobeAngle__float,
 	          "",
 	          "");
 	I_Method0(float, getVertLobeAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getVertLobeAngle,
 	          "",
 	          "");
 	I_Method1(void, setFadeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
 	          __void__setFadeAngle__float,
 	          "",
 	          "");
 	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getFadeAngle,
 	          "",
 	          "");
 	I_Method0(void, computeMatrix,
+	          Properties::NON_VIRTUAL,
 	          __void__computeMatrix,
 	          "",
 	          "");
@@ -277,22 +316,27 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
 	               "",
 	               "");
 	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setElevationRange__float__float__float,
 	                      "",
 	                      "");
 	I_Method0(float, getMinElevation,
+	          Properties::NON_VIRTUAL,
 	          __float__getMinElevation,
 	          "",
 	          "");
 	I_Method0(float, getMaxElevation,
+	          Properties::NON_VIRTUAL,
 	          __float__getMaxElevation,
 	          "",
 	          "");
 	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
 	          __float__getFadeAngle,
 	          "",
 	          "");
 	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
 	          __float__elevationSector__C5_osg_Vec3_R1,
 	          "",
 	          "");
@@ -307,7 +351,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ElevationSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::ElevationRange);
 	I_Constructor0(____ElevationSector,
@@ -322,22 +366,27 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
@@ -353,14 +402,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
 	                           "",
 	                           "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");

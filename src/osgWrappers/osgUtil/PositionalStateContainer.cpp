@@ -32,52 +32,63 @@ TYPE_NAME_ALIAS(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >
 
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >, osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	I_BaseType(osg::Object);
 	I_Constructor0(____PositionalStateContainer,
 	               "",
 	               "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
 	I_Method0(osgUtil::PositionalStateContainer::AttrMatrixList &, getAttrMatrixList,
+	          Properties::NON_VIRTUAL,
 	          __AttrMatrixList_R1__getAttrMatrixList,
 	          "",
 	          "");
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          Properties::VIRTUAL,
 	          __void__addPositionedAttribute__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
 	          "",
 	          "");
 	I_Method0(osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap &, getTexUnitAttrMatrixListMap,
+	          Properties::NON_VIRTUAL,
 	          __TexUnitAttrMatrixListMap_R1__getTexUnitAttrMatrixListMap,
 	          "",
 	          "");
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          Properties::VIRTUAL,
 	          __void__addPositionedTextureAttribute__unsigned_int__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
 	          "",
 	          "");
 	I_MethodWithDefaults3(void, draw, IN, osg::State &, state, , IN, osgUtil::RenderLeaf *&, previous, , IN, const osg::Matrix *, postMultMatrix, 0,
+	                      Properties::VIRTUAL,
 	                      __void__draw__osg_State_R1__RenderLeaf_P1R1__C5_osg_Matrix_P1,
 	                      "",
 	                      "");
@@ -96,26 +107,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
 	               "",
 	               "");
 	I_Constructor1(IN, osg::RefMatrix *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osg::RefMatrix *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osg::RefMatrix *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osg::RefMatrix > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

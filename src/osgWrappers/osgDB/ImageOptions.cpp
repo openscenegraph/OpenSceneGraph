@@ -34,12 +34,13 @@ BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageSamplingMode)
 	I_EnumLabel(osgDB::ImageOptions::CUBIC);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	I_BaseType(osgDB::ReaderWriter::Options);
 	I_Constructor0(____ImageOptions,
 	               "",
 	               "");
 	I_Constructor1(IN, const std::string &, str,
+	               Properties::NON_EXPLICIT,
 	               ____ImageOptions__C5_std_string_R1,
 	               "",
 	               "");
@@ -48,26 +49,32 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
 	          __void__init,
 	          "",
 	          "");
@@ -88,6 +95,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
 	               "",
 	               "");
 	I_Method4(void, set, IN, unsigned int, x, IN, unsigned int, y, IN, unsigned int, w, IN, unsigned int, h,
+	          Properties::NON_VIRTUAL,
 	          __void__set__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
 	          "",
 	          "");
@@ -102,6 +110,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
 	               "",
 	               "");
 	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h,
+	          Properties::NON_VIRTUAL,
 	          __void__set__double__double__double__double,
 	          "",
 	          "");
@@ -111,12 +120,13 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
 	I_PublicMemberProperty(double, windowHeight);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TexCoordRange,
 	               "",
 	               "");
 	I_Method4(void, set, IN, double, x, IN, double, y, IN, double, w, IN, double, h,
+	          Properties::NON_VIRTUAL,
 	          __void__set__double__double__double__double,
 	          "",
 	          "");

@@ -27,7 +27,7 @@
 
 TYPE_NAME_ALIAS(std::multiset< osgUtil::LineSegmentIntersector::Intersection >, osgUtil::LineSegmentIntersector::Intersections);
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	I_BaseType(osgUtil::Intersector);
 	I_Constructor2(IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end,
 	               ____LineSegmentIntersector__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
@@ -42,38 +42,47 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	               "Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1). ",
 	               "In PROJECTION coordinates (clip space cube) creates a start value of (x,y,-1) and end value of (x,y,1). In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1). ");
 	I_Method1(void, insertIntersection, IN, const osgUtil::LineSegmentIntersector::Intersection &, intersection,
+	          Properties::NON_VIRTUAL,
 	          __void__insertIntersection__C5_Intersection_R1,
 	          "",
 	          "");
 	I_Method0(osgUtil::LineSegmentIntersector::Intersections &, getIntersections,
+	          Properties::NON_VIRTUAL,
 	          __Intersections_R1__getIntersections,
 	          "",
 	          "");
 	I_Method0(osgUtil::LineSegmentIntersector::Intersection, getFirstIntersection,
+	          Properties::NON_VIRTUAL,
 	          __Intersection__getFirstIntersection,
 	          "",
 	          "");
 	I_Method1(osgUtil::Intersector *, clone, IN, osgUtil::IntersectionVisitor &, iv,
+	          Properties::VIRTUAL,
 	          __Intersector_P1__clone__osgUtil_IntersectionVisitor_R1,
 	          "",
 	          "");
 	I_Method1(bool, enter, IN, const osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __bool__enter__C5_osg_Node_R1,
 	          "",
 	          "");
 	I_Method0(void, leave,
+	          Properties::VIRTUAL,
 	          __void__leave,
 	          "",
 	          "");
 	I_Method2(void, intersect, IN, osgUtil::IntersectionVisitor &, iv, IN, osg::Drawable *, drawable,
+	          Properties::VIRTUAL,
 	          __void__intersect__osgUtil_IntersectionVisitor_R1__osg_Drawable_P1,
 	          "",
 	          "");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
 	I_Method0(bool, containsIntersections,
+	          Properties::VIRTUAL,
 	          __bool__containsIntersections,
 	          "",
 	          "");
@@ -94,18 +103,22 @@ BEGIN_VALUE_REFLECTOR(osgUtil::LineSegmentIntersector::Intersection)
 	               "",
 	               "");
 	I_Method0(const osg::Vec3d &, getLocalIntersectPoint,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3d_R1__getLocalIntersectPoint,
 	          "",
 	          "");
 	I_Method0(osg::Vec3d, getWorldIntersectPoint,
+	          Properties::NON_VIRTUAL,
 	          __osg_Vec3d__getWorldIntersectPoint,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getLocalIntersectNormal,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getLocalIntersectNormal,
 	          "",
 	          "");
 	I_Method0(osg::Vec3, getWorldIntersectNormal,
+	          Properties::NON_VIRTUAL,
 	          __osg_Vec3__getWorldIntersectNormal,
 	          "",
 	          "");

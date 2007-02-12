@@ -33,26 +33,32 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::VariableRateCounter)
 	                           "",
 	                           "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const osgParticle::rangef &, getRateRange,
+	          Properties::NON_VIRTUAL,
 	          __C5_rangef_R1__getRateRange,
 	          "",
 	          "");
 	I_Method1(void, setRateRange, IN, const osgParticle::rangef &, r,
+	          Properties::NON_VIRTUAL,
 	          __void__setRateRange__C5_rangef_R1,
 	          "",
 	          "");
 	I_Method2(void, setRateRange, IN, float, minrange, IN, float, maxrange,
+	          Properties::NON_VIRTUAL,
 	          __void__setRateRange__float__float,
 	          "",
 	          "");

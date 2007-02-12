@@ -37,12 +37,13 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_BaseType(osgUtil::RenderBin);
 	I_Constructor0(____RenderStage,
 	               "",
 	               "");
 	I_Constructor1(IN, osgUtil::RenderBin::SortMode, mode,
+	               Properties::NON_EXPLICIT,
 	               ____RenderStage__SortMode,
 	               "",
 	               "");
@@ -51,266 +52,332 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
 	I_Method1(void, setDrawBuffer, IN, GLenum, buffer,
+	          Properties::NON_VIRTUAL,
 	          __void__setDrawBuffer__GLenum,
 	          "Set the draw buffer used at the start of each frame draw. ",
 	          "");
 	I_Method0(GLenum, getDrawBuffer,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getDrawBuffer,
 	          "Get the draw buffer used at the start of each frame draw. ",
 	          "");
 	I_Method1(void, setReadBuffer, IN, GLenum, buffer,
+	          Properties::NON_VIRTUAL,
 	          __void__setReadBuffer__GLenum,
 	          "Set the read buffer for any required copy operations to use. ",
 	          "");
 	I_Method0(GLenum, getReadBuffer,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getReadBuffer,
 	          "Get the read buffer for any required copy operations to use. ",
 	          "");
 	I_Method1(void, setViewport, IN, osg::Viewport *, viewport,
+	          Properties::NON_VIRTUAL,
 	          __void__setViewport__osg_Viewport_P1,
 	          "Set the viewport. ",
 	          "");
 	I_Method0(const osg::Viewport *, getViewport,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Viewport_P1__getViewport,
 	          "Get the const viewport. ",
 	          "");
 	I_Method0(osg::Viewport *, getViewport,
+	          Properties::NON_VIRTUAL,
 	          __osg_Viewport_P1__getViewport,
 	          "Get the viewport. ",
 	          "");
 	I_Method1(void, setClearMask, IN, GLbitfield, mask,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearMask__GLbitfield,
 	          "Set the clear mask used in glClear(. ",
 	          ".). Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. ");
 	I_Method0(GLbitfield, getClearMask,
+	          Properties::NON_VIRTUAL,
 	          __GLbitfield__getClearMask,
 	          "Get the clear mask. ",
 	          "");
 	I_Method1(void, setColorMask, IN, osg::ColorMask *, cm,
+	          Properties::NON_VIRTUAL,
 	          __void__setColorMask__osg_ColorMask_P1,
 	          "",
 	          "");
 	I_Method0(osg::ColorMask *, getColorMask,
+	          Properties::NON_VIRTUAL,
 	          __osg_ColorMask_P1__getColorMask,
 	          "",
 	          "");
 	I_Method0(const osg::ColorMask *, getColorMask,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_ColorMask_P1__getColorMask,
 	          "",
 	          "");
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearColor__C5_osg_Vec4_R1,
 	          "Set the clear color used in glClearColor(. ",
 	          ".). glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true ");
 	I_Method0(const osg::Vec4 &, getClearColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getClearColor,
 	          "Get the clear color. ",
 	          "");
 	I_Method1(void, setClearAccum, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearAccum__C5_osg_Vec4_R1,
 	          "Set the clear accum used in glClearAccum(. ",
 	          ".). glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true. ");
 	I_Method0(const osg::Vec4 &, getClearAccum,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getClearAccum,
 	          "Get the clear accum. ",
 	          "");
 	I_Method1(void, setClearDepth, IN, double, depth,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearDepth__double,
 	          "Set the clear depth used in glClearDepth(. ",
 	          ".). Defaults to 1.0 glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true. ");
 	I_Method0(double, getClearDepth,
+	          Properties::NON_VIRTUAL,
 	          __double__getClearDepth,
 	          "Get the clear depth. ",
 	          "");
 	I_Method1(void, setClearStencil, IN, int, stencil,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearStencil__int,
 	          "Set the clear stencil value used in glClearStencil(). ",
 	          "Defaults to 0; glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true ");
 	I_Method0(int, getClearStencil,
+	          Properties::NON_VIRTUAL,
 	          __int__getClearStencil,
 	          "Get the clear color. ",
 	          "");
 	I_Method1(void, setCamera, IN, osg::Camera *, camera,
+	          Properties::NON_VIRTUAL,
 	          __void__setCamera__osg_Camera_P1,
 	          "",
 	          "");
 	I_Method0(osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
 	          __osg_Camera_P1__getCamera,
 	          "",
 	          "");
 	I_Method0(const osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Camera_P1__getCamera,
 	          "",
 	          "");
 	I_Method1(void, setCameraRequiresSetUp, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setCameraRequiresSetUp__bool,
 	          "",
 	          "");
 	I_Method0(bool, getCameraRequiresSetUp,
+	          Properties::NON_VIRTUAL,
 	          __bool__getCameraRequiresSetUp,
 	          "",
 	          "");
 	I_Method1(void, runCameraSetUp, IN, osg::RenderInfo &, renderInfo,
+	          Properties::NON_VIRTUAL,
 	          __void__runCameraSetUp__osg_RenderInfo_R1,
 	          "Attempt the set the RenderStage from the Camera settings. ",
 	          "");
 	I_MethodWithDefaults3(void, setTexture, IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setTexture__osg_Texture_P1__unsigned_int__unsigned_int,
 	                      "",
 	                      "");
 	I_Method0(osg::Texture *, getTexture,
+	          Properties::NON_VIRTUAL,
 	          __osg_Texture_P1__getTexture,
 	          "",
 	          "");
 	I_Method1(void, setImage, IN, osg::Image *, image,
+	          Properties::NON_VIRTUAL,
 	          __void__setImage__osg_Image_P1,
 	          "",
 	          "");
 	I_Method0(osg::Image *, getImage,
+	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImage,
 	          "",
 	          "");
 	I_Method1(void, setImageReadPixelFormat, IN, GLenum, format,
+	          Properties::NON_VIRTUAL,
 	          __void__setImageReadPixelFormat__GLenum,
 	          "",
 	          "");
 	I_Method0(GLenum, getImageReadPixelFormat,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getImageReadPixelFormat,
 	          "",
 	          "");
 	I_Method1(void, setImageReadPixelDataType, IN, GLenum, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setImageReadPixelDataType__GLenum,
 	          "",
 	          "");
 	I_Method0(GLenum, getImageReadPixelDataType,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getImageReadPixelDataType,
 	          "",
 	          "");
 	I_Method1(void, setFrameBufferObject, IN, osg::FrameBufferObject *, fbo,
+	          Properties::NON_VIRTUAL,
 	          __void__setFrameBufferObject__osg_FrameBufferObject_P1,
 	          "",
 	          "");
 	I_Method0(osg::FrameBufferObject *, getFrameBufferObject,
+	          Properties::NON_VIRTUAL,
 	          __osg_FrameBufferObject_P1__getFrameBufferObject,
 	          "",
 	          "");
 	I_Method0(const osg::FrameBufferObject *, getFrameBufferObject,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_FrameBufferObject_P1__getFrameBufferObject,
 	          "",
 	          "");
 	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context,
+	          Properties::NON_VIRTUAL,
 	          __void__setGraphicsContext__osg_GraphicsContext_P1,
 	          "",
 	          "");
 	I_Method0(osg::GraphicsContext *, getGraphicsContext,
+	          Properties::NON_VIRTUAL,
 	          __osg_GraphicsContext_P1__getGraphicsContext,
 	          "",
 	          "");
 	I_Method0(const osg::GraphicsContext *, getGraphicsContext,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_GraphicsContext_P1__getGraphicsContext,
 	          "",
 	          "");
 	I_Method1(void, setInheritedPositionalStateContainerMatrix, IN, const osg::Matrix &, matrix,
+	          Properties::NON_VIRTUAL,
 	          __void__setInheritedPositionalStateContainerMatrix__C5_osg_Matrix_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Matrix &, getInheritedPositionalStateContainerMatrix,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Matrix_R1__getInheritedPositionalStateContainerMatrix,
 	          "",
 	          "");
 	I_Method1(void, setInheritedPositionalStateContainer, IN, osgUtil::PositionalStateContainer *, rsl,
+	          Properties::NON_VIRTUAL,
 	          __void__setInheritedPositionalStateContainer__PositionalStateContainer_P1,
 	          "",
 	          "");
 	I_Method0(osgUtil::PositionalStateContainer *, getInheritedPositionalStateContainer,
+	          Properties::NON_VIRTUAL,
 	          __PositionalStateContainer_P1__getInheritedPositionalStateContainer,
 	          "",
 	          "");
 	I_Method1(void, setPositionalStateContainer, IN, osgUtil::PositionalStateContainer *, rsl,
+	          Properties::NON_VIRTUAL,
 	          __void__setPositionalStateContainer__PositionalStateContainer_P1,
 	          "",
 	          "");
 	I_Method0(osgUtil::PositionalStateContainer *, getPositionalStateContainer,
+	          Properties::NON_VIRTUAL,
 	          __PositionalStateContainer_P1__getPositionalStateContainer,
 	          "",
 	          "");
 	I_Method2(void, addPositionedAttribute, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          Properties::VIRTUAL,
 	          __void__addPositionedAttribute__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
 	          "",
 	          "");
 	I_Method3(void, addPositionedTextureAttribute, IN, unsigned int, textureUnit, IN, osg::RefMatrix *, matrix, IN, const osg::StateAttribute *, attr,
+	          Properties::VIRTUAL,
 	          __void__addPositionedTextureAttribute__unsigned_int__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
 	          "",
 	          "");
 	I_Method1(void, copyTexture, IN, osg::RenderInfo &, renderInfo,
+	          Properties::NON_VIRTUAL,
 	          __void__copyTexture__osg_RenderInfo_R1,
 	          "",
 	          "");
 	I_Method0(void, sort,
+	          Properties::VIRTUAL,
 	          __void__sort,
 	          "",
 	          "");
 	I_Method2(void, drawPreRenderStages, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::VIRTUAL,
 	          __void__drawPreRenderStages__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
 	I_Method2(void, draw, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::VIRTUAL,
 	          __void__draw__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
 	I_Method3(void, drawInner, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous, IN, bool &, doCopyTexture,
+	          Properties::VIRTUAL,
 	          __void__drawInner__osg_RenderInfo_R1__RenderLeaf_P1R1__bool_R1,
 	          "",
 	          "");
 	I_Method2(void, drawPostRenderStages, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::VIRTUAL,
 	          __void__drawPostRenderStages__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
 	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
 	I_Method1(void, addToDependencyList, IN, osgUtil::RenderStage *, rs,
+	          Properties::NON_VIRTUAL,
 	          __void__addToDependencyList__RenderStage_P1,
 	          "",
 	          "");
 	I_MethodWithDefaults2(void, addPreRenderStage, IN, osgUtil::RenderStage *, rs, , IN, int, order, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__addPreRenderStage__RenderStage_P1__int,
 	                      "",
 	                      "");
 	I_MethodWithDefaults2(void, addPostRenderStage, IN, osgUtil::RenderStage *, rs, , IN, int, order, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__addPostRenderStage__RenderStage_P1__int,
 	                      "",
 	                      "");
 	I_Method1(bool, getStats, IN, osgUtil::Statistics &, stats,
+	          Properties::NON_VIRTUAL,
 	          __bool__getStats__Statistics_R1,
 	          "Extract stats for current draw list. ",
 	          "");
 	I_Method0(unsigned int, computeNumberOfDynamicRenderLeaves,
+	          Properties::VIRTUAL,
 	          __unsigned_int__computeNumberOfDynamicRenderLeaves,
 	          "Compute the number of dynamic RenderLeaves. ",
 	          "");
 	I_Method2(void, attach, IN, osg::Camera::BufferComponent, buffer, IN, osg::Image *, image,
+	          Properties::NON_VIRTUAL,
 	          __void__attach__osg_Camera_BufferComponent__osg_Image_P1,
 	          "",
 	          "");

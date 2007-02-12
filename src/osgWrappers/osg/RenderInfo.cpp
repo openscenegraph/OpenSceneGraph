@@ -28,6 +28,7 @@ BEGIN_VALUE_REFLECTOR(osg::RenderInfo)
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::RenderInfo &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____RenderInfo__C5_RenderInfo_R1,
 	               "",
 	               "");
@@ -36,42 +37,52 @@ BEGIN_VALUE_REFLECTOR(osg::RenderInfo)
 	               "",
 	               "");
 	I_Method0(unsigned int, getContextID,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getContextID,
 	          "",
 	          "");
 	I_Method1(void, setState, IN, osg::State *, state,
+	          Properties::NON_VIRTUAL,
 	          __void__setState__State_P1,
 	          "",
 	          "");
 	I_Method0(osg::State *, getState,
+	          Properties::NON_VIRTUAL,
 	          __State_P1__getState,
 	          "",
 	          "");
 	I_Method0(const osg::State *, getState,
+	          Properties::NON_VIRTUAL,
 	          __C5_State_P1__getState,
 	          "",
 	          "");
 	I_Method1(void, setView, IN, osg::View *, view,
+	          Properties::NON_VIRTUAL,
 	          __void__setView__View_P1,
 	          "",
 	          "");
 	I_Method0(osg::View *, getView,
+	          Properties::NON_VIRTUAL,
 	          __View_P1__getView,
 	          "",
 	          "");
 	I_Method0(const osg::View *, getView,
+	          Properties::NON_VIRTUAL,
 	          __C5_View_P1__getView,
 	          "",
 	          "");
 	I_Method1(void, setUserData, IN, osg::Referenced *, userData,
+	          Properties::NON_VIRTUAL,
 	          __void__setUserData__Referenced_P1,
 	          "",
 	          "");
 	I_Method0(osg::Referenced *, getUserData,
+	          Properties::NON_VIRTUAL,
 	          __Referenced_P1__getUserData,
 	          "",
 	          "");
 	I_Method0(const osg::Referenced *, getUserData,
+	          Properties::NON_VIRTUAL,
 	          __C5_Referenced_P1__getUserData,
 	          "",
 	          "");

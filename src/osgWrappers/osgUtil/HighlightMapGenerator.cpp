@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::HighlightMapGenerator)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::HighlightMapGenerator)
 	I_BaseType(osgUtil::CubeMapGenerator);
 	I_ConstructorWithDefaults4(IN, const osg::Vec3 &, light_direction, , IN, const osg::Vec4 &, light_color, , IN, float, specular_exponent, , IN, int, texture_size, 64,
 	                           ____HighlightMapGenerator__C5_osg_Vec3_R1__C5_osg_Vec4_R1__float__int,

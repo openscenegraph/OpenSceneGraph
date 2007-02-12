@@ -34,26 +34,32 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
 	          __HeightFieldNode_P1__getHeightFieldNode,
 	          "",
 	          "");
 	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
 	          __C5_HeightFieldNode_P1__getHeightFieldNode,
 	          "",
 	          "");
 	I_Method0(void, initialize,
+	          Properties::PURE_VIRTUAL,
 	          __void__initialize,
 	          "",
 	          "");
 	I_Method0(void, heightFieldHasBeenModified,
+	          Properties::PURE_VIRTUAL,
 	          __void__heightFieldHasBeenModified,
 	          "",
 	          "");
 	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
 	          __void__update__osgUtil_UpdateVisitor_P1,
 	          "",
 	          "");
 	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
 	          __void__cull__osgUtil_CullVisitor_P1,
 	          "",
 	          "");

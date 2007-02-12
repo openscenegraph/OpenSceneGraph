@@ -24,68 +24,83 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osg::View)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::View)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____View,
 	               "",
 	               "");
 	I_Method1(void, setStats, IN, osg::Stats *, stats,
+	          Properties::NON_VIRTUAL,
 	          __void__setStats__osg_Stats_P1,
 	          "Set the Stats object used for collect various frame related timing and scene graph stats. ",
 	          "");
 	I_Method0(osg::Stats *, getStats,
+	          Properties::NON_VIRTUAL,
 	          __osg_Stats_P1__getStats,
 	          "Get the Stats object. ",
 	          "");
 	I_Method0(const osg::Stats *, getStats,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Stats_P1__getStats,
 	          "Get the const Stats object. ",
 	          "");
 	I_Method1(void, setCamera, IN, osg::Camera *, camera,
+	          Properties::NON_VIRTUAL,
 	          __void__setCamera__osg_Camera_P1,
 	          "Set the master camera of the view. ",
 	          "");
 	I_Method0(osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
 	          __osg_Camera_P1__getCamera,
 	          "Get the master camera of the view. ",
 	          "");
 	I_Method0(const osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const master camera of the view. ",
 	          "");
 	I_Method1(bool, addSlave, IN, osg::Camera *, camera,
+	          Properties::NON_VIRTUAL,
 	          __bool__addSlave__osg_Camera_P1,
 	          "",
 	          "");
 	I_Method3(bool, addSlave, IN, osg::Camera *, camera, IN, const osg::Matrix &, projectionOffset, IN, const osg::Matrix &, viewOffse,
+	          Properties::NON_VIRTUAL,
 	          __bool__addSlave__osg_Camera_P1__C5_osg_Matrix_R1__C5_osg_Matrix_R1,
 	          "",
 	          "");
 	I_Method1(bool, removeSlave, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
 	          __bool__removeSlave__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumSlaves,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumSlaves,
 	          "",
 	          "");
 	I_Method1(osg::View::Slave &, getSlave, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
 	          __Slave_R1__getSlave__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::View::Slave &, getSlave, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
 	          __C5_Slave_R1__getSlave__unsigned_int,
 	          "",
 	          "");
 	I_Method1(osg::View::Slave *, findSlaveForCamera, IN, osg::Camera *, camera,
+	          Properties::NON_VIRTUAL,
 	          __Slave_P1__findSlaveForCamera__osg_Camera_P1,
 	          "",
 	          "");
 	I_Method0(void, updateSlaves,
+	          Properties::NON_VIRTUAL,
 	          __void__updateSlaves,
 	          "",
 	          "");
 	I_Method1(void, updateSlave, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __void__updateSlave__unsigned_int,
 	          "",
 	          "");
@@ -113,6 +128,7 @@ BEGIN_VALUE_REFLECTOR(osg::View::Slave)
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::View::Slave &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____Slave__C5_Slave_R1,
 	               "",
 	               "");

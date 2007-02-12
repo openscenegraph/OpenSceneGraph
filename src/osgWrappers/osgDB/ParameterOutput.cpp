@@ -23,6 +23,7 @@
 
 BEGIN_VALUE_REFLECTOR(osgDB::ParameterOutput)
 	I_Constructor1(IN, osgDB::Output &, fw,
+	               Properties::NON_EXPLICIT,
 	               ____ParameterOutput__Output_R1,
 	               "",
 	               "");
@@ -31,14 +32,17 @@ BEGIN_VALUE_REFLECTOR(osgDB::ParameterOutput)
 	               "",
 	               "");
 	I_Method0(void, begin,
+	          Properties::NON_VIRTUAL,
 	          __void__begin,
 	          "",
 	          "");
 	I_Method0(void, newLine,
+	          Properties::NON_VIRTUAL,
 	          __void__newLine,
 	          "",
 	          "");
 	I_Method0(void, end,
+	          Properties::NON_VIRTUAL,
 	          __void__end,
 	          "",
 	          "");

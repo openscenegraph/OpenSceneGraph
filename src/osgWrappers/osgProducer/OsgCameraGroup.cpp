@@ -39,215 +39,267 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplement
 
 TYPE_NAME_ALIAS(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
 
-BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_Constructor0(____OsgCameraGroup,
 	               "",
 	               "");
 	I_Constructor1(IN, Producer::CameraConfig *, cfg,
+	               Properties::NON_EXPLICIT,
 	               ____OsgCameraGroup__Producer_CameraConfig_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const std::string &, configFile,
+	               Properties::NON_EXPLICIT,
 	               ____OsgCameraGroup__C5_std_string_R1,
 	               "",
 	               "");
 	I_Constructor1(IN, osg::ArgumentParser &, arguments,
+	               Properties::NON_EXPLICIT,
 	               ____OsgCameraGroup__osg_ArgumentParser_R1,
 	               "",
 	               "");
 	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au,
+	          Properties::NON_VIRTUAL,
 	          __void__setApplicationUsage__osg_ApplicationUsage_P1,
 	          "",
 	          "");
 	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
 	          __osg_ApplicationUsage_P1__getApplicationUsage,
 	          "",
 	          "");
 	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_ApplicationUsage_P1__getApplicationUsage,
 	          "",
 	          "");
 	I_Method1(void, setGraphicsContextList, IN, osgProducer::OsgCameraGroup::GraphicsContextList &, gcList,
+	          Properties::NON_VIRTUAL,
 	          __void__setGraphicsContextList__GraphicsContextList_R1,
 	          "",
 	          "");
 	I_Method0(osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList,
+	          Properties::NON_VIRTUAL,
 	          __GraphicsContextList_R1__getGraphicsContextList,
 	          "",
 	          "");
 	I_Method0(const osgProducer::OsgCameraGroup::GraphicsContextList &, getGraphicsContextList,
+	          Properties::NON_VIRTUAL,
 	          __C5_GraphicsContextList_R1__getGraphicsContextList,
 	          "",
 	          "");
 	I_Method0(osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList,
+	          Properties::NON_VIRTUAL,
 	          __SceneHandlerList_R1__getSceneHandlerList,
 	          "",
 	          "");
 	I_Method0(const osgProducer::OsgCameraGroup::SceneHandlerList &, getSceneHandlerList,
+	          Properties::NON_VIRTUAL,
 	          __C5_SceneHandlerList_R1__getSceneHandlerList,
 	          "",
 	          "");
 	I_Method1(void, setSceneData, IN, osg::Node *, scene,
+	          Properties::NON_VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,
 	          "Set the scene data to be rendered. ",
 	          " param scene The node to be used as the starting point during the rendering traversal of the scene graph. ");
 	I_Method0(osg::Node *, getSceneData,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getSceneData,
 	          "Get the scene data being used for rendering. ",
 	          "The node being used as the starting point during the rendering traversal of the scene graph. ");
 	I_Method0(const osg::Node *, getSceneData,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Node_P1__getSceneData,
 	          "",
 	          "");
 	I_Method1(void, setSceneDecorator, IN, osg::Group *, decorator,
+	          Properties::NON_VIRTUAL,
 	          __void__setSceneDecorator__osg_Group_P1,
 	          "",
 	          "");
 	I_Method0(osg::Group *, getSceneDecorator,
+	          Properties::NON_VIRTUAL,
 	          __osg_Group_P1__getSceneDecorator,
 	          "",
 	          "");
 	I_Method0(const osg::Group *, getSceneDecorator,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Group_P1__getSceneDecorator,
 	          "",
 	          "");
 	I_Method0(osg::Node *, getTopMostSceneData,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getTopMostSceneData,
 	          "",
 	          "");
 	I_Method0(const osg::Node *, getTopMostSceneData,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Node_P1__getTopMostSceneData,
 	          "",
 	          "");
 	I_Method0(void, updatedSceneData,
+	          Properties::VIRTUAL,
 	          __void__updatedSceneData,
 	          "Update internal structures w.r.t updated scene data. ",
 	          "");
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
+	          Properties::NON_VIRTUAL,
 	          __void__setDisplaySettings__osg_DisplaySettings_P1,
 	          "",
 	          "");
 	I_Method0(osg::DisplaySettings *, getDisplaySettings,
+	          Properties::NON_VIRTUAL,
 	          __osg_DisplaySettings_P1__getDisplaySettings,
 	          "",
 	          "");
 	I_Method0(const osg::DisplaySettings *, getDisplaySettings,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
 	          "",
 	          "");
 	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, cs,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullSettings__C5_osg_CullSettings_R1,
 	          "",
 	          "");
 	I_Method0(osg::CullSettings &, getCullSettings,
+	          Properties::NON_VIRTUAL,
 	          __osg_CullSettings_R1__getCullSettings,
 	          "",
 	          "");
 	I_Method0(const osg::CullSettings &, getCullSettings,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_CullSettings_R1__getCullSettings,
 	          "",
 	          "");
 	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
+	          Properties::NON_VIRTUAL,
 	          __void__setFrameStamp__osg_FrameStamp_P1,
 	          "",
 	          "");
 	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
 	          __osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method1(void, setGlobalStateSet, IN, osg::StateSet *, sset,
+	          Properties::NON_VIRTUAL,
 	          __void__setGlobalStateSet__osg_StateSet_P1,
 	          "",
 	          "");
 	I_Method0(osg::StateSet *, getGlobalStateSet,
+	          Properties::NON_VIRTUAL,
 	          __osg_StateSet_P1__getGlobalStateSet,
 	          "",
 	          "");
 	I_Method0(const osg::StateSet *, getGlobalStateSet,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_StateSet_P1__getGlobalStateSet,
 	          "",
 	          "");
 	I_Method1(void, setClearColor, IN, const osg::Vec4 &, clearColor,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearColor__C5_osg_Vec4_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getClearColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getClearColor,
 	          "",
 	          "");
 	I_Method1(void, setLODScale, IN, float, scale,
+	          Properties::NON_VIRTUAL,
 	          __void__setLODScale__float,
 	          "",
 	          "");
 	I_Method0(float, getLODScale,
+	          Properties::NON_VIRTUAL,
 	          __float__getLODScale,
 	          "",
 	          "");
 	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__setFusionDistance__osgUtil_SceneView_FusionDistanceMode__float,
 	                      "",
 	                      "");
 	I_Method1(void, setRealizeSceneViewOptions, IN, unsigned int, options,
+	          Properties::NON_VIRTUAL,
 	          __void__setRealizeSceneViewOptions__unsigned_int,
 	          "Set the options to set up SceneView with, see osgUtil::SceneView::Options for available options. ",
 	          "");
 	I_Method0(unsigned int, getRealizeSceneViewOptions,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getRealizeSceneViewOptions,
 	          "Get the options to set up SceneView with. ",
 	          "");
 	I_Method1(void, setEnableProcessorAffinityHint, IN, bool, enableProccessAffinityHint,
+	          Properties::NON_VIRTUAL,
 	          __void__setEnableProcessorAffinityHint__bool,
 	          "Set whether processor affinity should be enable where supported by hardware. ",
 	          "");
 	I_Method0(bool, getEnableProcessorAffinityHint,
+	          Properties::NON_VIRTUAL,
 	          __bool__getEnableProcessorAffinityHint,
 	          "Get whether processor affinity should be enable where supported by hardware. ",
 	          "");
 	I_Method1(void, setRealizeCallback, IN, osgProducer::OsgCameraGroup::RealizeCallback *, cb,
+	          Properties::NON_VIRTUAL,
 	          __void__setRealizeCallback__RealizeCallback_P1,
 	          "Set the realize callback to use when once the render surfaces are realized. ",
 	          "");
 	I_Method0(osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback,
+	          Properties::NON_VIRTUAL,
 	          __RealizeCallback_P1__getRealizeCallback,
 	          "Get the realize callback. ",
 	          "");
 	I_Method0(const osgProducer::OsgCameraGroup::RealizeCallback *, getRealizeCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_RealizeCallback_P1__getRealizeCallback,
 	          "Get the const realize callback. ",
 	          "");
 	I_Method0(void, advance,
+	          Properties::NON_VIRTUAL,
 	          __void__advance,
 	          "",
 	          "");
 	I_Method1(bool, realize, IN, osgProducer::OsgCameraGroup::ThreadingModel, thread_model,
+	          Properties::VIRTUAL,
 	          __bool__realize__ThreadingModel,
 	          "Set the threading model and then call realize(). ",
 	          "");
 	I_Method0(bool, realize,
+	          Properties::VIRTUAL,
 	          __bool__realize,
 	          "Realize the render surfaces (OpenGL graphics) and various threads, and call any realize callbacks. ",
 	          "");
 	I_Method1(void, setView, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
 	          __void__setView__C5_osg_Matrixd_R1,
 	          "Set the model view matrix of the camera group, by individually set all the camera groups's camera. ",
 	          "");
 	I_Method0(osg::Matrixd, getViewMatrix,
+	          Properties::NON_VIRTUAL,
 	          __osg_Matrixd__getViewMatrix,
 	          "Get the model view martrix of the camera group, taking its value for camera 0. ",
 	          "");
 	I_Method0(void, sync,
+	          Properties::VIRTUAL,
 	          __void__sync,
 	          "",
 	          "");
 	I_Method0(void, frame,
+	          Properties::VIRTUAL,
 	          __void__frame,
 	          "Dispatch the cull and draw for each of the Camera's for this frame. ",
 	          "");
 	I_Method0(void, cleanup_frame,
+	          Properties::VIRTUAL,
 	          __void__cleanup_frame,
 	          "Dispatch a clean up frame that should be called before closing a OsgCameraGroup, i.e. ",
 	          "on exit from an app. The clean up frame first release all GL objects associated with all the graphics context associated with the camera group, then runs a special frame that does the actual OpenGL deletion of GL objects for each graphics context. ");
@@ -316,26 +368,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgProducer::GraphicsContextImplementation >
 	               "",
 	               "");
 	I_Constructor1(IN, osgProducer::GraphicsContextImplementation *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgProducer::GraphicsContextImplementation *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgProducer::GraphicsContextImplementation *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgProducer::GraphicsContextImplementation > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

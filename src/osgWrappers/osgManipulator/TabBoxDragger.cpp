@@ -21,16 +21,18 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabBoxDragger,
 	               "",
 	               "");
 	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
 	          __void__setupDefaultGeometry,
 	          "Setup default geometry for dragger. ",
 	          "");
 	I_Method1(void, setPlaneColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
 	          __void__setPlaneColor__C5_osg_Vec4_R1,
 	          "",
 	          "");

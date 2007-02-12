@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
 	I_BaseType(osgParticle::Placer);
 	I_Constructor0(____MultiSegmentPlacer,
 	               "",
@@ -34,58 +34,72 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(int, numVertices,
+	          Properties::NON_VIRTUAL,
 	          __int__numVertices,
 	          "Get the number of vertices which define the segments. ",
 	          "");
 	I_Method1(const osg::Vec3 &, getVertex, IN, int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getVertex__int,
 	          "Get a vertex. ",
 	          "");
 	I_Method2(void, setVertex, IN, int, i, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertex__int__C5_osg_Vec3_R1,
 	          "Set a vertex. ",
 	          "");
 	I_Method4(void, setVertex, IN, int, i, IN, float, x, IN, float, y, IN, float, z,
+	          Properties::NON_VIRTUAL,
 	          __void__setVertex__int__float__float__float,
 	          "Set a vertex. ",
 	          "");
 	I_Method1(void, addVertex, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __void__addVertex__C5_osg_Vec3_R1,
 	          "Add a vertex. ",
 	          "");
 	I_Method3(void, addVertex, IN, float, x, IN, float, y, IN, float, z,
+	          Properties::NON_VIRTUAL,
 	          __void__addVertex__float__float__float,
 	          "Add a vertex. ",
 	          "");
 	I_Method1(void, removeVertex, IN, int, i,
+	          Properties::NON_VIRTUAL,
 	          __void__removeVertex__int,
 	          "Remove a vertex. ",
 	          "");
 	I_Method1(void, place, IN, osgParticle::Particle *, P,
+	          Properties::VIRTUAL,
 	          __void__place__Particle_P1,
 	          "Place a partice. Called automatically by ModularEmitter, do not call this method manually. ",
 	          "");
 	I_Method0(osg::Vec3, getControlPosition,
+	          Properties::VIRTUAL,
 	          __osg_Vec3__getControlPosition,
 	          "return the control position ",
 	          "");

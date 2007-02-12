@@ -28,68 +28,83 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgDB::Input)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Input)
 	I_BaseType(osgDB::FieldReaderIterator);
 	I_Constructor0(____Input,
 	               "",
 	               "");
 	I_Method1(void, setOptions, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
 	          __void__setOptions__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
 	I_Method0(const osgDB::ReaderWriter::Options *, getOptions,
+	          Properties::NON_VIRTUAL,
 	          __C5_ReaderWriter_Options_P1__getOptions,
 	          "",
 	          "");
 	I_Method1(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__readObjectOfType__C5_osg_Object_R1,
 	          "",
 	          "");
 	I_Method1(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__readObjectOfType__C5_basic_type_wrapper_R1,
 	          "",
 	          "");
 	I_Method0(osg::Object *, readObject,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__readObject,
 	          "",
 	          "");
 	I_Method0(osg::Image *, readImage,
+	          Properties::VIRTUAL,
 	          __osg_Image_P1__readImage,
 	          "",
 	          "");
 	I_Method0(osg::Drawable *, readDrawable,
+	          Properties::VIRTUAL,
 	          __osg_Drawable_P1__readDrawable,
 	          "",
 	          "");
 	I_Method0(osg::StateAttribute *, readStateAttribute,
+	          Properties::VIRTUAL,
 	          __osg_StateAttribute_P1__readStateAttribute,
 	          "",
 	          "");
 	I_Method0(osg::Uniform *, readUniform,
+	          Properties::VIRTUAL,
 	          __osg_Uniform_P1__readUniform,
 	          "",
 	          "");
 	I_Method0(osg::Node *, readNode,
+	          Properties::VIRTUAL,
 	          __osg_Node_P1__readNode,
 	          "",
 	          "");
 	I_Method1(osg::Object *, readObject, IN, const std::string &, fileName,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__readObject__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(osg::Image *, readImage, IN, const std::string &, fileName,
+	          Properties::VIRTUAL,
 	          __osg_Image_P1__readImage__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(osg::Node *, readNode, IN, const std::string &, fileName,
+	          Properties::VIRTUAL,
 	          __osg_Node_P1__readNode__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(osg::Object *, getObjectForUniqueID, IN, const std::string &, uniqueID,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__getObjectForUniqueID__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method2(void, regisiterUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __void__regisiterUniqueIDForObject__C5_std_string_R1__osg_Object_P1,
 	          "",
 	          "");

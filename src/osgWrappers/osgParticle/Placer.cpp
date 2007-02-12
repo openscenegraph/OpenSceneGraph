@@ -34,22 +34,27 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Placer)
 	                           "",
 	                           "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method1(void, place, IN, osgParticle::Particle *, P,
+	          Properties::PURE_VIRTUAL,
 	          __void__place__Particle_P1,
 	          "Place a particle. Must be implemented in descendant classes. ",
 	          "");
 	I_Method0(osg::Vec3, getControlPosition,
+	          Properties::PURE_VIRTUAL,
 	          __osg_Vec3__getControlPosition,
 	          "Return the control position of particles that placer will generate. Must be implemented in descendant classes. ",
 	          "");

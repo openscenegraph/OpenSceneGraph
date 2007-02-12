@@ -21,9 +21,10 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
 	I_BaseType(osgUtil::CubeMapGenerator);
 	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
+	                           Properties::NON_EXPLICIT,
 	                           ____ReflectionMapGenerator__int,
 	                           "",
 	                           "");

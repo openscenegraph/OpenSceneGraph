@@ -40,46 +40,57 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::PURE_VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::PURE_VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::PURE_VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method1(void, addSelection, IN, osgManipulator::Selection *, x,
+	          Properties::NON_VIRTUAL,
 	          __void__addSelection__Selection_P1,
 	          "Add Selection (receiver) to the command. ",
 	          "The command will be executed on all the selections.");
 	I_Method1(void, removeSelection, IN, osgManipulator::Selection *, x,
+	          Properties::NON_VIRTUAL,
 	          __void__removeSelection__Selection_P1,
 	          "Remove Selection (receiver) from the command. ",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::PURE_VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");
 	I_Method2(void, setLocalToWorldAndWorldToLocal, IN, const osg::Matrix &, localToWorld, IN, const osg::Matrix &, worldToLocal,
+	          Properties::NON_VIRTUAL,
 	          __void__setLocalToWorldAndWorldToLocal__C5_osg_Matrix_R1__C5_osg_Matrix_R1,
 	          "Sets the matrix for transforming the command's local coordinate system to the world/object coordinate system. ",
 	          "");
 	I_Method0(const osg::Matrix &, getLocalToWorld,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Matrix_R1__getLocalToWorld,
 	          "Gets the matrix for transforming the command's local coordinate system to the world/object coordinate system. ",
 	          "");
 	I_Method0(const osg::Matrix &, getWorldToLocal,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Matrix_R1__getWorldToLocal,
 	          "Gets the matrix for transforming the command's world/object coordinate system to the command's local coordinate system. ",
 	          "");
 	I_Method1(void, setStage, IN, const osgManipulator::MotionCommand::Stage, s,
+	          Properties::NON_VIRTUAL,
 	          __void__setStage__C5_Stage,
 	          "",
 	          "");
 	I_Method0(osgManipulator::MotionCommand::Stage, getStage,
+	          Properties::NON_VIRTUAL,
 	          __Stage__getStage,
 	          "",
 	          "");
@@ -97,32 +108,38 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Rotate3DCommand,
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method1(void, setRotation, IN, const osg::Quat &, rotation,
+	          Properties::NON_VIRTUAL,
 	          __void__setRotation__C5_osg_Quat_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Quat &, getRotation,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Quat_R1__getRotation,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");
@@ -134,56 +151,68 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 	                 __void__setRotation__C5_osg_Quat_R1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Scale1DCommand,
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method1(void, setScale, IN, float, s,
+	          Properties::NON_VIRTUAL,
 	          __void__setScale__float,
 	          "",
 	          "");
 	I_Method0(float, getScale,
+	          Properties::NON_VIRTUAL,
 	          __float__getScale,
 	          "",
 	          "");
 	I_Method1(void, setScaleCenter, IN, float, center,
+	          Properties::NON_VIRTUAL,
 	          __void__setScaleCenter__float,
 	          "",
 	          "");
 	I_Method0(float, getScaleCenter,
+	          Properties::NON_VIRTUAL,
 	          __float__getScaleCenter,
 	          "",
 	          "");
 	I_Method1(void, setReferencePoint, IN, float, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__setReferencePoint__float,
 	          "ReferencePoint is used only for snapping. ",
 	          "");
 	I_Method0(float, getReferencePoint,
+	          Properties::NON_VIRTUAL,
 	          __float__getReferencePoint,
 	          "",
 	          "");
 	I_Method1(void, setMinScale, IN, float, min,
+	          Properties::NON_VIRTUAL,
 	          __void__setMinScale__float,
 	          "",
 	          "");
 	I_Method0(float, getMinScale,
+	          Properties::NON_VIRTUAL,
 	          __float__getMinScale,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");
@@ -204,56 +233,68 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	                 __void__setScaleCenter__float);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Scale2DCommand,
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method1(void, setScale, IN, const osg::Vec2 &, s,
+	          Properties::NON_VIRTUAL,
 	          __void__setScale__C5_osg_Vec2_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec2 &, getScale,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec2_R1__getScale,
 	          "",
 	          "");
 	I_Method1(void, setScaleCenter, IN, const osg::Vec2 &, center,
+	          Properties::NON_VIRTUAL,
 	          __void__setScaleCenter__C5_osg_Vec2_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec2 &, getScaleCenter,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec2_R1__getScaleCenter,
 	          "",
 	          "");
 	I_Method1(void, setReferencePoint, IN, const osg::Vec2 &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__setReferencePoint__C5_osg_Vec2_R1,
 	          "ReferencePoint is used only for snapping. ",
 	          "");
 	I_Method0(const osg::Vec2 &, getReferencePoint,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec2_R1__getReferencePoint,
 	          "",
 	          "");
 	I_Method1(void, setMinScale, IN, const osg::Vec2 &, min,
+	          Properties::NON_VIRTUAL,
 	          __void__setMinScale__C5_osg_Vec2_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec2 &, getMinScale,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec2_R1__getMinScale,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");
@@ -274,40 +315,48 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	                 __void__setScaleCenter__C5_osg_Vec2_R1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____ScaleUniformCommand,
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method1(void, setScale, IN, float, s,
+	          Properties::NON_VIRTUAL,
 	          __void__setScale__float,
 	          "",
 	          "");
 	I_Method0(float, getScale,
+	          Properties::NON_VIRTUAL,
 	          __float__getScale,
 	          "",
 	          "");
 	I_Method1(void, setScaleCenter, IN, const osg::Vec3 &, center,
+	          Properties::NON_VIRTUAL,
 	          __void__setScaleCenter__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getScaleCenter,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getScaleCenter,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");
@@ -322,7 +371,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	                 __void__setScaleCenter__C5_osg_Vec3_R1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____TranslateInLineCommand,
 	               "",
@@ -332,38 +381,47 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method2(void, setLine, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
+	          Properties::NON_VIRTUAL,
 	          __void__setLine__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getLineStart,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getLineStart,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getLineEnd,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getLineEnd,
 	          "",
 	          "");
 	I_Method1(void, setTranslation, IN, const osg::Vec3 &, t,
+	          Properties::NON_VIRTUAL,
 	          __void__setTranslation__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getTranslation,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getTranslation,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");
@@ -381,52 +439,63 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	                 __void__setTranslation__C5_osg_Vec3_R1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____TranslateInPlaneCommand,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::Plane &, plane,
+	               Properties::NON_EXPLICIT,
 	               ____TranslateInPlaneCommand__C5_osg_Plane_R1,
 	               "",
 	               "");
 	I_Method0(bool, execute,
+	          Properties::VIRTUAL,
 	          __bool__execute,
 	          "Execute the command. ",
 	          "");
 	I_Method0(bool, unexecute,
+	          Properties::VIRTUAL,
 	          __bool__unexecute,
 	          "Undo the command. ",
 	          "The inverse of this command is executed. ");
 	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
+	          Properties::VIRTUAL,
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
 	I_Method1(void, setPlane, IN, const osg::Plane &, plane,
+	          Properties::NON_VIRTUAL,
 	          __void__setPlane__C5_osg_Plane_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Plane &, getPlane,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Plane_R1__getPlane,
 	          "",
 	          "");
 	I_Method1(void, setTranslation, IN, const osg::Vec3 &, t,
+	          Properties::NON_VIRTUAL,
 	          __void__setTranslation__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getTranslation,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getTranslation,
 	          "",
 	          "");
 	I_Method1(void, setReferencePoint, IN, const osg::Vec3 &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__setReferencePoint__C5_osg_Vec3_R1,
 	          "ReferencePoint is used only for snapping. ",
 	          "");
 	I_Method0(const osg::Vec3 &, getReferencePoint,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getReferencePoint,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
+	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems.");

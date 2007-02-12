@@ -38,66 +38,82 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
 	                           "",
 	                           "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, effectName,
+	          Properties::PURE_VIRTUAL,
 	          __C5_char_P1__effectName,
 	          "get the name of this Effect ",
 	          "");
 	I_Method0(const char *, effectDescription,
+	          Properties::PURE_VIRTUAL,
 	          __C5_char_P1__effectDescription,
 	          "get a brief description of this Effect ",
 	          "");
 	I_Method0(const char *, effectAuthor,
+	          Properties::PURE_VIRTUAL,
 	          __C5_char_P1__effectAuthor,
 	          "get the effect author's name ",
 	          "");
 	I_Method0(bool, getEnabled,
+	          Properties::NON_VIRTUAL,
 	          __bool__getEnabled,
 	          "get whether the effect is enabled or not ",
 	          "");
 	I_Method1(void, setEnabled, IN, bool, v,
+	          Properties::NON_VIRTUAL,
 	          __void__setEnabled__bool,
 	          "set whether the effect is enabled or not ",
 	          "");
 	I_Method0(void, setUpDemo,
+	          Properties::VIRTUAL,
 	          __void__setUpDemo,
 	          "optional: set effect parameters to produce a visually significant result to be used in demo applications like osgfxbrowser. ",
 	          "Default is to do nothing.");
 	I_Method0(int, getNumTechniques,
+	          Properties::NON_VIRTUAL,
 	          __int__getNumTechniques,
 	          "get the number of techniques defined for this Effect ",
 	          "");
 	I_Method1(osgFX::Technique *, getTechnique, IN, int, i,
+	          Properties::NON_VIRTUAL,
 	          __Technique_P1__getTechnique__int,
 	          "get the i-th Technique ",
 	          "");
 	I_Method1(const osgFX::Technique *, getTechnique, IN, int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_Technique_P1__getTechnique__int,
 	          "get the i-th const Technique ",
 	          "");
 	I_Method0(int, getSelectedTechnique,
+	          Properties::NON_VIRTUAL,
 	          __int__getSelectedTechnique,
 	          "get the index of the currently selected Technique ",
 	          "");
 	I_MethodWithDefaults1(void, selectTechnique, IN, int, i, osgFX::Effect::AUTO_DETECT,
+	                      Properties::NON_VIRTUAL,
 	                      __void__selectTechnique__int,
 	                      "select a technique or enable automatic detection ",
 	                      "");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "custom traversal ",
 	          "");
 	I_Method1(void, inherited_traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::NON_VIRTUAL,
 	          __void__inherited_traverse__osg_NodeVisitor_R1,
 	          "default traversal ",
 	          "");

@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
 	I_BaseType(osg::Drawable::CullCallback);
 	I_BaseType(osg::NodeCallback);
 	I_Constructor0(____ClusterCullingCallback,
@@ -43,74 +43,92 @@ BEGIN_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::Drawable *, drawable,
+	               Properties::NON_EXPLICIT,
 	               ____ClusterCullingCallback__C5_osg_Drawable_P1,
 	               "",
 	               "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(void, computeFrom, IN, const osg::Drawable *, drawable,
+	          Properties::NON_VIRTUAL,
 	          __void__computeFrom__C5_osg_Drawable_P1,
 	          "Computes the control point, normal, and deviation from the given drawable contents. ",
 	          "");
 	I_Method1(void, transform, IN, const osg::Matrixd &, matrix,
+	          Properties::NON_VIRTUAL,
 	          __void__transform__C5_osg_Matrixd_R1,
 	          "Transform the ClusterCullingCallback's positional members to a new coordinate frame. ",
 	          "");
 	I_Method4(void, set, IN, const osg::Vec3 &, controlPoint, IN, const osg::Vec3 &, normal, IN, float, deviation, IN, float, radius,
+	          Properties::NON_VIRTUAL,
 	          __void__set__C5_osg_Vec3_R1__C5_osg_Vec3_R1__float__float,
 	          "",
 	          "");
 	I_Method1(void, setControlPoint, IN, const osg::Vec3 &, controlPoint,
+	          Properties::NON_VIRTUAL,
 	          __void__setControlPoint__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getControlPoint,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getControlPoint,
 	          "",
 	          "");
 	I_Method1(void, setNormal, IN, const osg::Vec3 &, normal,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormal__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getNormal,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getNormal,
 	          "",
 	          "");
 	I_Method1(void, setRadius, IN, float, radius,
+	          Properties::NON_VIRTUAL,
 	          __void__setRadius__float,
 	          "",
 	          "");
 	I_Method0(float, getRadius,
+	          Properties::NON_VIRTUAL,
 	          __float__getRadius,
 	          "",
 	          "");
 	I_Method1(void, setDeviation, IN, float, deviation,
+	          Properties::NON_VIRTUAL,
 	          __void__setDeviation__float,
 	          "",
 	          "");
 	I_Method0(float, getDeviation,
+	          Properties::NON_VIRTUAL,
 	          __float__getDeviation,
 	          "",
 	          "");
 	I_Method3(bool, cull, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, x, IN, osg::State *, x,
+	          Properties::VIRTUAL,
 	          __bool__cull__osg_NodeVisitor_P1__osg_Drawable_P1__osg_State_P1,
 	          "deprecated. ",
 	          "");

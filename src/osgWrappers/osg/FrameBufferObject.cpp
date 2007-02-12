@@ -56,9 +56,10 @@ TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT);
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT);
 
-BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_BaseType(osg::Referenced);
 	I_Method0(bool, isSupported,
+	          Properties::NON_VIRTUAL,
 	          __bool__isSupported,
 	          "",
 	          "");
@@ -86,10 +87,12 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::FrameBufferAttachment &, copy,
+	               Properties::NON_EXPLICIT,
 	               ____FrameBufferAttachment__C5_FrameBufferAttachment_R1,
 	               "",
 	               "");
 	I_Constructor1(IN, osg::RenderBuffer *, target,
+	               Properties::EXPLICIT,
 	               ____FrameBufferAttachment__RenderBuffer_P1,
 	               "",
 	               "");
@@ -110,22 +113,27 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	                           "",
 	                           "");
 	I_Constructor1(IN, osg::TextureRectangle *, target,
+	               Properties::EXPLICIT,
 	               ____FrameBufferAttachment__TextureRectangle_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, osg::Camera::Attachment &, attachment,
+	               Properties::EXPLICIT,
 	               ____FrameBufferAttachment__Camera_Attachment_R1,
 	               "",
 	               "");
 	I_Method2(void, createRequiredTexturesAndApplyGenerateMipMap, IN, osg::State &, state, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
 	          __void__createRequiredTexturesAndApplyGenerateMipMap__State_R1__C5_FBOExtensions_P1,
 	          "",
 	          "");
 	I_Method3(void, attach, IN, osg::State &, state, IN, GLenum, attachment_point, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
 	          __void__attach__State_R1__GLenum__C5_FBOExtensions_P1,
 	          "",
 	          "");
 	I_Method1(int, compare, IN, const osg::FrameBufferAttachment &, fa,
+	          Properties::NON_VIRTUAL,
 	          __int__compare__C5_FrameBufferAttachment_R1,
 	          "",
 	          "");
@@ -133,7 +141,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap);
 
-BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____FrameBufferObject,
 	               "",
@@ -143,50 +151,62 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "Return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "Return the name of the attribute's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "Return the name of the attribute's class type. ",
 	          "");
 	I_Method0(osg::StateAttribute::Type, getType,
+	          Properties::VIRTUAL,
 	          __Type__getType,
 	          "Return the Type identifier of the attribute's class type. ",
 	          "");
 	I_Method0(const osg::FrameBufferObject::AttachmentMap &, getAttachmentMap,
+	          Properties::NON_VIRTUAL,
 	          __C5_AttachmentMap_R1__getAttachmentMap,
 	          "",
 	          "");
 	I_Method1(bool, hasAttachment, IN, GLenum, attachment_point,
+	          Properties::NON_VIRTUAL,
 	          __bool__hasAttachment__GLenum,
 	          "",
 	          "");
 	I_Method1(const osg::FrameBufferAttachment &, getAttachment, IN, GLenum, attachment_point,
+	          Properties::NON_VIRTUAL,
 	          __C5_FrameBufferAttachment_R1__getAttachment__GLenum,
 	          "",
 	          "");
 	I_Method2(void, setAttachment, IN, GLenum, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
+	          Properties::NON_VIRTUAL,
 	          __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1,
 	          "",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::VIRTUAL,
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
@@ -210,7 +230,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::RenderBuffer)
 	I_BaseType(osg::Object);
 	I_Constructor0(____RenderBuffer,
 	               "",
@@ -224,58 +244,72 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(int, getWidth,
+	          Properties::NON_VIRTUAL,
 	          __int__getWidth,
 	          "",
 	          "");
 	I_Method0(int, getHeight,
+	          Properties::NON_VIRTUAL,
 	          __int__getHeight,
 	          "",
 	          "");
 	I_Method1(void, setWidth, IN, int, w,
+	          Properties::NON_VIRTUAL,
 	          __void__setWidth__int,
 	          "",
 	          "");
 	I_Method1(void, setHeight, IN, int, h,
+	          Properties::NON_VIRTUAL,
 	          __void__setHeight__int,
 	          "",
 	          "");
 	I_Method2(void, setSize, IN, int, w, IN, int, h,
+	          Properties::NON_VIRTUAL,
 	          __void__setSize__int__int,
 	          "",
 	          "");
 	I_Method0(GLenum, getInternalFormat,
+	          Properties::NON_VIRTUAL,
 	          __GLenum__getInternalFormat,
 	          "",
 	          "");
 	I_Method1(void, setInternalFormat, IN, GLenum, format,
+	          Properties::NON_VIRTUAL,
 	          __void__setInternalFormat__GLenum,
 	          "",
 	          "");
 	I_Method2(GLuint, getObjectID, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
 	          __GLuint__getObjectID__unsigned_int__C5_FBOExtensions_P1,
 	          "",
 	          "");
 	I_Method1(int, compare, IN, const osg::RenderBuffer &, rb,
+	          Properties::NON_VIRTUAL,
 	          __int__compare__C5_RenderBuffer_R1,
 	          "",
 	          "");

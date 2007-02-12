@@ -23,53 +23,65 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____TriStripVisitor__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method1(void, stripify, IN, osg::Geometry &, drawable,
+	          Properties::NON_VIRTUAL,
 	          __void__stripify__osg_Geometry_R1,
 	          "Convert mesh primitives in Geometry into Tri Strips. ",
 	          "Converts all primitive types except points and lines, linestrips which it leaves unchanged.");
 	I_Method0(void, stripify,
+	          Properties::NON_VIRTUAL,
 	          __void__stripify,
 	          "Stripify (make into strips of tria or quads) the accumulated list of Geometry drawables. ",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "Accumulate the Geometry drawables to make into strips. ",
 	          "");
 	I_Method1(void, setCacheSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
 	          __void__setCacheSize__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getCacheSize,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getCacheSize,
 	          "",
 	          "");
 	I_Method0(const unsigned int, getCacheSize,
+	          Properties::NON_VIRTUAL,
 	          __C5_unsigned_int__getCacheSize,
 	          "",
 	          "");
 	I_Method1(void, setMinStripSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
 	          __void__setMinStripSize__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMinStripSize,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMinStripSize,
 	          "",
 	          "");
 	I_Method0(const unsigned int, getMinStripSize,
+	          Properties::NON_VIRTUAL,
 	          __C5_unsigned_int__getMinStripSize,
 	          "",
 	          "");
 	I_Method1(void, setGenerateFourPointPrimitivesQuads, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setGenerateFourPointPrimitivesQuads__bool,
 	          "",
 	          "");
 	I_Method0(bool, getGenerateFourPointPrimitivesQuads,
+	          Properties::NON_VIRTUAL,
 	          __bool__getGenerateFourPointPrimitivesQuads,
 	          "",
 	          "");

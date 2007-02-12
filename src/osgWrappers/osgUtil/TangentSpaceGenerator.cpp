@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TangentSpaceGenerator,
 	               "",
@@ -33,46 +33,57 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	                           "",
 	                           "");
 	I_MethodWithDefaults2(void, generate, IN, osg::Geometry *, geo, , IN, int, normal_map_tex_unit, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__generate__osg_Geometry_P1__int,
 	                      "",
 	                      "");
 	I_Method0(osg::Vec4Array *, getTangentArray,
+	          Properties::NON_VIRTUAL,
 	          __osg_Vec4Array_P1__getTangentArray,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4Array *, getTangentArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4Array_P1__getTangentArray,
 	          "",
 	          "");
 	I_Method1(void, setTangentArray, IN, osg::Vec4Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setTangentArray__osg_Vec4Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Vec4Array *, getNormalArray,
+	          Properties::NON_VIRTUAL,
 	          __osg_Vec4Array_P1__getNormalArray,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4Array *, getNormalArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4Array_P1__getNormalArray,
 	          "",
 	          "");
 	I_Method1(void, setNormalArray, IN, osg::Vec4Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setNormalArray__osg_Vec4Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::Vec4Array *, getBinormalArray,
+	          Properties::NON_VIRTUAL,
 	          __osg_Vec4Array_P1__getBinormalArray,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4Array *, getBinormalArray,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4Array_P1__getBinormalArray,
 	          "",
 	          "");
 	I_Method1(void, setBinormalArray, IN, osg::Vec4Array *, array,
+	          Properties::NON_VIRTUAL,
 	          __void__setBinormalArray__osg_Vec4Array_P1,
 	          "",
 	          "");
 	I_Method0(osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
 	          __osg_IndexArray_P1__getIndices,
 	          "",
 	          "");

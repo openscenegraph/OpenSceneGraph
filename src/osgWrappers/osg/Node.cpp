@@ -35,7 +35,7 @@ TYPE_NAME_ALIAS(unsigned int, osg::Node::NodeMask);
 
 TYPE_NAME_ALIAS(std::vector< std::string >, osg::Node::DescriptionList);
 
-BEGIN_OBJECT_REFLECTOR(osg::Node)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Node)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Node,
 	               "Construct a node. ",
@@ -45,242 +45,302 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __Object_P1__cloneType,
 	          "clone an object of the same type as the node. ",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "return a clone of a node, with Object* return type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(osg::Group *, asGroup,
+	          Properties::VIRTUAL,
 	          __Group_P1__asGroup,
 	          "convert 'this' into a Group pointer if Node is a Group, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<Group*>(this). ");
 	I_Method0(const osg::Group *, asGroup,
+	          Properties::VIRTUAL,
 	          __C5_Group_P1__asGroup,
 	          "convert 'const this' into a const Group pointer if Node is a Group, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<const Group*>(this). ");
 	I_Method0(osg::Transform *, asTransform,
+	          Properties::VIRTUAL,
 	          __Transform_P1__asTransform,
 	          "Convert 'this' into a Transform pointer if Node is a Transform, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<Transform*>(this). ");
 	I_Method0(const osg::Transform *, asTransform,
+	          Properties::VIRTUAL,
 	          __C5_Transform_P1__asTransform,
 	          "convert 'const this' into a const Transform pointer if Node is a Transform, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<const Transform*>(this). ");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__accept__NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method1(void, ascend, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
 	          __void__ascend__NodeVisitor_R1,
 	          "Traverse upwards : calls parents' accept method with NodeVisitor. ",
 	          "");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
+	          Properties::VIRTUAL,
 	          __void__traverse__NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
 	I_Method0(const osg::Node::ParentList &, getParents,
+	          Properties::NON_VIRTUAL,
 	          __C5_ParentList_R1__getParents,
 	          "Get the parent list of node. ",
 	          "");
 	I_Method0(osg::Node::ParentList, getParents,
+	          Properties::NON_VIRTUAL,
 	          __ParentList__getParents,
 	          "Get the a copy of parent list of node. ",
 	          "A copy is returned to prevent modification of the parent list. ");
 	I_Method1(osg::Group *, getParent, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __Group_P1__getParent__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Group *, getParent, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_Group_P1__getParent__unsigned_int,
 	          "Get a single const parent of node. ",
 	          " param i index of the parent to get.   return the parent i.");
 	I_Method0(unsigned int, getNumParents,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of node. ",
 	          "the number of parents of this node. ");
 	I_MethodWithDefaults1(osg::NodePathList, getParentalNodePaths, IN, osg::Node *, haltTraversalAtNode, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __NodePathList__getParentalNodePaths__osg_Node_P1,
 	                      "Get the list of node paths parent paths. ",
 	                      "The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. ");
 	I_MethodWithDefaults1(osg::MatrixList, getWorldMatrices, IN, osg::Node *, haltTraversalAtNode, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __MatrixList__getWorldMatrices__osg_Node_P1,
 	                      "Get the list of matrices that transform this node from local coordinates to world coordinates. ",
 	                      "The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. ");
 	I_Method1(void, setUpdateCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
 	          __void__setUpdateCallback__NodeCallback_P1,
 	          "Set update node callback, called during update traversal. ",
 	          "");
 	I_Method0(osg::NodeCallback *, getUpdateCallback,
+	          Properties::NON_VIRTUAL,
 	          __NodeCallback_P1__getUpdateCallback,
 	          "Get update node callback, called during update traversal. ",
 	          "");
 	I_Method0(const osg::NodeCallback *, getUpdateCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_NodeCallback_P1__getUpdateCallback,
 	          "Get const update node callback, called during update traversal. ",
 	          "");
 	I_Method0(unsigned int, getNumChildrenRequiringUpdateTraversal,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildrenRequiringUpdateTraversal,
 	          "Get the number of Children of this node which require Update traversal, since they have an Update Callback attached to them or their children. ",
 	          "");
 	I_Method1(void, setEventCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
 	          __void__setEventCallback__NodeCallback_P1,
 	          "Set update node callback, called during update traversal. ",
 	          "");
 	I_Method0(osg::NodeCallback *, getEventCallback,
+	          Properties::NON_VIRTUAL,
 	          __NodeCallback_P1__getEventCallback,
 	          "Get update node callback, called during update traversal. ",
 	          "");
 	I_Method0(const osg::NodeCallback *, getEventCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_NodeCallback_P1__getEventCallback,
 	          "Get const update node callback, called during update traversal. ",
 	          "");
 	I_Method0(unsigned int, getNumChildrenRequiringEventTraversal,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildrenRequiringEventTraversal,
 	          "Get the number of Children of this node which require Event traversal, since they have an Event Callback attached to them or their children. ",
 	          "");
 	I_Method1(void, setCullCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullCallback__NodeCallback_P1,
 	          "Set cull node callback, called during cull traversal. ",
 	          "");
 	I_Method0(osg::NodeCallback *, getCullCallback,
+	          Properties::NON_VIRTUAL,
 	          __NodeCallback_P1__getCullCallback,
 	          "Get cull node callback, called during cull traversal. ",
 	          "");
 	I_Method0(const osg::NodeCallback *, getCullCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_NodeCallback_P1__getCullCallback,
 	          "Get const cull node callback, called during cull traversal. ",
 	          "");
 	I_Method1(void, setCullingActive, IN, bool, active,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullingActive__bool,
 	          "Set the view frustum/small feature culling of this node to be active or inactive. ",
 	          "The default value is true for _cullingActive. Used as a guide to the cull traversal. ");
 	I_Method0(bool, getCullingActive,
+	          Properties::NON_VIRTUAL,
 	          __bool__getCullingActive,
 	          "Get the view frustum/small feature _cullingActive flag for this node. ",
 	          "Used as a guide to the cull traversal. ");
 	I_Method0(unsigned int, getNumChildrenWithCullingDisabled,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildrenWithCullingDisabled,
 	          "Get the number of Children of this node which have culling disabled. ",
 	          "");
 	I_Method0(bool, isCullingActive,
+	          Properties::NON_VIRTUAL,
 	          __bool__isCullingActive,
 	          "Return true if this node can be culled by view frustum, occlusion or small feature culling during the cull traversal. ",
 	          "Note, returns true only if no children have culling disabled, and the local _cullingActive flag is true. ");
 	I_Method0(unsigned int, getNumChildrenWithOccluderNodes,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildrenWithOccluderNodes,
 	          "Get the number of Children of this node which are or have OccluderNode's. ",
 	          "");
 	I_Method0(bool, containsOccluderNodes,
+	          Properties::NON_VIRTUAL,
 	          __bool__containsOccluderNodes,
 	          "return true if this node is an OccluderNode or the subgraph below this node are OccluderNodes. ",
 	          "");
 	I_Method1(void, setNodeMask, IN, osg::Node::NodeMask, nm,
+	          Properties::NON_VIRTUAL,
 	          __void__setNodeMask__NodeMask,
 	          "Set the node mask. ",
 	          "");
 	I_Method0(osg::Node::NodeMask, getNodeMask,
+	          Properties::NON_VIRTUAL,
 	          __NodeMask__getNodeMask,
 	          "Get the node Mask. ",
 	          "");
 	I_Method1(void, setDescriptions, IN, const osg::Node::DescriptionList &, descriptions,
+	          Properties::NON_VIRTUAL,
 	          __void__setDescriptions__C5_DescriptionList_R1,
 	          "Set the description list of the node. ",
 	          "");
 	I_Method0(osg::Node::DescriptionList &, getDescriptions,
+	          Properties::NON_VIRTUAL,
 	          __DescriptionList_R1__getDescriptions,
 	          "Get the description list of the node. ",
 	          "");
 	I_Method0(const osg::Node::DescriptionList &, getDescriptions,
+	          Properties::NON_VIRTUAL,
 	          __C5_DescriptionList_R1__getDescriptions,
 	          "Get the const description list of the const node. ",
 	          "");
 	I_Method1(const std::string &, getDescription, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getDescription__unsigned_int,
 	          "Get a single const description of the const node. ",
 	          "");
 	I_Method1(std::string &, getDescription, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
 	          __std_string_R1__getDescription__unsigned_int,
 	          "Get a single description of the node. ",
 	          "");
 	I_Method0(unsigned int, getNumDescriptions,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumDescriptions,
 	          "Get the number of descriptions of the node. ",
 	          "");
 	I_Method1(void, addDescription, IN, const std::string &, desc,
+	          Properties::NON_VIRTUAL,
 	          __void__addDescription__C5_std_string_R1,
 	          "Add a description string to the node. ",
 	          "");
 	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset,
+	          Properties::NON_VIRTUAL,
 	          __void__setStateSet__osg_StateSet_P1,
 	          "Set the node's StateSet. ",
 	          "");
 	I_Method0(osg::StateSet *, getOrCreateStateSet,
+	          Properties::NON_VIRTUAL,
 	          __osg_StateSet_P1__getOrCreateStateSet,
 	          "return the node's StateSet, if one does not already exist create it set the node and return the newly created StateSet. ",
 	          "This ensures that a valid StateSet is always returned and can be used directly. ");
 	I_Method0(osg::StateSet *, getStateSet,
+	          Properties::NON_VIRTUAL,
 	          __osg_StateSet_P1__getStateSet,
 	          "Return the node's StateSet. ",
 	          "returns NULL if a stateset is not attached. ");
 	I_Method0(const osg::StateSet *, getStateSet,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_StateSet_P1__getStateSet,
 	          "Return the node's const StateSet. ",
 	          "Returns NULL if a stateset is not attached. ");
 	I_Method1(void, setInitialBound, IN, const osg::BoundingSphere &, bsphere,
+	          Properties::NON_VIRTUAL,
 	          __void__setInitialBound__C5_osg_BoundingSphere_R1,
 	          "Set the intial bounding volume to use when computing the overall bounding volume. ",
 	          "");
 	I_Method0(const osg::BoundingSphere &, getInitialBound,
+	          Properties::NON_VIRTUAL,
 	          __C5_BoundingSphere_R1__getInitialBound,
 	          "Set the intial bounding volume to use when computing the overall bounding volume. ",
 	          "");
 	I_Method0(void, dirtyBound,
+	          Properties::NON_VIRTUAL,
 	          __void__dirtyBound,
 	          "Mark this node's bounding sphere dirty. ",
 	          "Forcing it to be computed on the next call to getBound(). ");
 	I_Method0(const osg::BoundingSphere &, getBound,
+	          Properties::NON_VIRTUAL,
 	          __C5_BoundingSphere_R1__getBound,
 	          "Get the bounding sphere of node. ",
 	          "Using lazy evaluation computes the bounding sphere if it is 'dirty'. ");
 	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
 	          __BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
 	I_Method1(void, setComputeBoundingSphereCallback, IN, osg::Node::ComputeBoundingSphereCallback *, callback,
+	          Properties::NON_VIRTUAL,
 	          __void__setComputeBoundingSphereCallback__ComputeBoundingSphereCallback_P1,
 	          "Set the compute bound callback to override the default computeBound. ",
 	          "");
 	I_Method0(osg::Node::ComputeBoundingSphereCallback *, getComputeBoundingSphereCallback,
+	          Properties::NON_VIRTUAL,
 	          __ComputeBoundingSphereCallback_P1__getComputeBoundingSphereCallback,
 	          "Get the compute bound callback. ",
 	          "");
 	I_Method0(const osg::Node::ComputeBoundingSphereCallback *, getComputeBoundingSphereCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_ComputeBoundingSphereCallback_P1__getComputeBoundingSphereCallback,
 	          "Get the const compute bound callback. ",
 	          "");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
+	          Properties::VIRTUAL,
 	          __void__setThreadSafeRefUnref__bool,
 	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
+	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned,
 	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
@@ -336,7 +396,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	                 __void__setUpdateCallback__NodeCallback_P1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
 	I_BaseType(osg::Object);
 	I_Constructor0(____ComputeBoundingSphereCallback,
 	               "",
@@ -346,26 +406,32 @@ BEGIN_OBJECT_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
 	               "",
 	               "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::BoundingSphere, computeBound, IN, const osg::Node &, x,
+	          Properties::VIRTUAL,
 	          __BoundingSphere__computeBound__C5_osg_Node_R1,
 	          "",
 	          "");

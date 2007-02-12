@@ -23,116 +23,144 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
 	I_ConstructorWithDefaults1(IN, osg::DisplaySettings *, ds, NULL,
+	                           Properties::NON_EXPLICIT,
 	                           ____OsgSceneHandler__osg_DisplaySettings_P1,
 	                           "",
 	                           "");
 	I_Method1(void, setSceneView, IN, osgUtil::SceneView *, sceneView,
+	          Properties::NON_VIRTUAL,
 	          __void__setSceneView__osgUtil_SceneView_P1,
 	          "set the scene view to which will manage rendering of the OSG scene. ",
 	          "");
 	I_Method0(osgUtil::SceneView *, getSceneView,
+	          Properties::NON_VIRTUAL,
 	          __osgUtil_SceneView_P1__getSceneView,
 	          "get the scene view. ",
 	          "");
 	I_Method0(const osgUtil::SceneView *, getSceneView,
+	          Properties::NON_VIRTUAL,
 	          __C5_osgUtil_SceneView_P1__getSceneView,
 	          "get the const scene view. ",
 	          "");
 	I_Method0(void, init,
+	          Properties::VIRTUAL,
 	          __void__init,
 	          "override the init method to force it be run one at a time. ",
 	          "");
 	I_Method1(void, clear, IN, Producer::Camera &, camera,
+	          Properties::VIRTUAL,
 	          __void__clear__Producer_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, clearImplementation, IN, Producer::Camera &, camera,
+	          Properties::VIRTUAL,
 	          __void__clearImplementation__Producer_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, setClearCallback, IN, osgProducer::OsgSceneHandler::Callback *, callback,
+	          Properties::NON_VIRTUAL,
 	          __void__setClearCallback__Callback_P1,
 	          "",
 	          "");
 	I_Method0(osgProducer::OsgSceneHandler::Callback *, getClearCallback,
+	          Properties::NON_VIRTUAL,
 	          __Callback_P1__getClearCallback,
 	          "",
 	          "");
 	I_Method0(const osgProducer::OsgSceneHandler::Callback *, getClearCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_Callback_P1__getClearCallback,
 	          "",
 	          "");
 	I_Method1(void, cull, IN, Producer::Camera &, camera,
+	          Properties::VIRTUAL,
 	          __void__cull__Producer_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, cullImplementation, IN, Producer::Camera &, camera,
+	          Properties::VIRTUAL,
 	          __void__cullImplementation__Producer_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, setCullCallback, IN, osgProducer::OsgSceneHandler::Callback *, callback,
+	          Properties::NON_VIRTUAL,
 	          __void__setCullCallback__Callback_P1,
 	          "",
 	          "");
 	I_Method0(osgProducer::OsgSceneHandler::Callback *, getCullCallback,
+	          Properties::NON_VIRTUAL,
 	          __Callback_P1__getCullCallback,
 	          "",
 	          "");
 	I_Method0(const osgProducer::OsgSceneHandler::Callback *, getCullCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_Callback_P1__getCullCallback,
 	          "",
 	          "");
 	I_Method1(void, draw, IN, Producer::Camera &, camera,
+	          Properties::VIRTUAL,
 	          __void__draw__Producer_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, drawImplementation, IN, Producer::Camera &, camera,
+	          Properties::VIRTUAL,
 	          __void__drawImplementation__Producer_Camera_R1,
 	          "",
 	          "");
 	I_Method1(void, setDrawCallback, IN, osgProducer::OsgSceneHandler::Callback *, callback,
+	          Properties::NON_VIRTUAL,
 	          __void__setDrawCallback__Callback_P1,
 	          "",
 	          "");
 	I_Method0(osgProducer::OsgSceneHandler::Callback *, getDrawCallback,
+	          Properties::NON_VIRTUAL,
 	          __Callback_P1__getDrawCallback,
 	          "",
 	          "");
 	I_Method0(const osgProducer::OsgSceneHandler::Callback *, getDrawCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_Callback_P1__getDrawCallback,
 	          "",
 	          "");
 	I_Method1(void, setCollectStats, IN, bool, collectStats,
+	          Properties::NON_VIRTUAL,
 	          __void__setCollectStats__bool,
 	          "",
 	          "");
 	I_Method0(bool, getCollectStats,
+	          Properties::NON_VIRTUAL,
 	          __bool__getCollectStats,
 	          "",
 	          "");
 	I_Method1(bool, getStats, IN, osgUtil::Statistics &, primStats,
+	          Properties::NON_VIRTUAL,
 	          __bool__getStats__osgUtil_Statistics_R1,
 	          "",
 	          "");
 	I_Method1(void, setContextID, IN, int, id,
+	          Properties::NON_VIRTUAL,
 	          __void__setContextID__int,
 	          "",
 	          "");
 	I_Method1(void, setFlushOfAllDeletedGLObjectsOnNextFrame, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setFlushOfAllDeletedGLObjectsOnNextFrame__bool,
 	          "",
 	          "");
 	I_Method0(bool, getFlushOfAllDeletedGLObjectsOnNextFrame,
+	          Properties::NON_VIRTUAL,
 	          __bool__getFlushOfAllDeletedGLObjectsOnNextFrame,
 	          "",
 	          "");
 	I_Method1(void, setCleanUpOnNextFrame, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setCleanUpOnNextFrame__bool,
 	          "",
 	          "");
 	I_Method0(bool, getCleanUpOnNextFrame,
+	          Properties::NON_VIRTUAL,
 	          __bool__getCleanUpOnNextFrame,
 	          "",
 	          "");

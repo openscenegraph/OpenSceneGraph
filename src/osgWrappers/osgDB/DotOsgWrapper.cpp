@@ -32,33 +32,39 @@ BEGIN_ENUM_REFLECTOR(osgDB::DotOsgWrapper::ReadWriteMode)
 	I_EnumLabel(osgDB::DotOsgWrapper::READ_ONLY);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgDB::DotOsgWrapper)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::DotOsgWrapper)
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE,
 	                           ____DotOsgWrapper__osg_Object_P1__C5_std_string_R1__C5_std_string_R1__ReadFunc__WriteFunc__ReadWriteMode,
 	                           "",
 	                           "");
 	I_Method0(const osg::Object *, getPrototype,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Object_P1__getPrototype,
 	          "",
 	          "");
 	I_Method0(const std::string &, getName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getName,
 	          "",
 	          "");
 	I_Method0(const osgDB::DotOsgWrapper::Associates &, getAssociates,
+	          Properties::NON_VIRTUAL,
 	          __C5_Associates_R1__getAssociates,
 	          "",
 	          "");
 	I_Method0(osgDB::DotOsgWrapper::ReadFunc, getReadFunc,
+	          Properties::NON_VIRTUAL,
 	          __ReadFunc__getReadFunc,
 	          "",
 	          "");
 	I_Method0(osgDB::DotOsgWrapper::WriteFunc, getWriteFunc,
+	          Properties::NON_VIRTUAL,
 	          __WriteFunc__getWriteFunc,
 	          "",
 	          "");
 	I_Method0(osgDB::DotOsgWrapper::ReadWriteMode, getReadWriteMode,
+	          Properties::NON_VIRTUAL,
 	          __ReadWriteMode__getReadWriteMode,
 	          "",
 	          "");

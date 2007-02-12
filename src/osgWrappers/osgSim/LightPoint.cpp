@@ -42,6 +42,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::LightPoint)
 	                           "",
 	                           "");
 	I_Constructor1(IN, const osgSim::LightPoint &, lp,
+	               Properties::NON_EXPLICIT,
 	               ____LightPoint__C5_LightPoint_R1,
 	               "",
 	               "");

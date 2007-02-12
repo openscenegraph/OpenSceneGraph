@@ -33,26 +33,32 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
 	                           "",
 	                           "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec3 &, getCenter,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getCenter,
 	          "Get the center point. ",
 	          "");
 	I_Method1(void, setCenter, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __void__setCenter__C5_osg_Vec3_R1,
 	          "Set the center point. ",
 	          "");
 	I_Method3(void, setCenter, IN, float, x, IN, float, y, IN, float, z,
+	          Properties::NON_VIRTUAL,
 	          __void__setCenter__float__float__float,
 	          "Set the center point. ",
 	          "");

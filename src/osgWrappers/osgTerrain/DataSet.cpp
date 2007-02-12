@@ -69,21 +69,25 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::MipMappingMode)
 	I_EnumLabel(osgTerrain::DataSet::MIP_MAPPING_IMAGERY);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_BaseType(osg::Referenced);
 	I_Method1(void, insertTileToQuadMap, IN, osgTerrain::DataSet::CompositeDestination *, tile,
+	          Properties::NON_VIRTUAL,
 	          __void__insertTileToQuadMap__CompositeDestination_P1,
 	          "",
 	          "");
 	I_Method3(osgTerrain::DataSet::DestinationTile *, getTile, IN, unsigned int, level, IN, unsigned int, X, IN, unsigned int, Y,
+	          Properties::NON_VIRTUAL,
 	          __DestinationTile_P1__getTile__unsigned_int__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method3(osgTerrain::DataSet::CompositeDestination *, getComposite, IN, unsigned int, level, IN, unsigned int, X, IN, unsigned int, Y,
+	          Properties::NON_VIRTUAL,
 	          __CompositeDestination_P1__getComposite__unsigned_int__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method2(osgTerrain::DataSet::Row &, getRow, IN, unsigned int, level, IN, unsigned int, Y,
+	          Properties::NON_VIRTUAL,
 	          __Row_R1__getRow__unsigned_int__unsigned_int,
 	          "",
 	          "");
@@ -91,318 +95,397 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	               "",
 	               "");
 	I_Method1(void, addSource, IN, osgTerrain::DataSet::Source *, source,
+	          Properties::NON_VIRTUAL,
 	          __void__addSource__Source_P1,
 	          "",
 	          "");
 	I_Method1(void, addSource, IN, osgTerrain::DataSet::CompositeSource *, composite,
+	          Properties::NON_VIRTUAL,
 	          __void__addSource__CompositeSource_P1,
 	          "",
 	          "");
 	I_Method0(void, loadSources,
+	          Properties::NON_VIRTUAL,
 	          __void__loadSources,
 	          "",
 	          "");
 	I_Method1(void, setMaximumTileImageSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumTileImageSize__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMaximumTileImageSize,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMaximumTileImageSize,
 	          "",
 	          "");
 	I_Method1(void, setMaximumTileTerrainSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumTileTerrainSize__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMaximumTileTerrainSize,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMaximumTileTerrainSize,
 	          "",
 	          "");
 	I_Method1(void, setMaximumVisibleDistanceOfTopLevel, IN, float, d,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumVisibleDistanceOfTopLevel__float,
 	          "",
 	          "");
 	I_Method0(float, getMaximumVisibleDistanceOfTopLevel,
+	          Properties::NON_VIRTUAL,
 	          __float__getMaximumVisibleDistanceOfTopLevel,
 	          "",
 	          "");
 	I_Method1(void, setRadiusToMaxVisibleDistanceRatio, IN, float, ratio,
+	          Properties::NON_VIRTUAL,
 	          __void__setRadiusToMaxVisibleDistanceRatio__float,
 	          "",
 	          "");
 	I_Method0(float, getRadiusToMaxVisibleDistanceRatio,
+	          Properties::NON_VIRTUAL,
 	          __float__getRadiusToMaxVisibleDistanceRatio,
 	          "",
 	          "");
 	I_Method1(void, setVerticalScale, IN, float, verticalScale,
+	          Properties::NON_VIRTUAL,
 	          __void__setVerticalScale__float,
 	          "",
 	          "");
 	I_Method0(float, getVerticalScale,
+	          Properties::NON_VIRTUAL,
 	          __float__getVerticalScale,
 	          "",
 	          "");
 	I_Method1(void, setSkirtRatio, IN, float, skirtRatio,
+	          Properties::NON_VIRTUAL,
 	          __void__setSkirtRatio__float,
 	          "",
 	          "");
 	I_Method0(float, getSkirtRatio,
+	          Properties::NON_VIRTUAL,
 	          __float__getSkirtRatio,
 	          "",
 	          "");
 	I_Method1(void, setDefaultColor, IN, const osg::Vec4 &, defaultColor,
+	          Properties::NON_VIRTUAL,
 	          __void__setDefaultColor__C5_osg_Vec4_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4 &, getDefaultColor,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getDefaultColor,
 	          "",
 	          "");
 	I_Method1(void, setDestinationCoordinateSystem, IN, const std::string &, wellKnownText,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationCoordinateSystem__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, setDestinationCoordinateSystem, IN, osg::CoordinateSystemNode *, cs,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationCoordinateSystem__osg_CoordinateSystemNode_P1,
 	          "",
 	          "");
 	I_Method0(osg::CoordinateSystemNode *, getDestinationCoordinateSystem,
+	          Properties::NON_VIRTUAL,
 	          __osg_CoordinateSystemNode_P1__getDestinationCoordinateSystem,
 	          "",
 	          "");
 	I_Method1(void, setIntermediateCoordinateSystem, IN, const std::string &, wellKnownText,
+	          Properties::NON_VIRTUAL,
 	          __void__setIntermediateCoordinateSystem__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, setIntermediateCoordinateSystem, IN, osg::CoordinateSystemNode *, cs,
+	          Properties::NON_VIRTUAL,
 	          __void__setIntermediateCoordinateSystem__osg_CoordinateSystemNode_P1,
 	          "",
 	          "");
 	I_Method0(osg::CoordinateSystemNode *, getIntermediateCoordinateSystem,
+	          Properties::NON_VIRTUAL,
 	          __osg_CoordinateSystemNode_P1__getIntermediateCoordinateSystem,
 	          "",
 	          "");
 	I_Method1(void, setConvertFromGeographicToGeocentric, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setConvertFromGeographicToGeocentric__bool,
 	          "",
 	          "");
 	I_Method0(bool, getConvertFromGeographicToGeocentric,
+	          Properties::NON_VIRTUAL,
 	          __bool__getConvertFromGeographicToGeocentric,
 	          "",
 	          "");
 	I_Method1(void, setEllipsoidModel, IN, osg::EllipsoidModel *, et,
+	          Properties::NON_VIRTUAL,
 	          __void__setEllipsoidModel__osg_EllipsoidModel_P1,
 	          "",
 	          "");
 	I_Method0(osg::EllipsoidModel *, getEllipsoidModel,
+	          Properties::NON_VIRTUAL,
 	          __osg_EllipsoidModel_P1__getEllipsoidModel,
 	          "",
 	          "");
 	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
 	          "",
 	          "");
 	I_Method0(bool, mapLatLongsToXYZ,
+	          Properties::NON_VIRTUAL,
 	          __bool__mapLatLongsToXYZ,
 	          "",
 	          "");
 	I_Method1(void, setDestinationExtents, IN, const osgTerrain::GeospatialExtents &, extents,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationExtents__C5_GeospatialExtents_R1,
 	          "",
 	          "");
 	I_Method1(void, setDestinationGeoTransform, IN, const osg::Matrixd &, geoTransform,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationGeoTransform__C5_osg_Matrixd_R1,
 	          "",
 	          "");
 	I_Method1(void, setArchiveName, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
 	          __void__setArchiveName__C5_std_string_R1,
 	          "Set the Archive name if one is to be used. ",
 	          "");
 	I_Method0(const std::string &, getArchiveName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getArchiveName,
 	          "Get the Archive name. ",
 	          "");
 	I_Method1(void, setArchive, IN, osgDB::Archive *, archive,
+	          Properties::NON_VIRTUAL,
 	          __void__setArchive__osgDB_Archive_P1,
 	          "Set the Archive. ",
 	          "");
 	I_Method0(osgDB::Archive *, getArchive,
+	          Properties::NON_VIRTUAL,
 	          __osgDB_Archive_P1__getArchive,
 	          "Get the Archive if one is to being used. ",
 	          "");
 	I_Method1(void, setDestinationName, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationName__C5_std_string_R1,
 	          "Set the Directory, DestinationTileBaseName and DestinationTileExtension from the passed in filename. ",
 	          "");
 	I_Method1(void, setDirectory, IN, const std::string &, directory,
+	          Properties::NON_VIRTUAL,
 	          __void__setDirectory__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getDirectory,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getDirectory,
 	          "",
 	          "");
 	I_Method1(void, setDestinationTileBaseName, IN, const std::string &, basename,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationTileBaseName__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getDestinationTileBaseName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getDestinationTileBaseName,
 	          "",
 	          "");
 	I_Method1(void, setDestinationTileExtension, IN, const std::string &, extension,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationTileExtension__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getDestinationTileExtension,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getDestinationTileExtension,
 	          "",
 	          "");
 	I_Method1(void, setDestinationImageExtension, IN, const std::string &, extension,
+	          Properties::NON_VIRTUAL,
 	          __void__setDestinationImageExtension__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getDestinationImageExtension,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getDestinationImageExtension,
 	          "",
 	          "");
 	I_Method1(void, setDatabaseType, IN, osgTerrain::DataSet::DatabaseType, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setDatabaseType__DatabaseType,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::DatabaseType, getDatabaseType,
+	          Properties::NON_VIRTUAL,
 	          __DatabaseType__getDatabaseType,
 	          "",
 	          "");
 	I_Method1(void, setGeometryType, IN, osgTerrain::DataSet::GeometryType, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setGeometryType__GeometryType,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::GeometryType, getGeometryType,
+	          Properties::NON_VIRTUAL,
 	          __GeometryType__getGeometryType,
 	          "",
 	          "");
 	I_Method1(void, setTextureType, IN, osgTerrain::DataSet::TextureType, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setTextureType__TextureType,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::TextureType, getTextureType,
+	          Properties::NON_VIRTUAL,
 	          __TextureType__getTextureType,
 	          "",
 	          "");
 	I_Method1(void, setMaxAnisotropy, IN, float, d,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaxAnisotropy__float,
 	          "",
 	          "");
 	I_Method0(float, getMaxAnisotropy,
+	          Properties::NON_VIRTUAL,
 	          __float__getMaxAnisotropy,
 	          "",
 	          "");
 	I_Method1(void, setMipMappingMode, IN, osgTerrain::DataSet::MipMappingMode, mipMappingMode,
+	          Properties::NON_VIRTUAL,
 	          __void__setMipMappingMode__MipMappingMode,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::MipMappingMode, getMipMappingMode,
+	          Properties::NON_VIRTUAL,
 	          __MipMappingMode__getMipMappingMode,
 	          "",
 	          "");
 	I_Method1(void, setUseLocalTileTransform, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setUseLocalTileTransform__bool,
 	          "",
 	          "");
 	I_Method0(bool, getUseLocalTileTransform,
+	          Properties::NON_VIRTUAL,
 	          __bool__getUseLocalTileTransform,
 	          "",
 	          "");
 	I_Method1(void, setSimplifyTerrain, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setSimplifyTerrain__bool,
 	          "",
 	          "");
 	I_Method0(bool, getSimplifyTerrain,
+	          Properties::NON_VIRTUAL,
 	          __bool__getSimplifyTerrain,
 	          "",
 	          "");
 	I_Method1(void, setDecorateGeneratedSceneGraphWithCoordinateSystemNode, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setDecorateGeneratedSceneGraphWithCoordinateSystemNode__bool,
 	          "",
 	          "");
 	I_Method0(bool, getDecorateGeneratedSceneGraphWithCoordinateSystemNode,
+	          Properties::NON_VIRTUAL,
 	          __bool__getDecorateGeneratedSceneGraphWithCoordinateSystemNode,
 	          "",
 	          "");
 	I_Method1(void, setDecorateGeneratedSceneGraphWithMultiTextureControl, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setDecorateGeneratedSceneGraphWithMultiTextureControl__bool,
 	          "",
 	          "");
 	I_Method0(bool, getDecorateGeneratedSceneGraphWithMultiTextureControl,
+	          Properties::NON_VIRTUAL,
 	          __bool__getDecorateGeneratedSceneGraphWithMultiTextureControl,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumOfTextureLevels,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumOfTextureLevels,
 	          "",
 	          "");
 	I_Method1(void, setCommentString, IN, const std::string &, comment,
+	          Properties::NON_VIRTUAL,
 	          __void__setCommentString__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getCommentString,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getCommentString,
 	          "",
 	          "");
 	I_Method1(void, setWriteNodeBeforeSimplification, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setWriteNodeBeforeSimplification__bool,
 	          "",
 	          "");
 	I_Method0(bool, getWriteNodeBeforeSimplification,
+	          Properties::NON_VIRTUAL,
 	          __bool__getWriteNodeBeforeSimplification,
 	          "",
 	          "");
 	I_Method9(osgTerrain::DataSet::CompositeDestination *, createDestinationGraph, IN, osgTerrain::DataSet::CompositeDestination *, parent, IN, osg::CoordinateSystemNode *, cs, IN, const osgTerrain::GeospatialExtents &, extents, IN, unsigned int, maxImageSize, IN, unsigned int, maxTerrainSize, IN, unsigned int, currentLevel, IN, unsigned int, currentX, IN, unsigned int, currentY, IN, unsigned int, maxNumLevels,
+	          Properties::NON_VIRTUAL,
 	          __CompositeDestination_P1__createDestinationGraph__CompositeDestination_P1__osg_CoordinateSystemNode_P1__C5_GeospatialExtents_R1__unsigned_int__unsigned_int__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, computeDestinationGraphFromSources, IN, unsigned int, numLevels,
+	          Properties::NON_VIRTUAL,
 	          __void__computeDestinationGraphFromSources__unsigned_int,
 	          "",
 	          "");
 	I_Method0(void, updateSourcesForDestinationGraphNeeds,
+	          Properties::NON_VIRTUAL,
 	          __void__updateSourcesForDestinationGraphNeeds,
 	          "",
 	          "");
 	I_Method0(void, populateDestinationGraphFromSources,
+	          Properties::NON_VIRTUAL,
 	          __void__populateDestinationGraphFromSources,
 	          "",
 	          "");
 	I_Method1(void, createDestination, IN, unsigned int, numLevels,
+	          Properties::NON_VIRTUAL,
 	          __void__createDestination__unsigned_int,
 	          "",
 	          "");
 	I_Method0(void, buildDestination,
+	          Properties::NON_VIRTUAL,
 	          __void__buildDestination,
 	          "",
 	          "");
 	I_Method0(void, writeDestination,
+	          Properties::NON_VIRTUAL,
 	          __void__writeDestination,
 	          "",
 	          "");
 	I_Method0(osg::Node *, getDestinationRootNode,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getDestinationRootNode,
 	          "",
 	          "");
 	I_Method2(void, _writeNodeFile, IN, const osg::Node &, node, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
 	          __void___writeNodeFile__C5_osg_Node_R1__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method2(void, _writeImageFile, IN, const osg::Image &, image, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
 	          __void___writeImageFile__C5_osg_Image_R1__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, setState, IN, osg::State *, state,
+	          Properties::NON_VIRTUAL,
 	          __void__setState__osg_State_P1,
 	          "",
 	          "");
 	I_Method0(osg::State *, getState,
+	          Properties::NON_VIRTUAL,
 	          __osg_State_P1__getState,
 	          "",
 	          "");
@@ -523,7 +606,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgTerrain::DataSet::DestinationTile 
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgTerrain::DataSet::CompositeDestination > >, osgTerrain::DataSet::CompositeDestination::ChildList);
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0(____CompositeDestination,
@@ -534,54 +617,67 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
 	               "",
 	               "");
 	I_Method0(void, computeNeighboursFromQuadMap,
+	          Properties::NON_VIRTUAL,
 	          __void__computeNeighboursFromQuadMap,
 	          "",
 	          "");
 	I_Method1(void, addRequiredResolutions, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph,
+	          Properties::NON_VIRTUAL,
 	          __void__addRequiredResolutions__CompositeSource_P1,
 	          "",
 	          "");
 	I_Method1(void, readFrom, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph,
+	          Properties::NON_VIRTUAL,
 	          __void__readFrom__CompositeSource_P1,
 	          "",
 	          "");
 	I_Method0(void, equalizeBoundaries,
+	          Properties::NON_VIRTUAL,
 	          __void__equalizeBoundaries,
 	          "",
 	          "");
 	I_Method0(osg::Node *, createScene,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__createScene,
 	          "",
 	          "");
 	I_Method0(bool, areSubTilesComplete,
+	          Properties::NON_VIRTUAL,
 	          __bool__areSubTilesComplete,
 	          "",
 	          "");
 	I_Method0(std::string, getSubTileName,
+	          Properties::NON_VIRTUAL,
 	          __std_string__getSubTileName,
 	          "",
 	          "");
 	I_Method0(osg::Node *, createPagedLODScene,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__createPagedLODScene,
 	          "",
 	          "");
 	I_Method0(osg::Node *, createSubTileScene,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__createSubTileScene,
 	          "",
 	          "");
 	I_Method0(void, unrefSubTileData,
+	          Properties::NON_VIRTUAL,
 	          __void__unrefSubTileData,
 	          "",
 	          "");
 	I_Method0(void, unrefLocalData,
+	          Properties::NON_VIRTUAL,
 	          __void__unrefLocalData,
 	          "",
 	          "");
 	I_Method1(void, setSubTilesGenerated, IN, bool, generated,
+	          Properties::NON_VIRTUAL,
 	          __void__setSubTilesGenerated__bool,
 	          "",
 	          "");
 	I_Method0(bool, getSubTilesGenerated,
+	          Properties::NON_VIRTUAL,
 	          __bool__getSubTilesGenerated,
 	          "",
 	          "");
@@ -612,26 +708,31 @@ TYPE_NAME_ALIAS(osgTerrain::DataSet::CompositeSource::base_source_iterator< osgT
 
 TYPE_NAME_ALIAS(osgTerrain::DataSet::CompositeSource::base_source_iterator< osgTerrain::DataSet::CompositeSource::LODSourceAdvancer >, osgTerrain::DataSet::CompositeSource::source_lod_iterator);
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeSource)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeSource)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_ConstructorWithDefaults1(IN, osgTerrain::DataSet::CompositeType, type, osgTerrain::DataSet::GROUP,
+	                           Properties::NON_EXPLICIT,
 	                           ____CompositeSource__CompositeType,
 	                           "",
 	                           "");
 	I_Method1(void, setType, IN, osgTerrain::DataSet::CompositeType, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setType__CompositeType,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::CompositeType, getType,
+	          Properties::NON_VIRTUAL,
 	          __CompositeType__getType,
 	          "",
 	          "");
 	I_Method0(void, setSortValueFromSourceDataResolution,
+	          Properties::NON_VIRTUAL,
 	          __void__setSortValueFromSourceDataResolution,
 	          "",
 	          "");
 	I_Method0(void, sort,
+	          Properties::NON_VIRTUAL,
 	          __void__sort,
 	          "",
 	          "");
@@ -648,10 +749,12 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::DefaultSourceAdvance
 	               "",
 	               "");
 	I_Method2(bool, isActive, IN, const osgTerrain::DataSet::CompositeSource &, x, IN, int, x,
+	          Properties::NON_VIRTUAL,
 	          __bool__isActive__C5_CompositeSource_R1__int,
 	          "",
 	          "");
 	I_Method2(bool, advanceToNextSource, IN, const osgTerrain::DataSet::CompositeSource &, composite, IN, int &, index,
+	          Properties::NON_VIRTUAL,
 	          __bool__advanceToNextSource__C5_CompositeSource_R1__int_R1,
 	          "",
 	          "");
@@ -668,14 +771,17 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::iterator)
 	                           "",
 	                           "");
 	I_Constructor1(IN, const osgTerrain::DataSet::CompositeSource::iterator &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____iterator__C5_iterator_R1,
 	               "",
 	               "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(bool, advance,
+	          Properties::NON_VIRTUAL,
 	          __bool__advance,
 	          "",
 	          "");
@@ -683,10 +789,12 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::LODSourceAdvancer)
 	I_ConstructorWithDefaults1(IN, float, targetResolution, 0.0f,
+	                           Properties::NON_EXPLICIT,
 	                           ____LODSourceAdvancer__float,
 	                           "",
 	                           "");
 	I_Method2(bool, advanceToNextSource, IN, const osgTerrain::DataSet::CompositeSource &, composite, IN, int &, index,
+	          Properties::NON_VIRTUAL,
 	          __bool__advanceToNextSource__C5_CompositeSource_R1__int_R1,
 	          "",
 	          "");
@@ -697,9 +805,10 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osgTerrain::DataSet::
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osgTerrain::DataSet::DestinationData::ModelList);
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationData)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationData)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, osgTerrain::DataSet *, dataSet,
+	               Properties::NON_EXPLICIT,
 	               ____DestinationData__DataSet_P1,
 	               "",
 	               "");
@@ -725,105 +834,129 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::DestinationTile::Position)
 	I_EnumLabel(osgTerrain::DataSet::DestinationTile::NUMBER_OF_POSITIONS);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationTile)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationTile)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0(____DestinationTile,
 	               "",
 	               "");
 	I_Method0(void, computeNeighboursFromQuadMap,
+	          Properties::NON_VIRTUAL,
 	          __void__computeNeighboursFromQuadMap,
 	          "",
 	          "");
 	I_Method8(void, setNeighbours, IN, osgTerrain::DataSet::DestinationTile *, left, IN, osgTerrain::DataSet::DestinationTile *, left_below, IN, osgTerrain::DataSet::DestinationTile *, below, IN, osgTerrain::DataSet::DestinationTile *, below_right, IN, osgTerrain::DataSet::DestinationTile *, right, IN, osgTerrain::DataSet::DestinationTile *, right_above, IN, osgTerrain::DataSet::DestinationTile *, above, IN, osgTerrain::DataSet::DestinationTile *, above_left,
+	          Properties::NON_VIRTUAL,
 	          __void__setNeighbours__DestinationTile_P1__DestinationTile_P1__DestinationTile_P1__DestinationTile_P1__DestinationTile_P1__DestinationTile_P1__DestinationTile_P1__DestinationTile_P1,
 	          "",
 	          "");
 	I_Method0(void, checkNeighbouringTiles,
+	          Properties::NON_VIRTUAL,
 	          __void__checkNeighbouringTiles,
 	          "",
 	          "");
 	I_Method2(void, setMaximumImagerySize, IN, unsigned int, maxNumColumns, IN, unsigned int, maxNumRows,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumImagerySize__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setMaximumTerrainSize, IN, unsigned int, maxNumColumns, IN, unsigned int, maxNumRows,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaximumTerrainSize__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, computeMaximumSourceResolution, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph,
+	          Properties::NON_VIRTUAL,
 	          __void__computeMaximumSourceResolution__CompositeSource_P1,
 	          "",
 	          "");
 	I_Method5(bool, computeImageResolution, IN, unsigned int, layer, IN, unsigned int &, numColumns, IN, unsigned int &, numRows, IN, double &, resX, IN, double &, resY,
+	          Properties::NON_VIRTUAL,
 	          __bool__computeImageResolution__unsigned_int__unsigned_int_R1__unsigned_int_R1__double_R1__double_R1,
 	          "",
 	          "");
 	I_Method4(bool, computeTerrainResolution, IN, unsigned int &, numColumns, IN, unsigned int &, numRows, IN, double &, resX, IN, double &, resY,
+	          Properties::NON_VIRTUAL,
 	          __bool__computeTerrainResolution__unsigned_int_R1__unsigned_int_R1__double_R1__double_R1,
 	          "",
 	          "");
 	I_Method0(void, allocate,
+	          Properties::NON_VIRTUAL,
 	          __void__allocate,
 	          "",
 	          "");
 	I_Method1(void, addRequiredResolutions, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph,
+	          Properties::NON_VIRTUAL,
 	          __void__addRequiredResolutions__CompositeSource_P1,
 	          "",
 	          "");
 	I_Method1(void, readFrom, IN, osgTerrain::DataSet::CompositeSource *, sourceGraph,
+	          Properties::NON_VIRTUAL,
 	          __void__readFrom__CompositeSource_P1,
 	          "",
 	          "");
 	I_Method0(void, allocateEdgeNormals,
+	          Properties::NON_VIRTUAL,
 	          __void__allocateEdgeNormals,
 	          "",
 	          "");
 	I_Method1(void, equalizeCorner, IN, osgTerrain::DataSet::DestinationTile::Position, position,
+	          Properties::NON_VIRTUAL,
 	          __void__equalizeCorner__Position,
 	          "",
 	          "");
 	I_Method1(void, equalizeEdge, IN, osgTerrain::DataSet::DestinationTile::Position, position,
+	          Properties::NON_VIRTUAL,
 	          __void__equalizeEdge__Position,
 	          "",
 	          "");
 	I_Method0(void, equalizeBoundaries,
+	          Properties::NON_VIRTUAL,
 	          __void__equalizeBoundaries,
 	          "",
 	          "");
 	I_Method1(void, setTileComplete, IN, bool, complete,
+	          Properties::NON_VIRTUAL,
 	          __void__setTileComplete__bool,
 	          "",
 	          "");
 	I_Method0(bool, getTileComplete,
+	          Properties::NON_VIRTUAL,
 	          __bool__getTileComplete,
 	          "",
 	          "");
 	I_Method0(void, optimizeResolution,
+	          Properties::NON_VIRTUAL,
 	          __void__optimizeResolution,
 	          "",
 	          "");
 	I_Method0(osg::Node *, createScene,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__createScene,
 	          "",
 	          "");
 	I_Method0(osg::StateSet *, createStateSet,
+	          Properties::NON_VIRTUAL,
 	          __osg_StateSet_P1__createStateSet,
 	          "",
 	          "");
 	I_Method0(osg::Node *, createHeightField,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__createHeightField,
 	          "",
 	          "");
 	I_Method0(osg::Node *, createPolygonal,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__createPolygonal,
 	          "",
 	          "");
 	I_Method0(void, unrefData,
+	          Properties::NON_VIRTUAL,
 	          __void__unrefData,
 	          "",
 	          "");
 	I_Method1(osgTerrain::DataSet::DestinationTile::ImageData &, getImageData, IN, unsigned int, layer,
+	          Properties::NON_VIRTUAL,
 	          __ImageData_R1__getImageData__unsigned_int,
 	          "",
 	          "");
@@ -872,7 +1005,7 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::Source::ParameterPolicy)
 	I_EnumLabel(osgTerrain::DataSet::Source::PREFER_FILE_SETTINGS);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0(____Source,
@@ -883,174 +1016,217 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
 	               "",
 	               "");
 	I_Method1(void, setSortValue, IN, double, s,
+	          Properties::NON_VIRTUAL,
 	          __void__setSortValue__double,
 	          "",
 	          "");
 	I_Method0(double, getSortValue,
+	          Properties::NON_VIRTUAL,
 	          __double__getSortValue,
 	          "",
 	          "");
 	I_Method0(void, setSortValueFromSourceDataResolution,
+	          Properties::NON_VIRTUAL,
 	          __void__setSortValueFromSourceDataResolution,
 	          "",
 	          "");
 	I_Method1(void, setType, IN, osgTerrain::DataSet::Source::Type, type,
+	          Properties::NON_VIRTUAL,
 	          __void__setType__Type,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::Source::Type, getType,
+	          Properties::NON_VIRTUAL,
 	          __Type__getType,
 	          "",
 	          "");
 	I_Method1(void, setFileName, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method0(const std::string &, getFileName,
+	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFileName,
 	          "",
 	          "");
 	I_Method1(void, setTemporaryFile, IN, bool, temporaryFile,
+	          Properties::NON_VIRTUAL,
 	          __void__setTemporaryFile__bool,
 	          "",
 	          "");
 	I_Method0(bool, getTemporaryFile,
+	          Properties::NON_VIRTUAL,
 	          __bool__getTemporaryFile,
 	          "",
 	          "");
 	I_Method1(void, setGdalDataset, IN, void *, gdalDataset,
+	          Properties::NON_VIRTUAL,
 	          __void__setGdalDataset__void_P1,
 	          "",
 	          "");
 	I_Method0(void *, getGdalDataset,
+	          Properties::NON_VIRTUAL,
 	          __void_P1__getGdalDataset,
 	          "",
 	          "");
 	I_Method0(const void *, getGdalDataset,
+	          Properties::NON_VIRTUAL,
 	          __C5_void_P1__getGdalDataset,
 	          "",
 	          "");
 	I_Method1(void, setCoordinateSystemPolicy, IN, osgTerrain::DataSet::Source::ParameterPolicy, policy,
+	          Properties::NON_VIRTUAL,
 	          __void__setCoordinateSystemPolicy__ParameterPolicy,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::Source::ParameterPolicy, getCoordinateSystemPolicy,
+	          Properties::NON_VIRTUAL,
 	          __ParameterPolicy__getCoordinateSystemPolicy,
 	          "",
 	          "");
 	I_Method1(void, setCoordinateSystem, IN, const std::string &, wellKnownText,
+	          Properties::NON_VIRTUAL,
 	          __void__setCoordinateSystem__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, setCoordinateSystem, IN, osg::CoordinateSystemNode *, cs,
+	          Properties::NON_VIRTUAL,
 	          __void__setCoordinateSystem__osg_CoordinateSystemNode_P1,
 	          "",
 	          "");
 	I_Method0(osg::CoordinateSystemNode *, getCoordinateSystem,
+	          Properties::NON_VIRTUAL,
 	          __osg_CoordinateSystemNode_P1__getCoordinateSystem,
 	          "",
 	          "");
 	I_Method1(void, setGeoTransformPolicy, IN, osgTerrain::DataSet::Source::ParameterPolicy, policy,
+	          Properties::NON_VIRTUAL,
 	          __void__setGeoTransformPolicy__ParameterPolicy,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::Source::ParameterPolicy, getGeoTransformPolicy,
+	          Properties::NON_VIRTUAL,
 	          __ParameterPolicy__getGeoTransformPolicy,
 	          "",
 	          "");
 	I_Method1(void, setGeoTransform, IN, osg::Matrixd &, transform,
+	          Properties::NON_VIRTUAL,
 	          __void__setGeoTransform__osg_Matrixd_R1,
 	          "",
 	          "");
 	I_Method0(osg::Matrixd &, getGeoTransform,
+	          Properties::NON_VIRTUAL,
 	          __osg_Matrixd_R1__getGeoTransform,
 	          "",
 	          "");
 	I_Method4(void, setGeoTransformFromRange, IN, double, xMin, IN, double, xMax, IN, double, yMin, IN, double, yMax,
+	          Properties::NON_VIRTUAL,
 	          __void__setGeoTransformFromRange__double__double__double__double,
 	          "",
 	          "");
 	I_Method0(void, assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy,
+	          Properties::NON_VIRTUAL,
 	          __void__assignCoordinateSystemAndGeoTransformAccordingToParameterPolicy,
 	          "",
 	          "");
 	I_Method1(void, setMinLevel, IN, unsigned int, minLevel,
+	          Properties::NON_VIRTUAL,
 	          __void__setMinLevel__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, setMaxLevel, IN, unsigned int, maxLevel,
+	          Properties::NON_VIRTUAL,
 	          __void__setMaxLevel__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setMinMaxLevel, IN, unsigned int, minLevel, IN, unsigned int, maxLevel,
+	          Properties::NON_VIRTUAL,
 	          __void__setMinMaxLevel__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMinLevel,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMinLevel,
 	          "",
 	          "");
 	I_Method0(unsigned int, getMaxLevel,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMaxLevel,
 	          "",
 	          "");
 	I_Method1(void, setLayer, IN, unsigned int, layer,
+	          Properties::NON_VIRTUAL,
 	          __void__setLayer__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getLayer,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getLayer,
 	          "",
 	          "");
 	I_Method1(void, setSourceData, IN, osgTerrain::DataSet::SourceData *, data,
+	          Properties::NON_VIRTUAL,
 	          __void__setSourceData__SourceData_P1,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::SourceData *, getSourceData,
+	          Properties::NON_VIRTUAL,
 	          __SourceData_P1__getSourceData,
 	          "",
 	          "");
 	I_Method1(bool, intersects, IN, const osgTerrain::DataSet::SpatialProperties &, sp,
+	          Properties::NON_VIRTUAL,
 	          __bool__intersects__C5_SpatialProperties_R1,
 	          "",
 	          "");
 	I_Method0(void, loadSourceData,
+	          Properties::NON_VIRTUAL,
 	          __void__loadSourceData,
 	          "",
 	          "");
 	I_Method1(bool, needReproject, IN, const osg::CoordinateSystemNode *, cs,
+	          Properties::NON_VIRTUAL,
 	          __bool__needReproject__C5_osg_CoordinateSystemNode_P1,
 	          "",
 	          "");
 	I_Method3(bool, needReproject, IN, const osg::CoordinateSystemNode *, cs, IN, double, minResolution, IN, double, maxResolution,
+	          Properties::NON_VIRTUAL,
 	          __bool__needReproject__C5_osg_CoordinateSystemNode_P1__double__double,
 	          "",
 	          "");
 	I_MethodWithDefaults3(osgTerrain::DataSet::Source *, doReproject, IN, const std::string &, filename, , IN, osg::CoordinateSystemNode *, cs, , IN, double, targetResolution, 0.0,
+	                      Properties::NON_VIRTUAL,
 	                      __Source_P1__doReproject__C5_std_string_R1__osg_CoordinateSystemNode_P1__double,
 	                      "",
 	                      "");
 	I_Method0(void, buildOverviews,
+	          Properties::NON_VIRTUAL,
 	          __void__buildOverviews,
 	          "",
 	          "");
 	I_Method2(void, addRequiredResolution, IN, double, resX, IN, double, resY,
+	          Properties::NON_VIRTUAL,
 	          __void__addRequiredResolution__double__double,
 	          "",
 	          "");
 	I_Method1(void, setRequiredResolutions, IN, osgTerrain::DataSet::Source::ResolutionList &, resolutions,
+	          Properties::NON_VIRTUAL,
 	          __void__setRequiredResolutions__ResolutionList_R1,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::Source::ResolutionList &, getRequiredResolutions,
+	          Properties::NON_VIRTUAL,
 	          __ResolutionList_R1__getRequiredResolutions,
 	          "",
 	          "");
 	I_Method0(const osgTerrain::DataSet::Source::ResolutionList &, getRequiredResolutions,
+	          Properties::NON_VIRTUAL,
 	          __C5_ResolutionList_R1__getRequiredResolutions,
 	          "",
 	          "");
 	I_Method0(void, consolodateRequiredResolutions,
+	          Properties::NON_VIRTUAL,
 	          __void__consolodateRequiredResolutions,
 	          "",
 	          "");
@@ -1112,42 +1288,51 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< const osg::CoordinateSystemNode * COMMA  osgTerrain::DataSet::SpatialProperties >, osgTerrain::DataSet::SourceData::SpatialPropertiesMap);
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_ConstructorWithDefaults1(IN, osgTerrain::DataSet::Source *, source, 0,
+	                           Properties::NON_EXPLICIT,
 	                           ____SourceData__Source_P1,
 	                           "",
 	                           "");
 	I_Method1(osgTerrain::GeospatialExtents, getExtents, IN, const osg::CoordinateSystemNode *, cs,
+	          Properties::NON_VIRTUAL,
 	          __GeospatialExtents__getExtents__C5_osg_CoordinateSystemNode_P1,
 	          "",
 	          "");
 	I_Method1(const osgTerrain::DataSet::SpatialProperties &, computeSpatialProperties, IN, const osg::CoordinateSystemNode *, cs,
+	          Properties::NON_VIRTUAL,
 	          __C5_SpatialProperties_R1__computeSpatialProperties__C5_osg_CoordinateSystemNode_P1,
 	          "",
 	          "");
 	I_Method1(bool, intersects, IN, const osgTerrain::DataSet::SpatialProperties &, sp,
+	          Properties::NON_VIRTUAL,
 	          __bool__intersects__C5_SpatialProperties_R1,
 	          "",
 	          "");
 	I_Method1(void, read, IN, osgTerrain::DataSet::DestinationData &, destination,
+	          Properties::NON_VIRTUAL,
 	          __void__read__DestinationData_R1,
 	          "",
 	          "");
 	I_Method1(void, readImage, IN, osgTerrain::DataSet::DestinationData &, destination,
+	          Properties::VIRTUAL,
 	          __void__readImage__DestinationData_R1,
 	          "",
 	          "");
 	I_Method1(void, readHeightField, IN, osgTerrain::DataSet::DestinationData &, destination,
+	          Properties::VIRTUAL,
 	          __void__readHeightField__DestinationData_R1,
 	          "",
 	          "");
 	I_Method1(void, readModels, IN, osgTerrain::DataSet::DestinationData &, destination,
+	          Properties::VIRTUAL,
 	          __void__readModels__DestinationData_R1,
 	          "",
 	          "");
 	I_Method3(float, getInterpolatedValue, IN, GDALRasterBand *, band, IN, double, x, IN, double, y,
+	          Properties::NON_VIRTUAL,
 	          __float__getInterpolatedValue__GDALRasterBand_P1__double__double,
 	          "",
 	          "");
@@ -1167,6 +1352,7 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::SpatialProperties)
 	               "",
 	               "");
 	I_Constructor1(IN, const osgTerrain::DataSet::SpatialProperties &, sp,
+	               Properties::NON_EXPLICIT,
 	               ____SpatialProperties__C5_SpatialProperties_R1,
 	               "",
 	               "");
@@ -1175,10 +1361,12 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::SpatialProperties)
 	               "",
 	               "");
 	I_Method1(osgTerrain::DataSet::SpatialProperties &, assignSpatialProperties, IN, const osgTerrain::DataSet::SpatialProperties &, sp,
+	          Properties::NON_VIRTUAL,
 	          __SpatialProperties_R1__assignSpatialProperties__C5_SpatialProperties_R1,
 	          "",
 	          "");
 	I_Method0(void, computeExtents,
+	          Properties::NON_VIRTUAL,
 	          __void__computeExtents,
 	          "",
 	          "");
@@ -1199,70 +1387,87 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::GeospatialExtents)
 	               "",
 	               "");
 	I_Method0(double &, xMin,
+	          Properties::NON_VIRTUAL,
 	          __double_R1__xMin,
 	          "",
 	          "");
 	I_Method0(double, xMin,
+	          Properties::NON_VIRTUAL,
 	          __double__xMin,
 	          "",
 	          "");
 	I_Method0(double &, yMin,
+	          Properties::NON_VIRTUAL,
 	          __double_R1__yMin,
 	          "",
 	          "");
 	I_Method0(double, yMin,
+	          Properties::NON_VIRTUAL,
 	          __double__yMin,
 	          "",
 	          "");
 	I_Method0(double &, xMax,
+	          Properties::NON_VIRTUAL,
 	          __double_R1__xMax,
 	          "",
 	          "");
 	I_Method0(double, xMax,
+	          Properties::NON_VIRTUAL,
 	          __double__xMax,
 	          "",
 	          "");
 	I_Method0(double &, yMax,
+	          Properties::NON_VIRTUAL,
 	          __double_R1__yMax,
 	          "",
 	          "");
 	I_Method0(double, yMax,
+	          Properties::NON_VIRTUAL,
 	          __double__yMax,
 	          "",
 	          "");
 	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
 	          __void__init,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(double, radius,
+	          Properties::NON_VIRTUAL,
 	          __double__radius,
 	          "",
 	          "");
 	I_Method0(double, radius2,
+	          Properties::NON_VIRTUAL,
 	          __double__radius2,
 	          "",
 	          "");
 	I_Method2(osgTerrain::GeospatialExtents, intersection, IN, const osgTerrain::GeospatialExtents &, e, IN, double, xoffset,
+	          Properties::NON_VIRTUAL,
 	          __GeospatialExtents__intersection__C5_GeospatialExtents_R1__double,
 	          "",
 	          "");
 	I_Method1(bool, intersects, IN, const osgTerrain::GeospatialExtents &, bb,
+	          Properties::NON_VIRTUAL,
 	          __bool__intersects__C5_GeospatialExtents_R1,
 	          "Return true if this bounding box intersects the specified bounding box. ",
 	          "");
 	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__C5_osg_BoundingSphere_R1,
 	          "",
 	          "");
 	I_Method1(void, expandBy, IN, const osg::Vec3 &, v,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method1(void, expandBy, IN, const osgTerrain::GeospatialExtents &, e,
+	          Properties::NON_VIRTUAL,
 	          __void__expandBy__C5_GeospatialExtents_R1,
 	          "",
 	          "");
@@ -1276,26 +1481,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)
 	               "",
 	               "");
 	I_Constructor1(IN, osg::Image *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osg::Image > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osg::Image *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osg::Image *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osg::Image > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
@@ -1309,26 +1520,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::CompositeDestination >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgTerrain::DataSet::CompositeDestination *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::CompositeDestination > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgTerrain::DataSet::CompositeDestination *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::CompositeDestination *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::CompositeDestination > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
@@ -1342,26 +1559,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::CompositeSource >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgTerrain::DataSet::CompositeSource *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::CompositeSource > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgTerrain::DataSet::CompositeSource *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::CompositeSource *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::CompositeSource > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
@@ -1375,26 +1598,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::DestinationTile >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgTerrain::DataSet::DestinationTile *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::DestinationTile > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgTerrain::DataSet::DestinationTile *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::DestinationTile *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::DestinationTile > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
@@ -1408,26 +1637,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::DataSet::Source >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgTerrain::DataSet::Source *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::DataSet::Source > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgTerrain::DataSet::Source *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgTerrain::DataSet::Source *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::DataSet::Source > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");
@@ -1442,14 +1677,17 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::base_source_iterator
 	                           "",
 	                           "");
 	I_Constructor1(IN, const osgTerrain::DataSet::CompositeSource::base_source_iterator< osgTerrain::DataSet::CompositeSource::DefaultSourceAdvancer > &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____base_source_iterator__C5_base_source_iterator_R1,
 	               "",
 	               "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(bool, advance,
+	          Properties::NON_VIRTUAL,
 	          __bool__advance,
 	          "",
 	          "");
@@ -1461,14 +1699,17 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::DataSet::CompositeSource::base_source_iterator
 	                           "",
 	                           "");
 	I_Constructor1(IN, const osgTerrain::DataSet::CompositeSource::base_source_iterator< osgTerrain::DataSet::CompositeSource::LODSourceAdvancer > &, rhs,
+	               Properties::NON_EXPLICIT,
 	               ____base_source_iterator__C5_base_source_iterator_R1,
 	               "",
 	               "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(bool, advance,
+	          Properties::NON_VIRTUAL,
 	          __bool__advance,
 	          "",
 	          "");

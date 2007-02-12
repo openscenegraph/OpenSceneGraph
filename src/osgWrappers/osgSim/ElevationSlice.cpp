@@ -34,42 +34,52 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	               "",
 	               "");
 	I_Method1(void, setStartPoint, IN, const osg::Vec3d &, startPoint,
+	          Properties::NON_VIRTUAL,
 	          __void__setStartPoint__C5_osg_Vec3d_R1,
 	          "Set the start point of the slice. ",
 	          "");
 	I_Method0(const osg::Vec3d &, getStartPoint,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3d_R1__getStartPoint,
 	          "Get the start point of the slice. ",
 	          "");
 	I_Method1(void, setEndPoint, IN, const osg::Vec3d &, endPoint,
+	          Properties::NON_VIRTUAL,
 	          __void__setEndPoint__C5_osg_Vec3d_R1,
 	          "Set the end point of the slice. ",
 	          "");
 	I_Method0(const osg::Vec3d &, getEndPoint,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3d_R1__getEndPoint,
 	          "Get the end point of the slice. ",
 	          "");
 	I_Method0(const osgSim::ElevationSlice::Vec3dList &, getIntersections,
+	          Properties::NON_VIRTUAL,
 	          __C5_Vec3dList_R1__getIntersections,
 	          "Get the intersections in the form of a vector of Vec3d. ",
 	          "");
 	I_Method0(const osgSim::ElevationSlice::DistanceHeightList &, getDistanceHeightIntersections,
+	          Properties::NON_VIRTUAL,
 	          __C5_DistanceHeightList_R1__getDistanceHeightIntersections,
 	          "Get the intersections in the form a vector of pair<double,double> representing distance along the slice and height. ",
 	          "");
 	I_MethodWithDefaults2(void, computeIntersections, IN, osg::Node *, scene, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                      Properties::NON_VIRTUAL,
 	                      __void__computeIntersections__osg_Node_P1__osg_Node_NodeMask,
 	                      "Compute the intersections with the specified scene graph, the results are stored in vectors of Vec3d. ",
 	                      "Note, if the topmost node is a CoordinateSystemNode then the input points are assumed to be geocentric, with the up vector defined by the EllipsoidModel attached to the CoordinateSystemNode. If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. ");
 	I_Method0(void, clearDatabaseCache,
+	          Properties::NON_VIRTUAL,
 	          __void__clearDatabaseCache,
 	          "Clear the database cache. ",
 	          "");
 	I_Method1(void, setDatabaseCacheReadCallback, IN, osgSim::DatabaseCacheReadCallback *, dcrc,
+	          Properties::NON_VIRTUAL,
 	          __void__setDatabaseCacheReadCallback__DatabaseCacheReadCallback_P1,
 	          "Set the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
 	          "Note, if you have mulitple LineOfSight or ElevationSlice objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
 	I_Method0(osgSim::DatabaseCacheReadCallback *, getDatabaseCacheReadCallback,
+	          Properties::NON_VIRTUAL,
 	          __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback,
 	          "Get the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
 	          "");

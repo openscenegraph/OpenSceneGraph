@@ -35,78 +35,97 @@ BEGIN_VALUE_REFLECTOR(osg::Vec4b)
 	               "",
 	               "");
 	I_Method0(osg::Vec4b::value_type *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __value_type_P1__ptr,
 	          "",
 	          "");
 	I_Method0(const osg::Vec4b::value_type *, ptr,
+	          Properties::NON_VIRTUAL,
 	          __C5_value_type_P1__ptr,
 	          "",
 	          "");
 	I_Method4(void, set, IN, osg::Vec4b::value_type, x, IN, osg::Vec4b::value_type, y, IN, osg::Vec4b::value_type, z, IN, osg::Vec4b::value_type, w,
+	          Properties::NON_VIRTUAL,
 	          __void__set__value_type__value_type__value_type__value_type,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, x,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__x,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, y,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__y,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, z,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__z,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, w,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__w,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, x,
+	          Properties::NON_VIRTUAL,
 	          __value_type__x,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, y,
+	          Properties::NON_VIRTUAL,
 	          __value_type__y,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, z,
+	          Properties::NON_VIRTUAL,
 	          __value_type__z,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, w,
+	          Properties::NON_VIRTUAL,
 	          __value_type__w,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, r,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__r,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, g,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__g,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, b,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__b,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type &, a,
+	          Properties::NON_VIRTUAL,
 	          __value_type_R1__a,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, r,
+	          Properties::NON_VIRTUAL,
 	          __value_type__r,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, g,
+	          Properties::NON_VIRTUAL,
 	          __value_type__g,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, b,
+	          Properties::NON_VIRTUAL,
 	          __value_type__b,
 	          "",
 	          "");
 	I_Method0(osg::Vec4b::value_type, a,
+	          Properties::NON_VIRTUAL,
 	          __value_type__a,
 	          "",
 	          "");

@@ -48,12 +48,13 @@ BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_EnumLabel(osgUtil::RenderBin::SORT_BACK_TO_FRONT);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_BaseType(osg::Object);
 	I_Constructor0(____RenderBin,
 	               "",
 	               "");
 	I_Constructor1(IN, osgUtil::RenderBin::SortMode, mode,
+	               Properties::NON_EXPLICIT,
 	               ____RenderBin__SortMode,
 	               "",
 	               "");
@@ -62,166 +63,207 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "",
 	          "");
 	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the object's library. ",
 	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
 	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset,
+	          Properties::NON_VIRTUAL,
 	          __void__setStateSet__osg_StateSet_P1,
 	          "",
 	          "");
 	I_Method0(osg::StateSet *, getStateSet,
+	          Properties::NON_VIRTUAL,
 	          __osg_StateSet_P1__getStateSet,
 	          "",
 	          "");
 	I_Method0(const osg::StateSet *, getStateSet,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_StateSet_P1__getStateSet,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin *, getParent,
+	          Properties::NON_VIRTUAL,
 	          __RenderBin_P1__getParent,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderBin *, getParent,
+	          Properties::NON_VIRTUAL,
 	          __C5_RenderBin_P1__getParent,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderStage *, getStage,
+	          Properties::NON_VIRTUAL,
 	          __RenderStage_P1__getStage,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderStage *, getStage,
+	          Properties::NON_VIRTUAL,
 	          __C5_RenderStage_P1__getStage,
 	          "",
 	          "");
 	I_Method0(int, getBinNum,
+	          Properties::NON_VIRTUAL,
 	          __int__getBinNum,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin::StateGraphList &, getStateGraphList,
+	          Properties::NON_VIRTUAL,
 	          __StateGraphList_R1__getStateGraphList,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderBin::StateGraphList &, getStateGraphList,
+	          Properties::NON_VIRTUAL,
 	          __C5_StateGraphList_R1__getStateGraphList,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin::RenderBinList &, getRenderBinList,
+	          Properties::NON_VIRTUAL,
 	          __RenderBinList_R1__getRenderBinList,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderBin::RenderBinList &, getRenderBinList,
+	          Properties::NON_VIRTUAL,
 	          __C5_RenderBinList_R1__getRenderBinList,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin::RenderLeafList &, getRenderLeafList,
+	          Properties::NON_VIRTUAL,
 	          __RenderLeafList_R1__getRenderLeafList,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderBin::RenderLeafList &, getRenderLeafList,
+	          Properties::NON_VIRTUAL,
 	          __C5_RenderLeafList_R1__getRenderLeafList,
 	          "",
 	          "");
 	I_Method2(osgUtil::RenderBin *, find_or_insert, IN, int, binNum, IN, const std::string &, binName,
+	          Properties::NON_VIRTUAL,
 	          __RenderBin_P1__find_or_insert__int__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, addStateGraph, IN, osgUtil::StateGraph *, rg,
+	          Properties::NON_VIRTUAL,
 	          __void__addStateGraph__StateGraph_P1,
 	          "",
 	          "");
 	I_Method0(void, sort,
+	          Properties::VIRTUAL,
 	          __void__sort,
 	          "",
 	          "");
 	I_Method0(void, sortImplementation,
+	          Properties::VIRTUAL,
 	          __void__sortImplementation,
 	          "",
 	          "");
 	I_Method1(void, setSortMode, IN, osgUtil::RenderBin::SortMode, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setSortMode__SortMode,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin::SortMode, getSortMode,
+	          Properties::NON_VIRTUAL,
 	          __SortMode__getSortMode,
 	          "",
 	          "");
 	I_Method0(void, sortByState,
+	          Properties::VIRTUAL,
 	          __void__sortByState,
 	          "",
 	          "");
 	I_Method0(void, sortByStateThenFrontToBack,
+	          Properties::VIRTUAL,
 	          __void__sortByStateThenFrontToBack,
 	          "",
 	          "");
 	I_Method0(void, sortFrontToBack,
+	          Properties::VIRTUAL,
 	          __void__sortFrontToBack,
 	          "",
 	          "");
 	I_Method0(void, sortBackToFront,
+	          Properties::VIRTUAL,
 	          __void__sortBackToFront,
 	          "",
 	          "");
 	I_Method1(void, setSortCallback, IN, osgUtil::RenderBin::SortCallback *, sortCallback,
+	          Properties::NON_VIRTUAL,
 	          __void__setSortCallback__SortCallback_P1,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin::SortCallback *, getSortCallback,
+	          Properties::NON_VIRTUAL,
 	          __SortCallback_P1__getSortCallback,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderBin::SortCallback *, getSortCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_SortCallback_P1__getSortCallback,
 	          "",
 	          "");
 	I_Method2(void, draw, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::VIRTUAL,
 	          __void__draw__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
 	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
 	I_Method1(void, setDrawCallback, IN, osgUtil::RenderBin::DrawCallback *, drawCallback,
+	          Properties::NON_VIRTUAL,
 	          __void__setDrawCallback__DrawCallback_P1,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin::DrawCallback *, getDrawCallback,
+	          Properties::NON_VIRTUAL,
 	          __DrawCallback_P1__getDrawCallback,
 	          "",
 	          "");
 	I_Method0(const osgUtil::RenderBin::DrawCallback *, getDrawCallback,
+	          Properties::NON_VIRTUAL,
 	          __C5_DrawCallback_P1__getDrawCallback,
 	          "",
 	          "");
 	I_Method1(bool, getStats, IN, osgUtil::Statistics &, primStats,
+	          Properties::NON_VIRTUAL,
 	          __bool__getStats__Statistics_R1,
 	          "Extract stats for current draw list. ",
 	          "");
 	I_Method0(unsigned int, computeNumberOfDynamicRenderLeaves,
+	          Properties::VIRTUAL,
 	          __unsigned_int__computeNumberOfDynamicRenderLeaves,
 	          "Compute the number of dynamic RenderLeaves. ",
 	          "");
 	I_Method0(void, copyLeavesFromStateGraphListToRenderLeafList,
+	          Properties::NON_VIRTUAL,
 	          __void__copyLeavesFromStateGraphListToRenderLeafList,
 	          "",
 	          "");
@@ -287,6 +329,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::DrawCallback)
 	               "",
 	               "");
 	I_Method3(void, drawImplementation, IN, osgUtil::RenderBin *, bin, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *&, previous,
+	          Properties::PURE_VIRTUAL,
 	          __void__drawImplementation__RenderBin_P1__osg_RenderInfo_R1__RenderLeaf_P1R1,
 	          "",
 	          "");
@@ -298,6 +341,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::SortCallback)
 	               "",
 	               "");
 	I_Method1(void, sortImplementation, IN, osgUtil::RenderBin *, x,
+	          Properties::PURE_VIRTUAL,
 	          __void__sortImplementation__RenderBin_P1,
 	          "",
 	          "");
@@ -308,26 +352,32 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderBin >)
 	               "",
 	               "");
 	I_Constructor1(IN, osgUtil::RenderBin *, ptr,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__T_P1,
 	               "",
 	               "");
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderBin > &, rp,
+	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::RenderBin *, get,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
 	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
 	          __bool__valid,
 	          "",
 	          "");
 	I_Method0(osgUtil::RenderBin *, release,
+	          Properties::NON_VIRTUAL,
 	          __T_P1__release,
 	          "",
 	          "");
 	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::RenderBin > &, rp,
+	          Properties::NON_VIRTUAL,
 	          __void__swap__ref_ptr_R1,
 	          "",
 	          "");

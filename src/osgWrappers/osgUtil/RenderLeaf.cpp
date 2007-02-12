@@ -25,25 +25,29 @@
 
 #include <osgUtil/StateGraph>
 	
-BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
 	                           ____RenderLeaf__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
 	                           "",
 	                           "");
 	I_MethodWithDefaults4(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
+	                      Properties::NON_VIRTUAL,
 	                      __void__set__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
 	                      "",
 	                      "");
 	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
 	I_Method2(void, render, IN, osg::RenderInfo &, renderInfo, IN, osgUtil::RenderLeaf *, previous,
+	          Properties::VIRTUAL,
 	          __void__render__osg_RenderInfo_R1__RenderLeaf_P1,
 	          "",
 	          "");
 	I_Method0(const osg::Drawable *, getDrawable,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Drawable_P1__getDrawable,
 	          "",
 	          "");

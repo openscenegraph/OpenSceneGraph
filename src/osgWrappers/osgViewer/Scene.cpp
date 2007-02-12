@@ -23,56 +23,68 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____Scene,
 	               "",
 	               "");
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,
 	          "",
 	          "");
 	I_Method0(osg::Node *, getSceneData,
+	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getSceneData,
 	          "",
 	          "");
 	I_Method0(const osg::Node *, getSceneData,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_Node_P1__getSceneData,
 	          "",
 	          "");
 	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, frameStamp,
+	          Properties::NON_VIRTUAL,
 	          __void__setFrameStamp__osg_FrameStamp_P1,
 	          "",
 	          "");
 	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
 	          __osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
 	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
+	          Properties::NON_VIRTUAL,
 	          __void__setDatabasePager__osgDB_DatabasePager_P1,
 	          "",
 	          "");
 	I_Method0(osgDB::DatabasePager *, getDatabasePager,
+	          Properties::NON_VIRTUAL,
 	          __osgDB_DatabasePager_P1__getDatabasePager,
 	          "",
 	          "");
 	I_Method0(const osgDB::DatabasePager *, getDatabasePager,
+	          Properties::NON_VIRTUAL,
 	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
 	          "",
 	          "");
 	I_Method0(void, frameAdvance,
+	          Properties::VIRTUAL,
 	          __void__frameAdvance,
 	          "",
 	          "");
 	I_Method0(void, frameUpdateTraversal,
+	          Properties::VIRTUAL,
 	          __void__frameUpdateTraversal,
 	          "",
 	          "");
 	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
 	          __void__init,
 	          "",
 	          "");

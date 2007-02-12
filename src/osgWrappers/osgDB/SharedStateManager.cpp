@@ -29,32 +29,38 @@ BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_ALL);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____SharedStateManager,
 	               "",
 	               "");
 	I_Method1(void, setShareMode, IN, unsigned int, mode,
+	          Properties::NON_VIRTUAL,
 	          __void__setShareMode__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getShareMode,
+	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getShareMode,
 	          "",
 	          "");
 	I_Method0(void, prune,
+	          Properties::NON_VIRTUAL,
 	          __void__prune,
 	          "",
 	          "");
 	I_MethodWithDefaults2(void, share, IN, osg::Node *, node, , IN, OpenThreads::Mutex *, mt, 0,
+	                      Properties::NON_VIRTUAL,
 	                      __void__share__osg_Node_P1__OpenThreads_Mutex_P1,
 	                      "",
 	                      "");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");

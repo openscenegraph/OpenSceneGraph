@@ -30,52 +30,63 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____UpdateVisitor,
 	               "",
 	               "");
 	I_Method0(void, reset,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "Method to call to reset visitor. ",
 	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
 	I_Method1(void, apply, IN, osg::Node &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "During traversal each type of node calls its callbacks and its children traversed. ",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Billboard &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Billboard_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::LightSource &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_LightSource_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Group &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Transform &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Transform_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Projection &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Projection_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Switch &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Switch_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::LOD &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_LOD_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::OccluderNode &, node,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_OccluderNode_R1,
 	          "",
 	          "");

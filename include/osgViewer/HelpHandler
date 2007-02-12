@@ -1,0 +1,59 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_HELPHANDLER
+#define OSGVIEWER_HELPHANDLER 1
+
+#include <osgViewer/Viewer>
+
+#include <osg/ApplicationUsage>
+
+namespace osgViewer {
+
+class OSGVIEWER_EXPORT HelpHandler : public osgGA::GUIEventHandler 
+{
+    public: 
+
+        HelpHandler(osg::ApplicationUsage* au=0);
+        
+        void setApplicationUsage(osg::ApplicationUsage* au) { _applicationUsage = au; }
+        osg::ApplicationUsage* getApplicationUsage() { return _applicationUsage.get(); }
+        const osg::ApplicationUsage* getApplicationUsage() const { return _applicationUsage.get(); }
+
+        void setKeyEventTogglesOnScreenHelp(int key) { _keyEventTogglesOnScreenHelp = key; }
+        int getKeyEventTogglesOnScreenHelp() const { return _keyEventTogglesOnScreenHelp; }
+        
+        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+    protected:
+
+        void setUpHUDCamera(osgViewer::Viewer* viewer);
+
+        void setUpScene(osgViewer::Viewer* viewer);
+        
+        osg::ref_ptr<osg::ApplicationUsage> _applicationUsage;
+
+        int                                 _keyEventTogglesOnScreenHelp;
+
+        bool                                _helpEnabled;
+        osg::ref_ptr<osg::Camera>           _camera;
+        osg::ref_ptr<osg::Switch>           _switch;
+        
+};
+
+}
+
+#endif

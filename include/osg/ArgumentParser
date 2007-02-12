@@ -15,15 +15,14 @@
 #define OSG_ARGUMENTPARSER 1
 
 #include <osg/Export>
+#include <osg/ref_ptr>
+#include <osg/ApplicationUsage>
 
 #include <map>
 #include <string>
 #include <ostream>
 
 namespace osg {
-
-// forward declare
-class ApplicationUsage;
 
 class OSG_EXPORT ArgumentParser
 {
@@ -89,8 +88,8 @@ class OSG_EXPORT ArgumentParser
         ArgumentParser(int* argc,char **argv);
 
         void setApplicationUsage(ApplicationUsage* usage) { _usage = usage; }
-        ApplicationUsage* getApplicationUsage() { return _usage; }
-        const ApplicationUsage* getApplicationUsage() const { return _usage; }
+        ApplicationUsage* getApplicationUsage() { return _usage.get(); }
+        const ApplicationUsage* getApplicationUsage() const { return _usage.get(); }
 
         /** Return the argument count. */
         int& argc() { return *_argc; }
@@ -187,10 +186,10 @@ class OSG_EXPORT ArgumentParser
   
   protected:
         
-        int*                _argc;
-        char**              _argv;
-        ErrorMessageMap     _errorMessageMap;
-        ApplicationUsage*   _usage;
+        int*                            _argc;
+        char**                          _argv;
+        ErrorMessageMap                 _errorMessageMap;
+        ref_ptr<ApplicationUsage>       _usage;
         
 };
 

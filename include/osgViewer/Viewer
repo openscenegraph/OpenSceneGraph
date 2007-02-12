@@ -161,6 +161,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Set up the Operations to render the various viewer cameras on the viewers graphics windows.*/
         void setUpRenderingSupport();
 
+        /** Get the keyboard and mouse usage of this viewer.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
     protected:
     
         void checkWindowStatus();

@@ -7,6 +7,7 @@ CXXFILES = \
 	Scene.cpp\
 	SimpleViewer.cpp\
 	StatsHandler.cpp\
+	HelpHandler.cpp\
 	Version.cpp\
 	View.cpp\
 	Viewer.cpp\

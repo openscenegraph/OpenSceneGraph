@@ -14,7 +14,7 @@
 #ifndef OSG_APPLICATIONUSAGE
 #define OSG_APPLICATIONUSAGE 1
 
-#include <osg/Export>
+#include <osg/Referenced>
 
 #include <map>
 #include <string>
@@ -22,7 +22,7 @@
 
 namespace osg {
 
-class OSG_EXPORT ApplicationUsage
+class OSG_EXPORT ApplicationUsage : public osg::Referenced
 {
     public:
         
@@ -88,6 +88,8 @@ class OSG_EXPORT ApplicationUsage
 
     protected:
     
+        virtual ~ApplicationUsage() {}
+
         std::string _applicationName;
         std::string _description;
         std::string _commandLineUsage;

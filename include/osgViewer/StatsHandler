@@ -45,6 +45,9 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         double getBlockMultiplier() const { return _blockMultiplier; }
 
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
     protected:
 
         void setUpHUDCamera(osgViewer::Viewer* viewer);

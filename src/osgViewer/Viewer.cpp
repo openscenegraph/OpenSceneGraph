@@ -2070,3 +2070,19 @@ void Viewer::renderingTraversals()
         getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
     }
 }
+
+void Viewer::getUsage(osg::ApplicationUsage& usage) const
+{
+    if (_cameraManipulator.valid())
+    {
+        _cameraManipulator->getUsage(usage);
+    }
+
+    for(EventHandlers::const_iterator hitr = _eventHandlers.begin();
+        hitr != _eventHandlers.end();
+        ++hitr)
+    {
+        (*hitr)->getUsage(usage);
+    }
+
+}

@@ -24,6 +24,7 @@
 #include "Depth.h"
 #include "Material.h"
 #include "CullFace.h"
+#include "ColorMask.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
 #include "PolygonMode.h"
@@ -997,6 +998,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVECULLFACE){
         attribute = new osg::CullFace();
         ((ive::CullFace*)(attribute))->read(this);
+    }
+    else if(attributeID == IVECOLORMASK){
+        attribute = new osg::ColorMask();
+        ((ive::ColorMask*)(attribute))->read(this);
     }
     else if(attributeID == IVECLIPPLANE){
         attribute = new osg::ClipPlane();

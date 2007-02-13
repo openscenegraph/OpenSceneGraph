@@ -68,6 +68,8 @@ namespace ive {
 #define IVEVERTEXPROGRAM                0x0000012F
 #define IVEDEPTH                        0x00000130
 #define IVESTENCIL                      0x00000131
+#define IVESTENCILTWOSIDED              0x00000132
+#define IVECOLORMASK                    0x00000133
 #define IVELIGHTMODEL                   0x00001121
 #define IVECLIPPLANE                    0x00001122
 #define IVEFRONTFACE                    0x00001123

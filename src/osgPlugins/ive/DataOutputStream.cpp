@@ -24,6 +24,7 @@
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
+#include "ColorMask.h"
 #include "Depth.h"
 #include "ClipPlane.h"
 #include "PolygonOffset.h"
@@ -681,6 +682,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a CullFace
         else if(dynamic_cast<const osg::CullFace*>(attribute)){
             ((ive::CullFace*)(attribute))->write(this);
+        }
+        // This is a ColorMask
+        else if(dynamic_cast<const osg::ColorMask*>(attribute)){
+            ((ive::ColorMask*)(attribute))->write(this);
         }
         // this is a Cliplane
         else if(dynamic_cast<const osg::ClipPlane*>(attribute)){

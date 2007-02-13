@@ -21,6 +21,7 @@ CXXFILES =\
         ConvexPlanarOccluder.cpp\
         ConvexPlanarPolygon.cpp\
         CoordinateSystemNode.cpp\
+        ColorMask.cpp\
 	CullFace.cpp\
 	DataInputStream.cpp\
 	DataOutputStream.cpp\

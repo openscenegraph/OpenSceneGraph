@@ -299,8 +299,8 @@ int main(int argc, char** argv)
         return 1;
     }
     
-    unsigned tex_width = 512;
-    unsigned tex_height = 512;
+    unsigned tex_width = 256;
+    unsigned tex_height = 256;
     while (arguments.read("--width", tex_width)) {}
     while (arguments.read("--height", tex_height)) {}
 

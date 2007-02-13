@@ -6,6 +6,7 @@ CXXFILES =\
         AnimationPath.cpp\
         AutoTransform.cpp\
         Billboard.cpp\
+        BlendColor.cpp\
         BlendFunc.cpp\
         Camera.cpp\
         CameraView.cpp\

@@ -1143,7 +1143,7 @@ void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
 }
 //////////////////////////////////////////////////////////////////////
 void ConvertFromInventor::_setVRMLImageTexture(const SoVRMLImageTexture* vit,
-                                               SoCallbackAction* action)
+                                               SoCallbackAction* /*action*/)
 {
     _hasVRMLImageTexture = true;
     ///Coin API to extract VRML97 ImageTexture

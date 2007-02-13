@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgcamera.cpp\
 
-LIBS     += -losgViewer -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) -lOpenThreads
+LIBS     += -losgViewer -losgText -losgGA -losgDB -losgUtil -losg $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS) -lOpenThreads
 
 INSTFILES = \
 	$(CXXFILES)\
@@ -13,15 +13,8 @@ INSTFILES = \
 EXEC = osgcamera
 
 INC      += $(X_INC) 
-LDFLAGS  += -L/usr/X11R6/lib
+#LDFLAGS  += -L/usr/X11R6/lib
 
-
-ifeq ($(USE_OPEN_THREAD),1)
-    DEF         += -D_USE_OPEN_THREAD
-    INC         += $(INC_OPEN_THREAD)
-    LDFLAGS     += $(LIB_OPEN_THREAD)
-    LIBS        +=  -lOpenThread
-endif
 
 include $(TOPDIR)/Make/makerules 
 

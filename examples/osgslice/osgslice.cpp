@@ -197,7 +197,11 @@ int main( int argc, char **argv )
         
         std::cout << "before readPixels: _r = " << sp->_image->r() << std::endl;
         
-        tmpImage->readPixels(sceneView->getViewport()->x(),sceneView->getViewport()->y(),sceneView->getViewport()->width(),sceneView->getViewport()->height(),GL_RGBA,GL_UNSIGNED_BYTE);
+        tmpImage->readPixels(static_cast<int>(sceneView->getViewport()->x()),
+                             static_cast<int>(sceneView->getViewport()->y()),
+                             static_cast<int>(sceneView->getViewport()->width()),
+                             static_cast<int>(sceneView->getViewport()->height()),
+                             GL_RGBA,GL_UNSIGNED_BYTE);
         
 //        std::cout << "vor copySubImage: _r = " << sp->_image->r() << std::endl;
         sp->_image->copySubImage( 0, 0, i, tmpImage );

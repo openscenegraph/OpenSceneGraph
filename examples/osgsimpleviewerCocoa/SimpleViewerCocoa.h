@@ -3,7 +3,7 @@
 //  osgsimpleviewerCocoa
 //
 //  Created by Eric Wing on 11/12/06.
-//  Copyright 2006. All rights reserved.
+//  Copyright 2006. Released under the OSGPL.
 //
 /* This is the class interface for a custom NSView that interfaces with an osgViewer.
  * Because Cocoa is written in Objective-C, but OSG is written in C++, we rely on
@@ -48,23 +48,40 @@ namespace osgViewer
 	// If so, remember ref_ptr is an object on the stack and the cdtors option must be activated.
 	// We could also make simpleViewer an object instead of a pointer, but again, turn on the option.
 	osgViewer::SimpleViewer* simpleViewer;
-	
+
 	// This timer is used to trigger animation callbacks since everything is event driven.
 	NSTimer* animationTimer;
 
 	// Flags to help track whether ctrl-clicking or option-clicking is being used
 	BOOL isUsingCtrlClick;
 	BOOL isUsingOptionClick;
+	
+	// Flag to track whether the OpenGL multithreading engine is enabled or not
+	BOOL isUsingMultithreadedOpenGLEngine;
+	
 }
 
 // My custom static method to create a basic pixel format
 + (NSOpenGLPixelFormat*) basicPixelFormat;
 
+
 // Official init methods
 - (id) initWithFrame:(NSRect)frame_rect pixelFormat:(NSOpenGLPixelFormat*)pixel_format;
 - (id) initWithCoder:(NSCoder*)the_coder;
+- (id) initWithFrame:(NSRect)frame_rect;
+
+// Official function, overridden by this class to prevent flashing/tearing when in splitviews, scrollviews, etc.
+- (void) renewGState;
+
+// My custom function for minimization.
+- (void) prepareForMiniaturization:(NSNotification*)notification;
+
+
+// Custom function to allow users to know if the Multithreaded OpenGL Engine is enabled
+- (BOOL) isUsingMultithreadedOpenGLEngine;
 
 // Private init helper methods
+- (void) initSharedOpenGLContext;
 - (void) commonInit;
 - (void) initOSGViewer;
 - (void) initAnimationTimer;
@@ -73,6 +90,7 @@ namespace osgViewer
 - (void) prepareOpenGL;
 // Class dealloc method
 - (void) dealloc;
+- (void) finalize;
 
 // Official mouse event methods
 - (void) mouseDown:(NSEvent*)the_event;
@@ -117,6 +135,13 @@ namespace osgViewer
 - (void) reshape;
 - (void) drawRect:(NSRect)the_rect;
 
+// Private helper methods for drawing
+- (NSBitmapImageRep*) renderOpenGLSceneToFramebuffer;
+- (NSBitmapImageRep*) renderOpenGLSceneToFramebufferAsFormat:(int)gl_format viewWidth:(float)view_width viewHeight:(float)view_height;
+- (NSBitmapImageRep*) renderOpenGLSceneToFramebufferAsFormat:(int)gl_format viewWidth:(float)view_width viewHeight:(float)view_height clearColorRed:(float)clear_red clearColorGreen:(float)clear_green clearColorBlue:(float)clear_blue clearColorAlpha:(float)clear_alpha;
+- (NSImage*)imageFromBitmapImageRep:(NSBitmapImageRep*)bitmap_image_rep;
+
+
 // Official methods for drag and drop (view as target)
 - (unsigned int) draggingEntered:(id <NSDraggingInfo>)the_sender;
 - (void) draggingExited:(id <NSDraggingInfo>)the_sender;
@@ -124,10 +149,19 @@ namespace osgViewer
 - (BOOL) performDragOperation:(id <NSDraggingInfo>)the_sender;
 - (void) concludeDragOperation:(id <NSDraggingInfo>)the_sender;
 
+// Official method for copy (i.e. copy & paste)
+- (IBAction) copy:(id)sender;
+
+// Private helper methods for drag and drop and copy/paste (view as source)
+- (NSData*) dataWithTIFFOfContentView;
+- (NSData*) contentsAsDataOfType:(NSString *)pboardType;
+- (void) startDragAndDropAsSource:(NSEvent*)the_event;
+
 
 // Examples of providing an action to connect to.
 - (IBAction) resetPosition:(id)the_sender;
 - (IBAction) takeBackgroundColorFrom:(id)the_sender;
+
 
 @end
 

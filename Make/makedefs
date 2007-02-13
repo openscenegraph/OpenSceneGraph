@@ -440,7 +440,7 @@ ifeq ($(OS),FreeBSD)
   endif
   DEPARG            = -MM
   INC               += -I/usr/local/include -I/usr/X11R6/include
-  DEF               += -W -Wall $(PTHREAD_CFLAGS)
+  DEF               += -W -Wall $(PTHREAD_CFLAGS) -pipe
   OPTF              = -O2 
   DBGF              = -g -DOSG_COMPILE_UNIT_TESTS
   SHARED            = -shared

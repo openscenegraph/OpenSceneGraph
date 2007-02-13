@@ -233,6 +233,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\CoordinateSystemNode.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\ColorMask.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\CullFace.cpp
 # End Source File
 # Begin Source File

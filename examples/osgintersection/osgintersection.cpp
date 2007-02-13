@@ -40,8 +40,6 @@ int main(int argc, char **argv)
     
     std::cout<<"Intersection "<<std::endl;
     
-    osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene.get());
-    osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
     
     osg::BoundingSphere bs = scene->getBound();
 
@@ -49,6 +47,9 @@ int main(int argc, char **argv)
     bool useIntersectorGroup = true;
     bool useLineOfSight = true;
     
+    //osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(scene.get());
+    //osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
+
     if (useLineOfSight)
     {
     
@@ -56,12 +57,12 @@ int main(int argc, char **argv)
         osg::Vec3d end = bs.center() - osg::Vec3d(0.0, bs.radius(),0.0);
         osg::Vec3d deltaRow( 0.0, 0.0, bs.radius()*0.01);
         osg::Vec3d deltaColumn( bs.radius()*0.01, 0.0, 0.0);
-        unsigned int numRows = 20;
-        unsigned int numColumns = 20;
 
         osgSim::LineOfSight los;
         
-#if 0
+#if 1
+        unsigned int numRows = 20;
+        unsigned int numColumns = 20;
         osgSim::HeightAboveTerrain hat;
         hat.setDatabaseCacheReadCallback(los.getDatabaseCacheReadCallback());
 

@@ -4,7 +4,7 @@ include $(TOPDIR)/Make/makedefs
 CXXFILES =\
 	osgGLUTsimple.cpp\
 
-LIBS     += -losgViewer -losgGA -losgDB -losgUtil -losg $(GLUT_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
+LIBS     += -losgViewer -losgText -losgGA -losgDB -losgUtil -losg $(GLUT_LIBS) $(GL_LIBS) $(X_LIBS) $(OTHER_LIBS)
 
 INSTFILES = \
 	$(CXXFILES)\

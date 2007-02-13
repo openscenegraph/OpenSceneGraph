@@ -271,7 +271,7 @@ struct TriangleCollector
 };
 typedef osg::TriangleFunctor<TriangleCollector> TriangleCollectorFunctor;
 
-void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
+void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float /*sampleRatio*/)
 {
     // osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
 
@@ -741,7 +741,7 @@ void OccluderGeometry::computeLightPositionSlihouetteEdges(const osg::Vec3& ligh
 
 void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, ShadowVolumeGeometry& svg) const
 {
-    osg::Timer_t t0 = osg::Timer::instance()->tick();
+    // osg::Timer_t t0 = osg::Timer::instance()->tick();
 
     ShadowVolumeGeometry::Vec3List& shadowVertices = svg.getVertices();
     shadowVertices.clear();
@@ -881,7 +881,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     svg.dirtyDisplayList();
     svg.dirtyBound();
 
-    osg::Timer_t t1 = osg::Timer::instance()->tick();
+    // osg::Timer_t t1 = osg::Timer::instance()->tick();
     // osg::notify(osg::NOTICE)<<"computeShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
 }
 

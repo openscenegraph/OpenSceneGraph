@@ -10,6 +10,7 @@ CXXFILES =\
 	AutoTransform.cpp\
 	Billboard.cpp\
 	BlendFunc.cpp\
+	BlendColor.cpp\
 	BlinkSequence.cpp\
 	ClipNode.cpp\
 	ClipPlane.cpp\

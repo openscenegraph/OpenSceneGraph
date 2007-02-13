@@ -185,6 +185,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Billboard.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\BlendColor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\BlendFunc.cpp
 # End Source File
 # Begin Source File
@@ -542,6 +546,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\AzimSector.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\Billboard.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\BlendColor.h
 # End Source File
 # Begin Source File
 

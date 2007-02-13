@@ -589,8 +589,6 @@ Viewer::Viewer():
     _eventVisitor->setActionAdapter(this);
     
     setStats(new osg::Stats("Viewer"));
-    
-    osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
 }
 
 Viewer::~Viewer()
@@ -1088,6 +1086,9 @@ void Viewer::startThreading()
         _startRenderingBarrier = 0;
         _endRenderingDispatchBarrier = 0;
         _endDynamicDrawBlock = new EndOfDynamicDrawBlock(numViewerDoubleBufferedRenderingOperation);
+        
+        if (!osg::Referenced::getDeleteHandler()) osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
+        else osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
     }
     
     if (numThreadsOnBarrier>1)

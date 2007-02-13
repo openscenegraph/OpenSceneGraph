@@ -173,6 +173,10 @@ SOURCE=..\..\..\src\osgPlugins\osg\Billboard.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\osg\BlendColor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\osg\BlendFunc.cpp
 # End Source File
 # Begin Source File

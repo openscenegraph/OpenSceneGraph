@@ -326,6 +326,7 @@ void KeyboardModel::createKeyboard()
         _inputText->setDrawMode(osgText::Text::TEXT/*||osgText::Text::BOUNDINGBOX*/);
         _inputText->setAlignment(osgText::Text::BASE_LINE);
         _inputText->setAxisAlignment(osgText::Text::XZ_PLANE);
+        _inputText->setDataVariance(osg::Object::DYNAMIC);
         _inputText->setText("Press some keys...");
         
         geodeInput->addDrawable(_inputText.get());

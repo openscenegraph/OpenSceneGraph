@@ -119,6 +119,21 @@ protected:
         document.setHeaderNode(_header.get());
     }
 
+    virtual void popLevel(Document& document)
+    {
+        if (_header.valid())
+        {
+            // Preset sampler uniforms.
+            ShaderPool* sp = document.getShaderPool();
+            if (sp && !sp->empty())
+            {
+                _header->getOrCreateStateSet()->addUniform( new osg::Uniform("TextureUnit0", 0) );
+                _header->getOrCreateStateSet()->addUniform( new osg::Uniform("TextureUnit1", 1) );
+                _header->getOrCreateStateSet()->addUniform( new osg::Uniform("TextureUnit2", 2) );
+                _header->getOrCreateStateSet()->addUniform( new osg::Uniform("TextureUnit3", 3) );
+            }
+        }
+    }
 };
 
 RegisterRecordProxy<Header> g_Header(HEADER_OP);

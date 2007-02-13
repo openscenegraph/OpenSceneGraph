@@ -30,10 +30,10 @@ void Viewport::write(DataOutputStream* out){
         throw Exception("Viewport::write(): Could not cast this osg::Viewport to an osg::Object.");
     // Write Viewport's properties.
 
-    out->writeInt(x());
-    out->writeInt(y());
-    out->writeInt(width());
-    out->writeInt(height());
+    out->writeInt(static_cast<int>(x()));
+    out->writeInt(static_cast<int>(y()));
+    out->writeInt(static_cast<int>(width()));
+    out->writeInt(static_cast<int>(height()));
 }
 
 void Viewport::read(DataInputStream* in){

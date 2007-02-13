@@ -6,6 +6,7 @@
 
 #include <osg/MatrixTransform>
 #include <osg/Texture2D>
+#include <osg/TexEnv>
 
 #include "Registry.h"
 #include "Document.h"
@@ -116,6 +117,13 @@ class Multitexture : public Record
 
         META_Record(Multitexture)
 
+        // Effect
+        enum EffectMode
+        {
+            TEXTURE_ENVIRONMENT = 0,
+            BUMP_MAP = 1
+        };
+
     protected:
 
         virtual ~Multitexture() {}
@@ -131,16 +139,40 @@ class Multitexture : public Record
                 if (mask & layerBit)
                 {
                     int16 textureIndex = in.readInt16();
-                    /* int16 effectIndex =*/ in.readInt16();
-                    /* int16 mappingIndex =*/ in.readInt16();
-                    /* uint16 data=*/ in.readUInt16();
+                    int16 effect = in.readInt16();
+                    /*int16 mappingIndex =*/ in.readInt16();
+                    /*uint16 data =*/ in.readUInt16();
 
                     osg::ref_ptr<osg::StateSet> texturePoolStateset = document.getOrCreateTexturePool()->get(textureIndex);
                     if (stateset.valid() && texturePoolStateset.valid())
                     {
-                        osg::Texture2D* texture = dynamic_cast<osg::Texture2D*>(texturePoolStateset->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
+                        // Apply texture from texture pool.
+                        osg::Texture* texture = dynamic_cast<osg::Texture*>(texturePoolStateset->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
                         if (texture)
                             stateset->setTextureAttributeAndModes(layer,texture,osg::StateAttribute::ON);
+
+                        // Apply texture environment
+                        switch (effect)
+                        {
+                        case TEXTURE_ENVIRONMENT:
+                            {
+                                // Use texture environment setting from .attr file.
+                                osg::TexEnv* texenv = dynamic_cast<osg::TexEnv*>(texturePoolStateset->getTextureAttribute(0,osg::StateAttribute::TEXENV));
+                                if (texenv)
+                                    stateset->setTextureAttribute(layer,texenv);
+                            }
+                            break;
+                        case BUMP_MAP:
+                            {
+                                // Dot3 bumpmap
+                                //osg::TexEnvCombine* texEnvCombine = new osg::TexEnvCombine;
+                                //texEnvCombine->setCombine_RGB(osg::TexEnvCombine::DOT3_RGB);
+                                //texEnvCombine->setSource0_RGB(osg::TexEnvCombine::PRIMARY_COLOR);
+                                //texEnvCombine->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
+                                //stateset->setTextureAttribute(layer,texEnvCombine);
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -194,8 +226,8 @@ class UVList : public Record
                     uint32 layerBit = 0x80000000u >> (layer-1);
                     if (mask & layerBit)
                     {
-    			        float32	u = in.readFloat32();
-    			        float32	v = in.readFloat32();
+                        float32    u = in.readFloat32();
+                        float32    v = in.readFloat32();
 
                         // Add texture coodinates to geometry.
                         if (_parent.valid())

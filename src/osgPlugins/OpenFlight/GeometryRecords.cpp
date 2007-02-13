@@ -148,10 +148,33 @@ public:
             }
         }
 
-        if (vertex.validNormal())
+        bool strict = false; // prepare for "strict" reader option.
+        if (strict)
         {
-            osg::Vec3Array* normals = getOrCreateNormalArray(*_geometry);
-            normals->push_back(vertex._normal);
+            if (vertex.validNormal())
+            {
+                osg::Vec3Array* normals = getOrCreateNormalArray(*_geometry);
+                normals->push_back(vertex._normal);
+            }
+        }
+        else
+        {
+            // Add normal only if lit.
+            if (isLit())
+            {
+                osg::Vec3Array* normals = getOrCreateNormalArray(*_geometry);
+
+                if (vertex.validNormal())
+                    normals->push_back(vertex._normal);
+                else // if lit and no normal in Vertex
+                {
+                    // Use previous normal if available.
+                    if (normals->empty())
+                        normals->push_back(osg::Vec3(0,0,1));
+                    else
+                        normals->push_back(normals->back());
+                }
+            }
         }
 
         for (int layer=0; layer<Vertex::MAX_LAYERS; layer++)

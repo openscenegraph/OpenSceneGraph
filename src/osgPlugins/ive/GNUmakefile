@@ -74,6 +74,7 @@ CXXFILES =\
 	Shape.cpp\
 	ShapeDrawable.cpp\
 	StateSet.cpp\
+	Stencil.cpp\
 	Switch.cpp\
 	TexEnvCombine.cpp\
 	TexEnv.cpp\

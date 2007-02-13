@@ -441,6 +441,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\Switch.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\..\src\osgPlugins\ive\Stencil.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\..\src\osgPlugins\ive\TexEnv.cpp
 # End Source File
 # Begin Source File
@@ -798,6 +802,10 @@ SOURCE=..\..\..\src\osgPlugins\ive\ShapeDrawable.h
 # Begin Source File
 
 SOURCE=..\..\..\src\osgPlugins\ive\StateSet.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\ive\Stencil.h
 # End Source File
 # Begin Source File
 

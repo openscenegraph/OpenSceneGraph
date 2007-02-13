@@ -19,6 +19,7 @@
 #include "StateSet.h"
 #include "AlphaFunc.h"
 #include "BlendColor.h"
+#include "Stencil.h"
 #include "BlendFunc.h"
 #include "Depth.h"
 #include "Material.h"
@@ -1080,6 +1081,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEPOINTSPRITE){
         attribute = new osg::PointSprite();
         ((ive::PointSprite*)(attribute))->read(this);
+    }
+    else if(attributeID == IVESTENCIL){
+        attribute = new osg::Stencil();
+        ((ive::Stencil*)(attribute))->read(this);
     }
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");

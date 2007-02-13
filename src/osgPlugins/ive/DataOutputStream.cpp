@@ -20,6 +20,7 @@
 #include "StateSet.h"
 #include "AlphaFunc.h"
 #include "BlendColor.h"
+#include "Stencil.h"
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
@@ -657,6 +658,9 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::BlendColor*>(attribute)){
             ((ive::BlendColor*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::Stencil*>(attribute)){
+            ((ive::Stencil*)(attribute))->write(this);
         }
         else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);

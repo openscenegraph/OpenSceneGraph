@@ -23,6 +23,8 @@
 #include <osg/AnimationPath>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+
 #include <osgUtil/Optimizer>
 #include <osgViewer/Viewer>
 
@@ -358,6 +360,8 @@ int main( int argc, char **argv )
 
     // hint to tell viewer to request stencil buffer when setting up windows
     osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
+
+    osgDB::writeNodeFile(*rootNode, "test.osg");
 
     return viewer.run();
 

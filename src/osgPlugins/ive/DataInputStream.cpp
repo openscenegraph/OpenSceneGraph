@@ -18,6 +18,7 @@
 #include "DataInputStream.h"
 #include "StateSet.h"
 #include "AlphaFunc.h"
+#include "BlendColor.h"
 #include "BlendFunc.h"
 #include "Depth.h"
 #include "Material.h"
@@ -966,6 +967,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     if(attributeID == IVEALPHAFUNC){
         attribute = new osg::AlphaFunc();
         ((ive::AlphaFunc*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEBLENDCOLOR){
+        attribute = new osg::BlendColor();
+        ((ive::BlendColor*)(attribute))->read(this);
     }
     else if(attributeID == IVEBLENDFUNC ||
             attributeID == IVEBLENDFUNCSEPARATE){

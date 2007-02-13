@@ -9,7 +9,7 @@
  *
  *    HISTORY:        Created 11.03.2003
  *                    Updated for 1D textures - Don Burns 27.1.2004
- *                      Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
+ *                    Updated for light model - Stan Blinov at 25 august 7512 from World Creation (7.09.2004)
  *
  *    Copyright 2003 VR-C
  **********************************************************************/
@@ -19,6 +19,7 @@
 
 #include "StateSet.h"
 #include "AlphaFunc.h"
+#include "BlendColor.h"
 #include "BlendFunc.h"
 #include "Material.h"
 #include "CullFace.h"
@@ -653,6 +654,9 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // write the stateset.
         if(dynamic_cast<const osg::AlphaFunc*>(attribute)){
             ((ive::AlphaFunc*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::BlendColor*>(attribute)){
+            ((ive::BlendColor*)(attribute))->write(this);
         }
         else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);

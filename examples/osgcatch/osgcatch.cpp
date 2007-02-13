@@ -1153,6 +1153,7 @@ osg::Node* GameEventHandler::createScene()
             text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
             text->setAlignment(osgText::Text::CENTER_CENTER);
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
+            text->setDataVariance(osg::Object::DYNAMIC);
 
             geode->addDrawable(text);
             _scoreTextList.push_back(text);
@@ -1293,6 +1294,7 @@ osg::Node* GameEventHandler::createScene()
             text->setPosition(textPosition);
             text->setCharacterSize(_width.length()*0.04f);
             text->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            text->setDataVariance(osg::Object::DYNAMIC);
             text->setAxisAlignment(osgText::Text::XZ_PLANE);
 
             osg::Geode* geode = new osg::Geode;
@@ -1306,6 +1308,7 @@ osg::Node* GameEventHandler::createScene()
             _levelText->setPosition(textPosition);
             _levelText->setCharacterSize(_width.length()*0.04f);
             _levelText->setColor(osg::Vec4(0.0f,0.2f,0.2f,1.0f));
+            _levelText->setDataVariance(osg::Object::DYNAMIC);
             _levelText->setAxisAlignment(osgText::Text::XZ_PLANE);
 
             geode->addDrawable(_levelText.get());

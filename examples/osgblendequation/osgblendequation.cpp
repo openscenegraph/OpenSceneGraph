@@ -132,8 +132,11 @@ int main( int argc, char **argv )
     root->addChild(loadedModel);
     
     
-    osg::StateSet*      stateset =      new osg::StateSet;
+    osg::StateSet* stateset = new osg::StateSet;
+    stateset->setDataVariance(osg::Object::DYNAMIC);
+    
     osg::BlendEquation* blendEquation = new osg::BlendEquation(osg::BlendEquation::FUNC_ADD);
+    blendEquation->setDataVariance(osg::Object::DYNAMIC);
     
     stateset->setAttributeAndModes(blendEquation,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
             
@@ -144,11 +147,6 @@ int main( int argc, char **argv )
 
     viewer.addEventHandler(new TechniqueEventHandler(blendEquation));
 
-    
-    // run optimization over the scene graph
-    osgUtil::Optimizer optimzer;
-    optimzer.optimize(root);
-     
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( root );
     

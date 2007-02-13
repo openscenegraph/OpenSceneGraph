@@ -947,8 +947,19 @@ struct ViewerRunOperations : public osg::Operation
     }
 };
 
+static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
+
 Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
 {
+    const char* str = getenv("OSG_THREADING");
+    if (str)
+    {
+        if (strcmp(str,"SingleThreaded")==0) return SingleThreaded;
+        else if (strcmp(str,"CullDrawThreadPerContext")==0) return CullDrawThreadPerContext;
+        else if (strcmp(str,"DrawThreadPerContext")==0) return CullDrawThreadPerContext;
+        else if (strcmp(str,"CullThreadPerCameraDrawThreadPerContext")==0) return CullThreadPerCameraDrawThreadPerContext;
+    }
+
     Contexts contexts;
     getContexts(contexts);
     

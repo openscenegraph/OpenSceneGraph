@@ -15,6 +15,8 @@
 #define OSG_STATS 1
 
 #include <osg/Referenced>
+#include <OpenThreads/Mutex>
+#include <OpenThreads/ScopedLock>
 
 #include <string>
 #include <map>
@@ -43,13 +45,28 @@ class OSG_EXPORT Stats : public osg::Referenced
         typedef std::vector<AttributeMap> AttributeMapList;
 
         bool setAttribute(int frameNumber, const std::string& attributeName, double value);
-        bool getAttribute(int frameNumber, const std::string& attributeName, double& value) const;        
+        
+        inline bool getAttribute(int frameNumber, const std::string& attributeName, double& value) const
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            return getAttributeNoMutex(frameNumber, attributeName, value);
+        }
 
         bool getAveragedAttribute(const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;
+        
         bool getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;        
         
-        AttributeMap& getAttributeMap(int frameNumber);
-        const AttributeMap& getAttributeMap(int frameNumber) const;
+        inline AttributeMap& getAttributeMap(int frameNumber)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            return getAttributeMapNoMutex(frameNumber);
+        }
+        
+        inline const AttributeMap& getAttributeMap(int frameNumber) const
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            return getAttributeMapNoMutex(frameNumber);
+        }
         
         typedef std::map<std::string, bool> CollectMap;
         
@@ -57,17 +74,25 @@ class OSG_EXPORT Stats : public osg::Referenced
         
         inline bool collectStats(const std::string& str) const
         {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            
             CollectMap::const_iterator itr = _collectMap.find(str); 
             return (itr !=  _collectMap.end()) ? itr->second : false;
         }
 
-        void report(std::ostream& out, const char* indent=0) const ;
+        void report(std::ostream& out, const char* indent=0) const;
         void report(std::ostream& out, unsigned int frameNumber, const char* indent=0) const;
         
     protected:
     
         virtual ~Stats() {}
         
+        bool getAttributeNoMutex(int frameNumber, const std::string& attributeName, double& value) const;
+
+        Stats::AttributeMap& Stats::getAttributeMapNoMutex(int frameNumber);
+        const AttributeMap& getAttributeMapNoMutex(int frameNumber) const;
+
+
         int getIndex(int frameNumber) const
         {
             // reject frame that are in the future
@@ -81,6 +106,8 @@ class OSG_EXPORT Stats : public osg::Referenced
         }
 
         std::string         _name;
+        
+        mutable OpenThreads::Mutex  _mutex;
         
         int                 _baseFrameNumber;
         int                 _latestFrameNumber;

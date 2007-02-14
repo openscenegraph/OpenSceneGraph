@@ -1294,7 +1294,7 @@ bool GraphicsWindowWin32::setPixelFormat()
             return false;
         }
 
-        osg::notify(osg::WARN) << "GraphicsWindowWin32::setPixelFormat() - Found a matching pixel format but without the WGL_SWAP_METHOD_ARB specification for screen #"
+        osg::notify(osg::INFO) << "GraphicsWindowWin32::setPixelFormat() - Found a matching pixel format but without the WGL_SWAP_METHOD_ARB specification for screen #"
                                << _traits->screenNum
                                << std::endl;
     }

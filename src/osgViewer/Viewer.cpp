@@ -673,17 +673,30 @@ int Viewer::run()
         realize();
     }
 
-#if 1
+#if 0
     while (!done())
     {
         frame();
     }
 #else
-    int runTillFrameNumber = 100;
-    while (!done() && getFrameStamp()->getFrameNumber()<runTillFrameNumber)
+
+    const char* str = getenv("OSG_RUN_FRAME_COUNT");
+    if (str)
     {
-        frame();
+        int runTillFrameNumber = atoi(str);
+        while (!done() && getFrameStamp()->getFrameNumber()<runTillFrameNumber)
+        {
+            frame();
+        }
     }
+    else
+    {
+        while (!done())
+        {
+            frame();
+        }
+    }
+
 #endif    
     return 0;
 }

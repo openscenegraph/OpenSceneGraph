@@ -55,8 +55,18 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
             if (valid())
             {
                 setState( new osg::State );
-                getState()->setContextID( osg::GraphicsContext::createNewContextID() );
                 getState()->setGraphicsContext(this);
+
+                if (_traits.valid() && _traits->sharedContext)
+                {
+                    getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+                    incrementContextIDUsageCount( getState()->getContextID() );   
+                }
+                else
+                {
+                    getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+                }
+
             }
         }
     
@@ -106,6 +116,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Display* getEventDisplay() { return _eventDisplay; }
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
+        GLXContext getGLXContext() { return _glxContext; }
 
         Cursor& getDefaultCursor() { return _defaultCursor; }
         Cursor& getNullCursor() { return _nullCursor; }

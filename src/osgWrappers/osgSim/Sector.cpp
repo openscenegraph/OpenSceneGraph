@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
+BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_BaseType(osgSim::ElevationRange);
@@ -86,7 +86,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::AzimSector)
+BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_Constructor0(____AzimSector,
@@ -127,7 +127,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::AzimSector)
 	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ConeSector)
+BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____ConeSector,
 	               "",
@@ -201,7 +201,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ConeSector)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::DirectionalSector)
+BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____DirectionalSector,
 	               "",
@@ -351,7 +351,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ElevationSector)
+BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::ElevationRange);
 	I_Constructor0(____ElevationSector,

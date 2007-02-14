@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::SectorPlacer)
+BEGIN_OBJECT_REFLECTOR(osgParticle::SectorPlacer)
 	I_BaseType(osgParticle::CenteredPlacer);
 	I_Constructor0(____SectorPlacer,
 	               "",

@@ -33,7 +33,7 @@ BEGIN_ENUM_REFLECTOR(osg::Transform::ReferenceFrame)
 	I_EnumLabel(osg::Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Transform)
+BEGIN_OBJECT_REFLECTOR(osg::Transform)
 	I_BaseType(osg::Group);
 	I_Constructor0(____Transform,
 	               "",

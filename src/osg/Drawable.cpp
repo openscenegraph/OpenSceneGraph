@@ -294,6 +294,19 @@ Drawable::~Drawable()
     dirtyDisplayList();
 }
 
+void Drawable::computeDataVariance()
+{
+    bool dynamic = false;
+    if (getUpdateCallback() ||
+        getEventCallback() ||
+        getCullCallback()) 
+    {
+        dynamic = true;
+    }
+    
+    setDataVariance(dynamic ? DYNAMIC : STATIC);
+}
+
 void Drawable::addParent(osg::Node* node)
 {
     _parents.push_back(node);    

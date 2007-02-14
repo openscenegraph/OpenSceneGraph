@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::RadialShooter)
+BEGIN_OBJECT_REFLECTOR(osgParticle::RadialShooter)
 	I_BaseType(osgParticle::Shooter);
 	I_Constructor0(____RadialShooter,
 	               "",

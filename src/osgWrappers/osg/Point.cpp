@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Point)
+BEGIN_OBJECT_REFLECTOR(osg::Point)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Point,
 	               "",
@@ -157,7 +157,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Point)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Point::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

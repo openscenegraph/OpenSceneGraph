@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Projection)
+BEGIN_OBJECT_REFLECTOR(osg::Projection)
 	I_BaseType(osg::Group);
 	I_Constructor0(____Projection,
 	               "",

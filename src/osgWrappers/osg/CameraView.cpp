@@ -32,7 +32,7 @@ BEGIN_ENUM_REFLECTOR(osg::CameraView::FieldOfViewMode)
 	I_EnumLabel(osg::CameraView::VERTICAL);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CameraView)
+BEGIN_OBJECT_REFLECTOR(osg::CameraView)
 	I_BaseType(osg::Transform);
 	I_Constructor0(____CameraView,
 	               "",

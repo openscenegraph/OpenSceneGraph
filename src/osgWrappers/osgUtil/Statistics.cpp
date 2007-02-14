@@ -47,7 +47,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 	I_EnumLabel(osgUtil::Statistics::STAT_RESTART);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Statistics)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_BaseType(osg::PrimitiveFunctor);
 	I_Constructor0(____Statistics,
 	               "",
@@ -228,7 +228,7 @@ TYPE_NAME_ALIAS(std::set< osg::Drawable * >, osgUtil::StatsVisitor::DrawableSet)
 
 TYPE_NAME_ALIAS(std::set< osg::StateSet * >, osgUtil::StatsVisitor::StateSetSet);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____StatsVisitor,
 	               "",

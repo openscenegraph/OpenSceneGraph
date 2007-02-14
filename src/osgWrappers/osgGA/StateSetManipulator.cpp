@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_BaseType(osgGA::GUIEventHandler);
 	I_ConstructorWithDefaults1(IN, osg::StateSet *, stateset, 0,
 	                           Properties::NON_EXPLICIT,

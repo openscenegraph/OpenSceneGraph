@@ -35,7 +35,7 @@
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventVisitor::EventList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::EventVisitor)
+BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____EventVisitor,
 	               "",

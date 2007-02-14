@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ShadowMap)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ShadowMap,
 	               "",

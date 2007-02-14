@@ -169,6 +169,78 @@ StateSet::~StateSet()
     clear();
 }
 
+void StateSet::computeDataVariance()
+{
+    bool dynamic = false;
+
+    if (_updateCallback.valid() ||
+        _eventCallback.valid())
+    {
+        dynamic = true;
+    }
+
+    // run attribute callbacks
+    for(AttributeList::iterator itr=_attributeList.begin();
+        itr!=_attributeList.end();
+        ++itr)
+    {
+        if (itr->second.first->getUpdateCallback() ||
+            itr->second.first->getEventCallback() ||
+            itr->second.first->getDataVariance()==DYNAMIC)
+        {
+            dynamic = true;
+            itr->second.first->setDataVariance(DYNAMIC);
+        }
+    }
+
+    // run texture attribute callbacks.
+    for(unsigned int i=0;i<_textureAttributeList.size();++i)
+    {
+        AttributeList& attributeList = _textureAttributeList[i];
+        for(AttributeList::iterator itr=attributeList.begin();
+            itr!=attributeList.end();
+            ++itr)
+        {
+            if (itr->second.first->getUpdateCallback() ||
+                itr->second.first->getEventCallback() ||
+                itr->second.first->getDataVariance()==DYNAMIC) 
+            {
+                itr->second.first->setDataVariance(DYNAMIC); 
+                dynamic = true;
+            }
+        }
+    }
+
+
+    // run uniform callbacks.
+    for(UniformList::iterator uitr = _uniformList.begin();
+        uitr != _uniformList.end();
+        ++uitr)
+    {
+        if (uitr->second.first->getUpdateCallback() ||
+            uitr->second.first->getEventCallback() ||
+            uitr->second.first->getDataVariance()==DYNAMIC)
+        {
+            uitr->second.first->setDataVariance(DYNAMIC);
+            dynamic = true;
+        }
+    }
+
+#if 0
+    if (dynamic)
+    {
+        osg::notify(osg::NOTICE)<<"StateSet::computeDataVariance setting to DYNAMIC"<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"StateSet::computeDataVariance to STATIC"<<std::endl;
+    }
+#endif
+
+    setDataVariance(dynamic ? DYNAMIC : STATIC);
+}
+
+
 void StateSet::addParent(osg::Object* object)
 {
     // osg::notify(osg::INFO)<<"Adding parent"<<std::endl;

@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::RandomRateCounter)
+BEGIN_OBJECT_REFLECTOR(osgParticle::RandomRateCounter)
 	I_BaseType(osgParticle::VariableRateCounter);
 	I_Constructor0(____RandomRateCounter,
 	               "",

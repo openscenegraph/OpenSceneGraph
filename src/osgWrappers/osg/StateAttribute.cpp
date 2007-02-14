@@ -259,7 +259,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
+BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",

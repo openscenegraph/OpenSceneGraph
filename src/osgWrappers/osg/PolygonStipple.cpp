@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PolygonStipple)
+BEGIN_OBJECT_REFLECTOR(osg::PolygonStipple)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PolygonStipple,
 	               "",

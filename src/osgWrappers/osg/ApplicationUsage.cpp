@@ -28,7 +28,7 @@ BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_EnumLabel(osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ApplicationUsage)
+BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ApplicationUsage,
 	               "",

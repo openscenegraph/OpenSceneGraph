@@ -50,7 +50,7 @@
 
 TYPE_NAME_ALIAS(osg::Matrix::value_type, osgUtil::CullVisitor::value_type);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CullVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_BaseType(osg::CullStack);
 	I_Constructor0(____CullVisitor,

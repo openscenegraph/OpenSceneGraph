@@ -36,7 +36,7 @@ BEGIN_ENUM_REFLECTOR(osg::Fog::FogCoordinateSource)
 	I_EnumLabel(osg::Fog::FRAGMENT_DEPTH);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Fog)
+BEGIN_OBJECT_REFLECTOR(osg::Fog)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Fog,
 	               "",

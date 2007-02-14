@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0,
 	                           Properties::NON_EXPLICIT,

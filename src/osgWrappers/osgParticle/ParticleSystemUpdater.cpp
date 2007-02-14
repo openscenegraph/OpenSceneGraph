@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
+BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
 	I_BaseType(osg::Node);
 	I_Constructor0(____ParticleSystemUpdater,
 	               "",

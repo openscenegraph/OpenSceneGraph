@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	I_BaseType(osg::Group);
 	I_Constructor0(____ShadowedScene,
 	               "",

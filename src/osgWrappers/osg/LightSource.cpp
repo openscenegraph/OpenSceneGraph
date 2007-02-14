@@ -32,7 +32,7 @@ BEGIN_ENUM_REFLECTOR(osg::LightSource::ReferenceFrame)
 	I_EnumLabel(osg::LightSource::ABSOLUTE_RF);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::LightSource)
+BEGIN_OBJECT_REFLECTOR(osg::LightSource)
 	I_BaseType(osg::Group);
 	I_Constructor0(____LightSource,
 	               "",

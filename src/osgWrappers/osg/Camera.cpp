@@ -72,7 +72,7 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
 	I_EnumLabel(osg::Camera::COLOR_BUFFER7);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Camera)
+BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_BaseType(osg::Transform);
 	I_BaseType(osg::CullSettings);
 	I_Constructor0(____Camera,
@@ -578,7 +578,7 @@ BEGIN_VALUE_REFLECTOR(osg::Camera::Attachment)
 	I_PublicMemberProperty(bool, _mipMapGeneration);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Camera::DrawCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Camera::DrawCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____DrawCallback,
 	               "",

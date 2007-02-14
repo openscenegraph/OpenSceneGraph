@@ -48,7 +48,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_EnumLabel(osgUtil::RenderBin::SORT_BACK_TO_FRONT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin)
+BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_BaseType(osg::Object);
 	I_Constructor0(____RenderBin,
 	               "",

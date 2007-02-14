@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::TransformCallback)
+BEGIN_OBJECT_REFLECTOR(osgUtil::TransformCallback)
 	I_BaseType(osg::NodeCallback);
 	I_Constructor3(IN, const osg::Vec3 &, pivot, IN, const osg::Vec3 &, axis, IN, float, angularVelocity,
 	               ____TransformCallback__C5_osg_Vec3_R1__C5_osg_Vec3_R1__float,

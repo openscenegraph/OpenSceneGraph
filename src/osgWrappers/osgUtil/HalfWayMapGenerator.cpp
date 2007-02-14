@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::HalfWayMapGenerator)
+BEGIN_OBJECT_REFLECTOR(osgUtil::HalfWayMapGenerator)
 	I_BaseType(osgUtil::CubeMapGenerator);
 	I_ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64,
 	                           ____HalfWayMapGenerator__C5_osg_Vec3_R1__int,

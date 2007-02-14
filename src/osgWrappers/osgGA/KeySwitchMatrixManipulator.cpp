@@ -32,7 +32,7 @@ TYPE_NAME_ALIAS(std::pair< std::string COMMA  osg::ref_ptr< osgGA::MatrixManipul
 
 TYPE_NAME_ALIAS(std::map< int COMMA  osgGA::KeySwitchMatrixManipulator::NamedManipulator >, osgGA::KeySwitchMatrixManipulator::KeyManipMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____KeySwitchMatrixManipulator,
 	               "",

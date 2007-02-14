@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::SegmentPlacer)
+BEGIN_OBJECT_REFLECTOR(osgParticle::SegmentPlacer)
 	I_BaseType(osgParticle::Placer);
 	I_Constructor0(____SegmentPlacer,
 	               "",

@@ -27,7 +27,7 @@
 
 TYPE_NAME_ALIAS(std::vector< bool >, osg::Switch::ValueList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Switch)
+BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	I_BaseType(osg::Group);
 	I_Constructor0(____Switch,
 	               "",

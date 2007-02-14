@@ -69,7 +69,7 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::MipMappingMode)
 	I_EnumLabel(osgTerrain::DataSet::MIP_MAPPING_IMAGERY);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet)
 	I_BaseType(osg::Referenced);
 	I_Method1(void, insertTileToQuadMap, IN, osgTerrain::DataSet::CompositeDestination *, tile,
 	          Properties::NON_VIRTUAL,
@@ -606,7 +606,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgTerrain::DataSet::DestinationTile 
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgTerrain::DataSet::CompositeDestination > >, osgTerrain::DataSet::CompositeDestination::ChildList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeDestination)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0(____CompositeDestination,
@@ -708,7 +708,7 @@ TYPE_NAME_ALIAS(osgTerrain::DataSet::CompositeSource::base_source_iterator< osgT
 
 TYPE_NAME_ALIAS(osgTerrain::DataSet::CompositeSource::base_source_iterator< osgTerrain::DataSet::CompositeSource::LODSourceAdvancer >, osgTerrain::DataSet::CompositeSource::source_lod_iterator);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeSource)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::CompositeSource)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_ConstructorWithDefaults1(IN, osgTerrain::DataSet::CompositeType, type, osgTerrain::DataSet::GROUP,
@@ -805,7 +805,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osgTerrain::DataSet::
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osgTerrain::DataSet::DestinationData::ModelList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationData)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationData)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, osgTerrain::DataSet *, dataSet,
 	               Properties::NON_EXPLICIT,
@@ -834,7 +834,7 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::DestinationTile::Position)
 	I_EnumLabel(osgTerrain::DataSet::DestinationTile::NUMBER_OF_POSITIONS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationTile)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::DestinationTile)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0(____DestinationTile,
@@ -1005,7 +1005,7 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::DataSet::Source::ParameterPolicy)
 	I_EnumLabel(osgTerrain::DataSet::Source::PREFER_FILE_SETTINGS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::Source)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_Constructor0(____Source,
@@ -1288,7 +1288,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< const osg::CoordinateSystemNode * COMMA  osgTerrain::DataSet::SpatialProperties >, osgTerrain::DataSet::SourceData::SpatialPropertiesMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::DataSet::SourceData)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osgTerrain::DataSet::SpatialProperties);
 	I_ConstructorWithDefaults1(IN, osgTerrain::DataSet::Source *, source, 0,

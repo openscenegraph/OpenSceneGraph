@@ -29,7 +29,7 @@
 
 TYPE_NAME_ALIAS(std::set< osg::ShadowVolumeOccluder >, osg::CollectOccludersVisitor::ShadowVolumeOccluderSet);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
+BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_BaseType(osg::CullStack);
 	I_Constructor0(____CollectOccludersVisitor,

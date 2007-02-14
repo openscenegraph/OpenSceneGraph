@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 	I_BaseType(osgManipulator::CylinderProjector);
 	I_Constructor0(____CylinderPlaneProjector,
 	               "",
@@ -53,7 +53,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____CylinderProjector,
 	               "",
@@ -96,7 +96,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
 	                 __void__setFront__bool);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::LineProjector)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____LineProjector,
 	               "",
@@ -143,7 +143,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::PlaneProjector)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::PlaneProjector)
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____PlaneProjector,
 	               "",
@@ -206,7 +206,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Projector)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
 	I_BaseType(osgManipulator::SphereProjector);
 	I_Constructor0(____SpherePlaneProjector,
 	               "",
@@ -233,7 +233,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
 	                      "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::SphereProjector)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::SphereProjector)
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____SphereProjector,
 	               "",

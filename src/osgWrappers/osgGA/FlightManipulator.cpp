@@ -30,7 +30,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::FlightManipulator::YawControlMode)
 	I_EnumLabel(osgGA::FlightManipulator::NO_AUTOMATIC_YAW);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::FlightManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::FlightManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____FlightManipulator,
 	               "",

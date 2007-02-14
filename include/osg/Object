@@ -102,6 +102,9 @@ class OSG_EXPORT Object : public Referenced
 
         /** Get the data variance of this object.*/
         inline DataVariance getDataVariance() const { return _dataVariance; }
+        
+        /** Compute the DataVariance based on an assestment of callback etc.*/
+        virtual void computeDataVariance() {}
 
 
         /**

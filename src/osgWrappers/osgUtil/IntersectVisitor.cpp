@@ -196,7 +196,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::IntersectVisitor::LODSelectionMode)
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____IntersectVisitor,
 	               "",
@@ -302,7 +302,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::PickVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::PickVisitor)
 	I_BaseType(osgUtil::IntersectVisitor);
 	I_Constructor5(IN, const osg::Viewport *, viewport, IN, const osg::Matrixd &, proj, IN, const osg::Matrixd &, view, IN, float, mx, IN, float, my,
 	               ____PickVisitor__C5_osg_Viewport_P1__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1__float__float,

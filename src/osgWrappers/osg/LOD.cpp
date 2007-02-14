@@ -40,7 +40,7 @@ BEGIN_ENUM_REFLECTOR(osg::LOD::RangeMode)
 	I_EnumLabel(osg::LOD::PIXEL_SIZE_ON_SCREEN);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::LOD)
+BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	I_BaseType(osg::Group);
 	I_Constructor0(____LOD,
 	               "",

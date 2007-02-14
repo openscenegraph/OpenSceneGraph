@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::Scene)
+BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____Scene,
 	               "",

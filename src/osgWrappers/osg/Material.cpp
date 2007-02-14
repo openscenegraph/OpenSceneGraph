@@ -40,7 +40,7 @@ BEGIN_ENUM_REFLECTOR(osg::Material::ColorMode)
 	I_EnumLabel(osg::Material::OFF);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Material)
+BEGIN_OBJECT_REFLECTOR(osg::Material)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Material,
 	               "",

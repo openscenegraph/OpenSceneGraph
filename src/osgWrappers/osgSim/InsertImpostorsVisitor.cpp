@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::InsertImpostorsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgSim::InsertImpostorsVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____InsertImpostorsVisitor,
 	               "Default to traversing all children. ",

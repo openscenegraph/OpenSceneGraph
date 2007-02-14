@@ -55,7 +55,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
 	                           "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry)
+BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_BaseType(osg::Referenced);
 	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, commandLine,
 	          Properties::NON_VIRTUAL,
@@ -487,7 +487,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry)
 	                 __void__setWriteFileCallback__WriteFileCallback_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
+BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ReadFileCallback,
 	               "",
@@ -542,7 +542,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
 	I_PublicMemberProperty(std::string, _filename);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
+BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____WriteFileCallback,
 	               "",

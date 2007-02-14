@@ -533,7 +533,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                  0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -767,7 +767,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	                 __void__setTextureMirroredRepeatSupported__bool);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture::TextureObject)
+BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_BaseType(osg::Referenced);
 	I_Constructor2(IN, GLuint, id, IN, GLenum, target,
 	               ____TextureObject__GLuint__GLenum,

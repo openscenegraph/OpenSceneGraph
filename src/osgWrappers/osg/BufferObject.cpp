@@ -121,7 +121,7 @@ BEGIN_VALUE_REFLECTOR(osg::BufferObject::BufferEntry)
 	I_PublicMemberProperty(unsigned int, offset);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -212,7 +212,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PixelBufferObject)
+BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	I_BaseType(osg::BufferObject);
 	I_ConstructorWithDefaults1(IN, osg::Image *, image, 0,
 	                           Properties::NON_EXPLICIT,

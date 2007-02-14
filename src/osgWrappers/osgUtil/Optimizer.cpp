@@ -39,7 +39,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::BaseOptimizerVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::BaseOptimizerVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor2(IN, osgUtil::Optimizer *, optimizer, IN, unsigned int, operation,
 	               ____BaseOptimizerVisitor__Optimizer_P1__unsigned_int,
@@ -88,7 +88,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer)
+BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer)
 	I_Constructor0(____Optimizer,
 	               "",
 	               "");
@@ -181,7 +181,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer)
 	                  0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CheckGeometryVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CheckGeometryVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -202,7 +202,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::CombineLODsVisitor::GroupList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -222,7 +222,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::CombineLODsVisitor::GroupList, _groupList);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -243,7 +243,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -267,7 +267,7 @@ TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osgUtil::Optimizer::FlattenBillboa
 
 TYPE_NAME_ALIAS(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >, osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -292,7 +292,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap, _billboards);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -336,7 +336,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisit
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallback)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallback)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____IsOperationPermissibleForObjectCallback,
 	               "",
@@ -363,7 +363,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObj
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -382,7 +382,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -449,7 +449,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -476,7 +476,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -498,7 +498,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -530,7 +530,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -555,7 +555,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList, _groupsToDivideList);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -584,7 +584,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -605,7 +605,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TessellateVisitor::GroupList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TessellateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -740,7 +740,7 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,
@@ -777,7 +777,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults7(IN, bool, changeAutoUnRef, , IN, bool, valueAutoUnRef, , IN, bool, changeClientImageStorage, , IN, bool, valueClientImageStorage, , IN, bool, changeAnisotropy, , IN, float, valueAnisotropy, , IN, osgUtil::Optimizer *, optimizer, 0,
 	                           ____TextureVisitor__bool__bool__bool__bool__bool__float__Optimizer_P1,

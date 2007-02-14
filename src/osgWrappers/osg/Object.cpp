@@ -92,6 +92,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	          __DataVariance__getDataVariance,
 	          "Get the data variance of this object. ",
 	          "");
+	I_Method0(void, computeDataVariance,
+	          Properties::VIRTUAL,
+	          __void__computeDataVariance,
+	          "Compute the DataVariance based on an assestment of callback etc. ",
+	          "");
 	I_Method1(void, setUserData, IN, osg::Referenced *, obj,
 	          Properties::NON_VIRTUAL,
 	          __void__setUserData__Referenced_P1,

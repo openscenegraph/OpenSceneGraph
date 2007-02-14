@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::Field::FieldType)
 	I_EnumLabel(osgDB::Field::UNINITIALISED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Field)
+BEGIN_VALUE_REFLECTOR(osgDB::Field)
 	I_Constructor0(____Field,
 	               "",
 	               "");

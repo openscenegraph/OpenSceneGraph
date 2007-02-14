@@ -27,7 +27,7 @@
 
 TYPE_NAME_ALIAS(std::multiset< osgUtil::LineSegmentIntersector::Intersection >, osgUtil::LineSegmentIntersector::Intersections);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
+BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	I_BaseType(osgUtil::Intersector);
 	I_Constructor2(IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end,
 	               ____LineSegmentIntersector__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,

@@ -30,7 +30,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
+BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	I_BaseType(osg::Node);
 	I_Constructor0(____PrecipitationEffect,
 	               "",
@@ -274,7 +274,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >, osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
+BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____PrecipitationDrawable,
 	               "",

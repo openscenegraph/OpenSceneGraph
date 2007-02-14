@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,

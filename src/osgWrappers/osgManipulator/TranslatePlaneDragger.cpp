@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslatePlaneDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslatePlaneDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TranslatePlaneDragger,
 	               "",

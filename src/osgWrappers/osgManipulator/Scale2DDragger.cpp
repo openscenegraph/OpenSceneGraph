@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osgManipulator::Scale2DDragger::ScaleMode)
 	I_EnumLabel(osgManipulator::Scale2DDragger::SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale2DDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DDragger)
 	I_BaseType(osgManipulator::Dragger);
 	I_ConstructorWithDefaults1(IN, osgManipulator::Scale2DDragger::ScaleMode, scaleMode, osgManipulator::Scale2DDragger::SCALE_WITH_ORIGIN_AS_PIVOT,
 	                           Properties::NON_EXPLICIT,

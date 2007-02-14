@@ -39,7 +39,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgProducer::GraphicsContextImplement
 
 TYPE_NAME_ALIAS(std::vector< Producer::ref_ptr< osgProducer::OsgSceneHandler > >, osgProducer::OsgCameraGroup::SceneHandlerList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgCameraGroup)
+BEGIN_VALUE_REFLECTOR(osgProducer::OsgCameraGroup)
 	I_Constructor0(____OsgCameraGroup,
 	               "",
 	               "");

@@ -33,7 +33,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
+BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ImpostorSprite,
 	               "",
@@ -240,7 +240,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	I_PublicMemberProperty(osg::Vec4, _color);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ImpostorSpriteManager)
+BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSpriteManager)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ImpostorSpriteManager,
 	               "",

@@ -67,7 +67,7 @@ BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::VisitorType)
 	I_EnumLabel(osg::NodeVisitor::CULL_VISITOR);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor)
+BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	I_VirtualBaseType(osg::Referenced);
 	I_ConstructorWithDefaults1(IN, osg::NodeVisitor::TraversalMode, tm, osg::NodeVisitor::TRAVERSE_NONE,
 	                           Properties::NON_EXPLICIT,

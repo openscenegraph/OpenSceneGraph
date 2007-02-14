@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::BumpMapping)
+BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____BumpMapping,
 	               "",

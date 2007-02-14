@@ -49,7 +49,7 @@ BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::BarrierPosition)
 	I_EnumLabel(osgViewer::Viewer::AfterSwapBuffers);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::Viewer)
+BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
 	               "",

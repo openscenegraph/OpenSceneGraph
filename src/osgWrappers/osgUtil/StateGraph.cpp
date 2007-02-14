@@ -34,7 +34,7 @@ TYPE_NAME_ALIAS(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::St
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >, osgUtil::StateGraph::LeafList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::StateGraph)
+BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____StateGraph,
 	               "",

@@ -29,7 +29,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
+BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
 	I_BaseType(osg::State::DynamicObjectRenderingCompletedCallback);
 	I_Constructor1(IN, unsigned, int,
 	               Properties::NON_EXPLICIT,
@@ -68,7 +68,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::View)
+BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_BaseType(osg::View);
 	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____View,

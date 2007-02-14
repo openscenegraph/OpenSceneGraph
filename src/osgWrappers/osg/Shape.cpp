@@ -27,7 +27,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Box)
+BEGIN_OBJECT_REFLECTOR(osg::Box)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Box,
 	               "",
@@ -140,7 +140,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Box)
 	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Capsule)
+BEGIN_OBJECT_REFLECTOR(osg::Capsule)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Capsule,
 	               "",
@@ -264,7 +264,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CompositeShape)
+BEGIN_OBJECT_REFLECTOR(osg::CompositeShape)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____CompositeShape,
 	               "",
@@ -365,7 +365,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CompositeShape)
 	                 __void__setShape__Shape_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Cone)
+BEGIN_OBJECT_REFLECTOR(osg::Cone)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Cone,
 	               "",
@@ -503,7 +503,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Cone)
 	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConstShapeVisitor)
+BEGIN_VALUE_REFLECTOR(osg::ConstShapeVisitor)
 	I_Constructor0(____ConstShapeVisitor,
 	               "",
 	               "");
@@ -559,7 +559,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConstShapeVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConvexHull)
+BEGIN_OBJECT_REFLECTOR(osg::ConvexHull)
 	I_BaseType(osg::TriangleMesh);
 	I_Constructor0(____ConvexHull,
 	               "",
@@ -605,7 +605,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConvexHull)
 	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Cylinder)
+BEGIN_OBJECT_REFLECTOR(osg::Cylinder)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Cylinder,
 	               "",
@@ -729,7 +729,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::HeightField)
+BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____HeightField,
 	               "",
@@ -925,7 +925,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::HeightField)
 	                 __void__setYInterval__float);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::InfinitePlane)
+BEGIN_OBJECT_REFLECTOR(osg::InfinitePlane)
 	I_BaseType(osg::Shape);
 	I_BaseType(osg::Plane);
 	I_Constructor0(____InfinitePlane,
@@ -1018,7 +1018,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shape)
 	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ShapeVisitor)
+BEGIN_VALUE_REFLECTOR(osg::ShapeVisitor)
 	I_Constructor0(____ShapeVisitor,
 	               "",
 	               "");
@@ -1074,7 +1074,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ShapeVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Sphere)
+BEGIN_OBJECT_REFLECTOR(osg::Sphere)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Sphere,
 	               "",
@@ -1160,7 +1160,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Sphere)
 	                 __void__setRadius__float);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TriangleMesh)
+BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
 	I_BaseType(osg::Shape);
 	I_Constructor0(____TriangleMesh,
 	               "",

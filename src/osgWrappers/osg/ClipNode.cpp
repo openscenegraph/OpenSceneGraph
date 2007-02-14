@@ -30,7 +30,7 @@
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::ClipPlaneList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ClipNode)
+BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____ClipNode,
 	               "",

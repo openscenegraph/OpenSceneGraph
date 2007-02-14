@@ -23,7 +23,7 @@
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >, osgFX::Registry::EffectMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Registry)
+BEGIN_OBJECT_REFLECTOR(osgFX::Registry)
 	I_BaseType(osg::Referenced);
 	I_Method1(void, registerEffect, IN, const osgFX::Effect *, effect,
 	          Properties::NON_VIRTUAL,

@@ -40,7 +40,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Tessellator::TessellationType)
 	I_EnumLabel(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Tessellator)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____Tessellator,
 	               "",
@@ -147,7 +147,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::Prim::VecList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Tessellator::Prim)
+BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator::Prim)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, GLenum, mode,
 	               Properties::NON_EXPLICIT,

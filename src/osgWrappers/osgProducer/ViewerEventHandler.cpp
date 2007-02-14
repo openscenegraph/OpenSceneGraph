@@ -32,7 +32,7 @@ BEGIN_ENUM_REFLECTOR(osgProducer::ViewerEventHandler::FrameStatsMode)
 	I_EnumLabel(osgProducer::ViewerEventHandler::SCENE_STATS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)
+BEGIN_OBJECT_REFLECTOR(osgProducer::ViewerEventHandler)
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor1(IN, osgProducer::OsgCameraGroup *, cg,
 	               Properties::NON_EXPLICIT,

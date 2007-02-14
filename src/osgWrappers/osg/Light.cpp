@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Light)
+BEGIN_OBJECT_REFLECTOR(osg::Light)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Light,
 	               "",

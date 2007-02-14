@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ShadowVolume,
 	               "",

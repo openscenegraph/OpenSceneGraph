@@ -41,7 +41,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexGen::Coord)
 	I_EnumLabel(osg::TexGen::Q);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TexGen)
+BEGIN_OBJECT_REFLECTOR(osg::TexGen)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexGen,
 	               "",

@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::LineSegment)
+BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____LineSegment,
 	               "",

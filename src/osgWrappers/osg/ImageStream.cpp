@@ -35,7 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::ImageStream::LoopingMode)
 	I_EnumLabel(osg::ImageStream::LOOPING);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ImageStream)
+BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	I_BaseType(osg::Image);
 	I_Constructor0(____ImageStream,
 	               "",

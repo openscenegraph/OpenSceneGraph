@@ -4148,19 +4148,14 @@ void Optimizer::StaticObjectDetectionVisitor::apply(osg::Geode& geode)
 
 void Optimizer::StaticObjectDetectionVisitor::applyStateSet(osg::StateSet& stateset)
 {
-    stateset.setDataVariance(osg::Object::STATIC);
+    stateset.computeDataVariance();
 }
 
 
 void Optimizer::StaticObjectDetectionVisitor::applyDrawable(osg::Drawable& drawable)
-{
+{   
+    
     if (drawable.getStateSet()) applyStateSet(*drawable.getStateSet());
-
-    osg::Object::DataVariance dataVariance = osg::Object::STATIC;
     
-    if (drawable.getDrawCallback()) dataVariance = osg::Object::DYNAMIC;
-    if (drawable.getCullCallback()) dataVariance = osg::Object::DYNAMIC;
-    if (drawable.getDrawCallback()) dataVariance = osg::Object::DYNAMIC;
-    
-    drawable.setDataVariance(dataVariance);
+    drawable.computeDataVariance();
 }

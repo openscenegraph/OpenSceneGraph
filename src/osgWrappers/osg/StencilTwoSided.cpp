@@ -51,7 +51,7 @@ BEGIN_ENUM_REFLECTOR(osg::StencilTwoSided::Operation)
 	I_EnumLabel(osg::StencilTwoSided::DECR_WRAP);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StencilTwoSided)
+BEGIN_OBJECT_REFLECTOR(osg::StencilTwoSided)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____StencilTwoSided,
 	               "",
@@ -226,7 +226,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StencilTwoSided)
 	                  0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StencilTwoSided::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::StencilTwoSided::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

@@ -40,7 +40,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 	I_EnumLabel(osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES,
 	                           Properties::NON_EXPLICIT,

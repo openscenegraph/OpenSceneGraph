@@ -35,7 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::Sequence::SequenceMode)
 	I_EnumLabel(osg::Sequence::RESUME);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Sequence)
+BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	I_BaseType(osg::Group);
 	I_Constructor0(____Sequence,
 	               "",

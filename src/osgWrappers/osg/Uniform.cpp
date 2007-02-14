@@ -148,7 +148,7 @@ BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 	I_EnumLabel(osg::Uniform::UNDEFINED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Uniform)
+BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Uniform,
 	               "",
@@ -789,7 +789,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Uniform)
 	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Uniform::Callback)
+BEGIN_OBJECT_REFLECTOR(osg::Uniform::Callback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",

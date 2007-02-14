@@ -35,7 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::BlendEquation::Equation)
 	I_EnumLabel(osg::BlendEquation::FUNC_REVERSE_SUBTRACT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendEquation)
+BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____BlendEquation,
 	               "",
@@ -120,7 +120,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendEquation)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

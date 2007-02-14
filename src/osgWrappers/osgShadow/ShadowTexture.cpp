@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ShadowTexture)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTexture)
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ShadowTexture,
 	               "",

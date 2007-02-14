@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Selection)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Selection)
 	I_BaseType(osg::MatrixTransform);
 	I_Constructor0(____Selection,
 	               "",

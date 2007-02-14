@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
 	I_EnumLabel(osgViewer::StatsHandler::LAST);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::StatsHandler)
+BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____StatsHandler,
 	               "",

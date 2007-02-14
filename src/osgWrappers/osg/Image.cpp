@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
 	I_EnumLabel(osg::Image::USE_MALLOC_FREE);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Image)
+BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Image,
 	               "",

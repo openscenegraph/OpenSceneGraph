@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ForceOperator)
+BEGIN_OBJECT_REFLECTOR(osgParticle::ForceOperator)
 	I_BaseType(osgParticle::Operator);
 	I_Constructor0(____ForceOperator,
 	               "",

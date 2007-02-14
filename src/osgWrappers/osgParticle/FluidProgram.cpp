@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::FluidProgram)
+BEGIN_OBJECT_REFLECTOR(osgParticle::FluidProgram)
 	I_BaseType(osgParticle::Program);
 	I_Constructor0(____FluidProgram,
 	               "",

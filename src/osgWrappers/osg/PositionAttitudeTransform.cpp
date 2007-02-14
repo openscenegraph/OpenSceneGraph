@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PositionAttitudeTransform)
+BEGIN_OBJECT_REFLECTOR(osg::PositionAttitudeTransform)
 	I_BaseType(osg::Transform);
 	I_Constructor0(____PositionAttitudeTransform,
 	               "",

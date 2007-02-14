@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
 	I_BaseType(osg::MatrixTransform);
 	I_Constructor0(____AntiSquish,
 	               "",

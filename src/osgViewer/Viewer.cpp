@@ -13,6 +13,7 @@
 
 #include <osg/GLExtensions>
 #include <osg/DeleteHandler>
+#include <osgUtil/Optimizer>
 #include <osgUtil/GLObjectsVisitor>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
@@ -672,13 +673,13 @@ int Viewer::run()
         realize();
     }
 
-#if 1
+#if 0
     while (!done())
     {
         frame();
     }
 #else
-    int runTillFrameNumber = 10;
+    int runTillFrameNumber = 100;
     while (!done() && getFrameStamp()->getFrameNumber()<runTillFrameNumber)
     {
         frame();
@@ -954,7 +955,7 @@ Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
     {
         if (strcmp(str,"SingleThreaded")==0) return SingleThreaded;
         else if (strcmp(str,"CullDrawThreadPerContext")==0) return CullDrawThreadPerContext;
-        else if (strcmp(str,"DrawThreadPerContext")==0) return CullDrawThreadPerContext;
+        else if (strcmp(str,"DrawThreadPerContext")==0) return DrawThreadPerContext;
         else if (strcmp(str,"CullThreadPerCameraDrawThreadPerContext")==0) return CullThreadPerCameraDrawThreadPerContext;
     }
 
@@ -1089,6 +1090,11 @@ void Viewer::startThreading()
         
         if (!osg::Referenced::getDeleteHandler()) osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
         else osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
+        
+        // now make sure the scene graph is set up with the correct DataVariance to protect the dyamic elements of
+        // the scene graph from being run in parallel.
+        osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
+        getSceneData()->accept(sodv);
     }
     
     if (numThreadsOnBarrier>1)

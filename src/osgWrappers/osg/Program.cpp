@@ -30,7 +30,7 @@ TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindi
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Program)
+BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Program,
 	               "",
@@ -208,7 +208,7 @@ BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
 	I_PublicMemberProperty(GLint, _size);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
+BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	I_BaseType(osg::Referenced);
 	I_Constructor2(IN, const osg::Program *, program, IN, unsigned int, contextID,
 	               ____PerContextProgram__C5_Program_P1__unsigned_int,

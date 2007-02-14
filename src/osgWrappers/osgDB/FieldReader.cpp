@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::FieldReader)
+BEGIN_VALUE_REFLECTOR(osgDB::FieldReader)
 	I_Constructor0(____FieldReader,
 	               "",
 	               "");

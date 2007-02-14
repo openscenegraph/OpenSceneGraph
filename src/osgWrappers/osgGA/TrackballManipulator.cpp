@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____TrackballManipulator,
 	               "",

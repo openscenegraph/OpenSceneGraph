@@ -34,7 +34,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageSamplingMode)
 	I_EnumLabel(osgDB::ImageOptions::CUBIC);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::ImageOptions)
+BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	I_BaseType(osgDB::ReaderWriter::Options);
 	I_Constructor0(____ImageOptions,
 	               "",
@@ -120,7 +120,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
 	I_PublicMemberProperty(double, windowHeight);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
+BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TexCoordRange,
 	               "",

@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::LineStipple)
+BEGIN_OBJECT_REFLECTOR(osg::LineStipple)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____LineStipple,
 	               "",

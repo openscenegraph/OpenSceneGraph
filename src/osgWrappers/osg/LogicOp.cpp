@@ -43,7 +43,7 @@ BEGIN_ENUM_REFLECTOR(osg::LogicOp::Opcode)
 	I_EnumLabel(osg::LogicOp::OR_INVERTED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::LogicOp)
+BEGIN_OBJECT_REFLECTOR(osg::LogicOp)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____LogicOp,
 	               "",

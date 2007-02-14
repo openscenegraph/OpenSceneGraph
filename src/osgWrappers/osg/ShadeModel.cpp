@@ -29,7 +29,7 @@ BEGIN_ENUM_REFLECTOR(osg::ShadeModel::Mode)
 	I_EnumLabel(osg::ShadeModel::SMOOTH);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ShadeModel)
+BEGIN_OBJECT_REFLECTOR(osg::ShadeModel)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____ShadeModel,
 	               "",

@@ -33,7 +33,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::OccluderGeometry::Vec3List)
 
 TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::OccluderGeometry::UIntList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
+BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____OccluderGeometry,
 	               "",
@@ -127,7 +127,7 @@ BEGIN_ENUM_REFLECTOR(osgShadow::ShadowVolumeGeometry::DrawMode)
 	I_EnumLabel(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ShadowVolumeGeometry,
 	               "",

@@ -173,7 +173,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ArrayVisitor)
+BEGIN_VALUE_REFLECTOR(osg::ArrayVisitor)
 	I_Constructor0(____ArrayVisitor,
 	               "",
 	               "");
@@ -269,7 +269,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ArrayVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConstArrayVisitor)
+BEGIN_VALUE_REFLECTOR(osg::ConstArrayVisitor)
 	I_Constructor0(____ConstArrayVisitor,
 	               "",
 	               "");
@@ -365,7 +365,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConstArrayVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ConstValueVisitor)
+BEGIN_VALUE_REFLECTOR(osg::ConstValueVisitor)
 	I_Constructor0(____ConstValueVisitor,
 	               "",
 	               "");
@@ -478,7 +478,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::IndexArray)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ValueVisitor)
+BEGIN_VALUE_REFLECTOR(osg::ValueVisitor)
 	I_Constructor0(____ValueVisitor,
 	               "",
 	               "");
@@ -603,7 +603,7 @@ TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType
 
 TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE >, osg::Vec4bArray);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<GLfloat>);
 	I_Constructor0(____TemplateArray,
@@ -685,7 +685,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< GLfloat COMMA  osg::Array::F
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec2>);
 	I_Constructor0(____TemplateArray,
@@ -767,7 +767,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2 COMMA  osg::Array:
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec2b>);
 	I_Constructor0(____TemplateArray,
@@ -849,7 +849,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2b COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec2s>);
 	I_Constructor0(____TemplateArray,
@@ -931,7 +931,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec2s COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec3>);
 	I_Constructor0(____TemplateArray,
@@ -1013,7 +1013,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3 COMMA  osg::Array:
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec3b>);
 	I_Constructor0(____TemplateArray,
@@ -1095,7 +1095,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3b COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec3s>);
 	I_Constructor0(____TemplateArray,
@@ -1177,7 +1177,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec3s COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4>);
 	I_Constructor0(____TemplateArray,
@@ -1259,7 +1259,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4 COMMA  osg::Array:
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4b>);
 	I_Constructor0(____TemplateArray,
@@ -1341,7 +1341,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4b COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4s>);
 	I_Constructor0(____TemplateArray,
@@ -1423,7 +1423,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4s COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE >)
 	I_BaseType(osg::Array);
 	I_BaseType(std::vector<osg::Vec4ub>);
 	I_Constructor0(____TemplateArray,
@@ -1505,7 +1505,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateArray< osg::Vec4ub COMMA  osg::Arra
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLbyte>);
 	I_Constructor0(____TemplateIndexArray,
@@ -1592,7 +1592,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLbyte COMMA  osg::Arra
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLint>);
 	I_Constructor0(____TemplateIndexArray,
@@ -1679,7 +1679,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLint COMMA  osg::Array
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLshort>);
 	I_Constructor0(____TemplateIndexArray,
@@ -1766,7 +1766,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLshort COMMA  osg::Arr
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLubyte>);
 	I_Constructor0(____TemplateIndexArray,
@@ -1853,7 +1853,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLubyte COMMA  osg::Arr
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLuint>);
 	I_Constructor0(____TemplateIndexArray,
@@ -1940,7 +1940,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLuint COMMA  osg::Arra
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT >)
+BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT >)
 	I_BaseType(osg::IndexArray);
 	I_BaseType(std::vector<GLushort>);
 	I_Constructor0(____TemplateIndexArray,

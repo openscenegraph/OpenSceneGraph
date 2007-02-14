@@ -32,7 +32,7 @@ BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::Alignment)
 	I_EnumLabel(osgParticle::ParticleSystem::FIXED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
+BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ParticleSystem,
 	               "",

@@ -28,7 +28,7 @@
 
 TYPE_NAME_ALIAS(osg::VectorGLsizei, osg::DrawArrayLengths::vector_type);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawArrayLengths)
+BEGIN_OBJECT_REFLECTOR(osg::DrawArrayLengths)
 	I_BaseType(osg::PrimitiveSet);
 	I_BaseType(osg::VectorGLsizei);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -127,7 +127,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawArrayLengths)
 	                 __void__setFirst__GLint);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawArrays)
+BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
 	I_BaseType(osg::PrimitiveSet);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
 	                           Properties::NON_EXPLICIT,
@@ -232,7 +232,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElementsUByte)
+BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	I_BaseType(osg::PrimitiveSet);
 	I_BaseType(osg::VectorGLubyte);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -347,7 +347,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::VectorGLuint, osg::DrawElementsUInt::vector_type);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElementsUInt)
+BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	I_BaseType(osg::PrimitiveSet);
 	I_BaseType(osg::VectorGLuint);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -462,7 +462,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::VectorGLushort, osg::DrawElementsUShort::vector_type);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElementsUShort)
+BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 	I_BaseType(osg::PrimitiveSet);
 	I_BaseType(osg::VectorGLushort);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,

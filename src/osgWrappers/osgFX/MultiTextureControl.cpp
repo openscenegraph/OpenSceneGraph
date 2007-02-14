@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
+BEGIN_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
 	I_BaseType(osg::Group);
 	I_Constructor0(____MultiTextureControl,
 	               "",

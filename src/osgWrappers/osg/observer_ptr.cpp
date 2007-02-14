@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Observer)
+BEGIN_VALUE_REFLECTOR(osg::Observer)
 	I_Constructor0(____Observer,
 	               "",
 	               "");

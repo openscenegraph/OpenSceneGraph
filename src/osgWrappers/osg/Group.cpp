@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Group)
+BEGIN_OBJECT_REFLECTOR(osg::Group)
 	I_BaseType(osg::Node);
 	I_Constructor0(____Group,
 	               "",

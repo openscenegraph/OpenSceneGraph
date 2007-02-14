@@ -38,7 +38,7 @@ BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_EnumLabel(osg::Geometry::BIND_PER_VERTEX);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Geometry)
+BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____Geometry,
 	               "",

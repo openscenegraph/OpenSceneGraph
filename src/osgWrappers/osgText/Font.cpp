@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font)
+BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults1(IN, osgText::Font::FontImplementation *, implementation, 0,
 	                           Properties::NON_EXPLICIT,
@@ -295,7 +295,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::FontImplementation)
 	I_PublicMemberProperty(osgText::Font *, _facade);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::Glyph)
+BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	I_BaseType(osg::Image);
 	I_Constructor0(____Glyph,
 	               "",

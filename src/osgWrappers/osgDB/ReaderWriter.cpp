@@ -32,7 +32,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ArchiveStatus)
 	I_EnumLabel(osgDB::ReaderWriter::CREATE);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::ReaderWriter)
+BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_BaseType(osg::Object);
 	I_Constructor0(____ReaderWriter,
 	               "",
@@ -173,7 +173,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_ALL);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
+BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Options,
 	               "",

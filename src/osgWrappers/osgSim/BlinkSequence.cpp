@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::BlinkSequence)
+BEGIN_OBJECT_REFLECTOR(osgSim::BlinkSequence)
 	I_BaseType(osg::Object);
 	I_Constructor0(____BlinkSequence,
 	               "",
@@ -128,7 +128,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::BlinkSequence)
 	                 __void__setSequenceGroup__SequenceGroup_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::SequenceGroup)
+BEGIN_OBJECT_REFLECTOR(osgSim::SequenceGroup)
 	I_BaseType(osg::Object);
 	I_Constructor0(____SequenceGroup,
 	               "",

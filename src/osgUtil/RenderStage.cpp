@@ -853,6 +853,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         
         // syncronize the frame stamps
         useState->setFrameStamp(const_cast<osg::FrameStamp*>(state.getFrameStamp()));
+        useState->setDynamicObjectCount(state.getDynamicObjectCount());
+        useState->setDynamicObjectRenderingCompletedCallback(state.getDynamicObjectRenderingCompletedCallback());
         
         if (!useThread) useContext->makeCurrent();
     }
@@ -876,6 +878,12 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
             renderInfo.setUserData(useRenderInfo.getUserData());
         }
         
+    }
+
+    if (useState != &state)
+    {
+        state.setDynamicObjectCount(useState->getDynamicObjectCount());
+        useState->setDynamicObjectRenderingCompletedCallback(0);
     }
 
 

@@ -47,7 +47,7 @@ public:
             {
                 if (ea.getKey()=='m')
                 {
-#if 1
+#if 0
                     switch(viewer->getThreadingModel())
                     {
                         case(osgViewer::Viewer::SingleThreaded):

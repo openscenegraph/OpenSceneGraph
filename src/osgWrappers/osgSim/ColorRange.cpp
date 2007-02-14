@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ColorRange)
+BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
 	I_BaseType(osgSim::ScalarsToColors);
 	I_Constructor2(IN, float, min, IN, float, max,
 	               ____ColorRange__float__float,

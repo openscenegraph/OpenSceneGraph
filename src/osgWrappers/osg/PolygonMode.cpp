@@ -36,7 +36,7 @@ BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Face)
 	I_EnumLabel(osg::PolygonMode::BACK);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PolygonMode)
+BEGIN_OBJECT_REFLECTOR(osg::PolygonMode)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PolygonMode,
 	               "",

@@ -69,7 +69,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::FusionDistanceMode)
 	I_EnumLabel(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::SceneView)
+BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_BaseType(osg::Object);
 	I_BaseType(osg::CullSettings);
 	I_ConstructorWithDefaults1(IN, osg::DisplaySettings *, ds, NULL,

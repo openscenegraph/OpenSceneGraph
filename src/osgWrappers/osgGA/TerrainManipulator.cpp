@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::TerrainManipulator::RotationMode)
 	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____TerrainManipulator,
 	               "",

@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::MatrixTransform)
+BEGIN_OBJECT_REFLECTOR(osg::MatrixTransform)
 	I_BaseType(osg::Transform);
 	I_Constructor0(____MatrixTransform,
 	               "",

@@ -56,7 +56,7 @@ TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT);
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FBOExtensions)
+BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_BaseType(osg::Referenced);
 	I_Method0(bool, isSupported,
 	          Properties::NON_VIRTUAL,
@@ -141,7 +141,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FrameBufferObject)
+BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____FrameBufferObject,
 	               "",
@@ -230,7 +230,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::RenderBuffer)
+BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	I_BaseType(osg::Object);
 	I_Constructor0(____RenderBuffer,
 	               "",

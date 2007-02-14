@@ -7,8 +7,8 @@ includedir=${prefix}/include
 
 Name: openscenegraph
 Description: 3D scenegraph
-Version: 1.0,0
+Version: 1.2,0
 Requires: openthreads
 Conflicts:
-Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgParticle -losgProducer -losgSim -losgText -losgUtil
+Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgParticle -losgViewer -losgSim -losgText -losgUtil
 Cflags: -I${includedir}

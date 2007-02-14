@@ -33,7 +33,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnv::Mode)
 	I_EnumLabel(osg::TexEnv::ADD);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TexEnv)
+BEGIN_OBJECT_REFLECTOR(osg::TexEnv)
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, osg::TexEnv::Mode, mode, osg::TexEnv::MODULATE,
 	                           Properties::NON_EXPLICIT,

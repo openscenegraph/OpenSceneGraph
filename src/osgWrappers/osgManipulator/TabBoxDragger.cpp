@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabBoxDragger,
 	               "",

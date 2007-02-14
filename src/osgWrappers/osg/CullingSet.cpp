@@ -50,7 +50,7 @@ BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
 	I_EnumLabel(osg::CullingSet::ENABLE_ALL_CULLING);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CullingSet)
+BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CullingSet,
 	               "",

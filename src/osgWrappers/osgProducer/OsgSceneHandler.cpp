@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
+BEGIN_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
 	I_ConstructorWithDefaults1(IN, osg::DisplaySettings *, ds, NULL,
 	                           Properties::NON_EXPLICIT,
 	                           ____OsgSceneHandler__osg_DisplaySettings_P1,

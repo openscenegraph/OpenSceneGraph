@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
+BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	I_BaseType(osg::Geometry);
 	I_Constructor0(____DelaunayConstraint,
 	               "",
@@ -91,7 +91,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::DelaunayConstraint > >, osgUtil::DelaunayTriangulator::linelist);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::DelaunayTriangulator)
+BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayTriangulator)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____DelaunayTriangulator,
 	               "",

@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::FireEffect)
+BEGIN_OBJECT_REFLECTOR(osgParticle::FireEffect)
 	I_BaseType(osgParticle::ParticleEffect);
 	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true,
 	                           Properties::EXPLICIT,

@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ParallelSplitShadowMap,
 	               "",

@@ -27,7 +27,7 @@
 
 TYPE_NAME_ALIAS(std::vector< osg::PagedLOD::PerRangeData >, osg::PagedLOD::PerRangeDataList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PagedLOD)
+BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	I_BaseType(osg::LOD);
 	I_Constructor0(____PagedLOD,
 	               "",

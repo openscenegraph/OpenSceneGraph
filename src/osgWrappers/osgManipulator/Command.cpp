@@ -108,7 +108,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Rotate3DCommand,
 	               "",
@@ -151,7 +151,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 	                 __void__setRotation__C5_osg_Quat_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Scale1DCommand,
 	               "",
@@ -233,7 +233,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	                 __void__setScaleCenter__float);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Scale2DCommand,
 	               "",
@@ -315,7 +315,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	                 __void__setScaleCenter__C5_osg_Vec2_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____ScaleUniformCommand,
 	               "",
@@ -371,7 +371,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	                 __void__setScaleCenter__C5_osg_Vec3_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____TranslateInLineCommand,
 	               "",
@@ -439,7 +439,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	                 __void__setTranslation__C5_osg_Vec3_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____TranslateInPlaneCommand,
 	               "",

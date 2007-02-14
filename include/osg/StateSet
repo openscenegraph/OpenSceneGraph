@@ -92,6 +92,10 @@ class OSG_EXPORT StateSet : public Object
         inline unsigned int getNumParents() const { return _parents.size(); }
 
 
+        /** Compute the DataVariance based on an assestment of callback etc.*/
+        virtual void computeDataVariance();
+
+
         /** Set all the modes to on or off so that it defines a
             complete state, typically used for a default global state.*/
         void setGlobalDefaults();
@@ -425,8 +429,6 @@ class OSG_EXPORT StateSet : public Object
 
         /** call release on all StateAttributes contained within this StateSet.*/
         virtual void releaseGLObjects(State* state=0) const;
-
-
 
     protected :
 

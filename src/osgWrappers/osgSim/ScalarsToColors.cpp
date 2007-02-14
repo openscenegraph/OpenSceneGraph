@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ScalarsToColors)
+BEGIN_OBJECT_REFLECTOR(osgSim::ScalarsToColors)
 	I_BaseType(osg::Referenced);
 	I_Constructor2(IN, float, scalarMin, IN, float, scalarMax,
 	               ____ScalarsToColors__float__float,

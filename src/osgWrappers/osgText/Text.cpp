@@ -107,7 +107,7 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::ColorGradientMode)
 	I_EnumLabel(osgText::Text::OVERALL);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Text)
+BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____Text,
 	               "",

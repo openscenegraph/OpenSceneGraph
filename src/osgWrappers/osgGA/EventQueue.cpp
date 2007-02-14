@@ -24,7 +24,7 @@
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventQueue::Events);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::EventQueue)
+BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults1(IN, osgGA::GUIEventAdapter::MouseYOrientation, mouseYOrientation, osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS,
 	                           Properties::NON_EXPLICIT,

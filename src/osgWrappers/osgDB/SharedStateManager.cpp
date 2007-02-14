@@ -29,7 +29,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_ALL);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::SharedStateManager)
+BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____SharedStateManager,
 	               "",

@@ -64,7 +64,7 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::CullingModeValues)
 	I_EnumLabel(osg::CullSettings::ENABLE_ALL_CULLING);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CullSettings)
+BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	I_Constructor0(____CullSettings,
 	               "",
 	               "");

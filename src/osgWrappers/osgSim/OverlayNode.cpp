@@ -27,7 +27,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::OverlayNode)
+BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____OverlayNode,
 	               "",

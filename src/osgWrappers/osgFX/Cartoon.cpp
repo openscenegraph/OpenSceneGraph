@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Cartoon)
+BEGIN_OBJECT_REFLECTOR(osgFX::Cartoon)
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____Cartoon,
 	               "",

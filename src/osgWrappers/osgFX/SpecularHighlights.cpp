@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::SpecularHighlights)
+BEGIN_OBJECT_REFLECTOR(osgFX::SpecularHighlights)
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____SpecularHighlights,
 	               "",

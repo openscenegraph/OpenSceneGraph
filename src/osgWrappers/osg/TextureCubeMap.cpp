@@ -34,7 +34,7 @@ BEGIN_ENUM_REFLECTOR(osg::TextureCubeMap::Face)
 	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_Z);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap)
+BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	I_BaseType(osg::Texture);
 	I_Constructor0(____TextureCubeMap,
 	               "",
@@ -211,7 +211,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

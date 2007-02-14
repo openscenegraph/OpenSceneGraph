@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::LinearInterpolator)
+BEGIN_OBJECT_REFLECTOR(osgParticle::LinearInterpolator)
 	I_BaseType(osgParticle::Interpolator);
 	I_Constructor0(____LinearInterpolator,
 	               "",

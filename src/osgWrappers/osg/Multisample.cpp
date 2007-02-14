@@ -30,7 +30,7 @@ BEGIN_ENUM_REFLECTOR(osg::Multisample::Mode)
 	I_EnumLabel(osg::Multisample::DONT_CARE);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Multisample)
+BEGIN_OBJECT_REFLECTOR(osg::Multisample)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Multisample,
 	               "",
@@ -136,7 +136,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Multisample)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Multisample::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::Multisample::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

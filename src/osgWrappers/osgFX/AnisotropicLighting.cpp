@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::AnisotropicLighting)
+BEGIN_OBJECT_REFLECTOR(osgFX::AnisotropicLighting)
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____AnisotropicLighting,
 	               "",

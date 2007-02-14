@@ -208,7 +208,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::TabletPointerType)
 	I_EnumLabel(osgGA::GUIEventAdapter::ERASER);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
+BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____GUIEventAdapter,
 	               "",

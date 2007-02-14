@@ -32,7 +32,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults2(IN, osgUtil::Intersector *, intersector, 0, IN, osgUtil::IntersectionVisitor::ReadCallback *, readCallback, 0,
 	                           ____IntersectionVisitor__Intersector_P1__ReadCallback_P1,
@@ -291,7 +291,7 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Intersector > >, osgUtil::IntersectorGroup::Intersectors);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::IntersectorGroup)
+BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectorGroup)
 	I_BaseType(osgUtil::Intersector);
 	I_Constructor0(____IntersectorGroup,
 	               "",

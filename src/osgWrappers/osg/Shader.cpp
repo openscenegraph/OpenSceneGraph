@@ -29,7 +29,7 @@ BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
 	I_EnumLabel(osg::Shader::UNDEFINED);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shader)
+BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED,
 	                           Properties::NON_EXPLICIT,

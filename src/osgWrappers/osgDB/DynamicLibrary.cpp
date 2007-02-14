@@ -24,7 +24,7 @@ TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::HANDLE);
 
 TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
+BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	I_BaseType(osg::Referenced);
 	I_Method0(const std::string &, getName,
 	          Properties::NON_VIRTUAL,

@@ -223,7 +223,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

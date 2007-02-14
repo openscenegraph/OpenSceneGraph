@@ -35,7 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::Billboard::Mode)
 	I_EnumLabel(osg::Billboard::AXIAL_ROT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Billboard)
+BEGIN_OBJECT_REFLECTOR(osg::Billboard)
 	I_BaseType(osg::Geode);
 	I_Constructor0(____Billboard,
 	               "",

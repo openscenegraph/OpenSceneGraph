@@ -28,7 +28,7 @@
 
 TYPE_NAME_ALIAS(std::vector< osgSim::LightPoint >, osgSim::LightPointNode::LightPointList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::LightPointNode)
+BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	I_BaseType(osg::Node);
 	I_Constructor0(____LightPointNode,
 	               "",

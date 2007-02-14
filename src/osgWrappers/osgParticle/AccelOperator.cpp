@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::AccelOperator)
+BEGIN_OBJECT_REFLECTOR(osgParticle::AccelOperator)
 	I_BaseType(osgParticle::Operator);
 	I_Constructor0(____AccelOperator,
 	               "",

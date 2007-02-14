@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::DisplayRequirementsVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::DisplayRequirementsVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____DisplayRequirementsVisitor,
 	               "Default to traversing all children, and requiresDoubleBuffer, requiresRGB and requiresDepthBuffer to true and with alpha and stencil off. ",

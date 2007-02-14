@@ -37,7 +37,7 @@ BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 	I_EnumLabel(osg::State::ONCE_PER_ATTRIBUTE);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State)
+BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____State,
 	               "",

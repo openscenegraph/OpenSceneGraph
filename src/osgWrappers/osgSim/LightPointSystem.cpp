@@ -28,7 +28,7 @@ BEGIN_ENUM_REFLECTOR(osgSim::LightPointSystem::AnimationState)
 	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_RANDOM);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::LightPointSystem)
+BEGIN_OBJECT_REFLECTOR(osgSim::LightPointSystem)
 	I_BaseType(osg::Object);
 	I_Constructor0(____LightPointSystem,
 	               "",

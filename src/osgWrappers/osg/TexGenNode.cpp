@@ -29,7 +29,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexGenNode::ReferenceFrame)
 	I_EnumLabel(osg::TexGenNode::ABSOLUTE_RF);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TexGenNode)
+BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____TexGenNode,
 	               "",

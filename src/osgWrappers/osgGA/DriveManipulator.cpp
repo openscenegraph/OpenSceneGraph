@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::DriveManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::DriveManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____DriveManipulator,
 	               "",

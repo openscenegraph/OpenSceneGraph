@@ -33,7 +33,7 @@ BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
 	I_EnumLabel(osg::ProxyNode::USER_DEFINED_CENTER);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ProxyNode)
+BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____ProxyNode,
 	               "",

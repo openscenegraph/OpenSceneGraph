@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	I_BaseType(osgManipulator::Dragger);
 	I_Constructor0(____Translate1DDragger,
 	               "",

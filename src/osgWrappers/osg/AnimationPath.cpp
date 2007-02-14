@@ -36,7 +36,7 @@ BEGIN_ENUM_REFLECTOR(osg::AnimationPath::LoopMode)
 	I_EnumLabel(osg::AnimationPath::NO_LOOPING);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AnimationPath)
+BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____AnimationPath,
 	               "",
@@ -260,7 +260,7 @@ BEGIN_VALUE_REFLECTOR(osg::AnimationPath::ControlPoint)
 	                 __void__setScale__C5_osg_Vec3d_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AnimationPathCallback)
+BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	I_BaseType(osg::NodeCallback);
 	I_Constructor0(____AnimationPathCallback,
 	               "",

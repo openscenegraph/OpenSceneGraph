@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::RotateCylinderDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::RotateCylinderDragger)
 	I_BaseType(osgManipulator::Dragger);
 	I_Constructor0(____RotateCylinderDragger,
 	               "",

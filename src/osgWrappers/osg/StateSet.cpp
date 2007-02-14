@@ -54,7 +54,7 @@ BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderBinMode)
 	I_EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateSet)
+BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_BaseType(osg::Object);
 	I_Constructor0(____StateSet,
 	               "",
@@ -118,6 +118,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateSet)
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of this StateSet. ",
 	          "the number of parents of this StateSet. ");
+	I_Method0(void, computeDataVariance,
+	          Properties::VIRTUAL,
+	          __void__computeDataVariance,
+	          "Compute the DataVariance based on an assestment of callback etc. ",
+	          "");
 	I_Method0(void, setGlobalDefaults,
 	          Properties::NON_VIRTUAL,
 	          __void__setGlobalDefaults,
@@ -546,7 +551,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateSet)
 	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateSet::Callback)
+BEGIN_OBJECT_REFLECTOR(osg::StateSet::Callback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",

@@ -39,7 +39,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::RotationMode)
 	I_EnumLabel(osgGA::NodeTrackerManipulator::ELEVATION_AZIM);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
+BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____NodeTrackerManipulator,
 	               "",

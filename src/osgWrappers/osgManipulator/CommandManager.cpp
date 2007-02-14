@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CommandManager)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CommandManager,
 	               "",

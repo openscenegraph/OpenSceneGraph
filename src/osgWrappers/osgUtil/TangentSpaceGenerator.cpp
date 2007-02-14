@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
+BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TangentSpaceGenerator,
 	               "",

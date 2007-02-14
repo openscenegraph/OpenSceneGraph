@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____SmoothingVisitor,
 	               "default to traversing all children. ",

@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::TabPlaneTrackballDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TabPlaneTrackballDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabPlaneTrackballDragger,
 	               "",

@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawPixels)
+BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____DrawPixels,
 	               "",

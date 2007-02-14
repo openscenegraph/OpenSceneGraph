@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ClipPlane)
+BEGIN_OBJECT_REFLECTOR(osg::ClipPlane)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____ClipPlane,
 	               "",

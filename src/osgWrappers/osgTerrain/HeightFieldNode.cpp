@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldNode)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____HeightFieldNode,
 	               "",

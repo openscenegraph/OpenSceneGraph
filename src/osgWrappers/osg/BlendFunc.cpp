@@ -42,7 +42,7 @@ BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
 	I_EnumLabel(osg::BlendFunc::ZERO);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendFunc)
+BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____BlendFunc,
 	               "",
@@ -205,7 +205,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendFunc)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

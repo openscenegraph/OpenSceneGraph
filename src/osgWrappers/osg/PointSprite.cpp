@@ -29,7 +29,7 @@ BEGIN_ENUM_REFLECTOR(osg::PointSprite::CoordOriginMode)
 	I_EnumLabel(osg::PointSprite::LOWER_LEFT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PointSprite)
+BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PointSprite,
 	               "",

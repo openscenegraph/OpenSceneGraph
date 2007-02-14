@@ -360,7 +360,7 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	I_PublicMemberProperty(unsigned int, screenNum);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
+BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osg::GraphicsContext::ScreenIdentifier);
 	I_Constructor0(____Traits,

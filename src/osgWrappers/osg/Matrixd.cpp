@@ -492,7 +492,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	                 __void__setTrans__C5_Vec3d_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::RefMatrixd)
+BEGIN_OBJECT_REFLECTOR(osg::RefMatrixd)
 	I_BaseType(osg::Object);
 	I_BaseType(osg::Matrixd);
 	I_Constructor0(____RefMatrixd,

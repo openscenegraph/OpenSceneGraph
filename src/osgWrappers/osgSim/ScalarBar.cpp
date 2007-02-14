@@ -30,7 +30,7 @@ BEGIN_ENUM_REFLECTOR(osgSim::ScalarBar::Orientation)
 	I_EnumLabel(osgSim::ScalarBar::VERTICAL);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ScalarBar)
+BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	I_BaseType(osg::Geode);
 	I_Constructor0(____ScalarBar,
 	               "Default constructor. ",
@@ -210,7 +210,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	                 __void__setWidth__float);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::ScalarBar::ScalarPrinter)
+BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar::ScalarPrinter)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ScalarPrinter,
 	               "",

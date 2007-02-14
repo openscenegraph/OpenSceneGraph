@@ -48,7 +48,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
 	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_ARRAYS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::DatabasePager)
+BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_BaseType(osg::NodeVisitor::DatabaseRequestHandler);
 	I_Constructor0(____DatabasePager,
 	               "",

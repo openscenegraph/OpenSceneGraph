@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::ScaleAxisDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleAxisDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____ScaleAxisDragger,
 	               "",

@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
+BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	I_BaseType(osgParticle::Emitter);
 	I_Constructor0(____ModularEmitter,
 	               "",

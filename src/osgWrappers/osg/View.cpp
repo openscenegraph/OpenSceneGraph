@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::View)
+BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____View,
 	               "",

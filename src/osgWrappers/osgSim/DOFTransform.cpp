@@ -34,7 +34,7 @@ BEGIN_ENUM_REFLECTOR(osgSim::DOFTransform::MultOrder)
 	I_EnumLabel(osgSim::DOFTransform::RHP);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::DOFTransform)
+BEGIN_OBJECT_REFLECTOR(osgSim::DOFTransform)
 	I_BaseType(osg::Transform);
 	I_Constructor0(____DOFTransform,
 	               "constructor ",

@@ -29,7 +29,7 @@ BEGIN_ENUM_REFLECTOR(osg::FrontFace::Mode)
 	I_EnumLabel(osg::FrontFace::COUNTER_CLOCKWISE);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FrontFace)
+BEGIN_OBJECT_REFLECTOR(osg::FrontFace)
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, osg::FrontFace::Mode, face, osg::FrontFace::COUNTER_CLOCKWISE,
 	                           Properties::NON_EXPLICIT,

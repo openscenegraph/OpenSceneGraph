@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendColor)
+BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____BlendColor,
 	               "",
@@ -115,7 +115,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendColor)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BlendColor::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::BlendColor::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

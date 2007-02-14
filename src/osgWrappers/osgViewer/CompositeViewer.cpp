@@ -43,7 +43,7 @@ BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::BarrierPosition)
 	I_EnumLabel(osgViewer::CompositeViewer::AfterSwapBuffers);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
+BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CompositeViewer,
 	               "",

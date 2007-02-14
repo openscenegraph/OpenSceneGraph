@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeCallback)
+BEGIN_OBJECT_REFLECTOR(osg::NodeCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____NodeCallback,
 	               "",

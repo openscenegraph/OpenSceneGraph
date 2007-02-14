@@ -37,7 +37,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderStage)
+BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_BaseType(osgUtil::RenderBin);
 	I_Constructor0(____RenderStage,
 	               "",

@@ -53,7 +53,7 @@ BEGIN_ENUM_REFLECTOR(osgProducer::Viewer::ViewerOptions)
 	I_EnumLabel(osgProducer::Viewer::STANDARD_SETTINGS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::Viewer)
+BEGIN_OBJECT_REFLECTOR(osgProducer::Viewer)
 	I_BaseType(osgProducer::OsgCameraGroup);
 	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____Viewer,

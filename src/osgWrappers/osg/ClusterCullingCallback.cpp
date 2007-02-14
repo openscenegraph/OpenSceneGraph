@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
+BEGIN_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
 	I_BaseType(osg::Drawable::CullCallback);
 	I_BaseType(osg::NodeCallback);
 	I_Constructor0(____ClusterCullingCallback,

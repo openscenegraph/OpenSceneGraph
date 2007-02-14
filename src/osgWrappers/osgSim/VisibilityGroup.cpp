@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::VisibilityGroup)
+BEGIN_OBJECT_REFLECTOR(osgSim::VisibilityGroup)
 	I_BaseType(osg::Group);
 	I_Constructor0(____VisibilityGroup,
 	               "",

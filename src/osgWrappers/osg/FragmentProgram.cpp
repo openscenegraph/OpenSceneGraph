@@ -30,7 +30,7 @@ TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::FragmentProgram::Local
 
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::MatrixList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FragmentProgram)
+BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____FragmentProgram,
 	               "",
@@ -194,7 +194,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FragmentProgram)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

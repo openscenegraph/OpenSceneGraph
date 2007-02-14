@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
+BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 	I_BaseType(osg::NodeCallback);
 	I_BaseType(osg::Drawable::EventCallback);
 	I_Constructor0(____GUIEventHandler,

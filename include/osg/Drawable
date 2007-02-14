@@ -125,6 +125,10 @@ class OSG_EXPORT Drawable : public Object
         virtual const Geometry* asGeometry() const { return 0; }
 
 
+        /** Compute the DataVariance based on an assestment of callback etc.*/
+        virtual void computeDataVariance();
+
+
         /** A vector of osg::Node pointers which is used to store the parent(s) of drawable.*/
         typedef std::vector<Node*> ParentList;
 

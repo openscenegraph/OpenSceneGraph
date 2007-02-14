@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ConstantRateCounter)
+BEGIN_OBJECT_REFLECTOR(osgParticle::ConstantRateCounter)
 	I_BaseType(osgParticle::Counter);
 	I_Constructor0(____ConstantRateCounter,
 	               "",

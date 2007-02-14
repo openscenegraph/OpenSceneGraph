@@ -31,7 +31,7 @@ BEGIN_ENUM_REFLECTOR(osgFlightUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgFlightUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer)
+BEGIN_VALUE_REFLECTOR(osgFlightUtil::Optimizer)
 	I_Constructor0(____Optimizer,
 	               "",
 	               "");
@@ -47,7 +47,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
+BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MakeLitVisitor,
 	               "default to traversing all children. ",
@@ -59,7 +59,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
+BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
@@ -76,7 +76,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____TessellateVisitor,
 	               "default to traversing all children. ",

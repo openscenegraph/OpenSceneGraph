@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
+BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
 	I_BaseType(osg::Object);
 	I_Constructor0(____ShadowTechnique,
 	               "",

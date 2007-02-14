@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
+BEGIN_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
 	I_BaseType(osgParticle::ParticleSystem);
 	I_Constructor0(____ConnectedParticleSystem,
 	               "",

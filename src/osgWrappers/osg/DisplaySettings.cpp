@@ -49,7 +49,7 @@ BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoVerticalEyeMapping)
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DisplaySettings)
+BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____DisplaySettings,
 	               "",

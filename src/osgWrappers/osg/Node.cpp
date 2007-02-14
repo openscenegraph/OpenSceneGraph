@@ -35,7 +35,7 @@ TYPE_NAME_ALIAS(unsigned int, osg::Node::NodeMask);
 
 TYPE_NAME_ALIAS(std::vector< std::string >, osg::Node::DescriptionList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Node)
+BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Node,
 	               "Construct a node. ",
@@ -396,7 +396,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Node)
 	                 __void__setUpdateCallback__NodeCallback_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
 	I_BaseType(osg::Object);
 	I_Constructor0(____ComputeBoundingSphereCallback,
 	               "",

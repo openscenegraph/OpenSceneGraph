@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::HelpHandler)
+BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	I_BaseType(osgGA::GUIEventHandler);
 	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
 	                           Properties::NON_EXPLICIT,

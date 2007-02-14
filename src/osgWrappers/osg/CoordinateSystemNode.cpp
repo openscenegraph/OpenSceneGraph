@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CoordinateSystemNode)
+BEGIN_OBJECT_REFLECTOR(osg::CoordinateSystemNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____CoordinateSystemNode,
 	               "",
@@ -129,7 +129,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CoordinateSystemNode)
 	                 __void__setFormat__C5_std_string_R1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::EllipsoidModel)
+BEGIN_OBJECT_REFLECTOR(osg::EllipsoidModel)
 	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults2(IN, double, radiusEquator, osg::WGS_84_RADIUS_EQUATOR, IN, double, radiusPolar, osg::WGS_84_RADIUS_POLAR,
 	                           ____EllipsoidModel__double__double,

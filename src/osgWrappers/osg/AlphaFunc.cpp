@@ -35,7 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::AlphaFunc::ComparisonFunction)
 	I_EnumLabel(osg::AlphaFunc::ALWAYS);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AlphaFunc)
+BEGIN_OBJECT_REFLECTOR(osg::AlphaFunc)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____AlphaFunc,
 	               "",

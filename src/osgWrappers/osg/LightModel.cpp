@@ -30,7 +30,7 @@ BEGIN_ENUM_REFLECTOR(osg::LightModel::ColorControl)
 	I_EnumLabel(osg::LightModel::SINGLE_COLOR);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::LightModel)
+BEGIN_OBJECT_REFLECTOR(osg::LightModel)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____LightModel,
 	               "",

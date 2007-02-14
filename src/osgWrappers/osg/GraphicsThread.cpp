@@ -27,7 +27,7 @@ BEGIN_ENUM_REFLECTOR(osg::BarrierOperation::PreBlockOp)
 	I_EnumLabel(osg::BarrierOperation::GL_FINISH);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BarrierOperation)
+BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_BaseType(osg::Operation);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
 	                           ____BarrierOperation__int__PreBlockOp,
@@ -41,7 +41,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_PublicMemberProperty(osg::BarrierOperation::PreBlockOp, _preBlockOp);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Block)
+BEGIN_OBJECT_REFLECTOR(osg::Block)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____Block,
 	               "",
@@ -109,7 +109,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	I_PublicMemberProperty(bool, _keep);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::OperationsThread)
+BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____OperationsThread,
 	               "",
@@ -185,7 +185,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::OperationsThread)
 	                 __void__setParent__Object_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
+BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	I_BaseType(osg::Operation);
 	I_BaseType(osg::Block);
 	I_Constructor0(____ReleaseContext_Block_MakeCurrentOperation,
@@ -198,7 +198,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
+BEGIN_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
 	I_BaseType(osg::Operation);
 	I_Constructor0(____SwapBuffersOperation,
 	               "",

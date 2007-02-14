@@ -46,7 +46,7 @@ BEGIN_ENUM_REFLECTOR(osg::Stencil::Operation)
 	I_EnumLabel(osg::Stencil::DECR_WRAP);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Stencil)
+BEGIN_OBJECT_REFLECTOR(osg::Stencil)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Stencil,
 	               "",

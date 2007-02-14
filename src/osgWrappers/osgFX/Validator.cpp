@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Validator)
+BEGIN_OBJECT_REFLECTOR(osgFX::Validator)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Validator,
 	               "",

@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::GeographicLocation)
+BEGIN_OBJECT_REFLECTOR(osgSim::GeographicLocation)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____GeographicLocation,
 	               "",

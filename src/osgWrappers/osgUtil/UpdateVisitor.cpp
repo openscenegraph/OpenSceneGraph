@@ -30,7 +30,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____UpdateVisitor,
 	               "",

@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Constraint)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Constraint)
 	I_BaseType(osg::Referenced);
 	I_Method1(bool, constrain, IN, osgManipulator::MotionCommand &, x,
 	          Properties::VIRTUAL,
@@ -57,7 +57,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Constraint)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::GridConstraint)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::GridConstraint)
 	I_BaseType(osgManipulator::Constraint);
 	I_Constructor3(IN, osg::Node &, refNode, IN, const osg::Vec3d &, origin, IN, const osg::Vec3d &, spacing,
 	               ____GridConstraint__osg_Node_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,

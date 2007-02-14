@@ -39,7 +39,7 @@ BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
 	I_EnumLabel(osgSim::SphereSegment::ALL);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::SphereSegment)
+BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_BaseType(osg::Geode);
 	I_Constructor0(____SphereSegment,
 	               "Default constructor. ",

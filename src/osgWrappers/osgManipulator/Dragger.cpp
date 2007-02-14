@@ -29,7 +29,7 @@
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManipulator::CompositeDragger::DraggerList);
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	I_BaseType(osgManipulator::Dragger);
 	I_Method0(const osgManipulator::CompositeDragger *, getComposite,
 	          Properties::VIRTUAL,
@@ -109,7 +109,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	                 __void__setParentDragger__Dragger_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Dragger)
+BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_BaseType(osgManipulator::Selection);
 	I_Method1(void, setCommandManager, IN, osgManipulator::CommandManager *, cm,
 	          Properties::VIRTUAL,

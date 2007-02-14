@@ -93,6 +93,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          __C5_Geometry_P1__asGeometry,
 	          "Convert 'const this' into a const Geometry pointer if Drawable is a Geometry, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<const Geometry*>(this). ");
+	I_Method0(void, computeDataVariance,
+	          Properties::VIRTUAL,
+	          __void__computeDataVariance,
+	          "Compute the DataVariance based on an assestment of callback etc. ",
+	          "");
 	I_Method0(const osg::Drawable::ParentList &, getParents,
 	          Properties::NON_VIRTUAL,
 	          __C5_ParentList_R1__getParents,
@@ -477,7 +482,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	                 __void__setUseVertexBufferObjects__bool);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::AttributeFunctor)
+BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
 	I_Constructor0(____AttributeFunctor,
 	               "",
 	               "");
@@ -538,7 +543,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::AttributeFunctor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
 	I_BaseType(osg::Object);
 	I_Constructor0(____ComputeBoundingBoxCallback,
 	               "",
@@ -579,7 +584,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
+BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
 	I_Constructor0(____ConstAttributeFunctor,
 	               "",
 	               "");
@@ -640,7 +645,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____CullCallback,
 	               "",
@@ -686,7 +691,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____DrawCallback,
 	               "",
@@ -732,7 +737,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____EventCallback,
 	               "",
@@ -773,7 +778,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 	          "");
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::Extensions)
+BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -1093,7 +1098,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	                 __void__setVertexProgramSupported__bool);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
+BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____UpdateCallback,
 	               "",

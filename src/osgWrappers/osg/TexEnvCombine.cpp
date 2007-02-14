@@ -59,7 +59,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::OperandParam)
 	I_EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_ALPHA);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TexEnvCombine)
+BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexEnvCombine,
 	               "",

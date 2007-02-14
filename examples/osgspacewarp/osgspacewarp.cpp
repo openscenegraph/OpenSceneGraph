@@ -111,7 +111,7 @@ osg::Node* createScene(unsigned int noStars)
     return group;
 }
 
-int main( int argc, char **argv )
+int main(int , char **)
 {
     // construct the viewer.
     osgViewer::Viewer viewer;

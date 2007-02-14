@@ -29,9 +29,9 @@ Dragger::~Dragger()
 Dragger::PointerInfo::PointerInfo():
     pixel_x(0),
     pixel_y(0),
-    sv(0),
-    hitIter(0)
-{    
+    sv(0)
+{
+    hitIter = hitList.begin();
 }
 
 bool Dragger::PointerInfo::contains(const osg::Node* node) const

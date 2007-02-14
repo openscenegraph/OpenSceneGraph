@@ -193,6 +193,7 @@ osg::Node* createHUD(osgText::Text* updateText)
         updateText->setColor(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         updateText->setText("");
         updateText->setPosition(position);
+        updateText->setDataVariance(osg::Object::DYNAMIC);
         
         position += delta;
     }    

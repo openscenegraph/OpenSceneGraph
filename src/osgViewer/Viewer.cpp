@@ -673,7 +673,7 @@ int Viewer::run()
         realize();
     }
 
-#if 0
+#if 1
     while (!done())
     {
         frame();

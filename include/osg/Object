@@ -50,9 +50,9 @@ class OSG_EXPORT Object : public Referenced
             and therefore cannot be constructed on its own, only derived
             classes which override the clone and className methods are
             concrete classes and can be constructed.*/
-        inline Object():Referenced(),_dataVariance(DYNAMIC) {}
+        inline Object():Referenced(),_dataVariance(UNSPECIFIED) {}
 
-        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(DYNAMIC) {}
+        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(UNSPECIFIED) {}
 
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
@@ -91,13 +91,15 @@ class OSG_EXPORT Object : public Referenced
         enum DataVariance
         {
             DYNAMIC,
-            STATIC
+            STATIC,
+            UNSPECIFIED
         };
         
         /** Set the data variance of this object.
            * Can be set to either STATIC for values that do not change over the lifetime of the object,
            * or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value
-           * can be used by routines such as optimzation codes that wish to share static data.*/
+           * can be used by routines such as optimzation codes that wish to share static data.
+           * UNSPECIFIED is used to sepecify that the DataVariance hasn't been set yet. */
         inline void setDataVariance(DataVariance dv) { _dataVariance = dv; }
 
         /** Get the data variance of this object.*/

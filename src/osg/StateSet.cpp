@@ -80,8 +80,6 @@ bool osg::isTextureMode(StateAttribute::GLMode mode)
 
 StateSet::StateSet()
 {
-    setDataVariance(osg::Object::STATIC);
-
     _renderingHint = DEFAULT_BIN;
     
     _numChildrenRequiringUpdateTraversal = 0;
@@ -180,17 +178,18 @@ void StateSet::computeDataVariance()
     }
 
     // run attribute callbacks
+
     for(AttributeList::iterator itr=_attributeList.begin();
         itr!=_attributeList.end();
         ++itr)
     {
-        if (itr->second.first->getUpdateCallback() ||
-            itr->second.first->getEventCallback() ||
-            itr->second.first->getDataVariance()==DYNAMIC)
+        if (itr->second.first->getDataVariance()==UNSPECIFIED && 
+            (itr->second.first->getUpdateCallback() || itr->second.first->getEventCallback()))
         {
-            dynamic = true;
             itr->second.first->setDataVariance(DYNAMIC);
         }
+
+        if (itr->second.first->getDataVariance()==DYNAMIC) dynamic = true;
     }
 
     // run texture attribute callbacks.
@@ -201,13 +200,13 @@ void StateSet::computeDataVariance()
             itr!=attributeList.end();
             ++itr)
         {
-            if (itr->second.first->getUpdateCallback() ||
-                itr->second.first->getEventCallback() ||
-                itr->second.first->getDataVariance()==DYNAMIC) 
+            if (itr->second.first->getDataVariance()==UNSPECIFIED && 
+                (itr->second.first->getUpdateCallback() || itr->second.first->getEventCallback()))
             {
-                itr->second.first->setDataVariance(DYNAMIC); 
-                dynamic = true;
+                itr->second.first->setDataVariance(DYNAMIC);
             }
+
+            if (itr->second.first->getDataVariance()==DYNAMIC) dynamic = true;
         }
     }
 
@@ -217,16 +216,17 @@ void StateSet::computeDataVariance()
         uitr != _uniformList.end();
         ++uitr)
     {
-        if (uitr->second.first->getUpdateCallback() ||
-            uitr->second.first->getEventCallback() ||
-            uitr->second.first->getDataVariance()==DYNAMIC)
+        if (uitr->second.first->getDataVariance()==UNSPECIFIED && 
+            (uitr->second.first->getUpdateCallback() || uitr->second.first->getEventCallback()))
         {
             uitr->second.first->setDataVariance(DYNAMIC);
-            dynamic = true;
         }
+
+        if (uitr->second.first->getDataVariance()==DYNAMIC) dynamic = true;
     }
 
 #if 0
+
     if (dynamic)
     {
         osg::notify(osg::NOTICE)<<"StateSet::computeDataVariance setting to DYNAMIC"<<std::endl;
@@ -237,7 +237,10 @@ void StateSet::computeDataVariance()
     }
 #endif
 
-    setDataVariance(dynamic ? DYNAMIC : STATIC);
+    if (getDataVariance()==UNSPECIFIED)
+    {
+        setDataVariance(dynamic ? DYNAMIC : STATIC);
+    }
 }
 
 

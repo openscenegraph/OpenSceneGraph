@@ -246,8 +246,6 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
 
 Drawable::Drawable()
 {
-    setDataVariance(osg::Object::STATIC);
-
     _boundingBoxComputed = false;
 
     // Note, if your are defining a subclass from drawable which is
@@ -296,7 +294,10 @@ Drawable::~Drawable()
 
 void Drawable::computeDataVariance()
 {
+    if (getDataVariance() != UNSPECIFIED) return;
+
     bool dynamic = false;
+    
     if (getUpdateCallback() ||
         getEventCallback() ||
         getCullCallback()) 

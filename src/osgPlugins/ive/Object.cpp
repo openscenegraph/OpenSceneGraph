@@ -33,6 +33,7 @@ void Object::write(DataOutputStream* out)
     {
         case(osg::Object::STATIC): out->writeChar((char)0); break;
         case(osg::Object::DYNAMIC): out->writeChar((char)1); break;
+        case(osg::Object::UNSPECIFIED): out->writeChar((char)2); break;
     }
 }
 
@@ -55,6 +56,7 @@ void Object::read(DataInputStream* in){
         {
             case 0: setDataVariance(osg::Object::STATIC);break;
             case 1: setDataVariance(osg::Object::DYNAMIC);break;
+            case 2: setDataVariance(osg::Object::UNSPECIFIED);break;
         }
     }
     else{

@@ -186,7 +186,7 @@ class OSG_EXPORT StateAttribute : public Object
         /** Simple pairing between an attribute type and the member within that attribute type group.*/
         typedef std::pair<Type,unsigned int> TypeMemberPair;
 
-        StateAttribute() { setDataVariance(STATIC); }
+        StateAttribute() {}
         
         StateAttribute(const StateAttribute& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Object(sa,copyop) {}

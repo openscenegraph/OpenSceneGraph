@@ -30,7 +30,6 @@ using namespace osg;
 Uniform::Uniform() :
     _type(UNDEFINED), _numElements(0), _modifiedCount(0)
 {
-    setDataVariance(STATIC);
 }
 
 
@@ -39,7 +38,6 @@ Uniform::Uniform( Type type, const std::string& name, int numElements ) :
 {
     setName(name);
     setNumElements(numElements);
-    setDataVariance(STATIC);
     allocateDataArray();
 }
 

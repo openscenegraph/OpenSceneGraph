@@ -26,6 +26,7 @@
 BEGIN_ENUM_REFLECTOR(osg::Object::DataVariance)
 	I_EnumLabel(osg::Object::DYNAMIC);
 	I_EnumLabel(osg::Object::STATIC);
+	I_EnumLabel(osg::Object::UNSPECIFIED);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
@@ -86,7 +87,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	          Properties::NON_VIRTUAL,
 	          __void__setDataVariance__DataVariance,
 	          "Set the data variance of this object. ",
-	          "Can be set to either STATIC for values that do not change over the lifetime of the object, or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value can be used by routines such as optimzation codes that wish to share static data. ");
+	          "Can be set to either STATIC for values that do not change over the lifetime of the object, or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value can be used by routines such as optimzation codes that wish to share static data. UNSPECIFIED is used to sepecify that the DataVariance hasn't been set yet. ");
 	I_Method0(osg::Object::DataVariance, getDataVariance,
 	          Properties::NON_VIRTUAL,
 	          __DataVariance__getDataVariance,

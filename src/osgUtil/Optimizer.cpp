@@ -134,6 +134,12 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         stats.print(osg::notify(osg::NOTICE));
     }
 
+    if (options & STATIC_OBJECT_DETECTION)
+    {
+        StaticObjectDetectionVisitor sodv;
+        node->accept(sodv);
+    }
+
     if (options & TESSELLATE_GEOMETRY)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing TESSELLATE_GEOMETRY"<<std::endl;
@@ -301,12 +307,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         SpatializeGroupsVisitor sv(this);
         node->accept(sv);
         sv.divide();
-    }
-
-    if (options & STATIC_OBJECT_DETECTION)
-    {
-        StaticObjectDetectionVisitor sodv;
-        node->accept(sodv);
     }
 
     if (osg::getNotifyLevel()>=osg::INFO)
@@ -789,7 +789,7 @@ class CollectLowestTransformsVisitor : public BaseOptimizerVisitor
             {
                 if (transform)
                 {
-                    if (transform->getDataVariance()==osg::Transform::DYNAMIC) _moreThanOneMatrixRequired=true;
+                    if (transform->getDataVariance()!=osg::Transform::STATIC) _moreThanOneMatrixRequired=true;
                     else if (transform->getReferenceFrame()!=osg::Transform::RELATIVE_RF) _moreThanOneMatrixRequired=true;
                     else
                     {

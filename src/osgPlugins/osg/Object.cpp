@@ -41,6 +41,12 @@ bool Object_readLocalData(Object& obj, Input& fr)
             fr +=2 ;
             iteratorAdvanced = true;
         }
+        else if (fr[1].matchWord("UNSPECIFIED"))
+        {
+            obj.setDataVariance(osg::Object::UNSPECIFIED);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
     }    
 
     if (fr.matchSequence("name %s"))
@@ -74,8 +80,9 @@ bool Object_writeLocalData(const Object& obj, Output& fw)
 {
     switch(obj.getDataVariance())
     {
-        case(osg::Object::STATIC): fw.indent() << "DataVariance STATIC" << std::endl;break;
-        default:                   fw.indent() << "DataVariance DYNAMIC" << std::endl;break;
+        case(osg::Object::STATIC):      fw.indent() << "DataVariance STATIC" << std::endl;break;
+        case(osg::Object::UNSPECIFIED): fw.indent() << "DataVariance UNSPECIFIED" << std::endl;break;
+        default:                        fw.indent() << "DataVariance DYNAMIC" << std::endl;break;
     }
 
     if (!obj.getName().empty()) fw.indent() << "name "<<fw.wrapString(obj.getName())<< std::endl;

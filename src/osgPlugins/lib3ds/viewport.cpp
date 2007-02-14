@@ -193,7 +193,7 @@ lib3ds_viewport_set_views(Lib3dsViewport *viewport, Lib3dsDword views)
   }
   else {
     viewport->layout.views=views;
-    viewport->layout.viewL=(Lib3dsView*)calloc(sizeof(Lib3dsView),views);
+    viewport->layout.viewL= views ? (Lib3dsView*)calloc(sizeof(Lib3dsView),views) : 0;
   }
 }
 

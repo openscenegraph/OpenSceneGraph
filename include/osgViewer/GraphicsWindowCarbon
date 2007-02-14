@@ -44,6 +44,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
             {
                 setState( new osg::State );
                 getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+                getState()->setGraphicsContext(this);
             }
         }
     

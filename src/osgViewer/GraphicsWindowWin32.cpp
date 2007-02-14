@@ -1006,6 +1006,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
     {
         setState( new osg::State );
         getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+        getState()->setGraphicsContext(this);
     }
 }
 

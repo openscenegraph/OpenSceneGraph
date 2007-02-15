@@ -411,8 +411,11 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         if (_lightpos != lightpos && _dynamicShadowVolumes)
         {
             _lightpos = lightpos;
-            osg::notify(osg::NOTICE)<<"Need to update ShadowVolume and project the lightpos into the shadow volumes coordinate frame"<<std::endl;
-            _occluder->computeShadowVolumeGeometry(lightpos, *_shadowVolume);
+
+            osg::Matrix eyeToWorld;
+            eyeToWorld.invert(cv.getModelViewMatrix());
+            
+            _occluder->computeShadowVolumeGeometry(lightpos * eyeToWorld, *_shadowVolume);
         }
         
         if (shadowVolumeBin.valid())

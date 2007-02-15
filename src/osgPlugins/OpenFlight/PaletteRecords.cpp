@@ -504,12 +504,12 @@ protected:
         in.forward(4*10);
         float32 spotExponent = in.readFloat32();
         float32 spotCutoff = in.readFloat32();
-        float32 yaw = in.readFloat32();
-        float32 pitch = in.readFloat32();
+        /*float32 yaw =*/ in.readFloat32();
+        /*float32 pitch =*/ in.readFloat32();
         float32 constantAttenuation = in.readFloat32();
         float32 linearAttenuation = in.readFloat32();
         float32 quadraticAttenuation = in.readFloat32();
-        int32 active = in.readInt32();
+        /*int32 active =*/ in.readInt32();
 
         osg::ref_ptr<osg::Light> light = new osg::Light;
         light->setAmbient(ambient);

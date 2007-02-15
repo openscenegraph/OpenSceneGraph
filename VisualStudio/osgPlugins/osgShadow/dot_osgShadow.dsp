@@ -158,27 +158,31 @@ LIB32=link.exe -lib
 
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgShadow\ParallelSplitShadowMap.cpp.cpp
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ParallelSplitShadowMap.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowedScene.cpp.cpp
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowedScene.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowMap.cpp.cpp
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowMap.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowTechnique.cpp.cpp
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowTechnique.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowTexture.cpp.cpp
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowTexture.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowVolume.cpp.cpp
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ShadowVolume.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\src\osgPlugins\osgShadow\ReaderWriterOsgShadow.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"

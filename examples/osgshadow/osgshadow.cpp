@@ -453,9 +453,14 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
     ls->getLight()->setPosition(lightpos);
+    ls->getLight()->setAmbient(osg::Vec4(1.0,0.0,0.0,1.0));
+    ls->getLight()->setDiffuse(osg::Vec4(0.0,1.0,0.0,1.0));
 
     shadowedScene->addChild(model.get());
     shadowedScene->addChild(ls.get());
+    
+    osgDB::writeNodeFile(*shadowedScene, "shadow.osg");
+    
 
     viewer.setSceneData(shadowedScene.get());
     

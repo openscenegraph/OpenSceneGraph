@@ -43,7 +43,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         void setReferenceTime(double time=0.0);
 
-        void setFrameStamp(osg::FrameStamp* frameStamp);
         osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
         const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 

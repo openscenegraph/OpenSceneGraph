@@ -245,13 +245,13 @@ struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
         text->drawImplementation(renderInfo);
     }
 
-    osg::Stats*     _stats;
-    std::string     _attributeName;
-    int             _frameDelta;
-    bool            _averageInInverseSpace;
-    double          _multiplier;
-    mutable char    _tmpText[128];
-    mutable osg::Timer_t    _tickLastUpdated;
+    osg::ref_ptr<osg::Stats>     _stats;
+    std::string                 _attributeName;
+    int                         _frameDelta;
+    bool                        _averageInInverseSpace;
+    double                      _multiplier;
+    mutable char                _tmpText[128];
+    mutable osg::Timer_t        _tickLastUpdated;
 };
 
 struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
@@ -299,14 +299,14 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
         drawable->drawImplementation(renderInfo);
     }
 
-    StatsHandler*   _statsHandler;
-    float           _xPos;
-    osg::Stats*     _viewerStats;
-    osg::Stats*     _stats;
-    std::string     _beginName;
-    std::string     _endName;
-    int             _frameDelta;
-    int             _numFrames;
+    StatsHandler*               _statsHandler;
+    float                       _xPos;
+    osg::ref_ptr<osg::Stats>    _viewerStats;
+    osg::ref_ptr<osg::Stats>    _stats;
+    std::string                 _beginName;
+    std::string                 _endName;
+    int                         _frameDelta;
+    int                         _numFrames;
 };
 
 osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
@@ -377,12 +377,12 @@ struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
         drawable->drawImplementation(renderInfo);
     }
 
-    StatsHandler*   _statsHandler;
-    float           _xPos;
-    osg::Stats*     _viewerStats;
-    std::string     _endName;
-    int             _frameDelta;
-    int             _numFrames;
+    StatsHandler*               _statsHandler;
+    float                       _xPos;
+    osg::ref_ptr<osg::Stats>    _viewerStats;
+    std::string                 _endName;
+    int                         _frameDelta;
+    int                         _numFrames;
 };
 
 

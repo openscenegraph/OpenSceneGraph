@@ -359,7 +359,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
 
         if (shadowVolumeBin.valid())
         {
-            // osg::notify(osg::NOTICE)<<"Found shadow volume bin, now removing it"<<std::endl;
+            //osg::notify(osg::NOTICE)<<"Found shadow volume bin, now removing it"<<std::endl;
             new_bin->getRenderBinList().erase(itr);
         }
     }
@@ -384,6 +384,8 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         osg::ref_ptr<osgUtil::PositionalStateContainer> ps = new osgUtil::PositionalStateContainer;
         new_rs->setPositionalStateContainer(ps.get());
 
+        const osg::Light* selectLight = 0;
+
         osgUtil::PositionalStateContainer::AttrMatrixList& aml = orig_rs->getPositionalStateContainer()->getAttrMatrixList();
         for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
             itr != aml.end();
@@ -395,6 +397,8 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
                 osg::RefMatrix* matrix = itr->second.get();
                 if (matrix) lightpos = light->getPosition() * (*matrix);
                 else lightpos = light->getPosition();
+                
+                selectLight = light;
             }
             else
             {
@@ -403,9 +407,24 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         }
         
         _ambientLight->setPosition(lightpos);
+        if (selectLight) 
         orig_rs->addPositionedAttribute(0,_ambientLight.get());
         
         _diffuseLight->setPosition(lightpos);
+        if (selectLight)
+        {
+            _ambientLight->setAmbient(selectLight->getAmbient());
+            
+            _diffuseLight->setDiffuse(selectLight->getDiffuse());
+            _diffuseLight->setSpecular(selectLight->getSpecular());
+            _diffuseLight->setSpecular(selectLight->getSpecular());
+            _diffuseLight->setDirection(selectLight->getDirection());
+            _diffuseLight->setConstantAttenuation(selectLight->getConstantAttenuation());
+            _diffuseLight->setLinearAttenuation(selectLight->getLinearAttenuation());
+            _diffuseLight->setQuadraticAttenuation(selectLight->getQuadraticAttenuation());
+            _diffuseLight->setSpotExponent(selectLight->getSpotExponent());
+            _diffuseLight->setSpotCutoff(selectLight->getSpotCutoff());
+        }
         ps->addPositionedAttribute(0, _diffuseLight.get());
         
         if (_lightpos != lightpos && _dynamicShadowVolumes)

@@ -1441,7 +1441,7 @@ void Viewer::setUpRenderingSupport()
                 ++citr)
             {
                 osg::Camera* camera = *citr;
-                camera->setStats(new osg::Stats("Camera"));
+                if (!camera->getStats()) camera->setStats(new osg::Stats("Camera"));
                 
                 bool localCamera = std::find(localCameras.begin(),localCameras.end(),camera) != localCameras.end();
                 if (localCamera)
@@ -1509,7 +1509,7 @@ void Viewer::setUpRenderingSupport()
             {
                 osg::Camera* camera = *citr;
 
-                camera->setStats(new osg::Stats("Camera"));
+                if (!camera->getStats()) camera->setStats(new osg::Stats("Camera"));
 
                 osgUtil::SceneView* sceneView = new osgUtil::SceneView;
                 _sceneViews.push_back(sceneView);

@@ -350,14 +350,18 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
     {
         const osg::Viewport* viewport = _camera->getViewport();
         
-        osg::Vec2d new_coord(x, y);
+        double new_x = static_cast<double>(_camera->getGraphicsContext()->getTraits()->width) * (x - eventState->getXmin())/(eventState->getXmax()-eventState->getXmin());
+        double new_y = view_invert_y ?
+                       static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (1.0 - (y- eventState->getYmin()))/(eventState->getYmax()-eventState->getYmin()) :
+                       static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (y - eventState->getYmin())/(eventState->getYmax()-eventState->getXmin());
         
         if (viewport && 
-            new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
-            new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
+            new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
+            new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )
         {
-            local_x = new_coord.x();
-            local_y = new_coord.y();
+            local_x = new_x;
+            local_y = new_y;
+
             return _camera.get();
         }
     }
@@ -369,10 +373,6 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
     if (view_invert_y) y = - y;
     
-    // osg::notify(osg::NOTICE)<<"  remapped ("<<x<<","<<y<<")"<<std::endl;;
-    // osg::notify(osg::NOTICE)<<"  number of slaves = "<<getNumSlaves()<<std::endl;;
-    
-
     for(unsigned i=0; i<getNumSlaves(); ++i)
     {
         const Slave& slave = getSlave(i);

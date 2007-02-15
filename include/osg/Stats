@@ -89,7 +89,7 @@ class OSG_EXPORT Stats : public osg::Referenced
         
         bool getAttributeNoMutex(int frameNumber, const std::string& attributeName, double& value) const;
 
-        Stats::AttributeMap& Stats::getAttributeMapNoMutex(int frameNumber);
+        AttributeMap& Stats::getAttributeMapNoMutex(int frameNumber);
         const AttributeMap& getAttributeMapNoMutex(int frameNumber) const;
 
 

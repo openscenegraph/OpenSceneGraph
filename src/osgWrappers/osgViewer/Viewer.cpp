@@ -89,11 +89,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__setReferenceTime__double,
 	                      "",
 	                      "");
-	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, frameStamp,
-	          Properties::NON_VIRTUAL,
-	          __void__setFrameStamp__osg_FrameStamp_P1,
-	          "",
-	          "");
 	I_Method0(osg::FrameStamp *, getFrameStamp,
 	          Properties::NON_VIRTUAL,
 	          __osg_FrameStamp_P1__getFrameStamp,
@@ -280,7 +275,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 __void__setEndBarrierPosition__BarrierPosition);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
-	                 __void__setFrameStamp__osg_FrameStamp_P1);
+	                 0);
 	I_SimpleProperty(int, KeyEventSetsDone, 
 	                 __int__getKeyEventSetsDone, 
 	                 __void__setKeyEventSetsDone__int);

@@ -259,7 +259,9 @@ class GraphicsContextCarbon : public osg::GraphicsContext
                 osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
                 return false;
             }
+            
             _context = aglCreateContext (pixelformat, NULL);
+            
             if (!_context) {
                 osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
                 return false;
@@ -621,7 +623,17 @@ bool GraphicsWindowCarbon::realizeImplementation()
     }
     
     // create the context
-    _context = aglCreateContext (_pixelFormat, NULL);
+    GraphicsWindowCarbon* sharedContextCarbon = dynamic_cast<GraphicsWindowCarbon*>(_traits->sharedContext);
+    if (sharedContextCarbon) 
+    {
+        _context = aglCreateContext (_pixelFormat, sharedContextCarbon->getAGLContext());
+    }
+    else
+    {
+        _context = aglCreateContext (_pixelFormat, NULL);
+    }
+
+
     if (!_context) {
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation failed creating a context: " << aglGetError() << std::endl;
         return false;

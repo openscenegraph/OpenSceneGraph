@@ -422,13 +422,16 @@ void GraphicsWindowX11::init()
         }    
     }
     
-    // need to pick up from traits
-    GLXContext sharedGLContext = 0;
     
     GraphicsWindowX11* sharedContextX11 = dynamic_cast<GraphicsWindowX11*>(_traits->sharedContext);
-    if (sharedContextX11) sharedGLContext = sharedContextX11->getGLXContext();
-    
-    _glxContext = glXCreateContext( _display, _visualInfo, sharedGLContext, True );
+    if (sharedContextX11) 
+    {
+        _glxContext = glXCreateContext( _display, _visualInfo, sharedContextX11->getGLXContext(), True );
+    }
+    else
+    {
+        _glxContext = glXCreateContext( _display, _visualInfo, NULL, True );
+    }
     
     if (!_glxContext)
     {

@@ -98,6 +98,8 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         
         int getScreenNumberContainingWindow( int& _screenOriginX, int& _screenOriginY );
         
+        HGLRC&          getWGLContext() { return _hglrc; }
+        
         HWND            _hwnd;
         HDC             _hdc;
         HGLRC           _hglrc;

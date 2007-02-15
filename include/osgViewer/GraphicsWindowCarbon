@@ -43,8 +43,17 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
             if (valid())
             {
                 setState( new osg::State );
-                getState()->setContextID( osg::GraphicsContext::createNewContextID() );
                 getState()->setGraphicsContext(this);
+
+                if (_traits.valid() && _traits->sharedContext)
+                {
+                    getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+                    incrementContextIDUsageCount( getState()->getContextID() );   
+                }
+                else
+                {
+                    getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+                }
             }
         }
     
@@ -95,6 +104,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         void transformMouseXY(float& x, float& y);
         
+        AGLContext& getAGLContext() { return _context; }
 
         bool            _valid;
         bool            _initialized;

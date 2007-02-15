@@ -1005,8 +1005,17 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
     if (valid())
     {
         setState( new osg::State );
-        getState()->setContextID( osg::GraphicsContext::createNewContextID() );
         getState()->setGraphicsContext(this);
+
+        if (_traits.valid() && _traits->sharedContext)
+        {
+            getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+            incrementContextIDUsageCount( getState()->getContextID() );   
+        }
+        else
+        {
+            getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+        }
     }
 }
 
@@ -1401,6 +1410,16 @@ bool GraphicsWindowWin32::realizeImplementation()
     {
         init();
         if (!_initialized) return false;
+        
+        if (_traits.valid && _traits->sharedContext)
+        {
+            GraphicsWindowWin32* sharedContextWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
+            if (sharedContextWin32)
+            {
+                makeCurrent();        
+                wglShareLists( sharedContextWin32->getWGLContext(), getWGLContext() );
+            }
+        }
     }
 
     //

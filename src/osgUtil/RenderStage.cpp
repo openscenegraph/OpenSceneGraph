@@ -853,6 +853,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         
         // syncronize the frame stamps
         useState->setFrameStamp(const_cast<osg::FrameStamp*>(state.getFrameStamp()));
+
+        // map the DynamicObjectCount across to the new window
         useState->setDynamicObjectCount(state.getDynamicObjectCount());
         useState->setDynamicObjectRenderingCompletedCallback(state.getDynamicObjectRenderingCompletedCallback());
         
@@ -882,6 +884,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     if (useState != &state)
     {
+        // reset the local State's DynamicObjectCount
         state.setDynamicObjectCount(useState->getDynamicObjectCount());
         useState->setDynamicObjectRenderingCompletedCallback(0);
     }

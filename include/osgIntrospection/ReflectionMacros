@@ -204,14 +204,14 @@ struct BaseTypeConverters<x, reflected_type, true>
 
 #define I_BaseType(x) \
     { \
-     addBaseType(typeof(x )); \
-     BaseTypeConverters<x, reflected_type, osgIntrospection::is_polymorphic<x >::value> btc; \
+     addBaseType(typeof( x )); \
+     BaseTypeConverters< x , reflected_type, osgIntrospection::is_polymorphic <x >::value > btc; \
     }
 
 #define I_VirtualBaseType(x) \
     { \
-     addBaseType(typeof(x )); \
-     BaseTypeConverters<x, reflected_type, false> btc; \
+     addBaseType(typeof( x )); \
+     BaseTypeConverters< x, reflected_type, false > btc; \
     }
 
 #define I_EnumLabel(x)                       addEnumLabel(x, #x, true);

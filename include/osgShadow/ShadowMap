@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGSHADOW_SHADOWEDTEXTURE
-#define OSGSHADOW_SHADOWEDTEXTURE 1
+#ifndef OSGSHADOW_SHADOWEMAP
+#define OSGSHADOW_SHADOWEMAP 1
 
 #include <osg/Camera>
 

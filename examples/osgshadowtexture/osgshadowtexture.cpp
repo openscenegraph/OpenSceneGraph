@@ -13,6 +13,8 @@
 
 #include <osgViewer/Viewer>
 
+#include <osgShadow/ShadowedScene>
+#include <osgShadow/ShadowVolume>
 
 // include the call which creates the shadowed subgraph.
 #include "CreateShadowedScene.h"
@@ -133,7 +135,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->addChild(cessna);
     
         osg::MatrixTransform* xform = new osg::MatrixTransform;
-        xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
+        //xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
 
         model->addChild(xform);
@@ -145,7 +147,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
 
 
-osg::Node* createModel()
+osg::Node* createModel(osg::ArgumentParser& arguments)
 {
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 100.0f;
@@ -156,21 +158,48 @@ osg::Node* createModel()
 
     // the shadowed model
     osg::Node* shadowed = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
+    
+    if (arguments.read("--osgShadow"))
+    {
+        osgShadow::ShadowedScene* shadowedScene = new osgShadow::ShadowedScene;
+        
+        osg::ref_ptr<osgShadow::ShadowVolume> shadowVolume = new osgShadow::ShadowVolume;
+        shadowedScene->setShadowTechnique(shadowVolume.get());
+        shadowVolume->setDynamicShadowVolumes(true);
 
-    // combine the models together to create one which has the shadower and the shadowed with the required callback.
-    osg::Group* root = createShadowedScene(shadower,shadowed,lightPosition,radius/100.0f,1);
+        osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
+        ls->getLight()->setPosition(osg::Vec4(0,1,1,0.0));
+        ls->getLight()->setAmbient(osg::Vec4(0.0,0.0,1.0,1.0));
+        ls->getLight()->setDiffuse(osg::Vec4(0.0,1.0,0.0,1.0));
 
-    return root;
+        shadowedScene->addChild(shadower);
+        shadowedScene->addChild(shadowed);
+        shadowedScene->addChild(ls.get());
+        
+        return shadowedScene;
+
+    }
+    else
+    {
+        // combine the models together to create one which has the shadower and the shadowed with the required callback.
+        osg::Group* root = createShadowedScene(shadower,shadowed,lightPosition,radius/100.0f,1);
+        return root;
+    }
+    
 }
 
 
-int main(int, char **)
+int main(int argc, char ** argv)
 {
+    osg::ArgumentParser arguments(&argc,argv);
+
     // construct the viewer.
     osgViewer::Viewer viewer;
          
     // pass the model to the viewer.
-    viewer.setSceneData( createModel() );
+    viewer.setSceneData( createModel(arguments) );
+
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     
     return viewer.run();
 }

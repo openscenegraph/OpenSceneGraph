@@ -7,7 +7,8 @@ CXXFILES =\
 	ShadowTechnique.cpp\
 	ShadowTexture.cpp\
 	ShadowVolume.cpp\
-	ShadowedScene.cpp
+	ShadowedScene.cpp\
+	ReaderWriterOsgShadow.cpp
 
 LIBS   += -losgShadow -losgUtil -losg $(OTHER_LIBS)
 

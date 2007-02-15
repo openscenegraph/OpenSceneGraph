@@ -116,7 +116,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Display* getEventDisplay() { return _eventDisplay; }
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
-        GLXContext getGLXContext() { return _glxContext; }
+        GLXContext& getGLXContext() { return _glxContext; }
 
         Cursor& getDefaultCursor() { return _defaultCursor; }
         Cursor& getNullCursor() { return _nullCursor; }

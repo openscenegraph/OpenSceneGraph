@@ -10,9 +10,9 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
-#include <osg/Object>
-#include <osg/Vec3>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/Vec3.svn-base>
 #include <osgSim/Sector>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,6 +24,9 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_BaseType(osgSim::ElevationRange);
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_BaseType(osgSim::ElevationRange);
@@ -41,13 +44,13 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -56,16 +59,190 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Constructor0(____AzimElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimElevationSector__C5_AzimElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimElevationSector__float__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_BaseType(osgSim::ElevationRange);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_BaseType(osgSim::ElevationRange);
+	I_Constructor0(____AzimElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimElevationSector__C5_AzimElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimElevationSector__float__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Constructor0(____AzimElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimElevationSector__C5_AzimElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimElevationSector__float__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
+	I_Constructor0(____AzimRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAzimuthRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __void__getAzimuthRange__float_R1__float_R1__float_R1,
+	          "",
+	          "");
+	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
+	          __float__azimSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Constructor0(____AzimRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAzimuthRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __void__getAzimuthRange__float_R1__float_R1__float_R1,
+	          "",
+	          "");
+	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
+	          __float__azimSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
+	I_Constructor0(____AzimRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setAzimuthRange, IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAzimuthRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method3(void, getAzimuthRange, IN, float &, minAzimuth, IN, float &, maxAzimuth, IN, float &, fadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __void__getAzimuthRange__float_R1__float_R1__float_R1,
+	          "",
+	          "");
+	I_Method1(float, azimSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
+	          __float__azimSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
 	I_Constructor0(____AzimRange,
 	               "",
 	               "");
@@ -89,6 +266,8 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
 	I_Constructor0(____AzimSector,
 	               "",
 	               "");
@@ -103,13 +282,13 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -118,16 +297,132 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Constructor0(____AzimSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimSector__C5_AzimSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::AzimRange);
+	I_Constructor0(____AzimSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimSector__C5_AzimSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Constructor0(____AzimSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::AzimSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AzimSector__C5_AzimSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minAzimuth, , IN, float, maxAzimuth, , IN, float, fadeAngle, 0.0f,
+	                           ____AzimSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
+	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____ConeSector,
 	               "",
@@ -143,13 +438,13 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -158,13 +453,210 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis,
+	          Properties::NON_VIRTUAL,
+	          __void__setAxis__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getAxis,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getAxis,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAngle__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getAngle,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Constructor0(____ConeSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConeSector__C5_ConeSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                           ____ConeSector__C5_osg_Vec3_R1__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis,
+	          Properties::NON_VIRTUAL,
+	          __void__setAxis__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getAxis,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getAxis,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAngle__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getAngle,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_SimpleProperty(float, Angle, 
+	                 __float__getAngle, 
+	                 0);
+	I_SimpleProperty(const osg::Vec3 &, Axis, 
+	                 __C5_osg_Vec3_R1__getAxis, 
+	                 __void__setAxis__C5_osg_Vec3_R1);
+	I_SimpleProperty(float, FadeAngle, 
+	                 __float__getFadeAngle, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::Sector);
+	I_Constructor0(____ConeSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConeSector__C5_ConeSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                           ____ConeSector__C5_osg_Vec3_R1__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis,
+	          Properties::NON_VIRTUAL,
+	          __void__setAxis__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getAxis,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getAxis,
+	          "",
+	          "");
+	I_MethodWithDefaults2(void, setAngle, IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAngle__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getAngle,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Constructor0(____ConeSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ConeSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ConeSector__C5_ConeSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, const osg::Vec3 &, axis, , IN, float, angle, , IN, float, fadeangle, 0.0f,
+	                           ____ConeSector__C5_osg_Vec3_R1__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_Method1(void, setAxis, IN, const osg::Vec3 &, axis,
 	          Properties::NON_VIRTUAL,
 	          __void__setAxis__C5_osg_Vec3_R1,
@@ -203,6 +695,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::Sector);
 	I_Constructor0(____DirectionalSector,
 	               "",
 	               "");
@@ -217,13 +710,13 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -232,13 +725,306 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
+	          Properties::NON_VIRTUAL,
+	          __void__setDirection__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getDirection,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getDirection,
+	          "",
+	          "");
+	I_Method1(void, setHorizLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setHorizLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getHorizLobeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getHorizLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setLobeRollAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setLobeRollAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getLobeRollAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getLobeRollAngle,
+	          "",
+	          "");
+	I_Method1(void, setVertLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getVertLobeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getVertLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setFadeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setFadeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method0(void, computeMatrix,
+	          Properties::NON_VIRTUAL,
+	          __void__computeMatrix,
+	          "",
+	          "");
+	I_Constructor0(____DirectionalSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DirectionalSector__C5_DirectionalSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f,
+	                           ____DirectionalSector__C5_osg_Vec3_R1__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
+	          Properties::NON_VIRTUAL,
+	          __void__setDirection__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getDirection,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getDirection,
+	          "",
+	          "");
+	I_Method1(void, setHorizLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setHorizLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getHorizLobeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getHorizLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setLobeRollAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setLobeRollAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getLobeRollAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getLobeRollAngle,
+	          "",
+	          "");
+	I_Method1(void, setVertLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getVertLobeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getVertLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setFadeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setFadeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method0(void, computeMatrix,
+	          Properties::NON_VIRTUAL,
+	          __void__computeMatrix,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec3 &, Direction, 
+	                 __C5_osg_Vec3_R1__getDirection, 
+	                 __void__setDirection__C5_osg_Vec3_R1);
+	I_SimpleProperty(float, FadeAngle, 
+	                 __float__getFadeAngle, 
+	                 __void__setFadeAngle__float);
+	I_SimpleProperty(float, HorizLobeAngle, 
+	                 __float__getHorizLobeAngle, 
+	                 __void__setHorizLobeAngle__float);
+	I_SimpleProperty(float, LobeRollAngle, 
+	                 __float__getLobeRollAngle, 
+	                 __void__setLobeRollAngle__float);
+	I_SimpleProperty(float, VertLobeAngle, 
+	                 __float__getVertLobeAngle, 
+	                 __void__setVertLobeAngle__float);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::Sector);
+	I_Constructor0(____DirectionalSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DirectionalSector__C5_DirectionalSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f,
+	                           ____DirectionalSector__C5_osg_Vec3_R1__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
+	          Properties::NON_VIRTUAL,
+	          __void__setDirection__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3 &, getDirection,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getDirection,
+	          "",
+	          "");
+	I_Method1(void, setHorizLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setHorizLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getHorizLobeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getHorizLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setLobeRollAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setLobeRollAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getLobeRollAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getLobeRollAngle,
+	          "",
+	          "");
+	I_Method1(void, setVertLobeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertLobeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getVertLobeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getVertLobeAngle,
+	          "",
+	          "");
+	I_Method1(void, setFadeAngle, IN, float, angle,
+	          Properties::NON_VIRTUAL,
+	          __void__setFadeAngle__float,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method0(void, computeMatrix,
+	          Properties::NON_VIRTUAL,
+	          __void__computeMatrix,
+	          "",
+	          "");
+	I_Constructor0(____DirectionalSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::DirectionalSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DirectionalSector__C5_DirectionalSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults5(IN, const osg::Vec3 &, direction, , IN, float, horizLobeAngle, , IN, float, vertLobeAngle, , IN, float, lobeRollAngle, , IN, float, fadeAngle, 0.0f,
+	                           ____DirectionalSector__C5_osg_Vec3_R1__float__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_Method1(void, setDirection, IN, const osg::Vec3 &, direction,
 	          Properties::NON_VIRTUAL,
 	          __void__setDirection__C5_osg_Vec3_R1,
@@ -340,6 +1126,102 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
 	          __float__elevationSector__C5_osg_Vec3_R1,
 	          "",
 	          "");
+	I_Constructor0(____ElevationRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setElevationRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getMinElevation,
+	          Properties::NON_VIRTUAL,
+	          __float__getMinElevation,
+	          "",
+	          "");
+	I_Method0(float, getMaxElevation,
+	          Properties::NON_VIRTUAL,
+	          __float__getMaxElevation,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
+	          __float__elevationSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_SimpleProperty(float, FadeAngle, 
+	                 __float__getFadeAngle, 
+	                 0);
+	I_SimpleProperty(float, MaxElevation, 
+	                 __float__getMaxElevation, 
+	                 0);
+	I_SimpleProperty(float, MinElevation, 
+	                 __float__getMinElevation, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
+	I_Constructor0(____ElevationRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setElevationRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getMinElevation,
+	          Properties::NON_VIRTUAL,
+	          __float__getMinElevation,
+	          "",
+	          "");
+	I_Method0(float, getMaxElevation,
+	          Properties::NON_VIRTUAL,
+	          __float__getMaxElevation,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
+	          __float__elevationSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
+	I_Constructor0(____ElevationRange,
+	               "",
+	               "");
+	I_MethodWithDefaults3(void, setElevationRange, IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setElevationRange__float__float__float,
+	                      "",
+	                      "");
+	I_Method0(float, getMinElevation,
+	          Properties::NON_VIRTUAL,
+	          __float__getMinElevation,
+	          "",
+	          "");
+	I_Method0(float, getMaxElevation,
+	          Properties::NON_VIRTUAL,
+	          __float__getMaxElevation,
+	          "",
+	          "");
+	I_Method0(float, getFadeAngle,
+	          Properties::NON_VIRTUAL,
+	          __float__getFadeAngle,
+	          "",
+	          "");
+	I_Method1(float, elevationSector, IN, const osg::Vec3 &, eyeLocal,
+	          Properties::NON_VIRTUAL,
+	          __float__elevationSector__C5_osg_Vec3_R1,
+	          "",
+	          "");
 	I_SimpleProperty(float, FadeAngle, 
 	                 __float__getFadeAngle, 
 	                 0);
@@ -352,6 +1234,8 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::ElevationRange);
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::ElevationRange);
 	I_Constructor0(____ElevationSector,
@@ -368,13 +1252,13 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -383,16 +1267,132 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Constructor0(____ElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ElevationSector__C5_ElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____ElevationSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::ElevationRange);
+	I_BaseType(osgSim::Sector);
+	I_BaseType(osgSim::ElevationRange);
+	I_Constructor0(____ElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ElevationSector__C5_ElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____ElevationSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Constructor0(____ElevationSector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::ElevationSector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ElevationSector__C5_ElevationSector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, float, minElevation, , IN, float, maxElevation, , IN, float, fadeAngle, 0.0f,
+	                           ____ElevationSector__float__float__float,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
+	I_BaseType(osg::Object);
 	I_BaseType(osg::Object);
 	I_Constructor0(____Sector,
 	               "",
@@ -404,13 +1404,84 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Constructor0(____Sector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Sector__C5_Sector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
+	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
+	I_Constructor0(____Sector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Sector__C5_Sector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Constructor0(____Sector,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Sector &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Sector__C5_Sector_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,

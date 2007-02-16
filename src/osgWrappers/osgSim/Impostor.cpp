@@ -10,11 +10,12 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingSphere>
-#include <osg/CopyOp>
-#include <osg/NodeVisitor>
-#include <osg/Object>
-#include <osg/Vec3>
+#include <osg/.svn/text-base/BoundingSphere.svn-base>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/NodeVisitor.svn-base>
+#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/Vec3.svn-base>
+#include <osgSim/.svn/text-base/Impostor.svn-base>
 #include <osgSim/Impostor>
 #include <osgSim/ImpostorSprite>
 
@@ -30,6 +31,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >, osgSim::I
 
 BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	I_BaseType(osg::LOD);
+	I_BaseType(osg::LOD);
 	I_Constructor0(____Impostor,
 	               "",
 	               "");
@@ -40,37 +42,37 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "clone an object of the same type as the node. ",
+	          "",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "return a clone of a node, with Object* return type. ",
+	          "",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "return true if this and obj are of the same kind of object. ",
+	          "",
 	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the node's class type. ",
+	          "",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the node's library. ",
+	          "",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
-	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "",
 	          "");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,
-	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "",
 	          "");
 	I_Method1(void, setImpostorThreshold, IN, float, distance,
 	          Properties::NON_VIRTUAL,
@@ -110,8 +112,90 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingSphere__computeBound,
-	          "Compute the bounding sphere around Node's geometry or children. ",
-	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	          "",
+	          "");
+	I_Constructor0(____Impostor,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Impostor &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Impostor__C5_Impostor_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setImpostorThreshold, IN, float, distance,
+	          Properties::NON_VIRTUAL,
+	          __void__setImpostorThreshold__float,
+	          "Set the Impostor threshold distance. ",
+	          "For eye points further than this threshold the Imposter is used if appropriate, otherwise the LOD children as chosen as per a standard LOD node.");
+	I_Method0(float, getImpostorThreshold,
+	          Properties::NON_VIRTUAL,
+	          __float__getImpostorThreshold,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setImpostorThresholdToBound, IN, float, ratio, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setImpostorThresholdToBound__float,
+	                      "Set the Impostor threshold distance relative to the node's bounding sphere's radius. ",
+	                      "");
+	I_Method2(osgSim::ImpostorSprite *, findBestImpostorSprite, IN, unsigned int, contextID, IN, const osg::Vec3 &, currLocalEyePoint,
+	          Properties::NON_VIRTUAL,
+	          __ImpostorSprite_P1__findBestImpostorSprite__unsigned_int__C5_osg_Vec3_R1,
+	          "Find the ImposterSprite which fits the current eye point best. ",
+	          "");
+	I_Method2(void, addImpostorSprite, IN, unsigned int, contextID, IN, osgSim::ImpostorSprite *, is,
+	          Properties::NON_VIRTUAL,
+	          __void__addImpostorSprite__unsigned_int__ImpostorSprite_P1,
+	          "Add an ImpostorSprite to the Impostor. ",
+	          "");
+	I_Method1(osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
+	          __ImpostorSpriteList_R1__getImpostorSpriteList__unsigned_int,
+	          "Get the list of ImpostorSprites attached to this Impostor. ",
+	          "");
+	I_Method1(const osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
+	          __C5_ImpostorSpriteList_R1__getImpostorSpriteList__unsigned_int,
+	          "Get a const list of ImpostorSprites attached to this const Impostor. ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
 	I_SimpleProperty(float, ImpostorThreshold, 
 	                 __float__getImpostorThreshold, 
 	                 __void__setImpostorThreshold__float);
@@ -120,44 +204,180 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	                 __void__setImpostorThresholdToBound__float);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgSim::ImpostorSprite >)
-	I_Constructor0(____ref_ptr,
-	               "",
-	               "");
-	I_Constructor1(IN, osgSim::ImpostorSprite *, ptr,
-	               Properties::NON_EXPLICIT,
-	               ____ref_ptr__T_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::ref_ptr< osgSim::ImpostorSprite > &, rp,
-	               Properties::NON_EXPLICIT,
-	               ____ref_ptr__C5_ref_ptr_R1,
-	               "",
-	               "");
-	I_Method0(osgSim::ImpostorSprite *, get,
-	          Properties::NON_VIRTUAL,
-	          __T_P1__get,
-	          "",
-	          "");
-	I_Method0(bool, valid,
-	          Properties::NON_VIRTUAL,
-	          __bool__valid,
-	          "",
-	          "");
-	I_Method0(osgSim::ImpostorSprite *, release,
-	          Properties::NON_VIRTUAL,
-	          __T_P1__release,
-	          "",
-	          "");
-	I_Method1(void, swap, IN, osg::ref_ptr< osgSim::ImpostorSprite > &, rp,
-	          Properties::NON_VIRTUAL,
-	          __void__swap__ref_ptr_R1,
-	          "",
-	          "");
-	I_SimpleProperty(osgSim::ImpostorSprite *, , 
-	                 __T_P1__get, 
-	                 0);
-END_REFLECTOR
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >, osgSim::Impostor::ImpostorSpriteList);
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >);
+BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
+	I_BaseType(osg::LOD);
+	I_BaseType(osg::LOD);
+	I_Constructor0(____Impostor,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Impostor &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Impostor__C5_Impostor_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setImpostorThreshold, IN, float, distance,
+	          Properties::NON_VIRTUAL,
+	          __void__setImpostorThreshold__float,
+	          "Set the Impostor threshold distance. ",
+	          "For eye points further than this threshold the Imposter is used if appropriate, otherwise the LOD children as chosen as per a standard LOD node.");
+	I_Method0(float, getImpostorThreshold,
+	          Properties::NON_VIRTUAL,
+	          __float__getImpostorThreshold,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setImpostorThresholdToBound, IN, float, ratio, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setImpostorThresholdToBound__float,
+	                      "Set the Impostor threshold distance relative to the node's bounding sphere's radius. ",
+	                      "");
+	I_Method2(osgSim::ImpostorSprite *, findBestImpostorSprite, IN, unsigned int, contextID, IN, const osg::Vec3 &, currLocalEyePoint,
+	          Properties::NON_VIRTUAL,
+	          __ImpostorSprite_P1__findBestImpostorSprite__unsigned_int__C5_osg_Vec3_R1,
+	          "Find the ImposterSprite which fits the current eye point best. ",
+	          "");
+	I_Method2(void, addImpostorSprite, IN, unsigned int, contextID, IN, osgSim::ImpostorSprite *, is,
+	          Properties::NON_VIRTUAL,
+	          __void__addImpostorSprite__unsigned_int__ImpostorSprite_P1,
+	          "Add an ImpostorSprite to the Impostor. ",
+	          "");
+	I_Method1(osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
+	          __ImpostorSpriteList_R1__getImpostorSpriteList__unsigned_int,
+	          "Get the list of ImpostorSprites attached to this Impostor. ",
+	          "");
+	I_Method1(const osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
+	          __C5_ImpostorSpriteList_R1__getImpostorSpriteList__unsigned_int,
+	          "Get a const list of ImpostorSprites attached to this const Impostor. ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
+	I_Constructor0(____Impostor,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgSim::Impostor &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Impostor__C5_Impostor_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setImpostorThreshold, IN, float, distance,
+	          Properties::NON_VIRTUAL,
+	          __void__setImpostorThreshold__float,
+	          "Set the Impostor threshold distance. ",
+	          "For eye points further than this threshold the Imposter is used if appropriate, otherwise the LOD children as chosen as per a standard LOD node.");
+	I_Method0(float, getImpostorThreshold,
+	          Properties::NON_VIRTUAL,
+	          __float__getImpostorThreshold,
+	          "",
+	          "");
+	I_MethodWithDefaults1(void, setImpostorThresholdToBound, IN, float, ratio, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setImpostorThresholdToBound__float,
+	                      "Set the Impostor threshold distance relative to the node's bounding sphere's radius. ",
+	                      "");
+	I_Method2(osgSim::ImpostorSprite *, findBestImpostorSprite, IN, unsigned int, contextID, IN, const osg::Vec3 &, currLocalEyePoint,
+	          Properties::NON_VIRTUAL,
+	          __ImpostorSprite_P1__findBestImpostorSprite__unsigned_int__C5_osg_Vec3_R1,
+	          "Find the ImposterSprite which fits the current eye point best. ",
+	          "");
+	I_Method2(void, addImpostorSprite, IN, unsigned int, contextID, IN, osgSim::ImpostorSprite *, is,
+	          Properties::NON_VIRTUAL,
+	          __void__addImpostorSprite__unsigned_int__ImpostorSprite_P1,
+	          "Add an ImpostorSprite to the Impostor. ",
+	          "");
+	I_Method1(osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
+	          __ImpostorSpriteList_R1__getImpostorSpriteList__unsigned_int,
+	          "Get the list of ImpostorSprites attached to this Impostor. ",
+	          "");
+	I_Method1(const osgSim::Impostor::ImpostorSpriteList &, getImpostorSpriteList, IN, unsigned int, contexID,
+	          Properties::NON_VIRTUAL,
+	          __C5_ImpostorSpriteList_R1__getImpostorSpriteList__unsigned_int,
+	          "Get a const list of ImpostorSprites attached to this const Impostor. ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
+	I_SimpleProperty(float, ImpostorThreshold, 
+	                 __float__getImpostorThreshold, 
+	                 __void__setImpostorThreshold__float);
+	I_SimpleProperty(float, ImpostorThresholdToBound, 
+	                 0, 
+	                 __void__setImpostorThresholdToBound__float);
+END_REFLECTOR
 

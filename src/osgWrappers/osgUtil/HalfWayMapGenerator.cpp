@@ -10,8 +10,8 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
-#include <osg/Vec3>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/Vec3.svn-base>
 #include <osgUtil/HalfWayMapGenerator>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,6 +24,36 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::HalfWayMapGenerator)
 	I_BaseType(osgUtil::CubeMapGenerator);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64,
+	                           ____HalfWayMapGenerator__C5_osg_Vec3_R1__int,
+	                           "",
+	                           "");
+	I_Constructor2(IN, const osgUtil::HalfWayMapGenerator &, copy, IN, const osg::CopyOp &, copyop,
+	               ____HalfWayMapGenerator__C5_HalfWayMapGenerator_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64,
+	                           ____HalfWayMapGenerator__C5_osg_Vec3_R1__int,
+	                           "",
+	                           "");
+	I_Constructor2(IN, const osgUtil::HalfWayMapGenerator &, copy, IN, const osg::CopyOp &, copyop,
+	               ____HalfWayMapGenerator__C5_HalfWayMapGenerator_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::HalfWayMapGenerator)
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64,
+	                           ____HalfWayMapGenerator__C5_osg_Vec3_R1__int,
+	                           "",
+	                           "");
+	I_Constructor2(IN, const osgUtil::HalfWayMapGenerator &, copy, IN, const osg::CopyOp &, copyop,
+	               ____HalfWayMapGenerator__C5_HalfWayMapGenerator_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::Vec3 &, light_direction, , IN, int, texture_size, 64,
 	                           ____HalfWayMapGenerator__C5_osg_Vec3_R1__int,
 	                           "",

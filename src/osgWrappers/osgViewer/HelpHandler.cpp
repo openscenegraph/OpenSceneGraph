@@ -25,6 +25,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	I_BaseType(osgGA::GUIEventHandler);
+	I_BaseType(osgGA::GUIEventHandler);
 	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
 	                           Properties::NON_EXPLICIT,
 	                           ____HelpHandler__osg_ApplicationUsage_P1,
@@ -56,9 +57,140 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	          "",
 	          "");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____HelpHandler__osg_ApplicationUsage_P1,
+	                           "",
+	                           "");
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au,
+	          Properties::NON_VIRTUAL,
+	          __void__setApplicationUsage__osg_ApplicationUsage_P1,
+	          "",
+	          "");
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventTogglesOnScreenHelp, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventTogglesOnScreenHelp__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventTogglesOnScreenHelp,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventTogglesOnScreenHelp,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::NON_VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_SimpleProperty(osg::ApplicationUsage *, ApplicationUsage, 
+	                 __osg_ApplicationUsage_P1__getApplicationUsage, 
+	                 __void__setApplicationUsage__osg_ApplicationUsage_P1);
+	I_SimpleProperty(int, KeyEventTogglesOnScreenHelp, 
+	                 __int__getKeyEventTogglesOnScreenHelp, 
+	                 __void__setKeyEventTogglesOnScreenHelp__int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
+	I_BaseType(osgGA::GUIEventHandler);
+	I_BaseType(osgGA::GUIEventHandler);
+	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____HelpHandler__osg_ApplicationUsage_P1,
+	                           "",
+	                           "");
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au,
+	          Properties::NON_VIRTUAL,
+	          __void__setApplicationUsage__osg_ApplicationUsage_P1,
+	          "",
+	          "");
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventTogglesOnScreenHelp, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventTogglesOnScreenHelp__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventTogglesOnScreenHelp,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventTogglesOnScreenHelp,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::NON_VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____HelpHandler__osg_ApplicationUsage_P1,
+	                           "",
+	                           "");
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au,
+	          Properties::NON_VIRTUAL,
+	          __void__setApplicationUsage__osg_ApplicationUsage_P1,
+	          "",
+	          "");
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventTogglesOnScreenHelp, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventTogglesOnScreenHelp__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventTogglesOnScreenHelp,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventTogglesOnScreenHelp,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::NON_VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,

@@ -10,8 +10,9 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
-#include <osg/Object>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/Shader.svn-base>
 #include <osg/Shader>
 #include <osg/State>
 
@@ -31,6 +32,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED,
 	                           Properties::NON_EXPLICIT,
 	                           ____Shader__Type,
@@ -47,13 +49,13 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -62,13 +64,13 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(int, compare, IN, const osg::Shader &, rhs,
 	          Properties::NON_VIRTUAL,
 	          __int__compare__C5_Shader_R1,
@@ -110,7 +112,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
-	                      Properties::VIRTUAL,
+	                      Properties::NON_VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objects for all graphics context if State object pointer NULL. ",
 	                      "");
@@ -134,6 +136,383 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          __bool__getGlShaderInfoLog__unsigned_int__std_string_R1,
 	          "Query InfoLog from a glShader. ",
 	          "");
+	I_ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED,
+	                           Properties::NON_EXPLICIT,
+	                           ____Shader__Type,
+	                           "",
+	                           "");
+	I_Constructor2(IN, osg::Shader::Type, type, IN, const std::string &, source,
+	               ____Shader__Type__C5_std_string_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Shader__C5_Shader_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::Shader &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_Shader_R1,
+	          "",
+	          "");
+	I_Method1(bool, setType, IN, osg::Shader::Type, t,
+	          Properties::NON_VIRTUAL,
+	          __bool__setType__Type,
+	          "",
+	          "");
+	I_Method1(void, setShaderSource, IN, const std::string &, sourceText,
+	          Properties::NON_VIRTUAL,
+	          __void__setShaderSource__C5_std_string_R1,
+	          "Load the Shader's source code text from a string. ",
+	          "");
+	I_Method1(bool, loadShaderSourceFromFile, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __bool__loadShaderSourceFromFile__C5_std_string_R1,
+	          "Load the Shader's source code text from a file. ",
+	          "");
+	I_Method0(const std::string &, getShaderSource,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getShaderSource,
+	          "Query the shader's source code text. ",
+	          "");
+	I_Method0(osg::Shader::Type, getType,
+	          Properties::NON_VIRTUAL,
+	          __Type__getType,
+	          "Get the Shader type as an enum. ",
+	          "");
+	I_Method0(const char *, getTypename,
+	          Properties::NON_VIRTUAL,
+	          __C5_char_P1__getTypename,
+	          "Get the Shader type as a descriptive string. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objects for all graphics context if State object pointer NULL. ",
+	                      "");
+	I_Method0(void, dirtyShader,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyShader,
+	          "Mark our PCSs as needing recompilation. ",
+	          "Also mark Programs that depend on us as needing relink ");
+	I_Method1(void, compileShader, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__compileShader__unsigned_int,
+	          "If needed, compile the PCS's glShader. ",
+	          "");
+	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program,
+	          Properties::NON_VIRTUAL,
+	          __void__attachShader__unsigned_int__GLuint,
+	          "For a given GL context, attach a glShader to a glProgram. ",
+	          "");
+	I_Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log,
+	          Properties::NON_VIRTUAL,
+	          __bool__getGlShaderInfoLog__unsigned_int__std_string_R1,
+	          "Query InfoLog from a glShader. ",
+	          "");
+	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName,
+	                __Shader_P1__readShaderFile__Type__C5_std_string_R1_S,
+	                "Read shader source from file and then constructor shader of specified type. ",
+	                "Return the resulting Shader or 0 if no valid shader source code be read. ");
+	I_StaticMethod2(void, deleteGlShader, IN, unsigned int, contextID, IN, GLuint, shader,
+	                __void__deleteGlShader__unsigned_int__GLuint_S,
+	                "Mark internal glShader for deletion. ",
+	                "Deletion requests are queued tuntil they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedGlShaders, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedGlShaders__unsigned_int__double__double_R1_S,
+	                "flush all the cached glShaders which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod1(osg::Shader::Type, getTypeId, IN, const std::string &, tname,
+	                __Shader_Type__getTypeId__C5_std_string_R1_S,
+	                "",
+	                "");
+	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName,
+	                __Shader_P1__readShaderFile__Type__C5_std_string_R1_S,
+	                "Read shader source from file and then constructor shader of specified type. ",
+	                "Return the resulting Shader or 0 if no valid shader source code be read. ");
+	I_StaticMethod2(void, deleteGlShader, IN, unsigned int, contextID, IN, GLuint, shader,
+	                __void__deleteGlShader__unsigned_int__GLuint_S,
+	                "Mark internal glShader for deletion. ",
+	                "Deletion requests are queued tuntil they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedGlShaders, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedGlShaders__unsigned_int__double__double_R1_S,
+	                "flush all the cached glShaders which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod1(osg::Shader::Type, getTypeId, IN, const std::string &, tname,
+	                __Shader_Type__getTypeId__C5_std_string_R1_S,
+	                "",
+	                "");
+	I_SimpleProperty(const std::string &, ShaderSource, 
+	                 __C5_std_string_R1__getShaderSource, 
+	                 __void__setShaderSource__C5_std_string_R1);
+	I_SimpleProperty(osg::Shader::Type, Type, 
+	                 __Type__getType, 
+	                 __bool__setType__Type);
+	I_SimpleProperty(const char *, Typename, 
+	                 __C5_char_P1__getTypename, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
+	I_EnumLabel(osg::Shader::VERTEX);
+	I_EnumLabel(osg::Shader::FRAGMENT);
+	I_EnumLabel(osg::Shader::UNDEFINED);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Shader)
+	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
+	I_ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED,
+	                           Properties::NON_EXPLICIT,
+	                           ____Shader__Type,
+	                           "",
+	                           "");
+	I_Constructor2(IN, osg::Shader::Type, type, IN, const std::string &, source,
+	               ____Shader__Type__C5_std_string_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Shader__C5_Shader_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::Shader &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_Shader_R1,
+	          "",
+	          "");
+	I_Method1(bool, setType, IN, osg::Shader::Type, t,
+	          Properties::NON_VIRTUAL,
+	          __bool__setType__Type,
+	          "",
+	          "");
+	I_Method1(void, setShaderSource, IN, const std::string &, sourceText,
+	          Properties::NON_VIRTUAL,
+	          __void__setShaderSource__C5_std_string_R1,
+	          "Load the Shader's source code text from a string. ",
+	          "");
+	I_Method1(bool, loadShaderSourceFromFile, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __bool__loadShaderSourceFromFile__C5_std_string_R1,
+	          "Load the Shader's source code text from a file. ",
+	          "");
+	I_Method0(const std::string &, getShaderSource,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getShaderSource,
+	          "Query the shader's source code text. ",
+	          "");
+	I_Method0(osg::Shader::Type, getType,
+	          Properties::NON_VIRTUAL,
+	          __Type__getType,
+	          "Get the Shader type as an enum. ",
+	          "");
+	I_Method0(const char *, getTypename,
+	          Properties::NON_VIRTUAL,
+	          __C5_char_P1__getTypename,
+	          "Get the Shader type as a descriptive string. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objects for all graphics context if State object pointer NULL. ",
+	                      "");
+	I_Method0(void, dirtyShader,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyShader,
+	          "Mark our PCSs as needing recompilation. ",
+	          "Also mark Programs that depend on us as needing relink ");
+	I_Method1(void, compileShader, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__compileShader__unsigned_int,
+	          "If needed, compile the PCS's glShader. ",
+	          "");
+	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program,
+	          Properties::NON_VIRTUAL,
+	          __void__attachShader__unsigned_int__GLuint,
+	          "For a given GL context, attach a glShader to a glProgram. ",
+	          "");
+	I_Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log,
+	          Properties::NON_VIRTUAL,
+	          __bool__getGlShaderInfoLog__unsigned_int__std_string_R1,
+	          "Query InfoLog from a glShader. ",
+	          "");
+	I_ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED,
+	                           Properties::NON_EXPLICIT,
+	                           ____Shader__Type,
+	                           "",
+	                           "");
+	I_Constructor2(IN, osg::Shader::Type, type, IN, const std::string &, source,
+	               ____Shader__Type__C5_std_string_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Shader__C5_Shader_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::Shader &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_Shader_R1,
+	          "",
+	          "");
+	I_Method1(bool, setType, IN, osg::Shader::Type, t,
+	          Properties::NON_VIRTUAL,
+	          __bool__setType__Type,
+	          "",
+	          "");
+	I_Method1(void, setShaderSource, IN, const std::string &, sourceText,
+	          Properties::NON_VIRTUAL,
+	          __void__setShaderSource__C5_std_string_R1,
+	          "Load the Shader's source code text from a string. ",
+	          "");
+	I_Method1(bool, loadShaderSourceFromFile, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __bool__loadShaderSourceFromFile__C5_std_string_R1,
+	          "Load the Shader's source code text from a file. ",
+	          "");
+	I_Method0(const std::string &, getShaderSource,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getShaderSource,
+	          "Query the shader's source code text. ",
+	          "");
+	I_Method0(osg::Shader::Type, getType,
+	          Properties::NON_VIRTUAL,
+	          __Type__getType,
+	          "Get the Shader type as an enum. ",
+	          "");
+	I_Method0(const char *, getTypename,
+	          Properties::NON_VIRTUAL,
+	          __C5_char_P1__getTypename,
+	          "Get the Shader type as a descriptive string. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objects for all graphics context if State object pointer NULL. ",
+	                      "");
+	I_Method0(void, dirtyShader,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyShader,
+	          "Mark our PCSs as needing recompilation. ",
+	          "Also mark Programs that depend on us as needing relink ");
+	I_Method1(void, compileShader, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__compileShader__unsigned_int,
+	          "If needed, compile the PCS's glShader. ",
+	          "");
+	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program,
+	          Properties::NON_VIRTUAL,
+	          __void__attachShader__unsigned_int__GLuint,
+	          "For a given GL context, attach a glShader to a glProgram. ",
+	          "");
+	I_Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log,
+	          Properties::NON_VIRTUAL,
+	          __bool__getGlShaderInfoLog__unsigned_int__std_string_R1,
+	          "Query InfoLog from a glShader. ",
+	          "");
+	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName,
+	                __Shader_P1__readShaderFile__Type__C5_std_string_R1_S,
+	                "Read shader source from file and then constructor shader of specified type. ",
+	                "Return the resulting Shader or 0 if no valid shader source code be read. ");
+	I_StaticMethod2(void, deleteGlShader, IN, unsigned int, contextID, IN, GLuint, shader,
+	                __void__deleteGlShader__unsigned_int__GLuint_S,
+	                "Mark internal glShader for deletion. ",
+	                "Deletion requests are queued tuntil they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedGlShaders, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedGlShaders__unsigned_int__double__double_R1_S,
+	                "flush all the cached glShaders which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod1(osg::Shader::Type, getTypeId, IN, const std::string &, tname,
+	                __Shader_Type__getTypeId__C5_std_string_R1_S,
+	                "",
+	                "");
 	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName,
 	                __Shader_P1__readShaderFile__Type__C5_std_string_R1_S,
 	                "Read shader source from file and then constructor shader of specified type. ",

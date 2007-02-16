@@ -96,10 +96,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgText\Export.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgText\FadeText.cpp
 # End Source File
 
@@ -109,10 +105,6 @@ SOURCE=..\..\..\src\osgWrappers\osgText\Font.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgText\String.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgText\Text.cpp
 # End Source File
 
 # End Group

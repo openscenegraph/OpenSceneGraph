@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Vec4>
+#include <osg/.svn/text-base/Vec4.svn-base>
 #include <osgManipulator/TabBoxDragger>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -23,6 +23,54 @@
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
+	I_BaseType(osgManipulator::CompositeDragger);
+	I_Constructor0(____TabBoxDragger,
+	               "",
+	               "");
+	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setupDefaultGeometry,
+	          "Setup default geometry for dragger. ",
+	          "");
+	I_Method1(void, setPlaneColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
+	          __void__setPlaneColor__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Constructor0(____TabBoxDragger,
+	               "",
+	               "");
+	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setupDefaultGeometry,
+	          "Setup default geometry for dragger. ",
+	          "");
+	I_Method1(void, setPlaneColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
+	          __void__setPlaneColor__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Vec4 &, PlaneColor, 
+	                 0, 
+	                 __void__setPlaneColor__C5_osg_Vec4_R1);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
+	I_BaseType(osgManipulator::CompositeDragger);
+	I_BaseType(osgManipulator::CompositeDragger);
+	I_Constructor0(____TabBoxDragger,
+	               "",
+	               "");
+	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setupDefaultGeometry,
+	          "Setup default geometry for dragger. ",
+	          "");
+	I_Method1(void, setPlaneColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
+	          __void__setPlaneColor__C5_osg_Vec4_R1,
+	          "",
+	          "");
 	I_Constructor0(____TabBoxDragger,
 	               "",
 	               "");

@@ -127,14 +127,6 @@ SOURCE=..\..\..\src\osgWrappers\osgFX\Scribe.cpp
 SOURCE=..\..\..\src\osgWrappers\osgFX\SpecularHighlights.cpp
 # End Source File
 
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgFX\Technique.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgFX\Validator.cpp
-# End Source File
-
 # End Group
 # Begin Group "Header Files"
 

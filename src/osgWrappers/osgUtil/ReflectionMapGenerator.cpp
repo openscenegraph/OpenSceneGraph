@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
+#include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osgUtil/ReflectionMapGenerator>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -23,6 +23,39 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
 	I_BaseType(osgUtil::CubeMapGenerator);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
+	                           Properties::NON_EXPLICIT,
+	                           ____ReflectionMapGenerator__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ReflectionMapGenerator__C5_ReflectionMapGenerator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
+	                           Properties::NON_EXPLICIT,
+	                           ____ReflectionMapGenerator__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ReflectionMapGenerator__C5_ReflectionMapGenerator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_BaseType(osgUtil::CubeMapGenerator);
+	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
+	                           Properties::NON_EXPLICIT,
+	                           ____ReflectionMapGenerator__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgUtil::ReflectionMapGenerator &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ReflectionMapGenerator__C5_ReflectionMapGenerator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
 	                           Properties::NON_EXPLICIT,
 	                           ____ReflectionMapGenerator__int,

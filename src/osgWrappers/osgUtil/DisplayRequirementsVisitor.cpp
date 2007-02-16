@@ -12,8 +12,8 @@
 
 #include <osg/.svn/text-base/DisplaySettings.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/Geode>
+#include <osg/StateSet>
 #include <osgUtil/DisplayRequirementsVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers

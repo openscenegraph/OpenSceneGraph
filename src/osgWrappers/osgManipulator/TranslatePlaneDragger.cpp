@@ -13,9 +13,9 @@
 #include <osg/.svn/text-base/Vec4.svn-base>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
+#include <osgManipulator/.svn/text-base/Translate2DDragger.svn-base>
 #include <osgManipulator/Dragger>
 #include <osgManipulator/Translate1DDragger>
-#include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/TranslatePlaneDragger>
 
 // Must undefine IN and OUT macros defined in Windows headers

@@ -13,8 +13,8 @@
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osgTerrain/HeightFieldNode>
 #include <osgTerrain/HeightFieldRenderer>
-#include <osgUtil/.svn/text-base/UpdateVisitor.svn-base>
 #include <osgUtil/CullVisitor>
+#include <osgUtil/UpdateVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

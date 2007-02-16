@@ -10,13 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/.svn/text-base/Matrixd.svn-base>
+#include <osg/.svn/text-base/Node.svn-base>
 #include <osg/ApplicationUsage>
-#include <osg/Matrixd>
-#include <osg/Node>
+#include <osgGA/.svn/text-base/TerrainManipulator.svn-base>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/TerrainManipulator>
-#include <osgUtil/SceneView>
+#include <osgUtil/.svn/text-base/SceneView.svn-base>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -33,14 +34,298 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
+	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____TerrainManipulator,
 	               "",
 	               "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setRotationMode__RotationMode,
+	          "",
+	          "");
+	I_Method0(osgGA::TerrainManipulator::RotationMode, getRotationMode,
+	          Properties::NON_VIRTUAL,
+	          __RotationMode__getRotationMode,
+	          "",
+	          "");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          Properties::VIRTUAL,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          Properties::VIRTUAL,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          Properties::VIRTUAL,
+	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
+	          "Get the FusionDistanceMode. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method0(float, getFusionDistanceValue,
+	          Properties::VIRTUAL,
+	          __float__getFusionDistanceValue,
+	          "Get the FusionDistanceValue. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method1(void, setNode, IN, osg::Node *, x,
+	          Properties::VIRTUAL,
+	          __void__setNode__osg_Node_P1,
+	          "Attach a node to the manipulator. ",
+	          "Automatically detaches previously attached node. setNode(NULL) detaches previously nodes. Is ignored by manipulators which do not require a reference model. ");
+	I_Method0(const osg::Node *, getNode,
+	          Properties::VIRTUAL,
+	          __C5_osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          Properties::VIRTUAL,
+	          __osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate. ");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Constructor0(____TerrainManipulator,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setRotationMode__RotationMode,
+	          "",
+	          "");
+	I_Method0(osgGA::TerrainManipulator::RotationMode, getRotationMode,
+	          Properties::NON_VIRTUAL,
+	          __RotationMode__getRotationMode,
+	          "",
+	          "");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          Properties::VIRTUAL,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          Properties::VIRTUAL,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          Properties::VIRTUAL,
+	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
+	          "Get the FusionDistanceMode. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method0(float, getFusionDistanceValue,
+	          Properties::VIRTUAL,
+	          __float__getFusionDistanceValue,
+	          "Get the FusionDistanceValue. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method1(void, setNode, IN, osg::Node *, x,
+	          Properties::VIRTUAL,
+	          __void__setNode__osg_Node_P1,
+	          "Attach a node to the manipulator. ",
+	          "Automatically detaches previously attached node. setNode(NULL) detaches previously nodes. Is ignored by manipulators which do not require a reference model. ");
+	I_Method0(const osg::Node *, getNode,
+	          Properties::VIRTUAL,
+	          __C5_osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          Properties::VIRTUAL,
+	          __osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate. ");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
+	                 0, 
+	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
+	                 0, 
+	                 __void__setByMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
+	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
+	                 0);
+	I_SimpleProperty(float, FusionDistanceValue, 
+	                 __float__getFusionDistanceValue, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
+	                 __osg_Matrixd__getInverseMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Matrixd, Matrix, 
+	                 __osg_Matrixd__getMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Node *, Node, 
+	                 __osg_Node_P1__getNode, 
+	                 __void__setNode__osg_Node_P1);
+	I_SimpleProperty(osgGA::TerrainManipulator::RotationMode, RotationMode, 
+	                 __RotationMode__getRotationMode, 
+	                 __void__setRotationMode__RotationMode);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgGA::TerrainManipulator::RotationMode)
+	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM_ROLL);
+	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
+	I_BaseType(osgGA::MatrixManipulator);
+	I_BaseType(osgGA::MatrixManipulator);
+	I_Constructor0(____TerrainManipulator,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setRotationMode__RotationMode,
+	          "",
+	          "");
+	I_Method0(osgGA::TerrainManipulator::RotationMode, getRotationMode,
+	          Properties::NON_VIRTUAL,
+	          __RotationMode__getRotationMode,
+	          "",
+	          "");
+	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
+	          __void__setByMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	          Properties::VIRTUAL,
+	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
+	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getMatrix,
+	          Properties::VIRTUAL,
+	          __osg_Matrixd__getMatrix,
+	          "get the position of the manipulator as 4x4 Matrix. ",
+	          "");
+	I_Method0(osg::Matrixd, getInverseMatrix,
+	          Properties::VIRTUAL,
+	          __osg_Matrixd__getInverseMatrix,
+	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
+	          "");
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          Properties::VIRTUAL,
+	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
+	          "Get the FusionDistanceMode. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method0(float, getFusionDistanceValue,
+	          Properties::VIRTUAL,
+	          __float__getFusionDistanceValue,
+	          "Get the FusionDistanceValue. ",
+	          "Used by SceneView for setting up setereo convergence. ");
+	I_Method1(void, setNode, IN, osg::Node *, x,
+	          Properties::VIRTUAL,
+	          __void__setNode__osg_Node_P1,
+	          "Attach a node to the manipulator. ",
+	          "Automatically detaches previously attached node. setNode(NULL) detaches previously nodes. Is ignored by manipulators which do not require a reference model. ");
+	I_Method0(const osg::Node *, getNode,
+	          Properties::VIRTUAL,
+	          __C5_osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method0(osg::Node *, getNode,
+	          Properties::VIRTUAL,
+	          __osg_Node_P1__getNode,
+	          "Return node if attached. ",
+	          "");
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Move the camera to the default position. ",
+	          "May be ignored by manipulators if home functionality is not appropriate. ");
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "Start/restart the manipulator. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          "handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Constructor0(____TerrainManipulator,
+	               "",
+	               "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setRotationMode__RotationMode,

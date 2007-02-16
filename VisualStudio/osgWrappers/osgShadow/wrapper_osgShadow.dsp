@@ -108,15 +108,15 @@ SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowMap.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowTechnique.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowTexture.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowVolume.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowedScene.cpp
 # End Source File
 
 # End Group

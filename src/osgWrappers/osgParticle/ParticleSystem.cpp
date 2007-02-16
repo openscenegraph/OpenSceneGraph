@@ -15,7 +15,7 @@
 #include <osg/.svn/text-base/Object.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/State>
-#include <osgDB/.svn/text-base/ReentrantMutex.svn-base>
+#include <osgDB/ReentrantMutex>
 #include <osgParticle/.svn/text-base/ParticleSystem.svn-base>
 #include <osgParticle/Particle>
 #include <osgParticle/ParticleSystem>

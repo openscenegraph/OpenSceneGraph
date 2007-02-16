@@ -120,11 +120,11 @@ SOURCE=..\..\..\src\osgWrappers\osgManipulator\Projector.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgManipulator\ScaleAxisDragger.cpp
+SOURCE=..\..\..\src\osgWrappers\osgManipulator\RotateSphereDragger.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgManipulator\Selection.cpp
+SOURCE=..\..\..\src\osgWrappers\osgManipulator\ScaleAxisDragger.cpp
 # End Source File
 
 # Begin Source File
@@ -132,19 +132,7 @@ SOURCE=..\..\..\src\osgWrappers\osgManipulator\TabBoxDragger.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgManipulator\TabPlaneDragger.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgManipulator\TrackballDragger.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgManipulator\Translate1DDragger.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgManipulator\Translate2DDragger.cpp
 # End Source File
 
 # Begin Source File

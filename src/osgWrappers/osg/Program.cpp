@@ -13,11 +13,11 @@
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
 #include <osg/.svn/text-base/Program.svn-base>
+#include <osg/.svn/text-base/Shader.svn-base>
 #include <osg/.svn/text-base/StateAttribute.svn-base>
-#include <osg/.svn/text-base/Uniform.svn-base>
 #include <osg/Program>
-#include <osg/Shader>
 #include <osg/State>
+#include <osg/Uniform>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

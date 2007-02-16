@@ -20,20 +20,20 @@
 #include <osg/.svn/text-base/NodeVisitor.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
 #include <osg/.svn/text-base/RenderInfo.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/.svn/text-base/Vec4.svn-base>
+#include <osg/.svn/text-base/View.svn-base>
 #include <osg/.svn/text-base/Viewport.svn-base>
 #include <osg/Camera>
 #include <osg/FrameStamp>
 #include <osg/State>
-#include <osg/View>
-#include <osgUtil/.svn/text-base/RenderStage.svn-base>
+#include <osg/StateSet>
 #include <osgUtil/.svn/text-base/SceneView.svn-base>
 #include <osgUtil/.svn/text-base/StateGraph.svn-base>
-#include <osgUtil/.svn/text-base/Statistics.svn-base>
 #include <osgUtil/CullVisitor>
+#include <osgUtil/RenderStage>
 #include <osgUtil/SceneView>
+#include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

@@ -13,9 +13,9 @@
 #include <osg/.svn/text-base/Drawable.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
 #include <osg/.svn/text-base/RenderInfo.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/Geode>
 #include <osg/State>
+#include <osg/StateSet>
 #include <osgUtil/.svn/text-base/GLObjectsVisitor.svn-base>
 #include <osgUtil/GLObjectsVisitor>
 

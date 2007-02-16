@@ -20,81 +20,127 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
-	I_Constructor0(____ReentrantMutex,
+BEGIN_OBJECT_REFLECTOR(osgDB::ReadWriteMutex)
+	I_Constructor0(____ReadWriteMutex,
 	               "",
 	               "");
-	I_Method0(int, lock,
+	I_Method0(int, readLock,
 	          Properties::VIRTUAL,
-	          __int__lock,
+	          __int__readLock,
 	          "",
 	          "");
-	I_Method0(int, unlock,
+	I_Method0(int, readUnlock,
 	          Properties::VIRTUAL,
-	          __int__unlock,
+	          __int__readUnlock,
 	          "",
 	          "");
-	I_Method0(int, trylock,
+	I_Method0(int, writeLock,
 	          Properties::VIRTUAL,
-	          __int__trylock,
+	          __int__writeLock,
 	          "",
 	          "");
-	I_Constructor0(____ReentrantMutex,
+	I_Method0(int, writeUnlock,
+	          Properties::VIRTUAL,
+	          __int__writeUnlock,
+	          "",
+	          "");
+	I_Constructor0(____ReadWriteMutex,
 	               "",
 	               "");
-	I_Method0(int, lock,
+	I_Method0(int, readLock,
 	          Properties::VIRTUAL,
-	          __int__lock,
+	          __int__readLock,
 	          "",
 	          "");
-	I_Method0(int, unlock,
+	I_Method0(int, readUnlock,
 	          Properties::VIRTUAL,
-	          __int__unlock,
+	          __int__readUnlock,
 	          "",
 	          "");
-	I_Method0(int, trylock,
+	I_Method0(int, writeLock,
 	          Properties::VIRTUAL,
-	          __int__trylock,
+	          __int__writeLock,
+	          "",
+	          "");
+	I_Method0(int, writeUnlock,
+	          Properties::VIRTUAL,
+	          __int__writeUnlock,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
-	I_Constructor0(____ReentrantMutex,
+BEGIN_OBJECT_REFLECTOR(osgDB::ReadWriteMutex)
+	I_Constructor0(____ReadWriteMutex,
 	               "",
 	               "");
-	I_Method0(int, lock,
+	I_Method0(int, readLock,
 	          Properties::VIRTUAL,
-	          __int__lock,
+	          __int__readLock,
 	          "",
 	          "");
-	I_Method0(int, unlock,
+	I_Method0(int, readUnlock,
 	          Properties::VIRTUAL,
-	          __int__unlock,
+	          __int__readUnlock,
 	          "",
 	          "");
-	I_Method0(int, trylock,
+	I_Method0(int, writeLock,
 	          Properties::VIRTUAL,
-	          __int__trylock,
+	          __int__writeLock,
 	          "",
 	          "");
-	I_Constructor0(____ReentrantMutex,
+	I_Method0(int, writeUnlock,
+	          Properties::VIRTUAL,
+	          __int__writeUnlock,
+	          "",
+	          "");
+	I_Constructor0(____ReadWriteMutex,
 	               "",
 	               "");
-	I_Method0(int, lock,
+	I_Method0(int, readLock,
 	          Properties::VIRTUAL,
-	          __int__lock,
+	          __int__readLock,
 	          "",
 	          "");
-	I_Method0(int, unlock,
+	I_Method0(int, readUnlock,
 	          Properties::VIRTUAL,
-	          __int__unlock,
+	          __int__readUnlock,
 	          "",
 	          "");
-	I_Method0(int, trylock,
+	I_Method0(int, writeLock,
 	          Properties::VIRTUAL,
-	          __int__trylock,
+	          __int__writeLock,
 	          "",
 	          "");
+	I_Method0(int, writeUnlock,
+	          Properties::VIRTUAL,
+	          __int__writeUnlock,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgDB::ScopedReadLock)
+	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
+	               Properties::NON_EXPLICIT,
+	               ____ScopedReadLock__ReadWriteMutex_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
+	               Properties::NON_EXPLICIT,
+	               ____ScopedReadLock__ReadWriteMutex_R1,
+	               "",
+	               "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgDB::ScopedReadLock)
+	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
+	               Properties::NON_EXPLICIT,
+	               ____ScopedReadLock__ReadWriteMutex_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
+	               Properties::NON_EXPLICIT,
+	               ____ScopedReadLock__ReadWriteMutex_R1,
+	               "",
+	               "");
 END_REFLECTOR
 

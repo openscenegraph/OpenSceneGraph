@@ -15,10 +15,10 @@
 #include <osg/.svn/text-base/Image.svn-base>
 #include <osg/.svn/text-base/Matrixd.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/.svn/text-base/Vec4.svn-base>
 #include <osg/State>
+#include <osg/StateSet>
 #include <osgDB/.svn/text-base/Archive.svn-base>
 #include <osgTerrain/.svn/text-base/DataSet.svn-base>
 #include <osgTerrain/DataSet>

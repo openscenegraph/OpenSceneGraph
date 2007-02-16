@@ -15,11 +15,11 @@
 #include <osg/.svn/text-base/Group.svn-base>
 #include <osg/.svn/text-base/Matrixd.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/.svn/text-base/Vec4.svn-base>
 #include <osg/ApplicationUsage>
 #include <osg/ArgumentParser>
 #include <osg/FrameStamp>
+#include <osg/StateSet>
 #include <osgProducer/.svn/text-base/OsgCameraGroup.svn-base>
 #include <osgProducer/OsgCameraGroup>
 #include <osgProducer/OsgSceneHandler>

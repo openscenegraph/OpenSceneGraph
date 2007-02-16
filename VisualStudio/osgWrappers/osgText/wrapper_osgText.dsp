@@ -107,6 +107,10 @@ SOURCE=..\..\..\src\osgWrappers\osgText\Font.cpp
 SOURCE=..\..\..\src\osgWrappers\osgText\String.cpp
 # End Source File
 
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgText\Text.cpp
+# End Source File
+
 # End Group
 # Begin Group "Header Files"
 

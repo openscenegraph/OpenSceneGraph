@@ -16,8 +16,8 @@
 #include <osg/FrameStamp>
 #include <osgGA/EventQueue>
 #include <osgViewer/.svn/text-base/CompositeViewer.svn-base>
+#include <osgViewer/.svn/text-base/View.svn-base>
 #include <osgViewer/CompositeViewer>
-#include <osgViewer/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

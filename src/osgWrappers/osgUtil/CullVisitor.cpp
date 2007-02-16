@@ -26,20 +26,20 @@
 #include <osg/.svn/text-base/Polytope.svn-base>
 #include <osg/.svn/text-base/RenderInfo.svn-base>
 #include <osg/.svn/text-base/StateAttribute.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
-#include <osg/.svn/text-base/TexGenNode.svn-base>
+#include <osg/.svn/text-base/Switch.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/Camera>
 #include <osg/Geode>
 #include <osg/Projection>
 #include <osg/State>
-#include <osg/Switch>
+#include <osg/StateSet>
+#include <osg/TexGenNode>
 #include <osg/Transform>
 #include <osgUtil/.svn/text-base/CullVisitor.svn-base>
-#include <osgUtil/.svn/text-base/RenderStage.svn-base>
+#include <osgUtil/.svn/text-base/RenderBin.svn-base>
 #include <osgUtil/.svn/text-base/StateGraph.svn-base>
 #include <osgUtil/CullVisitor>
-#include <osgUtil/RenderBin>
+#include <osgUtil/RenderStage>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

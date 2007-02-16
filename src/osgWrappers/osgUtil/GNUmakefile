@@ -13,11 +13,17 @@ CXXFILES =\
 	IntersectionVisitor.cpp\
 	LineSegmentIntersector.cpp\
 	Optimizer.cpp\
+	ReflectionMapGenerator.cpp\
 	RenderBin.cpp\
-	RenderLeaf.cpp\
+	RenderStage.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
+	SmoothingVisitor.cpp\
+	Statistics.cpp\
+	Tessellator.cpp\
+	TransformAttributeFunctor.cpp\
 	TriStripVisitor.cpp\
+	UpdateVisitor.cpp\
 
 LIBS   += -losgUtil -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 

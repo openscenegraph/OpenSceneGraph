@@ -15,12 +15,12 @@
 #include <osg/.svn/text-base/Matrix.svn-base>
 #include <osg/.svn/text-base/State.svn-base>
 #include <osg/.svn/text-base/StateAttribute.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/.svn/text-base/Viewport.svn-base>
 #include <osg/FrameStamp>
 #include <osg/Polytope>
 #include <osg/Program>
 #include <osg/State>
+#include <osg/StateSet>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -2396,41 +2396,5 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::Polytope, ViewFrustum, 
 	                 __Polytope__getViewFrustum, 
 	                 0);
-END_REFLECTOR
-
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____DynamicObjectRenderingCompletedCallback,
-	               "",
-	               "");
-	I_Method1(void, completed, IN, osg::State *, x,
-	          Properties::PURE_VIRTUAL,
-	          __void__completed__osg_State_P1,
-	          "",
-	          "");
-	I_Method1(void, completed, IN, osg::State *, x,
-	          Properties::PURE_VIRTUAL,
-	          __void__completed__osg_State_P1,
-	          "",
-	          "");
-END_REFLECTOR
-
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____DynamicObjectRenderingCompletedCallback,
-	               "",
-	               "");
-	I_Method1(void, completed, IN, osg::State *, x,
-	          Properties::PURE_VIRTUAL,
-	          __void__completed__osg_State_P1,
-	          "",
-	          "");
-	I_Method1(void, completed, IN, osg::State *, x,
-	          Properties::PURE_VIRTUAL,
-	          __void__completed__osg_State_P1,
-	          "",
-	          "");
 END_REFLECTOR
 

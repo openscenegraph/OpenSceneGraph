@@ -9,6 +9,7 @@ CXXFILES =\
 	Array.cpp\
 	BufferObject.cpp\
 	Camera.cpp\
+	ComputeBoundsVisitor.cpp\
 	DrawPixels.cpp\
 	Drawable.cpp\
 	Endian.cpp\
@@ -19,7 +20,7 @@ CXXFILES =\
 	FrontFace.cpp\
 	Geode.cpp\
 	Notify.cpp\
-	PagedLOD.cpp\
+	Plane.cpp\
 	Point.cpp\
 	PointSprite.cpp\
 	PolygonMode.cpp\
@@ -33,33 +34,31 @@ CXXFILES =\
 	ProxyNode.cpp\
 	Quat.cpp\
 	Referenced.cpp\
-	Sequence.cpp\
+	Scissor.cpp\
 	ShadeModel.cpp\
-	Shader.cpp\
 	ShadowVolumeOccluder.cpp\
 	Shape.cpp\
 	ShapeDrawable.cpp\
 	State.cpp\
 	StateSet.cpp\
 	Stats.cpp\
-	StencilTwoSided.cpp\
-	Switch.cpp\
-	TexEnvCombine.cpp\
-	TexEnvFilter.cpp\
+	TexEnv.cpp\
+	TexGen.cpp\
+	TexGenNode.cpp\
+	TexMat.cpp\
 	Texture.cpp\
-	Texture1D.cpp\
 	Texture2D.cpp\
 	Texture3D.cpp\
 	TextureCubeMap.cpp\
-	TextureRectangle.cpp\
 	Transform.cpp\
 	Uniform.cpp\
-	Vec2d.cpp\
+	Vec2f.cpp\
+	Vec2s.cpp\
 	Vec3d.cpp\
 	Vec4b.cpp\
+	Vec4d.cpp\
 	Vec4s.cpp\
 	VertexProgram.cpp\
-	View.cpp\
 
 LIBS   += -losg -losg -losgIntrospection  $(GL_LIBS) $(OTHER_LIBS)
 

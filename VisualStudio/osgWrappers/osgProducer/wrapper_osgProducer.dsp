@@ -112,7 +112,7 @@ SOURCE=..\..\..\src\osgWrappers\osgProducer\OsgSceneHandler.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgProducer\Viewer.cpp
+SOURCE=..\..\..\src\osgWrappers\osgProducer\ViewerEventHandler.cpp
 # End Source File
 
 # End Group

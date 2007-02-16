@@ -13,9 +13,9 @@
 #include <osg/.svn/text-base/BoundingBox.svn-base>
 #include <osg/.svn/text-base/BoundingSphere.svn-base>
 #include <osg/.svn/text-base/Matrix.svn-base>
-#include <osg/.svn/text-base/Plane.svn-base>
 #include <osg/.svn/text-base/Polytope.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
+#include <osg/Plane>
 #include <osg/Polytope>
 
 // Must undefine IN and OUT macros defined in Windows headers

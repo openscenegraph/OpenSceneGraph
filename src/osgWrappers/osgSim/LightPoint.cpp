@@ -13,9 +13,9 @@
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/.svn/text-base/Vec4.svn-base>
 #include <osgSim/.svn/text-base/LightPoint.svn-base>
+#include <osgSim/.svn/text-base/Sector.svn-base>
 #include <osgSim/BlinkSequence>
 #include <osgSim/LightPoint>
-#include <osgSim/Sector>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

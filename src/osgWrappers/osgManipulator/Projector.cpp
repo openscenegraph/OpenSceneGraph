@@ -11,8 +11,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/.svn/text-base/Matrix.svn-base>
-#include <osg/.svn/text-base/Plane.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
+#include <osg/Plane>
 #include <osg/Quat>
 #include <osg/Shape>
 #include <osgManipulator/Dragger>

@@ -21,14 +21,14 @@
 #include <osg/.svn/text-base/Matrixf.svn-base>
 #include <osg/.svn/text-base/NodeVisitor.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/Texture.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/.svn/text-base/Vec4.svn-base>
+#include <osg/.svn/text-base/View.svn-base>
 #include <osg/.svn/text-base/Viewport.svn-base>
 #include <osg/Camera>
 #include <osg/State>
 #include <osg/Stats>
-#include <osg/Texture>
-#include <osg/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

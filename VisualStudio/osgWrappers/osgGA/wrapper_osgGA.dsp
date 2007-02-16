@@ -144,7 +144,7 @@ SOURCE=..\..\..\src\osgWrappers\osgGA\StateSetManipulator.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgGA\UFOManipulator.cpp
+SOURCE=..\..\..\src\osgWrappers\osgGA\TerrainManipulator.cpp
 # End Source File
 
 # End Group

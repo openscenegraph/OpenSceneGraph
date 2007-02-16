@@ -180,7 +180,7 @@ SOURCE=..\..\..\src\osgWrappers\osgParticle\Particle.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgParticle\ParticleProcessor.cpp
+SOURCE=..\..\..\src\osgWrappers\osgParticle\ParticleEffect.cpp
 # End Source File
 
 # Begin Source File
@@ -188,11 +188,7 @@ SOURCE=..\..\..\src\osgWrappers\osgParticle\ParticleSystem.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgParticle\ParticleSystemUpdater.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgParticle\PointPlacer.cpp
+SOURCE=..\..\..\src\osgWrappers\osgParticle\Placer.cpp
 # End Source File
 
 # Begin Source File
@@ -208,11 +204,19 @@ SOURCE=..\..\..\src\osgWrappers\osgParticle\RadialShooter.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgParticle\RandomRateCounter.cpp
+SOURCE=..\..\..\src\osgWrappers\osgParticle\SectorPlacer.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgParticle\SegmentPlacer.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgParticle\Shooter.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgParticle\SmokeEffect.cpp
 # End Source File
 
 # End Group

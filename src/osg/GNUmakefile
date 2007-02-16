@@ -25,6 +25,7 @@ CXXFILES =\
 	CollectOccludersVisitor.cpp\
 	ColorMask.cpp\
 	ColorMatrix.cpp\
+	ComputeBoundsVisitor.cpp\
 	ConvexPlanarOccluder.cpp\
 	ConvexPlanarPolygon.cpp\
 	CoordinateSystemNode.cpp\

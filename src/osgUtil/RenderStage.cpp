@@ -736,8 +736,12 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     {
         copyTexture(renderInfo);
     }
+    
     std::map< osg::Camera::BufferComponent, Attachment>::const_iterator itr;
-     for(itr = _bufferAttachmentMap.begin();     itr != _bufferAttachmentMap.end();     ++itr){
+    for(itr = _bufferAttachmentMap.begin();
+        itr != _bufferAttachmentMap.end();
+        ++itr)
+    {
          if (itr->second._image.valid())
          {
 
@@ -910,7 +914,14 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
     {
-        if (!useThread) useContext->releaseContext();
+        if (!useThread)
+        {
+            // flush any command left in the useContex's FIFO
+            // to ensure that textures are updated before main thread commenses.
+            glFlush();
+        
+            useContext->releaseContext();
+        }
     }
 
     if (callingContext && useContext != callingContext)

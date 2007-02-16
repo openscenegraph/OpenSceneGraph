@@ -104,9 +104,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	          __C5_ClipPlane_P1__getClipPlane__unsigned_int,
 	          "Get const ClipPlane at the given index position. ",
 	          "");
-	I_Method1(void, getClipPlaneList, IN, const osg::ClipNode::ClipPlaneList &, cpl,
+	I_Method1(void, setClipPlaneList, IN, const osg::ClipNode::ClipPlaneList &, cpl,
 	          Properties::NON_VIRTUAL,
-	          __void__getClipPlaneList__C5_ClipPlaneList_R1,
+	          __void__setClipPlaneList__C5_ClipPlaneList_R1,
 	          "Set the ClipPlaneList. ",
 	          "");
 	I_Method0(osg::ClipNode::ClipPlaneList &, getClipPlaneList,
@@ -141,9 +141,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	                __bool__addClipPlane__ClipPlane_P1, 
 	                0, 
 	                __bool__removeClipPlane__unsigned_int);
-	I_SimpleProperty(osg::ClipNode::ClipPlaneList &, ClipPlaneList, 
-	                 __ClipPlaneList_R1__getClipPlaneList, 
-	                 0);
+	I_SimpleProperty(const osg::ClipNode::ClipPlaneList &, ClipPlaneList, 
+	                 __C5_ClipPlaneList_R1__getClipPlaneList, 
+	                 __void__setClipPlaneList__C5_ClipPlaneList_R1);
 	I_SimpleProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes, 
 	                 0, 
 	                 __void__setLocalStateSetModes__StateAttribute_GLModeValue);

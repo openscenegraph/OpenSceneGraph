@@ -112,6 +112,14 @@ SOURCE=..\..\..\src\osgWrappers\osgViewer\Scene.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgViewer\SimpleViewer.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgViewer\StatsHandler.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgViewer\View.cpp
 # End Source File
 

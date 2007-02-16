@@ -10,8 +10,8 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/.svn/text-base/Geometry.svn-base>
 #include <osg/Geode>
+#include <osg/Geometry>
 #include <osgUtil/SmoothingVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -24,7 +24,6 @@
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____SmoothingVisitor,
 	               "default to traversing all children. ",
 	               "");
@@ -33,47 +32,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	          __void__apply__osg_Geode_R1,
 	          "apply smoothing method to all geode geosets. ",
 	          "");
-	I_Constructor0(____SmoothingVisitor,
-	               "default to traversing all children. ",
-	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
-	          "apply smoothing method to all geode geosets. ",
-	          "");
-	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset,
-	                __void__smooth__osg_Geometry_R1_S,
-	                "smooth geoset by creating per vertex normals. ",
-	                "");
-	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset,
-	                __void__smooth__osg_Geometry_R1_S,
-	                "smooth geoset by creating per vertex normals. ",
-	                "");
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
-	I_BaseType(osg::NodeVisitor);
-	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____SmoothingVisitor,
-	               "default to traversing all children. ",
-	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
-	          "apply smoothing method to all geode geosets. ",
-	          "");
-	I_Constructor0(____SmoothingVisitor,
-	               "default to traversing all children. ",
-	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
-	          "apply smoothing method to all geode geosets. ",
-	          "");
-	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset,
-	                __void__smooth__osg_Geometry_R1_S,
-	                "smooth geoset by creating per vertex normals. ",
-	                "");
 	I_StaticMethod1(void, smooth, IN, osg::Geometry &, geoset,
 	                __void__smooth__osg_Geometry_R1_S,
 	                "smooth geoset by creating per vertex normals. ",

@@ -389,6 +389,7 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_PublicMemberProperty(unsigned int, face);
 	I_PublicMemberProperty(unsigned int, mipMapGeneration);
 	I_PublicMemberProperty(bool, vsync);
+	I_PublicMemberProperty(bool, useMultiThreadedOpenGLEngine);
 	I_PublicMemberProperty(bool, useCursor);
 	I_PublicMemberProperty(osg::GraphicsContext *, sharedContext);
 END_REFLECTOR

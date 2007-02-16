@@ -6,6 +6,8 @@ CXXFILES =\
 	GraphicsWindow.cpp\
 	HelpHandler.cpp\
 	Scene.cpp\
+	SimpleViewer.cpp\
+	StatsHandler.cpp\
 	View.cpp\
 	Viewer.cpp\
 

@@ -10,8 +10,11 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/.svn/text-base/TextureCubeMap.svn-base>
+#include <osg/CopyOp>
+#include <osg/Image>
+#include <osg/Object>
 #include <osg/State>
+#include <osg/StateAttribute>
 #include <osg/TextureCubeMap>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -22,50 +25,234 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap::SubloadCallback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____SubloadCallback,
+BEGIN_ENUM_REFLECTOR(osg::TextureCubeMap::Face)
+	I_EnumLabel(osg::TextureCubeMap::POSITIVE_X);
+	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_X);
+	I_EnumLabel(osg::TextureCubeMap::POSITIVE_Y);
+	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_Y);
+	I_EnumLabel(osg::TextureCubeMap::POSITIVE_Z);
+	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_Z);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
+	I_BaseType(osg::Texture);
+	I_Constructor0(____TextureCubeMap,
 	               "",
 	               "");
-	I_Method2(void, load, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__load__C5_TextureCubeMap_R1__State_R1,
+	I_ConstructorWithDefaults2(IN, const osg::TextureCubeMap &, cm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TextureCubeMap__C5_TextureCubeMap_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "Return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "Return the name of the attribute's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "Return the name of the attribute's class type. ",
+	          "");
+	I_Method0(osg::StateAttribute::Type, getType,
+	          Properties::VIRTUAL,
+	          __Type__getType,
+	          "Return the Type identifier of the attribute's class type. ",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, rhs,
+	          Properties::VIRTUAL,
+	          __int__compare__C5_StateAttribute_R1,
+	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method0(GLenum, getTextureTarget,
+	          Properties::VIRTUAL,
+	          __GLenum__getTextureTarget,
 	          "",
 	          "");
-	I_Method2(void, subload, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__subload__C5_TextureCubeMap_R1__State_R1,
+	I_Method2(void, setImage, IN, unsigned int, face, IN, osg::Image *, image,
+	          Properties::VIRTUAL,
+	          __void__setImage__unsigned_int__Image_P1,
+	          "Set the texture image for specified face. ",
+	          "");
+	I_Method1(osg::Image *, getImage, IN, unsigned int, face,
+	          Properties::VIRTUAL,
+	          __Image_P1__getImage__unsigned_int,
+	          "Get the texture image for specified face. ",
+	          "");
+	I_Method1(const osg::Image *, getImage, IN, unsigned int, face,
+	          Properties::VIRTUAL,
+	          __C5_Image_P1__getImage__unsigned_int,
+	          "Get the const texture image for specified face. ",
+	          "");
+	I_Method0(unsigned int, getNumImages,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumImages,
+	          "Get the number of images that can be assigned to the Texture. ",
+	          "");
+	I_Method2(unsigned int &, getModifiedCount, IN, unsigned int, face, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getModifiedCount__unsigned_int__unsigned_int,
 	          "",
 	          "");
-	I_Method2(void, load, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__load__C5_TextureCubeMap_R1__State_R1,
+	I_Method2(void, setTextureSize, IN, int, width, IN, int, height,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureSize__int__int,
+	          "Set the texture width and height. ",
+	          "If width or height are zero then the repsective size value is calculated from the source image sizes.");
+	I_Method1(void, setTextureWidth, IN, int, width,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureWidth__int,
 	          "",
 	          "");
-	I_Method2(void, subload, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__subload__C5_TextureCubeMap_R1__State_R1,
+	I_Method1(void, setTextureHeight, IN, int, height,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureHeight__int,
 	          "",
 	          "");
+	I_Method0(int, getTextureWidth,
+	          Properties::VIRTUAL,
+	          __int__getTextureWidth,
+	          "",
+	          "");
+	I_Method0(int, getTextureHeight,
+	          Properties::VIRTUAL,
+	          __int__getTextureHeight,
+	          "",
+	          "");
+	I_Method0(int, getTextureDepth,
+	          Properties::VIRTUAL,
+	          __int__getTextureDepth,
+	          "",
+	          "");
+	I_Method1(void, setSubloadCallback, IN, osg::TextureCubeMap::SubloadCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setSubloadCallback__SubloadCallback_P1,
+	          "",
+	          "");
+	I_Method0(osg::TextureCubeMap::SubloadCallback *, getSubloadCallback,
+	          Properties::NON_VIRTUAL,
+	          __SubloadCallback_P1__getSubloadCallback,
+	          "",
+	          "");
+	I_Method0(const osg::TextureCubeMap::SubloadCallback *, getSubloadCallback,
+	          Properties::NON_VIRTUAL,
+	          __C5_SubloadCallback_P1__getSubloadCallback,
+	          "",
+	          "");
+	I_Method1(void, setNumMipmapLevels, IN, unsigned int, num,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumMipmapLevels__unsigned_int,
+	          "Set the number of mip map levels the the texture has been created with. ",
+	          "Should only be called within an osg::Texuture::apply() and custom OpenGL texture load.");
+	I_Method0(unsigned int, getNumMipmapLevels,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumMipmapLevels,
+	          "Get the number of mip map levels the the texture has been created with. ",
+	          "");
+	I_Method8(void, copyTexSubImageCubeMap, IN, osg::State &, state, IN, int, face, IN, int, xoffset, IN, int, yoffset, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::NON_VIRTUAL,
+	          __void__copyTexSubImageCubeMap__State_R1__int__int__int__int__int__int__int,
+	          "Copies a two-dimensional texture subimage, as per glCopyTexSubImage2D. ",
+	          "Updates a portion of an existing OpenGL texture object from the current OpenGL background framebuffer contents at position x, y with width width and height height. Loads framebuffer data into the texture using offsets xoffset and yoffset. width and height must be powers of two. ");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__apply__State_R1,
+	          "On first apply (unless already compiled), create the mipmapped texture and bind it. ",
+	          "Subsequent apply will simple bind to texture.");
+	I_StaticMethod2(osg::TextureCubeMap::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::TextureCubeMap::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "The setExtensions method allows users to override the extensions across graphics contexts. ",
+	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions.");
+	I_ArrayProperty(osg::Image *, Image, 
+	                __Image_P1__getImage__unsigned_int, 
+	                __void__setImage__unsigned_int__Image_P1, 
+	                __unsigned_int__getNumImages, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(unsigned int, NumMipmapLevels, 
+	                 0, 
+	                 __void__setNumMipmapLevels__unsigned_int);
+	I_SimpleProperty(osg::TextureCubeMap::SubloadCallback *, SubloadCallback, 
+	                 __SubloadCallback_P1__getSubloadCallback, 
+	                 __void__setSubloadCallback__SubloadCallback_P1);
+	I_SimpleProperty(int, TextureDepth, 
+	                 __int__getTextureDepth, 
+	                 0);
+	I_SimpleProperty(int, TextureHeight, 
+	                 __int__getTextureHeight, 
+	                 __void__setTextureHeight__int);
+	I_SimpleProperty(GLenum, TextureTarget, 
+	                 __GLenum__getTextureTarget, 
+	                 0);
+	I_SimpleProperty(int, TextureWidth, 
+	                 __int__getTextureWidth, 
+	                 __void__setTextureWidth__int);
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	                 __Type__getType, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::TextureCubeMap::Extensions &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::TextureCubeMap::Extensions &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__setupGLExtenions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setCubeMapSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setCubeMapSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isCubeMapSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isCubeMapSupported,
+	          "",
+	          "");
+	I_SimpleProperty(bool, CubeMapSupported, 
+	                 0, 
+	                 __void__setCubeMapSupported__bool);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap::SubloadCallback)
 	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
 	I_Constructor0(____SubloadCallback,
 	               "",
 	               "");
-	I_Method2(void, load, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__load__C5_TextureCubeMap_R1__State_R1,
-	          "",
-	          "");
-	I_Method2(void, subload, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__subload__C5_TextureCubeMap_R1__State_R1,
-	          "",
-	          "");
 	I_Method2(void, load, IN, const osg::TextureCubeMap &, texture, IN, osg::State &, state,
 	          Properties::PURE_VIRTUAL,
 	          __void__load__C5_TextureCubeMap_R1__State_R1,

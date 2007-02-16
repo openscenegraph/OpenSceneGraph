@@ -140,11 +140,27 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\Optimizer.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\PlaneIntersector.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\PolytopeIntersector.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\PositionalStateContainer.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\ReflectionMapGenerator.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderBin.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderLeaf.cpp
 # End Source File
 
 # Begin Source File
@@ -164,7 +180,15 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\SmoothingVisitor.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\StateGraph.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\Statistics.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\TangentSpaceGenerator.cpp
 # End Source File
 
 # Begin Source File
@@ -173,6 +197,10 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\Tessellator.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\TransformAttributeFunctor.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\TransformCallback.cpp
 # End Source File
 
 # Begin Source File

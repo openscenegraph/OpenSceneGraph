@@ -2,6 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+	Export.cpp\
 	FadeText.cpp\
 	Font.cpp\
 	String.cpp\

@@ -1138,8 +1138,10 @@ void CullVisitor::apply(osg::Camera& camera)
     }
 
 
+    if (camera.getViewport()) pushViewport(camera.getViewport());
+
     pushProjectionMatrix(projection);
-    pushModelViewMatrix(modelview, camera.getReferenceFrame());
+    pushModelViewMatrix(modelview, camera.getReferenceFrame());    
 
 
     if (camera.getRenderOrder()==osg::Camera::NESTED_RENDER)
@@ -1272,6 +1274,8 @@ void CullVisitor::apply(osg::Camera& camera)
 
     // restore the previous model view matrix.
     popProjectionMatrix();
+
+    if (camera.getViewport()) popViewport();
 
     // restore the previous cull settings
     setCullSettings(saved_cull_settings);

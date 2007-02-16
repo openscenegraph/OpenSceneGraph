@@ -248,6 +248,10 @@ SOURCE=..\..\src\osg\ColorMatrix.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\ComputeBoundsVisitor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\ConvexPlanarOccluder.cpp
 # End Source File
 # Begin Source File
@@ -721,6 +725,10 @@ SOURCE=..\..\Include\Osg\ColorMask
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\ColorMatrix
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osg\ComputeBoundsVisitor
 # End Source File
 # Begin Source File
 

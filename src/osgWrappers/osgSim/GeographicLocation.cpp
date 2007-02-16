@@ -22,6 +22,168 @@
 
 BEGIN_OBJECT_REFLECTOR(osgSim::GeographicLocation)
 	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____GeographicLocation,
+	               "",
+	               "");
+	I_Constructor2(IN, double, lat, IN, double, lon,
+	               ____GeographicLocation__double__double,
+	               "",
+	               "");
+	I_Method0(double *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __double_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const double *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_double_P1__ptr,
+	          "",
+	          "");
+	I_Method2(void, set, IN, double, lat, IN, double, lon,
+	          Properties::NON_VIRTUAL,
+	          __void__set__double__double,
+	          "",
+	          "");
+	I_Method0(double &, latitude,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__latitude,
+	          "",
+	          "");
+	I_Method0(double &, longitude,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__longitude,
+	          "",
+	          "");
+	I_Method0(double, latitude,
+	          Properties::NON_VIRTUAL,
+	          __double__latitude,
+	          "",
+	          "");
+	I_Method0(double, longitude,
+	          Properties::NON_VIRTUAL,
+	          __double__longitude,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(bool, isNaN,
+	          Properties::NON_VIRTUAL,
+	          __bool__isNaN,
+	          "",
+	          "");
+	I_Constructor0(____GeographicLocation,
+	               "",
+	               "");
+	I_Constructor2(IN, double, lat, IN, double, lon,
+	               ____GeographicLocation__double__double,
+	               "",
+	               "");
+	I_Method0(double *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __double_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const double *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_double_P1__ptr,
+	          "",
+	          "");
+	I_Method2(void, set, IN, double, lat, IN, double, lon,
+	          Properties::NON_VIRTUAL,
+	          __void__set__double__double,
+	          "",
+	          "");
+	I_Method0(double &, latitude,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__latitude,
+	          "",
+	          "");
+	I_Method0(double &, longitude,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__longitude,
+	          "",
+	          "");
+	I_Method0(double, latitude,
+	          Properties::NON_VIRTUAL,
+	          __double__latitude,
+	          "",
+	          "");
+	I_Method0(double, longitude,
+	          Properties::NON_VIRTUAL,
+	          __double__longitude,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(bool, isNaN,
+	          Properties::NON_VIRTUAL,
+	          __bool__isNaN,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgSim::GeographicLocation)
+	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____GeographicLocation,
+	               "",
+	               "");
+	I_Constructor2(IN, double, lat, IN, double, lon,
+	               ____GeographicLocation__double__double,
+	               "",
+	               "");
+	I_Method0(double *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __double_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const double *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_double_P1__ptr,
+	          "",
+	          "");
+	I_Method2(void, set, IN, double, lat, IN, double, lon,
+	          Properties::NON_VIRTUAL,
+	          __void__set__double__double,
+	          "",
+	          "");
+	I_Method0(double &, latitude,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__latitude,
+	          "",
+	          "");
+	I_Method0(double &, longitude,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__longitude,
+	          "",
+	          "");
+	I_Method0(double, latitude,
+	          Properties::NON_VIRTUAL,
+	          __double__latitude,
+	          "",
+	          "");
+	I_Method0(double, longitude,
+	          Properties::NON_VIRTUAL,
+	          __double__longitude,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(bool, isNaN,
+	          Properties::NON_VIRTUAL,
+	          __bool__isNaN,
+	          "",
+	          "");
 	I_Constructor0(____GeographicLocation,
 	               "",
 	               "");

@@ -22,7 +22,6 @@ CXXFILES =\
 	ScalarsToColors.cpp\
 	Sector.cpp\
 	SphereSegment.cpp\
-	VisibilityGroup.cpp\
 
 LIBS   += -losgSim -losg -losgIntrospection -losgUtil -losgText -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 

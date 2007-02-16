@@ -10,13 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/FragmentProgram.svn-base>
+#include <osg/.svn/text-base/Matrix.svn-base>
+#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/StateAttribute.svn-base>
+#include <osg/.svn/text-base/Vec4.svn-base>
 #include <osg/FragmentProgram>
-#include <osg/Matrix>
-#include <osg/Object>
 #include <osg/State>
-#include <osg/StateAttribute>
-#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -32,6 +33,7 @@ TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::Mat
 
 BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_BaseType(osg::StateAttribute);
+	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____FragmentProgram,
 	               "",
 	               "");
@@ -42,32 +44,32 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an attribute, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an attribute, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "Return true if this and obj are of the same kind of object. ",
+	          "",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "Return the name of the attribute's library. ",
+	          "",
 	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "Return the name of the attribute's class type. ",
+	          "",
 	          "");
-	I_Method0(osg::StateAttribute::Type, getType,
+	I_Method0(Type, getType,
 	          Properties::VIRTUAL,
 	          __Type__getType,
-	          "Return the Type identifier of the attribute's class type. ",
+	          "",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
 	          Properties::VIRTUAL,
@@ -147,12 +149,144 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_Method1(void, apply, IN, osg::State &, state,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
-	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "",
+	          "");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__State_R1,
-	          "Default to nothing to compile - all state is applied immediately. ",
+	          "",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__State_P1,
+	                      "release an OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer == NULL. ",
+	                      "");
+	I_Constructor0(____FragmentProgram,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::FragmentProgram &, vp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____FragmentProgram__C5_FragmentProgram_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(Type, getType,
+	          Properties::VIRTUAL,
+	          __Type__getType,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::VIRTUAL,
+	          __int__compare__C5_osg_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          Properties::VIRTUAL,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method1(GLuint &, getFragmentProgramID, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLuint_R1__getFragmentProgramID__unsigned_int,
+	          "Get the handle to the fragment program id for the current context. ",
+	          "");
+	I_Method1(void, setFragmentProgram, IN, const char *, program,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgram__C5_char_P1,
+	          "Set the fragment program using a C style string. ",
+	          "");
+	I_Method1(void, setFragmentProgram, IN, const std::string &, program,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgram__C5_std_string_R1,
+	          "Set the fragment program using C++ style string. ",
+	          "");
+	I_Method0(const std::string &, getFragmentProgram,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getFragmentProgram,
+	          "Get the fragment program. ",
+	          "");
+	I_Method2(void, setProgramLocalParameter, IN, const GLuint, index, IN, const osg::Vec4 &, p,
+	          Properties::NON_VIRTUAL,
+	          __void__setProgramLocalParameter__C5_GLuint__C5_Vec4_R1,
+	          "Set Program Parameters. ",
+	          "");
+	I_Method1(void, setLocalParameters, IN, const osg::FragmentProgram::LocalParamList &, lpl,
+	          Properties::NON_VIRTUAL,
+	          __void__setLocalParameters__C5_LocalParamList_R1,
+	          "Set list of Program Parameters. ",
+	          "");
+	I_Method0(osg::FragmentProgram::LocalParamList &, getLocalParameters,
+	          Properties::NON_VIRTUAL,
+	          __LocalParamList_R1__getLocalParameters,
+	          "Get list of Program Parameters. ",
+	          "");
+	I_Method0(const osg::FragmentProgram::LocalParamList &, getLocalParameters,
+	          Properties::NON_VIRTUAL,
+	          __C5_LocalParamList_R1__getLocalParameters,
+	          "Get const list of Program Parameters. ",
+	          "");
+	I_Method2(void, setMatrix, IN, const GLenum, mode, IN, const osg::Matrix &, matrix,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrix__C5_GLenum__C5_Matrix_R1,
+	          "Matrix. ",
+	          "");
+	I_Method1(void, setMatrices, IN, const osg::FragmentProgram::MatrixList &, matrices,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrices__C5_MatrixList_R1,
+	          "Set list of Matrices. ",
+	          "");
+	I_Method0(osg::FragmentProgram::MatrixList &, getMatrices,
+	          Properties::NON_VIRTUAL,
+	          __MatrixList_R1__getMatrices,
+	          "Get list of Matrices. ",
+	          "");
+	I_Method0(const osg::FragmentProgram::MatrixList &, getMatrices,
+	          Properties::NON_VIRTUAL,
+	          __C5_MatrixList_R1__getMatrices,
+	          "Get list of Matrices. ",
+	          "");
+	I_Method0(void, dirtyFragmentProgramObject,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyFragmentProgramObject,
+	          "Force a recompile on next apply() of associated OpenGL vertex program objects. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__apply__State_R1,
+	          "",
+	          "");
+	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileGLObjects__State_R1,
+	          "",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
@@ -180,6 +314,22 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "setExtensions allows users to override the extensions across graphics contexts. ",
 	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_StaticMethod2(void, deleteFragmentProgramObject, IN, unsigned int, contextID, IN, GLuint, handle,
+	                __void__deleteFragmentProgramObject__unsigned_int__GLuint_S,
+	                "use deleteFragmentProgramObject instead of glDeletePrograms to allow OpenGL Fragment Program objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                "");
+	I_StaticMethod3(void, flushDeletedFragmentProgramObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedFragmentProgramObjects__unsigned_int__double__double_R1_S,
+	                "flush all the cached fragment programs which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(osg::FragmentProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag has been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::FragmentProgram::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions allows users to override the extensions across graphics contexts. ",
+	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
 	I_SimpleProperty(const std::string &, FragmentProgram, 
 	                 __C5_std_string_R1__getFragmentProgram, 
 	                 __void__setFragmentProgram__C5_std_string_R1);
@@ -189,13 +339,386 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_SimpleProperty(const osg::FragmentProgram::MatrixList &, Matrices, 
 	                 __C5_MatrixList_R1__getMatrices, 
 	                 __void__setMatrices__C5_MatrixList_R1);
-	I_SimpleProperty(osg::StateAttribute::Type, Type, 
+	I_SimpleProperty(Type, Type, 
+	                 __Type__getType, 
+	                 0);
+END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::FragmentProgram::LocalParamList);
+
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::MatrixList);
+
+BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
+	I_BaseType(osg::StateAttribute);
+	I_BaseType(osg::StateAttribute);
+	I_Constructor0(____FragmentProgram,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::FragmentProgram &, vp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____FragmentProgram__C5_FragmentProgram_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(Type, getType,
+	          Properties::VIRTUAL,
+	          __Type__getType,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::VIRTUAL,
+	          __int__compare__C5_osg_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          Properties::VIRTUAL,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method1(GLuint &, getFragmentProgramID, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLuint_R1__getFragmentProgramID__unsigned_int,
+	          "Get the handle to the fragment program id for the current context. ",
+	          "");
+	I_Method1(void, setFragmentProgram, IN, const char *, program,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgram__C5_char_P1,
+	          "Set the fragment program using a C style string. ",
+	          "");
+	I_Method1(void, setFragmentProgram, IN, const std::string &, program,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgram__C5_std_string_R1,
+	          "Set the fragment program using C++ style string. ",
+	          "");
+	I_Method0(const std::string &, getFragmentProgram,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getFragmentProgram,
+	          "Get the fragment program. ",
+	          "");
+	I_Method2(void, setProgramLocalParameter, IN, const GLuint, index, IN, const osg::Vec4 &, p,
+	          Properties::NON_VIRTUAL,
+	          __void__setProgramLocalParameter__C5_GLuint__C5_Vec4_R1,
+	          "Set Program Parameters. ",
+	          "");
+	I_Method1(void, setLocalParameters, IN, const osg::FragmentProgram::LocalParamList &, lpl,
+	          Properties::NON_VIRTUAL,
+	          __void__setLocalParameters__C5_LocalParamList_R1,
+	          "Set list of Program Parameters. ",
+	          "");
+	I_Method0(osg::FragmentProgram::LocalParamList &, getLocalParameters,
+	          Properties::NON_VIRTUAL,
+	          __LocalParamList_R1__getLocalParameters,
+	          "Get list of Program Parameters. ",
+	          "");
+	I_Method0(const osg::FragmentProgram::LocalParamList &, getLocalParameters,
+	          Properties::NON_VIRTUAL,
+	          __C5_LocalParamList_R1__getLocalParameters,
+	          "Get const list of Program Parameters. ",
+	          "");
+	I_Method2(void, setMatrix, IN, const GLenum, mode, IN, const osg::Matrix &, matrix,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrix__C5_GLenum__C5_Matrix_R1,
+	          "Matrix. ",
+	          "");
+	I_Method1(void, setMatrices, IN, const osg::FragmentProgram::MatrixList &, matrices,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrices__C5_MatrixList_R1,
+	          "Set list of Matrices. ",
+	          "");
+	I_Method0(osg::FragmentProgram::MatrixList &, getMatrices,
+	          Properties::NON_VIRTUAL,
+	          __MatrixList_R1__getMatrices,
+	          "Get list of Matrices. ",
+	          "");
+	I_Method0(const osg::FragmentProgram::MatrixList &, getMatrices,
+	          Properties::NON_VIRTUAL,
+	          __C5_MatrixList_R1__getMatrices,
+	          "Get list of Matrices. ",
+	          "");
+	I_Method0(void, dirtyFragmentProgramObject,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyFragmentProgramObject,
+	          "Force a recompile on next apply() of associated OpenGL vertex program objects. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__apply__State_R1,
+	          "",
+	          "");
+	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileGLObjects__State_R1,
+	          "",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__State_P1,
+	                      "release an OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer == NULL. ",
+	                      "");
+	I_Constructor0(____FragmentProgram,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::FragmentProgram &, vp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____FragmentProgram__C5_FragmentProgram_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(Type, getType,
+	          Properties::VIRTUAL,
+	          __Type__getType,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
+	          Properties::VIRTUAL,
+	          __int__compare__C5_osg_StateAttribute_R1,
+	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	          "");
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	          Properties::VIRTUAL,
+	          __bool__getModeUsage__ModeUsage_R1,
+	          "",
+	          "");
+	I_Method1(GLuint &, getFragmentProgramID, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLuint_R1__getFragmentProgramID__unsigned_int,
+	          "Get the handle to the fragment program id for the current context. ",
+	          "");
+	I_Method1(void, setFragmentProgram, IN, const char *, program,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgram__C5_char_P1,
+	          "Set the fragment program using a C style string. ",
+	          "");
+	I_Method1(void, setFragmentProgram, IN, const std::string &, program,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgram__C5_std_string_R1,
+	          "Set the fragment program using C++ style string. ",
+	          "");
+	I_Method0(const std::string &, getFragmentProgram,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getFragmentProgram,
+	          "Get the fragment program. ",
+	          "");
+	I_Method2(void, setProgramLocalParameter, IN, const GLuint, index, IN, const osg::Vec4 &, p,
+	          Properties::NON_VIRTUAL,
+	          __void__setProgramLocalParameter__C5_GLuint__C5_Vec4_R1,
+	          "Set Program Parameters. ",
+	          "");
+	I_Method1(void, setLocalParameters, IN, const osg::FragmentProgram::LocalParamList &, lpl,
+	          Properties::NON_VIRTUAL,
+	          __void__setLocalParameters__C5_LocalParamList_R1,
+	          "Set list of Program Parameters. ",
+	          "");
+	I_Method0(osg::FragmentProgram::LocalParamList &, getLocalParameters,
+	          Properties::NON_VIRTUAL,
+	          __LocalParamList_R1__getLocalParameters,
+	          "Get list of Program Parameters. ",
+	          "");
+	I_Method0(const osg::FragmentProgram::LocalParamList &, getLocalParameters,
+	          Properties::NON_VIRTUAL,
+	          __C5_LocalParamList_R1__getLocalParameters,
+	          "Get const list of Program Parameters. ",
+	          "");
+	I_Method2(void, setMatrix, IN, const GLenum, mode, IN, const osg::Matrix &, matrix,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrix__C5_GLenum__C5_Matrix_R1,
+	          "Matrix. ",
+	          "");
+	I_Method1(void, setMatrices, IN, const osg::FragmentProgram::MatrixList &, matrices,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrices__C5_MatrixList_R1,
+	          "Set list of Matrices. ",
+	          "");
+	I_Method0(osg::FragmentProgram::MatrixList &, getMatrices,
+	          Properties::NON_VIRTUAL,
+	          __MatrixList_R1__getMatrices,
+	          "Get list of Matrices. ",
+	          "");
+	I_Method0(const osg::FragmentProgram::MatrixList &, getMatrices,
+	          Properties::NON_VIRTUAL,
+	          __C5_MatrixList_R1__getMatrices,
+	          "Get list of Matrices. ",
+	          "");
+	I_Method0(void, dirtyFragmentProgramObject,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyFragmentProgramObject,
+	          "Force a recompile on next apply() of associated OpenGL vertex program objects. ",
+	          "");
+	I_Method1(void, apply, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__apply__State_R1,
+	          "",
+	          "");
+	I_Method1(void, compileGLObjects, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileGLObjects__State_R1,
+	          "",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__State_P1,
+	                      "release an OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer == NULL. ",
+	                      "");
+	I_StaticMethod2(void, deleteFragmentProgramObject, IN, unsigned int, contextID, IN, GLuint, handle,
+	                __void__deleteFragmentProgramObject__unsigned_int__GLuint_S,
+	                "use deleteFragmentProgramObject instead of glDeletePrograms to allow OpenGL Fragment Program objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                "");
+	I_StaticMethod3(void, flushDeletedFragmentProgramObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedFragmentProgramObjects__unsigned_int__double__double_R1_S,
+	                "flush all the cached fragment programs which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(osg::FragmentProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag has been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::FragmentProgram::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions allows users to override the extensions across graphics contexts. ",
+	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_StaticMethod2(void, deleteFragmentProgramObject, IN, unsigned int, contextID, IN, GLuint, handle,
+	                __void__deleteFragmentProgramObject__unsigned_int__GLuint_S,
+	                "use deleteFragmentProgramObject instead of glDeletePrograms to allow OpenGL Fragment Program objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                "");
+	I_StaticMethod3(void, flushDeletedFragmentProgramObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedFragmentProgramObjects__unsigned_int__double__double_R1_S,
+	                "flush all the cached fragment programs which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(osg::FragmentProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag has been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::FragmentProgram::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions allows users to override the extensions across graphics contexts. ",
+	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_SimpleProperty(const std::string &, FragmentProgram, 
+	                 __C5_std_string_R1__getFragmentProgram, 
+	                 __void__setFragmentProgram__C5_std_string_R1);
+	I_SimpleProperty(const osg::FragmentProgram::LocalParamList &, LocalParameters, 
+	                 __C5_LocalParamList_R1__getLocalParameters, 
+	                 __void__setLocalParameters__C5_LocalParamList_R1);
+	I_SimpleProperty(const osg::FragmentProgram::MatrixList &, Matrices, 
+	                 __C5_MatrixList_R1__getMatrices, 
+	                 __void__setMatrices__C5_MatrixList_R1);
+	I_SimpleProperty(Type, Type, 
 	                 __Type__getType, 
 	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::FragmentProgram::Extensions &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::FragmentProgram::Extensions &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__setupGLExtenions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setFragmentProgramSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgramSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isFragmentProgramSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isFragmentProgramSupported,
+	          "",
+	          "");
+	I_Method2(void, glBindProgram, IN, GLenum, target, IN, GLuint, id,
+	          Properties::NON_VIRTUAL,
+	          __void__glBindProgram__GLenum__GLuint,
+	          "",
+	          "");
+	I_Method2(void, glGenPrograms, IN, GLsizei, n, IN, GLuint *, programs,
+	          Properties::NON_VIRTUAL,
+	          __void__glGenPrograms__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method2(void, glDeletePrograms, IN, GLsizei, n, IN, GLuint *, programs,
+	          Properties::NON_VIRTUAL,
+	          __void__glDeletePrograms__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method4(void, glProgramString, IN, GLenum, target, IN, GLenum, format, IN, GLsizei, len, IN, const void *, string,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramString__GLenum__GLenum__GLsizei__C5_void_P1,
+	          "",
+	          "");
+	I_Method3(void, glProgramLocalParameter4fv, IN, GLenum, target, IN, GLuint, index, IN, const GLfloat *, params,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramLocalParameter4fv__GLenum__GLuint__C5_GLfloat_P1,
+	          "",
+	          "");
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
 	               ____Extensions__unsigned_int,
@@ -256,7 +779,121 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	                 __void__setFragmentProgramSupported__bool);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::Matrix >);
-
-STD_MAP_REFLECTOR(std::map< GLuint COMMA  osg::Vec4 >);
+BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
+	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::FragmentProgram::Extensions &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::FragmentProgram::Extensions &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__setupGLExtenions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setFragmentProgramSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgramSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isFragmentProgramSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isFragmentProgramSupported,
+	          "",
+	          "");
+	I_Method2(void, glBindProgram, IN, GLenum, target, IN, GLuint, id,
+	          Properties::NON_VIRTUAL,
+	          __void__glBindProgram__GLenum__GLuint,
+	          "",
+	          "");
+	I_Method2(void, glGenPrograms, IN, GLsizei, n, IN, GLuint *, programs,
+	          Properties::NON_VIRTUAL,
+	          __void__glGenPrograms__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method2(void, glDeletePrograms, IN, GLsizei, n, IN, GLuint *, programs,
+	          Properties::NON_VIRTUAL,
+	          __void__glDeletePrograms__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method4(void, glProgramString, IN, GLenum, target, IN, GLenum, format, IN, GLsizei, len, IN, const void *, string,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramString__GLenum__GLenum__GLsizei__C5_void_P1,
+	          "",
+	          "");
+	I_Method3(void, glProgramLocalParameter4fv, IN, GLenum, target, IN, GLuint, index, IN, const GLfloat *, params,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramLocalParameter4fv__GLenum__GLuint__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Constructor1(IN, unsigned int, contextID,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::FragmentProgram::Extensions &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____Extensions__C5_Extensions_R1,
+	               "",
+	               "");
+	I_Method1(void, lowestCommonDenominator, IN, const osg::FragmentProgram::Extensions &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	          "",
+	          "");
+	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __void__setupGLExtenions__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, setFragmentProgramSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentProgramSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isFragmentProgramSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isFragmentProgramSupported,
+	          "",
+	          "");
+	I_Method2(void, glBindProgram, IN, GLenum, target, IN, GLuint, id,
+	          Properties::NON_VIRTUAL,
+	          __void__glBindProgram__GLenum__GLuint,
+	          "",
+	          "");
+	I_Method2(void, glGenPrograms, IN, GLsizei, n, IN, GLuint *, programs,
+	          Properties::NON_VIRTUAL,
+	          __void__glGenPrograms__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method2(void, glDeletePrograms, IN, GLsizei, n, IN, GLuint *, programs,
+	          Properties::NON_VIRTUAL,
+	          __void__glDeletePrograms__GLsizei__GLuint_P1,
+	          "",
+	          "");
+	I_Method4(void, glProgramString, IN, GLenum, target, IN, GLenum, format, IN, GLsizei, len, IN, const void *, string,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramString__GLenum__GLenum__GLsizei__C5_void_P1,
+	          "",
+	          "");
+	I_Method3(void, glProgramLocalParameter4fv, IN, GLenum, target, IN, GLuint, index, IN, const GLfloat *, params,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramLocalParameter4fv__GLenum__GLuint__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_SimpleProperty(bool, FragmentProgramSupported, 
+	                 0, 
+	                 __void__setFragmentProgramSupported__bool);
+END_REFLECTOR
 

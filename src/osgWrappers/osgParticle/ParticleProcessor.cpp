@@ -10,12 +10,13 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingSphere>
-#include <osg/CopyOp>
-#include <osg/Matrix>
-#include <osg/NodeVisitor>
-#include <osg/Object>
-#include <osg/Vec3>
+#include <osg/.svn/text-base/BoundingSphere.svn-base>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/Matrix.svn-base>
+#include <osg/.svn/text-base/NodeVisitor.svn-base>
+#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/Vec3.svn-base>
+#include <osgParticle/.svn/text-base/ParticleProcessor.svn-base>
 #include <osgParticle/ParticleProcessor>
 #include <osgParticle/ParticleSystem>
 
@@ -34,6 +35,7 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	I_BaseType(osg::Node);
+	I_BaseType(osg::Node);
 	I_Constructor0(____ParticleProcessor,
 	               "",
 	               "");
@@ -44,22 +46,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the node's library. ",
+	          "",
 	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the node's class type. ",
+	          "",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "return true if this and obj are of the same kind of object. ",
+	          "",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
-	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "",
 	          "");
 	I_Method0(osgParticle::ParticleProcessor::ReferenceFrame, getReferenceFrame,
 	          Properties::NON_VIRTUAL,
@@ -152,9 +154,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	          "Check whether the processor is alive with respect to start time and life duration. ",
 	          "Note that this method may return true even if the processor has been disabled by calling setEnabled(false). To test whether the processor is actually processing particles or not, you should evaluate (isEnabled() && isAlive()).");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,
-	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "",
 	          "");
 	I_Method0(const osg::Matrix &, getLocalToWorldMatrix,
 	          Properties::NON_VIRTUAL,
@@ -199,8 +201,555 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingSphere__computeBound,
-	          "Compute the bounding sphere around Node's geometry or children. ",
-	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	          "",
+	          "");
+	I_Constructor0(____ParticleProcessor,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::ParticleProcessor &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ParticleProcessor__C5_ParticleProcessor_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method0(osgParticle::ParticleProcessor::ReferenceFrame, getReferenceFrame,
+	          Properties::NON_VIRTUAL,
+	          __ReferenceFrame__getReferenceFrame,
+	          "Get the reference frame. ",
+	          "");
+	I_Method1(void, setReferenceFrame, IN, osgParticle::ParticleProcessor::ReferenceFrame, rf,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceFrame__ReferenceFrame,
+	          "Set the reference frame. ",
+	          "");
+	I_Method0(bool, isEnabled,
+	          Properties::NON_VIRTUAL,
+	          __bool__isEnabled,
+	          "Get whether this processor is enabled or not. ",
+	          "");
+	I_Method1(void, setEnabled, IN, bool, v,
+	          Properties::NON_VIRTUAL,
+	          __void__setEnabled__bool,
+	          "Set whether this processor is enabled or not. ",
+	          "");
+	I_Method0(osgParticle::ParticleSystem *, getParticleSystem,
+	          Properties::NON_VIRTUAL,
+	          __ParticleSystem_P1__getParticleSystem,
+	          "Get a pointer to the destination particle system. ",
+	          "");
+	I_Method0(const osgParticle::ParticleSystem *, getParticleSystem,
+	          Properties::NON_VIRTUAL,
+	          __C5_ParticleSystem_P1__getParticleSystem,
+	          "Get a const pointer to the destination particle system. ",
+	          "");
+	I_Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps,
+	          Properties::NON_VIRTUAL,
+	          __void__setParticleSystem__ParticleSystem_P1,
+	          "Set the destination particle system. ",
+	          "");
+	I_Method1(void, setEndless, IN, bool, type,
+	          Properties::NON_VIRTUAL,
+	          __void__setEndless__bool,
+	          "Set the endless flag of this processor. ",
+	          "");
+	I_Method0(bool, isEndless,
+	          Properties::NON_VIRTUAL,
+	          __bool__isEndless,
+	          "Check whether this processor is endless. ",
+	          "");
+	I_Method1(void, setLifeTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setLifeTime__double,
+	          "Set the lifetime of this processor. ",
+	          "");
+	I_Method0(double, getLifeTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getLifeTime,
+	          "Get the lifetime of this processor. ",
+	          "");
+	I_Method1(void, setStartTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setStartTime__double,
+	          "Set the start time of this processor. ",
+	          "");
+	I_Method0(double, getStartTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getStartTime,
+	          "Get the start time of this processor. ",
+	          "");
+	I_Method1(void, setCurrentTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentTime__double,
+	          "Set the current time of this processor. ",
+	          "");
+	I_Method0(double, getCurrentTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getCurrentTime,
+	          "Get the current time of this processor. ",
+	          "");
+	I_Method1(void, setResetTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setResetTime__double,
+	          "Set the reset time of this processor. A value of 0 disables reset. ",
+	          "");
+	I_Method0(double, getResetTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getResetTime,
+	          "Get the reset time of this processor. ",
+	          "");
+	I_Method0(bool, isAlive,
+	          Properties::NON_VIRTUAL,
+	          __bool__isAlive,
+	          "Check whether the processor is alive with respect to start time and life duration. ",
+	          "Note that this method may return true even if the processor has been disabled by calling setEnabled(false). To test whether the processor is actually processing particles or not, you should evaluate (isEnabled() && isAlive()).");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::NON_VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix &, getLocalToWorldMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getLocalToWorldMatrix,
+	          "Get the current local-to-world transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getWorldToLocalMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getWorldToLocalMatrix,
+	          "Get the current world-to-local transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getPreviousLocalToWorldMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getPreviousLocalToWorldMatrix,
+	          "Get the previous local-to-world transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getPreviousWorldToLocalMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getPreviousWorldToLocalMatrix,
+	          "Get the previous world-to-local transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, transformLocalToWorld, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__transformLocalToWorld__C5_osg_Vec3_R1,
+	          "Transform a point from local to world coordinates (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__rotateLocalToWorld__C5_osg_Vec3_R1,
+	          "Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__transformWorldToLocal__C5_osg_Vec3_R1,
+	          "Transform a point from world to local coordinates (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, rotateWorldToLocal, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__rotateWorldToLocal__C5_osg_Vec3_R1,
+	          "Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal). ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
+	I_SimpleProperty(double, CurrentTime, 
+	                 __double__getCurrentTime, 
+	                 __void__setCurrentTime__double);
+	I_SimpleProperty(bool, Enabled, 
+	                 0, 
+	                 __void__setEnabled__bool);
+	I_SimpleProperty(bool, Endless, 
+	                 0, 
+	                 __void__setEndless__bool);
+	I_SimpleProperty(double, LifeTime, 
+	                 __double__getLifeTime, 
+	                 __void__setLifeTime__double);
+	I_SimpleProperty(const osg::Matrix &, LocalToWorldMatrix, 
+	                 __C5_osg_Matrix_R1__getLocalToWorldMatrix, 
+	                 0);
+	I_SimpleProperty(osgParticle::ParticleSystem *, ParticleSystem, 
+	                 __ParticleSystem_P1__getParticleSystem, 
+	                 __void__setParticleSystem__ParticleSystem_P1);
+	I_SimpleProperty(const osg::Matrix &, PreviousLocalToWorldMatrix, 
+	                 __C5_osg_Matrix_R1__getPreviousLocalToWorldMatrix, 
+	                 0);
+	I_SimpleProperty(const osg::Matrix &, PreviousWorldToLocalMatrix, 
+	                 __C5_osg_Matrix_R1__getPreviousWorldToLocalMatrix, 
+	                 0);
+	I_SimpleProperty(osgParticle::ParticleProcessor::ReferenceFrame, ReferenceFrame, 
+	                 __ReferenceFrame__getReferenceFrame, 
+	                 __void__setReferenceFrame__ReferenceFrame);
+	I_SimpleProperty(double, ResetTime, 
+	                 __double__getResetTime, 
+	                 __void__setResetTime__double);
+	I_SimpleProperty(double, StartTime, 
+	                 __double__getStartTime, 
+	                 __void__setStartTime__double);
+	I_SimpleProperty(const osg::Matrix &, WorldToLocalMatrix, 
+	                 __C5_osg_Matrix_R1__getWorldToLocalMatrix, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgParticle::ParticleProcessor::ReferenceFrame)
+	I_EnumLabel(osgParticle::ParticleProcessor::RELATIVE_RF);
+	I_EnumLabel(osgParticle::ParticleProcessor::ABSOLUTE_RF);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
+	I_BaseType(osg::Node);
+	I_BaseType(osg::Node);
+	I_Constructor0(____ParticleProcessor,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::ParticleProcessor &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ParticleProcessor__C5_ParticleProcessor_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method0(osgParticle::ParticleProcessor::ReferenceFrame, getReferenceFrame,
+	          Properties::NON_VIRTUAL,
+	          __ReferenceFrame__getReferenceFrame,
+	          "Get the reference frame. ",
+	          "");
+	I_Method1(void, setReferenceFrame, IN, osgParticle::ParticleProcessor::ReferenceFrame, rf,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceFrame__ReferenceFrame,
+	          "Set the reference frame. ",
+	          "");
+	I_Method0(bool, isEnabled,
+	          Properties::NON_VIRTUAL,
+	          __bool__isEnabled,
+	          "Get whether this processor is enabled or not. ",
+	          "");
+	I_Method1(void, setEnabled, IN, bool, v,
+	          Properties::NON_VIRTUAL,
+	          __void__setEnabled__bool,
+	          "Set whether this processor is enabled or not. ",
+	          "");
+	I_Method0(osgParticle::ParticleSystem *, getParticleSystem,
+	          Properties::NON_VIRTUAL,
+	          __ParticleSystem_P1__getParticleSystem,
+	          "Get a pointer to the destination particle system. ",
+	          "");
+	I_Method0(const osgParticle::ParticleSystem *, getParticleSystem,
+	          Properties::NON_VIRTUAL,
+	          __C5_ParticleSystem_P1__getParticleSystem,
+	          "Get a const pointer to the destination particle system. ",
+	          "");
+	I_Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps,
+	          Properties::NON_VIRTUAL,
+	          __void__setParticleSystem__ParticleSystem_P1,
+	          "Set the destination particle system. ",
+	          "");
+	I_Method1(void, setEndless, IN, bool, type,
+	          Properties::NON_VIRTUAL,
+	          __void__setEndless__bool,
+	          "Set the endless flag of this processor. ",
+	          "");
+	I_Method0(bool, isEndless,
+	          Properties::NON_VIRTUAL,
+	          __bool__isEndless,
+	          "Check whether this processor is endless. ",
+	          "");
+	I_Method1(void, setLifeTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setLifeTime__double,
+	          "Set the lifetime of this processor. ",
+	          "");
+	I_Method0(double, getLifeTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getLifeTime,
+	          "Get the lifetime of this processor. ",
+	          "");
+	I_Method1(void, setStartTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setStartTime__double,
+	          "Set the start time of this processor. ",
+	          "");
+	I_Method0(double, getStartTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getStartTime,
+	          "Get the start time of this processor. ",
+	          "");
+	I_Method1(void, setCurrentTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentTime__double,
+	          "Set the current time of this processor. ",
+	          "");
+	I_Method0(double, getCurrentTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getCurrentTime,
+	          "Get the current time of this processor. ",
+	          "");
+	I_Method1(void, setResetTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setResetTime__double,
+	          "Set the reset time of this processor. A value of 0 disables reset. ",
+	          "");
+	I_Method0(double, getResetTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getResetTime,
+	          "Get the reset time of this processor. ",
+	          "");
+	I_Method0(bool, isAlive,
+	          Properties::NON_VIRTUAL,
+	          __bool__isAlive,
+	          "Check whether the processor is alive with respect to start time and life duration. ",
+	          "Note that this method may return true even if the processor has been disabled by calling setEnabled(false). To test whether the processor is actually processing particles or not, you should evaluate (isEnabled() && isAlive()).");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::NON_VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix &, getLocalToWorldMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getLocalToWorldMatrix,
+	          "Get the current local-to-world transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getWorldToLocalMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getWorldToLocalMatrix,
+	          "Get the current world-to-local transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getPreviousLocalToWorldMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getPreviousLocalToWorldMatrix,
+	          "Get the previous local-to-world transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getPreviousWorldToLocalMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getPreviousWorldToLocalMatrix,
+	          "Get the previous world-to-local transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, transformLocalToWorld, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__transformLocalToWorld__C5_osg_Vec3_R1,
+	          "Transform a point from local to world coordinates (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__rotateLocalToWorld__C5_osg_Vec3_R1,
+	          "Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__transformWorldToLocal__C5_osg_Vec3_R1,
+	          "Transform a point from world to local coordinates (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, rotateWorldToLocal, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__rotateWorldToLocal__C5_osg_Vec3_R1,
+	          "Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal). ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
+	I_Constructor0(____ParticleProcessor,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgParticle::ParticleProcessor &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ParticleProcessor__C5_ParticleProcessor_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method0(osgParticle::ParticleProcessor::ReferenceFrame, getReferenceFrame,
+	          Properties::NON_VIRTUAL,
+	          __ReferenceFrame__getReferenceFrame,
+	          "Get the reference frame. ",
+	          "");
+	I_Method1(void, setReferenceFrame, IN, osgParticle::ParticleProcessor::ReferenceFrame, rf,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceFrame__ReferenceFrame,
+	          "Set the reference frame. ",
+	          "");
+	I_Method0(bool, isEnabled,
+	          Properties::NON_VIRTUAL,
+	          __bool__isEnabled,
+	          "Get whether this processor is enabled or not. ",
+	          "");
+	I_Method1(void, setEnabled, IN, bool, v,
+	          Properties::NON_VIRTUAL,
+	          __void__setEnabled__bool,
+	          "Set whether this processor is enabled or not. ",
+	          "");
+	I_Method0(osgParticle::ParticleSystem *, getParticleSystem,
+	          Properties::NON_VIRTUAL,
+	          __ParticleSystem_P1__getParticleSystem,
+	          "Get a pointer to the destination particle system. ",
+	          "");
+	I_Method0(const osgParticle::ParticleSystem *, getParticleSystem,
+	          Properties::NON_VIRTUAL,
+	          __C5_ParticleSystem_P1__getParticleSystem,
+	          "Get a const pointer to the destination particle system. ",
+	          "");
+	I_Method1(void, setParticleSystem, IN, osgParticle::ParticleSystem *, ps,
+	          Properties::NON_VIRTUAL,
+	          __void__setParticleSystem__ParticleSystem_P1,
+	          "Set the destination particle system. ",
+	          "");
+	I_Method1(void, setEndless, IN, bool, type,
+	          Properties::NON_VIRTUAL,
+	          __void__setEndless__bool,
+	          "Set the endless flag of this processor. ",
+	          "");
+	I_Method0(bool, isEndless,
+	          Properties::NON_VIRTUAL,
+	          __bool__isEndless,
+	          "Check whether this processor is endless. ",
+	          "");
+	I_Method1(void, setLifeTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setLifeTime__double,
+	          "Set the lifetime of this processor. ",
+	          "");
+	I_Method0(double, getLifeTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getLifeTime,
+	          "Get the lifetime of this processor. ",
+	          "");
+	I_Method1(void, setStartTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setStartTime__double,
+	          "Set the start time of this processor. ",
+	          "");
+	I_Method0(double, getStartTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getStartTime,
+	          "Get the start time of this processor. ",
+	          "");
+	I_Method1(void, setCurrentTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentTime__double,
+	          "Set the current time of this processor. ",
+	          "");
+	I_Method0(double, getCurrentTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getCurrentTime,
+	          "Get the current time of this processor. ",
+	          "");
+	I_Method1(void, setResetTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setResetTime__double,
+	          "Set the reset time of this processor. A value of 0 disables reset. ",
+	          "");
+	I_Method0(double, getResetTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getResetTime,
+	          "Get the reset time of this processor. ",
+	          "");
+	I_Method0(bool, isAlive,
+	          Properties::NON_VIRTUAL,
+	          __bool__isAlive,
+	          "Check whether the processor is alive with respect to start time and life duration. ",
+	          "Note that this method may return true even if the processor has been disabled by calling setEnabled(false). To test whether the processor is actually processing particles or not, you should evaluate (isEnabled() && isAlive()).");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::NON_VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix &, getLocalToWorldMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getLocalToWorldMatrix,
+	          "Get the current local-to-world transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getWorldToLocalMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getWorldToLocalMatrix,
+	          "Get the current world-to-local transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getPreviousLocalToWorldMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getPreviousLocalToWorldMatrix,
+	          "Get the previous local-to-world transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method0(const osg::Matrix &, getPreviousWorldToLocalMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix_R1__getPreviousWorldToLocalMatrix,
+	          "Get the previous world-to-local transformation matrix (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, transformLocalToWorld, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__transformLocalToWorld__C5_osg_Vec3_R1,
+	          "Transform a point from local to world coordinates (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, rotateLocalToWorld, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__rotateLocalToWorld__C5_osg_Vec3_R1,
+	          "Transform a vector from local to world coordinates, discarding translation (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, transformWorldToLocal, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__transformWorldToLocal__C5_osg_Vec3_R1,
+	          "Transform a point from world to local coordinates (valid only during cull traversal). ",
+	          "");
+	I_Method1(osg::Vec3, rotateWorldToLocal, IN, const osg::Vec3 &, P,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec3__rotateWorldToLocal__C5_osg_Vec3_R1,
+	          "Transform a vector from world to local coordinates, discarding translation (valid only during cull traversal). ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
 	I_SimpleProperty(double, CurrentTime, 
 	                 __double__getCurrentTime, 
 	                 __void__setCurrentTime__double);

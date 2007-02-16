@@ -2,11 +2,9 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	Export.cpp\
 	FadeText.cpp\
 	Font.cpp\
 	String.cpp\
-	Text.cpp\
 
 LIBS   += -losgText -losg -losgIntrospection -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 

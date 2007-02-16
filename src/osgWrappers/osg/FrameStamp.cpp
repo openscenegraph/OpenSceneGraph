@@ -22,6 +22,168 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
 	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____FrameStamp,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::FrameStamp &, fs,
+	               Properties::NON_EXPLICIT,
+	               ____FrameStamp__C5_FrameStamp_R1,
+	               "",
+	               "");
+	I_Method1(void, setFrameNumber, IN, int, fnum,
+	          Properties::NON_VIRTUAL,
+	          __void__setFrameNumber__int,
+	          "",
+	          "");
+	I_Method0(int, getFrameNumber,
+	          Properties::NON_VIRTUAL,
+	          __int__getFrameNumber,
+	          "",
+	          "");
+	I_Method1(void, setReferenceTime, IN, double, refTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceTime__double,
+	          "",
+	          "");
+	I_Method0(double, getReferenceTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getReferenceTime,
+	          "",
+	          "");
+	I_Method1(void, setSimulationTime, IN, double, refTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setSimulationTime__double,
+	          "",
+	          "");
+	I_Method0(double, getSimulationTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getSimulationTime,
+	          "",
+	          "");
+	I_Method1(void, setCalendarTime, IN, const tm &, calendarTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setCalendarTime__C5_tm_R1,
+	          "",
+	          "");
+	I_Method1(void, getCalendarTime, IN, tm &, calendarTime,
+	          Properties::NON_VIRTUAL,
+	          __void__getCalendarTime__tm_R1,
+	          "",
+	          "");
+	I_Constructor0(____FrameStamp,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::FrameStamp &, fs,
+	               Properties::NON_EXPLICIT,
+	               ____FrameStamp__C5_FrameStamp_R1,
+	               "",
+	               "");
+	I_Method1(void, setFrameNumber, IN, int, fnum,
+	          Properties::NON_VIRTUAL,
+	          __void__setFrameNumber__int,
+	          "",
+	          "");
+	I_Method0(int, getFrameNumber,
+	          Properties::NON_VIRTUAL,
+	          __int__getFrameNumber,
+	          "",
+	          "");
+	I_Method1(void, setReferenceTime, IN, double, refTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceTime__double,
+	          "",
+	          "");
+	I_Method0(double, getReferenceTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getReferenceTime,
+	          "",
+	          "");
+	I_Method1(void, setSimulationTime, IN, double, refTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setSimulationTime__double,
+	          "",
+	          "");
+	I_Method0(double, getSimulationTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getSimulationTime,
+	          "",
+	          "");
+	I_Method1(void, setCalendarTime, IN, const tm &, calendarTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setCalendarTime__C5_tm_R1,
+	          "",
+	          "");
+	I_Method1(void, getCalendarTime, IN, tm &, calendarTime,
+	          Properties::NON_VIRTUAL,
+	          __void__getCalendarTime__tm_R1,
+	          "",
+	          "");
+	I_SimpleProperty(const tm &, CalendarTime, 
+	                 0, 
+	                 __void__setCalendarTime__C5_tm_R1);
+	I_SimpleProperty(int, FrameNumber, 
+	                 __int__getFrameNumber, 
+	                 __void__setFrameNumber__int);
+	I_SimpleProperty(double, ReferenceTime, 
+	                 __double__getReferenceTime, 
+	                 __void__setReferenceTime__double);
+	I_SimpleProperty(double, SimulationTime, 
+	                 __double__getSimulationTime, 
+	                 __void__setSimulationTime__double);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
+	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____FrameStamp,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::FrameStamp &, fs,
+	               Properties::NON_EXPLICIT,
+	               ____FrameStamp__C5_FrameStamp_R1,
+	               "",
+	               "");
+	I_Method1(void, setFrameNumber, IN, int, fnum,
+	          Properties::NON_VIRTUAL,
+	          __void__setFrameNumber__int,
+	          "",
+	          "");
+	I_Method0(int, getFrameNumber,
+	          Properties::NON_VIRTUAL,
+	          __int__getFrameNumber,
+	          "",
+	          "");
+	I_Method1(void, setReferenceTime, IN, double, refTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceTime__double,
+	          "",
+	          "");
+	I_Method0(double, getReferenceTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getReferenceTime,
+	          "",
+	          "");
+	I_Method1(void, setSimulationTime, IN, double, refTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setSimulationTime__double,
+	          "",
+	          "");
+	I_Method0(double, getSimulationTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getSimulationTime,
+	          "",
+	          "");
+	I_Method1(void, setCalendarTime, IN, const tm &, calendarTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setCalendarTime__C5_tm_R1,
+	          "",
+	          "");
+	I_Method1(void, getCalendarTime, IN, tm &, calendarTime,
+	          Properties::NON_VIRTUAL,
+	          __void__getCalendarTime__tm_R1,
+	          "",
+	          "");
 	I_Constructor0(____FrameStamp,
 	               "",
 	               "");

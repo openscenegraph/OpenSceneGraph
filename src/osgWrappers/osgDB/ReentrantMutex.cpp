@@ -20,28 +20,41 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgDB::ReadWriteMutex)
-	I_Constructor0(____ReadWriteMutex,
+BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
+	I_Constructor0(____ReentrantMutex,
 	               "",
 	               "");
-	I_Method0(int, readLock,
+	I_Method0(int, lock,
 	          Properties::VIRTUAL,
-	          __int__readLock,
+	          __int__lock,
 	          "",
 	          "");
-	I_Method0(int, readUnlock,
+	I_Method0(int, unlock,
 	          Properties::VIRTUAL,
-	          __int__readUnlock,
+	          __int__unlock,
 	          "",
 	          "");
-	I_Method0(int, writeLock,
+	I_Method0(int, trylock,
 	          Properties::VIRTUAL,
-	          __int__writeLock,
+	          __int__trylock,
 	          "",
 	          "");
-	I_Method0(int, writeUnlock,
+	I_Constructor0(____ReentrantMutex,
+	               "",
+	               "");
+	I_Method0(int, lock,
 	          Properties::VIRTUAL,
-	          __int__writeUnlock,
+	          __int__lock,
+	          "",
+	          "");
+	I_Method0(int, unlock,
+	          Properties::VIRTUAL,
+	          __int__unlock,
+	          "",
+	          "");
+	I_Method0(int, trylock,
+	          Properties::VIRTUAL,
+	          __int__trylock,
 	          "",
 	          "");
 END_REFLECTOR
@@ -65,21 +78,23 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReentrantMutex)
 	          __int__trylock,
 	          "",
 	          "");
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osgDB::ScopedReadLock)
-	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
-	               Properties::NON_EXPLICIT,
-	               ____ScopedReadLock__ReadWriteMutex_R1,
+	I_Constructor0(____ReentrantMutex,
 	               "",
 	               "");
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osgDB::ScopedWriteLock)
-	I_Constructor1(IN, osgDB::ReadWriteMutex &, mutex,
-	               Properties::NON_EXPLICIT,
-	               ____ScopedWriteLock__ReadWriteMutex_R1,
-	               "",
-	               "");
+	I_Method0(int, lock,
+	          Properties::VIRTUAL,
+	          __int__lock,
+	          "",
+	          "");
+	I_Method0(int, unlock,
+	          Properties::VIRTUAL,
+	          __int__unlock,
+	          "",
+	          "");
+	I_Method0(int, trylock,
+	          Properties::VIRTUAL,
+	          __int__trylock,
+	          "",
+	          "");
 END_REFLECTOR
 

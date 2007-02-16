@@ -10,11 +10,11 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/CopyOp>
+#include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osgTerrain/HeightFieldNode>
 #include <osgTerrain/HeightFieldRenderer>
+#include <osgUtil/.svn/text-base/UpdateVisitor.svn-base>
 #include <osgUtil/CullVisitor>
-#include <osgUtil/UpdateVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -26,6 +26,126 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
 	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
+	I_Constructor0(____HeightFieldRenderer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____HeightFieldRenderer__C5_HeightFieldRenderer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
+	          __HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
+	          __C5_HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(void, initialize,
+	          Properties::PURE_VIRTUAL,
+	          __void__initialize,
+	          "",
+	          "");
+	I_Method0(void, heightFieldHasBeenModified,
+	          Properties::PURE_VIRTUAL,
+	          __void__heightFieldHasBeenModified,
+	          "",
+	          "");
+	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
+	          __void__update__osgUtil_UpdateVisitor_P1,
+	          "",
+	          "");
+	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
+	          __void__cull__osgUtil_CullVisitor_P1,
+	          "",
+	          "");
+	I_Constructor0(____HeightFieldRenderer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____HeightFieldRenderer__C5_HeightFieldRenderer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
+	          __HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
+	          __C5_HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(void, initialize,
+	          Properties::PURE_VIRTUAL,
+	          __void__initialize,
+	          "",
+	          "");
+	I_Method0(void, heightFieldHasBeenModified,
+	          Properties::PURE_VIRTUAL,
+	          __void__heightFieldHasBeenModified,
+	          "",
+	          "");
+	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
+	          __void__update__osgUtil_UpdateVisitor_P1,
+	          "",
+	          "");
+	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
+	          __void__cull__osgUtil_CullVisitor_P1,
+	          "",
+	          "");
+	I_SimpleProperty(osgTerrain::HeightFieldNode *, HeightFieldNode, 
+	                 __HeightFieldNode_P1__getHeightFieldNode, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
+	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
+	I_Constructor0(____HeightFieldRenderer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____HeightFieldRenderer__C5_HeightFieldRenderer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
+	          __HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	          Properties::NON_VIRTUAL,
+	          __C5_HeightFieldNode_P1__getHeightFieldNode,
+	          "",
+	          "");
+	I_Method0(void, initialize,
+	          Properties::PURE_VIRTUAL,
+	          __void__initialize,
+	          "",
+	          "");
+	I_Method0(void, heightFieldHasBeenModified,
+	          Properties::PURE_VIRTUAL,
+	          __void__heightFieldHasBeenModified,
+	          "",
+	          "");
+	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
+	          __void__update__osgUtil_UpdateVisitor_P1,
+	          "",
+	          "");
+	I_Method1(void, cull, IN, osgUtil::CullVisitor *, nv,
+	          Properties::PURE_VIRTUAL,
+	          __void__cull__osgUtil_CullVisitor_P1,
+	          "",
+	          "");
 	I_Constructor0(____HeightFieldRenderer,
 	               "",
 	               "");

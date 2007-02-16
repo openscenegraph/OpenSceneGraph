@@ -22,6 +22,42 @@
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TrackballDragger)
 	I_BaseType(osgManipulator::CompositeDragger);
+	I_BaseType(osgManipulator::CompositeDragger);
+	I_ConstructorWithDefaults1(IN, bool, useAutoTransform, false,
+	                           Properties::NON_EXPLICIT,
+	                           ____TrackballDragger__bool,
+	                           "",
+	                           "");
+	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setupDefaultGeometry,
+	          "Setup default geometry for dragger. ",
+	          "");
+	I_ConstructorWithDefaults1(IN, bool, useAutoTransform, false,
+	                           Properties::NON_EXPLICIT,
+	                           ____TrackballDragger__bool,
+	                           "",
+	                           "");
+	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setupDefaultGeometry,
+	          "Setup default geometry for dragger. ",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgManipulator::TrackballDragger)
+	I_BaseType(osgManipulator::CompositeDragger);
+	I_BaseType(osgManipulator::CompositeDragger);
+	I_ConstructorWithDefaults1(IN, bool, useAutoTransform, false,
+	                           Properties::NON_EXPLICIT,
+	                           ____TrackballDragger__bool,
+	                           "",
+	                           "");
+	I_Method0(void, setupDefaultGeometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setupDefaultGeometry,
+	          "Setup default geometry for dragger. ",
+	          "");
 	I_ConstructorWithDefaults1(IN, bool, useAutoTransform, false,
 	                           Properties::NON_EXPLICIT,
 	                           ____TrackballDragger__bool,

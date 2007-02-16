@@ -23,23 +23,15 @@ CXXFILES =\
 	MultiSegmentPlacer.cpp\
 	Operator.cpp\
 	Particle.cpp\
-	ParticleEffect.cpp\
 	ParticleProcessor.cpp\
 	ParticleSystem.cpp\
 	ParticleSystemUpdater.cpp\
-	Placer.cpp\
 	PointPlacer.cpp\
 	PrecipitationEffect.cpp\
 	Program.cpp\
 	RadialShooter.cpp\
 	RandomRateCounter.cpp\
-	SectorPlacer.cpp\
 	SegmentPlacer.cpp\
-	Shooter.cpp\
-	SmokeEffect.cpp\
-	SmokeTrailEffect.cpp\
-	VariableRateCounter.cpp\
-	range.cpp\
 
 LIBS   += -losgParticle -losg -losgIntrospection -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 

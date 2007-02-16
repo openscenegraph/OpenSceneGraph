@@ -10,18 +10,11 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Array>
-#include <osg/CopyOp>
-#include <osg/GL2Extensions>
-#include <osg/Matrixd>
-#include <osg/Matrixf>
-#include <osg/NodeVisitor>
-#include <osg/Object>
-#include <osg/StateSet>
+#include <osg/.svn/text-base/CopyOp.svn-base>
+#include <osg/.svn/text-base/NodeVisitor.svn-base>
+#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/.svn/text-base/Uniform.svn-base>
 #include <osg/Uniform>
-#include <osg/Vec2>
-#include <osg/Vec3>
-#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -32,6 +25,135 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Matrix2)
+	I_Constructor0(____Matrix2,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Matrix2 &, mat,
+	               Properties::NON_EXPLICIT,
+	               ____Matrix2__C5_Matrix2_R1,
+	               "",
+	               "");
+	I_Constructor4(IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11,
+	               ____Matrix2__float__float__float__float,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const osg::Matrix2 &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__set__C5_Matrix2_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, float const *const, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float_C5_P1C5,
+	          "",
+	          "");
+	I_Method4(void, set, IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float__float__float__float,
+	          "",
+	          "");
+	I_Method0(float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(void, makeIdentity,
+	          Properties::NON_VIRTUAL,
+	          __void__makeIdentity,
+	          "",
+	          "");
+	I_Constructor0(____Matrix2,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Matrix2 &, mat,
+	               Properties::NON_EXPLICIT,
+	               ____Matrix2__C5_Matrix2_R1,
+	               "",
+	               "");
+	I_Constructor4(IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11,
+	               ____Matrix2__float__float__float__float,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const osg::Matrix2 &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__set__C5_Matrix2_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, float const *const, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float_C5_P1C5,
+	          "",
+	          "");
+	I_Method4(void, set, IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float__float__float__float,
+	          "",
+	          "");
+	I_Method0(float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(void, makeIdentity,
+	          Properties::NON_VIRTUAL,
+	          __void__makeIdentity,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Matrix2)
+	I_Constructor0(____Matrix2,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Matrix2 &, mat,
+	               Properties::NON_EXPLICIT,
+	               ____Matrix2__C5_Matrix2_R1,
+	               "",
+	               "");
+	I_Constructor4(IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11,
+	               ____Matrix2__float__float__float__float,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const osg::Matrix2 &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__set__C5_Matrix2_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, float const *const, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float_C5_P1C5,
+	          "",
+	          "");
+	I_Method4(void, set, IN, float, a00, IN, float, a01, IN, float, a10, IN, float, a11,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float__float__float__float,
+	          "",
+	          "");
+	I_Method0(float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(void, makeIdentity,
+	          Properties::NON_VIRTUAL,
+	          __void__makeIdentity,
+	          "",
+	          "");
 	I_Constructor0(____Matrix2,
 	               "",
 	               "");
@@ -119,677 +241,139 @@ BEGIN_VALUE_REFLECTOR(osg::Matrix3)
 	          __void__makeIdentity,
 	          "",
 	          "");
+	I_Constructor0(____Matrix3,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::Matrix3 &, mat,
+	               Properties::NON_EXPLICIT,
+	               ____Matrix3__C5_Matrix3_R1,
+	               "",
+	               "");
+	I_Constructor9(IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22,
+	               ____Matrix3__float__float__float__float__float__float__float__float__float,
+	               "",
+	               "");
+	I_Method1(void, set, IN, const osg::Matrix3 &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__set__C5_Matrix3_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, float const *const, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float_C5_P1C5,
+	          "",
+	          "");
+	I_Method9(void, set, IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float__float__float__float__float__float__float__float__float,
+	          "",
+	          "");
+	I_Method0(float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(void, makeIdentity,
+	          Properties::NON_VIRTUAL,
+	          __void__makeIdentity,
+	          "",
+	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::Uniform::ParentList);
-
-BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
-	I_EnumLabel(osg::Uniform::FLOAT);
-	I_EnumLabel(osg::Uniform::FLOAT_VEC2);
-	I_EnumLabel(osg::Uniform::FLOAT_VEC3);
-	I_EnumLabel(osg::Uniform::FLOAT_VEC4);
-	I_EnumLabel(osg::Uniform::INT);
-	I_EnumLabel(osg::Uniform::INT_VEC2);
-	I_EnumLabel(osg::Uniform::INT_VEC3);
-	I_EnumLabel(osg::Uniform::INT_VEC4);
-	I_EnumLabel(osg::Uniform::BOOL);
-	I_EnumLabel(osg::Uniform::BOOL_VEC2);
-	I_EnumLabel(osg::Uniform::BOOL_VEC3);
-	I_EnumLabel(osg::Uniform::BOOL_VEC4);
-	I_EnumLabel(osg::Uniform::FLOAT_MAT2);
-	I_EnumLabel(osg::Uniform::FLOAT_MAT3);
-	I_EnumLabel(osg::Uniform::FLOAT_MAT4);
-	I_EnumLabel(osg::Uniform::SAMPLER_1D);
-	I_EnumLabel(osg::Uniform::SAMPLER_2D);
-	I_EnumLabel(osg::Uniform::SAMPLER_3D);
-	I_EnumLabel(osg::Uniform::SAMPLER_CUBE);
-	I_EnumLabel(osg::Uniform::SAMPLER_1D_SHADOW);
-	I_EnumLabel(osg::Uniform::SAMPLER_2D_SHADOW);
-	I_EnumLabel(osg::Uniform::UNDEFINED);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::Uniform)
-	I_BaseType(osg::Object);
-	I_Constructor0(____Uniform,
+BEGIN_VALUE_REFLECTOR(osg::Matrix3)
+	I_Constructor0(____Matrix3,
 	               "",
 	               "");
-	I_ConstructorWithDefaults3(IN, osg::Uniform::Type, type, , IN, const std::string &, name, , IN, int, numElements, 1,
-	                           ____Uniform__Type__C5_std_string_R1__int,
-	                           "",
-	                           "");
-	I_ConstructorWithDefaults2(IN, const osg::Uniform &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____Uniform__C5_Uniform_R1__C5_CopyOp_R1,
-	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, setType, IN, osg::Uniform::Type, t,
-	          Properties::NON_VIRTUAL,
-	          __bool__setType__Type,
-	          "Set the type of glUniform, ensuring it is only set once. ",
-	          "");
-	I_Method0(const osg::Uniform::Type, getType,
-	          Properties::NON_VIRTUAL,
-	          __C5_Type__getType,
-	          "Get the type of glUniform as enum. ",
-	          "");
-	I_Method1(void, setName, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __void__setName__C5_std_string_R1,
-	          "Set the name of the glUniform, ensuring it is only set once. ",
-	          "");
-	I_Method1(void, setNumElements, IN, unsigned int, numElements,
-	          Properties::NON_VIRTUAL,
-	          __void__setNumElements__unsigned_int,
-	          "Set the length of a uniform, ensuring it is only set once (1==scalar). ",
-	          "");
-	I_Method0(unsigned int, getNumElements,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getNumElements,
-	          "Get the number of GLSL elements of the osg::Uniform (1==scalar). ",
-	          "");
-	I_Method0(unsigned int, getInternalArrayNumElements,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getInternalArrayNumElements,
-	          "Get the number of elements required for the internal data array. ",
-	          "Returns 0 if the osg::Uniform is not properly configured. ");
-	I_Constructor2(IN, const char *, name, IN, float, f,
-	               ____Uniform__C5_char_P1__float,
-	               "convenient scalar (non-array) constructors w/ assignment ",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, int, i,
-	               ____Uniform__C5_char_P1__int,
+	I_Constructor1(IN, const osg::Matrix3 &, mat,
+	               Properties::NON_EXPLICIT,
+	               ____Matrix3__C5_Matrix3_R1,
 	               "",
 	               "");
-	I_Constructor2(IN, const char *, name, IN, bool, b,
-	               ____Uniform__C5_char_P1__bool,
+	I_Constructor9(IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22,
+	               ____Matrix3__float__float__float__float__float__float__float__float__float,
 	               "",
 	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Vec2 &, v2,
-	               ____Uniform__C5_char_P1__C5_osg_Vec2_R1,
+	I_Method1(void, set, IN, const osg::Matrix3 &, rhs,
+	          Properties::NON_VIRTUAL,
+	          __void__set__C5_Matrix3_R1,
+	          "",
+	          "");
+	I_Method1(void, set, IN, float const *const, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float_C5_P1C5,
+	          "",
+	          "");
+	I_Method9(void, set, IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22,
+	          Properties::NON_VIRTUAL,
+	          __void__set__float__float__float__float__float__float__float__float__float,
+	          "",
+	          "");
+	I_Method0(float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(const float *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __C5_float_P1__ptr,
+	          "",
+	          "");
+	I_Method0(void, makeIdentity,
+	          Properties::NON_VIRTUAL,
+	          __void__makeIdentity,
+	          "",
+	          "");
+	I_Constructor0(____Matrix3,
 	               "",
 	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Vec3 &, v3,
-	               ____Uniform__C5_char_P1__C5_osg_Vec3_R1,
+	I_Constructor1(IN, const osg::Matrix3 &, mat,
+	               Properties::NON_EXPLICIT,
+	               ____Matrix3__C5_Matrix3_R1,
 	               "",
 	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Vec4 &, v4,
-	               ____Uniform__C5_char_P1__C5_osg_Vec4_R1,
+	I_Constructor9(IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22,
+	               ____Matrix3__float__float__float__float__float__float__float__float__float,
 	               "",
 	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Matrix2 &, m2,
-	               ____Uniform__C5_char_P1__C5_osg_Matrix2_R1,
-	               "",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Matrix3 &, m3,
-	               ____Uniform__C5_char_P1__C5_osg_Matrix3_R1,
-	               "",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Matrixf &, m4,
-	               ____Uniform__C5_char_P1__C5_osg_Matrixf_R1,
-	               "",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, const osg::Matrixd &, m4,
-	               ____Uniform__C5_char_P1__C5_osg_Matrixd_R1,
-	               "",
-	               "");
-	I_Constructor3(IN, const char *, name, IN, int, i0, IN, int, i1,
-	               ____Uniform__C5_char_P1__int__int,
-	               "",
-	               "");
-	I_Constructor4(IN, const char *, name, IN, int, i0, IN, int, i1, IN, int, i2,
-	               ____Uniform__C5_char_P1__int__int__int,
-	               "",
-	               "");
-	I_Constructor5(IN, const char *, name, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3,
-	               ____Uniform__C5_char_P1__int__int__int__int,
-	               "",
-	               "");
-	I_Constructor3(IN, const char *, name, IN, bool, b0, IN, bool, b1,
-	               ____Uniform__C5_char_P1__bool__bool,
-	               "",
-	               "");
-	I_Constructor4(IN, const char *, name, IN, bool, b0, IN, bool, b1, IN, bool, b2,
-	               ____Uniform__C5_char_P1__bool__bool__bool,
-	               "",
-	               "");
-	I_Constructor5(IN, const char *, name, IN, bool, b0, IN, bool, b1, IN, bool, b2, IN, bool, b3,
-	               ____Uniform__C5_char_P1__bool__bool__bool__bool,
-	               "",
-	               "");
-	I_Method1(int, compare, IN, const osg::Uniform &, rhs,
-	          Properties::VIRTUAL,
-	          __int__compare__C5_Uniform_R1,
-	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
-	          "");
-	I_Method1(int, compareData, IN, const osg::Uniform &, rhs,
-	          Properties::VIRTUAL,
-	          __int__compareData__C5_Uniform_R1,
-	          "",
-	          "");
-	I_Method1(void, copyData, IN, const osg::Uniform &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__copyData__C5_Uniform_R1,
-	          "",
-	          "");
-	I_Method0(const osg::Uniform::ParentList &, getParents,
-	          Properties::NON_VIRTUAL,
-	          __C5_ParentList_R1__getParents,
-	          "Get the parent list of this Uniform. ",
-	          "");
-	I_Method0(osg::Uniform::ParentList, getParents,
-	          Properties::NON_VIRTUAL,
-	          __ParentList__getParents,
-	          "Get the a copy of parent list of node. ",
-	          "A copy is returned to prevent modification of the parent list. ");
-	I_Method1(osg::StateSet *, getParent, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __StateSet_P1__getParent__unsigned_int,
-	          "",
-	          "");
-	I_Method1(const osg::StateSet *, getParent, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_StateSet_P1__getParent__unsigned_int,
-	          "Get a single const parent of this Uniform. ",
-	          " param i index of the parent to get.   return the parent i.");
-	I_Method0(unsigned int, getNumParents,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getNumParents,
-	          "Get the number of parents of this Uniform. ",
-	          "the number of parents of this Uniform. ");
-	I_Method1(bool, set, IN, float, f,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__float,
-	          "convenient scalar (non-array) value assignment ",
-	          "");
-	I_Method1(bool, set, IN, int, i,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__int,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, bool, b,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__bool,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Vec2 &, v2,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Vec2_R1,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Vec3 &, v3,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Vec3_R1,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Vec4 &, v4,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Vec4_R1,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Matrix2 &, m2,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Matrix2_R1,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Matrix3 &, m3,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Matrix3_R1,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Matrixf &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Matrixf_R1,
-	          "",
-	          "");
-	I_Method1(bool, set, IN, const osg::Matrixd &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__C5_osg_Matrixd_R1,
-	          "",
-	          "");
-	I_Method2(bool, set, IN, int, i0, IN, int, i1,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__int__int,
-	          "",
-	          "");
-	I_Method3(bool, set, IN, int, i0, IN, int, i1, IN, int, i2,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__int__int__int,
-	          "",
-	          "");
-	I_Method4(bool, set, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__int__int__int__int,
-	          "",
-	          "");
-	I_Method2(bool, set, IN, bool, b0, IN, bool, b1,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__bool__bool,
-	          "",
-	          "");
-	I_Method3(bool, set, IN, bool, b0, IN, bool, b1, IN, bool, b2,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__bool__bool__bool,
-	          "",
-	          "");
-	I_Method4(bool, set, IN, bool, b0, IN, bool, b1, IN, bool, b2, IN, bool, b3,
-	          Properties::NON_VIRTUAL,
-	          __bool__set__bool__bool__bool__bool,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, float &, f,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__float_R1,
-	          "convenient scalar (non-array) value query ",
-	          "");
-	I_Method1(bool, get, IN, int &, i,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__int_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, bool &, b,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__bool_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Vec2 &, v2,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Vec2_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Vec3 &, v3,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Vec3_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Vec4 &, v4,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Vec4_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Matrix2 &, m2,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Matrix2_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Matrix3 &, m3,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Matrix3_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Matrixf &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Matrixf_R1,
-	          "",
-	          "");
-	I_Method1(bool, get, IN, osg::Matrixd &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__osg_Matrixd_R1,
-	          "",
-	          "");
-	I_Method2(bool, get, IN, int &, i0, IN, int &, i1,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method3(bool, get, IN, int &, i0, IN, int &, i1, IN, int &, i2,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__int_R1__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method4(bool, get, IN, int &, i0, IN, int &, i1, IN, int &, i2, IN, int &, i3,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__int_R1__int_R1__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method2(bool, get, IN, bool &, b0, IN, bool &, b1,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__bool_R1__bool_R1,
-	          "",
-	          "");
-	I_Method3(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__bool_R1__bool_R1__bool_R1,
-	          "",
-	          "");
-	I_Method4(bool, get, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2, IN, bool &, b3,
-	          Properties::NON_VIRTUAL,
-	          __bool__get__bool_R1__bool_R1__bool_R1__bool_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, float, f,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__float,
-	          "value assignment for array uniforms ",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, int, i,
+	I_Method1(void, set, IN, const osg::Matrix3 &, rhs,
 	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__int,
+	          __void__set__C5_Matrix3_R1,
 	          "",
 	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, bool, b,
+	I_Method1(void, set, IN, float const *const, ptr,
 	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__bool,
+	          __void__set__float_C5_P1C5,
 	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Vec2 &, v2,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Vec2_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Vec3 &, v3,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Vec3_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Vec4 &, v4,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Vec4_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrix2 &, m2,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Matrix2_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrix3 &, m3,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Matrix3_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrixf &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Matrixf_R1,
-	          "",
-	          "");
-	I_Method2(bool, setElement, IN, unsigned int, index, IN, const osg::Matrixd &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__C5_osg_Matrixd_R1,
-	          "",
-	          "");
-	I_Method3(bool, setElement, IN, unsigned int, index, IN, int, i0, IN, int, i1,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__int__int,
-	          "",
-	          "");
-	I_Method4(bool, setElement, IN, unsigned int, index, IN, int, i0, IN, int, i1, IN, int, i2,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__int__int__int,
-	          "",
-	          "");
-	I_Method5(bool, setElement, IN, unsigned int, index, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__int__int__int__int,
-	          "",
-	          "");
-	I_Method3(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__bool__bool,
-	          "",
-	          "");
-	I_Method4(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1, IN, bool, b2,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__bool__bool__bool,
-	          "",
-	          "");
-	I_Method5(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1, IN, bool, b2, IN, bool, b3,
-	          Properties::NON_VIRTUAL,
-	          __bool__setElement__unsigned_int__bool__bool__bool__bool,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, float &, f,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__float_R1,
-	          "value query for array uniforms ",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, int &, i,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__int_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, bool &, b,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__bool_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Vec2 &, v2,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Vec2_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Vec3 &, v3,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Vec3_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Vec4 &, v4,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Vec4_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrix2 &, m2,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Matrix2_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrix3 &, m3,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Matrix3_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrixf &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Matrixf_R1,
-	          "",
-	          "");
-	I_Method2(bool, getElement, IN, unsigned int, index, IN, osg::Matrixd &, m4,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__osg_Matrixd_R1,
-	          "",
-	          "");
-	I_Method3(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method4(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1, IN, int &, i2,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__int_R1__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method5(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1, IN, int &, i2, IN, int &, i3,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__int_R1__int_R1__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method3(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__bool_R1__bool_R1,
-	          "",
-	          "");
-	I_Method4(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__bool_R1__bool_R1__bool_R1,
-	          "",
-	          "");
-	I_Method5(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1, IN, bool &, b2, IN, bool &, b3,
-	          Properties::NON_VIRTUAL,
-	          __bool__getElement__unsigned_int__bool_R1__bool_R1__bool_R1__bool_R1,
-	          "",
-	          "");
-	I_Method1(void, setUpdateCallback, IN, osg::Uniform::Callback *, uc,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpdateCallback__Callback_P1,
-	          "Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal. ",
-	          "");
-	I_Method0(osg::Uniform::Callback *, getUpdateCallback,
-	          Properties::NON_VIRTUAL,
-	          __Callback_P1__getUpdateCallback,
-	          "Get the non const UpdateCallback. ",
-	          "");
-	I_Method0(const osg::Uniform::Callback *, getUpdateCallback,
-	          Properties::NON_VIRTUAL,
-	          __C5_Callback_P1__getUpdateCallback,
-	          "Get the const UpdateCallback. ",
-	          "");
-	I_Method1(void, setEventCallback, IN, osg::Uniform::Callback *, ec,
-	          Properties::NON_VIRTUAL,
-	          __void__setEventCallback__Callback_P1,
-	          "Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal. ",
-	          "");
-	I_Method0(osg::Uniform::Callback *, getEventCallback,
-	          Properties::NON_VIRTUAL,
-	          __Callback_P1__getEventCallback,
-	          "Get the non const EventCallback. ",
-	          "");
-	I_Method0(const osg::Uniform::Callback *, getEventCallback,
-	          Properties::NON_VIRTUAL,
-	          __C5_Callback_P1__getEventCallback,
-	          "Get the const EventCallback. ",
-	          "");
-	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
-	          __void__dirty,
-	          "Increment the modified count on the Uniform so Programs watching it know it update themselves. ",
-	          "NOTE: autotomatically called during osg::Uniform::set*(); you must call if modifying the internal data array directly. ");
-	I_Method1(bool, setArray, IN, osg::FloatArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __bool__setArray__FloatArray_P1,
-	          "Set the internal data array for a osg::Uniform. ",
-	          "");
-	I_Method1(bool, setArray, IN, osg::IntArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __bool__setArray__IntArray_P1,
-	          "",
-	          "");
-	I_Method0(osg::FloatArray *, getFloatArray,
-	          Properties::NON_VIRTUAL,
-	          __FloatArray_P1__getFloatArray,
-	          "Get the internal data array for a float osg::Uniform. ",
-	          "");
-	I_Method0(const osg::FloatArray *, getFloatArray,
-	          Properties::NON_VIRTUAL,
-	          __C5_FloatArray_P1__getFloatArray,
-	          "",
-	          "");
-	I_Method0(osg::IntArray *, getIntArray,
-	          Properties::NON_VIRTUAL,
-	          __IntArray_P1__getIntArray,
-	          "Get the internal data array for an int osg::Uniform. ",
 	          "");
-	I_Method0(const osg::IntArray *, getIntArray,
+	I_Method9(void, set, IN, float, a00, IN, float, a01, IN, float, a02, IN, float, a10, IN, float, a11, IN, float, a12, IN, float, a20, IN, float, a21, IN, float, a22,
 	          Properties::NON_VIRTUAL,
-	          __C5_IntArray_P1__getIntArray,
+	          __void__set__float__float__float__float__float__float__float__float__float,
 	          "",
 	          "");
-	I_Method1(void, setModifiedCount, IN, unsigned int, mc,
+	I_Method0(float *, ptr,
 	          Properties::NON_VIRTUAL,
-	          __void__setModifiedCount__unsigned_int,
+	          __float_P1__ptr,
 	          "",
 	          "");
-	I_Method0(unsigned int, getModifiedCount,
+	I_Method0(const float *, ptr,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getModifiedCount,
+	          __C5_float_P1__ptr,
 	          "",
 	          "");
-	I_Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location,
+	I_Method0(void, makeIdentity,
 	          Properties::NON_VIRTUAL,
-	          __void__apply__C5_GL2Extensions_P1__GLint,
+	          __void__makeIdentity,
 	          "",
 	          "");
-	I_StaticMethod1(const char *, getTypename, IN, osg::Uniform::Type, t,
-	                __C5_char_P1__getTypename__Type_S,
-	                "Return the name of a Type enum as string. ",
-	                "");
-	I_StaticMethod1(int, getTypeNumComponents, IN, osg::Uniform::Type, t,
-	                __int__getTypeNumComponents__Type_S,
-	                "Return the the number of components for a GLSL type. ",
-	                "");
-	I_StaticMethod1(osg::Uniform::Type, getTypeId, IN, const std::string &, tname,
-	                __Uniform_Type__getTypeId__C5_std_string_R1_S,
-	                "Return the Type enum of a Uniform typename string. ",
-	                "");
-	I_StaticMethod1(osg::Uniform::Type, getGlApiType, IN, osg::Uniform::Type, t,
-	                __Type__getGlApiType__Type_S,
-	                "Return the GL API type corresponding to a GLSL type. ",
-	                "");
-	I_StaticMethod1(GLenum, getInternalArrayType, IN, osg::Uniform::Type, t,
-	                __GLenum__getInternalArrayType__Type_S,
-	                "Return the internal data array type corresponding to a GLSL type. ",
-	                "");
-	I_SimpleProperty(osg::FloatArray *, Array, 
-	                 0, 
-	                 __bool__setArray__FloatArray_P1);
-	I_ArrayProperty(bool, Element, 
-	                0, 
-	                __bool__setElement__unsigned_int__bool, 
-	                __unsigned_int__getNumElements, 
-	                0, 
-	                0, 
-	                0);
-	I_SimpleProperty(osg::Uniform::Callback *, EventCallback, 
-	                 __Callback_P1__getEventCallback, 
-	                 __void__setEventCallback__Callback_P1);
-	I_SimpleProperty(osg::FloatArray *, FloatArray, 
-	                 __FloatArray_P1__getFloatArray, 
-	                 0);
-	I_SimpleProperty(osg::IntArray *, IntArray, 
-	                 __IntArray_P1__getIntArray, 
-	                 0);
-	I_SimpleProperty(unsigned int, InternalArrayNumElements, 
-	                 __unsigned_int__getInternalArrayNumElements, 
-	                 0);
-	I_SimpleProperty(unsigned int, ModifiedCount, 
-	                 __unsigned_int__getModifiedCount, 
-	                 __void__setModifiedCount__unsigned_int);
-	I_SimpleProperty(const std::string &, Name, 
-	                 0, 
-	                 __void__setName__C5_std_string_R1);
-	I_SimpleProperty(unsigned int, NumElements, 
-	                 0, 
-	                 __void__setNumElements__unsigned_int);
-	I_ArrayProperty(osg::StateSet *, Parent, 
-	                __StateSet_P1__getParent__unsigned_int, 
-	                0, 
-	                __unsigned_int__getNumParents, 
-	                0, 
-	                0, 
-	                0);
-	I_SimpleProperty(osg::Uniform::ParentList, Parents, 
-	                 __ParentList__getParents, 
-	                 0);
-	I_SimpleProperty(osg::Uniform::Type, Type, 
-	                 0, 
-	                 __bool__setType__Type);
-	I_SimpleProperty(osg::Uniform::Callback *, UpdateCallback, 
-	                 __Callback_P1__getUpdateCallback, 
-	                 __void__setUpdateCallback__Callback_P1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Uniform::Callback)
+	I_VirtualBaseType(osg::Object);
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",
@@ -801,13 +385,13 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform::Callback)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -816,12 +400,113 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform::Callback)
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	          "",
+	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
+	I_Constructor0(____Callback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Uniform::Callback &, x, IN, const osg::CopyOp &, x,
+	               ____Callback__C5_Callback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Uniform::Callback)
+	I_VirtualBaseType(osg::Object);
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0(____Callback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Uniform::Callback &, x, IN, const osg::CopyOp &, x,
+	               ____Callback__C5_Callback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Constructor0(____Callback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::Uniform::Callback &, x, IN, const osg::CopyOp &, x,
+	               ____Callback__C5_Callback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 END_REFLECTOR
 

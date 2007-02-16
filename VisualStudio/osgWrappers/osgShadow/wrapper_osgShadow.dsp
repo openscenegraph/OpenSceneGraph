@@ -96,10 +96,6 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgShadow\Export.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgShadow\OccluderGeometry.cpp
 # End Source File
 
@@ -109,10 +105,6 @@ SOURCE=..\..\..\src\osgWrappers\osgShadow\ParallelSplitShadowMap.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowMap.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgShadow\ShadowTechnique.cpp
 # End Source File
 
 # Begin Source File

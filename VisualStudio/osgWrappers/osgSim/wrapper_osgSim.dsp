@@ -175,10 +175,6 @@ SOURCE=..\..\..\src\osgWrappers\osgSim\Sector.cpp
 SOURCE=..\..\..\src\osgWrappers\osgSim\SphereSegment.cpp
 # End Source File
 
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgSim\VisibilityGroup.cpp
-# End Source File
-
 # End Group
 # Begin Group "Header Files"
 

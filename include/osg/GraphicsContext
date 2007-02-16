@@ -75,6 +75,7 @@ class OSG_EXPORT GraphicsContext : public Object
                 face(0),
                 mipMapGeneration(false),
                 vsync(true),
+                useMultiThreadedOpenGLEngine(false),
                 useCursor(true),
                 sharedContext(0) {}
                             
@@ -114,6 +115,9 @@ class OSG_EXPORT GraphicsContext : public Object
             
             // V-sync
             bool            vsync;
+            
+            // use multithreaded OpenGL-engine (OS X only)
+            bool            useMultiThreadedOpenGLEngine;
             
             // enable cursor
             bool            useCursor;

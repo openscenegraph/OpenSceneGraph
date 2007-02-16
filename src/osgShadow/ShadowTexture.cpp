@@ -15,8 +15,6 @@
 #include <osgShadow/ShadowedScene>
 #include <osg/Notify>
 
-#include <osgDB/ReadFile>
-
 using namespace osgShadow;
 
 class CameraCullCallback : public osg::NodeCallback
@@ -59,6 +57,7 @@ ShadowTexture::ShadowTexture(const ShadowTexture& copy, const osg::CopyOp& copyo
 
 void ShadowTexture::init()
 {
+    if (!_shadowedScene) return;
 
     unsigned int tex_width = 512;
     unsigned int tex_height = 512;
@@ -71,8 +70,6 @@ void ShadowTexture::init()
     _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
     _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
     _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-
-    _texture->setImage(osgDB::readImageFile("Images/road.png"));
 
     // set up the render to texture camera.
     {
@@ -90,7 +87,8 @@ void ShadowTexture::init()
         _camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+        //_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+        _camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
 
         // attach the texture and use it as the color buffer.
         _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
@@ -113,11 +111,14 @@ void ShadowTexture::init()
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
     }
+    
+    _dirty = false;
 }
 
 
-void ShadowTexture::update(osg::NodeVisitor&)
+void ShadowTexture::update(osg::NodeVisitor& nv)
 {
+    _shadowedScene->osg::Group::traverse(nv);
 }
 
 void ShadowTexture::cull(osgUtil::CullVisitor& cv)
@@ -125,8 +126,6 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
     // record the traversal mask on entry so we can reapply it later.
     unsigned int traversalMask = cv.getTraversalMask();
 
-    // do RTT camera traversal
-    // _camera->accept(cv);
 
     // do traversal of shadow casting scene which does not need to be decorated by the shadow texture
     {
@@ -148,6 +147,11 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
         cv.popStateSet();
 
     }
+
+
+    // do RTT camera traversal
+    _camera->accept(cv);
+
 
     // reapply the original traversal mask
     cv.setTraversalMask( traversalMask );

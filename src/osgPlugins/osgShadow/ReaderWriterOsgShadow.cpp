@@ -70,7 +70,7 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
 
 ///////////////////////////////////////////////////////////////////////////
 
-class ReaderWriterShadow : public osgDB::ReaderWriter
+class ReaderWriterOsgShadow : public osgDB::ReaderWriter
 {
 public:
     ReaderWriterOsgShadow() { }

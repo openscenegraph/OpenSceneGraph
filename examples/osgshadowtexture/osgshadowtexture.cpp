@@ -135,7 +135,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->addChild(cessna);
     
         osg::MatrixTransform* xform = new osg::MatrixTransform;
-        //xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
+        xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
         xform->addChild(positioned);
 
         model->addChild(xform);
@@ -159,8 +159,11 @@ osg::Node* createModel(osg::ArgumentParser& arguments)
     // the shadowed model
     osg::Node* shadowed = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
     
-    if (arguments.read("--osgShadow"))
+    if (arguments.read("--sv"))
     {
+        // hint to tell viewer to request stencil buffer when setting up windows
+        osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
+
         osgShadow::ShadowedScene* shadowedScene = new osgShadow::ShadowedScene;
         
         osg::ref_ptr<osgShadow::ShadowVolume> shadowVolume = new osgShadow::ShadowVolume;
@@ -168,9 +171,7 @@ osg::Node* createModel(osg::ArgumentParser& arguments)
         shadowVolume->setDynamicShadowVolumes(true);
 
         osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
-        ls->getLight()->setPosition(osg::Vec4(0,1,1,0.0));
-        ls->getLight()->setAmbient(osg::Vec4(0.0,0.0,1.0,1.0));
-        ls->getLight()->setDiffuse(osg::Vec4(0.0,1.0,0.0,1.0));
+        ls->getLight()->setPosition(osg::Vec4(lightPosition,1.0));
 
         shadowedScene->addChild(shadower);
         shadowedScene->addChild(shadowed);

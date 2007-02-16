@@ -8,8 +8,10 @@ CXXFILES =\
 	Effect.cpp\
 	MultiTextureControl.cpp\
 	Registry.cpp\
+	Scribe.cpp\
 	SpecularHighlights.cpp\
 	Technique.cpp\
+	Validator.cpp\
 
 LIBS   += -losgFX -losg -losgIntrospection -losgUtil -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 

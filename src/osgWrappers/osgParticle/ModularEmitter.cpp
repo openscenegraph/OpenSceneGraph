@@ -10,9 +10,9 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/.svn/text-base/CopyOp.svn-base>
-#include <osg/.svn/text-base/NodeVisitor.svn-base>
-#include <osg/.svn/text-base/Object.svn-base>
+#include <osg/CopyOp>
+#include <osg/NodeVisitor>
+#include <osg/Object>
 #include <osgParticle/Counter>
 #include <osgParticle/ModularEmitter>
 #include <osgParticle/Placer>
@@ -28,7 +28,6 @@
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	I_BaseType(osgParticle::Emitter);
-	I_BaseType(osgParticle::Emitter);
 	I_Constructor0(____ModularEmitter,
 	               "",
 	               "");
@@ -39,325 +38,32 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "",
+	          "clone an object of the same type as the node. ",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
+	          "return a clone of a node, with Object* return type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
+	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "",
+	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "",
+	          "return the name of the node's library. ",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method0(osgParticle::Counter *, getCounter,
-	          Properties::NON_VIRTUAL,
-	          __Counter_P1__getCounter,
-	          "Get the counter object. ",
-	          "");
-	I_Method0(const osgParticle::Counter *, getCounter,
-	          Properties::NON_VIRTUAL,
-	          __C5_Counter_P1__getCounter,
-	          "Get the const Counter object. ",
-	          "");
-	I_Method1(void, setCounter, IN, osgParticle::Counter *, c,
-	          Properties::NON_VIRTUAL,
-	          __void__setCounter__Counter_P1,
-	          "Set the Counter object. ",
-	          "");
-	I_Method0(float, getNumParticlesToCreateMovementCompenstationRatio,
-	          Properties::NON_VIRTUAL,
-	          __float__getNumParticlesToCreateMovementCompenstationRatio,
-	          "Get the ratio between number of particle to create in compenstation for movement of the emitter. ",
-	          "");
-	I_Method1(void, setNumParticlesToCreateMovementCompenstationRatio, IN, float, r,
-	          Properties::NON_VIRTUAL,
-	          __void__setNumParticlesToCreateMovementCompenstationRatio__float,
-	          "Set the ratio between number of particle to create in compenstation for movement of the emitter. ",
-	          "");
-	I_Method0(osgParticle::Placer *, getPlacer,
-	          Properties::NON_VIRTUAL,
-	          __Placer_P1__getPlacer,
-	          "Get the Placer object. ",
-	          "");
-	I_Method0(const osgParticle::Placer *, getPlacer,
-	          Properties::NON_VIRTUAL,
-	          __C5_Placer_P1__getPlacer,
-	          "Get the const Placer object. ",
-	          "");
-	I_Method1(void, setPlacer, IN, osgParticle::Placer *, p,
-	          Properties::NON_VIRTUAL,
-	          __void__setPlacer__Placer_P1,
-	          "Set the Placer object. ",
-	          "");
-	I_Method0(osgParticle::Shooter *, getShooter,
-	          Properties::NON_VIRTUAL,
-	          __Shooter_P1__getShooter,
-	          "Get the Shooter object. ",
-	          "");
-	I_Method0(const osgParticle::Shooter *, getShooter,
-	          Properties::NON_VIRTUAL,
-	          __C5_Shooter_P1__getShooter,
-	          "Get the const Shooter object. ",
-	          "");
-	I_Method1(void, setShooter, IN, osgParticle::Shooter *, s,
-	          Properties::NON_VIRTUAL,
-	          __void__setShooter__Shooter_P1,
-	          "Set the Shooter object. ",
-	          "");
-	I_Constructor0(____ModularEmitter,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgParticle::ModularEmitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ModularEmitter__C5_ModularEmitter_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method0(osgParticle::Counter *, getCounter,
-	          Properties::NON_VIRTUAL,
-	          __Counter_P1__getCounter,
-	          "Get the counter object. ",
-	          "");
-	I_Method0(const osgParticle::Counter *, getCounter,
-	          Properties::NON_VIRTUAL,
-	          __C5_Counter_P1__getCounter,
-	          "Get the const Counter object. ",
-	          "");
-	I_Method1(void, setCounter, IN, osgParticle::Counter *, c,
-	          Properties::NON_VIRTUAL,
-	          __void__setCounter__Counter_P1,
-	          "Set the Counter object. ",
-	          "");
-	I_Method0(float, getNumParticlesToCreateMovementCompenstationRatio,
-	          Properties::NON_VIRTUAL,
-	          __float__getNumParticlesToCreateMovementCompenstationRatio,
-	          "Get the ratio between number of particle to create in compenstation for movement of the emitter. ",
-	          "");
-	I_Method1(void, setNumParticlesToCreateMovementCompenstationRatio, IN, float, r,
-	          Properties::NON_VIRTUAL,
-	          __void__setNumParticlesToCreateMovementCompenstationRatio__float,
-	          "Set the ratio between number of particle to create in compenstation for movement of the emitter. ",
-	          "");
-	I_Method0(osgParticle::Placer *, getPlacer,
-	          Properties::NON_VIRTUAL,
-	          __Placer_P1__getPlacer,
-	          "Get the Placer object. ",
-	          "");
-	I_Method0(const osgParticle::Placer *, getPlacer,
-	          Properties::NON_VIRTUAL,
-	          __C5_Placer_P1__getPlacer,
-	          "Get the const Placer object. ",
-	          "");
-	I_Method1(void, setPlacer, IN, osgParticle::Placer *, p,
-	          Properties::NON_VIRTUAL,
-	          __void__setPlacer__Placer_P1,
-	          "Set the Placer object. ",
-	          "");
-	I_Method0(osgParticle::Shooter *, getShooter,
-	          Properties::NON_VIRTUAL,
-	          __Shooter_P1__getShooter,
-	          "Get the Shooter object. ",
-	          "");
-	I_Method0(const osgParticle::Shooter *, getShooter,
-	          Properties::NON_VIRTUAL,
-	          __C5_Shooter_P1__getShooter,
-	          "Get the const Shooter object. ",
-	          "");
-	I_Method1(void, setShooter, IN, osgParticle::Shooter *, s,
-	          Properties::NON_VIRTUAL,
-	          __void__setShooter__Shooter_P1,
-	          "Set the Shooter object. ",
-	          "");
-	I_SimpleProperty(osgParticle::Counter *, Counter, 
-	                 __Counter_P1__getCounter, 
-	                 __void__setCounter__Counter_P1);
-	I_SimpleProperty(float, NumParticlesToCreateMovementCompenstationRatio, 
-	                 0, 
-	                 __void__setNumParticlesToCreateMovementCompenstationRatio__float);
-	I_SimpleProperty(osgParticle::Placer *, Placer, 
-	                 __Placer_P1__getPlacer, 
-	                 __void__setPlacer__Placer_P1);
-	I_SimpleProperty(osgParticle::Shooter *, Shooter, 
-	                 __Shooter_P1__getShooter, 
-	                 __void__setShooter__Shooter_P1);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
-	I_BaseType(osgParticle::Emitter);
-	I_BaseType(osgParticle::Emitter);
-	I_Constructor0(____ModularEmitter,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgParticle::ModularEmitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ModularEmitter__C5_ModularEmitter_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method0(osgParticle::Counter *, getCounter,
-	          Properties::NON_VIRTUAL,
-	          __Counter_P1__getCounter,
-	          "Get the counter object. ",
-	          "");
-	I_Method0(const osgParticle::Counter *, getCounter,
-	          Properties::NON_VIRTUAL,
-	          __C5_Counter_P1__getCounter,
-	          "Get the const Counter object. ",
-	          "");
-	I_Method1(void, setCounter, IN, osgParticle::Counter *, c,
-	          Properties::NON_VIRTUAL,
-	          __void__setCounter__Counter_P1,
-	          "Set the Counter object. ",
-	          "");
-	I_Method0(float, getNumParticlesToCreateMovementCompenstationRatio,
-	          Properties::NON_VIRTUAL,
-	          __float__getNumParticlesToCreateMovementCompenstationRatio,
-	          "Get the ratio between number of particle to create in compenstation for movement of the emitter. ",
-	          "");
-	I_Method1(void, setNumParticlesToCreateMovementCompenstationRatio, IN, float, r,
-	          Properties::NON_VIRTUAL,
-	          __void__setNumParticlesToCreateMovementCompenstationRatio__float,
-	          "Set the ratio between number of particle to create in compenstation for movement of the emitter. ",
-	          "");
-	I_Method0(osgParticle::Placer *, getPlacer,
-	          Properties::NON_VIRTUAL,
-	          __Placer_P1__getPlacer,
-	          "Get the Placer object. ",
-	          "");
-	I_Method0(const osgParticle::Placer *, getPlacer,
-	          Properties::NON_VIRTUAL,
-	          __C5_Placer_P1__getPlacer,
-	          "Get the const Placer object. ",
-	          "");
-	I_Method1(void, setPlacer, IN, osgParticle::Placer *, p,
-	          Properties::NON_VIRTUAL,
-	          __void__setPlacer__Placer_P1,
-	          "Set the Placer object. ",
-	          "");
-	I_Method0(osgParticle::Shooter *, getShooter,
-	          Properties::NON_VIRTUAL,
-	          __Shooter_P1__getShooter,
-	          "Get the Shooter object. ",
-	          "");
-	I_Method0(const osgParticle::Shooter *, getShooter,
-	          Properties::NON_VIRTUAL,
-	          __C5_Shooter_P1__getShooter,
-	          "Get the const Shooter object. ",
-	          "");
-	I_Method1(void, setShooter, IN, osgParticle::Shooter *, s,
-	          Properties::NON_VIRTUAL,
-	          __void__setShooter__Shooter_P1,
-	          "Set the Shooter object. ",
-	          "");
-	I_Constructor0(____ModularEmitter,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgParticle::ModularEmitter &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ModularEmitter__C5_ModularEmitter_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osg_NodeVisitor_R1,
-	          "",
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method0(osgParticle::Counter *, getCounter,
 	          Properties::NON_VIRTUAL,

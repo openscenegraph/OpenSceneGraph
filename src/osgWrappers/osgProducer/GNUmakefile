@@ -2,10 +2,12 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
+	Export.cpp\
 	GraphicsContextImplementation.cpp\
 	KeyboardMouseCallback.cpp\
 	OsgCameraGroup.cpp\
 	OsgSceneHandler.cpp\
+	Viewer.cpp\
 	ViewerEventHandler.cpp\
 
 LIBS   += -losgProducer -losg -losgIntrospection -losgUtil -losgDB -lProducer -losgGA -losgText  $(GL_LIBS) $(OTHER_LIBS)

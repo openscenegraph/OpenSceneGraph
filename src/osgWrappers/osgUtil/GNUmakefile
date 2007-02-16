@@ -13,15 +13,22 @@ CXXFILES =\
 	IntersectionVisitor.cpp\
 	LineSegmentIntersector.cpp\
 	Optimizer.cpp\
+	PlaneIntersector.cpp\
+	PolytopeIntersector.cpp\
+	PositionalStateContainer.cpp\
 	ReflectionMapGenerator.cpp\
 	RenderBin.cpp\
+	RenderLeaf.cpp\
 	RenderStage.cpp\
 	SceneView.cpp\
 	Simplifier.cpp\
 	SmoothingVisitor.cpp\
+	StateGraph.cpp\
 	Statistics.cpp\
+	TangentSpaceGenerator.cpp\
 	Tessellator.cpp\
 	TransformAttributeFunctor.cpp\
+	TransformCallback.cpp\
 	TriStripVisitor.cpp\
 	UpdateVisitor.cpp\
 

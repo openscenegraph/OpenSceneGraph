@@ -10,12 +10,13 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/.svn/text-base/BoundingBox.svn-base>
-#include <osg/.svn/text-base/Drawable.svn-base>
-#include <osg/.svn/text-base/Matrix.svn-base>
-#include <osg/.svn/text-base/Node.svn-base>
+#include <osg/BoundingBox>
 #include <osg/ComputeBoundsVisitor>
+#include <osg/Drawable>
 #include <osg/Geode>
+#include <osg/Matrix>
+#include <osg/Node>
+#include <osg/NodeVisitor>
 #include <osg/Polytope>
 #include <osg/Transform>
 
@@ -29,7 +30,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::ComputeBoundsVisitor)
 	I_BaseType(osg::NodeVisitor);
-	I_ConstructorWithDefaults1(IN, TraversalMode, traversalMode, TRAVERSE_ALL_CHILDREN,
+	I_ConstructorWithDefaults1(IN, osg::NodeVisitor::TraversalMode, traversalMode, osg::NodeVisitor::TRAVERSE_ALL_CHILDREN,
 	                           Properties::NON_EXPLICIT,
 	                           ____ComputeBoundsVisitor__TraversalMode,
 	                           "",
@@ -37,8 +38,8 @@ BEGIN_OBJECT_REFLECTOR(osg::ComputeBoundsVisitor)
 	I_Method0(void, reset,
 	          Properties::VIRTUAL,
 	          __void__reset,
-	          "",
-	          "");
+	          "Method to call to reset visitor. ",
+	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
 	I_Method0(osg::BoundingBox &, getBoundingBox,
 	          Properties::NON_VIRTUAL,
 	          __osg_BoundingBox_R1__getBoundingBox,
@@ -55,17 +56,17 @@ BEGIN_OBJECT_REFLECTOR(osg::ComputeBoundsVisitor)
 	                      "",
 	                      "");
 	I_Method1(void, apply, IN, osg::Node &, node,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Transform &, transform,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Transform_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Geode &, geode,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");

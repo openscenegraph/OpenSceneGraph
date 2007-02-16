@@ -96,6 +96,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgProducer\Export.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgProducer\GraphicsContextImplementation.cpp
 # End Source File
 
@@ -109,6 +113,10 @@ SOURCE=..\..\..\src\osgWrappers\osgProducer\OsgCameraGroup.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgProducer\OsgSceneHandler.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgProducer\Viewer.cpp
 # End Source File
 
 # Begin Source File

@@ -96,7 +96,55 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\Archive.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\DatabasePager.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\DotOsgWrapper.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\DynamicLibrary.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\Field.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\FieldReader.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\FieldReaderIterator.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgDB\FileUtils.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\ImageOptions.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\Input.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\Output.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\ParameterOutput.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\ReaderWriter.cpp
 # End Source File
 
 # Begin Source File
@@ -105,6 +153,10 @@ SOURCE=..\..\..\src\osgWrappers\osgDB\ReentrantMutex.cpp
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgDB\Registry.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgDB\SharedStateManager.cpp
 # End Source File
 
 # End Group

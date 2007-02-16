@@ -10,11 +10,11 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/.svn/text-base/CopyOp.svn-base>
-#include <osg/.svn/text-base/Matrix.svn-base>
-#include <osg/.svn/text-base/Object.svn-base>
-#include <osg/.svn/text-base/StateAttribute.svn-base>
+#include <osg/CopyOp>
+#include <osg/Matrix>
+#include <osg/Object>
 #include <osg/State>
+#include <osg/StateAttribute>
 #include <osg/TexMat>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -27,7 +27,6 @@
 
 BEGIN_OBJECT_REFLECTOR(osg::TexMat)
 	I_BaseType(osg::StateAttribute);
-	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexMat,
 	               "",
 	               "");
@@ -43,119 +42,37 @@ BEGIN_OBJECT_REFLECTOR(osg::TexMat)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
+	          "Clone the type of an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
+	          "Clone an attribute, with Object* return type. ",
+	          "Must be defined by derived classes. ");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
+	          "Return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "",
+	          "Return the name of the attribute's library. ",
 	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "",
+	          "Return the name of the attribute's class type. ",
 	          "");
-	I_Method0(Type, getType,
+	I_Method0(osg::StateAttribute::Type, getType,
 	          Properties::VIRTUAL,
 	          __Type__getType,
-	          "",
+	          "Return the Type identifier of the attribute's class type. ",
 	          "");
 	I_Method0(bool, isTextureAttribute,
 	          Properties::VIRTUAL,
 	          __bool__isTextureAttribute,
-	          "",
-	          "");
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
-	          Properties::VIRTUAL,
-	          __int__compare__C5_StateAttribute_R1,
-	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
-	          "");
-	I_Method1(void, setMatrix, IN, const osg::Matrix &, matrix,
-	          Properties::NON_VIRTUAL,
-	          __void__setMatrix__C5_Matrix_R1,
-	          "Set the texture matrix. ",
-	          "");
-	I_Method0(osg::Matrix &, getMatrix,
-	          Properties::NON_VIRTUAL,
-	          __Matrix_R1__getMatrix,
-	          "Get the texture matrix. ",
-	          "");
-	I_Method0(const osg::Matrix &, getMatrix,
-	          Properties::NON_VIRTUAL,
-	          __C5_Matrix_R1__getMatrix,
-	          "Get the const texture matrix. ",
-	          "");
-	I_Method1(void, setScaleByTextureRectangleSize, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setScaleByTextureRectangleSize__bool,
-	          "Switch on/off the post scaling of the TexMat matrix by the size of the last applied texture rectangle. ",
-	          "Use a TexMat alongside a TextureRectangle with this scaling applied allows one to treat a TextureRectnagles texture coordinate range as if it were the usual non dimensional 0.0 to 1.0 range. Note, the TexMat matrix itself is not modified by the post scaling, its purely an operation passed to OpenGL to do the post scaling once the the TexMat matrix has been loaded. ");
-	I_Method0(bool, getScaleByTextureRectangleSize,
-	          Properties::NON_VIRTUAL,
-	          __bool__getScaleByTextureRectangleSize,
-	          "Get whether the post scaling of the TexMat matrix, by the size of the last applied texture rectangle, is switched on/off. ",
-	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
-	          Properties::VIRTUAL,
-	          __void__apply__State_R1,
-	          "Apply texture matrix to OpenGL state. ",
-	          "");
-	I_Constructor0(____TexMat,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Matrix &, matrix,
-	               Properties::NON_EXPLICIT,
-	               ____TexMat__C5_Matrix_R1,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osg::TexMat &, texmat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____TexMat__C5_TexMat_R1__C5_CopyOp_R1,
-	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(Type, getType,
-	          Properties::VIRTUAL,
-	          __Type__getType,
-	          "",
-	          "");
-	I_Method0(bool, isTextureAttribute,
-	          Properties::VIRTUAL,
-	          __bool__isTextureAttribute,
-	          "",
+	          "Return true if StateAttribute is a type which controls texturing and needs to be issued w.r.t to specific texture unit. ",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
 	          Properties::VIRTUAL,
@@ -198,185 +115,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TexMat)
 	I_SimpleProperty(bool, ScaleByTextureRectangleSize, 
 	                 __bool__getScaleByTextureRectangleSize, 
 	                 __void__setScaleByTextureRectangleSize__bool);
-	I_SimpleProperty(Type, Type, 
-	                 __Type__getType, 
-	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::TexMat)
-	I_BaseType(osg::StateAttribute);
-	I_BaseType(osg::StateAttribute);
-	I_Constructor0(____TexMat,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Matrix &, matrix,
-	               Properties::NON_EXPLICIT,
-	               ____TexMat__C5_Matrix_R1,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osg::TexMat &, texmat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____TexMat__C5_TexMat_R1__C5_CopyOp_R1,
-	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(Type, getType,
-	          Properties::VIRTUAL,
-	          __Type__getType,
-	          "",
-	          "");
-	I_Method0(bool, isTextureAttribute,
-	          Properties::VIRTUAL,
-	          __bool__isTextureAttribute,
-	          "",
-	          "");
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
-	          Properties::VIRTUAL,
-	          __int__compare__C5_StateAttribute_R1,
-	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
-	          "");
-	I_Method1(void, setMatrix, IN, const osg::Matrix &, matrix,
-	          Properties::NON_VIRTUAL,
-	          __void__setMatrix__C5_Matrix_R1,
-	          "Set the texture matrix. ",
-	          "");
-	I_Method0(osg::Matrix &, getMatrix,
-	          Properties::NON_VIRTUAL,
-	          __Matrix_R1__getMatrix,
-	          "Get the texture matrix. ",
-	          "");
-	I_Method0(const osg::Matrix &, getMatrix,
-	          Properties::NON_VIRTUAL,
-	          __C5_Matrix_R1__getMatrix,
-	          "Get the const texture matrix. ",
-	          "");
-	I_Method1(void, setScaleByTextureRectangleSize, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setScaleByTextureRectangleSize__bool,
-	          "Switch on/off the post scaling of the TexMat matrix by the size of the last applied texture rectangle. ",
-	          "Use a TexMat alongside a TextureRectangle with this scaling applied allows one to treat a TextureRectnagles texture coordinate range as if it were the usual non dimensional 0.0 to 1.0 range. Note, the TexMat matrix itself is not modified by the post scaling, its purely an operation passed to OpenGL to do the post scaling once the the TexMat matrix has been loaded. ");
-	I_Method0(bool, getScaleByTextureRectangleSize,
-	          Properties::NON_VIRTUAL,
-	          __bool__getScaleByTextureRectangleSize,
-	          "Get whether the post scaling of the TexMat matrix, by the size of the last applied texture rectangle, is switched on/off. ",
-	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
-	          Properties::VIRTUAL,
-	          __void__apply__State_R1,
-	          "Apply texture matrix to OpenGL state. ",
-	          "");
-	I_Constructor0(____TexMat,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Matrix &, matrix,
-	               Properties::NON_EXPLICIT,
-	               ____TexMat__C5_Matrix_R1,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osg::TexMat &, texmat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____TexMat__C5_TexMat_R1__C5_CopyOp_R1,
-	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(Type, getType,
-	          Properties::VIRTUAL,
-	          __Type__getType,
-	          "",
-	          "");
-	I_Method0(bool, isTextureAttribute,
-	          Properties::VIRTUAL,
-	          __bool__isTextureAttribute,
-	          "",
-	          "");
-	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
-	          Properties::VIRTUAL,
-	          __int__compare__C5_StateAttribute_R1,
-	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
-	          "");
-	I_Method1(void, setMatrix, IN, const osg::Matrix &, matrix,
-	          Properties::NON_VIRTUAL,
-	          __void__setMatrix__C5_Matrix_R1,
-	          "Set the texture matrix. ",
-	          "");
-	I_Method0(osg::Matrix &, getMatrix,
-	          Properties::NON_VIRTUAL,
-	          __Matrix_R1__getMatrix,
-	          "Get the texture matrix. ",
-	          "");
-	I_Method0(const osg::Matrix &, getMatrix,
-	          Properties::NON_VIRTUAL,
-	          __C5_Matrix_R1__getMatrix,
-	          "Get the const texture matrix. ",
-	          "");
-	I_Method1(void, setScaleByTextureRectangleSize, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setScaleByTextureRectangleSize__bool,
-	          "Switch on/off the post scaling of the TexMat matrix by the size of the last applied texture rectangle. ",
-	          "Use a TexMat alongside a TextureRectangle with this scaling applied allows one to treat a TextureRectnagles texture coordinate range as if it were the usual non dimensional 0.0 to 1.0 range. Note, the TexMat matrix itself is not modified by the post scaling, its purely an operation passed to OpenGL to do the post scaling once the the TexMat matrix has been loaded. ");
-	I_Method0(bool, getScaleByTextureRectangleSize,
-	          Properties::NON_VIRTUAL,
-	          __bool__getScaleByTextureRectangleSize,
-	          "Get whether the post scaling of the TexMat matrix, by the size of the last applied texture rectangle, is switched on/off. ",
-	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
-	          Properties::VIRTUAL,
-	          __void__apply__State_R1,
-	          "Apply texture matrix to OpenGL state. ",
-	          "");
-	I_SimpleProperty(const osg::Matrix &, Matrix, 
-	                 __C5_Matrix_R1__getMatrix, 
-	                 __void__setMatrix__C5_Matrix_R1);
-	I_SimpleProperty(bool, ScaleByTextureRectangleSize, 
-	                 __bool__getScaleByTextureRectangleSize, 
-	                 __void__setScaleByTextureRectangleSize__bool);
-	I_SimpleProperty(Type, Type, 
+	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);
 END_REFLECTOR

@@ -10,10 +10,10 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/.svn/text-base/CopyOp.svn-base>
-#include <osg/.svn/text-base/NodeVisitor.svn-base>
-#include <osg/.svn/text-base/Object.svn-base>
-#include <osgShadow/.svn/text-base/ShadowTechnique.svn-base>
+#include <osg/CopyOp>
+#include <osg/NodeVisitor>
+#include <osg/Object>
+#include <osgShadow/ShadowTechnique>
 #include <osgShadow/ShadowedScene>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -26,7 +26,6 @@
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	I_BaseType(osg::Group);
-	I_BaseType(osg::Group);
 	I_Constructor0(____ShadowedScene,
 	               "",
 	               "");
@@ -37,312 +36,37 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
-	          "",
+	          "clone an object of the same type as the node. ",
 	          "");
 	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
+	          "return a clone of a node, with Object* return type. ",
 	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
+	          "return true if this and obj are of the same kind of object. ",
 	          "");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "",
+	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
-	          "",
+	          "return the name of the node's library. ",
 	          "");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
-	          "",
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method1(void, setRecievesShadowTraversalMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setRecievesShadowTraversalMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getRecievesShadowTraversalMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getRecievesShadowTraversalMask,
-	          "",
-	          "");
-	I_Method1(void, setCastsShadowTraversalMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setCastsShadowTraversalMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getCastsShadowTraversalMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getCastsShadowTraversalMask,
-	          "",
-	          "");
-	I_Method1(void, setShadowTechnique, IN, osgShadow::ShadowTechnique *, technique,
-	          Properties::NON_VIRTUAL,
-	          __void__setShadowTechnique__ShadowTechnique_P1,
-	          "",
-	          "");
-	I_Method0(osgShadow::ShadowTechnique *, getShadowTechnique,
-	          Properties::NON_VIRTUAL,
-	          __ShadowTechnique_P1__getShadowTechnique,
-	          "",
-	          "");
-	I_Method0(const osgShadow::ShadowTechnique *, getShadowTechnique,
-	          Properties::NON_VIRTUAL,
-	          __C5_ShadowTechnique_P1__getShadowTechnique,
-	          "",
-	          "");
-	I_Method0(void, cleanSceneGraph,
-	          Properties::NON_VIRTUAL,
-	          __void__cleanSceneGraph,
-	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
-	          "");
-	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
-	          __void__dirty,
-	          "Dirty any cache data structures held in the attached ShadowTechnqiue. ",
-	          "");
-	I_Constructor0(____ShadowedScene,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgShadow::ShadowedScene &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ShadowedScene__C5_ShadowedScene_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__traverse__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method1(void, setRecievesShadowTraversalMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setRecievesShadowTraversalMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getRecievesShadowTraversalMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getRecievesShadowTraversalMask,
-	          "",
-	          "");
-	I_Method1(void, setCastsShadowTraversalMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setCastsShadowTraversalMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getCastsShadowTraversalMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getCastsShadowTraversalMask,
-	          "",
-	          "");
-	I_Method1(void, setShadowTechnique, IN, osgShadow::ShadowTechnique *, technique,
-	          Properties::NON_VIRTUAL,
-	          __void__setShadowTechnique__ShadowTechnique_P1,
-	          "",
-	          "");
-	I_Method0(osgShadow::ShadowTechnique *, getShadowTechnique,
-	          Properties::NON_VIRTUAL,
-	          __ShadowTechnique_P1__getShadowTechnique,
-	          "",
-	          "");
-	I_Method0(const osgShadow::ShadowTechnique *, getShadowTechnique,
-	          Properties::NON_VIRTUAL,
-	          __C5_ShadowTechnique_P1__getShadowTechnique,
-	          "",
-	          "");
-	I_Method0(void, cleanSceneGraph,
-	          Properties::NON_VIRTUAL,
-	          __void__cleanSceneGraph,
-	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
-	          "");
-	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
-	          __void__dirty,
-	          "Dirty any cache data structures held in the attached ShadowTechnqiue. ",
-	          "");
-	I_SimpleProperty(unsigned int, CastsShadowTraversalMask, 
-	                 __unsigned_int__getCastsShadowTraversalMask, 
-	                 __void__setCastsShadowTraversalMask__unsigned_int);
-	I_SimpleProperty(unsigned int, RecievesShadowTraversalMask, 
-	                 __unsigned_int__getRecievesShadowTraversalMask, 
-	                 __void__setRecievesShadowTraversalMask__unsigned_int);
-	I_SimpleProperty(osgShadow::ShadowTechnique *, ShadowTechnique, 
-	                 __ShadowTechnique_P1__getShadowTechnique, 
-	                 __void__setShadowTechnique__ShadowTechnique_P1);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
-	I_BaseType(osg::Group);
-	I_BaseType(osg::Group);
-	I_Constructor0(____ShadowedScene,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgShadow::ShadowedScene &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ShadowedScene__C5_ShadowedScene_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__traverse__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method1(void, setRecievesShadowTraversalMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setRecievesShadowTraversalMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getRecievesShadowTraversalMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getRecievesShadowTraversalMask,
-	          "",
-	          "");
-	I_Method1(void, setCastsShadowTraversalMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setCastsShadowTraversalMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getCastsShadowTraversalMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getCastsShadowTraversalMask,
-	          "",
-	          "");
-	I_Method1(void, setShadowTechnique, IN, osgShadow::ShadowTechnique *, technique,
-	          Properties::NON_VIRTUAL,
-	          __void__setShadowTechnique__ShadowTechnique_P1,
-	          "",
-	          "");
-	I_Method0(osgShadow::ShadowTechnique *, getShadowTechnique,
-	          Properties::NON_VIRTUAL,
-	          __ShadowTechnique_P1__getShadowTechnique,
-	          "",
-	          "");
-	I_Method0(const osgShadow::ShadowTechnique *, getShadowTechnique,
-	          Properties::NON_VIRTUAL,
-	          __C5_ShadowTechnique_P1__getShadowTechnique,
-	          "",
-	          "");
-	I_Method0(void, cleanSceneGraph,
-	          Properties::NON_VIRTUAL,
-	          __void__cleanSceneGraph,
-	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
-	          "");
-	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
-	          __void__dirty,
-	          "Dirty any cache data structures held in the attached ShadowTechnqiue. ",
-	          "");
-	I_Constructor0(____ShadowedScene,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgShadow::ShadowedScene &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ShadowedScene__C5_ShadowedScene_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "",
-	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "",
-	          "");
-	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osg_NodeVisitor_R1,
-	          "",
-	          "");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__traverse__osg_NodeVisitor_R1,
-	          "",
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
 	I_Method1(void, setRecievesShadowTraversalMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,

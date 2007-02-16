@@ -61,7 +61,7 @@ class OSG_EXPORT ClipNode : public Group
         inline const ClipPlane* getClipPlane(unsigned int pos) const { return _planes[pos].get(); }
 
         /** Set the ClipPlaneList. */
-        inline void getClipPlaneList(const ClipPlaneList& cpl) { _planes=cpl; }
+        inline void setClipPlaneList(const ClipPlaneList& cpl) { _planes=cpl; }
 
         /** Get the ClipPlaneList. */
         inline ClipPlaneList& getClipPlaneList() { return _planes; }

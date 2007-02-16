@@ -581,15 +581,16 @@ bool GraphicsWindowCarbon::realizeImplementation()
             attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute);
         else
             attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute) & ~kWindowResizableAttribute;
-         err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
     }
-    else {
-        attr = kWindowStandardHandlerAttribute;
+    else 
+    {
+        attr = kWindowNoTitleBarAttribute | kWindowNoShadowAttribute | kWindowStandardHandlerAttribute;
         if (_traits->supportsResize)
             attr |= kWindowResizableAttribute;
-         err = CreateNewWindow(kSimpleWindowClass, attr, &bounds, &_window);
     }
-       
+    
+    err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
+
     if (err) {
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
         return false;
@@ -641,8 +642,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
        
     makeCurrent();
 
-    // disabling Multi-threaded OpenGL Execution because it slows down rendering, perhaps we should add a new attribute to traits?
-    /*
+    if ((_traits->useMultiThreadedOpenGLEngine) && (OpenThreads::GetNumberOfProcessors() > 1)) {
         // enable Multi-threaded OpenGL Execution:
         CGLError cgerr = kCGLNoError;
         CGLContextObj ctx = CGLGetCurrentContext();
@@ -653,7 +653,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
         {
             osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
         } 
-    */
+    }
     aglSetDrawable(_context, GetWindowPort(_window));
     ShowWindow(_window);
     

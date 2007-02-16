@@ -124,6 +124,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Camera.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\ComputeBoundsVisitor.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\DrawPixels.cpp
 # End Source File
 
@@ -164,7 +168,7 @@ SOURCE=..\..\..\src\osgWrappers\osg\Notify.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\PagedLOD.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\Plane.cpp
 # End Source File
 
 # Begin Source File
@@ -220,15 +224,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Referenced.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Sequence.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\Scissor.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\ShadeModel.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Shader.cpp
 # End Source File
 
 # Begin Source File
@@ -256,27 +256,23 @@ SOURCE=..\..\..\src\osgWrappers\osg\Stats.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\StencilTwoSided.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\TexEnv.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Switch.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\TexGen.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexEnvCombine.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\TexGenNode.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TexEnvFilter.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\TexMat.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Texture.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Texture1D.cpp
 # End Source File
 
 # Begin Source File
@@ -292,10 +288,6 @@ SOURCE=..\..\..\src\osgWrappers\osg\TextureCubeMap.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\TextureRectangle.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Transform.cpp
 # End Source File
 
@@ -304,7 +296,11 @@ SOURCE=..\..\..\src\osgWrappers\osg\Uniform.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\Vec2d.cpp
+SOURCE=..\..\..\src\osgWrappers\osg\Vec2f.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec2s.cpp
 # End Source File
 
 # Begin Source File
@@ -316,15 +312,15 @@ SOURCE=..\..\..\src\osgWrappers\osg\Vec4b.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\Vec4d.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Vec4s.cpp
 # End Source File
 
 # Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\VertexProgram.cpp
-# End Source File
-
-# Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osg\View.cpp
 # End Source File
 
 # End Group

@@ -10,12 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/.svn/text-base/Array.svn-base>
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osg/.svn/text-base/Matrix.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
 #include <osg/.svn/text-base/Shape.svn-base>
 #include <osg/.svn/text-base/Vec2.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
+#include <osg/Array>
 #include <osg/Quat>
 #include <osg/Shape>
 
@@ -4075,5 +4077,315 @@ BEGIN_OBJECT_REFLECTOR(osg::Sphere)
 	I_SimpleProperty(float, Radius, 
 	                 __float__getRadius, 
 	                 __void__setRadius__float);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
+	I_BaseType(osg::Shape);
+	I_BaseType(osg::Shape);
+	I_Constructor0(____TriangleMesh,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TriangleMesh__C5_TriangleMesh_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertices__Vec3Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __C5_Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method1(void, setIndices, IN, osg::IndexArray *, indices,
+	          Properties::NON_VIRTUAL,
+	          __void__setIndices__IndexArray_P1,
+	          "",
+	          "");
+	I_Method0(osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Constructor0(____TriangleMesh,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TriangleMesh__C5_TriangleMesh_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertices__Vec3Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __C5_Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method1(void, setIndices, IN, osg::IndexArray *, indices,
+	          Properties::NON_VIRTUAL,
+	          __void__setIndices__IndexArray_P1,
+	          "",
+	          "");
+	I_Method0(osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_SimpleProperty(osg::IndexArray *, Indices, 
+	                 __IndexArray_P1__getIndices, 
+	                 __void__setIndices__IndexArray_P1);
+	I_SimpleProperty(osg::Vec3Array *, Vertices, 
+	                 __Vec3Array_P1__getVertices, 
+	                 __void__setVertices__Vec3Array_P1);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
+	I_BaseType(osg::Shape);
+	I_BaseType(osg::Shape);
+	I_Constructor0(____TriangleMesh,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TriangleMesh__C5_TriangleMesh_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertices__Vec3Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __C5_Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method1(void, setIndices, IN, osg::IndexArray *, indices,
+	          Properties::NON_VIRTUAL,
+	          __void__setIndices__IndexArray_P1,
+	          "",
+	          "");
+	I_Method0(osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Constructor0(____TriangleMesh,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::TriangleMesh &, mesh, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TriangleMesh__C5_TriangleMesh_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_ConstShapeVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertices__Vec3Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3Array *, getVertices,
+	          Properties::NON_VIRTUAL,
+	          __C5_Vec3Array_P1__getVertices,
+	          "",
+	          "");
+	I_Method1(void, setIndices, IN, osg::IndexArray *, indices,
+	          Properties::NON_VIRTUAL,
+	          __void__setIndices__IndexArray_P1,
+	          "",
+	          "");
+	I_Method0(osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getIndices,
+	          "",
+	          "");
+	I_SimpleProperty(osg::IndexArray *, Indices, 
+	                 __IndexArray_P1__getIndices, 
+	                 __void__setIndices__IndexArray_P1);
+	I_SimpleProperty(osg::Vec3Array *, Vertices, 
+	                 __Vec3Array_P1__getVertices, 
+	                 __void__setVertices__Vec3Array_P1);
 END_REFLECTOR
 

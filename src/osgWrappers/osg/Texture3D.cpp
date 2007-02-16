@@ -764,547 +764,59 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D::SubloadCallback)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
+	I_Constructor0(____SubloadCallback,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Texture3D::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture3D::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	I_Method2(void, load, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__load__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
+	I_Method2(void, subload, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__subload__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method1(void, setTexture3DSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DSupported__bool,
+	I_Method2(void, load, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__load__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method0(bool, isTexture3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DSupported,
+	I_Method2(void, subload, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__subload__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method1(void, setTexture3DFast, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DFast__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DFast,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DFast,
-	          "",
-	          "");
-	I_Method1(void, setMaxTexture3DSize, IN, GLint, maxsize,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxTexture3DSize__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, maxTexture3DSize,
-	          Properties::NON_VIRTUAL,
-	          __GLint__maxTexture3DSize,
-	          "",
-	          "");
-	I_Method1(void, setTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method10(void, glTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setCopyTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCopyTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCopyTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLint, x, IN, GLint, y, IN, GLsizei, width, IN, GLsizei, height,
-	          Properties::NON_VIRTUAL,
-	          __void__glCopyTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLint__GLint__GLsizei__GLsizei,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCompressedTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexSubImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glCompressedTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	           Properties::NON_VIRTUAL,
-	           __void__glCompressedTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setBuild3DMipmapsProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBuild3DMipmapsProc__void_P1,
-	          "",
-	          "");
-	I_Method8(void, gluBuild3DMipmaps, IN, GLenum, target, IN, GLint, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__gluBuild3DMipmaps__GLenum__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Texture3D::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture3D::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
-	          "",
-	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, setTexture3DSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setTexture3DFast, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DFast__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DFast,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DFast,
-	          "",
-	          "");
-	I_Method1(void, setMaxTexture3DSize, IN, GLint, maxsize,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxTexture3DSize__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, maxTexture3DSize,
-	          Properties::NON_VIRTUAL,
-	          __GLint__maxTexture3DSize,
-	          "",
-	          "");
-	I_Method1(void, setTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method10(void, glTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setCopyTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCopyTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCopyTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLint, x, IN, GLint, y, IN, GLsizei, width, IN, GLsizei, height,
-	          Properties::NON_VIRTUAL,
-	          __void__glCopyTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLint__GLint__GLsizei__GLsizei,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCompressedTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexSubImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glCompressedTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	           Properties::NON_VIRTUAL,
-	           __void__glCompressedTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setBuild3DMipmapsProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBuild3DMipmapsProc__void_P1,
-	          "",
-	          "");
-	I_Method8(void, gluBuild3DMipmaps, IN, GLenum, target, IN, GLint, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__gluBuild3DMipmaps__GLenum__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_SimpleProperty(void *, Build3DMipmapsProc, 
-	                 0, 
-	                 __void__setBuild3DMipmapsProc__void_P1);
-	I_SimpleProperty(void *, CompressedTexImage3DProc, 
-	                 0, 
-	                 __void__setCompressedTexImage3DProc__void_P1);
-	I_SimpleProperty(void *, CompressedTexSubImage3DProc, 
-	                 0, 
-	                 __void__setCompressedTexSubImage3DProc__void_P1);
-	I_SimpleProperty(void *, CopyTexSubImage3DProc, 
-	                 0, 
-	                 __void__setCopyTexSubImage3DProc__void_P1);
-	I_SimpleProperty(GLint, MaxTexture3DSize, 
-	                 0, 
-	                 __void__setMaxTexture3DSize__GLint);
-	I_SimpleProperty(void *, TexImage3DProc, 
-	                 0, 
-	                 __void__setTexImage3DProc__void_P1);
-	I_SimpleProperty(void *, TexSubImage3DProc, 
-	                 0, 
-	                 __void__setTexSubImage3DProc__void_P1);
-	I_SimpleProperty(bool, Texture3DFast, 
-	                 0, 
-	                 __void__setTexture3DFast__bool);
-	I_SimpleProperty(bool, Texture3DSupported, 
-	                 0, 
-	                 __void__setTexture3DSupported__bool);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D::SubloadCallback)
 	I_BaseType(osg::Referenced);
 	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
+	I_Constructor0(____SubloadCallback,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Texture3D::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture3D::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
+	I_Method2(void, load, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__load__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
+	I_Method2(void, subload, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__subload__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method1(void, setTexture3DSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DSupported__bool,
+	I_Method2(void, load, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__load__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method0(bool, isTexture3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DSupported,
+	I_Method2(void, subload, IN, const osg::Texture3D &, texture, IN, osg::State &, state,
+	          Properties::PURE_VIRTUAL,
+	          __void__subload__C5_Texture3D_R1__State_R1,
 	          "",
 	          "");
-	I_Method1(void, setTexture3DFast, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DFast__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DFast,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DFast,
-	          "",
-	          "");
-	I_Method1(void, setMaxTexture3DSize, IN, GLint, maxsize,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxTexture3DSize__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, maxTexture3DSize,
-	          Properties::NON_VIRTUAL,
-	          __GLint__maxTexture3DSize,
-	          "",
-	          "");
-	I_Method1(void, setTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method10(void, glTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setCopyTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCopyTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCopyTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLint, x, IN, GLint, y, IN, GLsizei, width, IN, GLsizei, height,
-	          Properties::NON_VIRTUAL,
-	          __void__glCopyTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLint__GLint__GLsizei__GLsizei,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCompressedTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexSubImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glCompressedTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	           Properties::NON_VIRTUAL,
-	           __void__glCompressedTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setBuild3DMipmapsProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBuild3DMipmapsProc__void_P1,
-	          "",
-	          "");
-	I_Method8(void, gluBuild3DMipmaps, IN, GLenum, target, IN, GLint, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__gluBuild3DMipmaps__GLenum__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Texture3D::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture3D::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
-	          "",
-	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, setTexture3DSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setTexture3DFast, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DFast__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DFast,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DFast,
-	          "",
-	          "");
-	I_Method1(void, setMaxTexture3DSize, IN, GLint, maxsize,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxTexture3DSize__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, maxTexture3DSize,
-	          Properties::NON_VIRTUAL,
-	          __GLint__maxTexture3DSize,
-	          "",
-	          "");
-	I_Method1(void, setTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method10(void, glTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setCopyTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCopyTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCopyTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLint, x, IN, GLint, y, IN, GLsizei, width, IN, GLsizei, height,
-	          Properties::NON_VIRTUAL,
-	          __void__glCopyTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLint__GLint__GLsizei__GLsizei,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method9(void, glCompressedTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexSubImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexSubImage3DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexSubImage3DProc__void_P1,
-	          "",
-	          "");
-	I_Method11(void, glCompressedTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	           Properties::NON_VIRTUAL,
-	           __void__glCompressedTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method1(void, setBuild3DMipmapsProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBuild3DMipmapsProc__void_P1,
-	          "",
-	          "");
-	I_Method8(void, gluBuild3DMipmaps, IN, GLenum, target, IN, GLint, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__gluBuild3DMipmaps__GLenum__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_SimpleProperty(void *, Build3DMipmapsProc, 
-	                 0, 
-	                 __void__setBuild3DMipmapsProc__void_P1);
-	I_SimpleProperty(void *, CompressedTexImage3DProc, 
-	                 0, 
-	                 __void__setCompressedTexImage3DProc__void_P1);
-	I_SimpleProperty(void *, CompressedTexSubImage3DProc, 
-	                 0, 
-	                 __void__setCompressedTexSubImage3DProc__void_P1);
-	I_SimpleProperty(void *, CopyTexSubImage3DProc, 
-	                 0, 
-	                 __void__setCopyTexSubImage3DProc__void_P1);
-	I_SimpleProperty(GLint, MaxTexture3DSize, 
-	                 0, 
-	                 __void__setMaxTexture3DSize__GLint);
-	I_SimpleProperty(void *, TexImage3DProc, 
-	                 0, 
-	                 __void__setTexImage3DProc__void_P1);
-	I_SimpleProperty(void *, TexSubImage3DProc, 
-	                 0, 
-	                 __void__setTexSubImage3DProc__void_P1);
-	I_SimpleProperty(bool, Texture3DFast, 
-	                 0, 
-	                 __void__setTexture3DFast__bool);
-	I_SimpleProperty(bool, Texture3DSupported, 
-	                 0, 
-	                 __void__setTexture3DSupported__bool);
 END_REFLECTOR
 

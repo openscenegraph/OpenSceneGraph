@@ -15,7 +15,7 @@
 #include <osg/.svn/text-base/Node.svn-base>
 #include <osg/.svn/text-base/NodeVisitor.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
-#include <osg/Texture2D>
+#include <osg/.svn/text-base/Texture2D.svn-base>
 #include <osgFX/BumpMapping>
 
 // Must undefine IN and OUT macros defined in Windows headers

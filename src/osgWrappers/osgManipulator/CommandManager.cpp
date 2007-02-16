@@ -10,11 +10,11 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osgManipulator/.svn/text-base/Selection.svn-base>
 #include <osgManipulator/Command>
 #include <osgManipulator/CommandManager>
 #include <osgManipulator/Constraint>
 #include <osgManipulator/Dragger>
-#include <osgManipulator/Selection>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

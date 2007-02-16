@@ -14,6 +14,7 @@
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowedScene>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 using namespace osgShadow;
 
@@ -126,6 +127,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
     // record the traversal mask on entry so we can reapply it later.
     unsigned int traversalMask = cv.getTraversalMask();
 
+    osgUtil::RenderStage* orig_rs = cv.getRenderStage();
 
     // do traversal of shadow casting scene which does not need to be decorated by the shadow texture
     {
@@ -147,11 +149,38 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
         cv.popStateSet();
 
     }
+    
+    // need to compute view frustum for RTT camera.
+    // 1) get the light position
+    // 2) get the center and extents of the view frustum
 
+    const osg::Light* selectLight = 0;
+    osg::Vec4 lightpos;
 
-    // do RTT camera traversal
-    _camera->accept(cv);
+    osgUtil::PositionalStateContainer::AttrMatrixList& aml = orig_rs->getPositionalStateContainer()->getAttrMatrixList();
+    for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
+        itr != aml.end();
+        ++itr)
+    {
+        const osg::Light* light = dynamic_cast<const osg::Light*>(itr->first.get());
+        if (light)
+        {
+            osg::RefMatrix* matrix = itr->second.get();
+            if (matrix) lightpos = light->getPosition() * (*matrix);
+            else lightpos = light->getPosition();
 
+            selectLight = light;
+        }
+    }
+    
+    if (selectLight)
+    {
+        osg::notify(osg::NOTICE)<<"Selected light "<<lightpos<<std::endl;
+
+        // do RTT camera traversal
+        _camera->accept(cv);
+        
+    }
 
     // reapply the original traversal mask
     cv.setTraversalMask( traversalMask );

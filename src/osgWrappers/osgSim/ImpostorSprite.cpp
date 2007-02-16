@@ -14,14 +14,14 @@
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osg/.svn/text-base/Matrix.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
+#include <osg/.svn/text-base/Texture2D.svn-base>
 #include <osg/.svn/text-base/Vec2.svn-base>
 #include <osg/.svn/text-base/Vec3.svn-base>
 #include <osg/Camera>
 #include <osg/Drawable>
 #include <osg/PrimitiveSet>
 #include <osg/State>
-#include <osg/Texture2D>
+#include <osg/StateSet>
 #include <osgSim/Impostor>
 #include <osgSim/ImpostorSprite>
 

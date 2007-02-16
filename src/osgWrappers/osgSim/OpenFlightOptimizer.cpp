@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/.svn/text-base/Group.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
 #include <osg/Geode>
 #include <osgSim/OpenFlightOptimizer>
@@ -138,44 +139,64 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____TessellateVisitor,
+	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
 	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
+	I_Method1(void, apply, IN, osg::Group &, group,
 	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
+	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
-	I_Constructor0(____TessellateVisitor,
+	I_Method1(void, mergeGeodes, IN, osg::Group &, group,
+	          Properties::NON_VIRTUAL,
+	          __void__mergeGeodes__osg_Group_R1,
+	          "",
+	          "");
+	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
 	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
+	I_Method1(void, apply, IN, osg::Group &, group,
 	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, mergeGeodes, IN, osg::Group &, group,
+	          Properties::NON_VIRTUAL,
+	          __void__mergeGeodes__osg_Group_R1,
 	          "",
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	I_BaseType(osg::NodeVisitor);
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____TessellateVisitor,
+	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
 	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
+	I_Method1(void, apply, IN, osg::Group &, group,
 	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
+	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
-	I_Constructor0(____TessellateVisitor,
+	I_Method1(void, mergeGeodes, IN, osg::Group &, group,
+	          Properties::NON_VIRTUAL,
+	          __void__mergeGeodes__osg_Group_R1,
+	          "",
+	          "");
+	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
 	               "");
-	I_Method1(void, apply, IN, osg::Geode &, geode,
+	I_Method1(void, apply, IN, osg::Group &, group,
 	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, mergeGeodes, IN, osg::Group &, group,
+	          Properties::NON_VIRTUAL,
+	          __void__mergeGeodes__osg_Group_R1,
 	          "",
 	          "");
 END_REFLECTOR

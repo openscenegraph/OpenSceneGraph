@@ -16,10 +16,10 @@
 #include <osg/.svn/text-base/LOD.svn-base>
 #include <osg/.svn/text-base/Matrix.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
+#include <osg/.svn/text-base/PagedLOD.svn-base>
 #include <osg/.svn/text-base/Viewport.svn-base>
 #include <osg/Camera>
 #include <osg/Geode>
-#include <osg/PagedLOD>
 #include <osg/Projection>
 #include <osg/Transform>
 #include <osgUtil/.svn/text-base/IntersectionVisitor.svn-base>

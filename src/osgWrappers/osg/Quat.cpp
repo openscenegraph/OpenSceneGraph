@@ -14,10 +14,10 @@
 #include <osg/.svn/text-base/Matrixf.svn-base>
 #include <osg/.svn/text-base/Quat.svn-base>
 #include <osg/.svn/text-base/Vec3f.svn-base>
-#include <osg/.svn/text-base/Vec4d.svn-base>
 #include <osg/.svn/text-base/Vec4f.svn-base>
 #include <osg/Quat>
 #include <osg/Vec3d>
+#include <osg/Vec4d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

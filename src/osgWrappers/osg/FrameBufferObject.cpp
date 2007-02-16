@@ -15,13 +15,13 @@
 #include <osg/.svn/text-base/FrameBufferObject.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
 #include <osg/.svn/text-base/StateAttribute.svn-base>
+#include <osg/.svn/text-base/Texture1D.svn-base>
+#include <osg/.svn/text-base/Texture2D.svn-base>
 #include <osg/.svn/text-base/TextureCubeMap.svn-base>
+#include <osg/.svn/text-base/TextureRectangle.svn-base>
 #include <osg/FrameBufferObject>
 #include <osg/State>
-#include <osg/Texture1D>
-#include <osg/Texture2D>
 #include <osg/Texture3D>
-#include <osg/TextureRectangle>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -735,5 +735,389 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_SimpleProperty(Type, Type, 
 	                 __Type__getType, 
 	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
+	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
+	I_Constructor0(____RenderBuffer,
+	               "",
+	               "");
+	I_Constructor3(IN, int, width, IN, int, height, IN, GLenum, internalFormat,
+	               ____RenderBuffer__int__int__GLenum,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::RenderBuffer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____RenderBuffer__C5_RenderBuffer_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(int, getWidth,
+	          Properties::NON_VIRTUAL,
+	          __int__getWidth,
+	          "",
+	          "");
+	I_Method0(int, getHeight,
+	          Properties::NON_VIRTUAL,
+	          __int__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setWidth, IN, int, w,
+	          Properties::NON_VIRTUAL,
+	          __void__setWidth__int,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setHeight__int,
+	          "",
+	          "");
+	I_Method2(void, setSize, IN, int, w, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setSize__int__int,
+	          "",
+	          "");
+	I_Method0(GLenum, getInternalFormat,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__getInternalFormat,
+	          "",
+	          "");
+	I_Method1(void, setInternalFormat, IN, GLenum, format,
+	          Properties::NON_VIRTUAL,
+	          __void__setInternalFormat__GLenum,
+	          "",
+	          "");
+	I_Method2(GLuint, getObjectID, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getObjectID__unsigned_int__C5_FBOExtensions_P1,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::RenderBuffer &, rb,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_RenderBuffer_R1,
+	          "",
+	          "");
+	I_Constructor0(____RenderBuffer,
+	               "",
+	               "");
+	I_Constructor3(IN, int, width, IN, int, height, IN, GLenum, internalFormat,
+	               ____RenderBuffer__int__int__GLenum,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::RenderBuffer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____RenderBuffer__C5_RenderBuffer_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(int, getWidth,
+	          Properties::NON_VIRTUAL,
+	          __int__getWidth,
+	          "",
+	          "");
+	I_Method0(int, getHeight,
+	          Properties::NON_VIRTUAL,
+	          __int__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setWidth, IN, int, w,
+	          Properties::NON_VIRTUAL,
+	          __void__setWidth__int,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setHeight__int,
+	          "",
+	          "");
+	I_Method2(void, setSize, IN, int, w, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setSize__int__int,
+	          "",
+	          "");
+	I_Method0(GLenum, getInternalFormat,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__getInternalFormat,
+	          "",
+	          "");
+	I_Method1(void, setInternalFormat, IN, GLenum, format,
+	          Properties::NON_VIRTUAL,
+	          __void__setInternalFormat__GLenum,
+	          "",
+	          "");
+	I_Method2(GLuint, getObjectID, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getObjectID__unsigned_int__C5_FBOExtensions_P1,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::RenderBuffer &, rb,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_RenderBuffer_R1,
+	          "",
+	          "");
+	I_StaticMethod2(void, deleteRenderBuffer, IN, unsigned int, contextID, IN, GLuint, rb,
+	                __void__deleteRenderBuffer__unsigned_int__GLuint_S,
+	                "Mark internal RenderBuffer for deletion. ",
+	                "Deletion requests are queued until they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedRenderBuffers, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedRenderBuffers__unsigned_int__double__double_R1_S,
+	                "flush all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(void, deleteRenderBuffer, IN, unsigned int, contextID, IN, GLuint, rb,
+	                __void__deleteRenderBuffer__unsigned_int__GLuint_S,
+	                "Mark internal RenderBuffer for deletion. ",
+	                "Deletion requests are queued until they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedRenderBuffers, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedRenderBuffers__unsigned_int__double__double_R1_S,
+	                "flush all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_SimpleProperty(int, Height, 
+	                 __int__getHeight, 
+	                 __void__setHeight__int);
+	I_SimpleProperty(GLenum, InternalFormat, 
+	                 __GLenum__getInternalFormat, 
+	                 __void__setInternalFormat__GLenum);
+	I_SimpleProperty(int, Width, 
+	                 __int__getWidth, 
+	                 __void__setWidth__int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
+	I_BaseType(osg::Object);
+	I_BaseType(osg::Object);
+	I_Constructor0(____RenderBuffer,
+	               "",
+	               "");
+	I_Constructor3(IN, int, width, IN, int, height, IN, GLenum, internalFormat,
+	               ____RenderBuffer__int__int__GLenum,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::RenderBuffer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____RenderBuffer__C5_RenderBuffer_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(int, getWidth,
+	          Properties::NON_VIRTUAL,
+	          __int__getWidth,
+	          "",
+	          "");
+	I_Method0(int, getHeight,
+	          Properties::NON_VIRTUAL,
+	          __int__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setWidth, IN, int, w,
+	          Properties::NON_VIRTUAL,
+	          __void__setWidth__int,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setHeight__int,
+	          "",
+	          "");
+	I_Method2(void, setSize, IN, int, w, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setSize__int__int,
+	          "",
+	          "");
+	I_Method0(GLenum, getInternalFormat,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__getInternalFormat,
+	          "",
+	          "");
+	I_Method1(void, setInternalFormat, IN, GLenum, format,
+	          Properties::NON_VIRTUAL,
+	          __void__setInternalFormat__GLenum,
+	          "",
+	          "");
+	I_Method2(GLuint, getObjectID, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getObjectID__unsigned_int__C5_FBOExtensions_P1,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::RenderBuffer &, rb,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_RenderBuffer_R1,
+	          "",
+	          "");
+	I_Constructor0(____RenderBuffer,
+	               "",
+	               "");
+	I_Constructor3(IN, int, width, IN, int, height, IN, GLenum, internalFormat,
+	               ____RenderBuffer__int__int__GLenum,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::RenderBuffer &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____RenderBuffer__C5_RenderBuffer_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
+	I_Method0(int, getWidth,
+	          Properties::NON_VIRTUAL,
+	          __int__getWidth,
+	          "",
+	          "");
+	I_Method0(int, getHeight,
+	          Properties::NON_VIRTUAL,
+	          __int__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setWidth, IN, int, w,
+	          Properties::NON_VIRTUAL,
+	          __void__setWidth__int,
+	          "",
+	          "");
+	I_Method1(void, setHeight, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setHeight__int,
+	          "",
+	          "");
+	I_Method2(void, setSize, IN, int, w, IN, int, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setSize__int__int,
+	          "",
+	          "");
+	I_Method0(GLenum, getInternalFormat,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__getInternalFormat,
+	          "",
+	          "");
+	I_Method1(void, setInternalFormat, IN, GLenum, format,
+	          Properties::NON_VIRTUAL,
+	          __void__setInternalFormat__GLenum,
+	          "",
+	          "");
+	I_Method2(GLuint, getObjectID, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getObjectID__unsigned_int__C5_FBOExtensions_P1,
+	          "",
+	          "");
+	I_Method1(int, compare, IN, const osg::RenderBuffer &, rb,
+	          Properties::NON_VIRTUAL,
+	          __int__compare__C5_RenderBuffer_R1,
+	          "",
+	          "");
+	I_StaticMethod2(void, deleteRenderBuffer, IN, unsigned int, contextID, IN, GLuint, rb,
+	                __void__deleteRenderBuffer__unsigned_int__GLuint_S,
+	                "Mark internal RenderBuffer for deletion. ",
+	                "Deletion requests are queued until they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedRenderBuffers, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedRenderBuffers__unsigned_int__double__double_R1_S,
+	                "flush all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod2(void, deleteRenderBuffer, IN, unsigned int, contextID, IN, GLuint, rb,
+	                __void__deleteRenderBuffer__unsigned_int__GLuint_S,
+	                "Mark internal RenderBuffer for deletion. ",
+	                "Deletion requests are queued until they can be executed in the proper GL context. ");
+	I_StaticMethod3(void, flushDeletedRenderBuffers, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedRenderBuffers__unsigned_int__double__double_R1_S,
+	                "flush all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_SimpleProperty(int, Height, 
+	                 __int__getHeight, 
+	                 __void__setHeight__int);
+	I_SimpleProperty(GLenum, InternalFormat, 
+	                 __GLenum__getInternalFormat, 
+	                 __void__setInternalFormat__GLenum);
+	I_SimpleProperty(int, Width, 
+	                 __int__getWidth, 
+	                 __void__setWidth__int);
 END_REFLECTOR
 

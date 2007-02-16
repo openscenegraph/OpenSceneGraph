@@ -8,13 +8,10 @@ CXXFILES =\
 	Constraint.cpp\
 	Dragger.cpp\
 	Projector.cpp\
+	RotateSphereDragger.cpp\
 	ScaleAxisDragger.cpp\
-	Selection.cpp\
 	TabBoxDragger.cpp\
-	TabPlaneDragger.cpp\
-	TrackballDragger.cpp\
 	Translate1DDragger.cpp\
-	Translate2DDragger.cpp\
 	TranslateAxisDragger.cpp\
 	TranslatePlaneDragger.cpp\
 

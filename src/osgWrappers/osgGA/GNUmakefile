@@ -14,7 +14,7 @@ CXXFILES =\
 	MatrixManipulator.cpp\
 	NodeTrackerManipulator.cpp\
 	StateSetManipulator.cpp\
-	UFOManipulator.cpp\
+	TerrainManipulator.cpp\
 
 LIBS   += -losgGA -losg -losgIntrospection -losgUtil  $(GL_LIBS) $(OTHER_LIBS)
 

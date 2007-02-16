@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
 	I_BaseType(osgParticle::Placer);
 	I_BaseType(osgParticle::Placer);
 	I_Constructor0(____CenteredPlacer,
@@ -105,7 +105,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
 	                 __void__setCenter__C5_osg_Vec3_R1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::CenteredPlacer)
 	I_BaseType(osgParticle::Placer);
 	I_BaseType(osgParticle::Placer);
 	I_Constructor0(____CenteredPlacer,

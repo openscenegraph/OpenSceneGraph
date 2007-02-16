@@ -13,11 +13,10 @@
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
 #include <osg/.svn/text-base/StateAttribute.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
-#include <osg/.svn/text-base/TexEnv.svn-base>
-#include <osg/.svn/text-base/Texture.svn-base>
 #include <osg/.svn/text-base/Vec2.svn-base>
 #include <osg/State>
+#include <osg/StateSet>
+#include <osg/TexEnv>
 #include <osgText/.svn/text-base/Font.svn-base>
 #include <osgText/Font>
 

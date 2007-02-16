@@ -16,9 +16,9 @@
 #include <osg/.svn/text-base/LightSource.svn-base>
 #include <osg/.svn/text-base/Node.svn-base>
 #include <osg/.svn/text-base/OccluderNode.svn-base>
+#include <osg/.svn/text-base/Switch.svn-base>
 #include <osg/Geode>
 #include <osg/Projection>
-#include <osg/Switch>
 #include <osg/Transform>
 #include <osgGA/.svn/text-base/EventQueue.svn-base>
 #include <osgGA/EventVisitor>

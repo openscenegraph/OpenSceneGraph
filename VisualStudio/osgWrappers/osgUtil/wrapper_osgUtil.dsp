@@ -140,11 +140,15 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\Optimizer.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\ReflectionMapGenerator.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderBin.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderLeaf.cpp
+SOURCE=..\..\..\src\osgWrappers\osgUtil\RenderStage.cpp
 # End Source File
 
 # Begin Source File
@@ -156,7 +160,27 @@ SOURCE=..\..\..\src\osgWrappers\osgUtil\Simplifier.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\SmoothingVisitor.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\Statistics.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\Tessellator.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\TransformAttributeFunctor.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgUtil\TriStripVisitor.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgUtil\UpdateVisitor.cpp
 # End Source File
 
 # End Group

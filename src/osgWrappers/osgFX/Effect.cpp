@@ -13,8 +13,8 @@
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osg/.svn/text-base/NodeVisitor.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
-#include <osgFX/.svn/text-base/Technique.svn-base>
 #include <osgFX/Effect>
+#include <osgFX/Technique>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

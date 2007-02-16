@@ -11,8 +11,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/.svn/text-base/PolygonMode.svn-base>
-#include <osg/.svn/text-base/StateSet.svn-base>
 #include <osg/ApplicationUsage>
+#include <osg/StateSet>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/StateSetManipulator>

@@ -23,115 +23,10 @@
 #include <osg/StencilTwoSided>
 #include <osg/CullFace>
 #include <osg/Geometry>
+#include <osg/ComputeBoundsVisitor>
 #include <osg/io_utils>
 
 using namespace osgShadow;
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//   ComputeBoundingBoxVisitor
-//
-class ComputeBoundingBoxVisitor : public osg::NodeVisitor
-{
-public:
-    ComputeBoundingBoxVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
-    {
-    }
-    
-    virtual void reset()
-    {
-        _matrixStack.clear();
-        _bb.init();
-    }
-    
-    osg::BoundingBox& getBoundingBox() { return _bb; }
-
-    void getPolytope(osg::Polytope& polytope, float margin=0.1) const
-    {
-        float delta = _bb.radius()*margin;
-        polytope.add( osg::Plane(0.0, 0.0, 1.0, -(_bb.zMin()-delta)) );
-        polytope.add( osg::Plane(0.0, 0.0, -1.0, (_bb.zMax()+delta)) );
-
-        polytope.add( osg::Plane(1.0, 0.0, 0.0, -(_bb.xMin()-delta)) );
-        polytope.add( osg::Plane(-1.0, 0.0, 0.0, (_bb.xMax()+delta)) );
-
-        polytope.add( osg::Plane(0.0, 1.0, 0.0, -(_bb.yMin()-delta)) );
-        polytope.add( osg::Plane(0.0, -1.0, 0.0, (_bb.yMax()+delta)) );
-    }
-        
-    void getBase(osg::Polytope& polytope, float margin=0.1) const
-    {
-        float delta = _bb.radius()*margin;
-        polytope.add( osg::Plane(0.0, 0.0, 1.0, -(_bb.zMin()-delta)) );
-    }
-    
-    void apply(osg::Node& node)
-    {
-        traverse(node);
-    }
-    
-    void apply(osg::Transform& transform)
-    {
-        osg::Matrix matrix;
-        if (!_matrixStack.empty()) matrix = _matrixStack.back();
-        
-        transform.computeLocalToWorldMatrix(matrix,this);
-        
-        pushMatrix(matrix);
-        
-        traverse(transform);
-        
-        popMatrix();
-    }
-    
-    void apply(osg::Geode& geode)
-    {
-        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-        {
-            apply(geode.getDrawable(i));
-        }
-    }
-    
-    void pushMatrix(osg::Matrix& matrix)
-    {
-        _matrixStack.push_back(matrix);
-    }
-    
-    void popMatrix()
-    {
-        _matrixStack.pop_back();
-    }
-
-    void apply(osg::Drawable* drawable)
-    {
-        if (_matrixStack.empty()) _bb.expandBy(drawable->getBound());
-        else
-        {
-            osg::Matrix& matrix = _matrixStack.back();
-            const osg::BoundingBox& dbb = drawable->getBound();
-            if (dbb.valid())
-            {
-                _bb.expandBy(dbb.corner(0) * matrix);
-                _bb.expandBy(dbb.corner(1) * matrix);
-                _bb.expandBy(dbb.corner(2) * matrix);
-                _bb.expandBy(dbb.corner(3) * matrix);
-                _bb.expandBy(dbb.corner(4) * matrix);
-                _bb.expandBy(dbb.corner(5) * matrix);
-                _bb.expandBy(dbb.corner(6) * matrix);
-                _bb.expandBy(dbb.corner(7) * matrix);
-            }
-        }
-    }
-    
-protected:
-    
-    typedef std::vector<osg::Matrix> MatrixStack;
-
-    MatrixStack         _matrixStack;
-    osg::BoundingBox    _bb;
-};
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -176,7 +71,7 @@ void ShadowVolume::init()
     if (!_shadowedScene) return;
     
     // get the bounds of the model.    
-    ComputeBoundingBoxVisitor cbbv;
+    osg::ComputeBoundsVisitor cbbv;
     _shadowedScene->osg::Group::traverse(cbbv);
 
 

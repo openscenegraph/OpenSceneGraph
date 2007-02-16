@@ -5,6 +5,7 @@ CXXFILES =\
 	FadeText.cpp\
 	Font.cpp\
 	String.cpp\
+	Text.cpp\
 
 LIBS   += -losgText -losg -losgIntrospection -losgDB  $(GL_LIBS) $(OTHER_LIBS)
 

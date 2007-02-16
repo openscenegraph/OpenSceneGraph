@@ -20,22 +20,32 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime)
-	I_Constructor0(____DepthMatrixStartTime,
+BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell)
+	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k,
+	               ____Cell__int__int__int,
 	               "",
 	               "");
-	I_PublicMemberProperty(float, depth);
-	I_PublicMemberProperty(float, startTime);
-	I_PublicMemberProperty(osg::Matrix, modelview);
+	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k,
+	               ____Cell__int__int__int,
+	               "",
+	               "");
+	I_PublicMemberProperty(int, i);
+	I_PublicMemberProperty(int, j);
+	I_PublicMemberProperty(int, k);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime)
-	I_Constructor0(____DepthMatrixStartTime,
+BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell)
+	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k,
+	               ____Cell__int__int__int,
 	               "",
 	               "");
-	I_PublicMemberProperty(float, depth);
-	I_PublicMemberProperty(float, startTime);
-	I_PublicMemberProperty(osg::Matrix, modelview);
+	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k,
+	               ____Cell__int__int__int,
+	               "",
+	               "");
+	I_PublicMemberProperty(int, i);
+	I_PublicMemberProperty(int, j);
+	I_PublicMemberProperty(int, k);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::LessFunctor)

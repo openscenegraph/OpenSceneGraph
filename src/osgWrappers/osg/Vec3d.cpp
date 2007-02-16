@@ -10,9 +10,9 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/.svn/text-base/Vec2d.svn-base>
 #include <osg/.svn/text-base/Vec3d.svn-base>
 #include <osg/.svn/text-base/Vec3f.svn-base>
-#include <osg/Vec2d>
 #include <osg/Vec3d>
 
 // Must undefine IN and OUT macros defined in Windows headers

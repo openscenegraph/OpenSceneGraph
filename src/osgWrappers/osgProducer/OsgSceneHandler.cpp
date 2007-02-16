@@ -11,9 +11,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/.svn/text-base/DisplaySettings.svn-base>
+#include <osgProducer/.svn/text-base/OsgSceneHandler.svn-base>
 #include <osgProducer/OsgSceneHandler>
-#include <osgUtil/.svn/text-base/Statistics.svn-base>
 #include <osgUtil/SceneView>
+#include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -635,21 +636,5 @@ BEGIN_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler)
 	I_SimpleProperty(osgUtil::SceneView *, SceneView, 
 	                 __osgUtil_SceneView_P1__getSceneView, 
 	                 __void__setSceneView__osgUtil_SceneView_P1);
-END_REFLECTOR
-
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler::Callback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____Callback,
-	               "",
-	               "");
-END_REFLECTOR
-
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgProducer::OsgSceneHandler::Callback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____Callback,
-	               "",
-	               "");
 END_REFLECTOR
 

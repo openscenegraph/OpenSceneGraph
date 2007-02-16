@@ -449,39 +449,3 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	                 __void__setSmoothing__bool);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier::ContinueSimplificationCallback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____ContinueSimplificationCallback,
-	               "",
-	               "");
-	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
-	          Properties::VIRTUAL,
-	          __bool__continueSimplification__C5_Simplifier_R1__float__unsigned_int__unsigned_int,
-	          "return true if mesh should be continued to be simplified, return false to stop simplification. ",
-	          "");
-	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
-	          Properties::VIRTUAL,
-	          __bool__continueSimplification__C5_Simplifier_R1__float__unsigned_int__unsigned_int,
-	          "return true if mesh should be continued to be simplified, return false to stop simplification. ",
-	          "");
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier::ContinueSimplificationCallback)
-	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____ContinueSimplificationCallback,
-	               "",
-	               "");
-	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
-	          Properties::VIRTUAL,
-	          __bool__continueSimplification__C5_Simplifier_R1__float__unsigned_int__unsigned_int,
-	          "return true if mesh should be continued to be simplified, return false to stop simplification. ",
-	          "");
-	I_Method4(bool, continueSimplification, IN, const osgUtil::Simplifier &, simplifier, IN, float, nextError, IN, unsigned int, numOriginalPrimitives, IN, unsigned int, numRemainingPrimitives,
-	          Properties::VIRTUAL,
-	          __bool__continueSimplification__C5_Simplifier_R1__float__unsigned_int__unsigned_int,
-	          "return true if mesh should be continued to be simplified, return false to stop simplification. ",
-	          "");
-END_REFLECTOR
-

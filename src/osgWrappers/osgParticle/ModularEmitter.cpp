@@ -13,10 +13,10 @@
 #include <osg/.svn/text-base/CopyOp.svn-base>
 #include <osg/.svn/text-base/NodeVisitor.svn-base>
 #include <osg/.svn/text-base/Object.svn-base>
-#include <osgParticle/.svn/text-base/Placer.svn-base>
-#include <osgParticle/.svn/text-base/Shooter.svn-base>
 #include <osgParticle/Counter>
 #include <osgParticle/ModularEmitter>
+#include <osgParticle/Placer>
+#include <osgParticle/Shooter>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

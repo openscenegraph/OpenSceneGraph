@@ -205,7 +205,7 @@ void ShadowVolume::init()
 
     if (_drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
     {
-        osg::notify(osg::NOTICE)<<"STENCIL_TWO_SIDED seleteced"<<std::endl;
+        osg::notify(osg::NOTICE)<<"STENCIL_TWO_SIDED selected"<<std::endl;
 
         osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
@@ -213,7 +213,7 @@ void ShadowVolume::init()
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES seleteced"<<std::endl;
+        osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES selectetd"<<std::endl;
 
         osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
@@ -407,7 +407,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         }
         
         _ambientLight->setPosition(lightpos);
-        if (selectLight) 
+
         orig_rs->addPositionedAttribute(0,_ambientLight.get());
         
         _diffuseLight->setPosition(lightpos);
@@ -416,7 +416,6 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
             _ambientLight->setAmbient(selectLight->getAmbient());
             
             _diffuseLight->setDiffuse(selectLight->getDiffuse());
-            _diffuseLight->setSpecular(selectLight->getSpecular());
             _diffuseLight->setSpecular(selectLight->getSpecular());
             _diffuseLight->setDirection(selectLight->getDirection());
             _diffuseLight->setConstantAttenuation(selectLight->getConstantAttenuation());

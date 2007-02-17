@@ -14,6 +14,7 @@
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowedScene>
 #include <osg/Notify>
+#include <osg/ComputeBoundsVisitor>
 #include <osg/io_utils>
 
 using namespace osgShadow;
@@ -29,14 +30,7 @@ class CameraCullCallback : public osg::NodeCallback
        
         virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
         {
-            unsigned int traversalMask = nv->getTraversalMask();
-
-            nv->setTraversalMask( traversalMask & 
-                                  _shadowTexture->getShadowedScene()->getCastsShadowTraversalMask() );
-                                  
             _shadowTexture->getShadowedScene()->osg::Group::traverse(*nv);
-            
-            nv->setTraversalMask( traversalMask );
         }
         
     protected:
@@ -102,6 +96,7 @@ void ShadowTexture::init()
 
         osg::StateSet* stateset = _camera->getOrCreateStateSet();
         stateset->setAttribute(_material.get(),osg::StateAttribute::OVERRIDE);
+        
     }
     
     {
@@ -111,6 +106,8 @@ void ShadowTexture::init()
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
         _stateset->setTextureMode(_textureUnit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
+        
+        _texgen = new osg::TexGen;
     }
     
     _dirty = false;
@@ -173,9 +170,55 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
         }
     }
     
+    osg::Matrix eyeToWorld;
+    eyeToWorld.invert(cv.getModelViewMatrix());
+    
+    lightpos = lightpos * eyeToWorld;
+
     if (selectLight)
     {
-        osg::notify(osg::NOTICE)<<"Selected light "<<lightpos<<std::endl;
+
+        // get the bounds of the model.    
+        osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+        cbbv.setTraversalMask(getShadowedScene()->getCastsShadowTraversalMask());
+        
+        _shadowedScene->osg::Group::traverse(cbbv);
+        
+        osg::BoundingBox bb = cbbv.getBoundingBox();
+        
+        if (lightpos[3]!=0.0)
+        {
+            osg::Vec3 position(lightpos.x(), lightpos.y(), lightpos.z());
+
+            float centerDistance = (position-bb.center()).length();
+
+            float znear = centerDistance-bb.radius();
+            float zfar  = centerDistance+bb.radius();
+            float zNearRatio = 0.001f;
+            if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+
+            float top   = (bb.radius()/centerDistance)*znear;
+            float right = top;
+
+            _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+            _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+            _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
+            
+
+            // compute the matrix which takes a vertex from local coords into tex coords
+            // will use this later to specify osg::TexGen..
+            osg::Matrix MVPT = _camera->getViewMatrix() * 
+                               _camera->getProjectionMatrix() *
+                               osg::Matrix::translate(1.0,1.0,1.0) *
+                               osg::Matrix::scale(0.5f,0.5f,0.5f);
+                               
+            _texgen->setMode(osg::TexGen::EYE_LINEAR);
+            _texgen->setPlanesFromMatrix(MVPT);
+        }
+
+
+        cv.setTraversalMask( traversalMask & 
+                             getShadowedScene()->getCastsShadowTraversalMask() );
 
         // do RTT camera traversal
         _camera->accept(cv);

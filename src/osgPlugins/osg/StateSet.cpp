@@ -116,6 +116,7 @@ void initGLNames()
     
     s_TextureGLModeSet.insert(GL_TEXTURE_CUBE_MAP);
     s_TextureGLModeSet.insert(GL_TEXTURE_RECTANGLE_NV);
+    s_TextureGLModeSet.insert(GL_TEXTURE_RECTANGLE);
     
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_Q);
     s_TextureGLModeSet.insert(GL_TEXTURE_GEN_R);

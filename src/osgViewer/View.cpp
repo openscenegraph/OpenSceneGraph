@@ -137,11 +137,17 @@ void View::setUpViewAcrossAllScreens()
     }
     else
     {
-    
-        double translate_x = double(numScreens) - 1.0;
-        bool firstWindow = true;
 
-        for(unsigned int i=0; i<numScreens; ++i, translate_x -= 2.0)
+        double translate_x = 0.0;
+
+        for(unsigned int i=0; i<numScreens; ++i)
+        {
+            unsigned int width, height;
+            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
+            translate_x += double(width) / (double(height) * aspectRatio);
+        }
+    
+        for(unsigned int i=0; i<numScreens; ++i)
         {
             unsigned int width, height;
             wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
@@ -175,27 +181,17 @@ void View::setUpViewAcrossAllScreens()
                 osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
             }
 
-            if (firstWindow)
-            {            
-                firstWindow = false;
-
-                double newAspectRatio = double(traits->width) / double(traits->height);
-                double aspectRatioChange = newAspectRatio / aspectRatio;
-                
-                if (aspectRatioChange != 1.0)
-                {
-                    _camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
-                }
-            }
-
             camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
 
             GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
             camera->setDrawBuffer(buffer);
             camera->setReadBuffer(buffer);
 
-            addSlave(camera.get(), osg::Matrixd::translate( translate_x, 0.0, 0.0), osg::Matrixd() );
+            double newAspectRatio = double(traits->width) / double(traits->height);
+            double aspectRatioChange = newAspectRatio / aspectRatio;
 
+            addSlave(camera.get(), osg::Matrixd::translate( translate_x - aspectRatioChange, 0.0, 0.0) * osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0), osg::Matrixd() );
+            translate_x -= aspectRatioChange * 2.0;
         }
     }
 

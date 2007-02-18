@@ -217,7 +217,7 @@ void OperationsThread::run()
     GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());
     if (graphicsContext)
     {        
-        graphicsContext->makeCurrentImplementation();
+        graphicsContext->makeCurrent();
     }
 
     osg::notify(osg::INFO)<<"Doing run "<<this<<" isRunning()="<<isRunning()<<std::endl;

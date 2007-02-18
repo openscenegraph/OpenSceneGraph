@@ -927,7 +927,7 @@ struct ViewerCompileOperation : public osg::Operation
         // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
         // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-        // context->makeCurrentImplementation();
+        // context->makeCurrent();
 
         osgUtil::GLObjectsVisitor compileVisitor;
         compileVisitor.setState(context->getState());
@@ -990,7 +990,7 @@ Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
 
 
     int numProcessors = OpenThreads::GetNumberOfProcessors();
-    
+
     if (contexts.size()==1)
     {
         if (numProcessors==1) return SingleThreaded;

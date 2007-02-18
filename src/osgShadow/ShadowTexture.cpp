@@ -82,8 +82,8 @@ void ShadowTexture::init()
         _camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        //_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-        _camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
+        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+        //_camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
 
         // attach the texture and use it as the color buffer.
         _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
@@ -222,8 +222,13 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
 
         // do RTT camera traversal
         _camera->accept(cv);
-        
+
+        orig_rs->getPositionalStateContainer()->addPositionedTextureAttribute(_textureUnit, &cv.getModelViewMatrix(), _texgen.get());
     }
+    
+    
+    
+
 
     // reapply the original traversal mask
     cv.setTraversalMask( traversalMask );

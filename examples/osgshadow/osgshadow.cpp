@@ -1,4 +1,6 @@
 #include <osg/ArgumentParser>
+#include <osg/ComputeBoundsVisitor>
+#include <osg/Texture2D>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -14,112 +16,14 @@
 
 #include <osgShadow/ShadowedScene>
 #include <osgShadow/ShadowVolume>
+#include <osgShadow/ShadowTexture>
+#include <osgShadow/ShadowMap>
+#include <osgShadow/ParallelSplitShadowMap>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
 #include <iostream>
-
-class ComputeBoundingBoxVisitor : public osg::NodeVisitor
-{
-public:
-    ComputeBoundingBoxVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
-    {
-    }
-    
-    virtual void reset()
-    {
-        _matrixStack.clear();
-        _bb.init();
-    }
-    
-    osg::BoundingBox& getBoundingBox() { return _bb; }
-
-    void getPolytope(osg::Polytope& polytope, float margin=0.1) const
-    {
-        float delta = _bb.radius()*margin;
-        polytope.add( osg::Plane(0.0, 0.0, 1.0, -(_bb.zMin()-delta)) );
-        polytope.add( osg::Plane(0.0, 0.0, -1.0, (_bb.zMax()+delta)) );
-
-        polytope.add( osg::Plane(1.0, 0.0, 0.0, -(_bb.xMin()-delta)) );
-        polytope.add( osg::Plane(-1.0, 0.0, 0.0, (_bb.xMax()+delta)) );
-
-        polytope.add( osg::Plane(0.0, 1.0, 0.0, -(_bb.yMin()-delta)) );
-        polytope.add( osg::Plane(0.0, -1.0, 0.0, (_bb.yMax()+delta)) );
-    }
-        
-    void getBase(osg::Polytope& polytope, float margin=0.1) const
-    {
-        float delta = _bb.radius()*margin;
-        polytope.add( osg::Plane(0.0, 0.0, 1.0, -(_bb.zMin()-delta)) );
-    }
-    
-    void apply(osg::Node& node)
-    {
-        traverse(node);
-    }
-    
-    void apply(osg::Transform& transform)
-    {
-        osg::Matrix matrix;
-        if (!_matrixStack.empty()) matrix = _matrixStack.back();
-        
-        transform.computeLocalToWorldMatrix(matrix,this);
-        
-        pushMatrix(matrix);
-        
-        traverse(transform);
-        
-        popMatrix();
-    }
-    
-    void apply(osg::Geode& geode)
-    {
-        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
-        {
-            apply(geode.getDrawable(i));
-        }
-    }
-    
-    void pushMatrix(osg::Matrix& matrix)
-    {
-        _matrixStack.push_back(matrix);
-    }
-    
-    void popMatrix()
-    {
-        _matrixStack.pop_back();
-    }
-
-    void apply(osg::Drawable* drawable)
-    {
-        if (_matrixStack.empty()) _bb.expandBy(drawable->getBound());
-        else
-        {
-            osg::Matrix& matrix = _matrixStack.back();
-            const osg::BoundingBox& dbb = drawable->getBound();
-            if (dbb.valid())
-            {
-                _bb.expandBy(dbb.corner(0) * matrix);
-                _bb.expandBy(dbb.corner(1) * matrix);
-                _bb.expandBy(dbb.corner(2) * matrix);
-                _bb.expandBy(dbb.corner(3) * matrix);
-                _bb.expandBy(dbb.corner(4) * matrix);
-                _bb.expandBy(dbb.corner(5) * matrix);
-                _bb.expandBy(dbb.corner(6) * matrix);
-                _bb.expandBy(dbb.corner(7) * matrix);
-            }
-        }
-    }
-    
-protected:
-    
-    typedef std::vector<osg::Matrix> MatrixStack;
-
-    MatrixStack         _matrixStack;
-    osg::BoundingBox    _bb;
-};
 
 enum Faces
 {
@@ -287,19 +191,31 @@ protected:
 
 };
 
-osg::Node* createTestModel()
+osg::Node* createTestModel(osg::ArgumentParser& arguments)
 {
-    osg::Switch* sw = new osg::Switch;
-    sw->setEventCallback(new SwitchHandler);
+    if (arguments.read("-1"))
+    {
+        osg::Switch* sw = new osg::Switch;
+        sw->setEventCallback(new SwitchHandler);
+
+        sw->addChild(createCube(FRONT_FACE), true);
+        sw->addChild(createCube(FRONT_FACE | BACK_FACE), false);
+        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE), false);
+        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE), false);
+        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE), false);
+        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE | BOTTOM_FACE), false);
+        
+        return sw;
+    }
+    else if (arguments.read("-2"))
+    {
+        return 0;
+    }
+    else /*if (arguments.read("-3"))*/
+    {
+        return 0;
+    }
     
-    sw->addChild(createCube(FRONT_FACE), true);
-    sw->addChild(createCube(FRONT_FACE | BACK_FACE), false);
-    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE), false);
-    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE), false);
-    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE), false);
-    sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE | BOTTOM_FACE), false);
-    
-    return sw;
 }
 
 int main(int argc, char** argv)
@@ -349,17 +265,9 @@ int main(int argc, char** argv)
     bool updateLightPosition = true;
     while (arguments.read("--noUpdate")) updateLightPosition = false;
 
-    bool createBase = false;
-    while (arguments.read("--base")) createBase = true;
-
 
     int screenNum = -1;
     while (arguments.read("--screen", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
-
-    osgShadow::ShadowVolumeGeometry::DrawMode drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
-    while (arguments.read("--two-sided")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED;
-    while (arguments.read("--two-pass")) drawMode = osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS;
-
 
     // set up the camera manipulators.
     {
@@ -393,45 +301,16 @@ int main(int argc, char** argv)
     // add stats
     viewer.addEventHandler( new osgViewer::StatsHandler() );
 
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-      arguments.writeErrorMessages(std::cout);
-      return 1;
-    }
-
-
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (!model)
     {
-        model = createTestModel();
+        model = createTestModel(arguments);
     }
 
     // get the bounds of the model.    
-    ComputeBoundingBoxVisitor cbbv;
+    osg::ComputeBoundsVisitor cbbv;
     model->accept(cbbv);
     osg::BoundingBox bb = cbbv.getBoundingBox();
-
-    if (createBase)
-    {
-        osg::ref_ptr<osg::Group> newGroup = new osg::Group;
-        newGroup->addChild(model.get());
-        
-        osg::Geode* geode = new osg::Geode;
-        
-        osg::Vec3 widthVec(bb.radius(), 0.0f, 0.0f);
-        osg::Vec3 depthVec(0.0f, bb.radius(), 0.0f);
-        osg::Vec3 centerBase( (bb.xMin()+bb.xMax())*0.5f, (bb.yMin()+bb.yMax())*0.5f, bb.zMin()-bb.radius()*0.1f );
-        
-        geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
-                                                             widthVec*3.0f, depthVec*3.0f) );
-        newGroup->addChild(geode);
-        
-        model = newGroup.get();
-    }
 
     osg::Vec4 lightpos;
     
@@ -447,15 +326,68 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
     
-    osg::ref_ptr<osgShadow::ShadowVolume> shadowVolume = new osgShadow::ShadowVolume;
-    shadowedScene->setShadowTechnique(shadowVolume.get());
-    shadowVolume->setDynamicShadowVolumes(updateLightPosition);
+    shadowedScene->setRecievesShadowTraversalMask(0x1);
+    shadowedScene->setCastsShadowTraversalMask(0x2);
+    
+    model->setNodeMask(shadowedScene->getCastsShadowTraversalMask());
+    
+    if (arguments.read("--sv"))
+    {
+        osg::ref_ptr<osgShadow::ShadowVolume> sv = new osgShadow::ShadowVolume;
+        sv->setDynamicShadowVolumes(updateLightPosition);
+        while (arguments.read("--two-sided")) sv->setDrawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED);
+        while (arguments.read("--two-pass")) sv->setDrawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS);
+
+        shadowedScene->setShadowTechnique(sv.get());
+    }
+    else if (arguments.read("--st"))
+    {
+        osg::ref_ptr<osgShadow::ShadowTexture> st = new osgShadow::ShadowTexture;
+        shadowedScene->setShadowTechnique(st.get());
+    }
+    else if (arguments.read("--pssm"))
+    {
+        osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap;
+        shadowedScene->setShadowTechnique(pssm.get());
+    }
+    else /* if (arguments.read("--sm")) */
+    {
+        osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;
+        shadowedScene->setShadowTechnique(sm.get());
+    }
+
+    if ( arguments.read("--base"))
+    {
+
+        osg::Geode* geode = new osg::Geode;
+        
+        osg::Vec3 widthVec(bb.radius(), 0.0f, 0.0f);
+        osg::Vec3 depthVec(0.0f, bb.radius(), 0.0f);
+        osg::Vec3 centerBase( (bb.xMin()+bb.xMax())*0.5f, (bb.yMin()+bb.yMax())*0.5f, bb.zMin()-bb.radius()*0.1f );
+        
+        geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
+                                                             widthVec*3.0f, depthVec*3.0f) );
+                                                             
+        geode->setNodeMask(shadowedScene->getRecievesShadowTraversalMask());
+        
+        geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
+
+        shadowedScene->addChild(geode);
+    }
 
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
     ls->getLight()->setPosition(lightpos);
-    ls->getLight()->setAmbient(osg::Vec4(1.0,0.0,0.0,1.0));
-    ls->getLight()->setDiffuse(osg::Vec4(0.0,1.0,0.0,1.0));
-
+    if ( arguments.read("--coloured-light"))
+    {
+        ls->getLight()->setAmbient(osg::Vec4(1.0,0.0,0.0,1.0));
+        ls->getLight()->setDiffuse(osg::Vec4(0.0,1.0,0.0,1.0));
+    }
+    else
+    {
+        ls->getLight()->setAmbient(osg::Vec4(0.2,0.2,0.2,1.0));
+        ls->getLight()->setDiffuse(osg::Vec4(0.8,0.8,0.8,1.0));
+    }
+    
     shadowedScene->addChild(model.get());
     shadowedScene->addChild(ls.get());
     

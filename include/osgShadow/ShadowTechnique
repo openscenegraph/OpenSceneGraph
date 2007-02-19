@@ -58,6 +58,20 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
 
     protected :
 
+        class OSGSHADOW_EXPORT CameraCullCallback : public osg::NodeCallback
+        {
+            public:
+
+                CameraCullCallback(ShadowTechnique* st);
+
+                virtual void operator()(osg::Node*, osg::NodeVisitor* nv);
+
+            protected:
+
+                ShadowTechnique* _shadowTechnique;
+        };
+
+
         virtual ~ShadowTechnique();
         
         friend class ShadowedScene;

@@ -19,25 +19,6 @@
 
 using namespace osgShadow;
 
-class CameraCullCallback : public osg::NodeCallback
-{
-    public:
-    
-        CameraCullCallback(ShadowTexture* st):
-            _shadowTexture(st)
-        {
-        }
-       
-        virtual void operator()(osg::Node*, osg::NodeVisitor* nv)
-        {
-            _shadowTexture->getShadowedScene()->osg::Group::traverse(*nv);
-        }
-        
-    protected:
-    
-        ShadowTexture* _shadowTexture;
-};
-
 ShadowTexture::ShadowTexture():
     _textureUnit(1)
 {

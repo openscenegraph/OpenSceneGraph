@@ -17,6 +17,19 @@
 
 using namespace osgShadow;
 
+ShadowTechnique::CameraCullCallback::CameraCullCallback(ShadowTechnique* st):
+    _shadowTechnique(st)
+{
+}
+
+void ShadowTechnique::CameraCullCallback::operator()(osg::Node*, osg::NodeVisitor* nv)
+{
+    if (_shadowTechnique->getShadowedScene())
+    {
+        _shadowTechnique->getShadowedScene()->osg::Group::traverse(*nv);
+    }
+}
+
 ShadowTechnique::ShadowTechnique():
     _shadowedScene(0),
     _dirty(true)

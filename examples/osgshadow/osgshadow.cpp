@@ -1,6 +1,8 @@
 #include <osg/ArgumentParser>
 #include <osg/ComputeBoundsVisitor>
 #include <osg/Texture2D>
+#include <osg/ShapeDrawable>
+#include <osg/MatrixTransform>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -25,195 +27,433 @@
 
 #include <iostream>
 
-enum Faces
+// for the grid data..
+#include "../osghangglide/terrain_coords.h"
+
+const int RecievesShadowTraversalMask = 0x1;
+const int CastsShadowTraversalMask = 0x2;
+  
+namespace ModelOne
 {
-    FRONT_FACE = 1,
-    BACK_FACE = 2,
-    LEFT_FACE = 4,
-    RIGHT_FACE = 8,
-    TOP_FACE = 16,
-    BOTTOM_FACE = 32        
-};
 
-osg::Node* createCube(unsigned int mask)
-{
-    osg::Geode* geode = new osg::Geode;
-    
-    osg::Geometry* geometry = new osg::Geometry;
-    geode->addDrawable(geometry);
-    
-    osg::Vec3Array* vertices = new osg::Vec3Array;
-    geometry->setVertexArray(vertices);
-    
-    osg::Vec3Array* normals = new osg::Vec3Array;
-    geometry->setNormalArray(normals);
-    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    
-    osg::Vec4Array* colours = new osg::Vec4Array;
-    geometry->setColorArray(colours);
-    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-    colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-    
-    
-    osg::Vec3 origin(0.0f,0.0f,0.0f);
-    osg::Vec3 dx(2.0f,0.0f,0.0f);
-    osg::Vec3 dy(0.0f,1.0f,0.0f);
-    osg::Vec3 dz(0.0f,0.0f,1.0f);
-    
-    osg::Vec3 px(1.0f,0.0,0.0f);
-    osg::Vec3 nx(-1.0f,0.0,0.0f);
-    osg::Vec3 py(0.0f,1.0f,0.0f);
-    osg::Vec3 ny(0.0f,-1.0f,0.0f);
-    osg::Vec3 pz(0.0f,0.0f,1.0f);
-    osg::Vec3 nz(0.0f,0.0f,-1.0f);
-
-    if (mask & FRONT_FACE)
+    enum Faces
     {
-        // front face    
-        vertices->push_back(origin);
-        vertices->push_back(origin+dx);
-        vertices->push_back(origin+dx+dz);
-        vertices->push_back(origin+dz);
-        normals->push_back(ny);
-        normals->push_back(ny);
-        normals->push_back(ny);
-        normals->push_back(ny);
+        FRONT_FACE = 1,
+        BACK_FACE = 2,
+        LEFT_FACE = 4,
+        RIGHT_FACE = 8,
+        TOP_FACE = 16,
+        BOTTOM_FACE = 32        
+    };
+
+    osg::Node* createCube(unsigned int mask)
+    {
+        osg::Geode* geode = new osg::Geode;
+
+        osg::Geometry* geometry = new osg::Geometry;
+        geode->addDrawable(geometry);
+
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        geometry->setVertexArray(vertices);
+
+        osg::Vec3Array* normals = new osg::Vec3Array;
+        geometry->setNormalArray(normals);
+        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+        osg::Vec4Array* colours = new osg::Vec4Array;
+        geometry->setColorArray(colours);
+        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        colours->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+
+
+        osg::Vec3 origin(0.0f,0.0f,0.0f);
+        osg::Vec3 dx(2.0f,0.0f,0.0f);
+        osg::Vec3 dy(0.0f,1.0f,0.0f);
+        osg::Vec3 dz(0.0f,0.0f,1.0f);
+
+        osg::Vec3 px(1.0f,0.0,0.0f);
+        osg::Vec3 nx(-1.0f,0.0,0.0f);
+        osg::Vec3 py(0.0f,1.0f,0.0f);
+        osg::Vec3 ny(0.0f,-1.0f,0.0f);
+        osg::Vec3 pz(0.0f,0.0f,1.0f);
+        osg::Vec3 nz(0.0f,0.0f,-1.0f);
+
+        if (mask & FRONT_FACE)
+        {
+            // front face    
+            vertices->push_back(origin);
+            vertices->push_back(origin+dx);
+            vertices->push_back(origin+dx+dz);
+            vertices->push_back(origin+dz);
+            normals->push_back(ny);
+            normals->push_back(ny);
+            normals->push_back(ny);
+            normals->push_back(ny);
+        }
+
+        if (mask & BACK_FACE)
+        {
+            // back face    
+            vertices->push_back(origin+dy);
+            vertices->push_back(origin+dy+dz);
+            vertices->push_back(origin+dy+dx+dz);
+            vertices->push_back(origin+dy+dx);
+            normals->push_back(py);
+            normals->push_back(py);
+            normals->push_back(py);
+            normals->push_back(py);
+        }
+
+        if (mask & LEFT_FACE)
+        {
+            // left face    
+            vertices->push_back(origin+dy);
+            vertices->push_back(origin);
+            vertices->push_back(origin+dz);
+            vertices->push_back(origin+dy+dz);
+            normals->push_back(nx);
+            normals->push_back(nx);
+            normals->push_back(nx);
+            normals->push_back(nx);
+        }
+
+        if (mask & RIGHT_FACE)
+        {
+            // right face    
+            vertices->push_back(origin+dx+dy);
+            vertices->push_back(origin+dx+dy+dz);
+            vertices->push_back(origin+dx+dz);
+            vertices->push_back(origin+dx);
+            normals->push_back(px);
+            normals->push_back(px);
+            normals->push_back(px);
+            normals->push_back(px);
+        }
+
+        if (mask & TOP_FACE)
+        {
+            // top face    
+            vertices->push_back(origin+dz);
+            vertices->push_back(origin+dz+dx);
+            vertices->push_back(origin+dz+dx+dy);
+            vertices->push_back(origin+dz+dy);
+            normals->push_back(pz);
+            normals->push_back(pz);
+            normals->push_back(pz);
+            normals->push_back(pz);
+        }
+
+        if (mask & BOTTOM_FACE)
+        {
+            // bottom face    
+            vertices->push_back(origin);
+            vertices->push_back(origin+dy);
+            vertices->push_back(origin+dx+dy);
+            vertices->push_back(origin+dx);
+            normals->push_back(nz);
+            normals->push_back(nz);
+            normals->push_back(nz);
+            normals->push_back(nz);
+        }
+
+        geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, vertices->size()));
+
+        return geode;
     }
 
-    if (mask & BACK_FACE)
+    class SwitchHandler : public osgGA::GUIEventHandler
     {
-        // back face    
-        vertices->push_back(origin+dy);
-        vertices->push_back(origin+dy+dz);
-        vertices->push_back(origin+dy+dx+dz);
-        vertices->push_back(origin+dy+dx);
-        normals->push_back(py);
-        normals->push_back(py);
-        normals->push_back(py);
-        normals->push_back(py);
-    }
+    public:
 
-    if (mask & LEFT_FACE)
+        SwitchHandler():
+            _childNum(0) {}
+
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* /*nv*/)
+        {
+            osg::Switch* sw = dynamic_cast<osg::Switch*>(object);
+            if (!sw) return false;
+
+            if (ea.getHandled()) return false;
+
+            switch(ea.getEventType())
+            {
+                case(osgGA::GUIEventAdapter::KEYDOWN):
+                {
+                    if (ea.getKey()=='n')
+                    {
+                        ++_childNum;
+                        if (_childNum >= sw->getNumChildren()) _childNum = 0;
+
+                        sw->setSingleChildOn(_childNum);
+                        return true;
+                    }                
+                    break;
+                }
+                default:
+                    break;
+            }
+            return false;
+        }
+
+    protected:
+
+        virtual ~SwitchHandler() {}
+        unsigned int    _childNum;
+
+    };
+
+
+    osg::Node* createModel(osg::ArgumentParser& /*arguments*/)
     {
-        // left face    
-        vertices->push_back(origin+dy);
-        vertices->push_back(origin);
-        vertices->push_back(origin+dz);
-        vertices->push_back(origin+dy+dz);
-        normals->push_back(nx);
-        normals->push_back(nx);
-        normals->push_back(nx);
-        normals->push_back(nx);
-    }
+        osg::Switch* sw = new osg::Switch;
+        sw->setEventCallback(new ModelOne::SwitchHandler);
 
-    if (mask & RIGHT_FACE)
-    {
-        // right face    
-        vertices->push_back(origin+dx+dy);
-        vertices->push_back(origin+dx+dy+dz);
-        vertices->push_back(origin+dx+dz);
-        vertices->push_back(origin+dx);
-        normals->push_back(px);
-        normals->push_back(px);
-        normals->push_back(px);
-        normals->push_back(px);
+        sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE), true);
+        sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE), false);
+        sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE), false);
+        sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE | ModelOne::RIGHT_FACE), false);
+        sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE | ModelOne::RIGHT_FACE | ModelOne::TOP_FACE), false);
+        sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE | ModelOne::RIGHT_FACE | ModelOne::TOP_FACE | ModelOne::BOTTOM_FACE), false);
+        
+        return sw;    
     }
-
-    if (mask & TOP_FACE)
-    {
-        // top face    
-        vertices->push_back(origin+dz);
-        vertices->push_back(origin+dz+dx);
-        vertices->push_back(origin+dz+dx+dy);
-        vertices->push_back(origin+dz+dy);
-        normals->push_back(pz);
-        normals->push_back(pz);
-        normals->push_back(pz);
-        normals->push_back(pz);
-    }
-
-    if (mask & BOTTOM_FACE)
-    {
-        // bottom face    
-        vertices->push_back(origin);
-        vertices->push_back(origin+dy);
-        vertices->push_back(origin+dx+dy);
-        vertices->push_back(origin+dx);
-        normals->push_back(nz);
-        normals->push_back(nz);
-        normals->push_back(nz);
-        normals->push_back(nz);
-    }
-    
-    geometry->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, vertices->size()));
-
-    return geode;
 }
 
-class SwitchHandler : public osgGA::GUIEventHandler
+namespace ModelTwo
 {
-public:
-
-    SwitchHandler():
-        _childNum(0) {}
-    
-    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& /*aa*/, osg::Object* object, osg::NodeVisitor* /*nv*/)
+    osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
     {
-        osg::Switch* sw = dynamic_cast<osg::Switch*>(object);
-        if (!sw) return false;
+        // set up the animation path 
+        osg::AnimationPath* animationPath = new osg::AnimationPath;
+        animationPath->setLoopMode(osg::AnimationPath::LOOP);
 
-        if (ea.getHandled()) return false;
-        
-        switch(ea.getEventType())
+        int numSamples = 40;
+        float yaw = 0.0f;
+        float yaw_delta = 2.0f*osg::PI/((float)numSamples-1.0f);
+        float roll = osg::inDegrees(30.0f);
+
+        double time=0.0f;
+        double time_delta = looptime/(double)numSamples;
+        for(int i=0;i<numSamples;++i)
         {
-            case(osgGA::GUIEventAdapter::KEYDOWN):
-            {
-                if (ea.getKey()=='n')
-                {
-                    ++_childNum;
-                    if (_childNum >= sw->getNumChildren()) _childNum = 0;
+            osg::Vec3 position(center+osg::Vec3(sinf(yaw)*radius,cosf(yaw)*radius,0.0f));
+            osg::Quat rotation(osg::Quat(roll,osg::Vec3(0.0,1.0,0.0))*osg::Quat(-(yaw+osg::inDegrees(90.0f)),osg::Vec3(0.0,0.0,1.0)));
 
-                    sw->setSingleChildOn(_childNum);
-                    return true;
-                }                
-                break;
-            }
-            default:
-                break;
+            animationPath->insert(time,osg::AnimationPath::ControlPoint(position,rotation));
+
+            yaw += yaw_delta;
+            time += time_delta;
+
         }
-        return false;
+        return animationPath;    
     }
 
-protected:
+    osg::Node* createBase(const osg::Vec3& center,float radius)
+    {
 
-    virtual ~SwitchHandler() {}
-    unsigned int    _childNum;
+        osg::Geode* geode = new osg::Geode;
 
-};
+        // set up the texture of the base.
+        osg::StateSet* stateset = new osg::StateSet();
+        osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+        if (image)
+        {
+            osg::Texture2D* texture = new osg::Texture2D;
+            texture->setImage(image);
+            stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        }
+
+        geode->setStateSet( stateset );
+
+
+        osg::HeightField* grid = new osg::HeightField;
+        grid->allocate(38,39);
+        grid->setOrigin(center+osg::Vec3(-radius,-radius,0.0f));
+        grid->setXInterval(radius*2.0f/(float)(38-1));
+        grid->setYInterval(radius*2.0f/(float)(39-1));
+
+        float minHeight = FLT_MAX;
+        float maxHeight = -FLT_MAX;
+
+
+        unsigned int r;
+        for(r=0;r<39;++r)
+        {
+            for(unsigned int c=0;c<38;++c)
+            {
+                float h = vertex[r+c*39][2];
+                if (h>maxHeight) maxHeight=h;
+                if (h<minHeight) minHeight=h;
+            }
+        }
+
+        float hieghtScale = radius*0.5f/(maxHeight-minHeight);
+        float hieghtOffset = -(minHeight+maxHeight)*0.5f;
+
+        for(r=0;r<39;++r)
+        {
+            for(unsigned int c=0;c<38;++c)
+            {
+                float h = vertex[r+c*39][2];
+                grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
+            }
+        }
+
+        geode->addDrawable(new osg::ShapeDrawable(grid));
+
+        osg::Group* group = new osg::Group;
+        group->addChild(geode);
+
+        return group;
+
+    }
+
+    osg::Node* createMovingModel(const osg::Vec3& center, float radius)
+    {
+        float animationLength = 10.0f;
+
+        osg::AnimationPath* animationPath = createAnimationPath(center,radius,animationLength);
+
+        osg::Group* model = new osg::Group;
+
+        osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+        if (cessna)
+        {
+            const osg::BoundingSphere& bs = cessna->getBound();
+
+            float size = radius/bs.radius()*0.3f;
+            osg::MatrixTransform* positioned = new osg::MatrixTransform;
+            positioned->setDataVariance(osg::Object::STATIC);
+            positioned->setMatrix(osg::Matrix::translate(-bs.center())*
+                                  osg::Matrix::scale(size,size,size)*
+                                  osg::Matrix::rotate(osg::inDegrees(180.0f),0.0f,0.0f,2.0f));
+
+            positioned->addChild(cessna);
+
+            osg::MatrixTransform* xform = new osg::MatrixTransform;
+            xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,2.0));
+            xform->addChild(positioned);
+
+            model->addChild(xform);
+        }
+
+        return model;
+    }
+
+    osg::Node* createModel(osg::ArgumentParser& /*arguments*/)
+    {
+        osg::Vec3 center(0.0f,0.0f,0.0f);
+        float radius = 100.0f;
+        osg::Vec3 lightPosition(center+osg::Vec3(0.0f,0.0f,radius));
+
+        // the shadower model
+        osg::Node* shadower = createMovingModel(center,radius*0.5f);
+        shadower->setNodeMask(CastsShadowTraversalMask);
+
+        // the shadowed model
+        osg::Node* shadowed = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
+        shadowed->setNodeMask(RecievesShadowTraversalMask);
+        
+        osg::Group* group = new osg::Group;
+
+        group->addChild(shadowed);
+        group->addChild(shadower);
+        
+        return group;
+    }
+}
+
+namespace ModelThree
+{
+    osg::Group* createModel(osg::ArgumentParser& arguments)
+    {
+        osg::Group* scene = new osg::Group;
+
+        osg::ref_ptr<osg::Geode> geode_1 = new osg::Geode;
+        scene->addChild(geode_1.get());
+
+        osg::ref_ptr<osg::Geode> geode_2 = new osg::Geode;
+        osg::ref_ptr<osg::MatrixTransform> transform_2 = new osg::MatrixTransform;
+        transform_2->addChild(geode_2.get());
+        transform_2->setUpdateCallback(new osg::AnimationPathCallback(osg::Vec3(0, 0, 0), osg::Z_AXIS, osg::inDegrees(45.0f)));
+        scene->addChild(transform_2.get());
+
+        osg::ref_ptr<osg::Geode> geode_3 = new osg::Geode;
+        osg::ref_ptr<osg::MatrixTransform> transform_3 = new osg::MatrixTransform;
+        transform_3->addChild(geode_3.get());
+        transform_3->setUpdateCallback(new osg::AnimationPathCallback(osg::Vec3(0, 0, 0), osg::Z_AXIS, osg::inDegrees(-22.5f)));
+        scene->addChild(transform_3.get());
+
+        const float radius = 0.8f;
+        const float height = 1.0f;
+        osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
+        hints->setDetailRatio(2.0f);
+        osg::ref_ptr<osg::ShapeDrawable> shape;
+
+        shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, -2.0f), 10, 10.0f, 0.1f), hints.get());
+        shape->setColor(osg::Vec4(0.5f, 0.5f, 0.7f, 1.0f));
+        geode_1->addDrawable(shape.get());
+
+        shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), radius * 2), hints.get());
+        shape->setColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
+        geode_1->addDrawable(shape.get());
+
+        shape = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(-3.0f, 0.0f, 0.0f), radius), hints.get());
+        shape->setColor(osg::Vec4(0.6f, 0.8f, 0.8f, 1.0f));
+        geode_2->addDrawable(shape.get());
+
+        shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(3.0f, 0.0f, 0.0f), 2 * radius), hints.get());
+        shape->setColor(osg::Vec4(0.4f, 0.9f, 0.3f, 1.0f));
+        geode_2->addDrawable(shape.get());
+
+        shape = new osg::ShapeDrawable(new osg::Cone(osg::Vec3(0.0f, -3.0f, 0.0f), radius, height), hints.get());
+        shape->setColor(osg::Vec4(0.2f, 0.5f, 0.7f, 1.0f));
+        geode_2->addDrawable(shape.get());
+
+        shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f, 3.0f, 0.0f), radius, height), hints.get());
+        shape->setColor(osg::Vec4(1.0f, 0.3f, 0.3f, 1.0f));
+        geode_2->addDrawable(shape.get());
+
+        shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, 3.0f), 2.0f, 2.0f, 0.1f), hints.get());
+        shape->setColor(osg::Vec4(0.8f, 0.8f, 0.4f, 1.0f));
+        geode_3->addDrawable(shape.get());
+
+        // material
+        osg::ref_ptr<osg::Material> matirial = new osg::Material;
+        matirial->setColorMode(osg::Material::DIFFUSE);
+        matirial->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+        matirial->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(1, 1, 1, 1));
+        matirial->setShininess(osg::Material::FRONT_AND_BACK, 64.0f);
+        scene->getOrCreateStateSet()->setAttributeAndModes(matirial.get(), osg::StateAttribute::ON);
+
+        bool withBaseTexture = true;
+        while(arguments.read("--with-base-texture")) { withBaseTexture = true; }
+        while(arguments.read("--no-base-texture")) { withBaseTexture = false; }
+
+        if (withBaseTexture)
+        {
+            scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
+        }
+
+        return scene;
+    }
+    
+}
+
 
 osg::Node* createTestModel(osg::ArgumentParser& arguments)
 {
     if (arguments.read("-1"))
     {
-        osg::Switch* sw = new osg::Switch;
-        sw->setEventCallback(new SwitchHandler);
-
-        sw->addChild(createCube(FRONT_FACE), true);
-        sw->addChild(createCube(FRONT_FACE | BACK_FACE), false);
-        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE), false);
-        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE), false);
-        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE), false);
-        sw->addChild(createCube(FRONT_FACE | BACK_FACE | LEFT_FACE | RIGHT_FACE | TOP_FACE | BOTTOM_FACE), false);
-        
-        return sw;
+        return ModelOne::createModel(arguments);
     }
     else if (arguments.read("-2"))
     {
-        return 0;
+        return ModelTwo::createModel(arguments);
     }
     else /*if (arguments.read("-3"))*/
     {
-        return 0;
+        return ModelThree::createModel(arguments);
     }
     
 }
@@ -258,7 +498,7 @@ int main(int argc, char** argv)
     while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
 
 
-    bool postionalLight = false;
+    bool postionalLight = true;
     while (arguments.read("--positionalLight")) postionalLight = true;
     while (arguments.read("--directionalLight")) postionalLight = false;
 
@@ -302,7 +542,11 @@ int main(int argc, char** argv)
     viewer.addEventHandler( new osgViewer::StatsHandler() );
 
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
-    if (!model)
+    if (model.valid())
+    {
+        model->setNodeMask(CastsShadowTraversalMask | RecievesShadowTraversalMask);
+    }
+    else
     {
         model = createTestModel(arguments);
     }
@@ -326,10 +570,9 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
     
-    shadowedScene->setRecievesShadowTraversalMask(0x1);
-    shadowedScene->setCastsShadowTraversalMask(0x2);
+    shadowedScene->setRecievesShadowTraversalMask(RecievesShadowTraversalMask);
+    shadowedScene->setCastsShadowTraversalMask(CastsShadowTraversalMask);
     
-    model->setNodeMask(shadowedScene->getCastsShadowTraversalMask());
     
     if (arguments.read("--sv"))
     {
@@ -391,9 +634,6 @@ int main(int argc, char** argv)
     shadowedScene->addChild(model.get());
     shadowedScene->addChild(ls.get());
     
-    osgDB::writeNodeFile(*shadowedScene, "shadow.osg");
-    
-
     viewer.setSceneData(shadowedScene.get());
     
     // create the windows and run the threads.

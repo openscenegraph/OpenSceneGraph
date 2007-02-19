@@ -69,7 +69,7 @@ void ShadowTexture::init()
 
         // tell the camera to use OpenGL frame buffer object where supported.
         _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-        _camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
+        //_camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
 
         // attach the texture and use it as the color buffer.
         _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());

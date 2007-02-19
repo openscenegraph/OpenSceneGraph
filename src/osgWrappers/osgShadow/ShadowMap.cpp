@@ -11,8 +11,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgShadow/ShadowMap>
+#include <osgUtil/CullVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -56,5 +58,38 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setTextureUnit, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureUnit__unsigned_int,
+	          "Set the texture unit that the shadow texture will be applied on. ",
+	          "");
+	I_Method0(unsigned int, getTextureUnit,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getTextureUnit,
+	          "Get the texture unit that the shadow texture will be applied on. ",
+	          "");
+	I_Method0(void, init,
+	          Properties::VIRTUAL,
+	          __void__init,
+	          "initialize the ShadowedScene and local cached data structures. ",
+	          "");
+	I_Method1(void, update, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__update__osg_NodeVisitor_R1,
+	          "run the update traversal of the ShadowedScene and update any loca chached data structures. ",
+	          "");
+	I_Method1(void, cull, IN, osgUtil::CullVisitor &, cv,
+	          Properties::VIRTUAL,
+	          __void__cull__osgUtil_CullVisitor_R1,
+	          "run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique. ",
+	          "");
+	I_Method0(void, cleanSceneGraph,
+	          Properties::VIRTUAL,
+	          __void__cleanSceneGraph,
+	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
+	          "");
+	I_SimpleProperty(unsigned int, TextureUnit, 
+	                 __unsigned_int__getTextureUnit, 
+	                 __void__setTextureUnit__unsigned_int);
 END_REFLECTOR
 

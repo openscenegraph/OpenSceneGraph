@@ -26,9 +26,11 @@
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	I_BaseType(osg::Group);
-	I_Constructor0(____ShadowedScene,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osgShadow::ShadowTechnique *, st, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____ShadowedScene__ShadowTechnique_P1,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, const osgShadow::ShadowedScene &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____ShadowedScene__C5_ShadowedScene_R1__C5_osg_CopyOp_R1,
 	                           "",

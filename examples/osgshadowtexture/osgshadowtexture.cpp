@@ -16,6 +16,7 @@
 #include <osgShadow/ShadowedScene>
 #include <osgShadow/ShadowVolume>
 #include <osgShadow/ShadowTexture>
+#include <osgShadow/ShadowMap>
 
 // include the call which creates the shadowed subgraph.
 #include "CreateShadowedScene.h"
@@ -188,6 +189,30 @@ osg::Node* createModel(osg::ArgumentParser& arguments)
         
         osg::ref_ptr<osgShadow::ShadowTexture> shadowTexture = new osgShadow::ShadowTexture;
         shadowedScene->setShadowTechnique(shadowTexture.get());
+
+        osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
+        ls->getLight()->setPosition(osg::Vec4(lightPosition,1.0));
+        
+        shadowedScene->setRecievesShadowTraversalMask(0x1);
+        shadowed->setNodeMask(shadowedScene->getRecievesShadowTraversalMask());
+        
+        shadowedScene->setCastsShadowTraversalMask(0x2);
+        shadower->setNodeMask(shadowedScene->getCastsShadowTraversalMask());
+
+        shadowedScene->addChild(shadower);
+        shadowedScene->addChild(shadowed);
+        shadowedScene->addChild(ls.get());
+        
+        return shadowedScene;
+
+    }
+    else if (arguments.read("--sm"))
+    {
+
+        osgShadow::ShadowedScene* shadowedScene = new osgShadow::ShadowedScene;
+        
+        osg::ref_ptr<osgShadow::ShadowMap> shadowMap = new osgShadow::ShadowMap;
+        shadowedScene->setShadowTechnique(shadowMap.get());
 
         osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
         ls->getLight()->setPosition(osg::Vec4(lightPosition,1.0));

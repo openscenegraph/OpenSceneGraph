@@ -21,6 +21,9 @@
 
 #include <osgDB/ReadFile>
 
+#include <osgShadow/ShadowedScene>
+#include <osgShadow/ShadowMap>
+
 #include <iostream>
 
 using namespace osg;
@@ -436,33 +439,65 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    ref_ptr<MatrixTransform> scene = new MatrixTransform;
-    scene->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(125.0),1.0,0.0,0.0));
-
-    ref_ptr<Group> shadowed_scene = _create_scene();    
-    if (!shadowed_scene.valid()) return 1;
-
-    ref_ptr<MatrixTransform> light_transform = _create_lights();
-    if (!light_transform.valid()) return 1;
-
-    ref_ptr<Group> shadowedScene;
     
-    
-    if (withBaseTexture)
+    if (arguments.read("--sm"))
     {
-        shadowed_scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
-        shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),1);
+        osgShadow::ShadowMap* sm = new osgShadow::ShadowMap;
+        sm->setTextureUnit( withBaseTexture ? 1 : 0 );
+        
+        osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene(sm);
+
+
+        ref_ptr<Group> created_scene = _create_scene();
+        if (!created_scene.valid()) return 1;
+
+        shadowedScene->addChild(_create_scene().get());
+        
+
+        ref_ptr<MatrixTransform> scene = new MatrixTransform;
+        scene->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(125.0),1.0,0.0,0.0));
+
+        scene->addChild(_create_lights().get());
+        scene->addChild(shadowedScene.get());
+
+        if (withBaseTexture)
+        {
+            scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
+        }
+
+        viewer.setSceneData(scene.get());
+
     }
     else
     {
-        shadowedScene = createShadowedScene(shadowed_scene.get(),light_transform.get(),0);
+        ref_ptr<MatrixTransform> scene = new MatrixTransform;
+        scene->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(125.0),1.0,0.0,0.0));
+
+        ref_ptr<Group> created_scene = _create_scene();
+        if (!created_scene.valid()) return 1;
+
+        ref_ptr<MatrixTransform> light_transform = _create_lights();
+        if (!light_transform.valid()) return 1;
+
+        ref_ptr<Group> shadowedScene;
+
+        if (withBaseTexture)
+        {
+            scene->getOrCreateStateSet()->setTextureAttributeAndModes( 0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")), osg::StateAttribute::ON);
+            shadowedScene = createShadowedScene(created_scene.get(),light_transform.get(),1);
+        }
+        else
+        {
+            shadowedScene = createShadowedScene(created_scene.get(),light_transform.get(),0);
+        }
+
+        scene->addChild(shadowedScene.get());
+
+        viewer.setSceneData(scene.get());
     }
     
     // viewer.setUpViewOnSingleScreen();
 
-    scene->addChild(shadowedScene.get());
-
-    viewer.setSceneData(scene.get());
 
     return viewer.run();
 }

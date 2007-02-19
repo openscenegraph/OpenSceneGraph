@@ -45,9 +45,16 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
         osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
         const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
 
+        void setUpdateVisitor(osgUtil::UpdateVisitor* uv) { _updateVisitor = uv; }
+        osgUtil::UpdateVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
+        const osgUtil::UpdateVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
+
+
         virtual void frameAdvance();
         
         virtual void frameUpdateTraversal();
+
+
 
     public:
 

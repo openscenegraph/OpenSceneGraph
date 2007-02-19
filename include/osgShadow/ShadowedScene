@@ -28,7 +28,7 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
 {
     public:
     
-        ShadowedScene();
+        ShadowedScene(ShadowTechnique* st=0);
 
         ShadowedScene(const ShadowedScene& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
             

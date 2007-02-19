@@ -15,6 +15,7 @@
 #define OSGSHADOW_SHADOWEMAP 1
 
 #include <osg/Camera>
+#include <osg/Material>
 
 #include <osgShadow/ShadowTechnique>
 
@@ -30,9 +31,35 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
             
         META_Object(osgShadow, ShadowMap);
         
+        /** Set the texture unit that the shadow texture will be applied on.*/
+        void setTextureUnit(unsigned int unit);
+
+        /** Get the texture unit that the shadow texture will be applied on.*/
+        unsigned int getTextureUnit() const { return _textureUnit; }
+        
+        
+        /** initialize the ShadowedScene and local cached data structures.*/
+        virtual void init();
+        
+        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
+        virtual void update(osg::NodeVisitor& nv);
+        
+        /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
+        virtual void cull(osgUtil::CullVisitor& cv);
+        
+        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        virtual void cleanSceneGraph();
+        
+
     protected :
 
         virtual ~ShadowMap() {}
+
+        osg::ref_ptr<osg::Camera>       _camera;
+        osg::ref_ptr<osg::TexGen>       _texgen;
+        osg::ref_ptr<osg::Texture2D>    _texture;
+        osg::ref_ptr<osg::StateSet>     _stateset;
+        unsigned int                    _textureUnit;
         
 };
 

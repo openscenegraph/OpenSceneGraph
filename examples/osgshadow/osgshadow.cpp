@@ -469,15 +469,18 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help", "Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--positionalLight", "Use a positional light.");
     arguments.getApplicationUsage()->addCommandLineOption("--directionalLight", "Use a direction light.");
-    arguments.getApplicationUsage()->addCommandLineOption("--addOccluderToScene", "Add the occluders geometry.");
     arguments.getApplicationUsage()->addCommandLineOption("--noUpdate", "Disable the updating the of light source.");
     arguments.getApplicationUsage()->addCommandLineOption("--base", "Add a base geometry to test shadows.");
-    arguments.getApplicationUsage()->addCommandLineOption("--noShadow", "Disable the shadows.");
+    arguments.getApplicationUsage()->addCommandLineOption("--sv", "Select ShadowVolume implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--1", "Use test model one.");
+    arguments.getApplicationUsage()->addCommandLineOption("--2", "Use test model two.");
+    arguments.getApplicationUsage()->addCommandLineOption("--3", "Use test model three.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
 
-    // hint to tell viewer to request stencil buffer when setting up windows
-    osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
     // construct the viewer.
     osgViewer::Viewer viewer;
@@ -576,6 +579,9 @@ int main(int argc, char** argv)
     
     if (arguments.read("--sv"))
     {
+        // hint to tell viewer to request stencil buffer when setting up windows
+        osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
+
         osg::ref_ptr<osgShadow::ShadowVolume> sv = new osgShadow::ShadowVolume;
         sv->setDynamicShadowVolumes(updateLightPosition);
         while (arguments.read("--two-sided")) sv->setDrawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED);

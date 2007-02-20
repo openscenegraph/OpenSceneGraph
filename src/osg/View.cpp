@@ -83,7 +83,7 @@ void View::updateSlave(unsigned int i)
     }
 
     slave._camera->inheritCullSettings(*_camera);
-    if (_camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) slave._camera->setClearColor(_camera->getClearColor());
+    if (slave._camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) slave._camera->setClearColor(_camera->getClearColor());
 }
 
 bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffset)

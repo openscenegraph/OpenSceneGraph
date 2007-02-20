@@ -47,7 +47,7 @@ WRAPPER_DIRS = \
 	osg \
 	osgDB \
 	osgFX \
-	osgGA
+	osgGA \
 	osgManipulator \
 	osgParticle \
 	osgShadow \
@@ -55,6 +55,7 @@ WRAPPER_DIRS = \
 	osgText \
 	osgUtil \
 	osgViewer \
+        
 
 ifeq ($(PRODUCER_INSTALLED),yes)
     WRAPPER_DIRS += osgProducer

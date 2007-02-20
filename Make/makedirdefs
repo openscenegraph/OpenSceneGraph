@@ -45,14 +45,16 @@ SRC_DIRS += \
 
 WRAPPER_DIRS = \
 	osg \
-	osgParticle \
-	osgSim \
-	osgUtil \
 	osgDB \
 	osgFX \
-	osgText \
-	osgManipulator \
 	osgGA
+	osgManipulator \
+	osgParticle \
+	osgShadow \
+	osgSim \
+	osgText \
+	osgUtil \
+	osgViewer \
 
 ifeq ($(PRODUCER_INSTALLED),yes)
     WRAPPER_DIRS += osgProducer

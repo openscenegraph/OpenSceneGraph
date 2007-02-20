@@ -163,7 +163,12 @@ struct ViewerRenderingOperation : public osg::Operation, public ViewerQuerySuppo
         
         // do cull taversal
         osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+        
+        _sceneView->inheritCullSettings(*(_sceneView->getCamera()));
+        
         _sceneView->cull();
+        
+        
         osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
 
 #if 0
@@ -310,7 +315,10 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
 
             // do cull taversal
             osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+            
+            sceneView->inheritCullSettings(*(sceneView->getCamera()));
             sceneView->cull();
+            
             osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
 
 #if 0
@@ -467,7 +475,10 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         
         // do cull taversal
         osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
+
+        sceneView->inheritCullSettings(*(sceneView->getCamera()));
         sceneView->cull();
+
         osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
 
         if (state->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())

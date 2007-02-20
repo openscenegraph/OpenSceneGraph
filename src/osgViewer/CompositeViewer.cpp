@@ -519,6 +519,7 @@ struct CompositeViewerRenderingOperation : public osg::Operation
 
         // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
         
+        _sceneView->inheritCullSettings(*(_sceneView->getCamera()));
         _sceneView->cull();
         _sceneView->draw();
 

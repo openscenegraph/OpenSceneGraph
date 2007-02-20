@@ -169,6 +169,117 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
     return distortionNode;
 }
 
+void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
+{
+ 
+    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+    if (!wsi) 
+    {
+        osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
+        return;
+    }
+
+    unsigned int width, height;
+    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->x = 0;
+    traits->y = 0;
+    traits->width = width;
+    traits->height = height;
+    traits->windowDecoration = true;
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+    if (!gc)
+    {
+        osg::notify(osg::NOTICE)<<"GraphicsWindow has not been created successfully."<<std::endl;
+        return;
+    }
+
+
+    int center_x = width/2;
+    int center_y = height/2;
+    int camera_width = 256;
+    int camera_height = 256;
+
+    // front face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y, camera_width, camera_height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+    }
+    
+    // top face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y+camera_height, camera_width, camera_height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 1.0,0.0,0.0));
+    }
+
+    // left face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(center_x-camera_width*3/2, center_y, camera_width, camera_height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 0.0,1.0,0.0));
+    }
+
+    // right face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(center_x+camera_width/2, center_y, camera_width, camera_height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 0.0,1.0,0.0));
+    }
+
+    // bottom face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y-camera_height, camera_width, camera_height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 1.0,0.0,0.0));
+    }
+
+    // back face
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(gc.get());
+        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y-2*camera_height, camera_width, camera_height));
+        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-180.0f), 1.0,0.0,0.0));
+    }
+    
+    viewer.getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
+
+    viewer.assignSceneDataToCameras();
+}
 
 int main(int argc, char** argv)
 {
@@ -185,11 +296,21 @@ int main(int argc, char** argv)
         osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
+
+    if (arguments.read("--dome"))
+    {    
+        viewer.setSceneData( loadedModel );
+
+        setDomeCorrection(viewer, arguments);
     
-    osg::Node* distortionNode = createDistortionSubgraph(loadedModel, viewer.getCamera()->getClearColor());
-    
-    // add model to the viewer.
-    viewer.setSceneData( distortionNode );
+    }
+    else
+    {
+        osg::Node* distortionNode = createDistortionSubgraph(loadedModel, viewer.getCamera()->getClearColor());
+
+        // add model to the viewer.
+        viewer.setSceneData( distortionNode );
+    }
 
     return viewer.run();
 }

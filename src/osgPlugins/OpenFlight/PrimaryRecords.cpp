@@ -151,15 +151,22 @@ class Group : public PrimaryRecord
     static const unsigned int BACKWARD_ANIM    = 0x80000000u >> 6;
 
     osg::ref_ptr<osg::Group> _group;
+    uint32 _flags;
     bool _forwardAnim;
     bool _backwardAnim;
+    int32 _loopCount;
     float32 _loopDuration;
+    float32 _lastFrameDuration;
 
 public:
 
     Group():
+        _flags(0),
         _forwardAnim(false),
-        _backwardAnim(false)
+        _backwardAnim(false),
+        _loopCount(0),
+        _loopDuration(0),
+        _lastFrameDuration(0)
     {}
 
     META_Record(Group)
@@ -181,54 +188,33 @@ protected:
 
         /*int16 relativePriority =*/ in.readInt16();
         in.forward(2);
-        uint32 flags = in.readUInt32();
+        _flags = in.readUInt32(0);
         /*uint16 specialId0 =*/ in.readUInt16();
         /*uint16 specialId1 =*/ in.readUInt16();
         /*uint16 significance =*/ in.readUInt16();
         /*int8 layer =*/ in.readInt8();
         in.forward(5);
         // version >= VERSION_15_8
-        /*uint32 loopCount =*/ in.readUInt32();
-        _loopDuration = in.readFloat32();
-        /*float32 lastFrameDuration =*/ in.readFloat32();
+        _loopCount = in.readInt32(0);
+        _loopDuration = in.readFloat32(0.0f);
+        _lastFrameDuration = in.readFloat32(0.0f);
 
         // Check for forward animation (sequence)
-        _forwardAnim = (flags & FORWARD_ANIM) != 0;
+        _forwardAnim = (_flags & FORWARD_ANIM) != 0;
 
         // For versions prior to 15.8, the swing bit can be set independently
         // of the animation bit.  This implies forward animation (with swing)
-        if ((document.version() < VERSION_15_8) && (flags & SWING_ANIM))
+        if ((document.version() < VERSION_15_8) && (_flags & SWING_ANIM))
             _forwardAnim = true;
         
         // OpenFlight 15.8 adds backwards animations
         _backwardAnim = ( (document.version() >= VERSION_15_8) &&
-            ((flags & BACKWARD_ANIM) != 0) );
+            ((_flags & BACKWARD_ANIM) != 0) );
 
         if (_forwardAnim || _backwardAnim)
-        {
-            osg::ref_ptr<osg::Sequence> sequence = new osg::Sequence;
-
-            // Regardless of forwards or backwards, animation could have swing bit set
-            const osg::Sequence::LoopMode loopMode = ((flags & SWING_ANIM) == 0) ?
-                osg::Sequence::LOOP : osg::Sequence::SWING;
-
-            if (_forwardAnim)
-                sequence->setInterval(loopMode, 0, -1);
-            else 
-                sequence->setInterval(loopMode, -1, 0);
-
-            // Set the duration, temporarily. We'll set the correct value
-            // in the destructor, when we know the number of children.
-            float speed=0.1f;
-            sequence->setDuration(speed);
-            sequence->setMode(osg::Sequence::START);
-
-            _group = sequence.get();
-        }
+            _group = new osg::Sequence;
         else
-        {
             _group = new osg::Group;
-        }
 
         _group->setName(id);
 
@@ -239,17 +225,45 @@ protected:
 
     virtual void popLevel(Document& document)
     {
-        // Set loop duration?
-        if (document.version() >= VERSION_15_8)
+        // Children are added!
+        osg::Sequence* sequence = dynamic_cast<osg::Sequence*>(_group.get());
+        if (sequence && sequence->getNumChildren() > 0)
         {
-            // Now that we know the number of children, set the loop duration
-            // to the best of our ability (currently, osg::Sequence doesn't
-            // support the OpenFlight last frame duration concept).
-            osg::Sequence* sequence = dynamic_cast<osg::Sequence*>(_group.get());
-            if (sequence && sequence->getNumChildren()>0)
+            // Regardless of forwards or backwards, animation could have swing bit set.
+            osg::Sequence::LoopMode loopMode = ((_flags & SWING_ANIM) == 0) ?
+                osg::Sequence::LOOP : osg::Sequence::SWING;
+
+            if (_forwardAnim)
+                sequence->setInterval(loopMode, 0, -1);
+            else 
+                sequence->setInterval(loopMode, -1, 0);
+
+            // Loop timing available from version 15.8.
+            if (document.version() >= VERSION_15_8)
             {
-                sequence->setDuration( _loopDuration / (float)(_group->getNumChildren()) );
+                // Set frame duration.
+                float frameDuration = _loopDuration / float(sequence->getNumChildren());
+                for (unsigned int i=0; i < sequence->getNumChildren(); i++)
+                    sequence->setTime(i, frameDuration);
+
+                // Set number of repetitions.
+                if (_loopCount > 0)
+                    sequence->setDuration(1.0f, _loopCount);
+                else
+                    sequence->setDuration(1.0f);        // Run continuously
             }
+            else // No timing available.
+            {
+                // Set frame duration
+                float frameDuration = 0.1f;     // 10Hz
+                for (unsigned int i=0; i < sequence->getNumChildren(); i++)
+                    sequence->setTime(i, frameDuration);
+
+                // Run continuously
+                sequence->setDuration(1.0f);
+            }
+
+            sequence->setMode(osg::Sequence::START);
         }
     }
 };

@@ -29,7 +29,12 @@ State::State()
     _modelView = _identity;
 
     _abortRenderingPtr = false;    
+
+#if 1
     _checkGLErrors = ONCE_PER_FRAME;
+#else    
+    _checkGLErrors = ONCE_PER_ATTRIBUTE;
+#endif
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;

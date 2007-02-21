@@ -88,8 +88,8 @@ void CURRENT_CLASS::traverse(osg::NodeVisitor &nv)
 
     // We are in the cull traversal, so first collect information on the
     // current modelview and projection matrices and viewport.
-    osg::RefMatrix& modelview = cv->getModelViewMatrix();
-    osg::RefMatrix& projection = cv->getProjectionMatrix();
+    osg::RefMatrix& modelview = *(cv->getModelViewMatrix());
+    osg::RefMatrix& projection = *(cv->getProjectionMatrix());
     osg::Viewport* viewport = cv->getViewport();
 
     // Prepare for scene traversal.

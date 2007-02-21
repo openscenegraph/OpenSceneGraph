@@ -183,7 +183,7 @@ class TexMatCullCallback : public osg::NodeCallback
             osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
             if (cv)
             {
-                osg::Quat quat = cv->getModelViewMatrix().getRotate();
+                osg::Quat quat = cv->getModelViewMatrix()->getRotate();
                 _texmat->setMatrix(osg::Matrix::rotate(quat.inverse()));
             }
         }

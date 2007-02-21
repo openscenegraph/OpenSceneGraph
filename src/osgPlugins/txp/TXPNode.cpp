@@ -105,8 +105,8 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
             tileMapper->setLODScale(cv->getLODScale());
             tileMapper->pushReferenceViewPoint(cv->getReferenceViewPoint());
             tileMapper->pushViewport(cv->getViewport());
-            tileMapper->pushProjectionMatrix(&(cv->getProjectionMatrix()));
-            tileMapper->pushModelViewMatrix(&(cv->getModelViewMatrix()), osg::Transform::RELATIVE_RF);
+            tileMapper->pushProjectionMatrix((cv->getProjectionMatrix()));
+            tileMapper->pushModelViewMatrix((cv->getModelViewMatrix()), osg::Transform::RELATIVE_RF);
 
             // traverse the scene graph to search for valid tiles
             accept(*tileMapper);

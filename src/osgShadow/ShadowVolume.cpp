@@ -326,7 +326,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
             _lightpos = lightpos;
 
             osg::Matrix eyeToWorld;
-            eyeToWorld.invert(cv.getModelViewMatrix());
+            eyeToWorld.invert(*cv.getModelViewMatrix());
             
             _occluder->computeShadowVolumeGeometry(lightpos * eyeToWorld, *_shadowVolume);
         }

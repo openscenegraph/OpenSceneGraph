@@ -1480,7 +1480,7 @@ void Viewer::setUpRenderingSupport()
                     }
 
 
-                    // osg::notify(osg::NOTICE)<<"localCamera"<<std::endl;
+                    osg::notify(osg::NOTICE)<<"localCamera "<<camera->getName()<<std::endl;
                     ViewerDoubleBufferedRenderingOperation* vdbro = new ViewerDoubleBufferedRenderingOperation(graphicsThreadDoesCull, sceneViewList[0], sceneViewList[1], dp, _startTick);
                     gc->add(vdbro);
                     ++numViewerDoubleBufferedRenderingOperation;

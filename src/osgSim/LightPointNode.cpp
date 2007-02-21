@@ -155,8 +155,8 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
     if (cv /*&& !cv->isCulled(_bbox)*/)
     {
     
-        osg::Matrix matrix = cv->getModelViewMatrix();
-        osg::RefMatrix& projection = cv->getProjectionMatrix();
+        osg::Matrix matrix = *(cv->getModelViewMatrix());
+        osg::RefMatrix& projection = *(cv->getProjectionMatrix());
         osgUtil::StateGraph* rg = cv->getCurrentStateGraph();
 
         if (rg->leaves_empty())

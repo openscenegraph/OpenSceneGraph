@@ -142,7 +142,7 @@ void Impostor::traverse(osg::NodeVisitor& nv)
         // within the impostor distance threshold therefore attempt
         // to use impostor instead.
         
-        RefMatrix& matrix = cv->getModelViewMatrix();
+        RefMatrix& matrix = *cv->getModelViewMatrix();
 
         // search for the best fit ImpostorSprite;
         ImpostorSprite* impostorSprite = findBestImpostorSprite(contextID,eyeLocal);
@@ -150,7 +150,7 @@ void Impostor::traverse(osg::NodeVisitor& nv)
         if (impostorSprite)
         {
             // impostor found, now check to see if it is good enough to use
-            float error = impostorSprite->calcPixelError(cv->getMVPW());
+            float error = impostorSprite->calcPixelError(*(cv->getMVPW()));
 
             if (error>cv->getImpostorPixelErrorThreshold())
             {
@@ -220,7 +220,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     // projection matrix...
     bool isPerspectiveProjection = true;
 
-    const Matrix& matrix = cv->getModelViewMatrix();
+    const Matrix& matrix = *(cv->getModelViewMatrix());
     const BoundingSphere& bs = getBound();
     osg::Vec3 eye_local = cv->getEyeLocal();
 
@@ -264,7 +264,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 
     // convert the corners of the sprite (in world coords) into their
     // equivilant window coordinates by using the camera's project method.
-    const osg::Matrix& MVPW = cv->getMVPW();
+    const osg::Matrix& MVPW = *(cv->getMVPW());
     Vec3 c00_win = c00 * MVPW;
     Vec3 c11_win = c11 * MVPW;
 
@@ -448,7 +448,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
         osg::Matrix::translate(-eye_local)*        
         osg::Matrix::rotate(rotate_from,rotate_to)*
         osg::Matrix::translate(eye_local)*
-        cv->getModelViewMatrix();
+        *cv->getModelViewMatrix();
 
     camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     camera->setViewMatrix(rotate_matrix);

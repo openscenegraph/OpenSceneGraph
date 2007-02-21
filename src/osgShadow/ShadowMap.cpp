@@ -213,7 +213,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
     }
     
     osg::Matrix eyeToWorld;
-    eyeToWorld.invert(cv.getModelViewMatrix());
+    eyeToWorld.invert(*cv.getModelViewMatrix());
     
     lightpos = lightpos * eyeToWorld;
 
@@ -265,7 +265,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
         // do RTT camera traversal
         _camera->accept(cv);
 
-        orig_rs->getPositionalStateContainer()->addPositionedTextureAttribute(_textureUnit, &cv.getModelViewMatrix(), _texgen.get());
+        orig_rs->getPositionalStateContainer()->addPositionedTextureAttribute(_textureUnit, cv.getModelViewMatrix(), _texgen.get());
     }
 
 

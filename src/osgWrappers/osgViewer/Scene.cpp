@@ -13,6 +13,7 @@
 #include <osg/FrameStamp>
 #include <osg/Node>
 #include <osgDB/DatabasePager>
+#include <osgUtil/UpdateVisitor>
 #include <osgViewer/Scene>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -73,6 +74,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
 	          "",
 	          "");
+	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, uv,
+	          Properties::NON_VIRTUAL,
+	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
+	          "",
+	          "");
+	I_Method0(osgUtil::UpdateVisitor *, getUpdateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __osgUtil_UpdateVisitor_P1__getUpdateVisitor,
+	          "",
+	          "");
+	I_Method0(const osgUtil::UpdateVisitor *, getUpdateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
+	          "",
+	          "");
 	I_Method0(void, frameAdvance,
 	          Properties::VIRTUAL,
 	          __void__frameAdvance,
@@ -97,5 +113,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);
+	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
+	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
+	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
 END_REFLECTOR
 

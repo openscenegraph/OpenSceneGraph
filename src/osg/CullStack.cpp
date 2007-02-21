@@ -270,7 +270,7 @@ void CullStack::popModelViewMatrix()
 void CullStack::computeFrustumVolume()
 {
     osg::Matrix invP;
-    invP.invert(getProjectionMatrix());
+    invP.invert(*getProjectionMatrix());
 
     osg::Vec3 f1(-1,-1,-1); f1 = f1*invP;
     osg::Vec3 f2(-1, 1,-1); f2 = f2*invP;

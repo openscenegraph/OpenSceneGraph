@@ -181,7 +181,7 @@ public:
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
         if (cv)
         {
-            const osg::Matrix& MV = cv->getModelViewMatrix();
+            const osg::Matrix& MV = *(cv->getModelViewMatrix());
             const osg::Matrix R = osg::Matrix::rotate( osg::DegreesToRadians(112.0f), 0.0f,0.0f,1.0f)*
                                   osg::Matrix::rotate( osg::DegreesToRadians(90.0f), 1.0f,0.0f,0.0f);
 

@@ -35,8 +35,12 @@ TexGenNode::TexGenNode(const TexGenNode& cn, const CopyOp& copyop):
 {
 }
 
-TexGenNode::TexGenNode(TexGen *texgen)
+TexGenNode::TexGenNode(TexGen *texgen):
+    _referenceFrame(RELATIVE_RF)
 {
+    // switch off culling of tex gen nodes by default.
+    setCullingActive(false);
+
     _textureUnit = 0;
     _value = StateAttribute::ON;
     _stateset = new StateSet;

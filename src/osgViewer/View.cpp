@@ -360,7 +360,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
             local_x = new_x;
             local_y = new_y;
 
-            osg::notify(osg::NOTICE)<<"Returning master camera"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Returning master camera"<<std::endl;
 
             return _camera.get();
         }
@@ -380,7 +380,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
             slave._camera->getAllowEventFocus() &&
             slave._camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
         {
-            osg::notify(osg::NOTICE)<<"Testing slave camera "<<slave._camera->getName()<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Testing slave camera "<<slave._camera->getName()<<std::endl;
 
             const osg::Camera* camera = slave._camera.get();
             const osg::Viewport* viewport = camera ? camera->getViewport() : 0;
@@ -392,15 +392,15 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
             osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
 
-            osg::notify(osg::NOTICE)<<"  x="<<x<<" y="<<y<<std::endl;;
-            osg::notify(osg::NOTICE)<<"  eventState->getXmin()="<<eventState->getXmin()<<" eventState->getXmax()="<<eventState->getXmax()<<std::endl;;
-            osg::notify(osg::NOTICE)<<"  new_coord "<<new_coord<<std::endl;;
+            //osg::notify(osg::NOTICE)<<"  x="<<x<<" y="<<y<<std::endl;;
+            //osg::notify(osg::NOTICE)<<"  eventState->getXmin()="<<eventState->getXmin()<<" eventState->getXmax()="<<eventState->getXmax()<<std::endl;;
+            //osg::notify(osg::NOTICE)<<"  new_coord "<<new_coord<<std::endl;;
 
             if (viewport && 
                 new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
                 new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
             {
-                osg::notify(osg::NOTICE)<<"  in viewport "<<std::endl;;
+                // osg::notify(osg::NOTICE)<<"  in viewport "<<std::endl;;
                 
                 local_x = new_coord.x();
                 local_y = new_coord.y();
@@ -409,7 +409,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"  not in viewport "<<viewport->x()<<" "<<(viewport->x()+viewport->width())<<std::endl;;
+                // osg::notify(osg::NOTICE)<<"  not in viewport "<<viewport->x()<<" "<<(viewport->x()+viewport->width())<<std::endl;;
             }
 
         }

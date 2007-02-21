@@ -13,10 +13,14 @@
 #include <osg/TextureCubeMap>
 #include <osg/io_utils>
 
+
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
 
 #include <osgUtil/SmoothingVisitor>
 
@@ -207,6 +211,7 @@ void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& /*arguments*/)
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y, camera_width, camera_height));
+
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
@@ -279,22 +284,6 @@ void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& /*arguments*/)
     viewer.assignSceneDataToCameras();
 }
 
-struct DrawCallback : public osg::Drawable::DrawCallback
-{
-
-    DrawCallback() {}
-
-    virtual void drawImplementation(osg::State& state,const osg::Drawable* drawable) const
-    {
-        osg::notify(osg::NOTICE)<<"I am here"<<std::endl;
-        osg::notify(osg::NOTICE)<<"  Projection matrix "<<state.getProjectionMatrix()<<std::endl;
-        osg::notify(osg::NOTICE)<<"  ModelView matrix "<<state.getModelViewMatrix()<<std::endl;
-        
-        drawable->drawImplementation(state);
-    }
-};
-
-
 void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*arguments*/)
 {
  
@@ -330,49 +319,76 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
 
     int center_x = width/2;
     int center_y = height/2;
-    int camera_width = 256;
-    int camera_height = 256;
+    int camera_width = 512;
+    int camera_height = 512;
     
-    int tex_width = 256;
-    int tex_height = 256;
-    
+    int tex_width = 512;
+    int tex_height = 512;
+
+#define CUBE_MAP
+#ifdef CUBE_MAP    
     osg::TextureCubeMap* texture = new osg::TextureCubeMap;
+#else
+    osg::Texture2D* texture = new osg::Texture2D;
+#endif    
     texture->setTextureSize(tex_width, tex_height);
     texture->setInternalFormat(GL_RGB);
     texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_R, osg::Texture::CLAMP_TO_EDGE);
-    texture->setFilter(osg::TextureCubeMap::MIN_FILTER,osg::TextureCubeMap::LINEAR);
-    texture->setFilter(osg::TextureCubeMap::MAG_FILTER,osg::TextureCubeMap::LINEAR);
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    
+#if 0    
+    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
+    GLenum buffer = GL_FRONT;
+#else
+    osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
+    GLenum buffer = GL_FRONT;
+#endif
 
     // front face
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Front face camera");
         camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y, camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
-        
-        // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Z);
+        camera->setAllowEventFocus(false);
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
 
+        // attach the texture and use it as the color buffer.
+#ifdef CUBE_MAP    
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Z);
+#else
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+#endif
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
     }
+
     
     // top face
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Top face camera");
         camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y+camera_height, camera_width, camera_height));
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
+        camera->setAllowEventFocus(false);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
+#ifdef CUBE_MAP    
         camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Y);
+#else
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+#endif
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 1.0,0.0,0.0));
     }
@@ -382,13 +398,20 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Left face camera");
         camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(center_x-camera_width*3/2, center_y, camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
+        camera->setAllowEventFocus(false);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
+#ifdef CUBE_MAP    
         camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_X);
+#else
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+#endif
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 0.0,1.0,0.0));
     }
@@ -398,13 +421,20 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Right face camera");
         camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(center_x+camera_width/2, center_y, camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
+        camera->setAllowEventFocus(false);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
+#ifdef CUBE_MAP    
         camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_X);
+#else
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+#endif
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 0.0,1.0,0.0));
     }
@@ -414,13 +444,20 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setGraphicsContext(gc.get());
         camera->setName("Bottom face camera");
-        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y-camera_height, camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
+        camera->setAllowEventFocus(false);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
+#ifdef CUBE_MAP    
         camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_Y);
+#else
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+#endif
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 1.0,0.0,0.0));
     }
@@ -430,13 +467,20 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setName("Back face camera");
         camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(center_x-camera_width/2, center_y-2*camera_height, camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
+        camera->setAllowEventFocus(false);
+
+        // tell the camera to use OpenGL frame buffer object where supported.
+        camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
+#ifdef CUBE_MAP    
         camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_Z);
+#else
+        camera->attach(osg::Camera::COLOR_BUFFER, texture);
+#endif
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-180.0f), 1.0,0.0,0.0));
     }
@@ -464,28 +508,28 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         int noSteps = 50;
 
         osg::Vec3Array* vertices = new osg::Vec3Array;
-        osg::Vec2Array* texcoords = new osg::Vec2Array;
+        osg::Vec3Array* texcoords = new osg::Vec3Array;
         osg::Vec4Array* colors = new osg::Vec4Array;
 
         osg::Vec3 bottom = origin;
         osg::Vec3 dx = xAxis*(width/((float)(noSteps-1)));
         osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
 
-        osg::Vec2 bottom_texcoord(0.0f,0.0f);
-        osg::Vec2 dx_texcoord(1.0f/(float)(noSteps-1),0.0f);
-        osg::Vec2 dy_texcoord(0.0f,1.0f/(float)(noSteps-1));
+        osg::Vec3 bottom_texcoord(0.0f,0.0f,0.0f);
+        osg::Vec3 dx_texcoord(1.0f/(float)(noSteps-1),0.0f,0.0f);
+        osg::Vec3 dy_texcoord(0.0f,1.0f/(float)(noSteps-1),0.0f);
 
         osg::Vec3 cursor = bottom;
-        osg::Vec2 texcoord = bottom_texcoord;
+        osg::Vec3 texcoord = bottom_texcoord;
         int i,j;
         for(i=0;i<noSteps;++i)
         {
             osg::Vec3 cursor = bottom+dy*(float)i;
-            osg::Vec2 texcoord = bottom_texcoord+dy_texcoord*(float)i;
+            osg::Vec3 texcoord = bottom_texcoord+dy_texcoord*(float)i;
             for(j=0;j<noSteps;++j)
             {
                 vertices->push_back(cursor);
-                texcoords->push_back(osg::Vec2((sin(texcoord.x()*osg::PI-osg::PI*0.5)+1.0f)*0.5f,(sin(texcoord.y()*osg::PI-osg::PI*0.5)+1.0f)*0.5f));
+                texcoords->push_back(osg::Vec3((sin(texcoord.x()*osg::PI-osg::PI*0.5)+1.0f)*0.5f,(1.0-sin(texcoord.y()*osg::PI-osg::PI*0.5))*0.5f,1.0));
                 colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
                 cursor += dx;
@@ -500,9 +544,6 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         polyGeom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
         polyGeom->setTexCoordArray(0,texcoords);
-        
-        polyGeom->setDrawCallback(new DrawCallback);
-
 
         for(i=0;i<noSteps-1;++i)
         {
@@ -529,11 +570,12 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         camera->setGraphicsContext(gc.get());
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
         camera->setClearColor( osg::Vec4(0.1,0.1,1.0,1.0) );
-        camera->setViewport(new osg::Viewport(0, 0, width/2, height/2));
+        camera->setViewport(new osg::Viewport(0, 0, width, height));
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+        camera->setAllowEventFocus(false);
         //camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
         
@@ -544,10 +586,6 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& /*argumen
         camera->addChild(geode);
         
         camera->setName("DistortionCorrectionCamera");
-
-        osg::notify(osg::NOTICE)<<"Original Projection matrix "<<camera->getProjectionMatrix()<<std::endl;
-        osg::notify(osg::NOTICE)<<"  View matrix "<<camera->getViewMatrix()<<std::endl;
-
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
     }
@@ -590,6 +628,32 @@ int main(int argc, char** argv)
 
         // add model to the viewer.
         viewer.setSceneData( distortionNode );
+    }
+
+    // set up the camera manipulators.
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+        std::string pathfile;
+        char keyForAnimationPath = '5';
+        while (arguments.read("-p",pathfile))
+        {
+            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+            if (apm || !apm->valid()) 
+            {
+                unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
+                keyswitchManipulator->selectMatrixManipulator(num);
+                ++keyForAnimationPath;
+            }
+        }
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
 
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);

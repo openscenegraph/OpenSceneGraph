@@ -715,6 +715,10 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     renderStage->setViewport(getViewport());
     renderStage->setClearColor(getClearColor());
     renderStage->setClearMask(_camera->getClearMask());
+    
+#if 1    
+    renderStage->setCamera(_camera.get());
+#endif
 
     switch(_lightingMode)
     {
@@ -1308,11 +1312,13 @@ void SceneView::draw()
     // re apply the defalt OGL state.
     state->popAllStateSets();
     state->apply();
-    
+
+#if 0
     if (_camera->getPostDrawCallback())
     {
         (*(_camera->getPostDrawCallback()))(*_camera);
     }
+#endif
 
     if (state->getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
     {

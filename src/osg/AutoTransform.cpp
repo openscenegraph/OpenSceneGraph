@@ -118,7 +118,7 @@ void AutoTransform::accept(NodeVisitor& nv)
                 osg::Vec3 localUp = cs->getUpLocal(); 
                 osg::Vec3 position = getPosition();
 
-                const osg::Matrix& projection = cs->getProjectionMatrix();
+                const osg::Matrix& projection = *(cs->getProjectionMatrix());
 
                 bool doUpdate = _firstTimeToInitEyePoint;
                 if (!_firstTimeToInitEyePoint)
@@ -161,7 +161,7 @@ void AutoTransform::accept(NodeVisitor& nv)
 
                     if (_autoRotateMode==ROTATE_TO_SCREEN)
                     {
-                        osg::Quat rotation = cs->getModelViewMatrix().getRotate();
+                        osg::Quat rotation = cs->getModelViewMatrix()->getRotate();
                         setRotation(rotation.inverse());
                     }
                     else if (_autoRotateMode==ROTATE_TO_CAMERA)

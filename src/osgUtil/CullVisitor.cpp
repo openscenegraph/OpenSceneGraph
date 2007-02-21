@@ -735,7 +735,7 @@ void CullVisitor::apply(Geode& node)
     // traverse any call callbacks and traverse any children.
     handle_cull_callbacks_and_traverse(node);
 
-    RefMatrix& matrix = getModelViewMatrix();
+    RefMatrix& matrix = *getModelViewMatrix();
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
         Drawable* drawable = node.getDrawable(i);
@@ -813,7 +813,7 @@ void CullVisitor::apply(Billboard& node)
     handle_cull_callbacks_and_traverse(node);
 
     const Vec3& eye_local = getEyeLocal();
-    const RefMatrix& modelview = getModelViewMatrix();
+    const RefMatrix& modelview = *getModelViewMatrix();
 
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
@@ -867,7 +867,7 @@ void CullVisitor::apply(LightSource& node)
     {
         if (node.getReferenceFrame()==osg::LightSource::RELATIVE_RF)
         {
-            RefMatrix& matrix = getModelViewMatrix();
+            RefMatrix& matrix = *getModelViewMatrix();
             addPositionedAttribute(&matrix,light);
         }
         else
@@ -889,7 +889,7 @@ void CullVisitor::apply(ClipNode& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    RefMatrix& matrix = getModelViewMatrix();
+    RefMatrix& matrix = *getModelViewMatrix();
 
     const ClipNode::ClipPlaneList& planes = node.getClipPlaneList();
     for(ClipNode::ClipPlaneList::const_iterator itr=planes.begin();
@@ -914,7 +914,7 @@ void CullVisitor::apply(TexGenNode& node)
 
     if (node.getReferenceFrame()==osg::TexGenNode::RELATIVE_RF)
     {
-        RefMatrix& matrix = getModelViewMatrix();
+        RefMatrix& matrix = *getModelViewMatrix();
         addPositionedTextureAttribute(node.getTextureUnit(), &matrix ,node.getTexGen());
     }
     else
@@ -959,7 +959,7 @@ void CullVisitor::apply(Transform& node)
     StateSet* node_state = node.getStateSet();
     if (node_state) pushStateSet(node_state);
 
-    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(getModelViewMatrix());
+    ref_ptr<RefMatrix> matrix = createOrReuseMatrix(*getModelViewMatrix());
     node.computeLocalToWorldMatrix(*matrix,this);
     pushModelViewMatrix(matrix.get(), node.getReferenceFrame());
     
@@ -1112,7 +1112,7 @@ void CullVisitor::apply(osg::Camera& camera)
     // activate all active cull settings from this Camera
     inheritCullSettings(camera);
 
-    RefMatrix& originalModelView = getModelViewMatrix();
+    RefMatrix& originalModelView = *getModelViewMatrix();
 
     osg::RefMatrix* projection = 0;
     osg::RefMatrix* modelview = 0;
@@ -1121,13 +1121,13 @@ void CullVisitor::apply(osg::Camera& camera)
     {
         if (camera.getTransformOrder()==osg::Camera::POST_MULTIPLY)
         {
-            projection = createOrReuseMatrix(getProjectionMatrix()*camera.getProjectionMatrix());
-            modelview = createOrReuseMatrix(getModelViewMatrix()*camera.getViewMatrix());
+            projection = createOrReuseMatrix(*getProjectionMatrix()*camera.getProjectionMatrix());
+            modelview = createOrReuseMatrix(*getModelViewMatrix()*camera.getViewMatrix());
         }
         else // pre multiply 
         {
-            projection = createOrReuseMatrix(camera.getProjectionMatrix()*getProjectionMatrix());
-            modelview = createOrReuseMatrix(camera.getViewMatrix()*getModelViewMatrix());
+            projection = createOrReuseMatrix(camera.getProjectionMatrix()*(*getProjectionMatrix()));
+            modelview = createOrReuseMatrix(camera.getViewMatrix()*(*getModelViewMatrix()));
         }
     }
     else
@@ -1228,7 +1228,7 @@ void CullVisitor::apply(osg::Camera& camera)
         // set up to charge the same PositionalStateContainer is the parent previous stage.
         osg::Matrix inhertiedMVtolocalMV;
         inhertiedMVtolocalMV.invert(originalModelView);
-        inhertiedMVtolocalMV.postMult(getModelViewMatrix());
+        inhertiedMVtolocalMV.postMult(*getModelViewMatrix());
         rtts->setInheritedPositionalStateContainerMatrix(inhertiedMVtolocalMV);
         rtts->setInheritedPositionalStateContainer(previous_stage->getPositionalStateContainer());
 

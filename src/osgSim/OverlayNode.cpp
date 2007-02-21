@@ -257,7 +257,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
         _texgenNode->accept(*cv);
         
-        const osg::Matrix modelView = (cv->getModelViewMatrix());
+        const osg::Matrix modelView = *(cv->getModelViewMatrix());
         osg::Polytope viewTextureFrustum;
         viewTextureFrustum.setAndTransformProvidingInverse(_textureFrustum, osg::Matrix::inverse(modelView));
 

@@ -259,6 +259,8 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
 
 void View::assignSceneDataToCameras()
 {
+    osg::notify(osg::NOTICE)<<"View::assignSceneDataToCameras()"<<std::endl;
+
     osg::Node* sceneData = _scene.valid() ? _scene->getSceneData() : 0;
     
     if (_cameraManipulator.valid())

@@ -275,21 +275,21 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         if (!precipitationDrawableSet->_quadPrecipitationDrawable->getCurrentCellMatrixMap().empty())
         {
             cv->pushStateSet(precipitationDrawableSet->_quadPrecipitationDrawable->getStateSet());
-            cv->addDrawableAndDepth(precipitationDrawableSet->_quadPrecipitationDrawable.get(),&cv->getModelViewMatrix(),depth);    
+            cv->addDrawableAndDepth(precipitationDrawableSet->_quadPrecipitationDrawable.get(),cv->getModelViewMatrix(),depth);    
             cv->popStateSet();
         }
 
         if (!precipitationDrawableSet->_linePrecipitationDrawable->getCurrentCellMatrixMap().empty())
         {
             cv->pushStateSet(precipitationDrawableSet->_linePrecipitationDrawable->getStateSet());
-            cv->addDrawableAndDepth(precipitationDrawableSet->_linePrecipitationDrawable.get(),&cv->getModelViewMatrix(),depth);    
+            cv->addDrawableAndDepth(precipitationDrawableSet->_linePrecipitationDrawable.get(),cv->getModelViewMatrix(),depth);    
             cv->popStateSet();
         }
 
         if (!precipitationDrawableSet->_pointPrecipitationDrawable->getCurrentCellMatrixMap().empty())
         {
             cv->pushStateSet(precipitationDrawableSet->_pointPrecipitationDrawable->getStateSet());
-            cv->addDrawableAndDepth(precipitationDrawableSet->_pointPrecipitationDrawable.get(),&cv->getModelViewMatrix(),depth);    
+            cv->addDrawableAndDepth(precipitationDrawableSet->_pointPrecipitationDrawable.get(),cv->getModelViewMatrix(),depth);    
             cv->popStateSet();
         }
 
@@ -731,7 +731,7 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     pds._pointPrecipitationDrawable->newFrame();
 
     osg::Matrix inverse_modelview;
-    inverse_modelview.invert(cv->getModelViewMatrix());
+    inverse_modelview.invert(*(cv->getModelViewMatrix()));
     
     osg::Vec3 eyeLocal = osg::Vec3(0.0f,0.0f,0.0f) * inverse_modelview;
     //osg::notify(osg::NOTICE)<<"  eyeLocal "<<eyeLocal<<std::endl;
@@ -746,8 +746,8 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     
     osg::Polytope frustum;
     frustum.setToUnitFrustum(false,false);
-    frustum.transformProvidingInverse(cv->getProjectionMatrix());
-    frustum.transformProvidingInverse(cv->getModelViewMatrix());
+    frustum.transformProvidingInverse(*(cv->getProjectionMatrix()));
+    frustum.transformProvidingInverse(*(cv->getModelViewMatrix()));
 
     float i_delta = _farTransition * _inverse_du.x();
     float j_delta = _farTransition * _inverse_dv.y();
@@ -836,11 +836,11 @@ bool PrecipitationEffect::build(const osg::Vec3 eyeLocal, int i, int j, int k, f
         return false;
     }
 
-    *mymodelview = cv->getModelViewMatrix();
+    *mymodelview = *(cv->getModelViewMatrix());
     mymodelview->preMult(osg::Matrix::translate(position));
     mymodelview->preMult(osg::Matrix::scale(scale));
     
-    cv->updateCalculatedNearFar(cv->getModelViewMatrix(),bb);
+    cv->updateCalculatedNearFar(*(cv->getModelViewMatrix()),bb);
 
     return true;
 }

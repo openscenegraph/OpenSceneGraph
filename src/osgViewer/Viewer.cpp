@@ -1764,13 +1764,16 @@ void Viewer::eventTraversal()
                                 ++citr)
                             {
                                 osg::Camera* camera = *citr;
-                                if (camera->getView()==this)
+                                if (camera->getView()==this && 
+                                    camera->getAllowEventFocus() &&
+                                    camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
                                 {
                                     osg::Viewport* viewport = camera ? camera->getViewport() : 0;
                                     if (viewport && 
                                         x >= viewport->x() && y >= viewport->y() &&
                                         x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
                                     {
+                                        // osg::notify(osg::NOTICE)<<"setCamera with focus "<<camera->getName()<<" x="<<x<<" y="<<y<<std::endl;
                                         setCameraWithFocus(camera);
                                     }
                                 }
@@ -1798,12 +1801,26 @@ void Viewer::eventTraversal()
                         x = new_coord.x();
                         y = new_coord.y();                                
 
+                        // osg::notify(osg::NOTICE)<<"pointer event new_coord.x()="<<new_coord.x()<<" new_coord.y()="<<new_coord.y()<<std::endl;
+
                         event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
                         event->setX(x);
                         event->setY(y);
                         event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 
                     }
+                    else
+                    {
+                        x = eventState->getXmin() + (x/double(gw->getTraits()->width))*(eventState->getXmax() - eventState->getXmin());
+                        y = eventState->getYmin() + (y/double(gw->getTraits()->height))*(eventState->getYmax() - eventState->getYmin());
+                        // osg::notify(osg::NOTICE)<<"new x = "<<x<<" new y = "<<y<<std::endl;
+
+                        event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
+                        event->setX(x);
+                        event->setY(y);
+                        event->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+                    }
+                    
                     // pass along the new pointer events details to the eventState of the viewer 
                     eventState->setX(x);
                     eventState->setY(y);

@@ -17,6 +17,7 @@ using namespace osg;
 
 Camera::Camera():
     _view(0),
+    _allowEventFocus(true),
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
     _clearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT),
     _transformOrder(PRE_MULTIPLY),
@@ -34,6 +35,7 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     Transform(camera,copyop),
     CullSettings(camera),
     _view(camera._view),
+    _allowEventFocus(camera._allowEventFocus),
     _clearColor(camera._clearColor),
     _clearMask(camera._clearMask),
     _colorMask(camera._colorMask),

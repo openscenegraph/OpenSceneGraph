@@ -1438,6 +1438,8 @@ void Viewer::setUpRenderingSupport()
     
     Cameras localCameras;
     getCameras(localCameras);
+    
+    unsigned int sceneViewOptions = osgUtil::SceneView::HEADLIGHT;
 
     if (true)//(_threadingModel==CullThreadPerCameraDrawThreadPerContext)
     {
@@ -1472,7 +1474,7 @@ void Viewer::setUpRenderingSupport()
                         sceneViewList[i] = sceneView;
 
                         sceneView->setGlobalStateSet(_camera->getStateSet());
-                        sceneView->setDefaults();
+                        sceneView->setDefaults(sceneViewOptions);
                         sceneView->setDisplaySettings(ds);
                         sceneView->setCamera(camera);
                         sceneView->setState(state);
@@ -1494,7 +1496,7 @@ void Viewer::setUpRenderingSupport()
                     _sceneViews.push_back(sceneView);                    
 
                     sceneView->setGlobalStateSet(_camera->getStateSet());
-                    sceneView->setDefaults();
+                    sceneView->setDefaults(sceneViewOptions);
                     sceneView->setDisplaySettings(ds);
                     sceneView->setCamera(camera);
                     sceneView->setState(state);
@@ -1531,7 +1533,7 @@ void Viewer::setUpRenderingSupport()
                 _sceneViews.push_back(sceneView);
 
                 sceneView->setGlobalStateSet(_camera->getStateSet());
-                sceneView->setDefaults();
+                sceneView->setDefaults(sceneViewOptions);
                 sceneView->setDisplaySettings(ds);
                 sceneView->setCamera(camera);
                 sceneView->setState(state);

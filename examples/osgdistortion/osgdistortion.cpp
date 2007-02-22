@@ -283,8 +283,20 @@ void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& /*arguments*/)
     viewer.assignSceneDataToCameras();
 }
 
-osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, osg::ArgumentParser& arguments)
+osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector,
+                                        osg::ArgumentParser& arguments)
 {
+    double sphere_radius = 1.0;
+    double collar_radius = 0.45;
+    osg::Vec3d center(0.0,0.0,0.0);
+    osg::Vec3d eye(0.0,0.0,0.0);
+    
+    double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
+    osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, distance);
+    
+    osg::notify(osg::NOTICE)<<"Projector position = "<<projector<<std::endl;
+
+
     // create the quad to visualize.
     osg::Geometry* geometry = new osg::Geometry();
 
@@ -298,7 +310,7 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     float height = heightVector.length();
     yAxis /= height;
     
-    int noSteps = 50;
+    int noSteps = 100;
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     osg::Vec3Array* texcoords = new osg::Vec3Array;
@@ -307,27 +319,37 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     osg::Vec3 bottom = origin;
     osg::Vec3 dx = xAxis*(width/((float)(noSteps-1)));
     osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
-
-    osg::Vec3 bottom_texcoord(0.0f,0.0f,0.0f);
-    osg::Vec3 dx_texcoord(1.0f/(float)(noSteps-1),0.0f,0.0f);
-    osg::Vec3 dy_texcoord(0.0f,1.0f/(float)(noSteps-1),0.0f);
+    
+    osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
+    float screenRadius = heightVector.length() * 0.5f;
 
     osg::Vec3 cursor = bottom;
-    osg::Vec3 texcoord = bottom_texcoord;
     int i,j;
     for(i=0;i<noSteps;++i)
     {
         osg::Vec3 cursor = bottom+dy*(float)i;
-        osg::Vec3 texcoord = bottom_texcoord+dy_texcoord*(float)i;
         for(j=0;j<noSteps;++j)
         {
+            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
+            double theta = atan2(-delta.y(), delta.x());
+            double phi = osg::PI_2 * delta.length() / screenRadius;
+            if (phi > osg::PI_2) phi = osg::PI_2;
+            
+            phi *= 2.0;
+            
+            // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
+           
+            osg::Vec3 texcoord(sin(phi) * cos(theta),
+                               sin(phi) * sin(theta),
+                               cos(phi));
+        
             vertices->push_back(cursor);
-            texcoords->push_back(osg::Vec3((sin(texcoord.x()*osg::PI-osg::PI*0.5)+1.0f)*0.5f,(1.0-sin(texcoord.y()*osg::PI-osg::PI*0.5))*0.5f,1.0));
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-
+            texcoords->push_back(texcoord);
+            
             cursor += dx;
-            texcoord += dx_texcoord;
         }
+        // osg::notify(osg::NOTICE)<<std::endl;
     }
 
     // pass the created vertex array to the points geometry object.
@@ -415,7 +437,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Z);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Y);
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
     }
@@ -436,11 +458,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
-#ifdef CUBE_MAP    
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Y);
-#else
-        camera->attach(osg::Camera::COLOR_BUFFER, texture);
-#endif
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_Z);
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 1.0,0.0,0.0));
     }
@@ -461,7 +479,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         // attach the texture and use it as the color buffer.
         camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_X);
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 0.0,1.0,0.0));
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-90.0f), 0.0,1.0,0.0) * osg::Matrixd::rotate(osg::inDegrees(-90.0f), 0.0,0.0,1.0));
     }
 
     // right face
@@ -478,9 +496,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_X);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::POSITIVE_X);
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 0.0,1.0,0.0));
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 0.0,1.0,0.0 ) * osg::Matrixd::rotate(osg::inDegrees(90.0f), 0.0,0.0,1.0));
     }
 
     // bottom face
@@ -497,9 +515,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_Y);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_Z);
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 1.0,0.0,0.0));
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(90.0f), 1.0,0.0,0.0) * osg::Matrixd::rotate(osg::inDegrees(180.0f), 0.0,0.0,1.0));
     }
 
     // back face
@@ -516,9 +534,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setRenderTargetImplementation(renderTargetImplementation);
 
         // attach the texture and use it as the color buffer.
-        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_Z);
+        camera->attach(osg::Camera::COLOR_BUFFER, texture, 0, osg::TextureCubeMap::NEGATIVE_Y);
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(-180.0f), 1.0,0.0,0.0));
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(180.0f), 1.0,0.0,0.0));
     }
     
     viewer.getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
@@ -561,6 +579,8 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
 
         viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
     }
+    
+    viewer.getCamera()->setNearFarRatio(0.0001f);
 }
 
 

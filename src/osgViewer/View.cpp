@@ -350,9 +350,12 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
         
         double new_x = static_cast<double>(_camera->getGraphicsContext()->getTraits()->width) * (x - eventState->getXmin())/(eventState->getXmax()-eventState->getXmin());
         double new_y = view_invert_y ?
-                       static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (1.0 - (y- eventState->getYmin()))/(eventState->getYmax()-eventState->getYmin()) :
+                       static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (1.0 - (y- eventState->getYmin())/(eventState->getYmax()-eventState->getYmin())) :
                        static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (y - eventState->getYmin())/(eventState->getYmax()-eventState->getXmin());
         
+        // osg::notify(osg::NOTICE)<<"  new_x="<<new_x<<","<<new_y<<std::endl;
+
+
         if (viewport && 
             new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
             new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )

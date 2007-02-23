@@ -59,16 +59,16 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const master camera of the view. ",
 	          "");
-	I_Method1(bool, addSlave, IN, osg::Camera *, camera,
-	          Properties::NON_VIRTUAL,
-	          __bool__addSlave__osg_Camera_P1,
-	          "",
-	          "");
-	I_Method3(bool, addSlave, IN, osg::Camera *, camera, IN, const osg::Matrix &, projectionOffset, IN, const osg::Matrix &, viewOffse,
-	          Properties::NON_VIRTUAL,
-	          __bool__addSlave__osg_Camera_P1__C5_osg_Matrix_R1__C5_osg_Matrix_R1,
-	          "",
-	          "");
+	I_MethodWithDefaults2(bool, addSlave, IN, osg::Camera *, camera, , IN, bool, useMastersSceneData, true,
+	                      Properties::NON_VIRTUAL,
+	                      __bool__addSlave__osg_Camera_P1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults4(bool, addSlave, IN, osg::Camera *, camera, , IN, const osg::Matrix &, projectionOffset, , IN, const osg::Matrix &, viewOffse, , IN, bool, useMastersSceneData, true,
+	                      Properties::NON_VIRTUAL,
+	                      __bool__addSlave__osg_Camera_P1__C5_osg_Matrix_R1__C5_osg_Matrix_R1__bool,
+	                      "",
+	                      "");
 	I_Method1(bool, removeSlave, IN, unsigned int, pos,
 	          Properties::NON_VIRTUAL,
 	          __bool__removeSlave__unsigned_int,
@@ -120,13 +120,15 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::View::Slave)
-	I_Constructor0(____Slave,
-	               "",
-	               "");
-	I_Constructor3(IN, osg::Camera *, camera, IN, const osg::Matrixd &, projectionOffset, IN, const osg::Matrixd &, viewOffset,
-	               ____Slave__osg_Camera_P1__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, bool, useMastersSceneData, true,
+	                           Properties::NON_EXPLICIT,
+	                           ____Slave__bool,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults4(IN, osg::Camera *, camera, , IN, const osg::Matrixd &, projectionOffset, , IN, const osg::Matrixd &, viewOffset, , IN, bool, useMastersSceneData, true,
+	                           ____Slave__osg_Camera_P1__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1__bool,
+	                           "",
+	                           "");
 	I_Constructor1(IN, const osg::View::Slave &, rhs,
 	               Properties::NON_EXPLICIT,
 	               ____Slave__C5_Slave_R1,
@@ -135,5 +137,6 @@ BEGIN_VALUE_REFLECTOR(osg::View::Slave)
 	I_PublicMemberProperty(osg::ref_ptr< osg::Camera >, _camera);
 	I_PublicMemberProperty(osg::Matrixd, _projectionOffset);
 	I_PublicMemberProperty(osg::Matrixd, _viewOffset);
+	I_PublicMemberProperty(bool, _useMastersSceneData);
 END_REFLECTOR
 

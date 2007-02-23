@@ -91,7 +91,7 @@ void osgParticle::ParticleSystem::update(double dt)
 
 void osgParticle::ParticleSystem::drawImplementation(osg::State& state) const
 {
-    osgDB::ScopedReadLock lock(_readWriteMutex);
+    OpenThreads::ScopedReadLock lock(_readWriteMutex);
 
     // update the frame count, so other objects can detect when
     // this particle system is culled

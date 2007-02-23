@@ -108,9 +108,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __bool__getUseFrameBlock,
 	          "Get the whether UseFrameBlock is on or off. ",
 	          "");
-	I_Method0(osg::Block *, getFrameBlock,
+	I_Method0(osg::RefBlock *, getFrameBlock,
 	          Properties::NON_VIRTUAL,
-	          __osg_Block_P1__getFrameBlock,
+	          __osg_RefBlock_P1__getFrameBlock,
 	          "",
 	          "");
 	I_Method1(void, setThreadPriorityDuringFrame, IN, osgDB::DatabasePager::ThreadPriority, duringFrame,
@@ -311,8 +311,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(unsigned int, FileRequestListSize, 
 	                 __unsigned_int__getFileRequestListSize, 
 	                 0);
-	I_SimpleProperty(osg::Block *, FrameBlock, 
-	                 __osg_Block_P1__getFrameBlock, 
+	I_SimpleProperty(osg::RefBlock *, FrameBlock, 
+	                 __osg_RefBlock_P1__getFrameBlock, 
 	                 0);
 	I_SimpleProperty(unsigned int, MaximumNumOfObjectsToCompilePerFrame, 
 	                 __unsigned_int__getMaximumNumOfObjectsToCompilePerFrame, 

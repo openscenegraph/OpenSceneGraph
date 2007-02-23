@@ -44,7 +44,7 @@
 #include <map>
 
 #include <OpenThreads/ScopedLock>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 
 #include "TXPArchive.h"
 
@@ -68,7 +68,7 @@ public:
         if( !acceptsExtension(osgDB::getFileExtension(file) ))
             return ReadResult::FILE_NOT_HANDLED;
             
-        OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
 
         return const_cast<ReaderWriterTXP*>(this)->local_readNode(file, options);
     }
@@ -85,7 +85,7 @@ protected:
     void createChildrenLocationString(const std::vector<TXPArchive::TileLocationInfo>& locs, std::string& locString) const;
     bool extractChildrenLocations(const std::string& name, int parentLod, std::vector<TXPArchive::TileLocationInfo>& locs, int nbChild) const;
 
-    mutable osgDB::ReentrantMutex               _serializerMutex;
+    mutable OpenThreads::ReentrantMutex               _serializerMutex;
     
     std::map< int,osg::ref_ptr<TXPArchive> >    _archives;
     static int                                  _archiveId;

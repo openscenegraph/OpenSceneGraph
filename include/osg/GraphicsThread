@@ -20,58 +20,18 @@
 #include <OpenThreads/Thread>
 #include <OpenThreads/Barrier>
 #include <OpenThreads/Condition>
+#include <OpenThreads/Block>
 
 #include <list>
 
 namespace osg {
 
-class Block: virtual public osg::Referenced {
+class RefBlock: virtual public osg::Referenced, public OpenThreads::Block
+{
     public:
-        Block():_released(false) {}
 
-        inline void block()
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-            if( !_released )
-                _cond.wait(&_mut);
-        }
+        RefBlock() {}
 
-        inline void release()
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-            if (!_released)
-            {
-                _released = true;
-                _cond.broadcast();
-            }
-        }
-
-        inline void reset()
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-            _released = false;
-        }
-        
-        inline void set(bool doRelease)
-        {
-            if (doRelease!=_released)
-            {
-                if (doRelease) release();
-                else reset();
-            }
-        }
-
-    protected:
-
-        ~Block()
-        {
-            release();
-        }
-
-    private:
-        OpenThreads::Mutex _mut;
-        OpenThreads::Condition _cond;
-        bool _released;
 };
 
 /** Base class for implementing graphics operations.*/
@@ -155,7 +115,7 @@ class OSG_EXPORT OperationsThread : public Referenced, public OpenThreads::Threa
         bool                        _done;
 
         OpenThreads::Mutex          _operationsMutex;
-        osg::ref_ptr<osg::Block>    _operationsBlock;
+        osg::ref_ptr<osg::RefBlock> _operationsBlock;
         OperationQueue              _operations;
         osg::ref_ptr<Operation>     _currentOperation;
 
@@ -195,7 +155,7 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
 
 /** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to aquire, 
   * then blocks waiting for context to be released, once the block is release the context is re-aqquired.*/
-struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public Operation, public Block
+struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public Operation, public RefBlock
 {
     ReleaseContext_Block_MakeCurrentOperation():
         Operation("ReleaseContext_Block_MakeCurrent", false) {}

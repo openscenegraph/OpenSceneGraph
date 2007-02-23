@@ -66,9 +66,9 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __OpenThreads_Mutex_P1__getOperationsMutex,
 	          "Get the operations queue mutex. ",
 	          "");
-	I_Method0(osg::Block *, getOperationsBlock,
+	I_Method0(osg::RefBlock *, getOperationsBlock,
 	          Properties::NON_VIRTUAL,
-	          __osg_Block_P1__getOperationsBlock,
+	          __osg_RefBlock_P1__getOperationsBlock,
 	          "Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block. ",
 	          "");
 	I_Method0(osg::Operation *, getCurrentOperation,
@@ -305,8 +305,8 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(osg::OperationsThread *, GraphicsThread, 
 	                 __OperationsThread_P1__getGraphicsThread, 
 	                 __void__setGraphicsThread__OperationsThread_P1);
-	I_SimpleProperty(osg::Block *, OperationsBlock, 
-	                 __osg_Block_P1__getOperationsBlock, 
+	I_SimpleProperty(osg::RefBlock *, OperationsBlock, 
+	                 __osg_RefBlock_P1__getOperationsBlock, 
 	                 0);
 	I_SimpleProperty(OpenThreads::Mutex *, OperationsMutex, 
 	                 __OpenThreads_Mutex_P1__getOperationsMutex, 

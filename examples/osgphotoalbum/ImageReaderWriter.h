@@ -18,11 +18,11 @@
 #include <osgDB/ImageOptions>
 
 #include <OpenThreads/ScopedLock>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 
 #include "PhotoArchive.h"
 
-#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 class ImageReaderWriter : public osgDB::ReaderWriter
 {
@@ -53,7 +53,7 @@ class ImageReaderWriter : public osgDB::ReaderWriter
 
         ReadResult local_readNode(const std::string& fileName, const Options*);
 
-        mutable osgDB::ReentrantMutex _serializerMutex;
+        mutable OpenThreads::ReentrantMutex _serializerMutex;
 
         struct DataReference
         {

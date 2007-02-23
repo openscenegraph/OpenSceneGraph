@@ -1910,9 +1910,7 @@
 		00E2813D07676504005AEE61 /* dxtctool.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E2813A07676502005AEE61 /* dxtctool.h */; };
 		00E2813E07676504005AEE61 /* TexEnvFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E2813B07676503005AEE61 /* TexEnvFilter.cpp */; };
 		00E2814107676629005AEE61 /* Archive in Headers */ = {isa = PBXBuildFile; fileRef = 00E2813F07676626005AEE61 /* Archive */; settings = {ATTRIBUTES = (Public, ); }; };
-		00E2814207676629005AEE61 /* ReentrantMutex in Headers */ = {isa = PBXBuildFile; fileRef = 00E2814007676628005AEE61 /* ReentrantMutex */; settings = {ATTRIBUTES = (Public, ); }; };
 		00E28145076766DA005AEE61 /* Archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E28143076766D7005AEE61 /* Archive.cpp */; };
-		00E28146076766DA005AEE61 /* ReentrantMutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E28144076766D9005AEE61 /* ReentrantMutex.cpp */; };
 		00E28148076767D2005AEE61 /* NodeTrackerManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00E28147076767D1005AEE61 /* NodeTrackerManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		00E2814A07676854005AEE61 /* NodeTrackerManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */; };
 		00E281A607676B93005AEE61 /* FindExternalModelVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281A407676B91005AEE61 /* FindExternalModelVisitor.cpp */; };
@@ -6053,9 +6051,7 @@
 		00E2813A07676502005AEE61 /* dxtctool.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = dxtctool.h; path = ../../src/osg/dxtctool.h; sourceTree = SOURCE_ROOT; };
 		00E2813B07676503005AEE61 /* TexEnvFilter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TexEnvFilter.cpp; path = ../../src/osg/TexEnvFilter.cpp; sourceTree = SOURCE_ROOT; };
 		00E2813F07676626005AEE61 /* Archive */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Archive; path = ../../include/osgDB/Archive; sourceTree = SOURCE_ROOT; };
-		00E2814007676628005AEE61 /* ReentrantMutex */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ReentrantMutex; path = ../../include/osgDB/ReentrantMutex; sourceTree = SOURCE_ROOT; };
 		00E28143076766D7005AEE61 /* Archive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Archive.cpp; path = ../../src/osgDB/Archive.cpp; sourceTree = SOURCE_ROOT; };
-		00E28144076766D9005AEE61 /* ReentrantMutex.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ReentrantMutex.cpp; path = ../../src/osgDB/ReentrantMutex.cpp; sourceTree = SOURCE_ROOT; };
 		00E28147076767D1005AEE61 /* NodeTrackerManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = NodeTrackerManipulator; sourceTree = "<group>"; };
 		00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = NodeTrackerManipulator.cpp; path = ../../src/osgGA/NodeTrackerManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00E281A407676B91005AEE61 /* FindExternalModelVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = FindExternalModelVisitor.cpp; path = ../../src/osgPlugins/flt/FindExternalModelVisitor.cpp; sourceTree = SOURCE_ROOT; };
@@ -11506,7 +11502,6 @@
 				BE1188F405D765CD00EB53E5 /* Output.cpp */,
 				BE1188F505D765CD00EB53E5 /* ReadFile.cpp */,
 				008F446B06CBF99E00F4220C /* ReaderWriter.cpp */,
-				00E28144076766D9005AEE61 /* ReentrantMutex.cpp */,
 				BE1188F605D765CD00EB53E5 /* Registry.cpp */,
 				BE1188F705D765CD00EB53E5 /* SharedStateManager.cpp */,
 				BE1188F805D765CD00EB53E5 /* Version.cpp */,
@@ -11534,7 +11529,6 @@
 				BE11891705D7665600EB53E5 /* ParameterOutput */,
 				BE11891805D7665600EB53E5 /* ReaderWriter */,
 				BE11891905D7665600EB53E5 /* ReadFile */,
-				00E2814007676628005AEE61 /* ReentrantMutex */,
 				BE11891A05D7665600EB53E5 /* Registry */,
 				BE11891B05D7665600EB53E5 /* SharedStateManager */,
 				BE11891C05D7665600EB53E5 /* Version */,
@@ -13274,7 +13268,6 @@
 				BE11892A05D7665600EB53E5 /* ParameterOutput in Headers */,
 				BE11892B05D7665600EB53E5 /* ReaderWriter in Headers */,
 				BE11892C05D7665600EB53E5 /* ReadFile in Headers */,
-				00E2814207676629005AEE61 /* ReentrantMutex in Headers */,
 				BE11892D05D7665600EB53E5 /* Registry in Headers */,
 				BE11892E05D7665600EB53E5 /* SharedStateManager in Headers */,
 				BE11892F05D7665600EB53E5 /* Version in Headers */,
@@ -19037,7 +19030,6 @@
 				BE11890A05D765CE00EB53E5 /* WriteFile.cpp in Sources */,
 				008F446C06CBF99E00F4220C /* ReaderWriter.cpp in Sources */,
 				00E28145076766DA005AEE61 /* Archive.cpp in Sources */,
-				00E28146076766DA005AEE61 /* ReentrantMutex.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

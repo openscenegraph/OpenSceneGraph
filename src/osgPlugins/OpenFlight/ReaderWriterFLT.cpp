@@ -11,14 +11,14 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 #include <osgUtil/Optimizer>
 
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
 
-#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 using namespace flt;
 using namespace osg;
@@ -279,7 +279,7 @@ class FLTReaderWriter : public ReaderWriter
 
     protected:
 
-        mutable osgDB::ReentrantMutex _serializerMutex;
+        mutable OpenThreads::ReentrantMutex _serializerMutex;
 };
 
 // now register with Registry to instantiate the above

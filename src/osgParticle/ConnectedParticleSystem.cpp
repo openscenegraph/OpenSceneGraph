@@ -114,7 +114,7 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
 
 void ConnectedParticleSystem::drawImplementation(osg::State& state) const
 {
-    osgDB::ScopedReadLock lock(_readWriteMutex);
+    OpenThreads::ScopedReadLock lock(_readWriteMutex);
 
     const Particle* particle = (_startParticle != Particle::INVALID_INDEX) ? &_particles[_startParticle] : 0;
     if (!particle) return;

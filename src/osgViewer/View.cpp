@@ -281,7 +281,7 @@ void View::assignSceneDataToCameras()
     for(unsigned i=0; i<getNumSlaves(); ++i)
     {
         Slave& slave = getSlave(i);
-        if (slave._camera.valid())
+        if (slave._camera.valid() && slave._useMastersSceneData)
         {
             slave._camera->removeChildren(0,slave._camera->getNumChildren());
             if (sceneData) slave._camera->addChild(sceneData);

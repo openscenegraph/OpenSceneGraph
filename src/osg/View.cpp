@@ -86,7 +86,7 @@ void View::updateSlave(unsigned int i)
     if (slave._camera->getInheritanceMask() & osg::CullSettings::CLEAR_COLOR) slave._camera->setClearColor(_camera->getClearColor());
 }
 
-bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffset)
+bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, const osg::Matrix& viewOffset, bool useMastersSceneData)
 {
     if (!camera) return false;
 
@@ -94,7 +94,7 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
 
     unsigned int i = _slaves.size();
 
-    _slaves.push_back(Slave(camera, projectionOffset, viewOffset));
+    _slaves.push_back(Slave(camera, projectionOffset, viewOffset, useMastersSceneData));
 
     updateSlave(i);
 

@@ -148,10 +148,6 @@ SOURCE=..\..\..\src\osgWrappers\osgDB\ReaderWriter.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgDB\ReentrantMutex.cpp
-# End Source File
-
-# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgDB\Registry.cpp
 # End Source File
 

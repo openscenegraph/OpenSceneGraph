@@ -137,7 +137,7 @@ GraphicsContext::GraphicsContext():
     _threadOfLastMakeCurrent(0)
 {
     setThreadSafeRefUnref(true);
-    _operationsBlock = new Block;
+    _operationsBlock = new RefBlock;
 }
 
 GraphicsContext::GraphicsContext(const GraphicsContext&, const osg::CopyOp&):
@@ -146,7 +146,7 @@ GraphicsContext::GraphicsContext(const GraphicsContext&, const osg::CopyOp&):
     _threadOfLastMakeCurrent(0)
 {
     setThreadSafeRefUnref(true);
-    _operationsBlock = new Block;
+    _operationsBlock = new RefBlock;
 }
 
 GraphicsContext::~GraphicsContext()

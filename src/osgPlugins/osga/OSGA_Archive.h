@@ -16,9 +16,9 @@
 #include <osgDB/FileNameUtils>
 
 #include <OpenThreads/ScopedLock>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 
-#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 class OSGA_Archive : public osgDB::Archive
 {
@@ -93,7 +93,7 @@ class OSGA_Archive : public osgDB::Archive
         
     protected:
   
-        mutable osgDB::ReentrantMutex _serializerMutex;
+        mutable OpenThreads::ReentrantMutex _serializerMutex;
 
     	class IndexBlock;
         friend class IndexBlock;

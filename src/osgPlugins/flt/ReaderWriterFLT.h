@@ -38,7 +38,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 
 
 namespace flt {
@@ -59,7 +59,7 @@ public:
 
 protected:
 
-    mutable osgDB::ReentrantMutex _serializerMutex;
+    mutable OpenThreads::ReentrantMutex _serializerMutex;
 };
 
 

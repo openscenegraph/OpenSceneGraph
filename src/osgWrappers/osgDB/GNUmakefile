@@ -15,7 +15,6 @@ CXXFILES =\
 	Output.cpp\
 	ParameterOutput.cpp\
 	ReaderWriter.cpp\
-	ReentrantMutex.cpp\
 	Registry.cpp\
 	SharedStateManager.cpp\
 

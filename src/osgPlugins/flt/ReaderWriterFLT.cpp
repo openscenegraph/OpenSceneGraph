@@ -26,7 +26,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readObject(const std::string& f
 osgDB::ReaderWriter::ReadResult ReaderWriterFLT::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
     // serialize all access to the OpenFlight plugin as its not thread safe by itself.
-    OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
 
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;

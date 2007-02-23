@@ -44,7 +44,7 @@ OperationsThread::OperationsThread():
     _parent(0),
     _done(false)
 {
-    _operationsBlock = new Block;
+    _operationsBlock = new RefBlock;
 }
 
 OperationsThread::~OperationsThread()

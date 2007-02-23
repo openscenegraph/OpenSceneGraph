@@ -189,7 +189,7 @@ class OSG_EXPORT GraphicsContext : public Object
         OpenThreads::Mutex* getOperationsMutex() { return &_operationsMutex; }
 
         /** Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block.*/
-        osg::Block* getOperationsBlock() { return _operationsBlock.get(); }
+        osg::RefBlock* getOperationsBlock() { return _operationsBlock.get(); }
 
         /** Get the current operations that is being run.*/
         Operation* getCurrentOperation() { return _currentOperation.get(); }
@@ -381,7 +381,7 @@ class OSG_EXPORT GraphicsContext : public Object
         OpenThreads::Thread*    _threadOfLastMakeCurrent;
         
         OpenThreads::Mutex                  _operationsMutex;
-        osg::ref_ptr<osg::Block>            _operationsBlock;
+        osg::ref_ptr<osg::RefBlock>         _operationsBlock;
         OperationQueue                      _operations;
         osg::ref_ptr<Operation>             _currentOperation;
 

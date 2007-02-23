@@ -18,14 +18,14 @@
 #include <osgDB/Registry>
 
 #include <OpenThreads/ScopedLock>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 
 #include "daeReader.h"
 #include "daeWriter.h"
 
 #define EXTENSION_NAME "dae"
 
-#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 ///////////////////////////////////////////////////////////////////////////
 // OSG reader/writer plugin for the COLLADA 1.4.x ".dae" format.
@@ -61,7 +61,7 @@ public:
 private:
 
     mutable DAE *_dae;
-    mutable osgDB::ReentrantMutex _serializerMutex;
+    mutable OpenThreads::ReentrantMutex _serializerMutex;
 
 };
 

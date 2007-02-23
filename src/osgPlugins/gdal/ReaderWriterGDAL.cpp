@@ -9,11 +9,11 @@
 #include <osgDB/ImageOptions>
 
 #include <OpenThreads/ScopedLock>
-#include <osgDB/ReentrantMutex>
+#include <OpenThreads/ReentrantMutex>
 
 #include <gdal_priv.h>
 
-#define SERIALIZER() OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex)  
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 // From easyrgb.com
 float Hue_2_RGB( float v1, float v2, float vH )
@@ -37,13 +37,13 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
-            OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+            OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
             return const_cast<ReaderWriterGDAL*>(this)->local_readImage(fileName, options);
         }
         
         virtual ReadResult readHeightField(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
-            OpenThreads::ScopedLock<osgDB::ReentrantMutex> lock(_serializerMutex);
+            OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
             return const_cast<ReaderWriterGDAL*>(this)->local_readHeightField(fileName, options);
         }
 
@@ -729,7 +729,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             }
         }
         
-        mutable osgDB::ReentrantMutex _serializerMutex;
+        mutable OpenThreads::ReentrantMutex _serializerMutex;
         
 };
 

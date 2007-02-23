@@ -41,33 +41,6 @@ BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_PublicMemberProperty(osg::BarrierOperation::PreBlockOp, _preBlockOp);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Block)
-	I_VirtualBaseType(osg::Referenced);
-	I_Constructor0(____Block,
-	               "",
-	               "");
-	I_Method0(void, block,
-	          Properties::NON_VIRTUAL,
-	          __void__block,
-	          "",
-	          "");
-	I_Method0(void, release,
-	          Properties::NON_VIRTUAL,
-	          __void__release,
-	          "",
-	          "");
-	I_Method0(void, reset,
-	          Properties::NON_VIRTUAL,
-	          __void__reset,
-	          "",
-	          "");
-	I_Method1(void, set, IN, bool, doRelease,
-	          Properties::NON_VIRTUAL,
-	          __void__set__bool,
-	          "",
-	          "");
-END_REFLECTOR
-
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
@@ -185,16 +158,23 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 	                 __void__setParent__Object_P1);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
+	I_VirtualBaseType(osg::Referenced);
+	I_Constructor0(____RefBlock,
+	               "",
+	               "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	I_BaseType(osg::Operation);
-	I_BaseType(osg::Block);
+	I_BaseType(osg::RefBlock);
 	I_Constructor0(____ReleaseContext_Block_MakeCurrentOperation,
 	               "",
 	               "");
 	I_Method0(void, release,
 	          Properties::VIRTUAL,
 	          __void__release,
-	          "",
+	          "if this operation is a barrier then release it. ",
 	          "");
 END_REFLECTOR
 

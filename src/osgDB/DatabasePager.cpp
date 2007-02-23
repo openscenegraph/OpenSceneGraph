@@ -37,8 +37,8 @@ DatabasePager::DatabasePager()
     _useFrameBlock = false;
     _numFramesActive = 0;
     _frameNumber = 0;
-    _frameBlock = new osg::Block;
-    _databasePagerThreadBlock = new osg::Block;
+    _frameBlock = new osg::RefBlock;
+    _databasePagerThreadBlock = new osg::RefBlock;
 
     _threadPriorityDuringFrame = THREAD_PRIORITY_MIN;
     _threadPriorityOutwithFrame = THREAD_PRIORITY_MIN;

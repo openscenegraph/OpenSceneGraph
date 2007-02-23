@@ -542,8 +542,6 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
     viewer.getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
 
 
-    viewer.assignSceneDataToCameras();
-
 
     // distortion correction set up.
     {
@@ -577,7 +575,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         
         camera->setName("DistortionCorrectionCamera");
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
     }
     
     viewer.getCamera()->setNearFarRatio(0.0001f);
@@ -602,17 +600,17 @@ int main(int argc, char** argv)
 
     if (arguments.read("--dome"))
     {    
-        viewer.setSceneData( loadedModel );
 
         setDomeCorrection(viewer, arguments);
     
+        viewer.setSceneData( loadedModel );
     }
     else if (arguments.read("--faces"))
     {    
-        viewer.setSceneData( loadedModel );
 
         setDomeFaces(viewer, arguments);
     
+        viewer.setSceneData( loadedModel );
     }
     else
     {
@@ -621,6 +619,7 @@ int main(int argc, char** argv)
         // add model to the viewer.
         viewer.setSceneData( distortionNode );
     }
+
 
     // set up the camera manipulators.
     {

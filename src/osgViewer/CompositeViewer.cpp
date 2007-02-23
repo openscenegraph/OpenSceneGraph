@@ -880,30 +880,34 @@ void CompositeViewer::eventTraversal()
                                 ++citr)
                             {
                                 osg::Camera* camera = *citr;
-                                osg::Viewport* viewport = camera ? camera->getViewport() : 0;
-                                if (camera->getView() &&                                
-                                    viewport && 
-                                    x >= viewport->x() && y >= viewport->y() &&
-                                    x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
+                                if (camera->getView() && 
+                                    camera->getAllowEventFocus() &&
+                                    camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
                                 {
-                                    setCameraWithFocus(camera);
-                                    
-                                    if (getViewWithFocus()!=masterView)
+                                    osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+                                    if (viewport && 
+                                        x >= viewport->x() && y >= viewport->y() &&
+                                        x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
                                     {
-                                        // need to reset the masterView
-                                        masterView = getViewWithFocus();
-                                        masterCamera = masterView->getCamera();
-                                        eventState = masterView->getEventQueue()->getCurrentEventState(); 
-                                        masterCameraVPW = masterCamera->getViewMatrix() * masterCamera->getProjectionMatrix();
-                                        if (masterCamera->getViewport()) 
+                                        setCameraWithFocus(camera);
+
+                                        if (getViewWithFocus()!=masterView)
                                         {
-                                            osg::Viewport* viewport = masterCamera->getViewport();
-                                            masterCameraVPW *= viewport->computeWindowMatrix();
-                                            eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
-                                        }
-                                        else
-                                        {
-                                            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+                                            // need to reset the masterView
+                                            masterView = getViewWithFocus();
+                                            masterCamera = masterView->getCamera();
+                                            eventState = masterView->getEventQueue()->getCurrentEventState(); 
+                                            masterCameraVPW = masterCamera->getViewMatrix() * masterCamera->getProjectionMatrix();
+                                            if (masterCamera->getViewport()) 
+                                            {
+                                                osg::Viewport* viewport = masterCamera->getViewport();
+                                                masterCameraVPW *= viewport->computeWindowMatrix();
+                                                eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
+                                            }
+                                            else
+                                            {
+                                                eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+                                            }
                                         }
                                     }
                                 }
@@ -1072,16 +1076,19 @@ void CompositeViewer::eventTraversal()
             ++veitr)
         {
             View* view = veitr->first;
-            for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
-                itr != veitr->second.end();
-                ++itr)
-            {
-                osgGA::GUIEventAdapter* event = itr->get();
+            if (view->getSceneData())
+            {            
+                for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
+                    itr != veitr->second.end();
+                    ++itr)
+                {
+                    osgGA::GUIEventAdapter* event = itr->get();
 
-                _eventVisitor->reset();
-                _eventVisitor->addEvent( event );
+                    _eventVisitor->reset();
+                    _eventVisitor->addEvent( event );
 
-                view->getSceneData()->accept(*_eventVisitor);
+                    view->getSceneData()->accept(*_eventVisitor);
+                }
             }
         }
     }
@@ -1107,7 +1114,7 @@ void CompositeViewer::updateTraversal()
         ++vitr)
     {
         View* view = vitr->get();
-        view->getCamera()->setViewMatrix( view->getCameraManipulator()->getInverseMatrix());
+        if (view->getCameraManipulator()) view->getCamera()->setViewMatrix( view->getCameraManipulator()->getInverseMatrix());
         view->updateSlaves();
     }
 

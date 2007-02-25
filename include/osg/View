@@ -24,13 +24,15 @@ namespace osg {
   * Note, if no slave cameras are attached to the view then the master camera does both the control and implementation of the rendering of the scene,
   * but if slave cameras are present then the master controls the view onto the scene, while the slaves implement the rendering of the scene.
 */
-class OSG_EXPORT View : public virtual osg::Referenced
+class OSG_EXPORT View : public osg::Object
 {
     public :
 
-
         View();
 
+        View(const osg::View& view, const osg::CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg,View);
 
         /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
         void setStats(osg::Stats* stats) { _stats = stats; }

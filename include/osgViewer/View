@@ -59,6 +59,10 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         View();
 
+        View(const osgViewer::View& view, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgViewer,View);
+
         Scene* getScene() { return _scene.get(); }
         const Scene* getScene() const { return _scene.get(); }
 

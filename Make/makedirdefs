@@ -97,6 +97,7 @@ PLUGIN_DIRS = \
 	osgParticle \
 	osgSim \
 	osgText \
+	osgViewer \
 	osgtgz \
 	pic \
 	pnm \

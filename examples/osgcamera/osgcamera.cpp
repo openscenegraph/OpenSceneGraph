@@ -1,6 +1,7 @@
 #if 1
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
@@ -263,6 +264,25 @@ int main( int argc, char **argv )
 
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
+
+    std::string configfile;
+    while (arguments.read("--config", configfile))
+    {
+        osg::notify(osg::NOTICE)<<"Trying to read config file "<<configfile<<std::endl;
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(configfile);
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(object.get());
+        if (view)
+        {
+            osg::notify(osg::NOTICE)<<"Read config file succesfully"<<std::endl;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Failed to read config file : "<<configfile<<std::endl;
+            return 1;
+        }
+    }
+
+    while (arguments.read("--write-config", configfile)) { osgDB::writeObjectFile(viewer, configfile); }
 
 
 #if 0

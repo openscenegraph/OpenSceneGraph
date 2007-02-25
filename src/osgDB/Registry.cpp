@@ -157,6 +157,8 @@ Registry::Registry()
 
     addFileExtensionAlias("shadow",  "osgShadow");
 
+    addFileExtensionAlias("view",  "osgViewer");
+
     addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");
     addFileExtensionAlias("int",  "rgb");

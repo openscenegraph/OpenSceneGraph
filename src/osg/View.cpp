@@ -29,6 +29,14 @@ View::View()
     stateset->setGlobalDefaults();
 }
 
+View::View(const osg::View& view, const osg::CopyOp& copyop):
+    Object(view,copyop),
+    _camera(view._camera),
+    _slaves(view._slaves)
+{
+}
+
+
 View::~View()
 {
     osg::notify(osg::INFO)<<"Destructing osg::View"<<std::endl;

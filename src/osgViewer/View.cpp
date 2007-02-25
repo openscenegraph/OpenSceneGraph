@@ -30,6 +30,13 @@ View::View()
     setEventQueue(new osgGA::EventQueue);
 }
 
+
+View::View(const osgViewer::View& view, const osg::CopyOp& copyop):
+    osg::View(view,copyop),
+    osgGA::GUIActionAdapter()
+{
+}
+
 View::~View()
 {
     // osg::notify(osg::NOTICE)<<"Destructing osgViewer::View"<<std::endl;

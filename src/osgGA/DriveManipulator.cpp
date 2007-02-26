@@ -303,6 +303,23 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
     switch(ea.getEventType())
     {
+        case(GUIEventAdapter::FRAME):
+            addMouseEvent(ea);
+            if (calcMovement()) us.requestRedraw();
+            return false;
+
+        case(GUIEventAdapter::RESIZE):
+            init(ea,us);
+            us.requestRedraw();
+            return true;
+        default:
+            break;
+    }
+
+    if (ea.getHandled()) return false;
+
+    switch(ea.getEventType())
+    {
         case(GUIEventAdapter::PUSH):
         {
 
@@ -397,22 +414,6 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             }
 #endif
             return false;
-        }
-
-        _pitchDownKeyPressed = false;
-
-        case(GUIEventAdapter::FRAME):
-        {
-            addMouseEvent(ea);
-            if (calcMovement()) us.requestRedraw();
-            return false;
-        }
-
-        case(GUIEventAdapter::RESIZE):
-        {
-            init(ea,us);
-            us.requestRedraw();
-            return true;
         }
 
         default:

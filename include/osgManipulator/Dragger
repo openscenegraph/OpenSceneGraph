@@ -29,6 +29,99 @@ namespace osgManipulator
 class CommandManager;
 class CompositeDragger;
 
+class OSGMANIPULATOR_EXPORT PointerInfo
+{
+    public:
+
+        PointerInfo();
+
+        PointerInfo(const PointerInfo& rhs):
+            _pixel_x(rhs._pixel_x),
+            _pixel_y(rhs._pixel_y),
+            _camera(rhs._camera),
+            _hitList(rhs._hitList)
+        {
+            _hitIter = _hitList.begin();
+        }
+
+        void reset()
+        {
+            _hitList.clear();
+            _hitIter = _hitList.begin();
+            setCamera(0);                
+        }
+
+
+        bool completed() const { return _hitIter==_hitList.end(); }
+
+        void next() 
+        {
+            if (!completed()) ++_hitIter;
+        }
+
+        typedef std::pair<osg::NodePath, osg::Vec3> NodePathIntersectionPair;
+        typedef std::list< NodePathIntersectionPair> IntersectionList;
+
+
+        osg::Vec2 pointToProject() const { return osg::Vec2(_pixel_x, _pixel_y); }
+        osg::Vec3 getLocalIntersectPoint() const { return _hitIter->second; }
+
+        bool projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const;
+
+        bool projectWindowXYIntoObject(osg::Vec3& nearPoint, osg::Vec3& farPoint) const
+        {
+            return projectWindowXYIntoObject(pointToProject(), nearPoint, farPoint);
+        }
+
+        bool projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const;
+
+        const osg::Matrix& getViewMatrix() const { return _camera->getViewMatrix(); }
+
+        bool contains(const osg::Node* node) const;
+
+        void setCamera(osg::Camera* camera)
+        {
+            _camera = camera;
+            if (_camera)
+            {
+                _MVPW = _camera->getViewMatrix() * _camera->getProjectionMatrix();
+                if (_camera->getViewport()) _MVPW.postMult(_camera->getViewport()->computeWindowMatrix());
+                _inverseMVPW.invert(_MVPW);
+            }
+            else
+            {
+                _MVPW.makeIdentity();
+                _inverseMVPW.makeIdentity();
+            }
+
+        }
+
+        void addIntersection(const osg::NodePath& nodePath, osg::Vec3 intersectionPoint)
+        {
+            bool needToResetHitIter = _hitList.empty();
+            _hitList.push_back(NodePathIntersectionPair(nodePath, intersectionPoint));
+            if (needToResetHitIter) _hitIter = _hitList.begin();
+        }
+
+        void setMousePosition(int pixel_x, int pixel_y)
+        {   
+            _pixel_x = pixel_x;
+            _pixel_y = pixel_y;
+        }
+
+    public:
+
+        int _pixel_x, _pixel_y;
+        osg::Camera* _camera;
+
+        IntersectionList _hitList;
+        IntersectionList::iterator _hitIter;
+
+        osg::Matrix _MVPW;
+        osg::Matrix _inverseMVPW;
+
+};
+
 /**
  * Base class for draggers. Concrete draggers implement the pick event handler
  * and generate motion commands (translate, rotate, ...) and sends these 
@@ -59,45 +152,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
 
         /** Returns 0 if this Dragger is not a CompositeDragger. */
         virtual CompositeDragger* getComposite() { return 0; }
-        
-        struct OSGMANIPULATOR_EXPORT PointerInfo
-        {
-            PointerInfo();
 
-            PointerInfo(const PointerInfo& rhs):
-                pixel_x(rhs.pixel_x),
-                pixel_y(rhs.pixel_y),
-                sv(rhs.sv),
-                hitList(rhs.hitList)
-            {
-                hitIter = hitList.begin();
-            }
-            
-
-            bool completed() const { return hitIter==hitList.end(); }
-            
-            void next() 
-            {
-                if (!completed()) ++hitIter;
-            }
-            
-            int pixel_x, pixel_y;
-            osgUtil::SceneView* sv;
-            osgUtil::IntersectVisitor::HitList hitList;
-            osgUtil::IntersectVisitor::HitList::iterator hitIter;
-            
-            osg::Vec2 pointToProject() const { return osg::Vec2(pixel_x, pixel_y); }
-            osg::Vec3 getLocalIntersectPoint() const { return hitIter->getLocalIntersectPoint(); }
-            
-            bool projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const { return sv->projectWindowXYIntoObject(static_cast<int>(windowCoord.x()), static_cast<int>(windowCoord.y()), nearPoint, farPoint); }
-            bool projectWindowXYIntoObject(osg::Vec3& nearPoint, osg::Vec3& farPoint) const { return sv->projectWindowXYIntoObject(pixel_x, pixel_y, nearPoint, farPoint); }
-
-            const osg::Matrix& getViewMatrix() const { return sv->getViewMatrix(); }
-
-            
-            bool contains(const osg::Node* node) const;
-            
-        };
 
         virtual bool handle(const PointerInfo&, const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) { return false; }
 

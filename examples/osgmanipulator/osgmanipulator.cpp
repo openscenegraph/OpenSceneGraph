@@ -1,6 +1,7 @@
+// --c++--
 #include <osgDB/ReadFile>
 #include <osgUtil/Optimizer>
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 #include <osg/CoordinateSystemNode>
 #include <osgText/Text>
 
@@ -12,6 +13,8 @@
 #include <osgManipulator/Translate1DDragger>
 #include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/TranslateAxisDragger>
+
+#include <iostream>
 
 osgManipulator::Dragger* createDragger(const std::string& name)
 {
@@ -99,7 +102,7 @@ osg::Node* createHUD()
     return camera;
 }
 
-
+#if 0
 bool computePixelCoords(osgProducer::Viewer* viewer,float x,float y,unsigned int cameraNum,float& pixel_x,float& pixel_y)
 {
     Producer::KeyboardMouse* km = viewer->getKeyboardMouse();
@@ -150,6 +153,7 @@ bool computePixelCoords(osgProducer::Viewer* viewer,float x,float y,unsigned int
     }
     return true;
 }
+#endif
 
 osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* cmdMgr, const std::string& name)
 {
@@ -182,14 +186,18 @@ class PickModeHandler : public osgGA::GUIEventHandler
             PICK
         };
 
-        PickModeHandler(osgProducer::Viewer *viewer) : osgGA::GUIEventHandler(),
-                                                       _viewer(viewer), _mode(VIEW), _activeDragger(0)
+        PickModeHandler():
+            _mode(VIEW), 
+            _activeDragger(0)
         {
         }        
         
         bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa,
                     osg::Object*, osg::NodeVisitor*)
         {
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+            if (!view) return false;
+
             if (ea.getKey() == osgGA::GUIEventAdapter::KEY_Tab &&
                 ea.getEventType() == osgGA::GUIEventAdapter::KEYDOWN &&
                 _activeDragger == 0)
@@ -199,28 +207,27 @@ class PickModeHandler : public osgGA::GUIEventHandler
             
             if (VIEW == _mode) return false;
 
-            for(unsigned int i=0;i<_viewer->getNumberOfCameras();++i)
+            switch (ea.getEventType())
             {
-                
-                if ((ea.getEventType() == osgGA::GUIEventAdapter::PUSH) &&
-                    _viewer->computeIntersections(ea.getX(), ea.getY(), i, _pointer.hitList))
+                case osgGA::GUIEventAdapter::PUSH:
                 {
-                    float pixel_x,pixel_y;
-                    if (computePixelCoords(_viewer,ea.getX(),ea.getY(),i,pixel_x,pixel_y))
+                    osgUtil::LineSegmentIntersector::Intersections intersections;
+
+                    _pointer.reset();
+
+                    if (view->computeIntersections(ea.getX(),ea.getY(),intersections))
                     {
-                        Producer::Camera* camera=_viewer->getCamera(i);
+                        _pointer.setCamera(view->getCamera());
+                        _pointer.setMousePosition(ea.getX(), ea.getY());
 
-                        osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
-                        osgUtil::SceneView* sv = sh ? sh->getSceneView() : 0;
-                        if (! sv) continue;
-                        
-                        _pointer.pixel_x = int(pixel_x+0.5);
-                        _pointer.pixel_y = int(pixel_y+0.5);
-                        _pointer.sv = sv;
-                        _pointer.hitIter = _pointer.hitList.begin();
-
-                        for (osg::NodePath::iterator itr = _pointer.hitList.front().getNodePath().begin();
-                             itr != _pointer.hitList.front().getNodePath().end();
+                        for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
+                            hitr != intersections.end();
+                            ++hitr)
+                        {
+                            _pointer.addIntersection(hitr->nodePath, hitr->getLocalIntersectPoint());
+                        }
+                        for (osg::NodePath::iterator itr = _pointer._hitList.front().first.begin();
+                             itr != _pointer._hitList.front().first.end();
                              ++itr)
                         {
                             osgManipulator::Dragger* dragger = dynamic_cast<osgManipulator::Dragger*>(*itr);
@@ -234,50 +241,36 @@ class PickModeHandler : public osgGA::GUIEventHandler
                         }
                     }
                 }
-                
-                switch (ea.getEventType())
+                case osgGA::GUIEventAdapter::DRAG:
+                case osgGA::GUIEventAdapter::RELEASE:
                 {
-                    case osgGA::GUIEventAdapter::DRAG:
-                    case osgGA::GUIEventAdapter::RELEASE:
-                        if (_activeDragger)
-                        {
-                            float pixel_x,pixel_y;
-                            if (computePixelCoords(_viewer,ea.getX(),ea.getY(),i,pixel_x,pixel_y))
-                            {
-                                Producer::Camera* camera=_viewer->getCamera(i);
+                    if (_activeDragger)
+                    {
+                        _pointer._hitIter = _pointer._hitList.begin();
+                        _pointer.setCamera(view->getCamera());
+                        _pointer.setMousePosition(ea.getX(), ea.getY());
 
-                                osgProducer::OsgSceneHandler* sh = dynamic_cast<osgProducer::OsgSceneHandler*>(camera->getSceneHandler());
-                                osgUtil::SceneView* sv = sh ? sh->getSceneView() : 0;
-                                if (_activeDragger && sv)
-                                {
-                                    _pointer.pixel_x = int(pixel_x+0.5);
-                                    _pointer.pixel_y = int(pixel_y+0.5);
-                                    _pointer.sv = sv;
-                                    _pointer.hitIter = _pointer.hitList.begin();
-
-                                    _activeDragger->handle(_pointer, ea, aa);
-                                }
-                            }
-                        }
-                        break;
-
-		    default:
-			break;
+                        _activeDragger->handle(_pointer, ea, aa);
+                    }
+                    break;
                 }
-                if (ea.getEventType() == osgGA::GUIEventAdapter::RELEASE)
-                {
-                    _activeDragger = 0;
-                    _pointer.hitList.clear();
-                }
+		default:
+		    break;
             }
+
+            if (ea.getEventType() == osgGA::GUIEventAdapter::RELEASE)
+            {
+                _activeDragger = 0;
+                _pointer.reset();
+            }
+
             return true;
         }
         
     private:
-        osgProducer::Viewer* _viewer;
         unsigned int _mode;
         osgManipulator::Dragger* _activeDragger;
-        osgManipulator::Dragger::PointerInfo _pointer;
+        osgManipulator::PointerInfo _pointer;
 };
 
 int main( int argc, char **argv )
@@ -301,10 +294,7 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    osgProducer::Viewer viewer(arguments);
-
-    // set up the value with sensible default event handlers.
-    viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
+    osgViewer::Viewer viewer;
 
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
@@ -371,34 +361,8 @@ int main( int argc, char **argv )
     // pass the loaded scene graph to the viewer.
     viewer.setSceneData(addDraggerToScene(loadedModel.get(), cmdMgr.get(), dragger_name));
 
-    viewer.getEventHandlerList().push_front(new PickModeHandler(&viewer));
+    viewer.addEventHandler(new PickModeHandler());
 
-    // create the windows and run the threads.
-    viewer.realize();
-
-    while( !viewer.done() )
-    {
-        // wait for all cull and draw threads to complete.
-        viewer.sync();
-
-        // update the scene by traversing it with the the update visitor which will
-        // call all node update callbacks and animations.
-        viewer.update();
-         
-        // fire off the cull and draw traversals of the scene.
-        viewer.frame();
-        
-    }
-    
-    // wait for all cull and draw threads to complete.
-    viewer.sync();
-
-    // run a clean up frame to delete all OpenGL objects.
-    viewer.cleanup_frame();
-
-    // wait for all the clean up frame to complete.
-    viewer.sync();
-
-    return 0;
+    return viewer.run();
 }
 

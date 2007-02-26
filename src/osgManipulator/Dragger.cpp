@@ -17,6 +17,34 @@
 
 using namespace osgManipulator;
 
+PointerInfo::PointerInfo():
+    _pixel_x(0),
+    _pixel_y(0),
+    _camera(0)
+{
+    _hitIter = _hitList.begin();
+}
+
+bool PointerInfo::contains(const osg::Node* node) const
+{
+    if (node && _hitIter!=_hitList.end()) return std::find((*_hitIter).first.begin(), (*_hitIter).first.end(), node) != (*_hitIter).first.end();
+    else return false;
+}
+
+bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const
+{
+    nearPoint = osg::Vec3(windowCoord.x(),windowCoord.y(),0.0f)*_inverseMVPW;
+    farPoint = osg::Vec3(windowCoord.x(),windowCoord.y(),1.0f)*_inverseMVPW;
+
+    return true;
+}
+
+bool PointerInfo::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const
+{
+    window = object * _MVPW;
+    return true;
+}
+
 Dragger::Dragger() : _commandManager(0)
 {
     _parentDragger = this;
@@ -24,20 +52,6 @@ Dragger::Dragger() : _commandManager(0)
 
 Dragger::~Dragger()
 {
-}
-
-Dragger::PointerInfo::PointerInfo():
-    pixel_x(0),
-    pixel_y(0),
-    sv(0)
-{
-    hitIter = hitList.begin();
-}
-
-bool Dragger::PointerInfo::contains(const osg::Node* node) const
-{
-    if (node) return std::find((*hitIter)._nodePath.begin(), (*hitIter)._nodePath.end(), node) != (*hitIter)._nodePath.end();
-    else return false;
 }
 
 

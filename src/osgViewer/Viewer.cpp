@@ -1956,17 +1956,18 @@ void Viewer::eventTraversal()
     {
         osgGA::GUIEventAdapter* event = itr->get();
 
-        if (_cameraManipulator.valid())
-        {
-            if (_cameraManipulator->handle( *event, *this)) event->setHandled(true);
-        }
-        
         for(EventHandlers::iterator hitr = _eventHandlers.begin();
             hitr != _eventHandlers.end();
             ++hitr)
         {
             if ((*hitr)->handle( *event, *this, 0, 0)) event->setHandled(true);
         }
+
+        if (_cameraManipulator.valid())
+        {
+            if (_cameraManipulator->handle( *event, *this)) event->setHandled(true);
+        }
+        
     }
 
     if (_eventVisitor.valid() && _scene.valid())

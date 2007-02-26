@@ -76,6 +76,20 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
 {
     switch(ea.getEventType())
     {
+        case(GUIEventAdapter::FRAME):
+            if (_thrown)
+            {
+                if (calcMovement()) us.requestRedraw();
+            }
+            return false;
+        default:
+            break;
+    }
+
+    if (ea.getHandled()) return false;
+
+    switch(ea.getEventType())
+    {
         case(GUIEventAdapter::PUSH):
         {
             flushMouseEventStack();
@@ -155,6 +169,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
         default:
             return false;
     }
+    return false;
 }
 
 

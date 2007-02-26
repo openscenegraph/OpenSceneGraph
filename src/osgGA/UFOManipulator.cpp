@@ -189,6 +189,16 @@ void UFOManipulator::home(double)
 
 bool UFOManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter &aa)
 {
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::FRAME):
+            _frame(ea,aa);
+            return false;
+        default:
+            break;
+    }
+
+    if (ea.getHandled()) return false;
 
     switch(ea.getEventType())
     {

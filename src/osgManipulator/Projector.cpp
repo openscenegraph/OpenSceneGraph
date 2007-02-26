@@ -243,7 +243,7 @@ LineProjector::~LineProjector()
 {
 }
 
-bool LineProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool LineProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_line->valid())
     {
@@ -257,8 +257,8 @@ bool LineProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projected
 
     // Project the objectLine onto the window.
     osg::ref_ptr<osg::LineSegment> windowLine = new osg::LineSegment;
-    pi.sv->projectObjectIntoWindow(objectLine->start(), windowLine->start());
-    pi.sv->projectObjectIntoWindow(objectLine->end(), windowLine->end());
+    pi.projectObjectIntoWindow(objectLine->start(), windowLine->start());
+    pi.projectObjectIntoWindow(objectLine->end(), windowLine->end());
 
     windowLine->start().z() = windowLine->end().z() = 0.0f;
 
@@ -305,7 +305,7 @@ PlaneProjector::~PlaneProjector()
 {
 }
 
-bool PlaneProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool PlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_plane.valid())
     {
@@ -340,7 +340,7 @@ SphereProjector::~SphereProjector()
 {
 }
 
-bool SphereProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool SphereProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_sphere->valid())
     {
@@ -364,10 +364,10 @@ bool SphereProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& project
     return getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, dontCare, projectedPoint);
 }
 
-bool SphereProjector::isPointInFront(const Dragger::PointerInfo& pi, const osg::Matrix& localToWorld) const
+bool SphereProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix& localToWorld) const
 {
     osg::Vec3 centerToPoint = getSphere()->getCenter() - pi.getLocalIntersectPoint();
-    if (centerToPoint * getEyeDirection(pi.sv->getViewMatrix(), localToWorld) < 0.0)
+    if (centerToPoint * getEyeDirection(pi.getViewMatrix(), localToWorld) < 0.0)
         return false;
     return true;
 }
@@ -449,7 +449,7 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
     }
 }
 
-bool SpherePlaneProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_sphere->valid())
     {
@@ -524,7 +524,7 @@ CylinderProjector::~CylinderProjector()
 {
 }
 
-bool CylinderProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool CylinderProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_cylinder.valid())
     {
@@ -547,7 +547,7 @@ bool CylinderProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& proje
     return getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, projectedPoint, dontCare);
 }
 
-bool CylinderProjector::isPointInFront(const Dragger::PointerInfo& pi, const osg::Matrix& localToWorld) const
+bool CylinderProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix& localToWorld) const
 {
     osg::Vec3 closestPointOnAxis;
     computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
@@ -571,7 +571,7 @@ CylinderPlaneProjector::~CylinderPlaneProjector()
 {
 }
 
-bool CylinderPlaneProjector::project(const Dragger::PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
 {
     if (!_cylinder.valid())
     {

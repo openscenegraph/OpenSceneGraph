@@ -1052,16 +1052,16 @@ void CompositeViewer::eventTraversal()
         {
             osgGA::GUIEventAdapter* event = itr->get();
 
-            if (view->getCameraManipulator())
-            {
-                if (view->getCameraManipulator()->handle( *event, *view)) event->setHandled(true);
-            }
-
             for(View::EventHandlers::iterator hitr = view->getEventHandlers().begin();
                 hitr != view->getEventHandlers().end();
                 ++hitr)
             {
                 if ((*hitr)->handle( *event, *view, 0, 0)) event->setHandled(true);
+            }
+
+            if (view->getCameraManipulator())
+            {
+                if (view->getCameraManipulator()->handle( *event, *view)) event->setHandled(true);
             }
         }
     }

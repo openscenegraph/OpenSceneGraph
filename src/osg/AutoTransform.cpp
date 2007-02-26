@@ -12,6 +12,8 @@
 */
 #include <osg/AutoTransform>
 #include <osg/CullStack>
+#include <osg/Notify>
+#include <osg/io_utils>
 
 using namespace osg;
 
@@ -161,7 +163,13 @@ void AutoTransform::accept(NodeVisitor& nv)
 
                     if (_autoRotateMode==ROTATE_TO_SCREEN)
                     {
-                        osg::Quat rotation = cs->getModelViewMatrix()->getRotate();
+                        osg::Vec3d translation;
+                        osg::Quat rotation;
+                        osg::Vec3d scale;
+                        osg::Quat so;
+                        
+                        cs->getModelViewMatrix()->decompose( translation, rotation, scale, so );
+
                         setRotation(rotation.inverse());
                     }
                     else if (_autoRotateMode==ROTATE_TO_CAMERA)

@@ -48,6 +48,7 @@ WRAPPER_DIRS = \
 	osgSim \
 	osgText \
 	osgUtil \
+	osgTerrain \
 	osgViewer \
 
 

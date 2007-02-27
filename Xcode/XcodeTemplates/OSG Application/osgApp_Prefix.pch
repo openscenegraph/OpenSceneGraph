@@ -318,7 +318,6 @@
 /* osgTerrain is an optional framework. If you're not using it or don't have it installed,
  * you should comment out this block.
  */
-#include <osgTerrain/DataSet>
 #include <osgTerrain/Export>
 #include <osgTerrain/HeightFieldNode>
 #include <osgTerrain/HeightFieldRenderer>

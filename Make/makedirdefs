@@ -23,11 +23,9 @@ SRC_DIRS = \
         osgFX \
         osgShadow \
 	osgSim \
-	osgManipulator
+	osgManipulator \
+	osgTerrain \
         
-ifeq ($(GDAL_INSTALLED),yes)
-SRC_DIRS += osgTerrain
-endif
 
 ifeq ($(COMPILE_INTROSPECTION),yes)
 SRC_DIRS += \
@@ -51,11 +49,7 @@ WRAPPER_DIRS = \
 	osgText \
 	osgUtil \
 	osgViewer \
-        
 
-ifeq ($(GDAL_INSTALLED),yes)
-    WRAPPER_DIRS += osgTerrain
-endif
 
 
 ################################################################
@@ -104,10 +98,6 @@ PLUGIN_DIRS = \
 	txp \
 	zip \
 
-
-ifeq ($(GDAL_INSTALLED),yes)
-    PLUGIN_DIRS += gdal
-endif
 
 ifeq ($(COLLADA_INSTALLED),yes)
     PLUGIN_DIRS += dae
@@ -186,10 +176,6 @@ APPLICATION_DIRS += osgarchive \
     osgconv \
     osgviewer \
 
-ifeq ($(GDAL_INSTALLED),yes)
-    APPLICATION_DIRS += osgdem
-endif
-
 EXAMPLE_DIRS = \
 	osganimate \
 	osgautotransform \
@@ -265,17 +251,13 @@ EXAMPLE_DIRS = \
 	osgvolume \
 	osgwindows \
 	osgmanipulator \
+	osgphotoalbum \
+	osgsimulation \
+	osgfadetext
 
 
 ifeq ($(COMPILE_INTROSPECTION),yes)
     EXAMPLE_DIRS += osgintrospection
-endif
-
-ifeq ($(GDAL_INSTALLED),yes)
-    EXAMPLE_DIRS += osgphotoalbum
-    EXAMPLE_DIRS += osgbluemarble
-    EXAMPLE_DIRS += osgsimulation
-    EXAMPLE_DIRS += osgfadetext
 endif
 
 ifeq ($(GLUT_INSTALLED),yes)

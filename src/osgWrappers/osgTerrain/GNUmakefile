@@ -2,7 +2,7 @@ TOPDIR = ../../..
 include $(TOPDIR)/Make/makedefs 
 
 CXXFILES =\
-	DataSet.cpp\
+	Export.cpp\
 	HeightFieldNode.cpp\
 	HeightFieldRenderer.cpp\
 

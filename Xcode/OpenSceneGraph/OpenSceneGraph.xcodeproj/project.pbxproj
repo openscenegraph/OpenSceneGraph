@@ -173,24 +173,12 @@
 			name = osgFrameworks;
 			productName = osgFrameworks;
 		};
-		00638D6C093B9904002722CD /* AllStandardTargetsAndGDALdependentStuff */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 00638D71093B994E002722CD /* Build configuration list for PBXAggregateTarget "AllStandardTargetsAndGDALdependentStuff" */;
-			buildPhases = (
-			);
-			dependencies = (
-				00638D6E093B9911002722CD /* PBXTargetDependency */,
-				00638D70093B9918002722CD /* PBXTargetDependency */,
-			);
-			name = AllStandardTargetsAndGDALdependentStuff;
-			productName = AllStandardTargetsAndGDALdependentStuff;
-		};
 		006FD302065A8A1600677FA5 /* AllStandardTargets */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 0011038908736A190015C576 /* Build configuration list for PBXAggregateTarget "AllStandardTargets" */;
 			buildPhases = (
 			);
-			comments = "This will build all the standard OpenSceneGraph frameworks, plugins, and applications/examples.\nThis target will not build components that require 3rd party libraries such as osgTerrain (requires GDAL).\nSee specific targets for the 3rd party components.\n\nGDALdependentStuff is a new target that will build just GDAL dependent stuff.\n\nNew to the 2.1/2.2 projects is Cross-Project Dependencies. I now use the new 2.x Xcode feature to reference the OpenThreads projects. The advantage of this is that you should be able to run an application through Xcode without having to first remember to install the OpenThreads frameworks. There might be drawbacks to this though. It might be the case that you want to use the installed frameworks. I'm not sure what the search order will be or if it will even work. This is an area for testing. Also, in an attempt to minimize the dependency pain in case you need to undo this, I will only make the AllStandardTargets depend on those projects. If you need to undo this, you only need to remove the dependency option for that target.\n";
+			comments = "This will build all the standard OpenSceneGraph frameworks, plugins, and applications/examples.\nThis target will not build components that require 3rd party libraries.\nSee specific targets for the 3rd party components.\n\n\nNew to the 2.1/2.2 projects is Cross-Project Dependencies. I now use the new 2.x Xcode feature to reference the OpenThreads projects. The advantage of this is that you should be able to run an application through Xcode without having to first remember to install the OpenThreads frameworks. There might be drawbacks to this though. It might be the case that you want to use the installed frameworks. I'm not sure what the search order will be or if it will even work. This is an area for testing. Also, in an attempt to minimize the dependency pain in case you need to undo this, I will only make the AllStandardTargets depend on those projects. If you need to undo this, you only need to remove the dependency option for that target.\n";
 			dependencies = (
 				00C6172C0924ECA40098F34F /* PBXTargetDependency */,
 				0040995F0924D075009ADD90 /* PBXTargetDependency */,
@@ -216,46 +204,17 @@
 			name = Applications;
 			productName = Applications;
 		};
-		00A15423084FE455000150AD /* GDALdependentStuff */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 0011039D08736A190015C576 /* Build configuration list for PBXAggregateTarget "GDALdependentStuff" */;
-			buildPhases = (
-			);
-			comments = "This requires the gdal.framework to be installed to your system in /Library/Frameworks or ~/Library/Frameworks\nYou should build the main osg frameworks before building this target.\n\n";
-			dependencies = (
-				00A15425084FE46D000150AD /* PBXTargetDependency */,
-				00A15427084FE46D000150AD /* PBXTargetDependency */,
-				00A15429084FE46D000150AD /* PBXTargetDependency */,
-				006E25670AC11B1E00FBB48F /* PBXTargetDependency */,
-				005CDF3C0946DAAC00613CD5 /* PBXTargetDependency */,
-			);
-			name = GDALdependentStuff;
-			productName = GDALdependentStuff;
-		};
 		00C5AD4C0B0D6AE900E9BCA1 /* SDLdependentStuff */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 00C5AD570B0D6AE900E9BCA1 /* Build configuration list for PBXAggregateTarget "SDLdependentStuff" */;
 			buildPhases = (
 			);
-			comments = "This requires the gdal.framework to be installed to your system in /Library/Frameworks or ~/Library/Frameworks\nYou should build the main osg frameworks before building this target.\n\n";
+			comments = "This requires the sdl.framework to be installed to your system in /Library/Frameworks or ~/Library/Frameworks\nYou should build the main osg frameworks before building this target.\n\n";
 			dependencies = (
 				00C5AD5C0B0D6B3300E9BCA1 /* PBXTargetDependency */,
 			);
 			name = SDLdependentStuff;
-			productName = GDALdependentStuff;
-		};
-		00C5AD5F0B0D6B7300E9BCA1 /* AllStandardTargetsAndGDALAndSDLdependentStuff */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 00C5AD640B0D6B7300E9BCA1 /* Build configuration list for PBXAggregateTarget "AllStandardTargetsAndGDALAndSDLdependentStuff" */;
-			buildPhases = (
-			);
-			dependencies = (
-				00C5AD600B0D6B7300E9BCA1 /* PBXTargetDependency */,
-				00C5AD620B0D6B7300E9BCA1 /* PBXTargetDependency */,
-				00C5AD690B0D6B9600E9BCA1 /* PBXTargetDependency */,
-			);
-			name = AllStandardTargetsAndGDALAndSDLdependentStuff;
-			productName = AllStandardTargetsAndGDALdependentStuff;
+			productName = SDLdependentStuff;
 		};
 /* End PBXAggregateTarget section */
 
@@ -341,7 +300,6 @@
 		000A252106CACC24009EE43A /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		000A252206CACC24009EE43A /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		000A252406CACC24009EE43A /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
-		000A253106CACD72009EE43A /* osgbluemarble.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A252D06CACD63009EE43A /* osgbluemarble.cpp */; };
 		000A253D06CACDBF009EE43A /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		000A253E06CACDBF009EE43A /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		000A253F06CACDBF009EE43A /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -524,7 +482,6 @@
 		000A28FF06CAFE60009EE43A /* osgprerender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A28FC06CAFE5F009EE43A /* osgprerender.cpp */; };
 		000A291106CAFF80009EE43A /* osgprerendercubemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A290E06CAFF7F009EE43A /* osgprerendercubemap.cpp */; };
 		000A291F06CB0128009EE43A /* osgreflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A291C06CB0127009EE43A /* osgreflect.cpp */; };
-		0018529F078C583400D3FC44 /* DataSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529B078C582F00D3FC44 /* DataSet.cpp */; };
 		001852A0078C583400D3FC44 /* HeightFieldNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529C078C583000D3FC44 /* HeightFieldNode.cpp */; };
 		001852A1078C583400D3FC44 /* HeightFieldRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529D078C583200D3FC44 /* HeightFieldRenderer.cpp */; };
 		001852A2078C583400D3FC44 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529E078C583300D3FC44 /* Version.cpp */; };
@@ -1629,7 +1586,6 @@
 		009D9FE8081D7845001FA987 /* FluidProgram.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009D9FE6081D7844001FA987 /* FluidProgram.cpp */; };
 		009DA001081D78E7001FA987 /* MultiTextureControl in Headers */ = {isa = PBXBuildFile; fileRef = 009D9FFF081D78C4001FA987 /* MultiTextureControl */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA003081D7900001FA987 /* MultiTextureControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009DA002081D7900001FA987 /* MultiTextureControl.cpp */; };
-		009DA014081D7999001FA987 /* DataSet in Headers */ = {isa = PBXBuildFile; fileRef = 00185289078C57A000D3FC44 /* DataSet */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA015081D7999001FA987 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = 0018528A078C57A100D3FC44 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA016081D7999001FA987 /* HeightFieldNode in Headers */ = {isa = PBXBuildFile; fileRef = 0018528B078C57A300D3FC44 /* HeightFieldNode */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA017081D7999001FA987 /* HeightFieldRenderer in Headers */ = {isa = PBXBuildFile; fileRef = 0018528C078C57A400D3FC44 /* HeightFieldRenderer */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1738,7 +1694,6 @@
 		00A14CF8084E582E000150AD /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		00A14D55084E5A50000150AD /* osgviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A14D52084E5A50000150AD /* osgviewer.cpp */; };
 		00A14D5C084E5ADC000150AD /* osgversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A14D59084E5ADC000150AD /* osgversion.cpp */; };
-		00A14D63084E5AFC000150AD /* osgdem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A14D60084E5AFC000150AD /* osgdem.cpp */; };
 		00A14F05084E65A9000150AD /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00A14F06084E65A9000150AD /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00A14F07084E65A9000150AD /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -1790,7 +1745,6 @@
 		00A1536A084FDE50000150AD /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00A1536B084FDE50000150AD /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00A15395084FE10F000150AD /* ReaderWriterDDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFDC3065A9A22003310BF /* ReaderWriterDDS.cpp */; };
-		00A15399084FE151000150AD /* ReaderWriterGDAL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A15398084FE150000150AD /* ReaderWriterGDAL.cpp */; };
 		00A15420084FE3FA000150AD /* osgTerrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6320CD4307845BC300FE3D2C /* osgTerrain.framework */; };
 		00A6946006CBD6FB00F26612 /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
 		00C0453906CC17ED008F84FE /* ClusterCullingCallback in Headers */ = {isa = PBXBuildFile; fileRef = 008F443B06CBF87A00F4220C /* ClusterCullingCallback */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3132,13 +3086,6 @@
 			remoteGlobalIDString = 00EF4E3606CB0AA6008ACEFF;
 			remoteInfo = osgsimulation;
 		};
-		005CDF3D0946DABF00613CD5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 000A251406CACC24009EE43A;
-			remoteInfo = osgbluemarble;
-		};
 		00638D26093B93F8002722CD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -3201,13 +3148,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 006FD302065A8A1600677FA5;
 			remoteInfo = AllStandardTargets;
-		};
-		00638D6F093B9918002722CD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00A15423084FE455000150AD;
-			remoteInfo = GDALdependentStuff;
 		};
 		006CE8F20921A83D00985402 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3993,20 +3933,6 @@
 			remoteGlobalIDString = 6320CD0307845BC300FE3D2C;
 			remoteInfo = osgTerrain;
 		};
-		00A15426084FE46D000150AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00A15334084FDD4E000150AD;
-			remoteInfo = osgdb_gdal;
-		};
-		00A15428084FE46D000150AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00A14CA1084E580E000150AD;
-			remoteInfo = osgdem;
-		};
 		00C59D1B0B0926A800E9BCA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -4132,13 +4058,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 006FD302065A8A1600677FA5;
 			remoteInfo = AllStandardTargets;
-		};
-		00C5AD630B0D6B7300E9BCA1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00A15423084FE455000150AD;
-			remoteInfo = GDALdependentStuff;
 		};
 		00C5AD680B0D6B9600E9BCA1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -4833,8 +4752,6 @@
 		0007BCF706C1ADFC00C884E1 /* osgteapot.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgteapot.cpp; sourceTree = "<group>"; };
 		000A24CD06CACA60009EE43A /* osgbillboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgbillboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000A250806CACB4C009EE43A /* osgbillboard.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgbillboard.cpp; path = ../../examples/osgbillboard/osgbillboard.cpp; sourceTree = SOURCE_ROOT; };
-		000A252506CACC24009EE43A /* osgbluemarble.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgbluemarble.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		000A252D06CACD63009EE43A /* osgbluemarble.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgbluemarble.cpp; sourceTree = "<group>"; };
 		000A254306CACDC0009EE43A /* osgcallback.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgcallback.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000A254906CACE71009EE43A /* osgcallback.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgcallback.cpp; sourceTree = "<group>"; };
 		000A258606CAD093009EE43A /* osgclip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgclip.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4912,12 +4829,10 @@
 		000A28FC06CAFE5F009EE43A /* osgprerender.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgprerender.cpp; sourceTree = "<group>"; };
 		000A290E06CAFF7F009EE43A /* osgprerendercubemap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgprerendercubemap.cpp; sourceTree = "<group>"; };
 		000A291C06CB0127009EE43A /* osgreflect.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgreflect.cpp; sourceTree = "<group>"; };
-		00185289078C57A000D3FC44 /* DataSet */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = DataSet; path = ../../include/osgTerrain/DataSet; sourceTree = SOURCE_ROOT; };
 		0018528A078C57A100D3FC44 /* Export */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Export; path = ../../include/osgTerrain/Export; sourceTree = SOURCE_ROOT; };
 		0018528B078C57A300D3FC44 /* HeightFieldNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = HeightFieldNode; path = ../../include/osgTerrain/HeightFieldNode; sourceTree = SOURCE_ROOT; };
 		0018528C078C57A400D3FC44 /* HeightFieldRenderer */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = HeightFieldRenderer; path = ../../include/osgTerrain/HeightFieldRenderer; sourceTree = SOURCE_ROOT; };
 		0018528D078C57A500D3FC44 /* Version */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Version; path = ../../include/osgTerrain/Version; sourceTree = SOURCE_ROOT; };
-		0018529B078C582F00D3FC44 /* DataSet.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = DataSet.cpp; path = ../../src/osgTerrain/DataSet.cpp; sourceTree = SOURCE_ROOT; };
 		0018529C078C583000D3FC44 /* HeightFieldNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = HeightFieldNode.cpp; path = ../../src/osgTerrain/HeightFieldNode.cpp; sourceTree = SOURCE_ROOT; };
 		0018529D078C583200D3FC44 /* HeightFieldRenderer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = HeightFieldRenderer.cpp; path = ../../src/osgTerrain/HeightFieldRenderer.cpp; sourceTree = SOURCE_ROOT; };
 		0018529E078C583300D3FC44 /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgTerrain/Version.cpp; sourceTree = SOURCE_ROOT; };
@@ -5875,12 +5790,10 @@
 		00A14C84084E573B000150AD /* OrientationConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OrientationConverter.cpp; path = ../../applications/osgconv/OrientationConverter.cpp; sourceTree = SOURCE_ROOT; };
 		00A14C85084E573C000150AD /* OrientationConverter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OrientationConverter.h; path = ../../applications/osgconv/OrientationConverter.h; sourceTree = SOURCE_ROOT; };
 		00A14C86084E573C000150AD /* osgconv.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgconv.cpp; path = ../../applications/osgconv/osgconv.cpp; sourceTree = SOURCE_ROOT; };
-		00A14CAD084E580E000150AD /* osgdem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgdem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14CD3084E5821000150AD /* osgviewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14CF9084E582E000150AD /* osgversion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgversion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14D52084E5A50000150AD /* osgviewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgviewer.cpp; path = ../../applications/osgviewer/osgviewer.cpp; sourceTree = SOURCE_ROOT; };
 		00A14D59084E5ADC000150AD /* osgversion.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgversion.cpp; path = ../../applications/osgversion/osgversion.cpp; sourceTree = SOURCE_ROOT; };
-		00A14D60084E5AFC000150AD /* osgdem.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgdem.cpp; path = ../../applications/osgdem/osgdem.cpp; sourceTree = SOURCE_ROOT; };
 		00A14F0B084E65A9000150AD /* osgparticleeffects.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgparticleeffects.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14F28084E65B3000150AD /* osglogicop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osglogicop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14F85084E66A7000150AD /* osglogicop.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osglogicop.cpp; path = ../../examples/osglogicop/osglogicop.cpp; sourceTree = SOURCE_ROOT; };
@@ -5910,9 +5823,7 @@
 		00A150D6084E6B36000150AD /* hdrloader.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = hdrloader.cpp; path = ../../src/osgPlugins/hdr/hdrloader.cpp; sourceTree = SOURCE_ROOT; };
 		00A150D7084E6B37000150AD /* hdrloader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = hdrloader.h; path = ../../src/osgPlugins/hdr/hdrloader.h; sourceTree = SOURCE_ROOT; };
 		00A150D8084E6B37000150AD /* ReaderWriterHDR.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterHDR.cpp; path = ../../src/osgPlugins/hdr/ReaderWriterHDR.cpp; sourceTree = SOURCE_ROOT; };
-		00A1533C084FDD4E000150AD /* osgdb_gdal.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_gdal.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A1536C084FDE50000150AD /* osgdb_.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		00A15398084FE150000150AD /* ReaderWriterGDAL.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterGDAL.cpp; path = ../../src/osgPlugins/gdal/ReaderWriterGDAL.cpp; sourceTree = SOURCE_ROOT; };
 		00C0CAC1062651A40091ED7C /* osgdb_freetype.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_freetype.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C0CAE90626525D0091ED7C /* osgdb_osgText.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_osgText.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59D340B0926A800E9BCA1 /* osgsimpleviewerGLUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgsimpleviewerGLUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -8469,15 +8380,6 @@
 			path = ../../examples/osgbillboard;
 			sourceTree = SOURCE_ROOT;
 		};
-		000A252A06CACD61009EE43A /* osgbluemarble */ = {
-			isa = PBXGroup;
-			children = (
-				000A252D06CACD63009EE43A /* osgbluemarble.cpp */,
-			);
-			name = osgbluemarble;
-			path = ../../examples/osgbluemarble;
-			sourceTree = SOURCE_ROOT;
-		};
 		000A254606CACE6F009EE43A /* osgcallback */ = {
 			isa = PBXGroup;
 			children = (
@@ -9322,7 +9224,6 @@
 				0007B98206C1922C00C884E1 /* osgautotransform */,
 				000A250506CACB4A009EE43A /* osgbillboard */,
 				00F238F2076773E300528CDD /* osgblendequation */,
-				000A252A06CACD61009EE43A /* osgbluemarble */,
 				000A254606CACE6F009EE43A /* osgcallback */,
 				006CE9100921AA0000985402 /* osgcamera */,
 				008F452C06CC072200F4220C /* osgcatch */,
@@ -9950,7 +9851,6 @@
 				008F44DE06CC041A00F4220C /* trans */,
 				001D0401065AB0EF003310BF /* txp */,
 				001D04A9065AB1FC003310BF /* zip */,
-				00A15396084FE14F000150AD /* gdal */,
 			);
 			name = osgPlugins;
 			sourceTree = "<group>";
@@ -10255,7 +10155,6 @@
 			children = (
 				00A14C56084E5673000150AD /* osgarchive */,
 				00A14C81084E573A000150AD /* osgconv */,
-				00A14D5D084E5AFB000150AD /* osgdem */,
 				00A14D56084E5ADB000150AD /* osgversion */,
 				00A14D4F084E5A4F000150AD /* osgviewer */,
 			);
@@ -10298,15 +10197,6 @@
 			);
 			name = osgversion;
 			path = ../../applications/osgversion;
-			sourceTree = SOURCE_ROOT;
-		};
-		00A14D5D084E5AFB000150AD /* osgdem */ = {
-			isa = PBXGroup;
-			children = (
-				00A14D60084E5AFC000150AD /* osgdem.cpp */,
-			);
-			name = osgdem;
-			path = ../../applications/osgdem;
 			sourceTree = SOURCE_ROOT;
 		};
 		00A14F82084E66A5000150AD /* osglogicop */ = {
@@ -10364,15 +10254,6 @@
 			);
 			name = hdr;
 			path = ../../src/osgPlugins/hdr;
-			sourceTree = SOURCE_ROOT;
-		};
-		00A15396084FE14F000150AD /* gdal */ = {
-			isa = PBXGroup;
-			children = (
-				00A15398084FE150000150AD /* ReaderWriterGDAL.cpp */,
-			);
-			name = gdal;
-			path = ../../src/osgPlugins/gdal;
 			sourceTree = SOURCE_ROOT;
 		};
 		00C59D770B0930DE00E9BCA1 /* osgsimpleviewerGLUT */ = {
@@ -10737,7 +10618,6 @@
 				0007BCB706C1AA6000C884E1 /* osgspheresegment.app */,
 				0007BCF106C1ADB300C884E1 /* osgteapot.app */,
 				000A24CD06CACA60009EE43A /* osgbillboard.app */,
-				000A252506CACC24009EE43A /* osgbluemarble.app */,
 				000A254306CACDC0009EE43A /* osgcallback.app */,
 				000A258606CAD093009EE43A /* osgclip.app */,
 				000A25A906CAD1A4009EE43A /* osgcluster.app */,
@@ -10796,14 +10676,12 @@
 				00F23927076776DE00528CDD /* osgmotionblur.app */,
 				00F2393B076776E700528CDD /* osgplanets.app */,
 				00A14C12084E52BF000150AD /* osgarchive.app */,
-				00A14CAD084E580E000150AD /* osgdem.app */,
 				00A14CD3084E5821000150AD /* osgviewer.app */,
 				00A14CF9084E582E000150AD /* osgversion.app */,
 				00A14F0B084E65A9000150AD /* osgparticleeffects.app */,
 				00A14F28084E65B3000150AD /* osglogicop.app */,
 				00A14FB9084E68D6000150AD /* osgdb_dxf.so */,
 				00A150B9084E6ABB000150AD /* osgdb_hdr.so */,
-				00A1533C084FDD4E000150AD /* osgdb_gdal.so */,
 				00A1536C084FDE50000150AD /* osgdb_.so */,
 				00D3F0E30920182C00817AAD /* osgdb___.so */,
 				006CE90B0921A83D00985402 /* osgcamera.app */,
@@ -10903,22 +10781,9 @@
 			name = Source;
 			sourceTree = "<group>";
 		};
-		6320CCF60784580300FE3D2C /* osgTerrain */ = {
-			isa = PBXGroup;
-			children = (
-				00185289078C57A000D3FC44 /* DataSet */,
-				0018528A078C57A100D3FC44 /* Export */,
-				0018528B078C57A300D3FC44 /* HeightFieldNode */,
-				0018528C078C57A400D3FC44 /* HeightFieldRenderer */,
-				0018528D078C57A500D3FC44 /* Version */,
-			);
-			name = osgTerrain;
-			sourceTree = SOURCE_ROOT;
-		};
 		6320CCFE07845B7C00FE3D2C /* osgTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				0018529B078C582F00D3FC44 /* DataSet.cpp */,
 				0018529C078C583000D3FC44 /* HeightFieldNode.cpp */,
 				0018529D078C583200D3FC44 /* HeightFieldRenderer.cpp */,
 				0018529E078C583300D3FC44 /* Version.cpp */,
@@ -12882,7 +12747,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				009DA014081D7999001FA987 /* DataSet in Headers */,
 				009DA015081D7999001FA987 /* Export in Headers */,
 				009DA016081D7999001FA987 /* HeightFieldNode in Headers */,
 				009DA017081D7999001FA987 /* HeightFieldRenderer in Headers */,
@@ -13411,24 +13275,6 @@
 			name = osgbillboard;
 			productName = osgtext;
 			productReference = 000A24CD06CACA60009EE43A /* osgbillboard.app */;
-			productType = "com.apple.product-type.application";
-		};
-		000A251406CACC24009EE43A /* osgbluemarble */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 001103A508736A190015C576 /* Build configuration list for PBXNativeTarget "osgbluemarble" */;
-			buildPhases = (
-				000A251B06CACC24009EE43A /* Headers */,
-				000A251C06CACC24009EE43A /* Resources */,
-				000A251D06CACC24009EE43A /* Sources */,
-				000A251E06CACC24009EE43A /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = osgbluemarble;
-			productName = osgtext;
-			productReference = 000A252506CACC24009EE43A /* osgbluemarble.app */;
 			productType = "com.apple.product-type.application";
 		};
 		000A253206CACDBF009EE43A /* osgcallback */ = {
@@ -15071,24 +14917,6 @@
 			productReference = 00A14C12084E52BF000150AD /* osgarchive.app */;
 			productType = "com.apple.product-type.application";
 		};
-		00A14CA1084E580E000150AD /* osgdem */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0011039908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdem" */;
-			buildPhases = (
-				00A14CA2084E580E000150AD /* Headers */,
-				00A14CA3084E580E000150AD /* Resources */,
-				00A14CA4084E580E000150AD /* Sources */,
-				00A14CA6084E580E000150AD /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = osgdem;
-			productName = osgtext;
-			productReference = 00A14CAD084E580E000150AD /* osgdem.app */;
-			productType = "com.apple.product-type.application";
-		};
 		00A14CC2084E5821000150AD /* osgviewer */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0011027108736A190015C576 /* Build configuration list for PBXNativeTarget "osgviewer" */;
@@ -15222,24 +15050,6 @@
 			name = osgdb_hdr;
 			productName = osgdb_3dc;
 			productReference = 00A150B9084E6ABB000150AD /* osgdb_hdr.so */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
-		00A15334084FDD4E000150AD /* osgdb_gdal */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0011039508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_gdal" */;
-			buildPhases = (
-				00A15336084FDD4E000150AD /* Headers */,
-				00A15337084FDD4E000150AD /* Sources */,
-				00A15339084FDD4E000150AD /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00A15335084FDD4E000150AD /* PBXTargetDependency */,
-			);
-			name = osgdb_gdal;
-			productName = osgdb_3dc;
-			productReference = 00A1533C084FDD4E000150AD /* osgdb_gdal.so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 		00A15365084FDE50000150AD /* osgdb_ */ = {
@@ -16068,8 +15878,7 @@
 			);
 			targets = (
 				006FD302065A8A1600677FA5 /* AllStandardTargets */,
-				00638D6C093B9904002722CD /* AllStandardTargetsAndGDALdependentStuff */,
-				00C5AD5F0B0D6B7300E9BCA1 /* AllStandardTargetsAndGDALAndSDLdependentStuff */,
+				00C5AD5F0B0D6B7300E9BCA1 /* AllStandardTargetsAndSDLdependentStuff */,
 				005988A50652DB9D003D6AA1 /* osgFrameworks */,
 				BE117FB205D63B3800EB53E5 /* osg */,
 				BE11849905D7126100EB53E5 /* osgUtil */,
@@ -16129,21 +15938,17 @@
 				001D049C065AB1AE003310BF /* osgdb_zip */,
 				00A15365084FDE50000150AD /* osgdb_ */,
 				00D3F0E20920182C00817AAD /* osgdb___ */,
-				00A15334084FDD4E000150AD /* osgdb_gdal */,
 				00A14C6F084E5690000150AD /* Applications */,
 				00A14C01084E52BF000150AD /* osgarchive */,
 				000A25BD06CAD314009EE43A /* osgconv */,
 				00A14CE8084E582E000150AD /* osgversion */,
 				00A14CC2084E5821000150AD /* osgviewer */,
-				00A14CA1084E580E000150AD /* osgdem */,
 				001D069A065AB62B003310BF /* Examples */,
-				00A15423084FE455000150AD /* GDALdependentStuff */,
 				00C5AD4C0B0D6AE900E9BCA1 /* SDLdependentStuff */,
 				0007B90B06C181CC00C884E1 /* osganimate */,
 				0007B96A06C18F9900C884E1 /* osgautotransform */,
 				000A24BA06CACA60009EE43A /* osgbillboard */,
 				00F238DE0767730700528CDD /* osgblendequation */,
-				000A251406CACC24009EE43A /* osgbluemarble */,
 				000A253206CACDBF009EE43A /* osgcallback */,
 				006CE8F00921A83D00985402 /* osgcamera */,
 				008F450906CC059400F4220C /* osgcatch */,
@@ -17132,14 +16937,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				000A250B06CACB4C009EE43A /* osgbillboard.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		000A251D06CACC24009EE43A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				000A253106CACD72009EE43A /* osgbluemarble.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18277,14 +18074,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00A14CA4084E580E000150AD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00A14D63084E5AFC000150AD /* osgdem.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		00A14CCB084E5821000150AD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -18339,14 +18128,6 @@
 			files = (
 				00A150D9084E6B38000150AD /* hdrloader.cpp in Sources */,
 				00A150DB084E6B38000150AD /* ReaderWriterHDR.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00A15337084FDD4E000150AD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00A15399084FE151000150AD /* ReaderWriterGDAL.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18629,7 +18410,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0018529F078C583400D3FC44 /* DataSet.cpp in Sources */,
 				001852A0078C583400D3FC44 /* HeightFieldNode.cpp in Sources */,
 				001852A1078C583400D3FC44 /* HeightFieldRenderer.cpp in Sources */,
 				001852A2078C583400D3FC44 /* Version.cpp in Sources */,
@@ -19401,11 +19181,6 @@
 			target = 00EF4E3606CB0AA6008ACEFF /* osgsimulation */;
 			targetProxy = 005CDF3B0946DAAC00613CD5 /* PBXContainerItemProxy */;
 		};
-		005CDF3E0946DABF00613CD5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 000A251406CACC24009EE43A /* osgbluemarble */;
-			targetProxy = 005CDF3D0946DABF00613CD5 /* PBXContainerItemProxy */;
-		};
 		00638D25093B93F8002722CD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BE117FB205D63B3800EB53E5 /* osg */;
@@ -19450,11 +19225,6 @@
 			isa = PBXTargetDependency;
 			target = 006FD302065A8A1600677FA5 /* AllStandardTargets */;
 			targetProxy = 00638D6D093B9911002722CD /* PBXContainerItemProxy */;
-		};
-		00638D70093B9918002722CD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00A15423084FE455000150AD /* GDALdependentStuff */;
-			targetProxy = 00638D6F093B9918002722CD /* PBXContainerItemProxy */;
 		};
 		006CE8F10921A83D00985402 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -20201,16 +19971,6 @@
 			target = 6320CD0307845BC300FE3D2C /* osgTerrain */;
 			targetProxy = 00A15424084FE46D000150AD /* PBXContainerItemProxy */;
 		};
-		00A15427084FE46D000150AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00A15334084FDD4E000150AD /* osgdb_gdal */;
-			targetProxy = 00A15426084FE46D000150AD /* PBXContainerItemProxy */;
-		};
-		00A15429084FE46D000150AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00A14CA1084E580E000150AD /* osgdem */;
-			targetProxy = 00A15428084FE46D000150AD /* PBXContainerItemProxy */;
-		};
 		00C59D1A0B0926A800E9BCA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BE117FB205D63B3800EB53E5 /* osg */;
@@ -20300,11 +20060,6 @@
 			isa = PBXTargetDependency;
 			target = 006FD302065A8A1600677FA5 /* AllStandardTargets */;
 			targetProxy = 00C5AD610B0D6B7300E9BCA1 /* PBXContainerItemProxy */;
-		};
-		00C5AD620B0D6B7300E9BCA1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00A15423084FE455000150AD /* GDALdependentStuff */;
-			targetProxy = 00C5AD630B0D6B7300E9BCA1 /* PBXContainerItemProxy */;
 		};
 		00C5AD690B0D6B9600E9BCA1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -31535,8 +31290,6 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/gdal.framework/Headers",
-					/Library/Frameworks/gdal.framework/Headers,
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "osgTerrain-Info.plist";
@@ -31551,8 +31304,6 @@
 					0x20c40000,
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 					"-lz",
 				);
 				OTHER_REZFLAGS = "";
@@ -31580,8 +31331,6 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/gdal.framework/Headers",
-					/Library/Frameworks/gdal.framework/Headers,
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "osgTerrain-Info.plist";
@@ -31596,8 +31345,6 @@
 					0x20c40000,
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 					"-lz",
 				);
 				OTHER_REZFLAGS = "";
@@ -31619,8 +31366,6 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/gdal.framework/Headers",
-					/Library/Frameworks/gdal.framework/Headers,
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "osgTerrain-Info.plist";
@@ -31635,8 +31380,6 @@
 					0x20c40000,
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 					"-lz",
 				);
 				OTHER_REZFLAGS = "";
@@ -31733,294 +31476,6 @@
 				PRODUCT_NAME = osgdb_;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		0011039608736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/gdal.framework/Headers",
-					/Library/Frameworks/gdal.framework/Headers,
-					"$(inherited)",
-				);
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib,
-					"$(inherited)",
-				);
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					gdal,
-					"-lz",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_gdal;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		0011039708736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/gdal.framework/Headers",
-					/Library/Frameworks/gdal.framework/Headers,
-					"$(inherited)",
-				);
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib,
-					"$(inherited)",
-				);
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					gdal,
-					"-lz",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_gdal;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		0011039808736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(HOME)/Library/Frameworks/gdal.framework/Headers",
-					/Library/Frameworks/gdal.framework/Headers,
-					"$(inherited)",
-				);
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_SEARCH_PATHS = (
-					/usr/lib,
-					"$(inherited)",
-				);
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					gdal,
-					"-lz",
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_gdal;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		0011039A08736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgdem-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					gdal,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdem;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		0011039B08736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgdem-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					gdal,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdem;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		0011039C08736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgdem-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-					"-framework",
-					gdal,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdem;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		0011039E08736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = GDALdependentStuff;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		0011039F08736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = GDALdependentStuff;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		001103A008736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = GDALdependentStuff;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
 			};
 			name = Default;
 		};
@@ -32128,94 +31583,6 @@
 			};
 			name = Default;
 		};
-		001103A608736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgbluemarble-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgbluemarble;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		001103A708736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgbluemarble-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgbluemarble;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		001103A808736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgbluemarble-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgbluemarble;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
 		001103AE08736A190015C576 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -32239,8 +31606,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgsimulation;
@@ -32272,8 +31637,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgsimulation;
@@ -32300,8 +31663,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgsimulation;
@@ -32846,7 +32207,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				PRODUCT_NAME = AllStandardTargets;
 			};
 			name = Development;
 		};
@@ -32856,7 +32217,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				PRODUCT_NAME = AllStandardTargets;
 				ZERO_LINK = NO;
 			};
 			name = Deployment;
@@ -32864,7 +32225,7 @@
 		00638D74093B994E002722CD /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				PRODUCT_NAME = AllStandardTargets;
 			};
 			name = Default;
 		};
@@ -33597,8 +32958,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgfadetext;
@@ -33630,8 +32989,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgfadetext;
@@ -33658,8 +33015,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
-					"-framework",
-					gdal,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgfadetext;
@@ -34221,74 +33576,6 @@
 			};
 			name = Default;
 		};
-		00C5AD580B0D6AE900E9BCA1 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = GDALdependentStuff;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		00C5AD590B0D6AE900E9BCA1 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				GCC_AUTO_VECTORIZATION = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = GDALdependentStuff;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		00C5AD5A0B0D6AE900E9BCA1 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = GDALdependentStuff;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Default;
-		};
 		00C5AD650B0D6B7300E9BCA1 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -34296,7 +33583,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				PRODUCT_NAME = AllStandardTargets;
 			};
 			name = Development;
 		};
@@ -34306,7 +33593,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				PRODUCT_NAME = AllStandardTargets;
 				ZERO_LINK = NO;
 			};
 			name = Deployment;
@@ -34314,7 +33601,7 @@
 		00C5AD670B0D6B7300E9BCA1 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = AllStandardTargetsAndGDALdependentStuff;
+				PRODUCT_NAME = AllStandardTargets;
 			};
 			name = Default;
 		};
@@ -36065,52 +35352,12 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		0011039508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_gdal" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0011039608736A190015C576 /* Development */,
-				0011039708736A190015C576 /* Deployment */,
-				0011039808736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		0011039908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdem" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0011039A08736A190015C576 /* Development */,
-				0011039B08736A190015C576 /* Deployment */,
-				0011039C08736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		0011039D08736A190015C576 /* Build configuration list for PBXAggregateTarget "GDALdependentStuff" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0011039E08736A190015C576 /* Development */,
-				0011039F08736A190015C576 /* Deployment */,
-				001103A008736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
 		001103A108736A190015C576 /* Build configuration list for PBXNativeTarget "os" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				001103A208736A190015C576 /* Development */,
 				001103A308736A190015C576 /* Deployment */,
 				001103A408736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		001103A508736A190015C576 /* Build configuration list for PBXNativeTarget "osgbluemarble" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				001103A608736A190015C576 /* Development */,
-				001103A708736A190015C576 /* Deployment */,
-				001103A808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
@@ -36181,16 +35428,6 @@
 				00638D5E093B9590002722CD /* Development */,
 				00638D5F093B9590002722CD /* Deployment */,
 				00638D60093B9590002722CD /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		00638D71093B994E002722CD /* Build configuration list for PBXAggregateTarget "AllStandardTargetsAndGDALdependentStuff" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00638D72093B994E002722CD /* Development */,
-				00638D73093B994E002722CD /* Deployment */,
-				00638D74093B994E002722CD /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
@@ -36351,16 +35588,6 @@
 				00C5AD580B0D6AE900E9BCA1 /* Development */,
 				00C5AD590B0D6AE900E9BCA1 /* Deployment */,
 				00C5AD5A0B0D6AE900E9BCA1 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		00C5AD640B0D6B7300E9BCA1 /* Build configuration list for PBXAggregateTarget "AllStandardTargetsAndGDALAndSDLdependentStuff" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00C5AD650B0D6B7300E9BCA1 /* Development */,
-				00C5AD660B0D6B7300E9BCA1 /* Deployment */,
-				00C5AD670B0D6B7300E9BCA1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

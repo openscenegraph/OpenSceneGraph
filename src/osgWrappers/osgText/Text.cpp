@@ -724,5 +724,7 @@ END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >);
 
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec2 >);
+
 STD_VECTOR_REFLECTOR(std::vector< osgText::Font::Glyph * >);
 

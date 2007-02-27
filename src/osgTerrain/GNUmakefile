@@ -3,7 +3,6 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
-    DataSet.cpp\
     HeightFieldNode.cpp\
     HeightFieldRenderer.cpp\
     Version.cpp\

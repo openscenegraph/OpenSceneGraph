@@ -17,7 +17,7 @@
 /* Put all your C++ headers inside the __cplusplus guard. */
 #ifdef __cplusplus
 
-/* You may not need the OpenThreads and Producer headers for your project.
+/* You may not need the OpenThreads headers for your project.
  * In those cases, you can comment out these blocks if you wish.
  */
 #include <OpenThreads/Barrier>
@@ -26,26 +26,6 @@
 #include <OpenThreads/Mutex>
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Thread>
-
-#include <Producer/Block>
-#include <Producer/BlockingQueue>
-#include <Producer/CameraConfig>
-#include <Producer/CameraGroup>
-#include <Producer/Events>
-#include <Producer/Export>
-#include <Producer/InputArea>
-#include <Producer/Keyboard>
-#include <Producer/KeyboardMouse>
-#include <Producer/Math>
-#include <Producer/Referenced>
-#include <Producer/RefOpenThreads>
-#include <Producer/RenderSurface>
-#include <Producer/Timer>
-#include <Producer/Trackball>
-#include <Producer/Types>
-#include <Producer/Version>
-#include <Producer/VisualChooser>
-#include <Producer/Window3D>
 
 #include <osg/AlphaFunc>
 #include <osg/AnimationPath>
@@ -310,14 +290,9 @@
 #include <osgParticle/Version>
 #include <osgParticle/range>  
 
-#include <osgProducer/Export>
-#include <osgProducer/GraphicsContextImplementation>
-#include <osgProducer/KeyboardMouseCallback>
-#include <osgProducer/OsgCameraGroup>
-#include <osgProducer/OsgSceneHandler>
-#include <osgProducer/Version>
-#include <osgProducer/Viewer>
-#include <osgProducer/ViewerEventHandler>
+#include <osgViewer/Export>
+#include <osgViewer/Version>
+#include <osgViewer/Viewer>
 
 #include <osgSim/BlinkSequence>
 #include <osgSim/ColorRange>

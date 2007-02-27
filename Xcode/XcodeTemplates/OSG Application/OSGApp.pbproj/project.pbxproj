@@ -283,16 +283,8 @@
 		1FF61109082F118D004EB1E4 = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
-			name = osgProducer.framework;
-			path = /Library/Frameworks/osgProducer.framework;
-			refType = 0;
-			sourceTree = "<absolute>";
-		};
-		1FF6110A082F118D004EB1E4 = {
-			isa = PBXFileReference;
-			lastKnownFileType = wrapper.framework;
-			name = Producer.framework;
-			path = /Library/Frameworks/Producer.framework;
+			name = osgViewer.framework;
+			path = /Library/Frameworks/osgViewer.framework;
 			refType = 0;
 			sourceTree = "<absolute>";
 		};

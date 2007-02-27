@@ -123,14 +123,6 @@ ifneq ("$(OPENTHREADS_LIB_DIR)","")
 LDFLAGS += -L$(OPENTHREADS_LIB_DIR)
 endif
 
-ifneq ("$(PRODUCER_INC_DIR)","")
-INC += -I$(PRODUCER_INC_DIR)
-endif
-
-ifneq ("$(PRODUCER_LIB_DIR)","")
-LDFLAGS += -L$(PRODUCER_LIB_DIR)
-endif
-
 
 RECURSIVE_TARGETS = \
       opt \

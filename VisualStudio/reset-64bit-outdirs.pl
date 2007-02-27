@@ -9,7 +9,7 @@ sub usage {
   "usage: $file [options]
 
 Resets the 64 bit OutputDirectory settings in the .vcproj files for
-OpenSceneGraph, Producer, and OpenThreads to be the same as the Win32
+OpenSceneGraph and OpenThreads to be the same as the Win32
 settings.  This is a workaround for Visual Studio's annoying practice of
 generating this setting itself when creating the 64 bit configuration,
 rather than reusing the Win32 setting.
@@ -58,8 +58,7 @@ sub callback {
 # cd to the directory containing this script, so paths below work properly
 chdir dirname($0);
 
-my @directories = qw(../../OpenThreads/win32_src
-                     ../../Producer/VC++7/Producer
+my @directories = qw(../../OpenThreads/win32_src                     
                      .);
 find(\&callback, @directories);
 

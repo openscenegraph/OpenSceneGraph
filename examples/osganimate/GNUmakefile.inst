@@ -8,7 +8,4 @@ LIBS     += -losgViewer -losgDB -losgText -losgUtil -losg $(GL_LIBS) $(X_LIBS) $
 
 EXEC = osganimate
 
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
-
 include $(TOPDIR)/Make/makerules

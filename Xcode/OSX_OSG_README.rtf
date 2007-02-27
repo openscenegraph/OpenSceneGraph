@@ -11,7 +11,7 @@
 \f0\b\fs24 \cf0 OpenSceneGraph on Mac OS X
 \f1\b0 \
 \
-This is the readme for the entire OpenThreads/Producer/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.2 release.\
+This is the readme for the entire OpenThreads/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.2 release.\
 \
 The source code is available at {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/"}}{\fldrslt http://www.openscenegraph.org/}}\
 \
@@ -110,8 +110,8 @@ If you are affected by this, please file a bug report at {\field{\*\fldinst{HYPE
 \f1\b0 \cf0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
 The Xcode projects are also set to build as Universal Binaries for both Development and Deployment\
 targets. If you do not need this and want to save build time, you should change the architecture option\
-to your desired setting (most likely to $(NATIVE_ARCH)). It is overridden in the top-level "OpenSceneGraph" project in the Group & Files panel. Don't forget to change OpenThreads and \
-Producer as well. (Quick tip: You can delete the modified (boldfaced) option by clicking on the - button.)\
+to your desired setting (most likely to $(NATIVE_ARCH)). It is overridden in the top-level "OpenSceneGraph" project in the Group & Files panel. Don't forget to change OpenThreads \
+as well. (Quick tip: You can delete the modified (boldfaced) option by clicking on the - button.)\
 \
 Apple documented the behavior of -Os in the Xcode 2.3 release, so we have changed the compiler optimizations (back) from -O3 to -Os. The hope was to shrink the binary size, but it didn't seem to have a large effect. Benchmarking still has not been done. (Volunteers?)\
 \
@@ -148,7 +148,7 @@ With Apple's announcement of the Intel transition, Xcode 2.1 was released to hel
 \
 Many thanks should be given to the people that have helped make these projects possible and for their contributions to make OSG run well on OS X through the multiyear run-up to 1.0. I unfortunately don't have a comprehensive list as many contributions have been submitted directly to OpenSceneGraph, but I wanted to give mention to these specific people I've had the pleasure of working with in trying to make this corner of the universe work.\
 \
-James Hopper (work on native Aqua Producer, Xcode templates, GDAL frameworks)\
+James Hopper (work on Xcode templates, GDAL frameworks)\
 David Guthrie (various patches, testing, Xcode project compiler options refinement)\
 Jeremy Bell (original comprehensive discussion on OS X frameworks, patches)\
 Stephen Travis Pope (provider of the OSG on OS X website)\
@@ -199,7 +199,7 @@ Also be aware that if using the 10.4 Universal SDK, you may have to explicitly s
 \f0\b Running the examples:
 \f1\b0 \
 \
-Now that Producer supports a native Window manager, we have attempted to provide double clickable .app bundles. We cheat a little to keep the download size smaller by symbolically linking the Frameworks, PlugIns, and Resources directories for each .app bundle instead of giving each its own copy. This allows the apps to find their resources when trying to run directly from the .dmg without having to copy anything to your computer. \
+Now that osgViewer supports a native Window manager, we have attempted to provide double clickable .app bundles. We cheat a little to keep the download size smaller by symbolically linking the Frameworks, PlugIns, and Resources directories for each .app bundle instead of giving each its own copy. This allows the apps to find their resources when trying to run directly from the .dmg without having to copy anything to your computer. \
 \
 If you copy these examples out of .dmg, be aware that these symbolic links may or may not be able to find all the dependencies depending on factors such as retaining the directory structure of the .dmg, copying everything over, or what you installed to system locations.\
 \
@@ -210,7 +210,7 @@ YourProgram.app/\
         Frameworks/     (all the frameworks you depend on go in here)\
             osg.framework\
             osgDB.framework\
-            Producer.framework\
+            osgViewer.framework\
             ...\
         PlugIns/  (the plugins you need go in here)\
             osgdb_freetype.so\
@@ -247,8 +247,7 @@ osgGA             -seg1addr 0x2049a000\
 osgIntrospection  -seg1addr 0x204fd000\
 osgSim            -seg1addr 0x205f4000\
 osgFX             -seg1addr 0x20690000\
-Producer          -seg1addr 0x20700000\
-osgProducer       -seg1addr 0x20760000\
+osgViweer          -seg1addr 0x20700000\
 gdal              -seg1addr 0x207d0000\
 osgTerrain        -seg1addr 0x20c40000
 \f1 \
@@ -329,9 +328,7 @@ the standard places like /Library/Frameworks to not be searched.\
 \f0\b Known Issues:
 \f1\b0 \
 \
-There is one known serious bug that appears sometimes. With Xcode 2.0 and 2.1, in some cases when you build OpenThreads/Producer/OSG from scratch, when you run the examples, they will crash on load. The workaround seems to be to delete just the OpenThreads framework after everything is built. Then rebuild just the OpenThreads framework. Bug reports have been filed with Apple, but the root cause remains to be a mystery. (We have some guesses, but nothing substantial.) I have not yet seen this issue emerge with Xcode 2.2, so maybe the problem is fixed.\
-\
-The native Aqua back-end (AGL based) for Producer continues to improve, but it is not as rigorously tested as the X11 back-end. With the included examples, AGL Producer seems to work well enough. There has been one report of crashing with a dual screen setup using a Radeon 9800 in the release candidate phase which may or may not be fixed by the final OSG release. But if you are experiencing problems and you think the AGL implementation might be suspect, you should try swapping in the X11 back-end for comparison. However, for releasable products, you are strongly discouraged from basing your application around the X11 back-end as there are known limitations and critical bugs in Apple's X11 implementation itself which could potentially derail your entire project. Apple's X11 is only intended to help initial porting to OS X and is not intended as a final destination.\
+There is one known serious bug that appears sometimes. With Xcode 2.0 and 2.1, in some cases when you build OpenThreads/OSG from scratch, when you run the examples, they will crash on load. The workaround seems to be to delete just the OpenThreads framework after everything is built. Then rebuild just the OpenThreads framework. Bug reports have been filed with Apple, but the root cause remains to be a mystery. (We have some guesses, but nothing substantial.) I have not yet seen this issue emerge with Xcode 2.2, so maybe the problem is fixed.\
 \
 The osgdb_geo plugin is not big endian safe. The Makefile system does not build it for OS X. We have added it for the Xcode projects, but you probably shouldn't use it unless you're on Intel.\
 \
@@ -352,9 +349,9 @@ Included with the OSG Xcode projects are some of the little scripts I used to he
 We're still looking for volunteers to help us write a new CMake based build system. Please contact me\
 or the list if you are interested in helping implement the thing.\
 \
-If you are developing with Leopard under the Apple software seed program, some areas of OpenSceneGraph and Producer are not 64-bit ready/clean. If you can help, please contact me. \
+If you are developing with Leopard under the Apple software seed program, some areas of OpenSceneGraph are not 64-bit ready/clean. If you can help, please contact me. \
 \
-On a similar note, a Cocoa Producer back end would be very nice (and would avoid most of the 64-bit issues). Nothing on this end is being done currently, but if you have an interest in implementing such a thing, please contact me.\
+On a similar note, a Cocoa back end would be very nice (and would avoid most of the 64-bit issues). Nothing on this end is being done currently, but if you have an interest in implementing such a thing, please contact me.\
 \
 On the topic of feature requests, another potentially useful thing to have is a osgtext plugin that can load glyphs rendered by Apple instead of Freetype.\
 \

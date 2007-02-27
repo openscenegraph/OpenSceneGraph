@@ -1,13 +1,12 @@
 @echo off
 REM This script provides a commandline shell properly configured to run OSG
-REM executables directly from the OpenThreads/Producer/OpenSceneGraph source
+REM executables directly from the OpenThreads/OpenSceneGraph source
 REM trees.
 REM mew 2004-07-16
 
 cd ..\..
-set PATH=%CD%\OpenThreads\bin\win32;%CD%\Producer\bin\win32;%CD%\OpenSceneGraph\bin\win32;%CD%\3rdParty\bin;%PATH%
+set PATH=%CD%\OpenThreads\bin\win32;%CD%\OpenSceneGraph\bin\win32;%CD%\3rdParty\bin;%PATH%
 set OSG_FILE_PATH=%CD%\OpenSceneGraph-Data;%CD%\OpenSceneGraph-Data\Images;%CD%\OpenSceneGraph-Data\fonts;%OSG_FILE_PATH%
-REM set PRODUCER_CAMERA_CONFIG_FILE=%CD%\Producer-Data\1win.cfg
 
 REM uncomment one of these for your desired notify level...
 rem set OSG_NOTIFY_LEVEL=ALWAYS

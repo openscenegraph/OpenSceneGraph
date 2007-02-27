@@ -40,14 +40,6 @@
 \f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
 \f2 OpenThreads.xcodeproj
 \f3 \uc0\u8232 \'ca\'ca
-\f2 Producer/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca
-\f2  Xcode/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca
-\f2  Producer/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
-\f2  Producer.xcodeproj
-\f3 \uc0\u8232 \'ca\'ca
 \f2 OpenSceneGraph/
 \f3 \uc0\u8232 \'ca\'ca\'ca\'ca
 \f2  Xcode/
@@ -61,7 +53,7 @@
 \f0\b\fs20 \cf0 Step 3 - Build it\
 \pard\pardeftab720\sa260\ql\qnatural
 
-\f1\b0\fs26 \cf0 Now use Xcode to build each of the projects. You should build OpenThreads first, Producer second, and OpenSceneGraph last. If you are using the Xcode 2.1+ projects, there is a cross-project dependency rule already setup for you in the OpenSceneGraph.xcodeproj called "AllStandardTargets" target. If you use this target, you can skip going to the other two projects and just go directly to OpenSceneGraph and it will build OpenThreads and Producer for you automatically.\
+\f1\b0\fs26 \cf0 Now use Xcode to build each of the projects. You should build OpenThreads first and OpenSceneGraph last. If you are using the Xcode 2.1+ projects, there is a cross-project dependency rule already setup for you in the OpenSceneGraph.xcodeproj called "AllStandardTargets" target. If you use this target, you can skip going to the other two projects and just go directly to OpenSceneGraph and it will build OpenThreads for you automatically.\
 You may want to set the build style to Deployment depending on what you are doing. The OpenSceneGraph project gives you multiple targets to select from so you may build everything, or just pieces you want.\
 The binaries will be written to the Xcode build subdirectory (following standard Xcode behavior).\
 To "Install" the Frameworks, you may move the Frameworks to a standard location.\uc0\u8232 ~/Library/Frameworks (for a single user)\u8232 /Library/Frameworks (for system wide installation)\u8232 /Network/Library/Frameworks (for those who understand when this should be used)\u8232 Or you may place them inside your application bundle e.g.\u8232 YourApp.app/Contents/Frameworks\u8232 Simply drag and drop the frameworks to the desired location.\u8232 \u8232 Similarly, to "Install" the Plugins, move the .so files to\u8232 ~/Library/Application Support/OpenSceneGraph/PlugIns\u8232 /Library/Application Support/OpenSceneGraph/PlugIns\u8232 /Network/Library/Application Support/OpenSceneGraph/PlugIns\u8232 Or you may place the ones you need inside your application bundle e.g.\u8232 YourApp.app/Contents/PlugIns\
@@ -85,9 +77,8 @@ To "Install" the Frameworks, you may move the Frameworks to a standard location.
 \f0\b\fs28 \cf0 Issues\
 \pard\pardeftab720\sa260\ql\qnatural
 
-\f1\b0\fs26 \cf0 There is a serious bug that appears sometimes when you build OpenThreads/Producer/OSG from scratch. When you run the examples, they will crash on load. If you encounter this problem, the workaround seems to be to delete just the OpenThreads framework after everything is built. Then rebuild just the OpenThreads framework. Bug reports have been filed with Apple, but the root cause remains to be a mystery. (We have some guesses, but nothing substantial.) So far the problem has not materialized yet for Xcode 2.2, so the problem may finally be resolved.\
+\f1\b0\fs26 \cf0 There is a serious bug that appears sometimes when you build OpenThreads/OSG from scratch. When you run the examples, they will crash on load. If you encounter this problem, the workaround seems to be to delete just the OpenThreads framework after everything is built. Then rebuild just the OpenThreads framework. Bug reports have been filed with Apple, but the root cause remains to be a mystery. (We have some guesses, but nothing substantial.) So far the problem has not materialized yet for Xcode 2.2, so the problem may finally be resolved.\
 Currently frameworks, plugins, and executables that have non-standard dependencies such as osgTerrain are not built. There is a target called GDALdependentStuff which will build all the GDAL dependent stuff. You must have the GDAL framework installed for this to work. This target is not built by default so you must select it manually. \
-The new native Aqua backend for Producer has improved dramatically from the previous release, but it is still a work in progress. For example, cmd/option clicking may lead to strange behavior and/or a crash. (This only affects you when you use the actual keys. A mutli-button mouse doesn't seem to have this problem.) If you have feedback or can contribute to its development, Don Burns (author of Producer/co-author of OSG) would like to hear from you.\
 By OS X conventions, resources (data files like images, models, fonts, etc) should be placed in your application bundles Contents/Resources directory. This behavior is not in the osg sources so we have patched the source to do so. You must apply our patch until osg accepts and includes this modification in the official source.\
 Many examples require command line parameters. This makes double clicking useless. For those examples, you must run them on the command line. You may use Terminal instead of X11 if you wish.\uc0\u8232 Example:\u8232 
 \f2\fs21\fsmilli10563 ./osgreflect.app/Contents/MacOS/osgreflect cessna.osg
@@ -114,8 +105,6 @@ osgGA             -seg1addr 0x2049a000\
 osgIntrospection  -seg1addr 0x204fd000\
 osgSim            -seg1addr 0x205f4000\
 osgFX             -seg1addr 0x20690000\
-Producer          -seg1addr 0x20700000\
-osgProducer       -seg1addr 0x20760000\
 gdal              -seg1addr 0x207d0000\
 osgTerrain        -seg1addr 0x20c40000\
 \

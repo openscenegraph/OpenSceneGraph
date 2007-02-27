@@ -11,8 +11,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Camera>
+#include <osg/CopyOp>
 #include <osg/DisplaySettings>
 #include <osg/Node>
+#include <osg/Object>
 #include <osg/State>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
@@ -74,6 +76,35 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Constructor0(____View,
 	               "",
 	               "");
+	I_ConstructorWithDefaults2(IN, const osgViewer::View &, view, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____View__C5_osgViewer_View_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method0(osgViewer::Scene *, getScene,
 	          Properties::NON_VIRTUAL,
 	          __Scene_P1__getScene,

@@ -25,10 +25,6 @@ SRC_DIRS = \
 	osgSim \
 	osgManipulator
         
-ifeq ($(PRODUCER_INSTALLED),yes)
-SRC_DIRS += osgProducer
-endif
-
 ifeq ($(GDAL_INSTALLED),yes)
 SRC_DIRS += osgTerrain
 endif
@@ -56,10 +52,6 @@ WRAPPER_DIRS = \
 	osgUtil \
 	osgViewer \
         
-
-ifeq ($(PRODUCER_INSTALLED),yes)
-    WRAPPER_DIRS += osgProducer
-endif	
 
 ifeq ($(GDAL_INSTALLED),yes)
     WRAPPER_DIRS += osgTerrain
@@ -196,12 +188,6 @@ APPLICATION_DIRS += osgarchive \
 
 ifeq ($(GDAL_INSTALLED),yes)
     APPLICATION_DIRS += osgdem
-endif
-
-ifeq ($(PRODUCER_INSTALLED),yes)
-
-    APPLICATION_DIRS += osgproducerviewer
-
 endif
 
 EXAMPLE_DIRS = \

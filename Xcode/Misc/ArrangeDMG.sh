@@ -21,10 +21,6 @@
 #     Xcode/
 #       OpenThreads/
 #         OpenThreads.xcode
-#    Producer/
-#      Xcode/
-#        Producer/
-#          Producer.xcode
 #    OpenSceneGraph/
 #      Xcode/
 #        OpenSceneGraph/
@@ -37,7 +33,7 @@
 # tarballs.
 #
 # You may place this script and run it from the same directory level 
-# that OpenThreads, Producer, and OpenSceneGraph exist in.
+# that OpenThreads and OpenSceneGraph exist in.
 # 
 #####################################################################
 
@@ -76,7 +72,6 @@ mkdir -p PackageDir/Resources
 echo "Copying Frameworks..."
 
 $COPY OpenThreads/Xcode/OpenThreads/build/$CONFIGURATION/OpenThreads.framework PackageDir/Frameworks
-$COPY Producer/Xcode/Producer/build/$CONFIGURATION/Producer.framework PackageDir/Frameworks
 $COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/osg*.framework PackageDir/Frameworks/
 
 # Copy the gdal framework 
@@ -96,7 +91,6 @@ find -d PackageDir/XcodeTemplates -name CVS -exec rm -rf {} \;
 
 echo "Copying License and ReadMe files..."
 $COPY OpenThreads/COPYING.txt PackageDir/LICENSE_OpenThreads.txt
-$COPY Producer/LICENSE.txt PackageDir/LICENSE_Producer.txt
 $COPY OpenSceneGraph/LICENSE.txt PackageDir/LICENSE_OSG.txt
 $COPY OpenSceneGraph/Xcode/OSX_OSG_README.rtf PackageDir
 

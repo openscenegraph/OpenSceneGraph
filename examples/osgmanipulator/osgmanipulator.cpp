@@ -102,59 +102,6 @@ osg::Node* createHUD()
     return camera;
 }
 
-#if 0
-bool computePixelCoords(osgProducer::Viewer* viewer,float x,float y,unsigned int cameraNum,float& pixel_x,float& pixel_y)
-{
-    Producer::KeyboardMouse* km = viewer->getKeyboardMouse();
-    if (!km) return false;
-	    
-    if (cameraNum>=viewer->getNumberOfCameras()) return false;
-
-    Producer::Camera* camera=viewer->getCamera(cameraNum);
-    Producer::RenderSurface* rs = camera->getRenderSurface();
-
-    Producer::InputArea* inputArea = km->getInputArea();
-    if( inputArea != NULL )
-    {
-        // first locate which InputRectange is appropriate for specified RenderSurface.
-        unsigned int i;
-        for(i=0;i<inputArea->getNumRenderSurfaces();++i)
-        {
-            if (inputArea->getRenderSurface(i)==rs) break;
-        }
-        
-        // the RenderSurface isn't in the InputArea list.. therefore cannot make mouse coords to it.
-        if (i==inputArea->getNumRenderSurfaces()) return false;
-
-        // we have a valid InputRectangle
-	Producer::RenderSurface::InputRectangle ir = inputArea->getRenderSurface(i)->getInputRectangle();
-
-        float rx = (x-ir.left())/ir.width();
-        float ry = (y-ir.bottom())/ir.height();
-        
-        int wx, wy;
-        unsigned int w, h;
-        rs->getWindowRectangle( wx, wy, w, h );
-
-        pixel_x = ((float)w)* rx;
-        pixel_y = ((float)h)* ry;
-    }
-    else
-    {
-        float rx = (x+1.0f)*0.5f;
-        float ry = (y+1.0f)*0.5f;
-
-        int wx, wy;
-        unsigned int w, h;
-        rs->getWindowRectangle( wx, wy, w, h );
-
-        pixel_x = ((float)w)* rx;
-        pixel_y = ((float)h)* ry;
-    }
-    return true;
-}
-#endif
-
 osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* cmdMgr, const std::string& name)
 {
     scene->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);

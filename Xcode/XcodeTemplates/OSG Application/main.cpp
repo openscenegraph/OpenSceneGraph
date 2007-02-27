@@ -4,12 +4,12 @@
 #include <osg/Geometry>
 #include <osg/Texture2D>
 #include <osgDB/ReadFile> 
-#include <osgProducer/Viewer>
+#include <osgViewer/Viewer>
 #include <osg/PositionAttitudeTransform>
 
 int main()
 {
-   osgProducer::Viewer viewer;
+   osgViewer::Viewer viewer;
    osg::Group* root = new osg::Group();
    osg::Geode* pyramidGeode = new osg::Geode();
    osg::Geometry* pyramidGeometry = new osg::Geometry();
@@ -154,17 +154,7 @@ int main()
 
    //The final step is to set up and enter a simulation loop.
 
-   viewer.setUpViewer(osgProducer::Viewer::STANDARD_SETTINGS);
    viewer.setSceneData( root );
 
-   viewer.realize();
-
-   while( !viewer.done() )
-   {
-      viewer.sync();
-      viewer.update();
-      viewer.frame();
-   } 
-
-   return 0;
+   return viewer.run();
 }

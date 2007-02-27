@@ -21,8 +21,6 @@
 
 #include <iostream>
 
-static bool s_ProfessionalServices = false;
-
 class MyBillboardTransform : public osg::PositionAttitudeTransform
 {
     public:
@@ -122,7 +120,7 @@ osg::Geometry* createWing(const osg::Vec3& left, const osg::Vec3& nose, const os
     
 }
 
-osg:: Node* createTextBelow(const osg::BoundingBox& bb)
+osg:: Node* createTextBelow(const osg::BoundingBox& bb, const std::string& label, const std::string&)
 {
     osg::Geode* geode = new osg::Geode();
 
@@ -136,14 +134,14 @@ osg:: Node* createTextBelow(const osg::BoundingBox& bb)
     text->setAxisAlignment(osgText::Text::XZ_PLANE);
     text->setPosition(bb.center()-osg::Vec3(0.0f,0.0f,(bb.zMax()-bb.zMin())));
     text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f));
-    text->setText("OpenSceneGraph");
+    text->setText(label);
 
     geode->addDrawable( text );
 
     return geode;
 }
 
-osg:: Node* createTextLeft(const osg::BoundingBox& bb)
+osg:: Node* createTextLeft(const osg::BoundingBox& bb, const std::string& label, const std::string& subscript)
 {
     osg::Geode* geode = new osg::Geode();
 
@@ -165,7 +163,7 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     text->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin()),-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.1f));
     //text->setColor(osg::Vec4(0.37f,0.48f,0.67f,1.0f)); // Neil's orignal OSG colour
     text->setColor(osg::Vec4(0.20f,0.45f,0.60f,1.0f)); // OGL logo colour
-    text->setText("OpenSceneGraph");
+    text->setText(label);
 
 #if 1
     text->setBackdropType(osgText::Text::OUTLINE);
@@ -197,19 +195,19 @@ osg:: Node* createTextLeft(const osg::BoundingBox& bb)
     geode->addDrawable( text );
 
 
-    if (s_ProfessionalServices)
+    if (!subscript.empty())
     {
         //osgText::Text* subscript = new  osgText::Text(new osgText::TextureFont(font,45));
 
-        osgText::Text* subscript = new osgText::Text;
-        subscript->setFont(font);
-        subscript->setText("Professional Services");
-        subscript->setAlignment(osgText::Text::RIGHT_CENTER);
-        subscript->setAxisAlignment(osgText::Text::XZ_PLANE);
-        subscript->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*4.3f,-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.6f));
-        subscript->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
+        osgText::Text* subscriptText = new osgText::Text;
+        subscriptText->setFont(font);
+        subscriptText->setText(subscript);
+        subscriptText->setAlignment(osgText::Text::RIGHT_CENTER);
+        subscriptText->setAxisAlignment(osgText::Text::XZ_PLANE);
+        subscriptText->setPosition(bb.center()-osg::Vec3((bb.xMax()-bb.xMin())*4.3f,-(bb.yMax()-bb.yMin())*0.5f,(bb.zMax()-bb.zMin())*0.6f));
+        subscriptText->setColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)); // black
 
-        geode->addDrawable( subscript );
+        geode->addDrawable( subscriptText );
     }
         
     return geode;
@@ -373,7 +371,7 @@ osg:: Node* createBackdrop(const osg::Vec3& corner,const osg::Vec3& top,const os
     return geode;    
 }
 
-osg::Node* createLogo(const std::string& filename)
+osg::Node* createLogo(const std::string& filename, const std::string& label, const std::string& subscript)
 {
     osg::BoundingBox bb(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(100.0f,100.0f,100.0f));
     float chordRatio = 0.5f; 
@@ -412,7 +410,7 @@ osg::Node* createLogo(const std::string& filename)
 
     // add the text to the group.
     //group->addChild(createTextBelow(bb));
-    logo_group->addChild(createTextLeft(bb));
+    logo_group->addChild(createTextLeft(bb, label, subscript));
     
     
     // create the backdrop to render the shadow to.
@@ -459,15 +457,19 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    while (arguments.read("ps")) s_ProfessionalServices = true;
+    std::string label = "OpenSceneGraph";
+    std::string subscript = "";
+
+    while (arguments.read("--label", label)) {} 
+    while (arguments.read("--subscript", subscript)) {} 
     
-    osg::Node* node = 0;
+    osg::ref_ptr<osg::Node> node;
     
-    if (arguments.argc()>1) createLogo(arguments[1]);
-    else node = createLogo("");
+    if (arguments.argc()>1) node = createLogo(arguments[1], label, subscript);
+    else node = createLogo("", label, subscript);
 
     // add model to viewer.
-    viewer.setSceneData( node );
+    viewer.setSceneData( node.get() );
 
     return viewer.run();
 }

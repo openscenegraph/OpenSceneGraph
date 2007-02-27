@@ -215,9 +215,6 @@ ifeq ($(OS),SunOS)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
-
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
 
@@ -307,9 +304,6 @@ ifeq ($(OS),IRIX)
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
-
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
 
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
@@ -405,9 +399,6 @@ endif
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
-
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
 
@@ -459,9 +450,6 @@ ifeq ($(OS),FreeBSD)
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
-
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
 
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
@@ -549,9 +537,6 @@ ifeq ($(OS),Darwin)
   FREETYPE_INCLUDE  = -I$(SDKPATH)/usr/X11R6/include -I$(SDKPATH)/usr/X11R6/include/freetype2
   FREETYPE_LIB      =  -L$(SDKPATH)/usr/X11R6/lib -lfreetype
 
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
-
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
 
@@ -590,10 +575,6 @@ ifeq ($(OS),CYGWIN)
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
-
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
-  GDAL_LIBS         += `gdal-config --dep-libs`
 
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
@@ -653,9 +634,6 @@ ifeq ($(OS),MINGW)
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
-
-  GDAL_INCLUDES     = 
-  GDAL_LIBS         =  -lgdal -ljpeg -lgeotiff -ltiff -lpng -lz
 
   XINE_INCLUDES     = `xine-config --cflags`
   XINE_LIBS         = `xine-config --libs`
@@ -720,9 +698,6 @@ ifeq ($(OS),HP-UX)
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
 
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
-
   INSTXCMD           = install -c -m 755
   INSTRCMD           = install -c -m 644
 
@@ -765,9 +740,6 @@ ifeq ($(OS),AIX)
 
   FREETYPE_INCLUDE  = `freetype-config --cflags`
   FREETYPE_LIB      = `freetype-config --libs`
-
-  GDAL_INCLUDES     = `gdal-config --cflags`
-  GDAL_LIBS         = `gdal-config --libs`
 
 endif
 

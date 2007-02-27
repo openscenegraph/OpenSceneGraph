@@ -14,8 +14,6 @@
 
 #include <osgText/FadeText>
 
-#include <osgTerrain/DataSet>
-
 #include <osgSim/OverlayNode>
 #include <osgSim/SphereSegment>
 
@@ -23,95 +21,25 @@
 
 #include <iostream>
 
-class MyGraphicsContext {
-    public:
-        MyGraphicsContext()
-        {
-            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->x = 0;
-            traits->y = 0;
-            traits->width = 1;
-            traits->height = 1;
-            traits->windowDecoration = false;
-            traits->doubleBuffer = false;
-            traits->sharedContext = 0;
-            traits->pbuffer = true;
-
-            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-            if (!_gc)
-            {
-                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
-                
-                traits->pbuffer = false;
-                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-            }
-
-            if (_gc.valid()) 
-            
-            
-            {
-                _gc->realize();
-                _gc->makeCurrent();
-                std::cout<<"Realized window"<<std::endl;
-            }
-        }
-        
-        bool valid() const { return _gc.valid() && _gc->isRealized(); }
-        
-    private:
-        osg::ref_ptr<osg::GraphicsContext> _gc;
-};
-
 osg::Node* createEarth()
 {
-    osg::ref_ptr<osg::Node> scene;
+    osg::TessellationHints* hints = new osg::TessellationHints;
+    hints->setDetailRatio(5.0f);
+
     
-    {
-        std::string filename = osgDB::findDataFile("Images/land_shallow_topo_2048.jpg");
-
-        // make osgTerrain::DataSet quieter..
-        osgTerrain::DataSet::setNotifyOffset(1);
-
-        osg::ref_ptr<osgTerrain::DataSet> dataSet = new osgTerrain::DataSet;
-
-        // register the source imagery
-        {
-            osgTerrain::DataSet::Source* source = new osgTerrain::DataSet::Source(osgTerrain::DataSet::Source::IMAGE, filename);
-
-            source->setCoordinateSystemPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS);
-            source->setCoordinateSystem(osgTerrain::DataSet::coordinateSystemStringToWTK("WGS84"));
-
-            source->setGeoTransformPolicy(osgTerrain::DataSet::Source::PREFER_CONFIG_SETTINGS_BUT_SCALE_BY_FILE_RESOLUTION);
-            source->setGeoTransformFromRange(-180.0, 180.0, -90.0, 90.0);
-
-            dataSet->addSource(source);
-        }
-
-        // set up destination database paramters.
-        dataSet->setDatabaseType(osgTerrain::DataSet::LOD_DATABASE);
-        dataSet->setConvertFromGeographicToGeocentric(true);
-        dataSet->setDestinationName("test.osg");
-
-        // load the source data and record sizes.
-        dataSet->loadSources();
-
-        MyGraphicsContext context;
-        dataSet->createDestination(30);
-
-        if (dataSet->getDatabaseType()==osgTerrain::DataSet::LOD_DATABASE) dataSet->buildDestination();
-        else dataSet->writeDestination();
-        
-        scene = dataSet->getDestinationRootNode();
-        
-        // now we must get rid of all the old OpenGL objects before we start using the scene graph again 
-        // otherwise it'll end up in an inconsistent state.
-        scene->releaseGLObjects(dataSet->getState());
-        osg::Texture::flushAllDeletedTextureObjects(0);
-        osg::Drawable::flushAllDeletedDisplayLists(0);
-    }
-        
-    return scene.release();
+    osg::ShapeDrawable* sd = new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0,0.0,0.0), osg::WGS_84_RADIUS_POLAR), hints);
+    
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(sd);
+    
+    std::string filename = osgDB::findDataFile("Images/land_shallow_topo_2048.jpg");
+    geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile(filename)));
+    
+    osg::CoordinateSystemNode* csn = new osg::CoordinateSystemNode;
+    csn->setEllipsoidModel(new osg::EllipsoidModel());
+    csn->addChild(geode);
+    
+    return csn;
     
 }
 

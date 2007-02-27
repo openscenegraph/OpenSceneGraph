@@ -28,10 +28,8 @@
 namespace osgUtil {
 
 /**
- * SceneView is literaly a view of a scene, encapsulating the 'camera' 
- * (not to be confused with Producer::Camera) (modelview+projection matrices),
- * global state, lights and the scene itself.  Provides
- * methods for setting up the view and rendering it.
+ * SceneView is literaly a view of a scene, encapsulating the rendering of the scene.
+ * Provides methods for setting up the view and rendering it.
 */
 class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 {

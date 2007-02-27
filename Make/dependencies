@@ -4,9 +4,6 @@
 # should we compile osgIntrospection?
 COMPILE_INTROSPECTION ?= no
 
-# should we compile osgProducer and the associated applications?
-PRODUCER_INSTALLED ?= yes
-
 # should we compile any of the examples?
 COMPILE_EXAMPLES ?= no
 

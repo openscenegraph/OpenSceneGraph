@@ -9,7 +9,7 @@ sub usage {
   "usage: $file [options]
 
 This script substitutes hardcoded values for the \$(PlatformName) and
-\$(ConfigurationName) variables in the OpenSceneGraph, Producer, and
+\$(ConfigurationName) variables in the OpenSceneGraph, and
 OpenThreads .dsp files.  Those variables are useful in VC 7.x and VC 8,
 but are incompatible with VC 6.0.
 
@@ -95,7 +95,6 @@ sub callback {
 }
 
 my (@dirs) = qw(.
-                ../../Producer/VC++6.0/Producer
                 ../../OpenThreads/win32_src);
 
 # change to directory containing script to ensure paths work properly

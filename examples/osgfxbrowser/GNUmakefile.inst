@@ -9,7 +9,4 @@ LIBS     += -losgViewer -losgText -losgDB -losgText -losgUtil -losg -losgFX $(GL
 
 EXEC = osgfxbrowser
 
-INC += $(PRODUCER_INCLUDE_DIR) $(X_INC)
-LDFLAGS  += $(PRODUCER_LIB_DIR)
-
 include $(TOPDIR)/Make/makerules

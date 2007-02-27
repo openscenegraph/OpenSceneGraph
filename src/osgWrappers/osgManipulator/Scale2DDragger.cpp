@@ -38,7 +38,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DDragger)
 	                           ____Scale2DDragger__ScaleMode,
 	                           "",
 	                           "");
-	I_Method3(bool, handle, IN, const osgManipulator::Dragger::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	I_Method3(bool, handle, IN, const osgManipulator::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Handle pick events on dragger and generate TranslateInLine commands. ",

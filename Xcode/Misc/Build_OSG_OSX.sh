@@ -3,7 +3,7 @@
 #####################################################################
 # Author: Eric Wing
 # 
-# This script will build OpenThreads, Producer, and OpenSceneGraph
+# This script will build OpenThreads and OpenSceneGraph
 # (using the Xcode projects I created for each) and package up 
 # the Frameworks and PlugIns into a disk image (.dmg) for
 # easy distribution. This script may be used towards automation
@@ -18,10 +18,6 @@
 #     Xcode/
 #       OpenThreads/
 #         OpenThreads.xcode
-#    Producer/
-#      Xcode/
-#        Producer/
-#          Producer.xcode
 #    OpenSceneGraph/
 #      Xcode/
 #        OpenSceneGraph/
@@ -34,7 +30,7 @@
 # tarballs.
 #
 # You may place this script and run it from the same directory level 
-# that OpenThreads, Producer, and OpenSceneGraph exist in.
+# that OpenThreads and OpenSceneGraph exist in.
 # 
 # The script will build each of the projects, and then move the built
 # files to a temporary subdirectory called PackageDir. A disk image (.dmg)
@@ -54,12 +50,6 @@
 # incomplete. Currently, optionally installed Plugins like Demeter
 # are not built.
 #
-# Examples are even more problematic because they require the X11 
-# system and currently cannot access the native Mac system. This 
-# makes double click launching impossible. However, when the 
-# day comes that Producer gets a native Mac backend, this will 
-# all fall into place.
-# 
 # To build everything, you must have the Apple Developer Tools installed
 # and you must also install Apple's X11 development package (if not 
 # already installed). It can be found with the Developer Tools on the 
@@ -105,21 +95,6 @@ mkdir -p PackageDir/Examples
 				;
 )
 
-# Next build Producer
-	# xcodebuild is the commandline tool that can build Xcode projects.
-	# Specifying "clean build" will clean everything and then rebuild it.
-	# Just specifying "build" will only rebuild things that need it.
-#	xcodebuild 	-project Producer.xcode \
-#				-buildstyle Deployment \
-(cd Producer/Xcode/Producer; \
-	xcodebuild 	-project Producer.xcodeproj \
-				-target Producer \
-				-configuration $CONFIGURATION \
-				$BUILDACTION \
-				;
-)
-
-
 # Now build OpenSceneGraph with everything
 	# xcodebuild is the commandline tool that can build Xcode projects.
 	# Specifying "clean build" will clean everything and then rebuild it.
@@ -145,14 +120,12 @@ mkdir -p PackageDir/Examples
 # Everything should be built now. Move all the things to be distrubuted 
 # to the PackageDir with the appropriate layout.
 #$COPY OpenThreads/Xcode/OpenThreads/build/OpenThreads.framework PackageDir/Frameworks
-#$COPY Producer/Xcode/Producer/build/Producer.framework PackageDir/Frameworks
 #$COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/osg*.framework PackageDir/Frameworks/
 
 #$COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/*.so PackageDir/PlugIns/
 #$COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/*.app PackageDir/Examples/
 
 $COPY OpenThreads/Xcode/OpenThreads/build/$CONFIGURATION/OpenThreads.framework PackageDir/Frameworks
-$COPY Producer/Xcode/Producer/build/$CONFIGURATION/Producer.framework PackageDir/Frameworks
 $COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/osg*.framework PackageDir/Frameworks/
 
 $COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/*.so PackageDir/PlugIns/

@@ -201,6 +201,40 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
             _texgen->setMode(osg::TexGen::EYE_LINEAR);
             _texgen->setPlanesFromMatrix(MVPT);
         }
+        else
+        {
+            // make an orthographic projection
+            osg::Vec3 lightDir(lightpos.x(), lightpos.y(), lightpos.z());
+            lightDir.normalize();
+
+            // set the position far away along the light direction
+            osg::Vec3 position = lightDir * bb.radius()  * 20;
+
+            float centerDistance = (position-bb.center()).length();
+
+            float znear = centerDistance-bb.radius();
+            float zfar  = centerDistance+bb.radius();
+            float zNearRatio = 0.001f;
+            if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+
+            float top   = bb.radius();
+            float right = top;
+
+            _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+            _camera->setProjectionMatrixAsOrtho(-right, right, -top, top, znear, zfar);
+            _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
+            
+
+            // compute the matrix which takes a vertex from local coords into tex coords
+            // will use this later to specify osg::TexGen..
+            osg::Matrix MVPT = _camera->getViewMatrix() * 
+                               _camera->getProjectionMatrix() *
+                               osg::Matrix::translate(1.0,1.0,1.0) *
+                               osg::Matrix::scale(0.5f,0.5f,0.5f);
+                               
+            _texgen->setMode(osg::TexGen::EYE_LINEAR);
+            _texgen->setPlanesFromMatrix(MVPT);
+        }
 
 
         cv.setTraversalMask( traversalMask & 

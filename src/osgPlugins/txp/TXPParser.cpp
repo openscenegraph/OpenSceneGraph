@@ -148,8 +148,8 @@ osg::Group *TXPParser::parseScene(
     }
     _tileGroups.clear();
 
-	LayerVisitor lv;
-	_root->accept(lv);
+    LayerVisitor lv;
+    _root->accept(lv);
 
     return _root.get();
 }
@@ -357,7 +357,7 @@ void TXPParser::loadLocalMaterials()
     int majorVer,minorVer;
     this->getArchive()->GetVersion(majorVer,minorVer);
     if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer>=TRPG_NOMERGE_VERSION_MINOR)) {
-	separateGeo = true;
+    separateGeo = true;
     }
     // new to 2.0 LOCAL materials
     trpgrImageHelper image_helper(
@@ -365,7 +365,7 @@ void TXPParser::loadLocalMaterials()
         _archive->getDir(),
         *_archive->GetMaterialTable(),
         *_archive->GetTexTable(),
-		separateGeo
+        separateGeo
     );
     trpgTileHeader* tile_head = getTileHeaderRef();
 
@@ -407,7 +407,7 @@ void TXPParser::loadLocalMaterials()
                 {
                 case trpgTextureEnv::Alpha :
                     osg_texenv->setMode(osg::TexEnv::REPLACE);
-		    break;
+            break;
                 case trpgTextureEnv::Decal:
                     osg_texenv->setMode(osg::TexEnv::DECAL);
                     break;
@@ -498,10 +498,10 @@ void TXPParser::loadLocalMaterials()
             }
             
             
-	    /* This controls what alpha values in a texture mean.  It can take the values:
-	       None,Always,Equal,GreaterThanOrEqual,GreaterThan,
-	       LessThanOrEqual,LessThan,Never,NotEqual
-	    */
+        /* This controls what alpha values in a texture mean.  It can take the values:
+           None,Always,Equal,GreaterThanOrEqual,GreaterThan,
+           LessThanOrEqual,LessThan,Never,NotEqual
+        */
             int alphaFunc;
             mat->GetAlphaFunc(alphaFunc);
             if( alphaFunc>=GL_NEVER && alphaFunc<=GL_ALWAYS)
@@ -758,18 +758,18 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     int attr_index;
     light.GetAttrIndex(attr_index);
 
-	uint32 nvert;
+    uint32 nvert;
     light.GetNumVertices(nvert);
 
-	const trpgLightTable *lt = _parse->getArchive()->GetLightTable();
-	trpgLightAttr *ref = const_cast<trpgLightAttr*>(lt->GetLightAttrRef(attr_index));
-	if (!ref)
-	{
-		osg::notify(osg::NOTICE) << "NULL LightAttr " << attr_index << std::endl;
-		return (void*)1;
-	}
+    const trpgLightTable *lt = _parse->getArchive()->GetLightTable();
+    trpgLightAttr *ref = const_cast<trpgLightAttr*>(lt->GetLightAttrRef(attr_index));
+    if (!ref)
+    {
+        osg::notify(osg::NOTICE) << "NULL LightAttr " << attr_index << std::endl;
+        return (void*)1;
+    }
 
-	osgSim::LightPointNode *lpNode = new osgSim::LightPointNode();
+    osgSim::LightPointNode *lpNode = new osgSim::LightPointNode();
 
     trpgColor col;
     ref->GetFrontColor(col);
@@ -780,88 +780,88 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     trpgLightAttr::PerformerAttr perfAttr;
     ref->GetPerformerAttr(perfAttr);
 
-	lpNode->setMaxPixelSize(perfAttr.maxPixelSize);
+    lpNode->setMaxPixelSize(perfAttr.maxPixelSize);
     lpNode->setMinPixelSize(perfAttr.minPixelSize);    
 
-	trpg3dPoint norm;
-	ref->GetNormal(norm);
+    trpg3dPoint norm;
+    ref->GetNormal(norm);
 
-	trpgLightAttr::LightDirectionality direc;
+    trpgLightAttr::LightDirectionality direc;
     ref->GetDirectionality(direc);
 
-	for ( unsigned i=0; i < nvert; i++ )
-	{
-		trpg3dPoint pt;
+    for ( unsigned i=0; i < nvert; i++ )
+    {
+        trpg3dPoint pt;
         light.GetVertex(i, pt);
 
-		osgSim::LightPoint lp( 
-			true, 
-			osg::Vec3(pt.x,pt.y,pt.z), 
-			osg::Vec4(col.red, col.green,col.blue, 1.0), 
-			inten
-		);
+        osgSim::LightPoint lp( 
+            true, 
+            osg::Vec3(pt.x,pt.y,pt.z), 
+            osg::Vec4(col.red, col.green,col.blue, 1.0), 
+            inten
+        );
 
-		switch (direc)
-		{
-		case trpgLightAttr::trpg_Unidirectional:
-			{
-				float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
-				float64 tmp;
+        switch (direc)
+        {
+        case trpgLightAttr::trpg_Unidirectional:
+            {
+                float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
+                float64 tmp;
 
-				ref->GetHLobeAngle(tmp);
-				lobeHorz = osg::DegreesToRadians( tmp );
-				
-				ref->GetVLobeAngle(tmp);
-				lobeVert = osg::DegreesToRadians( tmp );
-				
-				ref->GetLobeRollAngle(tmp);
-				lobeRoll = osg::DegreesToRadians( tmp );
+                ref->GetHLobeAngle(tmp);
+                lobeHorz = osg::DegreesToRadians( tmp );
+                
+                ref->GetVLobeAngle(tmp);
+                lobeVert = osg::DegreesToRadians( tmp );
+                
+                ref->GetLobeRollAngle(tmp);
+                lobeRoll = osg::DegreesToRadians( tmp );
 
-				osg::Vec3 normal(norm.x,norm.y,norm.z);
-				lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll );
-			}
-			break;
-		case trpgLightAttr::trpg_Bidirectional:
-			{
-				float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
-				float64 tmp;
+                osg::Vec3 normal(norm.x,norm.y,norm.z);
+                lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll );
+            }
+            break;
+        case trpgLightAttr::trpg_Bidirectional:
+            {
+                float lobeVert=0.f, lobeHorz=0.f, lobeRoll=0.f;
+                float64 tmp;
 
-				ref->GetHLobeAngle(tmp);
-				lobeHorz = osg::DegreesToRadians( tmp );
-				
-				ref->GetVLobeAngle(tmp);
-				lobeVert = osg::DegreesToRadians( tmp );
-				
-				ref->GetLobeRollAngle(tmp);
-				lobeRoll = osg::DegreesToRadians( tmp );
+                ref->GetHLobeAngle(tmp);
+                lobeHorz = osg::DegreesToRadians( tmp );
+                
+                ref->GetVLobeAngle(tmp);
+                lobeVert = osg::DegreesToRadians( tmp );
+                
+                ref->GetLobeRollAngle(tmp);
+                lobeRoll = osg::DegreesToRadians( tmp );
 
-				osg::Vec3 normal(norm.x,norm.y,norm.z);
-				lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll );
+                osg::Vec3 normal(norm.x,norm.y,norm.z);
+                lp._sector = new osgSim::DirectionalSector( normal, lobeHorz, lobeVert, lobeRoll );
 
-				ref->GetBackColor(col);
-				ref->GetBackIntensity(inten);
+                ref->GetBackColor(col);
+                ref->GetBackIntensity(inten);
 
-				osgSim::LightPoint lp2( 
-					true, 
-					osg::Vec3(pt.x,pt.y,pt.z), 
-					osg::Vec4(col.red, col.green,col.blue, 1.0), 
-					inten
-				);
+                osgSim::LightPoint lp2( 
+                    true, 
+                    osg::Vec3(pt.x,pt.y,pt.z), 
+                    osg::Vec4(col.red, col.green,col.blue, 1.0), 
+                    inten
+                );
 
-				lp2._sector = new osgSim::DirectionalSector( -normal, lobeHorz, lobeVert, lobeRoll );
-				lpNode->addLightPoint( lp2 );
-			}
-			break;
-		default:
-			;
-		}
+                lp2._sector = new osgSim::DirectionalSector( -normal, lobeHorz, lobeVert, lobeRoll );
+                lpNode->addLightPoint( lp2 );
+            }
+            break;
+        default:
+            ;
+        }
 
-		lpNode->addLightPoint( lp);
+        lpNode->addLightPoint( lp);
 
-	}
+    }
 
-	_parse->setCurrentNode(lpNode);
-	_parse->getCurrTop()->addChild(lpNode);
+    _parse->setCurrentNode(lpNode);
+    _parse->getCurrTop()->addChild(lpNode);
 
 #if 0
 
@@ -878,7 +878,7 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             trpg3dPoint pt;
             light.GetVertex(i, pt);
             osg::Matrix matrix;
-	    //        matrix.makeTranslate(pt.x,pt.y,pt.z);
+        //        matrix.makeTranslate(pt.x,pt.y,pt.z);
             matrix.makeRotate(osg::Quat(0.0,dla.attitude));
             matrix.setTrans(pt.x,pt.y,pt.z);
             osg::ref_ptr<osg::MatrixTransform> trans = new osg::MatrixTransform();
@@ -931,7 +931,7 @@ void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     trpgLayer group;
     if (!group.Read(buf)) return NULL;
 
-	osg::ref_ptr<LayerGroup> osgGroup = new LayerGroup();
+    osg::ref_ptr<LayerGroup> osgGroup = new LayerGroup();
     _parse->setCurrentNode(osgGroup.get());
     _parse->getCurrTop()->addChild(osgGroup.get());
     return (void*)1;
@@ -1362,58 +1362,58 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     {
     case trpgGeometry::Triangles:
     {
-	geometry = new osg::Geometry;
-	geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,numPrims*3));
+    geometry = new osg::Geometry;
+    geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,numPrims*3));
     }
     break;
     case trpgGeometry::Quads:
     {
-	geometry = new osg::Geometry;
-	geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,numPrims*4));
+    geometry = new osg::Geometry;
+    geometry->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,numPrims*4));
     }
     break;
     case trpgGeometry::TriStrips:
     {
-	geometry = new osg::Geometry;
-	osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_STRIP,0,numPrims);
-	geom.GetPrimLengths(reinterpret_cast<int*>(&(dal->front())));
-	geometry->addPrimitiveSet(dal);
+    geometry = new osg::Geometry;
+    osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_STRIP,0,numPrims);
+    geom.GetPrimLengths(reinterpret_cast<int*>(&(dal->front())));
+    geometry->addPrimitiveSet(dal);
     }
     break;
     case trpgGeometry::TriFans:
     {
-	geometry = new osg::Geometry;
-	osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_FAN,0,numPrims);
-	geom.GetPrimLengths(reinterpret_cast<int*>(&(dal->front())));
-	geometry->addPrimitiveSet(dal);
+    geometry = new osg::Geometry;
+    osg::DrawArrayLengths* dal = new osg::DrawArrayLengths(osg::PrimitiveSet::TRIANGLE_FAN,0,numPrims);
+    geom.GetPrimLengths(reinterpret_cast<int*>(&(dal->front())));
+    geometry->addPrimitiveSet(dal);
 
-	// Need to flip the fans coords.
-	int ind = 0;
-	int i;
-	for (i=0;i<numPrims;++i)
-	{
-	    int length = (*dal)[i];
-	    int start=ind+1;
-	    int end=ind+length-1;
-	    // Swap from start+1 to end
-	    // Swap vertices, texture coords & normals
-	    for (; start < end; ++start, --end )
-	    {
-		std::swap((*vertices)[start], (*vertices)[end]);
-		for(int texno = 0; texno < num_tex; texno ++ )
-		{
-		    if( tex_coords[texno].valid() )
-		    {
-			std::swap((*tex_coords[texno])[start], (*tex_coords[texno])[end]);
-		    }
-		}
-		if(normals.valid())
-		{
-		    std::swap((*normals)[start], (*normals)[end]);
-		}
-	    }
-	    ind += length;
-	}
+    // Need to flip the fans coords.
+    int ind = 0;
+    int i;
+    for (i=0;i<numPrims;++i)
+    {
+        int length = (*dal)[i];
+        int start=ind+1;
+        int end=ind+length-1;
+        // Swap from start+1 to end
+        // Swap vertices, texture coords & normals
+        for (; start < end; ++start, --end )
+        {
+        std::swap((*vertices)[start], (*vertices)[end]);
+        for(int texno = 0; texno < num_tex; texno ++ )
+        {
+            if( tex_coords[texno].valid() )
+            {
+            std::swap((*tex_coords[texno])[start], (*tex_coords[texno])[end]);
+            }
+        }
+        if(normals.valid())
+        {
+            std::swap((*normals)[start], (*normals)[end]);
+        }
+        }
+        ind += length;
+    }
     }
     break;
     default:
@@ -1460,7 +1460,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             if((sset!=0L) && sset.valid()) 
             {
                 if(tmp_ss.valid())
-		{
+        {
                     osg::StateAttribute* texenv0 = tmp_ss->getTextureAttribute(0,osg::StateAttribute::TEXENV);
                     if(texenv0) 
                         sset->setTextureAttribute(n_mat,texenv0);

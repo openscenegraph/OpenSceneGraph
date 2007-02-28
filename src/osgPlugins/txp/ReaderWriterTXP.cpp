@@ -39,8 +39,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
     if (strncmp(name.c_str(),"archive",7)==0)
     {
         std::string fileName = osgDB::findDataFile( file, options );
-		if ( fileName.empty() )
-			return ReadResult::FILE_NOT_FOUND;
+        if ( fileName.empty() )
+            return ReadResult::FILE_NOT_FOUND;
 
         osg::ref_ptr<TXPNode> txpNode = new TXPNode;
         txpNode->setArchiveName(fileName);
@@ -87,7 +87,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         archive->ReadSubArchive( 0, 0, endian);
         archive->ReadSubArchive( y, x, endian);
 
-//	std::cout << "Attempted " << x << " " << y << std::endl;
+//    std::cout << "Attempted " << x << " " << y << std::endl;
         
         TXPArchive::TileInfo info;
         if (!archive->getTileInfo(x,y,lod,info))
@@ -107,33 +107,33 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         archive->GetVersion(majorVersion, minorVersion);
         if(majorVersion ==2 && minorVersion >=1)
         {
-	    // Version 2.1 and over
-	    // The tile table only contains lod 0 and the children
-	    // info are stored in its parent. SO if we do not want
-	    // to be forced to reparse the parent we need to save that
-	    // info. For now we just add it to the node name
+        // Version 2.1 and over
+        // The tile table only contains lod 0 and the children
+        // info are stored in its parent. SO if we do not want
+        // to be forced to reparse the parent we need to save that
+        // info. For now we just add it to the node name
 
-	    if(childrenLoc.size() > 0)
-	    {
-		asChildren = true;
-		createChildrenLocationString(childrenLoc, childrenInfoStr);
-	    }
+        if(childrenLoc.size() > 0)
+        {
+        asChildren = true;
+        createChildrenLocationString(childrenLoc, childrenInfoStr);
+        }
         }
         else
         {
         if (lod < (numLods-1))
-		asChildren = true;
+        asChildren = true;
         }
 
-	if (asChildren)
+    if (asChildren)
         {
             char pagedLODfile[1024];
             sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d",
-		    archive->getDir(),
-		    lod,
-		    x,
-		    y,
-		    archive->getId());
+            archive->getDir(),
+            lod,
+            x,
+            y,
+            archive->getId());
 
             strcat(pagedLODfile, childrenInfoStr.c_str());
             strcat(pagedLODfile, ".txp");
@@ -153,7 +153,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
 
 
             osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
-			// note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
+            // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
             pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
             pagedLOD->setFileName(1,pagedLODfile);
             pagedLOD->setRange(1,0,info.minRange);
@@ -206,64 +206,64 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             std::vector<TXPArchive::TileLocationInfo> locs;
             bool status = true;
             status = extractChildrenLocations(name, lod, locs, nbChild);
-	    if(majorVersion >= TRPG_NOMERGE_VERSION_MAJOR && minorVersion >=TRPG_NOMERGE_VERSION_MINOR && archive->GetHeader()->GetIsMaster())
-	    {
-		for(int idx=0;idx<nbChild;idx++)
-		{
-		    //figure out the block row/col
-		    int blockx,blocky;
-		    unsigned int denom = (1 << locs[idx].lod); // this should work up to lod 31
-		    blockx = locs[idx].x/denom;
-		    blocky = locs[idx].y/denom;
-		    locs[idx].addr.col = blockx;
-		    locs[idx].addr.row = blocky;
-		}
-	    }
+        if(majorVersion >= TRPG_NOMERGE_VERSION_MAJOR && minorVersion >=TRPG_NOMERGE_VERSION_MINOR && archive->GetHeader()->GetIsMaster())
+        {
+        for(int idx=0;idx<nbChild;idx++)
+        {
+            //figure out the block row/col
+            int blockx,blocky;
+            unsigned int denom = (1 << locs[idx].lod); // this should work up to lod 31
+            blockx = locs[idx].x/denom;
+            blocky = locs[idx].y/denom;
+            locs[idx].addr.col = blockx;
+            locs[idx].addr.row = blocky;
+        }
+        }
 
             if(!status)
             {
-		ReaderWriterTXPERROR("ReaderWriterTXP::local_readNode()") << "'subtile' filename children parsing failed " << std::endl;
-		return ReadResult::ERROR_IN_READING_FILE;
+        ReaderWriterTXPERROR("ReaderWriterTXP::local_readNode()") << "'subtile' filename children parsing failed " << std::endl;
+        return ReadResult::ERROR_IN_READING_FILE;
             }
 
             const trpgHeader* header = archive->GetHeader();
             trpgHeader::trpgTileType tileType;
             header->GetTileOriginType(tileType);
 
-	    TXPArchive::TileLocationInfo plInfo;
-	    plInfo.x = x;
-	    plInfo.y = y;
-	    plInfo.lod = lod;
+        TXPArchive::TileLocationInfo plInfo;
+        plInfo.x = x;
+        plInfo.y = y;
+        plInfo.lod = lod;
             TXPArchive::TileInfo parentInfo;
             archive->getTileInfo(plInfo,parentInfo);
 
             for(int idx = 0; idx < nbChild; ++idx)
             {
-		std::vector<TXPArchive::TileLocationInfo> childrenChildLoc;
+        std::vector<TXPArchive::TileLocationInfo> childrenChildLoc;
                
-		TXPArchive::TileLocationInfo& loc = locs[idx];
+        TXPArchive::TileLocationInfo& loc = locs[idx];
                
-		TXPArchive::TileInfo info;
-		if (!archive->getTileInfo(loc,info))
-		    continue;
+        TXPArchive::TileInfo info;
+        if (!archive->getTileInfo(loc,info))
+            continue;
 
-		osg::ref_ptr<osg::Node> tileContent = getTileContent(info, loc, archive, childrenChildLoc);
+        osg::ref_ptr<osg::Node> tileContent = getTileContent(info, loc, archive, childrenChildLoc);
 
-		tileContent->setName("TileContent");
+        tileContent->setName("TileContent");
 
-		if(childrenChildLoc.size() > 0)
-		{
-		    std::string childInfoStr;
-		    createChildrenLocationString(childrenChildLoc, childInfoStr);
+        if(childrenChildLoc.size() > 0)
+        {
+            std::string childInfoStr;
+            createChildrenLocationString(childrenChildLoc, childInfoStr);
 
-		    char pagedLODfile[1024];
-		    sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d%s.txp",
-			    archive->getDir(),
-			    loc.lod,
-			    loc.x,
-			    loc.y,
-			    archive->getId(),
-			    childInfoStr.c_str());
+            char pagedLODfile[1024];
+            sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d%s.txp",
+                archive->getDir(),
+                loc.lod,
+                loc.x,
+                loc.y,
+                archive->getId(),
+                childInfoStr.c_str());
 
                     // there are tile sets which do not maintain the z extents in
                     // the tile table.  This attempt to address the issue by using
@@ -277,151 +277,151 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                         info.radius = bSphere.radius();
                     }
 
-		    osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
-					// note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
-		    pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
-		    pagedLOD->setFileName(1,pagedLODfile);
-		    pagedLOD->setRange(1,0,info.minRange);
-		    pagedLOD->setCenter(info.center);
-		    pagedLOD->setRadius(info.radius);
-		    pagedLOD->setPriorityOffset(0,numLods - loc.lod);
-		    pagedLOD->setPriorityScale(0,1.0f);
-		    pagedLOD->setNumChildrenThatCannotBeExpired(1);
-		    pagedLOD->setTileId(loc.x, loc.y, loc.lod);
+            osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
+                    // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
+            pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
+            pagedLOD->setFileName(1,pagedLODfile);
+            pagedLOD->setRange(1,0,info.minRange);
+            pagedLOD->setCenter(info.center);
+            pagedLOD->setRadius(info.radius);
+            pagedLOD->setPriorityOffset(0,numLods - loc.lod);
+            pagedLOD->setPriorityScale(0,1.0f);
+            pagedLOD->setNumChildrenThatCannotBeExpired(1);
+            pagedLOD->setTileId(loc.x, loc.y, loc.lod);
 
-		    if(tileType == trpgHeader::TileLocal)
-		    {
-			osg::Vec3d center(info.center - parentInfo.bbox._min);
-			osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
-			sw[2] = 0.0;
-			pagedLOD->setCenter(center - sw);
-			osg::Matrix offset;
-			offset.setTrans(sw);
-			osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
-			tform->addChild(pagedLOD.get());
-			subtiles->addChild(tform);
-		    }
-		    else
-		    subtiles->addChild(pagedLOD.get());
-		    subtiles->setUserData(new TileIdentifier(loc.x, loc.y, loc.lod)); // is this really needed?
-		}
-		else
-		{
-		    subtiles->setUserData(new TileIdentifier(loc.x, loc.y, loc.lod));
-		    if(tileType == trpgHeader::TileLocal)
-		    {
-			osg::Vec3d center(info.center - parentInfo.bbox._min);
-			osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
-			sw[2] = 0.0;
-			osg::Matrix offset;
-			offset.setTrans(sw);
-			osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
-			tform->addChild(tileContent.get());
-			subtiles->addChild(tform);
-		    }
-		    else
-		    subtiles->addChild(tileContent.get());
-		}
+            if(tileType == trpgHeader::TileLocal)
+            {
+            osg::Vec3d center(info.center - parentInfo.bbox._min);
+            osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
+            sw[2] = 0.0;
+            pagedLOD->setCenter(center - sw);
+            osg::Matrix offset;
+            offset.setTrans(sw);
+            osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
+            tform->addChild(pagedLOD.get());
+            subtiles->addChild(tform);
+            }
+            else
+            subtiles->addChild(pagedLOD.get());
+            subtiles->setUserData(new TileIdentifier(loc.x, loc.y, loc.lod)); // is this really needed?
+        }
+        else
+        {
+            subtiles->setUserData(new TileIdentifier(loc.x, loc.y, loc.lod));
+            if(tileType == trpgHeader::TileLocal)
+            {
+            osg::Vec3d center(info.center - parentInfo.bbox._min);
+            osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
+            sw[2] = 0.0;
+            osg::Matrix offset;
+            offset.setTrans(sw);
+            osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
+            tform->addChild(tileContent.get());
+            subtiles->addChild(tform);
+            }
+            else
+            subtiles->addChild(tileContent.get());
+        }
             }
         }
         else
         {
             
-	    int sizeX, sizeY;
-	    archive->getLODSize(lod+1,sizeX,sizeY);
+        int sizeX, sizeY;
+        archive->getLODSize(lod+1,sizeX,sizeY);
 
-	    const trpgHeader* header = archive->GetHeader();
-	    trpgHeader::trpgTileType tileType;
-	    header->GetTileOriginType(tileType);
+        const trpgHeader* header = archive->GetHeader();
+        trpgHeader::trpgTileType tileType;
+        header->GetTileOriginType(tileType);
 
-	    TXPArchive::TileInfo parentInfo;
-	    archive->getTileInfo(x,y,lod,parentInfo);
+        TXPArchive::TileInfo parentInfo;
+        archive->getTileInfo(x,y,lod,parentInfo);
 
-	    for (int ix = 0; ix < 2; ix++)
-	    {
-		for (int iy = 0; iy < 2; iy++)
-		{
-		    int tileX = x*2+ix;
-		    int tileY = y*2+iy;
-		    int tileLOD = lod+1;
+        for (int ix = 0; ix < 2; ix++)
+        {
+        for (int iy = 0; iy < 2; iy++)
+        {
+            int tileX = x*2+ix;
+            int tileY = y*2+iy;
+            int tileLOD = lod+1;
 
-		    TXPArchive::TileInfo info;
-		    if (!archive->getTileInfo(tileX,tileY,tileLOD,info))
-			continue;
+            TXPArchive::TileInfo info;
+            if (!archive->getTileInfo(tileX,tileY,tileLOD,info))
+            continue;
 
-		    osg::ref_ptr<osg::Node> tileContent = getTileContent(info,tileX,tileY,tileLOD,archive, childrenLoc);
+            osg::ref_ptr<osg::Node> tileContent = getTileContent(info,tileX,tileY,tileLOD,archive, childrenLoc);
 
-		    tileContent->setName("TileContent");
+            tileContent->setName("TileContent");
 
-		    if (tileLOD < (numLods-1))
-		    {
-			char pagedLODfile[1024];
-			sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d.txp",
-				archive->getDir(),
-				tileLOD,
-				tileX,
-				tileY,
-				archive->getId());
+            if (tileLOD < (numLods-1))
+            {
+            char pagedLODfile[1024];
+            sprintf(pagedLODfile,"%s\\subtiles%d_%dx%d_%d.txp",
+                archive->getDir(),
+                tileLOD,
+                tileX,
+                tileY,
+                archive->getId());
 
-			// there are tile sets which do not maintain the z extents in
-			// the tile table.  This attempt to address the issue by using
-			// the geometry bounding sphere.  The downside is that this is
-			// not coupled to the generation and may result in runtime cracks
-			if (info.center.z() == 0)
-			{
-			    osg::BoundingSphere bSphere = tileContent->getBound();
+            // there are tile sets which do not maintain the z extents in
+            // the tile table.  This attempt to address the issue by using
+            // the geometry bounding sphere.  The downside is that this is
+            // not coupled to the generation and may result in runtime cracks
+            if (info.center.z() == 0)
+            {
+                osg::BoundingSphere bSphere = tileContent->getBound();
 
-			    info.center.z() = bSphere.center().z();
-			    info.radius = bSphere.radius();
-			}
+                info.center.z() = bSphere.center().z();
+                info.radius = bSphere.radius();
+            }
 
-			osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
-						// note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
-			pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
-			pagedLOD->setFileName(1,pagedLODfile);
-			pagedLOD->setRange(1,0,info.minRange);
-			pagedLOD->setCenter(info.center);
-			pagedLOD->setRadius(info.radius);
-			pagedLOD->setPriorityOffset(0,numLods-lod);
-			pagedLOD->setPriorityScale(0,1.0f);
-			pagedLOD->setNumChildrenThatCannotBeExpired(1);
-			pagedLOD->setTileId(tileX,tileY,tileLOD);
+            osg::ref_ptr<TXPPagedLOD> pagedLOD = new TXPPagedLOD;
+                        // note: use maximum(info.maxRange,1e7) as just maxRange would result in some corner tiles from being culled out.
+            pagedLOD->addChild(tileContent.get(),info.minRange,osg::maximum(info.maxRange,1e7));
+            pagedLOD->setFileName(1,pagedLODfile);
+            pagedLOD->setRange(1,0,info.minRange);
+            pagedLOD->setCenter(info.center);
+            pagedLOD->setRadius(info.radius);
+            pagedLOD->setPriorityOffset(0,numLods-lod);
+            pagedLOD->setPriorityScale(0,1.0f);
+            pagedLOD->setNumChildrenThatCannotBeExpired(1);
+            pagedLOD->setTileId(tileX,tileY,tileLOD);
 
-			if(tileType == trpgHeader::TileLocal)
-			{
-			    osg::Vec3d center(info.center - parentInfo.bbox._min);
-			    osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
-			    sw[2] = 0.0;
-			    pagedLOD->setCenter(center - sw);
-			    osg::Matrix offset;
-			    offset.setTrans(sw);
-			    osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
-			    tform->addChild(pagedLOD.get());
-			    subtiles->addChild(tform);
-			}
-			else
-			    subtiles->addChild(pagedLOD.get());
-		    }
-		    else
-		    {
-			subtiles->setUserData(new TileIdentifier(tileX,tileY,tileLOD));
-			if(tileType == trpgHeader::TileLocal)
-			{
-			    osg::Vec3d center(info.center - parentInfo.bbox._min);
-			    osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
-			    sw[2] = 0.0;
-			    osg::Matrix offset;
-			    offset.setTrans(sw);
-			    osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
-			    tform->addChild(tileContent.get());
-			    subtiles->addChild(tform);
-			}
-			else
-			    subtiles->addChild(tileContent.get());
-		    }
+            if(tileType == trpgHeader::TileLocal)
+            {
+                osg::Vec3d center(info.center - parentInfo.bbox._min);
+                osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
+                sw[2] = 0.0;
+                pagedLOD->setCenter(center - sw);
+                osg::Matrix offset;
+                offset.setTrans(sw);
+                osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
+                tform->addChild(pagedLOD.get());
+                subtiles->addChild(tform);
+            }
+            else
+                subtiles->addChild(pagedLOD.get());
+            }
+            else
+            {
+            subtiles->setUserData(new TileIdentifier(tileX,tileY,tileLOD));
+            if(tileType == trpgHeader::TileLocal)
+            {
+                osg::Vec3d center(info.center - parentInfo.bbox._min);
+                osg::Vec3d sw(info.bbox._min - parentInfo.bbox._min);
+                sw[2] = 0.0;
+                osg::Matrix offset;
+                offset.setTrans(sw);
+                osg::MatrixTransform *tform = new osg::MatrixTransform(offset);
+                tform->addChild(tileContent.get());
+                subtiles->addChild(tform);
+            }
+            else
+                subtiles->addChild(tileContent.get());
+            }
 
-		}
-	    }
+        }
+        }
         }
 
         //osg::notify(osg::NOTICE) << "Subtiles for " << x << " " << y << " " << lod << " lodaded" << std::endl;
@@ -539,7 +539,7 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
 
         locs[idx].lod = parentLod+1;
 
-	  
+      
 
         token = strtok(0, "_");
     }
@@ -617,26 +617,26 @@ class SeamFinder: public osg::NodeVisitor
 {
 public:
     SeamFinder(int x, int y, int lod, const TXPArchive::TileInfo& info, TXPArchive *archive ):
-	osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-	_x(x), _y(y), _lod(lod), _info(info), _archive(archive) 
-	{}
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    _x(x), _y(y), _lod(lod), _info(info), _archive(archive) 
+    {}
 
     virtual void apply(osg::Group& group)
-	{
-	    for (unsigned int i = 0; i < group.getNumChildren(); i++)
-	    {
-		osg::Node* child = group.getChild(i);
-		osg::Node* seam = seamReplacement(child);
-		if (child != seam)
-		{
-		    group.replaceChild(child,seam);
-		}
-		else
-		{
-		    child->accept(*this);
-		}
-	    }
-	}
+    {
+        for (unsigned int i = 0; i < group.getNumChildren(); i++)
+        {
+        osg::Node* child = group.getChild(i);
+        osg::Node* seam = seamReplacement(child);
+        if (child != seam)
+        {
+            group.replaceChild(child,seam);
+        }
+        else
+        {
+            child->accept(*this);
+        }
+        }
+    }
 
 protected:
     osg::Node* seamReplacement(osg::Node* node);
@@ -649,8 +649,8 @@ protected:
 osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 {
     osg::Group* group = node->asGroup();
-	if ( group == 0 )
-		return node;
+    if ( group == 0 )
+        return node;
 
     std::vector<osg::Node*> nonSeamChildren;
     osg::LOD* hiRes = 0;
@@ -671,10 +671,10 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 
         bool nonSeamChild = true;
 
-	// looks like the problem is in here - likely due to seamLOD info
-	// not being adjusted properly in tiled databases
+    // looks like the problem is in here - likely due to seamLOD info
+    // not being adjusted properly in tiled databases
         // seam center is outside the bounding box of the tile
-	osg::Vec3 lodCenter = lod->getCenter();
+    osg::Vec3 lodCenter = lod->getCenter();
 
         if(tileType == trpgHeader::TileLocal)
         {
@@ -690,7 +690,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             tileExtents.y /= divider;
             offset[0] = _x*tileExtents.x;// + tileExtents.x*0.5;
             offset[1] = _y*tileExtents.y;// + tileExtents.y*0.5;
-	    lodCenter += offset;
+        lodCenter += offset;
         }
 
         if (!_info.bbox.contains(lodCenter))
@@ -735,7 +735,7 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
         int dx = 0;
         int dy = 0;
         int lod = _lod;
-	osg::Vec3 lodCenter = loRes->getCenter();
+    osg::Vec3 lodCenter = loRes->getCenter();
 
         if(tileType == trpgHeader::TileLocal)
         {
@@ -751,27 +751,27 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
             tileExtents.y /= divider;
             offset[0] = _x*tileExtents.x;// + tileExtents.x*0.5;
             offset[1] = _y*tileExtents.y;// + tileExtents.y*0.5;
-	    lodCenter += offset;
+        lodCenter += offset;
         }
 
         osg::Vec3 delta = lodCenter-_info.center;
         if (fabs(delta.x())>fabs(delta.y()))
         {
-			if ( delta.x() < 0.0 )
-				--dx;    // west
-			else
-				dx++;                  // east
+            if ( delta.x() < 0.0 )
+                --dx;    // west
+            else
+                dx++;                  // east
         }
         else
         {
-			if ( delta.y() < 0.0 )
-				--dy;    // south
-			else
-				++dy;                  // north
+            if ( delta.y() < 0.0 )
+                --dy;    // south
+            else
+                ++dy;                  // north
         }
 
         TXPSeamLOD* seam = new TXPSeamLOD(_x, _y, lod, dx, dy);
-	seam->setCenter(loRes->getCenter());
+    seam->setCenter(loRes->getCenter());
         seam->addChild(loRes->getChild(0));        // low res
         if (hiRes) 
         {
@@ -800,8 +800,8 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 
 osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc)
 {
-	if ( archive == 0 )
-		return false;
+    if ( archive == 0 )
+        return false;
 
     int majorVersion, minorVersion;
     archive->GetVersion(majorVersion, minorVersion);
@@ -837,8 +837,8 @@ osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, int
 // this version only gets called if the TXP version is >= than 2.1
 osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, const TXPArchive::TileLocationInfo& loc, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc)
 {
-	if ( archive == 0 )
-		return false;
+    if ( archive == 0 )
+        return false;
 
     // int numLods = archive->getNumLODs();
 

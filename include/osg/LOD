@@ -23,7 +23,7 @@ namespace osg {
     Typical uses are for load balancing - objects further away from
     the eye point are rendered at a lower level of detail, and at times
     of high stress on the graphics pipeline lower levels of detail can
-    also be chosen.
+    also be chosen by adjusting the viewers's Camera/CullSettings LODScale value.
     Each child has a corresponding valid range consisting of a minimum
     and maximum distance. Given a distance to the viewer (d), LOD displays
     a child if min <= d < max. LOD may display multiple children simultaneously

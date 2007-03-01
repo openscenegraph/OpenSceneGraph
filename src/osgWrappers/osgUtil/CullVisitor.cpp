@@ -321,6 +321,24 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          __C5_osg_RenderInfo_R1__getRenderInfo,
 	          "",
 	          "");
+	I_ProtectedMethod1(void, handle_cull_callbacks_and_traverse, IN, osg::Node &, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handle_cull_callbacks_and_traverse__osg_Node_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, handle_cull_callbacks_and_accept, IN, osg::Node &, node, IN, osg::Node *, acceptNode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handle_cull_callbacks_and_accept__osg_Node_R1__osg_Node_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethodWithDefaults4(osgUtil::RenderLeaf *, createOrReuseRenderLeaf, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, matrix, , IN, float, depth, 0.0f,
+	                               Properties::NON_VIRTUAL,
+	                               Properties::NON_CONST,
+	                               __RenderLeaf_P1__createOrReuseRenderLeaf__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
+	                               "",
+	                               "");
 	I_SimpleProperty(osgUtil::CullVisitor::value_type, CalculatedFarPlane, 
 	                 __value_type__getCalculatedFarPlane, 
 	                 0);

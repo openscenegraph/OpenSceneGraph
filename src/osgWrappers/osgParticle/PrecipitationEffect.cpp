@@ -219,6 +219,32 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	          __osg_StateSet_P1__getPointStateSet,
 	          "",
 	          "");
+	I_ProtectedMethod1(void, compileGLObjects, IN, osg::RenderInfo &, renderInfo,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__compileGLObjects__osg_RenderInfo_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, update,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__update,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(void, createGeometry, IN, unsigned int, numParticles, IN, osg::Geometry *, quad_geometry, IN, osg::Geometry *, line_geometry, IN, osg::Geometry *, point_geometry,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__createGeometry__unsigned_int__osg_Geometry_P1__osg_Geometry_P1__osg_Geometry_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setUpGeometries, IN, unsigned int, numParticles,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpGeometries__unsigned_int,
+	                   "",
+	                   "");
+
+
 	I_SimpleProperty(const osg::Vec3 &, CellSize, 
 	                 __C5_osg_Vec3_R1__getCellSize, 
 	                 __void__setCellSize__C5_osg_Vec3_R1);

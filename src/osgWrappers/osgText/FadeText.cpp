@@ -73,6 +73,14 @@ BEGIN_OBJECT_REFLECTOR(osgText::FadeText)
 	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "Draw the text. ",
 	          "");
+	I_ProtectedMethod0(void, init,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init,
+	                   "",
+	                   "");
+
+
 	I_SimpleProperty(float, FadeSpeed, 
 	                 __float__getFadeSpeed, 
 	                 __void__setFadeSpeed__float);

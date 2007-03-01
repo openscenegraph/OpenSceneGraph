@@ -49,5 +49,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CubeMapGenerator)
 	                      __void__generateMap__bool,
 	                      "Generate the six cube images. ",
 	                      "If use_osg_system is true, then the OSG's coordinate system is used instead of the default OpenGL one.");
+	I_ProtectedMethod4(void, set_pixel, IN, int, index, IN, int, c, IN, int, r, IN, const osg::Vec4 &, color,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__set_pixel__int__int__int__C5_osg_Vec4_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(osg::Vec4, compute_color, IN, const osg::Vec3 &, R,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::CONST,
+	                   __osg_Vec4__compute_color__C5_osg_Vec3_R1,
+	                   "Override this method to define how colors are computed. ",
+	                   "The parameter R is the reflection vector, pointing from the center of the cube. The return value should be the RGBA color associated with that reflection ray.");
 END_REFLECTOR
 

@@ -71,6 +71,48 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
+	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpHUDCamera__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createGeometry, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numBlocks,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createGeometry__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createFrameMarkers, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numBlocks,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createFrameMarkers__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createTick, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numTicks,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createTick__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod7(osg::Node *, createCameraStats, IN, const std::string &, font, IN, osg::Vec3 &, pos, IN, float, startBlocks, IN, bool, aquireGPUStats, IN, float, characterSize, IN, osg::Stats *, viewerStats, IN, osg::Camera *, camera,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Node_P1__createCameraStats__C5_std_string_R1__osg_Vec3_R1__float__bool__float__osg_Stats_P1__osg_Camera_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpScene__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, updateThreadingModelText,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateThreadingModelText,
+	                   "",
+	                   "");
 	I_SimpleProperty(double, BlockMultiplier, 
 	                 __double__getBlockMultiplier, 
 	                 0);

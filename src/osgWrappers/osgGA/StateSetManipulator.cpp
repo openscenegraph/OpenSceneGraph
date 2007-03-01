@@ -117,6 +117,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	          __void__cyclePolygonMode,
 	          "",
 	          "");
+	I_ProtectedMethod0(osg::PolygonMode *, getOrCreatePolygonMode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_PolygonMode_P1__getOrCreatePolygonMode,
+	                   "",
+	                   "");
 	I_SimpleProperty(bool, BackfaceEnabled, 
 	                 __bool__getBackfaceEnabled, 
 	                 __void__setBackfaceEnabled__bool);

@@ -209,6 +209,12 @@ BEGIN_OBJECT_REFLECTOR(osg::EllipsoidModel)
 	          __osg_Vec3d__computeLocalUpVector__double__double__double,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, computeCoefficients,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeCoefficients,
+	                   "",
+	                   "");
 	I_SimpleProperty(double, RadiusEquator, 
 	                 __double__getRadiusEquator, 
 	                 __void__setRadiusEquator__double);

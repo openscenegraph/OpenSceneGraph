@@ -64,6 +64,36 @@ BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
+	I_ProtectedMethod2(void, process, IN, osg::StateSet *, ss, IN, osg::Object *, parent,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__process__osg_StateSet_P1__osg_Object_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(osg::StateAttribute *, find, IN, osg::StateAttribute *, sa,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_StateAttribute_P1__find__osg_StateAttribute_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(osg::StateSet *, find, IN, osg::StateSet *, ss,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_StateSet_P1__find__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, setStateSet, IN, osg::StateSet *, ss, IN, osg::Object *, object,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setStateSet__osg_StateSet_P1__osg_Object_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, shareTextures, IN, osg::StateSet *, ss,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__shareTextures__osg_StateSet_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(unsigned int, ShareMode, 
 	                 __unsigned_int__getShareMode, 
 	                 __void__setShareMode__unsigned_int);

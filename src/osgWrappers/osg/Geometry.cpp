@@ -662,6 +662,30 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __void__accept__PrimitiveIndexFunctor_R1,
 	          "Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. ",
 	          "");
+	I_ProtectedMethod1(bool, verifyBindings, IN, const osg::Geometry::ArrayData &, arrayData,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__verifyBindings__C5_ArrayData_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, verifyBindings, IN, const osg::Geometry::Vec3ArrayData &, arrayData,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__verifyBindings__C5_Vec3ArrayData_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, computeCorrectBindingsAndArraySizes, IN, osg::Geometry::ArrayData &, arrayData, IN, const char *, arrayName,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeCorrectBindingsAndArraySizes__ArrayData_R1__C5_char_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, computeCorrectBindingsAndArraySizes, IN, osg::Geometry::Vec3ArrayData &, arrayData, IN, const char *, arrayName,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeCorrectBindingsAndArraySizes__Vec3ArrayData_R1__C5_char_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Array *, ColorArray, 
 	                 __Array_P1__getColorArray, 
 	                 __void__setColorArray__Array_P1);

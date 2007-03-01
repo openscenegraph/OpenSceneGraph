@@ -179,6 +179,30 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 	          __void__apply__State_R1,
 	          "On first apply (unless already compiled), create and bind the texture, subsequent apply will simply bind to texture. ",
 	          "");
+	I_ProtectedMethod0(void, computeInternalFormat,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormat,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, applyTexParameters, IN, GLenum, target, IN, osg::State &, state,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__applyTexParameters__GLenum__State_R1,
+	                   "Helper method. ",
+	                   "Sets texture paramters. ");
+	I_ProtectedMethod5(void, applyTexImage_load, IN, GLenum, target, IN, osg::Image *, image, IN, osg::State &, state, IN, GLsizei &, inwidth, IN, GLsizei &, inheight,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__applyTexImage_load__GLenum__Image_P1__State_R1__GLsizei_R1__GLsizei_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod6(void, applyTexImage_subload, IN, GLenum, target, IN, osg::Image *, image, IN, osg::State &, state, IN, GLsizei &, inwidth, IN, GLsizei &, inheight, IN, GLint &, inInternalFormat,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__applyTexImage_subload__GLenum__Image_P1__State_R1__GLsizei_R1__GLsizei_R1__GLint_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__Image_P1);

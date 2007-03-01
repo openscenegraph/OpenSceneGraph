@@ -32,5 +32,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
 	                           ____ReflectionMapGenerator__C5_ReflectionMapGenerator_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
+	I_ProtectedMethod1(osg::Vec4, compute_color, IN, const osg::Vec3 &, R,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __osg_Vec4__compute_color__C5_osg_Vec3_R1,
+	                   "Override this method to define how colors are computed. ",
+	                   "The parameter R is the reflection vector, pointing from the center of the cube. The return value should be the RGBA color associated with that reflection ray.");
 END_REFLECTOR
 

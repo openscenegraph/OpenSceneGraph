@@ -291,6 +291,36 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	          __void__apply__osg_LOD_R1,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, intersect, IN, osg::Drawable &, gset,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__intersect__osg_Drawable_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, pushMatrix, IN, osg::RefMatrix *, matrix, IN, osg::Transform::ReferenceFrame, rf,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__pushMatrix__osg_RefMatrix_P1__osg_Transform_ReferenceFrame,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, popMatrix,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__popMatrix,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, enterNode, IN, osg::Node &, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__enterNode__osg_Node_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, leaveNode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__leaveNode,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Vec3, EyePoint, 
 	                 __osg_Vec3__getEyePoint, 
 	                 __void__setEyePoint__C5_osg_Vec3_R1);

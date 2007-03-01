@@ -88,5 +88,11 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularProgram)
 	          __void__removeOperator__int,
 	          "Remove an operator from the list. ",
 	          "");
+	I_ProtectedMethod1(void, execute, IN, double, dt,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__execute__double,
+	                   "Execute the program on the particle system. Must be overriden in descendant classes. ",
+	                   "");
 END_REFLECTOR
 

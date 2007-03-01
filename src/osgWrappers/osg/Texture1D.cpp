@@ -174,6 +174,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture1D)
 	          __void__apply__State_R1,
 	          "Bind the texture object. ",
 	          "If the texture object hasn't already been compiled, create the texture mipmap levels. ");
+	I_ProtectedMethod0(void, computeInternalFormat,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormat,
+	                   "",
+	                   "");
+	I_ProtectedMethod5(void, applyTexImage1D, IN, GLenum, target, IN, osg::Image *, image, IN, osg::State &, state, IN, GLsizei &, width, IN, GLsizei &, numMipmapLevels,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__applyTexImage1D__GLenum__Image_P1__State_R1__GLsizei_R1__GLsizei_R1,
+	                   "Helper method. ",
+	                   "Createa the texture without setting or using a texture binding. ");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__Image_P1);

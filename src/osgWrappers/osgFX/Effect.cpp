@@ -117,6 +117,24 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
 	          __void__inherited_traverse__osg_NodeVisitor_R1,
 	          "default traversal ",
 	          "");
+	I_ProtectedMethod0(void, dirtyTechniques,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__dirtyTechniques,
+	                   "force rebuilding of techniques on next traversal ",
+	                   "");
+	I_ProtectedMethod1(void, addTechnique, IN, osgFX::Technique *, tech,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addTechnique__Technique_P1,
+	                   "add a technique to the Effect ",
+	                   "");
+	I_ProtectedMethod0(bool, define_techniques,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__define_techniques,
+	                   "abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect. ",
+	                   "You will usually call addTechnique() inside this method.");
 	I_SimpleProperty(bool, Enabled, 
 	                 __bool__getEnabled, 
 	                 __void__setEnabled__bool);

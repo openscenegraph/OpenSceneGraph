@@ -453,6 +453,42 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                __void__flushDeletedTextureObjects__unsigned_int__double__double_R1_S,
 	                "",
 	                "");
+	I_ProtectedMethod0(void, computeInternalFormat,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormat,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, computeInternalFormatWithImage, IN, const osg::Image &, image,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormatWithImage__C5_osg_Image_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod5(void, computeRequiredTextureDimensions, IN, osg::State &, state, IN, const osg::Image &, image, IN, GLsizei &, width, IN, GLsizei &, height, IN, GLsizei &, numMipmapLevels,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeRequiredTextureDimensions__State_R1__C5_osg_Image_R1__GLsizei_R1__GLsizei_R1__GLsizei_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, applyTexParameters, IN, GLenum, target, IN, osg::State &, state,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__applyTexParameters__GLenum__State_R1,
+	                   "Helper method. ",
+	                   "Sets texture paramters. ");
+	I_ProtectedMethod1(int, compareTexture, IN, const osg::Texture &, rhs,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __int__compareTexture__C5_Texture_R1,
+	                   "Returns -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	                   "");
+	I_ProtectedMethod1(int, compareTextureObjects, IN, const osg::Texture &, rhs,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __int__compareTextureObjects__C5_Texture_R1,
+	                   "Returns -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
+	                   "");
 	I_SimpleProperty(const osg::Vec4 &, BorderColor, 
 	                 __C5_Vec4_R1__getBorderColor, 
 	                 __void__setBorderColor__C5_Vec4_R1);

@@ -67,6 +67,11 @@ BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	                __FBOExtensions_P1__instance__unsigned__bool_S,
 	                "",
 	                "");
+	I_ProtectedConstructor1(IN, unsigned int, contextID,
+	                        Properties::NON_EXPLICIT,
+	                        ____FBOExtensions__unsigned_int,
+	                        "",
+	                        "");
 	I_PublicMemberProperty(osg::FBOExtensions::TglBindRenderbufferEXT *, glBindRenderbufferEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglGenRenderbuffersEXT *, glGenRenderbuffersEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteRenderbuffersEXT *, glDeleteRenderbuffersEXT);
@@ -218,6 +223,12 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                __void__flushDeletedFrameBufferObjects__unsigned_int__double__double_R1_S,
 	                "flush all the cached FBOs which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_ProtectedMethod0(void, dirtyAll,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__dirtyAll,
+	                   "",
+	                   "");
 	I_IndexedProperty(const osg::FrameBufferAttachment &, Attachment, 
 	                  __C5_FrameBufferAttachment_R1__getAttachment__GLenum, 
 	                  __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1, 
@@ -321,6 +332,12 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	                __void__flushDeletedRenderBuffers__unsigned_int__double__double_R1_S,
 	                "flush all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_ProtectedMethod0(void, dirtyAll,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__dirtyAll,
+	                   "",
+	                   "");
 	I_SimpleProperty(int, Height, 
 	                 __int__getHeight, 
 	                 __void__setHeight__int);

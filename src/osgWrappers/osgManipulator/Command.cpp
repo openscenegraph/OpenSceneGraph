@@ -94,6 +94,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	          __Stage__getStage,
 	          "",
 	          "");
+
+
 	I_SimpleProperty(const osg::Matrix &, LocalToWorld, 
 	                 __C5_osg_Matrix_R1__getLocalToWorld, 
 	                 0);

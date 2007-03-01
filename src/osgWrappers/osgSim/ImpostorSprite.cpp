@@ -213,6 +213,11 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const camera node to use for pre rendering the impostor sprite's texture. ",
 	          "");
+	I_ProtectedConstructor1(IN, const osgSim::ImpostorSprite &, x,
+	                        Properties::NON_EXPLICIT,
+	                        ____ImpostorSprite__C5_ImpostorSprite_R1,
+	                        "",
+	                        "");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 __void__setCamera__osg_Camera_P1);

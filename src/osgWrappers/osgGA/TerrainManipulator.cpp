@@ -116,6 +116,54 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
+	I_ProtectedMethod0(void, flushMouseEventStack,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__flushMouseEventStack,
+	                   "Reset the internal GUIEvent stack. ",
+	                   "");
+	I_ProtectedMethod1(void, addMouseEvent, IN, const osgGA::GUIEventAdapter &, ea,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addMouseEvent__C5_GUIEventAdapter_R1,
+	                   "Add the current mouse GUIEvent to internal stack. ",
+	                   "");
+	I_ProtectedMethod3(void, computePosition, IN, const osg::Vec3d &, eye, IN, const osg::Vec3d &, lv, IN, const osg::Vec3d &, up,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computePosition__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, calcMovement,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__calcMovement,
+	                   "For the give mouse movement calculate the movement of the camera. ",
+	                   "Return true is camera has moved and a redraw is required. ");
+	I_ProtectedMethod6(void, trackball, IN, osg::Vec3 &, axis, IN, double &, angle, IN, double, p1x, IN, double, p1y, IN, double, p2x, IN, double, p2y,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__trackball__osg_Vec3_R1__double_R1__double__double__double__double,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(double, tb_project_to_sphere, IN, double, r, IN, double, x, IN, double, y,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __double__tb_project_to_sphere__double__double__double,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, isMouseMoving,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__isMouseMoving,
+	                   "Check the speed at which the mouse is moving. ",
+	                   "If speed is below a threshold then return false, otherwise return true. ");
+	I_ProtectedMethod0(void, clampOrientation,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__clampOrientation,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
 	                 0, 
 	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);

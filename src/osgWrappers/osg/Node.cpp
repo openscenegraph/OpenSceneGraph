@@ -344,6 +344,42 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_ProtectedMethod1(void, addParent, IN, osg::Group *, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addParent__osg_Group_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeParent, IN, osg::Group *, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeParent__osg_Group_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setNumChildrenRequiringUpdateTraversal, IN, unsigned int, num,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setNumChildrenRequiringUpdateTraversal__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setNumChildrenRequiringEventTraversal, IN, unsigned int, num,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setNumChildrenRequiringEventTraversal__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setNumChildrenWithCullingDisabled, IN, unsigned int, num,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setNumChildrenWithCullingDisabled__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setNumChildrenWithOccluderNodes, IN, unsigned int, num,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setNumChildrenWithOccluderNodes__unsigned_int,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::BoundingSphere &, Bound, 
 	                 __C5_BoundingSphere_R1__getBound, 
 	                 0);

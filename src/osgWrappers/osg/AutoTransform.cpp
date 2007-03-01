@@ -172,6 +172,12 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __BoundingSphere__computeBound,
 	          "Overrides Group's computeBound. ",
 	          "There is no need to override in subclasses from osg::Transform since this computeBound() uses the underlying matrix (calling computeMatrix if required).");
+	I_ProtectedMethod0(void, computeMatrix,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeMatrix,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::AutoTransform::AutoRotateMode, AutoRotateMode, 
 	                 __AutoRotateMode__getAutoRotateMode, 
 	                 __void__setAutoRotateMode__AutoRotateMode);

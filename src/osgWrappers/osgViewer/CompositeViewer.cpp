@@ -263,6 +263,24 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __void__setUpRenderingSupport,
 	          "Set up the Operations to render the various viewer cameras on the viewers graphics windows. ",
 	          "");
+	I_ProtectedMethod0(void, init,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, checkWindowStatus,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__checkWindowStatus,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(unsigned int, computeNumberOfThreadsIncludingMainRequired,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __unsigned_int__computeNumberOfThreadsIncludingMainRequired,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);

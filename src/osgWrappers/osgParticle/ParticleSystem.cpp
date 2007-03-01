@@ -235,6 +235,18 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          __OpenThreads_ReadWriteMutex_P1__getReadWriteMutex,
 	          "",
 	          "");
+	I_ProtectedMethod2(void, update_bounds, IN, const osg::Vec3 &, p, IN, float, r,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__update_bounds__C5_osg_Vec3_R1__float,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, single_pass_render, IN, osg::State &, state, IN, const osg::Matrix &, modelview,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__single_pass_render__osg_State_R1__C5_osg_Matrix_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::Vec3 &, AlignVectorX, 
 	                 __C5_osg_Vec3_R1__getAlignVectorX, 
 	                 __void__setAlignVectorX__C5_osg_Vec3_R1);

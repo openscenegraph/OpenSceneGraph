@@ -118,6 +118,12 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::FluidProgram)
 	          __void__setFluidToWater,
 	          "Set the fluid parameters as for pure water (20°C temperature). ",
 	          "");
+	I_ProtectedMethod1(void, execute, IN, double, dt,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__execute__double,
+	                   "Execute the program on the particle system. Must be overriden in descendant classes. ",
+	                   "");
 	I_SimpleProperty(const osg::Vec3 &, Acceleration, 
 	                 __C5_osg_Vec3_R1__getAcceleration, 
 	                 __void__setAcceleration__C5_osg_Vec3_R1);

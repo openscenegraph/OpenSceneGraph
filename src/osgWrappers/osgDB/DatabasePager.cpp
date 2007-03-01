@@ -283,6 +283,30 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __unsigned_int__getDataToCompileListSize,
 	          "Report how many items are in the _dataToCompileList queue. ",
 	          "");
+	I_ProtectedMethod0(void, updateDatabasePagerThreadBlock,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateDatabasePagerThreadBlock,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, updateFrameBlock, IN, int, delta,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateFrameBlock__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeExpiredSubgraphs, IN, double, currentFrameTime,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeExpiredSubgraphs__double,
+	                   "Iterate through the active PagedLOD nodes children removing children which havn't been visited since specified expiryTime. ",
+	                   "note, should be only be called from the update thread. ");
+	I_ProtectedMethod1(void, addLoadedDataToSceneGraph, IN, double, currentFrameTime,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addLoadedDataToSceneGraph__double,
+	                   "Add the loaded data to the scene graph. ",
+	                   "");
 	I_SimpleProperty(bool, AcceptNewDatabaseRequests, 
 	                 __bool__getAcceptNewDatabaseRequests, 
 	                 __void__setAcceptNewDatabaseRequests__bool);

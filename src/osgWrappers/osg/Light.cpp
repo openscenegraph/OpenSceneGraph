@@ -200,6 +200,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Light)
 	          __void__apply__State_R1,
 	          "Apply the light's state to the OpenGL state machine. ",
 	          "");
+	I_ProtectedMethod0(void, init,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init,
+	                   "Initialize the light's settings with some decent defaults. ",
+	                   "");
 	I_SimpleProperty(const osg::Vec4 &, Ambient, 
 	                 __C5_Vec4_R1__getAmbient, 
 	                 __void__setAmbient__C5_Vec4_R1);

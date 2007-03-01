@@ -117,6 +117,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
+	I_ProtectedMethod1(void, handleFrame, IN, double, time,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handleFrame__double,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::AnimationPath *, AnimationPath, 
 	                 __osg_AnimationPath_P1__getAnimationPath, 
 	                 __void__setAnimationPath__osg_AnimationPath_P1);

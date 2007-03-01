@@ -740,6 +740,36 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	                __GLenum__getInternalArrayType__Type_S,
 	                "Return the internal data array type corresponding to a GLSL type. ",
 	                "");
+	I_ProtectedMethod1(bool, isCompatibleType, IN, osg::Uniform::Type, t,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__isCompatibleType__Type,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, isScalar,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__isScalar,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, allocateDataArray,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__allocateDataArray,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, addParent, IN, osg::StateSet *, object,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addParent__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeParent, IN, osg::StateSet *, object,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeParent__osg_StateSet_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::FloatArray *, Array, 
 	                 0, 
 	                 __bool__setArray__FloatArray_P1);

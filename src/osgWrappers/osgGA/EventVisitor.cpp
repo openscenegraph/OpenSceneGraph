@@ -145,6 +145,30 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	          __void__apply__osg_OccluderNode_R1,
 	          "",
 	          "");
+	I_ProtectedMethod1(void, handle_callbacks, IN, osg::StateSet *, stateset,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handle_callbacks__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, handle_callbacks_and_traverse, IN, osg::Node &, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handle_callbacks_and_traverse__osg_Node_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, handle_geode_callbacks, IN, osg::Geode &, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handle_geode_callbacks__osg_Geode_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, traverseGeode, IN, osg::Geode &, geode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__traverseGeode__osg_Geode_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgGA::GUIActionAdapter *, ActionAdapter, 
 	                 __osgGA_GUIActionAdapter_P1__getActionAdapter, 
 	                 __void__setActionAdapter__osgGA_GUIActionAdapter_P1);

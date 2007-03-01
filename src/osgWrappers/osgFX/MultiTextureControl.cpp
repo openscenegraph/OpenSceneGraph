@@ -77,6 +77,12 @@ BEGIN_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
 	          __unsigned_int__getNumTextureWeights,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, updateStateSet,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateStateSet,
+	                   "",
+	                   "");
 	I_ArrayProperty(float, TextureWeight, 
 	                __float__getTextureWeight__unsigned_int, 
 	                __void__setTextureWeight__unsigned_int__float, 

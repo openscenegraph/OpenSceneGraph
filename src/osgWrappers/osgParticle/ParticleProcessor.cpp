@@ -201,6 +201,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_ProtectedMethod1(void, process, IN, double, dt,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__process__double,
+	                   "",
+	                   "");
 	I_SimpleProperty(double, CurrentTime, 
 	                 __double__getCurrentTime, 
 	                 __void__setCurrentTime__double);

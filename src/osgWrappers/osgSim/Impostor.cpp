@@ -112,6 +112,12 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_ProtectedMethod1(osgSim::ImpostorSprite *, createImpostorSprite, IN, osgUtil::CullVisitor *, cv,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __ImpostorSprite_P1__createImpostorSprite__osgUtil_CullVisitor_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(float, ImpostorThreshold, 
 	                 __float__getImpostorThreshold, 
 	                 __void__setImpostorThreshold__float);

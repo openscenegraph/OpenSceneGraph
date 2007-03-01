@@ -160,6 +160,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	          __BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_ProtectedMethod2(void, childRemoved, IN, unsigned, int, IN, unsigned, int,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__childRemoved__unsigned__unsigned,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, childInserted, IN, unsigned, int,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__childInserted__unsigned,
+	                   "",
+	                   "");
 	I_ArrayProperty(osg::Node *, Child, 
 	                __Node_P1__getChild__unsigned_int, 
 	                __bool__setChild__unsigned_int__Node_P1, 

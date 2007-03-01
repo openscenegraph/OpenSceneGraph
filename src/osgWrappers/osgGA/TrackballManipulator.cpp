@@ -158,6 +158,48 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	          __float__getTrackballSize,
 	          "Get the size of the trackball. ",
 	          "");
+	I_ProtectedMethod0(void, flushMouseEventStack,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__flushMouseEventStack,
+	                   "Reset the internal GUIEvent stack. ",
+	                   "");
+	I_ProtectedMethod1(void, addMouseEvent, IN, const osgGA::GUIEventAdapter &, ea,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addMouseEvent__C5_GUIEventAdapter_R1,
+	                   "Add the current mouse GUIEvent to internal stack. ",
+	                   "");
+	I_ProtectedMethod3(void, computePosition, IN, const osg::Vec3 &, eye, IN, const osg::Vec3 &, lv, IN, const osg::Vec3 &, up,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computePosition__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, calcMovement,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__calcMovement,
+	                   "For the give mouse movement calculate the movement of the camera. ",
+	                   "Return true is camera has moved and a redraw is required. ");
+	I_ProtectedMethod6(void, trackball, IN, osg::Vec3 &, axis, IN, float &, angle, IN, float, p1x, IN, float, p1y, IN, float, p2x, IN, float, p2y,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__trackball__osg_Vec3_R1__float_R1__float__float__float__float,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(float, tb_project_to_sphere, IN, float, r, IN, float, x, IN, float, y,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __float__tb_project_to_sphere__float__float__float,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, isMouseMoving,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__isMouseMoving,
+	                   "Check the speed at which the mouse is moving. ",
+	                   "If speed is below a threshold then return false, otherwise return true. ");
 	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
 	                 0, 
 	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);

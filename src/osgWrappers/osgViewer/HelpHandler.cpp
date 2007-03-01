@@ -65,6 +65,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
+	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpHUDCamera__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpScene__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::ApplicationUsage *, ApplicationUsage, 
 	                 __osg_ApplicationUsage_P1__getApplicationUsage, 
 	                 __void__setApplicationUsage__osg_ApplicationUsage_P1);

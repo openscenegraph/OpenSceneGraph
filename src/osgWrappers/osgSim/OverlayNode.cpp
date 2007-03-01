@@ -166,6 +166,18 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_ProtectedMethod0(void, init,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, updateMainSubgraphStateSet,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateMainSubgraphStateSet,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 0);

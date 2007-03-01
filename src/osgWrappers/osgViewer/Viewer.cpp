@@ -264,6 +264,24 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this viewer. ",
 	          "");
+	I_ProtectedMethod0(void, checkWindowStatus,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__checkWindowStatus,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, makeCurrent, IN, osg::GraphicsContext *, gc,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__makeCurrent__osg_GraphicsContext_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, releaseContext,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__releaseContext,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);

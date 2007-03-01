@@ -217,20 +217,21 @@ void Type::getPropertiesMap(PropertyInfoMap& props) const
     }
 }
 
-void Type::getAllMethods(MethodInfoList& methods) const
+void Type::getAllMethods(MethodInfoList& methods, FunctionCategory category) const
 {
     check_defined();
-    std::copy(_methods.begin(), _methods.end(), std::back_inserter(methods));
+    const MethodInfoList& input_methods = (category == PUBLIC_FUNCTIONS ? _methods : _protected_methods);
+    std::copy(input_methods.begin(), input_methods.end(), std::back_inserter(methods));
     for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
         (*i)->getAllMethods(methods);
     }
 }
 
-void Type::getMethodsMap(MethodInfoMap& methods) const
+void Type::getMethodsMap(MethodInfoMap& methods, FunctionCategory category) const
 {
     check_defined();
-    methods[this] = _methods;
+    methods[this] = (category == PUBLIC_FUNCTIONS ? _methods : _protected_methods);
     for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
         (*i)->getMethodsMap(methods);

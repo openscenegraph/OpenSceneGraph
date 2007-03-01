@@ -89,6 +89,9 @@ namespace osgIntrospection
         /// Adds a method description to the current type.
         MethodInfo* addMethod(MethodInfo* mi);
 
+        /// Adds a protected method description to the current type.
+        MethodInfo* addProtectedMethod(MethodInfo* mi);
+
         /// Adds an enumeration label to the current type.
         void addEnumLabel(int v, const std::string& label, bool strip_namespace = true);
 
@@ -97,6 +100,10 @@ namespace osgIntrospection
         /// the automatically-generated default constructor is
         /// removed.
         ConstructorInfo* addConstructor(ConstructorInfo* ci);
+
+        /// Adds a protected constructor description to the current
+        /// type.
+        ConstructorInfo* addProtectedConstructor(ConstructorInfo* ci);
 
         /// Returns a string containing the qualified version of 'name'.
         std::string qualifyName(const std::string& name) const;
@@ -135,6 +142,7 @@ namespace osgIntrospection
 
         typedef std::vector<MethodInfo* > TempMethodList;
         TempMethodList _temp_methods;
+        TempMethodList _temp_protected_methods;
         Type* _type;
     };
 
@@ -148,6 +156,7 @@ namespace osgIntrospection
     {
         typedef ValueReflector<T> inherited;
         typedef ValueInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
+        typedef ProtectedConstructorInstanceCreator<typename Reflector<T>::reflected_type> invalid_instance_creator_type;
 
         ValueReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, false)
@@ -168,6 +177,7 @@ namespace osgIntrospection
     {
         typedef AbstractObjectReflector<T> inherited;
         typedef DummyInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
+        typedef ProtectedConstructorInstanceCreator<typename Reflector<T>::reflected_type> invalid_instance_creator_type;
 
         AbstractObjectReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, true)
@@ -190,6 +200,7 @@ namespace osgIntrospection
     {
         typedef ObjectReflector<T> inherited;
         typedef ObjectInstanceCreator<typename Reflector<T>::reflected_type> instance_creator_type;
+        typedef ProtectedConstructorInstanceCreator<typename Reflector<T>::reflected_type> invalid_instance_creator_type;
 
         ObjectReflector(const std::string& name, const std::string& ns)
         :    Reflector<T>(name, ns, false)
@@ -873,6 +884,20 @@ namespace osgIntrospection
     }
 
     template<typename T>
+    MethodInfo* Reflector<T>::addProtectedMethod(MethodInfo* mi)
+    {
+        for (TempMethodList::iterator i=_temp_protected_methods.begin(); i!=_temp_protected_methods.end(); ++i)
+        {
+            if (mi->overrides(*i))
+                return *i;
+        }
+        
+        _temp_protected_methods.push_back(mi);
+        _type->_protected_methods.push_back(mi);
+        return mi;
+    }
+
+    template<typename T>
     void Reflector<T>::addEnumLabel(int v, const std::string& label, bool strip_namespace)
     {
         if (strip_namespace)
@@ -891,6 +916,13 @@ namespace osgIntrospection
     ConstructorInfo* Reflector<T>::addConstructor(ConstructorInfo* ci)
     {
         _type->_cons.push_back(ci);
+        return ci;
+    }
+
+    template<typename T>
+    ConstructorInfo* Reflector<T>::addProtectedConstructor(ConstructorInfo* ci)
+    {
+        _type->_protected_cons.push_back(ci);
         return ci;
     }
 

@@ -240,32 +240,15 @@ void Mesh::parseMeshMaterialList(ifstream& fin)
         if (token.size() == 0)
             continue;
 
-        // dgm - check for "{ <material name> }" for a
+        // check for "{ <material name> }" for a
         // material which was declared globally 
-#if 1
-        Material * material = _obj->findMaterial(token[1]);
-        if (material) {
+        Material * material = _obj->findMaterial(token[0]);
+        if (material)
+        {
             _materialList->material.push_back(*material);
             continue;
         }
-#else
-        bool found = false;
-        if (token.size() > 2) {
-            std::vector<Material>::iterator itr;
-            for (itr = _globalMaterials.begin(); itr != _globalMaterials.end(); ++itr) {
-                if ( (*itr).name == token[1]) {
-                    if (!_materialList)
-                        _materialList = new MeshMaterialList;
-                    _materialList->material.push_back(*itr);
-                    found = true;
-                    break;
-                }
-            }
-        }
-        if (found)
-            continue;
-#endif
-        
+
         if (strrchr(buf, '}') != 0)
             break;
         else if (strrchr(buf, '{') != 0) {

@@ -36,6 +36,7 @@
 
 #include "trpage_sys.h"
 #include "trpage_read.h"
+#include "trpage_geom.h"
 
 #include <osg/Referenced>
 #include <osg/BoundingBox>
@@ -43,6 +44,7 @@
 #include <osg/StateSet>
 #include <osg/Node>
 #include <osg/PagedLOD>
+#include <osg/Array>
 #include <osgSim/LightPointNode>
 #include <osgText/Font>
 
@@ -166,7 +168,7 @@ namespace txp
     {
         return GetTexMapEntry(id).get();
     }
-    
+   
     // Returns scenegraph representing the Tile.
     // For version 2.1 and over this function can only be call
     // with lod = 0, since the archive tile table will contain 
@@ -198,7 +200,31 @@ namespace txp
         majorVer = _majorVersion;
         minorVer = _minorVersion;
     }
-        
+   
+   //////////////////////////////////////////////////////////////////
+   // This section brought to you by A. Danklefsen and the team @
+   // Alion Science And Technology 2/12/07
+   //
+   // This will allow you to have smc / fid / swc / stp values and 
+   // places them on the userdata of the state set. this way your own
+   // terrain loader / parser can know these values
+   void SetUserDataToMaterialAttributes(osg::StateSet& osg_state_set, const trpgMaterial& mat)
+   {
+      if(!_loadMaterialsToStateSet)
+         return; 
+
+      int attr_values = 0;
+      osg::ref_ptr<osg::IntArray> ourValueArray = new osg::IntArray();
+      for(int attrIter = 0 ; attrIter < 4; ++attrIter)
+      {
+         mat.GetAttr(attrIter, attr_values);
+         ourValueArray->push_back(attr_values);
+      }
+      osg_state_set.setUserData(ourValueArray.get());
+   }
+
+   void SetMaterialAttributesToStateSetVar(bool value) {_loadMaterialsToStateSet = value;}
+
     protected:
 
     // Destructor
@@ -252,7 +278,9 @@ namespace txp
     int _majorVersion, _minorVersion;
 
     bool _isMaster;
-    
+   
+    bool _loadMaterialsToStateSet;
+
     };
 
 } // namespace

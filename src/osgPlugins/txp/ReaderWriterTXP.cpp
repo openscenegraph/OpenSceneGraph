@@ -54,6 +54,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             TXPArchive* archive = txpNode->getArchive();
             if (archive) 
             {
+                if (options && options->getOptionString().find("loadMaterialsToStateSet")!=std::string::npos)
+                {
+                   archive->SetMaterialAttributesToStateSetVar(true);
+                }
+
                 int id = _archiveId++;
                 archive->setId(id);
 //                txpNode->setArchive(getArchive(id,osgDB::getFilePath(fileName)));

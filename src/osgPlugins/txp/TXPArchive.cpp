@@ -69,7 +69,8 @@ TXPArchive::TXPArchive():
     _neExtents(0.0,0.0),
     _majorVersion(-1),
     _minorVersion(-1),
-    _isMaster(false)
+    _isMaster(false),
+    _loadMaterialsToStateSet(false)
 {
 }
 
@@ -194,6 +195,8 @@ bool TXPArchive::loadMaterial(int ix)
         osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
         osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
         
+        SetUserDataToMaterialAttributes(*osg_state_set, *mat);
+
         if( alpha < 1.0f )
         {
             osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);

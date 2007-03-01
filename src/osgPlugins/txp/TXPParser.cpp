@@ -490,7 +490,9 @@ void TXPParser::loadLocalMaterials()
             
             osg_material->setAlpha(osg::Material::FRONT_AND_BACK ,(float)alpha);
             osg_state_set->setAttributeAndModes(osg_material, osg::StateAttribute::ON);
-            
+
+            _archive->SetUserDataToMaterialAttributes(*osg_state_set, *mat);
+
             if( alpha < 1.0f )
             {
                 osg_state_set->setMode(GL_BLEND,osg::StateAttribute::ON);
@@ -1457,16 +1459,20 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
                 _parse->loadMaterial(matId);
                 tmp_ss = (*_parse->getMaterials())[matId];
             }
-            if((sset!=0L) && sset.valid()) 
+            if(sset.valid()) 
             {
                 if(tmp_ss.valid())
-        {
+                  {
                     osg::StateAttribute* texenv0 = tmp_ss->getTextureAttribute(0,osg::StateAttribute::TEXENV);
                     if(texenv0) 
                         sset->setTextureAttribute(n_mat,texenv0);
                     osg::StateAttribute* tex0 = tmp_ss->getTextureAttribute(0,osg::StateAttribute::TEXTURE);
                     if(tex0) 
                         sset->setTextureAttributeAndModes(n_mat,tex0,osg::StateAttribute::ON);
+                    // submitted by a. danklefsen
+                    // Alion science and Technology 2/12/07
+                    // copy fid/smc codes over to this new state set from the prev state set.
+                    sset->setUserData(tmp_ss->getUserData());
                 }
 //                sset->merge(*tmp_ss.get());
             }
@@ -1601,7 +1607,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     }
     else
     {
-        osg::notify(osg::WARN)<<"Detected potential memory leak in TXPParerse.cpp"<<std::endl;
+        osg::notify(osg::WARN)<<"Detected potential memory leak in TXPParser.cpp"<<std::endl;
     }
     
     return (void *) 1;

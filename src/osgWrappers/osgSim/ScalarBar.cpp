@@ -178,6 +178,12 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	          __void__update,
 	          "force update the drawables used to render the scalar bar. ",
 	          "");
+	I_ProtectedMethod0(void, createDrawables,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__createDrawables,
+	                   "",
+	                   "");
 	I_SimpleProperty(float, AspectRatio, 
 	                 __float__getAspectRatio, 
 	                 __void__setAspectRatio__float);

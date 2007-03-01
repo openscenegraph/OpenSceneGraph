@@ -112,6 +112,30 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	                      __void__report__std_ostream_R1__unsigned_int__C5_char_P1,
 	                      "",
 	                      "");
+	I_ProtectedMethod3(bool, getAttributeNoMutex, IN, int, frameNumber, IN, const std::string &, attributeName, IN, double &, value,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__getAttributeNoMutex__int__C5_std_string_R1__double_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(osg::Stats::AttributeMap &, getAttributeMapNoMutex, IN, int, frameNumber,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __AttributeMap_R1__getAttributeMapNoMutex__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(const osg::Stats::AttributeMap &, getAttributeMapNoMutex, IN, int, frameNumber,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_AttributeMap_R1__getAttributeMapNoMutex__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(int, getIndex, IN, int, frameNumber,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __int__getIndex__int,
+	                   "",
+	                   "");
 	I_SimpleProperty(int, EarliestFrameNumber, 
 	                 __int__getEarliestFrameNumber, 
 	                 0);

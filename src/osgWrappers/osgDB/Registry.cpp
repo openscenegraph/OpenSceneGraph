@@ -461,6 +461,24 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                            __Registry_P1__instance__bool_S,
 	                            "",
 	                            "");
+	I_ProtectedConstructor0(____Registry,
+	                        "constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed ",
+	                        "");
+
+
+
+	I_ProtectedMethod1(osgDB::ReaderWriter::ReadResult, read, IN, const osgDB::Registry::ReadFunctor &, readFunctor,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __ReaderWriter_ReadResult__read__C5_ReadFunctor_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(osgDB::ReaderWriter::ReadResult, readImplementation, IN, const osgDB::Registry::ReadFunctor &, readFunctor, IN, bool, useObjectCache,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__bool,
+	                   "",
+	                   "");
 	I_SimpleProperty(bool, CreateNodeFromImage, 
 	                 __bool__getCreateNodeFromImage, 
 	                 __void__setCreateNodeFromImage__bool);

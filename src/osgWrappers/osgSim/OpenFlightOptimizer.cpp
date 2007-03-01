@@ -74,6 +74,12 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	          __void__mergeGeodes__osg_Group_R1,
 	          "",
 	          "");
+	I_ProtectedMethod2(bool, mergeGeode, IN, osg::Geode &, lhs, IN, osg::Geode &, rhs,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__mergeGeode__osg_Geode_R1__osg_Geode_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
@@ -86,5 +92,11 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, hasPolygons, IN, osg::Geometry &, geometry,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__hasPolygons__osg_Geometry_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 

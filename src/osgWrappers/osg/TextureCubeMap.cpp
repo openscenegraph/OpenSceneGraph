@@ -181,6 +181,18 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "The setExtensions method allows users to override the extensions across graphics contexts. ",
 	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions.");
+	I_ProtectedMethod0(bool, imagesValid,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__imagesValid,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, computeInternalFormat,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormat,
+	                   "",
+	                   "");
 	I_ArrayProperty(osg::Image *, Image, 
 	                __Image_P1__getImage__unsigned_int, 
 	                __void__setImage__unsigned_int__Image_P1, 

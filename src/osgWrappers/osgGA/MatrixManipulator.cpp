@@ -179,6 +179,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Handle events, return true if handled, false otherwise. ",
 	          "");
+	I_ProtectedConstructor0(____MatrixManipulator,
+	                        "",
+	                        "");
 	I_SimpleProperty(bool, AutoComputeHomePosition, 
 	                 __bool__getAutoComputeHomePosition, 
 	                 __void__setAutoComputeHomePosition__bool);

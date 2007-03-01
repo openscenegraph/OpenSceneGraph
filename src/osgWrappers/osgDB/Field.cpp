@@ -194,6 +194,24 @@ BEGIN_VALUE_REFLECTOR(osgDB::Field)
 	                            __FieldType__calculateFieldType__C5_char_P1__bool_S,
 	                            "",
 	                            "");
+	I_ProtectedMethod0(void, _init,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___init,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, _free,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___free,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, _copy, IN, const osgDB::Field &, ic,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___copy__C5_Field_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgDB::Field::FieldType, FieldType, 
 	                 __FieldType__getFieldType, 
 	                 0);

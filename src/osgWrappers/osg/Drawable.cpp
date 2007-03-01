@@ -428,6 +428,48 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "setExtensions allows users to override the extensions across graphics contexts. ",
 	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_ProtectedMethod1(void, setBound, IN, const osg::BoundingBox &, bb,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__setBound__C5_BoundingBox_R1,
+	                   "set the bounding box . ",
+	                   "");
+	I_ProtectedMethod1(void, addParent, IN, osg::Node *, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addParent__osg_Node_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeParent, IN, osg::Node *, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeParent__osg_Node_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setNumChildrenRequiringUpdateTraversal, IN, unsigned int, num,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setNumChildrenRequiringUpdateTraversal__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(unsigned int, getNumChildrenRequiringUpdateTraversal,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __unsigned_int__getNumChildrenRequiringUpdateTraversal,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setNumChildrenRequiringEventTraversal, IN, unsigned int, num,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setNumChildrenRequiringEventTraversal__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(unsigned int, getNumChildrenRequiringEventTraversal,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __unsigned_int__getNumChildrenRequiringEventTraversal,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::BoundingBox &, Bound, 
 	                 __C5_BoundingBox_R1__getBound, 
 	                 0);
@@ -1075,6 +1117,42 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	          __void__glGetQueryObjectui64v__GLuint__GLenum__GLuint64EXT_P1,
 	          "",
 	          "");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	I_SimpleProperty(bool, ARBOcclusionQuerySupported, 
 	                 0, 
 	                 __void__setARBOcclusionQuerySupported__bool);

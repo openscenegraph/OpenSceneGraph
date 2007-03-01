@@ -208,6 +208,16 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 	          __void__glGetBufferPointerv__GLenum__GLenum__GLvoid_P1P1,
 	          "",
 	          "");
+
+
+
+
+
+
+
+
+
+
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair);

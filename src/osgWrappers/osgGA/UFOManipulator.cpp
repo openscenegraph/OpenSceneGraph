@@ -156,6 +156,36 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	          __double__getRotationSpeed,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, _stop,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___stop,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, _keyDown, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___keyDown__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, _keyUp, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___keyUp__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, _frame, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___frame__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, _adjustPosition,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void___adjustPosition,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
 	                 0, 
 	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);

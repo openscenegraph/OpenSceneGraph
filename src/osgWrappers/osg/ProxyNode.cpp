@@ -152,6 +152,12 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	          __BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_ProtectedMethod1(void, expandFileNameListTo, IN, unsigned int, pos,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__expandFileNameListTo__unsigned_int,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::Vec3 &, Center, 
 	                 __C5_Vec3_R1__getCenter, 
 	                 __void__setCenter__C5_Vec3_R1);

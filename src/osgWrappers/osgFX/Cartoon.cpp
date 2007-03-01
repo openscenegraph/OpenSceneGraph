@@ -108,6 +108,12 @@ BEGIN_OBJECT_REFLECTOR(osgFX::Cartoon)
 	          __void__setLightNumber__int,
 	          "set the OpenGL light number that will be used in lighting computations ",
 	          "");
+	I_ProtectedMethod0(bool, define_techniques,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__define_techniques,
+	                   "abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect. ",
+	                   "You will usually call addTechnique() inside this method.");
 	I_SimpleProperty(int, LightNumber, 
 	                 __int__getLightNumber, 
 	                 __void__setLightNumber__int);

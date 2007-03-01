@@ -293,6 +293,18 @@ BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
 	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	I_ProtectedMethod1(bool, needsTexEnvCombiner, IN, GLint, value,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__needsTexEnvCombiner__GLint,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, computeNeedoForTexEnvCombiners,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeNeedoForTexEnvCombiners,
+	                   "",
+	                   "");
 	I_SimpleProperty(GLint, Combine_Alpha, 
 	                 __GLint__getCombine_Alpha, 
 	                 __void__setCombine_Alpha__GLint);

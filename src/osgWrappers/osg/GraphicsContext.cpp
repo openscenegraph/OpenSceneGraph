@@ -290,6 +290,55 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext)
 	                __void__decrementContextIDUsageCount__unsigned_int_S,
 	                "Decrement the usage count associate with a contextID. ",
 	                "Once the contextID goes to 0 the contextID is then free to be reused. ");
+	I_ProtectedConstructor0(____GraphicsContext,
+	                        "",
+	                        "");
+	I_ProtectedConstructor2(IN, const osg::GraphicsContext &, x, IN, const osg::CopyOp &, x,
+	                        ____GraphicsContext__C5_GraphicsContext_R1__C5_osg_CopyOp_R1,
+	                        "",
+	                        "");
+	I_ProtectedMethod0(osg::Object *, cloneType,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __Object_P1__cloneType,
+	                   "Clone the type of an object, with Object* return type. ",
+	                   "Must be defined by derived classes. ");
+	I_ProtectedMethod1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __Object_P1__clone__C5_CopyOp_R1,
+	                   "Clone an object, with Object* return type. ",
+	                   "Must be defined by derived classes. ");
+	I_ProtectedMethod1(bool, isSameKindAs, IN, const osg::Object *, object,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__isSameKindAs__C5_Object_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(const char *, libraryName,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_char_P1__libraryName,
+	                   "return the name of the object's library. ",
+	                   "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_ProtectedMethod0(const char *, className,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_char_P1__className,
+	                   "return the name of the object's class type. ",
+	                   "Must be defined by derived classes. ");
+	I_ProtectedMethod1(void, addCamera, IN, osg::Camera *, camera,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addCamera__osg_Camera_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeCamera, IN, osg::Camera *, camera,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeCamera__osg_Camera_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::GraphicsContext::Cameras &, Cameras, 
 	                 __Cameras_R1__getCameras, 
 	                 0);

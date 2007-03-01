@@ -120,6 +120,12 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	          __void__setShooter__Shooter_P1,
 	          "Set the Shooter object. ",
 	          "");
+	I_ProtectedMethod1(void, emit, IN, double, dt,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__emit__double,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgParticle::Counter *, Counter, 
 	                 __Counter_P1__getCounter, 
 	                 __void__setCounter__Counter_P1);

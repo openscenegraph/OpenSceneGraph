@@ -186,6 +186,12 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	          __bool__removeExpiredChildren__double__NodeList_R1,
 	          "Remove the children from the PagedLOD which haven't been visited since specified expiry time. ",
 	          "The removed children are added to the removeChildren list passed into the method, this allows the children to be deleted later at the caller's discretion. Return true if children are removed, false otherwise. ");
+	I_ProtectedMethod1(void, expandPerRangeDataTo, IN, unsigned int, pos,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__expandPerRangeDataTo__unsigned_int,
+	                   "",
+	                   "");
 	I_SimpleProperty(const std::string &, DatabasePath, 
 	                 __C5_std_string_R1__getDatabasePath, 
 	                 __void__setDatabasePath__C5_std_string_R1);

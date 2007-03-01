@@ -86,6 +86,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	          __bool__containsIntersections,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, intersects, IN, const osg::BoundingSphere &, bs,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__intersects__C5_osg_BoundingSphere_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, intersectAndClip, IN, osg::Vec3d &, s, IN, osg::Vec3d &, e, IN, const osg::BoundingBox &, bb,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__intersectAndClip__osg_Vec3d_R1__osg_Vec3d_R1__C5_osg_BoundingBox_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgUtil::LineSegmentIntersector::Intersection, FirstIntersection, 
 	                 __Intersection__getFirstIntersection, 
 	                 0);

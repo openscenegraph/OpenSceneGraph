@@ -55,6 +55,41 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Constraint)
 	          __bool__constrain__ScaleUniformCommand_R1,
 	          "",
 	          "");
+	I_ProtectedConstructor1(IN, osg::Node &, refNode,
+	                        Properties::NON_EXPLICIT,
+	                        ____Constraint__osg_Node_R1,
+	                        "",
+	                        "");
+	I_ProtectedMethod0(osg::Node &, getReferenceNode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Node_R1__getReferenceNode,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(const osg::Node &, getReferenceNode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_osg_Node_R1__getReferenceNode,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(const osg::Matrix &, getLocalToWorld,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_osg_Matrix_R1__getLocalToWorld,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(const osg::Matrix &, getWorldToLocal,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_osg_Matrix_R1__getWorldToLocal,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, computeLocalToWorldAndWorldToLocal,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeLocalToWorldAndWorldToLocal,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::GridConstraint)

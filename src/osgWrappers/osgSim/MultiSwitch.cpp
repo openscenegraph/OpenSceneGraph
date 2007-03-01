@@ -162,6 +162,12 @@ BEGIN_OBJECT_REFLECTOR(osgSim::MultiSwitch)
 	          __C5_ValueList_R1__getValueList__unsigned_int,
 	          "Get the a single set of different values for a particular switch set. ",
 	          "");
+	I_ProtectedMethod1(void, expandToEncompassSwitchSet, IN, unsigned int, switchSet,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__expandToEncompassSwitchSet__unsigned_int,
+	                   "",
+	                   "");
 	I_SimpleProperty(unsigned int, ActiveSwitchSet, 
 	                 __unsigned_int__getActiveSwitchSet, 
 	                 __void__setActiveSwitchSet__unsigned_int);

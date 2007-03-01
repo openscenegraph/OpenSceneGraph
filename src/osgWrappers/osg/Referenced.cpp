@@ -92,6 +92,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	                __DeleteHandler_P1__getDeleteHandler_S,
 	                "Get a DeleteHandler. ",
 	                "");
+	I_ProtectedMethod0(void, deletUsingDeleteHandler,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__deletUsingDeleteHandler,
+	                   "",
+	                   "");
 	I_SimpleProperty(bool, ThreadSafeRefUnref, 
 	                 __bool__getThreadSafeRefUnref, 
 	                 __void__setThreadSafeRefUnref__bool);

@@ -200,6 +200,12 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_ProtectedMethod4(void, addGlyph, IN, unsigned int, width, IN, unsigned int, height, IN, unsigned int, charcode, IN, osgText::Font::Glyph *, glyph,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addGlyph__unsigned_int__unsigned_int__unsigned_int__Glyph_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(std::string, FileName, 
 	                 __std_string__getFileName, 
 	                 0);

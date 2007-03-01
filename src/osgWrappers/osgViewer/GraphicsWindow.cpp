@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
+BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_BaseType(osg::GraphicsContext);
 	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____GraphicsWindow,

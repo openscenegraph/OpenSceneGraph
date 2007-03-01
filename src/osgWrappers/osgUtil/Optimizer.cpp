@@ -380,6 +380,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeodesVisitor)
 	          __bool__mergeGeodes__osg_Group_R1,
 	          "",
 	          "");
+	I_ProtectedMethod2(bool, mergeGeode, IN, osg::Geode &, lhs, IN, osg::Geode &, rhs,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__mergeGeode__osg_Geode_R1__osg_Geode_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
@@ -582,6 +588,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	          __void__optimize,
 	          "",
 	          "");
+	I_ProtectedMethod2(void, addStateSet, IN, osg::StateSet *, stateset, IN, osg::Object *, obj,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addStateSet__osg_StateSet_P1__osg_Object_P1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
@@ -601,6 +613,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
 	          __void__apply__osg_Geode_R1,
 	          "",
 	          "");
+	I_ProtectedMethod1(void, applyStateSet, IN, osg::StateSet &, stateset,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__applyStateSet__osg_StateSet_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, applyDrawable, IN, osg::Drawable &, drawable,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__applyDrawable__osg_Drawable_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TessellateVisitor::GroupList);
@@ -729,6 +753,8 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Optimizer::TextureAtlasBuilder)
 	          __osg_Matrix__getTextureMatrix__C5_osg_Texture2D_P1,
 	          "",
 	          "");
+
+
 	I_SimpleProperty(unsigned int, Margin, 
 	                 __unsigned_int__getMargin, 
 	                 __void__setMargin__unsigned_int);
@@ -772,6 +798,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureAtlasVisitor)
 	          __void__optimize,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, pushStateSet, IN, osg::StateSet *, stateset,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__pushStateSet__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, popStateSet,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__popStateSet,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgUtil::Optimizer::TextureAtlasBuilder &, TextureAtlasBuilder, 
 	                 __TextureAtlasBuilder_R1__getTextureAtlasBuilder, 
 	                 0);

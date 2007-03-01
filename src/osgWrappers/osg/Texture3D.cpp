@@ -197,6 +197,24 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "Overrides Extensions objects across graphics contexts. ",
 	                "Typically used to ensure the same lowest common denominator of extensions on sustems with different graphics pipes. ");
+	I_ProtectedMethod6(void, computeRequiredTextureDimensions, IN, osg::State &, state, IN, const osg::Image &, image, IN, GLsizei &, width, IN, GLsizei &, height, IN, GLsizei &, depth, IN, GLsizei &, numMipmapLevels,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeRequiredTextureDimensions__State_R1__C5_osg_Image_R1__GLsizei_R1__GLsizei_R1__GLsizei_R1__GLsizei_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, computeInternalFormat,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormat,
+	                   "",
+	                   "");
+	I_ProtectedMethod7(void, applyTexImage3D, IN, GLenum, target, IN, osg::Image *, image, IN, osg::State &, state, IN, GLsizei &, inwidth, IN, GLsizei &, inheight, IN, GLsizei &, indepth, IN, GLsizei &, numMipmapLevels,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__applyTexImage3D__GLenum__Image_P1__State_R1__GLsizei_R1__GLsizei_R1__GLsizei_R1__GLsizei_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__Image_P1);

@@ -339,6 +339,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                            __int__computeNearestPowerOfTwo__int__float_S,
 	                            "",
 	                            "");
+	I_ProtectedMethod0(void, deallocateData,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__deallocateData,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, setData, IN, unsigned char *, data, IN, osg::Image::AllocationMode, allocationMode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setData__unsigned_char_P1__AllocationMode,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Image::AllocationMode, AllocationMode, 
 	                 __AllocationMode__getAllocationMode, 
 	                 __void__setAllocationMode__AllocationMode);

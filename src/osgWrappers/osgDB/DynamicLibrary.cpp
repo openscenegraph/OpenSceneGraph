@@ -50,6 +50,18 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	                __DynamicLibrary_P1__loadLibrary__C5_std_string_R1_S,
 	                "returns a pointer to a DynamicLibrary object on successfully opening of library returns NULL on failure. ",
 	                "");
+	I_ProtectedConstructor0(____DynamicLibrary,
+	                        "disallow default constructor. ",
+	                        "");
+	I_ProtectedConstructor1(IN, const osgDB::DynamicLibrary &, x,
+	                        Properties::NON_EXPLICIT,
+	                        ____DynamicLibrary__C5_DynamicLibrary_R1,
+	                        "disallow copy constructor. ",
+	                        "");
+	I_ProtectedConstructor2(IN, const std::string &, name, IN, osgDB::DynamicLibrary::HANDLE, handle,
+	                        ____DynamicLibrary__C5_std_string_R1__HANDLE,
+	                        "Disallow public construction so that users have to go through loadLibrary() above which returns NULL on failure, a valid DynamicLibrary object on success. ",
+	                        "");
 	I_SimpleProperty(const std::string &, FullName, 
 	                 __C5_std_string_R1__getFullName, 
 	                 0);

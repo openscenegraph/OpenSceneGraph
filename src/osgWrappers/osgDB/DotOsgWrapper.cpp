@@ -68,6 +68,14 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DotOsgWrapper)
 	          __ReadWriteMode__getReadWriteMode,
 	          "",
 	          "");
+	I_ProtectedConstructor0(____DotOsgWrapper,
+	                        "protected to prevent inappropriate creation of wrappers. ",
+	                        "");
+	I_ProtectedConstructor1(IN, osgDB::DotOsgWrapper &, x,
+	                        Properties::NON_EXPLICIT,
+	                        ____DotOsgWrapper__DotOsgWrapper_R1,
+	                        "protected to prevent inappropriate creation of wrappers. ",
+	                        "");
 	I_SimpleProperty(const osgDB::DotOsgWrapper::Associates &, Associates, 
 	                 __C5_Associates_R1__getAssociates, 
 	                 0);

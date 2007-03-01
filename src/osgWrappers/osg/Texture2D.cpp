@@ -189,6 +189,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2D)
 	          __void__apply__State_R1,
 	          "Bind the texture object. ",
 	          "If the texture object hasn't already been compiled, create the texture mipmap levels. ");
+	I_ProtectedMethod0(void, computeInternalFormat,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormat,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__Image_P1);

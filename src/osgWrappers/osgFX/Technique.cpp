@@ -69,5 +69,40 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Technique)
 	          __void__traverse__osg_NodeVisitor_R1__Effect_P1,
 	          "traverse children with multipass if necessary. ",
 	          "By default this method simply calls the protected method traverse_implementation(); you can override it to change the default behavior. Don't call this method directly as it is called by osgFX::Effect");
+	I_ProtectedConstructor1(IN, const osgFX::Technique &, x,
+	                        Properties::NON_EXPLICIT,
+	                        ____Technique__C5_Technique_R1,
+	                        "",
+	                        "");
+	I_ProtectedMethod0(void, dirtyPasses,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__dirtyPasses,
+	                   "force rebuilding of pass nodes on next traversal ",
+	                   "");
+	I_ProtectedMethodWithDefaults1(void, addPass, IN, osg::StateSet *, ss, 0,
+	                               Properties::NON_VIRTUAL,
+	                               Properties::NON_CONST,
+	                               __void__addPass__osg_StateSet_P1,
+	                               "create a new pass node, add it to the technique and associate a StateSet ",
+	                               "");
+	I_ProtectedMethod1(osg::Node *, getOverrideChild, IN, int, x,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Node_P1__getOverrideChild__int,
+	                   "optional: return a node that overrides the child node on a specified pass ",
+	                   "");
+	I_ProtectedMethod0(void, define_passes,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__define_passes,
+	                   "define the rendering passes that make up this technique. ",
+	                   "You must implement this method in derived classes to add the required passes.");
+	I_ProtectedMethod2(void, traverse_implementation, IN, osg::NodeVisitor &, nv, IN, osgFX::Effect *, fx,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__traverse_implementation__osg_NodeVisitor_R1__Effect_P1,
+	                   "traverse children with multipass if necessary. ",
+	                   "Don't call this method directly unless you are in a customized version of traverse().");
 END_REFLECTOR
 

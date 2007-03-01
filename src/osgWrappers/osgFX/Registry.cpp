@@ -39,6 +39,9 @@ BEGIN_OBJECT_REFLECTOR(osgFX::Registry)
 	                __Registry_P1__instance_S,
 	                "",
 	                "");
+	I_ProtectedConstructor0(____Registry,
+	                        "",
+	                        "");
 	I_SimpleProperty(const osgFX::Registry::EffectMap &, EffectMap, 
 	                 __C5_EffectMap_R1__getEffectMap, 
 	                 0);

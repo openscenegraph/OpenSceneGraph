@@ -52,5 +52,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Program)
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
+	I_ProtectedMethod1(void, process, IN, double, dt,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__process__double,
+	                   "Implementation of ParticleProcessor::process(). Do not call this method by yourself. ",
+	                   "");
+	I_ProtectedMethod1(void, execute, IN, double, dt,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__execute__double,
+	                   "Execute the program on the particle system. Must be overriden in descendant classes. ",
+	                   "");
 END_REFLECTOR
 

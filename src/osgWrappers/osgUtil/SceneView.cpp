@@ -741,6 +741,24 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __bool__getStats__Statistics_R1,
 	          "Extract stats for current draw list. ",
 	          "");
+	I_ProtectedMethod5(void, cullStage, IN, const osg::Matrixd &, projection, IN, const osg::Matrixd &, modelview, IN, osgUtil::CullVisitor *, cullVisitor, IN, osgUtil::StateGraph *, rendergraph, IN, osgUtil::RenderStage *, renderStage,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__cullStage__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1__osgUtil_CullVisitor_P1__osgUtil_StateGraph_P1__osgUtil_RenderStage_P1,
+	                   "Do cull traversal of attached scene graph using Cull NodeVisitor. ",
+	                   "");
+	I_ProtectedMethod0(const osg::Matrix, computeMVPW,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __C5_osg_Matrix__computeMVPW,
+	                   "",
+	                   "");
+	I_ProtectedMethod5(void, clearArea, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, const osg::Vec4 &, color,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__clearArea__int__int__int__int__C5_osg_Vec4_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(int, ActiveUniforms, 
 	                 __int__getActiveUniforms, 
 	                 __void__setActiveUniforms__int);

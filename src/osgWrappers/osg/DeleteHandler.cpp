@@ -71,6 +71,11 @@ BEGIN_OBJECT_REFLECTOR(osg::DeleteHandler)
 	          __void__requestDelete__C5_osg_Referenced_P1,
 	          "Request the deletion of an object. ",
 	          "Depending on users implementation of DeleteHandler, the delete of the object may occur straight away or be delayed until doDelete is called. The default implementation does a delete straight away. ");
+	I_ProtectedConstructor1(IN, const osg::DeleteHandler &, x,
+	                        Properties::NON_EXPLICIT,
+	                        ____DeleteHandler__C5_DeleteHandler_R1,
+	                        "",
+	                        "");
 	I_SimpleProperty(int, FrameNumber, 
 	                 __int__getFrameNumber, 
 	                 __void__setFrameNumber__int);

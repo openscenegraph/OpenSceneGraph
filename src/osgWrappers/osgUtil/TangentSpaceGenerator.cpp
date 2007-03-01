@@ -87,6 +87,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	          __osg_IndexArray_P1__getIndices,
 	          "",
 	          "");
+	I_ProtectedMethod7(void, compute, IN, osg::PrimitiveSet *, pset, IN, const osg::Array *, vx, IN, const osg::Array *, nx, IN, const osg::Array *, tx, IN, int, iA, IN, int, iB, IN, int, iC,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__compute__osg_PrimitiveSet_P1__C5_osg_Array_P1__C5_osg_Array_P1__C5_osg_Array_P1__int__int__int,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Vec4Array *, BinormalArray, 
 	                 __osg_Vec4Array_P1__getBinormalArray, 
 	                 __void__setBinormalArray__osg_Vec4Array_P1);

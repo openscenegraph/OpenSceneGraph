@@ -130,6 +130,30 @@ BEGIN_OBJECT_REFLECTOR(osgGA::FlightManipulator)
 	          __double__getVelocity,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, flushMouseEventStack,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__flushMouseEventStack,
+	                   "Reset the internal GUIEvent stack. ",
+	                   "");
+	I_ProtectedMethod1(void, addMouseEvent, IN, const osgGA::GUIEventAdapter &, ea,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addMouseEvent__C5_GUIEventAdapter_R1,
+	                   "Add the current mouse GUIEvent to internal stack. ",
+	                   "");
+	I_ProtectedMethod3(void, computePosition, IN, const osg::Vec3 &, eye, IN, const osg::Vec3 &, lv, IN, const osg::Vec3 &, up,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computePosition__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, calcMovement,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__calcMovement,
+	                   "For the give mouse movement calculate the movement of the camera. ",
+	                   "Return true is camera has moved and a redraw is required. ");
 	I_SimpleProperty(double, Acceleration, 
 	                 __double__getAcceleration, 
 	                 __void__setAcceleration__double);

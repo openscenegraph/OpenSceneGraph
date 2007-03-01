@@ -159,6 +159,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayTriangulator)
 	          __void__removeInternalTriangles__DelaunayConstraint_P1,
 	          "remove the triangles internal to the constraint loops. ",
 	          "(Line strips cannot remove any internal triangles). ");
+	I_ProtectedMethod2(int, getindex, IN, const osg::Vec3, pt, IN, const osg::Vec3Array *, points,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __int__getindex__C5_osg_Vec3__C5_osg_Vec3Array_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Vec3Array *, InputPointArray, 
 	                 __osg_Vec3Array_P1__getInputPointArray, 
 	                 __void__setInputPointArray__osg_Vec3Array_P1);

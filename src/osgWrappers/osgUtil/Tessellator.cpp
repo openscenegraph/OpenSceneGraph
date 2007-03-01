@@ -125,6 +125,61 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	          __void__reset,
 	          "",
 	          "");
+	I_ProtectedMethod2(void, reduceArray, IN, osg::Array *, cold, IN, const unsigned int, nnu,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__reduceArray__osg_Array_P1__C5_unsigned_int,
+	                   "remove unused parts of the array, eg for wehn retessellating tessellation can introduce extra vertices for concave or crossing boundaries, these will leak memory if not removed when retessellating. ",
+	                   "");
+	I_ProtectedMethod2(void, collectTessellation, IN, osg::Geometry &, cxgeom, IN, unsigned int, originalIndex,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__collectTessellation__osg_Geometry_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(void, addContour, IN, GLenum, mode, IN, unsigned int, first, IN, unsigned int, last, IN, osg::Vec3Array *, vertices,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addContour__GLenum__unsigned_int__unsigned_int__osg_Vec3Array_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, addContour, IN, osg::PrimitiveSet *, primitive, IN, osg::Vec3Array *, vertices,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addContour__osg_PrimitiveSet_P1__osg_Vec3Array_P1,
+	                   "",
+	                   "");
+
+	I_ProtectedMethod1(void, begin, IN, GLenum, mode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__begin__GLenum,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, vertex, IN, osg::Vec3 *, vertex,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__vertex__osg_Vec3_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(void, combine, IN, osg::Vec3 *, vertex, IN, void *, vertex_data, IN, GLfloat, weight,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__combine__osg_Vec3_P1__void_P1__GLfloat,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, end,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__end,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, error, IN, GLenum, errorCode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__error__GLenum,
+	                   "",
+	                   "");
 	I_SimpleProperty(const bool, BoundaryOnly, 
 	                 __C5_bool__getBoundaryOnly, 
 	                 __void__setBoundaryOnly__C5_bool);

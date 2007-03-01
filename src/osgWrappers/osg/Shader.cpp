@@ -150,6 +150,19 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	                __Shader_Type__getTypeId__C5_std_string_R1_S,
 	                "",
 	                "");
+
+	I_ProtectedMethod1(bool, addProgramRef, IN, osg::Program *, program,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__addProgramRef__osg_Program_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, removeProgramRef, IN, osg::Program *, program,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__removeProgramRef__osg_Program_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(const std::string &, ShaderSource, 
 	                 __C5_std_string_R1__getShaderSource, 
 	                 __void__setShaderSource__C5_std_string_R1);

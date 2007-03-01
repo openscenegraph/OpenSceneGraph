@@ -587,6 +587,59 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __bool__checkGLErrors__C5_StateAttribute_P1,
 	          "",
 	          "");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	I_ProtectedMethod0(bool, computeSecondaryColorSupported,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__computeSecondaryColorSupported,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, computeFogCoordSupported,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__computeFogCoordSupported,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, computeVertexBufferObjectSupported,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__computeVertexBufferObjectSupported,
+	                   "",
+	                   "");
+
+
+
+
+
+
+	I_ProtectedMethod0(void, initializeExtensionProcs,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__initializeExtensionProcs,
+	                   "",
+	                   "");
 	I_SimpleProperty(bool, AbortRendering, 
 	                 __bool__getAbortRendering, 
 	                 0);

@@ -112,6 +112,50 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	                      __void__processGeometry__osg_Drawable_P1__osg_Matrix_P1__float,
 	                      "",
 	                      "");
+
+
+	I_ProtectedMethod0(void, setUpInternalStructures,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpInternalStructures,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, removeDuplicateVertices,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeDuplicateVertices,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, removeNullTriangles,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeNullTriangles,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, computeNormals,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeNormals,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, buildEdgeMaps,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__buildEdgeMaps,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, computeLightDirectionSlihouetteEdges, IN, const osg::Vec3 &, lightdirection, IN, osgShadow::OccluderGeometry::UIntList &, silhouetteIndices,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeLightDirectionSlihouetteEdges__C5_osg_Vec3_R1__UIntList_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, computeLightPositionSlihouetteEdges, IN, const osg::Vec3 &, lightpos, IN, osgShadow::OccluderGeometry::UIntList &, silhouetteIndices,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeLightPositionSlihouetteEdges__C5_osg_Vec3_R1__UIntList_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::Polytope &, BoundingPolytope, 
 	                 __C5_osg_Polytope_R1__getBoundingPolytope, 
 	                 __void__setBoundingPolytope__C5_osg_Polytope_R1);

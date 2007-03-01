@@ -92,6 +92,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	          __DraggerList_iterator__findDragger__C5_Dragger_P1,
 	          "",
 	          "");
+	I_ProtectedConstructor0(____CompositeDragger,
+	                        "",
+	                        "");
 	I_SimpleProperty(osgManipulator::CommandManager *, CommandManager, 
 	                 0, 
 	                 __void__setCommandManager__CommandManager_P1);
@@ -157,6 +160,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "",
 	          "");
+	I_ProtectedConstructor0(____Dragger,
+	                        "",
+	                        "");
 	I_SimpleProperty(osgManipulator::CommandManager *, CommandManager, 
 	                 __CommandManager_P1__getCommandManager, 
 	                 __void__setCommandManager__CommandManager_P1);

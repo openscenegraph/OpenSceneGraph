@@ -232,6 +232,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	                      __void__releaseGLObjects__State_P1,
 	                      "Release OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer NULL. ",
 	                      "");
+	I_ProtectedMethod1(void, addParent, IN, osg::StateSet *, object,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addParent__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeParent, IN, osg::StateSet *, object,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeParent__osg_StateSet_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::StateAttribute::Callback *, EventCallback, 
 	                 __Callback_P1__getEventCallback, 
 	                 __void__setEventCallback__Callback_P1);

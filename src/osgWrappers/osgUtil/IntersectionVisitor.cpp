@@ -183,6 +183,36 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	          __void__apply__osg_Camera_R1,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, enter, IN, const osg::Node &, node,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__enter__C5_osg_Node_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, leave,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__leave,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, intersect, IN, osg::Drawable *, drawable,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__intersect__osg_Drawable_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, push_clone,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__push_clone,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, pop_clone,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__pop_clone,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgUtil::Intersector *, Intersector, 
 	                 __Intersector_P1__getIntersector, 
 	                 __void__setIntersector__Intersector_P1);

@@ -60,6 +60,14 @@ namespace osgIntrospection
         }
     };
     
+    struct ProtectedConstructorInvocationException: public ReflectionException
+    {
+        ProtectedConstructorInvocationException()
+        :    ReflectionException("cannot invoke protected constructor")
+        {
+        }
+    };
+    
     struct InvokeNotImplementedException: public ReflectionException
     {
         InvokeNotImplementedException()
@@ -80,6 +88,14 @@ namespace osgIntrospection
     {
         ConstIsConstException()
         :    ReflectionException("cannot modify a const value")
+        {
+        }
+    };
+
+    struct ProtectedMethodInvocationException: public ReflectionException
+    {
+        ProtectedMethodInvocationException()
+        :    ReflectionException("cannot invoke protected method")
         {
         }
     };

@@ -343,6 +343,111 @@ namespace osgIntrospection
 
     };
 
+    template<typename T>
+    struct ProtectedConstructorInstanceCreator
+    {
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14, typename P15>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4, typename P5>
+        static Value create(Value& , Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3, typename P4>
+        static Value create(Value& , Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2, typename P3>
+        static Value create(Value& , Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1, typename P2>
+        static Value create(Value& , Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0, typename P1>
+        static Value create(Value& , Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        template<typename P0>
+        static Value create(Value& )
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+        static Value create()
+        {
+            throw ProtectedConstructorInvocationException();
+        }
+
+    };
 
 }
 

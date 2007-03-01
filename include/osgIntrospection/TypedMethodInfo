@@ -2972,6 +2972,933 @@ namespace osgIntrospection
         FunctionType f_;
     };
 
+    template<typename C, typename R> 
+    class TypedProtectedMethodInfo0: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo0(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+        
+        static TypedProtectedMethodInfo0 *constMethod(const std::string& qname, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        {
+            return new TypedProtectedMethodInfo0(qname, true, plist, virtualState, briefHelp, detailedHelp);
+        }
+        
+        static TypedProtectedMethodInfo0 *nonConstMethod(const std::string& qname, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        {
+            return new TypedProtectedMethodInfo0(qname, false, plist, virtualState, briefHelp, detailedHelp);
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList&  /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList&  /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0> 
+    class TypedProtectedMethodInfo1: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo1(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1> 
+    class TypedProtectedMethodInfo2: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo2(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2> 
+    class TypedProtectedMethodInfo3: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo3(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3> 
+    class TypedProtectedMethodInfo4: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo4(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4> 
+    class TypedProtectedMethodInfo5: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo5(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5> 
+    class TypedProtectedMethodInfo6: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo6(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6> 
+    class TypedProtectedMethodInfo7: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo7(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7> 
+    class TypedProtectedMethodInfo8: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo8(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8> 
+    class TypedProtectedMethodInfo9: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo9(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9> 
+    class TypedProtectedMethodInfo10: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo10(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10> 
+    class TypedProtectedMethodInfo11: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo11(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11> 
+    class TypedProtectedMethodInfo12: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo12(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12> 
+    class TypedProtectedMethodInfo13: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo13(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13> 
+    class TypedProtectedMethodInfo14: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo14(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14> 
+    class TypedProtectedMethodInfo15: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo15(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename R, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14, typename P15> 
+    class TypedProtectedMethodInfo16: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo16(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(R), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C> 
+    class TypedProtectedMethodInfo0<C, void>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo0(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList&  /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList&  /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0> 
+    class TypedProtectedMethodInfo1<C, void, P0>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo1(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1> 
+    class TypedProtectedMethodInfo2<C, void, P0, P1>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo2(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2> 
+    class TypedProtectedMethodInfo3<C, void, P0, P1, P2>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo3(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3> 
+    class TypedProtectedMethodInfo4<C, void, P0, P1, P2, P3>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo4(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4> 
+    class TypedProtectedMethodInfo5<C, void, P0, P1, P2, P3, P4>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo5(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5> 
+    class TypedProtectedMethodInfo6<C, void, P0, P1, P2, P3, P4, P5>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo6(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6> 
+    class TypedProtectedMethodInfo7<C, void, P0, P1, P2, P3, P4, P5, P6>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo7(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7> 
+    class TypedProtectedMethodInfo8<C, void, P0, P1, P2, P3, P4, P5, P6, P7>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo8(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8> 
+    class TypedProtectedMethodInfo9<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo9(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9> 
+    class TypedProtectedMethodInfo10<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo10(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10> 
+    class TypedProtectedMethodInfo11<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo11(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11> 
+    class TypedProtectedMethodInfo12<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo12(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12> 
+    class TypedProtectedMethodInfo13<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo13(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13> 
+    class TypedProtectedMethodInfo14<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo14(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14> 
+    class TypedProtectedMethodInfo15<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo15(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
+
+    template<typename C, typename P0, typename P1, typename P2, typename P3, typename P4, typename P5, typename P6, typename P7, typename P8, typename P9, typename P10, typename P11, typename P12, typename P13, typename P14, typename P15> 
+    class TypedProtectedMethodInfo16<C, void, P0, P1, P2, P3, P4, P5, P6, P7, P8, P9, P10, P11, P12, P13, P14, P15>: public MethodInfo
+    {
+    public:
+        TypedProtectedMethodInfo16(const std::string& qname, bool isConstMethod, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :    MethodInfo(qname, typeof(C), typeof(void), plist, virtualState, briefHelp, detailedHelp), is_const_(isConstMethod)
+        {
+        }
+
+        bool isConst() const { return is_const_; }
+        bool isStatic() const { return false; }
+
+        Value invoke(const Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+        Value invoke(Value& /*instance*/, ValueList& /*args*/) const
+        {
+            throw ProtectedMethodInvocationException();
+        }
+
+    private:
+        bool is_const_;
+    };
+
 }
 
 #endif

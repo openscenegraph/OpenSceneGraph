@@ -65,6 +65,14 @@ namespace osgIntrospection
     class OSGINTROSPECTION_EXPORT Type: public CustomAttributeProvider
     {
     public:
+        /// Function category specifier for querying constructors and
+        /// methods.
+        enum FunctionCategory
+        {
+            PUBLIC_FUNCTIONS,
+            PROTECTED_FUNCTIONS
+        };
+
         /// Destructor. Note that this class is not meant to be subclassed.
         ~Type();
 
@@ -174,19 +182,19 @@ namespace osgIntrospection
         void getPropertiesMap(PropertyInfoMap& props) const;
 
         /// Returns the list of constructors defined for this type.
-        inline const ConstructorInfoList& getConstructors() const;
+        inline const ConstructorInfoList& getConstructors(FunctionCategory category = PUBLIC_FUNCTIONS) const;
 
         /// Returns the list of methods defined for this type. The list
         /// does not include methods inherited from base types.
-        inline const MethodInfoList& getMethods() const;
+        inline const MethodInfoList& getMethods(FunctionCategory category = PUBLIC_FUNCTIONS) const;
 
         /// Fills a list of methods that are either defined in this Type 
         /// or in inherited types.
-        void getAllMethods(MethodInfoList& methods) const;
+        void getAllMethods(MethodInfoList& methods, FunctionCategory category = PUBLIC_FUNCTIONS) const;
 
         /// Fills a map of "type <-> MethodInfoList" that are either defined in this Type 
         /// or in inherited types.
-        void getMethodsMap(MethodInfoMap& methods) const;
+        void getMethodsMap(MethodInfoMap& methods, FunctionCategory category = PUBLIC_FUNCTIONS) const;
 
         /// Returns the map of enumeration labels. If the type is not an
         /// enumeration, an empty map is returned.
@@ -278,8 +286,10 @@ namespace osgIntrospection
         const Type* _referenced_type;
 
         ConstructorInfoList _cons;
+        ConstructorInfoList _protected_cons;
         PropertyInfoList _props;
         MethodInfoList _methods;
+        MethodInfoList _protected_methods;
 
         EnumLabelMap _labels;
         bool _is_defined;
@@ -429,16 +439,16 @@ namespace osgIntrospection
         return _props;
     }
 
-    inline const ConstructorInfoList& Type::getConstructors() const
+    inline const ConstructorInfoList& Type::getConstructors(FunctionCategory category) const
     {
         check_defined();
-        return _cons;
+        return category == PUBLIC_FUNCTIONS ? _cons : _protected_cons;
     }
 
-    inline const MethodInfoList& Type::getMethods() const
+    inline const MethodInfoList& Type::getMethods(FunctionCategory category) const
     {
         check_defined();
-        return _methods;
+        return category == PUBLIC_FUNCTIONS ? _methods : _protected_methods;
     }
 
     inline bool Type::isPointer() const

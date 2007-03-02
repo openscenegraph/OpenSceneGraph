@@ -287,14 +287,24 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
                                         osg::ArgumentParser& arguments)
 {
     double sphere_radius = 1.0;
+    if (arguments.read("--radius", sphere_radius)) {}
+
     double collar_radius = 0.45;
+    if (arguments.read("--collar", collar_radius)) {}
+
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
     
     double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
+    if (arguments.read("--distance", distance)) {}
+    
+    bool centerProjection = false;
+
     osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, distance);
     
+    
     osg::notify(osg::NOTICE)<<"Projector position = "<<projector<<std::endl;
+    osg::notify(osg::NOTICE)<<"distance = "<<distance<<std::endl;
 
 
     // create the quad to visualize.
@@ -310,7 +320,7 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     float height = heightVector.length();
     yAxis /= height;
     
-    int noSteps = 100;
+    int noSteps = 50;
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     osg::Vec3Array* texcoords = new osg::Vec3Array;
@@ -325,33 +335,71 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
     osg::Vec3 cursor = bottom;
     int i,j;
-    for(i=0;i<noSteps;++i)
+    
+    
+    if (centerProjection)
     {
-        osg::Vec3 cursor = bottom+dy*(float)i;
-        for(j=0;j<noSteps;++j)
+        for(i=0;i<noSteps;++i)
         {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(-delta.y(), delta.x());
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
-            
-            phi *= 2.0;
-            
-            // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
-           
-            osg::Vec3 texcoord(sin(phi) * cos(theta),
-                               sin(phi) * sin(theta),
-                               cos(phi));
-        
-            vertices->push_back(cursor);
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back(texcoord);
-            
-            cursor += dx;
-        }
-        // osg::notify(osg::NOTICE)<<std::endl;
-    }
+            osg::Vec3 cursor = bottom+dy*(float)i;
+            for(j=0;j<noSteps;++j)
+            {
+                osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
+                double theta = atan2(-delta.y(), delta.x());
+                double phi = osg::PI_2 * delta.length() / screenRadius;
+                if (phi > osg::PI_2) phi = osg::PI_2;
 
+                phi *= 2.0;
+
+                // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
+
+                osg::Vec3 texcoord(sin(phi) * cos(theta),
+                                   sin(phi) * sin(theta),
+                                   cos(phi));
+
+                vertices->push_back(cursor);
+                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                texcoords->push_back(texcoord);
+
+                cursor += dx;
+            }
+            // osg::notify(osg::NOTICE)<<std::endl;
+        }
+    }
+    else
+    {
+        for(i=0;i<noSteps;++i)
+        {
+            osg::Vec3 cursor = bottom+dy*(float)i;
+            for(j=0;j<noSteps;++j)
+            {
+                osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
+                double theta = atan2(-delta.y(), delta.x());
+                double phi = osg::PI_2 * delta.length() / screenRadius;
+                if (phi > osg::PI_2) phi = osg::PI_2;
+
+                // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
+                
+                double f = distance * sin(phi);
+                double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+                double l = e * cos(phi);
+                double h = e * sin(phi);
+                double z = l - distance;
+                
+                osg::Vec3 texcoord(h * cos(theta) / sphere_radius,
+                                   h * sin(theta) / sphere_radius,
+                                   z / sphere_radius);
+
+                vertices->push_back(cursor);
+                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                texcoords->push_back(texcoord);
+
+                cursor += dx;
+            }
+            // osg::notify(osg::NOTICE)<<std::endl;
+        }
+    }
+    
     // pass the created vertex array to the points geometry object.
     geometry->setVertexArray(vertices);
 
@@ -590,34 +638,32 @@ int main(int argc, char** argv)
     // construct the viewer.
     osgViewer::Viewer viewer;
     
-    // load the nodes from the commandline arguments.
-    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel)
-    {
-        osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
-        return 1;
-    }
 
-    if (arguments.read("--dome"))
+    if (arguments.read("--dome") || arguments.read("--puffer") )
     {    
 
         setDomeCorrection(viewer, arguments);
     
-        viewer.setSceneData( loadedModel );
+        viewer.setSceneData( osgDB::readNodeFiles(arguments) );
     }
     else if (arguments.read("--faces"))
     {    
 
         setDomeFaces(viewer, arguments);
-    
-        viewer.setSceneData( loadedModel );
+
+        viewer.setSceneData( osgDB::readNodeFiles(arguments) );
     }
     else
     {
-        osg::Node* distortionNode = createDistortionSubgraph(loadedModel, viewer.getCamera()->getClearColor());
+        osg::Node* distortionNode = createDistortionSubgraph( osgDB::readNodeFiles(arguments), viewer.getCamera()->getClearColor());
+    }
 
-        // add model to the viewer.
-        viewer.setSceneData( distortionNode );
+
+    // load the nodes from the commandline arguments.
+    if (!viewer.getSceneData())
+    {
+        osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
+        return 1;
     }
 
 
@@ -647,7 +693,7 @@ int main(int argc, char** argv)
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
 
-    // viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );

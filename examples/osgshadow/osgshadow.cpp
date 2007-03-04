@@ -475,9 +475,9 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");
-    arguments.getApplicationUsage()->addCommandLineOption("--1", "Use test model one.");
-    arguments.getApplicationUsage()->addCommandLineOption("--2", "Use test model two.");
-    arguments.getApplicationUsage()->addCommandLineOption("--3", "Use test model three.");
+    arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
+    arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
+    arguments.getApplicationUsage()->addCommandLineOption("-3", "Use test model three.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
 

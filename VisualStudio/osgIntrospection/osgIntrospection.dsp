@@ -175,6 +175,10 @@ SOURCE=..\..\include\osgIntrospection\Export
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\osgIntrospection\ExtendedTypeInfo
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\osgIntrospection\InstanceCreator
 # End Source File
 # Begin Source File
@@ -228,6 +232,10 @@ SOURCE=..\..\include\osgIntrospection\TypedMethodInfo
 # Begin Source File
 
 SOURCE=..\..\include\osgIntrospection\TypeNameAliasProxy
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgIntrospection\type_traits
 # End Source File
 # Begin Source File
 

@@ -71,7 +71,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
             return 0; // Passed all the above comparison macros, so must be equal.
         }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_BLEND);
             return true;

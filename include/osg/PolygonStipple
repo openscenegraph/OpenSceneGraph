@@ -34,7 +34,7 @@ class OSG_EXPORT PolygonStipple : public StateAttribute
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const;
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_POLYGON_STIPPLE);
             return true;

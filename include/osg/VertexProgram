@@ -136,7 +136,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_VERTEX_PROGRAM_ARB);
             return true;

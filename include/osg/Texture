@@ -214,7 +214,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         virtual GLenum getTextureTarget() const = 0;
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesTextureMode(getTextureTarget());
             return true;

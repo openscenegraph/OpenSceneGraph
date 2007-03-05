@@ -58,7 +58,7 @@ class OSG_EXPORT Scissor : public StateAttribute
         }
 
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_SCISSOR_TEST);
             return true;

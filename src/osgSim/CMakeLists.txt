@@ -11,6 +11,8 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/BlinkSequence
 	${HEADER_PATH}/ColorRange
 	${HEADER_PATH}/DOFTransform
+	${HEADER_PATH}/ElevationSlice
+	${HEADER_PATH}/HeightAboveTerrain
 	${HEADER_PATH}/Export
 	${HEADER_PATH}/GeographicLocation
 	${HEADER_PATH}/Impostor
@@ -19,6 +21,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/LightPoint
 	${HEADER_PATH}/LightPointNode
 	${HEADER_PATH}/LightPointSystem
+	${HEADER_PATH}/LineOfSight
 	${HEADER_PATH}/MultiSwitch
 	${HEADER_PATH}/OpenFlightOptimizer
 	${HEADER_PATH}/OverlayNode
@@ -37,6 +40,8 @@ ADD_LIBRARY(${LIB_NAME}
 	BlinkSequence.cpp
 	ColorRange.cpp
 	DOFTransform.cpp
+	ElevationSlice.cpp
+	HeightAboveTerrain.cpp
 	Impostor.cpp
 	ImpostorSprite.cpp
 	InsertImpostorsVisitor.cpp
@@ -46,6 +51,7 @@ ADD_LIBRARY(${LIB_NAME}
 	LightPointNode.cpp
 	LightPointSpriteDrawable.cpp
 	LightPointSpriteDrawable.h
+	LineOfSight.cpp
 	MultiSwitch.cpp
 	OpenFlightOptimizer.cpp
 	OverlayNode.cpp

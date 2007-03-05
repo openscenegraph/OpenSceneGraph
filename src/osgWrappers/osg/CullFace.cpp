@@ -78,8 +78,8 @@ BEGIN_OBJECT_REFLECTOR(osg::CullFace)
 	          "");
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
 	          Properties::VIRTUAL,
-	          __bool__getModeUsage__ModeUsage_R1,
-	          "",
+	          __bool__getModeUsage__StateAttribute_ModeUsage_R1,
+	          "Return the modes associated with this StateAttribute. ",
 	          "");
 	I_Method1(void, setMode, IN, osg::CullFace::Mode, mode,
 	          Properties::NON_VIRTUAL,

@@ -12,6 +12,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Font
 	${HEADER_PATH}/String
 	${HEADER_PATH}/Text
+	${HEADER_PATH}/FadeText
 	${HEADER_PATH}/Version
 )
 
@@ -23,6 +24,7 @@ ADD_LIBRARY(${LIB_NAME}
 	DefaultFont.h
 	Font.cpp
 	String.cpp
+	FadeText.cpp
 	Text.cpp
 	Version.cpp
 )

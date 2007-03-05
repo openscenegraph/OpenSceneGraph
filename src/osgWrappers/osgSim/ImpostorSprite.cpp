@@ -165,23 +165,23 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
 	          Properties::VIRTUAL,
-	          __bool__supports__C5_AttributeFunctor_R1,
-	          "Return true, osg::ImpostorSprite does support accept(AttributeFunctor&). ",
+	          __bool__supports__C5_Drawable_AttributeFunctor_R1,
+	          "Return true, osg::ImpostorSprite does support accept(Drawable::AttributeFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, af,
 	          Properties::VIRTUAL,
-	          __void__accept__AttributeFunctor_R1,
-	          "Accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          __void__accept__Drawable_AttributeFunctor_R1,
+	          "Accept an Drawable::AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x,
 	          Properties::VIRTUAL,
-	          __bool__supports__C5_ConstAttributeFunctor_R1,
-	          "Return true, osg::ImpostorSprite does support accept(ConstAttributeFunctor&). ",
+	          __bool__supports__C5_Drawable_ConstAttributeFunctor_R1,
+	          "Return true, osg::ImpostorSprite does support accept(Drawable::ConstAttributeFunctor&). ",
 	          "");
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
 	          Properties::VIRTUAL,
-	          __void__accept__ConstAttributeFunctor_R1,
-	          "Accept a ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          __void__accept__Drawable_ConstAttributeFunctor_R1,
+	          "Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
 	          Properties::VIRTUAL,

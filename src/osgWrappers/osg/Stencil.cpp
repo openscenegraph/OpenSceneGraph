@@ -92,8 +92,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Stencil)
 	          "");
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
 	          Properties::VIRTUAL,
-	          __bool__getModeUsage__ModeUsage_R1,
-	          "",
+	          __bool__getModeUsage__StateAttribute_ModeUsage_R1,
+	          "Return the modes associated with this StateAttribute. ",
 	          "");
 	I_Method3(void, setFunction, IN, osg::Stencil::Function, func, IN, int, ref, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,

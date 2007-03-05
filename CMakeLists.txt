@@ -141,7 +141,7 @@ ENDIF(DYNAMIC_OPENSCENEGRAPH)
 ADD_SUBDIRECTORY(src)
 
 # OSG Applications
-OPTION(BUILD_OSG_APPLICATIONS "Enable to build OSG Applications (e.g. osgviewer)" OFF)
+OPTION(BUILD_OSG_APPLICATIONS "Enable to build OSG Applications (e.g. osgviewer)" ON)
 IF   (BUILD_OSG_APPLICATIONS)
 	ADD_SUBDIRECTORY(applications)
 ENDIF(BUILD_OSG_APPLICATIONS)

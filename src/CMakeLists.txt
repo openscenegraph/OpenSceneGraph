@@ -15,7 +15,7 @@ SUBDIRS(
 	osgTerrain
 )
 
-OPTION(BUILD_OSG_PLUGINS "Enable to build OSG Plugins" OFF)
+OPTION(BUILD_OSG_PLUGINS "Enable to build OSG Plugins" ON)
 IF   (BUILD_OSG_PLUGINS)
 	ADD_SUBDIRECTORY(osgPlugins)
 ENDIF(BUILD_OSG_PLUGINS)

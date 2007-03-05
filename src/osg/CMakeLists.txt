@@ -35,6 +35,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/CollectOccludersVisitor
 	${HEADER_PATH}/ColorMask
 	${HEADER_PATH}/ColorMatrix
+	${HEADER_PATH}/ComputeBoundsVisitor
 	${HEADER_PATH}/ConvexPlanarOccluder
 	${HEADER_PATH}/ConvexPlanarPolygon
 	${HEADER_PATH}/CoordinateSystemNode
@@ -187,6 +188,7 @@ ADD_LIBRARY(${LIB_NAME}
 	CollectOccludersVisitor.cpp
 	ColorMask.cpp
 	ColorMatrix.cpp
+	ComputeBoundsVisitor.cpp
 	ConvexPlanarOccluder.cpp
 	ConvexPlanarPolygon.cpp
 	CoordinateSystemNode.cpp

@@ -65,7 +65,7 @@ class OSG_EXPORT TexGen : public StateAttribute
             return 0; // Passed all the above comparison macros, so must be equal.
         }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesTextureMode(GL_TEXTURE_GEN_S);
             usage.usesTextureMode(GL_TEXTURE_GEN_T);

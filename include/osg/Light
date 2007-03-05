@@ -69,7 +69,7 @@ class OSG_EXPORT Light : public StateAttribute
 
         virtual unsigned int getMember() const { return _lightnum; }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_LIGHT0+_lightnum);
             return true;

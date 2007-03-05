@@ -46,7 +46,7 @@ class OSG_EXPORT LineStipple : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
         
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_LINE_STIPPLE);
             return true;

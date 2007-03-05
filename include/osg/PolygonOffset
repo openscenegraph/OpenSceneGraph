@@ -49,7 +49,7 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_POLYGON_OFFSET_FILL);
             usage.usesMode(GL_POLYGON_OFFSET_LINE);

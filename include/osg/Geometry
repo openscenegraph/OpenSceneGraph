@@ -338,17 +338,17 @@ class OSG_EXPORT Geometry : public Drawable
         */
         virtual void drawImplementation(State& state) const;
 
-        /** Return true, osg::Geometry does support accept(AttributeFunctor&). */
-        virtual bool supports(const AttributeFunctor&) const { return true; }
+        /** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
+        virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }
 
-        /** Accept an AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
-        virtual void accept(AttributeFunctor& af);
+        /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
+        virtual void accept(Drawable::AttributeFunctor& af);
 
-        /** Return true, osg::Geometry does support accept(ConstAttributeFunctor&). */
-        virtual bool supports(const ConstAttributeFunctor&) const { return true; }
+        /** Return true, osg::Geometry does support accept(Drawable::ConstAttributeFunctor&). */
+        virtual bool supports(const Drawable::ConstAttributeFunctor&) const { return true; }
 
-        /** Accept a ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
-        virtual void accept(ConstAttributeFunctor& af) const;
+        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
+        virtual void accept(Drawable::ConstAttributeFunctor& af) const;
 
         /** Return true, osg::Geometry does support accept(PrimitiveFunctor&). */
         virtual bool supports(const PrimitiveFunctor&) const { return true; }

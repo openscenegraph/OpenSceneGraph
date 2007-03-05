@@ -54,7 +54,7 @@ class OSG_EXPORT CullFace : public StateAttribute
             return 0; // passed all the above comparison macro's, must be equal.
         }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_CULL_FACE);
             return true;

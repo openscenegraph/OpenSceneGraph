@@ -63,7 +63,7 @@ class OSG_EXPORT ClipPlane : public StateAttribute
 
         virtual unsigned int getMember() const { return _clipPlaneNum; }
 
-        virtual bool getModeUsage(ModeUsage& usage) const
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode((GLMode)(GL_CLIP_PLANE0+_clipPlaneNum));
             return true;

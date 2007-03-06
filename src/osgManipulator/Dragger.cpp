@@ -18,8 +18,8 @@
 using namespace osgManipulator;
 
 PointerInfo::PointerInfo():
-    _pixel_x(0),
-    _pixel_y(0),
+    _pixel_x(0.0),
+    _pixel_y(0.0),
     _camera(0)
 {
     _hitIter = _hitList.begin();

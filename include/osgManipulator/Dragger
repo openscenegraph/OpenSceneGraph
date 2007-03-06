@@ -103,7 +103,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
             if (needToResetHitIter) _hitIter = _hitList.begin();
         }
 
-        void setMousePosition(int pixel_x, int pixel_y)
+        void setMousePosition(float pixel_x, float pixel_y)
         {   
             _pixel_x = pixel_x;
             _pixel_y = pixel_y;
@@ -111,7 +111,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
     public:
 
-        int _pixel_x, _pixel_y;
+        float _pixel_x, _pixel_y;
         osg::Camera* _camera;
 
         IntersectionList _hitList;

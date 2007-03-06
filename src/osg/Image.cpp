@@ -195,9 +195,23 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_RGBA): return 4;
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;
+        case(GL_LUMINANCE4): return 1;
+        case(GL_LUMINANCE8): return 1;
+        case(GL_LUMINANCE12): return 1;
+        case(GL_LUMINANCE16): return 1;
         case(GL_LUMINANCE16F_ARB): return 1;
         case(GL_LUMINANCE32F_ARB): return 1;
+        case(GL_LUMINANCE4_ALPHA4): return 2;
+        case(GL_LUMINANCE6_ALPHA2): return 2;
+        case(GL_LUMINANCE8_ALPHA8): return 2;
+        case(GL_LUMINANCE12_ALPHA4): return 2;
+        case(GL_LUMINANCE12_ALPHA12): return 2;
+        case(GL_LUMINANCE16_ALPHA16): return 2;
         case(GL_INTENSITY): return 1;
+        case(GL_INTENSITY4): return 1;
+        case(GL_INTENSITY8): return 1;
+        case(GL_INTENSITY12): return 1;
+        case(GL_INTENSITY16): return 1;
         case(GL_INTENSITY16F_ARB): return 1;
         case(GL_INTENSITY32F_ARB): return 1;
         case(GL_LUMINANCE_ALPHA): return 2;
@@ -248,6 +262,25 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_COMPRESSED_RGBA):
             notify(WARN)<<"Image::computePixelSizeInBits(format,type) : cannot compute correct size of compressed format ("<<format<<") returning 0."<<std::endl;
             return 0;
+        default: break;
+    }
+
+    switch(format)
+    {
+        case(GL_LUMINANCE4): return 4;
+        case(GL_LUMINANCE8): return 8;
+        case(GL_LUMINANCE12): return 12;
+        case(GL_LUMINANCE16): return 16;
+        case(GL_LUMINANCE4_ALPHA4): return 8;
+        case(GL_LUMINANCE6_ALPHA2): return 8;
+        case(GL_LUMINANCE8_ALPHA8): return 16;
+        case(GL_LUMINANCE12_ALPHA4): return 16;
+        case(GL_LUMINANCE12_ALPHA12): return 24;
+        case(GL_LUMINANCE16_ALPHA16): return 32;
+        case(GL_INTENSITY4): return 4;
+        case(GL_INTENSITY8): return 8;
+        case(GL_INTENSITY12): return 12;
+        case(GL_INTENSITY16): return 16;
         default: break;
     }
 

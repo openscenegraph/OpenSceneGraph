@@ -21,7 +21,9 @@
 # #include <OpenThreads/Thread>
 
 # Try the user's environment request before anything else.
+
 FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+  ${CMAKE_INSTALL_PREFIX}/include
 	$ENV{OPENTHREADS_DIR}/include
 	$ENV{OSG_DIR}/include
 	~/Library/Frameworks
@@ -37,8 +39,9 @@ FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY 
-	NAMES OpenThreads OpenThreadsWin32
+	NAMES OpenThreads OpenThreadsd OpenThreadsWin32 OpenThreadsWin32d
 	PATHS
+	${CMAKE_INSTALL_PREFIX}/lib
 	$ENV{OPENTHREADS_DIR}/lib
 	$ENV{OSG_DIR}/lib
 	~/Library/Frameworks

@@ -1,55 +1,119 @@
+#---------------------------------------------------
+# OSG CMAKE SUPPORT 
+# (C) by Michael Wagner, mtw@shared-reality.com 2005
+#---------------------------------------------------
 
-PROJECT(OSG_PLUGINS)
+PROJECT(OSG_PLUGINS_MASTER)
 
-SUBDIRS(
-	3dc
-	ac3d
-	bmp
-	bsp
-	dds
-	directx
-	dw
-	dxf
-	ESRIShape
-	flt
-	freetype
-	geo
-	gif
-	hdr
-#	Inventor
-	ive
-#	jp2
-	jpeg
-	lib3ds
-	logo
-	lwo
-	lws
-	md2
-	net
-	normals
-	obj
-	OpenFlight
-	osg
-	osga
-	osgFX
-	osgParticle
-	osgSim
-	osgText
-	osgtgz
-#	pfb
-	pic
-	png
-	pnm
-	quicktime
-	rgb
-	rot
-	scale
-	stl
-	tga
-	tgz
-	tiff
-	trans
-	txp
-#	xine
-	zip
-)
+
+SET(LIBRARY_OUTPUT_PATH "${LIBRARY_OUTPUT_PATH}/osgPlugins")
+
+
+OPTION(BUILD_OSG_COMMON_PLUGINS "Build with Common  Plugins" TRUE)
+OPTION(BUILD_OSG_IMAGE_PLUGINS "Build with Imagege texture Plugins" TRUE)
+OPTION(BUILD_OSG_3D_PLUGINS "Build with 3D formats Plugins" TRUE)
+OPTION(BUILD_OSG_OTHER_PLUGINS "Build with other formats Plugins" TRUE)
+OPTION(BUILD_OSG_NET_PLUGINS "Build with net Plugin" TRUE)
+
+IF(NOT MINGW)
+	SET(CMAKE_SHARED_MODULE_PREFIX "")
+ENDIF(NOT MINGW)
+
+INCLUDE(OsgMacroUtils)
+
+	
+IF (BUILD_OSG_COMMON_PLUGINS)
+	ADD_OSG_PLUGIN(osgFX osgFX)
+	ADD_OSG_PLUGIN(osgParticle osgParticle)
+	ADD_OSG_PLUGIN(osgSim osgSim)
+	ADD_OSG_PLUGIN(osgText osgText)
+	ADD_OSG_PLUGIN(osga)
+	ADD_OSG_PLUGIN(rot)
+	ADD_OSG_PLUGIN(scale)
+	ADD_OSG_PLUGIN(trans)
+	
+	ADD_OSG_PLUGIN(osg osgSim osgFX osgText)
+	ADD_OSG_PLUGIN(ive osgSim osgFX osgText)
+ENDIF (BUILD_OSG_COMMON_PLUGINS)
+
+IF (BUILD_OSG_IMAGE_PLUGINS)
+	ADD_OSG_PLUGIN(rgb)
+	ADD_OSG_PLUGIN(bmp)
+	ADD_OSG_PLUGIN(dds)
+	ADD_OSG_PLUGIN(tga)
+	ADD_OSG_PLUGIN(hdr)
+	
+	IF(JPEG_FOUND)
+		SUBDIRS( jpeg )
+	ENDIF(JPEG_FOUND)
+	IF(GIF_FOUND)
+		SUBDIRS( gif )
+	ENDIF(GIF_FOUND)
+	IF(PNG_FOUND)
+		SUBDIRS( png )
+	ENDIF(PNG_FOUND)
+	IF(TIFF_FOUND)
+		SUBDIRS( tiff )
+	ENDIF(TIFF_FOUND)
+
+ENDIF (BUILD_OSG_IMAGE_PLUGINS)
+
+IF (BUILD_OSG_3D_PLUGINS)
+	ADD_OSG_PLUGIN(3dc)
+	#ADD_OSG_PLUGIN(Inventor)
+	#ADD_OSG_PLUGIN(lwo osgFX)
+	ADD_OSG_PLUGIN(directx)
+	ADD_OSG_PLUGIN(dw)
+	ADD_OSG_PLUGIN(dxf)
+	#ADD_OSG_PLUGIN(flt osgSim)
+	ADD_OSG_PLUGIN(OpenFlight osgSim)
+	ADD_OSG_PLUGIN(geo osgSim)
+	ADD_OSG_PLUGIN(obj)
+	#ADD_OSG_PLUGIN(pfb)
+	ADD_OSG_PLUGIN(pic)
+	ADD_OSG_PLUGIN(stl)
+	ADD_OSG_PLUGIN(lib3ds )
+	ADD_OSG_PLUGIN(ac3d)
+ENDIF (BUILD_OSG_3D_PLUGINS)
+
+IF (BUILD_OSG_OTHER_PLUGINS)
+	ADD_OSG_PLUGIN(logo)
+	ADD_OSG_PLUGIN(lws)
+	ADD_OSG_PLUGIN(md2)
+	ADD_OSG_PLUGIN(osgtgz)
+	#ADD_OSG_PLUGIN(quicktime)
+	ADD_OSG_PLUGIN(tgz)
+	#ADD_OSG_PLUGIN(txp)
+	#ADD_OSG_PLUGIN(xine)
+	ADD_OSG_PLUGIN(ESRIShape)
+
+	IF(FREETYPE_FOUND)
+		#SUBDIRS( freetype )
+	ENDIF(FREETYPE_FOUND)
+	IF(ZLIB_FOUND)
+		#SUBDIRS( zlib )
+	ENDIF(ZLIB_FOUND)
+
+ENDIF (BUILD_OSG_OTHER_PLUGINS)
+
+
+#---------------------------------------------------
+# ADD ALL PLUGINS 
+#---------------------------------------------------
+
+#ADD_OSG_PLUGIN(ESRIShape)
+
+
+IF (BUILD_OSG_NET_PLUGINS)
+	ADD_OSG_PLUGIN(net ${OSG_SOCKET_LIBS})
+ENDIF (BUILD_OSG_NET_PLUGINS)
+
+##########to get all the variables of Cmake
+GET_CMAKE_PROPERTY(MYVARS VARIABLES)
+FOREACH(myvar ${MYVARS})
+	FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/AllVariables.txt
+		"${myvar} -->${${myvar}}<-\n"
+	)
+ENDFOREACH(myvar)
+
+	

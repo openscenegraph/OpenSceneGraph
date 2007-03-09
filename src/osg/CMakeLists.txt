@@ -294,6 +294,6 @@ TARGET_LINK_LIBRARIES(${LIB_NAME}
 )
 
 # This file should not be built, but should be in the project file
-LIST(APPEND LIB_PUBLIC_HEADERS Matrix_implementation.cpp)
+# LIST(APPEND LIB_PUBLIC_HEADERS Matrix_implementation.cpp)
 
 INCLUDE(ModuleInstall OPTIONAL)

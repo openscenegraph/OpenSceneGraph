@@ -72,11 +72,32 @@ INCLUDE_DIRECTORIES(
 # Platform specific definitions
 
 IF(WIN32)
+	#needed for net plugin
+	SET (OSG_SOCKET_LIBS wsock32.lib)
 	# Both Cygwin and Msys need -DNOMINMAX ???
 	IF(UNIX)
 		ADD_DEFINITIONS(-DNOMINMAX)
 	ENDIF(UNIX)
 ENDIF(WIN32)
+
+########################################################################################################
+##### these were settings located in SetupCommon.cmake used in Luigi builds.... find out what are useful
+########################################################################################################
+#luigi#SET(CMAKE_VERBOSE_MAKEFILE TRUE)
+#luigi#SET(CMAKE_SKIP_RPATH TRUE)
+#luigi#SET(CMAKE_SKIP_RULE_DEPENDENCY TRUE)
+#luigi#IF(UNIX)
+#luigi#	LIST_CONTAINS(contains "g++" ${CMAKE_CXX_COMPILER_LIST})
+#luigi#	IF (contains)
+#luigi#		MESSAGE(${MY_MESSAGE_DEFAULT} "${CMAKE_CURRENT_LIST_FILE}:${CMAKE_CURRENT_LIST_LINE} setting  CMAKE_CXX_COMPILER to g++")
+#luigi#		SET(CMAKE_CXX_COMPILER "g++")
+#luigi#		SET(CMAKE_CXX_COMPILER_LOADED 2)
+#luigi#		SET(CMAKE_CXX_COMPILER_WORKS 2)
+#luigi#	ENDIF (contains)
+#luigi#	SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
+#luigi#	SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -gstabs")
+#luigi#ENDIF(UNIX)
+########################################################################################################
 
 
 

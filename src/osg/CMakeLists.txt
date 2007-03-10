@@ -134,7 +134,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Transform
 	${HEADER_PATH}/TriangleFunctor
 	${HEADER_PATH}/TriangleIndexFunctor
-	${HEADER_PATH}/TranderFunction
+	${HEADER_PATH}/TransferFunction
 	${HEADER_PATH}/Uniform
 	${HEADER_PATH}/Vec2
 	${HEADER_PATH}/Vec2b

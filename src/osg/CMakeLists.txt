@@ -134,6 +134,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Transform
 	${HEADER_PATH}/TriangleFunctor
 	${HEADER_PATH}/TriangleIndexFunctor
+	${HEADER_PATH}/TranderFunction
 	${HEADER_PATH}/Uniform
 	${HEADER_PATH}/Vec2
 	${HEADER_PATH}/Vec2b
@@ -277,6 +278,7 @@ ADD_LIBRARY(${LIB_NAME}
 	Texture3D.cpp
 	TextureCubeMap.cpp
 	TextureRectangle.cpp
+	TransferFunction.cpp
 	Timer.cpp
 	Transform.cpp
 	Uniform.cpp
@@ -292,8 +294,5 @@ TARGET_LINK_LIBRARIES(${LIB_NAME}
 	${OPENTHREADS_LIBRARY}
 	${OPENGL_LIBRARIES}
 )
-
-# This file should not be built, but should be in the project file
-# LIST(APPEND LIB_PUBLIC_HEADERS Matrix_implementation.cpp)
 
 INCLUDE(ModuleInstall OPTIONAL)

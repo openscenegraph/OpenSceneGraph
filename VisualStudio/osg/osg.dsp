@@ -600,6 +600,10 @@ SOURCE=..\..\src\osg\TextureRectangle.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osg\TransferFunction.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osg\Timer.cpp
 # End Source File
 # Begin Source File
@@ -1137,6 +1141,10 @@ SOURCE=..\..\Include\Osg\Transform
 # Begin Source File
 
 SOURCE=..\..\Include\Osg\TriangleFunctor
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\Include\Osg\TransferFunction
 # End Source File
 # Begin Source File
 

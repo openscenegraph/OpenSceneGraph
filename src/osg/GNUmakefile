@@ -113,6 +113,7 @@ CXXFILES =\
 	Texture.cpp\
 	TextureCubeMap.cpp\
 	TextureRectangle.cpp\
+	TransferFunction.cpp\
 	Timer.cpp\
 	Transform.cpp\
 	Uniform.cpp\

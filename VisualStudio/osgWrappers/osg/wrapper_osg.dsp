@@ -560,6 +560,10 @@ SOURCE=..\..\..\src\osgWrappers\osg\Timer.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osg\TransferFunction.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osg\Transform.cpp
 # End Source File
 

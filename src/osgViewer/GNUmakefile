@@ -16,6 +16,7 @@ CXXFILES = \
 ifeq ($(OS),Darwin)
   ifeq ($(USE_AGL),yes)
      CXXFILES += GraphicsWindowCarbon.cpp
+     LIBS     += -framework AGL
   else 
     ifeq ($(USE_CGL),yes)
        CXXFILES += GraphicsWindowCarbon.cpp

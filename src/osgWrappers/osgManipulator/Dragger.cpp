@@ -247,9 +247,9 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__addIntersection__C5_osg_NodePath_R1__osg_Vec3,
 	          "",
 	          "");
-	I_Method2(void, setMousePosition, IN, int, pixel_x, IN, int, pixel_y,
+	I_Method2(void, setMousePosition, IN, float, pixel_x, IN, float, pixel_y,
 	          Properties::NON_VIRTUAL,
-	          __void__setMousePosition__int__int,
+	          __void__setMousePosition__float__float,
 	          "",
 	          "");
 	I_SimpleProperty(osg::Camera *, Camera, 
@@ -261,8 +261,8 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	I_SimpleProperty(const osg::Matrix &, ViewMatrix, 
 	                 __C5_osg_Matrix_R1__getViewMatrix, 
 	                 0);
-	I_PublicMemberProperty(int, _pixel_x);
-	I_PublicMemberProperty(int, _pixel_y);
+	I_PublicMemberProperty(float, _pixel_x);
+	I_PublicMemberProperty(float, _pixel_y);
 	I_PublicMemberProperty(osg::Camera *, _camera);
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList, _hitList);
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList::iterator, _hitIter);

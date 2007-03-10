@@ -24,8 +24,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TransferFunction)
-	I_BaseType(osg::Object);
+BEGIN_VALUE_REFLECTOR(osg::TransferFunction)
 	I_Constructor0(____TransferFunction,
 	               "",
 	               "");
@@ -70,7 +69,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TransferFunction)
 	                 0);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TransferFunction1D)
+BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	I_BaseType(osg::TransferFunction);
 	I_Constructor0(____TransferFunction1D,
 	               "",
@@ -95,16 +94,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	          __unsigned_int__getNumberCellsX,
 	          "",
 	          "");
-	I_MethodWithDefaults3(osg::Vec4 &, getValue, IN, unsigned int, i, , IN, unsigned int, j, 0, IN, unsigned int, k, 0,
-	                      Properties::NON_VIRTUAL,
-	                      __osg_Vec4_R1__getValue__unsigned_int__unsigned_int__unsigned_int,
-	                      "",
-	                      "");
-	I_MethodWithDefaults3(const osg::Vec4 &, getValue, IN, unsigned int, i, , IN, unsigned int, j, 0, IN, unsigned int, k, 0,
-	                      Properties::NON_VIRTUAL,
-	                      __C5_osg_Vec4_R1__getValue__unsigned_int__unsigned_int__unsigned_int,
-	                      "",
-	                      "");
+	I_Method1(osg::Vec4 &, getValue, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec4_R1__getValue__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::Vec4 &, getValue, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getValue__unsigned_int,
+	          "",
+	          "");
 	I_SimpleProperty(unsigned int, NumberCellsX, 
 	                 __unsigned_int__getNumberCellsX, 
 	                 0);

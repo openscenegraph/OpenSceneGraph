@@ -4,7 +4,6 @@ SUBDIRS(
 	osgDB 
 	osgUtil 
 	osgText 
-	osgIntrospection
 	osgGA 
 	osgManipulator
 	osgSim
@@ -20,7 +19,8 @@ IF   (BUILD_OSG_PLUGINS)
 	ADD_SUBDIRECTORY(osgPlugins)
 ENDIF(BUILD_OSG_PLUGINS)
 
-OPTION(BUILD_OSG_WRAPPERS "Enable to build OSG Wrapper" OFF)
+OPTION(BUILD_OSG_WRAPPERS "Enable to build Introspection and Wrappers" OFF)
 IF   (BUILD_OSG_WRAPPERS)
+	ADD_SUBDIRECTORY(osgIntrospection)
 	ADD_SUBDIRECTORY(osgWrappers)
 ENDIF(BUILD_OSG_WRAPPERS)

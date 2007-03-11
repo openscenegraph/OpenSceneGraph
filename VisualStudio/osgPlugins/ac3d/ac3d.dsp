@@ -157,15 +157,15 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ac3d\ac3d.cpp
+SOURCE=..\..\..\src\osgPlugins\ac\ac3d.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ac3d\Exception.cpp
+SOURCE=..\..\..\src\osgPlugins\ac\Exception.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ac3d\Geode.cpp
+SOURCE=..\..\..\src\osgPlugins\ac\Geode.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -173,11 +173,11 @@ SOURCE=..\..\..\src\osgPlugins\ac3d\Geode.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ac3d\Exception.h
+SOURCE=..\..\..\src\osgPlugins\ac\Exception.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\ac3d\Geode.h
+SOURCE=..\..\..\src\osgPlugins\ac\Geode.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

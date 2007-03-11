@@ -58,18 +58,18 @@ WRAPPER_DIRS = \
 
 PLUGIN_DIRS = \
 	3dc \
-	ac3d \
+	ac \
 	bmp \
 	bsp \
 	dds \
-	directx \
+	x \
 	dw \
 	dxf \
-	ESRIShape \
+	shp \
 	flt \
 	hdr \
 	ive \
-	lib3ds \
+	3ds \
 	logo \
 	lwo \
 	lws \

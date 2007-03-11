@@ -157,19 +157,19 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\directx\directx.cpp
+SOURCE=..\..\..\src\osgPlugins\x\directx.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\directx\types.cpp
+SOURCE=..\..\..\src\osgPlugins\x\types.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\directx\mesh.cpp
+SOURCE=..\..\..\src\osgPlugins\x\mesh.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\src\osgPlugins\directx\ReaderWriterDirectX.cpp
+SOURCE=..\..\..\src\osgPlugins\x\ReaderWriterDirectX.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -177,15 +177,15 @@ SOURCE=..\..\..\src\osgPlugins\directx\ReaderWriterDirectX.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\directx\directx.h
+SOURCE=..\..\..\Src\osgPlugins\x\directx.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\directx\types.h
+SOURCE=..\..\..\Src\osgPlugins\x\types.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\directx\mesh.h
+SOURCE=..\..\..\Src\osgPlugins\x\mesh.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

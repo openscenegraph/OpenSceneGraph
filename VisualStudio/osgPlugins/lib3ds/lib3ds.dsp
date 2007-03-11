@@ -157,83 +157,83 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\atmosphere.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\atmosphere.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\background.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\background.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Camera.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Camera.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Chunk.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Chunk.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Ease.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Ease.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\File.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\File.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Lib3ds_float.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Lib3ds_float.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Light.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Light.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Material.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Material.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Matrix.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Matrix.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Mesh.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Mesh.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Node.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Node.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Quat.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Quat.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\ReaderWriter3DS.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\ReaderWriter3DS.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\readwrite.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\readwrite.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Shadow.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Shadow.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Tcb.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Tcb.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Tracks.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Tracks.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Vector.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Vector.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Viewport.cpp
+SOURCE=..\..\..\Src\osgPlugins\3ds\Viewport.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -241,87 +241,87 @@ SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Viewport.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\atmosphere.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\atmosphere.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\background.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\background.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Camera.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Camera.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Chunk.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Chunk.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\chunktable.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\chunktable.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Ease.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Ease.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\File.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\File.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Lib3ds_float.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Lib3ds_float.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Light.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Light.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Material.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Material.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Matrix.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Matrix.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Mesh.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Mesh.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Node.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Node.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Quat.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Quat.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\readwrite.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\readwrite.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Shadow.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Shadow.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Tcb.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Tcb.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Tracks.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Tracks.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Types.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Types.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Vector.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Vector.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\..\Src\osgPlugins\Lib3ds\Viewport.h
+SOURCE=..\..\..\Src\osgPlugins\3ds\Viewport.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

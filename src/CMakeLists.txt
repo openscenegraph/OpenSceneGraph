@@ -3,15 +3,15 @@ SUBDIRS(
 	osg
 	osgDB 
 	osgUtil 
-	osgText 
 	osgGA 
+	osgText 
 	osgManipulator
 	osgSim
 	osgFX
 	osgParticle
 	osgShadow
-	osgViewer
 	osgTerrain
+	osgViewer
 )
 
 OPTION(BUILD_OSG_PLUGINS "Enable to build OSG Plugins" ON)

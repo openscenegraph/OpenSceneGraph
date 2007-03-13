@@ -25,6 +25,7 @@ FIND_PATH(GIFLIB_INCLUDE_DIR gif_lib.h
 	/opt/csw/include # Blastwave
 	/opt/include
 	[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
+	/usr/freeware/include
 )
 
 FIND_LIBRARY(GIFLIB_LIBRARY 
@@ -44,6 +45,7 @@ FIND_LIBRARY(GIFLIB_LIBRARY
 	/opt/csw/lib
 	/opt/lib
 	[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+	/usr/freeware/lib64
 )
 
 SET(GIFLIB_FOUND "NO")

@@ -8,6 +8,8 @@ SET(LIB_NAME osgTerrain)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Export
+	${HEADER_PATH}/Locator
+	${HEADER_PATH}/Layer
 	${HEADER_PATH}/TerrainNode
 	${HEADER_PATH}/TerrainTechnique
 	${HEADER_PATH}/Version
@@ -17,6 +19,8 @@ SET(LIB_PUBLIC_HEADERS
 ADD_LIBRARY(${LIB_NAME}
 	${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
 	${LIB_PUBLIC_HEADERS}
+	Layer.cpp
+	Locator.cpp
 	TerrainNode.cpp
 	TerrainTechnique.cpp
 	Version.cpp

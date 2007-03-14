@@ -11,29 +11,29 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/HeightFieldNode>
+#include <osgTerrain/TerrainNode>
 
 using namespace osg;
 using namespace osgTerrain;
 
-HeightFieldNode::HeightFieldNode()
+TerrainNode::TerrainNode()
 {
     setNumChildrenRequiringUpdateTraversal(1);
 }
 
-HeightFieldNode::HeightFieldNode(const HeightFieldNode& terrain,const osg::CopyOp& copyop):
+TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _heightField(terrain._heightField)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
-    if (terrain.getRenderer()) setRenderer(dynamic_cast<HeightFieldRenderer*>(terrain.getRenderer()->cloneType()));
+    if (terrain.getRenderer()) setRenderer(dynamic_cast<TerrainTechnique*>(terrain.getRenderer()->cloneType()));
 }
 
-HeightFieldNode::~HeightFieldNode()
+TerrainNode::~TerrainNode()
 {
 }
 
-void HeightFieldNode::traverse(osg::NodeVisitor& nv)
+void TerrainNode::traverse(osg::NodeVisitor& nv)
 {
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
@@ -60,18 +60,18 @@ void HeightFieldNode::traverse(osg::NodeVisitor& nv)
     Group::traverse(nv);
 }
 
-void HeightFieldNode::setHeightField(osg::HeightField* heightField)
+void TerrainNode::setHeightField(osg::HeightField* heightField)
 {
     _heightField = heightField;
     if (_renderer.valid()) _renderer->initialize();
 }
 
-void HeightFieldNode::heightFieldHasBeenModified()
+void TerrainNode::heightFieldHasBeenModified()
 {
     if (_renderer.valid()) _renderer->heightFieldHasBeenModified();
 }
 
-void HeightFieldNode::setRenderer(osgTerrain::HeightFieldRenderer* renderer)
+void TerrainNode::setRenderer(osgTerrain::TerrainTechnique* renderer)
 {
     // need to figure out how to ensure that only one renderer is
     // used between terrain nodes... issue a warning?
@@ -79,12 +79,12 @@ void HeightFieldNode::setRenderer(osgTerrain::HeightFieldRenderer* renderer)
     
     if (_renderer.valid())
     {
-        _renderer->_heightFieldNode = this;
+        _renderer->_terrainNode = this;
         _renderer->initialize();
     }
 }
 
-void HeightFieldNode::computeNormalMap()
+void TerrainNode::computeNormalMap()
 {
     if (_heightField.valid())
     {

@@ -11,21 +11,21 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/HeightFieldRenderer>
+#include <osgTerrain/TerrainTechnique>
 
 using namespace osgTerrain;
 
-HeightFieldRenderer::HeightFieldRenderer():
-    _heightFieldNode(0)
+TerrainTechnique::TerrainTechnique():
+    _terrainNode(0)
 {
 }
 
-HeightFieldRenderer::HeightFieldRenderer(const HeightFieldRenderer& HeightFieldRenderer,const osg::CopyOp& copyop):
-    osg::Object(HeightFieldRenderer,copyop),
-    _heightFieldNode(0)
+TerrainTechnique::TerrainTechnique(const TerrainTechnique& TerrainTechnique,const osg::CopyOp& copyop):
+    osg::Object(TerrainTechnique,copyop),
+    _terrainNode(0)
 {
 }
 
-HeightFieldRenderer::~HeightFieldRenderer()
+TerrainTechnique::~TerrainTechnique()
 {
 }

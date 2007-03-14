@@ -155,6 +155,14 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\..\src\osgTerrain\Layer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\osgTerrain\Locator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgTerrain\TerrainNode.cpp
 # End Source File
 # Begin Source File
@@ -172,6 +180,14 @@ SOURCE=..\..\src\osgTerrain\Version.cpp
 # Begin Source File
 
 SOURCE=..\..\include\osgTerrain\Export
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgTerrain\Layer
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgTerrain\Locator
 # End Source File
 # Begin Source File
 

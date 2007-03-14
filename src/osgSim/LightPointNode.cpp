@@ -140,11 +140,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
     t1 = timer.tick();
 #endif
 
-    osgUtil::CullVisitor* cv = NULL;
-    if (typeid(nv)==typeid(osgUtil::CullVisitor))
-    {
-        cv = static_cast<osgUtil::CullVisitor*>(&nv);
-    }
+    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
     
 #ifdef USE_TIMER
     t2 = timer.tick();

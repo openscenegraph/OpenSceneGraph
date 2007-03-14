@@ -88,6 +88,7 @@ ADD_OSG_EXAMPLE( osgsimple )
 ##################################################
 ADD_OSG_EXAMPLE( osgsimplifier )
 ADD_OSG_EXAMPLE( osgsimulation osgSim osgGA)
+ADD_OSG_EXAMPLE( osgterrain osgTerrain)
 ADD_OSG_EXAMPLE( osgslice )
 ADD_OSG_EXAMPLE( osgspacewarp )
 ADD_OSG_EXAMPLE( osgspheresegment osgSim osgParticle)

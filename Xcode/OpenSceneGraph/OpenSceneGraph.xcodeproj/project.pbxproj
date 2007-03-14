@@ -482,8 +482,8 @@
 		000A28FF06CAFE60009EE43A /* osgprerender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A28FC06CAFE5F009EE43A /* osgprerender.cpp */; };
 		000A291106CAFF80009EE43A /* osgprerendercubemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A290E06CAFF7F009EE43A /* osgprerendercubemap.cpp */; };
 		000A291F06CB0128009EE43A /* osgreflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A291C06CB0127009EE43A /* osgreflect.cpp */; };
-		001852A0078C583400D3FC44 /* HeightFieldNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529C078C583000D3FC44 /* HeightFieldNode.cpp */; };
-		001852A1078C583400D3FC44 /* HeightFieldRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529D078C583200D3FC44 /* HeightFieldRenderer.cpp */; };
+		001852A0078C583400D3FC44 /* TerrainNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529C078C583000D3FC44 /* TerrainNode.cpp */; };
+		001852A1078C583400D3FC44 /* TerrainTechnique.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529D078C583200D3FC44 /* TerrainTechnique.cpp */; };
 		001852A2078C583400D3FC44 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529E078C583300D3FC44 /* Version.cpp */; };
 		001D0006065AA4BD003310BF /* atmosphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFD9065AA4BD003310BF /* atmosphere.cpp */; };
 		001D0007065AA4BD003310BF /* atmosphere.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFDA065AA4BD003310BF /* atmosphere.h */; };
@@ -1587,8 +1587,8 @@
 		009DA001081D78E7001FA987 /* MultiTextureControl in Headers */ = {isa = PBXBuildFile; fileRef = 009D9FFF081D78C4001FA987 /* MultiTextureControl */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA003081D7900001FA987 /* MultiTextureControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 009DA002081D7900001FA987 /* MultiTextureControl.cpp */; };
 		009DA015081D7999001FA987 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = 0018528A078C57A100D3FC44 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
-		009DA016081D7999001FA987 /* HeightFieldNode in Headers */ = {isa = PBXBuildFile; fileRef = 0018528B078C57A300D3FC44 /* HeightFieldNode */; settings = {ATTRIBUTES = (Public, ); }; };
-		009DA017081D7999001FA987 /* HeightFieldRenderer in Headers */ = {isa = PBXBuildFile; fileRef = 0018528C078C57A400D3FC44 /* HeightFieldRenderer */; settings = {ATTRIBUTES = (Public, ); }; };
+		009DA016081D7999001FA987 /* TerrainNode in Headers */ = {isa = PBXBuildFile; fileRef = 0018528B078C57A300D3FC44 /* TerrainNode */; settings = {ATTRIBUTES = (Public, ); }; };
+		009DA017081D7999001FA987 /* TerrainTechnique in Headers */ = {isa = PBXBuildFile; fileRef = 0018528C078C57A400D3FC44 /* TerrainTechnique */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA018081D7999001FA987 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 0018528D078C57A500D3FC44 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
 		009DA0CB081D7AB7001FA987 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		009DA0CC081D7AB7001FA987 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -4830,11 +4830,11 @@
 		000A290E06CAFF7F009EE43A /* osgprerendercubemap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgprerendercubemap.cpp; sourceTree = "<group>"; };
 		000A291C06CB0127009EE43A /* osgreflect.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgreflect.cpp; sourceTree = "<group>"; };
 		0018528A078C57A100D3FC44 /* Export */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Export; path = ../../include/osgTerrain/Export; sourceTree = SOURCE_ROOT; };
-		0018528B078C57A300D3FC44 /* HeightFieldNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = HeightFieldNode; path = ../../include/osgTerrain/HeightFieldNode; sourceTree = SOURCE_ROOT; };
-		0018528C078C57A400D3FC44 /* HeightFieldRenderer */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = HeightFieldRenderer; path = ../../include/osgTerrain/HeightFieldRenderer; sourceTree = SOURCE_ROOT; };
+		0018528B078C57A300D3FC44 /* TerrainNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TerrainNode; path = ../../include/osgTerrain/TerrainNode; sourceTree = SOURCE_ROOT; };
+		0018528C078C57A400D3FC44 /* TerrainTechnique */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TerrainTechnique; path = ../../include/osgTerrain/TerrainTechnique; sourceTree = SOURCE_ROOT; };
 		0018528D078C57A500D3FC44 /* Version */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Version; path = ../../include/osgTerrain/Version; sourceTree = SOURCE_ROOT; };
-		0018529C078C583000D3FC44 /* HeightFieldNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = HeightFieldNode.cpp; path = ../../src/osgTerrain/HeightFieldNode.cpp; sourceTree = SOURCE_ROOT; };
-		0018529D078C583200D3FC44 /* HeightFieldRenderer.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = HeightFieldRenderer.cpp; path = ../../src/osgTerrain/HeightFieldRenderer.cpp; sourceTree = SOURCE_ROOT; };
+		0018529C078C583000D3FC44 /* TerrainNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TerrainNode.cpp; path = ../../src/osgTerrain/TerrainNode.cpp; sourceTree = SOURCE_ROOT; };
+		0018529D078C583200D3FC44 /* TerrainTechnique.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TerrainTechnique.cpp; path = ../../src/osgTerrain/TerrainTechnique.cpp; sourceTree = SOURCE_ROOT; };
 		0018529E078C583300D3FC44 /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgTerrain/Version.cpp; sourceTree = SOURCE_ROOT; };
 		001D0000065AA4BD003310BF /* tracks.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = tracks.h; path = ../../src/osgPlugins/lib3ds/tracks.h; sourceTree = SOURCE_ROOT; };
 		001D0001065AA4BD003310BF /* types.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = types.h; path = ../../src/osgPlugins/lib3ds/types.h; sourceTree = SOURCE_ROOT; };
@@ -10784,8 +10784,8 @@
 		6320CCFE07845B7C00FE3D2C /* osgTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				0018529C078C583000D3FC44 /* HeightFieldNode.cpp */,
-				0018529D078C583200D3FC44 /* HeightFieldRenderer.cpp */,
+				0018529C078C583000D3FC44 /* TerrainNode.cpp */,
+				0018529D078C583200D3FC44 /* TerrainTechnique.cpp */,
 				0018529E078C583300D3FC44 /* Version.cpp */,
 			);
 			name = osgTerrain;
@@ -12748,8 +12748,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				009DA015081D7999001FA987 /* Export in Headers */,
-				009DA016081D7999001FA987 /* HeightFieldNode in Headers */,
-				009DA017081D7999001FA987 /* HeightFieldRenderer in Headers */,
+				009DA016081D7999001FA987 /* TerrainNode in Headers */,
+				009DA017081D7999001FA987 /* TerrainTechnique in Headers */,
 				009DA018081D7999001FA987 /* Version in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -18410,8 +18410,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001852A0078C583400D3FC44 /* HeightFieldNode.cpp in Sources */,
-				001852A1078C583400D3FC44 /* HeightFieldRenderer.cpp in Sources */,
+				001852A0078C583400D3FC44 /* TerrainNode.cpp in Sources */,
+				001852A1078C583400D3FC44 /* TerrainTechnique.cpp in Sources */,
 				001852A2078C583400D3FC44 /* Version.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

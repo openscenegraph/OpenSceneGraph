@@ -3,13 +3,13 @@ include $(TOPDIR)/Make/makedefs
 
 
 CXXFILES = \
-    HeightFieldNode.cpp\
-    HeightFieldRenderer.cpp\
+    TerrainNode.cpp\
+    TerrainTechnique.cpp\
     Version.cpp\
 
 DEF     += -DOSGTERRAIN_LIBRARY
 
-LIBS  +=  -losgFX -losgDB -losgUtil -losg $(GL_LIBS) $(OTHER_LIBS)
+LIBS  +=  -losgDB -losgUtil -losg $(GL_LIBS) $(OTHER_LIBS)
 
 TARGET_BASENAME = osgTerrain
 LIB = $(LIB_PREFIX)$(TARGET_BASENAME).$(LIB_EXT)

@@ -155,11 +155,11 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\..\src\osgTerrain\HeightFieldNode.cpp
+SOURCE=..\..\src\osgTerrain\TerrainNode.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\osgTerrain\HeightFieldRenderer.cpp
+SOURCE=..\..\src\osgTerrain\TerrainTechnique.cpp
 # End Source File
 # Begin Source File
 
@@ -175,7 +175,11 @@ SOURCE=..\..\include\osgTerrain\Export
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\osgTerrain\HeightFieldNode
+SOURCE=..\..\include\osgTerrain\TerrainNode
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgTerrain\TerrainTechnique
 # End Source File
 # Begin Source File
 

@@ -100,11 +100,19 @@ SOURCE=..\..\..\src\osgWrappers\osgTerrain\Export.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgTerrain\HeightFieldNode.cpp
+SOURCE=..\..\..\src\osgWrappers\osgTerrain\Layer.cpp
 # End Source File
 
 # Begin Source File
-SOURCE=..\..\..\src\osgWrappers\osgTerrain\HeightFieldRenderer.cpp
+SOURCE=..\..\..\src\osgWrappers\osgTerrain\Locator.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgTerrain\TerrainNode.cpp
+# End Source File
+
+# Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgTerrain\TerrainTechnique.cpp
 # End Source File
 
 # End Group

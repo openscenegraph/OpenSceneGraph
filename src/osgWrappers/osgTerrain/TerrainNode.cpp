@@ -15,8 +15,8 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Shape>
-#include <osgTerrain/HeightFieldNode>
-#include <osgTerrain/HeightFieldRenderer>
+#include <osgTerrain/TerrainNode>
+#include <osgTerrain/TerrainTechnique>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -26,13 +26,13 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldNode)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_BaseType(osg::Group);
-	I_Constructor0(____HeightFieldNode,
+	I_Constructor0(____TerrainNode,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____HeightFieldNode__C5_HeightFieldNode_R1__C5_osg_CopyOp_R1,
+	I_ConstructorWithDefaults2(IN, const osgTerrain::TerrainNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TerrainNode__C5_TerrainNode_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
@@ -73,7 +73,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldNode)
 	I_Method1(void, setHeightField, IN, osg::HeightField *, heightField,
 	          Properties::NON_VIRTUAL,
 	          __void__setHeightField__osg_HeightField_P1,
-	          "Set the HeightField for this HeightFieldNode. ",
+	          "Set the HeightField for this TerrainNode. ",
 	          "If a Renderer is attached then this will be notified. ");
 	I_Method0(osg::HeightField *, getHeightField,
 	          Properties::NON_VIRTUAL,
@@ -90,19 +90,19 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldNode)
 	          __void__heightFieldHasBeenModified,
 	          "Tell the Renderer that the height field has been modified, so that any cached data will need updating. ",
 	          "");
-	I_Method1(void, setRenderer, IN, osgTerrain::HeightFieldRenderer *, renderer,
+	I_Method1(void, setRenderer, IN, osgTerrain::TerrainTechnique *, renderer,
 	          Properties::NON_VIRTUAL,
-	          __void__setRenderer__osgTerrain_HeightFieldRenderer_P1,
+	          __void__setRenderer__osgTerrain_TerrainTechnique_P1,
 	          "Set the Renderer. ",
 	          "");
-	I_Method0(osgTerrain::HeightFieldRenderer *, getRenderer,
+	I_Method0(osgTerrain::TerrainTechnique *, getRenderer,
 	          Properties::NON_VIRTUAL,
-	          __HeightFieldRenderer_P1__getRenderer,
+	          __TerrainTechnique_P1__getRenderer,
 	          "Get the Renderer. ",
 	          "");
-	I_Method0(const osgTerrain::HeightFieldRenderer *, getRenderer,
+	I_Method0(const osgTerrain::TerrainTechnique *, getRenderer,
 	          Properties::NON_VIRTUAL,
-	          __C5_HeightFieldRenderer_P1__getRenderer,
+	          __C5_TerrainTechnique_P1__getRenderer,
 	          "Get the const Renderer. ",
 	          "");
 	I_Method1(void, setBaseTextureImage, IN, osg::Image *, image,
@@ -185,8 +185,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldNode)
 	I_SimpleProperty(osg::Image *, NormalMapImage, 
 	                 __osg_Image_P1__getNormalMapImage, 
 	                 __void__setNormalMapImage__osg_Image_P1);
-	I_SimpleProperty(osgTerrain::HeightFieldRenderer *, Renderer, 
-	                 __HeightFieldRenderer_P1__getRenderer, 
-	                 __void__setRenderer__osgTerrain_HeightFieldRenderer_P1);
+	I_SimpleProperty(osgTerrain::TerrainTechnique *, Renderer, 
+	                 __TerrainTechnique_P1__getRenderer, 
+	                 __void__setRenderer__osgTerrain_TerrainTechnique_P1);
 END_REFLECTOR
 

@@ -11,8 +11,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
-#include <osgTerrain/HeightFieldNode>
-#include <osgTerrain/HeightFieldRenderer>
+#include <osgTerrain/TerrainNode>
+#include <osgTerrain/TerrainTechnique>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
 
@@ -24,23 +24,23 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	I_BaseType(osg::Object);
-	I_Constructor0(____HeightFieldRenderer,
+	I_Constructor0(____TerrainTechnique,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldRenderer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____HeightFieldRenderer__C5_HeightFieldRenderer_R1__C5_osg_CopyOp_R1,
+	I_ConstructorWithDefaults2(IN, const osgTerrain::TerrainTechnique &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____TerrainTechnique__C5_TerrainTechnique_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
-	I_Method0(osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	I_Method0(osgTerrain::TerrainNode *, getTerrainNode,
 	          Properties::NON_VIRTUAL,
-	          __HeightFieldNode_P1__getHeightFieldNode,
+	          __TerrainNode_P1__getTerrainNode,
 	          "",
 	          "");
-	I_Method0(const osgTerrain::HeightFieldNode *, getHeightFieldNode,
+	I_Method0(const osgTerrain::TerrainNode *, getTerrainNode,
 	          Properties::NON_VIRTUAL,
-	          __C5_HeightFieldNode_P1__getHeightFieldNode,
+	          __C5_TerrainNode_P1__getTerrainNode,
 	          "",
 	          "");
 	I_Method0(void, initialize,
@@ -63,8 +63,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldRenderer)
 	          __void__cull__osgUtil_CullVisitor_P1,
 	          "",
 	          "");
-	I_SimpleProperty(osgTerrain::HeightFieldNode *, HeightFieldNode, 
-	                 __HeightFieldNode_P1__getHeightFieldNode, 
+	I_SimpleProperty(osgTerrain::TerrainNode *, TerrainNode, 
+	                 __TerrainNode_P1__getTerrainNode, 
 	                 0);
 END_REFLECTOR
 

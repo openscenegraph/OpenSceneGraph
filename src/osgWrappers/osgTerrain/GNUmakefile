@@ -3,8 +3,10 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	Export.cpp\
-	HeightFieldNode.cpp\
-	HeightFieldRenderer.cpp\
+	Layer.cpp\
+	Locator.cpp\
+	TerrainNode.cpp\
+	TerrainTechnique.cpp\
 
 LIBS   += -losgTerrain -losg -losgIntrospection -losgDB -losgUtil -losgFX  $(GL_LIBS) $(OTHER_LIBS)
 

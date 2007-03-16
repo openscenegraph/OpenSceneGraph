@@ -367,7 +367,7 @@ void GraphicsWindowX11::useCursor(bool cursorOn)
 
 }
 
-void GraphicsWindowX11::init()
+void GraphicsWindowX11::init(WindowData* inheritedWindowData)
 {
     if (_initialized) return;
 

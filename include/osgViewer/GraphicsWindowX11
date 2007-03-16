@@ -50,7 +50,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         {
             _traits = traits;
 
-            init();
+            init(traits ? dynamic_cast<WindowData*>(traits->inheritedWindowData.get()) : 0);
             
             if (valid())
             {
@@ -108,6 +108,15 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Switch on/off the cursor.*/
         virtual void useCursor(bool cursorOn);
         
+        /** WindowData is used to pass in the X11 window handle attached the GraphicsContext::Traits structure. */
+        struct WindowData : public osg::Referenced
+        {
+            WindowData(Window window):
+                _window(window) {}
+                
+            Window          _window;
+        };
+
     public:
     
         // X11 specific aces functions
@@ -127,7 +136,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         ~GraphicsWindowX11();
     
         bool createVisualInfo();
-        void init();
+        
+        void init(WindowData* inheritedWindowData=0);
 
         void transformMouseXY(float& x, float& y);
         void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);

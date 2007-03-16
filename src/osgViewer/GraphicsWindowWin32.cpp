@@ -980,7 +980,9 @@ osgViewer::GraphicsWindowWin32* Win32WindowingSystem::getGraphicsWindowFor( HWND
 //////////////////////////////////////////////////////////////////////////////
 
 GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
-: _hwnd(0),
+: 
+  _ownsWindow(true),
+  _hwnd(0),
   _hdc(0),
   _hglrc(0),
   _timeOfLastCheckEvents(-1.0),
@@ -1000,7 +1002,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
 {
     _traits = traits;
 
-    init();
+    init(traits ? dynamic_cast<WindowData*>(traits->inheritedWindowData.get()) : 0);
     
     if (valid())
     {
@@ -1025,7 +1027,7 @@ GraphicsWindowWin32::~GraphicsWindowWin32()
     destroyWindow();
 }
 
-void GraphicsWindowWin32::init()
+void GraphicsWindowWin32::init(WindowData* inheritedWindowData)
 {
     if (!_initialized)
     {

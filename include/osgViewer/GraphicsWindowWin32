@@ -78,9 +78,19 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         /** Handle a native (Win32) windowing event as received from the system */
         virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         
+        /** WindowData is used to pass in the Win32 window handle attached the GraphicsContext::Traits structure.*/
+        struct WindowData : public osg::Referenced
+        {
+            WindowData(HWND window):
+                _hwnd(window) {}
+                
+            HWND    _hwnd;
+        };
+        
+        
     protected:
     
-        void init();
+        void init(WindowData* inheritedWindowData=0);
         
         void registerWindowClass();
         
@@ -100,6 +110,7 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         
         HGLRC getWGLContext() { return _hglrc; }
         
+        bool            _ownsWindow;        
         HWND            _hwnd;
         HDC             _hdc;
         HGLRC           _hglrc;

@@ -536,7 +536,7 @@ void GraphicsWindowCarbon::setWindowDecoration(bool flag)
    _useWindowDecoration = flag;
 }
 
-void GraphicsWindowCarbon::init()
+void GraphicsWindowCarbon::init(WindowData* inheritedWindowData)
 {
     _closeRequested = false;
     _context = NULL;

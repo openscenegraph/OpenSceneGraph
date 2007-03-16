@@ -231,7 +231,7 @@ ifeq ($(OS),IRIX)
       DEPARG            = -M
       INC               += -I${TOPDIR}/include -I/usr/freeware/include
       LDFLAGS           += -L/usr/local/lib
-      DEF               += -LANG:std -OPT:Olimit=0 \
+      DEF               += -LANG:libc_in_namespace_std=OFF -LANG:std -OPT:Olimit=0 \
                             -DEBUG:woff=1681 -DEBUG:woff=1682 -DEBUG:woff=3303 \
                             -MDupdate $(MAKEDEPEND)
       OPTF              = -O2 
@@ -264,7 +264,7 @@ ifeq ($(OS),IRIX)
       INC               += -I${TOPDIR}/include -I/usr/freeware/include
       DEF               += -fPIC -W -Wno-unused 
       OPTF              = -O2 
-      DBGF              = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS  
+      DBGF              = -g -DOSG_COMPILE_UNIT_TESTS  
       SHARED            = -shared
       PFLIBS            = \
                     -lpf3ds -lpfdem -lpfdted -lpfdwb -lpfdxf -lpfevt \
@@ -352,7 +352,7 @@ endif
 #    DEF             += -W -Wall -fPIC -pipe -Woverloaded-virtual
     DEF             += -W -Wall -fPIC -pipe
     OPTF            = -O2 
-    DBGF            = -g -gstabs+ -DOSG_COMPILE_UNIT_TESTS 
+    DBGF            = -g -DOSG_COMPILE_UNIT_TESTS 
     SYSARCH           := $(shell arch)
     ifeq ($(SYSARCH),x86_64)
       ARCHARGS        =

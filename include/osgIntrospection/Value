@@ -303,7 +303,7 @@ namespace osgIntrospection
             virtual const Type* ptype() const
             {
                 if (!static_cast<Instance<T> *>(inst_)->_data) return 0;
-                return &typeof(typename remove_pointer<T>::type);
+                return &typeofvalue(*static_cast<Instance<T> *>(inst_)->_data);
             }
 
             virtual bool nullptr() const

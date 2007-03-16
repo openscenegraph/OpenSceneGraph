@@ -26,6 +26,7 @@
 /// returning the Type object associated to the type of the given
 /// expression.
 #define typeof(type)  osgIntrospection::Reflection::getType(extended_typeid< type >())
+#define typeofvalue(val)  osgIntrospection::Reflection::getType(osgIntrospection::ExtendedTypeInfo(typeid(val), false, false))
 
 namespace osgIntrospection
 {

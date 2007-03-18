@@ -980,11 +980,10 @@ osgViewer::GraphicsWindowWin32* Win32WindowingSystem::getGraphicsWindowFor( HWND
 //////////////////////////////////////////////////////////////////////////////
 
 GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
-: 
-  _ownsWindow(true),
-  _hwnd(0),
+: _hwnd(0),
   _hdc(0),
   _hglrc(0),
+  _windowProcedure(0),
   _timeOfLastCheckEvents(-1.0),
   _screenOriginX(0),
   _screenOriginY(0),
@@ -997,12 +996,14 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _initialized(false),
   _valid(false),
   _realized(false),
-  _recreateWindow(false),
+  _ownsWindow(true),
+  _closeWindow(false),
+  _destroyWindow(false),
   _destroying(false)
 {
     _traits = traits;
 
-    init(traits ? dynamic_cast<WindowData*>(traits->inheritedWindowData.get()) : 0);
+    init();
     
     if (valid())
     {
@@ -1027,16 +1028,23 @@ GraphicsWindowWin32::~GraphicsWindowWin32()
     destroyWindow();
 }
 
-void GraphicsWindowWin32::init(WindowData* inheritedWindowData)
+void GraphicsWindowWin32::init()
 {
-    if (!_initialized)
-    {
-        _initialized = createWindow() != 0;
-        _valid = _initialized;
-    }
+    if (_initialized) return;
+
+    WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
+    HWND windowHandle = windowData ? windowData->handle : 0;
+
+    _ownsWindow    = windowHandle==0;
+    _closeWindow   = false;
+    _destroyWindow = false;
+    _destroying    = false;
+
+    _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
+    _valid       = _initialized;
 }
 
-HWND GraphicsWindowWin32::createWindow()
+bool GraphicsWindowWin32::createWindow()
 {
     unsigned int extendedStyle;
     unsigned int windowStyle;
@@ -1050,7 +1058,7 @@ HWND GraphicsWindowWin32::createWindow()
                                          extendedStyle))
     {
         reportError("GraphicsWindowWin32::createWindow() - Unable to determine the window position and style");
-        return 0;
+        return false;
     }
 
     _hwnd = ::CreateWindowEx(extendedStyle,
@@ -1069,7 +1077,7 @@ HWND GraphicsWindowWin32::createWindow()
     if (_hwnd==0)
     {
         reportErrorForScreen("GraphicsWindowWin32::createWindow() - Unable to create window", _traits->screenNum, ::GetLastError());
-        return 0;
+        return false;
     }
 
     _hdc = ::GetDC(_hwnd);
@@ -1078,7 +1086,7 @@ HWND GraphicsWindowWin32::createWindow()
         reportErrorForScreen("GraphicsWindowWin32::createWindow() - Unable to get window device context", _traits->screenNum, ::GetLastError());
         destroyWindow();
         _hwnd = 0;
-        return 0;
+        return false;
     }
 
     //
@@ -1090,11 +1098,72 @@ HWND GraphicsWindowWin32::createWindow()
         ::ReleaseDC(_hwnd, _hdc);
         _hdc  = 0;
         destroyWindow();
-        return 0;
+        return false;
     }
 
     Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
-    return _hwnd;
+    return true;
+}
+
+bool GraphicsWindowWin32::setWindow( HWND handle )
+{
+    if (_initialized)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Window already created; it cannot be changed", _traits->screenNum, ::GetLastError());
+        return false;
+    }
+
+    if (handle==0)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Invalid window handle passed", _traits->screenNum, ::GetLastError());
+        return false;
+    }
+
+    _hwnd = handle;
+    if (_hwnd==0)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to retrieve native window handle", _traits->screenNum, ::GetLastError());
+        return false;
+    }
+
+    _hdc = ::GetDC(_hwnd);
+    if (_hdc==0)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to get window device context", _traits->screenNum, ::GetLastError());
+        _hwnd = 0;
+        return false;
+    }
+
+    //
+    // Create the OpenGL rendering context associated with this window
+    //
+
+    _hglrc = ::wglCreateContext(_hdc);
+    if (_hglrc==0)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
+        ::ReleaseDC(_hwnd, _hdc);
+        _hdc  = 0;
+        _hwnd = 0;
+        return false;
+    }
+
+    if (!registerWindowProcedure())
+    {
+        ::wglDeleteContext(_hglrc);
+        _hglrc = 0;
+        ::ReleaseDC(_hwnd, _hdc);
+        _hdc  = 0;
+        _hwnd = 0;
+        return false;
+    }
+
+    Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
+
+    _initialized = true;
+    _valid       = true;
+
+    return true;
 }
 
 void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
@@ -1116,10 +1185,12 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
         _hdc = 0;
     }
 
+    (void)unregisterWindowProcedure();
+
     if (_hwnd)
     {
         Win32WindowingSystem::getInterface()->unregisterWindow(_hwnd);
-        if (deleteNativeWindow) ::DestroyWindow(_hwnd);
+        if (_ownsWindow && deleteNativeWindow) ::DestroyWindow(_hwnd);
         _hwnd = 0;
     }
 
@@ -1129,26 +1200,38 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
     _destroying  = false;
 }
 
-void GraphicsWindowWin32::recreateWindow()
+bool GraphicsWindowWin32::registerWindowProcedure()
 {
-#ifdef NEXT_RELEASE_ONLY
-    _recreateWindow = false;
+    ::SetLastError(0);
+    _windowProcedure = (WNDPROC)::SetWindowLongPtr(_hwnd, GWLP_WNDPROC, LONG_PTR(WindowProc));
+    unsigned int error = ::GetLastError();
 
-    Win32WindowingSystem::getInterface()->unregisterWindow(_hwnd);
+    if (_windowProcedure==0 && error)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::registerWindowProcedure() - Unable to register window procedure", _traits->screenNum, error);
+        return false;
+    }
 
-    //
-    // Delete the original window after now one to prevent window "flashing" on screen
-    //
+    return true;
+}
 
-    HWND hwnd = _hwnd;
-    _hwnd = 0;                    // pretend native window has already been destroyed
+bool GraphicsWindowWin32::unregisterWindowProcedure()
+{
+    if (_windowProcedure==0 || _hwnd==0) return true;
 
-    close(true, false);
-    init();
-    realize();
+    ::SetLastError(0);
+    WNDPROC wndProc = (WNDPROC)::SetWindowLongPtr(_hwnd, GWLP_WNDPROC, LONG_PTR(_windowProcedure));
+    unsigned int error = ::GetLastError();
 
-    ::DestroyWindow(hwnd);        // destroy native window
-#endif
+    if (wndProc==0 && error)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::unregisterWindowProcedure() - Unable to unregister window procedure", _traits->screenNum, error);
+        return false;
+    }
+
+    _windowProcedure = 0;
+
+    return true;
 }
 
 bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& x, int& y, unsigned int& w, unsigned int& h, unsigned int& style, unsigned int& extendedStyle )
@@ -1428,30 +1511,33 @@ bool GraphicsWindowWin32::realizeImplementation()
         }
     }
 
-    //
-    // Bring the window on top of other ones (including the taskbar if it covers it completely)
-    //
-    // NOTE: To cover the taskbar with a window that does not completely cover it, the HWND_TOPMOST
-    // Z-order must be used in the code below instead of HWND_TOP.
-    // @todo: This should be controlled through a flag in the traits (topMostWindow)
-    //
+    if (_ownsWindow)
+    {
+        //
+        // Bring the window on top of other ones (including the taskbar if it covers it completely)
+        //
+        // NOTE: To cover the taskbar with a window that does not completely cover it, the HWND_TOPMOST
+        // Z-order must be used in the code below instead of HWND_TOP.
+        // @todo: This should be controlled through a flag in the traits (topMostWindow)
+        //
 
-    if (!::SetWindowPos(_hwnd,
-                        HWND_TOP,
-                        _windowOriginXToRealize,
-                        _windowOriginYToRealize,
-                        _windowWidthToRealize,
-                        _windowHeightToRealize,
-                        SWP_SHOWWINDOW))
-    {
-        reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to show window", _traits->screenNum, ::GetLastError());
-        return false;
-    }
+        if (!::SetWindowPos(_hwnd,
+                            HWND_TOP,
+                            _windowOriginXToRealize,
+                            _windowOriginYToRealize,
+                            _windowWidthToRealize,
+                            _windowHeightToRealize,
+                            SWP_SHOWWINDOW))
+        {
+            reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to show window", _traits->screenNum, ::GetLastError());
+            return false;
+        }
  
-    if (!::UpdateWindow(_hwnd))
-    {
-        reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to update window", _traits->screenNum, ::GetLastError());
-        return false;
+        if (!::UpdateWindow(_hwnd))
+        {
+            reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to update window", _traits->screenNum, ::GetLastError());
+            return false;
+        }
     }
 
     _realized = true;
@@ -1516,7 +1602,17 @@ void GraphicsWindowWin32::checkEvents()
         ::DispatchMessage(&msg);
     }
 
-    if (_recreateWindow) recreateWindow();
+    if (_closeWindow)
+    {
+        _closeWindow = false;
+        close();
+    }
+
+    if (_destroyWindow)
+    {
+        _destroyWindow = false;
+        destroyWindow(false);
+    }
 }
 
 void GraphicsWindowWin32::grabFocus()
@@ -1601,14 +1697,14 @@ void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol
         case VK_LSHIFT   :
         //////////////////
 
-            modifierMask |= osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT;
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT;
             break;
 
         //////////////////
         case VK_RSHIFT   :
         //////////////////
 
-            modifierMask |= osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT;
+        modifierMask |= osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT;
             break;
 
         //////////////////
@@ -1665,46 +1761,6 @@ void GraphicsWindowWin32::transformMouseXY( float& x, float& y )
     }
 }
 
-int GraphicsWindowWin32::getScreenNumberContainingWindow( int& _screenOriginX, int& _screenOriginY )
-{
-    RECT clientArea;
-
-    clientArea.left   = _traits->x + _screenOriginX;
-    clientArea.top    = _traits->y + _screenOriginY;
-    clientArea.right  = _traits->x + _screenOriginX + _traits->width  - 1;
-    clientArea.bottom = _traits->y + _screenOriginY + _traits->height - 1;
-
-    HMONITOR hMonitor = ::MonitorFromRect(&clientArea, MONITOR_DEFAULTTONULL);
-    if (hMonitor==NULL) return _traits->screenNum;
-
-    MONITORINFO monitorInfo;
-
-    monitorInfo.cbSize = sizeof(monitorInfo);
-    if (!::GetMonitorInfo(hMonitor, &monitorInfo))
-    {
-        reportErrorForScreen("GraphicsWindowWin32::getScreenNumberContainingWindow() - Unable to get monitor information", _traits->screenNum, ::GetLastError());
-        return _traits->screenNum;
-    }
-
-    Win32WindowingSystem* windowManager = Win32WindowingSystem::getInterface();
-
-    for (int screenNum=windowManager->getNumScreens(osg::GraphicsContext::ScreenIdentifier())-1; screenNum>=0; --screenNum)
-    {
-        int x, y;
-        unsigned w, h;
-
-        windowManager->getScreenPosition(osg::GraphicsContext::ScreenIdentifier(screenNum), x, y, w, h);
-        if (x==monitorInfo.rcWork.left && y==monitorInfo.rcWork.top)
-        {
-            _screenOriginX = x;
-            _screenOriginY = y;
-            return screenNum;
-        }
-    }
-
-    return _traits->screenNum;
-}
-
 LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     //!@todo adapt windows event time to osgGA event queue time for better resolution
@@ -1721,6 +1777,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         case WM_PAINT   :
         /////////////////
 
+            if (_ownsWindow)
             {
                 PAINTSTRUCT paint;
                 ::BeginPaint(hwnd, &paint);
@@ -1903,33 +1960,39 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         case WM_CLOSE   :
         /////////////////
 
-            ::DestroyWindow(hwnd);
+            getEventQueue()->closeWindow(eventTime);
             break;
 
         /////////////////
         case WM_DESTROY :
         /////////////////
 
-            destroyWindow(false);
-            getEventQueue()->closeWindow(eventTime);
-            ::PostQuitMessage(0);
+            _destroyWindow = true;
+            if (_ownsWindow)
+            {
+                ::PostQuitMessage(0);
+            }
             break;
 
         //////////////
         case WM_QUIT :
         //////////////
 
-            close();
+            _closeWindow = true;
             return wParam;
 
         /////////////////
         default         :
         /////////////////
 
-            return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+            if (_ownsWindow) return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+            break;
     }
 
-    return 0;
+    if (_ownsWindow) return 0;
+
+    return _windowProcedure==0 ? ::DefWindowProc(hwnd, uMsg, wParam, lParam) :
+                                 ::CallWindowProc(_windowProcedure, hwnd, uMsg, wParam, lParam);
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -17,7 +17,7 @@
  */
 
 #ifndef OSGVIEWER_GRAPHICSWINDOWWIN32
-#define OSGVIEWER_GRAPHICSWINDOWIN32 1
+#define OSGVIEWER_GRAPHICSWINDOWWIN32 1
 
 #include <osgViewer/GraphicsWindow>
 
@@ -38,8 +38,8 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         ~GraphicsWindowWin32();
     
         virtual bool valid() const { return _valid; }
-
-        /** Realise the GraphicsContext.*/
+        
+        /** Realize the GraphicsContext.*/
         virtual bool realizeImplementation();
 
         /** Return true if the graphics context has been realised and is ready to use.*/
@@ -90,11 +90,14 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         
     protected:
     
-        void init(WindowData* inheritedWindowData=0);
+        void init();
         
-        void registerWindowClass();
+        bool registerWindowProcedure();
+        bool unregisterWindowProcedure();
         
-        HWND createWindow();
+        bool createWindow();
+        bool setWindow( HWND handle );
+        
         void destroyWindow( bool deleteNativeWindow = true );
         void recreateWindow();
         
@@ -106,14 +109,13 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                 
         void transformMouseXY(float& x, float& y);
         
-        int getScreenNumberContainingWindow( int& _screenOriginX, int& _screenOriginY );
-        
         HGLRC getWGLContext() { return _hglrc; }
         
-        bool            _ownsWindow;        
         HWND            _hwnd;
         HDC             _hdc;
         HGLRC           _hglrc;
+        
+        WNDPROC         _windowProcedure;
         
         double          _timeOfLastCheckEvents;
         
@@ -130,8 +132,10 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         bool            _initialized;
         bool            _valid;
         bool            _realized;
-        
-        bool            _recreateWindow;
+
+        bool            _ownsWindow;        
+        bool            _closeWindow;
+        bool            _destroyWindow;
         bool            _destroying;
 };
 

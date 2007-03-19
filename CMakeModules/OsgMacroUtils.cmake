@@ -1,283 +1,119 @@
-INCLUDE(UtilityMacros)
-#---------------------------------------------------
-# ADD_OSG_LIB ( SUBDIR )
-# collects source files from given subdir and generates a shared library from them
-# additional parameters specify symbols, link libraries and omited files 
-# begin these with keyword DEFINE LINK or EXCLUDE
-# e.g. ADD_OSG_LIB( osgDB DEFINE OSGDB_EXPORT LINK osg EXCLUDE osg_mac.cxx ) 
-# if OSG_PROJECT_LABEL_PREFIX is defined the project label is augmented with prefix
-#---------------------------------------------------
+#######################################################################################################
+#  macro for common setup of plugins, examples and applications it expect some variables to be set:
+#  either within the local CMakeLists or higher in hierarchy
+#  TARGET_NAME is the name of the folder and of the actually .exe or .so or .dll
+#  TARGET_TARGETNAME  is the name of the target , this get buit out of a prefix, if present and TARGET_TARGETNAME
+#  TARGET_SRC  are the sources of the target
+#  TARGET_H are the eventual headers of the target
+#  TARGET_LIBRARIES are the libraries to link to that are internal to the project and have d suffix for debug
+#  TARGET_EXTERNAL_LIBRARIES are external libraries and are not differentiated with d suffix
+#  TARGET_LABEL is the label IDE should show up for targets
+##########################################################################################################
 
-MACRO(ADD_OSG_LIB SUBDIR EXPORTDEF)
-	#MESSAGE(STATUS "=== ADD_OSG_LIB ${SUBDIR}")
-	MACRO_MESSAGE("---source dir -->${OPENSCENEGRAPH_DIR}/src/${SUBDIR}<---")
+MACRO(SETUP_LINK_LIBRARIES)
+######################################################################
+#
+# This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plagins
+# kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES 
+# they are combined in a single list checked for unicity 
+# the suffix ${CMAKE_DEBUG_POSTFIX} is used for differentiating optimized and debug
+#
+# a second variable TARGET_EXTERNAL_LIBRARIES hold the list of  libraries not differentiated between debug and optimized 
+##################################################################################
+	SET(TARGET_LIBRARIES ${TARGET_COMMON_LIBRARIES})
+	FOREACH(LINKLIB ${TARGET_ADDED_LIBRARIES})
+  	SET(TO_INSERT TRUE)
+  	FOREACH (value ${TARGET_COMMON_LIBRARIES})
+    	IF (${value} STREQUAL ${LINKLIB})
+      	SET(TO_INSERT FALSE)
+    	ENDIF (${value} STREQUAL ${LINKLIB})
+  	ENDFOREACH (value ${TARGET_COMMON_LIBRARIES})
+  	IF(TO_INSERT)
+  		LIST(APPEND TARGET_LIBRARIES ${LINKLIB})
+  	ENDIF(TO_INSERT)
+	ENDFOREACH(LINKLIB)
+	FOREACH(LINKLIB ${TARGET_LIBRARIES})
+		TARGET_LINK_LIBRARIES(${TARGET_TARGETNAME} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
+	ENDFOREACH(LINKLIB)
+	FOREACH(LINKLIB ${TARGET_EXTERNAL_LIBRARIES})
+		TARGET_LINK_LIBRARIES(${TARGET_TARGETNAME} ${LINKLIB})
+	ENDFOREACH(LINKLIB)
+ENDMACRO(SETUP_LINK_LIBRARIES)
 
-	SET(TARGET_NAME ${SUBDIR})
-	FILE(GLOB SRC_FILES ${OPENSCENEGRAPH_DIR}/src/${SUBDIR}/*.cpp)
-	#FILE(GLOB H_FILES ${OPENSCENEGRAPH_DIR}/include/${SUBDIR}/*)
-	GET_HEADERS_EXTENSIONLESS("${OPENSCENEGRAPH_DIR}/include/${SUBDIR}" "*" H_FILES)
-#patch luigi osgwrapper	FILE(GLOB SRC_FILES_SUB ${OPENSCENEGRAPH_DIR}/src/${SUBDIR}/*/*.cpp)
-#patch luigi osgwrapper	SET(SRC_FILES ${SRC_FILES} ${SRC_FILES_SUB})
-	
-	#-- extract link files, defines, exclude files form additional arguments 
-	
-	SET(LISTNAME "TEMP")
-	SET(DEFSTR "")
-	
-	#--- parse remaining args
-	FOREACH(ARG ${ARGN})					 
-		#MESSAGE(STATUS "+ [${ARG}]")
-		
-		# if we find our keywords set the active list to given keyname 
-		STRING(COMPARE EQUAL "${ARG}" "LINK" IS_LINK)
-		STRING(COMPARE EQUAL "${ARG}" "DEFINE" IS_DEFINE)
-		STRING(COMPARE EQUAL "${ARG}" "EXCLUDE" IS_EXCLUDE)
-		
-		#MESSAGE(STATUS "STRSTUFF L ${IS_LINK} D ${IS_DEFINE} E ${IS_EXCLUDE}")
-		
-		#--- check for label change 
-		SET(LIST_CHANGED ${IS_LINK} OR ${IS_DEFINE} OR ${IS_EXCLUDE})
-		IF(${LIST_CHANGED})
-			SET(${LISTNAME} ${CURRLIST})				# in this case change the current list 
-			#MESSAGE(STATUS "STORED LIST [${LISTNAME}] = (${CURRLIST})")
-			SET(LISTNAME ${ARG})								# new list name 
-			REMOVE(CURRLIST ${CURRLIST} ) 			# clear current list 
-		ELSE(${LIST_CHANGED})
-			SET(CURRLIST ${CURRLIST} ${ARG})		# otherwise just add current entry to current list 
-		ENDIF(${LIST_CHANGED})
-		
-	ENDFOREACH(ARG)
-	SET(${LISTNAME} ${CURRLIST})						# copy current list to active list
-	#MESSAGE(STATUS "STORED LIST [${LISTNAME}] = (${CURRLIST})")
-	REMOVE(CURRLIST ${CURRLIST} )						# clear current list 
-	
-	#MESSAGE(STATUS "AFTER: EXC (${EXCLUDE}) DEF (${DEFINE}) LINK (${LINK})")
-	
-	#--- exclude files from exclude list 
-	FOREACH(EXF ${EXCLUDE})
-		REMOVE(SRC_FILES ${OPENSCENEGRAPH_DIR}/src/${SUBDIR}/${EXF})
-	ENDFOREACH(EXF)
-	
-	SOURCE_GROUP("Header Files" FILES ${H_FILES})
-	SET_SOURCE_FILES_PROPERTIES(${H_FILES} PROPERTIES HEADER_FILE_ONLY ON)
-	
-	#--- add symbols, first assemble string with multiple /D "symbol" entries
-	FOREACH(DEF ${DEFINE})
-		IF(WIN32)
-			SET(DEFSTR "${DEFSTR} /D \"${DEF}\"")
-			#MESSAGE(STATUS "add symbol : " ${DEF})
-		ENDIF(WIN32)
-		IF(UNIX)
-			SET(DEFSTR "${DEFSTR} -D\"${DEF}\"")
-			#MESSAGE(STATUS "add symbol : " ${DEF})
-		ENDIF(UNIX)
-	ENDFOREACH(DEF)
-	
-	IF(NOT DEFSTR STREQUAL "")	# then set defines 
-		SET_SOURCE_FILES_PROPERTIES(${SRC_FILES} PROPERTIES COMPILE_FLAGS ${DEFSTR})
-		#MESSAGE(STATUS "*********  ADD COMPILE FLAGS ${DEFSTR} **********")
-	ENDIF(NOT DEFSTR STREQUAL "")
-	
-	#--- add library with given name 
-	ADD_LIBRARY(${TARGET_NAME} SHARED ${SRC_FILES} ${H_FILES})
-	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES DEFINE_SYMBOL "${EXPORTDEF}" PROJECT_LABEL "${OSG_PROJECT_LABEL_PREFIX} ${TARGET_NAME}")
-	
-	TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LINK})
+############################################################################################
+# this is the common set of command for all the plugins
+#
 
-	#speed#TARGET_LOCATIONS_ACCUM(${TARGET_NAME})
+MACRO(SETUP_PLUGIN)
+	#MESSAGE("in -->SETUP_PLUGIN<-- ${TARGET_NAME}-->${TARGET_SRC} <--> ${TARGET_H}<--")
+
+	## we have set up the target label and targetname by taking into account global prfix (osgdb_)
+
+	IF(NOT TARGET_TARGETNAME)
+			SET(TARGET_TARGETNAME "${TARGET_DEFAULT_PREFIX}${TARGET_NAME}")
+	ENDIF(NOT TARGET_TARGETNAME)
+	IF(NOT TARGET_LABEL)
+			SET(TARGET_LABEL "${TARGET_DEFAULT_LABEL_PREFIX} ${TARGET_NAME}")
+	ENDIF(NOT TARGET_LABEL)
 	
-	REMOVE(DEFINE ${DEFINE})	
-	REMOVE(LINK ${LINK})	
-	REMOVE(EXCLUDE ${EXCLUDE})	
+# here we use the command to generate the library	
 	
-	#old form# INSTALL_TARGETS(/lib ${TARGET_NAME} )
-	INSTALL(TARGETS ${TARGET_NAME} ARCHIVE DESTINATION lib LIBRARY DESTINATION lib RUNTIME DESTINATION bin )
-	INSTALL(FILES ${H_FILES} DESTINATION include/${TARGET_NAME} )
+	ADD_LIBRARY(${TARGET_TARGETNAME} MODULE ${TARGET_SRC} ${TARGET_H})
 	
-ENDMACRO(ADD_OSG_LIB)
-
-
-
-MACRO(ADD_OSG_APPLICATION  SUBDIR)
-	#PROJECT("application_${SUBDIR}")
-  SET(MYTARGET application_${SUBDIR})
-	FILE(GLOB APPLICATION_SRC ${OPENSCENEGRAPH_APPLICATION_DIR}/${SUBDIR}/*.cpp)
-	FILE(GLOB APPLICATION_H ${OPENSCENEGRAPH_APPLICATION_DIR}/${SUBDIR}/*.h)
-	IF(NOT APPLICATION_SRC)
-		MESSAGE("application_${SUBDIR}")
-	ELSE(NOT APPLICATION_SRC)
-	ADD_EXECUTABLE(${MYTARGET} ${APPLICATION_SRC} ${APPLICATION_H})
-	ENDIF(NOT APPLICATION_SRC)
-	SET_TARGET_PROPERTIES(${MYTARGET} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-	SET_TARGET_PROPERTIES(${MYTARGET} PROPERTIES OUTPUT_NAME ${SUBDIR})
-	#IF(UNIX)
-	#	MESSAGE("so no qui!!!!!!!!!!")
-		FOREACH(LINKLIB osg osgDB osgUtil osgViewer osgText osgGA OpenThreads  ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-			IF(${LINKLIB} MATCHES "osg")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${MYTARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-			ELSE(${LINKLIB} MATCHES "osg")	
-			 IF(${LINKLIB} MATCHES "Producer")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${MYTARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-			 ELSE(${LINKLIB} MATCHES "Producer")	
-			  IF(${LINKLIB} MATCHES "OpenThreads")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				IF(MSVC)
-#change in name from standar VS projects					TARGET_LINK_LIBRARIES(${MYTARGET} optimized "${LINKLIB}Win32" debug "${LINKLIB}Win32d" )
-					TARGET_LINK_LIBRARIES(${MYTARGET} optimized "${LINKLIB}" debug "${LINKLIB}d" )
-				ELSE(MSVC)	
-				  TARGET_LINK_LIBRARIES(${MYTARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-        			ENDIF(MSVC)
-			  ELSE(${LINKLIB} MATCHES "OpenThreads")	
-				#MESSAGE("EXTERNAL LIB:TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB} )
-			  ENDIF(${LINKLIB} MATCHES "OpenThreads")	
-			 ENDIF(${LINKLIB} MATCHES "Producer")	
-			ENDIF(${LINKLIB} MATCHES "osg")	
-		ENDFOREACH(LINKLIB)
-	#ELSE(UNIX)
-	#	TARGET_LINK_LIBRARIES(${MYTARGET} osg osgDB osgUtil osgProducer ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-	#ENDIF(UNIX)
-	SET_TARGET_PROPERTIES(${MYTARGET} PROPERTIES PROJECT_LABEL "application ${SUBDIR}")
-	#speed#TARGET_LOCATIONS_ACCUM(${MYTARGET})
-	#MESSAGE(STATUS "adding osg application ${MYTARGET}")
-	
-	##INSTALL_TARGETS(/bin ${MYTARGET} )
-	INSTALL(TARGETS ${MYTARGET} RUNTIME DESTINATION bin  )			
-ENDMACRO(ADD_OSG_APPLICATION)
-
-MACRO(ADD_OSG_EXAMPLE  SUBDIR)
-	#PROJECT("example_${SUBDIR}")
-  SET(MYTARGET example_${SUBDIR})
-	FILE(GLOB EXAMPLE_SRC ${OPENSCENEGRAPH_EXAMPLE_DIR}/${SUBDIR}/*.cpp)
-	FILE(GLOB EXAMPLE_H ${OPENSCENEGRAPH_EXAMPLE_DIR}/${SUBDIR}/*.h)
-	IF(NOT EXAMPLE_SRC)
-		MESSAGE("example_${SUBDIR}")
-	ELSE(NOT EXAMPLE_SRC)
-	ADD_EXECUTABLE(${MYTARGET} ${EXAMPLE_SRC} ${EXAMPLE_H})
-	ENDIF(NOT EXAMPLE_SRC)
-	SET_TARGET_PROPERTIES(${MYTARGET} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-	SET_TARGET_PROPERTIES(${MYTARGET} PROPERTIES OUTPUT_NAME ${SUBDIR})
-	SET_TARGET_PROPERTIES(${TARGET} PROPERTIES PROJECT_LABEL "Examples ${MYTARGET}")
-	#IF(UNIX)
-	#	MESSAGE("so no qui!!!!!!!!!!")
-		FOREACH(LINKLIB osg osgDB osgUtil osgViewer osgText osgGA OpenThreads  ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-			IF(${LINKLIB} MATCHES "osg")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${MYTARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-			ELSE(${LINKLIB} MATCHES "osg")	
-			 IF(${LINKLIB} MATCHES "Producer")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${MYTARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-			 ELSE(${LINKLIB} MATCHES "Producer")	
-			  IF(${LINKLIB} MATCHES "OpenThreads")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				IF(MSVC)
-#change in name from standar VS projects					TARGET_LINK_LIBRARIES(${MYTARGET} optimized "${LINKLIB}Win32" debug "${LINKLIB}Win32d" )
-					TARGET_LINK_LIBRARIES(${MYTARGET} optimized "${LINKLIB}" debug "${LINKLIB}d" )
-				ELSE(MSVC)	
-				  TARGET_LINK_LIBRARIES(${MYTARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-        			ENDIF(MSVC)
-			  ELSE(${LINKLIB} MATCHES "OpenThreads")	
-				#MESSAGE("EXTERNAL LIB:TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${MYTARGET} ${LINKLIB} )
-			  ENDIF(${LINKLIB} MATCHES "OpenThreads")	
-			 ENDIF(${LINKLIB} MATCHES "Producer")	
-			ENDIF(${LINKLIB} MATCHES "osg")	
-		ENDFOREACH(LINKLIB)
-	#ELSE(UNIX)
-	#	TARGET_LINK_LIBRARIES(${MYTARGET} osg osgDB osgUtil osgProducer ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-	#ENDIF(UNIX)
-	SET_TARGET_PROPERTIES(${MYTARGET} PROPERTIES PROJECT_LABEL "example ${SUBDIR}")
-	#speed#TARGET_LOCATIONS_ACCUM(${MYTARGET})
-	#MESSAGE(STATUS "adding osg example ${MYTARGET}")
-	
-	##INSTALL_TARGETS(/bin ${MYTARGET} )
-	IF(WIN32)
-		INSTALL(TARGETS ${MYTARGET} RUNTIME DESTINATION bin  )			
-	ELSE(WIN32)
-		INSTALL(TARGETS ${MYTARGET} RUNTIME DESTINATION share/OpenSceneGraph/bin  )			
-	ENDIF(WIN32)
-ENDMACRO(ADD_OSG_EXAMPLE)
-
-
-
-#---------------------------------------------------
-# MACRO GET_TARGETNAME SUBDIR RESULT 
-# generates a plugin target name for given SUBDIR and sets RESULT accordingly 
-#	e.g. GET_TARGETNAME(osg OSG_TARGET) -> OSG_TARGET is osgdb_osg 
-MACRO(GET_TARGETNAME SUBDIR RESULT)
-	SET(${RESULT} osgdb_${SUBDIR})
-ENDMACRO(GET_TARGETNAME)
-
-#---------------------------------------------------
-# MACRO ADD_OSG_PLUGIN SUBDIR [additional libs to link to]
-# adds a plugin project for given SUBDIR, links libraries given as additional arguments 
-#	e.g. ADD_OSG_PLUGIN(osg osgSim) -> generates is osgdb_osg and links with osgSim 
-
-MACRO(ADD_OSG_PLUGIN SUBDIR)
-	GET_TARGETNAME(${SUBDIR} TARGET)
-#	MESSAGE("globbing in -->${PROJECT_SOURCE_DIR}/${SUBDIR}<--")
-	FILE(GLOB PLUGIN_SRC ${PROJECT_SOURCE_DIR}/${SUBDIR}/*.cpp)
-	FILE(GLOB PLUGIN_H ${PROJECT_SOURCE_DIR}/${SUBDIR}/*.h)
-
-	#ADD_LIBRARY(${TARGET} SHARED ${PLUGIN_SRC} ${PLUGIN_H})
-	ADD_LIBRARY(${TARGET} MODULE ${PLUGIN_SRC} ${PLUGIN_H})
+	#not sure if needed, but for plugins only msvc need the d suffix
 	IF(NOT MSVC)
-		SET_TARGET_PROPERTIES(${TARGET} PROPERTIES DEBUG_POSTFIX "")
+		SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES DEBUG_POSTFIX "")
 	ENDIF(NOT MSVC)
-	SET_TARGET_PROPERTIES(${TARGET} PROPERTIES PROJECT_LABEL "Plugins ${TARGET}")
+	SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
 
-		FOREACH(LINKLIB osg osgDB osgUtil ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-			IF(${LINKLIB} MATCHES "osg")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${TARGET} optimized ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${TARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-			ELSE(${LINKLIB} MATCHES "osg")	
-				TARGET_LINK_LIBRARIES(${TARGET} ${LINKLIB})
-			ENDIF(${LINKLIB} MATCHES "osg")	
-		ENDFOREACH(LINKLIB)
-	#ELSE(UNIX)
-	#	SET_TARGET_PROPERTIES(${TARGET} PROPERTIES PROJECT_LABEL "osgPlugins ${SUBDIR}")
-	#	TARGET_LINK_LIBRARIES(${TARGET} osg osgDB osgUtil ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-	#ENDIF(UNIX)
-	#speed#TARGET_LOCATIONS_ACCUM(${TARGET})
-	
-	#old_form#INSTALL_TARGETS(/lib ${TARGET} )
+	SETUP_LINK_LIBRARIES()
+
+#the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/osgPlugins
 	IF(WIN32)
-		INSTALL(TARGETS ${TARGET} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION bin )
+		INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION bin )
 	ELSE(WIN32)
-		INSTALL(TARGETS ${TARGET} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib${LIB_POSTFIX}/osgPlugins LIBRARY DESTINATION lib${LIB_POSTFIX}/osgPlugins )
+		INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib${LIB_POSTFIX}/osgPlugins LIBRARY DESTINATION lib${LIB_POSTFIX}/osgPlugins )
 	ENDIF(WIN32)
-ENDMACRO(ADD_OSG_PLUGIN)
+ENDMACRO(SETUP_PLUGIN)
 
 
+#################################################################################################################
+# this is the macro for example and application setup
+###########################################################
 
+MACRO(SETUP_EXE)
+	#MESSAGE("in -->SETUP_EXE<-- ${TARGET_NAME}-->${TARGET_SRC} <--> ${TARGET_H}<--")
+	IF(NOT TARGET_TARGETNAME)
+			SET(TARGET_TARGETNAME "${TARGET_DEFAULT_PREFIX}${TARGET_NAME}")
+	ENDIF(NOT TARGET_TARGETNAME)
+	IF(NOT TARGET_LABEL)
+			SET(TARGET_LABEL "${TARGET_DEFAULT_LABEL_PREFIX} ${TARGET_NAME}")
+	ENDIF(NOT TARGET_LABEL)
 
-
-MACRO(ADD_OSG_PLUGIN_EXTERN SOURCE_DIR _TARGET)
-
-	FILE(GLOB PLUGIN_SRC ${SOURCE_DIR}/*.cpp)
-	FILE(GLOB PLUGIN_H ${SOURCE_DIR}/*.h)
-	#ADD_LIBRARY(${TARGET} SHARED ${PLUGIN_SRC} ${PLUGIN_H})
-	ADD_LIBRARY(${_TARGET} MODULE ${PLUGIN_SRC} ${PLUGIN_H})
-	IF(UNIX)
-		SET_TARGET_PROPERTIES(${_TARGET} PROPERTIES DEBUG_POSTFIX "")
-	ENDIF(UNIX)
-		FOREACH(LINKLIB osg osgDB osgUtil ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-			IF(${LINKLIB} MATCHES "osg")	
-				#MESSAGE("TARGET_LINK_LIBRARIES(${TARGET} optimized ${LINKLIB}")
-				TARGET_LINK_LIBRARIES(${_TARGET} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-			ELSE(${LINKLIB} MATCHES "osg")	
-				TARGET_LINK_LIBRARIES(${_TARGET} ${LINKLIB})
-			ENDIF(${LINKLIB} MATCHES "osg")	
-		ENDFOREACH(LINKLIB)
-	#ELSE(UNIX)
-	#	SET_TARGET_PROPERTIES(${TARGET} PROPERTIES PROJECT_LABEL "osgPlugin ${SUBDIR}")
-	#	TARGET_LINK_LIBRARIES(${TARGET} osg osgDB osgUtil ${ARGV1} ${ARGV2} ${ARGV3} ${ARGV4} ${ARGV5})
-	#ENDIF(UNIX)
-	#speed#TARGET_LOCATIONS_ACCUM(${_TARGET})
+	ADD_EXECUTABLE(${TARGET_TARGETNAME} ${TARGET_SRC} ${TARGET_H})
+	SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
+	SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+	SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME})
 	
-	##INSTALL_TARGETS(/lib ${_TARGET} )
-	INSTALL(TARGETS ${_TARGET} RUNTIME DESTINATION bin  )
-ENDMACRO(ADD_OSG_PLUGIN_EXTERN)
+	SETUP_LINK_LIBRARIES()	
+
+ENDMACRO(SETUP_EXE)
+
+MACRO(SETUP_APPLICATION)
+
+        SETUP_EXE()
+        
+	INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin  )
+
+ENDMACRO(SETUP_APPLICATION)
+
+
+MACRO(SETUP_EXAMPLE)
+
+        SETUP_EXE()
+        
+	INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin  )			
+
+ENDMACRO(SETUP_EXAMPLE)
+
+

@@ -13,14 +13,25 @@ IF(NOT OSGCORE_BUNDLED)
 ENDIF(NOT OSGCORE_BUNDLED)
 SET(OPENSCENEGRAPH_APPLICATION_DIR ${PROJECT_SOURCE_DIR})
 
-INCLUDE(OsgMacroUtils)
 
+SET(TARGET_DEFAULT_PREFIX "application_")
+SET(TARGET_DEFAULT_LABEL_PREFIX "Applications")
+SET(TARGET_COMMON_LIBRARIES 
+	OpenThreads
+	osg 
+	osgDB 
+	osgUtil
+	osgGA
+	osgViewer 
+	osgText 
+)
 
-ADD_OSG_APPLICATION( osgviewer )
-ADD_OSG_APPLICATION( osgarchive )
-ADD_OSG_APPLICATION( osgconv )
-ADD_OSG_APPLICATION( osgversion )
+ADD_SUBDIRECTORY(osgviewer)
+ADD_SUBDIRECTORY(osgarchive)
+ADD_SUBDIRECTORY(osgconv)
+ADD_SUBDIRECTORY(osgversion)
 
+#REWRITE_CMAKELIST(ADD_OSG_EXAMPLE)
 
 #MESSAGE("---->${MY_EXAMPLE_LIST}<---------")
 ##########to get all the variables of Cmake

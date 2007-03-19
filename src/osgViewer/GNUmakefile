@@ -28,6 +28,7 @@ ifeq ($(OS),Darwin)
 else
   ifeq ($(OS),MINGW)
      CXXFILES += GraphicsWindowWin32.cpp
+     LIBS += -lgdi32
   else
     ifeq ($(OS),CYGWIN)
        CXXFILES += GraphicsWindowWin32.cpp

@@ -23,10 +23,11 @@ TerrainNode::TerrainNode()
 
 TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
-    _heightField(terrain._heightField)
+    _heightLayer(terrain._heightLayer)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
-    if (terrain.getRenderer()) setRenderer(dynamic_cast<TerrainTechnique*>(terrain.getRenderer()->cloneType()));
+    
+    if (terrain.getTerrainTechnique()) setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
 }
 
 TerrainNode::~TerrainNode()
@@ -39,9 +40,9 @@ void TerrainNode::traverse(osg::NodeVisitor& nv)
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
-        if (getRenderer() && uv)
+        if (getTerrainTechnique() && uv)
         {
-            getRenderer()->update(uv);
+            getTerrainTechnique()->update(uv);
             return;
         }        
         
@@ -49,9 +50,9 @@ void TerrainNode::traverse(osg::NodeVisitor& nv)
     else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
-        if (getRenderer() && cv)
+        if (getTerrainTechnique() && cv)
         {
-            getRenderer()->cull(cv);
+            getTerrainTechnique()->cull(cv);
             return;
         }
     }
@@ -60,50 +61,20 @@ void TerrainNode::traverse(osg::NodeVisitor& nv)
     Group::traverse(nv);
 }
 
-void TerrainNode::setHeightField(osg::HeightField* heightField)
+void TerrainNode::setHeightLayer(osgTerrain::Layer* layer)
 {
-    _heightField = heightField;
-    if (_renderer.valid()) _renderer->initialize();
+    _heightLayer = layer;
 }
 
-void TerrainNode::heightFieldHasBeenModified()
+osgTerrain::Layer* TerrainNode::getHeightLayer()
 {
-    if (_renderer.valid()) _renderer->heightFieldHasBeenModified();
+    return _heightLayer.get();
 }
 
-void TerrainNode::setRenderer(osgTerrain::TerrainTechnique* renderer)
+void TerrainNode::addColorLayer(osgTerrain::Layer* layer)
 {
-    // need to figure out how to ensure that only one renderer is
-    // used between terrain nodes... issue a warning?
-    _renderer = renderer;
-    
-    if (_renderer.valid())
-    {
-        _renderer->_terrainNode = this;
-        _renderer->initialize();
-    }
 }
 
-void TerrainNode::computeNormalMap()
+void TerrainNode::removeColorLayer(osgTerrain::Layer* layer)
 {
-    if (_heightField.valid())
-    {
-        osg::Image* image = new osg::Image;
-        image->allocateImage(_heightField->getNumColumns(),_heightField->getNumRows(),1,GL_RGB,GL_BYTE);
-
-        char* ptr = (char*) image->data();
-        for(unsigned int r=0;r<_heightField->getNumRows();++r)
-        {
-            for(unsigned int c=0;c<_heightField->getNumColumns();++c)
-            {
-                osg::Vec3 normal = _heightField->getNormal(c,r);
-                (*ptr++) = (char)((normal.x()+1.0)*0.5*255);
-                (*ptr++) = (char)((normal.y()+1.0)*0.5*255);
-                (*ptr++) = (char)((normal.z()+1.0)*0.5*255);
-            }
-        }
-        
-        setNormalMapImage(image);
-        
-    }
 }

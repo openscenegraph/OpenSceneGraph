@@ -1,4 +1,4 @@
-SET(TARGET_NAME txf )
+
 SET(TARGET_SRC 
     ReaderWriterTXF.cpp
     TXFFont.cpp
@@ -9,4 +9,4 @@ SET(TARGET_H
 SET(TARGET_ADDED_LIBRARIES osgText )
 
 #### end var setup  ###
-SETUP_PLUGIN()
+SETUP_PLUGIN(txf)

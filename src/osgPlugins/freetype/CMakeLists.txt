@@ -6,10 +6,10 @@
   ENDIF(WIN32)
   INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS} )
 
-SET(TARGET_NAME freetype )
+
 SET(TARGET_SRC FreeTypeFont.cpp FreeTypeLibrary.cpp ReaderWriterFreeType.cpp )
 SET(TARGET_H FreeTypeFont.h FreeTypeLibrary.h )
 SET(TARGET_ADDED_LIBRARIES osgText )
 SET(TARGET_EXTERNAL_LIBRARIES ${FREETYPE_LIBRARY} )
 #### end var setup  ###
-SETUP_PLUGIN()
+SETUP_PLUGIN(freetype)

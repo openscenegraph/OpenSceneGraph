@@ -1,4 +1,4 @@
-SET(TARGET_NAME osgViewer )
+
 SET(TARGET_SRC 
     View.cpp 
     ReaderWriterOsgViewer.cpp 
@@ -6,4 +6,4 @@ SET(TARGET_SRC
 SET(TARGET_ADDED_LIBRARIES osgViewer )
 
 #### end var setup  ###
-SETUP_PLUGIN()
+SETUP_PLUGIN(osgViewer)

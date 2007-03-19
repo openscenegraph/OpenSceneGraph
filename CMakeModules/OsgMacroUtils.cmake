@@ -44,7 +44,10 @@ ENDMACRO(SETUP_LINK_LIBRARIES)
 # this is the common set of command for all the plugins
 #
 
-MACRO(SETUP_PLUGIN)
+MACRO(SETUP_PLUGIN PLUGIN_NAME)
+
+        SET(TARGET_NAME ${PLUGIN_NAME} )
+
 	#MESSAGE("in -->SETUP_PLUGIN<-- ${TARGET_NAME}-->${TARGET_SRC} <--> ${TARGET_H}<--")
 
 	## we have set up the target label and targetname by taking into account global prfix (osgdb_)

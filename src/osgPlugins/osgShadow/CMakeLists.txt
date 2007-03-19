@@ -1,4 +1,4 @@
-SET(TARGET_NAME osgShadow )
+
 SET(TARGET_SRC 
     ParallelSplitShadowMap.cpp
     ReaderWriterOsgShadow.cpp
@@ -11,4 +11,4 @@ SET(TARGET_SRC
 SET(TARGET_ADDED_LIBRARIES osgShadow )
 
 #### end var setup  ###
-SETUP_PLUGIN()
+SETUP_PLUGIN(osgShadow)

@@ -11,10 +11,9 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
-#include <osg/Image>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Shape>
+#include <osgTerrain/Layer>
 #include <osgTerrain/TerrainNode>
 #include <osgTerrain/TerrainTechnique>
 
@@ -70,123 +69,46 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
-	I_Method1(void, setHeightField, IN, osg::HeightField *, heightField,
+	I_Method1(void, setTerrainTechnique, IN, osgTerrain::TerrainTechnique *, TerrainTechnique,
 	          Properties::NON_VIRTUAL,
-	          __void__setHeightField__osg_HeightField_P1,
-	          "Set the HeightField for this TerrainNode. ",
-	          "If a Renderer is attached then this will be notified. ");
-	I_Method0(osg::HeightField *, getHeightField,
-	          Properties::NON_VIRTUAL,
-	          __osg_HeightField_P1__getHeightField,
-	          "Get the HeightField. ",
+	          __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1,
+	          "Set the TerrainTechnique. ",
 	          "");
-	I_Method0(const osg::HeightField *, getHeightField,
+	I_Method0(osgTerrain::TerrainTechnique *, getTerrainTechnique,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_HeightField_P1__getHeightField,
-	          "Get the const HeightField. ",
+	          __TerrainTechnique_P1__getTerrainTechnique,
+	          "Get the TerrainTechnique. ",
 	          "");
-	I_Method0(void, heightFieldHasBeenModified,
+	I_Method0(const osgTerrain::TerrainTechnique *, getTerrainTechnique,
 	          Properties::NON_VIRTUAL,
-	          __void__heightFieldHasBeenModified,
-	          "Tell the Renderer that the height field has been modified, so that any cached data will need updating. ",
+	          __C5_TerrainTechnique_P1__getTerrainTechnique,
+	          "Get the const TerrainTechnique. ",
 	          "");
-	I_Method1(void, setRenderer, IN, osgTerrain::TerrainTechnique *, renderer,
+	I_Method1(void, setHeightLayer, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
-	          __void__setRenderer__osgTerrain_TerrainTechnique_P1,
-	          "Set the Renderer. ",
-	          "");
-	I_Method0(osgTerrain::TerrainTechnique *, getRenderer,
-	          Properties::NON_VIRTUAL,
-	          __TerrainTechnique_P1__getRenderer,
-	          "Get the Renderer. ",
-	          "");
-	I_Method0(const osgTerrain::TerrainTechnique *, getRenderer,
-	          Properties::NON_VIRTUAL,
-	          __C5_TerrainTechnique_P1__getRenderer,
-	          "Get the const Renderer. ",
-	          "");
-	I_Method1(void, setBaseTextureImage, IN, osg::Image *, image,
-	          Properties::NON_VIRTUAL,
-	          __void__setBaseTextureImage__osg_Image_P1,
+	          __void__setHeightLayer__osgTerrain_Layer_P1,
 	          "",
 	          "");
-	I_Method0(osg::Image *, getBaseTextureImage,
+	I_Method0(osgTerrain::Layer *, getHeightLayer,
 	          Properties::NON_VIRTUAL,
-	          __osg_Image_P1__getBaseTextureImage,
+	          __osgTerrain_Layer_P1__getHeightLayer,
 	          "",
 	          "");
-	I_Method0(const osg::Image *, getBaseTextureImage,
+	I_Method1(void, addColorLayer, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Image_P1__getBaseTextureImage,
+	          __void__addColorLayer__osgTerrain_Layer_P1,
 	          "",
 	          "");
-	I_Method1(void, setDetailTextureImage, IN, osg::Image *, image,
+	I_Method1(void, removeColorLayer, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
-	          __void__setDetailTextureImage__osg_Image_P1,
+	          __void__removeColorLayer__osgTerrain_Layer_P1,
 	          "",
 	          "");
-	I_Method0(osg::Image *, getDetailTextureImage,
-	          Properties::NON_VIRTUAL,
-	          __osg_Image_P1__getDetailTextureImage,
-	          "",
-	          "");
-	I_Method0(const osg::Image *, getDetailTextureImage,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Image_P1__getDetailTextureImage,
-	          "",
-	          "");
-	I_Method1(void, setCloudShadowTextureImage, IN, osg::Image *, image,
-	          Properties::NON_VIRTUAL,
-	          __void__setCloudShadowTextureImage__osg_Image_P1,
-	          "",
-	          "");
-	I_Method0(osg::Image *, getCloudShadowTextureImage,
-	          Properties::NON_VIRTUAL,
-	          __osg_Image_P1__getCloudShadowTextureImage,
-	          "",
-	          "");
-	I_Method0(const osg::Image *, getCloudShadowTextureImage,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Image_P1__getCloudShadowTextureImage,
-	          "",
-	          "");
-	I_Method1(void, setNormalMapImage, IN, osg::Image *, image,
-	          Properties::NON_VIRTUAL,
-	          __void__setNormalMapImage__osg_Image_P1,
-	          "",
-	          "");
-	I_Method0(osg::Image *, getNormalMapImage,
-	          Properties::NON_VIRTUAL,
-	          __osg_Image_P1__getNormalMapImage,
-	          "",
-	          "");
-	I_Method0(const osg::Image *, getNormalMapImage,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Image_P1__getNormalMapImage,
-	          "",
-	          "");
-	I_Method0(void, computeNormalMap,
-	          Properties::NON_VIRTUAL,
-	          __void__computeNormalMap,
-	          "",
-	          "");
-	I_SimpleProperty(osg::Image *, BaseTextureImage, 
-	                 __osg_Image_P1__getBaseTextureImage, 
-	                 __void__setBaseTextureImage__osg_Image_P1);
-	I_SimpleProperty(osg::Image *, CloudShadowTextureImage, 
-	                 __osg_Image_P1__getCloudShadowTextureImage, 
-	                 __void__setCloudShadowTextureImage__osg_Image_P1);
-	I_SimpleProperty(osg::Image *, DetailTextureImage, 
-	                 __osg_Image_P1__getDetailTextureImage, 
-	                 __void__setDetailTextureImage__osg_Image_P1);
-	I_SimpleProperty(osg::HeightField *, HeightField, 
-	                 __osg_HeightField_P1__getHeightField, 
-	                 __void__setHeightField__osg_HeightField_P1);
-	I_SimpleProperty(osg::Image *, NormalMapImage, 
-	                 __osg_Image_P1__getNormalMapImage, 
-	                 __void__setNormalMapImage__osg_Image_P1);
-	I_SimpleProperty(osgTerrain::TerrainTechnique *, Renderer, 
-	                 __TerrainTechnique_P1__getRenderer, 
-	                 __void__setRenderer__osgTerrain_TerrainTechnique_P1);
+	I_SimpleProperty(osgTerrain::Layer *, HeightLayer, 
+	                 __osgTerrain_Layer_P1__getHeightLayer, 
+	                 __void__setHeightLayer__osgTerrain_Layer_P1);
+	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechnique, 
+	                 __TerrainTechnique_P1__getTerrainTechnique, 
+	                 __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1);
 END_REFLECTOR
 

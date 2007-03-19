@@ -1033,7 +1033,7 @@ void GraphicsWindowWin32::init()
     if (_initialized) return;
 
     WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
-    HWND windowHandle = windowData ? windowData->handle : 0;
+    HWND windowHandle = windowData ? windowData->_hwnd : 0;
 
     _ownsWindow    = windowHandle==0;
     _closeWindow   = false;

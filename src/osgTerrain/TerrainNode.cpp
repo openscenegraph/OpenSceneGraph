@@ -61,6 +61,19 @@ void TerrainNode::traverse(osg::NodeVisitor& nv)
     Group::traverse(nv);
 }
 
+void TerrainNode::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique)
+{
+    if (_terrainTechnique == terrainTechnique) return; 
+
+    if (_terrainTechnique.valid()) _terrainTechnique->_terrainNode = 0;
+
+    _terrainTechnique = terrainTechnique;
+    
+    if (_terrainTechnique.valid()) _terrainTechnique->_terrainNode = this;
+    
+}
+
+
 void TerrainNode::setHeightLayer(osgTerrain::Layer* layer)
 {
     _heightLayer = layer;

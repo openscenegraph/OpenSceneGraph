@@ -33,7 +33,7 @@ namespace
                 np.pop_back(); 
 
                 // Get the accumulated modeling matrix.
-                osg::Matrix localToWorld = computeLocalToWorld(np);
+                osg::Matrix localToWorld = osg::computeLocalToWorld(np);
 
                 // compute the unsquished matrix.
                 bool flag = false;

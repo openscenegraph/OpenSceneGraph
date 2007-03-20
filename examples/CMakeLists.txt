@@ -1,21 +1,9 @@
-PROJECT(OSG_EXAMPLES)
-
-SET(OSGCORE_BUNDLED TRUE)
-
-IF(NOT OSGCORE_BUNDLED)
-	FIND_PACKAGE(OSGCORE)
-	IF(OSGCORE_FOUND)
-		INCLUDE(${OSGCORE_USE_FILE})
-	ELSE(OSGCORE_FOUND)
-		MESSAGE(ERROR "OSGCORE neeeded but NOT FOUND")
-	ENDIF(OSGCORE_FOUND)
-	SET(CMAKE_MODULE_PATH  ${PROJECT_SOURCE_DIR}/../../Macros)
-ENDIF(NOT OSGCORE_BUNDLED)
-SET(OPENSCENEGRAPH_EXAMPLE_DIR ${PROJECT_SOURCE_DIR})
-
-
+#######################################################
+# this are setting used in SETUP_EXAMPLE macro
+#######################################################
 SET(TARGET_DEFAULT_PREFIX "example_")
 SET(TARGET_DEFAULT_LABEL_PREFIX "Examples")
+
 SET(TARGET_COMMON_LIBRARIES 
 	OpenThreads
 	osg 
@@ -26,8 +14,6 @@ SET(TARGET_COMMON_LIBRARIES
 	osgText 
 )
 
-#this is for asking the production of a single CMakeLists.txt
-#ADD_SUBDIRECTORY(osganimate)
 ADD_SUBDIRECTORY(osganimate)
 ADD_SUBDIRECTORY(osgautotransform)
 ADD_SUBDIRECTORY(osgbillboard)
@@ -56,9 +42,9 @@ ADD_SUBDIRECTORY(osghangglide)
 ADD_SUBDIRECTORY(osghud)
 ADD_SUBDIRECTORY(osgimpostor)
 ADD_SUBDIRECTORY(osgintersection)
-IF   (BUILD_OSG_WRAPPERS)#
+IF   (BUILD_OSG_WRAPPERS)
     ADD_SUBDIRECTORY(osgintrospection)
-ENDIF(BUILD_OSG_WRAPPERS)#
+ENDIF(BUILD_OSG_WRAPPERS)
 ADD_SUBDIRECTORY(osgkeyboard)
 ADD_SUBDIRECTORY(osgkeyboardmouse)
 ADD_SUBDIRECTORY(osglauncher)
@@ -96,6 +82,9 @@ ADD_SUBDIRECTORY(osgshape)
 ADD_SUBDIRECTORY(osgsimple)
 ##################################################
 #ADD_SUBDIRECTORY(osgsimpleviewerXXX)
+#
+#need to find dependency on windowing libraries
+#
 ##################################################
 ADD_SUBDIRECTORY(osgsimplifier)
 ADD_SUBDIRECTORY(osgsimulation)
@@ -105,14 +94,7 @@ ADD_SUBDIRECTORY(osgspacewarp)
 ADD_SUBDIRECTORY(osgspheresegment)
 ADD_SUBDIRECTORY(osgspotlight)
 ADD_SUBDIRECTORY(osgstereoimage)
-
-###########################################################################################################
-## this is to specify external libraries linking, these libraries do not differentiate in debug and release
-
 ADD_SUBDIRECTORY(osgteapot)
-
-###########################################################################################################
-
 ADD_SUBDIRECTORY(osgtessellate)#)
 ADD_SUBDIRECTORY(osgtext)
 ADD_SUBDIRECTORY(osgtexture1D)
@@ -123,15 +105,4 @@ ADD_SUBDIRECTORY(osgunittests)
 ADD_SUBDIRECTORY(osgvertexprogram)
 ADD_SUBDIRECTORY(osgvolume)
 ADD_SUBDIRECTORY(osgwindows)
-
-#REWRITE_CMAKELIST(ADD_OSG_EXAMPLE)
-
-#MESSAGE("---->${MY_EXAMPLE_LIST}<---------")
-##########to get all the variables of Cmake
-#GET_CMAKE_PROPERTY(MYVARS VARIABLES)
-#FOREACH(myvar ${MYVARS})
-#	FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/AllVariables.txt
-#		"${myvar} -->${${myvar}}<-\n"
-#	)
-#ENDFOREACH(myvar)
 

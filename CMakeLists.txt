@@ -46,7 +46,9 @@ ELSE(USING_OSG_OP_OT_TRIPLE_SET)
 #	MESSAGE("OSG: Not using Triple Set")
 	FIND_PACKAGE(OpenThreads REQUIRED)
 
-ENDIF(USING_OSG_OP_OT_TRIPLE_SET)# Find OpenGL
+ENDIF(USING_OSG_OP_OT_TRIPLE_SET)
+
+# Find OpenGL
 FIND_PACKAGE(OpenGL)
 
 IF(APPLE)
@@ -107,6 +109,8 @@ ENDIF(WIN32)
 # Common to all platforms:
 FIND_PACKAGE(FreeType)
 
+# Common to all platforms:
+FIND_PACKAGE(Inventor)
 
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything
@@ -136,8 +140,6 @@ IF(NOT APPLE)
 ELSE(NOT APPLE) 
 	FIND_PACKAGE(QuickTime)
 ENDIF(NOT APPLE)
-
-
 
 
 ################################################################################

@@ -3,6 +3,7 @@ include $(TOPDIR)/Make/makedefs
 
 CXXFILES =\
 	Export.cpp\
+	GeometryTechnique.cpp\
 	Layer.cpp\
 	Locator.cpp\
 	TerrainNode.cpp\

@@ -29,3 +29,23 @@ TerrainTechnique::TerrainTechnique(const TerrainTechnique& TerrainTechnique,cons
 TerrainTechnique::~TerrainTechnique()
 {
 }
+
+void TerrainTechnique::initialize()
+{
+}
+
+void TerrainTechnique::update(osgUtil::UpdateVisitor* nv)
+{
+}
+
+void TerrainTechnique::cull(osgUtil::CullVisitor* nv)
+{
+}
+
+void TerrainTechnique::cleanSceneGraph()
+{
+}
+
+void TerrainTechnique::dirty()
+{
+}

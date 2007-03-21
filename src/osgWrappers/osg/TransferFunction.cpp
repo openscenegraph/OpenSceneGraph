@@ -24,7 +24,8 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osg::TransferFunction)
+BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
+	I_BaseType(osg::Referenced);
 	I_Constructor0(____TransferFunction,
 	               "",
 	               "");

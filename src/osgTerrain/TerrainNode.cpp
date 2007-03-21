@@ -23,7 +23,9 @@ TerrainNode::TerrainNode()
 
 TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
-    _heightLayer(terrain._heightLayer)
+    _elevationLayer(terrain._elevationLayer),
+    _colorLayer(terrain._colorLayer),
+    _colorTransferFunction(terrain._colorTransferFunction)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
     
@@ -74,20 +76,17 @@ void TerrainNode::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechn
 }
 
 
-void TerrainNode::setHeightLayer(osgTerrain::Layer* layer)
+void TerrainNode::setElevationLayer(osgTerrain::Layer* layer)
 {
-    _heightLayer = layer;
+    _elevationLayer = layer;
 }
 
-osgTerrain::Layer* TerrainNode::getHeightLayer()
+void TerrainNode::setColorLayer(osgTerrain::Layer* layer)
 {
-    return _heightLayer.get();
+    _colorLayer = layer;
 }
 
-void TerrainNode::addColorLayer(osgTerrain::Layer* layer)
+void TerrainNode::setColorTransferFunction(osg::TransferFunction* tf)
 {
-}
-
-void TerrainNode::removeColorLayer(osgTerrain::Layer* layer)
-{
+    _colorTransferFunction = tf;
 }

@@ -170,7 +170,7 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
     return distortionNode;
 }
 
-void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& /*arguments*/)
+void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
 {
  
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
@@ -182,6 +182,9 @@ void setDomeFaces(osgViewer::Viewer& viewer, osg::ArgumentParser& /*arguments*/)
 
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+
+    while (arguments.read("--width",width)) {}
+    while (arguments.read("--height",height)) {}
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->x = 0;
@@ -435,6 +438,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
+    while (arguments.read("--width",width)) {}
+    while (arguments.read("--height",height)) {}
+
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->x = 0;
     traits->y = 0;
@@ -443,6 +449,8 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
+    
+    
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
@@ -656,6 +664,7 @@ int main(int argc, char** argv)
     else
     {
         osg::Node* distortionNode = createDistortionSubgraph( osgDB::readNodeFiles(arguments), viewer.getCamera()->getClearColor());
+        viewer.setSceneData( distortionNode );
     }
 
 

@@ -40,7 +40,6 @@ ADD_LIBRARY(${LIB_NAME}
 	CommandManager.cpp
 	Constraint.cpp
 	Dragger.cpp
-	GNUmakefile
 	Projector.cpp
 	RotateCylinderDragger.cpp
 	RotateSphereDragger.cpp

@@ -32,20 +32,25 @@ TerrainTechnique::~TerrainTechnique()
 
 void TerrainTechnique::initialize()
 {
+    osg::notify(osg::NOTICE)<<className()<<"::initialize(..) not implementated yet"<<std::endl;
 }
 
-void TerrainTechnique::update(osgUtil::UpdateVisitor* nv)
+void TerrainTechnique::update(osgUtil::UpdateVisitor*)
 {
+    osg::notify(osg::NOTICE)<<className()<<"::update(..) not implementated yet"<<std::endl;
 }
 
-void TerrainTechnique::cull(osgUtil::CullVisitor* nv)
+void TerrainTechnique::cull(osgUtil::CullVisitor*)
 {
+    osg::notify(osg::NOTICE)<<className()<<"::cull(..) not implementated yet"<<std::endl;
 }
 
 void TerrainTechnique::cleanSceneGraph()
 {
+    osg::notify(osg::NOTICE)<<className()<<"::cleanSceneGraph(..) not implementated yet"<<std::endl;
 }
 
 void TerrainTechnique::dirty()
 {
+    osg::notify(osg::NOTICE)<<className()<<"::dirty(..) not implementated yet"<<std::endl;
 }

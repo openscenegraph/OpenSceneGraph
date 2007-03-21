@@ -13,7 +13,9 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/TransferFunction>
 #include <osgTerrain/Layer>
+#include <osgTerrain/Locator>
 #include <osgTerrain/TerrainNode>
 #include <osgTerrain/TerrainTechnique>
 
@@ -84,29 +86,78 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __C5_TerrainTechnique_P1__getTerrainTechnique,
 	          "Get the const TerrainTechnique. ",
 	          "");
-	I_Method1(void, setHeightLayer, IN, osgTerrain::Layer *, layer,
+	I_Method1(void, setLocator, IN, osgTerrain::Locator *, locator,
 	          Properties::NON_VIRTUAL,
-	          __void__setHeightLayer__osgTerrain_Layer_P1,
+	          __void__setLocator__Locator_P1,
+	          "Set the coordinate frame locator of the terrain node. ",
+	          "The locator takes non-dimensional s,t coordinates into the X,Y,Z world coords and back. ");
+	I_Method0(osgTerrain::Locator *, getLocator,
+	          Properties::NON_VIRTUAL,
+	          __Locator_P1__getLocator,
+	          "Get the coordinate frame locator of the terrain node. ",
+	          "");
+	I_Method0(const osgTerrain::Locator *, getLocator,
+	          Properties::NON_VIRTUAL,
+	          __C5_Locator_P1__getLocator,
+	          "Get the coordinate frame locator of the terrain node. ",
+	          "");
+	I_Method1(void, setElevationLayer, IN, osgTerrain::Layer *, layer,
+	          Properties::NON_VIRTUAL,
+	          __void__setElevationLayer__Layer_P1,
 	          "",
 	          "");
-	I_Method0(osgTerrain::Layer *, getHeightLayer,
+	I_Method0(osgTerrain::Layer *, getElevationLayer,
 	          Properties::NON_VIRTUAL,
-	          __osgTerrain_Layer_P1__getHeightLayer,
+	          __Layer_P1__getElevationLayer,
 	          "",
 	          "");
-	I_Method1(void, addColorLayer, IN, osgTerrain::Layer *, layer,
+	I_Method0(const osgTerrain::Layer *, getElevationLayer,
 	          Properties::NON_VIRTUAL,
-	          __void__addColorLayer__osgTerrain_Layer_P1,
+	          __C5_Layer_P1__getElevationLayer,
 	          "",
 	          "");
-	I_Method1(void, removeColorLayer, IN, osgTerrain::Layer *, layer,
+	I_Method1(void, setColorLayer, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
-	          __void__removeColorLayer__osgTerrain_Layer_P1,
+	          __void__setColorLayer__osgTerrain_Layer_P1,
 	          "",
 	          "");
-	I_SimpleProperty(osgTerrain::Layer *, HeightLayer, 
-	                 __osgTerrain_Layer_P1__getHeightLayer, 
-	                 __void__setHeightLayer__osgTerrain_Layer_P1);
+	I_Method0(osgTerrain::Layer *, getColorLayer,
+	          Properties::NON_VIRTUAL,
+	          __Layer_P1__getColorLayer,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::Layer *, getColorLayer,
+	          Properties::NON_VIRTUAL,
+	          __C5_Layer_P1__getColorLayer,
+	          "",
+	          "");
+	I_Method1(void, setColorTransferFunction, IN, osg::TransferFunction *, tf,
+	          Properties::NON_VIRTUAL,
+	          __void__setColorTransferFunction__osg_TransferFunction_P1,
+	          "",
+	          "");
+	I_Method0(osg::TransferFunction *, getColorTransferFunction,
+	          Properties::NON_VIRTUAL,
+	          __osg_TransferFunction_P1__getColorTransferFunction,
+	          "",
+	          "");
+	I_Method0(const osg::TransferFunction *, getColorTransferFunction,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_TransferFunction_P1__getColorTransferFunction,
+	          "",
+	          "");
+	I_SimpleProperty(osgTerrain::Layer *, ColorLayer, 
+	                 __Layer_P1__getColorLayer, 
+	                 __void__setColorLayer__osgTerrain_Layer_P1);
+	I_SimpleProperty(osg::TransferFunction *, ColorTransferFunction, 
+	                 __osg_TransferFunction_P1__getColorTransferFunction, 
+	                 __void__setColorTransferFunction__osg_TransferFunction_P1);
+	I_SimpleProperty(osgTerrain::Layer *, ElevationLayer, 
+	                 __Layer_P1__getElevationLayer, 
+	                 __void__setElevationLayer__Layer_P1);
+	I_SimpleProperty(osgTerrain::Locator *, Locator, 
+	                 __Locator_P1__getLocator, 
+	                 __void__setLocator__Locator_P1);
 	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechnique, 
 	                 __TerrainTechnique_P1__getTerrainTechnique, 
 	                 __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1);

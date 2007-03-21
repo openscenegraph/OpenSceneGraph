@@ -11,53 +11,43 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAIN_TERRAINTECHNIQUE
-#define OSGTERRAIN_TERRAINTECHNIQUE 1
+#ifndef OSGTERRAIN_GEOMETRYTECHNIQUE
+#define OSGTERRAIN_GEOMETRYTECHNIQUE 1
 
-#include <osg/Object>
+#include <osg/Geode>
+#include <osg/Geometry>
 
-#include <osgUtil/UpdateVisitor>
-#include <osgUtil/CullVisitor>
-
-#include <osgTerrain/Export>
+#include <osgTerrain/TerrainTechnique>
 
 namespace osgTerrain {
 
-class TerrainNode;
-
-class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
+class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 {
     public:
 
-        TerrainTechnique();
+        GeometryTechnique();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        TerrainTechnique(const TerrainTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        GeometryTechnique(const GeometryTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
-        META_Object(osgTerrain, TerrainTechnique);
-
-        TerrainNode* getTerrainNode() { return _terrainNode; }
-        const TerrainNode* getTerrainNode() const { return _terrainNode; }
-
         virtual void initialize();
 
         virtual void update(osgUtil::UpdateVisitor* nv);
 
         virtual void cull(osgUtil::CullVisitor* nv);
 
-        /** Clean scene graph from any terrain technique specific nodes.*/
-        virtual void cleanSceneGraph();
+        virtual void cleanSceneGraph() {} 
 
         /** Dirty so that cached data structurese are updated.*/
-        virtual void dirty();
+        virtual void dirty() { _dirty = true; }
 
     protected:
 
-        virtual ~TerrainTechnique();
+        virtual ~GeometryTechnique();
         
-        friend class osgTerrain::TerrainNode;
-
-        TerrainNode* _terrainNode;
+        osg::ref_ptr<osg::Geode>    _geode;
+        osg::ref_ptr<osg::Geometry> _geometry;
+        bool                        _dirty;
 
 };
 

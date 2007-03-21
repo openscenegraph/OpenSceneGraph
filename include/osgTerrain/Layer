@@ -40,8 +40,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         virtual ~Layer();
 
-
-        osg::ref_ptr<Locator> _locator;
+        osg::ref_ptr<Locator>           _locator;
 
 };
 

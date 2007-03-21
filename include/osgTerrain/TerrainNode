@@ -15,11 +15,12 @@
 #define OSGTERRAIN_TERRAINNODE 1
 
 #include <osg/Group>
-#include <osg/Image>
 #include <osg/CoordinateSystemNode>
+#include <osg/TransferFunction>
 
 #include <osgTerrain/TerrainTechnique>
 #include <osgTerrain/Layer>
+#include <osgTerrain/Locator>
 
 namespace osgTerrain {
 
@@ -49,20 +50,40 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         const TerrainTechnique* getTerrainTechnique() const { return _terrainTechnique.get(); }
 
 
-        void setHeightLayer(osgTerrain::Layer* layer);
-        osgTerrain::Layer* getHeightLayer();
+        /** Set the coordinate frame locator of the terrain node.
+          * The locator takes non-dimensional s,t coordinates into the X,Y,Z world coords and back.*/
+        void setLocator(Locator* locator) { _locator = locator; }
+
+        /** Get the coordinate frame locator of the terrain node.*/
+        Locator* getLocator() { return _locator.get(); }
+
+        /** Get the coordinate frame locator of the terrain node.*/
+        const Locator* getLocator() const { return _locator.get(); }
+
+
+        void setElevationLayer(Layer* layer);
+        Layer* getElevationLayer() { return _elevationLayer.get(); }
+        const Layer* getElevationLayer() const { return _elevationLayer.get(); }
         
-        void addColorLayer(osgTerrain::Layer* layer);
-        void removeColorLayer(osgTerrain::Layer* layer);
+        void setColorLayer(osgTerrain::Layer* layer);
+        Layer* getColorLayer() { return _colorLayer.get(); }
+        const Layer* getColorLayer() const { return _colorLayer.get(); }
+        
+        void setColorTransferFunction(osg::TransferFunction* tf);
+        osg::TransferFunction* getColorTransferFunction() { return _colorTransferFunction.get(); }
+        const osg::TransferFunction* getColorTransferFunction() const { return _colorTransferFunction.get(); }
 
     protected:
 
         virtual ~TerrainNode();
 
+        osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
+        osg::ref_ptr<Locator>               _locator;
         
-        osg::ref_ptr<TerrainTechnique>   _terrainTechnique;
-        
-        osg::ref_ptr<Layer> _heightLayer;
+        osg::ref_ptr<Layer>                 _elevationLayer;
+
+        osg::ref_ptr<Layer>                 _colorLayer;
+        osg::ref_ptr<osg::TransferFunction> _colorTransferFunction;
 };
 
 }

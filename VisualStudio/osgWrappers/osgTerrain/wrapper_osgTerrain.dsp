@@ -100,6 +100,10 @@ SOURCE=..\..\..\src\osgWrappers\osgTerrain\Export.cpp
 # End Source File
 
 # Begin Source File
+SOURCE=..\..\..\src\osgWrappers\osgTerrain\GeometryTechnique.cpp
+# End Source File
+
+# Begin Source File
 SOURCE=..\..\..\src\osgWrappers\osgTerrain\Layer.cpp
 # End Source File
 

@@ -22,12 +22,11 @@ namespace osg {
 
 /** TransferFunction used to manage the mapping for 1D, 2D or 3D input to output Vec4 values.
   */
-class OSG_EXPORT TransferFunction
+class OSG_EXPORT TransferFunction : public osg::Referenced
 {
     public :
     
         TransferFunction();
-        virtual ~TransferFunction();
 
         osg::Image* getImage() { return _image.get(); }
         const osg::Image* getImage() const { return _image.get(); }
@@ -40,6 +39,8 @@ class OSG_EXPORT TransferFunction
         
     protected:
     
+        virtual ~TransferFunction();
+
         typedef std::vector<osg::Vec4> Colors;
         Colors                     _colors;
         osg::ref_ptr<osg::Image>    _image;

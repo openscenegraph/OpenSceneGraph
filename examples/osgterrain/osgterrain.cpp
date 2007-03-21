@@ -16,6 +16,7 @@
 #include <osgText/FadeText>
 
 #include <osgTerrain/TerrainNode>
+#include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Layer>
 
 #include <iostream>
@@ -33,7 +34,7 @@ int main(int argc, char** argv)
     double w = 1.0;
     double h = 1.0;
 
-    osg::ref_ptr<osg::Node> root = new osgTerrain::TerrainNode;
+    osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
 
     bool readParameter = false;
     do 
@@ -61,12 +62,14 @@ int main(int argc, char** argv)
     } while (readParameter);
     
 
+    osg::ref_ptr<osgTerrain::GeometryTechnique> geometryTechnique = new osgTerrain::GeometryTechnique;
     
+    terrain->setTerrainTechnique(geometryTechnique.get());
     
-    if (!root) return 0;
+    if (!terrain) return 0;
 
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData(root.get());
+    viewer.setSceneData(terrain.get());
 
     return viewer.run();
 }

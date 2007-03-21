@@ -14,7 +14,9 @@
 #ifndef OSGTERRAIN_LAYER
 #define OSGTERRAIN_LAYER 1
 
-#include <osg/Object>
+#include <osg/Image>
+#include <osg/Shape>
+#include <osg/Array>
 
 #include <osgTerrain/Locator>
 
@@ -29,7 +31,6 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Layer(const Layer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
-        
         void setLocator(Locator* locator) { _locator = locator; }
         
         Locator* getLocator() { return _locator.get(); }
@@ -41,6 +42,79 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         virtual ~Layer();
 
         osg::ref_ptr<Locator>           _locator;
+
+};
+
+class OSGTERRAIN_EXPORT ImageLayer : public Layer
+{
+    public:
+
+        ImageLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+
+        void setImage(osg::Image* image);
+        
+        osg::Image* getImage() { return _image.get(); }
+
+        const osg::Image* getImage() const { return _image.get(); }
+
+    protected:
+
+        virtual ~ImageLayer() {}
+
+        osg::ref_ptr<osg::Image> _image;
+
+};
+
+class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
+{
+    public:
+
+        HeightFieldLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        HeightFieldLayer(const HeightFieldLayer& hfLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+
+        void setHeightField(osg::HeightField* hf);
+        
+        osg::HeightField* getHeightField() { return _heightField.get(); }
+
+        const osg::HeightField* getHeightField() const { return _heightField.get(); }
+
+    protected:
+
+        virtual ~HeightFieldLayer() {}
+
+        osg::ref_ptr<osg::HeightField> _heightField;
+
+};
+
+
+class OSGTERRAIN_EXPORT ArrayLayer : public Layer
+{
+    public:
+
+        ArrayLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ArrayLayer(const ArrayLayer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+
+        void setArray(osg::Array* array);
+        
+        osg::Array* getArray() { return _array.get(); }
+
+        const osg::Array* getArray() const { return _array.get(); }
+
+    protected:
+
+        virtual ~ArrayLayer() {}
+
+        osg::ref_ptr<osg::Array> _array;
 
 };
 

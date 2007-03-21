@@ -27,3 +27,62 @@ Layer::Layer(const Layer& Layer,const osg::CopyOp& copyop):
 Layer::~Layer()
 {
 }
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ImageLayer
+//
+ImageLayer::ImageLayer()
+{
+}
+
+ImageLayer::ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop):
+    Layer(imageLayer, copyop),
+    _image(imageLayer._image)
+{
+}
+
+void ImageLayer::setImage(osg::Image* image)
+{
+    _image = image;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HieghtFieldLayer
+//
+HeightFieldLayer::HeightFieldLayer()
+{
+}
+
+HeightFieldLayer::HeightFieldLayer(const HeightFieldLayer& hfLayer,const osg::CopyOp& copyop):
+    Layer(hfLayer,copyop),
+    _heightField(hfLayer._heightField)
+{
+}
+
+
+void HeightFieldLayer::setHeightField(osg::HeightField* hf)
+{
+    _heightField = hf;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ImageLayer
+//
+ArrayLayer::ArrayLayer()
+{
+}
+
+ArrayLayer::ArrayLayer(const ArrayLayer& arrayLayer,const osg::CopyOp& copyop):
+    Layer(arrayLayer,copyop),
+    _array(arrayLayer._array)
+{
+}
+
+void ArrayLayer::setArray(osg::Array* array)
+{
+    _array = array;
+}

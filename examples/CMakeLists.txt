@@ -21,9 +21,7 @@ ADD_SUBDIRECTORY(osgblendequation)
 ADD_SUBDIRECTORY(osgcallback)
 ADD_SUBDIRECTORY(osgcamera)
 ADD_SUBDIRECTORY(osgcatch)
-#ADD_SUBDIRECTORY(osgcegui)
 ADD_SUBDIRECTORY(osgclip)
-#to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)
 ADD_SUBDIRECTORY(osgcopy)
 ADD_SUBDIRECTORY(osgcubemap)
 ADD_SUBDIRECTORY(osgdelaunay)
@@ -35,18 +33,10 @@ ADD_SUBDIRECTORY(osgforest)
 ADD_SUBDIRECTORY(osgfxbrowser)
 ADD_SUBDIRECTORY(osggeodemo)
 ADD_SUBDIRECTORY(osggeometry)
-#to add subject to find Glut
-#ADD_SUBDIRECTORY(osgGLUTkeyboardmouse)
-#ADD_SUBDIRECTORY(osgGLUTsimple)
 ADD_SUBDIRECTORY(osghangglide)
 ADD_SUBDIRECTORY(osghud)
 ADD_SUBDIRECTORY(osgimpostor)
 ADD_SUBDIRECTORY(osgintersection)
-
-IF   (BUILD_OSG_WRAPPERS)
-    ADD_SUBDIRECTORY(osgintrospection)
-ENDIF(BUILD_OSG_WRAPPERS)
-
 ADD_SUBDIRECTORY(osgkeyboard)
 ADD_SUBDIRECTORY(osgkeyboardmouse)
 ADD_SUBDIRECTORY(osglauncher)
@@ -82,12 +72,6 @@ ADD_SUBDIRECTORY(osgshadowtexture)
 ADD_SUBDIRECTORY(osgshadow)
 ADD_SUBDIRECTORY(osgshape)
 ADD_SUBDIRECTORY(osgsimple)
-##################################################
-#ADD_SUBDIRECTORY(osgsimpleviewerXXX)
-#
-#need to find dependency on windowing libraries
-#
-##################################################
 ADD_SUBDIRECTORY(osgsimplifier)
 ADD_SUBDIRECTORY(osgsimulation)
 ADD_SUBDIRECTORY(osgterrain)
@@ -108,3 +92,19 @@ ADD_SUBDIRECTORY(osgvertexprogram)
 ADD_SUBDIRECTORY(osgvolume)
 ADD_SUBDIRECTORY(osgwindows)
 
+IF   (BUILD_OSG_WRAPPERS)
+    ADD_SUBDIRECTORY(osgintrospection)
+ENDIF(BUILD_OSG_WRAPPERS)
+
+IF   (GLUT_FOUND)
+    ADD_SUBDIRECTORY(osgGLUTkeyboardmouse)
+    ADD_SUBDIRECTORY(osgGLUTsimple)
+    ADD_SUBDIRECTORY(osgsimpleviewerGLUT)
+ENDIF(GLUT_FOUND)
+
+IF   (SDL_FOUND)
+    ADD_SUBDIRECTORY(osgsimpleviewerSDL)
+ENDIF(SDL_FOUND)
+
+#ADD_SUBDIRECTORY(osgcegui)
+#to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)

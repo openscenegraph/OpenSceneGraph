@@ -17,6 +17,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/CustomAttributeProvider
 	${HEADER_PATH}/Exceptions
 	${HEADER_PATH}/Export
+	${HEADER_PATH}/ExtendedTypeInfo
 	${HEADER_PATH}/InstanceCreator
 	${HEADER_PATH}/MethodInfo
 	${HEADER_PATH}/ParameterInfo
@@ -28,12 +29,12 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Reflector
 	${HEADER_PATH}/StaticMethodInfo
 	${HEADER_PATH}/Type
-	${HEADER_PATH}/TypeNameAliasProxy
 	${HEADER_PATH}/TypedConstructorInfo
 	${HEADER_PATH}/TypedMethodInfo
+	${HEADER_PATH}/TypeNameAliasProxy
+	${HEADER_PATH}/type_traits
 	${HEADER_PATH}/Utility
 	${HEADER_PATH}/Value
-	${HEADER_PATH}/type_traits
 	${HEADER_PATH}/variant_cast
 )
 

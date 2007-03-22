@@ -106,5 +106,17 @@ IF   (SDL_FOUND)
     ADD_SUBDIRECTORY(osgsimpleviewerSDL)
 ENDIF(SDL_FOUND)
 
+IF   (QT_FOUND)
+    IF   (QT4_FOUND)
+        ADD_SUBDIRECTORY(osgsimpleviewerQT4)
+    ELSE(QT4_FOUND)
+        ADD_SUBDIRECTORY(osgsimpleviewerQT3)
+    ENDIF(QT4_FOUND)
+ENDIF(QT_FOUND)
+
+IF   (FLTK_FOUND)
+    ADD_SUBDIRECTORY(osgsimpleviewerFLTK)
+ENDIF(FLTK_FOUND)
+
 #ADD_SUBDIRECTORY(osgcegui)
 #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)

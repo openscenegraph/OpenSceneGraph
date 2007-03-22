@@ -42,9 +42,11 @@ ADD_SUBDIRECTORY(osghangglide)
 ADD_SUBDIRECTORY(osghud)
 ADD_SUBDIRECTORY(osgimpostor)
 ADD_SUBDIRECTORY(osgintersection)
+
 IF   (BUILD_OSG_WRAPPERS)
     ADD_SUBDIRECTORY(osgintrospection)
 ENDIF(BUILD_OSG_WRAPPERS)
+
 ADD_SUBDIRECTORY(osgkeyboard)
 ADD_SUBDIRECTORY(osgkeyboardmouse)
 ADD_SUBDIRECTORY(osglauncher)

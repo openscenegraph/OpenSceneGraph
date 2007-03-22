@@ -60,6 +60,8 @@ IF(UNIX)
 	# Not sure what this will do on Cygwin and Msys
 	# Also, remember OS X X11 is a user installed option so it may not exist.
 	FIND_PACKAGE(X11)
+	# Some Unicies need explicit linkage to the Math library or the build fails.
+	FIND_LIBRARY(MATH_LIBRARY m)
 ENDIF(UNIX)
 	
 # Make the headers visible to everything
@@ -108,8 +110,8 @@ ENDIF(WIN32)
 
 # Common to all platforms:
 FIND_PACKAGE(FreeType)
-
-# Common to all platforms:
+FIND_PACKAGE(GLUT)
+FIND_PACKAGE(SDL)
 FIND_PACKAGE(Inventor)
 
 # Platform specific:

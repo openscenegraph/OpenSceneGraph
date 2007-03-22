@@ -1,0 +1,7 @@
+SET(TARGET_SRC osgsimpleviewerSDL.cpp )
+SET(TARGET_ADDED_LIBRARIES ${SDL_LIBRARY} )
+
+INCLUDE_DIRECTORIES(${SDL_INCLUDE_DIR} )
+
+#### end var setup  ###
+SETUP_EXAMPLE(osgsimpleviewerSDL)

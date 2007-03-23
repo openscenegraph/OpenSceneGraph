@@ -117,6 +117,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/StateSet
 	${HEADER_PATH}/Stats
 	${HEADER_PATH}/Stencil
+	${HEADER_PATH}/StencilTwoSided
 	${HEADER_PATH}/Switch
 	${HEADER_PATH}/TexEnv
 	${HEADER_PATH}/TexEnvCombine

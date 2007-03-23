@@ -224,7 +224,7 @@ void Type::getAllMethods(MethodInfoList& methods, FunctionCategory category) con
     std::copy(input_methods.begin(), input_methods.end(), std::back_inserter(methods));
     for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
-        (*i)->getAllMethods(methods);
+        (*i)->getAllMethods(methods, category);
     }
 }
 
@@ -234,7 +234,7 @@ void Type::getMethodsMap(MethodInfoMap& methods, FunctionCategory category) cons
     methods[this] = (category == PUBLIC_FUNCTIONS ? _methods : _protected_methods);
     for (TypeList::const_iterator i=_base.begin(); i!=_base.end(); ++i)
     {
-        (*i)->getMethodsMap(methods);
+        (*i)->getMethodsMap(methods, category);
     }
 }
 

@@ -10,7 +10,10 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
 #include <osg/CopyOp>
+#include <osg/Image>
+#include <osg/Shape>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
 
@@ -21,6 +24,93 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::ArrayLayer)
+	I_BaseType(osgTerrain::Layer);
+	I_Constructor0(____ArrayLayer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::ArrayLayer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ArrayLayer__C5_ArrayLayer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method1(void, setArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setArray__osg_Array_P1,
+	          "",
+	          "");
+	I_Method0(osg::Array *, getArray,
+	          Properties::NON_VIRTUAL,
+	          __osg_Array_P1__getArray,
+	          "",
+	          "");
+	I_Method0(const osg::Array *, getArray,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Array_P1__getArray,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Array *, Array, 
+	                 __osg_Array_P1__getArray, 
+	                 __void__setArray__osg_Array_P1);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
+	I_BaseType(osgTerrain::Layer);
+	I_Constructor0(____HeightFieldLayer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldLayer &, hfLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____HeightFieldLayer__C5_HeightFieldLayer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method1(void, setHeightField, IN, osg::HeightField *, hf,
+	          Properties::NON_VIRTUAL,
+	          __void__setHeightField__osg_HeightField_P1,
+	          "",
+	          "");
+	I_Method0(osg::HeightField *, getHeightField,
+	          Properties::NON_VIRTUAL,
+	          __osg_HeightField_P1__getHeightField,
+	          "",
+	          "");
+	I_Method0(const osg::HeightField *, getHeightField,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_HeightField_P1__getHeightField,
+	          "",
+	          "");
+	I_SimpleProperty(osg::HeightField *, HeightField, 
+	                 __osg_HeightField_P1__getHeightField, 
+	                 __void__setHeightField__osg_HeightField_P1);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
+	I_BaseType(osgTerrain::Layer);
+	I_Constructor0(____ImageLayer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::ImageLayer &, imageLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ImageLayer__C5_ImageLayer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method1(void, setImage, IN, osg::Image *, image,
+	          Properties::NON_VIRTUAL,
+	          __void__setImage__osg_Image_P1,
+	          "",
+	          "");
+	I_Method0(osg::Image *, getImage,
+	          Properties::NON_VIRTUAL,
+	          __osg_Image_P1__getImage,
+	          "",
+	          "");
+	I_Method0(const osg::Image *, getImage,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Image_P1__getImage,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __osg_Image_P1__getImage, 
+	                 __void__setImage__osg_Image_P1);
+END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_BaseType(osg::Object);

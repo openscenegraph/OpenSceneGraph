@@ -525,19 +525,19 @@ class OSG_EXPORT Drawable : public Object
 
             virtual ~ConstAttributeFunctor() {}
 
-            virtual void apply(AttributeType,const unsigned int,const GLbyte*) {}
-            virtual void apply(AttributeType,const unsigned int,const GLshort*) {}
-            virtual void apply(AttributeType,const unsigned int,const GLint*) {}
+            virtual void apply(AttributeType,unsigned int,const GLbyte*) {}
+            virtual void apply(AttributeType,unsigned int,const GLshort*) {}
+            virtual void apply(AttributeType,unsigned int,const GLint*) {}
 
-            virtual void apply(AttributeType,const unsigned int,const GLubyte*) {}
-            virtual void apply(AttributeType,const unsigned int,const GLushort*) {}
-            virtual void apply(AttributeType,const unsigned int,const GLuint*) {}
+            virtual void apply(AttributeType,unsigned int,const GLubyte*) {}
+            virtual void apply(AttributeType,unsigned int,const GLushort*) {}
+            virtual void apply(AttributeType,unsigned int,const GLuint*) {}
 
-            virtual void apply(AttributeType,const unsigned int,const float*) {}
-            virtual void apply(AttributeType,const unsigned int,const Vec2*) {}
-            virtual void apply(AttributeType,const unsigned int,const Vec3*) {}
-            virtual void apply(AttributeType,const unsigned int,const Vec4*) {}
-            virtual void apply(AttributeType,const unsigned int,const Vec4ub*) {}
+            virtual void apply(AttributeType,unsigned int,const float*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec2*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec3*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec4*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec4ub*) {}
         };
 
         /** Return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/

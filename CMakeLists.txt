@@ -148,6 +148,14 @@ ENDIF(NOT APPLE)
 
 
 ################################################################################
+# Create bin and lib directories if required
+
+IF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+   FILE(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin ${CMAKE_BINARY_DIR}/lib ${CMAKE_BINARY_DIR}/lib/osgPlugins)
+ENDIF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+
+
+################################################################################
 # Installation stuff
 
 SET(CMAKE_DEBUG_POSTFIX  "d")

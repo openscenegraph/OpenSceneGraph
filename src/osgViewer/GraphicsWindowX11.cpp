@@ -367,7 +367,7 @@ void GraphicsWindowX11::useCursor(bool cursorOn)
 
 }
 
-void GraphicsWindowX11::init(WindowData* inheritedWindowData)
+void GraphicsWindowX11::init()
 {
     if (_initialized) return;
 
@@ -376,6 +376,8 @@ void GraphicsWindowX11::init(WindowData* inheritedWindowData)
         _valid = false;
         return;
     }
+    
+    WindowData* inheritedWindowData =  dynamic_cast<WindowData*>(_traits->inheritedWindowData.get());
 
     _display = XOpenDisplay(_traits->displayName().c_str());
     

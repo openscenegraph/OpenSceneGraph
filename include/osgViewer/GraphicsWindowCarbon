@@ -39,7 +39,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         {
             _traits = traits;
 
-            init(traits ? dynamic_cast<WindowData*>(traits->inheritedWindowData.get()) : 0);
+            init();
             
             if (valid())
             {
@@ -110,7 +110,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
 
     protected:
     
-        void init(WindowData* inheritedWindowData=0);
+        void init();
         
         void transformMouseXY(float& x, float& y);
         

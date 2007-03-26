@@ -171,6 +171,10 @@ SOURCE=..\..\src\osgTerrain\TerrainTechnique.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\osgTerrain\GeometryTechnique.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\osgTerrain\Version.cpp
 # End Source File
 # End Group
@@ -196,6 +200,10 @@ SOURCE=..\..\include\osgTerrain\TerrainNode
 # Begin Source File
 
 SOURCE=..\..\include\osgTerrain\TerrainTechnique
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\osgTerrain\GeometryTechnique
 # End Source File
 # Begin Source File
 

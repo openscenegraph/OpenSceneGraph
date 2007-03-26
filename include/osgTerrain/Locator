@@ -32,8 +32,8 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         
         META_Object(osgTerrain, Locator);
         
-        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) {};
-        virtual bool convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local) {};
+        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) { return false; };
+        virtual bool convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local) { return false; };
 
     protected:
 

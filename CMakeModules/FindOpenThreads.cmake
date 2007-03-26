@@ -39,7 +39,25 @@ FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY 
-	NAMES OpenThreads OpenThreadsd OpenThreadsWin32 OpenThreadsWin32d
+	NAMES OpenThreads  OpenThreadsWin32 
+	PATHS
+	${CMAKE_INSTALL_PREFIX}/lib
+	$ENV{OPENTHREADS_DIR}/lib
+	$ENV{OSG_DIR}/lib
+	~/Library/Frameworks
+	/Library/Frameworks
+	/usr/local/lib64
+	/usr/local/lib
+	/usr/lib64
+	/usr/lib
+	/sw/lib
+	/opt/local/lib
+	/opt/csw/lib
+	/opt/lib
+	[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+)
+FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+	NAMES  OpenThreadsd  OpenThreadsWin32d
 	PATHS
 	${CMAKE_INSTALL_PREFIX}/lib
 	$ENV{OPENTHREADS_DIR}/lib
@@ -60,6 +78,10 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY
 SET(OPENTHREADS_FOUND "NO")
 IF(OPENTHREADS_INCLUDE_DIR AND OPENTHREADS_LIBRARY)
 	SET(OPENTHREADS_FOUND "YES")
-        MESSAGE("-- Found OpenThreads: "${OPENTHREADS_LIBRARY})
+  MESSAGE("-- Found OpenThreads: "${OPENTHREADS_LIBRARY})
+  IF(NOT OPENTHREADS_LIBRARY_DEBUG)
+  	MESSAGE("-- Warning Debug OpenThreads not found, using: ${OPENTHREADS_LIBRARY}")
+  	SET(OPENTHREADS_LIBRARY_DEBUG "${OPENTHREADS_LIBRARY}")
+  ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 ENDIF(OPENTHREADS_INCLUDE_DIR AND OPENTHREADS_LIBRARY)
 

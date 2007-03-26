@@ -1,3 +1,50 @@
+
+#######################################################################################################
+#  macro for linking libraries that come from Findxxxx commands, so there is a variable that contains the
+#  full path of the library name. in order to differentiate release and debug, this macro get the
+#  NAME of the variables, so the macro gets as arguments the target name and the following list of parameters
+#  is intended as a list of variable names each one containing  the path of the libraries to link to
+#  The existance of a varibale name with _DEBUG appended is tested and, in case it' s value is used
+#  for linking to when in debug mode 
+#  the content of this library for linking when in debugging
+#######################################################################################################
+
+
+MACRO(LINK_WITH_VARIABLES TRGTNAME)
+	FOREACH(varname ${ARGN})
+		IF(${varname}_DEBUG)
+			TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${${varname}}" debug "${${varname}_DEBUG}")
+		ELSE(${varname}_DEBUG)
+			TARGET_LINK_LIBRARIES(${TRGTNAME} "${${varname}}" )
+		ENDIF(${varname}_DEBUG)
+	ENDFOREACH(varname)
+ENDMACRO(LINK_WITH_VARIABLES TRGTNAME)
+
+MACRO(LINK_INTERNAL TRGTNAME)
+	FOREACH(LINKLIB ${ARGN})
+		TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${LINKLIB}" debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
+	ENDFOREACH(LINKLIB)
+ENDMACRO(LINK_INTERNAL TRGTNAME)
+
+MACRO(LINK_EXTERNAL TRGTNAME)
+	FOREACH(LINKLIB ${ARGN})
+		TARGET_LINK_LIBRARIES(${TRGTNAME} "${LINKLIB}" )
+	ENDFOREACH(LINKLIB)
+ENDMACRO(LINK_EXTERNAL TRGTNAME)
+
+
+#######################################################################################################
+#  macro for common setup of core libraries: it links OPENGL_LIBRARIES in undifferentiated mode and
+#  OPENTHREADS_LIBRARY as Differentiated, so if existe the variable OPENTHREADS_LIBRARY_DEBUG, it uses 
+#  the content of this library for linking when in debugging
+#######################################################################################################
+
+MACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
+	LINK_EXTERNAL(${CORELIB_NAME} ${OPENGL_LIBRARIES}) 
+	LINK_WITH_VARIABLES(${CORELIB_NAME} OPENTHREADS_LIBRARY)
+ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
+
+
 #######################################################################################################
 #  macro for common setup of plugins, examples and applications it expect some variables to be set:
 #  either within the local CMakeLists or higher in hierarchy
@@ -11,33 +58,37 @@
 ##########################################################################################################
 
 MACRO(SETUP_LINK_LIBRARIES)
-######################################################################
-#
-# This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plagins
-# kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES 
-# they are combined in a single list checked for unicity 
-# the suffix ${CMAKE_DEBUG_POSTFIX} is used for differentiating optimized and debug
-#
-# a second variable TARGET_EXTERNAL_LIBRARIES hold the list of  libraries not differentiated between debug and optimized 
-##################################################################################
-	SET(TARGET_LIBRARIES ${TARGET_COMMON_LIBRARIES})
-	FOREACH(LINKLIB ${TARGET_ADDED_LIBRARIES})
+    ######################################################################
+    #
+    # This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plagins
+    # kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES 
+    # they are combined in a single list checked for unicity 
+    # the suffix ${CMAKE_DEBUG_POSTFIX} is used for differentiating optimized and debug
+    #
+    # a second variable TARGET_EXTERNAL_LIBRARIES hold the list of  libraries not differentiated between debug and optimized 
+    ##################################################################################
+    SET(TARGET_LIBRARIES ${TARGET_COMMON_LIBRARIES})
+
+    FOREACH(LINKLIB ${TARGET_ADDED_LIBRARIES})
   	SET(TO_INSERT TRUE)
   	FOREACH (value ${TARGET_COMMON_LIBRARIES})
-    	IF (${value} STREQUAL ${LINKLIB})
-      	SET(TO_INSERT FALSE)
-    	ENDIF (${value} STREQUAL ${LINKLIB})
-  	ENDFOREACH (value ${TARGET_COMMON_LIBRARIES})
+    	    IF (${value} STREQUAL ${LINKLIB})
+      	        SET(TO_INSERT FALSE)
+    	    ENDIF (${value} STREQUAL ${LINKLIB})
+        ENDFOREACH (value ${TARGET_COMMON_LIBRARIES})
   	IF(TO_INSERT)
-  		LIST(APPEND TARGET_LIBRARIES ${LINKLIB})
+  	    LIST(APPEND TARGET_LIBRARIES ${LINKLIB})
   	ENDIF(TO_INSERT)
-	ENDFOREACH(LINKLIB)
-	FOREACH(LINKLIB ${TARGET_LIBRARIES})
-		TARGET_LINK_LIBRARIES(${TARGET_TARGETNAME} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-	ENDFOREACH(LINKLIB)
-	FOREACH(LINKLIB ${TARGET_EXTERNAL_LIBRARIES})
-		TARGET_LINK_LIBRARIES(${TARGET_TARGETNAME} ${LINKLIB})
-	ENDFOREACH(LINKLIB)
+    ENDFOREACH(LINKLIB)
+
+    FOREACH(LINKLIB ${TARGET_LIBRARIES})
+	TARGET_LINK_LIBRARIES(${TARGET_TARGETNAME} optimized ${LINKLIB} debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
+    ENDFOREACH(LINKLIB)
+
+    FOREACH(LINKLIB ${TARGET_EXTERNAL_LIBRARIES})
+	TARGET_LINK_LIBRARIES(${TARGET_TARGETNAME} ${LINKLIB})
+    ENDFOREACH(LINKLIB)
+
 ENDMACRO(SETUP_LINK_LIBRARIES)
 
 ############################################################################################

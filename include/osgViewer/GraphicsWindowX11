@@ -50,7 +50,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         {
             _traits = traits;
 
-            init(traits ? dynamic_cast<WindowData*>(traits->inheritedWindowData.get()) : 0);
+            init();
             
             if (valid())
             {
@@ -137,7 +137,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
     
         bool createVisualInfo();
         
-        void init(WindowData* inheritedWindowData=0);
+        void init();
 
         void transformMouseXY(float& x, float& y);
         void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);

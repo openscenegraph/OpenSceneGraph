@@ -31,6 +31,9 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Layer(const Layer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
+        META_Object(osgTerrain, Layer);
+        
+        
         void setLocator(Locator* locator) { _locator = locator; }
         
         Locator* getLocator() { return _locator.get(); }

@@ -162,6 +162,11 @@ class OSG_EXPORT ShapeDrawable : public Drawable
         */
         virtual void drawImplementation(State& state) const;
 
+        /* Not all virtual overloads of these methods are overridden in this class, so
+           bring the base class implementation in to avoid hiding the non-used ones. */
+        using Drawable::supports;
+        using Drawable::accept;
+
         /** Return false, osg::ShapeDrawable does not support accept(AttributeFunctor&).*/
         virtual bool supports(const AttributeFunctor&) const { return false; }
 

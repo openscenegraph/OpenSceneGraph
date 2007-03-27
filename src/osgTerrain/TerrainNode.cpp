@@ -38,29 +38,14 @@ TerrainNode::~TerrainNode()
 
 void TerrainNode::traverse(osg::NodeVisitor& nv)
 {
-    // if app traversal update the frame count.
-    if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
+    if (_terrainTechnique.valid())
     {
-        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
-        if (getTerrainTechnique() && uv)
-        {
-            getTerrainTechnique()->update(uv);
-            return;
-        }        
-        
+        _terrainTechnique->traverse(nv);
     }
-    else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    else
     {
-        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
-        if (getTerrainTechnique() && cv)
-        {
-            getTerrainTechnique()->cull(cv);
-            return;
-        }
+        osg::Group::traverse(nv);
     }
-
-    // otherwise fallback to the Group::traverse()
-    Group::traverse(nv);
 }
 
 void TerrainNode::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique)

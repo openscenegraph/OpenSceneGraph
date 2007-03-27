@@ -131,7 +131,7 @@ int main(int argc, char** argv)
     
     if (!terrain) return 0;
     
-    return 0;
+    // return 0;
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(terrain.get());

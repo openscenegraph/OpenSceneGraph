@@ -12,17 +12,20 @@
 */
 
 #include <osgTerrain/TerrainTechnique>
+#include <osgTerrain/TerrainNode>
 
 using namespace osgTerrain;
 
 TerrainTechnique::TerrainTechnique():
-    _terrainNode(0)
+    _terrainNode(0),
+    _dirty(true)
 {
 }
 
 TerrainTechnique::TerrainTechnique(const TerrainTechnique& TerrainTechnique,const osg::CopyOp& copyop):
     osg::Object(TerrainTechnique,copyop),
-    _terrainNode(0)
+    _terrainNode(0),
+    _dirty(true)
 {
 }
 
@@ -30,9 +33,11 @@ TerrainTechnique::~TerrainTechnique()
 {
 }
 
-void TerrainTechnique::initialize()
+void TerrainTechnique::init()
 {
     osg::notify(osg::NOTICE)<<className()<<"::initialize(..) not implementated yet"<<std::endl;
+    
+    _dirty = false;
 }
 
 void TerrainTechnique::update(osgUtil::UpdateVisitor*)
@@ -52,5 +57,37 @@ void TerrainTechnique::cleanSceneGraph()
 
 void TerrainTechnique::dirty()
 {
-    osg::notify(osg::NOTICE)<<className()<<"::dirty(..) not implementated yet"<<std::endl;
+    // osg::notify(osg::NOTICE)<<className()<<"::dirty(..) not implementated yet"<<std::endl;    
+    _dirty = true;
+}
+
+void TerrainTechnique::traverse(osg::NodeVisitor& nv)
+{
+    if (!_terrainNode) return;
+
+    // if app traversal update the frame count.
+    if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
+    {
+        if (_dirty) init();
+
+        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
+        if (uv)
+        {
+            update(uv);
+            return;
+        }        
+        
+    }
+    else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    {
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        if (cv)
+        {
+            cull(cv);
+            return;
+        }
+    }
+
+    // otherwise fallback to the Group::traverse()
+    _terrainNode->osg::Group::traverse(nv);
 }

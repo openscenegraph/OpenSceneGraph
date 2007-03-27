@@ -39,7 +39,7 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         TerrainNode* getTerrainNode() { return _terrainNode; }
         const TerrainNode* getTerrainNode() const { return _terrainNode; }
 
-        virtual void initialize();
+        virtual void init();
 
         virtual void update(osgUtil::UpdateVisitor* nv);
 
@@ -47,6 +47,9 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
 
         /** Clean scene graph from any terrain technique specific nodes.*/
         virtual void cleanSceneGraph();
+
+        /** Traverse the terain subgraph.*/
+        virtual void traverse(osg::NodeVisitor& nv);
 
         /** Dirty so that cached data structurese are updated.*/
         virtual void dirty();
@@ -57,7 +60,8 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         
         friend class osgTerrain::TerrainNode;
 
-        TerrainNode* _terrainNode;
+        TerrainNode*    _terrainNode;
+        bool            _dirty;
 
 };
 

@@ -28,14 +28,15 @@ GeometryTechnique::~GeometryTechnique()
 {
 }
 
-void GeometryTechnique::initialize()
+void GeometryTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<"Doing initalize"<<std::endl;
+    osg::notify(osg::NOTICE)<<"Doing init()"<<std::endl;
     
     _geode = new osg::Geode;
     _geometry = new osg::Geometry;
     _geode->addDrawable(_geometry.get());
-    
+
+    _dirty = false;    
 }
 
 
@@ -53,4 +54,14 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* nv)
     {
         _geode->accept(*nv);
     }
+}
+
+void GeometryTechnique::cleanSceneGraph()
+{
+    osg::notify(osg::NOTICE)<<"Cleaning scene graph"<<std::endl;
+}
+
+void GeometryTechnique::dirty()
+{
+    TerrainTechnique::dirty();
 }

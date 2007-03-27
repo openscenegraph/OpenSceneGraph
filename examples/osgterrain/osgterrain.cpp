@@ -22,41 +22,6 @@
 #include <iostream>
 
 
-class MyLocator : public osgTerrain::Locator
-{
-public:
-    
-    
-    MyLocator(double x, double y, double width, double height):
-        _x(x),
-        _y(y),
-        _width(width),
-        _height(height) {}
-        
-    
-    bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world)
-    {
-        world.x() = _x + local.x()*_width;
-        world.y() = _y + local.y()*_height;
-        world.z() = _z + local.z();
-        return true;
-    }
-    
-    bool convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local)
-    {
-        local.x() = (world.x()- _x) / _width;
-        local.y() = (world.y() - _y) / _height;
-        local.z() = world.z() - _z;
-        return true;
-    }
-    
-    
-    double _x;
-    double _y;
-    double _z;
-    double _width;
-    double _height;
-};
 
 
 int main(int argc, char** argv)
@@ -72,7 +37,7 @@ int main(int argc, char** argv)
     double h = 1.0;
 
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
-    osg::ref_ptr<osgTerrain::Locator> locator = new MyLocator(0.0, 0.0, 1.0, 1.0);
+    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
 
 
     bool readParameter = false;
@@ -81,9 +46,10 @@ int main(int argc, char** argv)
         readParameter = false;
         std::string filename;
         
-        if (arguments.read("-l",x,y,w,h))
+        if (arguments.read("-e",x,y,w,h))
         {
-            locator = new MyLocator(x,y,w,h);
+            // define the extents.
+            locator = new osgTerrain::EllipsoidLocator(x,y,w,h,0);
             readParameter = true;
         }
 
@@ -112,7 +78,7 @@ int main(int argc, char** argv)
             
         }
         
-        if (arguments.read("-e",filename) || arguments.read("--elevation-image",filename))
+        if (arguments.read("-h",filename) || arguments.read("--elevation-image",filename))
         {
             readParameter = true;
             osg::notify(osg::NOTICE)<<"--elevation-image "<<filename<<" x="<<x<<" y="<<y<<" w="<<w<<" h="<<h<<std::endl;

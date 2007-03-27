@@ -15,6 +15,10 @@
 
 using namespace osgTerrain;
 
+//////////////////////////////////////////////////////////////////////////////
+//
+// Locator
+//
 Locator::Locator()
 {
 }
@@ -26,4 +30,56 @@ Locator::Locator(const Locator& Locator,const osg::CopyOp& copyop):
 
 Locator::~Locator()
 {
+}
+
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// EllipsoidLocator
+//
+EllipsoidLocator::EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height):
+    _longitude(longitude),
+    _latitude(latitude),
+    _deltaLongitude(deltaLongitude),
+    _deltaLatitude(deltaLatitude),
+    _height(height)
+
+{
+    _em = new osg::EllipsoidModel;
+}
+
+
+void EllipsoidLocator::setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height)
+{
+    _longitude = longitude;
+    _latitude = latitude;
+    _deltaLongitude = deltaLongitude;
+    _deltaLatitude = deltaLatitude;
+    _height = height;
+}
+
+bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world)
+{
+    double longitude = _longitude + local.x() * _deltaLongitude;
+    double latitude = _latitude + local.y() * _deltaLatitude;
+    double height = _height + local.z();
+
+    _em->convertLatLongHeightToXYZ(latitude, longitude, height,
+                                   world.x(), world.y(), world.z());
+
+    return true;
+}
+
+bool EllipsoidLocator::convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local)
+{
+    double longitude, latitude, height;
+
+    _em->convertXYZToLatLongHeight(world.x(), world.y(), world.z(),
+                                   latitude, longitude, height );
+
+    local.x() = (longitude-_longitude)/_deltaLongitude;
+    local.y() = (latitude-_latitude)/_deltaLatitude;
+    local.z() = height-_height;
+
+    return true;
 }

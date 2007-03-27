@@ -28,6 +28,36 @@ Layer::~Layer()
 {
 }
 
+osg::BoundingSphere Layer::computeBound() const
+{
+    osg::BoundingSphere bs;
+    if (!getLocator()) return bs;
+
+    osg::Vec3d v;
+    if (getLocator()->convertLocalToModel(osg::Vec3d(0.0,0.0,0.0), v))
+    {
+        bs.expandBy(v);
+    }
+    
+    if (getLocator()->convertLocalToModel(osg::Vec3d(1.0,0.0,0.0), v))
+    {
+        bs.expandBy(v);
+    }
+
+    if (getLocator()->convertLocalToModel(osg::Vec3d(1.0,1.0,0.0), v))
+    {
+        bs.expandBy(v);
+    }
+
+    if (getLocator()->convertLocalToModel(osg::Vec3d(0.0,1.0,0.0), v))
+    {
+        bs.expandBy(v);
+    }
+    
+    return bs;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // ImageLayer

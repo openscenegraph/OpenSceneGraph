@@ -73,6 +73,9 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         osg::TransferFunction* getColorTransferFunction() { return _colorTransferFunction.get(); }
         const osg::TransferFunction* getColorTransferFunction() const { return _colorTransferFunction.get(); }
 
+        /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
+        virtual osg::BoundingSphere computeBound() const;
+
     protected:
 
         virtual ~TerrainNode();

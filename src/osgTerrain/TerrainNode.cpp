@@ -75,3 +75,14 @@ void TerrainNode::setColorTransferFunction(osg::TransferFunction* tf)
 {
     _colorTransferFunction = tf;
 }
+
+osg::BoundingSphere TerrainNode::computeBound() const
+{
+    osg::BoundingSphere bs;
+    
+    if (_elevationLayer.valid()) bs.expandBy(_elevationLayer->computeBound());
+
+    if (_colorLayer.valid()) bs.expandBy(_colorLayer->computeBound());
+
+    return bs;
+}

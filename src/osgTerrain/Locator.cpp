@@ -58,7 +58,7 @@ void EllipsoidLocator::setExtents(double longitude, double latitude, double delt
     _height = height;
 }
 
-bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world)
+bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const
 {
     double longitude = _longitude + local.x() * _deltaLongitude;
     double latitude = _latitude + local.y() * _deltaLatitude;
@@ -70,7 +70,7 @@ bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& 
     return true;
 }
 
-bool EllipsoidLocator::convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local)
+bool EllipsoidLocator::convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local) const
 {
     double longitude, latitude, height;
 

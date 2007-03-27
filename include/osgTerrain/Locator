@@ -16,6 +16,7 @@
 
 #include <osg/Object>
 #include <osg/Vec3d>
+#include <osg/CoordinateSystemNode>
 
 #include <osgTerrain/Export>
 
@@ -32,13 +33,47 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         
         META_Object(osgTerrain, Locator);
         
-        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) { return false; };
-        virtual bool convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local) { return false; };
+        virtual bool convertLocalToModel(const osg::Vec3d& /*local*/, osg::Vec3d& /*world*/) { return false; };
+        virtual bool convertModelToWorld(const osg::Vec3d& /*world*/, osg::Vec3d& /*local*/) { return false; };
 
     protected:
 
         virtual ~Locator();
         
+};
+
+class OSGTERRAIN_EXPORT EllipsoidLocator : public osgTerrain::Locator
+{
+public:
+    
+    
+    EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0);
+
+    void setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0);
+
+    double getLongitude() const { return _longitude; }
+    double getDeltaLongitude() const { return _deltaLongitude; }
+
+    double getLatitude() const { return _latitude; }
+    double getDeltaLatitude() const { return _deltaLatitude; }
+    
+    double getHeight() const { return _height; }
+
+    osg::EllipsoidModel* getEllipsoidModel() { return _em.get(); }
+    const osg::EllipsoidModel* getEllipsoidModel() const { return _em.get(); }
+
+    bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world);
+    bool convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local);    
+
+protected:
+
+    osg::ref_ptr<osg::EllipsoidModel> _em;
+    
+    double _longitude;
+    double _latitude;
+    double _deltaLongitude;
+    double _deltaLatitude;
+    double _height;
 };
 
 }

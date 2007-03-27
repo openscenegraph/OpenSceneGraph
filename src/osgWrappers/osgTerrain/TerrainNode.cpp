@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
@@ -145,6 +146,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_TransferFunction_P1__getColorTransferFunction,
 	          "",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
 	I_SimpleProperty(osgTerrain::Layer *, ColorLayer, 
 	                 __Layer_P1__getColorLayer, 

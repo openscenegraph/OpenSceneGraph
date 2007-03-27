@@ -32,9 +32,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	                           ____GeometryTechnique__C5_GeometryTechnique_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
-	I_Method0(void, initialize,
+	I_Method0(void, init,
 	          Properties::VIRTUAL,
-	          __void__initialize,
+	          __void__init,
 	          "",
 	          "");
 	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,

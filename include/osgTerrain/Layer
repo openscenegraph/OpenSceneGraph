@@ -40,6 +40,8 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         const Locator* getLocator() const { return _locator.get(); }
 
+        virtual osg::BoundingSphere computeBound() const;
+
     protected:
 
         virtual ~Layer();

@@ -10,7 +10,9 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/CoordinateSystemNode>
 #include <osg/CopyOp>
+#include <osg/Object>
 #include <osg/Vec3d>
 #include <osgTerrain/Locator>
 
@@ -22,7 +24,83 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::Locator)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
+	I_BaseType(osgTerrain::Locator);
+	I_ConstructorWithDefaults5(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0,
+	                           ____EllipsoidLocator__double__double__double__double__double,
+	                           "",
+	                           "");
+	I_MethodWithDefaults5(void, setExtents, IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setExtents__double__double__double__double__double,
+	                      "",
+	                      "");
+	I_Method0(double, getLongitude,
+	          Properties::NON_VIRTUAL,
+	          __double__getLongitude,
+	          "",
+	          "");
+	I_Method0(double, getDeltaLongitude,
+	          Properties::NON_VIRTUAL,
+	          __double__getDeltaLongitude,
+	          "",
+	          "");
+	I_Method0(double, getLatitude,
+	          Properties::NON_VIRTUAL,
+	          __double__getLatitude,
+	          "",
+	          "");
+	I_Method0(double, getDeltaLatitude,
+	          Properties::NON_VIRTUAL,
+	          __double__getDeltaLatitude,
+	          "",
+	          "");
+	I_Method0(double, getHeight,
+	          Properties::NON_VIRTUAL,
+	          __double__getHeight,
+	          "",
+	          "");
+	I_Method0(osg::EllipsoidModel *, getEllipsoidModel,
+	          Properties::NON_VIRTUAL,
+	          __osg_EllipsoidModel_P1__getEllipsoidModel,
+	          "",
+	          "");
+	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
+	          "",
+	          "");
+	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
+	          Properties::VIRTUAL,
+	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method2(bool, convertModelToWorld, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
+	          Properties::VIRTUAL,
+	          __bool__convertModelToWorld__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_SimpleProperty(double, DeltaLatitude, 
+	                 __double__getDeltaLatitude, 
+	                 0);
+	I_SimpleProperty(double, DeltaLongitude, 
+	                 __double__getDeltaLongitude, 
+	                 0);
+	I_SimpleProperty(osg::EllipsoidModel *, EllipsoidModel, 
+	                 __osg_EllipsoidModel_P1__getEllipsoidModel, 
+	                 0);
+	I_SimpleProperty(double, Height, 
+	                 __double__getHeight, 
+	                 0);
+	I_SimpleProperty(double, Latitude, 
+	                 __double__getLatitude, 
+	                 0);
+	I_SimpleProperty(double, Longitude, 
+	                 __double__getLongitude, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Locator,
 	               "",
@@ -31,13 +109,38 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::Locator)
 	                           ____Locator__C5_Locator_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
-	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
-	          Properties::PURE_VIRTUAL,
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
+	          Properties::VIRTUAL,
 	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method2(bool, convertModelToWorld, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
-	          Properties::PURE_VIRTUAL,
+	I_Method2(bool, convertModelToWorld, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
+	          Properties::VIRTUAL,
 	          __bool__convertModelToWorld__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");

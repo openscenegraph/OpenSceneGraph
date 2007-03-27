@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgTerrain/TerrainNode>
 #include <osgTerrain/TerrainTechnique>
@@ -69,9 +70,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          __C5_TerrainNode_P1__getTerrainNode,
 	          "",
 	          "");
-	I_Method0(void, initialize,
+	I_Method0(void, init,
 	          Properties::VIRTUAL,
-	          __void__initialize,
+	          __void__init,
 	          "",
 	          "");
 	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
@@ -88,6 +89,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          Properties::VIRTUAL,
 	          __void__cleanSceneGraph,
 	          "Clean scene graph from any terrain technique specific nodes. ",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse the terain subgraph. ",
 	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,

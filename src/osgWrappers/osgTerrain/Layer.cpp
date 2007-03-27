@@ -11,8 +11,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
+#include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Image>
+#include <osg/Object>
 #include <osg/Shape>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
@@ -25,7 +27,7 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::ArrayLayer)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::ArrayLayer)
 	I_BaseType(osgTerrain::Layer);
 	I_Constructor0(____ArrayLayer,
 	               "",
@@ -54,7 +56,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::ArrayLayer)
 	                 __void__setArray__osg_Array_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	I_BaseType(osgTerrain::Layer);
 	I_Constructor0(____HeightFieldLayer,
 	               "",
@@ -83,7 +85,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	                 __void__setHeightField__osg_HeightField_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	I_BaseType(osgTerrain::Layer);
 	I_Constructor0(____ImageLayer,
 	               "",
@@ -112,7 +114,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	                 __void__setImage__osg_Image_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::Layer)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_BaseType(osg::Object);
 	I_Constructor0(____Layer,
 	               "",
@@ -121,6 +123,31 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::Layer)
 	                           ____Layer__C5_Layer_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method1(void, setLocator, IN, osgTerrain::Locator *, locator,
 	          Properties::NON_VIRTUAL,
 	          __void__setLocator__Locator_P1,
@@ -134,6 +161,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_Method0(const osgTerrain::Locator *, getLocator,
 	          Properties::NON_VIRTUAL,
 	          __C5_Locator_P1__getLocator,
+	          "",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
 	          "",
 	          "");
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 

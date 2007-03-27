@@ -1,7 +1,9 @@
-#include <stdio.h>
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
+    #include <stdio.h>
     #include <io.h>
+#else
+    #include <unistd.h>
 #endif 
 
 #include "ESRIShape.h"

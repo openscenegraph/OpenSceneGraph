@@ -9,8 +9,8 @@ SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_
 # Mainly for Windows as a convenience. This will find a directory in parallel with the
 # OSG source that contains 3rd party headers and libraries.
 # Use of relative paths in CMake is ill-advised, but don't know of any alternatives in this case
-SET(CMAKE_INCLUDE_PATH "${OpenSceneGraph_SOURCE_DIR}/../3rdParty/include;${CMAKE_INCLUDE_PATH}")
-SET(CMAKE_LIBRARY_PATH "${OpenSceneGraph_SOURCE_DIR}/../3rdParty/lib;${CMAKE_LIBRARY_PATH}")
+#SET(CMAKE_INCLUDE_PATH "${OpenSceneGraph_SOURCE_DIR}/../3rdParty/include;${CMAKE_INCLUDE_PATH}")
+#SET(CMAKE_LIBRARY_PATH "${OpenSceneGraph_SOURCE_DIR}/../3rdParty/lib;${CMAKE_LIBRARY_PATH}")
 IF(USING_OSG_OP_OT_TRIPLE_SET)
 	SET(CMAKE_INCLUDE_PATH "${OpenSceneGraph_SOURCE_DIR}/../../3rdParty/include;${CMAKE_INCLUDE_PATH}")
 	SET(CMAKE_LIBRARY_PATH "${OpenSceneGraph_SOURCE_DIR}/../../3rdParty/lib;${CMAKE_LIBRARY_PATH}")
@@ -107,6 +107,9 @@ ENDIF(WIN32)
 
 ################################################################################
 # 3rd Party Dependency Stuff
+IF(MSVC)
+	INCLUDE(Find3rdPartyDependencies)
+ENDIF(MSVC)
 
 # Common to all platforms:
 FIND_PACKAGE(FreeType)

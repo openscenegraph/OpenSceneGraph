@@ -32,6 +32,7 @@ else
   else
     ifeq ($(OS),CYGWIN)
        CXXFILES += GraphicsWindowWin32.cpp
+       LIBS += -lgdi32
     else
        CXXFILES += GraphicsWindowX11.cpp
     endif

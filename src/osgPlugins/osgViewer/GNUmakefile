@@ -5,7 +5,7 @@ CXXFILES =\
 	View.cpp\
 	ReaderWriterOsgViewer.cpp\
 
-LIBS   += -losgViewer -losgUtil -losgDB -losg $(OTHER_LIBS)
+LIBS   += -losgViewer -losgUtil -losgDB -losgGA -losgText -losg $(OTHER_LIBS)
 
 TARGET_BASENAME = osgViewer
 include $(TOPDIR)/Make/cygwin_plugin_def

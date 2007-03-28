@@ -54,6 +54,10 @@ class OSG_EXPORT ClusterCullingCallback : public Drawable::CullCallback, public 
         void setDeviation(float deviation) { _deviation = deviation; }
         float getDeviation() const { return _deviation; }
 
+        /* Not all virtual overloads of drawImplementation are overridden in this class, so
+           bring the base class implementation in to avoid hiding the non-used ones. */
+        using Drawable::CullCallback::cull;
+
         virtual bool cull(osg::NodeVisitor*, osg::Drawable*, osg::State*) const;
 
         /** Callback method called by the NodeVisitor when visiting a node.*/

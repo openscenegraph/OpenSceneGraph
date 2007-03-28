@@ -13,6 +13,8 @@
 
 #include <osgTerrain/Locator>
 
+#include <list>
+
 using namespace osgTerrain;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -32,6 +34,43 @@ Locator::~Locator()
 {
 }
 
+bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight)
+{
+    typedef std::list<osg::Vec3d> Corners;
+    Corners corners;
+
+    osg::Vec3d cornerNDC;
+    if (Locator::convertLocalCoordBetween(source, osg::Vec3d(0.0,0.0,0.0), *this, cornerNDC))
+    {
+        corners.push_back(cornerNDC);
+    }
+
+    if (Locator::convertLocalCoordBetween(source, osg::Vec3d(1.0,0.0,0.0), *this, cornerNDC))
+    {
+        corners.push_back(cornerNDC);
+    }
+
+    if (Locator::convertLocalCoordBetween(source, osg::Vec3d(0.0,1.0,0.0), *this, cornerNDC))
+    {
+        corners.push_back(cornerNDC);
+    }
+
+    if (Locator::convertLocalCoordBetween(source, osg::Vec3d(1.0,1.0,0.0), *this, cornerNDC))
+    {
+        corners.push_back(cornerNDC);
+    }
+
+
+    for(Corners::iterator itr = corners.begin();
+        itr != corners.end();
+        ++itr)
+    {
+        bottomLeft.x() = osg::minimum( bottomLeft.x(), itr->x());
+        bottomLeft.y() = osg::minimum( bottomLeft.y(), itr->y());
+        topRight.x() = osg::maximum( topRight.x(), itr->x());
+        topRight.y() = osg::maximum( topRight.y(), itr->y());
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -70,7 +109,7 @@ bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& 
     return true;
 }
 
-bool EllipsoidLocator::convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local) const
+bool EllipsoidLocator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const
 {
     double longitude, latitude, height;
 

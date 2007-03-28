@@ -34,7 +34,18 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         META_Object(osgTerrain, Locator);
         
         virtual bool convertLocalToModel(const osg::Vec3d& /*local*/, osg::Vec3d& /*world*/) const { return false; }
-        virtual bool convertModelToWorld(const osg::Vec3d& /*world*/, osg::Vec3d& /*local*/) const { return false; }
+        virtual bool convertModelToLocal(const osg::Vec3d& /*world*/, osg::Vec3d& /*local*/) const { return false; }
+
+        static bool convertLocalCoordBetween(const Locator& source, const osg::Vec3d& sourceNDC, 
+                                             const Locator& destination, osg::Vec3d& destinationNDC)
+        {
+            osg::Vec3d model;
+            if (!source.convertLocalToModel(sourceNDC, model)) return false;
+            if (!destination.convertModelToLocal(model, destinationNDC)) return false;
+            return true;
+        }
+        
+        bool computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight);
 
     protected:
 
@@ -63,7 +74,7 @@ public:
     const osg::EllipsoidModel* getEllipsoidModel() const { return _em.get(); }
 
     bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const;
-    bool convertModelToWorld(const osg::Vec3d& world, osg::Vec3d& local) const;    
+    bool convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const;    
 
 protected:
 

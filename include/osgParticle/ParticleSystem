@@ -162,7 +162,7 @@ namespace osgParticle
         /// Update the particles. Don't call this directly, use a <CODE>ParticleSystemUpdater</CODE> instead.
         virtual void update(double dt);
 
-        virtual void drawImplementation(osg::State& state) const;
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
         virtual osg::BoundingBox computeBound() const;
         

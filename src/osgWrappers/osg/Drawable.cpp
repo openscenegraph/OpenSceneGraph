@@ -338,15 +338,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          __C5_DrawCallback_P1__getDrawCallback,
 	          "Get the const DrawCallback. ",
 	          "");
-	I_Method1(void, drawImplementation, IN, osg::State &, x,
-	          Properties::VIRTUAL,
-	          __void__drawImplementation__State_R1,
-	          "Deprecated. ",
-	          "");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
-	          Properties::VIRTUAL,
+	          Properties::PURE_VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,
-	          "drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
+	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
 	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
 	          Properties::VIRTUAL,
@@ -767,12 +762,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method2(void, drawImplementation, IN, osg::State &, x, IN, const osg::Drawable *, x,
-	          Properties::VIRTUAL,
-	          __void__drawImplementation__osg_State_R1__C5_osg_Drawable_P1,
-	          "Deprecated. ",
-	          "");
-	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, renderInfo, IN, const osg::Drawable *, drawable,
+	I_Method2(void, drawImplementation, IN, osg::RenderInfo &, x, IN, const osg::Drawable *, x,
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1__C5_osg_Drawable_P1,
 	          "do customized draw code. ",

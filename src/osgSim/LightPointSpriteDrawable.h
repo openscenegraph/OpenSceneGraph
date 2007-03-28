@@ -39,7 +39,7 @@ class OSGSIM_EXPORT LightPointSpriteDrawable : public osgSim::LightPointDrawable
 
         
         /** draw LightPoints. */
-        virtual void drawImplementation(osg::State& state) const;
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
 
     protected:

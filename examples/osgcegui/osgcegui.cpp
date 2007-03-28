@@ -41,7 +41,7 @@ public:
     void loadFont(const std::string& font);
     void loadLayout(const std::string& layout);
 
-    void drawImplementation(osg::State& state) const;
+    void drawImplementation(osg::RenderInfo& renderInfo) const;
 
 protected:    
 
@@ -185,8 +185,10 @@ void CEGUIDrawable::loadLayout(const std::string& layout)
 
 }
 
-void CEGUIDrawable::drawImplementation(osg::State& state) const
+void CEGUIDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+    osg::State& state = renderInfo.getState();
+
     if (state.getContextID()!=_activeContextID) return;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);

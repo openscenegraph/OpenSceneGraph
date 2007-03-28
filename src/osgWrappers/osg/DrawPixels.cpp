@@ -15,7 +15,7 @@
 #include <osg/DrawPixels>
 #include <osg/Image>
 #include <osg/Object>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -110,11 +110,11 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
 	          __void__getSubImageDimensions__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1,
 	          "",
 	          "");
-	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, state,
 	          Properties::VIRTUAL,
-	          __void__drawImplementation__State_R1,
-	          "Deprecated. ",
-	          "");
+	          __void__drawImplementation__RenderInfo_R1,
+	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
+	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
 	I_Method0(osg::BoundingBox, computeBound,
 	          Properties::VIRTUAL,
 	          __BoundingBox__computeBound,

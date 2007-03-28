@@ -28,12 +28,13 @@ LightPointSpriteDrawable::LightPointSpriteDrawable(const LightPointSpriteDrawabl
 {
 }
 
-void LightPointSpriteDrawable::drawImplementation(osg::State& state) const
+void LightPointSpriteDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+    osg::State& state = *renderInfo.getState();
 
     if (!state.getModeValidity(GL_POINT_SPRITE_ARB))
     {
-        LightPointDrawable::drawImplementation(state);
+        LightPointDrawable::drawImplementation(renderInfo);
         return;
     }
 

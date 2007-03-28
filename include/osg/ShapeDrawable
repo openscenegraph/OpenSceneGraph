@@ -160,7 +160,7 @@ class OSG_EXPORT ShapeDrawable : public Drawable
           * drawing itself, and is the method to override when deriving from
           * ShapeDrawable for user-drawn objects.
         */
-        virtual void drawImplementation(State& state) const;
+        virtual void drawImplementation(RenderInfo& renderInfo) const;
 
         /* Not all virtual overloads of these methods are overridden in this class, so
            bring the base class implementation in to avoid hiding the non-used ones. */

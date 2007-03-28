@@ -82,8 +82,9 @@ void LightPointDrawable::reset()
 }
 
 
-void LightPointDrawable::drawImplementation(osg::State& state) const
+void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+    osg::State& state = *renderInfo.getState();
 
     state.applyMode(GL_POINT_SMOOTH,true);
     state.applyMode(GL_BLEND,true);

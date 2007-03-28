@@ -89,8 +89,10 @@ void osgParticle::ParticleSystem::update(double dt)
     dirtyBound();
 }
 
-void osgParticle::ParticleSystem::drawImplementation(osg::State& state) const
+void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+    osg::State& state = *renderInfo.getState();
+
     OpenThreads::ScopedReadLock lock(_readWriteMutex);
 
     // update the frame count, so other objects can detect when

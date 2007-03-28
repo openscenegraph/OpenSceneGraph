@@ -25,8 +25,9 @@ struct DrawCallback : public osg::Drawable::DrawCallback
     DrawCallback():
         _firstTime(true) {}
 
-    virtual void drawImplementation(osg::State& state,const osg::Drawable* drawable) const
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
+        osg::State& state = *renderInfo.getState();
     
         if (!_firstTime)
         {
@@ -50,7 +51,7 @@ struct DrawCallback : public osg::Drawable::DrawCallback
                 
         _firstTime = false;
 
-        drawable->drawImplementation(state);
+        drawable->drawImplementation(renderInfo);
     }
     
     mutable bool _firstTime;

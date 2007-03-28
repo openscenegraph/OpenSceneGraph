@@ -13,7 +13,7 @@
 #include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osg/Vec3>
 #include <osgParticle/Particle>
 #include <osgParticle/ParticleSystem>
@@ -220,11 +220,11 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          __void__update__double,
 	          "Update the particles. Don't call this directly, use a ParticleSystemUpdater instead. ",
 	          "");
-	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
-	          __void__drawImplementation__osg_State_R1,
-	          "Deprecated. ",
-	          "");
+	          __void__drawImplementation__osg_RenderInfo_R1,
+	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
+	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
 	I_Method0(osg::BoundingBox, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingBox__computeBound,

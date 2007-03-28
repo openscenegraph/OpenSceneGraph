@@ -1785,8 +1785,10 @@ void ShapeDrawable::setTessellationHints(TessellationHints* hints)
     }
 }
 
-void ShapeDrawable::drawImplementation(State& state) const
+void ShapeDrawable::drawImplementation(RenderInfo& renderInfo) const
 {
+    osg::State& state = *renderInfo.getState();
+
     if (_shape.valid())
     {
         glColor4fv(_color.ptr());

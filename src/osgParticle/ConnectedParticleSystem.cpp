@@ -112,8 +112,10 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
 
 }
 
-void ConnectedParticleSystem::drawImplementation(osg::State& state) const
+void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+    osg::State& state = *renderInfo.getState();
+
     OpenThreads::ScopedReadLock lock(_readWriteMutex);
 
     const Particle* particle = (_startParticle != Particle::INVALID_INDEX) ? &_particles[_startParticle] : 0;

@@ -32,10 +32,10 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
     public:
 
         GraphicsWindowCarbon(osg::GraphicsContext::Traits* traits):
-            _ownWindow(true),
             _valid(false),
             _initialized(false),
-            _realized(false)
+            _realized(false),
+            _ownsWindow(true)
         {
             _traits = traits;
 
@@ -99,13 +99,13 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         bool handleMouseEvent(EventRef theEvent);
         bool handleKeyboardEvent(EventRef theEvent);
 
-        /** WindowData is used to pass in the X11 window handle attached the GraphicsContext::Traits structure. */
+        /** WindowData is used to pass in the Carbon window handle attached the GraphicsContext::Traits structure. */
         struct WindowData : public osg::Referenced
         {
-            WindowData(Window window):
+            WindowData(WindowRef window):
                 _window(window) {}
                 
-            Window          _window;
+            WindowRef   _window;
         };
 
     protected:

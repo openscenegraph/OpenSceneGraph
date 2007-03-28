@@ -12,6 +12,8 @@
 */
 
 #include <osgTerrain/GeometryTechnique>
+#include <osgTerrain/TerrainNode>
+#include <osg/io_utils>
 
 using namespace osgTerrain;
 
@@ -32,9 +34,74 @@ void GeometryTechnique::init()
 {
     osg::notify(osg::NOTICE)<<"Doing init()"<<std::endl;
     
+    if (!_terrainNode) return;
+
+
+    osgTerrain::Layer* elevationLayer = _terrainNode->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer();
+    osg::TransferFunction* colorTF = _terrainNode->getColorTransferFunction();
+    
+    osg::notify(osg::NOTICE)<<"elevationLayer = "<<elevationLayer<<std::endl;
+    osg::notify(osg::NOTICE)<<"colorLayer = "<<colorLayer<<std::endl;
+    osg::notify(osg::NOTICE)<<"colorTF = "<<colorTF<<std::endl;
+
+    Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
+    Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
+    
+    Locator* masterLocator = elevationLocator ? elevationLocator : colorLocator;
+    if (!masterLocator)
+    {
+        osg::notify(osg::NOTICE)<<"Problem, no locator found in any of the terrain layers"<<std::endl;
+        return;
+    }
+    
+    if (!elevationLocator) elevationLocator = masterLocator;
+    if (!colorLocator) colorLocator = masterLocator;
+    
+    osg::Vec3d bottomLeftNDC(DBL_MAX, DBL_MAX, 0.0);
+    osg::Vec3d topRightNDC(-DBL_MAX, -DBL_MAX, 0.0);
+    
+    if (elevationLayer)
+    {
+        if (elevationLocator!= masterLocator)
+        {
+            masterLocator->computeLocalBounds(*elevationLocator, bottomLeftNDC, topRightNDC);
+        }
+        else
+        {
+            bottomLeftNDC.x() = osg::minimum(bottomLeftNDC.x(), 0.0);
+            bottomLeftNDC.y() = osg::minimum(bottomLeftNDC.y(), 0.0);
+            topRightNDC.x() = osg::maximum(topRightNDC.x(), 1.0);
+            topRightNDC.y() = osg::maximum(topRightNDC.y(), 1.0);
+        }
+    }
+
+    if (colorLayer)
+    {
+        if (colorLocator!= masterLocator)
+        {
+            masterLocator->computeLocalBounds(*colorLocator, bottomLeftNDC, topRightNDC);
+        }
+        else
+        {
+            bottomLeftNDC.x() = osg::minimum(bottomLeftNDC.x(), 0.0);
+            bottomLeftNDC.y() = osg::minimum(bottomLeftNDC.y(), 0.0);
+            topRightNDC.x() = osg::maximum(topRightNDC.x(), 1.0);
+            topRightNDC.y() = osg::maximum(topRightNDC.y(), 1.0);
+        }
+    }
+
+    osg::notify(osg::NOTICE)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
+    osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
+
     _geode = new osg::Geode;
     _geometry = new osg::Geometry;
     _geode->addDrawable(_geometry.get());
+
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    osg::Vec3Array* normals = new osg::Vec3Array;
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
+
 
     _dirty = false;    
 }
@@ -42,14 +109,11 @@ void GeometryTechnique::init()
 
 void GeometryTechnique::update(osgUtil::UpdateVisitor* nv)
 {
-    osg::notify(osg::NOTICE)<<"Doing update"<<std::endl;
 }
 
 
 void GeometryTechnique::cull(osgUtil::CullVisitor* nv)
 {
-    osg::notify(osg::NOTICE)<<"Doing cull"<<std::endl;
-    
     if (_geode.valid())
     {
         _geode->accept(*nv);
@@ -58,7 +122,6 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* nv)
 
 void GeometryTechnique::cleanSceneGraph()
 {
-    osg::notify(osg::NOTICE)<<"Cleaning scene graph"<<std::endl;
 }
 
 void GeometryTechnique::dirty()

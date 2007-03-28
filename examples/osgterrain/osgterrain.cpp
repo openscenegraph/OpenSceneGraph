@@ -39,7 +39,6 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
 
-
     bool readParameter = false;
     do 
     {
@@ -57,7 +56,7 @@ int main(int argc, char** argv)
         {
             readParameter = true;
             
-            osg::notify(osg::NOTICE)<<"--hf "<<filename<<" x="<<x<<" y="<<y<<" w="<<w<<" h="<<h<<std::endl;
+            osg::notify(osg::NOTICE)<<"--hf "<<filename<<std::endl;
 
             osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(filename);
             if (hf.valid())
@@ -78,10 +77,10 @@ int main(int argc, char** argv)
             
         }
         
-        if (arguments.read("-h",filename) || arguments.read("--elevation-image",filename))
+        if (arguments.read("-d",filename) || arguments.read("--elevation-image",filename))
         {
             readParameter = true;
-            osg::notify(osg::NOTICE)<<"--elevation-image "<<filename<<" x="<<x<<" y="<<y<<" w="<<w<<" h="<<h<<std::endl;
+            osg::notify(osg::NOTICE)<<"--elevation-image "<<filename<<std::endl;
 
             osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
             if (image.valid())

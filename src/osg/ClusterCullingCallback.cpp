@@ -194,7 +194,7 @@ void ClusterCullingCallback::operator()(Node* node, NodeVisitor* nv)
 {
     if (nv)
     {
-        if (cull(nv,0,0)) return;
+        if (cull(nv,0,static_cast<State *>(0))) return;
         
         traverse(node,nv); 
     }

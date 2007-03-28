@@ -17,7 +17,7 @@
 #include <osg/Matrix>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osg/StateSet>
 #include <osg/Texture2D>
 #include <osg/Vec2>
@@ -158,9 +158,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          __int__t,
 	          "",
 	          "");
-	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
-	          __void__drawImplementation__osg_State_R1,
+	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "Draw ImpostorSprite directly. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,

@@ -84,9 +84,9 @@ class Logos: public osg::Drawable
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Logos*>(obj)!=NULL; }
         virtual const char* className() const { return "Logos"; }
 
-        virtual void drawImplementation(osg::State &state ) const
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const
         {
-            if( state.getContextID() != _contextID ) 
+            if( renderInfo.getContextID() != _contextID ) 
                 return;
 
 

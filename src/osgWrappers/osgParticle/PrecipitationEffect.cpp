@@ -402,7 +402,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1,
-	          "drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
+	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
 	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
 	I_Method0(osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap &, getCurrentCellMatrixMap,
 	          Properties::NON_VIRTUAL,

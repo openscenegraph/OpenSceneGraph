@@ -126,7 +126,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         int t() const { return _t; }
 
         /** Draw ImpostorSprite directly. */
-        virtual void drawImplementation(osg::State& state) const;
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
         /** Return true, osg::ImpostorSprite does support accept(Drawable::AttributeFunctor&). */
         virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }

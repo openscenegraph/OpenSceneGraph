@@ -79,7 +79,7 @@ float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
 
     return sqrtf(max_error_sqrd);
 }
-void ImpostorSprite::drawImplementation(osg::State&) const
+void ImpostorSprite::drawImplementation(osg::RenderInfo&) const
 {
     // when the tex env is set to REPLACE, and the 
     // texture is set up correctly the color has no effect.

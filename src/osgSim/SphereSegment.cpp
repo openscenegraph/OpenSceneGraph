@@ -53,7 +53,7 @@ public:
 
     META_Object(osgSim,Surface)
 
-    void drawImplementation(osg::State& state) const;
+    void drawImplementation(osg::RenderInfo& renderInfo) const;
 
     virtual osg::BoundingBox computeBound() const;
 
@@ -64,9 +64,9 @@ private:
     SphereSegment* _ss;
 };
 
-void SphereSegment::Surface::drawImplementation(osg::State& state) const
+void SphereSegment::Surface::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    _ss->Surface_drawImplementation(state);
+    _ss->Surface_drawImplementation(*renderInfo.getState());
 }
 
 osg:: BoundingBox SphereSegment::Surface::computeBound() const
@@ -101,7 +101,7 @@ public:
 
     META_Object(osgSim,EdgeLine)
 
-    void drawImplementation(osg::State& state) const;
+    void drawImplementation(osg::RenderInfo& renderInfo) const;
 
 protected:
 
@@ -121,9 +121,9 @@ private:
     SphereSegment* _ss;
 };
 
-void SphereSegment::EdgeLine::drawImplementation(osg::State& state) const
+void SphereSegment::EdgeLine::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    _ss->EdgeLine_drawImplementation(state);
+    _ss->EdgeLine_drawImplementation(*renderInfo.getState());
 }
 
 osg::BoundingBox SphereSegment::EdgeLine::computeBound() const
@@ -159,7 +159,7 @@ public:
 
     META_Object(osgSim,Side)
 
-    void drawImplementation(osg::State& state) const;
+    void drawImplementation(osg::RenderInfo& renderInfo) const;
 
 protected:
 
@@ -172,9 +172,9 @@ private:
 };
 
 
-void SphereSegment::Side::drawImplementation(osg::State& state) const
+void SphereSegment::Side::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    _ss->Side_drawImplementation(state, _planeOrientation, _BoundaryAngle);
+    _ss->Side_drawImplementation(*renderInfo.getState(), _planeOrientation, _BoundaryAngle);
 }
 
 osg::BoundingBox SphereSegment::Side::computeBound() const
@@ -210,7 +210,7 @@ public:
 
     META_Object(osgSim,Spoke)
 
-    void drawImplementation(osg::State& state) const;
+    void drawImplementation(osg::RenderInfo& renderInfo) const;
 
 protected:
 
@@ -229,9 +229,9 @@ private:
     SphereSegment::BoundaryAngle _azAngle, _elevAngle;
 };
 
-void SphereSegment::Spoke::drawImplementation(osg::State& state) const
+void SphereSegment::Spoke::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    _ss->Spoke_drawImplementation(state, _azAngle, _elevAngle);
+    _ss->Spoke_drawImplementation(*renderInfo.getState(), _azAngle, _elevAngle);
 }
 
 osg::BoundingBox SphereSegment::Spoke::computeBound() const

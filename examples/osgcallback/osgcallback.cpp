@@ -39,10 +39,10 @@ class CullCallback : public osg::NodeCallback
 
 class DrawableDrawCallback : public osg::Drawable::DrawCallback
 {
-        virtual void drawImplementation(osg::State& state,const osg::Drawable* drawable) const
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
         {
             std::cout<<"draw call back - pre drawImplementation"<<drawable<<std::endl;
-            drawable->drawImplementation(state);
+            drawable->drawImplementation(renderInfo);
             std::cout<<"draw call back - post drawImplementation"<<drawable<<std::endl;
         }
 };

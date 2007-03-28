@@ -12,7 +12,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/State>
+#include <osg/RenderInfo>
 #include <osgParticle/ConnectedParticleSystem>
 #include <osgParticle/Particle>
 
@@ -68,9 +68,9 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
 	          __void__reuseParticle__int,
 	          "Reuse the i-th particle. ",
 	          "");
-	I_Method1(void, drawImplementation, IN, osg::State &, state,
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
-	          __void__drawImplementation__osg_State_R1,
+	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "Draw the connected particles as either a line or a quad strip, depending upon viewing distance. . ",
 	          "");
 	I_Method0(const osgParticle::Particle *, getStartParticle,

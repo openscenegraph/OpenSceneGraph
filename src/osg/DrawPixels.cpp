@@ -88,7 +88,7 @@ BoundingBox DrawPixels::computeBound() const
     return bbox;
 }
 
-void DrawPixels::drawImplementation(State&) const
+void DrawPixels::drawImplementation(RenderInfo&) const
 {
     glRasterPos3f(_position.x(),_position.y(),_position.z());
 

@@ -39,7 +39,7 @@ namespace osgParticle
         virtual void reuseParticle(int i);
         
         /// Draw the connected particles as either a line or a quad strip, depending upon viewing distance. .
-        virtual void drawImplementation(osg::State& state) const;
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
         
         ///Get the (const) particle from where the line or quadstrip starts to be drawn
         const osgParticle::Particle* getStartParticle() const

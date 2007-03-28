@@ -876,14 +876,16 @@ unsigned int Geometry::getGLObjectSizeHint() const
     return totalSize;
 }
 
-void Geometry::drawImplementation(State& state) const
+void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
+    State& state = *renderInfo.getState();
+
 
     // osg::notify(osg::NOTICE)<<"Geometry::drawImplementation"<<std::endl;
 
     if (_internalOptimizedGeometry.valid())
     {
-        _internalOptimizedGeometry->drawImplementation(state);
+        _internalOptimizedGeometry->drawImplementation(renderInfo);
         return;
     }
 

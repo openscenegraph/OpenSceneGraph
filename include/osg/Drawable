@@ -404,11 +404,8 @@ class OSG_EXPORT Drawable : public Object
 
             META_Object(osg,DrawCallback);
 
-            /** Deprecated.*/
-            virtual void drawImplementation(osg::State&,const osg::Drawable*) const {}
-
             /** do customized draw code.*/
-            virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const { drawImplementation(*renderInfo.getState(), drawable); }
+            virtual void drawImplementation(osg::RenderInfo& /*renderInfo*/,const osg::Drawable* /*drawable*/) const {}
         };
 
         /** Set the DrawCallback which allows users to attach customize the drawing of existing Drawable object.*/
@@ -420,15 +417,12 @@ class OSG_EXPORT Drawable : public Object
         /** Get the const DrawCallback.*/
         const DrawCallback* getDrawCallback() const { return _drawCallback.get(); }
 
-        /** Deprecated. */
-        virtual void drawImplementation(State&) const {}
-
-        /** drawImplementation(State&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
+        /** drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
-          * drawImplementation(State&) is called from the draw(State&) method, with the draw method handling management of OpenGL display lists,
-          * and drawImplementation(State&) handling the actuall drawing itself.  
+          * drawImplementation(RenderInfo&) is called from the draw(RenderInfo&) method, with the draw method handling management of OpenGL display lists,
+          * and drawImplementation(RenderInfo&) handling the actuall drawing itself.  
           * @param state The osg::State object that encapulates the current OpenGL state for the current graphics context. */
-        virtual void drawImplementation(RenderInfo& renderInfo) const { drawImplementation(*renderInfo.getState()); }
+        virtual void drawImplementation(RenderInfo& renderInfo) const = 0;
 
 
         /** Return a OpenGL display list handle a newly generated or reused from display list cache. */

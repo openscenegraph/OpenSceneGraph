@@ -6,8 +6,17 @@
 #include <osg/PrimitiveSet>
 #include <osg/Texture2D>
 #include <osg/Light>
+
 #include <Inventor/actions/SoCallbackAction.h>
-#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
+
+#ifdef COIN_SOCALLBACKACTION_H
+    #define USE_COIN 1
+#endif
+
+#ifdef USE_COIN
+    #include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
+#endif
+
 #include <vector>
 #include <stack>
 
@@ -54,6 +63,7 @@ class ConvertFromInventor
                                      const SoPrimitiveVertex *v1);
         static void addPointCB(void* data, SoCallbackAction* action,
                                const SoPrimitiveVertex *v0);
+#ifdef USE_COIN
         ///Callback to intercept VRMLImageTexture(s)
         ///\param data The node data
         ///\param action The callback handling class
@@ -70,6 +80,7 @@ class ConvertFromInventor
         
         ///Get the currently converted texture
         osg::Texture2D* _getConvertedVRMLImageTexture();
+#endif
                                           
     private:
 

@@ -1,4 +1,5 @@
 #include "ConvertFromInventor.h"
+
 #include "PendulumCallback.h"
 #include "ShuttleCallback.h"
 
@@ -37,7 +38,9 @@
 #include <Inventor/misc/SoChildList.h>
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/SbLinear.h>
+#ifdef USE_COIN
 #include <Inventor/SbImage.h>
+#endif
 
 #include "GroupSoLOD.h"
 
@@ -98,9 +101,11 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
     
     cbAction.addPointCallback(SoShape::getClassTypeId(), addPointCB, this);
     
+#ifdef USE_COIN
     //callback for VRMLImageTextures
     cbAction.addPreCallback(SoVRMLImageTexture::getClassTypeId(),
                             _vrmlImageTextureAction,this);
+#endif
     // Traverse the inventor scene graph
     cbAction.apply(rootIVNode);
 
@@ -111,6 +116,7 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
 
     return _root.get(); 
 }
+#ifdef USE_COIN
 //////////////////////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::_vrmlImageTextureAction(void* data, SoCallbackAction* action, 
@@ -133,6 +139,7 @@ ConvertFromInventor::_vrmlImageTextureAction(void* data, SoCallbackAction* actio
 
     return SoCallbackAction::CONTINUE;
 }
+#endif
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preShape(void* data, SoCallbackAction* action, 
@@ -622,6 +629,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     
     // Convert the IV texture to OSG texture if any
     osg::ref_ptr<osg::Texture2D> texture;
+#ifdef USE_COIN
     if(_hasVRMLImageTexture)
     {
        ///VRMLImageTexture
@@ -643,7 +651,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
               texEnv->setMode(osg::TexEnv::BLEND);
               break;
 
-#ifdef COIN_BASIC_H
+#ifdef USE_COIN
 // This check is a very crude Coin detector.
 // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
             case SoTexture2::REPLACE:
@@ -655,7 +663,9 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
         stateSet->setAttributeAndModes(new osg::ShadeModel());
        
     }
-    else if (soTexStack.top())
+    else
+#endif
+    if (soTexStack.top())
     {
         osg::notify(osg::NOTICE)<<"Have texture"<<std::endl;
     
@@ -688,7 +698,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
                 texEnv->setMode(osg::TexEnv::BLEND);
                 break;
 
-#ifdef COIN_BASIC_H
+#ifdef USE_COIN
 // This check is a very crude Coin detector.
 // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
             case SoTexture2::REPLACE:
@@ -765,7 +775,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
                     texEnv->setMode(osg::TexEnv::BLEND);
                     break;
 
-    #ifdef COIN_BASIC_H
+    #ifdef USE_COIN
     // This check is a very crude Coin detector.
     // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
                 case SoTexture2::REPLACE:
@@ -1141,6 +1151,7 @@ void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
     thisPtr->numPrimitives++;
     thisPtr->primitiveType = osg::PrimitiveSet::POINTS;
 }
+#ifdef USE_COIN
 //////////////////////////////////////////////////////////////////////
 void ConvertFromInventor::_setVRMLImageTexture(const SoVRMLImageTexture* vit,
                                                SoCallbackAction* /*action*/)
@@ -1210,3 +1221,4 @@ osg::Texture2D* ConvertFromInventor::_getConvertedVRMLImageTexture()
     }
     return 0;
 }
+#endif

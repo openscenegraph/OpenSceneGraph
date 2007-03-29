@@ -48,6 +48,24 @@ ELSE(USING_OSG_OP_OT_TRIPLE_SET)
 
 ENDIF(USING_OSG_OP_OT_TRIPLE_SET)
 
+# Okay, here's the problem: On some platforms, linking against OpenThreads
+# is not enough and explicit linking to the underlying thread library 
+# is also required (e.g. FreeBSD). But OpenThreads may be built with different
+# backends (Pthreads, Sproc, Windows) so we don't know what the underlying 
+# thread library is because some platforms support multiple backends (e.g. 
+# IRIX supports Sproc and Pthreads). Linking all libraries won't work 
+# because the libraries may be incompatible.
+# So the current solution is to attempt best guess linking and exempt certain 
+# cases. With IRIX, we're going to hope explicit linking to the underlying
+# library is not necessary. We currently don't case for pthreads on Windows
+# which might be an issue on things like Cygwin. This may need to be fixed.
+FIND_PACKAGE(Threads)
+IF(CMAKE_SYSTEM MATCHES IRIX)
+	# Erase CMAKE_THREAD_LIBS_INIT and hope it works
+	SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")	
+ENDIF(CMAKE_SYSTEM MATCHES IRIX)
+
+
 # Find OpenGL
 FIND_PACKAGE(OpenGL)
 
@@ -107,9 +125,9 @@ ENDIF(WIN32)
 
 ################################################################################
 # 3rd Party Dependency Stuff
-IF(MSVC)
+IF(WIN32)
 	INCLUDE(Find3rdPartyDependencies)
-ENDIF(MSVC)
+ENDIF(WIN32)
 
 # Common to all platforms:
 FIND_PACKAGE(FreeType)
@@ -164,11 +182,11 @@ ENDIF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 SET(CMAKE_DEBUG_POSTFIX  "d")
 
 SET(LIB_POSTFIX "")
-if (UNIX AND NOT WIN32)
-  if (CMAKE_SIZEOF_VOID_P MATCHES "8")
+IF(UNIX AND NOT WIN32 AND NOT APPLE)
+  IF(CMAKE_SIZEOF_VOID_P MATCHES "8")
   	SET(LIB_POSTFIX "64")
-  endif (CMAKE_SIZEOF_VOID_P MATCHES "8")
-endif (UNIX AND NOT WIN32)
+  ENDIF(CMAKE_SIZEOF_VOID_P MATCHES "8")
+ENDIF(UNIX AND NOT WIN32 AND NOT APPLE)
 
 #SET(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME})
 SET(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin)

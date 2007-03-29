@@ -97,11 +97,66 @@ void GeometryTechnique::init()
     _geode = new osg::Geode;
     _geometry = new osg::Geometry;
     _geode->addDrawable(_geometry.get());
+    
+    unsigned int numRows = 100;
+    unsigned int numColumns = 100;
+    unsigned int numVertices = numRows * numColumns;
 
-    osg::Vec3Array* vertices = new osg::Vec3Array;
-    osg::Vec3Array* normals = new osg::Vec3Array;
-    osg::Vec2Array* texcoords = new osg::Vec2Array;
+    // allocate and assign vertices
+    osg::Vec3Array* vertices = new osg::Vec3Array(numVertices);
+    _geometry->setVertexArray(vertices);
 
+    // allocate and assign normals
+    osg::Vec3Array* normals = new osg::Vec3Array(numVertices);
+    _geometry->setNormalArray(normals);
+    _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+    // allocate and assign tex coords
+    osg::Vec2Array* texcoords = new osg::Vec2Array(numVertices);
+    _geometry->setTexCoordArray(0, texcoords);
+    
+    // allocate and assign color
+    osg::Vec4Array* colors = new osg::Vec4Array(1);
+    _geometry->setColorArray(colors);
+    _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    
+    // populate vertex and tex coord arrays
+    unsigned int j;
+    for(j=0; j<numRows; ++j)
+    {
+        for(unsigned int i=0; i<numColumns; ++i)
+        {
+            unsigned int iv = j*numColumns + i;
+            osg::Vec3d ndc( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 0.0);
+            osg::Vec3d model;
+            masterLocator->convertLocalToModel(ndc, model);
+
+            (*vertices)[iv] = model;
+            (*texcoords)[iv].set(ndc.x(), ndc.y());
+
+            // compute the local normal
+            osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
+            osg::Vec3d model_one;
+            masterLocator->convertLocalToModel(ndc_one, model_one);
+            model_one -= model;
+            model_one.normalize();            
+            (*normals)[iv] = model_one;
+        }
+    }
+
+    // populate primitive sets
+    for(j=0; j<numRows-1; ++j)
+    {
+        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, numColumns*2);
+        for(unsigned int i=0; i<numColumns; ++i)
+        {
+            unsigned int iv = j*numColumns + i;
+            (*elements)[i*2] = iv + numColumns;
+            (*elements)[i*2+1] = iv;
+        }
+        _geometry->addPrimitiveSet(elements);
+    }
 
     _dirty = false;    
 }

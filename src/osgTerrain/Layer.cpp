@@ -12,6 +12,7 @@
 */
 
 #include <osgTerrain/Layer>
+#include <osg/Notify>
 
 using namespace osgTerrain;
 
@@ -78,6 +79,30 @@ void ImageLayer::setImage(osg::Image* image)
 }
 
 
+bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
+{
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
+}
+
+bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
+{
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
+}
+
+bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
+{
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
+}
+
+bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+{
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // HieghtFieldLayer
@@ -98,21 +123,27 @@ void HeightFieldLayer::setHeightField(osg::HeightField* hf)
     _heightField = hf;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// ImageLayer
-//
-ArrayLayer::ArrayLayer()
+
+bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, float& value) const
 {
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
 }
 
-ArrayLayer::ArrayLayer(const ArrayLayer& arrayLayer,const osg::CopyOp& copyop):
-    Layer(arrayLayer,copyop),
-    _array(arrayLayer._array)
+bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
 {
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
 }
 
-void ArrayLayer::setArray(osg::Array* array)
+bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
 {
-    _array = array;
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
+}
+
+bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+{
+    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    return false;
 }

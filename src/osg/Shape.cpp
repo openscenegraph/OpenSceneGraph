@@ -19,6 +19,31 @@ Shape::~Shape()
 {
 }
 
+HeightField::HeightField():
+    _columns(0),
+    _rows(0),
+    _origin(0.0f,0.0f,0.0f),
+    _dx(1.0f),
+    _dy(1.0f),
+    _skirtHeight(0.0f),
+    _borderWidth(0)
+{
+    _heights = new osg::FloatArray;
+}
+
+HeightField::HeightField(const HeightField& mesh,const CopyOp& copyop): 
+    Shape(mesh,copyop),
+    _columns(mesh._columns),
+    _rows(mesh._rows),
+    _origin(mesh._origin),
+    _dx(mesh._dx),
+    _dy(mesh._dy),
+    _skirtHeight(mesh._skirtHeight),
+    _borderWidth(mesh._borderWidth),
+    _heights(new osg::FloatArray(*mesh._heights))
+{
+}
+
 HeightField::~HeightField()
 {
 }
@@ -28,7 +53,7 @@ void HeightField::allocate(unsigned int numColumns,unsigned int numRows)
 {
     if (_columns!=numColumns || _rows!=numRows)
     {
-        _heights.resize(numColumns*numRows);
+        _heights->resize(numColumns*numRows);
     }
     _columns=numColumns;
     _rows=numRows;

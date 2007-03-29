@@ -40,6 +40,72 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         const Locator* getLocator() const { return _locator.get(); }
 
+        virtual unsigned int getNumColumns() const { return 0; }
+        virtual unsigned int getNumRows() const { return 0; }
+
+        virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }
+        virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec2& /*value*/) const { return false; }
+        virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec3& /*value*/) const { return false; }
+        virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec4& /*value*/) const { return false; }
+
+        inline void computeIndices(double ndc_x, double ndc_y, unsigned int& i, unsigned int& j, double& ir, double& jr)
+        {
+            ndc_x *= double(getNumColumns()-1);
+            ndc_y *= double(getNumRows()-1);
+            i = (unsigned int)(ndc_x);
+            j = (unsigned int)(ndc_y);
+            ir = ndc_x - double(i);
+            jr = ndc_y - double(j);
+        } 
+
+
+        inline bool getInterpolatedValue(double ndc_x, double ndc_y, float& value)
+        {
+            unsigned int i,j;
+            double ir, jr;
+            computeIndices(ndc_x, ndc_y, i, j, ir, jr);
+            value = 0.0f;
+            double div = 0.0f;
+            float v,r;
+            
+            r = (1.0f-ir)*(1.0f-jr);
+            if (r>0.0 && getValue(i,j,v)) 
+            {
+                value += v*r;
+                div += r;
+            }
+            
+            r = (ir)*(1.0f-jr);
+            if (r>0.0 && getValue(i+1,j,v)) 
+            {
+                value += v*r;
+                div += r;
+            }
+            
+            r = (ir)*(jr);
+            if (r>0.0 && getValue(i+1,j+1,v)) 
+            {
+                value += v*r;
+                div += r;
+            }
+            
+            r = (1.0f-ir)*(jr);
+            if (r>0.0 && getValue(i,j+1,v)) 
+            {
+                value += v*r;
+                div += r;
+            }
+            
+            if (div != 0.0)
+            {
+                value /= div;
+                return true;
+            }
+            
+            value = 0.0;
+            return false;
+        }
+
         virtual osg::BoundingSphere computeBound() const;
 
     protected:
@@ -61,10 +127,16 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
         
 
         void setImage(osg::Image* image);
-        
         osg::Image* getImage() { return _image.get(); }
-
         const osg::Image* getImage() const { return _image.get(); }
+
+        virtual unsigned int getNumColumns() const { return _image.valid() ? _image->s() : 0; }
+        virtual unsigned int getNumRows() const { return _image.valid() ? _image->t() : 0;  }
+
+        virtual bool getValue(unsigned int i, unsigned int j, float& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec2& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec3& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec4& value) const;
 
     protected:
 
@@ -85,41 +157,22 @@ class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
         
 
         void setHeightField(osg::HeightField* hf);
-        
         osg::HeightField* getHeightField() { return _heightField.get(); }
-
         const osg::HeightField* getHeightField() const { return _heightField.get(); }
+
+        virtual unsigned int getNumColumns() const { return _heightField.valid() ? _heightField->getNumColumns() : 0; }
+        virtual unsigned int getNumRows() const { return _heightField.valid() ? _heightField->getNumRows() : 0;  }
+
+        virtual bool getValue(unsigned int i, unsigned int j, float& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec2& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec3& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec4& value) const;
 
     protected:
 
         virtual ~HeightFieldLayer() {}
 
         osg::ref_ptr<osg::HeightField> _heightField;
-
-};
-
-
-class OSGTERRAIN_EXPORT ArrayLayer : public Layer
-{
-    public:
-
-        ArrayLayer();
-
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        ArrayLayer(const ArrayLayer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
-
-        void setArray(osg::Array* array);
-        
-        osg::Array* getArray() { return _array.get(); }
-
-        const osg::Array* getArray() const { return _array.get(); }
-
-    protected:
-
-        virtual ~ArrayLayer() {}
-
-        osg::ref_ptr<osg::Array> _array;
 
 };
 

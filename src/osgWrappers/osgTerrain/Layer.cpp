@@ -10,12 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Array>
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/Shape>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
 
@@ -26,35 +28,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_OBJECT_REFLECTOR(osgTerrain::ArrayLayer)
-	I_BaseType(osgTerrain::Layer);
-	I_Constructor0(____ArrayLayer,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgTerrain::ArrayLayer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ArrayLayer__C5_ArrayLayer_R1__C5_osg_CopyOp_R1,
-	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
-	                           "");
-	I_Method1(void, setArray, IN, osg::Array *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setArray__osg_Array_P1,
-	          "",
-	          "");
-	I_Method0(osg::Array *, getArray,
-	          Properties::NON_VIRTUAL,
-	          __osg_Array_P1__getArray,
-	          "",
-	          "");
-	I_Method0(const osg::Array *, getArray,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Array_P1__getArray,
-	          "",
-	          "");
-	I_SimpleProperty(osg::Array *, Array, 
-	                 __osg_Array_P1__getArray, 
-	                 __void__setArray__osg_Array_P1);
-END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	I_BaseType(osgTerrain::Layer);
@@ -78,6 +51,36 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	I_Method0(const osg::HeightField *, getHeightField,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_HeightField_P1__getHeightField,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumColumns,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumColumns,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumRows,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumRows,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, float &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__float_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec2 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec3 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec4 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec4_R1,
 	          "",
 	          "");
 	I_SimpleProperty(osg::HeightField *, HeightField, 
@@ -107,6 +110,36 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	I_Method0(const osg::Image *, getImage,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Image_P1__getImage,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumColumns,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumColumns,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumRows,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumRows,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, float &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__float_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec2 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec3 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec4 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec4_R1,
 	          "",
 	          "");
 	I_SimpleProperty(osg::Image *, Image, 
@@ -161,6 +194,46 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_Method0(const osgTerrain::Locator *, getLocator,
 	          Properties::NON_VIRTUAL,
 	          __C5_Locator_P1__getLocator,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumColumns,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumColumns,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumRows,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumRows,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned, int, IN, unsigned, int, IN, float &, x,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned__unsigned__float_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned, int, IN, unsigned, int, IN, osg::Vec2 &, x,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned__unsigned__osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned, int, IN, unsigned, int, IN, osg::Vec3 &, x,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned__unsigned__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned, int, IN, unsigned, int, IN, osg::Vec4 &, x,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned__unsigned__osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method6(void, computeIndices, IN, double, ndc_x, IN, double, ndc_y, IN, unsigned int &, i, IN, unsigned int &, j, IN, double &, ir, IN, double &, jr,
+	          Properties::NON_VIRTUAL,
+	          __void__computeIndices__double__double__unsigned_int_R1__unsigned_int_R1__double_R1__double_R1,
+	          "",
+	          "");
+	I_Method3(bool, getInterpolatedValue, IN, double, ndc_x, IN, double, ndc_y, IN, float &, value,
+	          Properties::NON_VIRTUAL,
+	          __bool__getInterpolatedValue__double__double__float_R1,
 	          "",
 	          "");
 	I_Method0(osg::BoundingSphere, computeBound,

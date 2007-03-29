@@ -478,25 +478,9 @@ class OSG_EXPORT HeightField : public Shape
 {
     public:
     
-        HeightField():
-            _columns(0),
-            _rows(0),
-            _origin(0.0f,0.0f,0.0f),
-            _dx(1.0f),
-            _dy(1.0f),
-            _skirtHeight(0.0f),
-            _borderWidth(0) {}
+        HeightField();
 
-        HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
-            Shape(mesh,copyop),
-            _columns(mesh._columns),
-            _rows(mesh._rows),
-            _origin(mesh._origin),
-            _dx(mesh._dx),
-            _dy(mesh._dy),
-            _skirtHeight(mesh._skirtHeight),
-            _borderWidth(mesh._borderWidth),
-            _heights(mesh._heights) {}
+        HeightField(const HeightField& mesh,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         
         META_Shape(osg, HeightField);
 
@@ -515,6 +499,16 @@ class OSG_EXPORT HeightField : public Shape
 
         inline void setYInterval(float dy) { _dy = dy; }
         inline float getYInterval() const { return _dy; }
+    
+        /** Get the FloatArray height data.*/
+        osg::FloatArray* getFloatArray() { return _heights.get(); }
+
+        /** Get the const sFloatArray height data.*/
+        const osg::FloatArray* getFloatArray() const { return _heights.get(); }
+
+        HeightList& getHeightList() { return *_heights; }
+
+        const HeightList& getHeightList() const { return *_heights; }
 
         /** Set the height of the skirt to render around the edge of HeightField.
           * The skirt is used as a means of disguising edge boundaries between adjacent HeightField, 
@@ -540,29 +534,26 @@ class OSG_EXPORT HeightField : public Shape
         /* set a single height point in the height field */
         inline void setHeight(unsigned int c,unsigned int r,float value)
         {
-           _heights[c+r*_columns] = value;
+           (*_heights)[c+r*_columns] = value;
         }
 
         /* Get address of single height point in the height field, allows user to change. */
         inline float& getHeight(unsigned int c,unsigned int r)
         {
-           return _heights[c+r*_columns];
+           return (*_heights)[c+r*_columns];
         }
 
         /* Get value of single height point in the height field, not editable. */
         inline float getHeight(unsigned int c,unsigned int r) const
         {
-           return _heights[c+r*_columns];
+           return (*_heights)[c+r*_columns];
         }
-
-        HeightList& getHeightList() { return _heights; }
-        const HeightList& getHeightList() const { return _heights; }
 
         inline Vec3 getVertex(unsigned int c,unsigned int r) const
         {
             return Vec3(_origin.x()+getXInterval()*(float)c,
                         _origin.y()+getYInterval()*(float)r,
-                        _origin.z()+_heights[c+r*_columns]);  
+                        _origin.z()+(*_heights)[c+r*_columns]);  
         }
 
         Vec3 getNormal(unsigned int c,unsigned int r) const;
@@ -573,17 +564,17 @@ class OSG_EXPORT HeightField : public Shape
     
         virtual ~HeightField();
 
-        unsigned int    _columns,_rows;
+        unsigned int                    _columns,_rows;
 
-        osg::Vec3       _origin;
-        float           _dx;
-        float           _dy;
+        osg::Vec3                       _origin;
+        float                           _dx;
+        float                           _dy;
 
-        float           _skirtHeight;
-        unsigned int    _borderWidth;
+        float                           _skirtHeight;
+        unsigned int                    _borderWidth;
 
-        Quat            _rotation;
-        HeightList      _heights;
+        Quat                            _rotation;
+        osg::ref_ptr<osg::FloatArray>   _heights;
 
 };
 

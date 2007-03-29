@@ -818,6 +818,26 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	          __float__getYInterval,
 	          "",
 	          "");
+	I_Method0(osg::FloatArray *, getFloatArray,
+	          Properties::NON_VIRTUAL,
+	          __osg_FloatArray_P1__getFloatArray,
+	          "Get the FloatArray height data. ",
+	          "");
+	I_Method0(const osg::FloatArray *, getFloatArray,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_FloatArray_P1__getFloatArray,
+	          "Get the const sFloatArray height data. ",
+	          "");
+	I_Method0(osg::HeightField::HeightList &, getHeightList,
+	          Properties::NON_VIRTUAL,
+	          __HeightList_R1__getHeightList,
+	          "",
+	          "");
+	I_Method0(const osg::HeightField::HeightList &, getHeightList,
+	          Properties::NON_VIRTUAL,
+	          __C5_HeightList_R1__getHeightList,
+	          "",
+	          "");
 	I_Method1(void, setSkirtHeight, IN, float, skirtHeight,
 	          Properties::NON_VIRTUAL,
 	          __void__setSkirtHeight__float,
@@ -873,16 +893,6 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	          __float__getHeight__unsigned_int__unsigned_int,
 	          "",
 	          "");
-	I_Method0(osg::HeightField::HeightList &, getHeightList,
-	          Properties::NON_VIRTUAL,
-	          __HeightList_R1__getHeightList,
-	          "",
-	          "");
-	I_Method0(const osg::HeightField::HeightList &, getHeightList,
-	          Properties::NON_VIRTUAL,
-	          __C5_HeightList_R1__getHeightList,
-	          "",
-	          "");
 	I_Method2(osg::Vec3, getVertex, IN, unsigned int, c, IN, unsigned int, r,
 	          Properties::NON_VIRTUAL,
 	          __Vec3__getVertex__unsigned_int__unsigned_int,
@@ -901,6 +911,9 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	I_SimpleProperty(unsigned int, BorderWidth, 
 	                 __unsigned_int__getBorderWidth, 
 	                 __void__setBorderWidth__unsigned_int);
+	I_SimpleProperty(osg::FloatArray *, FloatArray, 
+	                 __osg_FloatArray_P1__getFloatArray, 
+	                 0);
 	I_IndexedProperty(float, Height, 
 	                  __float__getHeight__unsigned_int__unsigned_int, 
 	                  __void__setHeight__unsigned_int__unsigned_int__float, 

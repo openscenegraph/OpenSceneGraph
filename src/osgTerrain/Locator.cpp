@@ -60,6 +60,8 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
         corners.push_back(cornerNDC);
     }
 
+    if (corners.empty()) return false;
+
 
     for(Corners::iterator itr = corners.begin();
         itr != corners.end();
@@ -70,6 +72,8 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
         topRight.x() = osg::maximum( topRight.x(), itr->x());
         topRight.y() = osg::maximum( topRight.y(), itr->y());
     }
+    
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////

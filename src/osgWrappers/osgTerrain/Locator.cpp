@@ -75,9 +75,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
 	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method2(bool, convertModelToWorld, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
+	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
 	          Properties::VIRTUAL,
-	          __bool__convertModelToWorld__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	          __bool__convertModelToLocal__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
 	I_SimpleProperty(double, DeltaLatitude, 
@@ -139,10 +139,19 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method2(bool, convertModelToWorld, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
+	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
 	          Properties::VIRTUAL,
-	          __bool__convertModelToWorld__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	          __bool__convertModelToLocal__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
+	I_Method3(bool, computeLocalBounds, IN, osgTerrain::Locator &, source, IN, osg::Vec3d &, bottomLeft, IN, osg::Vec3d &, topRight,
+	          Properties::NON_VIRTUAL,
+	          __bool__computeLocalBounds__Locator_R1__osg_Vec3d_R1__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_StaticMethod4(bool, convertLocalCoordBetween, IN, const osgTerrain::Locator &, source, IN, const osg::Vec3d &, sourceNDC, IN, const osgTerrain::Locator &, destination, IN, osg::Vec3d &, destinationNDC,
+	                __bool__convertLocalCoordBetween__C5_Locator_R1__C5_osg_Vec3d_R1__C5_Locator_R1__osg_Vec3d_R1_S,
+	                "",
+	                "");
 END_REFLECTOR
 

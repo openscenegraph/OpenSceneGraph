@@ -35,13 +35,14 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         
         void setLocator(Locator* locator) { _locator = locator; }
-        
         Locator* getLocator() { return _locator.get(); }
-        
         const Locator* getLocator() const { return _locator.get(); }
 
         virtual unsigned int getNumColumns() const { return 0; }
         virtual unsigned int getNumRows() const { return 0; }
+
+        void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
+        const osg::Vec4& getDefaultValue() const { return _defaultValue; }
 
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec2& /*value*/) const { return false; }
@@ -112,7 +113,8 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         virtual ~Layer();
 
-        osg::ref_ptr<Locator>           _locator;
+        osg::ref_ptr<Locator>   _locator;
+        osg::Vec4               _defaultValue;
 
 };
 

@@ -13,6 +13,9 @@
 
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/TerrainNode>
+
+#include <osgUtil/SmoothingVisitor>
+
 #include <osg/io_utils>
 
 using namespace osgTerrain;
@@ -100,6 +103,14 @@ void GeometryTechnique::init()
     
     unsigned int numRows = 100;
     unsigned int numColumns = 100;
+    
+    if (elevationLayer)
+    {
+        numColumns = elevationLayer->getNumColumns();
+        numRows = elevationLayer->getNumRows();
+    }
+    
+    
     unsigned int numVertices = numRows * numColumns;
 
     // allocate and assign vertices
@@ -129,6 +140,15 @@ void GeometryTechnique::init()
         {
             unsigned int iv = j*numColumns + i;
             osg::Vec3d ndc( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 0.0);
+            
+            if (elevationLayer)
+            {
+                float value = 0.0f;
+                elevationLayer->getValue(i,j, value);
+                // osg::notify(osg::NOTICE)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
+                ndc.z() = value;
+            }
+            
             osg::Vec3d model;
             masterLocator->convertLocalToModel(ndc, model);
 
@@ -157,6 +177,9 @@ void GeometryTechnique::init()
         }
         _geometry->addPrimitiveSet(elements);
     }
+
+    osgUtil::SmoothingVisitor smoother;
+    _geode->accept(smoother);
 
     _dirty = false;    
 }

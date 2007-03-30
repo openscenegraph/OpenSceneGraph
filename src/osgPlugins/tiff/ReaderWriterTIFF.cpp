@@ -264,6 +264,7 @@ checkcmap(int n, uint16* r, uint16* g, uint16* b)
 static void
 invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bitspersample)
 {
+    // osg::notify(osg::NOTICE)<<"invert_row "<<invert<<std::endl;
     if (bitspersample == 8)
     {
         while (n--)
@@ -290,6 +291,7 @@ static void
 remap_row(unsigned char *ptr, unsigned char *data, int n,
 unsigned short *rmap, unsigned short *gmap, unsigned short *bmap)
 {
+    osg::notify(osg::NOTICE)<<"remap row"<<std::endl;
     unsigned int ix;
     while (n--)
     {
@@ -304,6 +306,7 @@ unsigned short *rmap, unsigned short *gmap, unsigned short *bmap)
 static void
 copy_row(unsigned char *ptr, unsigned char *data, int n, int numSamples)
 {
+    // osg::notify(osg::NOTICE)<<"Copy row"<<std::endl;
     while (n--)
     {
         for(int i=0;i<numSamples;++i)
@@ -318,6 +321,7 @@ static void interleave_row(unsigned char *ptr,
                            unsigned char *red, unsigned char *green, unsigned char *blue,
                            int n, int numSamples)
 {
+    // osg::notify(osg::NOTICE)<<"Interleave row RGB"<<std::endl;
     while (n--)
     {
         *ptr++ = *red++;
@@ -331,6 +335,7 @@ static void interleave_row(unsigned char *ptr,
                            unsigned char *red, unsigned char *green, unsigned char *blue, unsigned char *alpha,
                            int n, int numSamples)
 {
+    // osg::notify(osg::NOTICE)<<"Interleave row RGBA"<<std::endl;
     while (n--)
     {
         *ptr++ = *red++;
@@ -361,13 +366,14 @@ int headerlen)
 
 unsigned char *
 simage_tiff_load(std::istream& fin,
-int *width_ret,
-int *height_ret,
-int *numComponents_ret)
+                 int& width_ret,
+                 int& height_ret,
+                 int& numComponents_ret,
+                 uint16& bitspersample)
 {
     TIFF *in;
+    uint16 dataType;
     uint16 samplesperpixel;
-    uint16 bitspersample;
     uint16 photometric;
     uint32 w, h;
     uint16 config;
@@ -455,7 +461,7 @@ int *numComponents_ret)
         TIFFClose(in);
         return NULL;
     }
-
+    
     if (TIFFGetField(in, TIFFTAG_IMAGEWIDTH, &w) != 1 ||
         TIFFGetField(in, TIFFTAG_IMAGELENGTH, &h) != 1 ||
         TIFFGetField(in, TIFFTAG_PLANARCONFIG, &config) != 1)
@@ -464,6 +470,11 @@ int *numComponents_ret)
         tifferror = ERR_READ;
         return NULL;
     }
+
+        
+    TIFFGetField(in, TIFFTAG_DATATYPE, &dataType);
+    osg::notify(osg::INFO)<<"TIFFTAG_DATATYPE="<<dataType<<std::endl;
+
 
     /*
     if (photometric == PHOTOMETRIC_MINISWHITE ||
@@ -480,7 +491,9 @@ int *numComponents_ret)
         format = samplesperpixel * bitspersample / 8;
     
     
-
+    int bytespersample = bitspersample / 8;
+    int bytesperpixel = bytespersample * samplesperpixel;
+    
     buffer = new unsigned char [w*h*format];
     for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;
 
@@ -513,7 +526,6 @@ int *numComponents_ret)
                     break;
                 }
                 invert_row(currPtr, inbuf, w, photometric == PHOTOMETRIC_MINISWHITE, bitspersample);
-                //invert_row(currPtr, inbuf, w, photometric == PHOTOMETRIC_MINISWHITE);
                 currPtr -= format*w;
             }
             break;
@@ -598,9 +610,9 @@ int *numComponents_ret)
         if (buffer) delete [] buffer;
         return NULL;
     }
-    *width_ret = width;
-    *height_ret = height;
-    *numComponents_ret = format;
+    width_ret = width;
+    height_ret = height;
+    numComponents_ret = samplesperpixel;
     return buffer;
 }
 
@@ -625,8 +637,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             int width_ret;
             int height_ret;
             int numComponents_ret;
+            uint16 bitspersample;
 
-            imageData = simage_tiff_load(fin,&width_ret,&height_ret,&numComponents_ret);
+            imageData = simage_tiff_load(fin, width_ret, height_ret, numComponents_ret, bitspersample);
 
             if (imageData==NULL) 
             {
@@ -648,7 +661,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 numComponents_ret == 3 ? GL_RGB :
                 numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
-            unsigned int dataType = GL_UNSIGNED_BYTE;
+            unsigned int dataType = bitspersample==8 ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT;
 
             osg::Image* pOsgImage = new osg::Image;
             pOsgImage->setImage(s,t,r,

@@ -81,7 +81,42 @@ void ImageLayer::setImage(osg::Image* image)
 
 bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    const unsigned char* data = _image->data(i,j);
+    switch(_image->getDataType())
+    {
+        case(GL_BYTE): 
+            value = *((const char*)data); 
+            // osg::notify(osg::NOTICE)<<"byte "<<value<<std::endl;
+            break;
+        case(GL_UNSIGNED_BYTE): 
+            value = *data;
+            // osg::notify(osg::NOTICE)<<"Unsigned byte "<<value<<std::endl;
+            break;
+        case(GL_SHORT):
+            value = *((const short*)data);
+            // osg::notify(osg::NOTICE)<<"Short "<<value<<std::endl;
+            break;
+        case(GL_UNSIGNED_SHORT):
+            value = *((const unsigned short*)data);
+            // osg::notify(osg::NOTICE)<<"Unsigned Short "<<value<<std::endl;
+            break;
+        case(GL_INT):
+            value = *((const int*)data);
+            // osg::notify(osg::NOTICE)<<"Int "<<value<<std::endl;
+            break;
+        case(GL_UNSIGNED_INT):
+            // osg::notify(osg::NOTICE)<<"Unsigned Int "<<value<<std::endl;
+            value = *((const unsigned int*)data);
+            break;
+        case(GL_FLOAT):
+            // osg::notify(osg::NOTICE)<<"Float "<<value<<std::endl;
+            value = *((const float*)data);
+            break;
+        default: 
+            value = _defaultValue.x(); 
+            return false;
+    }
+
     return false;
 }
 
@@ -126,24 +161,30 @@ void HeightFieldLayer::setHeightField(osg::HeightField* hf)
 
 bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, float& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
-    return false;
+    value = _heightField->getHeight(i,j);
+    return true;
 }
 
 bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
-    return false;
+    value.x() = _heightField->getHeight(i,j);
+    value.y() = _defaultValue.y();
+    return true;
 }
 
 bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
-    return false;
+    value.x() = _heightField->getHeight(i,j);
+    value.y() = _defaultValue.y();
+    value.z() = _defaultValue.z();
+    return true;
 }
 
 bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
-    return false;
+    value.x() = _heightField->getHeight(i,j);
+    value.y() = _defaultValue.y();
+    value.z() = _defaultValue.z();
+    value.w() = _defaultValue.w();
+    return true;
 }

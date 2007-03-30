@@ -291,7 +291,7 @@ static void
 remap_row(unsigned char *ptr, unsigned char *data, int n,
 unsigned short *rmap, unsigned short *gmap, unsigned short *bmap)
 {
-    osg::notify(osg::NOTICE)<<"remap row"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"remap row"<<std::endl;
     unsigned int ix;
     while (n--)
     {
@@ -493,6 +493,10 @@ simage_tiff_load(std::istream& fin,
     
     int bytespersample = bitspersample / 8;
     int bytesperpixel = bytespersample * samplesperpixel;
+    
+    osg::notify(osg::INFO)<<"format="<<format<<std::endl;
+    osg::notify(osg::INFO)<<"bytespersample="<<bytespersample<<std::endl;
+    osg::notify(osg::INFO)<<"bytesperpixel="<<bytesperpixel<<std::endl;
     
     buffer = new unsigned char [w*h*format];
     for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;

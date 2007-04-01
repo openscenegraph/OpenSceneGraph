@@ -17,6 +17,7 @@
 #include <osgUtil/SmoothingVisitor>
 
 #include <osg/io_utils>
+#include <osg/Texture2D>
 
 using namespace osgTerrain;
 
@@ -123,9 +124,13 @@ void GeometryTechnique::init()
     _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
     // allocate and assign tex coords
-    osg::Vec2Array* texcoords = new osg::Vec2Array(numVertices);
-    _geometry->setTexCoordArray(0, texcoords);
-    
+    osg::Vec2Array* texcoords = 0;
+    if (colorLayer)
+    {
+        texcoords = new osg::Vec2Array(numVertices);
+        _geometry->setTexCoordArray(0, texcoords);
+    }
+        
     // allocate and assign color
     osg::Vec4Array* colors = new osg::Vec4Array(1);
     _geometry->setColorArray(colors);
@@ -153,7 +158,24 @@ void GeometryTechnique::init()
             masterLocator->convertLocalToModel(ndc, model);
 
             (*vertices)[iv] = model;
-            (*texcoords)[iv].set(ndc.x(), ndc.y());
+
+
+            if (colorLayer)
+            {
+                
+                if (colorLocator!= masterLocator)
+                {
+                    osg::Vec3d color_ndc;
+                    colorLocator->computeLocalBounds(*masterLocator, ndc, color_ndc);
+                    (*texcoords)[iv].set(color_ndc.x(), color_ndc.y());
+                }
+                else
+                {
+                    (*texcoords)[iv].set(ndc.x(), ndc.y());
+                }
+
+            }
+
 
             // compute the local normal
             osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
@@ -178,8 +200,22 @@ void GeometryTechnique::init()
         _geometry->addPrimitiveSet(elements);
     }
 
+
+
     osgUtil::SmoothingVisitor smoother;
     _geode->accept(smoother);
+
+
+    if (colorLayer)
+    {
+        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
+        if (imageLayer)
+        {
+            osg::Image* image = imageLayer->getImage();
+            osg::StateSet* stateset = _geode->getOrCreateStateSet();
+            stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image), osg::StateAttribute::ON);
+        }
+    }
 
     _dirty = false;    
 }

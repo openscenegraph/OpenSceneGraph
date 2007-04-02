@@ -164,6 +164,28 @@ int main(int argc, char** argv)
             }
         }
 
+        float minValue, maxValue;
+        if (arguments.read("--tf",minValue, maxValue))
+        {
+            readParameter = true;
+
+            osg::ref_ptr<osg::TransferFunction1D> tf = new osg::TransferFunction1D;
+            
+            tf->setInputRange(minValue, maxValue);
+            
+            tf->allocate(6);
+            tf->setValue(0, osg::Vec4(1.0,1.0,1.0,1.0));
+            tf->setValue(1, osg::Vec4(1.0,0.0,1.0,1.0));
+            tf->setValue(2, osg::Vec4(1.0,0.0,0.0,1.0));
+            tf->setValue(3, osg::Vec4(1.0,1.0,0.0,1.0));
+            tf->setValue(4, osg::Vec4(0.0,1.0,1.0,1.0));
+            tf->setValue(5, osg::Vec4(0.0,1.0,0.0,1.0));
+            
+            osg::notify(osg::NOTICE)<<"--tf "<<minValue<<" "<<maxValue<<std::endl;
+
+            terrain->setColorTransferFunction(tf.get());
+        }
+
     } while (readParameter);
     
 

@@ -46,6 +46,8 @@ void TransferFunction1D::setInputRange(float minimum, float maximum)
 void TransferFunction1D::allocate(unsigned int numX)
 {
     _colors.resize(numX);
+    _image = new osg::Image;
+    _image->setImage(numX,1,1,GL_RGBA, GL_RGBA, GL_FLOAT, (unsigned char*)&_colors[0], osg::Image::NO_DELETE);
 }
 
 void TransferFunction1D::clear(const osg::Vec4& color)

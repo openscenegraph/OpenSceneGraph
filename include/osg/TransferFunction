@@ -63,7 +63,7 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
         
         unsigned int getNumberCellsX() const { return _colors.size(); }
 
-        osg::Vec4& getValue(unsigned int i) { return _colors[i]; }
+        void setValue(unsigned int i, const osg::Vec4& color) { _colors[i] = color; if (_image.valid()) _image->dirty(); }
         const osg::Vec4& getValue(unsigned int i) const { return _colors[i]; }
 
     protected:

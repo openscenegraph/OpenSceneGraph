@@ -56,6 +56,12 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
         TransferFunction1D();
     
         void setInputRange(float minimum, float maximum);
+        
+        void setMinimum(float value) { _minimum = value; }
+        float getMinimum() const { return _minimum; }
+        
+        void setMaximum(float value) { _maximum = value; }
+        float getMaximum() const { return _maximum; }
 
         void allocate(unsigned int numX);
 

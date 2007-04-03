@@ -39,7 +39,7 @@
             #define GLUT_APIENTRY_DEFINED
             #define APIENTRY    __stdcall
         #endif
-               // XXX This is from Win32's <winnt.h> 
+               // XXX This is from Win32's <windef.h> 
         #ifndef CALLBACK
             #define CALLBACK __stdcall
         #endif
@@ -60,9 +60,9 @@
             #endif
         #endif
 
-         // XXX This is from Win32's <winnt.h> 
+         // XXX This is from Win32's <windef.h> 
         #ifndef CALLBACK
-            #if (defined(_M_MRX000) || defined(_M_IX86) || defined(_M_ALPHA) || defined(_M_PPC)) && !defined(MIDL_PASS)
+            #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
                 #define CALLBACK __stdcall
             #else
                 #define CALLBACK

@@ -128,6 +128,14 @@ void GeometryTechnique::init()
     _geometry->setNormalArray(normals);
     _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
+
+    osg::FloatArray* heights = 0;
+    if (colorTF)
+    {
+        heights = new osg::FloatArray(numVertices);
+        _geometry->setTexCoordArray(1, heights);
+    }
+
     // allocate and assign tex coords
     osg::Vec2Array* texcoords = 0;
     if (colorLayer)
@@ -181,6 +189,10 @@ void GeometryTechnique::init()
 
             }
 
+            if (heights)
+            {
+                (*heights)[iv] = ndc.z();
+            }
 
             // compute the local normal
             osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
@@ -225,55 +237,56 @@ void GeometryTechnique::init()
             stateset->setTextureAttributeAndModes(0, texture2D, osg::StateAttribute::ON);
         }
         
-        osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
-        if (tf)
+    }
+
+    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
+    if (tf)
+    {
+        osg::notify(osg::NOTICE)<<"Requires TransferFunction"<<std::endl;
+        osg::Image* image = tf->getImage();
+        osg::StateSet* stateset = _geode->getOrCreateStateSet();
+        osg::Texture1D* texture1D = new osg::Texture1D;
+        texture1D->setImage(image);
+        texture1D->setResizeNonPowerOfTwoHint(false);
+        texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
+        texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
+        stateset->setTextureAttributeAndModes(1, texture1D, osg::StateAttribute::ON);
+
+        osg::Program* program = new osg::Program;
+        stateset->setAttribute(program);
+
+        // get shaders from source
+        std::string vertexShaderFile = osgDB::findDataFile("lookup.vert");
+        if (!vertexShaderFile.empty())
         {
-            osg::notify(osg::NOTICE)<<"Requires TransferFunction"<<std::endl;
-            osg::Image* image = tf->getImage();
-            osg::StateSet* stateset = _geode->getOrCreateStateSet();
-            osg::Texture1D* texture1D = new osg::Texture1D;
-            texture1D->setImage(image);
-            texture1D->setResizeNonPowerOfTwoHint(false);
-            texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
-            texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-            stateset->setTextureAttributeAndModes(1, texture1D, osg::StateAttribute::ON);
-            
-            osg::Program* program = new osg::Program;
-            stateset->setAttribute(program);
-
-            // get shaders from source
-            std::string vertexShaderFile = osgDB::findDataFile("lookup.vert");
-            if (!vertexShaderFile.empty())
-            {
-                program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"Not found lookup.vert"<<std::endl;
-            }
-
-            std::string fragmentShaderFile = osgDB::findDataFile("lookup.frag");
-            if (!fragmentShaderFile.empty())
-            {
-                program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"Not found lookup.frag"<<std::endl;
-            }
-
-            osg::Uniform* sourceSampler = new osg::Uniform("sourceTexture",0);
-            stateset->addUniform(sourceSampler);
-
-            osg::Uniform* lookupTexture = new osg::Uniform("lookupTexture",1);
-            stateset->addUniform(lookupTexture);
-
-            osg::Uniform* minValue = new osg::Uniform("minValue", tf->getMinimum());
-            stateset->addUniform(minValue);
-
-            osg::Uniform* inverseRange = new osg::Uniform("inverseRange", 1.0f/(tf->getMaximum()-tf->getMinimum()));
-            stateset->addUniform(inverseRange);
+            program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
         }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Not found lookup.vert"<<std::endl;
+        }
+
+        std::string fragmentShaderFile = osgDB::findDataFile("lookup.frag");
+        if (!fragmentShaderFile.empty())
+        {
+            program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Not found lookup.frag"<<std::endl;
+        }
+
+        osg::Uniform* sourceSampler = new osg::Uniform("sourceTexture",0);
+        stateset->addUniform(sourceSampler);
+
+        osg::Uniform* lookupTexture = new osg::Uniform("lookupTexture",1);
+        stateset->addUniform(lookupTexture);
+
+        osg::Uniform* minValue = new osg::Uniform("minValue", tf->getMinimum());
+        stateset->addUniform(minValue);
+
+        osg::Uniform* inverseRange = new osg::Uniform("inverseRange", 1.0f/(tf->getMaximum()-tf->getMinimum()));
+        stateset->addUniform(inverseRange);
     }
 
     _dirty = false;    

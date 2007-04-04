@@ -406,7 +406,7 @@ const Triangle * getTriangleWithEdge(const unsigned int ip1,const unsigned int i
     return NULL; //-1;
 }
 
-int DelaunayTriangulator::getindex(const osg::Vec3 pt,const osg::Vec3Array *points)
+int DelaunayTriangulator::getindex(const osg::Vec3 &pt,const osg::Vec3Array *points)
 {
     // return index of pt in points (or -1)
     for (unsigned int i=0; i<points->size(); i++)
@@ -1173,7 +1173,7 @@ void DelaunayTriangulator::removeInternalTriangles(DelaunayConstraint *dc )
 }
 //=== DelaunayConstraint functions
 
-float DelaunayConstraint::windingNumber(const osg::Vec3 testpoint) const
+float DelaunayConstraint::windingNumber(const osg::Vec3 &testpoint) const
 {
     // return winding number of loop around testpoint. Only in 2D, x-y coordinates assumed!
     float theta=0; // sum of angles subtended by the line array - the winding number
@@ -1240,13 +1240,13 @@ osg::DrawElementsUInt *DelaunayConstraint::makeDrawable()
     
     return prim_tris_.get();
 }
-bool DelaunayConstraint::contains(const osg::Vec3 testpoint) const 
+bool DelaunayConstraint::contains(const osg::Vec3 &testpoint) const 
 {
     // true if point is internal to the loop.
     float theta=windingNumber(testpoint); // sum of angles subtended by the line array - the winding number
     return fabs(theta)>0.9; // should be 0 or 1 (or 2,3,4 for very complex not permitted loops).
 }
-bool DelaunayConstraint::outside(const osg::Vec3 testpoint) const 
+bool DelaunayConstraint::outside(const osg::Vec3 &testpoint) const 
 {
     // true if point is outside the loop.
     float theta=windingNumber(testpoint); // sum of angles subtended by the line array - the winding number
@@ -1254,7 +1254,7 @@ bool DelaunayConstraint::outside(const osg::Vec3 testpoint) const
 }
 
 
-void DelaunayConstraint::addtriangle(const int i1,const int i2, const int i3)
+void DelaunayConstraint::addtriangle(int i1, int i2, int i3)
 {
     // a triangle joins vertices i1,i2,i3 in the points of the delaunay triangles.
     // points is the array of poitns in the triangulator;

@@ -52,7 +52,7 @@ public:
       *  The delaunay triangles inside the DelaunayConstraint area can be used to fill
       *  the area or generate geometry that terrain follows the area in some way.
       *  These triangles can form a canopy or a field. */
-    void addtriangle(const int i1,const int i2, const int i3);
+    void addtriangle(int i1, int i2, int i3);
 
     /** Get the filling primitive. One:
      * triangulate must have bneen called and
@@ -83,11 +83,11 @@ public:
     
      /** return winding number as a float of loop around testpoint; may use multiple loops
       * does not reject points on the edge or very very close to the edge */
-    float windingNumber(const osg::Vec3 testpoint) const ;
+    float windingNumber(const osg::Vec3 &testpoint) const ;
 
      /** true if testpoint is internal (or external) to constraint. */
-    virtual bool contains(const osg::Vec3 testpoint) const;
-    virtual bool outside(const osg::Vec3 testpoint) const;
+    virtual bool contains(const osg::Vec3 &testpoint) const;
+    virtual bool outside(const osg::Vec3 &testpoint) const;
 
     /** Tessellate the constraint loops so that the crossing points are interpolated
      * and added to the contraints for the triangulation. */
@@ -158,7 +158,7 @@ public:
 protected:
     virtual ~DelaunayTriangulator();
     DelaunayTriangulator &operator=(const DelaunayTriangulator &) { return *this; }
-    int getindex(const osg::Vec3 pt,const osg::Vec3Array *points);
+    int getindex(const osg::Vec3 &pt,const osg::Vec3Array *points);
 
 private:
     osg::ref_ptr<osg::Vec3Array> points_;

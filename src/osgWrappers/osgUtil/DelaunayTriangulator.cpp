@@ -29,9 +29,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	I_Constructor0(____DelaunayConstraint,
 	               "",
 	               "");
-	I_Method3(void, addtriangle, IN, const int, i1, IN, const int, i2, IN, const int, i3,
+	I_Method3(void, addtriangle, IN, int, i1, IN, int, i2, IN, int, i3,
 	          Properties::NON_VIRTUAL,
-	          __void__addtriangle__C5_int__C5_int__C5_int,
+	          __void__addtriangle__int__int__int,
 	          "collect up indices of triangle from delaunay triangles. ",
 	          "The delaunay triangles inside the DelaunayConstraint area can be used to fill the area or generate geometry that terrain follows the area in some way. These triangles can form a canopy or a field. ");
 	I_Method0(const osg::DrawElementsUInt *, getTriangles,
@@ -64,19 +64,19 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	          __void__removeVerticesInside__C5_DelaunayConstraint_P1,
 	          "remove from line the vertices that are inside dco ",
 	          "");
-	I_Method1(float, windingNumber, IN, const osg::Vec3, testpoint,
+	I_Method1(float, windingNumber, IN, const osg::Vec3 &, testpoint,
 	          Properties::NON_VIRTUAL,
-	          __float__windingNumber__C5_osg_Vec3,
+	          __float__windingNumber__C5_osg_Vec3_R1,
 	          "return winding number as a float of loop around testpoint; may use multiple loops does not reject points on the edge or very very close to the edge ",
 	          "");
-	I_Method1(bool, contains, IN, const osg::Vec3, testpoint,
+	I_Method1(bool, contains, IN, const osg::Vec3 &, testpoint,
 	          Properties::VIRTUAL,
-	          __bool__contains__C5_osg_Vec3,
+	          __bool__contains__C5_osg_Vec3_R1,
 	          "true if testpoint is internal (or external) to constraint. ",
 	          "");
-	I_Method1(bool, outside, IN, const osg::Vec3, testpoint,
+	I_Method1(bool, outside, IN, const osg::Vec3 &, testpoint,
 	          Properties::VIRTUAL,
-	          __bool__outside__C5_osg_Vec3,
+	          __bool__outside__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method0(void, handleOverlaps,
@@ -159,10 +159,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayTriangulator)
 	          __void__removeInternalTriangles__DelaunayConstraint_P1,
 	          "remove the triangles internal to the constraint loops. ",
 	          "(Line strips cannot remove any internal triangles). ");
-	I_ProtectedMethod2(int, getindex, IN, const osg::Vec3, pt, IN, const osg::Vec3Array *, points,
+	I_ProtectedMethod2(int, getindex, IN, const osg::Vec3 &, pt, IN, const osg::Vec3Array *, points,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __int__getindex__C5_osg_Vec3__C5_osg_Vec3Array_P1,
+	                   __int__getindex__C5_osg_Vec3_R1__C5_osg_Vec3Array_P1,
 	                   "",
 	                   "");
 	I_SimpleProperty(osg::Vec3Array *, InputPointArray, 

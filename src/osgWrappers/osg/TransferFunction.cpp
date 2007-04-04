@@ -80,6 +80,26 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	          __void__setInputRange__float__float,
 	          "",
 	          "");
+	I_Method1(void, setMinimum, IN, float, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinimum__float,
+	          "",
+	          "");
+	I_Method0(float, getMinimum,
+	          Properties::NON_VIRTUAL,
+	          __float__getMinimum,
+	          "",
+	          "");
+	I_Method1(void, setMaximum, IN, float, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaximum__float,
+	          "",
+	          "");
+	I_Method0(float, getMaximum,
+	          Properties::NON_VIRTUAL,
+	          __float__getMaximum,
+	          "",
+	          "");
 	I_Method1(void, allocate, IN, unsigned int, numX,
 	          Properties::NON_VIRTUAL,
 	          __void__allocate__unsigned_int,
@@ -95,9 +115,9 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	          __unsigned_int__getNumberCellsX,
 	          "",
 	          "");
-	I_Method1(osg::Vec4 &, getValue, IN, unsigned int, i,
+	I_Method2(void, setValue, IN, unsigned int, i, IN, const osg::Vec4 &, color,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec4_R1__getValue__unsigned_int,
+	          __void__setValue__unsigned_int__C5_osg_Vec4_R1,
 	          "",
 	          "");
 	I_Method1(const osg::Vec4 &, getValue, IN, unsigned int, i,
@@ -105,8 +125,18 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	          __C5_osg_Vec4_R1__getValue__unsigned_int,
 	          "",
 	          "");
+	I_SimpleProperty(float, Maximum, 
+	                 __float__getMaximum, 
+	                 __void__setMaximum__float);
+	I_SimpleProperty(float, Minimum, 
+	                 __float__getMinimum, 
+	                 __void__setMinimum__float);
 	I_SimpleProperty(unsigned int, NumberCellsX, 
 	                 __unsigned_int__getNumberCellsX, 
 	                 0);
+	I_IndexedProperty(const osg::Vec4 &, Value, 
+	                  __C5_osg_Vec4_R1__getValue__unsigned_int, 
+	                  __void__setValue__unsigned_int__C5_osg_Vec4_R1, 
+	                  0);
 END_REFLECTOR
 

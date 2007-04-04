@@ -206,6 +206,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __unsigned_int__getNumRows,
 	          "",
 	          "");
+	I_Method1(void, setDefaultValue, IN, const osg::Vec4 &, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setDefaultValue__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getDefaultValue,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getDefaultValue,
+	          "",
+	          "");
 	I_Method3(bool, getValue, IN, unsigned, int, IN, unsigned, int, IN, float &, x,
 	          Properties::VIRTUAL,
 	          __bool__getValue__unsigned__unsigned__float_R1,
@@ -241,6 +251,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __osg_BoundingSphere__computeBound,
 	          "",
 	          "");
+	I_SimpleProperty(const osg::Vec4 &, DefaultValue, 
+	                 __C5_osg_Vec4_R1__getDefaultValue, 
+	                 __void__setDefaultValue__C5_osg_Vec4_R1);
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);

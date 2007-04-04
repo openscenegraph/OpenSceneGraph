@@ -137,7 +137,7 @@ class OSG_EXPORT BufferObject : public Object
 
         /** flush all the cached display list which need to be deleted
           * in the OpenGL context related to contextID.*/
-        void flushDeletedBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime);
+        static void flushDeletedBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime);
 
         /** Extensions class which encapsulates the querying of extensions and
         * associated function pointers, and provide convenience wrappers to

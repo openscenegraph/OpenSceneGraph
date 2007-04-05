@@ -244,7 +244,7 @@ void OperationsThread::run()
             if  (itr == _operations.end()) itr = _operations.begin();
         }
 
-        osg::notify(osg::INFO)<<"get op "<<_done<<" "<<this<<std::endl;
+        // osg::notify(osg::INFO)<<"get op "<<_done<<" "<<this<<std::endl;
 
         // get the front of the file request list.
         {
@@ -256,22 +256,22 @@ void OperationsThread::run()
                 
                 if (!_currentOperation->getKeep())
                 {
-                    osg::notify(osg::INFO)<<"removing "<<_currentOperation->getName()<<std::endl;
+                    // osg::notify(osg::INFO)<<"removing "<<_currentOperation->getName()<<std::endl;
 
                     // remove it from the opeations queue
                     itr = _operations.erase(itr);
 
-                    osg::notify(osg::INFO)<<"size "<<_operations.size()<<std::endl;
+                    // osg::notify(osg::INFO)<<"size "<<_operations.size()<<std::endl;
 
                     if (_operations.empty())
                     {
-                       osg::notify(osg::INFO)<<"setting block "<<_operations.size()<<std::endl;
+                       // osg::notify(osg::INFO)<<"setting block "<<_operations.size()<<std::endl;
                        _operationsBlock->set(false);
                     }
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"increment "<<_currentOperation->getName()<<std::endl;
+                    // osg::notify(osg::INFO)<<"increment "<<_currentOperation->getName()<<std::endl;
 
                     // move on to the next operation in the list.
                     ++itr;
@@ -284,7 +284,7 @@ void OperationsThread::run()
         
         if (_currentOperation.valid())
         {
-            osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
+            // osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
 
             // call the graphics operation.
             (*_currentOperation)(_parent.get());

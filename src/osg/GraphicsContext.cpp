@@ -420,7 +420,7 @@ void GraphicsContext::runOperations()
                 
         if (_currentOperation.valid())
         {
-            osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
+            // osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
 
             // call the graphics operation.
             (*_currentOperation)(this);

@@ -15,9 +15,9 @@
 
 using namespace osg;
 
-ShadeModel::ShadeModel()
+ShadeModel::ShadeModel(Mode mode):
+    _mode(mode)
 {
-    _mode = SMOOTH;
 }
 
 

@@ -88,14 +88,13 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __void__releaseBuffer__State_P1,
 	          "",
 	          "");
-	I_Method3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, x, IN, double &, availableTime,
-	          Properties::NON_VIRTUAL,
-	          __void__flushDeletedBufferObjects__unsigned_int__double__double_R1,
-	          "flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
-	          "");
 	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
 	                __void__deleteBufferObject__unsigned_int__GLuint_S,
 	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                "");
+	I_StaticMethod3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, x, IN, double &, availableTime,
+	                __void__flushDeletedBufferObjects__unsigned_int__double__double_R1_S,
+	                "flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
 	I_StaticMethod2(osg::BufferObject::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,

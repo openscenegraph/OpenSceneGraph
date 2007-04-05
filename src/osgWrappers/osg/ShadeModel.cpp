@@ -31,9 +31,11 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ShadeModel)
 	I_BaseType(osg::StateAttribute);
-	I_Constructor0(____ShadeModel,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osg::ShadeModel::Mode, mode, osg::ShadeModel::FLAT,
+	                           Properties::NON_EXPLICIT,
+	                           ____ShadeModel__Mode,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, const osg::ShadeModel &, sm, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____ShadeModel__C5_ShadeModel_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

@@ -25,7 +25,12 @@ class OSG_EXPORT ShadeModel : public StateAttribute
 {
     public :
     
-        ShadeModel();
+        enum Mode {
+            FLAT = GL_FLAT,
+            SMOOTH = GL_SMOOTH
+        };
+    
+        ShadeModel(Mode mode=FLAT);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ShadeModel(const ShadeModel& sm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -48,11 +53,6 @@ class OSG_EXPORT ShadeModel : public StateAttribute
             return 0; // passed all the above comparison macros, must be equal.
         }
 
-        enum Mode {
-            FLAT = GL_FLAT,
-            SMOOTH = GL_SMOOTH
-        };
-    
         inline void setMode(Mode mode) { _mode = mode; }
 
         inline Mode getMode() const { return _mode; }

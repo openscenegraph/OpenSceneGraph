@@ -49,6 +49,10 @@ void GeometryTechnique::init()
     osgTerrain::Layer* elevationLayer = _terrainNode->getElevationLayer();
     osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer();
     osg::TransferFunction* colorTF = _terrainNode->getColorTransferFunction();
+
+    // if the elevationLayer and colorLayer are the same, and there is colorTF then
+    // simply assing as a texture coordinate.
+    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
     
     osg::notify(osg::NOTICE)<<"elevationLayer = "<<elevationLayer<<std::endl;
     osg::notify(osg::NOTICE)<<"colorLayer = "<<colorLayer<<std::endl;
@@ -128,21 +132,42 @@ void GeometryTechnique::init()
     _geometry->setNormalArray(normals);
     _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
+    
+    int texcoord_index = 0;
+    int color_index = -1;
+    int tf_index = -1;
 
-    osg::FloatArray* heights = 0;
-    if (colorTF)
-    {
-        heights = new osg::FloatArray(numVertices);
-        _geometry->setTexCoordArray(1, heights);
-    }
+    float minHeight = 0.0;
+    float scaleHeight = 1.0;
 
     // allocate and assign tex coords
     osg::Vec2Array* texcoords = 0;
     if (colorLayer)
     {
+        color_index = texcoord_index;
+        ++texcoord_index;
+
         texcoords = new osg::Vec2Array(numVertices);
-        _geometry->setTexCoordArray(0, texcoords);
+        _geometry->setTexCoordArray(color_index, texcoords);
     }
+
+    osg::FloatArray* heights = 0;
+    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
+    if (tf)
+    {
+        tf_index = texcoord_index;
+        ++texcoord_index;
+
+        if (!colorLayer)
+        {
+            heights = new osg::FloatArray(numVertices);
+            _geometry->setTexCoordArray(tf_index, heights);
+
+            minHeight = tf->getMinimum();
+            scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
+        }
+    }
+
         
     // allocate and assign color
     osg::Vec4Array* colors = new osg::Vec4Array(1);
@@ -172,10 +197,8 @@ void GeometryTechnique::init()
 
             (*vertices)[iv] = model;
 
-
             if (colorLayer)
             {
-                
                 if (colorLocator!= masterLocator)
                 {
                     osg::Vec3d color_ndc;
@@ -191,7 +214,7 @@ void GeometryTechnique::init()
 
             if (heights)
             {
-                (*heights)[iv] = ndc.z();
+                (*heights)[iv] = (ndc.z()-minHeight)*scaleHeight;
             }
 
             // compute the local normal
@@ -234,12 +257,18 @@ void GeometryTechnique::init()
             osg::Texture2D* texture2D = new osg::Texture2D;
             texture2D->setImage(image);
             texture2D->setResizeNonPowerOfTwoHint(false);
-            stateset->setTextureAttributeAndModes(0, texture2D, osg::StateAttribute::ON);
+            stateset->setTextureAttributeAndModes(color_index, texture2D, osg::StateAttribute::ON);
+
+            if (tf)
+            {
+                // up the precision of hte internal texture format to its maximum.
+                //image->setInternalTextureFormat(GL_LUMINANCE32F_ARB);
+                image->setInternalTextureFormat(GL_LUMINANCE16);
+            }
         }
         
     }
 
-    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
     if (tf)
     {
         osg::notify(osg::NOTICE)<<"Requires TransferFunction"<<std::endl;
@@ -250,43 +279,52 @@ void GeometryTechnique::init()
         texture1D->setResizeNonPowerOfTwoHint(false);
         texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
         texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
-        stateset->setTextureAttributeAndModes(1, texture1D, osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(tf_index, texture1D, osg::StateAttribute::ON);
 
-        osg::Program* program = new osg::Program;
-        stateset->setAttribute(program);
-
-        // get shaders from source
-        std::string vertexShaderFile = osgDB::findDataFile("lookup.vert");
-        if (!vertexShaderFile.empty())
+        if (colorLayer)
         {
-            program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
+            osg::notify(osg::NOTICE)<<"Using fragment program"<<std::endl;
+        
+            osg::Program* program = new osg::Program;
+            stateset->setAttribute(program);
+
+            // get shaders from source
+            std::string vertexShaderFile = osgDB::findDataFile("lookup.vert");
+            if (!vertexShaderFile.empty())
+            {
+                program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Not found lookup.vert"<<std::endl;
+            }
+
+            std::string fragmentShaderFile = osgDB::findDataFile("lookup.frag");
+            if (!fragmentShaderFile.empty())
+            {
+                program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Not found lookup.frag"<<std::endl;
+            }
+
+            osg::Uniform* sourceSampler = new osg::Uniform("sourceTexture",color_index);
+            stateset->addUniform(sourceSampler);
+
+            osg::Uniform* lookupTexture = new osg::Uniform("lookupTexture",tf_index);
+            stateset->addUniform(lookupTexture);
+
+            osg::Uniform* minValue = new osg::Uniform("minValue", tf->getMinimum());
+            stateset->addUniform(minValue);
+
+            osg::Uniform* inverseRange = new osg::Uniform("inverseRange", 1.0f/(tf->getMaximum()-tf->getMinimum()));
+            stateset->addUniform(inverseRange);
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Not found lookup.vert"<<std::endl;
+            osg::notify(osg::NOTICE)<<"Using standard OpenGL fixed function pipeline"<<std::endl;
         }
-
-        std::string fragmentShaderFile = osgDB::findDataFile("lookup.frag");
-        if (!fragmentShaderFile.empty())
-        {
-            program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
-        }
-        else
-        {
-            osg::notify(osg::NOTICE)<<"Not found lookup.frag"<<std::endl;
-        }
-
-        osg::Uniform* sourceSampler = new osg::Uniform("sourceTexture",0);
-        stateset->addUniform(sourceSampler);
-
-        osg::Uniform* lookupTexture = new osg::Uniform("lookupTexture",1);
-        stateset->addUniform(lookupTexture);
-
-        osg::Uniform* minValue = new osg::Uniform("minValue", tf->getMinimum());
-        stateset->addUniform(minValue);
-
-        osg::Uniform* inverseRange = new osg::Uniform("inverseRange", 1.0f/(tf->getMaximum()-tf->getMinimum()));
-        stateset->addUniform(inverseRange);
     }
 
     _dirty = false;    

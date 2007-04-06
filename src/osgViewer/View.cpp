@@ -111,7 +111,11 @@ void View::setUpViewAcrossAllScreens()
         traits->windowDecoration = false;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
-
+        traits->sampleBuffers = ds->getMultiSamples();
+        traits->samples = ds->getNumMultiSamples();
+        if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER)) {
+            traits->quadBufferStereo = true;
+        }
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
         _camera->setGraphicsContext(gc.get());
@@ -170,6 +174,11 @@ void View::setUpViewAcrossAllScreens()
             traits->windowDecoration = false;
             traits->doubleBuffer = true;
             traits->sharedContext = 0;
+            traits->sampleBuffers = ds->getMultiSamples();
+            traits->samples = ds->getNumMultiSamples();
+            if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER)) {
+                traits->quadBufferStereo = true;
+            }
 
             osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
@@ -230,6 +239,11 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
+    traits->sampleBuffers = ds->getMultiSamples();
+    traits->samples = ds->getNumMultiSamples();
+    if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER)) {
+        traits->quadBufferStereo = true;
+    }
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 

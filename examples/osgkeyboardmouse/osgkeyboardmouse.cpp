@@ -391,10 +391,13 @@ int main( int argc, char **argv )
     {
         gw->checkEvents();
         
-        viewer.frame();
+        if (gw->isRealized() && !exitHandler->done())
+        {      
+            viewer.frame();
 
-        // Swap Buffers
-        gw->swapBuffers();
+            // Swap Buffers
+            gw->swapBuffers();
+        }
     }
 
     return 0;

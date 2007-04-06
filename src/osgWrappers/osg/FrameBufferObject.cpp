@@ -30,31 +30,31 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindRenderbufferEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindRenderbufferEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteRenderbuffersEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteRenderbuffersEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenRenderbuffersEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenRenderbuffersEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindFramebufferEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindFramebufferEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteFramebuffersEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteFramebuffersEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenFramebuffersEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenFramebuffersEXT)
 
-TYPE_NAME_ALIAS(GLenum , osg::FBOExtensions::TglCheckFramebufferStatusEXT);
+TYPE_NAME_ALIAS(GLenum , osg::FBOExtensions::TglCheckFramebufferStatusEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture1DEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture1DEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture2DEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture2DEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture3DEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture3DEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT)
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT);
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT)
 
 BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_BaseType(osg::Referenced);
@@ -144,7 +144,7 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_BaseType(osg::StateAttribute);
@@ -349,5 +349,5 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	                 __void__setWidth__int);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::FrameBufferAttachment >);
+STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::FrameBufferAttachment >)
 

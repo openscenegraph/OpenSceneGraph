@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< double COMMA  osg::AnimationPath::ControlPoint >, osg::AnimationPath::TimeControlPointMap);
+TYPE_NAME_ALIAS(std::map< double COMMA  osg::AnimationPath::ControlPoint >, osg::AnimationPath::TimeControlPointMap)
 
 BEGIN_ENUM_REFLECTOR(osg::AnimationPath::LoopMode)
 	I_EnumLabel(osg::AnimationPath::SWING);
@@ -414,5 +414,5 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	I_PublicMemberProperty(double, _pauseTime);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< double COMMA  osg::AnimationPath::ControlPoint >);
+STD_MAP_REFLECTOR(std::map< double COMMA  osg::AnimationPath::ControlPoint >)
 

@@ -26,9 +26,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::FragmentProgram::LocalParamList);
+TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::FragmentProgram::LocalParamList)
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::MatrixList);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::MatrixList)
 
 BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_BaseType(osg::StateAttribute);
@@ -256,7 +256,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	                 __void__setFragmentProgramSupported__bool);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::Matrix >);
+STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::Matrix >)
 
-STD_MAP_REFLECTOR(std::map< GLuint COMMA  osg::Vec4 >);
+STD_MAP_REFLECTOR(std::map< GLuint COMMA  osg::Vec4 >)
 

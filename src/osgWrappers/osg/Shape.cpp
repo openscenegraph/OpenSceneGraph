@@ -262,7 +262,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Capsule)
 	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList)
 
 BEGIN_OBJECT_REFLECTOR(osg::CompositeShape)
 	I_BaseType(osg::Shape);
@@ -727,7 +727,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Cylinder)
 	                 __void__setRotation__C5_Quat_R1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList);
+TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList)
 
 BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	I_BaseType(osg::Shape);
@@ -1255,7 +1255,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
 	                 __void__setVertices__Vec3Array_P1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(osg::HeightField, osg::Grid);
+TYPE_NAME_ALIAS(osg::HeightField, osg::Grid)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
 	I_Constructor0(____ref_ptr,
@@ -1296,7 +1296,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< float >);
+STD_VECTOR_REFLECTOR(std::vector< float >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Shape > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Shape > >)
 

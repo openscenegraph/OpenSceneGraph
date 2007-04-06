@@ -20,11 +20,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  double >, osg::Stats::AttributeMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  double >, osg::Stats::AttributeMap)
 
-TYPE_NAME_ALIAS(std::vector< osg::Stats::AttributeMap >, osg::Stats::AttributeMapList);
+TYPE_NAME_ALIAS(std::vector< osg::Stats::AttributeMap >, osg::Stats::AttributeMapList)
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  bool >, osg::Stats::CollectMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  bool >, osg::Stats::CollectMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	I_BaseType(osg::Referenced);
@@ -147,9 +147,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Stats)
 	                 __void__setName__C5_std_string_R1);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  bool >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  bool >)
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  double >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  double >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Stats::AttributeMap >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Stats::AttributeMap >)
 

@@ -23,7 +23,7 @@
 
 #include <osg/io_utils>
 	
-TYPE_NAME_ALIAS(double, osg::Vec2d::value_type);
+TYPE_NAME_ALIAS(double, osg::Vec2d::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Vec2d)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined

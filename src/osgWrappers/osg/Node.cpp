@@ -29,11 +29,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Group * >, osg::Node::ParentList);
+TYPE_NAME_ALIAS(std::vector< osg::Group * >, osg::Node::ParentList)
 
-TYPE_NAME_ALIAS(unsigned int, osg::Node::NodeMask);
+TYPE_NAME_ALIAS(unsigned int, osg::Node::NodeMask)
 
-TYPE_NAME_ALIAS(std::vector< std::string >, osg::Node::DescriptionList);
+TYPE_NAME_ALIAS(std::vector< std::string >, osg::Node::DescriptionList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_BaseType(osg::Object);
@@ -473,17 +473,17 @@ BEGIN_OBJECT_REFLECTOR(osg::Node::ComputeBoundingSphereCallback)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::NodePath);
+TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::NodePath)
 
-TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osg::NodePathList);
+TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osg::NodePathList)
 
-TYPE_NAME_ALIAS(std::vector< osg::Matrix >, osg::MatrixList);
+TYPE_NAME_ALIAS(std::vector< osg::Matrix >, osg::MatrixList)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Group * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Group * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Matrix >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Matrix >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::NodePath >);
+STD_VECTOR_REFLECTOR(std::vector< osg::NodePath >)
 
-STD_VECTOR_REFLECTOR(std::vector< std::string >);
+STD_VECTOR_REFLECTOR(std::vector< std::string >)
 

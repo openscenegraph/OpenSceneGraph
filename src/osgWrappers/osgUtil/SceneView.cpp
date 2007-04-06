@@ -42,7 +42,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osgUtil::SceneView::Options, osgUtil::SceneView::LightingMode);
+TYPE_NAME_ALIAS(osgUtil::SceneView::Options, osgUtil::SceneView::LightingMode)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::Options)
 	I_EnumLabel(osgUtil::SceneView::NO_SCENEVIEW_LIGHT);

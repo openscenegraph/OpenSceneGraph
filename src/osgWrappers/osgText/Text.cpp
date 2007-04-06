@@ -32,7 +32,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap);
+TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap)
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::CharacterSizeMode)
 	I_EnumLabel(osgText::Text::OBJECT_COORDS);
@@ -729,17 +729,17 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osgText::Font::Glyph * >, osgText::Text::GlyphQuads::Glyphs);
+TYPE_NAME_ALIAS(std::vector< osgText::Font::Glyph * >, osgText::Text::GlyphQuads::Glyphs)
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::Text::GlyphQuads::LineNumbers);
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osgText::Text::GlyphQuads::LineNumbers)
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::Coords2);
+TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::Coords2)
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgText::Text::GlyphQuads::Coords3);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgText::Text::GlyphQuads::Coords3)
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::TexCoords);
+TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::TexCoords)
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec4 >, osgText::Text::GlyphQuads::ColorCoords);
+TYPE_NAME_ALIAS(std::vector< osg::Vec4 >, osgText::Text::GlyphQuads::ColorCoords)
 
 BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 	I_Constructor0(____GlyphQuads,
@@ -854,9 +854,9 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >);
+STD_MAP_REFLECTOR(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec2 >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec2 >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgText::Font::Glyph * >);
+STD_VECTOR_REFLECTOR(std::vector< osgText::Font::Glyph * >)
 

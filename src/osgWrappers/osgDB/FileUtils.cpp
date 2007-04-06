@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DirectoryContents);
+TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DirectoryContents)
 
 BEGIN_ENUM_REFLECTOR(osgDB::CaseSensitivity)
 	I_EnumLabel(osgDB::CASE_SENSITIVE);

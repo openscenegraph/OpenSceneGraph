@@ -32,7 +32,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(unsigned int, osg::CopyOp::CopyFlags);
+TYPE_NAME_ALIAS(unsigned int, osg::CopyOp::CopyFlags)
 
 BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 	I_EnumLabel(osg::CopyOp::SHALLOW_COPY);

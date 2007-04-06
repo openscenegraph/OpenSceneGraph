@@ -28,9 +28,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< std::string COMMA  osg::ref_ptr< osgGA::MatrixManipulator > >, osgGA::KeySwitchMatrixManipulator::NamedManipulator);
+TYPE_NAME_ALIAS(std::pair< std::string COMMA  osg::ref_ptr< osgGA::MatrixManipulator > >, osgGA::KeySwitchMatrixManipulator::NamedManipulator)
 
-TYPE_NAME_ALIAS(std::map< int COMMA  osgGA::KeySwitchMatrixManipulator::NamedManipulator >, osgGA::KeySwitchMatrixManipulator::KeyManipMap);
+TYPE_NAME_ALIAS(std::map< int COMMA  osgGA::KeySwitchMatrixManipulator::NamedManipulator >, osgGA::KeySwitchMatrixManipulator::KeyManipMap)
 
 BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_BaseType(osgGA::MatrixManipulator);
@@ -269,7 +269,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::MatrixManipulator >)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< int COMMA  osgGA::KeySwitchMatrixManipulator::NamedManipulator >);
+STD_MAP_REFLECTOR(std::map< int COMMA  osgGA::KeySwitchMatrixManipulator::NamedManipulator >)
 
-STD_PAIR_REFLECTOR(std::pair< std::string COMMA  osg::ref_ptr< osgGA::MatrixManipulator > >);
+STD_PAIR_REFLECTOR(std::pair< std::string COMMA  osg::ref_ptr< osgGA::MatrixManipulator > >)
 

@@ -25,13 +25,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(unsigned int, osg::Polytope::ClippingMask);
+TYPE_NAME_ALIAS(unsigned int, osg::Polytope::ClippingMask)
 
-TYPE_NAME_ALIAS(std::vector< osg::Plane >, osg::Polytope::PlaneList);
+TYPE_NAME_ALIAS(std::vector< osg::Plane >, osg::Polytope::PlaneList)
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Polytope::VertexList);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Polytope::VertexList)
 
-TYPE_NAME_ALIAS(osg::fast_back_stack< osg::Polytope::ClippingMask >, osg::Polytope::MaskStack);
+TYPE_NAME_ALIAS(osg::fast_back_stack< osg::Polytope::ClippingMask >, osg::Polytope::MaskStack)
 
 BEGIN_VALUE_REFLECTOR(osg::Polytope)
 	I_Constructor0(____Polytope,
@@ -268,5 +268,5 @@ BEGIN_VALUE_REFLECTOR(osg::fast_back_stack< osg::Polytope::ClippingMask >)
 	I_PublicMemberProperty(unsigned int, _size);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Plane >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Plane >)
 

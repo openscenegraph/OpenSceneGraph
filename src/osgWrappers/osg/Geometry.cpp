@@ -26,9 +26,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayList);
+TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayList)
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::PrimitiveSet > >, osg::Geometry::PrimitiveSetList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::PrimitiveSet > >, osg::Geometry::PrimitiveSetList)
 
 BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_EnumLabel(osg::Geometry::BIND_OFF);
@@ -921,7 +921,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Geometry::ArrayData >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Geometry::ArrayData >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::PrimitiveSet > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::PrimitiveSet > >)
 

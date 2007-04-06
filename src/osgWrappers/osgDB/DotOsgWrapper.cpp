@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DotOsgWrapper::Associates);
+TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DotOsgWrapper::Associates)
 
 TYPE_NAME_ALIAS(bool (*)(osg::Object&,osgDB::Input&), osgDB::DotOsgWrapper::ReadFunc);
 	

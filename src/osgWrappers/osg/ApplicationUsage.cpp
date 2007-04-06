@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osg::ApplicationUsage::UsageMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osg::ApplicationUsage::UsageMap)
 
 BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_EnumLabel(osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -195,5 +195,5 @@ BEGIN_VALUE_REFLECTOR(osg::ApplicationUsageProxy)
 	               "");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  std::string >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  std::string >)
 

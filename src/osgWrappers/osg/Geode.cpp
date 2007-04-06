@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Drawable > >, osg::Geode::DrawableList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Drawable > >, osg::Geode::DrawableList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	I_BaseType(osg::Node);
@@ -211,5 +211,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Drawable >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Drawable > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Drawable > >)
 

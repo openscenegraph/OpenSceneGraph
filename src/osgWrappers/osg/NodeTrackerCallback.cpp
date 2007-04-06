@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osg::NodeTrackerCallback::ObserveredNodePath);
+TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osg::NodeTrackerCallback::ObserveredNodePath)
 
 BEGIN_OBJECT_REFLECTOR(osg::NodeTrackerCallback)
 	I_BaseType(osg::NodeCallback);
@@ -117,5 +117,5 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::Node >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::observer_ptr< osg::Node > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::observer_ptr< osg::Node > >)
 

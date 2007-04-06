@@ -20,9 +20,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::HANDLE);
+TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::HANDLE)
 
-TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS);
+TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS)
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	I_BaseType(osg::Referenced);

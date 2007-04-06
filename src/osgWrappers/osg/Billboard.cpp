@@ -27,7 +27,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Billboard::PositionList);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Billboard::PositionList)
 
 BEGIN_ENUM_REFLECTOR(osg::Billboard::Mode)
 	I_EnumLabel(osg::Billboard::POINT_ROT_EYE);
@@ -178,5 +178,5 @@ BEGIN_OBJECT_REFLECTOR(osg::Billboard)
 	                 __void__setPositionList__PositionList_R1);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec3 >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec3 >)
 

@@ -29,9 +29,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::OccluderGeometry::Vec3List);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::OccluderGeometry::Vec3List)
 
-TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::OccluderGeometry::UIntList);
+TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::OccluderGeometry::UIntList)
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	I_BaseType(osg::Drawable);
@@ -161,9 +161,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	                 __void__setBoundingPolytope__C5_osg_Polytope_R1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::ShadowVolumeGeometry::Vec3List);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::ShadowVolumeGeometry::Vec3List)
 
-TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::ShadowVolumeGeometry::UIntList);
+TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::ShadowVolumeGeometry::UIntList)
 
 BEGIN_ENUM_REFLECTOR(osgShadow::ShadowVolumeGeometry::DrawMode)
 	I_EnumLabel(osgShadow::ShadowVolumeGeometry::GEOMETRY);
@@ -266,5 +266,5 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	                 __void__setVertices__C5_Vec3List_R1);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< GLuint >);
+STD_VECTOR_REFLECTOR(std::vector< GLuint >)
 

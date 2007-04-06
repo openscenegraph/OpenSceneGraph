@@ -200,7 +200,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CheckGeometryVisitor)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::CombineLODsVisitor::GroupList);
+TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::CombineLODsVisitor::GroupList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineLODsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -241,7 +241,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CombineStaticTransformsVisitor)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList);
+TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -263,9 +263,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::CopySharedSubgraphsVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::CopySharedSubgraphsVisitor::SharedNodeList, _sharedNodeList);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList);
+TYPE_NAME_ALIAS(std::vector< osg::NodePath >, osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList)
 
-TYPE_NAME_ALIAS(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >, osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap);
+TYPE_NAME_ALIAS(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >, osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -453,7 +453,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MergeGeometryVisitor)
 	                 __void__setTargetMaximumNumberOfVertices__unsigned_int);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList);
+TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -480,7 +480,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveEmptyNodesVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::RemoveEmptyNodesVisitor::NodeList, _redundantNodeList);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList);
+TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -502,7 +502,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::RemoveLoadedProxyNodesVisitor::NodeList, _redundantNodeList);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList);
+TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -534,7 +534,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::RemoveRedundantNodesVisitor)
 	I_PublicMemberProperty(osgUtil::Optimizer::RemoveRedundantNodesVisitor::NodeList, _redundantNodeList);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList);
+TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -627,7 +627,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StaticObjectDetectionVisitor)
 	                   "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TessellateVisitor::GroupList);
+TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::TessellateVisitor::GroupList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TessellateVisitor)
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -849,9 +849,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
 	I_PublicMemberProperty(float, _valueAnisotropy);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >);
+STD_MAP_REFLECTOR(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >)
 
-STD_SET_REFLECTOR(std::set< osg::Group * >);
+STD_SET_REFLECTOR(std::set< osg::Group * >)
 
-STD_SET_REFLECTOR(std::set< osg::Node * >);
+STD_SET_REFLECTOR(std::set< osg::Node * >)
 

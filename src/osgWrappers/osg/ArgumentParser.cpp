@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >, osg::ArgumentParser::ErrorMessageMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >, osg::ArgumentParser::ErrorMessageMap)
 
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::ErrorSeverity)
 	I_EnumLabel(osg::ArgumentParser::BENIGN);
@@ -292,5 +292,5 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser::Parameter)
 	          "");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >)
 

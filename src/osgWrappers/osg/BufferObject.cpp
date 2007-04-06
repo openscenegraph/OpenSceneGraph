@@ -219,7 +219,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair);
+TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair)
 
 BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	I_BaseType(osg::BufferObject);
@@ -292,5 +292,5 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	                 __void__setImage__osg_Image_P1);
 END_REFLECTOR
 
-STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >);
+STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >)
 

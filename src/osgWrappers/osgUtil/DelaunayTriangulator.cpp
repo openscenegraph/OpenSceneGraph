@@ -89,7 +89,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	                 0);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::DelaunayConstraint > >, osgUtil::DelaunayTriangulator::linelist);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::DelaunayConstraint > >, osgUtil::DelaunayTriangulator::linelist)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayTriangulator)
 	I_BaseType(osg::Referenced);
@@ -215,5 +215,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::DelaunayConstraint >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::DelaunayConstraint > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::DelaunayConstraint > >)
 

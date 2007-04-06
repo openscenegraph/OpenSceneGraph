@@ -298,7 +298,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	                 __void__setWind__C5_osg_Vec3_R1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >, osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap);
+TYPE_NAME_ALIAS(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >, osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap)
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 	I_BaseType(osg::Drawable);
@@ -464,5 +464,5 @@ BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::L
 	               "");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >);
+STD_MAP_REFLECTOR(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >)
 

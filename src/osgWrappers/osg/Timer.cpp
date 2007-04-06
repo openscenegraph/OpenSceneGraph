@@ -101,5 +101,5 @@ BEGIN_VALUE_REFLECTOR(osg::Timer)
 	                 __void__setStartTick__Timer_t);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(unsigned long long, osg::Timer_t);
+TYPE_NAME_ALIAS(unsigned long long, osg::Timer_t)
 

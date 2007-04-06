@@ -475,7 +475,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::WriteResult)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::deque< std::string >, osgDB::FilePathList);
+TYPE_NAME_ALIAS(std::deque< std::string >, osgDB::FilePathList)
 
-STD_VECTOR_REFLECTOR(std::deque< std::string >);
+STD_VECTOR_REFLECTOR(std::deque< std::string >)
 

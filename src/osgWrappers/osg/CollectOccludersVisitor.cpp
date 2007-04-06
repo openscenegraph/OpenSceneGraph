@@ -27,7 +27,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::set< osg::ShadowVolumeOccluder >, osg::CollectOccludersVisitor::ShadowVolumeOccluderSet);
+TYPE_NAME_ALIAS(std::set< osg::ShadowVolumeOccluder >, osg::CollectOccludersVisitor::ShadowVolumeOccluderSet)
 
 BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
 	I_BaseType(osg::NodeVisitor);
@@ -169,5 +169,5 @@ BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
 	                 __void__setMinimumShadowOccluderVolume__float);
 END_REFLECTOR
 
-STD_SET_REFLECTOR(std::set< osg::ShadowVolumeOccluder >);
+STD_SET_REFLECTOR(std::set< osg::ShadowVolumeOccluder >)
 

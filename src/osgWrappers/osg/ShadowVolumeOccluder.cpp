@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Polytope >, osg::ShadowVolumeOccluder::HoleList);
+TYPE_NAME_ALIAS(std::vector< osg::Polytope >, osg::ShadowVolumeOccluder::HoleList)
 
 BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)
 	I_Constructor1(IN, const osg::ShadowVolumeOccluder &, svo,
@@ -138,7 +138,7 @@ BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)
 	                 0);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::ShadowVolumeOccluderList);
+TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::ShadowVolumeOccluderList)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Polytope >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Polytope >)
 

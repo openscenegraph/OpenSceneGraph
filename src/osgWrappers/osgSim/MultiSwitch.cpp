@@ -24,9 +24,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< bool >, osgSim::MultiSwitch::ValueList);
+TYPE_NAME_ALIAS(std::vector< bool >, osgSim::MultiSwitch::ValueList)
 
-TYPE_NAME_ALIAS(std::vector< osgSim::MultiSwitch::ValueList >, osgSim::MultiSwitch::SwitchSetList);
+TYPE_NAME_ALIAS(std::vector< osgSim::MultiSwitch::ValueList >, osgSim::MultiSwitch::SwitchSetList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::MultiSwitch)
 	I_BaseType(osg::Group);
@@ -197,5 +197,5 @@ BEGIN_OBJECT_REFLECTOR(osgSim::MultiSwitch)
 	                  0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osgSim::MultiSwitch::ValueList >);
+STD_VECTOR_REFLECTOR(std::vector< osgSim::MultiSwitch::ValueList >)
 

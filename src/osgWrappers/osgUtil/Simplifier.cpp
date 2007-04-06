@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList);
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	I_BaseType(osg::NodeVisitor);

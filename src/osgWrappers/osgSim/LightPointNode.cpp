@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osgSim::LightPoint >, osgSim::LightPointNode::LightPointList);
+TYPE_NAME_ALIAS(std::vector< osgSim::LightPoint >, osgSim::LightPointNode::LightPointList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	I_BaseType(osg::Node);
@@ -194,5 +194,5 @@ BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	                 __void__setPointSprite__bool);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osgSim::LightPoint >);
+STD_VECTOR_REFLECTOR(std::vector< osgSim::LightPoint >)
 

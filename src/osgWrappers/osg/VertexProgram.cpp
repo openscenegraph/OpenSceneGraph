@@ -26,9 +26,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::VertexProgram::LocalParamList);
+TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::VertexProgram::LocalParamList)
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::VertexProgram::MatrixList);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::VertexProgram::MatrixList)
 
 BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
 	I_BaseType(osg::StateAttribute);

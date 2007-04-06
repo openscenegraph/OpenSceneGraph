@@ -25,15 +25,15 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(GLenum, osg::StateAttribute::GLMode);
+TYPE_NAME_ALIAS(GLenum, osg::StateAttribute::GLMode)
 
-TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::GLModeValue);
+TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::GLModeValue)
 
-TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::OverrideValue);
+TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::OverrideValue)
 
-TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg::StateAttribute::TypeMemberPair);
+TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg::StateAttribute::TypeMemberPair)
 
-TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList);
+TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList)
 
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
 	I_EnumLabel(osg::StateAttribute::OFF);
@@ -323,7 +323,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
 	          "");
 END_REFLECTOR
 
-STD_PAIR_REFLECTOR(std::pair< osg::StateAttribute::Type COMMA  unsigned int >);
+STD_PAIR_REFLECTOR(std::pair< osg::StateAttribute::Type COMMA  unsigned int >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::StateSet * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::StateSet * >)
 

@@ -25,11 +25,11 @@
 
 #include <osg/Camera>
 	
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContext::OperationQueue);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContext::OperationQueue)
 
-TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras);
+TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras)
 
-BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_BaseType(osg::Object);
 	I_Method1(void, add, IN, osg::Operation *, operation,
 	          Properties::NON_VIRTUAL,
@@ -515,7 +515,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Operation >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::Camera * >);
+STD_LIST_REFLECTOR(std::list< osg::Camera * >)
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Operation > >);
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Operation > >)
 

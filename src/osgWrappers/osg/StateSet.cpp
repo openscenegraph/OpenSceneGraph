@@ -26,21 +26,21 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Object * >, osg::StateSet::ParentList);
+TYPE_NAME_ALIAS(std::vector< osg::Object * >, osg::StateSet::ParentList)
 
-TYPE_NAME_ALIAS(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateSet::ModeList);
+TYPE_NAME_ALIAS(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateSet::ModeList)
 
-TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateAttribute > COMMA  osg::StateAttribute::OverrideValue >, osg::StateSet::RefAttributePair);
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateAttribute > COMMA  osg::StateAttribute::OverrideValue >, osg::StateSet::RefAttributePair)
 
-TYPE_NAME_ALIAS(std::map< osg::StateAttribute::TypeMemberPair COMMA  osg::StateSet::RefAttributePair >, osg::StateSet::AttributeList);
+TYPE_NAME_ALIAS(std::map< osg::StateAttribute::TypeMemberPair COMMA  osg::StateSet::RefAttributePair >, osg::StateSet::AttributeList)
 
-TYPE_NAME_ALIAS(std::vector< osg::StateSet::ModeList >, osg::StateSet::TextureModeList);
+TYPE_NAME_ALIAS(std::vector< osg::StateSet::ModeList >, osg::StateSet::TextureModeList)
 
-TYPE_NAME_ALIAS(std::vector< osg::StateSet::AttributeList >, osg::StateSet::TextureAttributeList);
+TYPE_NAME_ALIAS(std::vector< osg::StateSet::AttributeList >, osg::StateSet::TextureAttributeList)
 
-TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribute::OverrideValue >, osg::StateSet::RefUniformPair);
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribute::OverrideValue >, osg::StateSet::RefUniformPair)
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::StateSet::RefUniformPair >, osg::StateSet::UniformList);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::StateSet::RefUniformPair >, osg::StateSet::UniformList)
 
 BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderingHint)
 	I_EnumLabel(osg::StateSet::DEFAULT_BIN);
@@ -762,17 +762,17 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
 END_REFLECTOR
 
 STD_MAP_REFLECTOR_WITH_TYPES(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateAttribute::GLMode, osg::StateAttribute::Values);
-STD_MAP_REFLECTOR(std::map< osg::StateAttribute::TypeMemberPair COMMA  osg::StateSet::RefAttributePair >);
+STD_MAP_REFLECTOR(std::map< osg::StateAttribute::TypeMemberPair COMMA  osg::StateSet::RefAttributePair >)
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::StateSet::RefUniformPair >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::StateSet::RefUniformPair >)
 
-STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateAttribute > COMMA  osg::StateAttribute::OverrideValue >);
+STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateAttribute > COMMA  osg::StateAttribute::OverrideValue >)
 
-STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribute::OverrideValue >);
+STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribute::OverrideValue >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Object * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Object * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::StateSet::AttributeList >);
+STD_VECTOR_REFLECTOR(std::vector< osg::StateSet::AttributeList >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::StateSet::ModeList >);
+STD_VECTOR_REFLECTOR(std::vector< osg::StateSet::ModeList >)
 

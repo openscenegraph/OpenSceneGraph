@@ -35,11 +35,11 @@ BEGIN_VALUE_REFLECTOR(osgUtil::RegisterRenderBinProxy)
 	               "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::RenderLeaf * >, osgUtil::RenderBin::RenderLeafList);
+TYPE_NAME_ALIAS(std::vector< osgUtil::RenderLeaf * >, osgUtil::RenderBin::RenderLeafList)
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::StateGraph * >, osgUtil::RenderBin::StateGraphList);
+TYPE_NAME_ALIAS(std::vector< osgUtil::StateGraph * >, osgUtil::RenderBin::StateGraphList)
 
-TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUtil::RenderBin::RenderBinList);
+TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUtil::RenderBin::RenderBinList)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE);
@@ -386,9 +386,9 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderBin >)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >);
+STD_MAP_REFLECTOR(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::RenderLeaf * >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::RenderLeaf * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::StateGraph * >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::StateGraph * >)
 

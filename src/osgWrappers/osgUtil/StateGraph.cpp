@@ -30,9 +30,9 @@ BEGIN_VALUE_REFLECTOR(osgUtil::LessDepthSortFunctor)
 	               "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::StateGraph > >, osgUtil::StateGraph::ChildList);
+TYPE_NAME_ALIAS(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::StateGraph > >, osgUtil::StateGraph::ChildList)
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >, osgUtil::StateGraph::LeafList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >, osgUtil::StateGraph::LeafList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	I_BaseType(osg::Referenced);
@@ -218,7 +218,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::StateGraph >)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::StateGraph > >);
+STD_MAP_REFLECTOR(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::StateGraph > >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >)
 

@@ -26,15 +26,15 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::Viewer::Contexts);
+TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::Viewer::Contexts)
 
-TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Viewer::Windows);
+TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Viewer::Windows)
 
-TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::Viewer::Cameras);
+TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::Viewer::Cameras)
 
-TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::Viewer::Threads);
+TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::Viewer::Threads)
 
-TYPE_NAME_ALIAS(std::vector< osg::OperationsThread * >, osgViewer::Viewer::OperationsThreads);
+TYPE_NAME_ALIAS(std::vector< osg::OperationsThread * >, osgViewer::Viewer::OperationsThreads)
 
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
 	I_EnumLabel(osgViewer::Viewer::SingleThreaded);
@@ -320,9 +320,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 __void__setUseMainThreadForRenderingTraversals__bool);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >);
+STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Camera * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Camera * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::OperationsThread * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::OperationsThread * >)
 

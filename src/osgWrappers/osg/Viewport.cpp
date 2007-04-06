@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(double, osg::Viewport::value_type);
+TYPE_NAME_ALIAS(double, osg::Viewport::value_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::Viewport)
 	I_BaseType(osg::StateAttribute);

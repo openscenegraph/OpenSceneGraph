@@ -31,7 +31,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ShadeModel)
 	I_BaseType(osg::StateAttribute);
-	I_ConstructorWithDefaults1(IN, osg::ShadeModel::Mode, mode, osg::ShadeModel::FLAT,
+	I_ConstructorWithDefaults1(IN, osg::ShadeModel::Mode, mode, osg::ShadeModel::SMOOTH,
 	                           Properties::NON_EXPLICIT,
 	                           ____ShadeModel__Mode,
 	                           "",

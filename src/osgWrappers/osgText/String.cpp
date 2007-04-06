@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osgText::VectorUInt, osgText::String::vector_type);
+TYPE_NAME_ALIAS(osgText::VectorUInt, osgText::String::vector_type)
 
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);

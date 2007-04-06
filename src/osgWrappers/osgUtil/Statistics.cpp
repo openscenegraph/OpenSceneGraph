@@ -30,11 +30,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgUtil::Statistics::PrimitivePair);
+TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgUtil::Statistics::PrimitivePair)
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, osgUtil::Statistics::PrimitiveValueMap);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, osgUtil::Statistics::PrimitiveValueMap)
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap);
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 	I_EnumLabel(osgUtil::Statistics::STAT_NONE);
@@ -222,11 +222,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_PublicMemberProperty(GLenum, _currentPrimitiveFunctorMode);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::StatsVisitor::NodeSet);
+TYPE_NAME_ALIAS(std::set< osg::Node * >, osgUtil::StatsVisitor::NodeSet)
 
-TYPE_NAME_ALIAS(std::set< osg::Drawable * >, osgUtil::StatsVisitor::DrawableSet);
+TYPE_NAME_ALIAS(std::set< osg::Drawable * >, osgUtil::StatsVisitor::DrawableSet)
 
-TYPE_NAME_ALIAS(std::set< osg::StateSet * >, osgUtil::StatsVisitor::StateSetSet);
+TYPE_NAME_ALIAS(std::set< osg::StateSet * >, osgUtil::StatsVisitor::StateSetSet)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_BaseType(osg::NodeVisitor);
@@ -303,13 +303,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_PublicMemberProperty(osgUtil::Statistics, _instancedStats);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >);
+STD_MAP_REFLECTOR(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >)
 
-STD_MAP_REFLECTOR(std::map< GLenum COMMA  unsigned int >);
+STD_MAP_REFLECTOR(std::map< GLenum COMMA  unsigned int >)
 
-STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  unsigned int >);
+STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  unsigned int >)
 
-STD_SET_REFLECTOR(std::set< osg::Drawable * >);
+STD_SET_REFLECTOR(std::set< osg::Drawable * >)
 
-STD_SET_REFLECTOR(std::set< osg::StateSet * >);
+STD_SET_REFLECTOR(std::set< osg::StateSet * >)
 

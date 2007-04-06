@@ -23,13 +23,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osgParticle::range< float >, osgParticle::rangef);
+TYPE_NAME_ALIAS(osgParticle::range< float >, osgParticle::rangef)
 
-TYPE_NAME_ALIAS(osgParticle::range< osg::Vec2 >, osgParticle::rangev2);
+TYPE_NAME_ALIAS(osgParticle::range< osg::Vec2 >, osgParticle::rangev2)
 
-TYPE_NAME_ALIAS(osgParticle::range< osg::Vec3 >, osgParticle::rangev3);
+TYPE_NAME_ALIAS(osgParticle::range< osg::Vec3 >, osgParticle::rangev3)
 
-TYPE_NAME_ALIAS(osgParticle::range< osg::Vec4 >, osgParticle::rangev4);
+TYPE_NAME_ALIAS(osgParticle::range< osg::Vec4 >, osgParticle::rangev4)
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< float >)
 	I_Constructor0(____range,

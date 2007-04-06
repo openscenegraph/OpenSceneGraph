@@ -27,19 +27,19 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(OpenThreads::Thread::ThreadPriority, osgDB::DatabasePager::ThreadPriority);
+TYPE_NAME_ALIAS(OpenThreads::Thread::ThreadPriority, osgDB::DatabasePager::ThreadPriority)
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::PagedLOD > >, osgDB::DatabasePager::PagedLODList);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::PagedLOD > >, osgDB::DatabasePager::PagedLODList)
 
-TYPE_NAME_ALIAS(std::set< osg::ref_ptr< osg::StateSet > >, osgDB::DatabasePager::StateSetList);
+TYPE_NAME_ALIAS(std::set< osg::ref_ptr< osg::StateSet > >, osgDB::DatabasePager::StateSetList)
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Drawable > >, osgDB::DatabasePager::DrawableList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Drawable > >, osgDB::DatabasePager::DrawableList)
 
-TYPE_NAME_ALIAS(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::DatabasePager::DrawableList >, osgDB::DatabasePager::DataToCompile);
+TYPE_NAME_ALIAS(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::DatabasePager::DrawableList >, osgDB::DatabasePager::DataToCompile)
 
-TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompile >, osgDB::DatabasePager::DataToCompileMap);
+TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompile >, osgDB::DatabasePager::DataToCompileMap)
 
-TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts);
+TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts)
 
 BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
 	I_EnumLabel(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
@@ -397,13 +397,13 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::PagedLOD > >);
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::PagedLOD > >)
 
-STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompile >);
+STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompile >)
 
-STD_PAIR_REFLECTOR(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::DatabasePager::DrawableList >);
+STD_PAIR_REFLECTOR(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::DatabasePager::DrawableList >)
 
-STD_SET_REFLECTOR(std::set< osg::ref_ptr< osg::StateSet > >);
+STD_SET_REFLECTOR(std::set< osg::ref_ptr< osg::StateSet > >)
 
-STD_SET_REFLECTOR(std::set< unsigned int >);
+STD_SET_REFLECTOR(std::set< unsigned int >)
 

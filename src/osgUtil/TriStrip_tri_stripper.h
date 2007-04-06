@@ -379,6 +379,6 @@ inline bool _cmp_tri_degree_gt::operator () (const triangle_degree & a, const tr
 
 
 
-}; // namespace triangle_stripper
+} // namespace triangle_stripper
 
 #endif

@@ -281,7 +281,7 @@ extern LIB3DSAPI void lib3ds_chunk_unknown(Lib3dsWord chunk);
 extern LIB3DSAPI void lib3ds_chunk_dump_info(const char *format, ...);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

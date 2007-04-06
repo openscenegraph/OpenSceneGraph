@@ -55,7 +55,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_rgb_write(Lib3dsRgb rgb, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_string_write(const char *s, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

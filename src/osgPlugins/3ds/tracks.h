@@ -203,7 +203,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_read(Lib3dsMorphTrack *track, FIL
 extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_write(Lib3dsMorphTrack *track, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

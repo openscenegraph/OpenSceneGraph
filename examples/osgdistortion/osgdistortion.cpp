@@ -423,7 +423,7 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     }
     
     return geometry;
-};
+}
 
 void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
 {
@@ -712,4 +712,4 @@ int main(int argc, char** argv)
 
     return viewer.run();
 }
-;
+

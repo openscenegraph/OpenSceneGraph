@@ -129,7 +129,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_mesh_read(Lib3dsMesh *mesh, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_mesh_write(Lib3dsMesh *mesh, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

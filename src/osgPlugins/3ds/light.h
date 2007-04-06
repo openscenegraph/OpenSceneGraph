@@ -72,7 +72,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_light_read(Lib3dsLight *light, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_light_write(Lib3dsLight *light, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

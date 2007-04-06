@@ -31,7 +31,7 @@ using namespace osgUtil;
 Statistics::Statistics()
 {
     reset();
-};
+}
 
 void Statistics::reset()
 {

@@ -35,7 +35,7 @@ extern LIB3DSAPI Lib3dsFloat lib3ds_ease(Lib3dsFloat fp, Lib3dsFloat fc,
   Lib3dsFloat fn, Lib3dsFloat ease_from, Lib3dsFloat ease_to);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

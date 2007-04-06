@@ -54,7 +54,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_camera_read(Lib3dsCamera *camera, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_camera_write(Lib3dsCamera *camera, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

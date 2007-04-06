@@ -165,10 +165,10 @@ class sockbuf: public streambuf
         enum msgflag {
             msg_oob        = MSG_OOB,
             msg_peek            = MSG_PEEK,
-            msg_dontroute    = MSG_DONTROUTE,
+            msg_dontroute    = MSG_DONTROUTE
 
 #if !(defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__APPLE__))
-            msg_maxiovlen    = MSG_MAXIOVLEN
+            ,msg_maxiovlen    = MSG_MAXIOVLEN
 #endif
         };
         enum shuthow {

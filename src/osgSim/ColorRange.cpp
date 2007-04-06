@@ -15,7 +15,7 @@ ColorRange::ColorRange(float min, float max): ScalarsToColors(min,max)
 ColorRange::ColorRange(float min, float max, const std::vector<osg::Vec4>& colors): ScalarsToColors(min,max)
 {
     setColors(colors);
-};
+}
 
 void ColorRange::setColors(const std::vector<osg::Vec4>& colors)
 {

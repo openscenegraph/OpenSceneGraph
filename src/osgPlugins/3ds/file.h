@@ -99,7 +99,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_file_remove_node(Lib3dsFile *file, Lib3dsNode
 extern LIB3DSAPI void lib3ds_file_dump_nodes(Lib3dsFile *file);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

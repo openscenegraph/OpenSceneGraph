@@ -135,6 +135,6 @@ private:
         osg::ref_ptr<MatrixManipulator> _current;
 };
 
-};
+}
 
 #endif

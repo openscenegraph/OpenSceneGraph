@@ -164,7 +164,7 @@ public:
     {
         NO_TRANSPARANCY_FIXING,
         MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE,
-        MAKE_ALL_STATESET_OPAQUE,
+        MAKE_ALL_STATESET_OPAQUE
     };
 
     FixTransparencyVisitor(FixTransparencyMode mode=MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE):

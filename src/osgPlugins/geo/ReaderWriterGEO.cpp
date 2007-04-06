@@ -61,7 +61,7 @@ geoHeaderGeo::geoHeaderGeo()
     extVars=new userVars;
     _initialTick = _timer.tick();
     color_palette=new colourPalette;
-};
+}
 const geoValue *geoHeaderGeo::getGeoVar(const unsigned fid) const {
     const geoValue *st=intVars->getGeoVar(fid);
     if (!st) {

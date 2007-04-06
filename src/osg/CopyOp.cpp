@@ -30,16 +30,16 @@ TYPE* CopyOp::operator() (const TYPE* obj) const \
         return const_cast<TYPE*>(obj); \
 } 
 
-COPY_OP( Object,         DEEP_COPY_OBJECTS );
-COPY_OP( Node,           DEEP_COPY_NODES );
-COPY_OP( Drawable,       DEEP_COPY_DRAWABLES );
-COPY_OP( StateSet,       DEEP_COPY_STATESETS );
-COPY_OP( Texture,        DEEP_COPY_TEXTURES );
-COPY_OP( Image,          DEEP_COPY_IMAGES );
-COPY_OP( Array,          DEEP_COPY_ARRAYS );
-COPY_OP( PrimitiveSet,   DEEP_COPY_PRIMITIVES );
-COPY_OP( Shape,          DEEP_COPY_SHAPES );
-COPY_OP( Uniform,        DEEP_COPY_UNIFORMS );
+COPY_OP( Object,         DEEP_COPY_OBJECTS )
+COPY_OP( Node,           DEEP_COPY_NODES )
+COPY_OP( Drawable,       DEEP_COPY_DRAWABLES )
+COPY_OP( StateSet,       DEEP_COPY_STATESETS )
+COPY_OP( Texture,        DEEP_COPY_TEXTURES )
+COPY_OP( Image,          DEEP_COPY_IMAGES )
+COPY_OP( Array,          DEEP_COPY_ARRAYS )
+COPY_OP( PrimitiveSet,   DEEP_COPY_PRIMITIVES )
+COPY_OP( Shape,          DEEP_COPY_SHAPES )
+COPY_OP( Uniform,        DEEP_COPY_UNIFORMS )
 
 Referenced* CopyOp::operator() (const Referenced* ref) const
 {

@@ -22,4 +22,4 @@ Object::Object(const Object& obj,const CopyOp& copyop):
     _userData(copyop(obj._userData.get())) {}
 
 
-}; // end of namespace osg
+} // end of namespace osg

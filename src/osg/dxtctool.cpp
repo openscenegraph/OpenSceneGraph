@@ -157,4 +157,4 @@ void dxtc_pixels::VFlip_DXT5() const
 
 
 
-}; // namespace dxtc_tool
+} // namespace dxtc_tool

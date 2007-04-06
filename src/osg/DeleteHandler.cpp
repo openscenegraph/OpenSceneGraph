@@ -123,4 +123,4 @@ void DeleteHandler::requestDelete(const osg::Referenced* object)
     }
 }
 
-}; // end of namespace osg
+} // end of namespace osg

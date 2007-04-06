@@ -228,6 +228,6 @@ void Referenced::deletUsingDeleteHandler() const
     getDeleteHandler()->requestDelete(this);
 }
 
-}; // end of namespace osg
+} // end of namespace osg
 
 #endif //OSG_JAVA_BUILD        

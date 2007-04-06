@@ -16,4 +16,4 @@ using namespace osg;
 
 ConvexPlanarOccluder::~ConvexPlanarOccluder()
 {
-};
+}

@@ -37,6 +37,8 @@ ShadowVolume::ShadowVolume():
     _drawMode(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED),
     _dynamicShadowVolumes(false)
 {
+    // _drawMode = osgShadow::ShadowVolumeGeometry::GEOMETRY;
+    
     osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowVolume technique in development."<<std::endl;
 }
 
@@ -92,6 +94,7 @@ void ShadowVolume::init()
     // set up shadow volume
     _shadowVolume = new osgShadow::ShadowVolumeGeometry;
     _shadowVolume->setUseDisplayList(!_dynamicShadowVolumes);
+    _shadowVolume->setDrawMode(_drawMode);
     _occluder->computeShadowVolumeGeometry(lightpos, *_shadowVolume);
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
@@ -108,7 +111,7 @@ void ShadowVolume::init()
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES selectetd"<<std::endl;
+        osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES selecteted"<<std::endl;
 
         osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");

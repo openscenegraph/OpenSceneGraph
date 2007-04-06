@@ -232,6 +232,10 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
     // (0,0) is returned if screen is unknown
     virtual void getScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height );
 
+    // Return the bits per pixel of specified screen
+    // (0) is returned if screen is unknown
+    virtual void getScreenColorDepth( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& dmBitsPerPel );
+
     // Set the resolution for given screen
     virtual bool setScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height );
 
@@ -852,6 +856,21 @@ void Win32WindowingSystem::getScreenResolution( const osg::GraphicsContext::Scre
     }
 }
 
+void Win32WindowingSystem::getScreenColorDepth( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& dmBitsPerPel )
+{
+    DISPLAY_DEVICE displayDevice;
+    DEVMODE        deviceMode;
+
+    if (getScreenInformation(si, displayDevice, deviceMode))
+    {
+        dmBitsPerPel = deviceMode.dmBitsPerPel;
+    }
+    else
+    {
+        dmBitsPerPel  = 0;
+    }
+}
+
 bool Win32WindowingSystem::changeScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, DISPLAY_DEVICE& displayDevice, DEVMODE& deviceMode )
 {
     //
@@ -1379,6 +1398,24 @@ bool GraphicsWindowWin32::setPixelFormat()
     //
 
     int pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+    if (pixelFormatIndex<0)
+    {
+            unsigned int bpp;
+            Win32WindowingSystem::getInterface()->getScreenColorDepth(*_traits.get(), bpp);
+            if (bpp < 32) {
+                osg::notify(osg::INFO)    << "GraphicsWindowWin32::setPixelFormat() - Display setting is not 32 bit colors, "
+                                        << bpp
+                                        << " bits per pixel on screen #"
+                                        << _traits->screenNum
+                                        << std::endl;
+
+                _traits->red = bpp / 4; //integer devide, determine minimum number of bits we will accept
+                _traits->green = bpp / 4;
+                _traits->blue = bpp / 4;
+                ::PreparePixelFormatSpecifications(*_traits, formatSpecs, true);// try again with WGL_SWAP_METHOD_ARB
+                pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+            }
+    }
     if (pixelFormatIndex<0)
     {
         ::PreparePixelFormatSpecifications(*_traits, formatSpecs, false);

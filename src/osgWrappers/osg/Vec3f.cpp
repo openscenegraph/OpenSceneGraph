@@ -23,7 +23,7 @@
 
 #include <osg/io_utils>
 	
-TYPE_NAME_ALIAS(float, osg::Vec3f::value_type);
+TYPE_NAME_ALIAS(float, osg::Vec3f::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Vec3f)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined

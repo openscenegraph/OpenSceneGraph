@@ -26,11 +26,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::CompositeViewer::Contexts);
+TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::CompositeViewer::Contexts)
 
-TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::CompositeViewer::Windows);
+TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::CompositeViewer::Windows)
 
-TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::CompositeViewer::Scenes);
+TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::CompositeViewer::Scenes)
 
 BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::ThreadingModel)
 	I_EnumLabel(osgViewer::CompositeViewer::SingleThreaded);
@@ -326,9 +326,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >);
+STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgViewer::Scene * >);
+STD_VECTOR_REFLECTOR(std::vector< osgViewer::Scene * >)
 

@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::SimpleViewer::EventHandlers);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::SimpleViewer::EventHandlers)
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::SimpleViewer)
 	I_VirtualBaseType(osgViewer::GraphicsWindow);
@@ -212,5 +212,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >);
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >)
 

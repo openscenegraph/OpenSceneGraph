@@ -29,7 +29,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec3Array > >, osgSim::SphereSegment::LineList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec3Array > >, osgSim::SphereSegment::LineList)
 
 BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
 	I_EnumLabel(osgSim::SphereSegment::SURFACE);
@@ -279,5 +279,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Vec3Array >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Vec3Array > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Vec3Array > >)
 

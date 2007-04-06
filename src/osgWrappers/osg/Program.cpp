@@ -26,9 +26,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList)
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_BaseType(osg::StateAttribute);
@@ -295,7 +295,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >)
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::Program::ActiveVarInfo >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::Program::ActiveVarInfo >)
 

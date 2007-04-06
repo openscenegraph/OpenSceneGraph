@@ -57,7 +57,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DatabaseCacheReadCallback)
 	                 __void__setMaximumNumOfFilesToCache__unsigned_int);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgSim::LineOfSight::Intersections);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgSim::LineOfSight::Intersections)
 
 BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
 	I_Constructor0(____LineOfSight,

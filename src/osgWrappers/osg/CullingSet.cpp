@@ -30,13 +30,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >, osg::CullingSet::StateFrustumPair);
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >, osg::CullingSet::StateFrustumPair)
 
-TYPE_NAME_ALIAS(std::vector< osg::CullingSet::StateFrustumPair >, osg::CullingSet::StateFrustumList);
+TYPE_NAME_ALIAS(std::vector< osg::CullingSet::StateFrustumPair >, osg::CullingSet::StateFrustumList)
 
-TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList);
+TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList)
 
-TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask);
+TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask)
 
 BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
 	I_EnumLabel(osg::CullingSet::NO_CULLING);
@@ -264,7 +264,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
 	                 0);
 END_REFLECTOR
 
-STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >);
+STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::CullingSet::StateFrustumPair >);
+STD_VECTOR_REFLECTOR(std::vector< osg::CullingSet::StateFrustumPair >)
 

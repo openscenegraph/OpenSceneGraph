@@ -22,7 +22,7 @@
 
 #include <osg/io_utils>
 	
-TYPE_NAME_ALIAS(char, osg::Vec3b::value_type);
+TYPE_NAME_ALIAS(char, osg::Vec3b::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Vec3b)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined

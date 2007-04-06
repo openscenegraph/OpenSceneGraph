@@ -28,7 +28,7 @@
 
 #include <osg/io_utils>
 	
-TYPE_NAME_ALIAS(double, osg::Quat::value_type);
+TYPE_NAME_ALIAS(double, osg::Quat::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Quat)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined

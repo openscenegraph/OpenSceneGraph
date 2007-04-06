@@ -23,11 +23,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgSim::ElevationSlice::Vec3dList);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgSim::ElevationSlice::Vec3dList)
 
-TYPE_NAME_ALIAS(std::pair< double COMMA  double >, osgSim::ElevationSlice::DistanceHeight);
+TYPE_NAME_ALIAS(std::pair< double COMMA  double >, osgSim::ElevationSlice::DistanceHeight)
 
-TYPE_NAME_ALIAS(std::vector< osgSim::ElevationSlice::DistanceHeight >, osgSim::ElevationSlice::DistanceHeightList);
+TYPE_NAME_ALIAS(std::vector< osgSim::ElevationSlice::DistanceHeight >, osgSim::ElevationSlice::DistanceHeightList)
 
 BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	I_Constructor0(____ElevationSlice,
@@ -104,9 +104,9 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	                 __void__setStartPoint__C5_osg_Vec3d_R1);
 END_REFLECTOR
 
-STD_PAIR_REFLECTOR(std::pair< double COMMA  double >);
+STD_PAIR_REFLECTOR(std::pair< double COMMA  double >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec3d >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec3d >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgSim::ElevationSlice::DistanceHeight >);
+STD_VECTOR_REFLECTOR(std::vector< osgSim::ElevationSlice::DistanceHeight >)
 

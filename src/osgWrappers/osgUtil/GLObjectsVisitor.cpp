@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode);
+TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS);

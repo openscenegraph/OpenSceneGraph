@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >, osgSim::Impostor::ImpostorSpriteList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >, osgSim::Impostor::ImpostorSpriteList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	I_BaseType(osg::LOD);
@@ -165,5 +165,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgSim::ImpostorSprite >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >)
 

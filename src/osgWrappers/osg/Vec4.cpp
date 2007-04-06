@@ -20,5 +20,5 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osg::Vec4f, osg::Vec4);
+TYPE_NAME_ALIAS(osg::Vec4f, osg::Vec4)
 

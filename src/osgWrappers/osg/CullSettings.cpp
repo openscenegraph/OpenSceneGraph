@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(unsigned int, osg::CullSettings::CullingMode);
+TYPE_NAME_ALIAS(unsigned int, osg::CullSettings::CullingMode)
 
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
 	I_EnumLabel(osg::CullSettings::COMPUTE_NEAR_FAR_MODE);

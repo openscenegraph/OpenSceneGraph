@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::ClipPlaneList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::ClipPlaneList)
 
 BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	I_BaseType(osg::Group);
@@ -188,5 +188,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::ClipPlane >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::ClipPlane > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::ClipPlane > >)
 

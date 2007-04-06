@@ -569,39 +569,39 @@ BEGIN_VALUE_REFLECTOR(osg::ValueVisitor)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE >, osg::ByteArray);
+TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLbyte COMMA  osg::Array::ByteArrayType COMMA  1 COMMA  GL_BYTE >, osg::ByteArray)
 
-TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT >, osg::ShortArray);
+TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLshort COMMA  osg::Array::ShortArrayType COMMA  1 COMMA  GL_SHORT >, osg::ShortArray)
 
-TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT >, osg::IntArray);
+TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLint COMMA  osg::Array::IntArrayType COMMA  1 COMMA  GL_INT >, osg::IntArray)
 
-TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE >, osg::UByteArray);
+TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLubyte COMMA  osg::Array::UByteArrayType COMMA  1 COMMA  GL_UNSIGNED_BYTE >, osg::UByteArray)
 
-TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT >, osg::UShortArray);
+TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLushort COMMA  osg::Array::UShortArrayType COMMA  1 COMMA  GL_UNSIGNED_SHORT >, osg::UShortArray)
 
-TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT >, osg::UIntArray);
+TYPE_NAME_ALIAS(osg::TemplateIndexArray< GLuint COMMA  osg::Array::UIntArrayType COMMA  1 COMMA  GL_UNSIGNED_INT >, osg::UIntArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT >, osg::FloatArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT >, osg::FloatArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT >, osg::Vec2Array);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec2 COMMA  osg::Array::Vec2ArrayType COMMA  2 COMMA  GL_FLOAT >, osg::Vec2Array)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT >, osg::Vec3Array);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3 COMMA  osg::Array::Vec3ArrayType COMMA  3 COMMA  GL_FLOAT >, osg::Vec3Array)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT >, osg::Vec4Array);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4 COMMA  osg::Array::Vec4ArrayType COMMA  4 COMMA  GL_FLOAT >, osg::Vec4Array)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE >, osg::Vec4ubArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4ub COMMA  osg::Array::Vec4ubArrayType COMMA  4 COMMA  GL_UNSIGNED_BYTE >, osg::Vec4ubArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT >, osg::Vec2sArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec2s COMMA  osg::Array::Vec2sArrayType COMMA  2 COMMA  GL_SHORT >, osg::Vec2sArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT >, osg::Vec3sArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3s COMMA  osg::Array::Vec3sArrayType COMMA  3 COMMA  GL_SHORT >, osg::Vec3sArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT >, osg::Vec4sArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4s COMMA  osg::Array::Vec4sArrayType COMMA  4 COMMA  GL_SHORT >, osg::Vec4sArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE >, osg::Vec2bArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec2b COMMA  osg::Array::Vec2bArrayType COMMA  2 COMMA  GL_BYTE >, osg::Vec2bArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE >, osg::Vec3bArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec3b COMMA  osg::Array::Vec3bArrayType COMMA  3 COMMA  GL_BYTE >, osg::Vec3bArray)
 
-TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE >, osg::Vec4bArray);
+TYPE_NAME_ALIAS(osg::TemplateArray< osg::Vec4b COMMA  osg::Array::Vec4bArrayType COMMA  4 COMMA  GL_BYTE >, osg::Vec4bArray)
 
 BEGIN_OBJECT_REFLECTOR(osg::TemplateArray< GLfloat COMMA  osg::Array::FloatArrayType COMMA  1 COMMA  GL_FLOAT >)
 	I_BaseType(osg::Array);

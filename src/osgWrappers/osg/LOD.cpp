@@ -26,9 +26,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< float COMMA  float >, osg::LOD::MinMaxPair);
+TYPE_NAME_ALIAS(std::pair< float COMMA  float >, osg::LOD::MinMaxPair)
 
-TYPE_NAME_ALIAS(std::vector< osg::LOD::MinMaxPair >, osg::LOD::RangeList);
+TYPE_NAME_ALIAS(std::vector< osg::LOD::MinMaxPair >, osg::LOD::RangeList)
 
 BEGIN_ENUM_REFLECTOR(osg::LOD::CenterMode)
 	I_EnumLabel(osg::LOD::USE_BOUNDING_SPHERE_CENTER);
@@ -191,7 +191,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	                 __void__setRangeMode__RangeMode);
 END_REFLECTOR
 
-STD_PAIR_REFLECTOR(std::pair< float COMMA  float >);
+STD_PAIR_REFLECTOR(std::pair< float COMMA  float >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::LOD::MinMaxPair >);
+STD_VECTOR_REFLECTOR(std::vector< osg::LOD::MinMaxPair >)
 

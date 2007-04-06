@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType);
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
 
 BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
 	I_EnumLabel(osg::Image::NO_DELETE);
@@ -395,5 +395,5 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< unsigned int >);
+STD_VECTOR_REFLECTOR(std::vector< unsigned int >)
 

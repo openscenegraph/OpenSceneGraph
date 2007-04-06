@@ -22,9 +22,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::VertexPointList);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::VertexPointList)
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Tessellator::Prim > >, osgUtil::Tessellator::PrimList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Tessellator::Prim > >, osgUtil::Tessellator::PrimList)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Tessellator::WindingType)
 	I_EnumLabel(osgUtil::Tessellator::TESS_WINDING_ODD);
@@ -200,7 +200,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	                 __void__setWindingType__C5_WindingType);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::Prim::VecList);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::Prim::VecList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator::Prim)
 	I_BaseType(osg::Referenced);
@@ -252,7 +252,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tessellator::Prim >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec3 * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec3 * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::Tessellator::Prim > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::Tessellator::Prim > >)
 

@@ -21,7 +21,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >, osgFX::Registry::EffectMap);
+TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >, osgFX::Registry::EffectMap)
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Registry)
 	I_BaseType(osg::Referenced);
@@ -55,5 +55,5 @@ BEGIN_VALUE_REFLECTOR(osgFX::Registry::Proxy)
 	               "");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >);
+STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >)
 

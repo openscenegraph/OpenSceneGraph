@@ -26,11 +26,11 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >, osgUtil::PositionalStateContainer::AttrMatrixPair);
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >, osgUtil::PositionalStateContainer::AttrMatrixPair)
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >, osgUtil::PositionalStateContainer::AttrMatrixList);
+TYPE_NAME_ALIAS(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >, osgUtil::PositionalStateContainer::AttrMatrixList)
 
-TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >, osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap);
+TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >, osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 	I_BaseType(osg::Object);
@@ -141,9 +141,9 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >);
+STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >)
 
-STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >);
+STD_PAIR_REFLECTOR(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >)
 

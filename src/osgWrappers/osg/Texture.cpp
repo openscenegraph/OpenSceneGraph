@@ -27,9 +27,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList)
 
-TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap);
+TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
 	I_EnumLabel(osg::Texture::WRAP_S);
@@ -936,5 +936,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Texture::TextureObject > >);
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Texture::TextureObject > >)
 

@@ -121,7 +121,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrix3)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::Uniform::ParentList);
+TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::Uniform::ParentList)
 
 BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 	I_EnumLabel(osg::Uniform::FLOAT);

@@ -21,9 +21,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< int COMMA  const osg::Referenced * >, osg::DeleteHandler::FrameNumberObjectPair);
+TYPE_NAME_ALIAS(std::pair< int COMMA  const osg::Referenced * >, osg::DeleteHandler::FrameNumberObjectPair)
 
-TYPE_NAME_ALIAS(std::list< osg::DeleteHandler::FrameNumberObjectPair >, osg::DeleteHandler::ObjectsToDeleteList);
+TYPE_NAME_ALIAS(std::list< osg::DeleteHandler::FrameNumberObjectPair >, osg::DeleteHandler::ObjectsToDeleteList)
 
 BEGIN_OBJECT_REFLECTOR(osg::DeleteHandler)
 	I_ConstructorWithDefaults1(IN, int, numberOfFramesToRetainObjects, 0,
@@ -84,7 +84,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DeleteHandler)
 	                 __void__setNumFramesToRetainObjects__int);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::DeleteHandler::FrameNumberObjectPair >);
+STD_LIST_REFLECTOR(std::list< osg::DeleteHandler::FrameNumberObjectPair >)
 
-STD_PAIR_REFLECTOR(std::pair< int COMMA  const osg::Referenced * >);
+STD_PAIR_REFLECTOR(std::pair< int COMMA  const osg::Referenced * >)
 

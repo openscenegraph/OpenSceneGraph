@@ -37,7 +37,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap);
+TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap)
 
 BEGIN_ENUM_REFLECTOR(osg::Camera::TransformOrder)
 	I_EnumLabel(osg::Camera::PRE_MULTIPLY);
@@ -627,5 +627,5 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera::DrawCallback)
 	          "Must be defined by derived classes. ");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >);
+STD_MAP_REFLECTOR(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >)
 

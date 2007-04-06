@@ -33,7 +33,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventVisitor::EventList);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventVisitor::EventList)
 
 BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)
 	I_BaseType(osg::NodeVisitor);

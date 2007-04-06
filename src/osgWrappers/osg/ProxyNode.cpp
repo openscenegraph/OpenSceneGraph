@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< std::string >, osg::ProxyNode::FileNameList);
+TYPE_NAME_ALIAS(std::vector< std::string >, osg::ProxyNode::FileNameList)
 
 BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
 	I_EnumLabel(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);

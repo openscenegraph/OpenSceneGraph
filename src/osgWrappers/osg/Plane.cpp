@@ -30,11 +30,11 @@
 
 #include <osg/io_utils>
 	
-TYPE_NAME_ALIAS(double, osg::Plane::value_type);
+TYPE_NAME_ALIAS(double, osg::Plane::value_type)
 
-TYPE_NAME_ALIAS(osg::Vec3d, osg::Plane::Vec3_type);
+TYPE_NAME_ALIAS(osg::Vec3d, osg::Plane::Vec3_type)
 
-TYPE_NAME_ALIAS(osg::Vec4d, osg::Plane::Vec4_type);
+TYPE_NAME_ALIAS(osg::Vec4d, osg::Plane::Vec4_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined

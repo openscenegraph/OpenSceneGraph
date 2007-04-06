@@ -46,5 +46,5 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
 	                 __void__setColors__C5_std_vectorT1_osg_Vec4__R1);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec4 >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec4 >)
 

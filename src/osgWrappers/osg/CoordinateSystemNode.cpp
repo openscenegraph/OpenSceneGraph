@@ -223,5 +223,5 @@ BEGIN_OBJECT_REFLECTOR(osg::EllipsoidModel)
 	                 __void__setRadiusPolar__double);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(osg::Matrixd, osg::CoordinateFrame);
+TYPE_NAME_ALIAS(osg::Matrixd, osg::CoordinateFrame)
 

@@ -319,7 +319,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Intersector)
 	                 __void__setCoordinateFrame__CoordinateFrame);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Intersector > >, osgUtil::IntersectorGroup::Intersectors);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Intersector > >, osgUtil::IntersectorGroup::Intersectors)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectorGroup)
 	I_BaseType(osgUtil::Intersector);
@@ -415,5 +415,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Intersector >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::Intersector > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgUtil::Intersector > >)
 

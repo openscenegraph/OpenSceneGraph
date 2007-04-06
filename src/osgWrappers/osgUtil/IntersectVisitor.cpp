@@ -35,7 +35,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< int >, osgUtil::Hit::VecIndexList);
+TYPE_NAME_ALIAS(std::vector< int >, osgUtil::Hit::VecIndexList)
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
 	I_Constructor0(____Hit,
@@ -187,9 +187,9 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
 	I_PublicMemberProperty(osg::Vec3, _intersectNormal);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList);
+TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList)
 
-TYPE_NAME_ALIAS(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap);
+TYPE_NAME_ALIAS(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::IntersectVisitor::LODSelectionMode)
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_HIGHEST_LEVEL_OF_DETAIL);
@@ -355,9 +355,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PickVisitor)
 	          "");
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >);
+STD_MAP_REFLECTOR(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >)
 
-STD_VECTOR_REFLECTOR(std::vector< int >);
+STD_VECTOR_REFLECTOR(std::vector< int >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::Hit >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::Hit >)
 

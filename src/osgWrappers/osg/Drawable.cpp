@@ -35,9 +35,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList);
+TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList)
 
-TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType);
+TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType)
 
 BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_EnumLabel(osg::Drawable::VERTICES);
@@ -1207,5 +1207,5 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
 	          "");
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Node * >);
+STD_VECTOR_REFLECTOR(std::vector< osg::Node * >)
 

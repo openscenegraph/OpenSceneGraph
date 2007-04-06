@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::PagedLOD::PerRangeData >, osg::PagedLOD::PerRangeDataList);
+TYPE_NAME_ALIAS(std::vector< osg::PagedLOD::PerRangeData >, osg::PagedLOD::PerRangeDataList)
 
 BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	I_BaseType(osg::LOD);
@@ -246,5 +246,5 @@ BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
 	I_PublicMemberProperty(double, _timeStamp);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::PagedLOD::PerRangeData >);
+STD_VECTOR_REFLECTOR(std::vector< osg::PagedLOD::PerRangeData >)
 

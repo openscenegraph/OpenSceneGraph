@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::set< osgUtil::PolytopeIntersector::Intersection >, osgUtil::PolytopeIntersector::Intersections);
+TYPE_NAME_ALIAS(std::set< osgUtil::PolytopeIntersector::Intersection >, osgUtil::PolytopeIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PolytopeIntersector)
 	I_BaseType(osgUtil::Intersector);
@@ -102,5 +102,5 @@ BEGIN_VALUE_REFLECTOR(osgUtil::PolytopeIntersector::Intersection)
 	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, drawable);
 END_REFLECTOR
 
-STD_SET_REFLECTOR(std::set< osgUtil::PolytopeIntersector::Intersection >);
+STD_SET_REFLECTOR(std::set< osgUtil::PolytopeIntersector::Intersection >)
 

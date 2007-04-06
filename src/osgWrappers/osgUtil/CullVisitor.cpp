@@ -48,7 +48,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osg::Matrix::value_type, osgUtil::CullVisitor::value_type);
+TYPE_NAME_ALIAS(osg::Matrix::value_type, osgUtil::CullVisitor::value_type)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_BaseType(osg::NodeVisitor);

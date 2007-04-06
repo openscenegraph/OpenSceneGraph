@@ -68,7 +68,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
 	                 __void__setNumOfBlocks__unsigned_int);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers)
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_BaseType(osg::View);

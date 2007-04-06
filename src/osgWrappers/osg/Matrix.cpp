@@ -20,7 +20,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osg::Matrixd, osg::Matrix);
+TYPE_NAME_ALIAS(osg::Matrixd, osg::Matrix)
 
-TYPE_NAME_ALIAS(osg::RefMatrixd, osg::RefMatrix);
+TYPE_NAME_ALIAS(osg::RefMatrixd, osg::RefMatrix)
 

@@ -29,7 +29,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack);
+TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
 
 BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 	I_EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
@@ -729,5 +729,5 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallb
 	          "");
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >);
+STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >)
 

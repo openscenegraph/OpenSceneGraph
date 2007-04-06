@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(float, osg::Matrixf::value_type);
+TYPE_NAME_ALIAS(float, osg::Matrixf::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Constructor0(____Matrixf,

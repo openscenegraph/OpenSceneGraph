@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(double, osg::Matrixd::value_type);
+TYPE_NAME_ALIAS(double, osg::Matrixd::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 	I_Constructor0(____Matrixd,

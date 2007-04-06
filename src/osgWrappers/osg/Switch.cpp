@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< bool >, osg::Switch::ValueList);
+TYPE_NAME_ALIAS(std::vector< bool >, osg::Switch::ValueList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	I_BaseType(osg::Group);
@@ -175,5 +175,5 @@ BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	                 __void__setValueList__C5_ValueList_R1);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< bool >);
+STD_VECTOR_REFLECTOR(std::vector< bool >)
 

@@ -28,7 +28,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManipulator::CompositeDragger::DraggerList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManipulator::CompositeDragger::DraggerList)
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	I_BaseType(osgManipulator::Dragger);
@@ -174,9 +174,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	                 __void__setParentDragger__Dragger_P1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::NodePath COMMA  osg::Vec3 >, osgManipulator::PointerInfo::NodePathIntersectionPair);
+TYPE_NAME_ALIAS(std::pair< osg::NodePath COMMA  osg::Vec3 >, osgManipulator::PointerInfo::NodePathIntersectionPair)
 
-TYPE_NAME_ALIAS(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >, osgManipulator::PointerInfo::IntersectionList);
+TYPE_NAME_ALIAS(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >, osgManipulator::PointerInfo::IntersectionList)
 
 BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	I_Constructor0(____PointerInfo,
@@ -309,9 +309,9 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >);
+STD_LIST_REFLECTOR(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >)
 
-STD_PAIR_REFLECTOR(std::pair< osg::NodePath COMMA  osg::Vec3 >);
+STD_PAIR_REFLECTOR(std::pair< osg::NodePath COMMA  osg::Vec3 >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Dragger > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Dragger > >)
 

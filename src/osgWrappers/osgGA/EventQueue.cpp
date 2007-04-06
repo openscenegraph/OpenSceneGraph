@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventQueue::Events);
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventQueue::Events)
 
 BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_BaseType(osg::Referenced);
@@ -297,5 +297,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventAdapter >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >);
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >)
 

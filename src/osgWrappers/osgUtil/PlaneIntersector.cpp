@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::PlaneIntersector::Intersection >, osgUtil::PlaneIntersector::Intersections);
+TYPE_NAME_ALIAS(std::vector< osgUtil::PlaneIntersector::Intersection >, osgUtil::PlaneIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	I_BaseType(osgUtil::Intersector);
@@ -109,9 +109,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
 	                 __void__setRecordHeightsAsAttributes__bool);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgUtil::PlaneIntersector::Intersection::Polyline);
+TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgUtil::PlaneIntersector::Intersection::Polyline)
 
-TYPE_NAME_ALIAS(std::vector< double >, osgUtil::PlaneIntersector::Intersection::Attributes);
+TYPE_NAME_ALIAS(std::vector< double >, osgUtil::PlaneIntersector::Intersection::Attributes)
 
 BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_Constructor0(____Intersection,
@@ -124,5 +124,5 @@ BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
 	I_PublicMemberProperty(osgUtil::PlaneIntersector::Intersection::Attributes, attributes);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osgUtil::PlaneIntersector::Intersection >);
+STD_VECTOR_REFLECTOR(std::vector< osgUtil::PlaneIntersector::Intersection >)
 

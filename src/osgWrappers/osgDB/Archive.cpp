@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::Archive::FileNameList);
+TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::Archive::FileNameList)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Archive)
 	I_BaseType(osgDB::ReaderWriter);

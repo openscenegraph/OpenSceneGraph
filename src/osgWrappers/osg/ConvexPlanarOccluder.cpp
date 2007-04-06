@@ -23,7 +23,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ConvexPlanarPolygon >, osg::ConvexPlanarOccluder::HoleList);
+TYPE_NAME_ALIAS(std::vector< osg::ConvexPlanarPolygon >, osg::ConvexPlanarOccluder::HoleList)
 
 BEGIN_OBJECT_REFLECTOR(osg::ConvexPlanarOccluder)
 	I_BaseType(osg::Object);
@@ -102,5 +102,5 @@ BEGIN_OBJECT_REFLECTOR(osg::ConvexPlanarOccluder)
 	                 __void__setOccluder__C5_ConvexPlanarPolygon_R1);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ConvexPlanarPolygon >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ConvexPlanarPolygon >)
 

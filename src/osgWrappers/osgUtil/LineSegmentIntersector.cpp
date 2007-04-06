@@ -25,7 +25,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::multiset< osgUtil::LineSegmentIntersector::Intersection >, osgUtil::LineSegmentIntersector::Intersections);
+TYPE_NAME_ALIAS(std::multiset< osgUtil::LineSegmentIntersector::Intersection >, osgUtil::LineSegmentIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	I_BaseType(osgUtil::Intersector);
@@ -106,9 +106,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	                 0);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::LineSegmentIntersector::Intersection::IndexList);
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::LineSegmentIntersector::Intersection::IndexList)
 
-TYPE_NAME_ALIAS(std::vector< double >, osgUtil::LineSegmentIntersector::Intersection::RatioList);
+TYPE_NAME_ALIAS(std::vector< double >, osgUtil::LineSegmentIntersector::Intersection::RatioList)
 
 BEGIN_VALUE_REFLECTOR(osgUtil::LineSegmentIntersector::Intersection)
 	I_Constructor0(____Intersection,
@@ -157,7 +157,7 @@ BEGIN_VALUE_REFLECTOR(osgUtil::LineSegmentIntersector::Intersection)
 	I_PublicMemberProperty(unsigned int, primitiveIndex);
 END_REFLECTOR
 
-STD_SET_REFLECTOR(std::multiset< osgUtil::LineSegmentIntersector::Intersection >);
+STD_SET_REFLECTOR(std::multiset< osgUtil::LineSegmentIntersector::Intersection >)
 
-STD_VECTOR_REFLECTOR(std::vector< double >);
+STD_VECTOR_REFLECTOR(std::vector< double >)
 

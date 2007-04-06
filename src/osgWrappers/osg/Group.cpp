@@ -184,7 +184,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	                 __void__setThreadSafeRefUnref__bool);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osg::NodeList);
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osg::NodeList)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Node >)
 	I_Constructor0(____ref_ptr,
@@ -225,5 +225,5 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Node >)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Node > >);
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Node > >)
 

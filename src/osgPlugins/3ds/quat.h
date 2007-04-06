@@ -55,7 +55,7 @@ extern LIB3DSAPI void lib3ds_quat_tangent(Lib3dsQuat c, Lib3dsQuat p, Lib3dsQuat
 extern LIB3DSAPI void lib3ds_quat_dump(Lib3dsQuat q);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

@@ -144,9 +144,18 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         {
             if (edge.boundaryEdge()) return true;
             
+            float offset = 0.0f;
+
             osg::Vec3 delta(lightpos-_vertices[edge._p1]);
-            float n1 = delta * _triangleNormals[edge._t1];
-            float n2 = delta * _triangleNormals[edge._t2];
+            delta.normalize();
+            
+            float n1 = delta * _triangleNormals[edge._t1] + offset;
+            float n2 = delta * _triangleNormals[edge._t2] + offset;
+
+            float angle_offset = 0.0f;
+
+            n1 = cos(acosf(n1) + angle_offset);
+            n2 = cos(acosf(n2) + angle_offset);
 
             if (n1==0.0f && n2==0.0f) return false;
             
@@ -157,8 +166,15 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         {
             if (edge.boundaryEdge()) return true;
             
-            float n1 = lightdirection * _triangleNormals[edge._t1];
-            float n2 = lightdirection * _triangleNormals[edge._t2];
+            float offset = 0.0f;
+            
+            float n1 = lightdirection * _triangleNormals[edge._t1] + offset;
+            float n2 = lightdirection * _triangleNormals[edge._t2] + offset;
+
+            float angle_offset = 0.0f;
+
+            n1 = cos(acosf(n1) + angle_offset);
+            n2 = cos(acosf(n2) + angle_offset);
 
             if (n1==0.0f && n2==0.0f) return false;
             

@@ -57,7 +57,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
             NODE_CENTER_AND_AZIM,
             /** Tack the center of the node's bounding sphere, and the all rotations of the node.
               */
-            NODE_CENTER_AND_ROTATION,
+            NODE_CENTER_AND_ROTATION
         };
         
         void setTrackerMode(TrackerMode mode);
@@ -71,7 +71,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
             TRACKBALL,
             /** Allow the elevation and azimuth angles to be adjust w.r.t the tracked orientation.
               */
-            ELEVATION_AZIM,
+            ELEVATION_AZIM
         };
         
         void setRotationMode(RotationMode mode);

@@ -75,7 +75,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_background_read(Lib3dsBackground *background,
 extern LIB3DSAPI Lib3dsBool lib3ds_background_write(Lib3dsBackground *background, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

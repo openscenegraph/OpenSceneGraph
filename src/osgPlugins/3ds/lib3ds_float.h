@@ -35,7 +35,7 @@ extern LIB3DSAPI Lib3dsFloat lib3ds_float_cubic(Lib3dsFloat a, Lib3dsFloat p,
   Lib3dsFloat q, Lib3dsFloat b, Lib3dsFloat t);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

@@ -56,7 +56,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_tcb_read(Lib3dsTcb *tcb, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_tcb_write(Lib3dsTcb *tcb, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

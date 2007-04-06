@@ -163,7 +163,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *file,
 extern LIB3DSAPI Lib3dsBool lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

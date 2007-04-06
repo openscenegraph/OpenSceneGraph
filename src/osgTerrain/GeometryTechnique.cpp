@@ -327,6 +327,8 @@ void GeometryTechnique::init()
         }
     }
 
+    // _geometry->setUseDisplayList(false);
+
     _dirty = false;    
 }
 

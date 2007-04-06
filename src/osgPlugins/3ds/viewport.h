@@ -127,7 +127,7 @@ extern LIB3DSAPI void lib3ds_viewport_set_views(Lib3dsViewport *viewport, Lib3ds
 extern LIB3DSAPI Lib3dsBool lib3ds_viewport_write(Lib3dsViewport *viewport, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

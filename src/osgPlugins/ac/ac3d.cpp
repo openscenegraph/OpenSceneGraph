@@ -186,7 +186,7 @@ enum {
   SurfaceTypeLineStrip = 2,
 
   SurfaceShaded = 1<<4,
-  SurfaceTwoSided = 1<<5,
+  SurfaceTwoSided = 1<<5
 };
 
 /// Returns a possibly quoted string given in the end of the current line in the stream

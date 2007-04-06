@@ -134,7 +134,7 @@ typedef union _Lib3dsUserData {
 } Lib3dsUserData;
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

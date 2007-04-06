@@ -52,7 +52,7 @@ extern LIB3DSAPI void lib3ds_vector_max(Lib3dsVector c, Lib3dsVector a);
 extern LIB3DSAPI void lib3ds_vector_dump(Lib3dsVector c);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

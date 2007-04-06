@@ -160,7 +160,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_material_read(Lib3dsMaterial *material, FILE 
 extern LIB3DSAPI Lib3dsBool lib3ds_material_write(Lib3dsMaterial *material, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

@@ -61,7 +61,7 @@ extern LIB3DSAPI void lib3ds_matrix_camera(Lib3dsMatrix matrix, Lib3dsVector pos
 extern LIB3DSAPI void lib3ds_matrix_dump(Lib3dsMatrix matrix);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

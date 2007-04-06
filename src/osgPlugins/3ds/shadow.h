@@ -49,7 +49,7 @@ extern LIB3DSAPI Lib3dsBool lib3ds_shadow_read(Lib3dsShadow *shadow, FILE *f);
 extern LIB3DSAPI Lib3dsBool lib3ds_shadow_write(Lib3dsShadow *shadow, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif
 

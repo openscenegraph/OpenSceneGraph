@@ -891,7 +891,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     enum
                         {
                         kEventParamMouseWheelSmoothVerticalDelta       = 'saxy', // typeSInt32
-                        kEventParamMouseWheelSmoothHorizontalDelta     = 'saxx', // typeSInt32
+                        kEventParamMouseWheelSmoothHorizontalDelta     = 'saxx' // typeSInt32
                         };
                     
                     SInt32 scroll_delta_x = 0;

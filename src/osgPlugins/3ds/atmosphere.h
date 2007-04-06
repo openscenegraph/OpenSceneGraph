@@ -95,6 +95,6 @@ extern LIB3DSAPI Lib3dsBool lib3ds_atmosphere_read(Lib3dsAtmosphere *atmosphere,
 extern LIB3DSAPI Lib3dsBool lib3ds_atmosphere_write(Lib3dsAtmosphere *atmosphere, FILE *f);
 
 #ifdef __cplusplus
-};
+}
 #endif
 #endif

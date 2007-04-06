@@ -55,12 +55,12 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
         }
     }
 
-    unsigned i; // VC6 doesn't like for-scoped variables
+    unsigned int i; // VC6 doesn't like for-scoped variables
 
-    for (unsigned pri=0; pri<geo->getNumPrimitiveSets(); ++pri) {
+    for (unsigned int pri=0; pri<geo->getNumPrimitiveSets(); ++pri) {
         osg::PrimitiveSet *pset = geo->getPrimitiveSet(pri);
 
-        unsigned N = pset->getNumIndices();
+        unsigned int N = pset->getNumIndices();
 
         switch (pset->getMode()) {
 
@@ -80,9 +80,9 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
             case osg::PrimitiveSet::TRIANGLE_STRIP:
                 if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
                     osg::DrawArrayLengths *dal = static_cast<osg::DrawArrayLengths *>(pset);
-                    unsigned j = 0;
+                    unsigned int j = 0;
                     for (osg::DrawArrayLengths::const_iterator pi=dal->begin(); pi!=dal->end(); ++pi) {
-                        unsigned iN = static_cast<unsigned>(*pi-2);
+                        unsigned int iN = static_cast<unsigned int>(*pi-2);
                         for (i=0; i<iN; ++i, ++j) {
                             if ((i%2) == 0) {
                                 compute(pset, vx, nx, tx, j, j+1, j+2);
@@ -106,9 +106,9 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
             case osg::PrimitiveSet::TRIANGLE_FAN:
                 if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
                     osg::DrawArrayLengths *dal = static_cast<osg::DrawArrayLengths *>(pset);
-                    unsigned j = 0;
+                    unsigned int j = 0;
                     for (osg::DrawArrayLengths::const_iterator pi=dal->begin(); pi!=dal->end(); ++pi) {
-                        unsigned iN = static_cast<unsigned>(*pi-2);
+                        unsigned int iN = static_cast<unsigned int>(*pi-2);
                         for (i=0; i<iN; ++i) {
                             compute(pset, vx, nx, tx, 0, j+1, j+2);
                         }
@@ -116,7 +116,7 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
                     }
                 } else {
                     for (i=0; i<N-2; ++i) {
-                        compute(pset, vx, nx, tx, 2, i+1, i+2);
+                        compute(pset, vx, nx, tx, 0, i+1, i+2);
                     }
                 }
                 break;

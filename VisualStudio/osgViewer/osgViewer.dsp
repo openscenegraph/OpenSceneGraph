@@ -203,7 +203,7 @@ SOURCE=..\..\Include\osgViewer\GraphicsWindow
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\Include\osgViewer\GraphicsWindowWin32
+SOURCE=..\..\Include\osgViewer\api\Win32\GraphicsWindowWin32
 # End Source File
 # Begin Source File
 

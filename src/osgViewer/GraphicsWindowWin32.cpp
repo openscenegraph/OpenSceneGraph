@@ -16,7 +16,7 @@
  * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
-#include <osgViewer/GraphicsWindowWin32>
+#include <osgViewer/api/Win32/GraphicsWindowWin32>
 #include <vector>
 #include <map>
 #include <sstream>

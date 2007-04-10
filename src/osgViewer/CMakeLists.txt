@@ -22,10 +22,9 @@ SET(LIB_PUBLIC_HEADERS
 )
 
 SET(LIB_PRIVATE_HEADERS
-	${HEADER_PATH}/GraphicsWindowCarbon
-	${HEADER_PATH}/GraphicsWindowCocoa
-	${HEADER_PATH}/GraphicsWindowWin32
-	${HEADER_PATH}/GraphicsWindowX11
+	${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
+	${HEADER_PATH}/api/Win32/GraphicsWindowWin32
+	${HEADER_PATH}/api/X11/GraphicsWindowX11
 )
 
 SET(LIB_COMMON_FILES

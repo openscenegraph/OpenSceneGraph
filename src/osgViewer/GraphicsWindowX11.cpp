@@ -16,7 +16,7 @@
  * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
-#include <osgViewer/GraphicsWindowX11>
+#include <osgViewer/api/X11/GraphicsWindowX11>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

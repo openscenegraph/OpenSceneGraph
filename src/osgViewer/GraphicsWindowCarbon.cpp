@@ -13,7 +13,7 @@
 
 #ifdef __APPLE__
 #include <osg/observer_ptr>
-#include <osgViewer/GraphicsWindowCarbon>
+#include <osgViewer/api/Carbon/GraphicsWindowCarbon>
 #include <Carbon/Carbon.h>
 #include <OpenGL/OpenGL.h>
 using namespace osgViewer;

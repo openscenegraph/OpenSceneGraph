@@ -1,2 +1,0 @@
-tag:
-	cvs tag OpenSceneGraph_$(VERSION_MAJOR)_$(VERSION_MINOR)_$(VERSION_RELEASE)_release_revision_$(VERSION_REVISION)

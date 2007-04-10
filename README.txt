@@ -5,8 +5,9 @@ and examples, and see the documentation on the OpenSceneGraph website.
 
     http://www.openscenegraph.org
   
+Or for the impatient read the READEME.txt in the OpenSceneGraph root directory.
 
-Robert Osfield. 
-robert@openscenegraph.com
-July 19th 2006.
+Robert Osfield.
+Project Lead.
+April 10th 2007.
 

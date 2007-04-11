@@ -110,6 +110,7 @@ void GeometryTechnique::init()
     _geode = new osg::Geode;
     _geometry = new osg::Geometry;
     _geode->addDrawable(_geometry.get());
+    _geode->addDrawable(new osgTerrain::TerrainGeometry);
     
     unsigned int numRows = 100;
     unsigned int numColumns = 100;
@@ -124,12 +125,12 @@ void GeometryTechnique::init()
     unsigned int numVertices = numRows * numColumns;
 
     // allocate and assign vertices
-    osg::Vec3Array* vertices = new osg::Vec3Array(numVertices);
-    _geometry->setVertexArray(vertices);
+    osg::Vec3Array* _vertices = new osg::Vec3Array(numVertices);
+    _geometry->setVertexArray(_vertices);
 
     // allocate and assign normals
-    osg::Vec3Array* normals = new osg::Vec3Array(numVertices);
-    _geometry->setNormalArray(normals);
+    osg::Vec3Array* _normals = new osg::Vec3Array(numVertices);
+    _geometry->setNormalArray(_normals);
     _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
     
@@ -141,17 +142,17 @@ void GeometryTechnique::init()
     float scaleHeight = 1.0;
 
     // allocate and assign tex coords
-    osg::Vec2Array* texcoords = 0;
+    osg::Vec2Array* _texcoords = 0;
     if (colorLayer)
     {
         color_index = texcoord_index;
         ++texcoord_index;
 
-        texcoords = new osg::Vec2Array(numVertices);
-        _geometry->setTexCoordArray(color_index, texcoords);
+        _texcoords = new osg::Vec2Array(numVertices);
+        _geometry->setTexCoordArray(color_index, _texcoords);
     }
 
-    osg::FloatArray* heights = 0;
+    osg::FloatArray* _elevations = 0;
     osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
     if (tf)
     {
@@ -160,8 +161,8 @@ void GeometryTechnique::init()
 
         if (!colorLayer)
         {
-            heights = new osg::FloatArray(numVertices);
-            _geometry->setTexCoordArray(tf_index, heights);
+            _elevations = new osg::FloatArray(numVertices);
+            _geometry->setTexCoordArray(tf_index, _elevations);
 
             minHeight = tf->getMinimum();
             scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
@@ -170,10 +171,10 @@ void GeometryTechnique::init()
 
         
     // allocate and assign color
-    osg::Vec4Array* colors = new osg::Vec4Array(1);
-    _geometry->setColorArray(colors);
+    osg::Vec4Array* _colors = new osg::Vec4Array(1);
+    _geometry->setColorArray(_colors);
     _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    (*_colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     
     // populate vertex and tex coord arrays
     unsigned int j;
@@ -195,7 +196,7 @@ void GeometryTechnique::init()
             osg::Vec3d model;
             masterLocator->convertLocalToModel(ndc, model);
 
-            (*vertices)[iv] = model;
+            (*_vertices)[iv] = model;
 
             if (colorLayer)
             {
@@ -203,18 +204,18 @@ void GeometryTechnique::init()
                 {
                     osg::Vec3d color_ndc;
                     Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
-                    (*texcoords)[iv].set(color_ndc.x(), color_ndc.y());
+                    (*_texcoords)[iv].set(color_ndc.x(), color_ndc.y());
                 }
                 else
                 {
-                    (*texcoords)[iv].set(ndc.x(), ndc.y());
+                    (*_texcoords)[iv].set(ndc.x(), ndc.y());
                 }
 
             }
 
-            if (heights)
+            if (_elevations)
             {
-                (*heights)[iv] = (ndc.z()-minHeight)*scaleHeight;
+                (*_elevations)[iv] = (ndc.z()-minHeight)*scaleHeight;
             }
 
             // compute the local normal
@@ -223,11 +224,12 @@ void GeometryTechnique::init()
             masterLocator->convertLocalToModel(ndc_one, model_one);
             model_one -= model;
             model_one.normalize();            
-            (*normals)[iv] = model_one;
+            (*_normals)[iv] = model_one;
         }
     }
 
     // populate primitive sets
+    // _primitiveSets.clear();
     for(j=0; j<numRows-1; ++j)
     {
         osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, numColumns*2);
@@ -237,6 +239,9 @@ void GeometryTechnique::init()
             (*elements)[i*2] = iv + numColumns;
             (*elements)[i*2+1] = iv;
         }
+        
+        //_primitiveSets.push_back(elements);
+        
         _geometry->addPrimitiveSet(elements);
     }
 
@@ -353,4 +358,46 @@ void GeometryTechnique::cleanSceneGraph()
 void GeometryTechnique::dirty()
 {
     TerrainTechnique::dirty();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  TerrainGeometry
+//
+TerrainGeometry::TerrainGeometry()
+{
+}
+
+
+TerrainGeometry::TerrainGeometry(const TerrainGeometry& geometry,const osg::CopyOp& copyop):
+    osg::Drawable(geometry, copyop),
+    _vertices(geometry._vertices),
+    _normals(geometry._normals),
+    _colors(geometry._colors),
+    _texcoords(geometry._texcoords),
+    _primitiveSets(geometry._primitiveSets)
+
+{
+}
+
+osg::BoundingBox TerrainGeometry::computeBound() const
+{
+    osg::BoundingBox bb;
+    
+    if (_vertices.first.valid())
+    {
+        for(osg::Vec3Array::const_iterator itr = _vertices.first->begin();
+            itr != _vertices.first->end();
+            ++itr)
+        {
+            bb.expandBy(*itr);
+        }
+    }
+    return bb;
+}
+
+void TerrainGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
+{
+    osg::notify(osg::NOTICE)<<"TerrainGeometry::drawImplementation"<<std::endl;
 }

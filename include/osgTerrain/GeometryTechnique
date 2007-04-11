@@ -43,9 +43,76 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
     protected:
 
         virtual ~GeometryTechnique();
-        
+
         osg::ref_ptr<osg::Geode>    _geode;
+        
         osg::ref_ptr<osg::Geometry> _geometry;
+        //osg::ref_ptr<TerrainGeometry> _geometry;
+};
+
+class OSGTERRAIN_EXPORT TerrainGeometry : public osg::Drawable
+{
+    public:
+        TerrainGeometry();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        TerrainGeometry(const TerrainGeometry& geometry,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        virtual osg::Object* cloneType() const { return new TerrainGeometry(); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new TerrainGeometry(*this,copyop); }        
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const TerrainGeometry*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osgTerrain"; }
+        virtual const char* className() const { return "TerrainGeometry"; }
+    
+        void setVertices(osg::Vec3Array* vertices) { _vertices.first = vertices; }
+        osg::Vec3Array* getVertices() { return _vertices.first.get(); }
+        const osg::Vec3Array* getVertices() const { return _vertices.first.get(); }
+
+        void setNormals(osg::Vec3Array* normals) { _normals.first = normals; }
+        osg::Vec3Array* getNormals() { return _normals.first.get(); }
+        const osg::Vec3Array* getNormals() const { return _normals.first.get(); }
+
+        void setColors(osg::Vec4Array* colors) { _colors.first = colors; }
+        osg::Vec4Array* getColors() { return _colors.first.get(); }
+        const osg::Vec4Array* getColors() const { return _colors.first.get(); }
+
+        void setTexCoords(unsigned int unit, osg::Array* array) { _texcoords.resize(unit+1); _texcoords[unit].first = array; }
+        osg::Array* getTexCoords(unsigned int unit) { return _texcoords[unit].first.get(); }
+        const osg::Array* getTexCoords(unsigned int unit) const { return _texcoords[unit].first.get(); }
+
+        void addPrimitiveSet(osg::PrimitiveSet* primitiveSet) { _primitiveSets.push_back(primitiveSet); }
+        
+        osg::PrimitiveSet* getPrimtitiveSet(unsigned int i) { return _primitiveSets[i].get(); }
+        const osg::PrimitiveSet* getPrimtitiveSet(unsigned int i) const { return _primitiveSets[i].get(); }
+        unsigned int getNumPrimitiveSets() const { return _primitiveSets.size(); }
+
+
+        virtual osg::BoundingBox computeBound() const;
+
+        /** Draw Geometry directly ignoring an OpenGL display list which could be attached.
+          * This is the internal draw method which does the drawing itself,
+          * and is the method to override when deriving from Geometry for user-drawn objects.
+        */
+        virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
+
+    protected:
+    
+        typedef osg::Geometry::PrimitiveSetList PrimitiveSetList;
+
+        typedef std::pair< osg::ref_ptr<osg::Array>, GLvoid*>       ArrayData;
+        typedef std::pair< osg::ref_ptr<osg::FloatArray>, GLvoid*>  FloatArrayData;
+        typedef std::pair< osg::ref_ptr<osg::Vec2Array>, GLvoid*>   Vec2ArrayData;
+        typedef std::pair< osg::ref_ptr<osg::Vec3Array>, GLvoid*>   Vec3ArrayData;
+        typedef std::pair< osg::ref_ptr<osg::Vec4Array>, GLvoid*>   Vec4ArrayData;
+        
+        typedef std::vector< ArrayData >                            TexCoordsList;
+
+        Vec3ArrayData       _vertices;
+        Vec3ArrayData       _normals;
+        Vec4ArrayData       _colors;
+        TexCoordsList       _texcoords;
+        
+        PrimitiveSetList    _primitiveSets;
 
 };
 

@@ -16,7 +16,8 @@
 using namespace osg;
 using namespace osgTerrain;
 
-TerrainNode::TerrainNode()
+TerrainNode::TerrainNode():
+    _requiresNormals(true)
 {
     setNumChildrenRequiringUpdateTraversal(1);
 }
@@ -24,8 +25,8 @@ TerrainNode::TerrainNode()
 TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _elevationLayer(terrain._elevationLayer),
-    _colorLayer(terrain._colorLayer),
-    _colorTransferFunction(terrain._colorTransferFunction)
+    _colorLayers(terrain._colorLayers),
+    _requiresNormals(terrain._requiresNormals)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
     
@@ -66,14 +67,18 @@ void TerrainNode::setElevationLayer(osgTerrain::Layer* layer)
     _elevationLayer = layer;
 }
 
-void TerrainNode::setColorLayer(osgTerrain::Layer* layer)
+void TerrainNode::setColorLayer(unsigned int i, osgTerrain::Layer* layer)
 {
-    _colorLayer = layer;
+    if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
+    
+    _colorLayers[i].layer = layer;
 }
 
-void TerrainNode::setColorTransferFunction(osg::TransferFunction* tf)
+void TerrainNode::setColorTransferFunction(unsigned int i, osg::TransferFunction* tf)
 {
-    _colorTransferFunction = tf;
+    if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
+    
+    _colorLayers[i].transferFunction = tf;
 }
 
 osg::BoundingSphere TerrainNode::computeBound() const
@@ -82,7 +87,12 @@ osg::BoundingSphere TerrainNode::computeBound() const
     
     if (_elevationLayer.valid()) bs.expandBy(_elevationLayer->computeBound());
 
-    if (_colorLayer.valid()) bs.expandBy(_colorLayer->computeBound());
+    for(Layers::const_iterator itr = _colorLayers.begin();
+        itr != _colorLayers.end();
+        ++itr)
+    {
+        if (itr->layer.valid()) bs.expandBy(itr->layer->computeBound());
+    }
 
     return bs;
 }

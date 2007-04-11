@@ -47,8 +47,8 @@ void GeometryTechnique::init()
 
 
     osgTerrain::Layer* elevationLayer = _terrainNode->getElevationLayer();
-    osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer();
-    osg::TransferFunction* colorTF = _terrainNode->getColorTransferFunction();
+    osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrainNode->getColorTransferFunction(0);
 
     // if the elevationLayer and colorLayer are the same, and there is colorTF then
     // simply assing as a texture coordinate.
@@ -182,7 +182,7 @@ void GeometryTechnique::init()
         for(unsigned int i=0; i<numColumns; ++i)
         {
             unsigned int iv = j*numColumns + i;
-            osg::Vec3d ndc( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 0.0);
+            osg::Vec3d ndc( ((double)i)/(double)(numColumns-1), ((double)j)/(double)(numRows-1), 0.0);
             
             if (elevationLayer)
             {
@@ -202,7 +202,7 @@ void GeometryTechnique::init()
                 if (colorLocator!= masterLocator)
                 {
                     osg::Vec3d color_ndc;
-                    colorLocator->computeLocalBounds(*masterLocator, ndc, color_ndc);
+                    Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
                     (*texcoords)[iv].set(color_ndc.x(), color_ndc.y());
                 }
                 else

@@ -60,18 +60,43 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         /** Get the coordinate frame locator of the terrain node.*/
         const Locator* getLocator() const { return _locator.get(); }
 
-
+        /** Set the layer to use to define the elevations of the terrain.*/
         void setElevationLayer(Layer* layer);
+
+        /** Get the layer to use to define the elevations of the terrain.*/
         Layer* getElevationLayer() { return _elevationLayer.get(); }
+
+        /** Get the const layer to use to define the elevations of the terrain.*/
         const Layer* getElevationLayer() const { return _elevationLayer.get(); }
+
+
+        /** Set a color layer with specified layer number.*/
+        void setColorLayer(unsigned int i, osgTerrain::Layer* layer);
+
+        /** Get color layer with specified layer number.*/
+        Layer* getColorLayer(unsigned int i) { return i<_colorLayers.size() ? _colorLayers[i].layer.get() : 0; }
+
+        /** Set const color layer with specified layer number.*/
+        const Layer* getColorLayer(unsigned int i) const { return i<_colorLayers.size() ? _colorLayers[i].layer.get() : 0; }
         
-        void setColorLayer(osgTerrain::Layer* layer);
-        Layer* getColorLayer() { return _colorLayer.get(); }
-        const Layer* getColorLayer() const { return _colorLayer.get(); }
-        
-        void setColorTransferFunction(osg::TransferFunction* tf);
-        osg::TransferFunction* getColorTransferFunction() { return _colorTransferFunction.get(); }
-        const osg::TransferFunction* getColorTransferFunction() const { return _colorTransferFunction.get(); }
+        /** Set a color transfer function with specified layer number.*/
+        void setColorTransferFunction(unsigned int i, osg::TransferFunction* tf);
+
+        /** Get color transfer function with specified layer number.*/
+        osg::TransferFunction* getColorTransferFunction(unsigned int i) { return i<_colorLayers.size() ? _colorLayers[i].transferFunction.get() : 0; }
+
+        /** Get const color transfer function with specified layer number.*/
+        const osg::TransferFunction* getColorTransferFunction(unsigned int i) const { return i<_colorLayers.size() ? _colorLayers[i].transferFunction.get() : 0; }
+
+        unsigned int getNumColorLayers() const { return _colorLayers.size(); }
+
+
+        /** Set whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
+        void setRequiresNormals(bool flag) { _requiresNormals = flag; }
+
+        /** Get whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
+        bool getRequiresNormals() const { return _requiresNormals; }
+
 
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
         virtual osg::BoundingSphere computeBound() const;
@@ -80,13 +105,22 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
 
         virtual ~TerrainNode();
 
+        struct LayerData
+        {
+            osg::ref_ptr<Layer> layer;
+            osg::ref_ptr<osg::TransferFunction> transferFunction;
+        };
+
+        typedef std::vector<LayerData> Layers;
+
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
         osg::ref_ptr<Locator>               _locator;
         
         osg::ref_ptr<Layer>                 _elevationLayer;
 
-        osg::ref_ptr<Layer>                 _colorLayer;
-        osg::ref_ptr<osg::TransferFunction> _colorTransferFunction;
+        Layers                              _colorLayers;
+        
+        bool                                _requiresNormals;
 };
 
 }

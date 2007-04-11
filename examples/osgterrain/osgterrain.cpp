@@ -82,20 +82,30 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
 
+    unsigned int layerNum = 0;
+
     bool readParameter = false;
-    do 
+    float minValue, maxValue;
+    int pos = 1;
+    while(pos<arguments.argc())
     {
         readParameter = false;
         std::string filename;
         
-        if (arguments.read("-e",x,y,w,h))
+        if (arguments.read(pos, "--layer",layerNum)) 
+        {
+            osg::notify(osg::NOTICE)<<"Set layer number to "<<layerNum<<std::endl;
+            readParameter = true;
+        }
+
+        else if (arguments.read(pos, "-e",x,y,w,h))
         {
             // define the extents.
             locator = new osgTerrain::EllipsoidLocator(x,y,w,h,0);
             readParameter = true;
         }
 
-        if (arguments.read("--hf",filename))
+        else if (arguments.read(pos, "--hf",filename))
         {
             readParameter = true;
             
@@ -119,8 +129,8 @@ int main(int argc, char** argv)
             }
             
         }
-        
-        if (arguments.read("-d",filename) || arguments.read("--elevation-image",filename))
+
+        else if (arguments.read(pos, "-d",filename) || arguments.read(pos, "--elevation-image",filename))
         {
             readParameter = true;
             osg::notify(osg::NOTICE)<<"--elevation-image "<<filename<<std::endl;
@@ -141,8 +151,8 @@ int main(int argc, char** argv)
                 osg::notify(osg::NOTICE)<<"failed to create osgTerrain::ImageLayer"<<std::endl;
             }
         }
-
-        if (arguments.read("-c",filename) || arguments.read("--image",filename))
+        
+        else if (arguments.read(pos, "-c",filename) || arguments.read(pos, "--image",filename))
         {
             readParameter = true;
             osg::notify(osg::NOTICE)<<"--image "<<filename<<" x="<<x<<" y="<<y<<" w="<<w<<" h="<<h<<std::endl;
@@ -154,7 +164,7 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 
-                terrain->setColorLayer(imageLayer.get());
+                terrain->setColorLayer(layerNum, imageLayer.get());
                 
                 osg::notify(osg::NOTICE)<<"created Color osgTerrain::ImageLayer"<<std::endl;
             }
@@ -164,8 +174,7 @@ int main(int argc, char** argv)
             }
         }
 
-        float minValue, maxValue;
-        if (arguments.read("--tf",minValue, maxValue))
+        else if (arguments.read(pos, "--tf",minValue, maxValue))
         {
             readParameter = true;
 
@@ -183,10 +192,14 @@ int main(int argc, char** argv)
             
             osg::notify(osg::NOTICE)<<"--tf "<<minValue<<" "<<maxValue<<std::endl;
 
-            terrain->setColorTransferFunction(tf.get());
+            terrain->setColorTransferFunction(layerNum, tf.get());
+        }
+        else
+        {
+            ++pos;
         }
 
-    } while (readParameter);
+    }
     
 
     osg::ref_ptr<osgTerrain::GeometryTechnique> geometryTechnique = new osgTerrain::GeometryTechnique;

@@ -105,65 +105,88 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_Method1(void, setElevationLayer, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
 	          __void__setElevationLayer__Layer_P1,
-	          "",
+	          "Set the layer to use to define the elevations of the terrain. ",
 	          "");
 	I_Method0(osgTerrain::Layer *, getElevationLayer,
 	          Properties::NON_VIRTUAL,
 	          __Layer_P1__getElevationLayer,
-	          "",
+	          "Get the layer to use to define the elevations of the terrain. ",
 	          "");
 	I_Method0(const osgTerrain::Layer *, getElevationLayer,
 	          Properties::NON_VIRTUAL,
 	          __C5_Layer_P1__getElevationLayer,
+	          "Get the const layer to use to define the elevations of the terrain. ",
+	          "");
+	I_Method2(void, setColorLayer, IN, unsigned int, i, IN, osgTerrain::Layer *, layer,
+	          Properties::NON_VIRTUAL,
+	          __void__setColorLayer__unsigned_int__osgTerrain_Layer_P1,
+	          "Set a color layer with specified layer number. ",
+	          "");
+	I_Method1(osgTerrain::Layer *, getColorLayer, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __Layer_P1__getColorLayer__unsigned_int,
+	          "Get color layer with specified layer number. ",
+	          "");
+	I_Method1(const osgTerrain::Layer *, getColorLayer, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_Layer_P1__getColorLayer__unsigned_int,
+	          "Set const color layer with specified layer number. ",
+	          "");
+	I_Method2(void, setColorTransferFunction, IN, unsigned int, i, IN, osg::TransferFunction *, tf,
+	          Properties::NON_VIRTUAL,
+	          __void__setColorTransferFunction__unsigned_int__osg_TransferFunction_P1,
+	          "Set a color transfer function with specified layer number. ",
+	          "");
+	I_Method1(osg::TransferFunction *, getColorTransferFunction, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __osg_TransferFunction_P1__getColorTransferFunction__unsigned_int,
+	          "Get color transfer function with specified layer number. ",
+	          "");
+	I_Method1(const osg::TransferFunction *, getColorTransferFunction, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_TransferFunction_P1__getColorTransferFunction__unsigned_int,
+	          "Get const color transfer function with specified layer number. ",
+	          "");
+	I_Method0(unsigned int, getNumColorLayers,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumColorLayers,
 	          "",
 	          "");
-	I_Method1(void, setColorLayer, IN, osgTerrain::Layer *, layer,
+	I_Method1(void, setRequiresNormals, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
-	          __void__setColorLayer__osgTerrain_Layer_P1,
-	          "",
+	          __void__setRequiresNormals__bool,
+	          "Set whether the TerrainTechnique should create per vertex normals for lighting purposes. ",
 	          "");
-	I_Method0(osgTerrain::Layer *, getColorLayer,
+	I_Method0(bool, getRequiresNormals,
 	          Properties::NON_VIRTUAL,
-	          __Layer_P1__getColorLayer,
-	          "",
-	          "");
-	I_Method0(const osgTerrain::Layer *, getColorLayer,
-	          Properties::NON_VIRTUAL,
-	          __C5_Layer_P1__getColorLayer,
-	          "",
-	          "");
-	I_Method1(void, setColorTransferFunction, IN, osg::TransferFunction *, tf,
-	          Properties::NON_VIRTUAL,
-	          __void__setColorTransferFunction__osg_TransferFunction_P1,
-	          "",
-	          "");
-	I_Method0(osg::TransferFunction *, getColorTransferFunction,
-	          Properties::NON_VIRTUAL,
-	          __osg_TransferFunction_P1__getColorTransferFunction,
-	          "",
-	          "");
-	I_Method0(const osg::TransferFunction *, getColorTransferFunction,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_TransferFunction_P1__getColorTransferFunction,
-	          "",
+	          __bool__getRequiresNormals,
+	          "Get whether the TerrainTechnique should create per vertex normals for lighting purposes. ",
 	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
-	I_SimpleProperty(osgTerrain::Layer *, ColorLayer, 
-	                 __Layer_P1__getColorLayer, 
-	                 __void__setColorLayer__osgTerrain_Layer_P1);
-	I_SimpleProperty(osg::TransferFunction *, ColorTransferFunction, 
-	                 __osg_TransferFunction_P1__getColorTransferFunction, 
-	                 __void__setColorTransferFunction__osg_TransferFunction_P1);
+	I_ArrayProperty(osgTerrain::Layer *, ColorLayer, 
+	                __Layer_P1__getColorLayer__unsigned_int, 
+	                __void__setColorLayer__unsigned_int__osgTerrain_Layer_P1, 
+	                __unsigned_int__getNumColorLayers, 
+	                0, 
+	                0, 
+	                0);
+	I_IndexedProperty(osg::TransferFunction *, ColorTransferFunction, 
+	                  __osg_TransferFunction_P1__getColorTransferFunction__unsigned_int, 
+	                  __void__setColorTransferFunction__unsigned_int__osg_TransferFunction_P1, 
+	                  0);
 	I_SimpleProperty(osgTerrain::Layer *, ElevationLayer, 
 	                 __Layer_P1__getElevationLayer, 
 	                 __void__setElevationLayer__Layer_P1);
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
+	I_SimpleProperty(bool, RequiresNormals, 
+	                 __bool__getRequiresNormals, 
+	                 __void__setRequiresNormals__bool);
 	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechnique, 
 	                 __TerrainTechnique_P1__getTerrainTechnique, 
 	                 __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1);

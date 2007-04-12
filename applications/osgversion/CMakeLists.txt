@@ -3,5 +3,5 @@
 
 SET(TARGET_SRC osgversion.cpp )
 #### end var setup  ###
-# The YES denotes commandline app
-SETUP_APPLICATION(osgversion 1)
+
+SETUP_COMMANDLINE_APPLICATION(osgversion)

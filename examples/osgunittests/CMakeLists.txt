@@ -4,5 +4,5 @@
 SET(TARGET_SRC UnitTestFramework.cpp UnitTests_osg.cpp osgunittests.cpp performance.cpp )
 SET(TARGET_H UnitTestFramework.h performance.h )
 #### end var setup  ###
-# The 1 denotes commandline app (for TRUE)
-SETUP_EXAMPLE(osgunittests 1)
+
+SETUP_COMMANDLINE_EXAMPLE(osgunittests)

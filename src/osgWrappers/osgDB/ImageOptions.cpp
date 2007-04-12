@@ -44,8 +44,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	               ____ImageOptions__C5_std_string_R1,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgDB::ImageOptions &, options, , IN, const osg::CopyOp, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ImageOptions__C5_ImageOptions_R1__C5_osg_CopyOp,
+	I_ConstructorWithDefaults2(IN, const osgDB::ImageOptions &, options, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ImageOptions__C5_ImageOptions_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,

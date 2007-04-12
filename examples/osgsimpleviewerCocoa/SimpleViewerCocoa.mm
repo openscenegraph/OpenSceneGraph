@@ -1154,7 +1154,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 //        int number_of_files = [file_names count];
 		// Exercise for the reader: Try loading all files in the array
 		NSString* single_file = [file_names objectAtIndex:0];
-	    osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([single_file UTF8String]);
+	    osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([single_file fileSystemRepresentation]);
 		if(!loaded_model)
 		{
 			NSLog(@"File: %@ failed to load", single_file);
@@ -1173,7 +1173,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 			return NO;
 		}
 		NSString* file_path = [file_url path];
-	    osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([file_path UTF8String]);
+	    osg::ref_ptr<osg::Node> loaded_model = osgDB::readNodeFile([file_path fileSystemRepresentation]);
 		if(!loaded_model)
 		{
 			NSLog(@"URL: %@ failed to load, %@", file_url, file_path);

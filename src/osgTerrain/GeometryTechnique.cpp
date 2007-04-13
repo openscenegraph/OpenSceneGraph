@@ -400,4 +400,13 @@ osg::BoundingBox TerrainGeometry::computeBound() const
 void TerrainGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::notify(osg::NOTICE)<<"TerrainGeometry::drawImplementation"<<std::endl;
+    
+    if (_vertices.first.valid() && _vertices.first->getDataVariance()==DYNAMIC)
+    {
+        osg::notify(osg::NOTICE)<<"  Vertices DYNAMIC"<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"  Vertices STATIC"<<std::endl;
+    }
 }

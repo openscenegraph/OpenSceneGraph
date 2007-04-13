@@ -265,7 +265,6 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	I_PublicMemberProperty(float, _pixel_y);
 	I_PublicMemberProperty(osg::Camera *, _camera);
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList, _hitList);
-	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList::iterator, _hitIter);
 	I_PublicMemberProperty(osg::Matrix, _MVPW);
 	I_PublicMemberProperty(osg::Matrix, _inverseMVPW);
 END_REFLECTOR

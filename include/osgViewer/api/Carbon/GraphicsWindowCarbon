@@ -81,6 +81,9 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         /** Check to see if any events have been generated.*/
         virtual void checkEvents();
 
+        /** Set the window's position and size.*/
+        virtual void setWindowRectangle(int x, int y, int width, int height);
+
         /** Set Window decoration.*/
         virtual void setWindowDecoration(bool flag);
 

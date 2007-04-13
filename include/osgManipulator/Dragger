@@ -115,7 +115,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         osg::Camera* _camera;
 
         IntersectionList _hitList;
-        IntersectionList::iterator _hitIter;
+        IntersectionList::const_iterator _hitIter;
 
         osg::Matrix _MVPW;
         osg::Matrix _inverseMVPW;

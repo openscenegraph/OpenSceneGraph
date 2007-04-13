@@ -105,6 +105,9 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         // Override from GUIActionAdapter
         virtual void requestWarpPointer(float x,float y);
 
+        /** Set the window's position and size.*/
+        virtual void setWindowRectangle(int x, int y, int width, int height);
+
         /** Switch on/off the cursor.*/
         virtual void useCursor(bool cursorOn);
         
@@ -121,8 +124,11 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
     
         // X11 specific aces functions
 
-        Display* getDisplay() { return _display; }
-        Display* getEventDisplay() { return _eventDisplay; }
+        Display* getDisplay() const { return _display; }
+        Display* getEventDisplay() const { return _eventDisplay; }
+        Display* getDisplayToUse() const ;
+        
+        
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
         GLXContext& getGLXContext() { return _glxContext; }
@@ -130,6 +136,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Cursor& getDefaultCursor() { return _defaultCursor; }
         Cursor& getNullCursor() { return _nullCursor; }
         Cursor& getCurrentCursor() { return _nullCursor; }
+        
+        
 
     protected:
     

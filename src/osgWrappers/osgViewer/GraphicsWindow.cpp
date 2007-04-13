@@ -48,9 +48,24 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__checkEvents,
 	          "",
 	          "");
+	I_Method4(void, setWindowRectangle, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::VIRTUAL,
+	          __void__setWindowRectangle__int__int__int__int,
+	          "Set the window's position and size. ",
+	          "");
+	I_Method4(void, getWindowRectangle, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height,
+	          Properties::VIRTUAL,
+	          __void__getWindowRectangle__int_R1__int_R1__int_R1__int_R1,
+	          "Get the window's position and size. ",
+	          "");
 	I_Method1(void, setWindowDecoration, IN, bool, x,
 	          Properties::VIRTUAL,
 	          __void__setWindowDecoration__bool,
+	          "Set Window decoration. ",
+	          "");
+	I_Method0(bool, getWindowDecoration,
+	          Properties::VIRTUAL,
+	          __bool__getWindowDecoration,
 	          "Set Window decoration. ",
 	          "");
 	I_Method0(void, grabFocus,
@@ -132,7 +147,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
 	I_SimpleProperty(bool, WindowDecoration, 
-	                 0, 
+	                 __bool__getWindowDecoration, 
 	                 __void__setWindowDecoration__bool);
 END_REFLECTOR
 

@@ -47,25 +47,6 @@ public:
             {
                 if (ea.getKey()=='m')
                 {
-#if 0
-                    switch(viewer->getThreadingModel())
-                    {
-                        case(osgViewer::Viewer::SingleThreaded):
-                            viewer->setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
-                            osg::notify(osg::NOTICE)<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::CullDrawThreadPerContext):
-                            viewer->setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
-                            osg::notify(osg::NOTICE)<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::DrawThreadPerContext):
-                            viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-                            osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
-                            break;
-                        default:
-                            break;
-                    }
-#else                
                     switch(viewer->getThreadingModel())
                     {
                         case(osgViewer::Viewer::SingleThreaded):
@@ -89,7 +70,6 @@ public:
                             osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
                             break;
                     }
-#endif
                     return true;
                 }
                 if (ea.getKey()=='e')
@@ -126,6 +106,86 @@ public:
     bool _done;
 };
 
+
+class FullScreenToggleHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    FullScreenToggleHandler() {}
+        
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        if (!viewer) return false;
+    
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey()=='f')
+                {
+                    osgViewer::Viewer::Windows windows;
+                    viewer->getWindows(windows);
+                    
+                    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+                        itr != windows.end();
+                        ++itr)
+                    {
+                        toggleFullscreen(*itr);
+                    }
+                }
+            }
+            default: break;
+        }
+        
+        return false;
+    }
+    
+    /** Get the keyboard and mouse usage of this manipulator.*/
+    virtual void getUsage(osg::ApplicationUsage& usage) const
+    {
+        usage.addKeyboardMouseBinding("f","Toggle full screen.");
+    }
+
+
+    void toggleFullscreen(osgViewer::GraphicsWindow* window)
+    {
+
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (!wsi) 
+        {
+            osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot toggle window fullscreen."<<std::endl;
+            return;
+        }
+        
+        unsigned int screen_width, screen_height;
+        wsi->getScreenResolution(*(window->getTraits()), screen_width, screen_height);
+        
+        int x, y, width, height;
+        window->getWindowRectangle(x, y, width, height);
+        
+        bool isFullScreen = x==0 && y==0 && width==screen_width && height==screen_height;
+        if (isFullScreen)
+        {
+            window->setWindowRectangle(screen_width/4, screen_height/4, screen_width/2, screen_height/2);
+            window->setWindowDecoration(true);
+        }
+        else
+        {
+            window->setWindowDecoration(false);
+            window->setWindowRectangle(0, 0, screen_width, screen_height);
+        }
+        
+        window->grabFocusIfPointerInWindow();
+        
+        return;
+        
+    }
+        
+
+
+    bool _done;
+};
 
 int main(int argc, char** argv)
 {
@@ -204,6 +264,9 @@ int main(int argc, char** argv)
     // add the thread model handler
     viewer.addEventHandler(new ThreadingHandler);
 
+    // add the full screen toggle handler
+    viewer.addEventHandler(new FullScreenToggleHandler);
+    
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 

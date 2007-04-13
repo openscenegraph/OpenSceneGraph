@@ -355,6 +355,11 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
         _traits->height = watt.height;
 #endif
 
+        // add usleep here to give window manager a chance to handle the request, if
+        // we don't add this sleep then any X11 calls right afterwards can produce
+        // X11 errors.
+        usleep(100000);
+
     }
     else
         osg::notify(osg::NOTICE)<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
@@ -370,6 +375,11 @@ void GraphicsWindowX11::setWindowRectangle(int x, int y, int width, int height)
     
     XFlush(display);
     XSync(display, 0);
+
+    // add usleep here to give window manager a chance to handle the request, if
+    // we don't add this sleep then any X11 calls right afterwards can produce
+    // X11 errors.
+    usleep(100000);
 }
 
 void GraphicsWindowX11::useCursor(bool cursorOn)

@@ -231,6 +231,23 @@ GraphicsWindowX11::~GraphicsWindowX11()
     close(true);
 }
 
+Display* GraphicsWindowX11::getDisplayToUse() const
+{
+    if (_threadOfLastMakeCurrent==0)
+    {
+        return _display;
+    }
+    
+    if (OpenThreads::Thread::CurrentThread()==_threadOfLastMakeCurrent) 
+    {
+        return _display;
+    }
+    else 
+    {
+        return _eventDisplay;
+    }
+}
+
 bool GraphicsWindowX11::createVisualInfo()
 {
     typedef std::vector<int> Attributes;
@@ -275,7 +292,7 @@ bool GraphicsWindowX11::createVisualInfo()
 
 void GraphicsWindowX11::setWindowDecoration(bool flag)
 {
-    Display* display = _display;
+    Display* display = getDisplayToUse();
 
     Atom atom;
     if( (atom = XInternAtom( display, "_MOTIF_WM_HINTS", 0 )) != None )
@@ -343,9 +360,21 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
         osg::notify(osg::NOTICE)<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
 }
 
+void GraphicsWindowX11::setWindowRectangle(int x, int y, int width, int height)
+{
+    if (!_realized) return;
+    
+    Display* display = getDisplayToUse();
+    
+    XMoveResizeWindow(display, _window, x, y, width, height);
+    
+    XFlush(display);
+    XSync(display, 0);
+}
+
 void GraphicsWindowX11::useCursor(bool cursorOn)
 {
-    Display* display = _display;
+    Display* display = getDisplayToUse();
 
     if (cursorOn)
     {
@@ -444,6 +473,8 @@ void GraphicsWindowX11::init()
         return;
     }
     
+    _eventDisplay = XOpenDisplay(_traits->displayName().c_str());
+
     _parent = RootWindow( _display, screen );
 
     XWindowAttributes watt;
@@ -482,8 +513,6 @@ void GraphicsWindowX11::init()
         return;
     }
 
-    _eventDisplay = XOpenDisplay(_traits->displayName().c_str());
-
 
     // This positions the window at _windowX, _windowY
     XSizeHints sh;
@@ -498,11 +527,8 @@ void GraphicsWindowX11::init()
     sh.height = _traits->height;
     XSetStandardProperties( _display, _window, _traits->windowName.c_str(), _traits->windowName.c_str(), None, 0, 0, &sh);
 
-#if 1
     setWindowDecoration(_traits->windowDecoration);
-#else
-    setWindowDecoration(true);
-#endif
+
     // Create  default Cursor
     _defaultCursor = XCreateFontCursor( _display, XC_left_ptr );
 
@@ -678,7 +704,7 @@ void GraphicsWindowX11::checkEvents()
 {
     if (!_realized) return;
 
-    Display* display = _eventDisplay;
+    Display* display = getDisplayToUse();
 
     double baseTime = _timeOfLastCheckEvents;
     double eventTime = baseTime;
@@ -940,8 +966,11 @@ void GraphicsWindowX11::checkEvents()
 
 void GraphicsWindowX11::grabFocus()
 {
-    XSetInputFocus( _eventDisplay, _window, RevertToNone, CurrentTime );
-    XFlush(_eventDisplay); XSync(_eventDisplay,0);
+    Display* display = getDisplayToUse();
+
+    XSetInputFocus( display, _window, RevertToNone, CurrentTime );
+    XFlush(display); 
+    XSync(display,0);
 }
 
 void GraphicsWindowX11::grabFocusIfPointerInWindow()
@@ -950,7 +979,9 @@ void GraphicsWindowX11::grabFocusIfPointerInWindow()
     int wx, wy, rx, ry;
     unsigned int buttons;
 
-    if( XQueryPointer( _eventDisplay, _window,
+    Display* display = getDisplayToUse();
+
+    if( XQueryPointer( display, _window,
           &root, &win, &rx, &ry, &wx, &wy, &buttons))
     {
 #if 0
@@ -978,6 +1009,7 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 
 void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask)
 {
+    Display* display = getDisplayToUse();
  
     static XComposeStatus state;
     unsigned char keybuf[32];
@@ -1011,7 +1043,7 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
 
     keySymbol = keybuf[0];
     
-    KeySym ks = XKeycodeToKeysym( _eventDisplay, keyevent.keycode, 0 );
+    KeySym ks = XKeycodeToKeysym( display, keyevent.keycode, 0 );
     int remappedKey = remapX11Key(ks);
     if (remappedKey & 0xff00) 
     {
@@ -1029,14 +1061,16 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
 
 void GraphicsWindowX11::requestWarpPointer(float x,float y)
 {
-    XWarpPointer( _eventDisplay, 
+    Display* display = getDisplayToUse();
+
+    XWarpPointer( display, 
                   None,
                   _window, 
                   0, 0, 0, 0,
                   static_cast<int>(x), static_cast<int>(y) );
 
-    XFlush(_eventDisplay);
-    XSync(_eventDisplay, 0);
+    XFlush(display);
+    XSync(display, 0);
     
     getEventQueue()->mouseWarped(x,y);
 }

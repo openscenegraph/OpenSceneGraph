@@ -42,18 +42,27 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
         virtual void checkEvents() {}
+        
+        /** Set the window's position and size.*/
+        virtual void setWindowRectangle(int x, int y, int width, int height) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowRectangle(..) not implemented."<<std::endl; }
+
+        /** Get the window's position and size.*/
+        virtual void getWindowRectangle(int& x, int& y, int& width, int& height) { if (_traits.valid()) { x = _traits->x; y = _traits->y; width = _traits->width; height = _traits->height; }  }
 
         /** Set Window decoration.*/
-        virtual void setWindowDecoration(bool /*flag*/) {}
+        virtual void setWindowDecoration(bool /*flag*/) {  osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowDecoration(..) not implemented."<<std::endl; }
+
+        /** Set Window decoration.*/
+        virtual bool getWindowDecoration() const { return _traits.valid() ? _traits->windowDecoration : false; }
 
         /** Get focus.*/
-        virtual void grabFocus() {}
+        virtual void grabFocus() { osg::notify(osg::NOTICE)<<"GraphicsWindow::grabFocus(..) not implemented."<<std::endl; }
         
         /** Get focus on if the pointer is in this window.*/
-        virtual void grabFocusIfPointerInWindow() {}
+        virtual void grabFocusIfPointerInWindow() { osg::notify(osg::NOTICE)<<"GraphicsWindow::grabFocusIfPointerInWindow(..) not implemented."<<std::endl; }
 
         /** Switch on/off the cursor.*/
-        virtual void useCursor(bool /*cursorOn*/) {}
+        virtual void useCursor(bool /*cursorOn*/) { osg::notify(osg::NOTICE)<<"GraphicsWindow::useCursor(..) not implemented."<<std::endl; }
 
     public:
 

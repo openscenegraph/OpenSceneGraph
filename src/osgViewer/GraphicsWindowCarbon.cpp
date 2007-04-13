@@ -1060,6 +1060,11 @@ void GraphicsWindowCarbon::checkEvents()
 }
 
 
+void GraphicsWindowCarbon::setWindowRectangle(int x, int y, int width, int height)
+{
+   // TODO: implement
+     osg::notify(osg::NOTICE)<<"GraphicsWindowCarbon::setWindowRectangle(..) not implemented."<<std::endl;
+}
 
 void GraphicsWindowCarbon::grabFocus()
 {

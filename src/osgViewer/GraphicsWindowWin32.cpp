@@ -1708,6 +1708,14 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
     getEventQueue()->mouseWarped(x,y);
 }
 
+void GraphicsWindowWin32::setWindowRectangle(int x, int y, int width, int height)
+{
+    if (!::SetWindowPos(_hwnd, HWND_TOP, x, y, width, height, SWP_SHOWWINDOW | SWP_FRAMECHANGED))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindowRectangle() - Unable to set new window position and size", _traits->screenNum, ::GetLastError());
+    }
+}
+
 void GraphicsWindowWin32::useCursor( bool cursorOn )
 {
     _traits->useCursor = cursorOn;

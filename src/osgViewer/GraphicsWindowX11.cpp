@@ -29,6 +29,8 @@
 
 #include <X11/Xmd.h>		/* For CARD16 */
 
+#include <unistd.h>
+
 using namespace osgViewer;
 
 namespace osgViewer
@@ -1085,6 +1087,9 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
     getEventQueue()->mouseWarped(x,y);
 }
 
+extern "C" 
+{
+
 int X11ErrorHandling(Display* display, XErrorEvent* event)
 {
     osg::notify(osg::NOTICE)<<"Got an X11ErrorHandling call display="<<display<<" event="<<event<<std::endl;
@@ -1116,6 +1121,7 @@ int X11ErrorHandling(Display* display, XErrorEvent* event)
     return 0;
 }
 
+}
 
 struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
 {

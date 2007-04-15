@@ -38,12 +38,24 @@ bool validName(const std::string& first)
     if (first=="CameraNode") return false;
     if (first=="CopyOp") return false;
     if (first=="Fixed") return false;
+    if (first=="View") return false;
+    if (first=="GraphicsContext") return false;
+    if (first=="WindowData") return false;
+    if (first=="ViewPoint") return false;
+    if (first=="PickHandler") return false;
+    if (first=="Program") return false;
+    if (first=="Object") return false;
+    if (first=="OpenSceneGraph") return false;
+    if (first=="SpotExponent") return false;
+    if (first=="Framstamp") return false;
+    if (first=="Stats") return false;
     if (first=="Creator") return false;
     if (first=="CullVisitor") return false;
     if (first=="Drawable") return false;
     if (first=="Geode") return false;
     if (first=="GeoSet") return false;
     if (first=="Image") return false;
+    if (first=="Face") return false;
     if (first=="Images/SolarSystem") return false;
     if (first=="IntersectVisitor") return false;
     if (first=="LongIDRecord") return false;
@@ -269,6 +281,14 @@ std::string typoCorrection(const std::string& name)
     if (name=="Antonoine") return "Antoine";
     if (name=="Andew") return "Andrew";
     if (name=="Daneil") return "Daniel";
+    if (name=="AndrÃ©") return "Anré";
+    if (name=="GarcÃ­a") return "Garcea";
+    if (name=="SjÃ¶lie") return "Sjölie";
+    if (name=="JosÃ©") return "José";
+    if (name=="FrÃ¶hlich") return "Fröhlich";
+    if (name=="Froehlich") return "Fröhlich";
+    if (name=="Eileman") return "Eilemann";
+    
     return name;
 }
 
@@ -434,8 +454,6 @@ bool submissionsSequence(const Words& words, unsigned int& i)
         words[i]=="from" || 
         words[i]=="From:" || 
         words[i]=="from:" || 
-        words[i]=="Applied" || 
-        words[i]=="Added" || 
         words[i]=="Merged" || 
         words[i]=="Integrated") return true;
         
@@ -511,11 +529,11 @@ void readContributors(NameMap& names, const std::string& file)
         }
         else
         {
-            if (words[i]=="robert") 
+            if (words[i]=="robert:") 
             {
                 ++names[NameRobertOsfield];
             }
-            else if (words[i]=="don")
+            else if (words[i]=="don:")
             {
                 ++names[NameDonBurns];
             }

@@ -716,7 +716,7 @@ void GraphicsWindowX11::checkEvents()
 {
     if (!_realized) return;
 
-    Display* display = getDisplayToUse();
+    Display* display = _eventDisplay;
 
     double baseTime = _timeOfLastCheckEvents;
     double eventTime = baseTime;
@@ -1021,7 +1021,7 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 
 void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask)
 {
-    Display* display = getDisplayToUse();
+    Display* display = _eventDisplay;
  
     static XComposeStatus state;
     unsigned char keybuf[32];

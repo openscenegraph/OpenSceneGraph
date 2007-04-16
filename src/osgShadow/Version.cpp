@@ -2,7 +2,7 @@
 
 const char* osgShadowGetVersion()
 {
-    return "1.2";
+    return "1.9";
 }
 
 

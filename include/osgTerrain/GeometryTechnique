@@ -21,35 +21,6 @@
 
 namespace osgTerrain {
 
-class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
-{
-    public:
-
-        GeometryTechnique();
-
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        GeometryTechnique(const GeometryTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
-        virtual void init();
-
-        virtual void update(osgUtil::UpdateVisitor* nv);
-
-        virtual void cull(osgUtil::CullVisitor* nv);
-
-        virtual void cleanSceneGraph();
-
-        virtual void dirty();
-
-    protected:
-
-        virtual ~GeometryTechnique();
-
-        osg::ref_ptr<osg::Geode>    _geode;
-        
-        osg::ref_ptr<osg::Geometry> _geometry;
-        //osg::ref_ptr<TerrainGeometry> _geometry;
-};
-
 class OSGTERRAIN_EXPORT TerrainGeometry : public osg::Drawable
 {
     public:
@@ -114,6 +85,34 @@ class OSGTERRAIN_EXPORT TerrainGeometry : public osg::Drawable
         
         PrimitiveSetList    _primitiveSets;
 
+};
+
+class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
+{
+    public:
+
+        GeometryTechnique();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        GeometryTechnique(const GeometryTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        virtual void init();
+
+        virtual void update(osgUtil::UpdateVisitor* nv);
+
+        virtual void cull(osgUtil::CullVisitor* nv);
+
+        virtual void cleanSceneGraph();
+
+        virtual void dirty();
+
+    protected:
+
+        virtual ~GeometryTechnique();
+
+        osg::ref_ptr<osg::Geode>    _geode;
+        
+        osg::ref_ptr<TerrainGeometry> _terrainGeometry;
 };
 
 }

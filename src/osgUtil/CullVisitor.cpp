@@ -1112,6 +1112,14 @@ void CullVisitor::apply(osg::Camera& camera)
     // activate all active cull settings from this Camera
     inheritCullSettings(camera);
 
+    bool hasSetCullMask =
+        (camera.getInheritanceMask() & osg::CullSettings::CULL_MASK) == 0;
+
+    if (hasSetCullMask)
+    {
+        setTraversalMask(camera.getCullMask());
+    }
+
     RefMatrix& originalModelView = *getModelViewMatrix();
 
     osg::RefMatrix* projection = 0;

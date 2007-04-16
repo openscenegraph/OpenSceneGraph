@@ -120,10 +120,16 @@ class OSG_EXPORT State : public Referenced
 
         /** Pop stateset off state stack.*/
         void popStateSet();
-
+        
         /** pop all statesets off state stack, ensuring it is empty ready for the next frame.
           * Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
         void popAllStateSets();
+
+        /** Insert stateset onto state stack.*/
+        void insertStateSet(unsigned int pos,const StateSet* dstate);
+
+        /** Pop stateset off state stack.*/
+        void removeStateSet(unsigned int pos);
         
         /** Get the number of StateSet's on the StateSet stack.*/
         unsigned int getStateSetStackSize() { return _stateStateStack.size(); }

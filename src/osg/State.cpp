@@ -178,6 +178,7 @@ void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
 
 void State::pushStateSet(const StateSet* dstate)
 {
+
     _stateStateStack.push_back(dstate);
     if (dstate)
     {
@@ -203,10 +204,14 @@ void State::pushStateSet(const StateSet* dstate)
 
         pushUniformList(_uniformMap,dstate->getUniformList());
     }
+
+    // osg::notify(osg::NOTICE)<<"State::pushStateSet()"<<_stateStateStack.size()<<std::endl;
 }
 
 void State::popAllStateSets()
 {
+    // osg::notify(osg::NOTICE)<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
+
     while (!_stateStateStack.empty()) popStateSet();
     
     applyProjectionMatrix(0);
@@ -217,7 +222,10 @@ void State::popAllStateSets()
 
 void State::popStateSet()
 {
+    // osg::notify(osg::NOTICE)<<"State::popStateSet()"<<_stateStateStack.size()<<std::endl;
+
     if (_stateStateStack.empty()) return;
+    
     
     const StateSet* dstate = _stateStateStack.back();
 
@@ -249,6 +257,58 @@ void State::popStateSet()
     
     // remove the top draw state from the stack.
     _stateStateStack.pop_back();
+}
+
+void State::insertStateSet(unsigned int pos,const StateSet* dstate)
+{
+    StateSetStack tempStack;
+    
+    // first pop the StateSet above the position we need to insert at
+    while (_stateStateStack.size()>pos)
+    {
+        tempStack.push_back(_stateStateStack.back());
+        popStateSet();
+    }
+
+    // push our new stateset
+    pushStateSet(dstate);
+    
+    // push back the original ones
+    for(StateSetStack::reverse_iterator itr = tempStack.rbegin();
+        itr != tempStack.rend();
+        ++itr)
+    {
+        pushStateSet(*itr);
+    }
+
+}
+
+void State::removeStateSet(unsigned int pos)
+{
+    if (pos >= _stateStateStack.size())
+    {
+        osg::notify(osg::NOTICE)<<"Warning: State::removeStateSet("<<pos<<") out of range"<<std::endl;
+        return;
+    }
+    
+    // record the StateSet above the one we intend to remove
+    StateSetStack tempStack;
+    while (_stateStateStack.size()-1>pos)
+    {
+        tempStack.push_back(_stateStateStack.back());
+        popStateSet();
+    }
+
+    // remove the intended StateSet as well    
+    popStateSet();
+
+    // push back the original ones that were above the remove StateSet
+    for(StateSetStack::reverse_iterator itr = tempStack.rbegin();
+        itr != tempStack.rend();
+        ++itr)
+    {
+        pushStateSet(*itr);
+    }
 }
 
 void State::captureCurrentState(StateSet& stateset) const

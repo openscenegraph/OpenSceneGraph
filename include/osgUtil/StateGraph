@@ -46,7 +46,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         typedef std::map< const osg::StateSet*, osg::ref_ptr<StateGraph> >   ChildList;
         typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
 
-        StateGraph*                        _parent;
+        StateGraph*                         _parent;
         const osg::StateSet*                _stateset;
 
         int                                 _depth;
@@ -279,6 +279,19 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             
         }
         
+        inline static int numToPop(osg::State& state,StateGraph* sg_curr)
+        {
+            int numToPop = 0;
+            // need to pop back all statesets and matrices.
+            while (sg_curr)
+            {
+                if (sg_curr->_stateset) ++numToPop;
+                sg_curr = sg_curr->_parent;
+            }
+            
+            return numToPop;
+        }
+
     private:
 
         /// disallow copy construction.

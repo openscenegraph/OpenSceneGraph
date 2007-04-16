@@ -370,19 +370,12 @@ void RenderBin::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     else drawImplementation(renderInfo,previous);
 }
 
-#define NEW_STATECODE
-//#define OLD_STATECODE
-
 void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     osg::State& state = *renderInfo.getState();
 
     // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
 
-
-#ifndef OLD_STATECODE
-
-#ifdef NEW_STATECODE
 
     unsigned int numToPop = (previous ? StateGraph::numToPop(state, previous->_parent) : 0);
     if (numToPop>1) --numToPop;
@@ -393,23 +386,6 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
         state.insertStateSet(insertStateSetPosition, _stateset.get());
     }
 
-#else
-
-    unsigned int stateSetStackSize = state.getStateSetStackSize();
-
-    previous = 0;
-
-    if (_stateset.valid()) 
-    {
-        // first need to flush the stack
-
-        // now its safe to push RenderBin's StateSet as we now know its the root.        
-        state.pushStateSet(_stateset.get());
-        state.apply();
-    }
-    
-#endif    
-#endif
 
     // draw first set of draw bins.
     RenderBinList::iterator rbitr;
@@ -479,24 +455,11 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
         rbitr->second->draw(renderInfo,previous);
     }
 
-#ifndef OLD_STATECODE
-#ifdef NEW_STATECODE
-
     if (_stateset.valid())
     {
         state.removeStateSet(insertStateSetPosition);
-        state.apply();
+        // state.apply();
     }
-
-#else
-    if (stateSetStackSize!=state.getStateSetStackSize())
-    {
-        state.popStateSetStackToSize(stateSetStackSize);
-    }
-
-    previous = 0;
-#endif
-#endif
 
 
     // osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;

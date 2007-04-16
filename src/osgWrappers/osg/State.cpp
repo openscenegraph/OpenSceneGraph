@@ -82,6 +82,16 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__popAllStateSets,
 	          "pop all statesets off state stack, ensuring it is empty ready for the next frame. ",
 	          "Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply(). ");
+	I_Method2(void, insertStateSet, IN, unsigned int, pos, IN, const osg::StateSet *, dstate,
+	          Properties::NON_VIRTUAL,
+	          __void__insertStateSet__unsigned_int__C5_StateSet_P1,
+	          "Insert stateset onto state stack. ",
+	          "");
+	I_Method1(void, removeStateSet, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
+	          __void__removeStateSet__unsigned_int,
+	          "Pop stateset off state stack. ",
+	          "");
 	I_Method0(unsigned int, getStateSetStackSize,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getStateSetStackSize,

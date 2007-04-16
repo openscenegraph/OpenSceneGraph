@@ -108,9 +108,8 @@ void GeometryTechnique::init()
     osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
     _geode = new osg::Geode;
-    _geometry = new osg::Geometry;
-    _geode->addDrawable(_geometry.get());
-    _geode->addDrawable(new osgTerrain::TerrainGeometry);
+    _terrainGeometry = new osgTerrain::TerrainGeometry;
+    _geode->addDrawable(_terrainGeometry.get());
     
     unsigned int numRows = 100;
     unsigned int numColumns = 100;
@@ -126,13 +125,11 @@ void GeometryTechnique::init()
 
     // allocate and assign vertices
     osg::Vec3Array* _vertices = new osg::Vec3Array(numVertices);
-    _geometry->setVertexArray(_vertices);
+    _terrainGeometry->setVertices(_vertices);
 
     // allocate and assign normals
     osg::Vec3Array* _normals = new osg::Vec3Array(numVertices);
-    _geometry->setNormalArray(_normals);
-    _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-
+    _terrainGeometry->setNormals(_normals);
     
     int texcoord_index = 0;
     int color_index = -1;
@@ -149,7 +146,7 @@ void GeometryTechnique::init()
         ++texcoord_index;
 
         _texcoords = new osg::Vec2Array(numVertices);
-        _geometry->setTexCoordArray(color_index, _texcoords);
+        _terrainGeometry->setTexCoords(color_index, _texcoords);
     }
 
     osg::FloatArray* _elevations = 0;
@@ -162,7 +159,7 @@ void GeometryTechnique::init()
         if (!colorLayer)
         {
             _elevations = new osg::FloatArray(numVertices);
-            _geometry->setTexCoordArray(tf_index, _elevations);
+            _terrainGeometry->setTexCoords(tf_index, _elevations);
 
             minHeight = tf->getMinimum();
             scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
@@ -172,9 +169,9 @@ void GeometryTechnique::init()
         
     // allocate and assign color
     osg::Vec4Array* _colors = new osg::Vec4Array(1);
-    _geometry->setColorArray(_colors);
-    _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     (*_colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    
+    _terrainGeometry->setColors(_colors);
     
     // populate vertex and tex coord arrays
     unsigned int j;
@@ -222,7 +219,7 @@ void GeometryTechnique::init()
             osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
             osg::Vec3d model_one;
             masterLocator->convertLocalToModel(ndc_one, model_one);
-            model_one -= model;
+            model_one = model_one - model;
             model_one.normalize();            
             (*_normals)[iv] = model_one;
         }
@@ -240,16 +237,8 @@ void GeometryTechnique::init()
             (*elements)[i*2+1] = iv;
         }
         
-        //_primitiveSets.push_back(elements);
-        
-        _geometry->addPrimitiveSet(elements);
+        _terrainGeometry->addPrimitiveSet(elements);
     }
-
-
-
-    osgUtil::SmoothingVisitor smoother;
-    _geode->accept(smoother);
-
 
     if (colorLayer)
     {
@@ -332,7 +321,7 @@ void GeometryTechnique::init()
         }
     }
 
-    // _geometry->setUseDisplayList(false);
+    // _terrainGeometry->setUseDisplayList(false);
 
     _dirty = false;    
 }
@@ -399,6 +388,7 @@ osg::BoundingBox TerrainGeometry::computeBound() const
 
 void TerrainGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+#if 0
     osg::notify(osg::NOTICE)<<"TerrainGeometry::drawImplementation"<<std::endl;
     
     if (_vertices.first.valid() && _vertices.first->getDataVariance()==DYNAMIC)
@@ -408,5 +398,66 @@ void TerrainGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
     else
     {
         osg::notify(osg::NOTICE)<<"  Vertices STATIC"<<std::endl;
+    }
+#endif
+    
+    osg::State& state = *renderInfo.getState();
+    const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(state.getContextID(),true);
+    
+    //
+    // Non Vertex Buffer Object path for defining vertex arrays.
+    //            
+    if( _vertices.first.valid() )
+        state.setVertexPointer(_vertices.first->getDataSize(), _vertices.first->getDataType(), 0, _vertices.first->getDataPointer());
+    else
+        state.disableVertexPointer();
+
+    if (_normals.first.valid())
+    {
+        state.setNormalPointer(_normals.first->getDataType(),0,_normals.first->getDataPointer());
+    }
+    else
+    {
+        state.disableNormalPointer();
+        glNormal3f(0.0f,0.0f,1.0f);
+    }
+
+    if (_colors.first.valid() && _colors.first->getNumElements()==_vertices.first->getNumElements())
+    {
+        state.setColorPointer(_colors.first->getDataSize(),_colors.first->getDataType(),0,_colors.first->getDataPointer());
+    }
+    else
+    {
+        state.disableColorPointer();
+
+        if (_colors.first.valid() && _colors.first->getNumElements()>=1)
+        {
+            glColor4fv(static_cast<const GLfloat*>(_colors.first->getDataPointer()));
+        }
+        else
+        {
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        } 
+    }
+
+    unsigned int unit;
+    for(unit=0;unit<_texcoords.size();++unit)
+    {
+        const osg::Array* array = _texcoords[unit].first.get();
+        if (array)
+            state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
+        else
+            state.disableTexCoordPointer(unit);
+    }
+    state.disableTexCoordPointersAboveAndIncluding(unit);
+
+    bool usingVertexBufferObjects = false;
+
+    for(PrimitiveSetList::const_iterator itr = _primitiveSets.begin();
+        itr != _primitiveSets.end();
+        ++itr)
+    {
+        (*itr)->draw(state, usingVertexBufferObjects);
+
     }
 }

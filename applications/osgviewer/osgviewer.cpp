@@ -34,7 +34,11 @@ class ThreadingHandler : public osgGA::GUIEventHandler
 {
 public: 
 
-    ThreadingHandler() {}
+    ThreadingHandler()
+    {
+       _tickOrLastKeyPress = osg::Timer::instance()->tick();
+    }
+
         
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
@@ -45,8 +49,14 @@ public:
         {
             case(osgGA::GUIEventAdapter::KEYUP):
             {
-                if (ea.getKey()=='m')
+
+                double delta = osg::Timer::instance()->delta_s(_tickOrLastKeyPress, osg::Timer::instance()->tick());
+
+                if (ea.getKey()=='m' && delta>1.0)
                 {
+
+                    _tickOrLastKeyPress = osg::Timer::instance()->tick();
+
                     switch(viewer->getThreadingModel())
                     {
                         case(osgViewer::Viewer::SingleThreaded):
@@ -101,8 +111,7 @@ public:
         usage.addKeyboardMouseBinding("e","Toggle the placement of the end of frame barrier.");
     }
 
-
-
+    osg::Timer_t _tickOrLastKeyPress;
     bool _done;
 };
 

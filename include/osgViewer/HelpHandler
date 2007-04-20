@@ -33,6 +33,11 @@ class OSGVIEWER_EXPORT HelpHandler : public osgGA::GUIEventHandler
         void setKeyEventTogglesOnScreenHelp(int key) { _keyEventTogglesOnScreenHelp = key; }
         int getKeyEventTogglesOnScreenHelp() const { return _keyEventTogglesOnScreenHelp; }
         
+        void reset();
+
+        osg::Camera* getCamera() { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
+
         bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
         /** Get the keyboard and mouse usage of this manipulator.*/
@@ -49,6 +54,8 @@ class OSGVIEWER_EXPORT HelpHandler : public osgGA::GUIEventHandler
         int                                 _keyEventTogglesOnScreenHelp;
 
         bool                                _helpEnabled;
+
+        bool                                _initialized;
         osg::ref_ptr<osg::Camera>           _camera;
         osg::ref_ptr<osg::Switch>           _switch;
         

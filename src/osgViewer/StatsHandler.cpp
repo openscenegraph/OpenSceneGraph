@@ -22,6 +22,7 @@ StatsHandler::StatsHandler():
     _keyEventTogglesOnScreenStats('s'),
     _keyEventPrintsOutStats('S'),
     _statsType(NO_STATS),
+    _initialized(false),
     _threadingModel(osgViewer::Viewer::SingleThreaded),
     _frameRateChildNum(0),
     _viewerChildNum(0),
@@ -29,6 +30,7 @@ StatsHandler::StatsHandler():
     _numBlocks(8),
     _blockMultiplier(10000.0)
 {
+    _camera = new osg::Camera;
 }
 
 bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -50,7 +52,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
             {
                 if (viewer->getStats())
                 {
-                    if (!_camera.valid())
+                    if (!_initialized)
                     {
                         setUpHUDCamera(viewer);
                         setUpScene(viewer);
@@ -184,17 +186,28 @@ void StatsHandler::updateThreadingModelText()
     }
 }
 
+void StatsHandler::reset()
+{
+    _initialized = false;
+    _camera->setGraphicsContext(0);
+}
+
 void StatsHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
 {
-    osgViewer::Viewer::Windows windows;
-    viewer->getWindows(windows);
+    osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
 
-    if (windows.empty()) return;
+    if (!window)
+    {    
+        osgViewer::Viewer::Windows windows;
+        viewer->getWindows(windows);
 
-    osgViewer::GraphicsWindow* window = windows.front();
+        if (windows.empty()) return;
 
-    _camera = new osg::Camera;
-    _camera->setGraphicsContext(window);
+        window = windows.front();
+
+        _camera->setGraphicsContext(window);
+    }
+
     _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
 
     _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
@@ -205,6 +218,8 @@ void StatsHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
     _camera->setClearMask(0);
 
     viewer->setUpRenderingSupport();
+    
+    _initialized = true;
 }
 
 struct TextDrawCallback : public virtual osg::Drawable::DrawCallback

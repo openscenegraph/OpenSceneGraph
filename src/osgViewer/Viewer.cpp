@@ -1299,6 +1299,29 @@ void Viewer::checkWindowStatus()
 }
 
 
+struct LessGraphicsContext
+{
+    bool operator () (const osg::GraphicsContext* lhs, const osg::GraphicsContext* rhs) const
+    {
+        int screenLeft = lhs->getTraits()? lhs->getTraits()->screenNum : 0;
+        int screenRight = rhs->getTraits()? rhs->getTraits()->screenNum : 0;
+        if (screenLeft < screenRight) return true;
+        if (screenLeft > screenRight) return false;
+
+        screenLeft = lhs->getTraits()? lhs->getTraits()->x : 0;
+        screenRight = rhs->getTraits()? rhs->getTraits()->x : 0;
+        if (screenLeft < screenRight) return true;
+        if (screenLeft > screenRight) return false;
+
+        screenLeft = lhs->getTraits()? lhs->getTraits()->y : 0;
+        screenRight = rhs->getTraits()? rhs->getTraits()->y : 0;
+        if (screenLeft < screenRight) return true;
+        if (screenLeft > screenRight) return false;
+        
+        return lhs < rhs;
+    } 
+};
+
 void Viewer::getContexts(Contexts& contexts, bool onlyValid)
 {
     typedef std::set<osg::GraphicsContext*> ContextSet;
@@ -1330,6 +1353,11 @@ void Viewer::getContexts(Contexts& contexts, bool onlyValid)
         ++itr)
     {
         contexts.push_back(const_cast<osg::GraphicsContext*>(*itr));
+    }
+
+    if (contexts.size()>=2)
+    {
+        std::sort(contexts.begin(), contexts.end(), LessGraphicsContext()); 
     }
 }
 

@@ -41,9 +41,14 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         void setKeyEventPrintsOutStats(int key) { _keyEventPrintsOutStats = key; }
         int getKeyEventPrintsOutStats() const { return _keyEventPrintsOutStats; }
 
-        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
-
         double getBlockMultiplier() const { return _blockMultiplier; }
+
+        void reset();
+
+        osg::Camera* getCamera() { return _camera.get(); }
+        const osg::Camera* getCamera() const { return _camera.get(); }
+
+        virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
 
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
@@ -68,7 +73,10 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         int                                 _keyEventPrintsOutStats;
 
         int                                 _statsType;
+
+        bool                                _initialized;
         osg::ref_ptr<osg::Camera>           _camera;
+        
         osg::ref_ptr<osg::Switch>           _switch;
         
         osgViewer::Viewer::ThreadingModel   _threadingModel;

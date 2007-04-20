@@ -22,8 +22,10 @@ using namespace osgViewer;
 HelpHandler::HelpHandler(osg::ApplicationUsage* au):
     _applicationUsage(au),
     _keyEventTogglesOnScreenHelp('h'),
-    _helpEnabled(false)
+    _helpEnabled(false),
+    _initialized(false)
 {
+    _camera = new osg::Camera;
 }
 
 bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -37,7 +39,7 @@ bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
         {
             if (ea.getKey()==_keyEventTogglesOnScreenHelp)
             {
-                if (!_camera.valid())
+                if (!_initialized)
                 {
                     setUpHUDCamera(viewer);
                     setUpScene(viewer);
@@ -84,6 +86,8 @@ void HelpHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
     _camera->setClearMask(0);
 
     viewer->setUpRenderingSupport();
+    
+    _initialized = true;
 }
 
 void HelpHandler::setUpScene(osgViewer::Viewer* viewer)

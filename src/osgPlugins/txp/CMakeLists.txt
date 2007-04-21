@@ -62,6 +62,8 @@ SET(TARGET_H
 
 INCLUDE_DIRECTORIES(.)
 
+SET(TARGET_ADDED_LIBRARIES osgSim )
+
 #### end var setup  ###
 SETUP_PLUGIN(txp)
 

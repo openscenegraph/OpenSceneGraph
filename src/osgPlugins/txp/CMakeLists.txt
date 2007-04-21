@@ -60,5 +60,8 @@ SET(TARGET_H
     TXPSeamLOD.h
 )
 
+INCLUDE_DIRECTORIES(.)
+
 #### end var setup  ###
 SETUP_PLUGIN(txp)
+

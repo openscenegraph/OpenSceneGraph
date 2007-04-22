@@ -1,4 +1,4 @@
-OpenSceneGraph Library 1.2
+OpenSceneGraph Library 1.9
 
 250 Contributors:
 
@@ -8,9 +8,9 @@ Robert Osfield
 Don Burns
 Marco Jez
 Mike Weiblen
+Eric Wing
 Brede Johansen
 Geoff Michel
-Eric Wing
 Farshid Lashkari
 Paul Martz
 Bob Kuehne

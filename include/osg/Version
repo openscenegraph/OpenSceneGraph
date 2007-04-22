@@ -19,7 +19,7 @@
 extern "C" {
 
 #define OSG_VERSION_MAJOR 1
-#define OSG_VERSION_MINOR 2
+#define OSG_VERSION_MINOR 9
 #define OSG_VERSION_RELEASE 0
 #define OSG_VERSION_REVISION 0
 

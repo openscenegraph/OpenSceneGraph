@@ -1164,7 +1164,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             //std::cout << "none VertexBuffer path"<<std::endl;
 
             //
-            // None Vertex Buffer Object path for defining vertex arrays.
+            // Non Vertex Buffer Object path for defining vertex arrays.
             //            
             if( _vertexData.array.valid() )
                 state.setVertexPointer(_vertexData.array->getDataSize(),_vertexData.array->getDataType(),0,_vertexData.array->getDataPointer());

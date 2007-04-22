@@ -613,8 +613,15 @@ int main( int argc, char **argv)
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--entries","Print out number of entries into the ChangeLog file for each contributor.");
+    arguments.getApplicationUsage()->addCommandLineOption("--version-number","Print out version number only");
     arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the ChangeLog to generate an estimated contributors list.");
 
+    if (arguments.read("--version-number"))
+    {
+        std::cout<<osgGetVersion()<<std::endl;
+        return 0;
+    }
+    
     std::cout<<osgGetLibraryName()<< " "<< osgGetVersion()<<std::endl<<std::endl;
 
     bool printContributors = false;

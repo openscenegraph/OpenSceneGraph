@@ -229,6 +229,15 @@ void print(Lib3dsNode *node, int level) {
 
 }
 
+void copyLib3dsMatrixToOsgMatrix(osg::Matrix& osg_matrix, const Lib3dsMatrix lib3ds_matrix)
+{
+    osg_matrix.set(
+        lib3ds_matrix[0][0],lib3ds_matrix[0][1],lib3ds_matrix[0][2],lib3ds_matrix[0][3],
+        lib3ds_matrix[1][0],lib3ds_matrix[1][1],lib3ds_matrix[1][2],lib3ds_matrix[1][3],
+        lib3ds_matrix[2][0],lib3ds_matrix[2][1],lib3ds_matrix[2][2],lib3ds_matrix[2][3],
+        lib3ds_matrix[3][0],lib3ds_matrix[3][1],lib3ds_matrix[3][2],lib3ds_matrix[3][3]); 
+}
+
 // Transforms points by matrix if 'matrix' is not NULL
 // Creates a Geode and Geometry (as parent,child) and adds the Geode to 'parent' parameter iff 'parent' is non-NULL
 // Returns ptr to the Geode
@@ -368,11 +377,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
         if (pivoted) {
             // Transform object's pivot point to the world origin
             osg::MatrixTransform* T=new osg::MatrixTransform;
-            osgmatrix.set(
-                N[0][0],N[0][1],N[0][2],N[0][3],
-                N[1][0],N[1][1],N[1][2],N[1][3],
-                N[2][0],N[2][1],N[2][2],N[2][3],
-                N[3][0],N[3][1],N[3][2],N[3][3]); 
+            copyLib3dsMatrixToOsgMatrix(osgmatrix, N);
             T->setMatrix(osgmatrix);
             T->setName("3DSPIVOTPOINT: Translate pivotpoint to (world) origin");
             //cout<<"Translation for "<<node->name<<" is "<<osgmatrix<<endl;
@@ -380,11 +385,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
             // rotate about "origin" (after the transform this is the world origin)
             // BUG this matrix also contains the translation to the pivot point - we should plit that out (maybe)
             osg::MatrixTransform* R=new osg::MatrixTransform;
-            osgmatrix.set(
-                M[0][0],M[0][1],M[0][2],M[0][3],
-                M[1][0],M[1][1],M[1][2],M[1][3],
-                M[2][0],M[2][1],M[2][2],M[2][3],
-                M[3][0],M[3][1],M[3][2],M[3][3]); 
+            copyLib3dsMatrixToOsgMatrix(osgmatrix, M);
             R->setMatrix(osgmatrix);
             R->setName("3DSPIVOTPOINT: Rotate");
                 
@@ -504,7 +505,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
         }
     } 
 
-;    if (osg::getNotifyLevel()>=osg::INFO)
+    if (osg::getNotifyLevel()>=osg::INFO)
     {
         osg::notify(osg::NOTICE) << "Final OSG node structure looks like this:"<< endl;
         PrintVisitor pv(osg::notify(osg::NOTICE));
@@ -612,6 +613,16 @@ osg::Drawable*   ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,Fac
             (*osg_normals)[orig2NewMapping[face.points[1]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
             (*osg_normals)[orig2NewMapping[face.points[2]]] += osg::Vec3(face.normal[0],face.normal[1],face.normal[2]);;
 
+        }
+
+        if (matrix)
+        {
+            osg::Matrix osg_matrix;
+            copyLib3dsMatrixToOsgMatrix(osg_matrix, *matrix);
+            for (i=0; i<noVertex; ++i)
+            {
+                (*osg_normals)[i] = osg::Matrix::transform3x3((*osg_normals)[i], osg_matrix);
+            }
         }
 
         // normalize the normal list to unit length normals.

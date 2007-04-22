@@ -11,14 +11,19 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/Version>
+#include <osg/Version>
+
+extern "C" {
 
 const char* osgUtilGetVersion()
 {
-    return "1.9";
+    return osgGetVersion();
 }
 
 
 const char* osgUtilGetLibraryName()
 {
     return "OpenSceneGraph Utility Library";
+}
+
 }

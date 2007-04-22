@@ -1,12 +1,17 @@
 #include <osgViewer/Version>
+#include <osg/Version>
+
+extern "C" {
 
 const char* osgViewerGetVersion()
 {
-    return "1.9";
+    return osgGetVersion();
 }
 
 
 const char* osgViewerGetLibraryName()
 {
     return "OpenSceneGraph Viewer Library";
+}
+
 }

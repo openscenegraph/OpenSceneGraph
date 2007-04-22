@@ -11,14 +11,19 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgDB/Version>
+#include <osg/Version>
+
+extern "C" {
 
 const char* osgDBGetVersion()
 {
-    return "1.9";
+    return osgGetVersion();
 }
 
 
 const char* osgDBGetLibraryName()
 {
     return "OpenSceneGraph DB (data base) Library";
+}
+
 }

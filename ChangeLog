@@ -1,3 +1,87 @@
+2007-04-15 12:09 +0000 [r6501]  robert:
+
+	* Updatged ChangeLog using svn2log, osgversion to handle new SVN
+	  based ChangeLog, and updated AUTHORS.txt
+
+2007-04-14 08:31 +0000 [r6500]  robert:
+
+	* Added an #include<unistd.h> and extern "C" around
+	  X11ErrorHandling to prevent Solaris build errros
+
+2007-04-13 19:28 +0000 [r6498-6499]  robert:
+
+	* Added some debugging
+
+	* Updated wrappers
+
+2007-04-13 14:54 +0000 [r6496-6497]  robert:
+
+	* Added fullscreen toggle event handler
+
+	* Added usleep's to avoid X11 errors when doing X11 calls to close
+	  to changes in window size or decoration.
+
+2007-04-13 14:23 +0000 [r6495]  robert:
+
+	* Added setWindowRectangle implementation for GraphicsWindowWin32,
+	  and place holder for setWindowRectangle implementation for
+	  GraphicsWindowCarbon.
+
+2007-04-13 13:28 +0000 [r6494]  robert:
+
+	* Updated wrappers
+
+2007-04-13 13:22 +0000 [r6493]  robert:
+
+	* Added s/getWindowRectangle to GraphicsWindow and implementation
+	  in GraphicsWindowX11
+
+2007-04-13 13:19 +0000 [r6492]  robert:
+
+	* Changed hitItr to be a const_iterator.
+
+2007-04-13 10:14 +0000 [r6491]  robert:
+
+	* From Eric Wing, "I added a warning message for Mac users about
+	  the Universal Binary problem."
+
+2007-04-12 17:30 +0000 [r6489]  robert:
+
+	* Fixed variable name dereference
+
+2007-04-12 10:14 +0000 [r6487]  robert:
+
+	* Added different cmake version requirements across platforms
+
+2007-04-12 10:06 +0000 [r6486]  robert:
+
+	* From Eric Wing, "Adding back missing search paths in
+	  FindOpenThreads.cmake. Also fixed a bug regarding when to set the
+	  debug version. It waited until both include and library were set,
+	  but it shouldn't wait on include. Also added a fix to the
+	  optional warning flags."
+
+2007-04-12 09:59 +0000 [r6484]  robert:
+
+	* Added SETUP_COMMANDLINE_APPLICATION and SETUP_COMMANDLINE_EXAMPLE
+	  macros
+
+2007-04-12 09:33 +0000 [r6481-6483]  robert:
+
+	* From Eric Wing, "Attached is a patch allows access access to the
+	  CMake MACOSX_BUNDLE option. Now SETUP_APPLICATION and
+	  SETUP_EXAMPLE take an additional optional parameter that
+	  specifies if the program is a command line application or a GUI
+	  application (think: IS_COMMANDLINE_APP). Passing 1 means true
+	  (is_commandline_app). Passing 0 or omitting the parameter means
+	  false. I changed the scripts for osgversion and osgunittests to
+	  support this option because I believe they are command line apps.
+	  Are there any others?"
+
+	* Updated wrappers
+
+	* From Mike Wittman, fix to CopyOp&.
+
 2007-04-12 09:18 +0000 [r6480]  robert:
 
 	* From Eric Wing, "Minor robustness fix to osgsimpleviewerCocoa."

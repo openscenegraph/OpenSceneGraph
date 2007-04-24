@@ -10,6 +10,7 @@
 #include <Inventor/SoInteraction.h>
 #include <Inventor/nodekits/SoNodeKit.h>
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
 
 #include "ConvertFromInventor.h"
 #include "GroupSoLOD.h"
@@ -43,6 +44,9 @@ ReaderWriterIV::readNode(const std::string& file,
 
     // Initial GroupSoLOD node
     GroupSoLOD::initClass();
+
+    // Disable delayed loading of VRML textures
+    SoVRMLImageTexture::setDelayFetchURL(FALSE);
 
     // Open the file
     SoInput input;

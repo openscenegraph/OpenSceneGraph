@@ -35,12 +35,11 @@
 #include <Inventor/nodes/SoPendulum.h>
 #include <Inventor/nodes/SoShuttle.h>
 #include <Inventor/nodes/SoLOD.h>
+#include <Inventor/nodes/SoTexture2.h>
+#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
 #include <Inventor/misc/SoChildList.h>
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/SbLinear.h>
-#ifdef USE_COIN
-#include <Inventor/SbImage.h>
-#endif
 
 #include "GroupSoLOD.h"
 
@@ -58,7 +57,6 @@
 ConvertFromInventor::ConvertFromInventor()
 {
     numPrimitives = 0;
-    _hasVRMLImageTexture = false;
 }
 ///////////////////////////////////////////
 ConvertFromInventor::~ConvertFromInventor()
@@ -69,7 +67,7 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
 {    
     // Transformation matrix for converting Inventor coordinate system to OSG 
     // coordinate system
-   osg::Matrix ivToOSGMat(osg::Matrix(1.0, 0.0, 0.0, 0.0,
+    osg::Matrix ivToOSGMat(osg::Matrix(1.0, 0.0, 0.0, 0.0,
                                        0.0, 0.0, 1.0, 0.0,
                                        0.0,-1.0, 0.0, 0.0,
                                        0.0, 0.0, 0.0, 1.0));
@@ -85,12 +83,16 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
     
     // Create callback actions for the inventor nodes 
     // These callback functions perform the conversion
+    // note: if one class is derived from the other and both callbacks
+    // are registered, both functions will be called
     SoCallbackAction cbAction;
     cbAction.addPreCallback(SoShape::getClassTypeId(), preShape, this);
     cbAction.addPostCallback(SoShape::getClassTypeId(), postShape, this);
     cbAction.addPreCallback(SoGroup::getClassTypeId(), preGroup, this);
     cbAction.addPostCallback(SoGroup::getClassTypeId(), postGroup, this);
     cbAction.addPreCallback(SoTexture2::getClassTypeId(), preTexture, this);
+    cbAction.addPreCallback(SoVRMLImageTexture::getClassTypeId(),
+                            preVRMLImageTexture, this);
     cbAction.addPreCallback(SoLight::getClassTypeId(), preLight, this);
     cbAction.addPreCallback(SoRotor::getClassTypeId(), preRotor, this);
     cbAction.addPreCallback(SoPendulum::getClassTypeId(), prePendulum, this);
@@ -98,48 +100,31 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
     cbAction.addTriangleCallback(SoShape::getClassTypeId(), addTriangleCB, this);
     cbAction.addLineSegmentCallback(SoShape::getClassTypeId(), addLineSegmentCB,
                                     this);
-    
     cbAction.addPointCallback(SoShape::getClassTypeId(), addPointCB, this);
-    
-#ifdef USE_COIN
-    //callback for VRMLImageTextures
-    cbAction.addPreCallback(SoVRMLImageTexture::getClassTypeId(),
-                            _vrmlImageTextureAction,this);
-#endif
+
     // Traverse the inventor scene graph
     cbAction.apply(rootIVNode);
 
-    // Pop the root osg node
-    groupStack.pop();
+    // Pop all the groups that are Transforms
+    // Verify that the last transform is _root .
+    assert(groupStack.size() > 0 && "groupStack underflow.");
+    osg::ref_ptr<osg::Group> group = groupStack.top();
+    while (strcmp(group->className(), "MatrixTransform") == 0)
+    {
+        groupStack.pop();
+        if (groupStack.empty()) break;
+        group = groupStack.top();
+    }
+    assert(group.get() == _root.get() && "groupStack error");
+    assert(groupStack.size() == 0 && "groupStack is not empty after traversal.");
 
+    assert(soTexStack.size() == 0 && "soTexStack was left at inconsistent state.");
+
+    assert(lightStack.size() == 1 && "lightStack was left at inconsistent state.");
     lightStack.pop();
 
     return _root.get(); 
 }
-#ifdef USE_COIN
-//////////////////////////////////////////////////////////////////////////////////
-SoCallbackAction::Response 
-ConvertFromInventor::_vrmlImageTextureAction(void* data, SoCallbackAction* action, 
-                                             const SoNode* node)
-{
-#ifdef DEBUG_IV_PLUGIN
-    osg::notify(osg::INFO) << "_vrmlImageTextureAction()    " 
-              << node->getTypeId().getName().getString() << std::endl;
-#endif
-    ///The converter data
-    ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
-
-
-    SoVRMLImageTexture* vit = (SoVRMLImageTexture*)(node);
-    if(vit)
-    {
-       //convert the SoVRMLImageTexture to an osg::Texture
-       thisPtr->_setVRMLImageTexture(vit,action);
-    }
-
-    return SoCallbackAction::CONTINUE;
-}
-#endif
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
 ConvertFromInventor::preShape(void* data, SoCallbackAction* action, 
@@ -316,31 +301,15 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
     geometry->setColorBinding(thisPtr->colorBinding);
 
 
-#if 0 // original code
-      // BUG: if default texture coordinates are used in Inventor model,
-      // the texture is not shown in OSG
-    if (!(thisPtr->textureCoords.empty()) && action->getNumTextureCoordinates()>0)
-    {
-
-        osg::notify(osg::NOTICE)<<"tex coords found"<<std::endl;
-
-#elif 0 // bug fix
-
-    if (!(thisPtr->textureCoords.empty())/* && action->getNumTextureCoordinates()>0*/) // BUG: That was avoiding using of automatic texture coordinate generation of IV.
-
-#else // improved code
-
     if (thisPtr->textureCoords.empty())
-        osg::notify(osg::NOTICE)<<"tex coords not found"<<std::endl;
+        osg::notify(osg::INFO)<<"tex coords not found"<<std::endl;
     else {
         
         // report texture coordinate conditions
         if (action->getNumTextureCoordinates()>0)
-            osg::notify(osg::DEBUG_INFO)<<"tex coords found"<<std::endl;
+            osg::notify(osg::INFO)<<"tex coords found"<<std::endl;
         else
-           osg::notify(osg::DEBUG_INFO)<<"tex coords generated"<<std::endl;
-
-#endif // end of changes
+           osg::notify(osg::INFO)<<"tex coords generated"<<std::endl;
 
         // Get the texture transformation matrix
         osg::Matrix textureMat;
@@ -392,7 +361,7 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
 }
 ///////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
-ConvertFromInventor::preTexture(void* data, SoCallbackAction *, 
+ConvertFromInventor::preTexture(void* data, SoCallbackAction *,
                                 const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
@@ -403,9 +372,27 @@ ConvertFromInventor::preTexture(void* data, SoCallbackAction *,
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
     
     if (thisPtr->soTexStack.size())
-        thisPtr->soTexStack.pop() ;
-    thisPtr->soTexStack.push((SoTexture2 *)node) ;
+        thisPtr->soTexStack.pop();
+    thisPtr->soTexStack.push(node);
         
+    return SoCallbackAction::CONTINUE;
+}
+//////////////////////////////////////////////////////////////////////////////////
+SoCallbackAction::Response 
+ConvertFromInventor::preVRMLImageTexture(void* data, SoCallbackAction* action,
+                                         const SoNode* node)
+{
+#ifdef DEBUG_IV_PLUGIN
+    osg::notify(osg::INFO) << "preVRMLImageTexture()  " 
+              << node->getTypeId().getName().getString() << std::endl;
+#endif
+
+    ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
+
+    if (thisPtr->soTexStack.size())
+        thisPtr->soTexStack.pop();
+    thisPtr->soTexStack.push(node);
+
     return SoCallbackAction::CONTINUE;
 }
 //////////////////////////////////////////////////////////////////
@@ -497,7 +484,8 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     return SoCallbackAction::CONTINUE;
 }
 ///////////////////////////////////////////////////////////////////////////////////////
- osg::ref_ptr<osg::StateSet> ConvertFromInventor::getStateSet(SoCallbackAction* action)
+osg::ref_ptr<osg::StateSet>
+ConvertFromInventor::getStateSet(SoCallbackAction* action)
 {
     osg::ref_ptr<osg::StateSet> stateSet = new osg::StateSet;
     
@@ -629,47 +617,10 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     
     // Convert the IV texture to OSG texture if any
     osg::ref_ptr<osg::Texture2D> texture;
-#ifdef USE_COIN
-    if(_hasVRMLImageTexture)
-    {
-       ///VRMLImageTexture
-       texture = _getConvertedVRMLImageTexture();
-       _hasVRMLImageTexture = false;
-       stateSet->setTextureAttributeAndModes(0,texture.get(), osg::StateAttribute::ON);
-
-       // Set the texture environment
-       osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
-       switch (action->getTextureModel())
-       {
-          case SoTexture2::MODULATE:
-              texEnv->setMode(osg::TexEnv::MODULATE);
-              break;
-          case SoTexture2::DECAL:
-              texEnv->setMode(osg::TexEnv::DECAL);
-              break;
-          case SoTexture2::BLEND:
-              texEnv->setMode(osg::TexEnv::BLEND);
-              break;
-
-#ifdef USE_COIN
-// This check is a very crude Coin detector.
-// SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
-            case SoTexture2::REPLACE:
-                texEnv->setMode(osg::TexEnv::REPLACE);
-                break;
-#endif
-        }
-        stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
-        stateSet->setAttributeAndModes(new osg::ShadeModel());
-       
-    }
-    else
-#endif
     if (soTexStack.top())
     {
-        osg::notify(osg::NOTICE)<<"Have texture"<<std::endl;
-    
-        //osg::ref_ptr<osg::Texture2D> tex;
+        osg::notify(osg::INFO)<<"Have texture"<<std::endl;
+
         // Found a corresponding OSG texture object
         if (ivToOsgTexMap[soTexStack.top()])
             texture = ivToOsgTexMap[soTexStack.top()];
@@ -698,9 +649,9 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
                 texEnv->setMode(osg::TexEnv::BLEND);
                 break;
 
-#ifdef USE_COIN
-// This check is a very crude Coin detector.
+#ifdef __COIN__
 // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
+// Coin supports REPLACE since 2.2 release, TGS Inventor from 4.0.
             case SoTexture2::REPLACE:
                 texEnv->setMode(osg::TexEnv::REPLACE);
                 break;
@@ -708,127 +659,61 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
         }
         stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
     }
-    else
-    {
-        // fallback because many inventor models don't appear to have any SoTexture2..
-        SbVec2s soTexSize;
-        int soTexNC;
-        const unsigned char* texImage = action->getTextureImage(soTexSize, soTexNC);
-        if (texImage)
-        {
-            osg::notify(osg::NOTICE)<<"Image data found soTexSize[0]="<<soTexSize[0]<<", soTexSize[1]="<<soTexSize[1]<<"\tsoTexNC="<<soTexNC<<std::endl;
 
-            // Allocate memory for image data
-            unsigned char* imageData = new unsigned char[soTexSize[0] * soTexSize[1] * 
-                                                         soTexNC];
-
-            // Copy the texture image data from the inventor texture
-            memcpy(imageData, texImage, soTexSize[0] * soTexSize[1] * soTexNC);
-
-            // Create the osg image 
-            osg::ref_ptr<osg::Image> osgTexImage = new osg::Image;
-#if 0
-            SbString iv_string;
-            soTex->filename.get(iv_string);
-            std::string str(iv_string.getString());
-            osg::notify(osg::INFO) << str << " -> ";
-            if (str[0]=='\"') str.erase(str.begin());
-            if (str[str.size()-1]=='\"') str.erase(str.begin()+str.size()-1);
-            osg::notify(osg::INFO) << str << std::endl;
-            osgTexImage->setFileName(str);
-#endif            
-            
-            GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
-            osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
-                    formats[soTexNC-1], GL_UNSIGNED_BYTE, imageData, 
-                    osg::Image::USE_NEW_DELETE/*, -1*/); // BUG: -1 have to be removed (definitely WRONG packing!) It causes crashes of GLU.
-
-            // Create the osg texture
-            texture = new osg::Texture2D;
-            texture->setImage(osgTexImage.get());
-
-            static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap2;
-            static bool firstTime2 = true;
-            if (firstTime2)
-            {
-                texWrapMap2[SoTexture2::CLAMP] = osg::Texture2D::CLAMP;
-                texWrapMap2[SoTexture2::REPEAT] = osg::Texture2D::REPEAT;
-                firstTime2 = false;
-            }
-            // Set texture wrap mode
-            texture->setWrap(osg::Texture2D::WRAP_S,texWrapMap2[action->getTextureWrapS()]);
-            texture->setWrap(osg::Texture2D::WRAP_T,texWrapMap2[action->getTextureWrapT()]);
-            
-            stateSet->setTextureAttributeAndModes(0,texture.get(), osg::StateAttribute::ON);
-
-            // Set the texture environment
-            osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
-            switch (action->getTextureModel())
-            {
-                case SoTexture2::MODULATE:
-                    texEnv->setMode(osg::TexEnv::MODULATE);
-                    break;
-                case SoTexture2::DECAL:
-                    texEnv->setMode(osg::TexEnv::DECAL);
-                    break;
-                case SoTexture2::BLEND:
-                    texEnv->setMode(osg::TexEnv::BLEND);
-                    break;
-
-    #ifdef USE_COIN
-    // This check is a very crude Coin detector.
-    // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
-                case SoTexture2::REPLACE:
-                    texEnv->setMode(osg::TexEnv::REPLACE);
-                    break;
-    #endif
-            }
-            stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
-        }
-    }
     return stateSet;
 }
 ////////////////////////////////////////////////////////////////////
-osg::Texture2D* 
-ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex, 
+osg::Texture2D*
+ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
                                           SoCallbackAction* action)
 {
-    osg::notify(osg::NOTICE)<<"convertIVTexToOSGTex"<<std::endl;
+    osg::notify(osg::INFO)<<"convertIVTexToOSGTex of type "<<
+        soNode->getTypeId().getName().getString()<<std::endl;
 
-    SbVec2s soTexSize;
-    int soTexNC;
-    
+    SbVec2s soSize;
+    int soNC;
+
     // Get the texture size and components
-    const unsigned char* texImage;
-    texImage = soTex->image.getValue(soTexSize, soTexNC);
-    if (!texImage)
+    const unsigned char* soImageData = action->getTextureImage(soSize, soNC);
+    if (!soImageData) {
+        osg::notify(osg::WARN) << "IV import warning: Error while loading texture data." << std::endl;
         return NULL;
-    
+    }
+
     // Allocate memory for image data
-    unsigned char* imageData = new unsigned char[soTexSize[0] * soTexSize[1] * 
-                                                 soTexNC];
-    
+    unsigned char* osgImageData = new unsigned char[soSize[0] * soSize[1] * soNC];
+
     // Copy the texture image data from the inventor texture
-    memcpy(imageData, texImage, soTexSize[0] * soTexSize[1] * soTexNC);
+    memcpy(osgImageData, soImageData, soSize[0] * soSize[1] * soNC);
 
-    // Create the osg image 
-    osg::ref_ptr<osg::Image> osgTexImage = new osg::Image;
-    SbString iv_string;
-    soTex->filename.get(iv_string);
-    std::string str(iv_string.getString());
-    osg::notify(osg::INFO) << str << " -> ";
-    if (str[0]=='\"') str.erase(str.begin());
-    if (str[str.size()-1]=='\"') str.erase(str.begin()+str.size()-1);
-    osg::notify(osg::INFO) << str << std::endl;
-    osgTexImage->setFileName(str);
+    // File name
+    std::string fileName;
+    if (soNode->isOfType(SoTexture2::getClassTypeId()))
+        fileName = ((SoTexture2*)soNode)->filename.getValue().getString();
+    else
+    if (soNode->isOfType(SoVRMLImageTexture::getClassTypeId()))
+        fileName = ((SoVRMLImageTexture*)soNode)->url.getNum() >= 1 ? 
+                   ((SoVRMLImageTexture*)soNode)->url.getValues(0)[0].getString() : "";
+    else
+      osg::notify(osg::WARN) << "IV import warning: Unsupported texture type: "
+            << soNode->getTypeId().getName().getString() << std::endl;
+
+    osg::notify(osg::INFO) << fileName << " -> ";
+    if (fileName[0]=='\"') fileName.erase(fileName.begin());
+    if (fileName.size() > 0 && fileName[fileName.size()-1]=='\"') 
+        fileName.erase(fileName.begin()+fileName.size()-1);
+    osg::notify(osg::INFO) << fileName << std::endl;
+
+    // Create the osg::Image 
+    osg::ref_ptr<osg::Image> osgImage = new osg::Image;
+    osgImage->setFileName(fileName);
     GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
-    osgTexImage->setImage(soTexSize[0], soTexSize[1], 0, soTexNC,
-            formats[soTexNC-1], GL_UNSIGNED_BYTE, imageData, 
-            osg::Image::USE_NEW_DELETE/*, -1*/); // BUG: -1 have to be removed (definitely WRONG packing!) It causes crashes of GLU.
+    osgImage->setImage(soSize[0], soSize[1], 0, soNC, formats[soNC-1],
+                       GL_UNSIGNED_BYTE, osgImageData, osg::Image::USE_NEW_DELETE);
 
-    // Create the osg texture
-    osg::ref_ptr<osg::Texture2D> osgTex = new osg::Texture2D;
-    osgTex->setImage(osgTexImage.get());
+    // Create the osg::Texture2D
+    osg::Texture2D *osgTex = new osg::Texture2D;
+    osgTex->setImage(osgImage.get());
 
     static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap;
     static bool firstTime = true;
@@ -840,14 +725,28 @@ ConvertFromInventor::convertIVTexToOSGTex(SoTexture2* soTex,
     }
          
     // Set texture wrap mode
-    osgTex->setWrap(osg::Texture2D::WRAP_S,texWrapMap[action->getTextureWrapS()]);
-    osgTex->setWrap(osg::Texture2D::WRAP_T,texWrapMap[action->getTextureWrapT()]);
+    if (soNode->isOfType(SoVRMLImageTexture::getClassTypeId())) {
+        // It looks like there is a high probability of bug in Coin (investigated on version 2.4.6).
+        // action->getTextureWrap() returns correct value on SoTexture2 (SoTexture2::CLAMP = 0x2900,
+        // and REPEAT = 0x2901), but SoVRMLImageTexture returns incorrect value of
+        // SoGLImage::REPEAT = 0, CLAMP = 1, CLAMP_TO_EDGE = 2).
+        // So, let's not use action and try to get correct value directly from texture node.
+        // PCJohn-2007-04-22
+        osgTex->setWrap(osg::Texture2D::WRAP_S, ((SoVRMLImageTexture*)soNode)->repeatS.getValue() ?
+            osg::Texture2D::REPEAT : osg::Texture2D::CLAMP_TO_EDGE);
+        osgTex->setWrap(osg::Texture2D::WRAP_T, ((SoVRMLImageTexture*)soNode)->repeatT.getValue() ?
+            osg::Texture2D::REPEAT : osg::Texture2D::CLAMP_TO_EDGE);
+    } else {
+        // Proper way to determine wrap mode
+        osgTex->setWrap(osg::Texture2D::WRAP_S, texWrapMap[action->getTextureWrapS()]);
+        osgTex->setWrap(osg::Texture2D::WRAP_T, texWrapMap[action->getTextureWrapT()]);
+    }
 
-    return osgTex.get(); 
+    return osgTex; 
 }
 ///////////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
-ConvertFromInventor::preGroup(void* data, SoCallbackAction* action, 
+ConvertFromInventor::preGroup(void* data, SoCallbackAction*, 
                               const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
@@ -857,12 +756,12 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
 
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
-    // Handle SoLOD nodes
-    if (node->getTypeId() == GroupSoLOD::getClassTypeId())
-        return preLOD(data, action, node);
-
-    // Create a new group and add it to the stack
-    osg::ref_ptr<osg::Group> group = new osg::Group;
+    // Create a new Group or LOD and add it to the stack
+    osg::ref_ptr<osg::Group> group;
+    if (node->isOfType(SoLOD::getClassTypeId()))
+        group = new osg::LOD;
+    else
+        group = new osg::Group;
     thisPtr->groupStack.top()->addChild(group.get());
     thisPtr->groupStack.push(group.get());
 
@@ -883,9 +782,13 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
 }
 //////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
-ConvertFromInventor::postGroup(void* data, SoCallbackAction *, 
+ConvertFromInventor::postGroup(void* data, SoCallbackAction* action, 
                                const SoNode* node)
 {
+    // Handle SoLOD nodes specially
+    if (node->isOfType(SoLOD::getClassTypeId()))
+        return postLOD(data, action, node);
+
 #ifdef DEBUG_IV_PLUGIN
     osg::notify(osg::INFO) << "postGroup()   " 
               << node->getTypeId().getName().getString() << std::endl;
@@ -893,19 +796,16 @@ ConvertFromInventor::postGroup(void* data, SoCallbackAction *,
 
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
-    // Pop all the groups that are Transforms and add it 
-    // to the corresponding parent group
+    // Pop all the groups that are Transforms
     osg::ref_ptr<osg::Group> group = thisPtr->groupStack.top();
     while (strcmp(group->className(), "MatrixTransform") == 0)
     {
         thisPtr->groupStack.pop();
-        thisPtr->groupStack.top()->addChild(group.get());
         group = thisPtr->groupStack.top();
     }
 
-    // Pop the group from the stack and add it to it's parent
+    // Pop the group from the stack
     thisPtr->groupStack.pop();
-    thisPtr->groupStack.top()->addChild(group.get());
 
     // Pop the state if the group is a Separator
     if (node->isOfType(SoSeparator::getClassTypeId()))
@@ -918,36 +818,50 @@ ConvertFromInventor::postGroup(void* data, SoCallbackAction *,
 }
 ////////////////////////////////////////////////////////////
 SoCallbackAction::Response 
-ConvertFromInventor::preLOD(void* data, SoCallbackAction *, 
-                            const SoNode* node)
+ConvertFromInventor::postLOD(void* data, SoCallbackAction *, 
+                             const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    osg::notify(osg::INFO) << "preLOD()    " 
+    osg::notify(osg::INFO) << "postLOD()    " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
-    // Inventor LOD node
+    // Inventor and OSG LOD node
     SoLOD *ivLOD = (SoLOD *) node;
-
-    // Create a new LOD and add it to the stack
-    osg::ref_ptr<osg::LOD> lod = new osg::LOD;
-    thisPtr->groupStack.push(lod.get());
-    thisPtr->groupStack.top()->addChild(lod.get());
+    osg::LOD *lod = dynamic_cast<osg::LOD*>(thisPtr->groupStack.top());
 
     // Get the center of LOD and set it
     SbVec3f ivCenter = ivLOD->center.getValue();
     lod->setCenter(osg::Vec3(ivCenter[0], ivCenter[1], ivCenter[2]));
 
+    // Verify the number of children and range values
+    int num = thisPtr->groupStack.top()->getNumChildren();
+    if (ivLOD->range.getNum()+1 != num && !(num == 0 && ivLOD->range.getNum() == 0)) {
+        osg::notify(osg::WARN) << "IV import warning: SoLOD does not "
+            << "contain correct data in range field." << std::endl;
+        if (ivLOD->range.getNum()+1 < num) {
+            thisPtr->groupStack.top()->removeChildren(ivLOD->range.getNum() + 1,
+                                                      num - ivLOD->range.getNum() - 1);
+            num = ivLOD->range.getNum() + 1;
+        }
+    }
+
     // Get the ranges and set it
-    // lod->setRange(0, 0.0);
-    lod->setRange(0, 0.0, ivLOD->range[0]);
-    for (int i = 1; i < ivLOD->getChildren()->getLength(); i++)
-        lod->setRange(i, ivLOD->range[i-1], ivLOD->range[i]);
-        
-    lod->setRange(ivLOD->getChildren()->getLength(), 
-                  ivLOD->range[ivLOD->getChildren()->getLength()],FLT_MAX);
+    if (num > 0) {
+        if (num == 1)
+            lod->setRange(0, 0.0, FLT_MAX);
+        else {
+            lod->setRange(0, 0.0, ivLOD->range[0]);
+            for (int i = 1; i < num-2; i++)
+                lod->setRange(i, ivLOD->range[i-1], ivLOD->range[i]);
+            lod->setRange(num-1, ivLOD->range[num-2], FLT_MAX);
+        }
+    }
+
+    // Pop the group from the stack
+    thisPtr->groupStack.pop();
 
     return SoCallbackAction::CONTINUE;
 }
@@ -983,8 +897,8 @@ ConvertFromInventor::preRotor(void* data, SoCallbackAction *,
     rotorTransform->setUpdateCallback(rotorCallback.get());
     
     // Push the rotor transform onto the group stack
-    thisPtr->groupStack.push(rotorTransform.get());
     thisPtr->groupStack.top()->addChild(rotorTransform.get());
+    thisPtr->groupStack.push(rotorTransform.get());
 
     return SoCallbackAction::CONTINUE;
 }
@@ -1020,8 +934,8 @@ ConvertFromInventor::prePendulum(void* data, SoCallbackAction *,
     pendulumTransform->setUpdateCallback(pendulumCallback);
     
     // Push the pendulum transform onto the group stack
-    thisPtr->groupStack.push(pendulumTransform.get());
     thisPtr->groupStack.top()->addChild(pendulumTransform.get());
+    thisPtr->groupStack.push(pendulumTransform.get());
 
     return SoCallbackAction::CONTINUE;
 }
@@ -1056,8 +970,8 @@ ConvertFromInventor::preShuttle(void* data, SoCallbackAction *,
     shuttleTransform->setUpdateCallback(shuttleCallback);
     
     // Push the shuttle transform onto the group stack
-    thisPtr->groupStack.push(shuttleTransform.get());
     thisPtr->groupStack.top()->addChild(shuttleTransform.get());
+    thisPtr->groupStack.push(shuttleTransform.get());
 
     return SoCallbackAction::CONTINUE;
 }
@@ -1151,74 +1065,3 @@ void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
     thisPtr->numPrimitives++;
     thisPtr->primitiveType = osg::PrimitiveSet::POINTS;
 }
-#ifdef USE_COIN
-//////////////////////////////////////////////////////////////////////
-void ConvertFromInventor::_setVRMLImageTexture(const SoVRMLImageTexture* vit,
-                                               SoCallbackAction* /*action*/)
-{
-    _hasVRMLImageTexture = true;
-    ///Coin API to extract VRML97 ImageTexture
-    int nComponents = 1;
-    SbImage* vitImage = (SbImage*)vit->getImage();
-    SbString filename;
-    filename = vit->url.getValues(0)[0];
-    vitImage->readFile(filename);
-
-    SbVec2s dimensions;
-    dimensions[0] = 2;
-    dimensions[1] = 2;
-    const unsigned char* dataPtr = vitImage->getValue(dimensions,nComponents);
-  
-    unsigned char* data = new unsigned char[dimensions[0]*
-                                           dimensions[1]*
-                                           nComponents];
-
-    ///Is this effiecient???
-    memcpy(data, dataPtr, dimensions[0]*dimensions[1]*nComponents);
-   
-    GLenum format = GL_RGBA;
-    switch (nComponents)
-    {
-       case 1:
-         format = GL_LUMINANCE;
-         break;
-       case 2:
-         format = GL_LUMINANCE_ALPHA;
-         break;
-       case 3:
-          format = GL_RGB;
-          break;
-       case 4:
-         default:
-         format = GL_RGBA;
-       break;
-    };
-
-    osg::ref_ptr<osg::Image> image = new osg::Image();
-    image->setImage(dimensions[0], dimensions[1], 1, nComponents,
-                   format, GL_UNSIGNED_BYTE, const_cast<unsigned char*>(data), 
-                   osg::Image::USE_NEW_DELETE);
-
-   
-    osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D();
-    texture->setImage(image.get());
-
-    osg::Texture::WrapMode smode = (vit->repeatS.getValue())?(osg::Texture::REPEAT):(osg::Texture::CLAMP);
-    osg::Texture::WrapMode tmode = (vit->repeatT.getValue())?(osg::Texture::REPEAT):(osg::Texture::CLAMP);
-
-    // Set texture wrap mode
-    texture->setWrap(osg::Texture2D::WRAP_S,smode);
-    texture->setWrap(osg::Texture2D::WRAP_T,tmode);
-    _currentVRMLImageTexture = texture;
-    _currentVRMLImageTexture->dirtyTextureObject();
-}
-////////////////////////////////////////////////////////////////////
-osg::Texture2D* ConvertFromInventor::_getConvertedVRMLImageTexture()
-{
-    if(_currentVRMLImageTexture.valid())
-    {
-       return _currentVRMLImageTexture.get();
-    }
-    return 0;
-}
-#endif

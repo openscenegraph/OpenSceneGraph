@@ -119,10 +119,23 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
     NodeList nodeList;
 
     std::string filename;
+
     while (arguments.read("--image",filename))
     {
         osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
-        if (image.valid()) nodeList.push_back(osg::createGeodeForImage(image.get()));
+        if (image.valid())
+        {
+            osg::Geode* geode = osg::createGeodeForImage(image.get());
+           
+            if (image->isImageTranslucent())
+            {
+                osg::notify()<<"Image "<<image->getFileName()<<" is translucent; setting up blending."<<std::endl;
+                geode->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+                geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+            }
+
+            nodeList.push_back(geode);
+        }
     }
 
     while (arguments.read("--movie",filename))

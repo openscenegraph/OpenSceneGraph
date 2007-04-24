@@ -1,5 +1,8 @@
 INCLUDE(OsgMacroUtils)
 
+INCLUDE_DIRECTORIES( ${INVENTOR_INCLUDE_DIR} )
+
+
 SET(TARGET_SRC
     ConvertFromInventor.cpp
     GroupSoLOD.cpp

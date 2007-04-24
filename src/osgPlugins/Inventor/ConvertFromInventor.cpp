@@ -36,14 +36,18 @@
 #include <Inventor/nodes/SoShuttle.h>
 #include <Inventor/nodes/SoLOD.h>
 #include <Inventor/nodes/SoTexture2.h>
-#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
 #include <Inventor/misc/SoChildList.h>
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/SbLinear.h>
 
+#ifdef COIN_BASIC_H
+#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
+#endif
+
 #include "GroupSoLOD.h"
 
 #include <map>
+#include <assert.h>
 #include <math.h>
 #ifdef __linux
 #include <values.h>
@@ -91,8 +95,10 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
     cbAction.addPreCallback(SoGroup::getClassTypeId(), preGroup, this);
     cbAction.addPostCallback(SoGroup::getClassTypeId(), postGroup, this);
     cbAction.addPreCallback(SoTexture2::getClassTypeId(), preTexture, this);
+#ifdef COIN_BASIC_H
     cbAction.addPreCallback(SoVRMLImageTexture::getClassTypeId(),
                             preVRMLImageTexture, this);
+#endif
     cbAction.addPreCallback(SoLight::getClassTypeId(), preLight, this);
     cbAction.addPreCallback(SoRotor::getClassTypeId(), preRotor, this);
     cbAction.addPreCallback(SoPendulum::getClassTypeId(), prePendulum, this);
@@ -690,10 +696,12 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     std::string fileName;
     if (soNode->isOfType(SoTexture2::getClassTypeId()))
         fileName = ((SoTexture2*)soNode)->filename.getValue().getString();
+#ifdef COIN_BASIC_H
     else
     if (soNode->isOfType(SoVRMLImageTexture::getClassTypeId()))
         fileName = ((SoVRMLImageTexture*)soNode)->url.getNum() >= 1 ? 
                    ((SoVRMLImageTexture*)soNode)->url.getValues(0)[0].getString() : "";
+#endif
     else
       osg::notify(osg::WARN) << "IV import warning: Unsupported texture type: "
             << soNode->getTypeId().getName().getString() << std::endl;
@@ -725,6 +733,7 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     }
          
     // Set texture wrap mode
+#ifdef COIN_BASIC_H
     if (soNode->isOfType(SoVRMLImageTexture::getClassTypeId())) {
         // It looks like there is a high probability of bug in Coin (investigated on version 2.4.6).
         // action->getTextureWrap() returns correct value on SoTexture2 (SoTexture2::CLAMP = 0x2900,
@@ -736,7 +745,10 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
             osg::Texture2D::REPEAT : osg::Texture2D::CLAMP_TO_EDGE);
         osgTex->setWrap(osg::Texture2D::WRAP_T, ((SoVRMLImageTexture*)soNode)->repeatT.getValue() ?
             osg::Texture2D::REPEAT : osg::Texture2D::CLAMP_TO_EDGE);
-    } else {
+    }
+    else
+#endif
+    {
         // Proper way to determine wrap mode
         osgTex->setWrap(osg::Texture2D::WRAP_S, texWrapMap[action->getTextureWrapS()]);
         osgTex->setWrap(osg::Texture2D::WRAP_T, texWrapMap[action->getTextureWrapT()]);

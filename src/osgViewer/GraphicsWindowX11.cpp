@@ -27,7 +27,7 @@
 #include <X11/cursorfont.h>
 #include <X11/Intrinsic.h>
 
-#include <X11/Xmd.h>		/* For CARD16 */
+#include <X11/Xmd.h>        /* For CARD16 */
 
 #include <unistd.h>
 
@@ -932,8 +932,8 @@ void GraphicsWindowX11::checkEvents()
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);
 
-                getEventQueue()->keyPress(keySymbol, eventTime);
                 getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                getEventQueue()->keyPress(keySymbol, eventTime);
                 break;
             }
             
@@ -947,8 +947,8 @@ void GraphicsWindowX11::checkEvents()
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);
                 
-                getEventQueue()->keyRelease(keySymbol, eventTime);
                 getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                getEventQueue()->keyRelease(keySymbol, eventTime);
                 break;
             }
             

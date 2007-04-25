@@ -44,7 +44,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         virtual void checkEvents() {}
         
         /** Set the window's position and size.*/
-        virtual void setWindowRectangle(int x, int y, int width, int height) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowRectangle(..) not implemented."<<std::endl; }
+        virtual void setWindowRectangle(int /*x*/, int /*y*/, int /*width*/, int /*height*/) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowRectangle(..) not implemented."<<std::endl; }
 
         /** Get the window's position and size.*/
         virtual void getWindowRectangle(int& x, int& y, int& width, int& height) { if (_traits.valid()) { x = _traits->x; y = _traits->y; width = _traits->width; height = _traits->height; }  }

@@ -974,15 +974,15 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
         case kEventRawKeyDown:
         case kEventRawKeyRepeat:
         {
-            getEventQueue()->keyPress(keychar);
             getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+            getEventQueue()->keyPress(keychar);
             break;
         }
         
         case kEventRawKeyUp:
         {                 
-            getEventQueue()->keyRelease(keychar);
             getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+            getEventQueue()->keyRelease(keychar);
             break;
         }
         

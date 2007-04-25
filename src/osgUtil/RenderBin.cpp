@@ -377,7 +377,7 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
     // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
 
 
-    unsigned int numToPop = (previous ? StateGraph::numToPop(state, previous->_parent) : 0);
+    unsigned int numToPop = (previous ? StateGraph::numToPop(previous->_parent) : 0);
     if (numToPop>1) --numToPop;
     unsigned int insertStateSetPosition = state.getStateSetStackSize() - numToPop;
 

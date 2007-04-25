@@ -279,7 +279,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             
         }
         
-        inline static int numToPop(osg::State& state,StateGraph* sg_curr)
+        inline static int numToPop(StateGraph* sg_curr)
         {
             int numToPop = 0;
             // need to pop back all statesets and matrices.

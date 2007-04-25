@@ -3,9 +3,9 @@ IF(WIN32)
 ELSE(WIN32)
     IF(APPLE)
         CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6 FATAL_ERROR)
-		IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
-			MESSAGE("Warning: A critical CMake bug exists in 2.4.6 and below. Trying to build Universal Binaries will result in a compile error that seems unrelated. Either avoid building Universal Binaries by changing the CMAKE_OSX_ARCHITECTURES field to list only your architecture, or upgrade to the current CVS version of CMake or a newer stable version if it exists.")
-		ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+        IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+            MESSAGE("Warning: A critical CMake bug exists in 2.4.6 and below. Trying to build Universal Binaries will result in a compile error that seems unrelated. Either avoid building Universal Binaries by changing the CMAKE_OSX_ARCHITECTURES field to list only your architecture, or upgrade to the current CVS version of CMake or a newer stable version if it exists.")
+        ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
     ELSE(APPLE)
         CMAKE_MINIMUM_REQUIRED(VERSION 2.4.0 FATAL_ERROR)
     ENDIF(APPLE)
@@ -255,10 +255,10 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # returns too many hits.
     # FYI, if we do implement GNUCC, then -Wmissing-prototypes in another 
     # interesting C-specific flag.
-	# Also, there is a bug in gcc 4.0. Under C++, -pedantic will create
-	# errors instead of warnings for certain issues, including superfluous
-	# semicolons and commas, and the use of long long. -fpermissive seems
-	# to be the workaround. 
+    # Also, there is a bug in gcc 4.0. Under C++, -pedantic will create
+    # errors instead of warnings for certain issues, including superfluous
+    # semicolons and commas, and the use of long long. -fpermissive seems
+    # to be the workaround. 
     SET(OSG_AGGRESSIVE_WARNING_FLAGS "-Wall -Wparentheses -Wformat=2 -Wno-long-long -Wno-import -pedantic -Wnewline-eof -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -fpermissive")
 ELSE(CMAKE_COMPILER_IS_GNUCXX)
     IF(MSVC)
@@ -305,7 +305,7 @@ IF(APPLE)
     # will overwrite any changes the user sets.
     # FORCE is used because the options are not reflected in the UI otherwise.
     # Seems like a good place to add version specific compiler flags too.
-    IF(NOT "${OSG_CONFIG_HAS_BEEN_RUN_BEFORE}")
+    IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
         # This is really fragile, but CMake doesn't provide the OS system 
         # version information we need. (Darwin versions can be changed 
         # independently of OS X versions.)
@@ -323,7 +323,7 @@ IF(APPLE)
                 # but the SDK detection is too unreliable here.
             ENDIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
         ENDIF(EXISTS /Developer/SDKs/10.5.sdk)
-    ENDIF(NOT "${OSG_CONFIG_HAS_BEEN_RUN_BEFORE}")
+    ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 ENDIF(APPLE)
 
 
@@ -358,8 +358,8 @@ ENDIF(BUILD_DOCUMENTATION)
 
 # This needs to be run very last so other parts of the scripts can take
 # advantage of this.
-IF(NOT "${OSG_CONFIG_HAS_BEEN_RUN_BEFORE}")
+IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
     SET(OSG_CONFIG_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether this is the first time running CMake or if CMake has been configured before")
-ENDIF(NOT "${OSG_CONFIG_HAS_BEEN_RUN_BEFORE}")
+ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
 

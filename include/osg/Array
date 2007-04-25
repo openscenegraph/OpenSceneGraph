@@ -27,6 +27,7 @@
 #include <osg/Vec3b>
 #include <osg/Vec4b>
 
+#include <osg/BufferObject>
 
 #include <osg/Object>
 #include <osg/GL>
@@ -71,14 +72,16 @@ class OSG_EXPORT Array : public Object
             _arrayType(arrayType),
             _dataSize(dataSize),
             _dataType(dataType),
-            _modifiedCount(0) {}
+            _modifiedCount(0),
+            _vboIndex(0) {}
     
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(array,copyop),
             _arrayType(array._arrayType),
             _dataSize(array._dataSize),
             _dataType(array._dataType),
-            _modifiedCount(0) {}
+            _modifiedCount(0),
+            _vboIndex(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -113,14 +116,31 @@ class OSG_EXPORT Array : public Object
         /** Get modified count value.*/
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
+        /** Set the VertexBufferObject.*/
+        inline void setVertexBufferObject(osg::VertexBufferObject* vbo) { _vbo = vbo; }
+        
+        /** Get the VertexBufferObject. If no VBO is assigned returns NULL*/
+        inline osg::VertexBufferObject* getVertexBufferObject() { return _vbo.get(); }
+
+        /** Get the const VertexBufferObject. If no VBO is assigned returns NULL*/
+        inline const osg::VertexBufferObject* getVertexBufferObject() const { return _vbo.get(); }
+
+        /** Set the index into the VertexBufferObject, if used.*/
+        inline void setVertexBufferObjectIndex(unsigned int index) { _vboIndex = index; }
+
+        /** Get the index into the VertexBufferObject, if used.*/
+        inline unsigned int getVertexBufferObjectIndex() const { return _vboIndex; }
+
     protected:
     
         virtual ~Array() {}
 
-        Type        _arrayType;
-        GLint       _dataSize;
-        GLenum      _dataType;
-        unsigned int    _modifiedCount;
+        Type                                    _arrayType;
+        GLint                                   _dataSize;
+        GLenum                                  _dataType;
+        unsigned int                            _modifiedCount;
+        osg::ref_ptr<osg::VertexBufferObject>   _vbo;
+        unsigned int                            _vboIndex;
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

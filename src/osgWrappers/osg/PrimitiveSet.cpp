@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BufferObject>
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
@@ -230,10 +231,53 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
 	                 __void__setFirst__GLint);
 END_REFLECTOR
 
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
+	I_BaseType(osg::PrimitiveSet);
+	I_ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0,
+	                           ____DrawElements__Type__GLenum,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osg::DrawElements &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DrawElements__C5_DrawElements_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method1(void, setElementsBufferObject, IN, osg::ElementsBufferObject *, ebo,
+	          Properties::NON_VIRTUAL,
+	          __void__setElementsBufferObject__osg_ElementsBufferObject_P1,
+	          "Set the ElementsBufferObject. ",
+	          "");
+	I_Method0(osg::ElementsBufferObject *, getElementsBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __osg_ElementsBufferObject_P1__getElementsBufferObject,
+	          "Get the ElementsBufferObject. ",
+	          "If no EBO is assigned returns NULL ");
+	I_Method0(const osg::ElementsBufferObject *, getElementsBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ElementsBufferObject_P1__getElementsBufferObject,
+	          "Get the const ElementsBufferObject. ",
+	          "If no EBO is assigned returns NULL ");
+	I_Method1(void, setElementsBufferObjectIndex, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __void__setElementsBufferObjectIndex__unsigned_int,
+	          "Set the index into the ElementsBufferObject, if used. ",
+	          "");
+	I_Method0(unsigned int, getElementsBufferObjectIndex,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getElementsBufferObjectIndex,
+	          "Get the index into the ElementsBufferObject, if used. ",
+	          "");
+	I_SimpleProperty(osg::ElementsBufferObject *, ElementsBufferObject, 
+	                 __osg_ElementsBufferObject_P1__getElementsBufferObject, 
+	                 __void__setElementsBufferObject__osg_ElementsBufferObject_P1);
+	I_SimpleProperty(unsigned int, ElementsBufferObjectIndex, 
+	                 __unsigned_int__getElementsBufferObjectIndex, 
+	                 __void__setElementsBufferObjectIndex__unsigned_int);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
-	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::DrawElements);
 	I_BaseType(osg::VectorGLubyte);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
 	                           Properties::NON_EXPLICIT,
@@ -348,7 +392,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(osg::VectorGLuint, osg::DrawElementsUInt::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
-	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::DrawElements);
 	I_BaseType(osg::VectorGLuint);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
 	                           Properties::NON_EXPLICIT,
@@ -463,7 +507,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(osg::VectorGLushort, osg::DrawElementsUShort::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
-	I_BaseType(osg::PrimitiveSet);
+	I_BaseType(osg::DrawElements);
 	I_BaseType(osg::VectorGLushort);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
 	                           Properties::NON_EXPLICIT,

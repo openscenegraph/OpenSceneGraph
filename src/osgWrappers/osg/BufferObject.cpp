@@ -10,10 +10,12 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
 #include <osg/BufferObject>
 #include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/Object>
+#include <osg/PrimitiveSet>
 #include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -219,6 +221,80 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >, osg::ElementsBufferObject::BufferEntryDrawElementstPair)
+
+TYPE_NAME_ALIAS(std::vector< osg::ElementsBufferObject::BufferEntryDrawElementstPair >, osg::ElementsBufferObject::BufferEntryDrawElementsPairs)
+
+BEGIN_OBJECT_REFLECTOR(osg::ElementsBufferObject)
+	I_BaseType(osg::BufferObject);
+	I_Constructor0(____ElementsBufferObject,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ElementsBufferObject &, pbo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ElementsBufferObject__C5_ElementsBufferObject_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(unsigned int, addDrawElements, IN, osg::DrawElements *, PrimitiveSet,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__addDrawElements__osg_DrawElements_P1,
+	          "",
+	          "");
+	I_Method2(void, setDrawElements, IN, unsigned int, i, IN, osg::DrawElements *, PrimitiveSet,
+	          Properties::NON_VIRTUAL,
+	          __void__setDrawElements__unsigned_int__DrawElements_P1,
+	          "",
+	          "");
+	I_Method1(osg::DrawElements *, getDrawElements, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __DrawElements_P1__getDrawElements__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::DrawElements *, getDrawElements, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_DrawElements_P1__getDrawElements__unsigned_int,
+	          "",
+	          "");
+	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
+	          Properties::VIRTUAL,
+	          __bool__needsCompile__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileBuffer__State_R1,
+	          "",
+	          "");
+	I_IndexedProperty(osg::DrawElements *, DrawElements, 
+	                  __DrawElements_P1__getDrawElements__unsigned_int, 
+	                  __void__setDrawElements__unsigned_int__DrawElements_P1, 
+	                  0);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair)
 
 BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
@@ -292,5 +368,87 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	                 __void__setImage__osg_Image_P1);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Array * >, osg::VertexBufferObject::BufferEntryArrayPair)
+
+TYPE_NAME_ALIAS(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >, osg::VertexBufferObject::BufferEntryArrayPairs)
+
+BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
+	I_BaseType(osg::BufferObject);
+	I_Constructor0(____VertexBufferObject,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::VertexBufferObject &, vbo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____VertexBufferObject__C5_VertexBufferObject_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(unsigned int, addArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__addArray__osg_Array_P1,
+	          "",
+	          "");
+	I_Method2(void, setArray, IN, unsigned int, i, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setArray__unsigned_int__Array_P1,
+	          "",
+	          "");
+	I_Method1(osg::Array *, getArray, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __Array_P1__getArray__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::Array *, getArray, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_Array_P1__getArray__unsigned_int,
+	          "",
+	          "");
+	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
+	          Properties::VIRTUAL,
+	          __bool__needsCompile__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileBuffer__State_R1,
+	          "",
+	          "");
+	I_IndexedProperty(osg::Array *, Array, 
+	                  __Array_P1__getArray__unsigned_int, 
+	                  __void__setArray__unsigned_int__Array_P1, 
+	                  0);
+END_REFLECTOR
+
+STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Array * >)
+
+STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >)
+
 STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ElementsBufferObject::BufferEntryDrawElementstPair >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >)
 

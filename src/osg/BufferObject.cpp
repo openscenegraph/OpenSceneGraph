@@ -276,8 +276,92 @@ void BufferObject::Extensions::glGetBufferPointerv (GLenum target, GLenum pname,
     else notify(WARN)<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  VertexBufferObject
+//
+VertexBufferObject::VertexBufferObject()
+{
+}
 
+VertexBufferObject::VertexBufferObject(const VertexBufferObject& vbo,const CopyOp& copyop):
+    BufferObject(vbo,copyop)
+{
+}
 
+VertexBufferObject::~VertexBufferObject()
+{
+}
+
+unsigned int VertexBufferObject::addArray(osg::Array* array)
+{
+    unsigned int i = _bufferEntryArrayPairs.size();
+    _bufferEntryArrayPairs.resize(i+1);
+    _bufferEntryArrayPairs[i].second = array;
+    
+    return i;
+}
+
+void VertexBufferObject::setArray(unsigned int i, Array* array)
+{
+    if (i+1>=_bufferEntryArrayPairs.size()) _bufferEntryArrayPairs.resize(i+1); 
+    
+    _bufferEntryArrayPairs[i].second = array;
+}
+
+bool VertexBufferObject::needsCompile(unsigned int contextID) const
+{
+}
+
+void VertexBufferObject::compileBuffer(State& state) const
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  ElementsBufferObject
+//
+ElementsBufferObject::ElementsBufferObject()
+{
+}
+
+ElementsBufferObject::ElementsBufferObject(const ElementsBufferObject& vbo,const CopyOp& copyop):
+    BufferObject(vbo,copyop)
+{
+}
+
+ElementsBufferObject::~ElementsBufferObject()
+{
+}
+
+unsigned int ElementsBufferObject::addDrawElements(osg::DrawElements* DrawElements)
+{
+    unsigned int i = _bufferEntryDrawElementsPairs.size();
+    _bufferEntryDrawElementsPairs.resize(i+1);
+    _bufferEntryDrawElementsPairs[i].second = DrawElements;
+    
+    return i;
+}
+
+void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* DrawElements)
+{
+    if (i+1>=_bufferEntryDrawElementsPairs.size()) _bufferEntryDrawElementsPairs.resize(i+1); 
+    
+    _bufferEntryDrawElementsPairs[i].second = DrawElements;
+}
+
+bool ElementsBufferObject::needsCompile(unsigned int contextID) const
+{
+}
+
+void ElementsBufferObject::compileBuffer(State& state) const
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  PixelBufferObject
+//
 PixelBufferObject::PixelBufferObject(osg::Image* image):
     BufferObject()
 {

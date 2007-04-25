@@ -20,70 +20,125 @@
 # Header files are presumed to be included like
 # #include <OpenThreads/Thread>
 
-# Try the user's environment request before anything else.
+# To make it easier for one-step automated configuration/builds,
+# we leverage environmental paths. This is preferable 
+# to the -DVAR=value switches because it insulates the 
+# users from changes we may make in this script.
+# It also offers a little more flexibility than setting
+# the CMAKE_*_PATH since we can target specific components.
+# However, the default CMake behavior will search system paths
+# before anything else. This is problematic in the cases
+# where you have an older (stable) version installed, but
+# are trying to build a newer version.
+# CMake doesn't offer a nice way to globally control this behavior
+# so we have to do a nasty "double FIND_" in this module.
+# The first FIND disables the CMAKE_ search paths and only checks
+# the environmental paths.
+# If nothing is found, then the second find will search the
+# standard install paths.
+# Explicit -DVAR=value arguments should still be able to override everything.
 
 FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
-  ${CMAKE_INSTALL_PREFIX}/include
+	$ENV{OPENTHREADS_INCLUDE_DIR}
 	$ENV{OPENTHREADS_DIR}/include
 	$ENV{OPENTHREADS_DIR}
+	$ENV{OSG_INCLUDE_DIR}
 	$ENV{OSG_DIR}/include
 	$ENV{OSG_DIR}
-	~/Library/Frameworks
-	/Library/Frameworks
-	/usr/local/include
-	/usr/include
-	/sw/include # Fink
-	/opt/local/include # DarwinPorts
-	/opt/csw/include # Blastwave
-	/opt/include
-	[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
+	NO_DEFAULT_PATH
 )
+
+IF(NOT OPENTHREADS_INCLUDE_DIR)
+	FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+		~/Library/Frameworks
+		/Library/Frameworks
+		/usr/local/include
+		/usr/include
+		/sw/include # Fink
+		/opt/local/include # DarwinPorts
+		/opt/csw/include # Blastwave
+		/opt/include
+		[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
+		${CMAKE_INSTALL_PREFIX}/include # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
+	)
+ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY 
-	NAMES OpenThreads  OpenThreadsWin32 
+	NAMES OpenThreads OpenThreadsWin32 
 	PATHS
-	${CMAKE_INSTALL_PREFIX}/lib
+	$ENV{OPENTHREADS_LIBRARY_DIR}
 	$ENV{OPENTHREADS_DIR}/lib64
 	$ENV{OPENTHREADS_DIR}/lib
 	$ENV{OPENTHREADS_DIR}
+	$ENV{OSG_LIBRARY_DIR}
 	$ENV{OSG_DIR}/lib64
 	$ENV{OSG_DIR}/lib
 	$ENV{OSG_DIR}
-	~/Library/Frameworks
-	/Library/Frameworks
-	/usr/local/lib64
-	/usr/local/lib
-	/usr/lib64
-	/usr/lib
-	/sw/lib
-	/opt/local/lib
-	/opt/csw/lib
-	/opt/lib
-	[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+	NO_DEFAULT_PATH
 )
+
+IF(NOT OPENTHREADS_LIBRARY)
+	FIND_LIBRARY(OPENTHREADS_LIBRARY 
+		NAMES OpenThreads OpenThreadsWin32 
+		PATHS
+		~/Library/Frameworks
+		/Library/Frameworks
+		/usr/local/lib64
+		/usr/local/lib
+		/usr/lib64
+		/usr/lib
+		/sw/lib64
+		/sw/lib
+		/opt/local/lib64
+		/opt/local/lib
+		/opt/csw/lib64
+		/opt/csw/lib
+		/opt/lib64
+		/opt/lib
+		[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+		${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
+		${CMAKE_INSTALL_PREFIX}/lib # hack
+	)
+ENDIF(NOT OPENTHREADS_LIBRARY)
+
+
 FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
-	NAMES  OpenThreadsd  OpenThreadsWin32d
+	NAMES OpenThreadsd OpenThreadsWin32d
 	PATHS
-	${CMAKE_INSTALL_PREFIX}/lib
+	$ENV{OPENTHREADS_LIBRARY_DIR}
 	$ENV{OPENTHREADS_DIR}/lib64
 	$ENV{OPENTHREADS_DIR}/lib
 	$ENV{OPENTHREADS_DIR}
+	$ENV{OSG_LIBRARY_DIR}
 	$ENV{OSG_DIR}/lib64
 	$ENV{OSG_DIR}/lib
 	$ENV{OSG_DIR}
-	~/Library/Frameworks
-	/Library/Frameworks
-	/usr/local/lib64
-	/usr/local/lib
-	/usr/lib64
-	/usr/lib
-	/sw/lib
-	/opt/local/lib
-	/opt/csw/lib
-	/opt/lib
-	[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+	NO_DEFAULT_PATH
 )
+
+IF(NOT OPENTHREADS_LIBRARY_DEBUG)
+	FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+		NAMES OpenThreadsd OpenThreadsWin32d
+		PATHS
+		/usr/local/lib64
+		/usr/local/lib
+		/usr/lib64
+		/usr/lib
+		/sw/lib64
+		/sw/lib
+		/opt/local/lib64
+		/opt/local/lib
+		/opt/csw/lib64
+		/opt/csw/lib
+		/opt/lib64
+		/opt/lib
+		[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+		${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
+		${CMAKE_INSTALL_PREFIX}/lib # hack
+	)
+ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
+
 
 IF(OPENTHREADS_LIBRARY)
   IF(NOT OPENTHREADS_LIBRARY_DEBUG)

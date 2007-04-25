@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
+#include <osg/Camera>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgViewer/StatsHandler>
@@ -56,15 +57,30 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	          __int__getKeyEventPrintsOutStats,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
-	          Properties::VIRTUAL,
-	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
-	          "");
 	I_Method0(double, getBlockMultiplier,
 	          Properties::NON_VIRTUAL,
 	          __double__getBlockMultiplier,
 	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
+	          __osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method0(const osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
@@ -115,6 +131,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	                   "");
 	I_SimpleProperty(double, BlockMultiplier, 
 	                 __double__getBlockMultiplier, 
+	                 0);
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
 	                 0);
 	I_SimpleProperty(int, KeyEventPrintsOutStats, 
 	                 __int__getKeyEventPrintsOutStats, 

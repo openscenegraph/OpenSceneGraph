@@ -121,8 +121,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	                __void__moveToRootStateGraph__osg_State_R1__StateGraph_P1_S,
 	                "",
 	                "");
-	I_StaticMethod2(int, numToPop, IN, osg::State &, state, IN, osgUtil::StateGraph *, sg_curr,
-	                __int__numToPop__osg_State_R1__StateGraph_P1_S,
+	I_StaticMethod1(int, numToPop, IN, osgUtil::StateGraph *, sg_curr,
+	                __int__numToPop__StateGraph_P1_S,
 	                "",
 	                "");
 	I_SimpleProperty(float, AverageDistance, 

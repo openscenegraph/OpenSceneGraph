@@ -48,7 +48,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__checkEvents,
 	          "",
 	          "");
-	I_Method4(void, setWindowRectangle, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	I_Method4(void, setWindowRectangle, IN, int, x, IN, int, x, IN, int, x, IN, int, x,
 	          Properties::VIRTUAL,
 	          __void__setWindowRectangle__int__int__int__int,
 	          "Set the window's position and size. ",

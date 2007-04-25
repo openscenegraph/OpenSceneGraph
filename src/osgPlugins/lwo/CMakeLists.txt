@@ -35,5 +35,7 @@ SET(TARGET_H
     VertexMap.h
 )
 
+SET(TARGET_ADDED_LIBRARIES osgFX)
+
 #### end var setup  ###
 SETUP_PLUGIN(lwo)

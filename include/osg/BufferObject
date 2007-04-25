@@ -216,14 +216,75 @@ class OSG_EXPORT BufferObject : public Object
         
         typedef osg::buffered_value<GLuint> GLObjectList;
 
-        typedef std::pair< BufferEntry, ref_ptr<Array> >        BufferEntryArrayPair;
-        typedef std::pair< BufferEntry, ref_ptr<PrimitiveSet> > BufferEntryPrimitiveSetPair;
-        
         mutable GLObjectList    _bufferObjectList;
 
         GLenum                  _target;
         GLenum                  _usage;
         mutable unsigned int    _totalSize;
+};
+
+class Array;
+class OSG_EXPORT VertexBufferObject : public BufferObject
+{
+    public:
+
+        VertexBufferObject();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        VertexBufferObject(const VertexBufferObject& vbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg,VertexBufferObject);
+        
+        typedef std::pair< BufferEntry, Array* > BufferEntryArrayPair;
+        typedef std::vector< BufferEntryArrayPair > BufferEntryArrayPairs;
+
+        unsigned int addArray(osg::Array* array);
+
+        void setArray(unsigned int i, Array* array);
+        Array* getArray(unsigned int i) { return _bufferEntryArrayPairs[i].second; }
+        const Array* getArray(unsigned int i) const { return _bufferEntryArrayPairs[i].second; }
+        
+        virtual bool needsCompile(unsigned int contextID) const;
+
+        virtual void compileBuffer(State& state) const;
+
+    protected:
+    
+        virtual ~VertexBufferObject();
+        
+        BufferEntryArrayPairs _bufferEntryArrayPairs;
+};
+
+class DrawElements;
+class OSG_EXPORT ElementsBufferObject : public BufferObject
+{
+    public:
+
+        ElementsBufferObject();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ElementsBufferObject(const ElementsBufferObject& pbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg,ElementsBufferObject);
+        
+        typedef std::pair< BufferEntry, DrawElements* > BufferEntryDrawElementstPair;
+        typedef std::vector< BufferEntryDrawElementstPair > BufferEntryDrawElementsPairs;
+
+        unsigned int addDrawElements(osg::DrawElements* PrimitiveSet);
+
+        void setDrawElements(unsigned int i, DrawElements* PrimitiveSet);
+        DrawElements* getDrawElements(unsigned int i) { return _bufferEntryDrawElementsPairs[i].second; }
+        const DrawElements* getDrawElements(unsigned int i) const { return _bufferEntryDrawElementsPairs[i].second; }
+        
+        virtual bool needsCompile(unsigned int contextID) const;
+
+        virtual void compileBuffer(State& state) const;
+
+    protected:
+    
+        virtual ~ElementsBufferObject();
+        
+        BufferEntryDrawElementsPairs _bufferEntryDrawElementsPairs;
 };
 
 class Image;

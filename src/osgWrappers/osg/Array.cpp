@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
+#include <osg/BufferObject>
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osg/Vec2>
@@ -153,6 +154,31 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	          __unsigned_int__getModifiedCount,
 	          "Get modified count value. ",
 	          "");
+	I_Method1(void, setVertexBufferObject, IN, osg::VertexBufferObject *, vbo,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertexBufferObject__osg_VertexBufferObject_P1,
+	          "Set the VertexBufferObject. ",
+	          "");
+	I_Method0(osg::VertexBufferObject *, getVertexBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __osg_VertexBufferObject_P1__getVertexBufferObject,
+	          "Get the VertexBufferObject. ",
+	          "If no VBO is assigned returns NULL ");
+	I_Method0(const osg::VertexBufferObject *, getVertexBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_VertexBufferObject_P1__getVertexBufferObject,
+	          "Get the const VertexBufferObject. ",
+	          "If no VBO is assigned returns NULL ");
+	I_Method1(void, setVertexBufferObjectIndex, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertexBufferObjectIndex__unsigned_int,
+	          "Set the index into the VertexBufferObject, if used. ",
+	          "");
+	I_Method0(unsigned int, getVertexBufferObjectIndex,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getVertexBufferObjectIndex,
+	          "Get the index into the VertexBufferObject, if used. ",
+	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);
@@ -171,6 +197,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_SimpleProperty(osg::Array::Type, Type, 
 	                 __Type__getType, 
 	                 0);
+	I_SimpleProperty(osg::VertexBufferObject *, VertexBufferObject, 
+	                 __osg_VertexBufferObject_P1__getVertexBufferObject, 
+	                 __void__setVertexBufferObject__osg_VertexBufferObject_P1);
+	I_SimpleProperty(unsigned int, VertexBufferObjectIndex, 
+	                 __unsigned_int__getVertexBufferObjectIndex, 
+	                 __void__setVertexBufferObjectIndex__unsigned_int);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArrayVisitor)

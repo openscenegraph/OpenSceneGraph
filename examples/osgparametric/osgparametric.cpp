@@ -13,6 +13,7 @@
 #include <osgUtil/Optimizer>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/StatsHandler>
 
 #include <iostream>
 
@@ -87,7 +88,7 @@ class UniformVarying : public osg::Uniform::Callback
     }
 };
 
-osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName)
+osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName, bool dynamic, bool vbo)
 {
     osg::Geode* geode = new osg::Geode;
     
@@ -112,9 +113,16 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
             program->addShader(vertex_shader);
 
             osg::Uniform* coeff = new osg::Uniform("coeff",osg::Vec4(1.0,-1.0f,-1.0f,1.0f));
-            coeff->setUpdateCallback(new UniformVarying);
+            
             stateset->addUniform(coeff);
-            stateset->setDataVariance(osg::Object::DYNAMIC);
+
+            if (dynamic)
+            {
+                coeff->setUpdateCallback(new UniformVarying);
+                coeff->setDataVariance(osg::Object::DYNAMIC);
+                stateset->setDataVariance(osg::Object::DYNAMIC);
+            }
+            
         }
         else if (shader=="matrix")
         {
@@ -225,7 +233,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         geom->addPrimitiveSet(elements);    
     }
     
-    // geom->setUseVertexBufferObjects(true);
+    geom->setUseVertexBufferObjects(vbo);
 
     return geode;
 }
@@ -243,6 +251,9 @@ int main(int argc, char *argv[])
     // construct the viewer.
     osgViewer::Viewer viewer;
 
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
     std::string shader("simple");
     while(arguments.read("-s",shader)) {}
     
@@ -252,15 +263,21 @@ int main(int argc, char *argv[])
     std::string terrainFileName("");
     while(arguments.read("-d",terrainFileName)) {}
 
+    bool dynamic = true;
+    while(arguments.read("--static")) { dynamic = false; }
+
+    bool vbo = false;
+    while(arguments.read("--vbo")) { vbo = true; }
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
-
+    
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel(shader,textureFileName,terrainFileName);
+    osg::Node* model = createModel(shader,textureFileName,terrainFileName, dynamic, vbo);
     if (!model)
     {
         return 1;

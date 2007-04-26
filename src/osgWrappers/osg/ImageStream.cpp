@@ -109,6 +109,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __LoopingMode__getLoopingMode,
 	          "",
 	          "");
+	I_Method0(double, getLength,
+	          Properties::VIRTUAL,
+	          __double__getLength,
+	          "",
+	          "");
 	I_Method1(void, setReferenceTime, IN, double, x,
 	          Properties::VIRTUAL,
 	          __void__setReferenceTime__double,
@@ -134,6 +139,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __void__update,
 	          "",
 	          "");
+	I_SimpleProperty(double, Length, 
+	                 __double__getLength, 
+	                 0);
 	I_SimpleProperty(osg::ImageStream::LoopingMode, LoopingMode, 
 	                 __LoopingMode__getLoopingMode, 
 	                 __void__setLoopingMode__LoopingMode);

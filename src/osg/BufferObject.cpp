@@ -20,6 +20,8 @@
 #include <osg/Timer>
 #include <osg/Image>
 #include <osg/State>
+#include <osg/PrimitiveSet>
+#include <osg/Array>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -282,6 +284,8 @@ void BufferObject::Extensions::glGetBufferPointerv (GLenum target, GLenum pname,
 //
 VertexBufferObject::VertexBufferObject()
 {
+    _target = GL_ARRAY_BUFFER_ARB;
+    _usage = GL_STATIC_DRAW_ARB;
 }
 
 VertexBufferObject::VertexBufferObject(const VertexBufferObject& vbo,const CopyOp& copyop):
@@ -296,8 +300,11 @@ VertexBufferObject::~VertexBufferObject()
 unsigned int VertexBufferObject::addArray(osg::Array* array)
 {
     unsigned int i = _bufferEntryArrayPairs.size();
+
     _bufferEntryArrayPairs.resize(i+1);
     _bufferEntryArrayPairs[i].second = array;
+    _bufferEntryArrayPairs[i].first.modifiedCount.setAllElementsTo(0xffffffff);
+    _bufferEntryArrayPairs[i].first.offset = 0;
     
     return i;
 }
@@ -307,14 +314,142 @@ void VertexBufferObject::setArray(unsigned int i, Array* array)
     if (i+1>=_bufferEntryArrayPairs.size()) _bufferEntryArrayPairs.resize(i+1); 
     
     _bufferEntryArrayPairs[i].second = array;
-}
+    _bufferEntryArrayPairs[i].first.modifiedCount.setAllElementsTo(0xffffffff);
+    _bufferEntryArrayPairs[i].first.offset = 0;
+} 
 
 bool VertexBufferObject::needsCompile(unsigned int contextID) const
 {
+    unsigned int numValidArray = 0;
+    for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
+        itr != _bufferEntryArrayPairs.end();
+        ++itr)
+    {
+        const BufferEntryArrayPair& bep = *itr;
+        if (bep.second)
+        {
+            ++numValidArray;
+            
+            if (bep.first.modifiedCount[contextID] != bep.second->getModifiedCount())
+            {
+                return true;
+            } 
+
+            if (bep.first.dataSize != bep.second->getTotalDataSize())
+            {
+                return true;
+            }
+        }
+    }
+        
+    if (numValidArray==0) return false;
+        
+    if (_bufferObjectList[contextID]==0) return true;
+
+    return false;
 }
 
 void VertexBufferObject::compileBuffer(State& state) const
 {
+    unsigned int contextID = state.getContextID();
+    if (!needsCompile(contextID)) return;
+    
+    Extensions* extensions = getExtensions(contextID,true);
+
+    unsigned int totalSizeRequired = 0;
+    unsigned int numModified = 0;
+    unsigned int numNotModified = 0;
+    for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
+        itr != _bufferEntryArrayPairs.end();
+        ++itr)
+    {
+        const BufferEntryArrayPair& bep = *itr;
+        if (bep.second)
+        {
+            totalSizeRequired += bep.second->getTotalDataSize();
+        }
+    }
+
+    bool copyAll = false;
+    GLuint& vbo = buffer(contextID);
+    if (vbo==0)
+    {
+        // building for the first time.
+
+        _totalSize = totalSizeRequired;
+
+        // don't generate buffer if size is zero.        
+        if (_totalSize==0) return;
+
+        extensions->glGenBuffers(1, &vbo);
+        extensions->glBindBuffer(_target, vbo);
+        extensions->glBufferData(_target, _totalSize, NULL, _usage);
+        
+        copyAll = true;           
+    }
+    else
+    {
+        extensions->glBindBuffer(_target, vbo);
+
+        if (_totalSize != totalSizeRequired)
+        {
+            // resize vbo.
+            _totalSize = totalSizeRequired;
+            extensions->glBufferData(_target, _totalSize, NULL, _usage);
+            
+            copyAll = true;           
+        }
+    }
+
+//    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+
+
+    void* vboMemory = 0; 
+
+#if 0
+    vboMemory = extensions->glMapBuffer(_target, GL_WRITE_ONLY_ARB);
+#endif
+
+    unsigned int offset = 0;
+    for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
+        itr != _bufferEntryArrayPairs.end();
+        ++itr)
+    {
+        const BufferEntryArrayPair& bep = *itr;
+        const Array* de = bep.second;
+        if (de)
+        {
+            if (copyAll || 
+                bep.first.modifiedCount[contextID] != bep.second->getModifiedCount() ||
+                bep.first.dataSize != bep.second->getTotalDataSize())
+            {
+                // copy data across
+                bep.first.dataSize = bep.second->getTotalDataSize();
+                if (copyAll) 
+                {
+                    bep.first.modifiedCount[contextID] != de->getModifiedCount();
+                    bep.first.offset = offset;
+                    offset += bep.first.dataSize;
+                    
+                }
+                
+                if (vboMemory)
+                    memcpy((char*)vboMemory + bep.first.offset, de->getDataPointer(), bep.first.dataSize);
+                else
+                    extensions->glBufferSubData(_target, bep.first.offset, bep.first.dataSize, de->getDataPointer());
+
+            }
+        }
+    }
+
+        
+    // Unmap the texture image buffer
+    if (vboMemory) extensions->glUnmapBuffer(_target);
+
+    extensions->glBindBuffer(_target, 0);
+    
+//    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
+//    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -323,6 +458,8 @@ void VertexBufferObject::compileBuffer(State& state) const
 //
 ElementsBufferObject::ElementsBufferObject()
 {
+    _target = GL_ELEMENT_ARRAY_BUFFER_ARB;
+    _usage = GL_STATIC_DRAW_ARB;
 }
 
 ElementsBufferObject::ElementsBufferObject(const ElementsBufferObject& vbo,const CopyOp& copyop):
@@ -334,28 +471,158 @@ ElementsBufferObject::~ElementsBufferObject()
 {
 }
 
-unsigned int ElementsBufferObject::addDrawElements(osg::DrawElements* DrawElements)
+unsigned int ElementsBufferObject::addDrawElements(osg::DrawElements* drawElements)
 {
     unsigned int i = _bufferEntryDrawElementsPairs.size();
     _bufferEntryDrawElementsPairs.resize(i+1);
-    _bufferEntryDrawElementsPairs[i].second = DrawElements;
-    
+    _bufferEntryDrawElementsPairs[i].second = drawElements;
+    _bufferEntryDrawElementsPairs[i].first.modifiedCount.setAllElementsTo(0xffffffff);
+    _bufferEntryDrawElementsPairs[i].first.dataSize = 0;
+ 
     return i;
 }
 
-void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* DrawElements)
+void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* drawElements)
 {
     if (i+1>=_bufferEntryDrawElementsPairs.size()) _bufferEntryDrawElementsPairs.resize(i+1); 
     
-    _bufferEntryDrawElementsPairs[i].second = DrawElements;
+    _bufferEntryDrawElementsPairs[i].second = drawElements;
+    _bufferEntryDrawElementsPairs[i].first.modifiedCount.setAllElementsTo(0xffffffff);
+    _bufferEntryDrawElementsPairs[i].first.dataSize = 0;
 }
 
 bool ElementsBufferObject::needsCompile(unsigned int contextID) const
 {
+    unsigned int numValidDrawElements = 0;
+    for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
+        itr != _bufferEntryDrawElementsPairs.end();
+        ++itr)
+    {
+        const BufferEntryDrawElementstPair& bep = *itr;
+        if (bep.second)
+        {
+            ++numValidDrawElements;
+            
+            if (bep.first.modifiedCount[contextID] != bep.second->getModifiedCount())
+            {
+                return true;
+            } 
+
+            if (bep.first.dataSize != bep.second->getTotalDataSize())
+            {
+                return true;
+            }
+        }
+    }
+        
+    if (numValidDrawElements==0) return false;
+        
+    if (_bufferObjectList[contextID]==0) return true;
+
+    return false;
 }
 
 void ElementsBufferObject::compileBuffer(State& state) const
 {
+    unsigned int contextID = state.getContextID();
+    if (!needsCompile(contextID)) return;
+    
+    Extensions* extensions = getExtensions(contextID,true);
+
+    unsigned int totalSizeRequired = 0;
+    unsigned int numModified = 0;
+    unsigned int numNotModified = 0;
+    for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
+        itr != _bufferEntryDrawElementsPairs.end();
+        ++itr)
+    {
+        const BufferEntryDrawElementstPair& bep = *itr;
+        if (bep.second)
+        {
+            totalSizeRequired += bep.second->getTotalDataSize();
+        }
+    }
+
+    bool copyAll = false;
+    GLuint& ebo = buffer(contextID);
+    if (ebo==0)
+    {
+        // building for the first time.
+
+        _totalSize = totalSizeRequired;
+
+        // don't generate buffer if size is zero.        
+        if (_totalSize==0) return;
+
+        extensions->glGenBuffers(1, &ebo);
+        extensions->glBindBuffer(_target, ebo);
+        extensions->glBufferData(_target, _totalSize, NULL, _usage);
+        
+        copyAll = true;           
+    }
+    else
+    {
+        extensions->glBindBuffer(_target, ebo);
+
+        if (_totalSize != totalSizeRequired)
+        {
+            // resize EBO.
+            _totalSize = totalSizeRequired;
+            extensions->glBufferData(_target, _totalSize, NULL, _usage);
+            
+            copyAll = true;           
+        }
+    }
+
+//    osg::Timer_t start_tick = osg::Timer::instance()->tick();
+
+
+    void* eboMemory = 0; 
+
+#if 0
+    eboMemory = extensions->glMapBuffer(_target, GL_WRITE_ONLY_ARB);
+#endif
+
+    unsigned int offset = 0;
+    for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
+        itr != _bufferEntryDrawElementsPairs.end();
+        ++itr)
+    {
+        const BufferEntryDrawElementstPair& bep = *itr;
+        const DrawElements* de = bep.second;
+        if (de)
+        {
+            if (copyAll || 
+                bep.first.modifiedCount[contextID] != bep.second->getModifiedCount() ||
+                bep.first.dataSize != bep.second->getTotalDataSize())
+            {
+                // copy data across
+                bep.first.dataSize = bep.second->getTotalDataSize();
+                if (copyAll) 
+                {
+                    bep.first.modifiedCount[contextID] != de->getModifiedCount();
+                    bep.first.offset = offset;
+                    offset += bep.first.dataSize;
+                    
+                }
+                
+                if (eboMemory)
+                    memcpy((char*)eboMemory + bep.first.offset, de->getDataPointer(), bep.first.dataSize);
+                else
+                    extensions->glBufferSubData(_target, bep.first.offset, bep.first.dataSize, de->getDataPointer());
+
+            }
+        }
+    }
+
+        
+    // Unmap the texture image buffer
+    if (eboMemory) extensions->glUnmapBuffer(_target);
+
+    extensions->glBindBuffer(_target, 0);
+    
+//    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
+//    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -423,8 +690,7 @@ void PixelBufferObject::compileBuffer(State& state) const
 
         extensions->glGenBuffers(1, &pbo);
         extensions->glBindBuffer(_target, pbo);
-        extensions->glBufferData(_target, _totalSize, NULL,
-                     _usage);
+        extensions->glBufferData(_target, _totalSize, NULL, _usage);
                     
     }
     else
@@ -433,10 +699,9 @@ void PixelBufferObject::compileBuffer(State& state) const
 
         if (_totalSize != image->getTotalSizeInBytes())
         {
-
+            // resize PBO.
             _totalSize = image->getTotalSizeInBytes();
-            extensions->glBufferData(_target, _totalSize, NULL,
-                     _usage);
+            extensions->glBufferData(_target, _totalSize, NULL, _usage);
         }
     }
 
@@ -445,6 +710,7 @@ void PixelBufferObject::compileBuffer(State& state) const
     void* pboMemory = extensions->glMapBuffer(_target,
                  GL_WRITE_ONLY_ARB);
 
+    // copy data across
     memcpy(pboMemory, image->data(), _totalSize);
         
     // Unmap the texture image buffer

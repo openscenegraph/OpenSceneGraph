@@ -117,7 +117,26 @@ class OSG_EXPORT Array : public Object
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
         /** Set the VertexBufferObject.*/
-        inline void setVertexBufferObject(osg::VertexBufferObject* vbo) { _vbo = vbo; }
+        inline void setVertexBufferObject(osg::VertexBufferObject* vbo)
+        {
+            if (_vbo == vbo) return;
+            
+            if (_vbo.valid())
+            {
+                _vbo->setArray(_vboIndex,0);
+            }
+            
+            _vbo = vbo;
+            
+            if (_vbo.valid())
+            {
+                _vboIndex = _vbo->addArray(this);
+            }
+            else
+            {
+                _vboIndex = 0;
+            }
+        }
         
         /** Get the VertexBufferObject. If no VBO is assigned returns NULL*/
         inline osg::VertexBufferObject* getVertexBufferObject() { return _vbo.get(); }
@@ -133,7 +152,13 @@ class OSG_EXPORT Array : public Object
 
     protected:
     
-        virtual ~Array() {}
+        virtual ~Array()
+        {
+            if (_vbo.valid())
+            {
+                _vbo->setArray(_vboIndex,0);
+            }
+        }
 
         Type                                    _arrayType;
         GLint                                   _dataSize;

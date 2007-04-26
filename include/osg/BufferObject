@@ -101,8 +101,8 @@ class OSG_EXPORT BufferObject : public Object
             BufferEntry& operator = (const BufferEntry& be) { modifiedCount=be.modifiedCount; dataSize=be.dataSize; offset=be.offset; return *this; }
 
             mutable buffered_value<unsigned int>    modifiedCount;
-            unsigned int                            dataSize;
-            unsigned int                            offset;
+            mutable unsigned int                            dataSize;
+            mutable unsigned int                            offset;
         };
 
         inline bool isBufferObjectSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isBufferObjectSupported(); }

@@ -416,7 +416,25 @@ class DrawElements : public PrimitiveSet
 
 
         /** Set the ElementsBufferObject.*/
-        inline void setElementsBufferObject(osg::ElementsBufferObject* ebo) { _ebo = ebo; }
+        inline void setElementsBufferObject(osg::ElementsBufferObject* ebo)
+        {
+            if (_ebo == ebo) return;
+            
+            if (_ebo.valid())
+            {
+                _ebo->setDrawElements(_eboIndex,0);
+            }
+            _ebo = ebo;
+
+            if (_ebo.valid())
+            {
+                _eboIndex = _ebo->addDrawElements(this);
+            }
+            else
+            {
+                _eboIndex = 0;
+            }
+        }
         
         /** Get the ElementsBufferObject. If no EBO is assigned returns NULL*/
         inline osg::ElementsBufferObject* getElementsBufferObject() { return _ebo.get(); }
@@ -433,6 +451,14 @@ class DrawElements : public PrimitiveSet
 
     protected:
     
+        virtual ~DrawElements()
+        {
+            if (_ebo.valid())
+            {
+                _ebo->setDrawElements(_eboIndex,0);
+            }
+        }
+
         osg::ref_ptr<ElementsBufferObject>  _ebo;
         unsigned int                        _eboIndex;
 };

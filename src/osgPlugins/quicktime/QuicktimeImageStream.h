@@ -87,7 +87,10 @@ public:
    virtual void quit(bool wiatForThreadToExit);
 
    /// Get total length in seconds.
-   inline float getLength() const { return _len; }
+   virtual double getLength() const
+   { 
+     return double(_len);
+   }
 
    /// jumps to a specific position 
    void jumpTo(float pos) {
@@ -105,6 +108,29 @@ public:
 
    /// starts the thread
    virtual void run();
+
+   /// Go to a specific position in the stream.
+   virtual void setReferenceTime(double time)
+   {
+     jumpTo(float(time));
+   }
+   /// Return the current position in the stream.
+   virtual double getReferenceTime() const
+   { 
+     return double(getCurrentTime());
+   }
+           
+   // Set the time multiplier if you want to speed up,
+   // slow down, or go normal speed.
+   virtual void setTimeMultiplier(double multiplier)
+   {
+     setMovieRate(float(multiplier));
+   }
+   virtual double getTimeMultiplier()
+   { 
+     return 0.0;
+   }
+
 
 protected:
    /// destructor

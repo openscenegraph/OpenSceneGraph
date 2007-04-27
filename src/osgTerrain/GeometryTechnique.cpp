@@ -108,8 +108,13 @@ void GeometryTechnique::init()
     osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
     _geode = new osg::Geode;
-    _terrainGeometry = new osgTerrain::TerrainGeometry;
-    _geode->addDrawable(_terrainGeometry.get());
+
+    _terrainGeometry = 0; // new osgTerrain::TerrainGeometry;
+    if (_terrainGeometry.valid()) _geode->addDrawable(_terrainGeometry.get());
+
+    _geometry = new osg::Geometry;
+    if (_geometry.valid()) _geode->addDrawable(_geometry.get());
+
     
     unsigned int numRows = 100;
     unsigned int numColumns = 100;
@@ -125,11 +130,17 @@ void GeometryTechnique::init()
 
     // allocate and assign vertices
     osg::Vec3Array* _vertices = new osg::Vec3Array(numVertices);
-    _terrainGeometry->setVertices(_vertices);
+    if (_terrainGeometry.valid()) _terrainGeometry->setVertices(_vertices);
+    if (_geometry.valid()) _geometry->setVertexArray(_vertices);
 
     // allocate and assign normals
     osg::Vec3Array* _normals = new osg::Vec3Array(numVertices);
-    _terrainGeometry->setNormals(_normals);
+    if (_terrainGeometry.valid()) _terrainGeometry->setNormals(_normals);
+    if (_geometry.valid())
+    {
+        _geometry->setNormalArray(_normals);
+        _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+    }
     
     int texcoord_index = 0;
     int color_index = -1;
@@ -146,7 +157,10 @@ void GeometryTechnique::init()
         ++texcoord_index;
 
         _texcoords = new osg::Vec2Array(numVertices);
-        _terrainGeometry->setTexCoords(color_index, _texcoords);
+        
+        if (_terrainGeometry.valid()) _terrainGeometry->setTexCoords(color_index, _texcoords);
+
+        if (_geometry.valid()) _geometry->setTexCoordArray(color_index, _texcoords);
     }
 
     osg::FloatArray* _elevations = 0;
@@ -159,7 +173,8 @@ void GeometryTechnique::init()
         if (!colorLayer)
         {
             _elevations = new osg::FloatArray(numVertices);
-            _terrainGeometry->setTexCoords(tf_index, _elevations);
+            if (_terrainGeometry.valid()) _terrainGeometry->setTexCoords(tf_index, _elevations);
+            if (_geometry.valid()) _geometry->setTexCoordArray(tf_index, _elevations);
 
             minHeight = tf->getMinimum();
             scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
@@ -171,7 +186,12 @@ void GeometryTechnique::init()
     osg::Vec4Array* _colors = new osg::Vec4Array(1);
     (*_colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     
-    _terrainGeometry->setColors(_colors);
+    if (_terrainGeometry.valid()) _terrainGeometry->setColors(_colors);
+    if (_geometry.valid())
+    {
+        _geometry->setColorArray(_colors);
+        _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+    }
     
     // populate vertex and tex coord arrays
     unsigned int j;
@@ -237,7 +257,9 @@ void GeometryTechnique::init()
             (*elements)[i*2+1] = iv;
         }
         
-        _terrainGeometry->addPrimitiveSet(elements);
+        if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
+
+        if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
     }
 
     if (colorLayer)
@@ -321,7 +343,13 @@ void GeometryTechnique::init()
         }
     }
 
-    // _terrainGeometry->setUseDisplayList(false);
+    // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
+
+    if (_geometry.valid())
+    {
+        osgUtil::SmoothingVisitor smoother;
+        smoother.smooth(*_geometry);    
+    }
 
     _dirty = false;    
 }

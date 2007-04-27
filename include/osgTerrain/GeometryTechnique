@@ -113,6 +113,7 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         osg::ref_ptr<osg::Geode>    _geode;
         
         osg::ref_ptr<TerrainGeometry> _terrainGeometry;
+        osg::ref_ptr<osg::Geometry> _geometry;
 };
 
 }

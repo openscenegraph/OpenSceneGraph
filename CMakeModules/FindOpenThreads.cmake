@@ -39,115 +39,115 @@
 # Explicit -DVAR=value arguments should still be able to override everything.
 
 FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
-	$ENV{OPENTHREADS_INCLUDE_DIR}
-	$ENV{OPENTHREADS_DIR}/include
-	$ENV{OPENTHREADS_DIR}
-	$ENV{OSG_INCLUDE_DIR}
-	$ENV{OSG_DIR}/include
-	$ENV{OSG_DIR}
-	NO_DEFAULT_PATH
+    $ENV{OPENTHREADS_INCLUDE_DIR}
+    $ENV{OPENTHREADS_DIR}/include
+    $ENV{OPENTHREADS_DIR}
+    $ENV{OSG_INCLUDE_DIR}
+    $ENV{OSG_DIR}/include
+    $ENV{OSG_DIR}
+    NO_DEFAULT_PATH
 )
 
 IF(NOT OPENTHREADS_INCLUDE_DIR)
-	FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
-		~/Library/Frameworks
-		/Library/Frameworks
-		/usr/local/include
-		/usr/include
-		/sw/include # Fink
-		/opt/local/include # DarwinPorts
-		/opt/csw/include # Blastwave
-		/opt/include
-		[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
-		${CMAKE_INSTALL_PREFIX}/include # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
-	)
+    FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/include
+        /usr/include
+        /sw/include # Fink
+        /opt/local/include # DarwinPorts
+        /opt/csw/include # Blastwave
+        /opt/include
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
+        ${CMAKE_INSTALL_PREFIX}/include # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
+    )
 ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY 
-	NAMES OpenThreads OpenThreadsWin32 
-	PATHS
-	$ENV{OPENTHREADS_LIBRARY_DIR}
-	$ENV{OPENTHREADS_DIR}/lib64
-	$ENV{OPENTHREADS_DIR}/lib
-	$ENV{OPENTHREADS_DIR}
-	$ENV{OSG_LIBRARY_DIR}
-	$ENV{OSG_DIR}/lib64
-	$ENV{OSG_DIR}/lib
-	$ENV{OSG_DIR}
-	NO_DEFAULT_PATH
+    NAMES OpenThreads OpenThreadsWin32 
+    PATHS
+    $ENV{OPENTHREADS_LIBRARY_DIR}
+    $ENV{OPENTHREADS_DIR}/lib64
+    $ENV{OPENTHREADS_DIR}/lib
+    $ENV{OPENTHREADS_DIR}
+    $ENV{OSG_LIBRARY_DIR}
+    $ENV{OSG_DIR}/lib64
+    $ENV{OSG_DIR}/lib
+    $ENV{OSG_DIR}
+    NO_DEFAULT_PATH
 )
 
 IF(NOT OPENTHREADS_LIBRARY)
-	FIND_LIBRARY(OPENTHREADS_LIBRARY 
-		NAMES OpenThreads OpenThreadsWin32 
-		PATHS
-		~/Library/Frameworks
-		/Library/Frameworks
-		/usr/local/lib64
-		/usr/local/lib
-		/usr/lib64
-		/usr/lib
-		/sw/lib64
-		/sw/lib
-		/opt/local/lib64
-		/opt/local/lib
-		/opt/csw/lib64
-		/opt/csw/lib
-		/opt/lib64
-		/opt/lib
-		[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-		${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
-		${CMAKE_INSTALL_PREFIX}/lib # hack
-	)
+    FIND_LIBRARY(OPENTHREADS_LIBRARY 
+        NAMES OpenThreads OpenThreadsWin32 
+        PATHS
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/lib64
+        /usr/local/lib
+        /usr/lib64
+        /usr/lib
+        /sw/lib64
+        /sw/lib
+        /opt/local/lib64
+        /opt/local/lib
+        /opt/csw/lib64
+        /opt/csw/lib
+        /opt/lib64
+        /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+        ${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
+        ${CMAKE_INSTALL_PREFIX}/lib # hack
+    )
 ENDIF(NOT OPENTHREADS_LIBRARY)
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
-	NAMES OpenThreadsd OpenThreadsWin32d
-	PATHS
-	$ENV{OPENTHREADS_LIBRARY_DIR}
-	$ENV{OPENTHREADS_DIR}/lib64
-	$ENV{OPENTHREADS_DIR}/lib
-	$ENV{OPENTHREADS_DIR}
-	$ENV{OSG_LIBRARY_DIR}
-	$ENV{OSG_DIR}/lib64
-	$ENV{OSG_DIR}/lib
-	$ENV{OSG_DIR}
-	NO_DEFAULT_PATH
+    NAMES OpenThreadsd OpenThreadsWin32d
+    PATHS
+    $ENV{OPENTHREADS_LIBRARY_DIR}
+    $ENV{OPENTHREADS_DIR}/lib64
+    $ENV{OPENTHREADS_DIR}/lib
+    $ENV{OPENTHREADS_DIR}
+    $ENV{OSG_LIBRARY_DIR}
+    $ENV{OSG_DIR}/lib64
+    $ENV{OSG_DIR}/lib
+    $ENV{OSG_DIR}
+    NO_DEFAULT_PATH
 )
 
 IF(NOT OPENTHREADS_LIBRARY_DEBUG)
-	FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
-		NAMES OpenThreadsd OpenThreadsWin32d
-		PATHS
-		/usr/local/lib64
-		/usr/local/lib
-		/usr/lib64
-		/usr/lib
-		/sw/lib64
-		/sw/lib
-		/opt/local/lib64
-		/opt/local/lib
-		/opt/csw/lib64
-		/opt/csw/lib
-		/opt/lib64
-		/opt/lib
-		[HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-		${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
-		${CMAKE_INSTALL_PREFIX}/lib # hack
-	)
+    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+        NAMES OpenThreadsd OpenThreadsWin32d
+        PATHS
+        /usr/local/lib64
+        /usr/local/lib
+        /usr/lib64
+        /usr/lib
+        /sw/lib64
+        /sw/lib
+        /opt/local/lib64
+        /opt/local/lib
+        /opt/csw/lib64
+        /opt/csw/lib
+        /opt/lib64
+        /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+        ${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
+        ${CMAKE_INSTALL_PREFIX}/lib # hack
+    )
 ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 
 
 IF(OPENTHREADS_LIBRARY)
   IF(NOT OPENTHREADS_LIBRARY_DEBUG)
-	  #MESSAGE("-- Warning Debug OpenThreads not found, using: ${OPENTHREADS_LIBRARY}")
-	  #SET(OPENTHREADS_LIBRARY_DEBUG "${OPENTHREADS_LIBRARY}")
-	  SET(OPENTHREADS_LIBRARY_DEBUG "${OPENTHREADS_LIBRARY}" CACHE FILEPATH "Debug version of OpenThreads Library (use regular version if not available)" FORCE)
+      #MESSAGE("-- Warning Debug OpenThreads not found, using: ${OPENTHREADS_LIBRARY}")
+      #SET(OPENTHREADS_LIBRARY_DEBUG "${OPENTHREADS_LIBRARY}")
+      SET(OPENTHREADS_LIBRARY_DEBUG "${OPENTHREADS_LIBRARY}" CACHE FILEPATH "Debug version of OpenThreads Library (use regular version if not available)" FORCE)
   ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 ENDIF(OPENTHREADS_LIBRARY)
-	
+    
 SET(OPENTHREADS_FOUND "NO")
 IF(OPENTHREADS_INCLUDE_DIR AND OPENTHREADS_LIBRARY)
   SET(OPENTHREADS_FOUND "YES")

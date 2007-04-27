@@ -449,8 +449,8 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
             arrays.push_back(geom.getFogCoordArray());
         }
         
-        osg::Geometry::ArrayList& tcal = geom.getTexCoordArrayList();
-        for(osg::Geometry::ArrayList::iterator tcalItr=tcal.begin();
+        osg::Geometry::ArrayDataList& tcal = geom.getTexCoordArrayList();
+        for(osg::Geometry::ArrayDataList::iterator tcalItr=tcal.begin();
             tcalItr!=tcal.end();
             ++tcalItr)
         {

@@ -224,7 +224,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          "Return OpenGL display list for specified contextID. ",
 	          "");
 	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setUseVertexBufferObjects__bool,
 	          "When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation method to use OpenGL vertex buffer objects for rendering. ",
 	          "");
@@ -234,7 +234,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          "Return whether OpenGL vertex buffer objects should be used when supported by OpenGL driver. ",
 	          "");
 	I_Method0(void, dirtyDisplayList,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__dirtyDisplayList,
 	          "Force a recompile on next draw() of any OpenGL display list associated with this geoset. ",
 	          "");

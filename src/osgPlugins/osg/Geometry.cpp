@@ -1185,7 +1185,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         Array_writeLocalData(*geom.getFogCoordIndices(),fw);        
     }
 
-    const Geometry::ArrayList& tcal=geom.getTexCoordArrayList();
+    const Geometry::ArrayDataList& tcal=geom.getTexCoordArrayList();
     unsigned int i;
     for(i=0;i<tcal.size();++i)
     {
@@ -1201,7 +1201,7 @@ bool Geometry_writeLocalData(const Object& obj, Output& fw)
         }
     }
     
-    const Geometry::ArrayList& vaal=geom.getVertexAttribArrayList();
+    const Geometry::ArrayDataList& vaal=geom.getVertexAttribArrayList();
     for(i=0;i<vaal.size();++i)
     {
         const osg::Geometry::ArrayData& arrayData = vaal[i];

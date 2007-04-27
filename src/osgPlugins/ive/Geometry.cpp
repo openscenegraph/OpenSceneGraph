@@ -128,7 +128,7 @@ void Geometry::write(DataOutputStream* out){
         out->writeArray(getFogCoordIndices());
     }
     // Write texture coord arrays
-    Geometry::ArrayList& tcal = getTexCoordArrayList();
+    Geometry::ArrayDataList& tcal = getTexCoordArrayList();
     out->writeInt(tcal.size());
     unsigned int j;
     for(j=0;j<tcal.size();j++)
@@ -146,7 +146,7 @@ void Geometry::write(DataOutputStream* out){
     }
 
     // Write vertex attributes
-    Geometry::ArrayList& vaal = getVertexAttribArrayList();
+    Geometry::ArrayDataList& vaal = getVertexAttribArrayList();
     out->writeInt(vaal.size());
     for(j=0;j<vaal.size();j++)
     {

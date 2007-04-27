@@ -241,6 +241,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	                           ____DrawElements__C5_DrawElements_R1__C5_CopyOp_R1,
 	                           "",
 	                           "");
+	I_Method0(osg::DrawElements *, getDrawElements,
+	          Properties::VIRTUAL,
+	          __DrawElements_P1__getDrawElements,
+	          "",
+	          "");
+	I_Method0(const osg::DrawElements *, getDrawElements,
+	          Properties::VIRTUAL,
+	          __C5_DrawElements_P1__getDrawElements,
+	          "",
+	          "");
 	I_Method1(void, setElementsBufferObject, IN, osg::ElementsBufferObject *, ebo,
 	          Properties::NON_VIRTUAL,
 	          __void__setElementsBufferObject__osg_ElementsBufferObject_P1,
@@ -266,6 +276,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	          __unsigned_int__getElementsBufferObjectIndex,
 	          "Get the index into the ElementsBufferObject, if used. ",
 	          "");
+	I_SimpleProperty(osg::DrawElements *, DrawElements, 
+	                 __DrawElements_P1__getDrawElements, 
+	                 0);
 	I_SimpleProperty(osg::ElementsBufferObject *, ElementsBufferObject, 
 	                 __osg_ElementsBufferObject_P1__getElementsBufferObject, 
 	                 __void__setElementsBufferObject__osg_ElementsBufferObject_P1);
@@ -823,6 +836,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	          __bool__supportsBufferObject,
 	          "",
 	          "");
+	I_Method0(osg::DrawElements *, getDrawElements,
+	          Properties::VIRTUAL,
+	          __DrawElements_P1__getDrawElements,
+	          "",
+	          "");
+	I_Method0(const osg::DrawElements *, getDrawElements,
+	          Properties::VIRTUAL,
+	          __C5_DrawElements_P1__getDrawElements,
+	          "",
+	          "");
 	I_Method1(void, setMode, IN, GLenum, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setMode__GLenum,
@@ -900,6 +923,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(osg::DrawElements *, DrawElements, 
+	                 __DrawElements_P1__getDrawElements, 
 	                 0);
 	I_SimpleProperty(GLenum, Mode, 
 	                 __GLenum__getMode, 

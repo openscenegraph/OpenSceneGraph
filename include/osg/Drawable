@@ -271,14 +271,14 @@ class OSG_EXPORT Drawable : public Object
 
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
             method to use OpenGL vertex buffer objects for rendering.*/
-        void setUseVertexBufferObjects(bool flag);
+        virtual void setUseVertexBufferObjects(bool flag);
 
         /** Return whether OpenGL vertex buffer objects should be used when supported by OpenGL driver.*/
         inline bool getUseVertexBufferObjects() const { return _useVertexBufferObjects; }
 
 
         /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
-        void dirtyDisplayList();
+        virtual void dirtyDisplayList();
 
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.

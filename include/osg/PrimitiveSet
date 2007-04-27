@@ -171,6 +171,8 @@ public:
     virtual void end() = 0;
 };
 
+class DrawElements;
+
 class OSG_EXPORT PrimitiveSet : public Object
 {
     public:
@@ -220,6 +222,9 @@ class OSG_EXPORT PrimitiveSet : public Object
         virtual const GLvoid*   getDataPointer() const { return 0; }
         virtual unsigned int    getTotalDataSize() const { return 0; }
         virtual bool            supportsBufferObject() const { return false; }
+
+        virtual DrawElements* getDrawElements() { return 0; }
+        virtual const DrawElements* getDrawElements() const { return 0; }
             
         void setMode(GLenum mode) { _mode = mode; }
         GLenum getMode() const { return _mode; }
@@ -414,6 +419,9 @@ class DrawElements : public PrimitiveSet
             PrimitiveSet(copy,copyop),
             _eboIndex(0) {}
 
+
+        virtual DrawElements* getDrawElements() { return this; }
+        virtual const DrawElements* getDrawElements() const { return this; }
 
         /** Set the ElementsBufferObject.*/
         inline void setElementsBufferObject(osg::ElementsBufferObject* ebo)

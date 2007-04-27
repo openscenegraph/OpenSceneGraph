@@ -142,18 +142,18 @@ class OSG_EXPORT Geometry : public Drawable
         */
         static const ArrayData s_InvalidArrayData;
         
-        typedef std::vector< ArrayData >  ArrayList;
+        typedef std::vector< ArrayData >  ArrayDataList;
                
 
-        void setVertexArray(Array* array) { _vertexData.array = array; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound();     }
+        void setVertexArray(Array* array);
         Array* getVertexArray() { return _vertexData.array.get(); }
         const Array* getVertexArray() const  { return _vertexData.array.get(); }
 
-        void setVertexIndices(IndexArray* array) { _vertexData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound(); }
+        void setVertexIndices(IndexArray* array);
         IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
         const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
 
-        void setVertexData(const ArrayData& arrayData) { _vertexData = arrayData; computeFastPathsUsed(); dirtyDisplayList(); dirtyBound(); }
+        void setVertexData(const ArrayData& arrayData);
         ArrayData& getVertexData() { return _vertexData; }
         const ArrayData& getVertexData() const { return _vertexData; }
         
@@ -161,30 +161,30 @@ class OSG_EXPORT Geometry : public Drawable
         void setNormalBinding(AttributeBinding ab);
         AttributeBinding getNormalBinding() const { return _normalData.binding; }
 
-        void setNormalArray(Array* array) { _normalData.array = array; if (!_normalData.array.valid()) _normalData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setNormalArray(Array* array);
         Array* getNormalArray() { return _normalData.array.get(); }
         const Array* getNormalArray() const { return _normalData.array.get(); }
      
-        void setNormalIndices(IndexArray* array) { _normalData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setNormalIndices(IndexArray* array);
         IndexArray* getNormalIndices() { return _normalData.indices.get(); }
         const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }
 
-        void setNormalData(const ArrayData& arrayData) { _normalData = arrayData;  computeFastPathsUsed(); dirtyDisplayList();}
+        void setNormalData(const ArrayData& arrayData);
         ArrayData& getNormalData() { return _normalData; }
         const ArrayData& getNormalData() const { return _normalData; }
 
         void setColorBinding(AttributeBinding ab);
         AttributeBinding getColorBinding() const { return _colorData.binding; }
 
-        void setColorArray(Array* array) { _colorData.array = array;  if (!_colorData.array.valid()) _colorData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setColorArray(Array* array);
         Array* getColorArray() { return _colorData.array.get(); }
         const Array* getColorArray() const { return _colorData.array.get(); }
 
-        void setColorIndices(IndexArray* array) { _colorData.indices = array;  computeFastPathsUsed(); dirtyDisplayList(); }
+        void setColorIndices(IndexArray* array);
         IndexArray* getColorIndices() { return _colorData.indices.get(); }
         const IndexArray* getColorIndices() const { return _colorData.indices.get(); }
 
-        void setColorData(const ArrayData& arrayData) { _colorData = arrayData;  computeFastPathsUsed(); dirtyDisplayList();}
+        void setColorData(const ArrayData& arrayData);
         ArrayData& getColorData() { return _colorData; }
         const ArrayData& getColorData() const { return _colorData; }
 
@@ -192,15 +192,15 @@ class OSG_EXPORT Geometry : public Drawable
         void setSecondaryColorBinding(AttributeBinding ab);
         AttributeBinding getSecondaryColorBinding() const { return _secondaryColorData.binding; }
 
-        void setSecondaryColorArray(Array* array) { _secondaryColorData.array = array;  if (!_secondaryColorData.array.valid()) _secondaryColorData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setSecondaryColorArray(Array* array);
         Array* getSecondaryColorArray() { return _secondaryColorData.array.get(); }
         const Array* getSecondaryColorArray() const { return _secondaryColorData.array.get(); }
 
-        void setSecondaryColorIndices(IndexArray* array) { _secondaryColorData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setSecondaryColorIndices(IndexArray* array);
         IndexArray* getSecondaryColorIndices() { return _secondaryColorData.indices.get(); }
         const IndexArray* getSecondaryColorIndices() const { return _secondaryColorData.indices.get(); }
 
-        void setSecondaryColorData(const ArrayData& arrayData) { _secondaryColorData = arrayData; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setSecondaryColorData(const ArrayData& arrayData);
         ArrayData& getSecondaryColorData() { return _secondaryColorData; }
         const ArrayData& getSecondaryColorData() const { return _secondaryColorData; }
 
@@ -208,18 +208,17 @@ class OSG_EXPORT Geometry : public Drawable
         void setFogCoordBinding(AttributeBinding ab);
         AttributeBinding getFogCoordBinding() const { return _fogCoordData.binding; }
 
-        void setFogCoordArray(Array* array) { _fogCoordData.array = array; if (!_fogCoordData.array.valid()) _fogCoordData.binding=BIND_OFF; computeFastPathsUsed(); dirtyDisplayList();  }
+        void setFogCoordArray(Array* array);
         Array* getFogCoordArray() { return _fogCoordData.array.get(); }
         const Array* getFogCoordArray() const { return _fogCoordData.array.get(); }
 
-        void setFogCoordIndices(IndexArray* array) { _fogCoordData.indices = array; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setFogCoordIndices(IndexArray* array);
         IndexArray* getFogCoordIndices() { return _fogCoordData.indices.get(); }
         const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
 
-        void setFogCoordData(const ArrayData& arrayData) { _fogCoordData = arrayData; computeFastPathsUsed(); dirtyDisplayList(); }
+        void setFogCoordData(const ArrayData& arrayData);
         ArrayData& getFogCoordData() { return _fogCoordData; }
         const ArrayData& getFogCoordData() const { return _fogCoordData; }
-        
         
 
         void setTexCoordArray(unsigned int unit,Array*);
@@ -235,8 +234,8 @@ class OSG_EXPORT Geometry : public Drawable
         const ArrayData& getTexCoordData(unsigned int index) const;
 
         unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
-        ArrayList& getTexCoordArrayList() { return _texCoordList; }
-        const ArrayList& getTexCoordArrayList() const { return _texCoordList; }
+        ArrayDataList& getTexCoordArrayList() { return _texCoordList; }
+        const ArrayDataList& getTexCoordArrayList() const { return _texCoordList; }
 
 
 
@@ -259,8 +258,8 @@ class OSG_EXPORT Geometry : public Drawable
         const ArrayData& getVertexAttribData(unsigned int index) const;
 
         unsigned int getNumVertexAttribArrays() const { return _vertexAttribList.size(); }
-        ArrayList& getVertexAttribArrayList() { return _vertexAttribList; }
-        const ArrayList& getVertexAttribArrayList() const { return _vertexAttribList; }
+        ArrayDataList& getVertexAttribArrayList() { return _vertexAttribList; }
+        const ArrayDataList& getVertexAttribArrayList() const { return _vertexAttribList; }
 
 
 
@@ -291,6 +290,25 @@ class OSG_EXPORT Geometry : public Drawable
           * When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet())
         */
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
+
+
+        /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 
+            method to use OpenGL vertex buffer objects for rendering.*/
+        virtual void setUseVertexBufferObjects(bool flag);
+
+        /** Force a recompile on next draw() of any OpenGL display list associated with this geoset.*/
+        virtual void dirtyDisplayList();
+
+
+        typedef std::vector<osg::Array*>  ArrayList;
+        bool getArrayList(ArrayList& arrayList);
+
+        typedef std::vector<osg::DrawElements*>  DrawElementsList;
+        bool getDrawElementsList(DrawElementsList& drawElementsList);
+
+        osg::VertexBufferObject* getOrCreateVertexBufferObject();
+
+        osg::ElementsBufferObject* getOrCreateElementsBufferObject();
 
 
         /** Set whether fast paths should be used when supported. */
@@ -375,6 +393,9 @@ class OSG_EXPORT Geometry : public Drawable
         void computeCorrectBindingsAndArraySizes(ArrayData& arrayData,const char* arrayName);
         void computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData,const char* arrayName);
         
+        void addVertexBufferObjectIfRequired(osg::Array* array);
+        void addElementsBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);
+        
 
         PrimitiveSetList                _primitives;
         ArrayData                       _vertexData;
@@ -382,8 +403,8 @@ class OSG_EXPORT Geometry : public Drawable
         ArrayData                       _colorData;
         ArrayData                       _secondaryColorData;
         ArrayData                       _fogCoordData;
-        ArrayList                       _texCoordList;
-        ArrayList                       _vertexAttribList;
+        ArrayDataList                   _texCoordList;
+        ArrayDataList                   _vertexAttribList;
 
         mutable bool                    _fastPath;
         bool                            _fastPathHint;

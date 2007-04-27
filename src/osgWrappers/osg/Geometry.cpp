@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
+#include <osg/BufferObject>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Geometry>
@@ -26,9 +27,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayList)
+TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayDataList)
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::PrimitiveSet > >, osg::Geometry::PrimitiveSetList)
+
+TYPE_NAME_ALIAS(std::vector< osg::Array * >, osg::Geometry::ArrayList)
+
+TYPE_NAME_ALIAS(std::vector< osg::DrawElements * >, osg::Geometry::DrawElementsList)
 
 BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_EnumLabel(osg::Geometry::BIND_OFF);
@@ -402,14 +407,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __unsigned_int__getNumTexCoordArrays,
 	          "",
 	          "");
-	I_Method0(osg::Geometry::ArrayList &, getTexCoordArrayList,
+	I_Method0(osg::Geometry::ArrayDataList &, getTexCoordArrayList,
 	          Properties::NON_VIRTUAL,
-	          __ArrayList_R1__getTexCoordArrayList,
+	          __ArrayDataList_R1__getTexCoordArrayList,
 	          "",
 	          "");
-	I_Method0(const osg::Geometry::ArrayList &, getTexCoordArrayList,
+	I_Method0(const osg::Geometry::ArrayDataList &, getTexCoordArrayList,
 	          Properties::NON_VIRTUAL,
-	          __C5_ArrayList_R1__getTexCoordArrayList,
+	          __C5_ArrayDataList_R1__getTexCoordArrayList,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribArray, IN, unsigned int, index, IN, osg::Array *, array,
@@ -482,14 +487,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __unsigned_int__getNumVertexAttribArrays,
 	          "",
 	          "");
-	I_Method0(osg::Geometry::ArrayList &, getVertexAttribArrayList,
+	I_Method0(osg::Geometry::ArrayDataList &, getVertexAttribArrayList,
 	          Properties::NON_VIRTUAL,
-	          __ArrayList_R1__getVertexAttribArrayList,
+	          __ArrayDataList_R1__getVertexAttribArrayList,
 	          "",
 	          "");
-	I_Method0(const osg::Geometry::ArrayList &, getVertexAttribArrayList,
+	I_Method0(const osg::Geometry::ArrayDataList &, getVertexAttribArrayList,
 	          Properties::NON_VIRTUAL,
-	          __C5_ArrayList_R1__getVertexAttribArrayList,
+	          __C5_ArrayDataList_R1__getVertexAttribArrayList,
 	          "",
 	          "");
 	I_Method1(void, setPrimitiveSetList, IN, const osg::Geometry::PrimitiveSetList &, primitives,
@@ -547,6 +552,36 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __unsigned_int__getPrimitiveSetIndex__C5_PrimitiveSet_P1,
 	          "Get the index number of a primitive set, return a value between 0 and getNumPrimitiveSet()-1 if found, if not found then return getNumPrimitiveSet(). ",
 	          "When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet())");
+	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag,
+	          Properties::VIRTUAL,
+	          __void__setUseVertexBufferObjects__bool,
+	          "When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation method to use OpenGL vertex buffer objects for rendering. ",
+	          "");
+	I_Method0(void, dirtyDisplayList,
+	          Properties::VIRTUAL,
+	          __void__dirtyDisplayList,
+	          "Force a recompile on next draw() of any OpenGL display list associated with this geoset. ",
+	          "");
+	I_Method1(bool, getArrayList, IN, osg::Geometry::ArrayList &, arrayList,
+	          Properties::NON_VIRTUAL,
+	          __bool__getArrayList__ArrayList_R1,
+	          "",
+	          "");
+	I_Method1(bool, getDrawElementsList, IN, osg::Geometry::DrawElementsList &, drawElementsList,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDrawElementsList__DrawElementsList_R1,
+	          "",
+	          "");
+	I_Method0(osg::VertexBufferObject *, getOrCreateVertexBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __osg_VertexBufferObject_P1__getOrCreateVertexBufferObject,
+	          "",
+	          "");
+	I_Method0(osg::ElementsBufferObject *, getOrCreateElementsBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __osg_ElementsBufferObject_P1__getOrCreateElementsBufferObject,
+	          "",
+	          "");
 	I_Method1(void, setFastPathHint, IN, bool, on,
 	          Properties::NON_VIRTUAL,
 	          __void__setFastPathHint__bool,
@@ -686,6 +721,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                   __void__computeCorrectBindingsAndArraySizes__Vec3ArrayData_R1__C5_char_P1,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(void, addVertexBufferObjectIfRequired, IN, osg::Array *, array,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addVertexBufferObjectIfRequired__osg_Array_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, addElementsBufferObjectIfRequired, IN, osg::PrimitiveSet *, primitiveSet,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addElementsBufferObjectIfRequired__osg_PrimitiveSet_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Array *, ColorArray, 
 	                 __Array_P1__getColorArray, 
 	                 __void__setColorArray__Array_P1);
@@ -760,8 +807,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                0, 
 	                0, 
 	                0);
-	I_SimpleProperty(osg::Geometry::ArrayList &, TexCoordArrayList, 
-	                 __ArrayList_R1__getTexCoordArrayList, 
+	I_SimpleProperty(osg::Geometry::ArrayDataList &, TexCoordArrayList, 
+	                 __ArrayDataList_R1__getTexCoordArrayList, 
 	                 0);
 	I_ArrayProperty(const osg::Geometry::ArrayData &, TexCoordData, 
 	                __C5_ArrayData_R1__getTexCoordData__unsigned_int, 
@@ -777,6 +824,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                0, 
 	                0, 
 	                0);
+	I_SimpleProperty(bool, UseVertexBufferObjects, 
+	                 0, 
+	                 __void__setUseVertexBufferObjects__bool);
 	I_SimpleProperty(osg::Array *, VertexArray, 
 	                 __Array_P1__getVertexArray, 
 	                 __void__setVertexArray__Array_P1);
@@ -787,8 +837,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                0, 
 	                0, 
 	                0);
-	I_SimpleProperty(osg::Geometry::ArrayList &, VertexAttribArrayList, 
-	                 __ArrayList_R1__getVertexAttribArrayList, 
+	I_SimpleProperty(osg::Geometry::ArrayDataList &, VertexAttribArrayList, 
+	                 __ArrayDataList_R1__getVertexAttribArrayList, 
 	                 0);
 	I_ArrayProperty(osg::Geometry::AttributeBinding, VertexAttribBinding, 
 	                __AttributeBinding__getVertexAttribBinding__unsigned_int, 
@@ -920,6 +970,10 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
 	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Array * >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::DrawElements * >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Geometry::ArrayData >)
 

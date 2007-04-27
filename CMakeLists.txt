@@ -14,6 +14,10 @@ ENDIF(WIN32)
 
 PROJECT(OpenSceneGraph)
 
+SET(OPENSCENEGRAPH_MAJOR_VERSION 1)
+SET(OPENSCENEGRAPH_MINOR_VERSION 9)
+SET(OPENSCENEGRAPH_PATCH_VERSION 1)
+
 # We have some custom .cmake scripts not in the official distribution.
 # Maybe this can be used override existing behavior if needed?
 SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
@@ -220,6 +224,28 @@ SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
 
 ################################################################################
 # User Options
+
+
+# Expose CMAKE_INCLUDE_PATH and CMAKE_LIBARY_PATH to the GUI so users
+# may set these values without needing to manipulate the environment.
+SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} CACHE STRING "You may add additional search paths here. Use ; to separate multiple paths.")
+SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} CACHE STRING "You may add additional search paths here. Use ; to separate multiple paths.")
+# We are proposing that a new variable called CMAKE_PREFIX_PATH be introduced
+# to CMake to compliment CMAKE_INCLUDE_PATH and CMAKE_LIBRARY_PATH.
+# A formal feature request has been submited to CMake, Bug #4947.
+# It is intended for those users who have common prefixes for their INCLUDE
+# and LIBRARY locations. So if users have headers in /usr/local/include
+# and libraries in /usr/local/lib, the common prefix is /usr/local.
+# It should also cover the case where headers and libraries are
+# in the same directory.
+# Our proposal expects that FIND_* commands will automatically search for
+# CMAKE_PREFIX_PATH right after CMAKE_INCLUDE_PATH or CMAKE_LIBRARY_PATH.
+# Obviously, since CMake does not currently support this, we must write
+# our Find*.cmake modules to explicitly support this. Otherwise, this variable
+# will have no impact.
+# This is unofficial so this may be removed or changed at anytime.
+SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} CACHE STRING "(EXPERIMENTAL) You may add additional search paths here. Use ; to separate multiple paths.")
+
 
 # Dynamic vs Static Linking
 OPTION(DYNAMIC_OPENSCENEGRAPH "Set to ON to build OpenSceneGraph for dynamic linking.  Use OFF for static." ON)

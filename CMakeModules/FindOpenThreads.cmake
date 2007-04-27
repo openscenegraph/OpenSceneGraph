@@ -37,6 +37,10 @@
 # If nothing is found, then the second find will search the
 # standard install paths.
 # Explicit -DVAR=value arguments should still be able to override everything.
+# Note: We have added an additional check for ${CMAKE_PREFIX_PATH}.
+# This is not an official CMake variable, but one we are proposing be
+# added to CMake. Be warned that this may go away or the variable name
+# may change.
 
 FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
     $ENV{OPENTHREADS_INCLUDE_DIR}
@@ -50,6 +54,13 @@ FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
 
 IF(NOT OPENTHREADS_INCLUDE_DIR)
     FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+        PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
+        PATH_SUFFIXES include
+    )
+ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
+
+IF(NOT OPENTHREADS_INCLUDE_DIR)
+    FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/include
@@ -58,8 +69,8 @@ IF(NOT OPENTHREADS_INCLUDE_DIR)
         /opt/local/include # DarwinPorts
         /opt/csw/include # Blastwave
         /opt/include
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/include
         [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
-        ${CMAKE_INSTALL_PREFIX}/include # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
     )
 ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
 
@@ -81,6 +92,14 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY
 IF(NOT OPENTHREADS_LIBRARY)
     FIND_LIBRARY(OPENTHREADS_LIBRARY 
         NAMES OpenThreads OpenThreadsWin32 
+        PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
+        PATH_SUFFIXES lib64 lib
+    )
+ENDIF(NOT OPENTHREADS_LIBRARY)
+
+IF(NOT OPENTHREADS_LIBRARY)
+    FIND_LIBRARY(OPENTHREADS_LIBRARY 
+        NAMES OpenThreads OpenThreadsWin32 
         PATHS
         ~/Library/Frameworks
         /Library/Frameworks
@@ -96,9 +115,8 @@ IF(NOT OPENTHREADS_LIBRARY)
         /opt/csw/lib
         /opt/lib64
         /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/lib
         [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-        ${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
-        ${CMAKE_INSTALL_PREFIX}/lib # hack
     )
 ENDIF(NOT OPENTHREADS_LIBRARY)
 
@@ -106,6 +124,7 @@ ENDIF(NOT OPENTHREADS_LIBRARY)
 FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
     NAMES OpenThreadsd OpenThreadsWin32d
     PATHS
+    $ENV{OPENTHREADS_DEBUG_LIBRARY_DIR}
     $ENV{OPENTHREADS_LIBRARY_DIR}
     $ENV{OPENTHREADS_DIR}/lib64
     $ENV{OPENTHREADS_DIR}/lib
@@ -114,8 +133,19 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG
     $ENV{OSG_DIR}/lib64
     $ENV{OSG_DIR}/lib
     $ENV{OSG_DIR}
+    ${CMAKE_PREFIX_PATH}/lib64
+    ${CMAKE_PREFIX_PATH}/lib
+    ${CMAKE_PREFIX_PATH}
     NO_DEFAULT_PATH
 )
+
+IF(NOT OPENTHREADS_LIBRARY_DEBUG)
+    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+        NAMES OpenThreadsd OpenThreadsWin32d
+        PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
+        PATH_SUFFIXES lib64 lib
+    )
+ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 
 IF(NOT OPENTHREADS_LIBRARY_DEBUG)
     FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
@@ -133,9 +163,8 @@ IF(NOT OPENTHREADS_LIBRARY_DEBUG)
         /opt/csw/lib
         /opt/lib64
         /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/lib
         [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-        ${CMAKE_INSTALL_PREFIX}/lib64 # hack: this should be last because it can interfere badly with other search paths in the case where you do not explicitly set this value and CMake invokes its default value which may not be what you want.
-        ${CMAKE_INSTALL_PREFIX}/lib # hack
     )
 ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
 

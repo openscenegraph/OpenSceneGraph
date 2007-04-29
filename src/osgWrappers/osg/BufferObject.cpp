@@ -279,6 +279,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ElementsBufferObject)
 	          __C5_DrawElements_P1__getDrawElements__unsigned_int,
 	          "",
 	          "");
+	I_Method1(const GLvoid *, getOffset, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_GLvoid_P1__getOffset__unsigned_int,
+	          "",
+	          "");
 	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
 	          Properties::VIRTUAL,
 	          __bool__needsCompile__unsigned_int,
@@ -424,6 +429,11 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	I_Method1(const osg::Array *, getArray, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getArray__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const GLvoid *, getOffset, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_GLvoid_P1__getOffset__unsigned_int,
 	          "",
 	          "");
 	I_Method1(bool, needsCompile, IN, unsigned int, contextID,

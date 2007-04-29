@@ -107,7 +107,18 @@ void GeometryTechnique::init()
     osg::notify(osg::NOTICE)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
     osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
+    
     _geode = new osg::Geode;
+
+    _transform = new osg::MatrixTransform;
+    _transform->addChild(_geode.get());
+
+    osg::Vec3d centerNDC = (bottomLeftNDC + topRightNDC)*0.5;
+    osg::Vec3d centerModel = (bottomLeftNDC + topRightNDC)*0.5;
+    masterLocator->convertLocalToModel(centerNDC, centerModel);
+    
+    _transform->setMatrix(osg::Matrix::translate(centerModel));
+    
 
     _terrainGeometry = 0; // new osgTerrain::TerrainGeometry;
     if (_terrainGeometry.valid()) _geode->addDrawable(_terrainGeometry.get());
@@ -213,7 +224,7 @@ void GeometryTechnique::init()
             osg::Vec3d model;
             masterLocator->convertLocalToModel(ndc, model);
 
-            (*_vertices)[iv] = model;
+            (*_vertices)[iv] = model - centerModel;
 
             if (colorLayer)
             {
@@ -363,9 +374,9 @@ void GeometryTechnique::update(osgUtil::UpdateVisitor* nv)
 
 void GeometryTechnique::cull(osgUtil::CullVisitor* nv)
 {
-    if (_geode.valid())
+    if (_transform.valid())
     {
-        _geode->accept(*nv);
+        _transform->accept(*nv);
     }
 }
 

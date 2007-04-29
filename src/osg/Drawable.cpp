@@ -258,6 +258,7 @@ Drawable::Drawable()
 
     _supportsVertexBufferObjects = false;
     _useVertexBufferObjects = false;
+    // _useVertexBufferObjects = true;
 
     _numChildrenRequiringUpdateTraversal = 0;
     _numChildrenRequiringEventTraversal = 0;
@@ -603,6 +604,8 @@ void Drawable::setUseDisplayList(bool flag)
 
 void Drawable::setUseVertexBufferObjects(bool flag)
 {
+    // _useVertexBufferObjects = true;
+
     // osg::notify(osg::NOTICE)<<"Drawable::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     // if value unchanged simply return.

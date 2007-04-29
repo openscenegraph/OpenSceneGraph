@@ -1135,6 +1135,8 @@ osg::ElementsBufferObject* Geometry::getOrCreateElementsBufferObject()
 
 void Geometry::setUseVertexBufferObjects(bool flag)
 {
+    // flag = true;
+    
     // osg::notify(osg::NOTICE)<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     if (_useVertexBufferObjects==flag) return;
@@ -1412,7 +1414,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             //
             // Vertex Buffer Object path for defining vertex arrays.
             // 
-#if 1            
+#if 1
 
             // first compile the VBO's
             const VertexBufferObject* prev_vbo = 0;
@@ -1566,7 +1568,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                 _fogCoordData.offset = totalSize;
                 if (_fogCoordData.array.valid()) totalSize += _fogCoordData.array->getTotalDataSize();
 
-
+                unsigned int unit;
                 for(unit=0;unit<_texCoordList.size();++unit)
                 {
                     _texCoordList[unit].offset = totalSize;
@@ -1670,7 +1672,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                 state.setFogCoordPointer(GL_FLOAT,0,(const GLvoid*)_fogCoordData.offset);
             else
                 state.disableFogCoordPointer();
-
+                
+            unsigned int unit;
             for(unit=0;unit<_texCoordList.size();++unit)
             {
                 const Array* array = _texCoordList[unit].array.get();

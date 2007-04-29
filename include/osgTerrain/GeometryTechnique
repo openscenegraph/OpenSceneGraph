@@ -14,6 +14,7 @@
 #ifndef OSGTERRAIN_GEOMETRYTECHNIQUE
 #define OSGTERRAIN_GEOMETRYTECHNIQUE 1
 
+#include <osg/MatrixTransform>
 #include <osg/Geode>
 #include <osg/Geometry>
 
@@ -110,10 +111,11 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 
         virtual ~GeometryTechnique();
 
-        osg::ref_ptr<osg::Geode>    _geode;
+        osg::ref_ptr<osg::MatrixTransform>  _transform;
+        osg::ref_ptr<osg::Geode>            _geode;
         
-        osg::ref_ptr<TerrainGeometry> _terrainGeometry;
-        osg::ref_ptr<osg::Geometry> _geometry;
+        osg::ref_ptr<TerrainGeometry>       _terrainGeometry;
+        osg::ref_ptr<osg::Geometry>         _geometry;
 };
 
 }

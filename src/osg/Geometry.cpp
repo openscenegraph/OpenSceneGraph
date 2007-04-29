@@ -682,7 +682,10 @@ void Geometry::setTexCoordArray(unsigned int unit,Array* array)
     computeFastPathsUsed();
     dirtyDisplayList();
 
-    if (_useVertexBufferObjects && array) addVertexBufferObjectIfRequired(array);
+    if (_useVertexBufferObjects && array)
+    {
+        addVertexBufferObjectIfRequired(array);
+    }
 }
 
 Array* Geometry::getTexCoordArray(unsigned int unit)
@@ -1011,14 +1014,14 @@ unsigned int Geometry::getGLObjectSizeHint() const
         }
     }
 
-        for(PrimitiveSetList::const_iterator itr=_primitives.begin();
-            itr!=_primitives.end();
-            ++itr)
-        {
+    for(PrimitiveSetList::const_iterator itr=_primitives.begin();
+        itr!=_primitives.end();
+        ++itr)
+    {
 
-            totalSize += 4*(*itr)->getNumIndices();
+        totalSize += 4*(*itr)->getNumIndices();
 
-        }
+    }
 
 
     // do a very simply mapping of display list size proportional to vertex datasize.
@@ -1035,6 +1038,18 @@ bool Geometry::getArrayList(ArrayList& arrayList)
     if (_secondaryColorData.array.valid()) arrayList.push_back(_secondaryColorData.array.get());
     if (_fogCoordData.array.valid()) arrayList.push_back(_fogCoordData.array.get());
     
+    for(unsigned int unit=0;unit<_texCoordList.size();++unit)
+    {
+        Array* array = _texCoordList[unit].array.get();
+        if (array) arrayList.push_back(array);
+    }
+
+    for(unsigned int  index = 0; index < _vertexAttribList.size(); ++index )
+    {
+        Array* array = _vertexAttribList[index].array.get();
+        if (array) arrayList.push_back(array);
+    }
+
     return arrayList.size()!=startSize;
 }
 
@@ -1120,14 +1135,12 @@ osg::ElementsBufferObject* Geometry::getOrCreateElementsBufferObject()
 
 void Geometry::setUseVertexBufferObjects(bool flag)
 {
-    osg::notify(osg::NOTICE)<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     if (_useVertexBufferObjects==flag) return;
 
     Drawable::setUseVertexBufferObjects(flag);
     
-    osg::notify(osg::NOTICE)<<" setting up"<<std::endl;
-
     ArrayList arrayList;
     getArrayList(arrayList);
 
@@ -1217,11 +1230,96 @@ void Geometry::dirtyDisplayList()
     Drawable::dirtyDisplayList();
 }
 
+
+#define SETARRAYPOINTER(vertexData, setVertexPointer, disableVertexPointer) \
+    if( vertexData.array.valid() ) \
+    { \
+        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
+        if (new_vbo) \
+        { \
+            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
+            prev_vbo = new_vbo; \
+            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
+        } \
+        else \
+        { \
+            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
+            prev_vbo = 0; \
+            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
+        } \
+    } \
+    else \
+        disableVertexPointer();
+
+#define SETNORMALPOINTER_IFPERVERTEXBINDING(vertexData, setVertexPointer, disableVertexPointer) \
+    if( vertexData.array.valid() && vertexData.binding==BIND_PER_VERTEX) \
+    { \
+        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
+        if (new_vbo) \
+        { \
+            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
+            prev_vbo = new_vbo; \
+            setVertexPointer(vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
+        } \
+        else \
+        { \
+            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
+            prev_vbo = 0; \
+            setVertexPointer(vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
+        } \
+    } \
+    else \
+        disableVertexPointer();
+
+
+#define SETARRAYPOINTER_IFPERVERTEXBINDING(vertexData, setVertexPointer, disableVertexPointer) \
+    if( vertexData.array.valid() && vertexData.binding==BIND_PER_VERTEX) \
+    { \
+        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
+        if (new_vbo) \
+        { \
+            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
+            prev_vbo = new_vbo; \
+            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
+        } \
+        else \
+        { \
+            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
+            prev_vbo = 0; \
+            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
+        } \
+    } \
+    else \
+        disableVertexPointer();
+
+
+#define SETARRAYUNITPOINTER_IFPERVERTEXBINDING(vertexData, unit, setVertexPointer, disableVertexPointer) \
+    if( vertexData.array.valid() && vertexData.binding==BIND_PER_VERTEX) \
+    { \
+        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
+        if (new_vbo) \
+        { \
+            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
+            prev_vbo = new_vbo; \
+            setVertexPointer(unit, vertexData.array->getDataSize(),vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
+        } \
+        else \
+        { \
+            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
+            prev_vbo = 0; \
+            setVertexPointer(unit, vertexData.array->getDataSize(),vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
+        } \
+    } \
+    else \
+        disableVertexPointer();
+
+
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
-
+    unsigned int contextID = state.getContextID();
+    
     // osg::notify(osg::NOTICE)<<"Geometry::drawImplementation"<<std::endl;
 
     if (_internalOptimizedGeometry.valid())
@@ -1311,69 +1409,134 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         if (usingVertexBufferObjects)
         {
 
-            // first up lets check for new VBO support:
-            unsigned int numArraysWithVBO = 0;
-            unsigned int numArraysWithoutVBO = 0;
-            if (_vertexData.array.valid())
-            {
-                if (_vertexData.array->getVertexBufferObject())
-                    ++numArraysWithVBO;
-                else
-                    ++numArraysWithoutVBO;
-            }
+            //
+            // Vertex Buffer Object path for defining vertex arrays.
+            // 
+#if 1            
 
-            if (_normalData.array.valid())
-            {
-                if (_normalData.array->getVertexBufferObject())
-                    ++numArraysWithVBO;
-                else
-                    ++numArraysWithoutVBO;
-            }
+            // first compile the VBO's
+            const VertexBufferObject* prev_vbo = 0;
+            const VertexBufferObject* new_vbo = 0;
+            
+            new_vbo = _vertexData.array.valid() ? _vertexData.array->getVertexBufferObject() : 0;
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+            
+            new_vbo = (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid()) ? _normalData.array->getVertexBufferObject() : 0;
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
 
+            new_vbo = (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid()) ? _colorData.array->getVertexBufferObject() : 0;
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
 
-            if (_colorData.array.valid())
-            {
-                if (_colorData.array->getVertexBufferObject())
-                    ++numArraysWithVBO;
-                else
-                    ++numArraysWithoutVBO;
-            }
+            new_vbo = (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.array.valid()) ? _secondaryColorData.array->getVertexBufferObject() : 0;
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
 
+            new_vbo = (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.array.valid()) ? _fogCoordData.array->getVertexBufferObject() : 0;
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
 
             unsigned int unit;
             for(unit=0;unit<_texCoordList.size();++unit)
             {
-                if (_texCoordList[unit].array.valid())
-                {
-                    if (_texCoordList[unit].array->getVertexBufferObject())
-                        ++numArraysWithVBO;
-                    else
-                        ++numArraysWithoutVBO;
-                }
+                const Array* array = _texCoordList[unit].array.get();
+                new_vbo = array ? array->getVertexBufferObject() : 0;
+                if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
             }
 
             if( handleVertexAttributes )
             {
-                for(unit=0;unit<_vertexAttribList.size();++unit)
+                unsigned int index;
+                for( index = 0; index < _vertexAttribList.size(); ++index )
                 {
-                    if (_vertexAttribList[unit].array.valid())
+                    const Array* array = _vertexAttribList[index].array.get();
+                    new_vbo = (_vertexAttribList[index].binding==BIND_PER_VERTEX && array) ? array->getVertexBufferObject() : 0;
+                    if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+                }
+            }
+
+            prev_vbo = 0;
+                      
+            SETNORMALPOINTER_IFPERVERTEXBINDING(_normalData, state.setNormalPointer, state.disableNormalPointer)
+            SETARRAYPOINTER_IFPERVERTEXBINDING(_colorData, state.setColorPointer, state.disableColorPointer)
+            SETARRAYPOINTER_IFPERVERTEXBINDING(_secondaryColorData, state.setSecondaryColorPointer, state.disableSecondaryColorPointer)
+            SETNORMALPOINTER_IFPERVERTEXBINDING(_fogCoordData, state.setFogCoordPointer, state.disableFogCoordPointer)
+
+            for(unit=0;unit<_texCoordList.size();++unit)
+            {
+                SETARRAYUNITPOINTER_IFPERVERTEXBINDING(_texCoordList[unit], unit, state.setTexCoordPointer, state.disableVertexPointer)
+            }
+            state.disableTexCoordPointersAboveAndIncluding(unit);
+
+            if( handleVertexAttributes )
+            {
+                unsigned int index;
+                for( index = 0; index < _vertexAttribList.size(); ++index )
+                {
+                    const Array* array = _vertexAttribList[index].array.get();
+                    const AttributeBinding ab = _vertexAttribList[index].binding;
+                    if(array && ab==BIND_PER_VERTEX)
                     {
-                        if (_vertexAttribList[unit].array->getVertexBufferObject())
-                            ++numArraysWithVBO;
+                        new_vbo = array->getVertexBufferObject();
+                        if (new_vbo)
+                        {
+                            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID);
+                            prev_vbo = new_vbo;
+                            state.setVertexAttribPointer(index, array->getDataSize(),array->getDataType(),_vertexAttribList[index].normalize, 0,new_vbo->getOffset(array->getVertexBufferObjectIndex()));
+                        }
                         else
-                            ++numArraysWithoutVBO;
+                        {
+                            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+                            prev_vbo = 0;
+                            state.setVertexAttribPointer(index, array->getDataSize(),array->getDataType(),_vertexAttribList[index].normalize, 0,array->getDataPointer());
+                        }
+                    }
+                    else
+                        state.disableVertexAttribPointer(index);
+
+                    if(array && ab!=BIND_PER_VERTEX)
+                    {
+                        const IndexArray* indexArray = _vertexAttribList[index].indices.get();
+
+                        if( indexArray && indexArray->getNumElements() > 0 )
+                        {
+                            drawVertexAttribMap[ab].push_back( 
+                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
+                        }
+                        else
+                        {
+                            drawVertexAttribMap[ab].push_back( 
+                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
+                        }
+                    }
+                }
+                state.disableVertexAttribPointersAboveAndIncluding( index );
+                
+            }
+            else if (vertexVertexAttributesSupported)
+            {
+                state.disableVertexAttribPointersAboveAndIncluding( 0 );
+            }
+
+            SETARRAYPOINTER(_vertexData, state.setVertexPointer, state.disableVertexPointer)
+
+            const osg::ElementsBufferObject* prev_ebo = 0;
+            const osg::ElementsBufferObject* new_ebo = 0;
+            for(PrimitiveSetList::const_iterator itr=_primitives.begin();
+                itr!=_primitives.end();
+                ++itr)
+            {
+                const DrawElements* de = (*itr)->getDrawElements();
+                if (de)
+                {
+                    new_ebo = de->getElementsBufferObject();
+                    if (new_ebo && new_ebo!=prev_ebo)
+                    {
+                        new_ebo->compileBuffer(state);
+                        prev_ebo = new_ebo;
                     }
                 }
             }
 
-            osg::notify(osg::NOTICE)<<"Geometry::drawImplementation "<<std::endl;
-            osg::notify(osg::NOTICE)<<"  numArraysWithVBO = "<<numArraysWithVBO<<std::endl;
-            osg::notify(osg::NOTICE)<<"  numArraysWithoutVBO = "<<numArraysWithoutVBO<<std::endl;
-                        
-            //
-            // Vertex Buffer Object path for defining vertex arrays.
-            // 
-            
+#else
+
             GLuint& buffer = _vboList[state.getContextID()];
             if (!buffer)
             {
@@ -1559,7 +1722,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             {
                 state.disableVertexAttribPointersAboveAndIncluding( 0 );
             }
-
+#endif
 
         }
         else

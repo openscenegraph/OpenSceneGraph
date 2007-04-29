@@ -154,6 +154,25 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
+#if 1
+        unsigned int contextID = state.getContextID();
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
+
+        const ElementsBufferObject* ebo = getElementsBufferObject();
+        if (ebo)
+        {
+            //ebo->compileBuffer(state);
+            ebo->bindBuffer(contextID);
+    
+            glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, ebo->getOffset(getElementsBufferObjectIndex()));
+            
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+        }
+        else
+        {
+            glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
+        }
+#else    
         unsigned int contextID = state.getContextID();
         const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
 
@@ -181,6 +200,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
         glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, 0);
         
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+#endif
     }
     else 
     {
@@ -247,6 +267,25 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
+#if 1
+        unsigned int contextID = state.getContextID();
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
+
+        const ElementsBufferObject* ebo = getElementsBufferObject();
+        if (ebo)
+        {
+            //ebo->compileBuffer(state);
+            ebo->bindBuffer(contextID);
+    
+            glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, ebo->getOffset(getElementsBufferObjectIndex()));
+            
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+        }
+        else
+        {
+            glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
+        }
+#else    
         unsigned int contextID = state.getContextID();
         const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
 
@@ -275,6 +314,7 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
         glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, 0);
 
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+#endif
     }
     else 
     {
@@ -341,6 +381,25 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
 {
     if (useVertexBufferObjects)
     {
+#if 1
+        unsigned int contextID = state.getContextID();
+        const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
+
+        const ElementsBufferObject* ebo = getElementsBufferObject();
+        if (ebo)
+        {
+            //ebo->compileBuffer(state);
+            ebo->bindBuffer(contextID);
+    
+            glDrawElements(_mode, size(), GL_UNSIGNED_INT, ebo->getOffset(getElementsBufferObjectIndex()));
+            
+            extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+        }
+        else
+        {
+            glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
+        }
+#else    
         unsigned int contextID = state.getContextID();
         const BufferObject::Extensions* extensions = BufferObject::getExtensions(contextID, true);
         
@@ -369,6 +428,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
         glDrawElements(_mode, size(), GL_UNSIGNED_INT, 0);
         
         extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+#endif
     }
     else 
     {

@@ -286,6 +286,8 @@ VertexBufferObject::VertexBufferObject()
 {
     _target = GL_ARRAY_BUFFER_ARB;
     _usage = GL_STATIC_DRAW_ARB;
+//    _usage = GL_DYNAMIC_DRAW_ARB;
+//    _usage = GL_STREAM_DRAW_ARB;
 }
 
 VertexBufferObject::VertexBufferObject(const VertexBufferObject& vbo,const CopyOp& copyop):
@@ -320,6 +322,8 @@ void VertexBufferObject::setArray(unsigned int i, Array* array)
 
 bool VertexBufferObject::needsCompile(unsigned int contextID) const
 {
+//    return true;
+
     unsigned int numValidArray = 0;
     for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
         itr != _bufferEntryArrayPairs.end();
@@ -355,6 +359,8 @@ void VertexBufferObject::compileBuffer(State& state) const
     if (!needsCompile(contextID)) return;
     
     Extensions* extensions = getExtensions(contextID,true);
+
+    osg::notify(osg::NOTICE)<<"VertexBufferObject::compileBuffer frameNumber="<<state.getFrameStamp()->getFrameNumber()<<std::endl;
 
     unsigned int totalSizeRequired = 0;
     unsigned int numModified = 0;
@@ -425,13 +431,14 @@ void VertexBufferObject::compileBuffer(State& state) const
             {
                 // copy data across
                 bep.first.dataSize = bep.second->getTotalDataSize();
+                bep.first.modifiedCount[contextID] = de->getModifiedCount();
                 if (copyAll) 
                 {
-                    bep.first.modifiedCount[contextID] != de->getModifiedCount();
                     bep.first.offset = offset;
                     offset += bep.first.dataSize;
-                    
                 }
+                
+                // osg::notify(osg::NOTICE)<<"   copying vertex buffer data "<<bep.first.dataSize<<" bytes"<<std::endl;
                 
                 if (vboMemory)
                     memcpy((char*)vboMemory + bep.first.offset, de->getDataPointer(), bep.first.dataSize);
@@ -493,6 +500,7 @@ void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* drawEle
 
 bool ElementsBufferObject::needsCompile(unsigned int contextID) const
 {
+#if 1
     unsigned int numValidDrawElements = 0;
     for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
         itr != _bufferEntryDrawElementsPairs.end();
@@ -516,6 +524,7 @@ bool ElementsBufferObject::needsCompile(unsigned int contextID) const
     }
         
     if (numValidDrawElements==0) return false;
+#endif
         
     if (_bufferObjectList[contextID]==0) return true;
 
@@ -526,6 +535,8 @@ void ElementsBufferObject::compileBuffer(State& state) const
 {
     unsigned int contextID = state.getContextID();
     if (!needsCompile(contextID)) return;
+
+    osg::notify(osg::NOTICE)<<"ElementsBufferObject::compile"<<std::endl;
     
     Extensions* extensions = getExtensions(contextID,true);
 
@@ -598,12 +609,11 @@ void ElementsBufferObject::compileBuffer(State& state) const
             {
                 // copy data across
                 bep.first.dataSize = bep.second->getTotalDataSize();
+                bep.first.modifiedCount[contextID] = de->getModifiedCount();
                 if (copyAll) 
                 {
-                    bep.first.modifiedCount[contextID] != de->getModifiedCount();
                     bep.first.offset = offset;
                     offset += bep.first.dataSize;
-                    
                 }
                 
                 if (eboMemory)

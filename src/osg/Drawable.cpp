@@ -603,7 +603,7 @@ void Drawable::setUseDisplayList(bool flag)
 
 void Drawable::setUseVertexBufferObjects(bool flag)
 {
-    osg::notify(osg::NOTICE)<<"Drawable::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Drawable::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     // if value unchanged simply return.
     if (_useVertexBufferObjects==flag) return;

@@ -344,6 +344,7 @@ void GeometryTechnique::init()
     }
 
     // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
+    if (_geometry.valid()) _geometry->setUseVertexBufferObjects(true);
 
     if (_geometry.valid())
     {

@@ -75,14 +75,29 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __void__unbindBuffer__unsigned_int,
 	          "",
 	          "");
+	I_Method0(void, dirty,
+	          Properties::NON_VIRTUAL,
+	          __void__dirty,
+	          "",
+	          "");
+	I_Method1(bool, isDirty, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __bool__isDirty__unsigned_int,
+	          "",
+	          "");
 	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
 	          Properties::PURE_VIRTUAL,
 	          __bool__needsCompile__unsigned_int,
 	          "",
 	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	I_Method2(void, compileBuffer, IN, unsigned int, contextID, IN, osg::State &, state,
+	          Properties::NON_VIRTUAL,
+	          __void__compileBuffer__unsigned_int__State_R1,
+	          "",
+	          "");
+	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
 	          Properties::PURE_VIRTUAL,
-	          __void__compileBuffer__State_R1,
+	          __void__compileBufferImplementation__State_R1,
 	          "",
 	          "");
 	I_Method1(void, releaseBuffer, IN, osg::State *, state,
@@ -289,9 +304,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ElementsBufferObject)
 	          __bool__needsCompile__unsigned_int,
 	          "",
 	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
 	          Properties::VIRTUAL,
-	          __void__compileBuffer__State_R1,
+	          __void__compileBufferImplementation__State_R1,
 	          "",
 	          "");
 	I_IndexedProperty(osg::DrawElements *, DrawElements, 
@@ -363,9 +378,9 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	          __bool__needsCompile__unsigned_int,
 	          "",
 	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
 	          Properties::VIRTUAL,
-	          __void__compileBuffer__State_R1,
+	          __void__compileBufferImplementation__State_R1,
 	          "",
 	          "");
 	I_SimpleProperty(osg::Image *, Image, 
@@ -441,9 +456,9 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	          __bool__needsCompile__unsigned_int,
 	          "",
 	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
 	          Properties::VIRTUAL,
-	          __void__compileBuffer__State_R1,
+	          __void__compileBufferImplementation__State_R1,
 	          "",
 	          "");
 	I_IndexedProperty(osg::Array *, Array, 

@@ -308,6 +308,8 @@ unsigned int VertexBufferObject::addArray(osg::Array* array)
     _bufferEntryArrayPairs[i].first.modifiedCount.setAllElementsTo(0xffffffff);
     _bufferEntryArrayPairs[i].first.offset = 0;
     
+    dirty();
+    
     return i;
 }
 
@@ -318,11 +320,13 @@ void VertexBufferObject::setArray(unsigned int i, Array* array)
     _bufferEntryArrayPairs[i].second = array;
     _bufferEntryArrayPairs[i].first.modifiedCount.setAllElementsTo(0xffffffff);
     _bufferEntryArrayPairs[i].first.offset = 0;
+
+    dirty();
 } 
 
 bool VertexBufferObject::needsCompile(unsigned int contextID) const
 {
-//    return true;
+    if (isDirty(contextID)) return true;
 
     unsigned int numValidArray = 0;
     for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
@@ -353,10 +357,11 @@ bool VertexBufferObject::needsCompile(unsigned int contextID) const
     return false;
 }
 
-void VertexBufferObject::compileBuffer(State& state) const
+void VertexBufferObject::compileBufferImplementation(State& state) const
 {
     unsigned int contextID = state.getContextID();
-    if (!needsCompile(contextID)) return;
+
+    _compiledList[contextID] = 1;
     
     Extensions* extensions = getExtensions(contextID,true);
 
@@ -500,6 +505,8 @@ void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* drawEle
 
 bool ElementsBufferObject::needsCompile(unsigned int contextID) const
 {
+    if (isDirty(contextID)) return true;
+
 #if 1
     unsigned int numValidDrawElements = 0;
     for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
@@ -531,10 +538,11 @@ bool ElementsBufferObject::needsCompile(unsigned int contextID) const
     return false;
 }
 
-void ElementsBufferObject::compileBuffer(State& state) const
+void ElementsBufferObject::compileBufferImplementation(State& state) const
 {
     unsigned int contextID = state.getContextID();
-    if (!needsCompile(contextID)) return;
+
+    _compiledList[contextID] = 1;
 
     osg::notify(osg::NOTICE)<<"ElementsBufferObject::compile"<<std::endl;
     
@@ -660,11 +668,17 @@ PixelBufferObject::~PixelBufferObject()
 
 void PixelBufferObject::setImage(osg::Image* image)
 {
+    if (_bufferEntryImagePair.second == image) return;
+    
     _bufferEntryImagePair.second = image;
+    
+    dirty();
 }
 
 bool PixelBufferObject::needsCompile(unsigned int contextID) const
 {
+    if (isDirty(contextID)) return true;
+
     if (!_bufferEntryImagePair.second) 
         return false;
 
@@ -676,11 +690,12 @@ bool PixelBufferObject::needsCompile(unsigned int contextID) const
     return false;
 }
 
-void PixelBufferObject::compileBuffer(State& state) const
+void PixelBufferObject::compileBufferImplementation(State& state) const
 {
     unsigned int contextID = state.getContextID();
-    if (!needsCompile(contextID)) return;
     
+    _compiledList[contextID] = 1;
+
     osg::Image* image = _bufferEntryImagePair.second;
 
     _bufferEntryImagePair.first.modifiedCount[contextID] = image->getModifiedCount();

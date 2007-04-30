@@ -122,9 +122,18 @@ class OSG_EXPORT BufferObject : public Object
             extensions->glBindBuffer(_target,0);
         }
 
+        inline void dirty() { _compiledList.setAllElementsTo(0); }
+
+        bool isDirty(unsigned int contextID) const { return _compiledList[contextID]==0; }
+
         virtual bool needsCompile(unsigned int contextID) const = 0;
 
-        virtual void compileBuffer(State& state) const = 0;
+        inline void compileBuffer(unsigned int contextID, State& state) const
+        {
+            if (isDirty(contextID)) compileBufferImplementation(state);
+        }
+
+        virtual void compileBufferImplementation(State& state) const = 0;
         
         void releaseBuffer(State* state) const;
 
@@ -215,8 +224,10 @@ class OSG_EXPORT BufferObject : public Object
         virtual ~BufferObject();
         
         typedef osg::buffered_value<GLuint> GLObjectList;
+        typedef osg::buffered_value<unsigned int> CompiledList;
 
         mutable GLObjectList    _bufferObjectList;
+        mutable CompiledList    _compiledList;
 
         GLenum                  _target;
         GLenum                  _usage;
@@ -248,7 +259,7 @@ class OSG_EXPORT VertexBufferObject : public BufferObject
 
         virtual bool needsCompile(unsigned int contextID) const;
 
-        virtual void compileBuffer(State& state) const;
+        virtual void compileBufferImplementation(State& state) const;
 
     protected:
     
@@ -282,7 +293,7 @@ class OSG_EXPORT ElementsBufferObject : public BufferObject
 
         virtual bool needsCompile(unsigned int contextID) const;
 
-        virtual void compileBuffer(State& state) const;
+        virtual void compileBufferImplementation(State& state) const;
 
     protected:
     
@@ -314,7 +325,7 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
         
         virtual bool needsCompile(unsigned int contextID) const;
 
-        virtual void compileBuffer(State& state) const;
+        virtual void compileBufferImplementation(State& state) const;
 
     protected:
     

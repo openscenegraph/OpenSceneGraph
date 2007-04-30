@@ -28,6 +28,11 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainNode::Filter)
+	I_EnumLabel(osgTerrain::TerrainNode::NEAREST);
+	I_EnumLabel(osgTerrain::TerrainNode::LINEAR);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_BaseType(osg::Group);
 	I_Constructor0(____TerrainNode,
@@ -147,10 +152,20 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __C5_osg_TransferFunction_P1__getColorTransferFunction__unsigned_int,
 	          "Get const color transfer function with specified layer number. ",
 	          "");
+	I_Method2(void, setColorFilter, IN, unsigned int, i, IN, osgTerrain::TerrainNode::Filter, filter,
+	          Properties::NON_VIRTUAL,
+	          __void__setColorFilter__unsigned_int__Filter,
+	          "Set a color filter with specified layer number. ",
+	          "");
+	I_Method1(osgTerrain::TerrainNode::Filter, getColorFilter, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __Filter__getColorFilter__unsigned_int,
+	          "Set const color filter with specified layer number. ",
+	          "");
 	I_Method0(unsigned int, getNumColorLayers,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumColorLayers,
-	          "",
+	          "Get the number of colour layers. ",
 	          "");
 	I_Method1(void, setRequiresNormals, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
@@ -167,6 +182,10 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
+	I_IndexedProperty(osgTerrain::TerrainNode::Filter, ColorFilter, 
+	                  __Filter__getColorFilter__unsigned_int, 
+	                  __void__setColorFilter__unsigned_int__Filter, 
+	                  0);
 	I_ArrayProperty(osgTerrain::Layer *, ColorLayer, 
 	                __Layer_P1__getColorLayer__unsigned_int, 
 	                __void__setColorLayer__unsigned_int__osgTerrain_Layer_P1, 

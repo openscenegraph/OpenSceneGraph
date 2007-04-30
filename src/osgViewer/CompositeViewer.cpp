@@ -27,7 +27,8 @@ CompositeViewer::CompositeViewer():
     _quitEventSetsDone(true),
     _threadingModel(ThreadPerContext),
     _endBarrierPosition(AfterSwapBuffers),
-    _numThreadsOnBarrier(0)
+    _numThreadsOnBarrier(0),
+    _startTick(0)
 {
     // make sure View is safe to reference multi-threaded.
     setThreadSafeRefUnref(true);

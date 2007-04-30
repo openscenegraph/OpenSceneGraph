@@ -590,7 +590,8 @@ Viewer::Viewer():
     _threadsRunning(false),
     _useMainThreadForRenderingTraversal(true),
     _endBarrierPosition(AfterSwapBuffers),
-    _numWindowsOpenAtLastSetUpThreading(0)
+    _numWindowsOpenAtLastSetUpThreading(0),
+    _startTick(0)
 {
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);

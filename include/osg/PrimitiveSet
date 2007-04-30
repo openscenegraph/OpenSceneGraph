@@ -241,7 +241,7 @@ class OSG_EXPORT PrimitiveSet : public Object
         virtual unsigned int getNumPrimitives() const; 
 
         /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
-        inline void dirty() { ++_modifiedCount; }      
+        virtual void dirty() { ++_modifiedCount; }      
       
         /** Set the modified count value.*/
         inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
@@ -422,6 +422,8 @@ class DrawElements : public PrimitiveSet
 
         virtual DrawElements* getDrawElements() { return this; }
         virtual const DrawElements* getDrawElements() const { return this; }
+
+        virtual void dirty() { ++_modifiedCount; if (_ebo.valid()) _ebo->dirty(); } 
 
         /** Set the ElementsBufferObject.*/
         inline void setElementsBufferObject(osg::ElementsBufferObject* ebo)

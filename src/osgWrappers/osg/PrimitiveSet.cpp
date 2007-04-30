@@ -251,6 +251,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	          __C5_DrawElements_P1__getDrawElements,
 	          "",
 	          "");
+	I_Method0(void, dirty,
+	          Properties::VIRTUAL,
+	          __void__dirty,
+	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
+	          "");
 	I_Method1(void, setElementsBufferObject, IN, osg::ElementsBufferObject *, ebo,
 	          Properties::NON_VIRTUAL,
 	          __void__setElementsBufferObject__osg_ElementsBufferObject_P1,
@@ -892,7 +897,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	          "",
 	          "");
 	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__dirty,
 	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
 	          "");

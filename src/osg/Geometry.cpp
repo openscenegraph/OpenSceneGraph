@@ -1135,7 +1135,7 @@ osg::ElementsBufferObject* Geometry::getOrCreateElementsBufferObject()
 
 void Geometry::setUseVertexBufferObjects(bool flag)
 {
-    // flag = true;
+    flag = true;
     
     // osg::notify(osg::NOTICE)<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
@@ -1421,26 +1421,26 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             const VertexBufferObject* new_vbo = 0;
             
             new_vbo = _vertexData.array.valid() ? _vertexData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
             
             new_vbo = (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid()) ? _normalData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
 
             new_vbo = (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid()) ? _colorData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
 
             new_vbo = (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.array.valid()) ? _secondaryColorData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
 
             new_vbo = (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.array.valid()) ? _fogCoordData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
 
             unsigned int unit;
             for(unit=0;unit<_texCoordList.size();++unit)
             {
                 const Array* array = _texCoordList[unit].array.get();
                 new_vbo = array ? array->getVertexBufferObject() : 0;
-                if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+                if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
             }
 
             if( handleVertexAttributes )
@@ -1450,7 +1450,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                 {
                     const Array* array = _vertexAttribList[index].array.get();
                     new_vbo = (_vertexAttribList[index].binding==BIND_PER_VERTEX && array) ? array->getVertexBufferObject() : 0;
-                    if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(state); prev_vbo = new_vbo; }
+                    if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
                 }
             }
 
@@ -1531,7 +1531,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                     new_ebo = de->getElementsBufferObject();
                     if (new_ebo && new_ebo!=prev_ebo)
                     {
-                        new_ebo->compileBuffer(state);
+                        new_ebo->compileBuffer(contextID, state);
                         prev_ebo = new_ebo;
                     }
                 }

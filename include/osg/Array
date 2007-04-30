@@ -108,7 +108,7 @@ class OSG_EXPORT Array : public Object
         virtual void trim() {}
 
         /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
-        inline void dirty() { ++_modifiedCount; }      
+        inline void dirty() { ++_modifiedCount; if (_vbo.valid()) _vbo->dirty(); }
       
         /** Set the modified count value.*/
         inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }

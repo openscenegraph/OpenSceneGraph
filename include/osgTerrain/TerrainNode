@@ -88,6 +88,20 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         /** Get const color transfer function with specified layer number.*/
         const osg::TransferFunction* getColorTransferFunction(unsigned int i) const { return i<_colorLayers.size() ? _colorLayers[i].transferFunction.get() : 0; }
 
+        enum Filter
+        {
+            NEAREST,
+            LINEAR
+        };
+
+        /** Set a color filter with specified layer number.*/
+        void setColorFilter(unsigned int i, Filter filter);
+
+        /** Set const color filter with specified layer number.*/
+        Filter getColorFilter(unsigned int i) const { return i<_colorLayers.size() ? _colorLayers[i].filter : LINEAR; }
+
+
+        /** Get the number of colour layers.*/
         unsigned int getNumColorLayers() const { return _colorLayers.size(); }
 
 
@@ -107,7 +121,23 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
 
         struct LayerData
         {
-            osg::ref_ptr<Layer> layer;
+            LayerData():
+                filter(LINEAR) {}
+        
+            LayerData(const LayerData& rhs):
+                filter(rhs.filter),
+                layer(rhs.layer),
+                transferFunction(rhs.transferFunction) {}
+
+            LayerData& operator = (const LayerData& rhs)
+            {
+                filter = rhs.filter;
+                layer = rhs.layer;
+                transferFunction = rhs.transferFunction;
+            }
+
+            Filter                              filter;
+            osg::ref_ptr<Layer>                 layer;
             osg::ref_ptr<osg::TransferFunction> transferFunction;
         };
 

@@ -81,6 +81,13 @@ void TerrainNode::setColorTransferFunction(unsigned int i, osg::TransferFunction
     _colorLayers[i].transferFunction = tf;
 }
 
+void TerrainNode::setColorFilter(unsigned int i, Filter filter)
+{
+    if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
+    
+    _colorLayers[i].filter = filter;
+}
+
 osg::BoundingSphere TerrainNode::computeBound() const
 {
     osg::BoundingSphere bs;

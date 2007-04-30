@@ -49,6 +49,7 @@ void GeometryTechnique::init()
     osgTerrain::Layer* elevationLayer = _terrainNode->getElevationLayer();
     osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer(0);
     osg::TransferFunction* colorTF = _terrainNode->getColorTransferFunction(0);
+    osgTerrain::TerrainNode::Filter filter = _terrainNode->getColorFilter(0);
 
     // if the elevationLayer and colorLayer are the same, and there is colorTF then
     // simply assing as a texture coordinate.
@@ -285,6 +286,8 @@ void GeometryTechnique::init()
             texture2D->setImage(image);
             texture2D->setResizeNonPowerOfTwoHint(false);
             stateset->setTextureAttributeAndModes(color_index, texture2D, osg::StateAttribute::ON);
+
+            texture2D->setFilter(osg::Texture::MAG_FILTER, filter==TerrainNode::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
 
             if (tf)
             {

@@ -84,6 +84,8 @@ int main(int argc, char** argv)
 
     unsigned int layerNum = 0;
 
+    std::string filterName;
+
     bool readParameter = false;
     float minValue, maxValue;
     int pos = 1;
@@ -172,6 +174,27 @@ int main(int argc, char** argv)
             {
                 osg::notify(osg::NOTICE)<<"failed to create osgTerrain::ImageLayer"<<std::endl;
             }
+        }
+
+        else if (arguments.read(pos, "--filter",filterName))
+        {
+            readParameter = true;
+            
+            if (filterName=="NEAREST")
+            {
+                osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
+                terrain->setColorFilter(layerNum, osgTerrain::TerrainNode::NEAREST);
+            }
+            else if (filterName=="LINEAER") 
+            {
+                osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
+                terrain->setColorFilter(layerNum, osgTerrain::TerrainNode::LINEAR);
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"--filter "<<filterName<<" unrecognized filter name, please use LINEAER or NEAREST."<<std::endl;
+            }            
+            
         }
 
         else if (arguments.read(pos, "--tf",minValue, maxValue))

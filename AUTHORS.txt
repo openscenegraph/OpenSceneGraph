@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.9.1
+OpenSceneGraph Library 1.9.2
 
-250 Contributors:
+252 Contributors:
 
 Firstname Surname
 -----------------
@@ -62,6 +62,7 @@ Stephane Simon
 Sean Spicer
 Ravi Mathur
 Mike Connell
+Michael Platings
 Loic Dachary
 Joseph Steel
 Jason Daly
@@ -76,7 +77,7 @@ Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
 Nikolaus Hanekamp
-Michael Platings
+Martin Aumueller
 Leandro Motta Barros
 Carlo Camporesi
 Bruce Clay
@@ -85,11 +86,11 @@ Alberto Barbati
 Sohey Yamamoto
 Phil Atkin
 Paul Melis
-Martin Aumueller
 Laurens Voerman
 Ken Sewell
 Julian Ortiz
 John Shue
+Jeremy Moles
 Jeremy Bell
 James French
 Gabor Dorka
@@ -123,7 +124,6 @@ Keith Steffen
 Joseph Winston
 John Aughey
 Johan Nouvel
-Jeremy Moles
 Jean-Sebastien Guay
 Jan Ciger
 Igor Kravtchenko
@@ -205,7 +205,9 @@ John Davis
 Joan Abadie
 Joakim Simmonsson
 Jay Zuckerman
+Jason Howlett
 Jason Ballenger
+Jan Peciva
 J.E. Hoffmann
 Henrique Bucher
 Gustavo Wagner

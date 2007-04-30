@@ -1,3 +1,127 @@
+2007-04-25 09:14 +0000 [r6547]  robert:
+
+	* From Eric Wing, "I made a mistake in my IF() checks for
+	  FOO_CONFIG_HAS_BEEN_RUN_BEFORE. I was using
+	  ${FOO_CONFIG_HAS_BEEN_RUN_BEFORE} instead of just
+	  FOO_HAS_BEEN_RUN_BEFORE. In this case, it happened to work out to
+	  still be correct, but in general it shouldn't have the ${}. (I
+	  really hate this syntax.)"
+
+2007-04-24 19:08 +0000 [r6545]  robert:
+
+	* From Jeremy Moles, Added check for image transluceny to image
+	  loaded code, placing the image quad into the transparent bin for
+	  images with alpha values.
+
+2007-04-24 19:03 +0000 [r6544]  robert:
+
+	* From Martin Aumueller, "the new Inventor plugin needs some
+	  changes in order to compile against OpenInventor. Just as in the
+	  pre-r6419 I used the COIN_BASIC_H define in order to discriminate
+	  between the two versions of Inventor. Additionally, I had to
+	  change the CMakeLists.txt to use the proper include path. "
+
+2007-04-24 13:12 +0000 [r6542-6543]  robert:
+
+	* From Jan Peciva, "I was working on a new version of Inventor
+	  plugin. It was inspired by the need to get correct and high
+	  quality conversion, so I verified the plugin on complex models
+	  and made number of serious fixes: - the geometry is not two times
+	  on the output file (!) - SoVRMLImageTexture: VRML texture support
+	  was rewritten according to Inventor programming practices, since
+	  it does not worked correctly on many models (Anyway, thanks for
+	  Gerrick Bivins to introduce it.) - osg::ref wrong usage related
+	  crash fixed - code cleaning and texture code overhaul - LOD fixes
+	  - appended README.txt with all the contributors I was able to get
+	  from SVN logs"
+
+	* Added CMake support for lwo plugin.
+
+2007-04-24 12:59 +0000 [r6541]  robert:
+
+	* Added compile path support for XINE, Inventor and LibXML
+
+2007-04-23 20:21 +0000 [r6536]  robert:
+
+	* Updated version to 1.9.1
+
+2007-04-22 21:54 +0000 [r6520-6521]  robert:
+
+	* Updated AUTHORS file for 1.9 developer release
+
+	* Updated ChangeLog
+
+2007-04-22 21:40 +0000 [r6519]  robert:
+
+	* Added --version-number support
+
+2007-04-22 21:18 +0000 [r6518]  robert:
+
+	* From Michael Platings, "In the "new method" 3DS loader, inverse
+	  matrices were applied to vertices, but not normals, which caused
+	  some models to appear with normals doubly rotated. I've now added
+	  some code to transform the normals."
+
+2007-04-22 20:19 +0000 [r6514]  robert:
+
+	* Unified the setup of version numbers so that they all are based
+	  on the version number setup in the include/osg/Version header
+	  file.
+
+2007-04-21 12:29 +0000 [r6513]  robert:
+
+	* Added osgSim dependency to txp plugin
+
+2007-04-21 11:24 +0000 [r6512]  robert:
+
+	* Added include directory to get txp plugin building
+
+2007-04-20 16:17 +0000 [r6510-6511]  robert:
+
+	* Added support for sorting the graphics contexts so that the first
+	  context/window returned from Viewer::getContexts/getWindows will
+	  be the left most window on the lowest screen number. Added
+	  ability for StatsHandler and HelpHandler to support end users
+	  setting their Camera's graphics context.
+
+	* Added delay between sequential threading model changes to prevent
+	  the system from locking up with 'm' is held down, which previous
+	  would cause the threading model to be thrashed.
+
+2007-04-16 19:40 +0000 [r6509]  robert:
+
+	* From Jason Howlett, using suggestion from Robert Osfield,
+	  "CullVisitor.cpp was modified, beginning at line 1115. Code was
+	  added to check if the camera inherits its cull mask. If not, the
+	  CullVisitor sets its traversal mask to the camera's cull mask."
+
+2007-04-16 19:34 +0000 [r6508]  robert:
+
+	* Implement basic TerrainGeometry code
+
+2007-04-16 18:33 +0000 [r6507]  robert:
+
+	* Added logo and txp CMakeLists.txt files. The txp build is
+	  temporarily commented out while the build is fixed.
+
+2007-04-16 12:21 +0000 [r6504-6506]  robert:
+
+	* Updated wrappers
+
+	* Cleaned up state management code
+
+	* Fixed bug associated with complex RenderBin setup.
+
+2007-04-16 06:03 +0000 [r6503]  robert:
+
+	* Bumbped the version number up to 1.9, in preperation for using
+	  odd release numbers for development releases, odd versions for
+	  stable releases.
+
+2007-04-15 20:53 +0000 [r6502]  robert:
+
+	* Fixed choice of display
+
 2007-04-15 12:09 +0000 [r6501]  robert:
 
 	* Updatged ChangeLog using svn2log, osgversion to handle new SVN

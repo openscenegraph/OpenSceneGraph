@@ -413,11 +413,11 @@ class DrawElements : public PrimitiveSet
         
         DrawElements(Type primType=PrimitiveType, GLenum mode=0):
             PrimitiveSet(primType,mode),
-            _eboIndex(0) {}
+            _eboOffset(0) {}
     
         DrawElements(const DrawElements& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             PrimitiveSet(copy,copyop),
-            _eboIndex(0) {}
+            _eboOffset(0) {}
 
 
         virtual DrawElements* getDrawElements() { return this; }
@@ -432,17 +432,14 @@ class DrawElements : public PrimitiveSet
             
             if (_ebo.valid())
             {
-                _ebo->setDrawElements(_eboIndex,0);
+                _ebo->removeDrawElements(this);
             }
+            
             _ebo = ebo;
 
             if (_ebo.valid())
             {
-                _eboIndex = _ebo->addDrawElements(this);
-            }
-            else
-            {
-                _eboIndex = 0;
+                _ebo->addDrawElements(this);
             }
         }
         
@@ -452,12 +449,26 @@ class DrawElements : public PrimitiveSet
         /** Get the const ElementBufferObject. If no EBO is assigned returns NULL*/
         inline const osg::ElementBufferObject* getElementBufferObject() const { return _ebo.get(); }
 
-        /** Set the index into the ElementBufferObject, if used.*/
-        inline void setElementBufferObjectIndex(unsigned int index) { _eboIndex = index; }
+        /** Set the offset into the ElementBufferObject, if used.*/
+        inline void setElementBufferObjectOffset(const GLvoid* offset) const { _eboOffset = offset; }
 
-        /** Get the index into the ElementBufferObject, if used.*/
-        inline unsigned int getElementBufferObjectIndex() const { return _eboIndex; }
+        /** Get the offset into the ElementBufferOffset, if used.*/
+        inline const GLvoid* getElementBufferObjectOffset() const { return _eboOffset; }
 
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize)
+        {
+            if (_ebo.valid()) _ebo->resizeGLObjectBuffers(maxSize);
+        }
+
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * for all graphics contexts. */
+        virtual void releaseGLObjects(State* state=0) const
+        {
+            if (_ebo.valid()) _ebo->releaseGLObjects(state);
+        }
 
     protected:
     
@@ -465,12 +476,13 @@ class DrawElements : public PrimitiveSet
         {
             if (_ebo.valid())
             {
-                _ebo->setDrawElements(_eboIndex,0);
+                _ebo->removeDrawElements(this);
             }
         }
 
-        osg::ref_ptr<ElementBufferObject>  _ebo;
-        unsigned int                        _eboIndex;
+        osg::ref_ptr<ElementBufferObject>   _ebo;
+        mutable const GLvoid*               _eboOffset;
+
 };
 
 class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
@@ -512,11 +524,6 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual unsigned int getNumIndices() const { return size(); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
-
-        virtual void releaseGLObjects(State* state=0) const;
         
         virtual void computeRange() const
         {
@@ -545,9 +552,6 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
 
         mutable unsigned int    _minIndex;
         mutable unsigned int    _maxIndex;
-        
-        mutable GLObjectList    _vboList;
-
 };
 
 
@@ -596,11 +600,6 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
-
-        virtual void releaseGLObjects(State* state=0) const;
-        
         virtual void computeRange() const
         {
             if (empty()) 
@@ -628,8 +627,6 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
 
         mutable unsigned int    _minIndex;
         mutable unsigned int    _maxIndex;        
-
-        mutable GLObjectList    _vboList;
 };
 
 class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
@@ -677,10 +674,6 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
-
-        virtual void releaseGLObjects(State* state=0) const;
         
         virtual void computeRange() const
         {
@@ -709,8 +702,6 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         
         mutable unsigned int    _minIndex;
         mutable unsigned int    _maxIndex;
-        
-        mutable GLObjectList _vboList;
 };
 
 }

@@ -632,15 +632,6 @@ void Drawable::dirtyDisplayList()
             _globjList[i] = 0;
         }
     }
-
-    for(i=0;i<_vboList.size();++i)
-    {
-        if (_vboList[i] != 0)
-        {
-            Drawable::deleteVertexBufferObject(i,_vboList[i]);
-            _vboList[i] = 0;
-        }
-    }
 }
 
 

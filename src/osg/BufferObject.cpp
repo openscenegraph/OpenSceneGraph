@@ -101,10 +101,15 @@ BufferObject::BufferObject(const BufferObject& bo,const CopyOp& copyop):
 
 BufferObject::~BufferObject()
 {
-    releaseBuffer(0);
+    releaseGLObjects(0);
 }
 
-void BufferObject::releaseBuffer(State* state) const
+void BufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    _bufferObjectList.resize(maxSize);
+}
+
+void BufferObject::releaseGLObjects(State* state) const
 {
     if (state)
     {
@@ -313,6 +318,18 @@ unsigned int VertexBufferObject::addArray(osg::Array* array)
     return i;
 }
 
+void VertexBufferObject::removeArray(osg::Array* array)
+{
+    BufferEntryArrayPairs::iterator itr;
+    for(itr = _bufferEntryArrayPairs.begin();
+        itr != _bufferEntryArrayPairs.end();
+        ++itr)
+    {
+        if (itr->second == array) break;
+    }
+    if (itr != _bufferEntryArrayPairs.end()) _bufferEntryArrayPairs.erase(itr);
+}
+
 void VertexBufferObject::setArray(unsigned int i, Array* array)
 {
     if (i+1>=_bufferEntryArrayPairs.size()) _bufferEntryArrayPairs.resize(i+1); 
@@ -323,41 +340,7 @@ void VertexBufferObject::setArray(unsigned int i, Array* array)
 
     dirty();
 } 
-
-bool VertexBufferObject::needsCompile(unsigned int contextID) const
-{
-    if (isDirty(contextID)) return true;
-
-    unsigned int numValidArray = 0;
-    for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
-        itr != _bufferEntryArrayPairs.end();
-        ++itr)
-    {
-        const BufferEntryArrayPair& bep = *itr;
-        if (bep.second)
-        {
-            ++numValidArray;
-            
-            if (bep.first.modifiedCount[contextID] != bep.second->getModifiedCount())
-            {
-                return true;
-            } 
-
-            if (bep.first.dataSize != bep.second->getTotalDataSize())
-            {
-                return true;
-            }
-        }
-    }
-        
-    if (numValidArray==0) return false;
-        
-    if (_bufferObjectList[contextID]==0) return true;
-
-    return false;
-}
-
-void VertexBufferObject::compileBufferImplementation(State& state) const
+void VertexBufferObject::compileBuffer(State& state) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -365,7 +348,7 @@ void VertexBufferObject::compileBufferImplementation(State& state) const
     
     Extensions* extensions = getExtensions(contextID,true);
 
-    osg::notify(osg::NOTICE)<<"VertexBufferObject::compileBuffer frameNumber="<<state.getFrameStamp()->getFrameNumber()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"VertexBufferObject::compileBuffer frameNumber="<<state.getFrameStamp()->getFrameNumber()<<std::endl;
 
     unsigned int totalSizeRequired = 0;
     unsigned int numModified = 0;
@@ -440,6 +423,7 @@ void VertexBufferObject::compileBufferImplementation(State& state) const
                 if (copyAll) 
                 {
                     bep.first.offset = offset;
+                    de->setVertexBufferObjectOffset((GLvoid*)offset);
                     offset += bep.first.dataSize;
                 }
                 
@@ -460,6 +444,18 @@ void VertexBufferObject::compileBufferImplementation(State& state) const
     
 //    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
 //    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+}
+
+void VertexBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BufferObject::resizeGLObjectBuffers(maxSize);
+    
+    for(BufferEntryArrayPairs::iterator itr = _bufferEntryArrayPairs.begin();
+        itr != _bufferEntryArrayPairs.end();
+        ++itr)
+    {
+        itr->first.modifiedCount.resize(maxSize);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -492,6 +488,18 @@ unsigned int ElementBufferObject::addDrawElements(osg::DrawElements* drawElement
     return i;
 }
 
+void ElementBufferObject::removeDrawElements(osg::DrawElements* drawElements)
+{
+    BufferEntryDrawElementsPairs::iterator itr;
+    for(itr = _bufferEntryDrawElementsPairs.begin();
+        itr != _bufferEntryDrawElementsPairs.end();
+        ++itr)
+    {
+        if (itr->second == drawElements) break;
+    }
+    if (itr != _bufferEntryDrawElementsPairs.end()) _bufferEntryDrawElementsPairs.erase(itr);
+}
+
 void ElementBufferObject::setDrawElements(unsigned int i, DrawElements* drawElements)
 {
     if (i+1>=_bufferEntryDrawElementsPairs.size()) _bufferEntryDrawElementsPairs.resize(i+1); 
@@ -501,48 +509,13 @@ void ElementBufferObject::setDrawElements(unsigned int i, DrawElements* drawElem
     _bufferEntryDrawElementsPairs[i].first.dataSize = 0;
 }
 
-bool ElementBufferObject::needsCompile(unsigned int contextID) const
-{
-    if (isDirty(contextID)) return true;
-
-#if 1
-    unsigned int numValidDrawElements = 0;
-    for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
-        itr != _bufferEntryDrawElementsPairs.end();
-        ++itr)
-    {
-        const BufferEntryDrawElementstPair& bep = *itr;
-        if (bep.second)
-        {
-            ++numValidDrawElements;
-            
-            if (bep.first.modifiedCount[contextID] != bep.second->getModifiedCount())
-            {
-                return true;
-            } 
-
-            if (bep.first.dataSize != bep.second->getTotalDataSize())
-            {
-                return true;
-            }
-        }
-    }
-        
-    if (numValidDrawElements==0) return false;
-#endif
-        
-    if (_bufferObjectList[contextID]==0) return true;
-
-    return false;
-}
-
-void ElementBufferObject::compileBufferImplementation(State& state) const
+void ElementBufferObject::compileBuffer(State& state) const
 {
     unsigned int contextID = state.getContextID();
 
     _compiledList[contextID] = 1;
 
-    osg::notify(osg::NOTICE)<<"ElementBufferObject::compile"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"ElementBufferObject::compile"<<std::endl;
     
     Extensions* extensions = getExtensions(contextID,true);
 
@@ -619,6 +592,7 @@ void ElementBufferObject::compileBufferImplementation(State& state) const
                 if (copyAll) 
                 {
                     bep.first.offset = offset;
+                    de->setElementBufferObjectOffset((GLvoid*)offset);
                     offset += bep.first.dataSize;
                 }
                 
@@ -637,6 +611,18 @@ void ElementBufferObject::compileBufferImplementation(State& state) const
 
 //    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
 //    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+}
+
+void ElementBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BufferObject::resizeGLObjectBuffers(maxSize);
+    
+    for(BufferEntryDrawElementsPairs::iterator itr = _bufferEntryDrawElementsPairs.begin();
+        itr != _bufferEntryDrawElementsPairs.end();
+        ++itr)
+    {
+        itr->first.modifiedCount.resize(maxSize);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -670,23 +656,7 @@ void PixelBufferObject::setImage(osg::Image* image)
     
     dirty();
 }
-
-bool PixelBufferObject::needsCompile(unsigned int contextID) const
-{
-    if (isDirty(contextID)) return true;
-
-    if (!_bufferEntryImagePair.second) 
-        return false;
-
-    if (_bufferEntryImagePair.first.modifiedCount[contextID]!=_bufferEntryImagePair.second->getModifiedCount())
-        return true;
-        
-    if (_bufferObjectList[contextID]==0) return true;
-
-    return false;
-}
-
-void PixelBufferObject::compileBufferImplementation(State& state) const
+void PixelBufferObject::compileBuffer(State& state) const
 {
     unsigned int contextID = state.getContextID();
     
@@ -741,4 +711,11 @@ void PixelBufferObject::compileBufferImplementation(State& state) const
 
 //    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
 //    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+}
+
+void PixelBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BufferObject::resizeGLObjectBuffers(maxSize);
+    
+    _bufferEntryImagePair.first.modifiedCount.resize(maxSize);
 }

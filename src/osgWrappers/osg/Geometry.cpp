@@ -18,6 +18,7 @@
 #include <osg/Object>
 #include <osg/PrimitiveSet>
 #include <osg/RenderInfo>
+#include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -562,6 +563,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __void__dirtyDisplayList,
 	          "Force a recompile on next draw() of any OpenGL display list associated with this geoset. ",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__State_P1,
+	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_Method1(bool, getArrayList, IN, osg::Geometry::ArrayList &, arrayList,
 	          Properties::NON_VIRTUAL,
 	          __bool__getArrayList__ArrayList_R1,
@@ -901,7 +912,6 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
 	I_PublicMemberProperty(osg::ref_ptr< osg::IndexArray >, indices);
 	I_PublicMemberProperty(osg::Geometry::AttributeBinding, binding);
 	I_PublicMemberProperty(GLboolean, normalize);
-	I_PublicMemberProperty(unsigned long, offset);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
@@ -929,7 +939,6 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
 	I_PublicMemberProperty(osg::ref_ptr< osg::IndexArray >, indices);
 	I_PublicMemberProperty(osg::Geometry::AttributeBinding, binding);
 	I_PublicMemberProperty(GLboolean, normalize);
-	I_PublicMemberProperty(unsigned long, offset);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)

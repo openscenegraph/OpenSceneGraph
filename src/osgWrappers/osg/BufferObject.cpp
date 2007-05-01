@@ -85,26 +85,21 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __bool__isDirty__unsigned_int,
 	          "",
 	          "");
-	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
 	          Properties::PURE_VIRTUAL,
-	          __bool__needsCompile__unsigned_int,
+	          __void__compileBuffer__State_R1,
 	          "",
 	          "");
-	I_Method2(void, compileBuffer, IN, unsigned int, contextID, IN, osg::State &, state,
-	          Properties::NON_VIRTUAL,
-	          __void__compileBuffer__unsigned_int__State_R1,
-	          "",
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
-	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__compileBufferImplementation__State_R1,
-	          "",
-	          "");
-	I_Method1(void, releaseBuffer, IN, osg::State *, state,
-	          Properties::NON_VIRTUAL,
-	          __void__releaseBuffer__State_P1,
-	          "",
-	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__State_P1,
+	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
 	                __void__deleteBufferObject__unsigned_int__GLuint_S,
 	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
@@ -279,6 +274,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
 	          __unsigned_int__addDrawElements__osg_DrawElements_P1,
 	          "",
 	          "");
+	I_Method1(void, removeDrawElements, IN, osg::DrawElements *, PrimitiveSet,
+	          Properties::NON_VIRTUAL,
+	          __void__removeDrawElements__osg_DrawElements_P1,
+	          "",
+	          "");
 	I_Method2(void, setDrawElements, IN, unsigned int, i, IN, osg::DrawElements *, PrimitiveSet,
 	          Properties::NON_VIRTUAL,
 	          __void__setDrawElements__unsigned_int__DrawElements_P1,
@@ -299,15 +299,15 @@ BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
 	          __C5_GLvoid_P1__getOffset__unsigned_int,
 	          "",
 	          "");
-	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
 	          Properties::VIRTUAL,
-	          __bool__needsCompile__unsigned_int,
+	          __void__compileBuffer__State_R1,
 	          "",
 	          "");
-	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
-	          __void__compileBufferImplementation__State_R1,
-	          "",
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_IndexedProperty(osg::DrawElements *, DrawElements, 
 	                  __DrawElements_P1__getDrawElements__unsigned_int, 
@@ -373,15 +373,15 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	          __unsigned_int__offset,
 	          "",
 	          "");
-	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
 	          Properties::VIRTUAL,
-	          __bool__needsCompile__unsigned_int,
+	          __void__compileBuffer__State_R1,
 	          "",
 	          "");
-	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
-	          __void__compileBufferImplementation__State_R1,
-	          "",
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
@@ -431,6 +431,11 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	          __unsigned_int__addArray__osg_Array_P1,
 	          "",
 	          "");
+	I_Method1(void, removeArray, IN, osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__removeArray__osg_Array_P1,
+	          "",
+	          "");
 	I_Method2(void, setArray, IN, unsigned int, i, IN, osg::Array *, array,
 	          Properties::NON_VIRTUAL,
 	          __void__setArray__unsigned_int__Array_P1,
@@ -451,15 +456,15 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	          __C5_GLvoid_P1__getOffset__unsigned_int,
 	          "",
 	          "");
-	I_Method1(bool, needsCompile, IN, unsigned int, contextID,
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
 	          Properties::VIRTUAL,
-	          __bool__needsCompile__unsigned_int,
+	          __void__compileBuffer__State_R1,
 	          "",
 	          "");
-	I_Method1(void, compileBufferImplementation, IN, osg::State &, state,
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
-	          __void__compileBufferImplementation__State_R1,
-	          "",
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_IndexedProperty(osg::Array *, Array, 
 	                  __Array_P1__getArray__unsigned_int, 

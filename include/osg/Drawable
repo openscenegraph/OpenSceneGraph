@@ -803,7 +803,6 @@ class OSG_EXPORT Drawable : public Object
 
         typedef osg::buffered_value<GLuint> GLObjectList;
         mutable GLObjectList    _globjList;
-        mutable GLObjectList    _vboList;
 
         ref_ptr<UpdateCallback> _updateCallback;
         unsigned int _numChildrenRequiringUpdateTraversal;

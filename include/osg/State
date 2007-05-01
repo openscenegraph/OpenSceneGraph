@@ -409,7 +409,7 @@ class OSG_EXPORT State : public Referenced
         inline void bindVertexBufferObject(const osg::VertexBufferObject* vbo)
         {
             if (vbo == _currentVBO) return;
-            if (vbo->isDirty(_contextID)) vbo->compileBuffer(_contextID, *this);
+            if (vbo->isDirty(_contextID)) vbo->compileBuffer(*this);
             else _glBindBuffer(GL_ARRAY_BUFFER_ARB,vbo->buffer(_contextID));
             _currentVBO = vbo;
         }
@@ -427,7 +427,7 @@ class OSG_EXPORT State : public Referenced
         inline void bindElementBufferObject(const osg::ElementBufferObject* ebo)
         {
             if (ebo == _currentEBO) return;
-            if (ebo->isDirty(_contextID)) ebo->compileBuffer(_contextID, *this);
+            if (ebo->isDirty(_contextID)) ebo->compileBuffer(*this);
             else _glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,ebo->buffer(_contextID));
             _currentEBO = ebo;
         }
@@ -446,7 +446,7 @@ class OSG_EXPORT State : public Referenced
         {
             if (pbo == _currentPBO) return;
 
-            if (pbo->isDirty(_contextID)) pbo->compileBuffer(_contextID, *this);
+            if (pbo->isDirty(_contextID)) pbo->compileBuffer(*this);
             else _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,pbo->buffer(_contextID));
 
             _currentPBO = pbo;
@@ -474,7 +474,7 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
-                    setVertexPointer(array->getDataSize(),array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+                    setVertexPointer(array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
                 }
                 else
                 {
@@ -531,7 +531,7 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
-                    setNormalPointer(array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+                   setNormalPointer(array->getDataType(),0,array->getVertexBufferObjectOffset());
                 }
                 else
                 {
@@ -587,7 +587,7 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
-                    setColorPointer(array->getDataSize(),array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+                    setColorPointer(array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
                 }
                 else
                 {
@@ -648,7 +648,11 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
+#if 0                    
                     setSecondaryColorPointer(array->getDataSize(),array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+#else
+                    setSecondaryColorPointer(array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
+#endif
                 }
                 else
                 {
@@ -730,7 +734,11 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
+#if 0
                     setFogCoordPointer(array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+#else
+                    setFogCoordPointer(array->getDataType(),0,array->getVertexBufferObjectOffset());
+#endif
                 }
                 else
                 {
@@ -775,7 +783,11 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
+#if 0
                     setTexCoordPointer(unit, array->getDataSize(),array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+#else
+                    setTexCoordPointer(unit, array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
+#endif
                 }
                 else
                 {
@@ -893,7 +905,11 @@ class OSG_EXPORT State : public Referenced
                 if (vbo)
                 { 
                     bindVertexBufferObject(vbo);
+#if 0                    
                     setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),normalized,0,vbo->getOffset(array->getVertexBufferObjectIndex()));
+#else
+                    setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),normalized,0,array->getVertexBufferObjectOffset());
+#endif
                 }
                 else
                 {

@@ -358,8 +358,7 @@ Geometry::ArrayData::ArrayData(const ArrayData& data,const CopyOp& copyop):
     array(copyop(data.array.get())),
     indices(dynamic_cast<osg::IndexArray*>(copyop(data.indices.get()))),
     binding(data.binding),
-    normalize(data.normalize),
-    offset(data.offset)
+    normalize(data.normalize)
 {
 }
 
@@ -367,8 +366,7 @@ Geometry::Vec3ArrayData::Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& c
     array(dynamic_cast<osg::Vec3Array*>(copyop(data.array.get()))),
     indices(dynamic_cast<osg::IndexArray*>(copyop(data.indices.get()))),
     binding(data.binding),
-    normalize(data.normalize),
-    offset(data.offset)
+    normalize(data.normalize)
 {
 }
 
@@ -981,7 +979,7 @@ unsigned int Geometry::getGLObjectSizeHint() const
     return totalSize;
 }
 
-bool Geometry::getArrayList(ArrayList& arrayList)
+bool Geometry::getArrayList(ArrayList& arrayList) const
 {
     unsigned int startSize = arrayList.size();
     
@@ -1006,11 +1004,11 @@ bool Geometry::getArrayList(ArrayList& arrayList)
     return arrayList.size()!=startSize;
 }
 
-bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList)
+bool Geometry::getDrawElementsList(DrawElementsList& drawElementsList) const
 {
     unsigned int startSize = drawElementsList.size();
     
-    for(PrimitiveSetList::iterator itr = _primitives.begin();
+    for(PrimitiveSetList::const_iterator itr = _primitives.begin();
         itr != _primitives.end();
         ++itr)
     {
@@ -1088,7 +1086,7 @@ osg::ElementBufferObject* Geometry::getOrCreateElementBufferObject()
 
 void Geometry::setUseVertexBufferObjects(bool flag)
 {
-    flag = true;
+    // flag = true;
     
     // osg::notify(osg::NOTICE)<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
@@ -1185,89 +1183,60 @@ void Geometry::dirtyDisplayList()
     Drawable::dirtyDisplayList();
 }
 
+void Geometry::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    Drawable::resizeGLObjectBuffers(maxSize);
 
-#define SETARRAYPOINTER(vertexData, setVertexPointer, disableVertexPointer) \
-    if( vertexData.array.valid() ) \
-    { \
-        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
-        if (new_vbo) \
-        { \
-            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
-            prev_vbo = new_vbo; \
-            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
-        } \
-        else \
-        { \
-            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
-            prev_vbo = 0; \
-            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
-        } \
-    } \
-    else \
-        disableVertexPointer();
+    ArrayList arrays;
+    if (getArrayList(arrays))
+    {
+        for(ArrayList::iterator itr = arrays.begin();
+            itr != arrays.end();
+            ++itr)
+        {
+            (*itr)->resizeGLObjectBuffers(maxSize);
+        }
+    }
 
-#define SETNORMALPOINTER_IFPERVERTEXBINDING(vertexData, setVertexPointer, disableVertexPointer) \
-    if( vertexData.array.valid() && vertexData.binding==BIND_PER_VERTEX) \
-    { \
-        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
-        if (new_vbo) \
-        { \
-            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
-            prev_vbo = new_vbo; \
-            setVertexPointer(vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
-        } \
-        else \
-        { \
-            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
-            prev_vbo = 0; \
-            setVertexPointer(vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
-        } \
-    } \
-    else \
-        disableVertexPointer();
+    DrawElementsList drawElements;
+    if (getDrawElementsList(drawElements))
+    {
+        for(DrawElementsList::iterator itr = drawElements.begin();
+            itr != drawElements.end();
+            ++itr)
+        {
+            (*itr)->resizeGLObjectBuffers(maxSize);
+        }
+    }
+}
 
+void Geometry::releaseGLObjects(State* state) const
+{
+    Drawable::releaseGLObjects(state);
 
-#define SETARRAYPOINTER_IFPERVERTEXBINDING(vertexData, setVertexPointer, disableVertexPointer) \
-    if( vertexData.array.valid() && vertexData.binding==BIND_PER_VERTEX) \
-    { \
-        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
-        if (new_vbo) \
-        { \
-            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
-            prev_vbo = new_vbo; \
-            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
-        } \
-        else \
-        { \
-            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
-            prev_vbo = 0; \
-            setVertexPointer(vertexData.array->getDataSize(),vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
-        } \
-    } \
-    else \
-        disableVertexPointer();
+    ArrayList arrays;
+    if (getArrayList(arrays))
+    {
+        for(ArrayList::iterator itr = arrays.begin();
+            itr != arrays.end();
+            ++itr)
+        {
+            (*itr)->releaseGLObjects(state);
+        }
+    }
 
+    DrawElementsList drawElements;
+    if (getDrawElementsList(drawElements))
+    {
+        for(DrawElementsList::iterator itr = drawElements.begin();
+            itr != drawElements.end();
+            ++itr)
+        {
+            (*itr)->releaseGLObjects(state);
+        }
+    }
 
-#define SETARRAYUNITPOINTER_IFPERVERTEXBINDING(vertexData, unit, setVertexPointer, disableVertexPointer) \
-    if( vertexData.array.valid() && vertexData.binding==BIND_PER_VERTEX) \
-    { \
-        new_vbo = vertexData.array.valid() ? vertexData.array->getVertexBufferObject() : 0; \
-        if (new_vbo) \
-        { \
-            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID); \
-            prev_vbo = new_vbo; \
-            setVertexPointer(unit, vertexData.array->getDataSize(),vertexData.array->getDataType(),0,new_vbo->getOffset(vertexData.array->getVertexBufferObjectIndex())); \
-        } \
-        else \
-        { \
-            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0); \
-            prev_vbo = 0; \
-            setVertexPointer(unit, vertexData.array->getDataSize(),vertexData.array->getDataType(),0,vertexData.array->getDataPointer()); \
-        } \
-    } \
-    else \
-        disableVertexPointer();
-
+}
 
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {

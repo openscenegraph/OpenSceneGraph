@@ -271,25 +271,35 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	          __C5_osg_ElementBufferObject_P1__getElementBufferObject,
 	          "Get the const ElementBufferObject. ",
 	          "If no EBO is assigned returns NULL ");
-	I_Method1(void, setElementBufferObjectIndex, IN, unsigned int, index,
+	I_Method1(void, setElementBufferObjectOffset, IN, const GLvoid *, offset,
 	          Properties::NON_VIRTUAL,
-	          __void__setElementBufferObjectIndex__unsigned_int,
-	          "Set the index into the ElementBufferObject, if used. ",
+	          __void__setElementBufferObjectOffset__C5_GLvoid_P1,
+	          "Set the offset into the ElementBufferObject, if used. ",
 	          "");
-	I_Method0(unsigned int, getElementBufferObjectIndex,
+	I_Method0(const GLvoid *, getElementBufferObjectOffset,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getElementBufferObjectIndex,
-	          "Get the index into the ElementBufferObject, if used. ",
+	          __C5_GLvoid_P1__getElementBufferObjectOffset,
+	          "Get the offset into the ElementBufferOffset, if used. ",
 	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__State_P1,
+	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_SimpleProperty(osg::DrawElements *, DrawElements, 
 	                 __DrawElements_P1__getDrawElements, 
 	                 0);
 	I_SimpleProperty(osg::ElementBufferObject *, ElementBufferObject, 
 	                 __osg_ElementBufferObject_P1__getElementBufferObject, 
 	                 __void__setElementBufferObject__osg_ElementBufferObject_P1);
-	I_SimpleProperty(unsigned int, ElementBufferObjectIndex, 
-	                 __unsigned_int__getElementBufferObjectIndex, 
-	                 __void__setElementBufferObjectIndex__unsigned_int);
+	I_SimpleProperty(const GLvoid *, ElementBufferObjectOffset, 
+	                 __C5_GLvoid_P1__getElementBufferObjectOffset, 
+	                 __void__setElementBufferObjectOffset__C5_GLvoid_P1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type)
@@ -384,16 +394,6 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
 	          __void__offsetIndices__int,
 	          "",
 	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
-	                      Properties::VIRTUAL,
-	                      __void__releaseGLObjects__State_P1,
-	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_Method0(void, computeRange,
 	          Properties::VIRTUAL,
 	          __void__computeRange,
@@ -499,16 +499,6 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
 	          __void__offsetIndices__int,
 	          "",
 	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
-	                      Properties::VIRTUAL,
-	                      __void__releaseGLObjects__State_P1,
-	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_Method0(void, computeRange,
 	          Properties::VIRTUAL,
 	          __void__computeRange,
@@ -614,16 +604,6 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 	          __void__offsetIndices__int,
 	          "",
 	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
-	                      Properties::VIRTUAL,
-	                      __void__releaseGLObjects__State_P1,
-	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
 	I_Method0(void, computeRange,
 	          Properties::VIRTUAL,
 	          __void__computeRange,

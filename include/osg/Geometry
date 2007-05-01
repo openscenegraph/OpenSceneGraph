@@ -57,8 +57,7 @@ class OSG_EXPORT Geometry : public Drawable
         {
             ArrayData():
                 binding(BIND_OFF),
-                normalize(GL_FALSE),
-                offset(0) {}
+                normalize(GL_FALSE) {}
                 
             ArrayData(const ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -66,15 +65,13 @@ class OSG_EXPORT Geometry : public Drawable
                 array(a),
                 indices(0),
                 binding(b),
-                normalize(n),
-                offset(0) {}
+                normalize(n) {}
 
             ArrayData(Array* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
                 array(a),
                 indices(i),
                 binding(b),
-                normalize(n),
-                offset(0) {}
+                normalize(n) {}
 
             ArrayData& operator = (const ArrayData& rhs)
             {
@@ -82,7 +79,6 @@ class OSG_EXPORT Geometry : public Drawable
                 indices = rhs.indices;
                 binding = rhs.binding;
                 normalize = rhs.normalize;
-                offset = rhs.offset;
                 return *this;
             }
             
@@ -92,15 +88,13 @@ class OSG_EXPORT Geometry : public Drawable
             ref_ptr<IndexArray>     indices;
             AttributeBinding        binding;
             GLboolean               normalize;
-            mutable unsigned long   offset;
         };
         
         struct OSG_EXPORT Vec3ArrayData
         {
             Vec3ArrayData():
                 binding(BIND_OFF),
-                normalize(GL_FALSE),
-                offset(0) {}
+                normalize(GL_FALSE) {}
                 
             Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
@@ -108,15 +102,13 @@ class OSG_EXPORT Geometry : public Drawable
                 array(a),
                 indices(0),
                 binding(b),
-                normalize(n),
-                offset(0) {}
+                normalize(n) {}
 
             Vec3ArrayData(Vec3Array* a, IndexArray* i, AttributeBinding b, GLboolean n = GL_FALSE):
                 array(a),
                 indices(i),
                 binding(b),
-                normalize(n),
-                offset(0) {}
+                normalize(n) {}
 
             Vec3ArrayData& operator = (const Vec3ArrayData& rhs)
             {
@@ -124,7 +116,6 @@ class OSG_EXPORT Geometry : public Drawable
                 indices = rhs.indices;
                 binding = rhs.binding;
                 normalize = rhs.normalize;
-                offset = rhs.offset;
                 return *this;
             }
 
@@ -134,7 +125,6 @@ class OSG_EXPORT Geometry : public Drawable
             ref_ptr<IndexArray>     indices;
             AttributeBinding        binding;
             GLboolean               normalize;
-            mutable unsigned long   offset;
         };
 
         /** Static ArrayData which is returned from getTexCoordData(i) const and getVertexAttribData(i) const 
@@ -300,11 +290,19 @@ class OSG_EXPORT Geometry : public Drawable
         virtual void dirtyDisplayList();
 
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * for all graphics contexts. */
+        virtual void releaseGLObjects(State* state=0) const;
+
         typedef std::vector<osg::Array*>  ArrayList;
-        bool getArrayList(ArrayList& arrayList);
+        bool getArrayList(ArrayList& arrayList) const;
 
         typedef std::vector<osg::DrawElements*>  DrawElementsList;
-        bool getDrawElementsList(DrawElementsList& drawElementsList);
+        bool getDrawElementsList(DrawElementsList& drawElementsList) const;
 
         osg::VertexBufferObject* getOrCreateVertexBufferObject();
 

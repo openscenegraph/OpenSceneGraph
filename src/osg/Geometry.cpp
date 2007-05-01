@@ -17,7 +17,6 @@ using namespace osg;
 
 const Geometry::ArrayData Geometry::s_InvalidArrayData;
 
-#if 1
 class DrawVertex
 {
     public:
@@ -74,29 +73,6 @@ class DrawVertex
         Array::Type         _verticesType;
         Array::Type         _indicesType;
 };
-#else
-class DrawVertex : public osg::ConstValueVisitor
-{
-    public:
-    
-        DrawVertex(const Array* vertices,const IndexArray* indices):
-            _vertices(vertices),
-            _indices(indices) {}
-    
-        inline void operator () (unsigned int pos)
-        {
-            if (_indices) _vertices->accept(_indices->index(pos),*this);
-            else _vertices->accept(pos,*this);
-        }
-        
-        virtual void apply(const Vec2& v)   { glVertex2fv(v.ptr()); }
-        virtual void apply(const Vec3& v)   { glVertex3fv(v.ptr()); }
-        virtual void apply(const Vec4& v)   { glVertex4fv(v.ptr()); }
-
-        const Array*        _vertices;
-        const IndexArray*   _indices;
-};
-#endif
 
 class DrawNormal
 {
@@ -159,7 +135,6 @@ class DrawNormal
         Array::Type        _normalsType;
 };
 
-#if 1
 class DrawColor
 {
     public:
@@ -215,29 +190,7 @@ class DrawColor
         Array::Type         _colorsType;
         Array::Type         _indicesType;
 };
-#else
-class DrawColor : public osg::ConstValueVisitor
-{
-    public:
 
-        DrawColor(const Array* colors,const IndexArray* indices):
-            _colors(colors),
-            _indices(indices) {}
-
-        inline void operator () (unsigned int pos)
-        {
-            if (_indices) _colors->accept(_indices->index(pos),*this);
-            else _colors->accept(pos,*this);
-        }
-
-        virtual void apply(const UVec4b& v) { glColor4ubv(v.ptr()); }
-        virtual void apply(const Vec3& v)   { glColor3fv(v.ptr()); }
-        virtual void apply(const Vec4& v)   { glColor4fv(v.ptr()); }
-        
-        const Array*        _colors;
-        const IndexArray*   _indices;
-};
-#endif
 class DrawVertexAttrib : public osg::Referenced, public osg::ConstValueVisitor
 {
 public:
@@ -1414,12 +1367,6 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             //
             // Vertex Buffer Object path for defining vertex arrays.
             // 
-#if 1
-
-
-    #if 1
-
-
             state.setNormalPointer(_normalData.binding==BIND_PER_VERTEX ? _normalData.array.get() : 0);
             state.setColorPointer(_colorData.binding==BIND_PER_VERTEX ? _colorData.array.get() : 0);
             state.setSecondaryColorPointer(_secondaryColorData.binding==BIND_PER_VERTEX ? _secondaryColorData.array.get() : 0);
@@ -1467,320 +1414,6 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
             state.setVertexPointer(_vertexData.array.get());
 
-    #else
-
-            // first compile the VBO's
-            const VertexBufferObject* prev_vbo = 0;
-            const VertexBufferObject* new_vbo = 0;
-            
-            new_vbo = _vertexData.array.valid() ? _vertexData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-            
-            new_vbo = (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid()) ? _normalData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-
-            new_vbo = (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid()) ? _colorData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-
-            new_vbo = (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.array.valid()) ? _secondaryColorData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-
-            new_vbo = (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.array.valid()) ? _fogCoordData.array->getVertexBufferObject() : 0;
-            if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-
-            unsigned int unit;
-            for(unit=0;unit<_texCoordList.size();++unit)
-            {
-                const Array* array = _texCoordList[unit].array.get();
-                new_vbo = array ? array->getVertexBufferObject() : 0;
-                if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-            }
-
-            if( handleVertexAttributes )
-            {
-                unsigned int index;
-                for( index = 0; index < _vertexAttribList.size(); ++index )
-                {
-                    const Array* array = _vertexAttribList[index].array.get();
-                    new_vbo = (_vertexAttribList[index].binding==BIND_PER_VERTEX && array) ? array->getVertexBufferObject() : 0;
-                    if (new_vbo && new_vbo!=prev_vbo) { new_vbo->compileBuffer(contextID, state); prev_vbo = new_vbo; }
-                }
-            }
-
-            prev_vbo = 0;
-                      
-            SETNORMALPOINTER_IFPERVERTEXBINDING(_normalData, state.setNormalPointer, state.disableNormalPointer)
-            SETARRAYPOINTER_IFPERVERTEXBINDING(_colorData, state.setColorPointer, state.disableColorPointer)
-            SETARRAYPOINTER_IFPERVERTEXBINDING(_secondaryColorData, state.setSecondaryColorPointer, state.disableSecondaryColorPointer)
-            SETNORMALPOINTER_IFPERVERTEXBINDING(_fogCoordData, state.setFogCoordPointer, state.disableFogCoordPointer)
-
-            for(unit=0;unit<_texCoordList.size();++unit)
-            {
-                SETARRAYUNITPOINTER_IFPERVERTEXBINDING(_texCoordList[unit], unit, state.setTexCoordPointer, state.disableVertexPointer)
-            }
-            state.disableTexCoordPointersAboveAndIncluding(unit);
-
-            if( handleVertexAttributes )
-            {
-                unsigned int index;
-                for( index = 0; index < _vertexAttribList.size(); ++index )
-                {
-                    const Array* array = _vertexAttribList[index].array.get();
-                    const AttributeBinding ab = _vertexAttribList[index].binding;
-                    if(array && ab==BIND_PER_VERTEX)
-                    {
-                        new_vbo = array->getVertexBufferObject();
-                        if (new_vbo)
-                        {
-                            if (new_vbo!=prev_vbo) new_vbo->bindBuffer(contextID);
-                            prev_vbo = new_vbo;
-                            state.setVertexAttribPointer(index, array->getDataSize(),array->getDataType(),_vertexAttribList[index].normalize, 0,new_vbo->getOffset(array->getVertexBufferObjectIndex()));
-                        }
-                        else
-                        {
-                            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
-                            prev_vbo = 0;
-                            state.setVertexAttribPointer(index, array->getDataSize(),array->getDataType(),_vertexAttribList[index].normalize, 0,array->getDataPointer());
-                        }
-                    }
-                    else
-                        state.disableVertexAttribPointer(index);
-
-                    if(array && ab!=BIND_PER_VERTEX)
-                    {
-                        const IndexArray* indexArray = _vertexAttribList[index].indices.get();
-
-                        if( indexArray && indexArray->getNumElements() > 0 )
-                        {
-                            drawVertexAttribMap[ab].push_back( 
-                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
-                        }
-                        else
-                        {
-                            drawVertexAttribMap[ab].push_back( 
-                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
-                        }
-                    }
-                }
-                state.disableVertexAttribPointersAboveAndIncluding( index );
-                
-            }
-            else if (vertexVertexAttributesSupported)
-            {
-                state.disableVertexAttribPointersAboveAndIncluding( 0 );
-            }
-
-            SETARRAYPOINTER(_vertexData, state.setVertexPointer, state.disableVertexPointer)
-
-            const osg::ElementBufferObject* prev_ebo = 0;
-            const osg::ElementBufferObject* new_ebo = 0;
-            for(PrimitiveSetList::const_iterator itr=_primitives.begin();
-                itr!=_primitives.end();
-                ++itr)
-            {
-                const DrawElements* de = (*itr)->getDrawElements();
-                if (de)
-                {
-                    new_ebo = de->getElementBufferObject();
-                    if (new_ebo && new_ebo!=prev_ebo)
-                    {
-                        new_ebo->compileBuffer(contextID, state);
-                        prev_ebo = new_ebo;
-                    }
-                }
-            }
-
-    #endif
-
-#else
-
-            GLuint& buffer = _vboList[state.getContextID()];
-            if (!buffer)
-            {
-
-                //std::cout << "creating VertexBuffer "<<buffer<<std::endl;
-
-                extensions->glGenBuffers(1, &buffer);
-                extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,buffer);
-                
-                //std::cout << "  gen VertexBuffer "<<buffer<<std::endl;
-
-                // compute total size and offsets required.
-                unsigned long totalSize = 0;
-                
-                _vertexData.offset = 0;
-                if (_vertexData.array.valid()) totalSize += _vertexData.array->getTotalDataSize();
-                
-                _normalData.offset = totalSize; 
-                if (_normalData.array.valid()) totalSize += _normalData.array->getTotalDataSize();
-                                
-                _colorData.offset = totalSize;
-                if (_colorData.array.valid()) totalSize += _colorData.array->getTotalDataSize();
-
-                _secondaryColorData.offset = totalSize;
-                if (_secondaryColorData.array.valid()) totalSize += _secondaryColorData.array->getTotalDataSize();
-
-                _fogCoordData.offset = totalSize;
-                if (_fogCoordData.array.valid()) totalSize += _fogCoordData.array->getTotalDataSize();
-
-                unsigned int unit;
-                for(unit=0;unit<_texCoordList.size();++unit)
-                {
-                    _texCoordList[unit].offset = totalSize;
-                    const Array* array = _texCoordList[unit].array.get();
-                    if (array)
-                        totalSize += array->getTotalDataSize();
-                        
-                }
-
-                if( handleVertexAttributes )
-                {
-                    unsigned int index;
-                    for( index = 0; index < _vertexAttribList.size(); ++index )
-                    {
-                        _vertexAttribList[index].offset = totalSize;
-                        const Array* array = _vertexAttribList[index].array.get();
-                        const AttributeBinding ab = _vertexAttribList[index].binding;
-                        if( ab == BIND_PER_VERTEX && array )
-                        {
-                            totalSize += array->getTotalDataSize();           
-                        }
-                    }
-                }
-
-                // allocated the buffer space, but leave the copy to be done per vertex array below
-                extensions->glBufferData(GL_ARRAY_BUFFER_ARB,totalSize, 0, GL_STATIC_DRAW_ARB);
-                
-                //std::cout << "  Created VertexBuffer "<<buffer<<" size="<<totalSize<<std::endl;
-
-                //
-                // copy the data
-                //
-                if( _vertexData.array.valid() )
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _vertexData.offset, _vertexData.array->getTotalDataSize(),_vertexData.array->getDataPointer());
-
-                if (_normalData.binding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _normalData.offset, _normalData.array->getTotalDataSize(),_normalData.array->getDataPointer());
-
-                if (_colorData.binding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _colorData.offset, _colorData.array->getTotalDataSize(),_colorData.array->getDataPointer());
-
-                if (secondaryColorBinding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _secondaryColorData.offset, _secondaryColorData.array->getTotalDataSize(),_secondaryColorData.array->getDataPointer());
-
-                if (fogCoordBinding==BIND_PER_VERTEX)
-                    extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _fogCoordData.offset, _fogCoordData.array->getTotalDataSize(),_fogCoordData.array->getDataPointer());
-
-                for(unit=0;unit<_texCoordList.size();++unit)
-                {
-                    const Array* array = _texCoordList[unit].array.get();
-                    if (array)
-                        extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _texCoordList[unit].offset, array->getTotalDataSize(), array->getDataPointer());
-                }
-
-                if( handleVertexAttributes )
-                {
-                    unsigned int index;
-                    for( index = 0; index < _vertexAttribList.size(); ++index )
-                    {
-                        const Array* array = _vertexAttribList[index].array.get();
-                        const AttributeBinding ab = _vertexAttribList[index].binding;
-
-                        if( ab == BIND_PER_VERTEX && array )
-                        {
-                            extensions->glBufferSubData(GL_ARRAY_BUFFER_ARB, _vertexAttribList[index].offset, array->getTotalDataSize(), array->getDataPointer());
-                        }
-                    }
-                }
-                                     
-                
-            }
-            else
-            {
-                extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,buffer);
-            }
-            
-            //std::cout << "binding VertexBuffer "<<buffer<<std::endl;
-
-                      
-            if( _vertexData.array.valid() )
-                state.setVertexPointer(_vertexData.array->getDataSize(),_vertexData.array->getDataType(),0,(const GLvoid*)_vertexData.offset);
-            else
-                state.disableVertexPointer();
-
-            if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
-                state.setNormalPointer(GL_FLOAT,0,(const GLvoid*)_normalData.offset);
-            else
-                state.disableNormalPointer();
-
-            if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
-                state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,(const GLvoid*)_colorData.offset);
-            else
-                state.disableColorPointer();
-
-            if (secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
-                state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,(const GLvoid*)_secondaryColorData.offset);
-            else
-                state.disableSecondaryColorPointer();
-
-            if (fogCoordBinding==BIND_PER_VERTEX && _fogCoordData.array.valid())
-                state.setFogCoordPointer(GL_FLOAT,0,(const GLvoid*)_fogCoordData.offset);
-            else
-                state.disableFogCoordPointer();
-                
-            unsigned int unit;
-            for(unit=0;unit<_texCoordList.size();++unit)
-            {
-                const Array* array = _texCoordList[unit].array.get();
-                if (array)
-                    state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,(const GLvoid*)_texCoordList[unit].offset);
-                else
-                    state.disableTexCoordPointer(unit);
-            }
-            state.disableTexCoordPointersAboveAndIncluding(unit);
-
-            if( handleVertexAttributes )
-            {
-                unsigned int index;
-                for( index = 0; index < _vertexAttribList.size(); ++index )
-                {
-                    const Array* array = _vertexAttribList[index].array.get();
-                    const AttributeBinding ab = _vertexAttribList[index].binding;
-
-                    if( ab == BIND_PER_VERTEX && array )
-                    {
-                        state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(), 
-                            _vertexAttribList[index].normalize, 0, (const GLvoid*)_vertexAttribList[index].offset );
-                    }
-                    else
-                    {
-                        if( array )
-                        {
-                            const IndexArray* indexArray = _vertexAttribList[index].indices.get();
-
-                            if( indexArray && indexArray->getNumElements() > 0 )
-                            {
-                                drawVertexAttribMap[ab].push_back( 
-                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
-                            }
-                            else
-                            {
-                                drawVertexAttribMap[ab].push_back( 
-                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
-                            }
-                        }
-
-                        state.disableVertexAttribPointer( index );
-                    }
-                }
-                state.disableVertexAttribPointersAboveAndIncluding( index );
-                
-            }
-            else if (vertexVertexAttributesSupported)
-            {
-                state.disableVertexAttribPointersAboveAndIncluding( 0 );
-            }
-#endif
 
         }
         else
@@ -1916,9 +1549,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
         if (usingVertexBufferObjects)
         {
-            // extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+#if 1
             state.unbindVertexBufferObject();
             state.unbindElementBufferObject();
+#endif
         }
 
     }

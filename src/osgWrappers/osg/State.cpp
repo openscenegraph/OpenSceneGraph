@@ -10,6 +10,8 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Array>
+#include <osg/BufferObject>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
 #include <osg/GraphicsContext>
@@ -322,11 +324,76 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__dirtyAllVertexArrays,
 	          "dirty the vertex, normal, color, tex coords, secondary color, fog coord and index arrays. ",
 	          "");
+	I_Method1(void, setCurrentVertexBufferObject, IN, osg::VertexBufferObject *, vbo,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentVertexBufferObject__osg_VertexBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(const osg::VertexBufferObject *, getCurrentVertexBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexBufferObject_P1__getCurrentVertexBufferObject,
+	          "",
+	          "");
+	I_Method1(void, bindVertexBufferObject, IN, const osg::VertexBufferObject *, vbo,
+	          Properties::NON_VIRTUAL,
+	          __void__bindVertexBufferObject__C5_osg_VertexBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(void, unbindVertexBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __void__unbindVertexBufferObject,
+	          "",
+	          "");
+	I_Method1(void, setCurrentElementBufferObject, IN, osg::ElementBufferObject *, ebo,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentElementBufferObject__osg_ElementBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(const osg::ElementBufferObject *, getCurrentElementBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_ElementBufferObject_P1__getCurrentElementBufferObject,
+	          "",
+	          "");
+	I_Method1(void, bindElementBufferObject, IN, const osg::ElementBufferObject *, ebo,
+	          Properties::NON_VIRTUAL,
+	          __void__bindElementBufferObject__C5_osg_ElementBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(void, unbindElementBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __void__unbindElementBufferObject,
+	          "",
+	          "");
+	I_Method1(void, setCurrentPixelBufferObject, IN, osg::PixelBufferObject *, pbo,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentPixelBufferObject__osg_PixelBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(const osg::PixelBufferObject *, getCurrentPixelBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_PixelBufferObject_P1__getCurrentPixelBufferObject,
+	          "",
+	          "");
+	I_Method1(void, bindPixelBufferObject, IN, const osg::PixelBufferObject *, pbo,
+	          Properties::NON_VIRTUAL,
+	          __void__bindPixelBufferObject__C5_osg_PixelBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(void, unbindPixelBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __void__unbindPixelBufferObject,
+	          "",
+	          "");
 	I_Method3(void, setInterleavedArrays, IN, GLenum, format, IN, GLsizei, stride, IN, const GLvoid *, pointer,
 	          Properties::NON_VIRTUAL,
 	          __void__setInterleavedArrays__GLenum__GLsizei__C5_GLvoid_P1,
 	          "Wrapper around glInterleavedArrays(. ",
 	          ".). also resets the internal array points and modes within osg::State to keep the other vertex array operations consistent. ");
+	I_Method1(void, setVertexPointer, IN, const osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertexPointer__C5_Array_P1,
+	          "Set the vertex pointer using an osg::Array, and manage any VBO that are required. ",
+	          "");
 	I_Method4(void, setVertexPointer, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
 	          __void__setVertexPointer__GLint__GLenum__GLsizei__C5_GLvoid_P1,
@@ -342,6 +409,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__dirtyVertexPointer,
 	          "",
 	          "");
+	I_Method1(void, setNormalPointer, IN, const osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setNormalPointer__C5_Array_P1,
+	          "Set the normal pointer using an osg::Array, and manage any VBO that are required. ",
+	          "");
 	I_Method3(void, setNormalPointer, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
 	          __void__setNormalPointer__GLenum__GLsizei__C5_GLvoid_P1,
@@ -356,6 +428,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          Properties::NON_VIRTUAL,
 	          __void__dirtyNormalPointer,
 	          "",
+	          "");
+	I_Method1(void, setColorPointer, IN, const osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setColorPointer__C5_Array_P1,
+	          "Set the color pointer using an osg::Array, and manage any VBO that are required. ",
 	          "");
 	I_Method4(void, setColorPointer, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
@@ -376,6 +453,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          Properties::NON_VIRTUAL,
 	          __bool__isSecondaryColorSupported,
 	          "",
+	          "");
+	I_Method1(void, setSecondaryColorPointer, IN, const osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setSecondaryColorPointer__C5_Array_P1,
+	          "Set the secondary color pointer using an osg::Array, and manage any VBO that are required. ",
 	          "");
 	I_Method4(void, setSecondaryColorPointer, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
@@ -412,6 +494,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __bool__isFogCoordSupported,
 	          "",
 	          "");
+	I_Method1(void, setFogCoordPointer, IN, const osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setFogCoordPointer__C5_Array_P1,
+	          "Set the fog coord pointer using an osg::Array, and manage any VBO that are required. ",
+	          "");
 	I_Method3(void, setFogCoordPointer, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordPointer__GLenum__GLsizei__C5_GLvoid_P1,
@@ -426,6 +513,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          Properties::NON_VIRTUAL,
 	          __void__dirtyFogCoordPointer,
 	          "",
+	          "");
+	I_Method2(void, setTexCoordPointer, IN, unsigned int, unit, IN, const osg::Array *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexCoordPointer__unsigned_int__C5_Array_P1,
+	          "Set the tex coord pointer using an osg::Array, and manage any VBO that are required. ",
 	          "");
 	I_Method5(void, setTexCoordPointer, IN, unsigned int, unit, IN, GLint, size, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
@@ -471,6 +563,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getClientActiveTextureUnit,
 	          "Get the current tex coord array texture unit. ",
+	          "");
+	I_Method3(void, setVertexAttribPointer, IN, unsigned int, unit, IN, const osg::Array *, array, IN, GLboolean, normalized,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertexAttribPointer__unsigned_int__C5_Array_P1__GLboolean,
+	          "Set the vertex attrib pointer using an osg::Array, and manage any VBO that are required. ",
 	          "");
 	I_Method6(void, setVertexAttribPointer, IN, unsigned int, index, IN, GLint, size, IN, GLenum, type, IN, GLboolean, normalized, IN, GLsizei, stride, IN, const GLvoid *, ptr,
 	          Properties::NON_VIRTUAL,
@@ -597,6 +694,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __bool__checkGLErrors__C5_StateAttribute_P1,
 	          "",
 	          "");
+	I_Method0(void, initializeExtensionProcs,
+	          Properties::NON_VIRTUAL,
+	          __void__initializeExtensionProcs,
+	          "Initialize extension used by osg:State. ",
+	          "");
 
 
 
@@ -644,12 +746,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 
 
 
-	I_ProtectedMethod0(void, initializeExtensionProcs,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__initializeExtensionProcs,
-	                   "",
-	                   "");
+
 	I_SimpleProperty(bool, AbortRendering, 
 	                 __bool__getAbortRendering, 
 	                 0);
@@ -665,9 +762,21 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, ClientActiveTextureUnit, 
 	                 __unsigned_int__getClientActiveTextureUnit, 
 	                 __bool__setClientActiveTextureUnit__unsigned_int);
+	I_SimpleProperty(const osg::Array *, ColorPointer, 
+	                 0, 
+	                 __void__setColorPointer__C5_Array_P1);
 	I_SimpleProperty(unsigned int, ContextID, 
 	                 __unsigned_int__getContextID, 
 	                 __void__setContextID__unsigned_int);
+	I_SimpleProperty(osg::ElementBufferObject *, CurrentElementBufferObject, 
+	                 0, 
+	                 __void__setCurrentElementBufferObject__osg_ElementBufferObject_P1);
+	I_SimpleProperty(osg::PixelBufferObject *, CurrentPixelBufferObject, 
+	                 0, 
+	                 __void__setCurrentPixelBufferObject__osg_PixelBufferObject_P1);
+	I_SimpleProperty(osg::VertexBufferObject *, CurrentVertexBufferObject, 
+	                 0, 
+	                 __void__setCurrentVertexBufferObject__osg_VertexBufferObject_P1);
 	I_SimpleProperty(const osg::Viewport *, CurrentViewport, 
 	                 __C5_Viewport_P1__getCurrentViewport, 
 	                 0);
@@ -680,6 +789,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::State::DynamicObjectRenderingCompletedCallback *, DynamicObjectRenderingCompletedCallback, 
 	                 __DynamicObjectRenderingCompletedCallback_P1__getDynamicObjectRenderingCompletedCallback, 
 	                 __void__setDynamicObjectRenderingCompletedCallback__DynamicObjectRenderingCompletedCallback_P1);
+	I_SimpleProperty(const osg::Array *, FogCoordPointer, 
+	                 0, 
+	                 __void__setFogCoordPointer__C5_Array_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 0, 
 	                 __void__setFrameStamp__FrameStamp_P1);
@@ -713,15 +825,24 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(const osg::Matrix &, ModelViewMatrix, 
 	                 __C5_osg_Matrix_R1__getModelViewMatrix, 
 	                 0);
+	I_SimpleProperty(const osg::Array *, NormalPointer, 
+	                 0, 
+	                 __void__setNormalPointer__C5_Array_P1);
 	I_SimpleProperty(const osg::Matrix &, ProjectionMatrix, 
 	                 __C5_osg_Matrix_R1__getProjectionMatrix, 
 	                 0);
+	I_SimpleProperty(const osg::Array *, SecondaryColorPointer, 
+	                 0, 
+	                 __void__setSecondaryColorPointer__C5_Array_P1);
 	I_SimpleProperty(osg::State::StateSetStack &, StateSetStack, 
 	                 __StateSetStack_R1__getStateSetStack, 
 	                 0);
 	I_SimpleProperty(unsigned int, StateSetStackSize, 
 	                 __unsigned_int__getStateSetStackSize, 
 	                 0);
+	I_SimpleProperty(const osg::Array *, VertexPointer, 
+	                 0, 
+	                 __void__setVertexPointer__C5_Array_P1);
 	I_SimpleProperty(osg::Polytope, ViewFrustum, 
 	                 __Polytope__getViewFrustum, 
 	                 0);

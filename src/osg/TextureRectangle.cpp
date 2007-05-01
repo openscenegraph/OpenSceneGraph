@@ -285,8 +285,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isPBOSupported(contextID))
     {
-        pbo->compileBuffer(contextID, state);
-        pbo->bindBuffer(contextID);
+        state.bindPixelBufferObject(pbo);
         dataMinusOffset = image->data();
         dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
     }
@@ -305,7 +304,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
 
     if (pbo)
     {
-        pbo->unbindBuffer(contextID);
+        state.unbindPixelBufferObject();
     }
 
     inwidth = image->s();
@@ -352,8 +351,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isPBOSupported(contextID))
     {
-        pbo->compileBuffer(contextID, state);
-        pbo->bindBuffer(contextID);
+        state.bindPixelBufferObject(pbo);
         dataMinusOffset = image->data();
         dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset()); // -dataMinusOffset+dataPlusOffset
 
@@ -378,7 +376,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
     if (pbo)
     {
-        pbo->unbindBuffer(contextID);
+        state.unbindPixelBufferObject();
     }
 
 #ifdef DO_TIMING

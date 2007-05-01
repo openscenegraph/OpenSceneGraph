@@ -169,15 +169,15 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	          __C5_osg_VertexBufferObject_P1__getVertexBufferObject,
 	          "Get the const VertexBufferObject. ",
 	          "If no VBO is assigned returns NULL ");
-	I_Method1(void, setVertexBufferObjectIndex, IN, unsigned int, index,
+	I_Method1(void, setVertexBufferObjectOffset, IN, const GLvoid *, offset,
 	          Properties::NON_VIRTUAL,
-	          __void__setVertexBufferObjectIndex__unsigned_int,
-	          "Set the index into the VertexBufferObject, if used. ",
+	          __void__setVertexBufferObjectOffset__C5_GLvoid_P1,
+	          "Set the offset into the VertexBufferObject, if used. ",
 	          "");
-	I_Method0(unsigned int, getVertexBufferObjectIndex,
+	I_Method0(const GLvoid *, getVertexBufferObjectOffset,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getVertexBufferObjectIndex,
-	          "Get the index into the VertexBufferObject, if used. ",
+	          __C5_GLvoid_P1__getVertexBufferObjectOffset,
+	          "Get the offset into the VertexBufferObject, if used. ",
 	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
@@ -200,9 +200,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_SimpleProperty(osg::VertexBufferObject *, VertexBufferObject, 
 	                 __osg_VertexBufferObject_P1__getVertexBufferObject, 
 	                 __void__setVertexBufferObject__osg_VertexBufferObject_P1);
-	I_SimpleProperty(unsigned int, VertexBufferObjectIndex, 
-	                 __unsigned_int__getVertexBufferObjectIndex, 
-	                 __void__setVertexBufferObjectIndex__unsigned_int);
+	I_SimpleProperty(const GLvoid *, VertexBufferObjectOffset, 
+	                 __C5_GLvoid_P1__getVertexBufferObjectOffset, 
+	                 __void__setVertexBufferObjectOffset__C5_GLvoid_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArrayVisitor)

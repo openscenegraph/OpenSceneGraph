@@ -101,8 +101,8 @@ class OSG_EXPORT BufferObject : public Object
             BufferEntry& operator = (const BufferEntry& be) { modifiedCount=be.modifiedCount; dataSize=be.dataSize; offset=be.offset; return *this; }
 
             mutable buffered_value<unsigned int>    modifiedCount;
-            mutable unsigned int                            dataSize;
-            mutable unsigned int                            offset;
+            mutable unsigned int                    dataSize;
+            mutable unsigned int                    offset;
         };
 
         inline bool isBufferObjectSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isBufferObjectSupported(); }
@@ -126,16 +126,15 @@ class OSG_EXPORT BufferObject : public Object
 
         bool isDirty(unsigned int contextID) const { return _compiledList[contextID]==0; }
 
-        virtual bool needsCompile(unsigned int contextID) const = 0;
-
-        inline void compileBuffer(unsigned int contextID, State& state) const
-        {
-            if (isDirty(contextID)) compileBufferImplementation(state);
-        }
-
-        virtual void compileBufferImplementation(State& state) const = 0;
+        virtual void compileBuffer(State& state) const = 0;
         
-        void releaseBuffer(State* state) const;
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * for all graphics contexts. */
+        void releaseGLObjects(State* state=0) const;
 
 
         /** Use deleteVertexBufferObject instead of glDeleteBuffers to allow
@@ -250,6 +249,7 @@ class OSG_EXPORT VertexBufferObject : public BufferObject
         typedef std::vector< BufferEntryArrayPair > BufferEntryArrayPairs;
 
         unsigned int addArray(osg::Array* array);
+        void removeArray(osg::Array* array);
 
         void setArray(unsigned int i, Array* array);
         Array* getArray(unsigned int i) { return _bufferEntryArrayPairs[i].second; }
@@ -257,9 +257,10 @@ class OSG_EXPORT VertexBufferObject : public BufferObject
         
         const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(_bufferEntryArrayPairs[i].first.offset); }
 
-        virtual bool needsCompile(unsigned int contextID) const;
+        virtual void compileBuffer(State& state) const;
 
-        virtual void compileBufferImplementation(State& state) const;
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
     protected:
     
@@ -284,6 +285,7 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
         typedef std::vector< BufferEntryDrawElementstPair > BufferEntryDrawElementsPairs;
 
         unsigned int addDrawElements(osg::DrawElements* PrimitiveSet);
+        void removeDrawElements(osg::DrawElements* PrimitiveSet);
 
         void setDrawElements(unsigned int i, DrawElements* PrimitiveSet);
         DrawElements* getDrawElements(unsigned int i) { return _bufferEntryDrawElementsPairs[i].second; }
@@ -291,9 +293,10 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
         
         const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(_bufferEntryDrawElementsPairs[i].first.offset); }
 
-        virtual bool needsCompile(unsigned int contextID) const;
+        virtual void compileBuffer(State& state) const;
 
-        virtual void compileBufferImplementation(State& state) const;
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
     protected:
     
@@ -323,9 +326,10 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
         
         unsigned int offset() const { return _bufferEntryImagePair.first.offset; }
         
-        virtual bool needsCompile(unsigned int contextID) const;
+        virtual void compileBuffer(State& state) const;
 
-        virtual void compileBufferImplementation(State& state) const;
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
     protected:
     

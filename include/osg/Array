@@ -73,7 +73,7 @@ class OSG_EXPORT Array : public Object
             _dataSize(dataSize),
             _dataType(dataType),
             _modifiedCount(0),
-            _vboIndex(0) {}
+            _vboOffset(0) {}
     
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(array,copyop),
@@ -81,7 +81,7 @@ class OSG_EXPORT Array : public Object
             _dataSize(array._dataSize),
             _dataType(array._dataType),
             _modifiedCount(0),
-            _vboIndex(0) {}
+            _vboOffset(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -123,18 +123,14 @@ class OSG_EXPORT Array : public Object
             
             if (_vbo.valid())
             {
-                _vbo->setArray(_vboIndex,0);
+                _vbo->removeArray(this);
             }
             
             _vbo = vbo;
             
             if (_vbo.valid())
             {
-                _vboIndex = _vbo->addArray(this);
-            }
-            else
-            {
-                _vboIndex = 0;
+                _vbo->addArray(this);
             }
         }
         
@@ -144,11 +140,11 @@ class OSG_EXPORT Array : public Object
         /** Get the const VertexBufferObject. If no VBO is assigned returns NULL*/
         inline const osg::VertexBufferObject* getVertexBufferObject() const { return _vbo.get(); }
 
-        /** Set the index into the VertexBufferObject, if used.*/
-        inline void setVertexBufferObjectIndex(unsigned int index) { _vboIndex = index; }
+        /** Set the offset into the VertexBufferObject, if used.*/
+        void setVertexBufferObjectOffset(const GLvoid* offset ) const { _vboOffset = offset; }
 
-        /** Get the index into the VertexBufferObject, if used.*/
-        inline unsigned int getVertexBufferObjectIndex() const { return _vboIndex; }
+        /** Get the offset into the VertexBufferObject, if used.*/
+        const GLvoid* getVertexBufferObjectOffset() const { return _vboOffset; }
 
     protected:
     
@@ -156,7 +152,7 @@ class OSG_EXPORT Array : public Object
         {
             if (_vbo.valid())
             {
-                _vbo->setArray(_vboIndex,0);
+                _vbo->removeArray(this);
             }
         }
 
@@ -165,7 +161,7 @@ class OSG_EXPORT Array : public Object
         GLenum                                  _dataType;
         unsigned int                            _modifiedCount;
         osg::ref_ptr<osg::VertexBufferObject>   _vbo;
-        unsigned int                            _vboIndex;
+        mutable const GLvoid*                   _vboOffset;
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

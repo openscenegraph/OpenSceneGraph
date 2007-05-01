@@ -907,8 +907,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale)
     {
-        pbo->compileBuffer(contextID, state);
-        pbo->bindBuffer(contextID);
+        state.bindPixelBufferObject(pbo);
         dataMinusOffset = data;
         dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
 #ifdef DO_TIMING
@@ -1043,8 +1042,9 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
     if (pbo)
     {
-        pbo->unbindBuffer(contextID);
+        state.unbindPixelBufferObject();
     }
+    
 #ifdef DO_TIMING
     static double s_total_time = 0.0;
     double delta_time = osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick());
@@ -1159,8 +1159,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
     if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale)
     {
-        pbo->compileBuffer(contextID, state);
-        pbo->bindBuffer(contextID);
+        state.bindPixelBufferObject(pbo);
         dataMinusOffset = data;
         dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
 #ifdef DO_TIMING
@@ -1277,7 +1276,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     
     if (pbo)
     {
-        pbo->unbindBuffer(contextID);
+        state.unbindPixelBufferObject();
     }
 #ifdef DO_TIMING
     osg::notify(osg::NOTICE)<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;

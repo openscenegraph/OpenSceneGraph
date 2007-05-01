@@ -121,35 +121,6 @@ DrawElementsUByte::~DrawElementsUByte()
     releaseGLObjects();
 }
 
-void DrawElementsUByte::resizeGLObjectBuffers(unsigned int maxSize)
-{
-    _vboList.resize(maxSize);
-}
-
-void DrawElementsUByte::releaseGLObjects(State* state) const
-{
-    if (state)
-    {
-        unsigned int contextID = state->getContextID();
-        if (_vboList[contextID]._objectID != 0)
-        {
-            BufferObject::deleteBufferObject(contextID,_vboList[contextID]._objectID);
-            _vboList[contextID]._objectID = 0;
-        }
-    }
-    else
-    {
-        for(unsigned int i=0;i<_vboList.size();++i)
-        {
-            if (_vboList[i]._objectID != 0)
-            {
-                BufferObject::deleteBufferObject(i,_vboList[i]._objectID);
-                _vboList[i]._objectID = 0;
-            }
-        }
-    }
-}
-
 void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const 
 {
     if (useVertexBufferObjects)
@@ -158,7 +129,7 @@ void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, ebo->getOffset(getElementBufferObjectIndex()));
+            glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, getElementBufferObjectOffset());
         }
         else
         {
@@ -197,35 +168,6 @@ DrawElementsUShort::~DrawElementsUShort()
     releaseGLObjects();
 }
 
-void DrawElementsUShort::resizeGLObjectBuffers(unsigned int maxSize)
-{
-    _vboList.resize(maxSize);
-}
-
-void DrawElementsUShort::releaseGLObjects(State* state) const
-{
-    if (state)
-    {
-        unsigned int contextID = state->getContextID();
-        if (_vboList[contextID]._objectID != 0)
-        {
-            BufferObject::deleteBufferObject(contextID,_vboList[contextID]._objectID);
-            _vboList[contextID]._objectID = 0;
-        }
-    }
-    else
-    {
-        for(unsigned int i=0;i<_vboList.size();++i)
-        {
-            if (_vboList[i]._objectID != 0)
-            {
-                BufferObject::deleteBufferObject(i,_vboList[i]._objectID);
-                _vboList[i]._objectID = 0;
-            }
-        }
-    }
-}
-
 void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const 
 {
     if (useVertexBufferObjects)
@@ -234,7 +176,7 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, ebo->getOffset(getElementBufferObjectIndex()));
+            glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, getElementBufferObjectOffset());
         }
         else
         {
@@ -273,35 +215,6 @@ DrawElementsUInt::~DrawElementsUInt()
     releaseGLObjects();
 }
 
-void DrawElementsUInt::resizeGLObjectBuffers(unsigned int maxSize)
-{
-    _vboList.resize(maxSize);
-}
-
-void DrawElementsUInt::releaseGLObjects(State* state) const
-{
-    if (state)
-    {
-        unsigned int contextID = state->getContextID();
-        if (_vboList[contextID]._objectID != 0)
-        {
-            BufferObject::deleteBufferObject(contextID,_vboList[contextID]._objectID);
-            _vboList[contextID]._objectID = 0;
-        }
-    }
-    else
-    {
-        for(unsigned int i=0;i<_vboList.size();++i)
-        {
-            if (_vboList[i]._objectID != 0)
-            {
-                BufferObject::deleteBufferObject(i,_vboList[i]._objectID);
-                _vboList[i]._objectID = 0;
-            }
-        }
-    }
-}
-
 void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const 
 {
     if (useVertexBufferObjects)
@@ -310,7 +223,7 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            glDrawElements(_mode, size(), GL_UNSIGNED_INT, ebo->getOffset(getElementBufferObjectIndex()));
+            glDrawElements(_mode, size(), GL_UNSIGNED_INT, getElementBufferObjectOffset());
         }
         else
         {

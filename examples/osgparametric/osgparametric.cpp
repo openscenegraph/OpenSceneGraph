@@ -223,7 +223,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
     osg::VertexBufferObject* vbObject = new osg::VertexBufferObject;
     vertices->setVertexBufferObject(vbObject);
     
-    osg::ElementsBufferObject* ebo = new osg::ElementsBufferObject;
+    osg::ElementBufferObject* ebo = new osg::ElementBufferObject;
 
     for(iy=0; iy<num_y-1; ++iy)
     {
@@ -237,7 +237,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         }
         geom->addPrimitiveSet(elements); 
         
-        if (ebo) elements->setElementsBufferObject(ebo);   
+        if (ebo) elements->setElementBufferObject(ebo);   
     }
     
     geom->setUseVertexBufferObjects(vbo);

@@ -457,8 +457,6 @@ void VertexBufferObject::compileBufferImplementation(State& state) const
         
     // Unmap the texture image buffer
     if (vboMemory) extensions->glUnmapBuffer(_target);
-
-    extensions->glBindBuffer(_target, 0);
     
 //    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
 //    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
@@ -466,24 +464,24 @@ void VertexBufferObject::compileBufferImplementation(State& state) const
 
 //////////////////////////////////////////////////////////////////////////////////
 //
-//  ElementsBufferObject
+//  ElementBufferObject
 //
-ElementsBufferObject::ElementsBufferObject()
+ElementBufferObject::ElementBufferObject()
 {
     _target = GL_ELEMENT_ARRAY_BUFFER_ARB;
     _usage = GL_STATIC_DRAW_ARB;
 }
 
-ElementsBufferObject::ElementsBufferObject(const ElementsBufferObject& vbo,const CopyOp& copyop):
+ElementBufferObject::ElementBufferObject(const ElementBufferObject& vbo,const CopyOp& copyop):
     BufferObject(vbo,copyop)
 {
 }
 
-ElementsBufferObject::~ElementsBufferObject()
+ElementBufferObject::~ElementBufferObject()
 {
 }
 
-unsigned int ElementsBufferObject::addDrawElements(osg::DrawElements* drawElements)
+unsigned int ElementBufferObject::addDrawElements(osg::DrawElements* drawElements)
 {
     unsigned int i = _bufferEntryDrawElementsPairs.size();
     _bufferEntryDrawElementsPairs.resize(i+1);
@@ -494,7 +492,7 @@ unsigned int ElementsBufferObject::addDrawElements(osg::DrawElements* drawElemen
     return i;
 }
 
-void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* drawElements)
+void ElementBufferObject::setDrawElements(unsigned int i, DrawElements* drawElements)
 {
     if (i+1>=_bufferEntryDrawElementsPairs.size()) _bufferEntryDrawElementsPairs.resize(i+1); 
     
@@ -503,7 +501,7 @@ void ElementsBufferObject::setDrawElements(unsigned int i, DrawElements* drawEle
     _bufferEntryDrawElementsPairs[i].first.dataSize = 0;
 }
 
-bool ElementsBufferObject::needsCompile(unsigned int contextID) const
+bool ElementBufferObject::needsCompile(unsigned int contextID) const
 {
     if (isDirty(contextID)) return true;
 
@@ -538,13 +536,13 @@ bool ElementsBufferObject::needsCompile(unsigned int contextID) const
     return false;
 }
 
-void ElementsBufferObject::compileBufferImplementation(State& state) const
+void ElementBufferObject::compileBufferImplementation(State& state) const
 {
     unsigned int contextID = state.getContextID();
 
     _compiledList[contextID] = 1;
 
-    osg::notify(osg::NOTICE)<<"ElementsBufferObject::compile"<<std::endl;
+    osg::notify(osg::NOTICE)<<"ElementBufferObject::compile"<<std::endl;
     
     Extensions* extensions = getExtensions(contextID,true);
 
@@ -637,8 +635,6 @@ void ElementsBufferObject::compileBufferImplementation(State& state) const
     // Unmap the texture image buffer
     if (eboMemory) extensions->glUnmapBuffer(_target);
 
-    extensions->glBindBuffer(_target, 0);
-    
 //    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;
 //    osg::notify(osg::NOTICE)<<"pbo "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 }
@@ -741,8 +737,6 @@ void PixelBufferObject::compileBufferImplementation(State& state) const
     // Unmap the texture image buffer
     extensions->glUnmapBuffer(_target);
 
-    extensions->glBindBuffer(_target, 0);
-    
     _bufferEntryImagePair.first.modifiedCount[contextID] = image->getModifiedCount();
 
 //    osg::notify(osg::NOTICE)<<"pbo _totalSize="<<_totalSize<<std::endl;

@@ -940,6 +940,8 @@ struct ViewerCompileOperation : public osg::Operation
         // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
         // context->makeCurrent();
+        
+        context->getState()->initializeExtensionProcs();
 
         osgUtil::GLObjectsVisitor compileVisitor;
         compileVisitor.setState(context->getState());

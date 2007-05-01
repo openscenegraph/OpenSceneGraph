@@ -39,6 +39,10 @@ State::State()
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;
 
+    _currentVBO = 0;
+    _currentEBO = 0;
+    _currentPBO = 0;
+
     _isSecondaryColorSupportResolved = false;
     _isSecondaryColorSupported = false;
 
@@ -728,6 +732,7 @@ void State::initializeExtensionProcs()
     _glVertexAttribPointer =  (VertexAttribPointerProc) osg::getGLExtensionFuncPtr("glVertexAttribPointer","glVertexAttribPointerARB");
     _glEnableVertexAttribArray =  (EnableVertexAttribProc) osg::getGLExtensionFuncPtr("glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
     _glDisableVertexAttribArray =  (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+    _glBindBuffer = (BindBufferProc) osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB");
 
     _extensionProcsInitialized = true;
 }
@@ -736,8 +741,6 @@ bool State::setClientActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentClientActiveTextureUnit)
     {
-        if (!_extensionProcsInitialized) initializeExtensionProcs();
- 
         if (_glClientActiveTexture)
         {
             _glClientActiveTexture(GL_TEXTURE0+unit);
@@ -758,8 +761,6 @@ bool State::setActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentActiveTextureUnit)
     {
-        if (!_extensionProcsInitialized) initializeExtensionProcs();
-
         if (_glActiveTexture)
         {
             _glActiveTexture(GL_TEXTURE0+unit);
@@ -775,8 +776,6 @@ bool State::setActiveTextureUnit( unsigned int unit )
 
 void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
 {
-    if (!_extensionProcsInitialized) initializeExtensionProcs();
-
     if (_glFogCoordPointer)
     {
 
@@ -798,8 +797,6 @@ void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
 void State::setSecondaryColorPointer( GLint size, GLenum type,
                                       GLsizei stride, const GLvoid *ptr )
 {
-    if (!_extensionProcsInitialized) initializeExtensionProcs();
-
     if (_glSecondaryColorPointer)
     {
         if (!_secondaryColorArray._enabled || _secondaryColorArray._dirty)
@@ -822,8 +819,6 @@ void State::setVertexAttribPointer( unsigned int index,
                                       GLint size, GLenum type, GLboolean normalized, 
                                     GLsizei stride, const GLvoid *ptr )
 {
-    if (!_extensionProcsInitialized) initializeExtensionProcs();
-
     if (_glVertexAttribPointer)
     {
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
@@ -848,8 +843,6 @@ void State::setVertexAttribPointer( unsigned int index,
 * note, only updates values that change.*/
 void State::disableVertexAttribPointer( unsigned int index )
 {
-    if (!_extensionProcsInitialized) initializeExtensionProcs();
-
     if (_glDisableVertexAttribArray)
     {
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
@@ -866,8 +859,6 @@ void State::disableVertexAttribPointer( unsigned int index )
 
 void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 {
-    if (!_extensionProcsInitialized) initializeExtensionProcs();
-
     if (_glDisableVertexAttribArray)
     {
         while (index<_vertexAttribArrayList.size())

@@ -824,7 +824,7 @@ bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
 {
     if (primitiveset)
     {
-        if (_useVertexBufferObjects) addElementsBufferObjectIfRequired(primitiveset);
+        if (_useVertexBufferObjects) addElementBufferObjectIfRequired(primitiveset);
 
         _primitives.push_back(primitiveset);
         dirtyDisplayList();
@@ -839,7 +839,7 @@ bool Geometry::setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
 {
     if (i<_primitives.size() && primitiveset)
     {
-        if (_useVertexBufferObjects) addElementsBufferObjectIfRequired(primitiveset);
+        if (_useVertexBufferObjects) addElementBufferObjectIfRequired(primitiveset);
 
         _primitives[i] = primitiveset;
         dirtyDisplayList();
@@ -855,7 +855,7 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
 
     if (primitiveset)
     {
-        if (_useVertexBufferObjects) addElementsBufferObjectIfRequired(primitiveset);
+        if (_useVertexBufferObjects) addElementBufferObjectIfRequired(primitiveset);
 
         if (i<_primitives.size())
         {
@@ -1079,14 +1079,14 @@ void Geometry::addVertexBufferObjectIfRequired(osg::Array* array)
     }
 }
 
-void Geometry::addElementsBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet)
+void Geometry::addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet)
 {
     if (_useVertexBufferObjects)
     {
         osg::DrawElements* drawElements = primitiveSet->getDrawElements();
-        if (drawElements && !drawElements->getElementsBufferObject())
+        if (drawElements && !drawElements->getElementBufferObject())
         {
-            drawElements->setElementsBufferObject(getOrCreateElementsBufferObject());
+            drawElements->setElementBufferObject(getOrCreateElementBufferObject());
         }
     }
 }
@@ -1112,12 +1112,12 @@ osg::VertexBufferObject* Geometry::getOrCreateVertexBufferObject()
     return vbo;
 }
 
-osg::ElementsBufferObject* Geometry::getOrCreateElementsBufferObject()
+osg::ElementBufferObject* Geometry::getOrCreateElementBufferObject()
 {
     DrawElementsList drawElementsList;
     getDrawElementsList(drawElementsList);
 
-    osg::ElementsBufferObject* ebo = 0;
+    osg::ElementBufferObject* ebo = 0;
 
     DrawElementsList::iterator deitr;
     for(deitr = drawElementsList.begin();
@@ -1125,10 +1125,10 @@ osg::ElementsBufferObject* Geometry::getOrCreateElementsBufferObject()
         ++deitr)
     {
         osg::DrawElements* elements = *deitr;
-        if (!elements->getElementsBufferObject()) ebo = elements->getElementsBufferObject();
+        if (!elements->getElementBufferObject()) ebo = elements->getElementBufferObject();
     }
 
-    if (!ebo) ebo = new osg::ElementsBufferObject;
+    if (!ebo) ebo = new osg::ElementBufferObject;
     
     return ebo;
 }
@@ -1150,7 +1150,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
     getDrawElementsList(drawElementsList);
 
     typedef std::vector<osg::VertexBufferObject*>  VertexBufferObjectList;
-    typedef std::vector<osg::ElementsBufferObject*>  ElementsBufferObjectList;
+    typedef std::vector<osg::ElementBufferObject*>  ElementBufferObjectList;
 
     if (_useVertexBufferObjects)
     {
@@ -1183,9 +1183,9 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 
         if (!drawElementsList.empty()) 
         {
-            ElementsBufferObjectList eboList;
+            ElementBufferObjectList eboList;
             
-            osg::ElementsBufferObject* ebo = 0;
+            osg::ElementBufferObject* ebo = 0;
 
             DrawElementsList::iterator deitr;
             for(deitr = drawElementsList.begin();
@@ -1193,17 +1193,17 @@ void Geometry::setUseVertexBufferObjects(bool flag)
                 ++deitr)
             {
                 osg::DrawElements* elements = *deitr;
-                if (!elements->getElementsBufferObject()) ebo = elements->getElementsBufferObject();
+                if (!elements->getElementBufferObject()) ebo = elements->getElementBufferObject();
             }
 
-            if (!ebo) ebo = new osg::ElementsBufferObject;
+            if (!ebo) ebo = new osg::ElementBufferObject;
 
             for(deitr = drawElementsList.begin();
                 deitr != drawElementsList.end();
                 ++deitr)
             {
                 osg::DrawElements* elements = *deitr;
-                if (!elements->getElementsBufferObject()) elements->setElementsBufferObject(ebo);
+                if (!elements->getElementBufferObject()) elements->setElementBufferObject(ebo);
             }
         }
     }
@@ -1222,7 +1222,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
             ++deitr)
         {
             osg::DrawElements* elements = *deitr;
-            if (!elements->getElementsBufferObject()) elements->setElementsBufferObject(0);
+            if (!elements->getElementBufferObject()) elements->setElementBufferObject(0);
         }
     }
 }
@@ -1416,6 +1416,59 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             // 
 #if 1
 
+
+    #if 1
+
+
+            state.setNormalPointer(_normalData.binding==BIND_PER_VERTEX ? _normalData.array.get() : 0);
+            state.setColorPointer(_colorData.binding==BIND_PER_VERTEX ? _colorData.array.get() : 0);
+            state.setSecondaryColorPointer(_secondaryColorData.binding==BIND_PER_VERTEX ? _secondaryColorData.array.get() : 0);
+            state.setFogCoordPointer(_fogCoordData.binding==BIND_PER_VERTEX ? _fogCoordData.array.get() : 0);
+
+            unsigned int unit;
+            for(unit=0;unit<_texCoordList.size();++unit)
+            {
+                state.setTexCoordPointer(unit, _texCoordList[unit].array.get());
+            }
+            state.disableTexCoordPointersAboveAndIncluding(unit);
+
+            if( handleVertexAttributes )
+            {
+                unsigned int index;
+                for( index = 0; index < _vertexAttribList.size(); ++index )
+                {
+                    const Array* array = _vertexAttribList[index].array.get();
+                    const AttributeBinding ab = _vertexAttribList[index].binding;
+                    state.setVertexAttribPointer(index, (ab==BIND_PER_VERTEX ? array : 0), _vertexAttribList[index].normalize);
+
+                    if(array && ab!=BIND_PER_VERTEX)
+                    {
+                        const IndexArray* indexArray = _vertexAttribList[index].indices.get();
+
+                        if( indexArray && indexArray->getNumElements() > 0 )
+                        {
+                            drawVertexAttribMap[ab].push_back( 
+                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
+                        }
+                        else
+                        {
+                            drawVertexAttribMap[ab].push_back( 
+                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
+                        }
+                    }
+                }
+                state.disableVertexAttribPointersAboveAndIncluding( index );
+                
+            }
+            else if (vertexVertexAttributesSupported)
+            {
+                state.disableVertexAttribPointersAboveAndIncluding( 0 );
+            }
+
+            state.setVertexPointer(_vertexData.array.get());
+
+    #else
+
             // first compile the VBO's
             const VertexBufferObject* prev_vbo = 0;
             const VertexBufferObject* new_vbo = 0;
@@ -1519,8 +1572,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
             SETARRAYPOINTER(_vertexData, state.setVertexPointer, state.disableVertexPointer)
 
-            const osg::ElementsBufferObject* prev_ebo = 0;
-            const osg::ElementsBufferObject* new_ebo = 0;
+            const osg::ElementBufferObject* prev_ebo = 0;
+            const osg::ElementBufferObject* new_ebo = 0;
             for(PrimitiveSetList::const_iterator itr=_primitives.begin();
                 itr!=_primitives.end();
                 ++itr)
@@ -1528,7 +1581,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                 const DrawElements* de = (*itr)->getDrawElements();
                 if (de)
                 {
-                    new_ebo = de->getElementsBufferObject();
+                    new_ebo = de->getElementBufferObject();
                     if (new_ebo && new_ebo!=prev_ebo)
                     {
                         new_ebo->compileBuffer(contextID, state);
@@ -1536,6 +1589,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                     }
                 }
             }
+
+    #endif
 
 #else
 
@@ -1861,7 +1916,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
         if (usingVertexBufferObjects)
         {
-            extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+            // extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+            state.unbindVertexBufferObject();
+            state.unbindElementBufferObject();
         }
 
     }

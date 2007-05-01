@@ -577,9 +577,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __osg_VertexBufferObject_P1__getOrCreateVertexBufferObject,
 	          "",
 	          "");
-	I_Method0(osg::ElementsBufferObject *, getOrCreateElementsBufferObject,
+	I_Method0(osg::ElementBufferObject *, getOrCreateElementBufferObject,
 	          Properties::NON_VIRTUAL,
-	          __osg_ElementsBufferObject_P1__getOrCreateElementsBufferObject,
+	          __osg_ElementBufferObject_P1__getOrCreateElementBufferObject,
 	          "",
 	          "");
 	I_Method1(void, setFastPathHint, IN, bool, on,
@@ -727,10 +727,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                   __void__addVertexBufferObjectIfRequired__osg_Array_P1,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(void, addElementsBufferObjectIfRequired, IN, osg::PrimitiveSet *, primitiveSet,
+	I_ProtectedMethod1(void, addElementBufferObjectIfRequired, IN, osg::PrimitiveSet *, primitiveSet,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__addElementsBufferObjectIfRequired__osg_PrimitiveSet_P1,
+	                   __void__addElementBufferObjectIfRequired__osg_PrimitiveSet_P1,
 	                   "",
 	                   "");
 	I_SimpleProperty(osg::Array *, ColorArray, 

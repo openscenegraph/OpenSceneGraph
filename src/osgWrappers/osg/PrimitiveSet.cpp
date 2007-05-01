@@ -256,40 +256,40 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	          __void__dirty,
 	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
 	          "");
-	I_Method1(void, setElementsBufferObject, IN, osg::ElementsBufferObject *, ebo,
+	I_Method1(void, setElementBufferObject, IN, osg::ElementBufferObject *, ebo,
 	          Properties::NON_VIRTUAL,
-	          __void__setElementsBufferObject__osg_ElementsBufferObject_P1,
-	          "Set the ElementsBufferObject. ",
+	          __void__setElementBufferObject__osg_ElementBufferObject_P1,
+	          "Set the ElementBufferObject. ",
 	          "");
-	I_Method0(osg::ElementsBufferObject *, getElementsBufferObject,
+	I_Method0(osg::ElementBufferObject *, getElementBufferObject,
 	          Properties::NON_VIRTUAL,
-	          __osg_ElementsBufferObject_P1__getElementsBufferObject,
-	          "Get the ElementsBufferObject. ",
+	          __osg_ElementBufferObject_P1__getElementBufferObject,
+	          "Get the ElementBufferObject. ",
 	          "If no EBO is assigned returns NULL ");
-	I_Method0(const osg::ElementsBufferObject *, getElementsBufferObject,
+	I_Method0(const osg::ElementBufferObject *, getElementBufferObject,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_ElementsBufferObject_P1__getElementsBufferObject,
-	          "Get the const ElementsBufferObject. ",
+	          __C5_osg_ElementBufferObject_P1__getElementBufferObject,
+	          "Get the const ElementBufferObject. ",
 	          "If no EBO is assigned returns NULL ");
-	I_Method1(void, setElementsBufferObjectIndex, IN, unsigned int, index,
+	I_Method1(void, setElementBufferObjectIndex, IN, unsigned int, index,
 	          Properties::NON_VIRTUAL,
-	          __void__setElementsBufferObjectIndex__unsigned_int,
-	          "Set the index into the ElementsBufferObject, if used. ",
+	          __void__setElementBufferObjectIndex__unsigned_int,
+	          "Set the index into the ElementBufferObject, if used. ",
 	          "");
-	I_Method0(unsigned int, getElementsBufferObjectIndex,
+	I_Method0(unsigned int, getElementBufferObjectIndex,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getElementsBufferObjectIndex,
-	          "Get the index into the ElementsBufferObject, if used. ",
+	          __unsigned_int__getElementBufferObjectIndex,
+	          "Get the index into the ElementBufferObject, if used. ",
 	          "");
 	I_SimpleProperty(osg::DrawElements *, DrawElements, 
 	                 __DrawElements_P1__getDrawElements, 
 	                 0);
-	I_SimpleProperty(osg::ElementsBufferObject *, ElementsBufferObject, 
-	                 __osg_ElementsBufferObject_P1__getElementsBufferObject, 
-	                 __void__setElementsBufferObject__osg_ElementsBufferObject_P1);
-	I_SimpleProperty(unsigned int, ElementsBufferObjectIndex, 
-	                 __unsigned_int__getElementsBufferObjectIndex, 
-	                 __void__setElementsBufferObjectIndex__unsigned_int);
+	I_SimpleProperty(osg::ElementBufferObject *, ElementBufferObject, 
+	                 __osg_ElementBufferObject_P1__getElementBufferObject, 
+	                 __void__setElementBufferObject__osg_ElementBufferObject_P1);
+	I_SimpleProperty(unsigned int, ElementBufferObjectIndex, 
+	                 __unsigned_int__getElementBufferObjectIndex, 
+	                 __void__setElementBufferObjectIndex__unsigned_int);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type)

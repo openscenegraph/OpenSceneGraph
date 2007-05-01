@@ -236,17 +236,17 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >, osg::ElementsBufferObject::BufferEntryDrawElementstPair)
+TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >, osg::ElementBufferObject::BufferEntryDrawElementstPair)
 
-TYPE_NAME_ALIAS(std::vector< osg::ElementsBufferObject::BufferEntryDrawElementstPair >, osg::ElementsBufferObject::BufferEntryDrawElementsPairs)
+TYPE_NAME_ALIAS(std::vector< osg::ElementBufferObject::BufferEntryDrawElementstPair >, osg::ElementBufferObject::BufferEntryDrawElementsPairs)
 
-BEGIN_OBJECT_REFLECTOR(osg::ElementsBufferObject)
+BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
 	I_BaseType(osg::BufferObject);
-	I_Constructor0(____ElementsBufferObject,
+	I_Constructor0(____ElementBufferObject,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osg::ElementsBufferObject &, pbo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ElementsBufferObject__C5_ElementsBufferObject_R1__C5_CopyOp_R1,
+	I_ConstructorWithDefaults2(IN, const osg::ElementBufferObject &, pbo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ElementBufferObject__C5_ElementBufferObject_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
@@ -473,7 +473,7 @@ STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawEle
 
 STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ElementsBufferObject::BufferEntryDrawElementstPair >)
+STD_VECTOR_REFLECTOR(std::vector< osg::ElementBufferObject::BufferEntryDrawElementstPair >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >)
 

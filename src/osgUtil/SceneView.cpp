@@ -845,9 +845,10 @@ void SceneView::draw()
 {
     if (_camera->getNodeMask()==0) return;
 
-    if (!_initCalled) init();
-
     osg::State* state = _renderInfo.getState();
+    state->initializeExtensionProcs();
+
+    if (!_initCalled) init();
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
     // and texture objects is deferred until the OpenGL context is the correct

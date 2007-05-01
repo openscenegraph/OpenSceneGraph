@@ -308,7 +308,7 @@ class OSG_EXPORT Geometry : public Drawable
 
         osg::VertexBufferObject* getOrCreateVertexBufferObject();
 
-        osg::ElementsBufferObject* getOrCreateElementsBufferObject();
+        osg::ElementBufferObject* getOrCreateElementBufferObject();
 
 
         /** Set whether fast paths should be used when supported. */
@@ -394,7 +394,7 @@ class OSG_EXPORT Geometry : public Drawable
         void computeCorrectBindingsAndArraySizes(Vec3ArrayData& arrayData,const char* arrayName);
         
         void addVertexBufferObjectIfRequired(osg::Array* array);
-        void addElementsBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);
+        void addElementBufferObjectIfRequired(osg::PrimitiveSet* primitiveSet);
         
 
         PrimitiveSetList                _primitives;

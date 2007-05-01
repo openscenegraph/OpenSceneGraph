@@ -425,8 +425,8 @@ class DrawElements : public PrimitiveSet
 
         virtual void dirty() { ++_modifiedCount; if (_ebo.valid()) _ebo->dirty(); } 
 
-        /** Set the ElementsBufferObject.*/
-        inline void setElementsBufferObject(osg::ElementsBufferObject* ebo)
+        /** Set the ElementBufferObject.*/
+        inline void setElementBufferObject(osg::ElementBufferObject* ebo)
         {
             if (_ebo == ebo) return;
             
@@ -446,17 +446,17 @@ class DrawElements : public PrimitiveSet
             }
         }
         
-        /** Get the ElementsBufferObject. If no EBO is assigned returns NULL*/
-        inline osg::ElementsBufferObject* getElementsBufferObject() { return _ebo.get(); }
+        /** Get the ElementBufferObject. If no EBO is assigned returns NULL*/
+        inline osg::ElementBufferObject* getElementBufferObject() { return _ebo.get(); }
 
-        /** Get the const ElementsBufferObject. If no EBO is assigned returns NULL*/
-        inline const osg::ElementsBufferObject* getElementsBufferObject() const { return _ebo.get(); }
+        /** Get the const ElementBufferObject. If no EBO is assigned returns NULL*/
+        inline const osg::ElementBufferObject* getElementBufferObject() const { return _ebo.get(); }
 
-        /** Set the index into the ElementsBufferObject, if used.*/
-        inline void setElementsBufferObjectIndex(unsigned int index) { _eboIndex = index; }
+        /** Set the index into the ElementBufferObject, if used.*/
+        inline void setElementBufferObjectIndex(unsigned int index) { _eboIndex = index; }
 
-        /** Get the index into the ElementsBufferObject, if used.*/
-        inline unsigned int getElementsBufferObjectIndex() const { return _eboIndex; }
+        /** Get the index into the ElementBufferObject, if used.*/
+        inline unsigned int getElementBufferObjectIndex() const { return _eboIndex; }
 
 
     protected:
@@ -469,7 +469,7 @@ class DrawElements : public PrimitiveSet
             }
         }
 
-        osg::ref_ptr<ElementsBufferObject>  _ebo;
+        osg::ref_ptr<ElementBufferObject>  _ebo;
         unsigned int                        _eboIndex;
 };
 

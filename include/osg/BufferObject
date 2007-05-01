@@ -269,16 +269,16 @@ class OSG_EXPORT VertexBufferObject : public BufferObject
 };
 
 class DrawElements;
-class OSG_EXPORT ElementsBufferObject : public BufferObject
+class OSG_EXPORT ElementBufferObject : public BufferObject
 {
     public:
 
-        ElementsBufferObject();
+        ElementBufferObject();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        ElementsBufferObject(const ElementsBufferObject& pbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        ElementBufferObject(const ElementBufferObject& pbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-        META_Object(osg,ElementsBufferObject);
+        META_Object(osg,ElementBufferObject);
         
         typedef std::pair< BufferEntry, DrawElements* > BufferEntryDrawElementstPair;
         typedef std::vector< BufferEntryDrawElementstPair > BufferEntryDrawElementsPairs;
@@ -297,7 +297,7 @@ class OSG_EXPORT ElementsBufferObject : public BufferObject
 
     protected:
     
-        virtual ~ElementsBufferObject();
+        virtual ~ElementBufferObject();
         
         BufferEntryDrawElementsPairs _bufferEntryDrawElementsPairs;
 };

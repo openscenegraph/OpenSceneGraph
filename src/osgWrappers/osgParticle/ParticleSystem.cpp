@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <OpenThreads/ReadWriteMutex>
 #include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Object>

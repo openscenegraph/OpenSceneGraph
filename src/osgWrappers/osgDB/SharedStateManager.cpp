@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <OpenThreads/Mutex>
 #include <osg/Geode>
 #include <osg/Node>
 #include <osgDB/SharedStateManager>

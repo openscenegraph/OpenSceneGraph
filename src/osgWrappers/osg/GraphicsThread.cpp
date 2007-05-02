@@ -29,6 +29,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_BaseType(osg::Operation);
+	I_BaseType(OpenThreads::Barrier);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
 	                           ____BarrierOperation__int__PreBlockOp,
 	                           "",
@@ -36,7 +37,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_Method0(void, release,
 	          Properties::VIRTUAL,
 	          __void__release,
-	          "if this operation is a barrier then release it. ",
+	          "Release the barrier, now. ",
 	          "");
 	I_PublicMemberProperty(osg::BarrierOperation::PreBlockOp, _preBlockOp);
 END_REFLECTOR
@@ -84,6 +85,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 	I_BaseType(osg::Referenced);
+	I_BaseType(OpenThreads::Thread);
 	I_Constructor0(____OperationsThread,
 	               "",
 	               "");
@@ -160,6 +162,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
 	I_VirtualBaseType(osg::Referenced);
+	I_BaseType(OpenThreads::Block);
 	I_Constructor0(____RefBlock,
 	               "",
 	               "");

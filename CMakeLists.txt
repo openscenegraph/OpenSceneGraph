@@ -33,37 +33,6 @@ IF(USING_OSG_OP_OT_TRIPLE_SET)
 ENDIF(USING_OSG_OP_OT_TRIPLE_SET)
 
 
-# FIXME: The FindOpenThreads stuff below is not quite correct.
-# The problem is that if we are building OpenSceneGraph by itself 
-# (not part of the triple-set OT/OP/OSG source), then we need to hunt
-# down the OpenThreads library on the system.
-# But if we are building as part of the triple-set, then we want to 
-# refer to the version in the triple set. But this gets harder because 
-# FIND_LIBRARY will fail to pick the triple set version in this case 
-# because the library is not yet built when running this CMake script.
-#
-# Maybe we need a global flag (set in the root CMakeLists.txt) 
-# that tells us which scenario we are doing. 
-# And in the triple set case, we skip this check.
-
-IF(USING_OSG_OP_OT_TRIPLE_SET)
-    # MESSAGE("OSG: Using TripleSet, ${OpenThreads_SOURCE_DIR}.")
-    # So I think the fall-out is that all the OpenThreads variables
-    # that have been set are still in play. So the include paths are still
-    # visible, and the library is still set.
-    # To keep the same code paths
-    SET(OPENTHREADS_LIBRARY OpenThreads)
-    SET(OPENTHREADS_INCLUDE_DIR ${OpenThreads_SOURCE_DIR}/include)
-
-    # MESSAGE("Lib: ${OPENTHREADS_LIBRARY}")
-    
-
-ELSE(USING_OSG_OP_OT_TRIPLE_SET)
-#    MESSAGE("OSG: Not using Triple Set")
-    FIND_PACKAGE(OpenThreads REQUIRED)
-
-ENDIF(USING_OSG_OP_OT_TRIPLE_SET)
-
 # Okay, here's the problem: On some platforms, linking against OpenThreads
 # is not enough and explicit linking to the underlying thread library 
 # is also required (e.g. FreeBSD). But OpenThreads may be built with different
@@ -101,7 +70,6 @@ ENDIF(UNIX)
 # Make the headers visible to everything
 INCLUDE_DIRECTORIES(
     ${OpenSceneGraph_SOURCE_DIR}/include
-    ${OPENTHREADS_INCLUDE_DIR}
     ${OPENGL_INCLUDE_DIR}
 )
     

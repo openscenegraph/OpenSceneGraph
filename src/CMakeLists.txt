@@ -1,5 +1,6 @@
 
 SUBDIRS(
+        OpenThreads
 	osg
 	osgDB 
 	osgUtil 

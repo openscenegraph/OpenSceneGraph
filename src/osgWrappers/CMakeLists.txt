@@ -86,6 +86,7 @@ ENDMACRO(ADD_WRAPPER_LIB)
 
 
 SET(OSGWRAPPER_LIB_LIST 
+	OpenThreads
 	osg
 	osgDB
 	osgUtil

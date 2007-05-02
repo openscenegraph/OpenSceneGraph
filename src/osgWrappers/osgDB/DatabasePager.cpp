@@ -50,6 +50,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_BaseType(osg::NodeVisitor::DatabaseRequestHandler);
+	I_BaseType(OpenThreads::Thread);
 	I_Constructor0(____DatabasePager,
 	               "",
 	               "");

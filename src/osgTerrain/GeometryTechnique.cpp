@@ -23,6 +23,7 @@
 #include <osg/Texture1D>
 #include <osg/TexEnvCombine>
 #include <osg/Program>
+#include <osg/Math>
 
 using namespace osgTerrain;
 
@@ -175,7 +176,7 @@ void GeometryTechnique::init()
         if (_geometry.valid()) _geometry->setTexCoordArray(color_index, _texcoords);
     }
 
-    osg::FloatArray* _elevations = 0;
+    osg::FloatArray* _elevations = new osg::FloatArray(numVertices);
     osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
     if (tf)
     {
@@ -184,7 +185,7 @@ void GeometryTechnique::init()
 
         if (!colorLayer)
         {
-            _elevations = new osg::FloatArray(numVertices);
+            // _elevations = new osg::FloatArray(numVertices);
             if (_terrainGeometry.valid()) _terrainGeometry->setTexCoords(tf_index, _elevations);
             if (_geometry.valid()) _geometry->setTexCoordArray(tf_index, _elevations);
 
@@ -257,21 +258,73 @@ void GeometryTechnique::init()
         }
     }
 
+
     // populate primitive sets
-    // _primitiveSets.clear();
-    for(j=0; j<numRows-1; ++j)
+    bool optimizeOrientations = _elevations!=0;
+    
+    if (!optimizeOrientations)
     {
-        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, numColumns*2);
-        for(unsigned int i=0; i<numColumns; ++i)
+        osg::notify(osg::NOTICE)<<"Old tesselation"<<std::endl;
+        for(j=0; j<numRows-1; ++j)
         {
-            unsigned int iv = j*numColumns + i;
-            (*elements)[i*2] = iv + numColumns;
-            (*elements)[i*2+1] = iv;
+            osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, numColumns*2);
+            for(unsigned int i=0; i<numColumns; ++i)
+            {
+                unsigned int iv = j*numColumns + i;
+                (*elements)[i*2] = iv + numColumns;
+                (*elements)[i*2+1] = iv;
+            }
+
+            if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
+
+            if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
         }
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"New tesselation"<<std::endl;
+    
+        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
+        elements->reserve((numRows-1) * (numColumns-1) * 6);
         
         if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
-
         if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
+
+        for(j=0; j<numRows-1; ++j)
+        {
+            for(unsigned int i=0; i<numColumns-1; ++i)
+            {
+                unsigned int i00 = j*numColumns + i;
+                unsigned int i10 = i00+1;
+                unsigned int i01 = i00+numColumns;
+                unsigned int i11 = i01+1;
+                float e00 = (*_elevations)[i00];
+                float e10 = (*_elevations)[i10];
+                float e01 = (*_elevations)[i01];
+                float e11 = (*_elevations)[i11];
+                
+                if (fabsf(e00-e11)<fabsf(e01-e10))
+                {
+                    elements->push_back(i01);
+                    elements->push_back(i00);
+                    elements->push_back(i11);
+
+                    elements->push_back(i00);
+                    elements->push_back(i10);
+                    elements->push_back(i11);
+                }
+                else
+                {
+                    elements->push_back(i01);
+                    elements->push_back(i00);
+                    elements->push_back(i10);
+
+                    elements->push_back(i01);
+                    elements->push_back(i10);
+                    elements->push_back(i11);
+                }
+            }
+        }
     }
 
     if (colorLayer)

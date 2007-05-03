@@ -34,14 +34,11 @@ ENDMACRO(LINK_EXTERNAL TRGTNAME)
 
 
 #######################################################################################################
-#  macro for common setup of core libraries: it links OPENGL_LIBRARIES in undifferentiated mode and
-#  OPENTHREADS_LIBRARY as Differentiated, so if existe the variable OPENTHREADS_LIBRARY_DEBUG, it uses 
-#  the content of this library for linking when in debugging
+#  macro for common setup of core libraries: it links OPENGL_LIBRARIES in undifferentiated mode
 #######################################################################################################
 
 MACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
     LINK_EXTERNAL(${CORELIB_NAME} ${OPENGL_LIBRARIES}) 
-    LINK_WITH_VARIABLES(${CORELIB_NAME} OPENTHREADS_LIBRARY)
 ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
 
 

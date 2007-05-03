@@ -41,6 +41,7 @@ LINK_INTERNAL(${LIB_NAME}
 	osgUtil
 	osgDB
 	osg
+	OpenThreads
 )
 LINK_CORELIB_DEFAULT(${LIB_NAME})
 

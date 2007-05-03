@@ -70,6 +70,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
 	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
 	          "",
 	          "");
+	I_Method0(bool, orientationOpenGL,
+	          Properties::VIRTUAL,
+	          __bool__orientationOpenGL,
+	          "",
+	          "");
 	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
 	          Properties::VIRTUAL,
 	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
@@ -134,6 +139,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(bool, orientationOpenGL,
+	          Properties::VIRTUAL,
+	          __bool__orientationOpenGL,
+	          "",
+	          "");
 	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
 	          Properties::VIRTUAL,
 	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,

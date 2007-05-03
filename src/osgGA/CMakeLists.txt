@@ -50,6 +50,7 @@ ADD_LIBRARY(${LIB_NAME}
 
 LINK_INTERNAL(${LIB_NAME} 	
 	osgDB
+	osgUtil
 	osg
 	OpenThreads
 )

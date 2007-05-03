@@ -261,6 +261,7 @@ void GeometryTechnique::init()
 
     // populate primitive sets
     bool optimizeOrientations = _elevations!=0;
+    bool swapOrientation = !(masterLocator->orientationOpenGL());
     
     if (!optimizeOrientations)
     {
@@ -271,8 +272,16 @@ void GeometryTechnique::init()
             for(unsigned int i=0; i<numColumns; ++i)
             {
                 unsigned int iv = j*numColumns + i;
-                (*elements)[i*2] = iv + numColumns;
-                (*elements)[i*2+1] = iv;
+                if (swapOrientation)
+                {
+                    (*elements)[i*2] = iv + numColumns;
+                    (*elements)[i*2+1] = iv;
+                }
+                else
+                {
+                    (*elements)[i*2+1] = iv + numColumns;
+                    (*elements)[i*2] = iv;
+                }
             }
 
             if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
@@ -294,10 +303,22 @@ void GeometryTechnique::init()
         {
             for(unsigned int i=0; i<numColumns-1; ++i)
             {
-                unsigned int i00 = j*numColumns + i;
+                unsigned int i00;
+                unsigned int i01;
+                if (swapOrientation)
+                {
+                    i01 = j*numColumns + i;
+                    i00 = i01+numColumns;
+                }
+                else
+                {
+                    i00 = j*numColumns + i;
+                    i01 = i00+numColumns;
+                }
+
                 unsigned int i10 = i00+1;
-                unsigned int i01 = i00+numColumns;
                 unsigned int i11 = i01+1;
+
                 float e00 = (*_elevations)[i00];
                 float e10 = (*_elevations)[i10];
                 float e01 = (*_elevations)[i01];

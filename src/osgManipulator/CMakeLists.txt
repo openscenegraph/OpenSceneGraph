@@ -61,6 +61,7 @@ LINK_INTERNAL(${LIB_NAME}
 	osgGA
 	osgUtil
 	osg
+	OpenThreads
 )
 LINK_CORELIB_DEFAULT(${LIB_NAME})
 

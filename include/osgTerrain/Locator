@@ -60,9 +60,9 @@ class OSGTERRAIN_EXPORT EllipsoidLocator : public osgTerrain::Locator
     public:
 
 
-        EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0);
+        EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f);
 
-        void setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0);
+        void setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f);
 
         double getLongitude() const { return _longitude; }
         double getDeltaLongitude() const { return _deltaLongitude; }
@@ -88,6 +88,42 @@ class OSGTERRAIN_EXPORT EllipsoidLocator : public osgTerrain::Locator
         double _deltaLongitude;
         double _deltaLatitude;
         double _height;
+        double _heightScale;
+};
+
+
+class OSGTERRAIN_EXPORT CartizianLocator : public osgTerrain::Locator
+{
+    public:
+
+        CartizianLocator(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 1.0f); 
+
+        void setExtents(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 1.0f); 
+
+        void setOriginX(double x) { _originX = x; }
+        double getOriginX() const { return _originX; }
+
+        void setOriginY(double y) { _originY = y; }
+        double getOriginY() const { return _originY; }
+
+        void setLengthX(double x) { _lengthX = x; }
+        double getLengthX() const { return _lengthX; }
+
+        void setLengthY(double y) { _lengthY = y; }
+        double getLengthY() const { return _lengthY; }
+
+        virtual bool orientationOpenGL() const;
+        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const;
+        virtual bool convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const;    
+
+    protected:
+
+        double _originX;
+        double _originY;
+        double _lengthX;
+        double _lengthY;
+        double _height;
+        double _heightScale;
 };
 
 }

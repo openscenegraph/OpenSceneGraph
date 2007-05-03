@@ -80,25 +80,21 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
 //
 // EllipsoidLocator
 //
-EllipsoidLocator::EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height):
-    _longitude(longitude),
-    _latitude(latitude),
-    _deltaLongitude(deltaLongitude),
-    _deltaLatitude(deltaLatitude),
-    _height(height)
-
+EllipsoidLocator::EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height, double heightScale)
 {
+    setExtents(longitude, latitude, deltaLongitude, deltaLatitude, height, heightScale);
     _em = new osg::EllipsoidModel;
 }
 
 
-void EllipsoidLocator::setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height)
+void EllipsoidLocator::setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height, double heightScale)
 {
     _longitude = longitude;
     _latitude = latitude;
     _deltaLongitude = deltaLongitude;
     _deltaLatitude = deltaLatitude;
     _height = height;
+    _heightScale = heightScale;
 }
 
 bool EllipsoidLocator::orientationOpenGL() const
@@ -110,7 +106,7 @@ bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& 
 {
     double longitude = _longitude + local.x() * _deltaLongitude;
     double latitude = _latitude + local.y() * _deltaLatitude;
-    double height = _height + local.z();
+    double height = _height + local.z() * _heightScale;
 
     _em->convertLatLongHeightToXYZ(latitude, longitude, height,
                                    world.x(), world.y(), world.z());
@@ -127,7 +123,50 @@ bool EllipsoidLocator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& 
 
     local.x() = (longitude-_longitude)/_deltaLongitude;
     local.y() = (latitude-_latitude)/_deltaLatitude;
-    local.z() = height-_height;
+    local.z() = (height-_height)/_heightScale;
+
+    return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// CartizianLocator
+//
+
+CartizianLocator::CartizianLocator(double originX, double originY, double lengthX, double lengthY, double height, double heightScale)
+{
+    setExtents(originX, originY, lengthY, lengthY, height, heightScale);
+}
+
+void CartizianLocator::setExtents(double originX, double originY, double lengthX, double lengthY, double height, double heightScale)
+{
+    _originX = originX;
+    _originY = originY;
+    _lengthX = lengthX;
+    _lengthY = lengthY;
+    _height = height;
+    _heightScale = heightScale;
+}
+
+bool CartizianLocator::orientationOpenGL() const
+{
+    return (_lengthX * _lengthY) >= 0.0;
+}
+
+bool CartizianLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const
+{
+    world.x() = _originX + local.x() * _lengthX;
+    world.y() = _originY + local.y() * _lengthY;
+    world.z() = _height + local.z() * _heightScale;
+
+    return true;
+}
+
+bool CartizianLocator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const
+{
+    local.x() = (world.x() - _originX)/_lengthX;
+    local.y() = (world.y() - _originY)/_lengthY;
+    local.z() = (world.z() - _height)/_heightScale;
 
     return true;
 }

@@ -134,6 +134,7 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
                 filter = rhs.filter;
                 layer = rhs.layer;
                 transferFunction = rhs.transferFunction;
+                return *this;
             }
 
             Filter                              filter;

@@ -101,6 +101,11 @@ void EllipsoidLocator::setExtents(double longitude, double latitude, double delt
     _height = height;
 }
 
+bool EllipsoidLocator::orientationOpenGL() const
+{
+    return (_deltaLongitude * _deltaLatitude) >= 0.0;
+}
+
 bool EllipsoidLocator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const
 {
     double longitude = _longitude + local.x() * _deltaLongitude;

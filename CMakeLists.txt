@@ -18,6 +18,8 @@ SET(OPENSCENEGRAPH_MAJOR_VERSION 1)
 SET(OPENSCENEGRAPH_MINOR_VERSION 9)
 SET(OPENSCENEGRAPH_PATCH_VERSION 2)
 
+SET(OpenThreads_SOURCE_DIR ${OpenSceneGraph_SOURCE_DIR})
+
 # We have some custom .cmake scripts not in the official distribution.
 # Maybe this can be used override existing behavior if needed?
 SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")

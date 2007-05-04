@@ -81,6 +81,10 @@ static int s_debugMessages = 0;
 	ptr = NULL;\
 }
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static inline void
 clear(void* dest, uint32_t size)
 {
@@ -2796,3 +2800,6 @@ void register_rgbout_plugin(xine_t *self)
      xine_register_plugins(self, xine_plugin_info);
 }
 
+#ifdef __cplusplus
+}
+#endif

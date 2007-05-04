@@ -119,14 +119,14 @@ IF (BUILD_OSG_OTHER_PLUGINS)
 	ADD_SUBDIRECTORY(md2)
 	ADD_SUBDIRECTORY(osgtgz)
 	ADD_SUBDIRECTORY(tgz)
-        
-        # comment out txp plugin till it compiles cleanly...
+
 	ADD_SUBDIRECTORY(txp)
-        
 	ADD_SUBDIRECTORY(shp)
 	ADD_SUBDIRECTORY(txf)
 
-	#ADD_SUBDIRECTORY(xine)
+        IF(XINE_FOUND)
+            ADD_SUBDIRECTORY(xine)
+        ENDIF(XINE_FOUND)
 
         IF(QUICKTIME_FOUND)
             ADD_SUBDIRECTORY(quicktime)

@@ -24,15 +24,95 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::CartizianLocator)
 	I_BaseType(osgTerrain::Locator);
-	I_ConstructorWithDefaults5(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0,
-	                           ____EllipsoidLocator__double__double__double__double__double,
+	I_ConstructorWithDefaults6(IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,
+	                           ____CartizianLocator__double__double__double__double__double__double,
 	                           "",
 	                           "");
-	I_MethodWithDefaults5(void, setExtents, IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0,
+	I_MethodWithDefaults6(void, setExtents, IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setExtents__double__double__double__double__double,
+	                      __void__setExtents__double__double__double__double__double__double,
+	                      "",
+	                      "");
+	I_Method1(void, setOriginX, IN, double, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setOriginX__double,
+	          "",
+	          "");
+	I_Method0(double, getOriginX,
+	          Properties::NON_VIRTUAL,
+	          __double__getOriginX,
+	          "",
+	          "");
+	I_Method1(void, setOriginY, IN, double, y,
+	          Properties::NON_VIRTUAL,
+	          __void__setOriginY__double,
+	          "",
+	          "");
+	I_Method0(double, getOriginY,
+	          Properties::NON_VIRTUAL,
+	          __double__getOriginY,
+	          "",
+	          "");
+	I_Method1(void, setLengthX, IN, double, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setLengthX__double,
+	          "",
+	          "");
+	I_Method0(double, getLengthX,
+	          Properties::NON_VIRTUAL,
+	          __double__getLengthX,
+	          "",
+	          "");
+	I_Method1(void, setLengthY, IN, double, y,
+	          Properties::NON_VIRTUAL,
+	          __void__setLengthY__double,
+	          "",
+	          "");
+	I_Method0(double, getLengthY,
+	          Properties::NON_VIRTUAL,
+	          __double__getLengthY,
+	          "",
+	          "");
+	I_Method0(bool, orientationOpenGL,
+	          Properties::VIRTUAL,
+	          __bool__orientationOpenGL,
+	          "",
+	          "");
+	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
+	          Properties::VIRTUAL,
+	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
+	          Properties::VIRTUAL,
+	          __bool__convertModelToLocal__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	          "",
+	          "");
+	I_SimpleProperty(double, LengthX, 
+	                 __double__getLengthX, 
+	                 __void__setLengthX__double);
+	I_SimpleProperty(double, LengthY, 
+	                 __double__getLengthY, 
+	                 __void__setLengthY__double);
+	I_SimpleProperty(double, OriginX, 
+	                 __double__getOriginX, 
+	                 __void__setOriginX__double);
+	I_SimpleProperty(double, OriginY, 
+	                 __double__getOriginY, 
+	                 __void__setOriginY__double);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
+	I_BaseType(osgTerrain::Locator);
+	I_ConstructorWithDefaults6(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f,
+	                           ____EllipsoidLocator__double__double__double__double__double__double,
+	                           "",
+	                           "");
+	I_MethodWithDefaults6(void, setExtents, IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setExtents__double__double__double__double__double__double,
 	                      "",
 	                      "");
 	I_Method0(double, getLongitude,

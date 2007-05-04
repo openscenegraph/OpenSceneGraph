@@ -338,8 +338,8 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
         if (glyph)
         {
 
-           float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
-           //float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
+           float width = (float)(glyph->s()) * wr;
+           //float height = (float)(glyph->t()) * hr;
            #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
            if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
            //if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
@@ -598,9 +598,9 @@ void Text::computeGlyphRepresentation()
                 Font::Glyph* glyph = activefont->getGlyph(charcode);
                 if (glyph)
                 {
+                    float width = (float)(glyph->s()) * wr;
+                    float height = (float)(glyph->t()) * hr;
 
-                    float width = (float)(glyph->s()-2*activefont->getGlyphImageMargin()) * wr;
-                    float height = (float)(glyph->t()-2*activefont->getGlyphImageMargin()) * hr;
                     #ifdef TREES_CODE_FOR_MAKING_SPACES_EDITABLE
                     if (width == 0.0f)  width = glyph->getHorizontalAdvance() * wr;
                     if (height == 0.0f) height = glyph->getVerticalAdvance() * hr;
@@ -1465,7 +1465,11 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     unsigned int contextID = state.getContextID();
 
     state.applyMode(GL_BLEND,true);
+#if 1   
     state.applyTextureMode(0,GL_TEXTURE_2D,true);
+#else
+    state.applyTextureMode(0,GL_TEXTURE_2D,false);
+#endif
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
 
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)

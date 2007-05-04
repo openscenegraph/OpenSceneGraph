@@ -195,8 +195,8 @@ void DefaultFont::constructGlyphs()
     unsigned int sourceWidth = 8;
     unsigned int sourceHeight = 12;
     
-    _width = sourceWidth+2*_margin;
-    _height = sourceHeight+2*_margin;
+    _width = sourceWidth;
+    _height = sourceHeight;
 
     // populate the glyph mp
     for(unsigned int i=32;i<127;i++)
@@ -223,12 +223,8 @@ void DefaultFont::constructGlyphs()
         unsigned char value_on = 255;
         unsigned char value_off = 0;
 
-        // skip the top margin        
-        data += (_margin*_width);
-        
         for(unsigned int row=0;row<sourceHeight;++row,++ptr)
         {
-            data+=_margin; // skip the left margin
             (*data++)=((*ptr)&128)?value_on:value_off;
             (*data++)=((*ptr)&64)?value_on:value_off;
             (*data++)=((*ptr)&32)?value_on:value_off;
@@ -237,7 +233,6 @@ void DefaultFont::constructGlyphs()
             (*data++)=((*ptr)&4)?value_on:value_off;
             (*data++)=((*ptr)&2)?value_on:value_off;
             (*data++)=((*ptr)&1)?value_on:value_off;
-            data+=_margin; // skip the right margin.
         }
                         
         glyph->setHorizontalBearing(osg::Vec2(0.0f,0.0f)); // bottom left.

@@ -730,7 +730,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
                   }
                   if (cols3) {
                       primCol3=(*cols3)[iprim]; // GWM Dec 2003 flat shaded rgb colour
-                    if (_index>=cols4->size()) {
+                    if (_index>=cols3->size()) {
                         cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
                     }
                   }

@@ -54,6 +54,10 @@ ADD_LIBRARY(${LIB_NAME}
 	Value.cpp
 )
 
+LINK_INTERNAL(${LIB_NAME}
+       OpenThreads
+)
+
 LINK_CORELIB_DEFAULT(${LIB_NAME})
 
 

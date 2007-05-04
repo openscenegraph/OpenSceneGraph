@@ -133,9 +133,10 @@ osgText::Font* osgText::readFontStream(std::istream& stream)
 Font::Font(FontImplementation* implementation):
     _width(16),
     _height(16),
-    _margin(2),
-    _textureWidthHint(512),
-    _textureHeightHint(512),
+    _margin(1),
+    _marginRatio(0.05),
+    _textureWidthHint(1024),
+    _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
     _magFilterHint(osg::Texture::LINEAR)
 {
@@ -197,6 +198,16 @@ void Font::setGlyphImageMargin(unsigned int margin)
 unsigned int Font::getGlyphImageMargin() const
 {
     return _margin;
+}
+
+void Font::setGlyphImageMarginRatio(float ratio)
+{
+    _marginRatio = ratio;
+}
+
+float Font::getGlyphImageMarginRatio() const
+{
+    return _marginRatio;
 }
 
 void Font::setTextureSizeHint(unsigned int width,unsigned int height)
@@ -340,6 +351,7 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
 
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);
+        glyphTexture->setGlyphImageMarginRatio(_marginRatio);
         glyphTexture->setTextureSize(_textureWidthHint,_textureHeightHint);
         glyphTexture->setFilter(osg::Texture::MIN_FILTER,_minFilterHint);
         glyphTexture->setFilter(osg::Texture::MAG_FILTER,_magFilterHint);
@@ -362,7 +374,8 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
 
 
 Font::GlyphTexture::GlyphTexture():
-    _margin(2),
+    _margin(1),
+    _marginRatio(0.05f),
     _usedY(0),
     _partUsedX(0),
     _partUsedY(0)
@@ -384,9 +397,11 @@ int Font::GlyphTexture::compare(const osg::StateAttribute& rhs) const
 
 bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {
-        
-    int width = glyph->s()+2*_margin;
-    int height = glyph->t()+2*_margin;
+    int maxAxis = std::max(glyph->s(), glyph->t());
+    int margin = _margin + (int)((float)maxAxis * _marginRatio);
+    
+    int width = glyph->s()+2*margin;
+    int height = glyph->t()+2*margin;
 
     // first check box (_partUsedX,_usedY) to (width,height)
     if (width <= (getTextureWidth()-_partUsedX) &&
@@ -395,8 +410,8 @@ bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
         // can fit in existing row.
 
         // record the position in which the texture will be stored.
-        posX = _partUsedX+_margin;
-        posY = _usedY+_margin;        
+        posX = _partUsedX+margin;
+        posY = _usedY+margin;        
 
         // move used markers on.
         _partUsedX += width;
@@ -413,8 +428,8 @@ bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
         _partUsedX = 0;
         _usedY = _partUsedY;
 
-        posX = _partUsedX+_margin;
-        posY = _usedY+_margin;        
+        posX = _partUsedX+margin;
+        posY = _usedY+margin;        
 
         // move used markers on.
         _partUsedX += width;
@@ -439,9 +454,9 @@ void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     // set up the details of where to place glyph's image in the texture.
     glyph->setTexture(this);
     glyph->setTexturePosition(posX,posY);
-    unsigned int sizeAdjustment = 0; // was 1.
-    glyph->setMinTexCoord(osg::Vec2((float)(posX+_margin)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+_margin)/(float)(getTextureHeight()-sizeAdjustment)));
-    glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s()-_margin)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+glyph->t()-_margin)/(float)(getTextureHeight()-sizeAdjustment)));
+    unsigned int sizeAdjustment = 1;
+    glyph->setMinTexCoord(osg::Vec2((float)(posX)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY)/(float)(getTextureHeight()-sizeAdjustment)));
+    glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s())/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+glyph->t())/(float)(getTextureHeight()-sizeAdjustment)));
 }
 
 void Font::GlyphTexture::apply(osg::State& state) const

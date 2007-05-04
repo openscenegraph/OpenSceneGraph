@@ -129,10 +129,20 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	          Properties::NON_VIRTUAL,
 	          __void__setGlyphImageMargin__unsigned_int,
 	          "Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other. ",
-	          "Default margin is 2 texels. ");
+	          "Default margin is 1 texels. ");
 	I_Method0(unsigned int, getGlyphImageMargin,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getGlyphImageMargin,
+	          "",
+	          "");
+	I_Method1(void, setGlyphImageMarginRatio, IN, float, margin,
+	          Properties::NON_VIRTUAL,
+	          __void__setGlyphImageMarginRatio__float,
+	          "Set the margin ratio around each glyph, relative to the glyph's size. ",
+	          "to ensure that texture filtering doesn't bleed adjacent glyph's into each other. Default margin is 0.05. ");
+	I_Method0(float, getGlyphImageMarginRatio,
+	          Properties::NON_VIRTUAL,
+	          __float__getGlyphImageMarginRatio,
 	          "",
 	          "");
 	I_Method2(void, setTextureSizeHint, IN, unsigned int, width, IN, unsigned int, height,
@@ -218,6 +228,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_SimpleProperty(unsigned int, GlyphImageMargin, 
 	                 __unsigned_int__getGlyphImageMargin, 
 	                 __void__setGlyphImageMargin__unsigned_int);
+	I_SimpleProperty(float, GlyphImageMarginRatio, 
+	                 __float__getGlyphImageMarginRatio, 
+	                 __void__setGlyphImageMarginRatio__float);
 	I_SimpleProperty(osgText::Font::FontImplementation *, Implementation, 
 	                 __FontImplementation_P1__getImplementation, 
 	                 __void__setImplementation__FontImplementation_P1);
@@ -468,6 +481,16 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	          __unsigned_int__getGlyphImageMargin,
 	          "",
 	          "");
+	I_Method1(void, setGlyphImageMarginRatio, IN, float, margin,
+	          Properties::NON_VIRTUAL,
+	          __void__setGlyphImageMarginRatio__float,
+	          "",
+	          "");
+	I_Method0(float, getGlyphImageMarginRatio,
+	          Properties::NON_VIRTUAL,
+	          __float__getGlyphImageMarginRatio,
+	          "",
+	          "");
 	I_Method3(bool, getSpaceForGlyph, IN, osgText::Font::Glyph *, glyph, IN, int &, posX, IN, int &, posY,
 	          Properties::NON_VIRTUAL,
 	          __bool__getSpaceForGlyph__Glyph_P1__int_R1__int_R1,
@@ -496,6 +519,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	I_SimpleProperty(unsigned int, GlyphImageMargin, 
 	                 __unsigned_int__getGlyphImageMargin, 
 	                 __void__setGlyphImageMargin__unsigned_int);
+	I_SimpleProperty(float, GlyphImageMarginRatio, 
+	                 __float__getGlyphImageMarginRatio, 
+	                 __void__setGlyphImageMarginRatio__float);
 	I_SimpleProperty(bool, ThreadSafeRefUnref, 
 	                 0, 
 	                 __void__setThreadSafeRefUnref__bool);

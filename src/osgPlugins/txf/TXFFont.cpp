@@ -242,9 +242,8 @@ TXFFont::loadFont(std::istream& stream)
         unsigned sourceWidth = glyphs[i].width;
         unsigned sourceHeight = glyphs[i].height;
 
-        unsigned margin = _facade->getGlyphImageMargin();
-        unsigned width = sourceWidth + 2*margin;
-        unsigned height = sourceHeight + 2*margin;
+        unsigned width = sourceWidth;
+        unsigned height = sourceHeight;
 
         glyph->allocateImage(width, height, 1, GL_ALPHA, GL_UNSIGNED_BYTE);
         glyph->setInternalTextureFormat(GL_ALPHA);
@@ -261,7 +260,7 @@ TXFFont::loadFont(std::istream& stream)
         {
             for (unsigned l = 0; l < glyphs[i].height; ++l)
             {
-                *glyph->data(margin + k, margin + l) = *image->data(glyphs[i].x + k, glyphs[i].y + l);
+                *glyph->data(k, l) = *image->data(glyphs[i].x + k, glyphs[i].y + l);
             }
         }
 
@@ -281,9 +280,8 @@ TXFFont::loadFont(std::istream& stream)
     // insert a trivial blank character
     osgText::Font::Glyph* glyph = new osgText::Font::Glyph;
 
-    unsigned margin = _facade->getGlyphImageMargin();
-    unsigned width = 1 + 2*margin;
-    unsigned height = 1 + 2*margin;
+    unsigned width = 1;
+    unsigned height = 1;
     
     glyph->allocateImage(width, height, 1, GL_ALPHA, GL_UNSIGNED_BYTE);
     glyph->setInternalTextureFormat(GL_ALPHA);

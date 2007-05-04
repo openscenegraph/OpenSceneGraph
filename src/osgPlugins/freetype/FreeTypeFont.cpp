@@ -58,13 +58,16 @@ FreeTypeFont::~FreeTypeFont()
 
 void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)
 {
-    if (width+2*_facade->getGlyphImageMargin()>_facade->getTextureWidthHint() ||
-        height+2*_facade->getGlyphImageMargin()>_facade->getTextureHeightHint())
+    int maxAxis = std::max(width, height);
+    int margin = _facade->getGlyphImageMargin() + (int)((float)maxAxis * _facade->getGlyphImageMarginRatio());
+
+    if (width+2*margin>_facade->getTextureWidthHint() ||
+        width+2*margin>_facade->getTextureHeightHint())
     {
         osg::notify(osg::WARN)<<"Warning: FreeTypeFont::setSize("<<width<<","<<height<<") sizes too large,"<<std::endl;
     
-        width = _facade->getTextureWidthHint()-2*_facade->getGlyphImageMargin();
-        height = _facade->getTextureHeightHint()-2*_facade->getGlyphImageMargin();
+        width = _facade->getTextureWidthHint()-2*margin;
+        height = _facade->getTextureHeightHint()-2*margin;
 
         osg::notify(osg::WARN)<<"         sizes capped ("<<width<<","<<height<<") to fit int current glyph texture size."<<std::endl;
     }
@@ -118,9 +121,8 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     unsigned int sourceWidth = glyphslot->bitmap.width;;
     unsigned int sourceHeight = glyphslot->bitmap.rows;
     
-    unsigned int margin = _facade->getGlyphImageMargin();
-    unsigned int width = sourceWidth+2*margin;
-    unsigned int height = sourceHeight+2*margin;
+    unsigned int width = sourceWidth;
+    unsigned int height = sourceHeight;
 
     osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph;
     
@@ -140,20 +142,14 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
 
     glyph->setInternalTextureFormat(GL_ALPHA);
 
-    // skip the top margin        
-    data += (margin*width);
-
     // copy image across to osgText::Glyph image.     
     for(int r=sourceHeight-1;r>=0;--r)
     {
-        data+=margin; // skip the left margin
-
         unsigned char* ptr = buffer+r*pitch;
         for(unsigned int c=0;c<sourceWidth;++c,++ptr)
         {
             (*data++)=*ptr;
         }
-        data+=margin; // skip the right margin.
     }
 
 

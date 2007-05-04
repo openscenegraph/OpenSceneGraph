@@ -280,7 +280,7 @@ class MaterialData
         // this must be done past the transparency setting ...
         (*mColorArray)[0] = mMaterial->getDiffuse(osg::Material::FRONT_AND_BACK);
     }
-  
+
     void toStateSet(osg::StateSet* stateSet) const
     {
         stateSet->setAttribute(mMaterial.get());
@@ -341,6 +341,8 @@ class TextureData
     }
     void toTextureStateSet(osg::StateSet* stateSet) const
     {
+        if (!valid())
+            return;
         osg::TexEnv* texEnv = new osg::TexEnv;
         texEnv->setMode(osg::TexEnv::MODULATE);
         stateSet->setTextureAttribute(0, texEnv);
@@ -363,17 +365,12 @@ class FileData
         mLightIndex(1)
     { }
 
-    bool toTextureStateSet(const std::string& texName, osg::StateSet* stateSet)
+    TextureData toTextureData(const std::string& texName)
     {
-        if (!mTextureStates[texName].valid())
-        {
-            TextureData textureData;
-            if (!textureData.setTexture(texName, mOptions.get()))
-                return false;
-            mTextureStates[texName] = textureData;
-        }
-        mTextureStates[texName].toTextureStateSet(stateSet);
-        return true;
+        TextureDataMap::iterator i = mTextureStates.find(texName);
+        if (i == mTextureStates.end())
+            mTextureStates[texName].setTexture(texName, mOptions.get());
+        return mTextureStates[texName];
     }
 
     osg::Light* getNextLight()
@@ -405,7 +402,8 @@ private:
 
     /// Local per model texture attribute cache.
     /// ... images are usualy cached in the registries object cache
-    std::map<std::string, TextureData> mTextureStates;
+    typedef std::map<std::string, TextureData> TextureDataMap;
+    TextureDataMap mTextureStates;
 
     /// Hack to include light nodes from ac3d into the scenegraph
     unsigned mLightIndex;
@@ -608,7 +606,7 @@ class PrimitiveBin : public osg::Referenced
     virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord) = 0;
     virtual bool endPrimitive() = 0;
 
-    virtual osg::Geometry* finalize(const MaterialData& material) = 0;
+    virtual osg::Geometry* finalize(const MaterialData& material, const TextureData& textureData) = 0;
 
   protected:
     bool isLineLoop() const
@@ -701,7 +699,7 @@ class LineBin : public PrimitiveBin
         return true;
     }
 
-    virtual osg::Geometry* finalize(const MaterialData& material)
+    virtual osg::Geometry* finalize(const MaterialData& material, const TextureData& textureData)
     {
         material.toStateSet(_geometry->getOrCreateStateSet());
         _geometry->setColorArray(material.getColorArray());
@@ -853,10 +851,11 @@ class SurfaceBin : public PrimitiveBin {
         texcoordArray->push_back(_vertexSet->getTexCoord(vertexIndex));
     }
 
-    virtual osg::Geometry* finalize(const MaterialData& material)
+    virtual osg::Geometry* finalize(const MaterialData& material, const TextureData& textureData)
     {
         osg::StateSet* stateSet = _geometry->getOrCreateStateSet();
         material.toStateSet(stateSet);
+        textureData.toTextureStateSet(stateSet);
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
         // Single- or doublesided culling
@@ -1008,27 +1007,27 @@ struct Bins
             }
         }
     }
-    void finalize(osg::Geode* geode, const MaterialData& material)
+    void finalize(osg::Geode* geode, const MaterialData& material, const TextureData& textureData)
     {
         if (lineBin.valid())
         {
-            geode->addDrawable(lineBin->finalize(material));
+            geode->addDrawable(lineBin->finalize(material, textureData));
         }
         if (smoothDoubleSurfaceBin.valid())
         {
-            geode->addDrawable(smoothDoubleSurfaceBin->finalize(material));
+            geode->addDrawable(smoothDoubleSurfaceBin->finalize(material, textureData));
         }
         if (smoothSingleSurfaceBin.valid())
         {
-            geode->addDrawable(smoothSingleSurfaceBin->finalize(material));
+            geode->addDrawable(smoothSingleSurfaceBin->finalize(material, textureData));
         }
         if (flatDoubleSurfaceBin.valid())
         {
-            geode->addDrawable(flatDoubleSurfaceBin->finalize(material));
+            geode->addDrawable(flatDoubleSurfaceBin->finalize(material, textureData));
         }
         if (flatSingleSurfaceBin.valid())
         {
-            geode->addDrawable(flatSingleSurfaceBin->finalize(material));
+            geode->addDrawable(flatSingleSurfaceBin->finalize(material, textureData));
         }
     }
 
@@ -1041,7 +1040,7 @@ private:
 };
 
 osg::Node*
-readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform)
+readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTransform, TextureData textureData)
 {
     // most of this logic came from Andy Colebourne (developer of the AC3D editor) so it had better be right!
 
@@ -1101,7 +1100,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
             if (p != std::string::npos)
                 texname = texname.substr(p+1, std::string::npos);
         
-            fileData.toTextureStateSet(texname, group->getOrCreateStateSet());
+            textureData  = fileData.toTextureData(texname);
         }
         else if (token == "texrep") {
             stream >> textureRepeat[0] >> textureRepeat[1];
@@ -1249,7 +1248,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 }
                 
                 for (unsigned i = 0; i < primitiveBins.size(); ++i)
-                    primitiveBins[i].finalize(geode.get(), fileData.getMaterial(i));
+                    primitiveBins[i].finalize(geode.get(), fileData.getMaterial(i), textureData);
             }
         }
         else if (token == "kids") {
@@ -1257,7 +1256,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
             stream >> num;
             if (num != 0) {
                 for (unsigned n = 0; n < num; n++) {
-                    osg::Node *k = readObject(stream, fileData, transform*parentTransform);
+                    osg::Node *k = readObject(stream, fileData, transform*parentTransform, textureData);
                     if (k == 0) {
                         osg::notify(osg::FATAL) << "osgDB ac3d reader: error reading child object" << std::endl;
                         return group.release();
@@ -1303,7 +1302,7 @@ readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options)
 {
     FileData fileData(options);
     osg::Matrix idetityTransform;
-    osg::Node* node = readObject(stream, fileData, idetityTransform);
+    osg::Node* node = readObject(stream, fileData, idetityTransform, TextureData());
     if (node)
       node->setName("World");
     return node;

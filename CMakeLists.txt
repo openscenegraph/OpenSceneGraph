@@ -123,6 +123,7 @@ FIND_PACKAGE(SDL)
 FIND_PACKAGE(Inventor)
 FIND_PACKAGE(Qt3)
 FIND_PACKAGE(Qt4)
+FIND_PACKAGE(Jasper)
 
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything

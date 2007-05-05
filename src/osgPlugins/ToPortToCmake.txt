@@ -1,4 +1,3 @@
 dae - ported but not linking properly
 
-pfb
-vrml
+pfb - ported but will need many additional libs

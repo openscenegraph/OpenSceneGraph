@@ -127,6 +127,7 @@ FIND_PACKAGE(Jasper)
 FIND_PACKAGE(COLLADA)
 FIND_PACKAGE(Xine)
 FIND_PACKAGE(OpenVRML)
+FIND_PACKAGE(Performer)
 
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything

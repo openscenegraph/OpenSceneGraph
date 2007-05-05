@@ -1,6 +1,5 @@
 dae - ported but not linking properly
 
-normals
 pfb
 pnm
 vrml

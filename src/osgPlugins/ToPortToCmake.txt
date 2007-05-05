@@ -1,5 +1,4 @@
 dae - ported but not linking properly
 
 pfb
-pnm
 vrml

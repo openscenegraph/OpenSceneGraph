@@ -1,6 +1,7 @@
 #---------------------------------------------------
 # OSG CMAKE SUPPORT 
 # (C) by Michael Wagner, mtw@shared-reality.com 2005
+# (C) Eric Wing, Luigi Calori and Robert Osfield 2006-2007
 #---------------------------------------------------
 
 PROJECT(OSG_PLUGINS_MASTER)
@@ -59,6 +60,7 @@ IF (BUILD_OSG_IMAGE_PLUGINS)
 	SET(TARGET_DEFAULT_LABEL_PREFIX "Plug image" )#
 	ADD_SUBDIRECTORY(rgb)
 	ADD_SUBDIRECTORY(bmp)
+	ADD_SUBDIRECTORY(pnm)
 	ADD_SUBDIRECTORY(dds)
 	ADD_SUBDIRECTORY(tga)
 	ADD_SUBDIRECTORY(hdr)

@@ -14,6 +14,16 @@ Project Lead.
 
 --
 
+Notes for 1.9.3 release
+=======================
+
+OpenThreads/include and src directories has now been merged directly into 
+the OpenSceneGraph distribution, this means that you don't need to download,
+compile or install it, and will be able to remove the external OpenThreads
+from your system.
+
+--
+
 How to build the OpenSceneGraph
 ===============================
 

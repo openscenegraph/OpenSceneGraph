@@ -1,4 +1,4 @@
-OpenSceneGraph Library 1.9.2
+OpenSceneGraph Library 1.9.3
 
 252 Contributors:
 
@@ -23,8 +23,8 @@ Trajce Nikolov
 Pavel Moloshtan
 Tom Jolley
 Norman Vine
-Alberto Farre
 Luigi Calori
+Alberto Farre
 Ruben Lopez
 Randall Hopper
 Gideon May
@@ -37,6 +37,7 @@ Roger James
 Joran Jessurun
 Daniel Sjölie
 Anré Garneau
+Mathias Fröhlich
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -45,7 +46,6 @@ Sondra Iverson
 Rune Schmidt Jensen
 Per Fahlberg
 Neil Salter
-Mathias Fröhlich
 Jason Beverage
 David Spilling
 Ben Discoe
@@ -53,9 +53,11 @@ Sasa Bistrovic
 Rainer Oder
 Olaf Flebbe
 Martin Naylor
+Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
 Gordon Tomlinson
+David Callu
 Andreas Ekstrand
 Vivek Rajan
 Stephane Simon
@@ -67,7 +69,6 @@ Loic Dachary
 Joseph Steel
 Jason Daly
 David Guthrie
-David Callu
 Corbin Holtz
 Toshiyuki Takahei
 Thom DeCarlo
@@ -77,8 +78,8 @@ Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
 Nikolaus Hanekamp
-Martin Aumueller
 Leandro Motta Barros
+Jeremy Moles
 Carlo Camporesi
 Bruce Clay
 Brad Christiansen
@@ -90,7 +91,6 @@ Laurens Voerman
 Ken Sewell
 Julian Ortiz
 John Shue
-Jeremy Moles
 Jeremy Bell
 James French
 Gabor Dorka
@@ -98,6 +98,7 @@ Donn Mielcarek
 Domenico Mangieri
 Daniel Larimer
 Bryan Thrall
+Brad Colbert
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
@@ -134,7 +135,6 @@ Fabio Mierlo
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
-Brad Colbert
 Antoine Hue
 Andrew Sampson
 Andrew Lorino

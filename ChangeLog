@@ -1,4 +1,348 @@
-2007-04-25 09:14 +0000 [r6547]  robert:
+2007-05-05 16:24 +0000 [r6612]  robert:
+
+	* Added preliminary Performer plugin support, note, still missing
+	  are a range of Performer database libs that will be required.
+
+2007-05-05 16:11 +0000 [r6611]  robert:
+
+	* Added OpenVRML support
+
+2007-05-05 15:36 +0000 [r6610]  robert:
+
+	* Added CMake support for pnm plugin
+
+2007-05-05 08:22 +0000 [r6609]  robert:
+
+	* Added support for normals plugin
+
+2007-05-05 08:18 +0000 [r6608]  robert:
+
+	* Added ToPortToCmake.txt to record what modules need port to
+	  CMake.
+
+2007-05-04 19:17 +0000 [r6607]  robert:
+
+	* Added first cut a Xine support
+
+2007-05-04 14:25 +0000 [r6606]  robert:
+
+	* Added first cut of Cmake COLLADA support
+
+2007-05-04 13:41 +0000 [r6605]  robert:
+
+	* Added COLLADA CMAkeLists.txt, doesn't work yet as we done yet
+	  have a FindCOLLADA.cmake but it is a start
+
+2007-05-04 13:20 +0000 [r6604]  robert:
+
+	* Added support for jp2 plugin
+
+2007-05-04 12:06 +0000 [r6602-6603]  robert:
+
+	* Removed margin
+
+	* Reorganised the managment of margins around glyphs so that is
+	  done entirely with src/osgText/Font.cpp rather than the font
+	  plugins or Text.cpp
+
+2007-05-04 08:48 +0000 [r6601]  robert:
+
+	* From Luigi Calori, Win32 build fix
+
+2007-05-04 08:45 +0000 [r6600]  robert:
+
+	* From Mathias Froehlich, "Attached is a change that does no longer
+	  set the render bin details in nodes other than drawables. I guess
+	  that this way I am sure to not introduce hierarchical render bins
+	  in loaded models."
+
+2007-05-04 08:40 +0000 [r6599]  robert:
+
+	* From David Callu, fixed incorrect array usage.
+
+2007-05-03 16:23 +0000 [r6598]  robert:
+
+	* Added CartizianLocator
+
+2007-05-03 15:21 +0000 [r6597]  robert:
+
+	* Updated wrappers
+
+2007-05-03 14:51 +0000 [r6596]  robert:
+
+	* Added return *this to operator =
+
+2007-05-03 14:47 +0000 [r6595]  robert:
+
+	* Added osgUtil into lib list
+
+2007-05-03 11:11 +0000 [r6594]  robert:
+
+	* Added virtual orientationOpenGL() method into
+	  osgTerrain::Locator.
+
+2007-05-03 10:10 +0000 [r6593]  robert:
+
+	* Added OpenThreads to TARGET_COMMON_LIBRARIES
+
+2007-05-03 10:06 +0000 [r6592]  robert:
+
+	* Moved the OpenThreads link locally to each lib
+
+2007-05-03 08:50 +0000 [r6591]  robert:
+
+	* Added support for setting OpenThreads_SOURCE_DIR to help the
+	  install of OpenThreads headers
+
+2007-05-02 19:57 +0000 [r6589]  robert:
+
+	* Added OpenThreads wrappers
+
+2007-05-02 18:07 +0000 [r6588]  robert:
+
+	* Added CMake support for local OpenThreads build
+
+2007-05-02 16:36 +0000 [r6586]  robert:
+
+	* Added svn:externals for include/OpenThreads and src/OpenThreads
+
+2007-05-02 13:58 +0000 [r6583]  robert:
+
+	* Introduced new tesslation technique that adjusts the
+	  triangulation so that the diagonal goes between the corners with
+	  least vertical deviation.
+
+2007-05-01 18:03 +0000 [r6582]  robert:
+
+	* Further perfomrmance optimizations and clean up on new
+	  VBO/EBO/PBO API.
+
+2007-05-01 09:29 +0000 [r6581]  robert:
+
+	* Cleaned up the optional code paths in new VBO code
+
+2007-05-01 07:31 +0000 [r6580]  robert:
+
+	* Updated wrappers
+
+2007-05-01 06:40 +0000 [r6579]  robert:
+
+	* Added direct links to the CMake build pages
+
+2007-05-01 06:28 +0000 [r6578]  robert:
+
+	* Moved VBO switching code into inline methods into osg::State to
+	  speed performance
+
+2007-04-30 22:12 +0000 [r6577]  ewing:
+
+	* Fixes to resync Xcode project with current tree. flt files are
+	  missing. I'm not sure if it was intentionally removed from the
+	  project, so I left the everything in place, but removed the
+	  target from the build aggregate targets so it doesn't get in the
+	  way of the build system. Added back osgTerrain to the project
+	  (don't know who deleted those). SDL's aggregate target is also
+	  missing.
+
+2007-04-30 15:10 +0000 [r6576]  robert:
+
+	* Added initalization of _startTick to CompositeViewer
+
+2007-04-30 14:49 +0000 [r6575]  robert:
+
+	* From Jeremy Moles, fixed missing intialization of _startTick
+	  member variable.
+
+2007-04-30 12:18 +0000 [r6574]  robert:
+
+	* Implementated new dirty buffer mechansim for BufferObjects to
+	  make it more efficient
+
+2007-04-30 09:47 +0000 [r6573]  robert:
+
+	* Added TerrainNode::setColorFilter(layerNum,Filter) to allow
+	  developers to set what type of texture filter to use, either
+	  LINEAER and NEAREST.
+
+2007-04-30 08:37 +0000 [r6570]  robert:
+
+	* Updated ChangeLog and AUTHORS file
+
+2007-04-30 08:31 +0000 [r6569]  robert:
+
+	* Updated version number for 1.9.2 dev release
+
+2007-04-29 20:19 +0000 [r6568]  robert:
+
+	* Updated wrappers
+
+2007-04-29 20:13 +0000 [r6567]  robert:
+
+	* Added temporary code (but comment out) for testing VBO
+	  performance
+
+2007-04-29 20:10 +0000 [r6566]  robert:
+
+	* Added a MatrixTransform set up to provide a local origin for
+	  better precision.
+
+2007-04-29 08:12 +0000 [r6565]  robert:
+
+	* Further work on new VertexBufferObject/ElementsBufferObject
+	  support
+
+2007-04-27 17:03 +0000 [r6564]  robert:
+
+	* Added back in osg::Geometry path
+
+2007-04-27 14:52 +0000 [r6563]  robert:
+
+	* Further work on the new VBO support
+
+2007-04-27 10:29 +0000 [r6562]  robert:
+
+	* From Eric Wing, " Here are more changes for the CMake scripts: -
+	  I removed CMAKE_INSTALL_PREFIX in FindOpenThreads as a follow up
+	  to the discussion thread. - I introduced an experimental
+	  CMAKE_PREFIX_PATH to replace it. - I added CMAKE_PREFIX_PATH,
+	  CMAKE_INCLUDE_PATH, and CMAKE_LIBRARY_PATH to the CMake GUI so
+	  users can enter values there instead of in the environment. - I
+	  added OPENSCENEGRAPH_*_VERSION variables (MAJOR, MINOR, PATCH).
+	  These should be kept up-to-date with the real version numbers.
+	  Mac bundles like to have version information so users can find
+	  out the version they are running through standard About panels
+	  and also automated system reporters for troubleshooting/bug
+	  tracking. In theory, this information could be used for library
+	  versioning. We should do the same for OpenThreads, but I forgot
+	  about it. - I added some Mac Info.plist stuff (which uses the
+	  version information). "
+
+2007-04-27 09:49 +0000 [r6561]  robert:
+
+	* Fixed tabbing
+
+2007-04-26 16:50 +0000 [r6559-6560]  robert:
+
+	* Added using of VertexBufferObject and ElementsBufferObject
+	  classes
+
+	* Further work VertexBufferObject and ElementsBufferObject classes
+
+2007-04-26 08:26 +0000 [r6558]  robert:
+
+	* Updated wrappers
+
+2007-04-26 08:11 +0000 [r6557]  robert:
+
+	* From Brad Colbert, "Added a new method to ImageStream called
+	  getLength that is used to return the length of the stream.
+	  Implemented the virtual methods in QuicktimeImageStream,
+	  (getLength, getReferenceTime, setTimeMultiplier), to return valid
+	  value for each. "
+
+2007-04-26 08:07 +0000 [r6556]  robert:
+
+	* From Eric Wing, Added quicktime CMakeLists.txt
+
+2007-04-25 18:50 +0000 [r6555]  robert:
+
+	* Added VertexBufferObject and ElementBufferObject class
+	  interfaces, and wired up osg::Array and osg::DrawElements* to
+	  these respectively. Updated wrappers
+
+2007-04-25 15:32 +0000 [r6554]  robert:
+
+	* Added --static and --vbo options to allow the user to toggle
+	  on/off dynamic updating of geometry and use of vertex buffer
+	  objects.
+
+2007-04-25 10:32 +0000 [r6552-6553]  robert:
+
+	* Updated wrappers
+
+	* Cleaned up numToTop method
+
+2007-04-25 10:12 +0000 [r6551]  robert:
+
+	* From Martin Aumueller, fixed unused parameter warnings
+
+2007-04-25 09:32 +0000 [r6550]  robert:
+
+	* From Martin Aumueller, " a collegue of mine noticed that on
+	  Windows and X11 the modifier state (such as Alt or Ctrl) would be
+	  applied one key press too late: e.g. press & hold Alt, press a,
+	  release Alt, press a, press a would generate the key sequence a,
+	  Alt-a, a instead of Alt-a, a, a. The problem is also present on
+	  Carbon. Moving the call to setModKeyMask in front of the call to
+	  keyPress fixed it for me on Carbon and X11. I suppose that this
+	  will fix the problem for Windows as well."
+
+2007-04-25 09:21 +0000 [r6549]  robert:
+
+	* From Eric Wing, "These enhancements make it much easier to
+	  control which libraries get found by FIND_ using environmental
+	  variables. The problem with the old script was that CMake
+	  searches what it considers system paths first. This makes it
+	  difficult to override in the case where you might have a stable
+	  version in /usr/local, but are trying to build a bleeding edge
+	  release in the non-standard location /bleeding-edge. I went to
+	  the CMake mailing list hoping to find a good solution to this.
+	  Unfortunately, there isn't one, and I have to do something rather
+	  bone-headed in the Find module. Basically, I have to run FIND_
+	  twice: once with default search paths turned off and my
+	  environmental variables listed, and again with standard search
+	  paths reenabled. At least it works. I also added a few more
+	  environmental variables, specifically: OPENTHREADS_INCLUDE_DIR
+	  OPENTHREADS_LIBRARY_DIR These two variables address the
+	  shortcoming of OPENTHREADS_DIR in the case where the include path
+	  and library path don't share a common parent. Put all this
+	  together, and you can setup an automated shell script or
+	  Microsoft .bat file to configure and build your application in an
+	  automated step. You still should be able to use the key CMake
+	  variables like CMAKE_INCLUDE_PATH and CMAKE_LIBRARY_PATH to find
+	  things, but it will occur after the environmental paths are
+	  searched. The reason for this is that the OPENTHREADS_INCLUDE_DIR
+	  and OPENTHREADS_LIBRARY_DIR are more specific. This prevents the
+	  accidental ordering problem where you might use
+	  CMAKE_INCLUDE_PATH to find some other component like GLUT, but
+	  didn't want to accidentally include an older version of
+	  OpenThreads located in the same area. As the ultimate override,
+	  you can still pass -DVAR=value arguments to cmake and it will
+	  take these above all else. However, it's safer for people to not
+	  use these in case we modify the script and change the variable
+	  names. Finally, I'm wondering if we can kill the
+	  ${CMAKE_INSTALL_PREFIX} searches in the Find module. As I've said
+	  before, this is kind of a hack and the variable wasn't really
+	  intended to be used in this way. And I just got bitten by it in
+	  some bad corner cases. The problem is that if you don't
+	  explicitly set the ${CMAKE_INSTALL_PREFIX}, CMake sets a default
+	  value for it (such as /usr/local). The problem is that /usr/local
+	  may not be the place you want searched. If you wait to set the
+	  ${CMAKE_INSTALL_PREFIX} in the ccmake GUI, then FIND_ is already
+	  run once on ${CMAKE_INSTALL_PREFIX=/usr/local. If you were
+	  planning to change the value in the GUI, it's too late if you had
+	  a stuff in /usr/local because FIND_ already found something and
+	  won't change the value when you reconfigure since it is already
+	  set. You will have to manually change the value yourself.
+	  Furthermore, as another problem example, on the Mac,
+	  /Library/Frameworks is supposed to be searched before /usr/local,
+	  but ${CMAKE_INSTALL_PREFIX} kept causing stuff in /usr/local to
+	  be hit first which took me a really long time to understand how
+	  this was happenning. The work around is that I must push the
+	  ${CMAKE_INSTALL_PREFIX} search to the very end as not to conflict
+	  with anything else. But I think it would be much better if we
+	  removed it entirely. And with so many different environmental
+	  variables at our disposal, I don't think we need this one:
+	  (Checked by CMake automatically:) CMAKE_INCLUDE_PATH
+	  CMAKE_SYSTEM_INCLUDE_PATH CMAKE_LIBRARY_PATH
+	  CMAKE_SYSTEM_LIBRARY_PATH PATH LIB (Checked by us:)
+	  OPENTHREADS_INCLUDE_DIR OPENTHREADS_LIBRARY_DIR OPENTHREADS_DIR
+	  OSG_INCLUDE_DIR OSG_LIBRARY_DIR OSG_DIR "
+
+2007-04-25 09:16 +0000 [r6547-6548]  robert:
+
+	* From Eric Wing, "lwo must link to osgFX or undefined symbols
+	  ensue."
 
 	* From Eric Wing, "I made a mistake in my IF() checks for
 	  FOO_CONFIG_HAS_BEEN_RUN_BEFORE. I was using

@@ -28,6 +28,13 @@ HelpHandler::HelpHandler(osg::ApplicationUsage* au):
     _camera = new osg::Camera;
 }
 
+
+void HelpHandler::reset()
+{
+    _initialized = false;
+    _camera->setGraphicsContext(0);
+}
+
 bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);

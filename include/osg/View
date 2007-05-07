@@ -15,6 +15,7 @@
 #define OSG_VIEW 1
 
 #include <osg/Camera>
+#include <osg/Light>
 
 #include <OpenThreads/Mutex>
 
@@ -43,6 +44,29 @@ class OSG_EXPORT View : public osg::Object
         /** Get the const Stats object.*/
         const osg::Stats* getStats() const { return _stats.get(); }
 
+        /** Options for controlling the global lighting used for the view.*/
+        enum LightingMode
+        {
+            NO_LIGHT,
+            HEADLIGHT,
+            SKY_LIGHT
+        };
+        
+        /** Set the global lighting to use for this view.
+          * Defaults to headlight. */
+        void setLightingMode(LightingMode lightingMode);
+
+        /** Get the global lighting used for this view.*/
+        LightingMode getLightingMode() const { return _lightingMode; }
+
+        /** Get the global light.*/
+        void setLight(osg::Light* light) { _light = light; }
+
+        /** Get the global lighting if assigned.*/
+        osg::Light* getLight() { return _light.get(); }
+
+        /** Get the const global lighting if assigned.*/
+        const osg::Light* getLight() const { return _light.get(); }
 
         /** Set the master camera of the view. */        
         void setCamera(osg::Camera* camera);
@@ -109,10 +133,13 @@ class OSG_EXPORT View : public osg::Object
         
         osg::ref_ptr<osg::Stats>    _stats;
         
+        LightingMode                _lightingMode;
+        osg::ref_ptr<osg::Light>    _light;
+
         osg::ref_ptr<osg::Camera>   _camera;
         
-        typedef std::vector<Slave> Slaves;
-        Slaves _slaves;
+        typedef std::vector<Slave>  Slaves;
+        Slaves                      _slaves;
 };
 
 }

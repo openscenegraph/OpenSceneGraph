@@ -422,6 +422,12 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         virtual osg::Matrixd computeRightEyeProjectionImplementation(const osg::Matrixd& projection) const;
         virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view) const;
 
+        /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
+        void inheritCullSettings(const CullSettings& settings) { inheritCullSettings(settings, _inheritanceMask); }
+
+        /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
+        virtual void inheritCullSettings(const osg::CullSettings& settings, unsigned int inheritanceMask);
+
 
         /** Do init traversal of attached scene graph using Init NodeVisitor.
           * The init traversal is called once for each SceneView, and should

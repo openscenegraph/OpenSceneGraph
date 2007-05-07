@@ -496,6 +496,24 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
                        -es,0.0,0.0,1.0);
 }
 
+void SceneView::inheritCullSettings(const osg::CullSettings& settings, unsigned int inheritanceMask)
+{
+    if (_camera.valid() && _camera->getView()) 
+    {
+        switch(_camera->getView()->getLightingMode())
+        {
+            case(osg::View::NO_LIGHT): setLightingMode(NO_SCENEVIEW_LIGHT); break;
+            case(osg::View::HEADLIGHT): setLightingMode(HEADLIGHT); break;
+            case(osg::View::SKY_LIGHT): setLightingMode(SKY_LIGHT); break;
+        }
+        
+        setLight(_camera->getView()->getLight());
+    }
+    
+    osg::CullSettings::inheritCullSettings(settings, inheritanceMask);
+}
+
+
 void SceneView::cull()
 {
     _dynamicObjectCount = 0;

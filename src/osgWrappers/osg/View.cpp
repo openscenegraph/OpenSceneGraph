@@ -12,6 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/CopyOp>
+#include <osg/Light>
 #include <osg/Matrix>
 #include <osg/Matrixd>
 #include <osg/Object>
@@ -25,6 +26,12 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_ENUM_REFLECTOR(osg::View::LightingMode)
+	I_EnumLabel(osg::View::NO_LIGHT);
+	I_EnumLabel(osg::View::HEADLIGHT);
+	I_EnumLabel(osg::View::SKY_LIGHT);
+END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_BaseType(osg::Object);
@@ -74,6 +81,31 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Stats_P1__getStats,
 	          "Get the const Stats object. ",
+	          "");
+	I_Method1(void, setLightingMode, IN, osg::View::LightingMode, lightingMode,
+	          Properties::NON_VIRTUAL,
+	          __void__setLightingMode__LightingMode,
+	          "Set the global lighting to use for this view. ",
+	          "Defaults to headlight. ");
+	I_Method0(osg::View::LightingMode, getLightingMode,
+	          Properties::NON_VIRTUAL,
+	          __LightingMode__getLightingMode,
+	          "Get the global lighting used for this view. ",
+	          "");
+	I_Method1(void, setLight, IN, osg::Light *, light,
+	          Properties::NON_VIRTUAL,
+	          __void__setLight__osg_Light_P1,
+	          "Get the global light. ",
+	          "");
+	I_Method0(osg::Light *, getLight,
+	          Properties::NON_VIRTUAL,
+	          __osg_Light_P1__getLight,
+	          "Get the global lighting if assigned. ",
+	          "");
+	I_Method0(const osg::Light *, getLight,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Light_P1__getLight,
+	          "Get the const global lighting if assigned. ",
 	          "");
 	I_Method1(void, setCamera, IN, osg::Camera *, camera,
 	          Properties::NON_VIRTUAL,
@@ -138,6 +170,12 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 __void__setCamera__osg_Camera_P1);
+	I_SimpleProperty(osg::Light *, Light, 
+	                 __osg_Light_P1__getLight, 
+	                 __void__setLight__osg_Light_P1);
+	I_SimpleProperty(osg::View::LightingMode, LightingMode, 
+	                 __LightingMode__getLightingMode, 
+	                 __void__setLightingMode__LightingMode);
 	I_ArrayProperty(osg::View::Slave &, Slave, 
 	                __Slave_R1__getSlave__unsigned_int, 
 	                0, 

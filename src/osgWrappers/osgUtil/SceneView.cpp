@@ -13,6 +13,7 @@
 #include <osg/Camera>
 #include <osg/CollectOccludersVisitor>
 #include <osg/CopyOp>
+#include <osg/CullSettings>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
 #include <osg/Light>
@@ -695,6 +696,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          Properties::VIRTUAL,
 	          __osg_Matrixd__computeRightEyeViewImplementation__C5_osg_Matrixd_R1,
 	          "",
+	          "");
+	I_Method1(void, inheritCullSettings, IN, const osg::CullSettings &, settings,
+	          Properties::NON_VIRTUAL,
+	          __void__inheritCullSettings__C5_CullSettings_R1,
+	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
+	          "");
+	I_Method2(void, inheritCullSettings, IN, const osg::CullSettings &, settings, IN, unsigned int, inheritanceMask,
+	          Properties::VIRTUAL,
+	          __void__inheritCullSettings__C5_osg_CullSettings_R1__unsigned_int,
+	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");
 	I_Method0(void, init,
 	          Properties::VIRTUAL,

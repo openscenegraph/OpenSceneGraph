@@ -20,6 +20,8 @@ View::View()
 {
     // osg::notify(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
 
+    setLightingMode(HEADLIGHT);
+
     setCamera(new osg::Camera);
 
     _camera->setProjectionMatrixAsFrustum(-0.325, 0.325, -0.26, 0.26, 1.0f,10000.0f);
@@ -31,6 +33,8 @@ View::View()
 
 View::View(const osg::View& view, const osg::CopyOp& copyop):
     Object(view,copyop),
+    _lightingMode(view._lightingMode),
+    _light(view._light),
     _camera(view._camera),
     _slaves(view._slaves)
 {
@@ -58,6 +62,19 @@ View::~View()
     }
     
     osg::notify(osg::INFO)<<"Done destructing osg::View"<<std::endl;
+}
+
+void View::setLightingMode(LightingMode lightingMode)
+{
+    _lightingMode = lightingMode;
+    if (_lightingMode != NO_LIGHT && !_light) 
+    {
+        _light = new osg::Light;
+        _light->setLightNum(0);
+        _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
+        _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
+        _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
+    }
 }
 
 

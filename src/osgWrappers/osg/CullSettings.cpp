@@ -99,12 +99,12 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	          "Set the local cull settings values from specified CullSettings object. ",
 	          "");
 	I_Method1(void, inheritCullSettings, IN, const osg::CullSettings &, settings,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__inheritCullSettings__C5_CullSettings_R1,
 	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");
 	I_Method2(void, inheritCullSettings, IN, const osg::CullSettings &, settings, IN, unsigned int, inheritanceMask,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__inheritCullSettings__C5_CullSettings_R1__unsigned_int,
 	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");

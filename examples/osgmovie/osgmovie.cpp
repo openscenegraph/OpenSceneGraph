@@ -320,14 +320,14 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     float height = heightVector.length();
     yAxis /= height;
     
-    int noSteps = 50;
+    int noSteps = 160;
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     osg::Vec2Array* texcoords = new osg::Vec2Array;
     osg::Vec4Array* colors = new osg::Vec4Array;
 
     osg::Vec3 bottom = origin;
-    osg::Vec3 dx = xAxis*(width/((float)(noSteps-1)));
+    osg::Vec3 dx = xAxis*(width/((float)(noSteps-2)));
     osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
     
     osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
@@ -336,13 +336,69 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     osg::Vec3 cursor = bottom;
     int i,j;
     
-    for(i=0;i<noSteps;++i)
+    int midSteps = noSteps/2;
+    
+    for(i=0;i<midSteps;++i)
+    {
+        osg::Vec3 cursor = bottom+dy*(float)i;
+        for(j=0;j<midSteps;++j)
+        {
+            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
+            double theta = atan2(delta.x(), -delta.y());
+            theta += 2*osg::PI;
+            double phi = osg::PI_2 * delta.length() / screenRadius;
+            if (phi > osg::PI_2) phi = osg::PI_2;
+
+            double f = distance * sin(phi);
+            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+            double l = e * cos(phi);
+            double h = e * sin(phi);
+            double gamma = atan2(h, l-distance);
+
+            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
+
+            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
+
+            vertices->push_back(cursor);
+            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+            texcoords->push_back(texcoord);
+
+            if (j+1<midSteps) cursor += dx;
+        }
+
+        for(;j<noSteps;++j)
+        {
+            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
+            double theta = atan2(delta.x(), -delta.y());
+            double phi = osg::PI_2 * delta.length() / screenRadius;
+            if (phi > osg::PI_2) phi = osg::PI_2;
+
+            double f = distance * sin(phi);
+            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+            double l = e * cos(phi);
+            double h = e * sin(phi);
+            double gamma = atan2(h, l-distance);
+
+            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
+
+            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
+
+            vertices->push_back(cursor);
+            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+            texcoords->push_back(texcoord);
+
+            cursor += dx;
+        }
+        // osg::notify(osg::NOTICE)<<std::endl;
+    }
+    
+    for(;i<noSteps;++i)
     {
         osg::Vec3 cursor = bottom+dy*(float)i;
         for(j=0;j<noSteps;++j)
         {
             osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), delta.y());
+            double theta = atan2(delta.x(), -delta.y());
             if (theta<0.0) theta += 2*osg::PI;
             double phi = osg::PI_2 * delta.length() / screenRadius;
             if (phi > osg::PI_2) phi = osg::PI_2;
@@ -355,7 +411,7 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
             osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
 
-            osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
+            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
             vertices->push_back(cursor);
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -363,9 +419,10 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
             cursor += dx;
         }
+
         // osg::notify(osg::NOTICE)<<std::endl;
     }
-    
+
     // pass the created vertex array to the points geometry object.
     geometry->setVertexArray(vertices);
 
@@ -438,7 +495,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
 
             if (image)
             {
-#if 0            
+#if 1            
                 texture = new osg::TextureRectangle(image);
 #else
                 texture = new osg::Texture2D(image);
@@ -461,8 +518,9 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+        texture->setMaxAnisotropy(16.0f);
         stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-#if 0        
+#if 1        
         osg::TexMat* texmat = new osg::TexMat;
         texmat->setScaleByTextureRectangleSize(true);
         stateset->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
@@ -484,12 +542,15 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         camera->setViewMatrix(osg::Matrix::identity());
 
         // add subgraph to render
-        camera->addChild(geode);
+        // camera->addChild(geode);
         
         camera->setName("DistortionCorrectionCamera");
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), true);
+
+        viewer.setSceneData(geode);
     }
+    
     
     viewer.getCamera()->setNearFarRatio(0.0001f);
 }
@@ -514,6 +575,12 @@ int main(int argc, char** argv)
     // construct the viewer.
     osgViewer::Viewer viewer;
     
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
+
     while (arguments.read("--texture2D")) useTextureRectangle=false;
     while (arguments.read("--shader")) useShader=true;
 
@@ -524,49 +591,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-    osg::Vec3 pos(0.0f,0.0f,0.0f);
-        
-    osg::StateSet* stateset = geode->getOrCreateStateSet();
-    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-
-    if (useShader)
-    {
-        //useTextureRectangle = false;
-        
-        static const char *shaderSourceTextureRec = {
-            "uniform vec4 cutoff_color;\n"
-            "uniform samplerRect movie_texture;\n"
-            "void main(void)\n"
-            "{\n"
-            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
-            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
-            "    gl_FragColor = texture_color;\n"
-            "}\n"
-        };
-
-        static const char *shaderSourceTexture2D = {
-            "uniform vec4 cutoff_color;\n"
-            "uniform sampler2D movie_texture;\n"
-            "void main(void)\n"
-            "{\n"
-            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"
-            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
-            "    gl_FragColor = texture_color;\n"
-            "}\n"
-        };
-
-        osg::Program* program = new osg::Program;
-        
-        program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
-                                           useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));
-
-        stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
-        stateset->addUniform(new osg::Uniform("movie_texture",0));
-
-        stateset->setAttribute(program);
-
-    }
 
 
     if (arguments.read("--dome") || arguments.read("--puffer") )
@@ -575,6 +599,50 @@ int main(int argc, char** argv)
     }
     else
     {
+        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+        osg::Vec3 pos(0.0f,0.0f,0.0f);
+
+        osg::StateSet* stateset = geode->getOrCreateStateSet();
+        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+        if (useShader)
+        {
+            //useTextureRectangle = false;
+
+            static const char *shaderSourceTextureRec = {
+                "uniform vec4 cutoff_color;\n"
+                "uniform samplerRect movie_texture;\n"
+                "void main(void)\n"
+                "{\n"
+                "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
+                "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
+                "    gl_FragColor = texture_color;\n"
+                "}\n"
+            };
+
+            static const char *shaderSourceTexture2D = {
+                "uniform vec4 cutoff_color;\n"
+                "uniform sampler2D movie_texture;\n"
+                "void main(void)\n"
+                "{\n"
+                "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"
+                "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
+                "    gl_FragColor = texture_color;\n"
+                "}\n"
+            };
+
+            osg::Program* program = new osg::Program;
+
+            program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
+                                               useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));
+
+            stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
+            stateset->addUniform(new osg::Uniform("movie_texture",0));
+
+            stateset->setAttribute(program);
+
+        }
+
         for(int i=1;i<arguments.argc();++i)
         {
             if (arguments.isString(i))
@@ -595,7 +663,11 @@ int main(int argc, char** argv)
                 }            
             }
         }
-        if (!viewer.getSceneData())
+
+        // set the scene to render
+        viewer.setSceneData(geode.get());
+
+        if (viewer.getSceneData()==0)
         {
             arguments.getApplicationUsage()->write(std::cout);
             return 1;
@@ -605,8 +677,8 @@ int main(int argc, char** argv)
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
-    geode->setEventCallback(meh);
     meh->set(viewer.getSceneData());
+    viewer.addEventHandler(meh);
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())
@@ -614,16 +686,8 @@ int main(int argc, char** argv)
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
 
 
-    // set the scene to render
-    viewer.setSceneData(geode.get());
 
     // create the windows and run the threads.
     return viewer.run();

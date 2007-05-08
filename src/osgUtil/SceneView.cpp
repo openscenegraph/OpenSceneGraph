@@ -500,14 +500,20 @@ void SceneView::inheritCullSettings(const osg::CullSettings& settings, unsigned 
 {
     if (_camera.valid() && _camera->getView()) 
     {
-        switch(_camera->getView()->getLightingMode())
+        if (inheritanceMask & osg::CullSettings::LIGHTING_MODE)
         {
-            case(osg::View::NO_LIGHT): setLightingMode(NO_SCENEVIEW_LIGHT); break;
-            case(osg::View::HEADLIGHT): setLightingMode(HEADLIGHT); break;
-            case(osg::View::SKY_LIGHT): setLightingMode(SKY_LIGHT); break;
+            switch(_camera->getView()->getLightingMode())
+            {
+                case(osg::View::NO_LIGHT): setLightingMode(NO_SCENEVIEW_LIGHT); break;
+                case(osg::View::HEADLIGHT): setLightingMode(HEADLIGHT); break;
+                case(osg::View::SKY_LIGHT): setLightingMode(SKY_LIGHT); break;
+            }
         }
-        
-        setLight(_camera->getView()->getLight());
+                
+        if (inheritanceMask & osg::CullSettings::LIGHT)
+        {
+            setLight(_camera->getView()->getLight());
+        }
     }
     
     osg::CullSettings::inheritCullSettings(settings, inheritanceMask);

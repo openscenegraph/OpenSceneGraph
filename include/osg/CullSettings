@@ -71,6 +71,8 @@ class OSG_EXPORT CullSettings
             CULL_MASK_LEFT                          = 0x0800,
             CULL_MASK_RIGHT                         = 0x1000,
             CLEAR_COLOR                             = 0x2000,
+            LIGHTING_MODE                           = 0x4000,
+            LIGHT                                   = 0x8000,
             
             NO_VARIABLES                            = 0x0000,
             ALL_VARIABLES                           = 0xFFFF

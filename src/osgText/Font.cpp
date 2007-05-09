@@ -135,8 +135,8 @@ Font::Font(FontImplementation* implementation):
     _height(16),
     _margin(1),
     _marginRatio(0.02),
-    _textureWidthHint(1024),
-    _textureHeightHint(1024),
+    _textureWidthHint(8000),
+    _textureHeightHint(8000),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
     _magFilterHint(osg::Texture::LINEAR)
 {
@@ -514,6 +514,15 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
     if (newTextureObject)
     {
+        GLint maxTextureSize = 256;
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+        if (maxTextureSize < getTextureWidth() || maxTextureSize < getTextureHeight())
+        {
+            osg::notify(osg::WARN)<<"Warning: osgText::Font texture size of ("<<getTextureWidth()<<", "<<getTextureHeight()<<") too large, unable to create font texture."<<std::endl;
+            osg::notify(osg::WARN)<<"         Maximum supported by hardward by native OpenGL implementation is ("<<maxTextureSize<<","<<maxTextureSize<<")."<<std::endl;
+            osg::notify(osg::WARN)<<"         Please set OSG_MAX_TEXTURE_SIZE lenvironment variable to "<<maxTextureSize<<" and re-run application."<<std::endl;
+            return;
+        }
         
         // being bound for the first time, need to allocate the texture
 

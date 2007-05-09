@@ -108,6 +108,27 @@ bool Output::writeObject(const osg::Object& obj)
     return Registry::instance()->writeObject(obj,*this);
 }
 
+
+void Output::writeBeginObject(const std::string& name)
+{
+    indent() << name << " {" << std::endl;
+}
+
+void Output::writeEndObject()
+{
+    indent() << "}" << std::endl;
+}
+
+void Output::writeUseID(const std::string& id)
+{
+    indent() << "Use " << id << std::endl;
+}
+
+void Output::writeUniqueID(const std::string& id)
+{
+    indent() << "UniqueID " << id << std::endl;
+}
+
 bool Output::getUniqueIDForObject(const osg::Object* obj,std::string& uniqueID)
 {
     UniqueIDToLabelMapping::iterator fitr = _objectToUniqueIDMap.find(obj);

@@ -1116,14 +1116,14 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         std::string uniqueID;
         if (fw.getUniqueIDForObject(&obj,uniqueID))
         {
-            fw.indent() << "Use " << uniqueID << std::endl;
+            fw.writeUseID( uniqueID );
             return true;
         }
     }
 
-    std::string classname = obj.className();
-    std::string libraryName = obj.libraryName();
-    std::string compositeName = libraryName + "::" + classname;
+    const std::string classname( obj.className() );
+    const std::string libraryName( obj.libraryName() );
+    const std::string compositeName( libraryName + "::" + classname );
 
     // try composite name first
     DotOsgWrapperMap::iterator itr = _classNameWrapperMap.find(compositeName);
@@ -1131,11 +1131,11 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
     if (itr==_classNameWrapperMap.end())
     {
         // first try the standard nodekit library.
-        std::string nodeKitLibraryName = createLibraryNameForNodeKit(obj.libraryName());
+        std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
         if (loadLibrary(nodeKitLibraryName)) return writeObject(obj,fw);
 
         // otherwise try the osgdb_ plugin library.
-        std::string pluginLibraryName = createLibraryNameForExtension(obj.libraryName());
+        std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
         if (loadLibrary(pluginLibraryName)) return writeObject(obj,fw);
 
         // otherwise try simple class name
@@ -1148,11 +1148,10 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         DotOsgWrapper* wrapper = itr->second.get();
         const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
 
-        if (strcmp(obj.libraryName(),"osg")==0)
+        if (libraryName=="osg")
         {
             // member of the core osg, so no need to have composite library::class name.
-            fw.indent() << wrapper->getName() << " {"<< std::endl;
-            fw.moveIn();
+            fw.writeBeginObject( wrapper->getName() );
         }
         else
         {
@@ -1160,15 +1159,14 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
             std::string::size_type posDoubleColon = wrapper->getName().find("::");
             if (posDoubleColon != std::string::npos)
             {
-                fw.indent() << wrapper->getName() << " {"<< std::endl;
+                fw.writeBeginObject( wrapper->getName() );
             }
             else
             {
-                fw.indent() << obj.libraryName()<<"::"<< wrapper->getName() << " {"<< std::endl;
+                fw.writeBeginObject( libraryName + "::" + wrapper->getName() );
             }
-
-            fw.moveIn();
         }
+        fw.moveIn();
 
 
         // write out the unique ID if required.
@@ -1177,7 +1175,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
             std::string uniqueID;
             fw.createUniqueIDForObject(&obj,uniqueID);
             fw.registerUniqueIDForObject(&obj,uniqueID);
-            fw.indent() << "UniqueID " << uniqueID << std::endl;
+            fw.writeUniqueID( uniqueID );
         }
 
         // read the local data by iterating through the associate
@@ -1231,7 +1229,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
         }
 
         fw.moveOut();
-        fw.indent() << "}"<< std::endl;
+        fw.writeEndObject();
 
         return true;
     }

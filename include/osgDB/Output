@@ -62,7 +62,10 @@ class OSGDB_EXPORT Output : public std::ofstream
         void moveOut();
         
         virtual bool writeObject(const osg::Object& obj);
-        
+        virtual void writeBeginObject(const std::string& name);
+        virtual void writeEndObject();
+        virtual void writeUseID(const std::string& id);
+        virtual void writeUniqueID(const std::string& id);
 
         bool getUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);
         bool createUniqueIDForObject(const osg::Object* obj,std::string& uniqueID);

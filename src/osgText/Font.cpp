@@ -561,8 +561,8 @@ void Font::GlyphTexture::apply(osg::State& state) const
         }
         
 
-        osg::notify(osg::NOTICE)<<"Texture width = "<<getTextureWidth()<<std::endl;
-        osg::notify(osg::NOTICE)<<"Texture height = "<<getTextureHeight()<<std::endl;
+//        osg::notify(osg::NOTICE)<<"Texture width = "<<getTextureWidth()<<std::endl;
+//        osg::notify(osg::NOTICE)<<"Texture height = "<<getTextureHeight()<<std::endl;
                
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,

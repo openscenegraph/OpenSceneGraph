@@ -145,6 +145,16 @@ Font::Font(FontImplementation* implementation):
     _texenv = new osg::TexEnv;
     _stateset = new osg::StateSet;
     _stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+
+    char *ptr;
+    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+    {
+        GLint osg_max_size = atoi(ptr);
+
+        if (osg_max_size<_textureWidthHint) _textureWidthHint = osg_max_size;
+        if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;
+    }
+
 }
 
 Font::~Font()
@@ -214,6 +224,15 @@ void Font::setTextureSizeHint(unsigned int width,unsigned int height)
 {
     _textureWidthHint = width;
     _textureHeightHint = height;
+
+    char *ptr;
+    if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
+    {
+        GLint osg_max_size = atoi(ptr);
+
+        if (osg_max_size<_textureWidthHint) _textureWidthHint = osg_max_size;
+        if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;
+    }
 }
 
 unsigned int Font::getTextureWidthHint() const
@@ -532,6 +551,9 @@ void Font::GlyphTexture::apply(osg::State& state) const
             imageData[i] = 0;
         }
         
+
+        osg::notify(osg::NOTICE)<<"Texture width = "<<getTextureWidth()<<std::endl;
+        osg::notify(osg::NOTICE)<<"Texture height = "<<getTextureHeight()<<std::endl;
                
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,

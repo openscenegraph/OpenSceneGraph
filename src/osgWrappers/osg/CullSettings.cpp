@@ -41,6 +41,8 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
 	I_EnumLabel(osg::CullSettings::CULL_MASK_LEFT);
 	I_EnumLabel(osg::CullSettings::CULL_MASK_RIGHT);
 	I_EnumLabel(osg::CullSettings::CLEAR_COLOR);
+	I_EnumLabel(osg::CullSettings::LIGHTING_MODE);
+	I_EnumLabel(osg::CullSettings::LIGHT);
 	I_EnumLabel(osg::CullSettings::NO_VARIABLES);
 	I_EnumLabel(osg::CullSettings::ALL_VARIABLES);
 END_REFLECTOR

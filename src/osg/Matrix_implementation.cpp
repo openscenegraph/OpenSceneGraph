@@ -138,9 +138,9 @@ Quat Matrix_implementation::getRotate() const
     QY = 0.5 * sqrt( osg::maximum( 0.0, 1.0 - _mat[0][0] + _mat[1][1] - _mat[2][2] ) );
     QZ = 0.5 * sqrt( osg::maximum( 0.0, 1.0 - _mat[0][0] - _mat[1][1] + _mat[2][2] ) );
 
-    QX = QX * osg::sign(  _mat[1][2] - _mat[2][1]) ;
-    QY = QY * osg::sign(  _mat[2][0] - _mat[0][2]) ;
-    QZ = QZ * osg::sign(  _mat[0][1] - _mat[1][0]) ;
+    QX = QX * osg::signOrZero(  _mat[1][2] - _mat[2][1]) ;
+    QY = QY * osg::signOrZero(  _mat[2][0] - _mat[0][2]) ;
+    QZ = QZ * osg::signOrZero(  _mat[0][1] - _mat[1][0]) ;
 
     return q;
 }

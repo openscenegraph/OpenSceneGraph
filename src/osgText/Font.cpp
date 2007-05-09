@@ -135,8 +135,8 @@ Font::Font(FontImplementation* implementation):
     _height(16),
     _margin(1),
     _marginRatio(0.02),
-    _textureWidthHint(8000),
-    _textureHeightHint(8000),
+    _textureWidthHint(1024),
+    _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
     _magFilterHint(osg::Texture::LINEAR)
 {

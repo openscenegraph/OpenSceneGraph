@@ -314,7 +314,20 @@ void testQuat()
     testQuatRotate(osg::Vec3d(0.0,0.0,-1.0),osg::Vec3d(0.0,0.0,1.0));
 
     testGetQuatFromMatrix();
+
+
+    osg::Matrix matrix(0.5, 0.0, 0.0, 0.0,
+                       0.0, 0.5, 0.0, 0.0,
+                       0.0, 0.0, 0.5, 0.0,
+                       1.0, 1.0, 1.0, 1.0);
+                       
+    osg::Quat quat;
+    matrix.get(quat);
+    
+    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<" rotation="<<quat<<std::endl;
+
 }
+
 
 int main( int argc, char** argv )
 {

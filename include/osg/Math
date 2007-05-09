@@ -168,6 +168,9 @@ template<typename T>
 inline T sign(T v) { return v<(T)0?(T)-1:(T)1; }
 
 template<typename T>
+inline T signOrZero(T v) { return v<(T)0 ? (T)-1 : ( v>(T)0 ? (T)1 : 0 ); }
+
+template<typename T>
 inline T square(T v) { return v*v; }
 
 template<typename T>

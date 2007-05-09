@@ -457,6 +457,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __SharedStateManager_P1__getSharedStateManager,
 	          "Get the SharedStateManager. ",
 	          "Return 0 if no SharedStateManager has been assigned. ");
+	I_Method1(void, addArchiveExtension, IN, const std::string, ext,
+	          Properties::NON_VIRTUAL,
+	          __void__addArchiveExtension__C5_std_string,
+	          "Add an Archive extension. ",
+	          "");
 	I_StaticMethodWithDefaults1(osgDB::Registry *, instance, IN, bool, erase, false,
 	                            __Registry_P1__instance__bool_S,
 	                            "",

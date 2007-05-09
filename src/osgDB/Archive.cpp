@@ -29,6 +29,13 @@ osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::Archive
 
 osgDB::Archive* osgDB::openArchive(const std::string& filename, Archive::ArchiveStatus status, unsigned int indexBlockSizeHint,ReaderWriter::Options* options)
 {
+    // ensure archive extension is in the registry list
+    std::string::size_type dot = filename.find_last_of('.');
+    if (dot != std::string::npos)
+    {
+        std::string ext = filename.substr(dot+1);
+        Registry::instance()->addArchiveExtension(ext);
+    }
     ReaderWriter::ReadResult result = osgDB::Registry::instance()->openArchive(filename, status, indexBlockSizeHint, options);
     return result.takeArchive();
 }

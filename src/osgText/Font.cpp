@@ -134,7 +134,7 @@ Font::Font(FontImplementation* implementation):
     _width(16),
     _height(16),
     _margin(1),
-    _marginRatio(0.05),
+    _marginRatio(0.02),
     _textureWidthHint(1024),
     _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
@@ -375,7 +375,7 @@ void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charco
 
 Font::GlyphTexture::GlyphTexture():
     _margin(1),
-    _marginRatio(0.05f),
+    _marginRatio(0.02f),
     _usedY(0),
     _partUsedX(0),
     _partUsedY(0)
@@ -524,13 +524,23 @@ void Font::GlyphTexture::apply(osg::State& state) const
             // not mip mapping so no problems.
             break;
         }
+        
+        unsigned int imageDataSize = getTextureHeight()*getTextureWidth();
+        unsigned char* imageData = new unsigned char[imageDataSize];
+        for(unsigned int i=0; i<imageDataSize; ++i)
+        {
+            imageData[i] = 0;
+        }
+        
                
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
                 getTextureWidth(), getTextureHeight(), 0,
                 GL_ALPHA,
                 GL_UNSIGNED_BYTE,
-                0 );
+                imageData );
+                
+        delete [] imageData;
     
     }
     else

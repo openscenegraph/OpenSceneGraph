@@ -136,6 +136,9 @@ Registry::Registry()
 
     _createNodeFromImage = false;
     _openingLibrary = false;
+
+    // add default osga archive extension
+    _archiveExtList.push_back("osga");
     
     initFilePathLists();
 
@@ -1291,30 +1294,47 @@ struct Registry::ReadArchiveFunctor : public Registry::ReadFunctor
 
 };
 
+void Registry::addArchiveExtension(const std::string ext)
+{
+    for(ArchiveExtensionList::iterator aitr=_archiveExtList.begin();
+        aitr!=_archiveExtList.end();
+        ++aitr)
+    {
+        if ( (*aitr) == ext)   // extension already in archive extension list
+            return;
+    }
+    _archiveExtList.push_back(ext);
+};
+
 ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 {
-    std::string archiveName(".osga");
-
-    std::string::size_type positionArchive = readFunctor._filename.find(archiveName+'/');
-    if (positionArchive==std::string::npos) positionArchive = readFunctor._filename.find(archiveName+'\\');
-    if (positionArchive!=std::string::npos)
+    for(ArchiveExtensionList::iterator aitr=_archiveExtList.begin();
+        aitr!=_archiveExtList.end();
+        ++aitr)
     {
-        std::string archiveName(readFunctor._filename.substr(0,positionArchive+5));
-        std::string fileName(readFunctor._filename.substr(positionArchive+6,std::string::npos));
-        osg::notify(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
-        osg::notify(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
-        osg::notify(osg::INFO)<<"         filename : "<<fileName<<std::endl;
-        
-        ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, readFunctor._options);
-        
-        if (!result.validArchive()) return result;
+        std::string archiveName = "." + (*aitr);
 
-        osgDB::Archive* archive = result.getArchive();
+        std::string::size_type positionArchive = readFunctor._filename.find(archiveName+'/');
+        if (positionArchive==std::string::npos) positionArchive = readFunctor._filename.find(archiveName+'\\');
+        if (positionArchive!=std::string::npos)
+        {
+            std::string archiveName(readFunctor._filename.substr(0,positionArchive+5));
+            std::string fileName(readFunctor._filename.substr(positionArchive+6,std::string::npos));
+            osg::notify(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
+            osg::notify(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
+            osg::notify(osg::INFO)<<"         filename : "<<fileName<<std::endl;
         
-        osg::ref_ptr<ReaderWriter::Options> options = new ReaderWriter::Options;
-        options->setDatabasePath(archiveName);
+            ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, readFunctor._options);
+        
+            if (!result.validArchive()) return result;
 
-        return archive->readObject(fileName,options.get());
+            osgDB::Archive* archive = result.getArchive();
+        
+            osg::ref_ptr<ReaderWriter::Options> options = new ReaderWriter::Options;
+            options->setDatabasePath(archiveName);
+
+            return archive->readObject(fileName,options.get());
+        }
     }
 
     // if filename contains archive

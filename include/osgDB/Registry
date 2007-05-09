@@ -385,6 +385,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get the SharedStateManager. Return 0 if no SharedStateManager has been assigned.*/
         SharedStateManager* getSharedStateManager() { return _sharedStateManager.get(); }
 
+        /** Add an Archive extension.*/
+        void addArchiveExtension(const std::string ext);
 
     protected:
 
@@ -394,6 +396,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
+        typedef std::vector< std::string>                               ArchiveExtensionList;
         
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
@@ -489,7 +492,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         ArchiveCache                            _archiveCache;
         OpenThreads::Mutex                      _archiveCacheMutex;
-        
+
+        ArchiveExtensionList                    _archiveExtList;
         
         osg::ref_ptr<DatabasePager>             _databasePager;
         osg::ref_ptr<SharedStateManager>        _sharedStateManager;

@@ -9,115 +9,205 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ */
 
 #ifndef OSG_SEQUENCE
 #define OSG_SEQUENCE 1
 
-#include <osg/Switch>
+#include <osg/Group>
 
-namespace osg {
-
+namespace osg 
+{
+  
 /** Sequence is a Group node which allows automatic, time based
-    switching between children.
+switching between children.
 */
 class OSG_EXPORT Sequence : public Group
 {
-public :
-        
-    Sequence();
+    public :
 
-    /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-    Sequence(const Sequence&, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        Sequence();
 
-    META_Node(osg, Sequence);
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Sequence(const Sequence&, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
-    virtual void traverse(NodeVisitor& nv);
-    
-    
-    void setValue(int value) { _value = value; }
-    int getValue() const { return _value; }
+        META_Node(osg, Sequence);
 
-    /** Set time in seconds for child. */
-    void setTime(int frame, float t);
+        virtual void traverse(NodeVisitor& nv);
 
-    /** Get time for child. */
-    float getTime(int frame) const;
+        // the relationship between the _frameTime vector and the _children
+        // vector is a bit of a mess.  This is how it was in previous versions,
+        // and there's no way out of it if upward compatability needs to be
+        // maintained.  New code should set defaultTime and use addChild, and
+        // not mess with the setTime method
 
-    /** Set default time in seconds for new child. */
-    void setDefaultTime(float t) {_defaultTime = t;}
+        virtual bool addChild( Node *child);
 
-    /** Get default time in seconds for new child. */
-    float getDefaultTime(void) const {return _defaultTime;};
+        virtual bool addChild( Node *child, double t);
 
-    /** Get number of frames */
-    inline unsigned int getNumFrames() const { return _frameTime.size(); }
+        virtual bool insertChild( unsigned int index, Node *child);
 
-    /** Interval modes. 'Loop' repeats frames 1-N; 'swing' repeats 1->N, (N-1)->1. */
-    enum LoopMode
-    {
-        LOOP,
-        SWING
-    };
+        virtual bool insertChild( unsigned int index, Node *child, double t);
 
-    /** Set sequence mode & interval (range of children to be displayed). */
-    void setInterval(LoopMode mode, int begin, int end);
+        virtual bool removeChild( Node *child );
 
-    /** Get sequence mode & interval. */
-    inline void getInterval(LoopMode& mode, int& begin, int& end) const
-    {
-        mode = _loopMode;
-        begin = _begin;
-        end = _end;
-    }
+        virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 
-    /** Set duration: speed-up & number of repeats */
-    void setDuration(float speed, int nreps = -1);
 
-    /** Get duration & number of repeats. */
-    inline void getDuration(float& speed, int& nreps) const
-    {
-        speed = _speed;
-        nreps = _nreps;
-    }
+        /** value is which child node is to be displayed */
+        void setValue(int value) { _value = value ; }
+        int getValue() const { return _value; }
 
-    /** Sequence modes. */
-    enum SequenceMode
-    {
-        START,
-        STOP,
-        PAUSE,
-        RESUME
-    };
+        /** Set time in seconds for child. */
+        void setTime(unsigned int frame, double t);
 
-    /** Set sequence mode. Start/stop & pause/resume. */
-    void setMode(SequenceMode mode);
+        /** Get time for child. */
+        double getTime(unsigned int frame) const;
 
-    /** Get sequence mode. */
-    inline SequenceMode getMode() const { return _mode; }
+        /** Set default time in seconds for new child. 
+            if t<0, t=0 */
+        void setDefaultTime(double t) {_defaultTime = (t<0.?0.:t);}
 
-protected :
-    
-    virtual ~Sequence() {}
+        /** Get default time in seconds for new child. */
+        double getDefaultTime(void) const {return _defaultTime;};
 
-    int        _value;
+        /** Set time of last frame of last loop, in seconds.  
+            if t<= 0, then ignored */
+        void setLastFrameTime(double t) {_lastFrameTime = (t<0.?0.:t);}
 
-    float _last;
-    std::vector<float> _frameTime;
+        /** Get last frame time in seconds */
+        double getLastFrameTime(void) const {return _lastFrameTime;};
 
-    int _step;
+        /** Get number of frames */
+        inline unsigned int getNumFrames() const { return _frameTime.size(); }
 
-    LoopMode _loopMode;
-    int _begin, _end;
+        /** Interval modes. 'Loop' repeats frames 1-N; 'swing' repeats 1->N, (N-1)->1. */
+        enum LoopMode
+        {
+            LOOP,
+            SWING
+        };
 
-    float _speed;
-    int _nreps, _nrepsremain;
+        /** Set sequence mode & interval (range of children to be displayed). */
+        void setInterval(LoopMode mode, int begin, int end);
 
-    float _defaultTime ;
+        /** Get sequence mode & interval. */
+        inline void getInterval(LoopMode& mode, int& begin, int& end) const
+        {
+            mode = _loopMode;
+            begin = _begin;
+            end = _end;
+        }
 
-    SequenceMode _mode;
+        /** Set duration: speed-up & number of repeats */
+        void setDuration(float speed, int nreps = -1);
+
+        /** Get duration & number of repeats. */
+        inline void getDuration(float& speed, int& nreps) const
+        {
+            speed = _speed;
+            nreps = _nreps;
+        }
+
+        /** Sequence modes. */
+        enum SequenceMode
+        {
+            START,
+            STOP,
+            PAUSE,
+            RESUME
+        };
+
+        /** Set sequence mode. Start/stop & pause/resume. */
+        void setMode(SequenceMode mode);
+
+        /** Get sequence mode. */
+        inline SequenceMode getMode() const { return _mode; }
+
+        /** If false (default), frames will not be sync'd to frameTime.  If
+            true, frames will be sync'd to frameTime. */
+        void setSync(bool sync) { _sync = sync ; } ;
+
+        /** Get sync value */
+        inline void getSync(bool& sync) const { sync = _sync ; } ;
+
+        /** If true, show no child nodes after stopping */
+        void setClearOnStop(bool clearOnStop) { _clearOnStop = clearOnStop ; } ;
+
+        /** If true, show no child nodes after stopping */
+        inline void getClearOnStop(bool& clearOnStop) const { clearOnStop = _clearOnStop ; } ;
+
+    protected :
+
+        virtual ~Sequence() {}
+
+        // get next _value in sequence
+        int _getNextValue(void) ;
+
+        // update local variables
+        void _update(void) ;
+
+        // init to -1 to mean "restart"
+        int _value;
+
+        // current time, set by traverse
+        double _now ;
+
+        // time this frame started.  init to -1.0f- means get current time
+        double _start;
+
+        // a vector of frame times, one per value
+        std::vector<double> _frameTime;
+
+        // the total time for one sequence, from BEGIN to END
+        double _totalTime ;
+
+        // true if _totalTime needs to be recalculated because setTime or
+        // setInterval was invoked, or a new child was added
+        bool _resetTotalTime ;
+
+        // store "loop mde", either LOOP or SWING
+        // init to LOOP- set by setInterval
+        LoopMode _loopMode;
+
+        // first and last "values" to sequence through
+        // begin inits to 0
+        // end inits to -1- means to init to number of values
+        int _begin, _end;
+
+        // multiplier of real-time clock- set to N to go N times faster
+        // init to 0- going nowhere
+        float _speed;
+
+        // _nreps: how many times to repeat- default param is -1, repeat forever
+        // init to 0, no repetitions
+        // _nrepsRemain: set to nreps and counts down every traversal, 
+        // stopping when it gets to zero.  init to 0
+        int _nreps, _nrepsRemain;
+
+        // default frame time for newly created frames or children- default is 1.
+        // set by setDefaultTime
+        double _defaultTime ;
+
+        // special time to display last frame of last loop
+        // <= zero means to not do anything special
+        double _lastFrameTime ;
+
+        // save the actual time of the last frame, and what value was stored
+        double _saveRealLastFrameTime ;
+        unsigned int _saveRealLastFrameValue ;
+
+        // the current mode
+        SequenceMode _mode;
+
+        // the current sync value
+        bool _sync ;
+
+        // the current clearOnStop value
+        bool _clearOnStop ;
+
 };
-
+  
 }
 
 #endif

@@ -169,6 +169,7 @@ class OSG_EXPORT Uniform : public Object
         };
 
     public:
+
         Uniform();
         Uniform( Type type, const std::string& name, int numElements=1 );
 
@@ -182,7 +183,7 @@ class OSG_EXPORT Uniform : public Object
         bool setType( Type t );
 
         /** Get the type of glUniform as enum. */
-        const Type getType() const { return _type; }
+        Type getType() const { return _type; }
 
         /** Set the name of the glUniform, ensuring it is only set once.*/
         void setName( const std::string& name );

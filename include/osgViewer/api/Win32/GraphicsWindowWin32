@@ -89,7 +89,14 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                 
             HWND    _hwnd;
         };
-        
+
+        /** Get native window.*/        
+        HWND getHWND() const { return _hwnd; }
+
+        HDC getHDC() const { return _hdc; }
+
+        /** Get native OpenGL graphics context.*/        
+        HGLRC getWGLContext() const { return _hglrc; }
         
     protected:
     
@@ -112,7 +119,6 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                 
         void transformMouseXY(float& x, float& y);
         
-        HGLRC getWGLContext() { return _hglrc; }
         
         HWND            _hwnd;
         HDC             _hdc;

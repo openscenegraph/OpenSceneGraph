@@ -78,6 +78,76 @@ void ImageLayer::setImage(osg::Image* image)
     _image = image;
 }
 
+template <typename T, class O>    
+void _processRow(unsigned int num, GLenum pixelFormat, T* data,const O& operation)
+{
+    switch(pixelFormat)
+    {
+        case(GL_LUMINANCE):         { for(unsigned int i=0;i<num;++i) { operation(*data++); } }  break;
+        case(GL_ALPHA):             { for(unsigned int i=0;i<num;++i) { operation(*data++); } }  break;
+        case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { operation(*data++); operation(*data++); } }  break;
+        case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { operation(*data++); operation(*data++); operation(*data++); } }  break;
+        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { operation(*data++); operation(*data++); operation(*data++); operation(*data++);  } }  break;
+        case(GL_BGR):               { for(unsigned int i=0;i<num;++i) { operation(*data++); operation(*data++); operation(*data++); } }  break;
+        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { operation(*data++); operation(*data++); operation(*data++); operation(*data++);  } }  break;
+    }
+}
+
+template <class O>    
+void processRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const O& operation)
+{
+    switch(dataType)
+    {
+        case(GL_BYTE):              _processRow(num,pixelFormat, (char*)data,            operation); break;
+        case(GL_UNSIGNED_BYTE):     _processRow(num,pixelFormat, (unsigned char*)data,   operation); break;
+        case(GL_SHORT):             _processRow(num,pixelFormat, (short*) data,          operation); break;
+        case(GL_UNSIGNED_SHORT):    _processRow(num,pixelFormat, (unsigned short*)data,  operation); break;
+        case(GL_INT):               _processRow(num,pixelFormat, (int*) data,            operation); break;
+        case(GL_UNSIGNED_INT):      _processRow(num,pixelFormat, (unsigned int*) data,   operation); break;
+        case(GL_FLOAT):             _processRow(num,pixelFormat, (float*) data,          operation); break;
+    }
+}
+
+template <class O>    
+void processImage(osg::Image* image, const O& operation)
+{
+    if (!image) return;
+    
+    for(int r=0;r<image->r();++r)
+    {
+        for(int t=0;t<image->t();++t)
+        {
+            processRow(image->s(), image->getPixelFormat(), image->getDataType(), image->data(0,t,r), operation);
+        }
+    }
+}
+
+struct TransformOperator
+{
+    TransformOperator(float offset, float scale):
+        _offset(offset),
+        _scale(scale) {}
+
+    inline void operator() (unsigned char& v) const { v = (unsigned char)(_offset + (float)v * _scale); }
+    inline void operator() (unsigned short& v) const { v = (unsigned short)(_offset + (float)v * _scale); }
+    inline void operator() (unsigned int& v) const { v = (unsigned int)(_offset + (float)v * _scale); }
+    inline void operator() (char& v) const { v = (char)(_offset + (float)v * _scale); }
+    inline void operator() (short& v) const { v = (short)(_offset + (float)v * _scale); }
+    inline void operator() (int& v) const { v = (int)(_offset + (float)v * _scale); }
+    inline void operator() (float& v) const { v = _offset + v * _scale; }
+    
+    float _offset, _scale;
+};
+
+
+bool ImageLayer::transform(float offset, float scale)
+{
+    if (!_image.valid()) return false;
+
+    processImage(_image.get(), TransformOperator(offset,scale));
+
+    return true;
+}
 
 bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
 {
@@ -158,6 +228,24 @@ void HeightFieldLayer::setHeightField(osg::HeightField* hf)
     _heightField = hf;
 }
 
+
+
+bool HeightFieldLayer::transform(float offset, float scale)
+{
+    if (!_heightField) return false;
+
+    osg::FloatArray* heights = _heightField->getFloatArray();
+    if (!heights) return false;
+    
+    for(osg::FloatArray::iterator itr = heights->begin();
+        itr != heights->end();
+        ++itr)
+    {
+        *itr = offset + (*itr) * scale;
+    }
+
+    return true;
+}
 
 bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, float& value) const
 {

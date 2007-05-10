@@ -43,6 +43,8 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
         const osg::Vec4& getDefaultValue() const { return _defaultValue; }
+        
+        virtual bool transform(float offset, float scale) { return false; }
 
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec2& /*value*/) const { return false; }
@@ -127,6 +129,7 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
+        virtual bool transform(float offset, float scale);
 
         void setImage(osg::Image* image);
         osg::Image* getImage() { return _image.get(); }
@@ -157,6 +160,7 @@ class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         HeightFieldLayer(const HeightFieldLayer& hfLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
+        virtual bool transform(float offset, float scale);
 
         void setHeightField(osg::HeightField* hf);
         osg::HeightField* getHeightField() { return _heightField.get(); }

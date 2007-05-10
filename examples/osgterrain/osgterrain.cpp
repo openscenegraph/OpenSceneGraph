@@ -88,6 +88,9 @@ int main(int argc, char** argv)
 
     bool readParameter = false;
     float minValue, maxValue;
+    float scale = 1.0f;
+    float offset = 0.0f;
+
     int pos = 1;
     while(pos<arguments.argc())
     {
@@ -104,6 +107,12 @@ int main(int argc, char** argv)
         {
             // define the extents.
             locator = new osgTerrain::EllipsoidLocator(x,y,w,h,0);
+            readParameter = true;
+        }
+
+        else if (arguments.read(pos, "--transform",offset, scale) || arguments.read(pos, "-t",offset, scale))
+        {
+            // define the extents.
             readParameter = true;
         }
 
@@ -128,6 +137,11 @@ int main(int argc, char** argv)
                 
                 hfl->setLocator(locator.get());
                 
+                if (offset!=0.0f || scale!=1.0f)
+                {
+                    hfl->transform(offset,scale);
+                }
+                
                 terrain->setElevationLayer(hfl.get());
                 
                 osg::notify(osg::NOTICE)<<"created osgTerrain::HeightFieldLayer"<<std::endl;
@@ -136,6 +150,9 @@ int main(int argc, char** argv)
             {
                 osg::notify(osg::NOTICE)<<"failed to create osgTerrain::HeightFieldLayer"<<std::endl;
             }
+            
+            scale = 1.0f;
+            offset = 0.0f;
             
         }
 
@@ -151,6 +168,11 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 
+                if (offset!=0.0f || scale!=1.0f)
+                {
+                    imageLayer->transform(offset,scale);
+                }
+                
                 terrain->setElevationLayer(imageLayer.get());
                 
                 osg::notify(osg::NOTICE)<<"created Elevation osgTerrain::ImageLayer"<<std::endl;
@@ -159,6 +181,10 @@ int main(int argc, char** argv)
             {
                 osg::notify(osg::NOTICE)<<"failed to create osgTerrain::ImageLayer"<<std::endl;
             }
+
+            scale = 1.0f;
+            offset = 0.0f;
+            
         }
         
         else if (arguments.read(pos, "-c",filename) || arguments.read(pos, "--image",filename))
@@ -173,6 +199,11 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 
+                if (offset!=0.0f || scale!=1.0f)
+                {
+                    imageLayer->transform(offset,scale);
+                }
+
                 terrain->setColorLayer(layerNum, imageLayer.get());
                 
                 osg::notify(osg::NOTICE)<<"created Color osgTerrain::ImageLayer"<<std::endl;
@@ -181,6 +212,10 @@ int main(int argc, char** argv)
             {
                 osg::notify(osg::NOTICE)<<"failed to create osgTerrain::ImageLayer"<<std::endl;
             }
+
+            scale = 1.0f;
+            offset = 0.0f;
+            
         }
 
         else if (arguments.read(pos, "--filter",filterName))

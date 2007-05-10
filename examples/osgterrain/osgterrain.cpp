@@ -107,7 +107,7 @@ int main(int argc, char** argv)
             readParameter = true;
         }
 
-        else if (arguments.read(pos, "-c",x,y,w,h))
+        else if (arguments.read(pos, "--cartizian",x,y,w,h))
         {
             // define the extents.
             locator = new osgTerrain::CartizianLocator(x,y,w,h,0);

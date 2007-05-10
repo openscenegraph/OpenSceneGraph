@@ -51,7 +51,7 @@ public:
         return archive.get();
     }
 
-    virtual ReadResult readImage(const std::string& file,const Options*) const
+    virtual ReadResult readImage(const std::string& file,const Options* options) const
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
         
@@ -64,14 +64,16 @@ public:
         ReadResult result_2 = result.getArchive()->readImage(result.getArchive()->getMasterFileName(),local_options.get());
         
 
-        // register the archive so that it is cached for future use.
-        osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
-
+        if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
+        {
+            // register the archive so that it is cached for future use.
+            osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
+        }
 
         return result_2;
     }
 
-    virtual ReadResult readNode(const std::string& file,const Options*) const
+    virtual ReadResult readNode(const std::string& file,const Options* options) const
     {
         ReadResult result = openArchive(file,osgDB::Archive::READ);
         
@@ -84,9 +86,11 @@ public:
         ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());
         
 
-        // register the archive so that it is cached for future use.
-        osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
-
+        if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
+        {
+            // register the archive so that it is cached for future use.
+            osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
+        }
 
         return result_2;
     }

@@ -348,6 +348,8 @@ void GeometryTechnique::init()
         }
     }
 
+    bool containsTransparency = false;
+
     if (colorLayer)
     {
         osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
@@ -362,16 +364,21 @@ void GeometryTechnique::init()
             stateset->setTextureAttributeAndModes(color_index, texture2D, osg::StateAttribute::ON);
 
             texture2D->setFilter(osg::Texture::MAG_FILTER, filter==TerrainNode::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
-
+            
             if (tf)
             {
                 // up the precision of hte internal texture format to its maximum.
                 //image->setInternalTextureFormat(GL_LUMINANCE32F_ARB);
                 image->setInternalTextureFormat(GL_LUMINANCE16);
             }
+            else
+            {
+                containsTransparency = image->isImageTranslucent();
+            }
         }
         
     }
+
 
     if (tf)
     {
@@ -384,6 +391,8 @@ void GeometryTechnique::init()
         texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
         texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
         stateset->setTextureAttributeAndModes(tf_index, texture1D, osg::StateAttribute::ON);
+
+        containsTransparency = image->isImageTranslucent();
 
         if (colorLayer)
         {
@@ -429,6 +438,13 @@ void GeometryTechnique::init()
         {
             osg::notify(osg::NOTICE)<<"Using standard OpenGL fixed function pipeline"<<std::endl;
         }
+    }
+    
+    if (containsTransparency)
+    {
+        osg::StateSet* stateset = _geode->getOrCreateStateSet();
+        stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+        stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
 
     // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);

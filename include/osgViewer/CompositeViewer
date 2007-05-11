@@ -28,6 +28,7 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         virtual ~CompositeViewer();
 
         void addView(osgViewer::View* view);
+        void removeView(osgViewer::View* view);
         
         osgViewer::View* getView(unsigned i) { return _views[i].get(); }
         const osgViewer::View* getView(unsigned i) const { return _views[i].get(); }
@@ -144,6 +145,9 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         /** Get the graphics operation to call on realization of the viewers graphics windows.*/
         osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
 
+        /** Return true if viewer threads are running. */
+        bool areThreadsRunning() const { return _threadsRunning; }
+
         /** Stop any threads begin run by viewer.*/
         void stopThreading();
 
@@ -169,6 +173,8 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         bool _quitEventSetsDone;
         
         ThreadingModel _threadingModel;
+        bool           _threadsRunning;
+
         BarrierPosition _endBarrierPosition;
 
         osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;

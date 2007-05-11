@@ -81,9 +81,34 @@ CompositeViewer::~CompositeViewer()
 
 void CompositeViewer::addView(osgViewer::View* view)
 {
+    bool threadsWereRuinning = _threadsRunning;
+    if (threadsWereRuinning) stopThreading();
+
     _views.push_back(view);
     
     setUpRenderingSupport();
+    if (threadsWereRuinning) startThreading();
+}
+
+void CompositeViewer::removeView(osgViewer::View* view)
+{
+    for(Views::iterator itr = _views.begin();
+        itr != _views.end();
+        ++itr)
+    {
+        if (*itr == view)
+        {
+            bool threadsWereRuinning = _threadsRunning;
+            if (threadsWereRuinning) stopThreading();
+
+            _views.erase(itr);
+
+            setUpRenderingSupport();
+            if (threadsWereRuinning) startThreading();
+
+            return;
+        }
+    }
 }
 
 bool CompositeViewer::isRealized() const
@@ -188,6 +213,8 @@ void CompositeViewer::setEndBarrierPosition(BarrierPosition bp)
 
 void CompositeViewer::stopThreading()
 {
+    if (!_threadsRunning) return;
+
     if (_numThreadsOnBarrier==0) return;
 
     osg::notify(osg::INFO)<<"CompositeViewer::stopThreading() - stopping threading"<<std::endl;
@@ -278,6 +305,8 @@ unsigned int CompositeViewer::computeNumberOfThreadsIncludingMainRequired()
 
 void CompositeViewer::startThreading()
 {
+    if (_threadsRunning) return;
+
     unsigned int numThreadsIncludingMainThread = computeNumberOfThreadsIncludingMainRequired();
 
     // return if we don't need multiple threads.
@@ -394,6 +423,8 @@ void CompositeViewer::startThreading()
             // OpenThreads::Thread::YieldCurrentThread();
         }
     }
+
+    _threadsRunning = true;
 }
 
 void CompositeViewer::checkWindowStatus()

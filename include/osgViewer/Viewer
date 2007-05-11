@@ -151,6 +151,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Set up the threading and processor affinity as per the viewers threading model.*/
         void setUpThreading();      
 
+        /** Return true if viewer threads are running. */
+        bool areThreadsRunning() const { return _threadsRunning; }
+
         /** Stop any threads begin run by viewer.*/
         void stopThreading();
 

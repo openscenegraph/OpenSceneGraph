@@ -14,7 +14,7 @@ SET(TARGET_EXTERNAL_LIBRARIES
     pfflt pfgds pfgfo pfim pflsa pflsb
     pfnff pfobj pfpegg pfpfb pfphd pfpts
     pfrot pfscale pfsgf pfsgo pfsphere pfsv
-    pftri pfunc pfvct pfdu pfutil pfdb
+    pftri pfunc pfvct pfdu pfutil
 )
 
 SET(TARGET_LIBRARIES_VARS PERFORMER_LIBRARY )

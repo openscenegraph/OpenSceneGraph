@@ -53,6 +53,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __void__addView__osgViewer_View_P1,
 	          "",
 	          "");
+	I_Method1(void, removeView, IN, osgViewer::View *, view,
+	          Properties::NON_VIRTUAL,
+	          __void__removeView__osgViewer_View_P1,
+	          "",
+	          "");
 	I_Method1(osgViewer::View *, getView, IN, unsigned, i,
 	          Properties::NON_VIRTUAL,
 	          __osgViewer_View_P1__getView__unsigned,
@@ -247,6 +252,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          Properties::NON_VIRTUAL,
 	          __osg_Operation_P1__getRealizeOperation,
 	          "Get the graphics operation to call on realization of the viewers graphics windows. ",
+	          "");
+	I_Method0(bool, areThreadsRunning,
+	          Properties::NON_VIRTUAL,
+	          __bool__areThreadsRunning,
+	          "Return true if viewer threads are running. ",
 	          "");
 	I_Method0(void, stopThreading,
 	          Properties::NON_VIRTUAL,

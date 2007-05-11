@@ -244,6 +244,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__setUpThreading,
 	          "Set up the threading and processor affinity as per the viewers threading model. ",
 	          "");
+	I_Method0(bool, areThreadsRunning,
+	          Properties::NON_VIRTUAL,
+	          __bool__areThreadsRunning,
+	          "Return true if viewer threads are running. ",
+	          "");
 	I_Method0(void, stopThreading,
 	          Properties::NON_VIRTUAL,
 	          __void__stopThreading,

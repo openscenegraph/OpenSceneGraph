@@ -20,6 +20,7 @@
 #include <osg/Vec4>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
+#include <osgTerrain/ValidDataOperator>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -206,6 +207,21 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_Locator_P1__getLocator,
 	          "",
 	          "");
+	I_Method1(void, setValidDataOperator, IN, osgTerrain::ValidDataOperator *, validDataOp,
+	          Properties::NON_VIRTUAL,
+	          __void__setValidDataOperator__ValidDataOperator_P1,
+	          "",
+	          "");
+	I_Method0(osgTerrain::ValidDataOperator *, getValidDataOperator,
+	          Properties::NON_VIRTUAL,
+	          __ValidDataOperator_P1__getValidDataOperator,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::ValidDataOperator *, getValidDataOperator,
+	          Properties::NON_VIRTUAL,
+	          __C5_ValidDataOperator_P1__getValidDataOperator,
+	          "",
+	          "");
 	I_Method0(unsigned int, getNumColumns,
 	          Properties::VIRTUAL,
 	          __unsigned_int__getNumColumns,
@@ -251,6 +267,26 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __bool__getValue__unsigned__unsigned__osg_Vec4_R1,
 	          "",
 	          "");
+	I_Method3(bool, getValidValue, IN, unsigned int, i, IN, unsigned int, j, IN, float &, value,
+	          Properties::NON_VIRTUAL,
+	          __bool__getValidValue__unsigned_int__unsigned_int__float_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValidValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec2 &, value,
+	          Properties::NON_VIRTUAL,
+	          __bool__getValidValue__unsigned_int__unsigned_int__osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValidValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec3 &, value,
+	          Properties::NON_VIRTUAL,
+	          __bool__getValidValue__unsigned_int__unsigned_int__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValidValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec4 &, value,
+	          Properties::NON_VIRTUAL,
+	          __bool__getValidValue__unsigned_int__unsigned_int__osg_Vec4_R1,
+	          "",
+	          "");
 	I_Method6(void, computeIndices, IN, double, ndc_x, IN, double, ndc_y, IN, unsigned int &, i, IN, unsigned int &, j, IN, double &, ir, IN, double &, jr,
 	          Properties::NON_VIRTUAL,
 	          __void__computeIndices__double__double__unsigned_int_R1__unsigned_int_R1__double_R1__double_R1,
@@ -272,5 +308,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
+	I_SimpleProperty(osgTerrain::ValidDataOperator *, ValidDataOperator, 
+	                 __ValidDataOperator_P1__getValidDataOperator, 
+	                 __void__setValidDataOperator__ValidDataOperator_P1);
 END_REFLECTOR
 

@@ -13,6 +13,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/TerrainNode
 	${HEADER_PATH}/TerrainTechnique
 	${HEADER_PATH}/GeometryTechnique
+	${HEADER_PATH}/ValidDataOperator
 	${HEADER_PATH}/Version
 )
 

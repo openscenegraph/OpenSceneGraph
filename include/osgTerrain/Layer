@@ -19,6 +19,7 @@
 #include <osg/Array>
 
 #include <osgTerrain/Locator>
+#include <osgTerrain/ValidDataOperator>
 
 namespace osgTerrain {
 
@@ -38,6 +39,11 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
 
+        void setValidDataOperator(ValidDataOperator* validDataOp) { _validDataOperator = validDataOp; }
+        ValidDataOperator* getValidDataOperator() { return _validDataOperator.get(); }
+        const ValidDataOperator* getValidDataOperator() const { return _validDataOperator.get(); }
+
+
         virtual unsigned int getNumColumns() const { return 0; }
         virtual unsigned int getNumRows() const { return 0; }
 
@@ -46,10 +52,36 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         virtual bool transform(float offset, float scale) { return false; }
 
+
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec2& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec3& /*value*/) const { return false; }
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, osg::Vec4& /*value*/) const { return false; }
+
+        inline bool getValidValue(unsigned int i, unsigned int j, float& value) const
+        {
+            if (getValue(i,j,value)) return _validDataOperator.valid() ? (*_validDataOperator)(value) : true;
+            return false;
+        }
+
+        inline bool getValidValue(unsigned int i, unsigned int j, osg::Vec2& value) const
+        {
+            if (getValue(i,j,value)) return _validDataOperator.valid() ? (*_validDataOperator)(value) : true;
+            return false;
+        }
+
+        inline bool getValidValue(unsigned int i, unsigned int j, osg::Vec3& value) const
+        {
+            if (getValue(i,j,value)) return _validDataOperator.valid() ? (*_validDataOperator)(value) : true;
+            return false;
+        }
+
+        inline bool getValidValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+        {
+            if (getValue(i,j,value)) return _validDataOperator.valid() ? (*_validDataOperator)(value) : true;
+            return false;
+        }
+
 
         inline void computeIndices(double ndc_x, double ndc_y, unsigned int& i, unsigned int& j, double& ir, double& jr)
         {
@@ -115,8 +147,9 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
 
         virtual ~Layer();
 
-        osg::ref_ptr<Locator>   _locator;
-        osg::Vec4               _defaultValue;
+        osg::ref_ptr<Locator>           _locator;
+        osg::ref_ptr<ValidDataOperator> _validDataOperator;
+        osg::Vec4                       _defaultValue;
 
 };
 

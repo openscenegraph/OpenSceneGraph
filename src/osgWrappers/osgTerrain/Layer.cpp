@@ -38,6 +38,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	                           ____HeightFieldLayer__C5_HeightFieldLayer_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
+	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
+	          Properties::VIRTUAL,
+	          __bool__transform__float__float,
+	          "",
+	          "");
 	I_Method1(void, setHeightField, IN, osg::HeightField *, hf,
 	          Properties::NON_VIRTUAL,
 	          __void__setHeightField__osg_HeightField_P1,
@@ -97,6 +102,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	                           ____ImageLayer__C5_ImageLayer_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
+	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
+	          Properties::VIRTUAL,
+	          __bool__transform__float__float,
+	          "",
+	          "");
 	I_Method1(void, setImage, IN, osg::Image *, image,
 	          Properties::NON_VIRTUAL,
 	          __void__setImage__osg_Image_P1,
@@ -214,6 +224,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_Method0(const osg::Vec4 &, getDefaultValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getDefaultValue,
+	          "",
+	          "");
+	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
+	          Properties::VIRTUAL,
+	          __bool__transform__float__float,
 	          "",
 	          "");
 	I_Method3(bool, getValue, IN, unsigned, int, IN, unsigned, int, IN, float &, x,

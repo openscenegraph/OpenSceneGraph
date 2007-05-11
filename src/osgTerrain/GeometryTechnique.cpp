@@ -142,12 +142,12 @@ void GeometryTechnique::init()
     unsigned int numVertices = numRows * numColumns;
 
     // allocate and assign vertices
-    osg::Vec3Array* _vertices = new osg::Vec3Array(numVertices);
+    osg::Vec3Array* _vertices = new osg::Vec3Array;
     if (_terrainGeometry.valid()) _terrainGeometry->setVertices(_vertices);
     if (_geometry.valid()) _geometry->setVertexArray(_vertices);
 
     // allocate and assign normals
-    osg::Vec3Array* _normals = new osg::Vec3Array(numVertices);
+    osg::Vec3Array* _normals = new osg::Vec3Array;
     if (_terrainGeometry.valid()) _terrainGeometry->setNormals(_normals);
     if (_geometry.valid())
     {
@@ -169,14 +169,14 @@ void GeometryTechnique::init()
         color_index = texcoord_index;
         ++texcoord_index;
 
-        _texcoords = new osg::Vec2Array(numVertices);
+        _texcoords = new osg::Vec2Array;
         
         if (_terrainGeometry.valid()) _terrainGeometry->setTexCoords(color_index, _texcoords);
 
         if (_geometry.valid()) _geometry->setTexCoordArray(color_index, _texcoords);
     }
 
-    osg::FloatArray* _elevations = new osg::FloatArray(numVertices);
+    osg::FloatArray* _elevations = new osg::FloatArray;
     osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
     if (tf)
     {
@@ -194,6 +194,10 @@ void GeometryTechnique::init()
         }
     }
 
+    if (_vertices) _vertices->reserve(numVertices);
+    if (_texcoords) _texcoords->reserve(numVertices);
+    if (_elevations) _elevations->reserve(numVertices);
+    if (_normals) _normals->reserve(numVertices);
         
     // allocate and assign color
     osg::Vec4Array* _colors = new osg::Vec4Array(1);
@@ -205,6 +209,10 @@ void GeometryTechnique::init()
         _geometry->setColorArray(_colors);
         _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
+
+
+    typedef std::vector<int> Indices;
+    Indices indices(numColumns*numRows, -1);
     
     // populate vertex and tex coord arrays
     unsigned int j;
@@ -214,47 +222,59 @@ void GeometryTechnique::init()
         {
             unsigned int iv = j*numColumns + i;
             osg::Vec3d ndc( ((double)i)/(double)(numColumns-1), ((double)j)/(double)(numRows-1), 0.0);
+     
+            bool validValue = true;
+     
             
             if (elevationLayer)
             {
                 float value = 0.0f;
-                elevationLayer->getValue(i,j, value);
+                validValue = elevationLayer->getValidValue(i,j, value);
                 // osg::notify(osg::NOTICE)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
                 ndc.z() = value;
             }
             
-            osg::Vec3d model;
-            masterLocator->convertLocalToModel(ndc, model);
-
-            (*_vertices)[iv] = model - centerModel;
-
-            if (colorLayer)
+            if (validValue)
             {
-                if (colorLocator!= masterLocator)
+                indices[iv] = _vertices->size();
+            
+                osg::Vec3d model;
+                masterLocator->convertLocalToModel(ndc, model);
+
+                (*_vertices).push_back(model - centerModel);
+
+                if (colorLayer)
                 {
-                    osg::Vec3d color_ndc;
-                    Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
-                    (*_texcoords)[iv].set(color_ndc.x(), color_ndc.y());
-                }
-                else
-                {
-                    (*_texcoords)[iv].set(ndc.x(), ndc.y());
+                    if (colorLocator!= masterLocator)
+                    {
+                        osg::Vec3d color_ndc;
+                        Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
+                        (*_texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
+                    }
+                    else
+                    {
+                        (*_texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
+                    }
+
                 }
 
+                if (_elevations)
+                {
+                    (*_elevations).push_back((ndc.z()-minHeight)*scaleHeight);
+                }
+
+                // compute the local normal
+                osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
+                osg::Vec3d model_one;
+                masterLocator->convertLocalToModel(ndc_one, model_one);
+                model_one = model_one - model;
+                model_one.normalize();            
+                (*_normals).push_back(model_one);
             }
-
-            if (_elevations)
+            else
             {
-                (*_elevations)[iv] = (ndc.z()-minHeight)*scaleHeight;
+                indices[iv] = -1;
             }
-
-            // compute the local normal
-            osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
-            osg::Vec3d model_one;
-            masterLocator->convertLocalToModel(ndc_one, model_one);
-            model_one = model_one - model;
-            model_one.normalize();            
-            (*_normals)[iv] = model_one;
         }
     }
 
@@ -263,67 +283,51 @@ void GeometryTechnique::init()
     bool optimizeOrientations = _elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
     
-    if (!optimizeOrientations)
+    osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
+    elements->reserve((numRows-1) * (numColumns-1) * 6);
+
+    if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
+    if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
+
+    for(j=0; j<numRows-1; ++j)
     {
-        osg::notify(osg::NOTICE)<<"Old tesselation"<<std::endl;
-        for(j=0; j<numRows-1; ++j)
+        for(unsigned int i=0; i<numColumns-1; ++i)
         {
-            osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, numColumns*2);
-            for(unsigned int i=0; i<numColumns; ++i)
+            int i00;
+            int i01;
+            if (swapOrientation)
             {
-                unsigned int iv = j*numColumns + i;
-                if (swapOrientation)
-                {
-                    (*elements)[i*2] = iv + numColumns;
-                    (*elements)[i*2+1] = iv;
-                }
-                else
-                {
-                    (*elements)[i*2+1] = iv + numColumns;
-                    (*elements)[i*2] = iv;
-                }
+                i01 = j*numColumns + i;
+                i00 = i01+numColumns;
+            }
+            else
+            {
+                i00 = j*numColumns + i;
+                i01 = i00+numColumns;
             }
 
-            if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
+            int i10 = i00+1;
+            int i11 = i01+1;
 
-            if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
-        }
-    }
-    else
-    {
-        osg::notify(osg::NOTICE)<<"New tesselation"<<std::endl;
-    
-        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
-        elements->reserve((numRows-1) * (numColumns-1) * 6);
-        
-        if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
-        if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
-
-        for(j=0; j<numRows-1; ++j)
-        {
-            for(unsigned int i=0; i<numColumns-1; ++i)
+            // remap indices to final vertex positions
+            i00 = indices[i00];
+            i01 = indices[i01];
+            i10 = indices[i10];
+            i11 = indices[i11];
+            
+            unsigned int numValid = 0;
+            if (i00>=0) ++numValid;
+            if (i01>=0) ++numValid;
+            if (i10>=0) ++numValid;
+            if (i11>=0) ++numValid;
+            
+            if (numValid==4)
             {
-                unsigned int i00;
-                unsigned int i01;
-                if (swapOrientation)
-                {
-                    i01 = j*numColumns + i;
-                    i00 = i01+numColumns;
-                }
-                else
-                {
-                    i00 = j*numColumns + i;
-                    i01 = i00+numColumns;
-                }
-
-                unsigned int i10 = i00+1;
-                unsigned int i11 = i01+1;
-
                 float e00 = (*_elevations)[i00];
                 float e10 = (*_elevations)[i10];
                 float e01 = (*_elevations)[i01];
                 float e11 = (*_elevations)[i11];
-                
+
                 if (fabsf(e00-e11)<fabsf(e01-e10))
                 {
                     elements->push_back(i01);
@@ -345,8 +349,17 @@ void GeometryTechnique::init()
                     elements->push_back(i11);
                 }
             }
+            else if (numValid==3)
+            {
+                if (i00>=0) elements->push_back(i00);
+                if (i01>=0) elements->push_back(i01);
+                if (i11>=0) elements->push_back(i11);
+                if (i10>=0) elements->push_back(i10);
+            }
+            
         }
     }
+
 
     bool containsTransparency = false;
 

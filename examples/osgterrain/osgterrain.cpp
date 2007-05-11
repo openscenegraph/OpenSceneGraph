@@ -81,6 +81,7 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
+    osg::ref_ptr<osgTerrain::ValidDataOperator> validDataOperator = new osgTerrain::NoDataValue(0.0);
 
     unsigned int layerNum = 0;
 
@@ -136,6 +137,7 @@ int main(int argc, char** argv)
                 hfl->setHeightField(hf.get());
                 
                 hfl->setLocator(locator.get());
+                hfl->setValidDataOperator(validDataOperator.get());
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -167,6 +169,7 @@ int main(int argc, char** argv)
                 osg::ref_ptr<osgTerrain::ImageLayer> imageLayer = new osgTerrain::ImageLayer;
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
+                imageLayer->setValidDataOperator(validDataOperator.get());
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -198,6 +201,7 @@ int main(int argc, char** argv)
                 osg::ref_ptr<osgTerrain::ImageLayer> imageLayer = new osgTerrain::ImageLayer;
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
+                imageLayer->setValidDataOperator(validDataOperator.get());
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {

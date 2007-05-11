@@ -187,7 +187,7 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
             return false;
     }
 
-    return false;
+    return true;
 }
 
 bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const

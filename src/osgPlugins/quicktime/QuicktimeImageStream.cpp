@@ -254,7 +254,10 @@ void QuicktimeImageStream::run()
             if(_current >= _len)
             {                    
                pause();
-               rewind();
+
+               // Don't rewind to the begining if the movie has completed.
+               // Someone may want to see the last frame displayed.
+               //rewind();
             }        
             // orig
             //pause();

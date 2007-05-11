@@ -191,9 +191,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __bool__setType__Type,
 	          "Set the type of glUniform, ensuring it is only set once. ",
 	          "");
-	I_Method0(const osg::Uniform::Type, getType,
+	I_Method0(osg::Uniform::Type, getType,
 	          Properties::NON_VIRTUAL,
-	          __C5_Type__getType,
+	          __Type__getType,
 	          "Get the type of glUniform as enum. ",
 	          "");
 	I_Method1(void, setName, IN, const std::string &, name,
@@ -812,7 +812,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	                 __ParentList__getParents, 
 	                 0);
 	I_SimpleProperty(osg::Uniform::Type, Type, 
-	                 0, 
+	                 __Type__getType, 
 	                 __bool__setType__Type);
 	I_SimpleProperty(osg::Uniform::Callback *, UpdateCallback, 
 	                 __Callback_P1__getUpdateCallback, 

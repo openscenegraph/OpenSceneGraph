@@ -14,6 +14,7 @@
 #ifndef OSGTERRAIN_VALIDDATAOPERATOR
 #define OSGTERRAIN_VALIDDATAOPERATOR 1
 
+#include <osg/Referenced>
 #include <osgTerrain/Export>
 
 namespace osgTerrain {

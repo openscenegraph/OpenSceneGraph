@@ -106,6 +106,10 @@ IF   (SDL_FOUND)
     ADD_SUBDIRECTORY(osgsimpleviewerSDL)
 ENDIF(SDL_FOUND)
 
+IF   (wxWidgets_FOUND)
+    ADD_SUBDIRECTORY(osgsimpleviewerWX)
+ENDIF(wxWidgets_FOUND)
+
 IF   (QT_FOUND)
     IF   (QT4_FOUND)
         ADD_SUBDIRECTORY(osgsimpleviewerQT4)

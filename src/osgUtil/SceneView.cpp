@@ -1156,6 +1156,13 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
             {
+                if( getDrawBufferValue() !=  GL_NONE)
+                {
+                    _renderStageLeft->setDrawBuffer(getDrawBufferValue());
+                    _renderStageLeft->setReadBuffer(getDrawBufferValue());
+                    _renderStageRight->setDrawBuffer(getDrawBufferValue());
+                    _renderStageRight->setReadBuffer(getDrawBufferValue());
+                }
                 _localStateSet->setAttribute(getViewport());
 
                 // ensure that all color planes are active.
@@ -1226,6 +1233,13 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
             {
+         if( getDrawBufferValue() !=  GL_NONE)
+         {
+           _renderStageLeft->setDrawBuffer(getDrawBufferValue());
+           _renderStageLeft->setReadBuffer(getDrawBufferValue());
+           _renderStageRight->setDrawBuffer(getDrawBufferValue());
+           _renderStageRight->setReadBuffer(getDrawBufferValue());
+         }
                 _localStateSet->setAttribute(getViewport());
 
                 // ensure that all color planes are active.

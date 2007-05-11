@@ -123,12 +123,14 @@ FIND_PACKAGE(SDL)
 FIND_PACKAGE(Inventor)
 FIND_PACKAGE(Qt3)
 FIND_PACKAGE(Qt4)
-FIND_PACKAGE(wxWidgets)
 FIND_PACKAGE(Jasper)
 FIND_PACKAGE(COLLADA)
 FIND_PACKAGE(Xine)
 FIND_PACKAGE(OpenVRML)
 FIND_PACKAGE(Performer)
+
+SET(wxWidgets_USE_LIBS base core gl net)
+FIND_PACKAGE(wxWidgets)
 
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything

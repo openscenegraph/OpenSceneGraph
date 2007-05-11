@@ -9,7 +9,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "wxOsgSample.h"
+#include "osgsimpleviewerWX.h"
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 #include <wx/image.h>

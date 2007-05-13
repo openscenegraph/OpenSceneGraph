@@ -104,6 +104,11 @@ int main(int argc, char** argv)
             readParameter = true;
         }
 
+        else if (arguments.read(pos, "-b"))
+        {
+            terrain->setTreatBoundariesToValidDataAsDefaultValue(true);
+        }
+        
         else if (arguments.read(pos, "-e",x,y,w,h))
         {
             // define the extents.

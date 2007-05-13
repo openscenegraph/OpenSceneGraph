@@ -17,7 +17,8 @@ using namespace osg;
 using namespace osgTerrain;
 
 TerrainNode::TerrainNode():
-    _requiresNormals(true)
+    _requiresNormals(true),
+    _treatBoundariesToValidDataAsDefaultValue(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
 }
@@ -26,7 +27,8 @@ TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
-    _requiresNormals(terrain._requiresNormals)
+    _requiresNormals(terrain._requiresNormals),
+    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
     
@@ -48,6 +50,15 @@ void TerrainNode::traverse(osg::NodeVisitor& nv)
         osg::Group::traverse(nv);
     }
 }
+
+void TerrainNode::init()
+{
+    if (_terrainTechnique.valid() && _terrainTechnique->isDirty())
+    {
+        _terrainTechnique->init();
+    }    
+}
+
 
 void TerrainNode::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique)
 {

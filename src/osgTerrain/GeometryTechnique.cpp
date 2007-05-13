@@ -138,6 +138,8 @@ void GeometryTechnique::init()
         numRows = elevationLayer->getNumRows();
     }
     
+    bool treatBoundariesToValidDataAsDefaultValue = _terrainNode->getTreatBoundariesToValidDataAsDefaultValue();
+    osg::notify(osg::NOTICE)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
     unsigned int numVertices = numRows * numColumns;
 

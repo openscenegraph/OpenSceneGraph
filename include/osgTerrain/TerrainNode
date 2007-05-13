@@ -39,6 +39,8 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
 
         virtual void traverse(osg::NodeVisitor& nv);
 
+        /** Call init on any attached TerrainTechnique.*/
+        void init();
 
         /** Set the TerrainTechnique*/
         void setTerrainTechnique(osgTerrain::TerrainTechnique* TerrainTechnique);
@@ -105,11 +107,18 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         unsigned int getNumColorLayers() const { return _colorLayers.size(); }
 
 
-        /** Set whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
+        /** Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
         void setRequiresNormals(bool flag) { _requiresNormals = flag; }
 
         /** Get whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
         bool getRequiresNormals() const { return _requiresNormals; }
+
+
+        /** Set the hint to whether the TerrainTechnique should treat the invalid Layer entries that at are neigbours to valid entries with the default value.*/
+        void setTreatBoundariesToValidDataAsDefaultValue(bool flag) { _treatBoundariesToValidDataAsDefaultValue = flag; }
+
+        /** Get whether the TeatBoundariesToValidDataAsDefaultValue hint.*/
+        bool getTreatBoundariesToValidDataAsDefaultValue() const { return _treatBoundariesToValidDataAsDefaultValue; }
 
 
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
@@ -152,6 +161,7 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         Layers                              _colorLayers;
         
         bool                                _requiresNormals;
+        bool                                _treatBoundariesToValidDataAsDefaultValue;
 };
 
 }

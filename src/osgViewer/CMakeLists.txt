@@ -19,6 +19,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewer
+    ${HEADER_PATH}/ViewerEventHandler
 )
 
 SET(LIB_PRIVATE_HEADERS
@@ -36,6 +37,7 @@ SET(LIB_COMMON_FILES
     Version.cpp
     View.cpp
     Viewer.cpp
+    ViewerEventHandler.cpp
 )
 
 

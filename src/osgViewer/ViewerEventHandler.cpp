@@ -18,16 +18,16 @@ namespace osgViewer
 {
 
 /*
-** ScreenHandler
+** WindowSizeHandler
 */
 
-ScreenHandler::ScreenHandler() :
-_keyEventToggleFullscreen('f'),
-_toggleFullscreen(true),
-_keyEventWindowedResolutionUp('>'),
-_keyEventWindowedResolutionDown('<'),
-_changeWindowedResolution(true),
-_currentResolutionIndex(-1)
+WindowSizeHandler::WindowSizeHandler() :
+    _keyEventToggleFullscreen('f'),
+    _toggleFullscreen(true),
+    _keyEventWindowedResolutionUp('>'),
+    _keyEventWindowedResolutionDown('<'),
+    _changeWindowedResolution(true),
+    _currentResolutionIndex(-1)
 {
     _resolutionList.push_back(osg::Vec2(640, 480));
     _resolutionList.push_back(osg::Vec2(800, 600));
@@ -50,20 +50,20 @@ _currentResolutionIndex(-1)
     _resolutionList.push_back(osg::Vec2(3840, 2400));
 }
 
-void ScreenHandler::getUsage(osg::ApplicationUsage &usage) const
+void WindowSizeHandler::getUsage(osg::ApplicationUsage &usage) const
 {
     usage.addKeyboardMouseBinding("f", "Toggle full screen.");
     usage.addKeyboardMouseBinding(">", "Increase the screen resolution (in windowed mode).");
     usage.addKeyboardMouseBinding("<", "Decrease the screen resolution (in windowed mode).");
 }
 
-bool ScreenHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     osgViewer::Viewer    *viewer = dynamic_cast<osgViewer::Viewer *>(&aa);
 
     if (viewer == NULL)
     {
-        return (false);
+        return false;
     }
 
     switch(ea.getEventType())
@@ -79,9 +79,9 @@ bool ScreenHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
                     itr != windows.end();
                     ++itr)
                 {
-                    this->toggleFullscreen(*itr);
+                    toggleFullscreen(*itr);
                 }
-                return (true);
+                return true;
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionUp)
             {
@@ -93,9 +93,9 @@ bool ScreenHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
                     itr != windows.end();
                     ++itr)
                 {
-                    this->changeWindowedResolution(*itr, true);
+                    changeWindowedResolution(*itr, true);
                 }
-                return (true);
+                return true;
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionDown)
             {
@@ -107,19 +107,19 @@ bool ScreenHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAda
                     itr != windows.end();
                     ++itr)
                 {
-                    this->changeWindowedResolution(*itr, false);
+                    changeWindowedResolution(*itr, false);
                 }
-                return (true);
+                return true;
             }
             break;
         }
     default:
         break;
     }
-    return (false);
+    return false;
 }
 
-void ScreenHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
+void WindowSizeHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
 {
     osg::GraphicsContext::WindowingSystemInterface    *wsi = osg::GraphicsContext::getWindowingSystemInterface();
 
@@ -149,7 +149,7 @@ void ScreenHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
 
         if (_currentResolutionIndex == -1)
         {
-            _currentResolutionIndex = this->getNearestResolution(screenWidth, screenHeight, screenWidth / 2, screenHeight / 2);
+            _currentResolutionIndex = getNearestResolution(screenWidth, screenHeight, screenWidth / 2, screenHeight / 2);
         }
         resolution = _resolutionList[_currentResolutionIndex];
         window->setWindowDecoration(true);
@@ -165,7 +165,7 @@ void ScreenHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
     window->grabFocusIfPointerInWindow();
 }
 
-void ScreenHandler::changeWindowedResolution(osgViewer::GraphicsWindow *window, bool increase)
+void WindowSizeHandler::changeWindowedResolution(osgViewer::GraphicsWindow *window, bool increase)
 {
     osg::GraphicsContext::WindowingSystemInterface    *wsi = osg::GraphicsContext::getWindowingSystemInterface();
 
@@ -195,7 +195,7 @@ void ScreenHandler::changeWindowedResolution(osgViewer::GraphicsWindow *window, 
 
         if (_currentResolutionIndex == -1)
         {
-            _currentResolutionIndex = this->getNearestResolution(screenWidth, screenHeight, width, height);
+            _currentResolutionIndex = getNearestResolution(screenWidth, screenHeight, width, height);
         }
 
         if (increase == true)
@@ -232,7 +232,7 @@ void ScreenHandler::changeWindowedResolution(osgViewer::GraphicsWindow *window, 
     }
 }
 
-unsigned int ScreenHandler::getNearestResolution(int screenWidth, int screenHeight, int width, int height) const
+unsigned int WindowSizeHandler::getNearestResolution(int screenWidth, int screenHeight, int width, int height) const
 {
     unsigned int    position = 0;
     unsigned int    result = 0;
@@ -261,10 +261,10 @@ unsigned int ScreenHandler::getNearestResolution(int screenWidth, int screenHeig
 */
 
 ThreadingHandler::ThreadingHandler() :
-_keyEventChangeThreadingModel('m'),
-_changeThreadingModel(true),
-_keyEventChangeEndBarrierPosition('e'),
-_changeEndBarrierPosition(true)
+    _keyEventChangeThreadingModel('m'),
+    _changeThreadingModel(true),
+    _keyEventChangeEndBarrierPosition('e'),
+    _changeEndBarrierPosition(true)
 {
     _tickOrLastKeyPress = osg::Timer::instance()->tick();
 }
@@ -281,7 +281,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 
     if (viewer == NULL)
     {
-        return (false);
+        return false;
     }
 
     switch(ea.getEventType())
@@ -317,7 +317,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                     osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
                     break;
                 }
-                return (true);
+                return true;
             }
             if (_changeEndBarrierPosition == true && ea.getKey() == _keyEventChangeEndBarrierPosition)
             {
@@ -332,14 +332,14 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                     osg::notify(osg::NOTICE)<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
                     break;
                 }
-                return (true);
+                return true;
             }
             break;
         }
     default:
         break;
     }
-    return (false);
+    return false;
 }
 
 }

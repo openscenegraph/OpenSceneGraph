@@ -15,6 +15,7 @@
 #define OSGVIEWER_VIEWEREVENTHANDLER 1
 
 #include <osgGA/GUIEventHandler>
+#include <osgViewer/GraphicsWindow>
 
 namespace osgViewer {
 

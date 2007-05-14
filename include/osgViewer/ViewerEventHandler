@@ -1,0 +1,105 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+*
+* This library is open source and may be redistributed and/or modified under  
+* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+* (at your option) any later version.  The full license is in LICENSE file
+* included with this distribution, and on the openscenegraph.org website.
+* 
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_VIEWEREVENTHANDLER
+#define OSGVIEWER_VIEWEREVENTHANDLER 1
+
+#include <osgGA/GUIEventHandler>
+
+namespace osgViewer {
+
+    /**
+    Handler allowing to change the screen resolution (in windowed mode) and toggle between fullscreen and windowed mode.
+    */
+    class OSGVIEWER_EXPORT ScreenHandler : public osgGA::GUIEventHandler 
+    {
+    public: 
+
+        ScreenHandler();
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage &usage) const;
+
+        void setKeyEventToggleFullscreen(int key) { _keyEventToggleFullscreen = key; }
+        int getKeyEventToggleFullscreen() const { return (_keyEventToggleFullscreen); }
+
+        void setToggleFullscreen(bool flag) { _toggleFullscreen = flag; }
+        bool getToggleFullscreen() const { return (_toggleFullscreen); }
+
+        void setKeyEventWindowedResolutionUp(int key) { _keyEventWindowedResolutionUp = key; }
+        int getKeyEventWindowedResolutionUp() const { return (_keyEventWindowedResolutionUp); }
+        void setKeyEventWindowedResolutionDown(int key) { _keyEventWindowedResolutionDown = key; }
+        int getKeyEventWindowedResolutionDown() const { return (_keyEventWindowedResolutionUp); }
+
+        void setChangeWindowedResolution(bool flag) { _changeWindowedResolution = flag; }
+        bool getChangeWindowedResolution() const { return (_changeWindowedResolution); }
+
+        virtual bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+
+    protected:
+
+        void toggleFullscreen(osgViewer::GraphicsWindow *window);
+        void changeWindowedResolution(osgViewer::GraphicsWindow *window, bool increase);
+
+        unsigned int getNearestResolution(int screenWidth, int screenHeight, int width, int height) const;
+
+        int                     _keyEventToggleFullscreen;
+        bool                    _toggleFullscreen;
+
+        int                     _keyEventWindowedResolutionUp;
+        int                     _keyEventWindowedResolutionDown;
+        bool                    _changeWindowedResolution;
+        std::vector<osg::Vec2>  _resolutionList;
+        int                     _currentResolutionIndex;
+    };
+
+    /**
+    Handler allowing to change the viewer threading model
+    */
+    class OSGVIEWER_EXPORT ThreadingHandler : public osgGA::GUIEventHandler 
+    {
+    public: 
+
+        ThreadingHandler();
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage &usage) const;
+
+        void setKeyEventChangeThreadingModel(int key) { _keyEventChangeThreadingModel = key; }
+        int getKeyEventChangeThreadingModel() const { return (_keyEventChangeThreadingModel); }
+
+        void setChangeThreadingModel(bool flag) { _changeThreadingModel = flag; }
+        bool getChangeThreadingModel() const { return (_changeThreadingModel); }
+
+        void setKeyEventChangeEndBarrierPosition(int key) { _keyEventChangeEndBarrierPosition = key; }
+        int getKeyEventChangeEndBarrierPosition() const { return (_keyEventChangeEndBarrierPosition); }
+
+        void setChangeEndBarrierPosition(bool flag) { _changeEndBarrierPosition = flag; }
+        bool getChangeEndBarrierPosition() const { return (_changeEndBarrierPosition); }
+
+        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+
+    protected:
+
+        int             _keyEventChangeThreadingModel;
+        bool            _changeThreadingModel;
+
+        int             _keyEventChangeEndBarrierPosition;
+        bool            _changeEndBarrierPosition;
+
+        osg::Timer_t    _tickOrLastKeyPress;
+        bool            _done;
+    };
+}
+
+#endif

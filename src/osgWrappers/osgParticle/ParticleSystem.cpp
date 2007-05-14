@@ -225,7 +225,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1,
 	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
-	          " param state The osg::State object that encapulates the current OpenGL state for the current graphics context.  ");
+	          " param renderInfo The osg::RenderInfo object that encapulates the current rendering information including the osg::State OpenGL state for the current graphics context.  ");
 	I_Method0(osg::BoundingBox, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingBox__computeBound,

@@ -28,13 +28,26 @@ namespace osgSim {
 class OSGSIM_EXPORT OverlayNode : public osg::Group
 {
     public :
-        OverlayNode();
+
+        enum OverlayTechnique
+        {
+            OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+            VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+            VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY,
+        };
+
+        OverlayNode(OverlayTechnique technique=OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);
 
         OverlayNode(const OverlayNode& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
             
         META_Node(osgSim, OverlayNode);
         
         virtual void traverse(osg::NodeVisitor& nv);
+
+
+        void setOverlayTechnique(OverlayTechnique technique);
+        OverlayTechnique getOverlayTechnique() { return _overlayTechnique; }
+
 
         /** Set the overlay subgraph which will be rendered to texture.*/
         void setOverlaySubgraph(osg::Node* node);
@@ -60,7 +73,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         void setOverlayClearColor(const osg::Vec4& color);
 
         /** Get the clear color to use when rendering the overlay subgraph.*/
-        const osg::Vec4& getOverlayClearColor() const;
+        osg::Vec4 getOverlayClearColor() const;
 
         /** Set the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
         void setTexEnvMode(GLenum mode);
@@ -103,12 +116,22 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         virtual ~OverlayNode() {}
         
         void init();
+        void init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
+        void init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
+        void init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY();
         
+        void traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv);
+        void traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv);
+        void traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv);
+
+
         void updateMainSubgraphStateSet();
 
         typedef osg::buffered_value< int > TextureObjectValidList;
         
         mutable TextureObjectValidList _textureObjectValidList;
+
+        OverlayTechnique _overlayTechnique;
 
         osg::ref_ptr<osg::Camera>   _camera;
         

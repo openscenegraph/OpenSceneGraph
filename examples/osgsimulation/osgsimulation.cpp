@@ -250,6 +250,12 @@ int main(int argc, char **argv)
             return 1;
         }
     }
+    
+    osgSim::OverlayNode::OverlayTechnique technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
+    while (arguments.read("--object")) technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
+    while (arguments.read("--ortho") || arguments.read("--orthographic")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
+    while (arguments.read("--persp") || arguments.read("--perspective")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY;
+    
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -287,7 +293,7 @@ int main(int argc, char **argv)
         if (insertOverlayNode)
         {
         
-            overlayNode = new osgSim::OverlayNode;
+            overlayNode = new osgSim::OverlayNode(technique);
             
             // insert the OverlayNode between the coordinate system node and its children.
             for(unsigned int i=0; i<csn->getNumChildren(); ++i)

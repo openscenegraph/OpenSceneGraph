@@ -22,7 +22,8 @@
 using namespace osgSim;
 using namespace osg;
 
-OverlayNode::OverlayNode():
+OverlayNode::OverlayNode(OverlayTechnique technique):
+    _overlayTechnique(technique),
     _texEnvMode(GL_DECAL),
     _textureUnit(1),
     _textureSizeHint(1024),
@@ -35,6 +36,7 @@ OverlayNode::OverlayNode():
 
 OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     osg::Group(copy,copyop),
+    _overlayTechnique(copy._overlayTechnique),
     _overlaySubgraph(copy._overlaySubgraph),
     _texEnvMode(copy._texEnvMode),
     _textureUnit(copy._textureUnit),
@@ -78,8 +80,34 @@ void OverlayNode::releaseGLObjects(osg::State* state) const
     if (_texture.valid()) _texture->releaseGLObjects(state);
 }
 
+void OverlayNode::setOverlayTechnique(OverlayTechnique technique)
+{
+    if (_overlayTechnique==technique) return;
+    
+    _overlayTechnique = technique;
+    
+    init();
+}
+
 void OverlayNode::init()
 {
+    switch(_overlayTechnique)
+    {
+        case(OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
+            init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
+            break;
+        case(VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
+            init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
+            break;
+        case(VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY):
+            init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY();
+            break;
+    }
+}
+
+void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
+{
+    osg::notify(osg::NOTICE)<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
 
     unsigned int tex_width = _textureSizeHint;
     unsigned int tex_height = _textureSizeHint;
@@ -125,8 +153,33 @@ void OverlayNode::init()
     setOverlayTextureUnit(_textureUnit);
 }
 
+void OverlayNode::init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
+{
+    osg::notify(osg::NOTICE)<<"OverlayNode::init() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+}
+
+void OverlayNode::init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY()
+{
+    osg::notify(osg::NOTICE)<<"OverlayNode::init() - VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY"<<std::endl;
+}
 
 void OverlayNode::traverse(osg::NodeVisitor& nv)
+{
+    switch(_overlayTechnique)
+    {
+        case(OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
+            traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(nv);
+            break;
+        case(VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
+            traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(nv);
+            break;
+        case(VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY):
+            traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(nv);
+            break;
+    }
+}
+
+void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
 {
     if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
@@ -276,14 +329,28 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
     }
 }
 
+void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
+{
+    osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+}
+
+void OverlayNode::traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv)
+{
+    osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY"<<std::endl;
+}
+
+
 void OverlayNode::setOverlaySubgraph(osg::Node* node)
 {
     if (_overlaySubgraph == node) return;
 
     _overlaySubgraph = node;
 
-    _camera->removeChildren(0, _camera->getNumChildren());
-    _camera->addChild(node);
+    if (_camera.valid())
+    {
+        _camera->removeChildren(0, _camera->getNumChildren());
+        _camera->addChild(node);
+    }
 
     dirtyOverlayTexture();
 }
@@ -296,12 +363,12 @@ void OverlayNode::dirtyOverlayTexture()
 
 void OverlayNode::setOverlayClearColor(const osg::Vec4& color)
 {
-    _camera->setClearColor(color);
+    if (_camera.valid()) _camera->setClearColor(color);
 }
 
-const osg::Vec4& OverlayNode::getOverlayClearColor() const
+osg::Vec4 OverlayNode::getOverlayClearColor() const
 {
-    return _camera->getClearColor();
+    return _camera.valid() ? _camera->getClearColor() : osg::Vec4(1.0f,1.0f,1.0f,1.0f);
 }
 
 
@@ -316,7 +383,7 @@ void OverlayNode::setOverlayTextureUnit(unsigned int unit)
 {
     _textureUnit = unit;
 
-    _texgenNode->setTextureUnit(_textureUnit);
+    if (_texgenNode.valid()) _texgenNode->setTextureUnit(_textureUnit);
     
     updateMainSubgraphStateSet();
 }
@@ -327,12 +394,14 @@ void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
 
     _textureSizeHint = size;    
     //_texture->dirtyTextureObject();
-    _texture->setTextureSize(_textureSizeHint, _textureSizeHint);
-    _camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
+    if (_texture.valid()) _texture->setTextureSize(_textureSizeHint, _textureSizeHint);
+    if (_camera.valid()) _camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
 }
 
 void OverlayNode::updateMainSubgraphStateSet()
 {
+    if (!_mainSubgraphStateSet) return;
+
     _mainSubgraphStateSet->clear();
     _mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, _texture.get(), osg::StateAttribute::ON);
     _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);

@@ -421,7 +421,7 @@ class OSG_EXPORT Drawable : public Object
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
           * drawImplementation(RenderInfo&) is called from the draw(RenderInfo&) method, with the draw method handling management of OpenGL display lists,
           * and drawImplementation(RenderInfo&) handling the actuall drawing itself.  
-          * @param state The osg::State object that encapulates the current OpenGL state for the current graphics context. */
+          * @param renderInfo The osg::RenderInfo object that encapulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
         virtual void drawImplementation(RenderInfo& renderInfo) const = 0;
 
 

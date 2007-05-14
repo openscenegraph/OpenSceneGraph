@@ -20,7 +20,7 @@
 
 namespace osgViewer {
 
-/** Viewer holds a single view on to a single scene..*/
+/** Viewer holds a single view on to a single scene.*/
 class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 {
     public:

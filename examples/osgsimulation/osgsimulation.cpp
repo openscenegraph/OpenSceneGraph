@@ -17,6 +17,9 @@
 #endif // WIN32
 
 #include <osgViewer/Viewer>
+#include <osgViewer/StatsHandler>
+#include <osgViewer/HelpHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osg/Group>
 #include <osg/Geode>
@@ -37,6 +40,7 @@
 #include <osgSim/SphereSegment>
 
 #include <osgGA/NodeTrackerManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <iostream>
 
@@ -172,6 +176,22 @@ int main(int argc, char **argv)
     // construct the viewer.
     osgViewer::Viewer viewer;
 
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    
+    // add the thread model handler
+    viewer.addEventHandler(new osgViewer::ThreadingHandler);
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+        
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add the help handler
+    viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
+
+    // set the near far ration computation up.
     viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
     viewer.getCamera()->setNearFarRatio(0.00001f);
 

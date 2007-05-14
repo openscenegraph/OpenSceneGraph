@@ -64,7 +64,7 @@ class OSGSIM_EXPORT HeightAboveTerrain
           * If the topmost node is not a CoordinateSystemNode then a local coordinates frame is assumed, with a local up vector. */
         void computeIntersections(osg::Node* scene, osg::Node::NodeMask traversalMask=0xffffffff);
 
-        /** Compute the vertical distance between the specified scene graph and a single HAT point. .*/
+        /** Compute the vertical distance between the specified scene graph and a single HAT point. */
         static double computeHeightAboveTerrain(osg::Node* scene, const osg::Vec3d& point, osg::Node::NodeMask traversalMask=0xffffffff);
         
         

@@ -98,7 +98,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
 	          __void__dirty,
-	          "Dirty so that cached data structurese are updated. ",
+	          "Dirty so that cached data structurese will be updated on next use. ",
+	          "");
+	I_Method0(bool, isDirty,
+	          Properties::VIRTUAL,
+	          __bool__isDirty,
+	          "Return true if cached data structurese need updating. ",
 	          "");
 	I_SimpleProperty(osgTerrain::TerrainNode *, TerrainNode, 
 	                 __TerrainNode_P1__getTerrainNode, 

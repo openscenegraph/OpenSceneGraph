@@ -19,7 +19,7 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/StatsHandler>
 #include <osgViewer/HelpHandler>
-#include <osgViewer/ViewerEventHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>

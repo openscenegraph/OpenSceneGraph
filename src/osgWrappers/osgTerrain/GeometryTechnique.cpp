@@ -60,7 +60,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
 	          __void__dirty,
-	          "Dirty so that cached data structurese are updated. ",
+	          "Dirty so that cached data structurese will be updated on next use. ",
 	          "");
 END_REFLECTOR
 

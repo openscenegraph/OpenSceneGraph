@@ -77,6 +77,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
+	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
+	          __void__init,
+	          "Call init on any attached TerrainTechnique. ",
+	          "");
 	I_Method1(void, setTerrainTechnique, IN, osgTerrain::TerrainTechnique *, TerrainTechnique,
 	          Properties::NON_VIRTUAL,
 	          __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1,
@@ -170,12 +175,22 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_Method1(void, setRequiresNormals, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setRequiresNormals__bool,
-	          "Set whether the TerrainTechnique should create per vertex normals for lighting purposes. ",
+	          "Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes. ",
 	          "");
 	I_Method0(bool, getRequiresNormals,
 	          Properties::NON_VIRTUAL,
 	          __bool__getRequiresNormals,
 	          "Get whether the TerrainTechnique should create per vertex normals for lighting purposes. ",
+	          "");
+	I_Method1(void, setTreatBoundariesToValidDataAsDefaultValue, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setTreatBoundariesToValidDataAsDefaultValue__bool,
+	          "Set the hint to whether the TerrainTechnique should treat the invalid Layer entries that at are neigbours to valid entries with the default value. ",
+	          "");
+	I_Method0(bool, getTreatBoundariesToValidDataAsDefaultValue,
+	          Properties::NON_VIRTUAL,
+	          __bool__getTreatBoundariesToValidDataAsDefaultValue,
+	          "Get whether the TeatBoundariesToValidDataAsDefaultValue hint. ",
 	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
@@ -209,5 +224,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechnique, 
 	                 __TerrainTechnique_P1__getTerrainTechnique, 
 	                 __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1);
+	I_SimpleProperty(bool, TreatBoundariesToValidDataAsDefaultValue, 
+	                 __bool__getTreatBoundariesToValidDataAsDefaultValue, 
+	                 __void__setTreatBoundariesToValidDataAsDefaultValue__bool);
 END_REFLECTOR
 

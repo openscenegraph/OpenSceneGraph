@@ -18,14 +18,14 @@
 
 namespace osgViewer {
 
-    /**
-    Handler allowing to change the screen resolution (in windowed mode) and toggle between fullscreen and windowed mode.
-    */
-    class OSGVIEWER_EXPORT ScreenHandler : public osgGA::GUIEventHandler 
-    {
-    public: 
+/**
+Handler allowing to change the screen resolution (in windowed mode) and toggle between fullscreen and windowed mode.
+*/
+class OSGVIEWER_EXPORT WindowSizeHandler : public osgGA::GUIEventHandler 
+{
+public: 
 
-        ScreenHandler();
+        WindowSizeHandler();
 
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage &usage) const;
@@ -46,7 +46,7 @@ namespace osgViewer {
 
         virtual bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
-    protected:
+protected:
 
         void toggleFullscreen(osgViewer::GraphicsWindow *window);
         void changeWindowedResolution(osgViewer::GraphicsWindow *window, bool increase);
@@ -61,14 +61,14 @@ namespace osgViewer {
         bool                    _changeWindowedResolution;
         std::vector<osg::Vec2>  _resolutionList;
         int                     _currentResolutionIndex;
-    };
+};
 
-    /**
-    Handler allowing to change the viewer threading model
-    */
-    class OSGVIEWER_EXPORT ThreadingHandler : public osgGA::GUIEventHandler 
-    {
-    public: 
+/**
+Handler allowing to change the viewer threading model
+*/
+class OSGVIEWER_EXPORT ThreadingHandler : public osgGA::GUIEventHandler 
+{
+public: 
 
         ThreadingHandler();
 
@@ -89,7 +89,7 @@ namespace osgViewer {
 
         bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
-    protected:
+protected:
 
         int             _keyEventChangeThreadingModel;
         bool            _changeThreadingModel;
@@ -99,7 +99,8 @@ namespace osgViewer {
 
         osg::Timer_t    _tickOrLastKeyPress;
         bool            _done;
-    };
+};
+
 }
 
 #endif

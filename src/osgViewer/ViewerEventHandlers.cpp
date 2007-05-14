@@ -12,7 +12,7 @@
 */
 
 #include <osgViewer/Viewer>
-#include <osgViewer/ViewerEventHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 namespace osgViewer
 {

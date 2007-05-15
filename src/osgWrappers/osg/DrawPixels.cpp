@@ -110,7 +110,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
 	          __void__getSubImageDimensions__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1,
 	          "",
 	          "");
-	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, state,
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,
 	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",

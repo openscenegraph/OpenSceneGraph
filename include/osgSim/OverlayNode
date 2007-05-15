@@ -19,6 +19,8 @@
 #include <osg/Texture2D>
 #include <osg/TexGenNode>
 
+#include <osgUtil/CullVisitor>
+
 #include <osgSim/Export>
 
 namespace osgSim {
@@ -153,6 +155,24 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         bool                            _continuousUpdate;
         bool                            _updateCamera;
         osg::Polytope                   _textureFrustum;
+
+    private:
+        
+        struct OverlayData
+        {
+            osg::ref_ptr<osg::Camera>   _camera;
+            osg::ref_ptr<osg::StateSet> _overlayStateSet;
+            osg::ref_ptr<osg::StateSet> _mainSubgraphStateSet;
+            osg::ref_ptr<osg::TexGen>   _texgen;
+        };
+        
+        typedef std::map<osgUtil::CullVisitor*, OverlayData> OverlayDataMap;
+        
+        OpenThreads::Mutex              _overlayDataMapMutex;
+        OverlayDataMap                  _overlayDataMap;
+        
+        OverlayData& getOverlayData(osgUtil::CullVisitor* cv);
+        
 };
 
 }

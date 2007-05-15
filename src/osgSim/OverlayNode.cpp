@@ -89,6 +89,12 @@ void OverlayNode::setOverlayTechnique(OverlayTechnique technique)
     init();
 }
 
+OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_overlayDataMapMutex);
+    return _overlayDataMap[cv];
+}
+
 void OverlayNode::init()
 {
     switch(_overlayTechnique)
@@ -332,6 +338,26 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
 {
     osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+
+
+    if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
+    {
+        Group::traverse(nv);
+        return;
+    }
+
+    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+    if (!cv)
+    {
+        Group::traverse(nv);
+        return;
+    }
+    
+    OverlayData& overlayData = getOverlayData(cv);
+
+    Group::traverse(nv);
+
+    osg::notify(osg::NOTICE)<<"   "<<&overlayData<<std::endl;
 }
 
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv)

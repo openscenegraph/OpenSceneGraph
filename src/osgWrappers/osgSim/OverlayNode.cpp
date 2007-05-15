@@ -27,11 +27,19 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgSim::OverlayNode::OverlayTechnique)
+	I_EnumLabel(osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);
+	I_EnumLabel(osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);
+	I_EnumLabel(osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_BaseType(osg::Group);
-	I_Constructor0(____OverlayNode,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osgSim::OverlayNode::OverlayTechnique, technique, osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+	                           Properties::NON_EXPLICIT,
+	                           ____OverlayNode__OverlayTechnique,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, const osgSim::OverlayNode &, es, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____OverlayNode__C5_OverlayNode_R1__C5_osg_CopyOp_R1,
 	                           "",
@@ -71,6 +79,16 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
+	I_Method1(void, setOverlayTechnique, IN, osgSim::OverlayNode::OverlayTechnique, technique,
+	          Properties::NON_VIRTUAL,
+	          __void__setOverlayTechnique__OverlayTechnique,
+	          "",
+	          "");
+	I_Method0(osgSim::OverlayNode::OverlayTechnique, getOverlayTechnique,
+	          Properties::NON_VIRTUAL,
+	          __OverlayTechnique__getOverlayTechnique,
+	          "",
+	          "");
 	I_Method1(void, setOverlaySubgraph, IN, osg::Node *, node,
 	          Properties::NON_VIRTUAL,
 	          __void__setOverlaySubgraph__osg_Node_P1,
@@ -106,9 +124,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          __void__setOverlayClearColor__C5_osg_Vec4_R1,
 	          "Set the clear color to use when rendering the overlay subgraph. ",
 	          "");
-	I_Method0(const osg::Vec4 &, getOverlayClearColor,
+	I_Method0(osg::Vec4, getOverlayClearColor,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec4_R1__getOverlayClearColor,
+	          __osg_Vec4__getOverlayClearColor,
 	          "Get the clear color to use when rendering the overlay subgraph. ",
 	          "");
 	I_Method1(void, setTexEnvMode, IN, GLenum, mode,
@@ -172,6 +190,42 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	                   __void__init,
 	                   "",
 	                   "");
+	I_ProtectedMethod0(void, init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY, IN, osg::NodeVisitor &, nv,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY__osg_NodeVisitor_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY, IN, osg::NodeVisitor &, nv,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY__osg_NodeVisitor_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY, IN, osg::NodeVisitor &, nv,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY__osg_NodeVisitor_R1,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, updateMainSubgraphStateSet,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -184,12 +238,15 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_SimpleProperty(bool, ContinuousUpdate, 
 	                 __bool__getContinuousUpdate, 
 	                 __void__setContinuousUpdate__bool);
-	I_SimpleProperty(const osg::Vec4 &, OverlayClearColor, 
-	                 __C5_osg_Vec4_R1__getOverlayClearColor, 
+	I_SimpleProperty(osg::Vec4, OverlayClearColor, 
+	                 __osg_Vec4__getOverlayClearColor, 
 	                 __void__setOverlayClearColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(osg::Node *, OverlaySubgraph, 
 	                 __osg_Node_P1__getOverlaySubgraph, 
 	                 __void__setOverlaySubgraph__osg_Node_P1);
+	I_SimpleProperty(osgSim::OverlayNode::OverlayTechnique, OverlayTechnique, 
+	                 __OverlayTechnique__getOverlayTechnique, 
+	                 __void__setOverlayTechnique__OverlayTechnique);
 	I_SimpleProperty(unsigned int, OverlayTextureSizeHint, 
 	                 __unsigned_int__getOverlayTextureSizeHint, 
 	                 __void__setOverlayTextureSizeHint__unsigned_int);

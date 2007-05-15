@@ -128,6 +128,8 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         WindowRef       _window;
         AGLContext      _context;
         AGLPixelFormat  _pixelFormat;
+        
+        int             _windowTitleHeight;
     
     private:        
         bool _closeRequested;

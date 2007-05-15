@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <osg/ComputeBoundsVisitor>
 #include <osg/Texture2D>
 #include <osg/CoordinateSystemNode>
 #include <osg/TexEnv>
@@ -337,7 +338,7 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
 
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
 {
-    osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
 
 
     if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
@@ -355,9 +356,78 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
     
     OverlayData& overlayData = getOverlayData(cv);
 
-    Group::traverse(nv);
+    if (_overlaySubgraph.valid()) 
+    {
+        // get the bounds of the model.    
+        osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+        _overlaySubgraph->accept(cbbv);
+        
+        Group::traverse(nv);    
 
-    osg::notify(osg::NOTICE)<<"   "<<&overlayData<<std::endl;
+        osg::Matrix pm = *(cv->getProjectionMatrix());
+        
+        osgUtil::CullVisitor::value_type znear = cv->getCalculatedNearPlane();
+        osgUtil::CullVisitor::value_type zfar = cv->getCalculatedFarPlane();
+        
+        // osg::notify(osg::NOTICE)<<" before znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
+        
+        cv->computeNearPlane();
+        
+        znear = cv->getCalculatedNearPlane();
+        zfar = cv->getCalculatedFarPlane();
+
+        // osg::notify(osg::NOTICE)<<" after znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
+
+        // osg::notify(osg::NOTICE)<<" before clamp pm="<<pm<<std::endl;
+
+        cv->clampProjectionMatrixImplementation(pm, znear,zfar);
+        
+        // osg::notify(osg::NOTICE)<<" after clamp pm="<<pm<<std::endl;
+        
+        osg::Matrix MVP = *(cv->getModelViewMatrix()) * pm;
+        osg::Matrix inverseMVP;
+        inverseMVP.invert(MVP);
+        
+        // osg::notify(osg::NOTICE)<<" MVP="<<MVP<<std::endl;
+        // osg::notify(osg::NOTICE)<<" inverseMVP="<<inverseMVP<<std::endl;
+        
+        typedef std::vector<osg::Vec3d> Corners;
+        Corners corners;
+        corners.push_back(osg::Vec3d(-1.0,-1.0,-1.0));
+        corners.push_back(osg::Vec3d(1.0,-1.0,-1.0));
+        corners.push_back(osg::Vec3d(1.0,1.0,-1.0));
+        corners.push_back(osg::Vec3d(-1.0,1.0,1.0));
+        corners.push_back(osg::Vec3d(-1.0,-1.0,1.0));
+        corners.push_back(osg::Vec3d(1.0,-1.0,1.0));
+        corners.push_back(osg::Vec3d(1.0,1.0,1.0));
+        corners.push_back(osg::Vec3d(-1.0,1.0,1.0));
+        
+        
+        osg::Vec3d center;
+        for(Corners::iterator itr = corners.begin();
+            itr != corners.end();
+            ++itr)
+        {
+            *itr = *itr * inverseMVP;
+            center += *itr;
+            // osg::notify(osg::NOTICE)<<"    corner ="<<*itr<<std::endl;
+        }
+        
+        center /= 8.0;
+        
+        double diagonal = (corners[0]-corners[7]).length();
+        
+        osg::notify(osg::NOTICE)<<"    center ="<<center<<" diagonal ="<<diagonal<<std::endl;
+        
+
+    }
+    else
+    {
+        Group::traverse(nv);    
+    }
+    
+
+    // osg::notify(osg::NOTICE)<<"   "<<&overlayData<<std::endl;
 }
 
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv)

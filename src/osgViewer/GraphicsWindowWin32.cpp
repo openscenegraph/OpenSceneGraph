@@ -1351,7 +1351,7 @@ static void PreparePixelFormatSpecifications( const osg::GraphicsContext::Traits
     attributes.end();
 }
 
-static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAttributes& formatSpecifications )
+static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAttributes& formatSpecifications ,osg::GraphicsContext::Traits* _traits)
 {
     //
     // Access the entry point for the wglChoosePixelFormatARB function
@@ -1360,8 +1360,41 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAt
     WGLChoosePixelFormatARB wglChoosePixelFormatARB = (WGLChoosePixelFormatARB)wglGetProcAddress("wglChoosePixelFormatARB");
     if (wglChoosePixelFormatARB==0)
     {
-        reportErrorForScreen("ChooseMatchingPixelFormat() - wglChoosePixelFormatARB extension not found", screenNum, ::GetLastError());
-        return -1;
+        // = openGLContext.getTraits()
+        reportErrorForScreen("ChooseMatchingPixelFormat() - wglChoosePixelFormatARB extension not found, trying GDI", screenNum, ::GetLastError());
+        PIXELFORMATDESCRIPTOR pixelFormat = { 
+            sizeof(PIXELFORMATDESCRIPTOR),  //  size of this pfd 
+            1,                     // version number 
+            PFD_DRAW_TO_WINDOW |   // support window 
+            PFD_SUPPORT_OPENGL |   // support OpenGL 
+            (_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL),      // double buffered ?
+            PFD_TYPE_RGBA,         // RGBA type 
+            _traits->red + _traits->green + _traits->blue,                // color depth
+            _traits->red ,0, _traits->green ,0, _traits->blue, 0,          // shift bits ignored 
+            _traits->alpha,          // alpha buffer ?
+            0,                     // shift bit ignored 
+            0,                     // no accumulation buffer 
+            0, 0, 0, 0,            // accum bits ignored 
+            _traits->depth,          // 32 or 16 bit z-buffer ?
+            _traits->stencil,        // stencil buffer ?
+            0,                     // no auxiliary buffer 
+            PFD_MAIN_PLANE,        // main layer 
+            0,                     // reserved 
+            0, 0, 0                // layer masks ignored 
+        }; 
+        int pixelFormatIndex = ::ChoosePixelFormat(hdc, &pixelFormat);
+        if (pixelFormatIndex == 0)
+        {
+            reportErrorForScreen("ChooseMatchingPixelFormat() - GDI ChoosePixelFormat Failed.", screenNum, ::GetLastError());
+            return -1;
+        }
+
+        ::DescribePixelFormat(hdc, pixelFormatIndex ,sizeof(PIXELFORMATDESCRIPTOR),&pixelFormat);
+        if (((pixelFormat.dwFlags & PFD_GENERIC_FORMAT) != 0)  && ((pixelFormat.dwFlags & PFD_GENERIC_ACCELERATED) == 0))
+        {
+            osg::notify(osg::WARN) << "Rendering in software: pixelFormatIndex " << pixelFormatIndex << std::endl;
+        }
+        return pixelFormatIndex;
     }
 
     int pixelFormatIndex = 0;
@@ -1397,7 +1430,8 @@ bool GraphicsWindowWin32::setPixelFormat()
     // Choose the closest matching pixel format from the specified traits
     //
 
-    int pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+    int pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs,_traits.get());
+
     if (pixelFormatIndex<0)
     {
             unsigned int bpp;
@@ -1413,13 +1447,13 @@ bool GraphicsWindowWin32::setPixelFormat()
                 _traits->green = bpp / 4;
                 _traits->blue = bpp / 4;
                 ::PreparePixelFormatSpecifications(*_traits, formatSpecs, true);// try again with WGL_SWAP_METHOD_ARB
-                pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+                pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs,_traits.get());
             }
     }
     if (pixelFormatIndex<0)
     {
         ::PreparePixelFormatSpecifications(*_traits, formatSpecs, false);
-        pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs);
+        pixelFormatIndex = ::ChooseMatchingPixelFormat(openGLContext.deviceContext(), _traits->screenNum, formatSpecs,_traits.get());
         if (pixelFormatIndex<0)
         {
             reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - No matching pixel format found based on traits specified", _traits->screenNum, 0);

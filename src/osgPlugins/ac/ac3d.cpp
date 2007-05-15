@@ -597,7 +597,7 @@ class PrimitiveBin : public osg::Referenced
 {
   public:
     PrimitiveBin(unsigned flags, VertexSet* vertexSet) :
-        _geometry(new osg::Geometry),
+        _geode(new osg::Geode),
         _vertexSet(vertexSet),
         _flags(flags)
     { }
@@ -606,7 +606,7 @@ class PrimitiveBin : public osg::Referenced
     virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord) = 0;
     virtual bool endPrimitive() = 0;
 
-    virtual osg::Geometry* finalize(const MaterialData& material, const TextureData& textureData) = 0;
+    virtual osg::Geode* finalize(const MaterialData& material, const TextureData& textureData) = 0;
 
   protected:
     bool isLineLoop() const
@@ -626,7 +626,7 @@ class PrimitiveBin : public osg::Referenced
         return _flags & SurfaceShaded;
     }
 
-    osg::ref_ptr<osg::Geometry> _geometry;
+    osg::ref_ptr<osg::Geode> _geode;
     osg::ref_ptr<VertexSet> _vertexSet;
 
   private:
@@ -636,6 +636,7 @@ class PrimitiveBin : public osg::Referenced
 class LineBin : public PrimitiveBin
 {
   private:
+    osg::ref_ptr<osg::Geometry> _geometry;
     osg::ref_ptr<osg::Vec3Array> _vertices;
     osg::ref_ptr<osg::Vec2Array> _texCoords;
     struct Ref {
@@ -647,12 +648,13 @@ class LineBin : public PrimitiveBin
   public:
     LineBin(unsigned flags, VertexSet* vertexSet) :
         PrimitiveBin(flags, vertexSet),
-        _vertices(new osg::Vec3Array)
+        _geometry(new osg::Geometry),
+        _vertices(new osg::Vec3Array),
+        _texCoords(new osg::Vec2Array)
     {
         _geometry->setVertexArray(_vertices.get());
-        _texCoords = new osg::Vec2Array;
         _geometry->setTexCoordArray(0, _texCoords.get());
-        osg::StateSet* stateSet = _geometry->getOrCreateStateSet();
+        osg::StateSet* stateSet = _geode->getOrCreateStateSet();
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
     }
 
@@ -699,13 +701,14 @@ class LineBin : public PrimitiveBin
         return true;
     }
 
-    virtual osg::Geometry* finalize(const MaterialData& material, const TextureData& textureData)
+    virtual osg::Geode* finalize(const MaterialData& material, const TextureData& textureData)
     {
-        material.toStateSet(_geometry->getOrCreateStateSet());
+        _geode->addDrawable(_geometry.get());
+        material.toStateSet(_geode->getOrCreateStateSet());
         _geometry->setColorArray(material.getColorArray());
         _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
         _geometry->setNormalBinding(osg::Geometry::BIND_OFF);
-        return _geometry.get();
+        return _geode.get();
     }
 };
 
@@ -848,12 +851,13 @@ class SurfaceBin : public PrimitiveBin {
     {
         vertexArray->push_back(_vertexSet->getVertex(vertexIndex));
         normalArray->push_back(_vertexSet->getNormal(vertexIndex));
-        texcoordArray->push_back(_vertexSet->getTexCoord(vertexIndex));
+        if (texcoordArray)
+            texcoordArray->push_back(_vertexSet->getTexCoord(vertexIndex));
     }
 
-    virtual osg::Geometry* finalize(const MaterialData& material, const TextureData& textureData)
+    virtual osg::Geode* finalize(const MaterialData& material, const TextureData& textureData)
     {
-        osg::StateSet* stateSet = _geometry->getOrCreateStateSet();
+        osg::StateSet* stateSet = _geode->getOrCreateStateSet();
         material.toStateSet(stateSet);
         textureData.toTextureStateSet(stateSet);
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
@@ -877,33 +881,40 @@ class SurfaceBin : public PrimitiveBin {
         stateSet->setAttribute(shadeModel);
         
         // Set up the arrays, allways store texture coords, may be we need them later ...
+        osg::Geometry* geometry = new osg::Geometry;
+        _geode->addDrawable(geometry);
+        geometry->setColorArray(material.getColorArray());
+        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         osg::Vec3Array* normalArray = new osg::Vec3Array;
+        geometry->setNormalArray(normalArray);
         osg::Vec3Array* vertexArray = new osg::Vec3Array;
-        osg::Vec2Array* texcoordArray = new osg::Vec2Array;
-        _geometry->setColorArray(material.getColorArray());
-        _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-        _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-        _geometry->setNormalArray(normalArray);
-        _geometry->setVertexArray(vertexArray);
-        _geometry->setTexCoordArray(0, texcoordArray);
+        geometry->setVertexArray(vertexArray);
+        osg::Vec2Array* texcoordArray = 0;
+        if (textureData.valid())
+        {
+            texcoordArray = new osg::Vec2Array;
+            geometry->setTexCoordArray(0, texcoordArray);
+        }
 
         // At first handle the the polygons to tessellate, fix them and append the other polygons later
         if (!_toTessellatePolygons.empty())
         {
+            unsigned start = vertexArray->size();
+            osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON, start);
+            drawArrayLengths->reserve(_toTessellatePolygons.size());
             for (unsigned i = 0; i < _toTessellatePolygons.size(); ++i)
             {
-                unsigned start = vertexArray->size();
                 for (unsigned j = 0; j < _toTessellatePolygons[i].index.size(); ++j)
                 {
                     pushVertex(_toTessellatePolygons[i].index[j], vertexArray, normalArray, texcoordArray);
                 }
-                unsigned count = _toTessellatePolygons[i].index.size();
-                osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::POLYGON, start, count);
-                _geometry->addPrimitiveSet(drawArray);
+                drawArrayLengths->push_back(_toTessellatePolygons[i].index.size());
             }
+            geometry->addPrimitiveSet(drawArrayLengths);
 
             osgUtil::Tessellator Tessellator;
-            Tessellator.retessellatePolygons(*_geometry);
+            Tessellator.retessellatePolygons(*geometry);
         }
 
         // handle triangles
@@ -918,7 +929,7 @@ class SurfaceBin : public PrimitiveBin {
                 }
             }
             osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, start, 3*_triangles.size());
-            _geometry->addPrimitiveSet(drawArray);
+            geometry->addPrimitiveSet(drawArray);
         }
 
         // handle quads
@@ -933,26 +944,27 @@ class SurfaceBin : public PrimitiveBin {
                 }
             }
             osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::QUADS, start, 4*_quads.size());
-            _geometry->addPrimitiveSet(drawArray);
+            geometry->addPrimitiveSet(drawArray);
         }
 
         // handle polygons
         if (!_polygons.empty())
         {
+            unsigned start = vertexArray->size();
+            osg::DrawArrayLengths* drawArrayLengths = new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON, start);
+            drawArrayLengths->reserve(_polygons.size());
             for (unsigned i = 0; i < _polygons.size(); ++i)
             {
-                unsigned start = vertexArray->size();
                 for (unsigned j = 0; j < _polygons[i].index.size(); ++j)
                 {
                     pushVertex(_polygons[i].index[j], vertexArray, normalArray, texcoordArray);
                 }
-                unsigned count = _polygons[i].index.size();
-                osg::DrawArrays* drawArray = new osg::DrawArrays(osg::PrimitiveSet::POLYGON, start, count);
-                _geometry->addPrimitiveSet(drawArray);
+                drawArrayLengths->push_back(_polygons[i].index.size());
             }
+            geometry->addPrimitiveSet(drawArrayLengths);
         }
 
-        return _geometry.get();
+        return _geode.get();
     }
 };
 
@@ -1007,27 +1019,27 @@ struct Bins
             }
         }
     }
-    void finalize(osg::Geode* geode, const MaterialData& material, const TextureData& textureData)
+    void finalize(osg::Group* group, const MaterialData& material, const TextureData& textureData)
     {
         if (lineBin.valid())
         {
-            geode->addDrawable(lineBin->finalize(material, textureData));
+            group->addChild(lineBin->finalize(material, textureData));
         }
         if (smoothDoubleSurfaceBin.valid())
         {
-            geode->addDrawable(smoothDoubleSurfaceBin->finalize(material, textureData));
+            group->addChild(smoothDoubleSurfaceBin->finalize(material, textureData));
         }
         if (smoothSingleSurfaceBin.valid())
         {
-            geode->addDrawable(smoothSingleSurfaceBin->finalize(material, textureData));
+            group->addChild(smoothSingleSurfaceBin->finalize(material, textureData));
         }
         if (flatDoubleSurfaceBin.valid())
         {
-            geode->addDrawable(flatDoubleSurfaceBin->finalize(material, textureData));
+            group->addChild(flatDoubleSurfaceBin->finalize(material, textureData));
         }
         if (flatSingleSurfaceBin.valid())
         {
-            geode->addDrawable(flatSingleSurfaceBin->finalize(material, textureData));
+            group->addChild(flatSingleSurfaceBin->finalize(material, textureData));
         }
     }
 
@@ -1141,9 +1153,6 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
             unsigned num;
             stream >> num;
             if (0 < num) {
-                osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-                group->addChild(geode.get());
-                
                 // list of materials required- generate one geode per material
                 std::vector<Bins> primitiveBins(fileData.getNumMaterials());
                 vertexSet->setCreaseAngle(creaseAngle);
@@ -1248,7 +1257,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 }
                 
                 for (unsigned i = 0; i < primitiveBins.size(); ++i)
-                    primitiveBins[i].finalize(geode.get(), fileData.getMaterial(i), textureData);
+                    primitiveBins[i].finalize(group.get(), fileData.getMaterial(i), textureData);
             }
         }
         else if (token == "kids") {

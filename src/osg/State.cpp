@@ -15,6 +15,13 @@
 #include <osg/GLU>
 #include <osg/GLExtensions>
 
+#ifndef GL_MAX_TEXTURE_COORDS
+#define GL_MAX_TEXTURE_COORDS 0x8871
+#endif
+
+#ifndef GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+#define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS 0x8B4D
+#endif
 
 using namespace std;
 using namespace osg;
@@ -734,6 +741,13 @@ void State::initializeExtensionProcs()
     _glDisableVertexAttribArray =  (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     _glBindBuffer = (BindBufferProc) osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB");
 
+    _glMaxTextureCoords = 1;
+    glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
+
+    _glMaxTextureUnits = 1;
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
+    _glMaxTextureUnits = maximum(_glMaxTextureCoords,_glMaxTextureUnits);
+
     _extensionProcsInitialized = true;
 }
 
@@ -741,7 +755,7 @@ bool State::setClientActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentClientActiveTextureUnit)
     {
-        if (_glClientActiveTexture)
+        if (_glClientActiveTexture && unit < (unsigned int)_glMaxTextureCoords)
         {
             _glClientActiveTexture(GL_TEXTURE0+unit);
             _currentClientActiveTextureUnit = unit;
@@ -761,7 +775,7 @@ bool State::setActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentActiveTextureUnit)
     {
-        if (_glActiveTexture)
+        if (_glActiveTexture && unit < (unsigned int)_glMaxTextureUnits)
         {
             _glActiveTexture(GL_TEXTURE0+unit);
             _currentActiveTextureUnit = unit;

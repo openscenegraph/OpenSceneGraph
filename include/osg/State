@@ -1293,6 +1293,8 @@ class OSG_EXPORT State : public Referenced
 
 
         bool                        _extensionProcsInitialized;
+        GLint                       _glMaxTextureCoords;
+        GLint                       _glMaxTextureUnits;
         ActiveTextureProc           _glClientActiveTexture;
         ActiveTextureProc           _glActiveTexture;
         FogCoordPointerProc         _glFogCoordPointer;

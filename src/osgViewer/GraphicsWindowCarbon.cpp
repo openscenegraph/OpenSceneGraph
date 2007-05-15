@@ -538,6 +538,7 @@ void GraphicsWindowCarbon::setWindowDecoration(bool flag)
 
 void GraphicsWindowCarbon::init()
 {
+    _windowTitleHeight = 0;
     _closeRequested = false;
     _context = NULL;
     _window = NULL;
@@ -594,7 +595,13 @@ bool GraphicsWindowCarbon::realizeImplementation()
     if (err) {
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
         return false;
+    } else {
+        osg::notify(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation() - window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
     }
+    
+    Rect titleRect;
+    GetWindowBounds(_window, kWindowTitleBarRgn, &titleRect);
+    _windowTitleHeight = abs(titleRect.top);
     
     // register window event handler to receive resize-events
     EventTypeSpec   windEventList[] = {
@@ -743,6 +750,10 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
     // mouse down event   
     Point wheresMyMouse;
     GetEventParameter (theEvent, kEventParamWindowMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouse);
+    
+    wheresMyMouse.v -= _windowTitleHeight;
+    if (_useWindowDecoration && (wheresMyMouse.v < 0))
+        return false;
     
     Point wheresMyMouseGlobal;
     GetEventParameter (theEvent, kEventParamMouseLocation, typeQDPoint, NULL, sizeof(wheresMyMouse), NULL, &wheresMyMouseGlobal);

@@ -188,6 +188,11 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /** Add an attribute which is positioned relative to the modelview matrix.*/
         inline void addPositionedTextureAttribute(unsigned int textureUnit, osg::RefMatrix* matrix,const osg::StateAttribute* attr);
 
+
+        /** compute near plane based on the polgon intersection of primtives in near plane candidate list of drawables.
+          * Note, you have to set ComputeNearFarMode to COMPUTE_NEAR_FAR_USING_PRIMITIVES to be able to near plane candidate drawables to be recorded by the cull traversal. */ 
+        void computeNearPlane();
+
         /** Re-implement CullStack's popProjectionMatrix() adding clamping of the projection matrix to
           * the computed near and far.*/
         virtual void popProjectionMatrix();

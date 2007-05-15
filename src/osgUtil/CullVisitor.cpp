@@ -173,13 +173,12 @@ float CullVisitor::getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODSca
     else return dist;
 }
 
-void CullVisitor::popProjectionMatrix()
+void CullVisitor::computeNearPlane()
 {
-
     if (!_nearPlaneCandidateMap.empty())
     { 
     
-        // osg::Timer_t start_t = osg::Timer::instance()->tick();
+        osg::Timer_t start_t = osg::Timer::instance()->tick();
         
         // update near from defferred list of drawables
         unsigned int numTests = 0;
@@ -197,9 +196,16 @@ void CullVisitor::popProjectionMatrix()
             }
         } 
 
-        // osg::Timer_t end_t = osg::Timer::instance()->tick();
+        osg::Timer_t end_t = osg::Timer::instance()->tick();
         // osg::notify(osg::NOTICE)<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
+
+        _nearPlaneCandidateMap.clear();
     }
+}
+
+void CullVisitor::popProjectionMatrix()
+{
+    computeNearPlane();
 
     if (_computeNearFar && _computed_zfar>=_computed_znear)
     {

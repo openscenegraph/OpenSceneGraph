@@ -10,7 +10,6 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
@@ -124,9 +123,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          __void__setOverlayClearColor__C5_osg_Vec4_R1,
 	          "Set the clear color to use when rendering the overlay subgraph. ",
 	          "");
-	I_Method0(osg::Vec4, getOverlayClearColor,
+	I_Method0(const osg::Vec4 &, getOverlayClearColor,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec4__getOverlayClearColor,
+	          __C5_osg_Vec4_R1__getOverlayClearColor,
 	          "Get the clear color to use when rendering the overlay subgraph. ",
 	          "");
 	I_Method1(void, setTexEnvMode, IN, GLenum, mode,
@@ -158,16 +157,6 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getOverlayTextureSizeHint,
 	          "Get the texture size hint. ",
-	          "");
-	I_Method0(osg::Camera *, getCamera,
-	          Properties::NON_VIRTUAL,
-	          __osg_Camera_P1__getCamera,
-	          "Get the camera used to implement the render to texture of the overlay subgraph. ",
-	          "");
-	I_Method0(const osg::Camera *, getCamera,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Camera_P1__getCamera,
-	          "Get the const camera used to implement the render to texture of the overlay subgraph. ",
 	          "");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
 	          Properties::VIRTUAL,
@@ -232,14 +221,11 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	                   __void__updateMainSubgraphStateSet,
 	                   "",
 	                   "");
-	I_SimpleProperty(osg::Camera *, Camera, 
-	                 __osg_Camera_P1__getCamera, 
-	                 0);
 	I_SimpleProperty(bool, ContinuousUpdate, 
 	                 __bool__getContinuousUpdate, 
 	                 __void__setContinuousUpdate__bool);
-	I_SimpleProperty(osg::Vec4, OverlayClearColor, 
-	                 __osg_Vec4__getOverlayClearColor, 
+	I_SimpleProperty(const osg::Vec4 &, OverlayClearColor, 
+	                 __C5_osg_Vec4_R1__getOverlayClearColor, 
 	                 __void__setOverlayClearColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(osg::Node *, OverlaySubgraph, 
 	                 __osg_Node_P1__getOverlaySubgraph, 

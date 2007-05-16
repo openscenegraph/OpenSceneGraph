@@ -28,6 +28,7 @@ OverlayNode::OverlayNode(OverlayTechnique technique):
     _texEnvMode(GL_DECAL),
     _textureUnit(1),
     _textureSizeHint(1024),
+    _overlayClearColor(0.0f,0.0f,0.0f,0.0f),
     _continuousUpdate(false),
     _updateCamera(false)
 {
@@ -42,43 +43,77 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     _texEnvMode(copy._texEnvMode),
     _textureUnit(copy._textureUnit),
     _textureSizeHint(copy._textureSizeHint),
+    _overlayClearColor(copy._overlayClearColor),
     _continuousUpdate(copy._continuousUpdate)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
     init();
 }
 
+void OverlayNode::OverlayData::setThreadSafeRefUnref(bool threadSafe)
+{
+    if (_camera.valid()) _camera->setThreadSafeRefUnref(threadSafe);
+    if (_texgenNode.valid()) _texgenNode->setThreadSafeRefUnref(threadSafe);
+    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->setThreadSafeRefUnref(threadSafe);
+    if (_texture.valid()) _texture->setThreadSafeRefUnref(threadSafe);
+}
+
+void OverlayNode::OverlayData::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    if (_camera.valid()) _camera->resizeGLObjectBuffers(maxSize);
+    if (_texgenNode.valid()) _texgenNode->resizeGLObjectBuffers(maxSize);
+    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->resizeGLObjectBuffers(maxSize);
+    if (_texture.valid()) _texture->resizeGLObjectBuffers(maxSize);
+}
+
+void OverlayNode::OverlayData::releaseGLObjects(osg::State* state) const
+{
+    if (_camera.valid()) _camera->releaseGLObjects(state);
+    if (_texgenNode.valid()) _texgenNode->releaseGLObjects(state);
+    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->releaseGLObjects(state);
+    if (_texture.valid()) _texture->releaseGLObjects(state);
+}
+
 void OverlayNode::setThreadSafeRefUnref(bool threadSafe)
 {
     osg::Group::setThreadSafeRefUnref(threadSafe);
     
-    if (_camera.valid()) _camera->setThreadSafeRefUnref(threadSafe);
     if (_overlaySubgraph.valid()) _overlaySubgraph->setThreadSafeRefUnref(threadSafe);
-    if (_texgenNode.valid()) _texgenNode->setThreadSafeRefUnref(threadSafe);
-    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->setThreadSafeRefUnref(threadSafe);
-    if (_texture.valid()) _texture->setThreadSafeRefUnref(threadSafe);
+
+    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
+    {
+        itr->second.setThreadSafeRefUnref(threadSafe);
+    }
 }
 
 void OverlayNode::resizeGLObjectBuffers(unsigned int maxSize)
 {
     osg::Group::resizeGLObjectBuffers(maxSize);
 
-    if (_camera.valid()) _camera->resizeGLObjectBuffers(maxSize);
     if (_overlaySubgraph.valid()) _overlaySubgraph->resizeGLObjectBuffers(maxSize);
-    if (_texgenNode.valid()) _texgenNode->resizeGLObjectBuffers(maxSize);
-    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->resizeGLObjectBuffers(maxSize);
-    if (_texture.valid()) _texture->resizeGLObjectBuffers(maxSize);
+
+    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
+    {
+        itr->second.resizeGLObjectBuffers(maxSize);
+    }
 }
 
 void OverlayNode::releaseGLObjects(osg::State* state) const
 {
     osg::Group::releaseGLObjects(state);
     
-    if (_camera.valid()) _camera->releaseGLObjects(state);
     if (_overlaySubgraph.valid()) _overlaySubgraph->releaseGLObjects(state);
-    if (_texgenNode.valid()) _texgenNode->releaseGLObjects(state);
-    if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->releaseGLObjects(state);
-    if (_texture.valid()) _texture->releaseGLObjects(state);
+
+    for(OverlayDataMap::const_iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
+    {
+        itr->second.releaseGLObjects(state);
+    }
 }
 
 void OverlayNode::setOverlayTechnique(OverlayTechnique technique)
@@ -116,11 +151,15 @@ void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
 {
     osg::notify(osg::NOTICE)<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
 
+    OverlayData& overlayData = getOverlayData(0);
+
     unsigned int tex_width = _textureSizeHint;
     unsigned int tex_height = _textureSizeHint;
     
-    if (!_texture) 
+    if (!overlayData._texture) 
     { 
+        osg::notify(osg::NOTICE)<<"   setting up texture"<<std::endl;
+
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setTextureSize(tex_width, tex_height);
         texture->setInternalFormat(GL_RGBA);
@@ -128,34 +167,36 @@ void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
         texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
         texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-        texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,0.0f));
-        _texture = texture;
+        texture->setBorderColor(osg::Vec4(_overlayClearColor));
+        overlayData._texture = texture;
     }   
 
     // set up the render to texture camera.
-    if (!_camera)
+    if (!overlayData._camera)
     {
+        osg::notify(osg::NOTICE)<<"   setting up camera"<<std::endl;
+
         // create the camera
-        _camera = new osg::Camera;
+        overlayData._camera = new osg::Camera;
          
-        _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
+        overlayData._camera->setClearColor(_overlayClearColor);
 
         // set viewport
-        _camera->setViewport(0,0,tex_width,tex_height);
+        overlayData._camera->setViewport(0,0,tex_width,tex_height);
 
         // set the camera to render before the main camera.
-        _camera->setRenderOrder(osg::Camera::PRE_RENDER);
+        overlayData._camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+        overlayData._camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
-        _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
+        overlayData._camera->attach(osg::Camera::COLOR_BUFFER, overlayData._texture.get());
     }
 
-    if (!_texgenNode) _texgenNode = new osg::TexGenNode;
+    if (!overlayData._texgenNode) overlayData._texgenNode = new osg::TexGenNode;
 
-    if (!_mainSubgraphStateSet) _mainSubgraphStateSet = new osg::StateSet;
+    if (!overlayData._mainSubgraphStateSet) overlayData._mainSubgraphStateSet = new osg::StateSet;
 
     setOverlayTextureUnit(_textureUnit);
 }
@@ -188,19 +229,23 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
 void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
 {
+    OverlayData& overlayData = getOverlayData(0);
+    osg::Camera* camera = overlayData._camera.get();
+
     if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
-
 
         Group::traverse(nv);
 
         if (_continuousUpdate || _updateCamera)
         {
+        
+        
             // now compute the camera's view and projection matrix to point at the shadower (the camera's children)
             osg::BoundingSphere bs;
-            for(unsigned int i=0; i<_camera->getNumChildren(); ++i)
+            for(unsigned int i=0; i<camera->getNumChildren(); ++i)
             {
-                bs.expandBy(_camera->getChild(i)->getBound());
+                bs.expandBy(camera->getChild(i)->getBound());
             }
 
             if (bs.valid())
@@ -215,7 +260,7 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
                     csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
                 }
 
-                _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+                camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
 
                 if (csn)
                 {
@@ -230,8 +275,8 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
                     double top   = (bs.radius()/centerDistance)*znear;
                     double right = top;
 
-                    _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-                    _camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
+                    camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
+                    camera->setViewMatrixAsLookAt(eyePoint, bs.center(), osg::Vec3(0.0f,1.0f,0.0f));
                 }
                 else
                 {
@@ -248,26 +293,26 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
                     float top   = bs.radius();
                     float right = top;
 
-                    _camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
-                    _camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
+                    camera->setProjectionMatrixAsOrtho(-right,right,-top,top,znear,zfar);
+                    camera->setViewMatrixAsLookAt(eyePoint,center,upDirection);
 
                 }
 
 
                 // compute the matrix which takes a vertex from local coords into tex coords
                 // will use this later to specify osg::TexGen..
-                osg::Matrix MVP = _camera->getViewMatrix() * 
-                                  _camera->getProjectionMatrix();
+                osg::Matrix MVP = camera->getViewMatrix() * 
+                                  camera->getProjectionMatrix();
 
                 osg::Matrix MVPT = MVP *
                                    osg::Matrix::translate(1.0,1.0,1.0) *
                                    osg::Matrix::scale(0.5,0.5,0.5);
 
-                _texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-                _texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
+                overlayData._texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
+                overlayData._texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
 
-                _textureFrustum.setToUnitFrustum(false,false);
-                _textureFrustum.transformProvidingInverse(MVP);
+                overlayData._textureFrustum.setToUnitFrustum(false,false);
+                overlayData._textureFrustum.transformProvidingInverse(MVP);
             }
             _updateCamera = false;
         }
@@ -294,7 +339,8 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
     // if we need to redraw then do cull traversal on camera.
     if (!_textureObjectValidList[contextID] || _continuousUpdate)
     {
-        _camera->accept(*cv);
+        camera->setClearColor(_overlayClearColor);
+        camera->accept(*cv);
         _textureObjectValidList[contextID] = 1;
     }
     
@@ -315,14 +361,14 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
 #endif
     {
 
-        _texgenNode->accept(*cv);
+        overlayData._texgenNode->accept(*cv);
         
         const osg::Matrix modelView = *(cv->getModelViewMatrix());
         osg::Polytope viewTextureFrustum;
-        viewTextureFrustum.setAndTransformProvidingInverse(_textureFrustum, osg::Matrix::inverse(modelView));
+        viewTextureFrustum.setAndTransformProvidingInverse(overlayData._textureFrustum, osg::Matrix::inverse(modelView));
 
-        cv->getProjectionCullingStack().back().addStateFrustum(_mainSubgraphStateSet.get(), viewTextureFrustum);
-        cv->getCurrentCullingSet().addStateFrustum(_mainSubgraphStateSet.get(), _textureFrustum);
+        cv->getProjectionCullingStack().back().addStateFrustum(overlayData._mainSubgraphStateSet.get(), viewTextureFrustum);
+        cv->getCurrentCullingSet().addStateFrustum(overlayData._mainSubgraphStateSet.get(), overlayData._textureFrustum);
         
         // push the stateset.
         // cv->pushStateSet(_mainSubgraphStateSet.get());
@@ -496,11 +542,18 @@ void OverlayNode::setOverlaySubgraph(osg::Node* node)
 
     _overlaySubgraph = node;
 
-    if (_camera.valid())
+    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
     {
-        _camera->removeChildren(0, _camera->getNumChildren());
-        _camera->addChild(node);
+        osg::Camera* camera = itr->second._camera.get();
+        if (camera)
+        {
+            camera->removeChildren(0, camera->getNumChildren());
+            camera->addChild(node);
+        }
     }
+
 
     dirtyOverlayTexture();
 }
@@ -509,16 +562,6 @@ void OverlayNode::dirtyOverlayTexture()
 {
     _textureObjectValidList.setAllElementsTo(0);
     _updateCamera = true;
-}
-
-void OverlayNode::setOverlayClearColor(const osg::Vec4& color)
-{
-    if (_camera.valid()) _camera->setClearColor(color);
-}
-
-osg::Vec4 OverlayNode::getOverlayClearColor() const
-{
-    return _camera.valid() ? _camera->getClearColor() : osg::Vec4(1.0f,1.0f,1.0f,1.0f);
 }
 
 
@@ -533,7 +576,13 @@ void OverlayNode::setOverlayTextureUnit(unsigned int unit)
 {
     _textureUnit = unit;
 
-    if (_texgenNode.valid()) _texgenNode->setTextureUnit(_textureUnit);
+    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
+    {
+        osg::TexGenNode* texgenNode = itr->second._texgenNode.get();
+        if (texgenNode) texgenNode->setTextureUnit(_textureUnit);
+    }
     
     updateMainSubgraphStateSet();
 }
@@ -543,24 +592,41 @@ void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
     if (_textureSizeHint == size) return;
 
     _textureSizeHint = size;    
+
+
+    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
+    {
+        if (itr->second._texture.valid()) itr->second._texture->setTextureSize(_textureSizeHint, _textureSizeHint);
+        if (itr->second._camera.valid()) itr->second._camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
+    }
+
     //_texture->dirtyTextureObject();
-    if (_texture.valid()) _texture->setTextureSize(_textureSizeHint, _textureSizeHint);
-    if (_camera.valid()) _camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
 }
 
 void OverlayNode::updateMainSubgraphStateSet()
 {
-    if (!_mainSubgraphStateSet) return;
+   osg::notify(osg::NOTICE)<<"OverlayNode::updateMainSubgraphStateSet()"<<std::endl;
 
-    _mainSubgraphStateSet->clear();
-    _mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, _texture.get(), osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
-    _mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
-
-    if (_texEnvMode!=GL_NONE) 
+   for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
+        itr != _overlayDataMap.end();
+        ++itr)
     {
-        _mainSubgraphStateSet->setTextureAttribute(_textureUnit, new osg::TexEnv((osg::TexEnv::Mode)_texEnvMode));
+        osg::StateSet* mainSubgraphStateSet = itr->second._mainSubgraphStateSet.get();
+        if (mainSubgraphStateSet)  
+        {
+            mainSubgraphStateSet->clear();
+            mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, itr->second._texture.get(), osg::StateAttribute::ON);
+            mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
+            mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
+            mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
+            mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
+
+            if (_texEnvMode!=GL_NONE) 
+            {
+                mainSubgraphStateSet->setTextureAttribute(_textureUnit, new osg::TexEnv((osg::TexEnv::Mode)_texEnvMode));
+            }
+        }
     }
 }

@@ -18,6 +18,7 @@
 #include <osg/Camera>
 #include <osg/Texture2D>
 #include <osg/TexGenNode>
+#include <osg/Geode>
 
 #include <osgUtil/CullVisitor>
 
@@ -72,10 +73,10 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
 
         /** Set the clear color to use when rendering the overlay subgraph.*/
-        void setOverlayClearColor(const osg::Vec4& color);
+        void setOverlayClearColor(const osg::Vec4& color) { _overlayClearColor = _overlayClearColor; }
 
         /** Get the clear color to use when rendering the overlay subgraph.*/
-        osg::Vec4 getOverlayClearColor() const;
+        const osg::Vec4& getOverlayClearColor() const { return _overlayClearColor; }
 
         /** Set the TexEnv mode used to combine the overlay texture with the base color/texture of the OverlayNode's decorate subgraph.*/
         void setTexEnvMode(GLenum mode);
@@ -95,12 +96,6 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Get the texture size hint.*/
         unsigned int getOverlayTextureSizeHint() const { return _textureSizeHint; }
         
-
-        /** Get the camera used to implement the render to texture of the overlay subgraph.*/
-        osg::Camera* getCamera() { return _camera.get(); }
-
-        /** Get the const camera used to implement the render to texture of the overlay subgraph.*/
-        const osg::Camera* getCamera() const { return _camera.get(); }
         
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
@@ -135,35 +130,34 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         OverlayTechnique _overlayTechnique;
 
-        osg::ref_ptr<osg::Camera>   _camera;
-        
         // overlay subgraph is render to a texture
         osg::ref_ptr<osg::Node>         _overlaySubgraph;
-        
-        // texgen node to generate the tex coordinates for us
-        osg::ref_ptr<osg::TexGenNode>   _texgenNode;
-        
-        // state set to decoate the main subgraph.
-        osg::ref_ptr<osg::StateSet>     _mainSubgraphStateSet;
         
         // texture to render to, and to read from.
         GLenum                          _texEnvMode;
         unsigned int                    _textureUnit;
         unsigned int                    _textureSizeHint;
-        osg::ref_ptr<osg::Texture2D>    _texture;
+        osg::Vec4                       _overlayClearColor;
 
         bool                            _continuousUpdate;
         bool                            _updateCamera;
-        osg::Polytope                   _textureFrustum;
 
     private:
         
         struct OverlayData
         {
-            osg::ref_ptr<osg::Camera>   _camera;
-            osg::ref_ptr<osg::StateSet> _overlayStateSet;
-            osg::ref_ptr<osg::StateSet> _mainSubgraphStateSet;
-            osg::ref_ptr<osg::TexGen>   _texgen;
+
+            void setThreadSafeRefUnref(bool threadSafe);
+            void resizeGLObjectBuffers(unsigned int maxSize);
+            void releaseGLObjects(osg::State* state= 0) const;
+
+            osg::ref_ptr<osg::Camera>       _camera;
+            osg::ref_ptr<osg::StateSet>     _overlayStateSet;
+            osg::ref_ptr<osg::StateSet>     _mainSubgraphStateSet;
+            osg::ref_ptr<osg::TexGenNode>   _texgenNode;
+            osg::ref_ptr<osg::Texture2D>    _texture;
+            osg::Polytope                   _textureFrustum;
+            osg::ref_ptr<osg::Geode>        _geode;
         };
         
         typedef std::map<osgUtil::CullVisitor*, OverlayData> OverlayDataMap;

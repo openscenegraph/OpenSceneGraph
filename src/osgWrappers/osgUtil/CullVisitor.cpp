@@ -266,6 +266,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          __void__addPositionedTextureAttribute__unsigned_int__osg_RefMatrix_P1__C5_osg_StateAttribute_P1,
 	          "Add an attribute which is positioned relative to the modelview matrix. ",
 	          "");
+	I_Method0(void, computeNearPlane,
+	          Properties::NON_VIRTUAL,
+	          __void__computeNearPlane,
+	          "compute near plane based on the polgon intersection of primtives in near plane candidate list of drawables. ",
+	          "Note, you have to set ComputeNearFarMode to COMPUTE_NEAR_FAR_USING_PRIMITIVES to be able to near plane candidate drawables to be recorded by the cull traversal. ");
 	I_Method0(void, popProjectionMatrix,
 	          Properties::VIRTUAL,
 	          __void__popProjectionMatrix,

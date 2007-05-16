@@ -128,31 +128,12 @@ void OverlayNode::setOverlayTechnique(OverlayTechnique technique)
 OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_overlayDataMapMutex);
-    return _overlayDataMap[cv];
-}
-
-void OverlayNode::init()
-{
-    switch(_overlayTechnique)
-    {
-        case(OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
-            init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
-            break;
-        case(VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
-            init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
-            break;
-        case(VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY):
-            init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY();
-            break;
-    }
-}
-
-void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
-{
-    osg::notify(osg::NOTICE)<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
-
-    OverlayData& overlayData = getOverlayData(0);
-
+    OverlayDataMap::iterator itr = _overlayDataMap.find(cv);
+    if (itr != _overlayDataMap.end()) return itr->second;
+    
+    OverlayData& overlayData = _overlayDataMap[cv];
+    
+    
     unsigned int tex_width = _textureSizeHint;
     unsigned int tex_height = _textureSizeHint;
     
@@ -181,6 +162,8 @@ void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
          
         overlayData._camera->setClearColor(_overlayClearColor);
 
+        overlayData._camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+
         // set viewport
         overlayData._camera->setViewport(0,0,tex_width,tex_height);
 
@@ -192,13 +175,55 @@ void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
 
         // attach the texture and use it as the color buffer.
         overlayData._camera->attach(osg::Camera::COLOR_BUFFER, overlayData._texture.get());
+        
+        if (_overlaySubgraph.valid()) overlayData._camera->addChild(_overlaySubgraph.get());
     }
 
-    if (!overlayData._texgenNode) overlayData._texgenNode = new osg::TexGenNode;
+    if (!overlayData._texgenNode)
+    {
+        overlayData._texgenNode = new osg::TexGenNode;
+        overlayData._texgenNode->setTextureUnit(_textureUnit);
+    }
 
-    if (!overlayData._mainSubgraphStateSet) overlayData._mainSubgraphStateSet = new osg::StateSet;
+    if (!overlayData._mainSubgraphStateSet) 
+    {
+        overlayData._mainSubgraphStateSet = new osg::StateSet;
 
-    setOverlayTextureUnit(_textureUnit);
+        overlayData._mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, overlayData._texture.get(), osg::StateAttribute::ON);
+        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
+        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
+        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
+        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
+
+        if (_texEnvMode!=GL_NONE) 
+        {
+            overlayData._mainSubgraphStateSet->setTextureAttribute(_textureUnit, new osg::TexEnv((osg::TexEnv::Mode)_texEnvMode));
+        }
+    }
+
+    return overlayData;
+}
+
+void OverlayNode::init()
+{
+    switch(_overlayTechnique)
+    {
+        case(OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
+            init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
+            break;
+        case(VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY):
+            init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY();
+            break;
+        case(VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY):
+            init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY();
+            break;
+    }
+}
+
+void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
+{
+    osg::notify(osg::NOTICE)<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+    OverlayData& overlayData = getOverlayData(0);
 }
 
 void OverlayNode::init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
@@ -260,8 +285,7 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
                     csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
                 }
 
-                camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
-
+  
                 if (csn)
                 {
                     osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
@@ -346,19 +370,6 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
     
     
     // now set up the drawing of the main scene.
-#if 0 
-    // Disable for time being as _overlaySubgraphBound isn't accurate for
-    // detecting whether the overaly texture will sit over affect the rendering
-    // of the children of the OverlayNode.  Frustrum intersection may prove more
-    // fruitful.
-
-    // note needs to use bound when captured not current bound.
-    if (!_overlaySubgraphBound.valid() || cv->isCulled(_overlaySubgraphBound))
-    {
-        Group::traverse(nv);
-    }
-    else
-#endif
     {
 
         overlayData._texgenNode->accept(*cv);
@@ -401,6 +412,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
     }
     
     OverlayData& overlayData = getOverlayData(cv);
+    osg::Camera* camera = overlayData._camera.get();
 
     if (_overlaySubgraph.valid()) 
     {
@@ -408,7 +420,26 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
         _overlaySubgraph->accept(cbbv);
         
+        // see if we are within a coordinate system node.
+        osg::CoordinateSystemNode* csn = 0;
+        osg::NodePath& nodePath = nv.getNodePath();
+        for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+            itr != nodePath.rend() && csn==0;
+            ++itr)
+        {
+            csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
+        }
+
+        osg::BoundingSphere bs = _overlaySubgraph->getBound();
+
+
+
+        // push the stateset.
+        cv->pushStateSet(overlayData._mainSubgraphStateSet.get());
+
         Group::traverse(nv);    
+
+        cv->popStateSet();
 
         osg::Matrix pm = *(cv->getProjectionMatrix());
         
@@ -468,18 +499,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         
         osg::notify(osg::NOTICE)<<"    center ="<<center<<" diagonal ="<<diagonal<<std::endl;
         osg::notify(osg::NOTICE)<<"    frustum_axis ="<<frustum_axis<<" diagonal_near ="<<diagonal_near<<" diagonal_far="<<diagonal_far<<std::endl;
-        
-
-        // see if we are within a coordinate system node.
-        osg::CoordinateSystemNode* csn = 0;
-        osg::NodePath& nodePath = nv.getNodePath();
-        for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
-            itr != nodePath.rend() && csn==0;
-            ++itr)
-        {
-            csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
-        }
-
 
         osg::Vec3d lookVector(0.0,0.0,-1.0);
         if (csn)
@@ -518,7 +537,41 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
         osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
 
+
+
+        double bs_center = (bs.center()-center) * lookVector;
+        double bs_near = bs_center-bs.radius();
+        double bs_far = bs_center+bs.radius();
+        
+        osg::notify(osg::NOTICE)<<"    bs_near="<<bs_near<<"  bs_far="<<bs_far<<std::endl;
+
+        camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,bs_near,bs_far);
+        camera->setViewMatrixAsLookAt(center, center+lookVector, upVector);
+
+        // compute the matrix which takes a vertex from local coords into tex coords
+        // will use this later to specify osg::TexGen..
+        MVP = camera->getViewMatrix() * camera->getProjectionMatrix();
+
+        osg::Matrix MVPT = MVP *
+                           osg::Matrix::translate(1.0,1.0,1.0) *
+                           osg::Matrix::scale(0.5,0.5,0.5);
+
+        overlayData._texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
+        overlayData._texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
+
+        overlayData._textureFrustum.setToUnitFrustum(false,false);
+        overlayData._textureFrustum.transformProvidingInverse(MVP);
+
         osg::notify(osg::NOTICE)<<std::endl;
+
+        unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
+
+        // if we need to redraw then do cull traversal on camera.
+        camera->setClearColor(_overlayClearColor);
+        camera->accept(*cv);
+        _textureObjectValidList[contextID] = 1;
+
+        overlayData._texgenNode->accept(*cv);
 
     }
     else
@@ -526,13 +579,12 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         Group::traverse(nv);    
     }
     
-
     // osg::notify(osg::NOTICE)<<"   "<<&overlayData<<std::endl;
 }
 
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv)
 {
-    osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY"<<std::endl;
+    traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(nv);
 }
 
 
@@ -576,14 +628,6 @@ void OverlayNode::setOverlayTextureUnit(unsigned int unit)
 {
     _textureUnit = unit;
 
-    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
-        itr != _overlayDataMap.end();
-        ++itr)
-    {
-        osg::TexGenNode* texgenNode = itr->second._texgenNode.get();
-        if (texgenNode) texgenNode->setTextureUnit(_textureUnit);
-    }
-    
     updateMainSubgraphStateSet();
 }
 
@@ -613,6 +657,9 @@ void OverlayNode::updateMainSubgraphStateSet()
         itr != _overlayDataMap.end();
         ++itr)
     {
+        osg::TexGenNode* texgenNode = itr->second._texgenNode.get();
+        if (texgenNode) texgenNode->setTextureUnit(_textureUnit);
+
         osg::StateSet* mainSubgraphStateSet = itr->second._mainSubgraphStateSet.get();
         if (mainSubgraphStateSet)  
         {

@@ -396,29 +396,83 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         corners.push_back(osg::Vec3d(-1.0,-1.0,-1.0));
         corners.push_back(osg::Vec3d(1.0,-1.0,-1.0));
         corners.push_back(osg::Vec3d(1.0,1.0,-1.0));
-        corners.push_back(osg::Vec3d(-1.0,1.0,1.0));
+        corners.push_back(osg::Vec3d(-1.0,1.0,-1.0));
         corners.push_back(osg::Vec3d(-1.0,-1.0,1.0));
         corners.push_back(osg::Vec3d(1.0,-1.0,1.0));
         corners.push_back(osg::Vec3d(1.0,1.0,1.0));
         corners.push_back(osg::Vec3d(-1.0,1.0,1.0));
         
         
-        osg::Vec3d center;
         for(Corners::iterator itr = corners.begin();
             itr != corners.end();
             ++itr)
         {
             *itr = *itr * inverseMVP;
-            center += *itr;
-            // osg::notify(osg::NOTICE)<<"    corner ="<<*itr<<std::endl;
         }
         
-        center /= 8.0;
+        osg::Vec3d center_near = (corners[0]+corners[1]+corners[2]+corners[3])*0.25;
+        osg::Vec3d center_far = (corners[4]+corners[5]+corners[6]+corners[7])*0.25;
+        osg::Vec3d center = (center_near+center_far)*0.5;
+        osg::Vec3d frustum_axis = (center_far-center_near);
+        frustum_axis.normalize();
         
         double diagonal = (corners[0]-corners[7]).length();
+        float diagonal_near = (corners[0]-center_near).length();
+        float diagonal_far = (corners[7]-center_far).length();
         
         osg::notify(osg::NOTICE)<<"    center ="<<center<<" diagonal ="<<diagonal<<std::endl;
+        osg::notify(osg::NOTICE)<<"    frustum_axis ="<<frustum_axis<<" diagonal_near ="<<diagonal_near<<" diagonal_far="<<diagonal_far<<std::endl;
         
+
+        // see if we are within a coordinate system node.
+        osg::CoordinateSystemNode* csn = 0;
+        osg::NodePath& nodePath = nv.getNodePath();
+        for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+            itr != nodePath.rend() && csn==0;
+            ++itr)
+        {
+            csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
+        }
+
+
+        osg::Vec3d lookVector(0.0,0.0,-1.0);
+        if (csn)
+        {
+            lookVector = -center;
+            lookVector.normalize();
+        }
+        
+        osg::Vec3d sideVector = lookVector ^ frustum_axis;
+        sideVector.normalize();
+        
+        osg::Vec3d upVector = sideVector ^ lookVector;
+        upVector.normalize();
+        
+        osg::notify(osg::NOTICE)<<"    lookVector ="<<lookVector<<std::endl;
+        
+        double min_side = DBL_MAX;
+        double max_side = -DBL_MAX;
+        double min_up = DBL_MAX;
+        double max_up = -DBL_MAX;
+
+        for(Corners::iterator itr = corners.begin();
+            itr != corners.end();
+            ++itr)
+        {
+            osg::Vec3d delta = *itr - center;
+            double distance_side = delta * sideVector;
+            double distance_up = delta * upVector;
+            
+            if (distance_side<min_side) min_side = distance_side;
+            if (distance_side>max_side) max_side = distance_side;
+            if (distance_up<min_up) min_up = distance_up;
+            if (distance_up>max_up) max_up = distance_up;
+        }
+        
+        osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
+        osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
+
+        osg::notify(osg::NOTICE)<<std::endl;
 
     }
     else

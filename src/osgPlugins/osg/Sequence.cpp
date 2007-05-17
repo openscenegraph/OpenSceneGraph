@@ -170,7 +170,7 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
         {
         int sync ;
         fr[1].getInt(sync) ;
-        sw.setSync((bool)sync) ;
+        sw.setSync(sync!=0) ;
             iteratorAdvanced = true;
             fr += 2;
         }
@@ -181,7 +181,7 @@ bool Sequence_readLocalData(Object& obj, Input& fr)
         {
             int clearOnStop ;
             fr[1].getInt(clearOnStop) ;
-            sw.setClearOnStop((bool)clearOnStop) ;
+            sw.setClearOnStop(clearOnStop!=0) ;
             iteratorAdvanced = true;
             fr += 2;
         }

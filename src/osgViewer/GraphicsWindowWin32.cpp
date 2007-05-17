@@ -1937,6 +1937,28 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             }
             break;
 
+        ///////////////////////
+        case WM_LBUTTONDBLCLK :
+        case WM_MBUTTONDBLCLK :
+        case WM_RBUTTONDBLCLK :
+        ///////////////////////
+
+            {
+                ::SetCapture(hwnd);
+
+                int button;
+
+                if (uMsg==WM_LBUTTONDBLCLK)            button = 1;
+                else if (uMsg==WM_MBUTTONDBLCLK)    button = 2;
+                else button = 3;
+
+                float mx = GET_X_LPARAM(lParam);
+                float my = GET_Y_LPARAM(lParam);
+                transformMouseXY(mx, my);
+                getEventQueue()->mouseDoubleButtonPress(mx, my, button, eventTime);
+            }
+            break;
+
         ////////////////////
         case WM_MOUSEWHEEL :
         ////////////////////

@@ -544,9 +544,19 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         double bs_far = bs_center+bs.radius();
         
         osg::notify(osg::NOTICE)<<"    bs_near="<<bs_near<<"  bs_far="<<bs_far<<std::endl;
+        osg::notify(osg::NOTICE)<<"    bs.radius()="<<bs.radius()<<std::endl;
 
-        camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,bs_near,bs_far);
-        camera->setViewMatrixAsLookAt(center, center+lookVector, upVector);
+
+#if 0
+        camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,bs_near+bs.center().length(),bs_far+bs.center().length());
+        camera->setViewMatrixAsLookAt(osg::Vec3d(0.0f,0.0f,0.0f), bs.center(), upVector);
+
+#else        
+        
+        camera->setProjectionMatrixAsOrtho(-bs.radius(),bs.radius(),-bs.radius(),bs.radius(),-bs.radius(),bs.radius());
+        camera->setViewMatrixAsLookAt(bs.center(), osg::Vec3d(0.0f,0.0f,0.0f), osg::Vec3(0.0,0.0,1.0));
+#endif        
+
 
         // compute the matrix which takes a vertex from local coords into tex coords
         // will use this later to specify osg::TexGen..
@@ -556,6 +566,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                            osg::Matrix::translate(1.0,1.0,1.0) *
                            osg::Matrix::scale(0.5,0.5,0.5);
 
+        //overlayData._texgenNode->setReferenceFrame(osg::TexGenNode::ABSOLUTE_RF);
         overlayData._texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
         overlayData._texgenNode->getTexGen()->setPlanesFromMatrix(MVPT);
 

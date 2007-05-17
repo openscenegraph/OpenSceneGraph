@@ -164,6 +164,10 @@ struct ViewerRenderingOperation : public osg::Operation, public ViewerQuerySuppo
         // do cull taversal
         osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
         
+        // pass on the fusion distance settings from the View to the SceneView
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(_sceneView->getCamera()->getView());
+        if (view) _sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
+
         _sceneView->inheritCullSettings(*(_sceneView->getCamera()));
         
         _sceneView->cull();
@@ -305,6 +309,10 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         if (sceneView)
         {
             // osg::notify(osg::NOTICE)<<"Culling buffer "<<_currentCull<<std::endl;
+
+            // pass on the fusion distance settings from the View to the SceneView
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(sceneView->getCamera()->getView());
+            if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
         
             osg::Stats* stats = sceneView->getCamera()->getStats();
             osg::State* state = sceneView->getState();
@@ -455,6 +463,10 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         }
 
         // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+
+        // pass on the fusion distance settings from the View to the SceneView
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(sceneView->getCamera()->getView());
+        if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
@@ -2043,6 +2055,9 @@ void Viewer::updateTraversal()
 
     if (_cameraManipulator.valid())
     {
+        setFusionDistance( getCameraManipulator()->getFusionDistanceMode(),
+                            getCameraManipulator()->getFusionDistanceValue() );
+
         _camera->setViewMatrix(_cameraManipulator->getInverseMatrix());
     }
 

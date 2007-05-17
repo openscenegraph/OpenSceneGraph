@@ -94,6 +94,19 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the DsplaySettings object associated with this view.*/
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
+        /** Set the FusionDistanceMode and Value. Note, is used only when working in stereo.*/
+        void setFusionDistance(osgUtil::SceneView::FusionDistanceMode mode,float value=1.0f)
+        {
+            _fusionDistanceMode = mode;
+            _fusionDistanceValue = value;
+        }
+
+        /** Get the FusionDistanceMode.*/
+        osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return _fusionDistanceMode; }
+
+        /** Get the FusionDistanceValue. Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes.*/
+        float getFusionDistanceValue() const { return _fusionDistanceValue; }
+
         
         /** Convinience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
         void setUpViewAcrossAllScreens();
@@ -142,6 +155,8 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         EventHandlers                           _eventHandlers;
     
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
+        osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
+        float                                   _fusionDistanceValue;
 };
 
 }

@@ -500,16 +500,7 @@ int main( int argc, char **argv )
         (*itr)->useCursor(false);
     }
 
-#if 0
-    // set all the sceneview's up so that their left and right add cull masks are set up.
-    for(osgProducer::OsgCameraGroup::SceneHandlerList::iterator itr=viewer.getSceneHandlerList().begin();
-        itr!=viewer.getSceneHandlerList().end();
-        ++itr)
-    {
-        osgUtil::SceneView* sceneview = (*itr)->getSceneView();
-        sceneview->setFusionDistance(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE,radius);
-    }
-#endif
+    viewer.setFusionDistance(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE,radius);
 
     // set up the SlideEventHandler.
     seh->set(rootNode.get(),offsetX,offsetY,texmatLeft,texmatRight,timeDelayBetweenSlides,autoSteppingActive);

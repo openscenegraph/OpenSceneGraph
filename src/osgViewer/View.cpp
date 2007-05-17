@@ -20,7 +20,9 @@
 
 using namespace osgViewer;
 
-View::View()
+View::View():
+    _fusionDistanceMode(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE),
+    _fusionDistanceValue(1.0f)
 {
     // osg::notify(osg::NOTICE)<<"Constructing osgViewer::View"<<std::endl;
 
@@ -33,7 +35,9 @@ View::View()
 
 View::View(const osgViewer::View& view, const osg::CopyOp& copyop):
     osg::View(view,copyop),
-    osgGA::GUIActionAdapter()
+    osgGA::GUIActionAdapter(),
+    _fusionDistanceMode(view._fusionDistanceMode),
+    _fusionDistanceValue(view._fusionDistanceValue)
 {
 }
 

@@ -553,6 +553,10 @@ struct CompositeViewerRenderingOperation : public osg::Operation
 
         // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
         
+        // pass on the fusion distance settings from the View to the SceneView
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(_sceneView->getCamera()->getView());
+        if (view) _sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
+
         _sceneView->inheritCullSettings(*(_sceneView->getCamera()));
         _sceneView->cull();
         _sceneView->draw();
@@ -1148,7 +1152,13 @@ void CompositeViewer::updateTraversal()
         ++vitr)
     {
         View* view = vitr->get();
-        if (view->getCameraManipulator()) view->getCamera()->setViewMatrix( view->getCameraManipulator()->getInverseMatrix());
+        if (view->getCameraManipulator()) 
+        {
+            view->setFusionDistance( view->getCameraManipulator()->getFusionDistanceMode(),
+                                     view->getCameraManipulator()->getFusionDistanceValue() );
+                                      
+            view->getCamera()->setViewMatrix( view->getCameraManipulator()->getInverseMatrix());
+        }
         view->updateSlaves();
     }
 

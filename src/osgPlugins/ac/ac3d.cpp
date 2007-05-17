@@ -611,19 +611,19 @@ class PrimitiveBin : public osg::Referenced
   protected:
     bool isLineLoop() const
     {
-        return _flags & SurfaceTypeLineLoop;
+        return (_flags & SurfaceTypeLineLoop)!=0;
     }
     bool isLineStrip() const
     {
-        return _flags & SurfaceTypeLineStrip;
+        return (_flags & SurfaceTypeLineStrip)!=0;
     }
     bool isTwoSided() const
     {
-        return _flags & SurfaceTwoSided;
+        return (_flags & SurfaceTwoSided)!=0;
     }
     bool isSmooth() const
     {
-        return _flags & SurfaceShaded;
+        return (_flags & SurfaceShaded)!=0;
     }
 
     osg::ref_ptr<osg::Geode> _geode;

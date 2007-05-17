@@ -255,7 +255,7 @@ class OSG_EXPORT VertexBufferObject : public BufferObject
         Array* getArray(unsigned int i) { return _bufferEntryArrayPairs[i].second; }
         const Array* getArray(unsigned int i) const { return _bufferEntryArrayPairs[i].second; }
         
-        const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(_bufferEntryArrayPairs[i].first.offset); }
+        const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(((char *)0)+(_bufferEntryArrayPairs[i].first.offset)); }
 
         virtual void compileBuffer(State& state) const;
 
@@ -291,7 +291,7 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
         DrawElements* getDrawElements(unsigned int i) { return _bufferEntryDrawElementsPairs[i].second; }
         const DrawElements* getDrawElements(unsigned int i) const { return _bufferEntryDrawElementsPairs[i].second; }
         
-        const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(_bufferEntryDrawElementsPairs[i].first.offset); }
+        const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(((char *)0)+(_bufferEntryDrawElementsPairs[i].first.offset)); }
 
         virtual void compileBuffer(State& state) const;
 

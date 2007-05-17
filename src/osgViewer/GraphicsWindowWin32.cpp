@@ -890,7 +890,7 @@ bool Win32WindowingSystem::changeScreenSettings( const osg::GraphicsContext::Scr
     {
         case DISP_CHANGE_BADMODE     : msg += " The specified graphics mode is not supported."; break;
         case DISP_CHANGE_FAILED      : msg += " The display driver failed the specified graphics mode."; break;
-           case DISP_CHANGE_RESTART     : msg += " The computer must be restarted for the graphics mode to work."; break;
+        case DISP_CHANGE_RESTART     : msg += " The computer must be restarted for the graphics mode to work."; break;
         default : break;
     }
 
@@ -1154,17 +1154,34 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
     }
 
     //
-    // Create the OpenGL rendering context associated with this window
+    // Check if we must set the pixel format of the inherited window
     //
 
-    _hglrc = ::wglCreateContext(_hdc);
-    if (_hglrc==0)
+    if (_traits.valid() && _traits->setInheritedWindowPixelFormat)
     {
-        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
-        ::ReleaseDC(_hwnd, _hdc);
-        _hdc  = 0;
-        _hwnd = 0;
-        return false;
+        if (!setPixelFormat())
+        {
+            reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to set the inherited window pixel format", _traits->screenNum, ::GetLastError());
+            _hdc  = 0;
+            _hwnd = 0;
+            return false;
+        }
+    }
+    else
+    {
+        //
+        // Create the OpenGL rendering context associated with this window
+        //
+
+        _hglrc = ::wglCreateContext(_hdc);
+        if (_hglrc==0)
+        {
+            reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
+            ::ReleaseDC(_hwnd, _hdc);
+            _hdc  = 0;
+            _hwnd = 0;
+            return false;
+        }
     }
 
     if (!registerWindowProcedure())
@@ -1973,31 +1990,6 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 }
             }
             break;
-
-#ifdef NEXT_RELEASE_ONLY
-        //////////////////////
-        case WM_EXITSIZEMOVE :
-        //////////////////////
-
-            {
-                int vx = _traits->x + _screenOriginX;
-                int vy = _traits->y + _screenOriginY;
-
-                int screenNum = getScreenNumberContainingWindow(_screenOriginX, _screenOriginY);
-                if (screenNum!=_traits->screenNum)
-                {
-                    _recreateWindow = true;
-
-                    _traits->screenNum = screenNum;
-                    int x = vx - _screenOriginX;
-                    int y = vy - _screenOriginY;
-
-                    resized(x, y, _traits->width, _traits->height); 
-                    getEventQueue()->windowResize(x, y, _traits->width, _traits->height, _timeOfLastCheckEvents);
-                }
-            }
-            break;
-#endif
 
         ////////////////////
         case WM_KEYDOWN    :

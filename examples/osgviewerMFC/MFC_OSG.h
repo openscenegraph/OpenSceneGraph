@@ -2,7 +2,7 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/StatsHandler>
-#include <osgViewer/GraphicsWindowWin32>
+#include <osgViewer/api/win32/GraphicsWindowWin32>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/KeySwitchMatrixManipulator>
 #include <osgDB/DatabasePager>
@@ -23,6 +23,8 @@ public:
     void InitCameraConfig(void);
     void SetupWindow(void);
     void SetupCamera(void);
+    void PreFrameUpdate(void);
+    void PostFrameUpdate(void);
     static void Render(void* ptr);
 
     osgViewer::Viewer* getViewer() { return mViewer.get(); }

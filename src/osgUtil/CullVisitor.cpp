@@ -1154,6 +1154,17 @@ void CullVisitor::apply(osg::Camera& camera)
 
     if (camera.getViewport()) pushViewport(camera.getViewport());
 
+    // record previous near and far values.
+    float previous_znear = _computed_znear;
+    float previous_zfar = _computed_zfar;
+    
+    // take a copy of the current near plane candidates
+    DistanceMatrixDrawableMap  previousNearPlaneCandidateMap;
+    previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
+
+    _computed_znear = FLT_MAX;
+    _computed_zfar = -FLT_MAX;
+
     pushProjectionMatrix(projection);
     pushModelViewMatrix(modelview, camera.getReferenceFrame());    
 
@@ -1288,6 +1299,15 @@ void CullVisitor::apply(osg::Camera& camera)
 
     // restore the previous model view matrix.
     popProjectionMatrix();
+
+
+    // restore the original near and far values
+    _computed_znear = previous_znear;
+    _computed_zfar = previous_zfar;
+
+    // swap back the near plane candidates
+    previousNearPlaneCandidateMap.swap(_nearPlaneCandidateMap);
+
 
     if (camera.getViewport()) popViewport();
 

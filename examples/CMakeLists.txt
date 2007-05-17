@@ -122,5 +122,11 @@ IF   (FLTK_FOUND)
     ADD_SUBDIRECTORY(osgsimpleviewerFLTK)
 ENDIF(FLTK_FOUND)
 
+IF   (WIN32)
+    ADD_SUBDIRECTORY(osgviewerMFC)
+ENDIF(WIN32)
+
+
+
 #ADD_SUBDIRECTORY(osgcegui)
 #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)

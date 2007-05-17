@@ -149,13 +149,34 @@ void cOSG::InitCameraConfig(void)
     mViewer->realize();
 }
 
+void cOSG::PreFrameUpdate()
+{
+    // Due any preframe updates in this routine
+}
+
+void cOSG::PostFrameUpdate()
+{
+    // Due any postframe updates in this routine
+}
+
 void cOSG::Render(void* ptr)
 {
     cOSG* osg = (cOSG*)ptr;
 
     osgViewer::Viewer* viewer = osg->getViewer();
 
-    viewer->run();
+    // You have two options for the main viewer loop
+    //      viewer->run()   or
+    //      while(!viewer->done()) { viewer->frame(); }
+
+    //viewer->run();
+    while(!viewer->done())
+    {
+        osg->PreFrameUpdate();
+        viewer->frame();
+        osg->PostFrameUpdate();
+        //Sleep(10);         // Use this command if you need to allow other processes to have cpu time
+    }
 
     // For some reason this has to be here to avoid issue: 
     // if you have multiple OSG windows up 

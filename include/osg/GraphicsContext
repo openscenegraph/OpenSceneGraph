@@ -77,7 +77,8 @@ class OSG_EXPORT GraphicsContext : public Object
                 vsync(true),
                 useMultiThreadedOpenGLEngine(false),
                 useCursor(true),
-                sharedContext(0) {}
+                sharedContext(0),
+                setInheritedWindowPixelFormat(false) {}
                             
             // graphics context orginal and size
             int x;
@@ -126,6 +127,9 @@ class OSG_EXPORT GraphicsContext : public Object
             GraphicsContext* sharedContext;
             
             osg::ref_ptr<osg::Referenced> inheritedWindowData;
+            
+            // ask the GraphicsWindow implementation to set the pixel format of an inherited window
+            bool setInheritedWindowPixelFormat;
         };
     
     

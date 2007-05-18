@@ -41,6 +41,12 @@
 
 #include <osgGA/NodeTrackerManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
 
 #include <iostream>
 
@@ -294,6 +300,8 @@ int main(int argc, char **argv)
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root.get());
 
+    osg::ref_ptr<osgGA::NodeTrackerManipulator> tm;
+
     osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
     if (csn)
     {
@@ -358,12 +366,10 @@ int main(int argc, char **argv)
                 overlayNode->setOverlaySubgraph(mt);
             }
 
-            osgGA::NodeTrackerManipulator* tm = new osgGA::NodeTrackerManipulator;
+            tm = new osgGA::NodeTrackerManipulator;
             tm->setTrackerMode(trackerMode);
             tm->setRotationMode(rotationMode);
             tm->setTrackNode(scaler);
-
-            viewer.setCameraManipulator(tm);
         }
         else
         {
@@ -371,6 +377,21 @@ int main(int argc, char **argv)
         }
         
     }    
+
+
+    // set up camera manipulators.
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        if (tm.valid()) keyswitchManipulator->addMatrixManipulator( '0', "Trackball", tm.get() );
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
+    }
+    
 
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 

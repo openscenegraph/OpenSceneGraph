@@ -84,6 +84,16 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         EventHandlers& getEventHandlers() { return _eventHandlers; }
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
         
+
+        /** Set the NodePath to any active CoordinateSystemNode present in the Scene.*/
+        void setCoordinateSystemNodePath(const osg::NodePath& nodePath);
+
+        /** Get the NodePath to any active CoordinateSystemNode present in the Scene.*/
+        osg::NodePath getCoordinateSystemNodePath() const;
+
+        /** Compute the NodePath to any active CoordinateSystemNode present in the Scene.*/
+        void computeActiveCoordinateSystemNodePath();
+
         
         /** Set the DsplaySettings object associated with this view.*/
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
@@ -154,6 +164,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
     
+        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserveredNodePath;
+        ObserveredNodePath                      _coordinateSystemNodePath;
+
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
         float                                   _fusionDistanceValue;

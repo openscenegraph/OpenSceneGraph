@@ -765,6 +765,8 @@ void Viewer::setSceneData(osg::Node* node)
     _scene->setSceneData(node);
     _scene->setFrameStamp(_frameStamp.get());
     
+    computeActiveCoordinateSystemNodePath();
+
     setReferenceTime(0.0);
     
     assignSceneDataToCameras();

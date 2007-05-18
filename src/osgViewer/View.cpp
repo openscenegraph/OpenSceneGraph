@@ -20,6 +20,104 @@
 
 using namespace osgViewer;
 
+class CollectedCoordinateSystemNodesVisitor : public osg::NodeVisitor
+{
+public:
+
+    CollectedCoordinateSystemNodesVisitor():
+        NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
+        
+        
+    virtual void apply(osg::Node& node)
+    {
+        traverse(node);
+    }
+
+    virtual void apply(osg::CoordinateSystemNode& node)
+    {
+        if (_pathToCoordinateSystemNode.empty())
+        {
+            osg::notify(osg::INFO)<<"Found CoordianteSystemNode node"<<std::endl;
+            osg::notify(osg::INFO)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
+            _pathToCoordinateSystemNode = getNodePath();
+        }
+        else
+        {
+            osg::notify(osg::INFO)<<"Found additional CoordianteSystemNode node, but ignoring"<<std::endl;
+            osg::notify(osg::INFO)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
+        }
+        traverse(node);
+    }
+    
+    osg::NodePath _pathToCoordinateSystemNode;
+};
+
+
+/** callback class to use to allow matrix manipulators to querry the application for the local coordinate frame.*/
+class ViewerCoordinateFrameCallback : public osgGA::MatrixManipulator::CoordinateFrameCallback
+{
+public:
+
+    ViewerCoordinateFrameCallback(osgViewer::View* view):
+        _view(view) {}
+        
+    
+    virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
+    {
+        osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
+
+        osg::NodePath tmpPath = _view->getCoordinateSystemNodePath();
+        
+        if (!tmpPath.empty())
+        {        
+            osg::Matrixd coordinateFrame;
+
+            osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(tmpPath.back());
+            if (csn)
+            {
+                osg::Vec3 local_position = position*osg::computeWorldToLocal(tmpPath);
+                
+                // get the coordinate frame in world coords.
+                coordinateFrame = csn->computeLocalCoordinateFrame(local_position)* osg::computeLocalToWorld(tmpPath);
+
+                // keep the position of the coordinate frame to reapply after rescale.
+                osg::Vec3d pos = coordinateFrame.getTrans();
+
+                // compensate for any scaling, so that the coordinate frame is a unit size
+                osg::Vec3d x(1.0,0.0,0.0);
+                osg::Vec3d y(0.0,1.0,0.0);
+                osg::Vec3d z(0.0,0.0,1.0);
+                x = osg::Matrixd::transform3x3(x,coordinateFrame);
+                y = osg::Matrixd::transform3x3(y,coordinateFrame);
+                z = osg::Matrixd::transform3x3(z,coordinateFrame);
+                coordinateFrame.preMult(osg::Matrixd::scale(1.0/x.length(),1.0/y.length(),1.0/z.length()));
+
+                // reapply the position.
+                coordinateFrame.setTrans(pos);
+
+                osg::notify(osg::INFO)<<"csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath)"<<coordinateFrame<<std::endl;
+
+            }
+            else
+            {
+                osg::notify(osg::INFO)<<"osg::computeLocalToWorld(tmpPath)"<<std::endl;
+                coordinateFrame =  osg::computeLocalToWorld(tmpPath);
+            }
+            return coordinateFrame;
+        }
+        else
+        {
+            osg::notify(osg::INFO)<<"   no coordinate system found, using default orientation"<<std::endl;
+            return osg::Matrixd::translate(position);
+        }
+    }
+    
+protected:
+    virtual ~ViewerCoordinateFrameCallback() {}
+    
+    osg::observer_ptr<osgViewer::View> _view;
+};
+
 View::View():
     _fusionDistanceMode(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE),
     _fusionDistanceValue(1.0f)
@@ -64,15 +162,20 @@ void View::setSceneData(osg::Node* node)
     _scene = new osgViewer::Scene;
     _scene->setSceneData(node);
     
+    computeActiveCoordinateSystemNodePath();
+
     assignSceneDataToCameras();
 }
 
 void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 {
     _cameraManipulator = manipulator;
-    if (_cameraManipulator.valid() && getSceneData())
+    
+    if (_cameraManipulator.valid())
     {
-        _cameraManipulator->setNode(getSceneData());
+        _cameraManipulator->setCoordinateFrameCallback(new ViewerCoordinateFrameCallback(this));
+
+        if (getSceneData()) _cameraManipulator->setNode(getSceneData());
         
         osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
 
@@ -83,6 +186,48 @@ void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 void View::addEventHandler(osgGA::GUIEventHandler* eventHandler)
 { 
     _eventHandlers.push_back(eventHandler);
+}
+
+void View::setCoordinateSystemNodePath(const osg::NodePath& nodePath)
+{
+    _coordinateSystemNodePath.clear();
+    std::copy(nodePath.begin(),
+              nodePath.end(),
+              std::back_inserter(_coordinateSystemNodePath));
+}
+
+osg::NodePath View::getCoordinateSystemNodePath() const
+{
+    osg::NodePath nodePath;
+    for(ObserveredNodePath::const_iterator itr = _coordinateSystemNodePath.begin();
+        itr != _coordinateSystemNodePath.end();
+        ++itr)
+    {
+        nodePath.push_back(const_cast<osg::Node*>(itr->get()));
+    }
+    return nodePath;
+}
+
+void View::computeActiveCoordinateSystemNodePath()
+{
+    // now search for CoordinateSystemNode's for which we want to track.
+    osg::Node* subgraph = getSceneData();
+    
+    if (subgraph)
+    {
+    
+        CollectedCoordinateSystemNodesVisitor ccsnv;
+        subgraph->accept(ccsnv);
+
+        if (!ccsnv._pathToCoordinateSystemNode.empty())
+        {
+           setCoordinateSystemNodePath(ccsnv._pathToCoordinateSystemNode);
+           return;
+        }
+    }  
+
+    // otherwise no node path found so reset to empty.
+    setCoordinateSystemNodePath(osg::NodePath());
 }
 
 void View::setUpViewAcrossAllScreens()

@@ -71,17 +71,18 @@ class ModelPositionCallback : public osg::NodeCallback
 {
 public:
 
-    ModelPositionCallback():
+    ModelPositionCallback(double speed):
         _latitude(0.0),
         _longitude(0.0),
-        _height(100000.0)
+        _height(100000.0),
+        _speed(speed)
     {
         _rotation.makeRotate(osg::DegreesToRadians(90.0),0.0,0.0,1.0);
     }
     
     void updateParameters()
     {
-        _longitude += ((2.0*osg::PI)/360.0)/20.0;
+        _longitude += _speed * ((2.0*osg::PI)/360.0)/20.0;
     }
 
 
@@ -136,6 +137,7 @@ public:
     double                  _longitude;
     double                  _height;
     osg::Quat               _rotation;
+    double                  _speed;
 };
 
 
@@ -194,6 +196,10 @@ int main(int argc, char **argv)
     // set the near far ration computation up.
     viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
     viewer.getCamera()->setNearFarRatio(0.00001f);
+
+
+    double speed = 1.0;
+    while (arguments.read("-f") || arguments.read("--fixed")) speed = 0.0;
 
 
     osg::Quat rotation;
@@ -340,10 +346,10 @@ int main(int argc, char **argv)
             mt->addChild(scaler);
 
 
-            if (!nc) nc = new ModelPositionCallback;
+            if (!nc) nc = new ModelPositionCallback(speed);
 
             mt->setUpdateCallback(nc);
-
+            
             csn->addChild(mt);
             
             // if we are using an overaly node, use the cessna subgraph as the overlay subgraph

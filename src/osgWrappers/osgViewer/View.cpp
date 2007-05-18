@@ -20,6 +20,7 @@
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
 #include <osgUtil/LineSegmentIntersector>
+#include <osgUtil/SceneView>
 #include <osgViewer/Scene>
 #include <osgViewer/View>
 
@@ -175,6 +176,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_EventHandlers_R1__getEventHandlers,
 	          "",
 	          "");
+	I_Method1(void, setCoordinateSystemNodePath, IN, const osg::NodePath &, nodePath,
+	          Properties::NON_VIRTUAL,
+	          __void__setCoordinateSystemNodePath__C5_osg_NodePath_R1,
+	          "Set the NodePath to any active CoordinateSystemNode present in the Scene. ",
+	          "");
+	I_Method0(osg::NodePath, getCoordinateSystemNodePath,
+	          Properties::NON_VIRTUAL,
+	          __osg_NodePath__getCoordinateSystemNodePath,
+	          "Get the NodePath to any active CoordinateSystemNode present in the Scene. ",
+	          "");
+	I_Method0(void, computeActiveCoordinateSystemNodePath,
+	          Properties::NON_VIRTUAL,
+	          __void__computeActiveCoordinateSystemNodePath,
+	          "Compute the NodePath to any active CoordinateSystemNode present in the Scene. ",
+	          "");
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
 	          Properties::NON_VIRTUAL,
 	          __void__setDisplaySettings__osg_DisplaySettings_P1,
@@ -190,6 +206,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
 	          "Set the DsplaySettings object associated with this view. ",
 	          "");
+	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setFusionDistance__osgUtil_SceneView_FusionDistanceMode__float,
+	                      "Set the FusionDistanceMode and Value. ",
+	                      "Note, is used only when working in stereo. ");
+	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
+	          Properties::NON_VIRTUAL,
+	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
+	          "Get the FusionDistanceMode. ",
+	          "");
+	I_Method0(float, getFusionDistanceValue,
+	          Properties::NON_VIRTUAL,
+	          __float__getFusionDistanceValue,
+	          "Get the FusionDistanceValue. ",
+	          "Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes. ");
 	I_Method0(void, setUpViewAcrossAllScreens,
 	          Properties::NON_VIRTUAL,
 	          __void__setUpViewAcrossAllScreens,
@@ -248,6 +279,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
 	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);
+	I_SimpleProperty(osg::NodePath, CoordinateSystemNodePath, 
+	                 __osg_NodePath__getCoordinateSystemNodePath, 
+	                 __void__setCoordinateSystemNodePath__C5_osg_NodePath_R1);
 	I_SimpleProperty(osg::DisplaySettings *, DisplaySettings, 
 	                 __osg_DisplaySettings_P1__getDisplaySettings, 
 	                 __void__setDisplaySettings__osg_DisplaySettings_P1);
@@ -257,6 +291,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
+	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
+	                 0);
+	I_SimpleProperty(float, FusionDistanceValue, 
+	                 __float__getFusionDistanceValue, 
+	                 0);
 	I_SimpleProperty(osgViewer::Scene *, Scene, 
 	                 __Scene_P1__getScene, 
 	                 0);

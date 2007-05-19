@@ -41,8 +41,8 @@ GUIEventAdapter::GUIEventAdapter():
     _tabletPointerType(UNKNOWN)
 {}
 
-GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs):
-    osg::Referenced(),
+GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& copyop):
+    osg::Object(rhs,copyop),
     _handled(rhs._handled),
     _eventType(rhs._eventType),
     _time(rhs._time),

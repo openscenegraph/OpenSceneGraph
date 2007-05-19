@@ -14,22 +14,15 @@
 #ifndef OSGGA_EVENT
 #define OSGGA_EVENT 1 
 
-#include <osg/Referenced>
+#include <osg/Object>
 #include <osgGA/Export>
 
 namespace osgGA{
 
 
-/**
-Pure virtual base class for adapting platform specific GUIEventAdapters into
-generic keyboard and mouse GUIEventAdapters. 
-
-Used as GUI toolkit-independent input into GUIEventAdapters. Viewer
-writers should subclass this base class to implement the functionality
-to translate one of their GUI GUIEventAdapters, e.g. a Qt GUIEventAdapter or an MFC GUIEventAdapter,
-as appropriate.
+/** Event class for storing Keyboard, mouse and window events.
 */
-class OSGGA_EXPORT GUIEventAdapter : public osg::Referenced
+class OSGGA_EXPORT GUIEventAdapter : public osg::Object
 {
 public:
 
@@ -55,7 +48,8 @@ public:
             PEN_PROXIMITY_ENTER,
             PEN_PROXIMITY_LEAVE,
             CLOSE_WINDOW,
-            QUIT_APPLICATION
+            QUIT_APPLICATION,
+            USER
         };
 
         enum KeySymbol
@@ -256,7 +250,9 @@ public:
 
         GUIEventAdapter();
 
-        GUIEventAdapter(const GUIEventAdapter& rhs);
+        GUIEventAdapter(const GUIEventAdapter& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgGA, GUIEventAdapter);
         
         /** Set whether this event has been handled by an event handler or not.*/
         void setHandled(bool handled) { _handled = handled; }

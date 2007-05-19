@@ -358,3 +358,15 @@ GUIEventAdapter* EventQueue::createEvent()
     if (_accumulateEventState.valid()) return new GUIEventAdapter(*_accumulateEventState.get()); 
     else return new GUIEventAdapter();    
 }
+
+void EventQueue::userEvent(osg::Referenced* userEventData, double time)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::USER);
+    event->setUserData(userEventData);
+    event->setTime(time);
+    
+    addEvent(event);
+};
+
+

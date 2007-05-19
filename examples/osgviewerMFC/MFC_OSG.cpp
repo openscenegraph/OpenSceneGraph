@@ -14,8 +14,8 @@ cOSG::cOSG(HWND hWnd) :
     {
         sizeof(PIXELFORMATDESCRIPTOR),
         1,
-        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL,
-        PFD_TYPE_RGBA,
+        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 
+        PFD_TYPE_RGBA,    
         24,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0,

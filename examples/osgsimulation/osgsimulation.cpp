@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 
     // set the near far ration computation up.
     viewer.getCamera()->setComputeNearFarMode(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
-    viewer.getCamera()->setNearFarRatio(0.00001f);
+    viewer.getCamera()->setNearFarRatio(0.000003f);
 
 
     double speed = 1.0;

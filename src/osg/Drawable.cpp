@@ -538,7 +538,7 @@ void Drawable::releaseGLObjects(State* state) const
         // call the globj if already set otherwise comple and execute.
         if( globj != 0 )
         {
-            glDeleteLists( globj, 1 );
+            Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());
             globj = 0;
         }    
     }

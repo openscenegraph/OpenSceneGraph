@@ -178,6 +178,11 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	          __int__intersect__C5_std_vectorT1_Vec3__R1,
 	          "intersection test between plane and vertex list return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ",
 	          "");
+	I_Method1(int, intersect, IN, const std::vector< osg::Vec3d > &, vertices,
+	          Properties::NON_VIRTUAL,
+	          __int__intersect__C5_std_vectorT1_Vec3d__R1,
+	          "intersection test between plane and vertex list return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ",
+	          "");
 	I_Method1(int, intersect, IN, const osg::BoundingSphere &, bs,
 	          Properties::NON_VIRTUAL,
 	          __int__intersect__C5_BoundingSphere_R1,
@@ -202,4 +207,6 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	                 __Vec3_type__getNormal, 
 	                 0);
 END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec3d >)
 

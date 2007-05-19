@@ -106,7 +106,5 @@ END_REFLECTOR
 
 STD_PAIR_REFLECTOR(std::pair< double COMMA  double >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::Vec3d >)
-
 STD_VECTOR_REFLECTOR(std::vector< osgSim::ElevationSlice::DistanceHeight >)
 

@@ -23,6 +23,322 @@
 using namespace osgSim;
 using namespace osg;
 
+
+namespace osgSim
+{
+
+class CustomPolytope
+{
+public:
+
+    CustomPolytope() {}
+
+    typedef std::vector<Vec3d> Vertices;
+
+    struct Face
+    {
+        osg::Plane  plane;
+        Vertices    vertices;
+    };
+
+    Face& createFace() { _faces.push_back(Face()); return _faces.back(); }
+
+    /** Create a Polytope which is a cube, centered at 0,0,0, with sides of 2 units.*/
+    void setToUnitFrustum(bool withNear=true, bool withFar=true)
+    {
+        const osg::Vec3d v000(-1.0,-1.0,-1.0);
+        const osg::Vec3d v010(-1.0,1.0,-1.0);
+        const osg::Vec3d v001(-1.0,-1.0,1.0);
+        const osg::Vec3d v011(-1.0,1.0,1.0);
+        const osg::Vec3d v100(1.0,-1.0,-1.0);
+        const osg::Vec3d v110(1.0,1.0,-1.0);
+        const osg::Vec3d v101(1.0,-1.0,1.0);
+        const osg::Vec3d v111(1.0,1.0,1.0);
+        
+        _faces.clear();
+
+        {   // left plane.
+            Face& face = createFace();
+            face.plane.set(1.0,0.0,0.0,1.0);
+            face.vertices.push_back(v000);
+            face.vertices.push_back(v001);
+            face.vertices.push_back(v011);
+            face.vertices.push_back(v010);
+        }
+
+        {   // right plane.
+            Face& face = createFace();
+            face.plane.set(-1.0,0.0,0.0,1.0);
+            face.vertices.push_back(v100);
+            face.vertices.push_back(v110);
+            face.vertices.push_back(v111);
+            face.vertices.push_back(v101);
+        }
+
+        {   // bottom plane.
+            Face& face = createFace();
+            face.plane.set(0.0,1.0,0.0,1.0);
+            face.vertices.push_back(v000);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v110);
+            face.vertices.push_back(v100);
+        }
+
+        {   // top plane.
+            Face& face = createFace();
+            face.plane.set(0.0,-1.0,0.0,1.0);
+            face.vertices.push_back(v001);
+            face.vertices.push_back(v101);
+            face.vertices.push_back(v111);
+            face.vertices.push_back(v011);
+        }
+        
+        if (withNear)
+        {   // near plane
+            Face& face = createFace();
+            face.plane.set(0.0,0.0,-1.0,1.0);
+            face.vertices.push_back(v000);
+            face.vertices.push_back(v100);
+            face.vertices.push_back(v101);
+            face.vertices.push_back(v001);
+        }        
+        
+        if (withFar)
+        {   // far plane
+            Face& face = createFace();
+            face.plane.set(0.0,0.0,1.0,1.0);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v011);
+            face.vertices.push_back(v111);
+            face.vertices.push_back(v110);
+        }        
+    }
+
+    void setToBoundingBox(const osg::BoundingBox& bb)
+    {
+        const osg::Vec3d v000(bb.xMin(),bb.yMin(), bb.zMin());
+        const osg::Vec3d v010(bb.xMin(),bb.yMax(), bb.zMin());
+        const osg::Vec3d v001(bb.xMin(),bb.yMin(), bb.zMax());
+        const osg::Vec3d v011(bb.xMin(),bb.yMax(), bb.zMax());
+        const osg::Vec3d v100(bb.xMax(),bb.yMin(), bb.zMin());
+        const osg::Vec3d v110(bb.xMax(),bb.yMax(), bb.zMin());
+        const osg::Vec3d v101(bb.xMax(),bb.yMin(), bb.zMax());
+        const osg::Vec3d v111(bb.xMax(),bb.yMax(), bb.zMax());
+        
+        _faces.clear();
+
+        {   // left plane.
+            Face& face = createFace();
+            face.plane.set(1.0,0.0,0.0,-bb.xMin());
+            face.vertices.push_back(v000);
+            face.vertices.push_back(v001);
+            face.vertices.push_back(v011);
+            face.vertices.push_back(v010);
+        }
+
+        {   // right plane.
+            Face& face = createFace();
+            face.plane.set(-1.0,0.0,0.0,bb.xMax());
+            face.vertices.push_back(v100);
+            face.vertices.push_back(v110);
+            face.vertices.push_back(v111);
+            face.vertices.push_back(v101);
+        }
+#if 0
+        {   // bottom plane.
+            Face& face = createFace();
+            face.plane.set(0.0,1.0,0.0,-bb.yMin());
+            face.vertices.push_back(v000);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v110);
+            face.vertices.push_back(v100);
+        }
+
+        {   // top plane.
+            Face& face = createFace();
+            face.plane.set(0.0,-1.0,0.0,bb.yMax());
+            face.vertices.push_back(v001);
+            face.vertices.push_back(v101);
+            face.vertices.push_back(v111);
+            face.vertices.push_back(v011);
+        }
+#endif        
+        {   // near plane
+            Face& face = createFace();
+            face.plane.set(0.0,0.0,-1.0,bb.zMin());
+            face.vertices.push_back(v000);
+            face.vertices.push_back(v100);
+            face.vertices.push_back(v101);
+            face.vertices.push_back(v001);
+        }        
+        
+        {   // far plane
+            Face& face = createFace();
+            face.plane.set(0.0,0.0,1.0,-bb.zMax());
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v011);
+            face.vertices.push_back(v111);
+            face.vertices.push_back(v110);
+        }        
+    }
+
+    void transform(const osg::Matrix& matrix, const osg::Matrix& inverse)
+    {
+        for(Faces::iterator itr = _faces.begin();
+            itr != _faces.end();
+            ++itr)
+        {
+            Face& face = *itr;
+            face.plane.transformProvidingInverse(inverse);
+            for(Vertices::iterator vitr = face.vertices.begin();
+                vitr != face.vertices.end();
+                ++vitr)
+            {
+                *vitr = *vitr * matrix;
+            }
+        }        
+    }
+
+    void cut(const osg::Polytope& polytope)
+    {
+        osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
+        for(osg::Polytope::PlaneList::const_iterator itr = polytope.getPlaneList().begin();
+            itr != polytope.getPlaneList().end();
+            ++itr)
+        {
+            cut(*itr);
+        }
+    }
+
+    void cut(const CustomPolytope& polytope)
+    {
+        osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
+        for(Faces::const_iterator itr = polytope._faces.begin();
+            itr != polytope._faces.end();
+            ++itr)
+        {
+            cut(itr->plane);
+        }
+    }
+
+    void cut(const osg::Plane& plane)
+    {
+        osg::notify(osg::NOTICE)<<"  Cutting plane "<<plane<<std::endl;
+        Face newFace;
+        
+        for(Faces::iterator itr = _faces.begin();
+            itr != _faces.end();
+            )
+        {
+            Face& face = *itr;
+            int intersect = plane.intersect(face.vertices);
+            if (intersect==1)
+            {
+                osg::notify(osg::NOTICE)<<"    Face inside"<<std::endl; 
+                ++itr;
+            }
+            else if (intersect==0)
+            {
+                osg::notify(osg::NOTICE)<<"    Face intersecting"<<std::endl;
+                
+                Vertices& vertices = face.vertices;
+                Vertices newVertices;
+
+                typedef std::vector<double> Distances;
+                Distances distances;
+                distances.reserve(face.vertices.size());
+                for(Vertices::iterator vitr = vertices.begin();
+                    vitr != vertices.end();
+                    ++vitr)
+                {
+                    distances.push_back(plane.distance(*vitr));
+                }
+                
+                for(unsigned int i=0; i<vertices.size(); ++i)
+                {
+                    osg::Vec3d& va = vertices[i];
+                    osg::Vec3d& vb = vertices[(i+1)%vertices.size()];
+                    double distance_a = distances[i];
+                    double distance_b = distances[(i+1)%vertices.size()];
+
+                    // is first edge point inside plane?
+                    if (distance_a>=0.0) newVertices.push_back(vertices[i]);
+
+                    // does edge intersect plane
+                    if (distance_a * distance_b<0.0)
+                    {
+                        // inserting vertex
+                        osg::Vec3d intersection = (vb*distance_a - va*distance_b)/(distance_a-distance_b);
+                        newVertices.push_back(intersection);
+                        newFace.vertices.push_back(intersection);
+                    }
+                }
+                
+                vertices.swap(newVertices);
+                
+                ++itr;
+            }
+            else if (intersect==-1)
+            {
+                osg::notify(osg::NOTICE)<<"    Face outside"<<_faces.size()<<std::endl; 
+                itr = _faces.erase(itr);
+            }
+        }
+        
+        if (!newFace.vertices.empty())
+        {
+            osg::notify(osg::NOTICE)<<"    inserting newFace intersecting"<<std::endl;
+            newFace.plane = plane;
+            _faces.push_back(newFace);
+        }
+    }
+
+    void getPolytope(osg::Polytope& polytope)
+    {
+        for(Faces::const_iterator itr = _faces.begin();
+            itr != _faces.end();
+            ++itr)
+        {
+            polytope.add(itr->plane);
+        }
+    }
+
+    void getPoints(Vertices& vertices)
+    {
+        typedef std::set<osg::Vec3d> VerticesSet;
+        VerticesSet verticesSet;
+        for(Faces::iterator itr = _faces.begin();
+            itr != _faces.end();
+            ++itr)
+        {
+            Face& face = *itr;
+            for(Vertices::iterator vitr = face.vertices.begin();
+                vitr != face.vertices.end();
+                ++vitr)
+            {
+                verticesSet.insert(*vitr);
+            }
+        }
+        
+        for(VerticesSet::iterator sitr = verticesSet.begin();
+            sitr != verticesSet.end();
+            ++sitr)
+        {
+            vertices.push_back(*sitr);
+        }
+    }
+
+protected:
+
+    typedef std::list<Face> Faces;
+    Faces _faces;
+
+    
+};
+
+}
+
+
 OverlayNode::OverlayNode(OverlayTechnique technique):
     _overlayTechnique(technique),
     _texEnvMode(GL_DECAL),
@@ -416,9 +732,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
     if (_overlaySubgraph.valid()) 
     {
-        // get the bounds of the model.    
-        osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
-        _overlaySubgraph->accept(cbbv);
         
         // see if we are within a coordinate system node.
         osg::CoordinateSystemNode* csn = 0;
@@ -464,29 +777,29 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::Matrix MVP = *(cv->getModelViewMatrix()) * pm;
         osg::Matrix inverseMVP;
         inverseMVP.invert(MVP);
+
+        // create polytope for the view frustum in local coords
+        CustomPolytope frustum;
+        frustum.setToUnitFrustum();
+        frustum.transform(inverseMVP, MVP);
         
-        // osg::notify(osg::NOTICE)<<" MVP="<<MVP<<std::endl;
-        // osg::notify(osg::NOTICE)<<" inverseMVP="<<inverseMVP<<std::endl;
+
+        // create polytope for the overlay subgraph in local coords
+        CustomPolytope overlayPolytope;
+
+        // get the bounds of the model.    
+        osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+        _overlaySubgraph->accept(cbbv);
+        overlayPolytope.setToBoundingBox(cbbv.getBoundingBox());
+
+        frustum.cut(overlayPolytope);
         
-        typedef std::vector<osg::Vec3d> Corners;
-        Corners corners;
-        corners.push_back(osg::Vec3d(-1.0,-1.0,-1.0));
-        corners.push_back(osg::Vec3d(1.0,-1.0,-1.0));
-        corners.push_back(osg::Vec3d(1.0,1.0,-1.0));
-        corners.push_back(osg::Vec3d(-1.0,1.0,-1.0));
-        corners.push_back(osg::Vec3d(-1.0,-1.0,1.0));
-        corners.push_back(osg::Vec3d(1.0,-1.0,1.0));
-        corners.push_back(osg::Vec3d(1.0,1.0,1.0));
-        corners.push_back(osg::Vec3d(-1.0,1.0,1.0));
+
+        CustomPolytope::Vertices corners;
+        frustum.getPoints(corners);
         
-        
-        for(Corners::iterator itr = corners.begin();
-            itr != corners.end();
-            ++itr)
-        {
-            *itr = *itr * inverseMVP;
-        }
-        
+        if (corners.size()<8) return;
+ 
         osg::Vec3d center_near = (corners[0]+corners[1]+corners[2]+corners[3])*0.25;
         osg::Vec3d center_far = (corners[4]+corners[5]+corners[6]+corners[7])*0.25;
         osg::Vec3d center = (center_near+center_far)*0.5;
@@ -520,7 +833,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         double min_up = DBL_MAX;
         double max_up = -DBL_MAX;
 
-        for(Corners::iterator itr = corners.begin();
+        for(CustomPolytope::Vertices::iterator itr = corners.begin();
             itr != corners.end();
             ++itr)
         {
@@ -547,7 +860,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::notify(osg::NOTICE)<<"    bs.radius()="<<bs.radius()<<std::endl;
 
 
-#if 0
+#if 1
         camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,bs_near+bs.center().length(),bs_far+bs.center().length());
         camera->setViewMatrixAsLookAt(osg::Vec3d(0.0f,0.0f,0.0f), bs.center(), upVector);
 

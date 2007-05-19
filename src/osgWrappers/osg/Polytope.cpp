@@ -57,6 +57,11 @@ BEGIN_VALUE_REFLECTOR(osg::Polytope)
 	                      __void__setToUnitFrustum__bool__bool,
 	                      "Create a Polytope which is a cube, centered at 0,0,0, with sides of 2 units. ",
 	                      "");
+	I_Method1(void, setToBoundingBox, IN, const osg::BoundingBox &, bb,
+	          Properties::NON_VIRTUAL,
+	          __void__setToBoundingBox__C5_BoundingBox_R1,
+	          "Create a Polytope which is a equivilant to BoundingBox. ",
+	          "");
 	I_Method2(void, setAndTransformProvidingInverse, IN, const osg::Polytope &, pt, IN, const osg::Matrix &, matrix,
 	          Properties::NON_VIRTUAL,
 	          __void__setAndTransformProvidingInverse__C5_Polytope_R1__C5_osg_Matrix_R1,
@@ -207,6 +212,9 @@ BEGIN_VALUE_REFLECTOR(osg::Polytope)
 	I_SimpleProperty(osg::Polytope::ClippingMask, ResultMask, 
 	                 __ClippingMask__getResultMask, 
 	                 __void__setResultMask__ClippingMask);
+	I_SimpleProperty(const osg::BoundingBox &, ToBoundingBox, 
+	                 0, 
+	                 __void__setToBoundingBox__C5_BoundingBox_R1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::fast_back_stack< osg::Polytope::ClippingMask >)

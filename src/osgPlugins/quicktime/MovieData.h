@@ -75,6 +75,24 @@
                 f = balance;
                 return f;
             }
+            
+            /** @return true, if this movie is looping */
+            bool isLooping() const { return _isLooping; }
+            
+            /** sets the looping mode */
+            void setLooping(bool loop) {
+                if (_isLooping != loop) {
+                    _isLooping = loop;
+                    switch (_isLooping) {
+                        case true:
+                            SetTimeBaseFlags(GetMovieTimeBase(_movie), loopTimeBase);
+                            break;
+                        case false:
+                            SetTimeBaseFlags(GetMovieTimeBase(_movie), 0);
+                            break;
+                    }
+                }
+            }
                 
             
         protected:
@@ -87,6 +105,7 @@
             bool            _fError;
             float           _movieRate;
             bool            _preRolled;
+            bool            _isLooping;
             
             /** inits the image for storage */
             void _initImage(osg::Image* image);

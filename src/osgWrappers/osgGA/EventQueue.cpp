@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Referenced>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventAdapter>
@@ -240,6 +241,16 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          Properties::NON_VIRTUAL,
 	          __C5_GUIEventAdapter_P1__getCurrentEventState,
 	          "",
+	          "");
+	I_Method1(void, userEvent, IN, osg::Referenced *, userEventData,
+	          Properties::NON_VIRTUAL,
+	          __void__userEvent__osg_Referenced_P1,
+	          "Method for adapting user defined events. ",
+	          "");
+	I_Method2(void, userEvent, IN, osg::Referenced *, userEventData, IN, double, time,
+	          Properties::NON_VIRTUAL,
+	          __void__userEvent__osg_Referenced_P1__double,
+	          "Method for adapting user defined events with specified event time. ",
 	          "");
 	I_SimpleProperty(osgGA::GUIEventAdapter *, CurrentEventState, 
 	                 __GUIEventAdapter_P1__getCurrentEventState, 

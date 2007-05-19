@@ -1,12 +1,11 @@
 SET(TARGET_SRC osgsimpleviewerWX.cpp )
 
 SET(TARGET_H osgsimpleviewerWX.h )
-                             
-SET(TARGET_EXTERNAL_LIBRARIES ${wxWidgets_LIBRARIES} )
 
-INCLUDE_DIRECTORIES(${wxWidgets_INCLUDE_DIRS} )
-
-ADD_DEFINITIONS( ${wxWidgets_DEFINITIONS} )
+INCLUDE(${wxWidgets_USE_FILE})
 
 #### end var setup  ###
-SETUP_EXAMPLE(osgsimpleviewerWX)
+
+SETUP_EXAMPLE(osgsimpleviewerWX 1)
+
+TARGET_LINK_LIBRARIES("${TARGET_DEFAULT_PREFIX}osgsimpleviewerWX" ${wxWidgets_LIBRARIES})

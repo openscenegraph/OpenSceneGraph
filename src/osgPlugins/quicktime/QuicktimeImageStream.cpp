@@ -36,39 +36,26 @@
 
 
 #define IDLE_TIMEOUT 150000L
-#define ERR_MSG(no,msg) osg::notify(osg::WARN) << "QT-ImageStream: " << msg << " failed with error " << no << std::endl;
 
 int QuicktimeImageStream::_qtInstanceCount = 0;
 
 // Constructor: setup and start thread
 QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 {
-   /*
-   // ricky   
-   if(_qtInstanceCount == 0)
-   {      
-      osg::notify(osg::NOTICE) << "quicktime Init" << std::endl;
-      initQuicktime(); 
-   }
-   ++ _qtInstanceCount;   
-   // end ricky
-   */   
+    _len = 0;
+    _data = new MovieData();
 
-
-   _len = 0;
-   _data = new MovieData();
-
-   for (int i = 0; i < NUM_CMD_INDEX; i++)
+    for (int i = 0; i < NUM_CMD_INDEX; i++)
       _cmd[i] = THREAD_IDLE;
-   _wrIndex = _rdIndex = 0;
+    _wrIndex = _rdIndex = 0;
 
-   load(fileName);
+    load(fileName);
 
-   if (!fileName.empty())
+    if (!fileName.empty())
       setFileName(fileName);
 
-   // ricky
-   _status = ImageStream::PAUSED;
+    // ricky
+    _status = ImageStream::PAUSED;
 }
 
 
@@ -80,17 +67,7 @@ QuicktimeImageStream::~QuicktimeImageStream()
       quit(true);
    }
 
-   /*   
-   // ricky   
-   -- _qtInstanceCount;
-   if(_qtInstanceCount == 0)
-   {
-      osg::notify(osg::NOTICE) << "quicktime Exit" << std::endl;
-      exitQuicktime(); 
-   }  
-   // end ricky
-   */   
-
+   
    // clean up quicktime movies.
    delete _data;
    
@@ -158,12 +135,6 @@ void QuicktimeImageStream::run()
    bool playing = false;
    bool done = false;
 
-   /*
-   OSErr err;
-   err = EnterMoviesOnThread(0);
-   ERR_MSG(err,"EnterMoviesOnThread");
-   err = AttachMovieToCurrentThread(_data->getMovie());
-   */       
    while (!done) {
 
 
@@ -175,6 +146,7 @@ void QuicktimeImageStream::run()
             osg::notify(osg::DEBUG_INFO) << "new cmd: " << cmd << std::endl;
             switch (cmd) {
                     case THREAD_START: // Start or continue stream
+                       applyLoopingMode();    
                        _data->setMovieRate(1.0f);
 
                        playing = true;
@@ -233,37 +205,6 @@ void QuicktimeImageStream::run()
          dirty();
          // update internal time and take care of looping
          _lastUpdate = _current;
-
-         if (getLoopingMode() == LOOPING) 
-         {                
-            // loopen wir rueckwaerts?
-            if ((_current <= 0.0f) && (_data->getCachedMovieRate() < 0.0f)) {
-               forward();
-               setMovieRate(_data->getCachedMovieRate());                    
-            } 
-            // loppen wir vorwŠrts?
-            else if ((_current >= _len) && (_data->getCachedMovieRate() > 0.0f)) 
-            {               
-               rewind();
-               setMovieRate(_data->getCachedMovieRate());                    
-            }
-         }        
-         else 
-         { // NO LOOPING
-            //ricky
-            if(_current >= _len)
-            {                    
-               pause();
-
-               // Don't rewind to the begining if the movie has completed.
-               // Someone may want to see the last frame displayed.
-               //rewind();
-            }        
-            // orig
-            //pause();
-
-            //end ricky
-         }
       }
 
       if (playing)
@@ -275,9 +216,12 @@ void QuicktimeImageStream::run()
          OpenThreads::Thread::microSleep(IDLE_TIMEOUT);
       }
    }
-   /*
-   err = DetachMovieFromCurrentThread(_data->getMovie());
-   err = ExitMoviesOnThread();
-   ERR_MSG(err,"ExitMoviesOnThread");
-   */
+
+
+}
+
+
+void QuicktimeImageStream::applyLoopingMode() {
+    osg::notify(osg::ALWAYS) << "applying loop mode " << getLoopingMode() << std::endl;
+    _data->setLooping(getLoopingMode() == osg::ImageStream::LOOPING);
 }

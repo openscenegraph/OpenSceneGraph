@@ -133,6 +133,8 @@ public:
 
 
 protected:
+   /// apply the looping mode to quicktime
+   virtual void applyLoopingMode();
    /// destructor
    virtual ~QuicktimeImageStream();
 

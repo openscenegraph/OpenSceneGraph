@@ -16,7 +16,7 @@
 
 
     
-MovieData::MovieData() : _pointer(NULL), _movie(NULL), _gw(NULL), _fError(false)
+MovieData::MovieData() : _pointer(NULL), _movie(NULL), _gw(NULL), _fError(false), _isLooping(false)
 {
 
 }

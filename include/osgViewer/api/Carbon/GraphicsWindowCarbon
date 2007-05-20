@@ -103,13 +103,24 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         bool handleKeyboardEvent(EventRef theEvent);
 
         /** WindowData is used to pass in the Carbon window handle attached the GraphicsContext::Traits structure. */
-        struct WindowData : public osg::Referenced
+        class WindowData : public osg::Referenced
         {
-            WindowData(WindowRef window):
-                _window(window) {}
+            public:
+                WindowData(WindowRef window):
+                    _window(window), _installEventHandler(false) {}
                 
-            WindowRef   _window;
+                WindowRef getNativeWindowRef() { return _window; }
+                void setInstallEventHandler(bool flag) { _installEventHandler = flag; }
+                bool installEventHandler() { return _installEventHandler; }
+            
+            private:
+                WindowRef   _window;
+                bool        _installEventHandler;
+            
         };
+        
+        /// install the standard os-eventhandler
+        void installEventHandler();
 
     protected:
     
@@ -118,6 +129,8 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         void transformMouseXY(float& x, float& y);
         
         AGLContext& getAGLContext() { return _context; }
+        
+
 
         bool            _valid;
         bool            _initialized;
@@ -129,9 +142,12 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         AGLContext      _context;
         AGLPixelFormat  _pixelFormat;
         
-        int             _windowTitleHeight;
-    
+        int             _windowTitleHeight;    
     private:        
+        /// computes the window attributes
+        WindowAttributes computeWindowAttributes(bool useWindowDecoration, bool supportsResize);
+    
+        
         bool _closeRequested;
 };
 

@@ -500,6 +500,65 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
         
         // osg::notify(osg::DEBUG_INFO) << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
     }
+    
+    /** helper method to get a value out of a CFDictionary */
+    static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
+    {
+       double double_value;
+       CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
+       if (!number_value) // if can't get a number for the dictionary
+           return -1;  // fail
+       if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &double_value)) // or if cant convert it
+            return -1; // fail
+        return double_value; // otherwise return the long value
+    }
+
+    
+    /** implementation of setScreenResolution */
+    virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) 
+    { 
+        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
+        
+        // add next line and on following line replace hard coded depth and refresh rate
+        CGRefreshRate refresh =  getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);  
+        CFDictionaryRef display_mode_values =
+            CGDisplayBestModeForParametersAndRefreshRate(
+                            displayID, 
+                            CGDisplayBitsPerPixel(displayID), 
+                            width, height,  
+                            refresh,  
+                            NULL);
+
+                                          
+        CGDisplaySwitchToMode(displayID, display_mode_values);    
+        return true; 
+    }
+    
+    /** implementation of setScreenRefreshRate */
+    virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate) { 
+        
+        boolean_t  success(false);
+        unsigned width, height;
+        getScreenResolution(screenIdentifier, width, height);
+        
+        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
+        
+        // add next line and on following line replace hard coded depth and refresh rate
+        CFDictionaryRef display_mode_values =
+            CGDisplayBestModeForParametersAndRefreshRate(
+                            displayID, 
+                            CGDisplayBitsPerPixel(displayID), 
+                            width, height,  
+                            refreshRate,  
+                            &success);
+
+                                          
+        if (success)
+            CGDisplaySwitchToMode(displayID, display_mode_values);    
+            
+        return (success != 0);
+    }
+
         
     
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
@@ -531,15 +590,13 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
 #pragma mark * * * GraphicsWindowCarbon * * *
 
 
-void GraphicsWindowCarbon::setWindowDecoration(bool flag)
-{
-   _useWindowDecoration = flag;
-}
+
 
 void GraphicsWindowCarbon::init()
 {
     _windowTitleHeight = 0;
     _closeRequested = false;
+    _ownsWindow = false;
     _context = NULL;
     _window = NULL;
     _pixelFormat = createPixelFormat(_traits.get());
@@ -549,6 +606,70 @@ void GraphicsWindowCarbon::init()
     _initialized = true;
 }
 
+void GraphicsWindowCarbon::setWindowDecoration(bool flag)
+{
+    _useWindowDecoration = flag;
+    if (_realized) {
+        OSErr err = noErr;
+        Rect bounds;
+        GetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
+
+        if (_useWindowDecoration) {
+            err = ChangeWindowAttributes(getNativeWindowRef(),  kWindowStandardDocumentAttributes,  kWindowNoTitleBarAttribute | kWindowNoShadowAttribute);
+            SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
+        } else {
+            err = ChangeWindowAttributes(getNativeWindowRef(), kWindowNoTitleBarAttribute | kWindowNoShadowAttribute, kWindowStandardDocumentAttributes);
+        }
+
+        if (err != noErr) {
+            osg::notify(osg::WARN) << "GraphicsWindowCarbon::setWindowDecoration failed with " << err << std::endl;
+        }
+    }
+}
+
+WindowAttributes GraphicsWindowCarbon::computeWindowAttributes(bool useWindowDecoration, bool supportsResize) {
+    WindowAttributes attr; 
+    
+    if (useWindowDecoration) 
+    {
+        if (supportsResize)
+            attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute);
+        else
+            attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute) & ~kWindowResizableAttribute;
+    }
+    else 
+    {
+        attr = kWindowNoTitleBarAttribute | kWindowNoShadowAttribute | kWindowStandardHandlerAttribute;
+        if (supportsResize)
+            attr |= kWindowResizableAttribute;
+    }
+    return attr;
+}
+
+void GraphicsWindowCarbon::installEventHandler() {
+
+    // register window event handler to receive resize-events
+    EventTypeSpec   windEventList[] = {
+        { kEventClassWindow, kEventWindowBoundsChanged},
+        { kEventClassWindow, kEventWindowClosed},
+        
+        {kEventClassMouse, kEventMouseDown},
+        {kEventClassMouse, kEventMouseUp},
+        {kEventClassMouse, kEventMouseMoved},
+        {kEventClassMouse, kEventMouseDragged},
+        {kEventClassMouse, kEventMouseWheelMoved},
+
+        {kEventClassKeyboard, kEventRawKeyDown},
+        {kEventClassKeyboard, kEventRawKeyRepeat},
+        {kEventClassKeyboard, kEventRawKeyUp},
+        {kEventClassKeyboard, kEventRawKeyModifiersChanged},
+        {kEventClassKeyboard, kEventHotKeyPressed},
+        {kEventClassKeyboard, kEventHotKeyReleased},
+    };
+    
+
+    InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  GetEventTypeCount(windEventList), windEventList, this, NULL);
+}
 
 
 bool GraphicsWindowCarbon::realizeImplementation()
@@ -571,58 +692,35 @@ bool GraphicsWindowCarbon::realizeImplementation()
         _traits->x += screenLeft;
     }
     
-    // create the window
-    Rect bounds = {_traits->y, _traits->x, _traits->y + _traits->height, _traits->x + _traits->width};
-    OSStatus err = 0;
-    WindowAttributes attr;
+    WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
+    _ownsWindow = (windowData) ? (windowData->getNativeWindowRef() == NULL) : true;
     
-    if (_useWindowDecoration) 
-    {
-        if (_traits->supportsResize)
-            attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute);
-        else
-            attr = (kWindowStandardDocumentAttributes | kWindowStandardHandlerAttribute) & ~kWindowResizableAttribute;
-    }
-    else 
-    {
-        attr = kWindowNoTitleBarAttribute | kWindowNoShadowAttribute | kWindowStandardHandlerAttribute;
-        if (_traits->supportsResize)
-            attr |= kWindowResizableAttribute;
-    }
-    
-    err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
+    if (_ownsWindow) {
+        
+        // create the window
+        Rect bounds = {_traits->y, _traits->x, _traits->y + _traits->height, _traits->x + _traits->width};
+        OSStatus err = 0;
+        WindowAttributes attr = computeWindowAttributes(_useWindowDecoration, _traits->supportsResize);
+        
+        err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
 
-    if (err) {
-        osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
-        return false;
-    } else {
-        osg::notify(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation() - window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
+        if (err) {
+            osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
+            return false;
+        } else {
+            osg::notify(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation() - window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
+        }
+    }
+    else {
+        _window = windowData->getNativeWindowRef();
     }
     
     Rect titleRect;
     GetWindowBounds(_window, kWindowTitleBarRgn, &titleRect);
     _windowTitleHeight = abs(titleRect.top);
     
-    // register window event handler to receive resize-events
-    EventTypeSpec   windEventList[] = {
-        { kEventClassWindow, kEventWindowBoundsChanged},
-        { kEventClassWindow, kEventWindowClosed},
-        
-        {kEventClassMouse, kEventMouseDown},
-        {kEventClassMouse, kEventMouseUp},
-        {kEventClassMouse, kEventMouseMoved},
-        {kEventClassMouse, kEventMouseDragged},
-        {kEventClassMouse, kEventMouseWheelMoved},
-
-        {kEventClassKeyboard, kEventRawKeyDown},
-        {kEventClassKeyboard, kEventRawKeyRepeat},
-        {kEventClassKeyboard, kEventRawKeyUp},
-        {kEventClassKeyboard, kEventRawKeyModifiersChanged},
-        {kEventClassKeyboard, kEventHotKeyPressed},
-        {kEventClassKeyboard, kEventHotKeyReleased},
-    };
-    
-    InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  GetEventTypeCount(windEventList), windEventList, this, NULL);
+    if ((_ownsWindow) || (windowData && windowData->installEventHandler()))
+        installEventHandler();
     
     // set the window title
     if (!_traits->windowName.empty()) {
@@ -720,7 +818,7 @@ void GraphicsWindowCarbon::closeImplementation()
         _context = NULL;
     }
     
-    if (_window) DisposeWindow(_window);
+    if (_ownsWindow && _window) DisposeWindow(_window);
     _window = NULL;
 }
 
@@ -1073,8 +1171,11 @@ void GraphicsWindowCarbon::checkEvents()
 
 void GraphicsWindowCarbon::setWindowRectangle(int x, int y, int width, int height)
 {
-   // TODO: implement
-     osg::notify(osg::NOTICE)<<"GraphicsWindowCarbon::setWindowRectangle(..) not implemented."<<std::endl;
+    Rect bounds = {y, x, y + height, x + width};
+    SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
+    aglUpdateContext(_context);
+    MenubarController::instance()->update();
+
 }
 
 void GraphicsWindowCarbon::grabFocus()

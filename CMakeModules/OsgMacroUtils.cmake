@@ -121,11 +121,11 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
 
     SETUP_LINK_LIBRARIES()
 
-#the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/osgPlugins
+#the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/${OSG_PLUGINS}
     IF(WIN32)
         INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib LIBRARY DESTINATION bin )
     ELSE(WIN32)
-        INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib${LIB_POSTFIX}/osgPlugins LIBRARY DESTINATION lib${LIB_POSTFIX}/osgPlugins )
+        INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} LIBRARY DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} )
     ENDIF(WIN32)
 ENDMACRO(SETUP_PLUGIN)
 

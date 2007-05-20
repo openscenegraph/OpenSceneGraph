@@ -108,6 +108,17 @@ ENDIF(WIN32)
 #luigi#ENDIF(UNIX)
 ########################################################################################################
 
+OPTION(OSG_USE_FLOAT_MATRIX "Set to ON to build OpenSceneGraph with float matrix instead of double." OFF)
+MARK_AS_ADVANCED(OSG_USE_FLOAT_MATRIX)
+IF(OSG_USE_FLOAT_MATRIX)        
+    ADD_DEFINITIONS(-DOSG_USE_FLOAT_MATRIX)
+ENDIF(OSG_USE_FLOAT_MATRIX)        
+
+OPTION(OSG_USE_FLOAT_PLANE "Set to ON to build OpenSceneGraph with float matrix instead of double." OFF)
+MARK_AS_ADVANCED(OSG_USE_FLOAT_PLANE)
+IF(OSG_USE_FLOAT_PLANE)        
+    ADD_DEFINITIONS(-DOSG_USE_FLOAT_PLANE)
+ENDIF(OSG_USE_FLOAT_PLANE)        
 
 
 ################################################################################

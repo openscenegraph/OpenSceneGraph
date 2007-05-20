@@ -23,8 +23,6 @@
 
 #include <vector>
 
-#define OSG_USE_DOUBLE_PLANE 1
-
 namespace osg {
 
 /** A plane class. It can be used to represent an infinite plane.*/
@@ -33,16 +31,16 @@ class OSG_EXPORT Plane
 
     public:
 
-#ifdef OSG_USE_DOUBLE_PLANE
-        /** Type of Plane class.*/
-        typedef double value_type;
-        typedef Vec3d Vec3_type;
-        typedef Vec4d Vec4_type;
-#else
+#ifdef OSG_USE_FLOAT_PLANE
         /** Type of Plane class.*/
         typedef float value_type;
         typedef Vec3f Vec3_type;
         typedef Vec4f Vec4_type;
+#else
+        /** Type of Plane class.*/
+        typedef double value_type;
+        typedef Vec3d Vec3_type;
+        typedef Vec4d Vec4_type;
 #endif
 
         /** Number of vector components. */

@@ -17,17 +17,14 @@
 #include <osg/Matrixd>
 #include <osg/Matrixf>
 
-#define OSG_USE_DOUBLE_MATRICES 1
-
 namespace osg {
 
-#ifdef OSG_USE_DOUBLE_MATRICES
-    typedef Matrixd Matrix;
-    typedef RefMatrixd RefMatrix;
-#else
+#ifdef OSG_USE_FLOAT_MATRIX
     typedef Matrixf Matrix;
     typedef RefMatrixf RefMatrix;
-
+#else
+    typedef Matrixd Matrix;
+    typedef RefMatrixd RefMatrix;
 #endif
 
 } //namespace osg

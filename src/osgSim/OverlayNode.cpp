@@ -756,8 +756,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         osg::Matrix pm = *(cv->getProjectionMatrix());
         
-        osgUtil::CullVisitor::value_type znear = cv->getCalculatedNearPlane();
-        osgUtil::CullVisitor::value_type zfar = cv->getCalculatedFarPlane();
+        double znear = cv->getCalculatedNearPlane();
+        double zfar = cv->getCalculatedFarPlane();
         
         // osg::notify(osg::NOTICE)<<" before znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
         

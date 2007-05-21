@@ -136,7 +136,7 @@ bool
 TXFFont::loadFont(std::istream& stream)
 {
     unsigned char magic[4];
-    stream.readsome(reinterpret_cast<std::istream::char_type*>(&magic), 4);
+    stream.read(reinterpret_cast<std::istream::char_type*>(&magic), 4);
 
     if (magic[0] != 0xFF || magic[1] != 't' || magic[2] != 'x'  || magic[3] != 'f' )
     {

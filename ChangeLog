@@ -1,3 +1,497 @@
+2007-05-20 13:42 +0000 [r6706]  robert:
+
+	* From Stephan Huber, "attached you'll find some modifications and
+	  enhancements to the carbon's implementation of GraphicsWindow: -
+	  usage of WindowData, you can specify an existing window to use
+	  via osg::Traits - implementation of setScreenResolution and
+	  setScreenRefreshRate - implementation of setWindowDecoration when
+	  window is already created. There seems to be a bug regarding
+	  multiple threads and closing windows, see my other mail on
+	  osg-users. "
+
+2007-05-20 12:29 +0000 [r6705]  robert:
+
+	* Added support for version of the osgPlugins directory, which now
+	  gets versioned according to the OpenSceneGraph/CMakeLists.txt and
+	  the include/osg/Version settings. These changes mean that the
+	  1.9.5 release will have a libs/osgPlugins-1.9.5 directory.
+
+2007-05-20 11:45 +0000 [r6704]  robert:
+
+	* Added support for SG_USE_FLOAT_MATRIX and OSG_USE_FLOAT_PLANE in
+	  CMake build and include/osg/Matrix and include/osg/Plane.
+
+2007-05-20 11:13 +0000 [r6703]  robert:
+
+	* Fixed build error under float matrix build
+
+2007-05-20 09:55 +0000 [r6702]  robert:
+
+	* From Lugi Calori, added control of lib postfix.
+
+2007-05-19 14:00 +0000 [r6701]  robert:
+
+	* From Stephan Huber, "I cleaned the code a little bit and improved
+	  the handling of loops: I added a new protected virtual method to
+	  ImageStream called applyLoopingMode() which is called from
+	  setLoopingMode. The quicktime-plugin has an implementation of
+	  applyLoopingMode which sets some flags for the quicktime, so that
+	  quicktime handles the loop playback by itself. This has some
+	  benefits: + no gaps when looping audio + simplified code Attached
+	  you'll find the modified files, hope you'll find them useful."
+
+2007-05-19 13:43 +0000 [r6700]  robert:
+
+	* Various additions to better support view dependent overlay node,
+	  and updated wrappers
+
+2007-05-19 13:39 +0000 [r6698-6699]  robert:
+
+	* From Rafa Giatan and Robert Osfield, added support for User
+	  defined events, by adding UserData to Events.
+
+	* Made the near far ratio lower to allow one to be near the terrain
+	  before clipping comes in to effect
+
+2007-05-19 12:27 +0000 [r6697]  robert:
+
+	* From Michael Hartman, "I have made a small change to the
+	  osgviewerMFC application that resolved most of my home computer
+	  issues. It seams that my home computer needed to have the pixel
+	  format set with PFD_DOUBLEBUFFER. Also, with the cmake ability
+	  you are free to remove the MFC_OSG_MDI.vcproj file. "
+
+2007-05-19 12:16 +0000 [r6696]  robert:
+
+	* From Lugi Calori, fix for Win32 build of osgsimpleviewerWX
+
+2007-05-19 07:08 +0000 [r6695]  robert:
+
+	* In Drawable::releaseGLObjects() replaced glDeleteLists with
+	  Drawable::deleteDisplayList(..) to prevent inappropriate OpenGL
+	  deletion when current thread does have required grpahics contxt
+
+2007-05-18 11:22 +0000 [r6694]  robert:
+
+	* Updated wrappers
+
+2007-05-18 10:33 +0000 [r6693]  robert:
+
+	* Added support for tracking the CoordinateSystemNode path, and
+	  passing this on to camera manipulators.
+
+2007-05-18 09:49 +0000 [r6692]  robert:
+
+	* Added range of CameranManipulators to allow us to navigate the
+	  scene freely
+
+2007-05-18 09:43 +0000 [r6691]  robert:
+
+	* Added -f/--fixed option to allow use to freeze the animation of
+	  the cessna.
+
+2007-05-17 19:58 +0000 [r6690]  robert:
+
+	* Added support for View::setFustionDistance(..)
+
+2007-05-17 15:39 +0000 [r6689]  robert:
+
+	* Improved view dependent camera positioning
+
+2007-05-17 13:20 +0000 [r6688]  robert:
+
+	* Added saving and restoring of the near/far planes during Camera
+	  setup
+
+2007-05-17 11:55 +0000 [r6687]  robert:
+
+	* From Serge Lages, "Here is a modified GraphicsWindowWin32.cpp
+	  which handle double click events. I've modified the file
+	  submitted yesterday by Andre and not the current SVN version."
+
+2007-05-17 11:48 +0000 [r6686]  robert:
+
+	* From David Callu, "I have added the uninstall command at the end
+	  of the first file, and the configuration file template use by the
+	  command is the second file. The command use the
+	  cmake_install.cmake file which list all file installed by the
+	  install target. this issue come from the CMake FAQ"
+
+2007-05-17 11:04 +0000 [r6685]  robert:
+
+	* From Michael Hartman, "I have gone in and created a CMakeList.txt
+	  file for osgviewerMFC application. Below is the changes made to
+	  the included files. The examples CMakeList.txt file was not
+	  included but the code change needed for osgviewerMFC inclusion is
+	  listed below. CMakeList.txt: This is a little different than
+	  other example cmakelist.txt files in that I could not use the
+	  setup_example macro. I had to go in and extract out the important
+	  parts of the macro and inline them in the CMakeList.txt file so
+	  that I could add the WIN32 declaration into the ADD_EXECUTABLE()
+	  statement. In the future the setup_example macro might be
+	  modified to support osgviewerMFC but this is special case so you
+	  might not want to muddy the water for one example. MFC_OSG.h:
+	  This file had some small changes: From: #include
+	  <osgViewer/GraphicsWindowWin32> To: #include
+	  <osgViewer/api/win32/GraphicsWindowWin32> Also added two new
+	  function declarations Void PreFrameUpdate(void); Void
+	  PostFrameUpdate(void); MFC_OSG.cpp: This file changed only in
+	  that I am explicitly showing the viewer run loop and added the
+	  two new functions in the MFC_OSG.h file. "
+
+2007-05-17 10:59 +0000 [r6684]  robert:
+
+	* From Andre Garneau, warnings fixes fo VC++
+
+2007-05-17 10:33 +0000 [r6683]  robert:
+
+	* From Andre Garneau,"Please find attached changes to have the
+	  GraphicsWindowWin32 class selectively set the pixel format for
+	  windows that are inherited, following some discussions on the
+	  mailing list last week. This is implemented through a new traits
+	  flag (setInheritedWindowPixelFormat) with a default state of
+	  false (to avoid breaking existing applications). When set to
+	  true, the pixel format of the inherited window will be set
+	  according to the traits specifications. "
+
+2007-05-16 19:19 +0000 [r6682]  robert:
+
+	* Futher work on view dependent OverlayNode
+
+2007-05-16 14:22 +0000 [r6681]  robert:
+
+	* Refactored the internals of OverlayNode
+
+2007-05-16 11:32 +0000 [r6680]  robert:
+
+	* Added code for computing the frustum dimensions in local coords
+	  to the overlay node
+
+2007-05-15 19:45 +0000 [r6679]  robert:
+
+	* From Mathias Froehlich, "This is an other small update for the
+	  ac3d loader: - It avoids attaching texture coordinates if there
+	  is not texture attached. - It uses DrawArrayLengths instead of
+	  multiple DrawElements."
+
+2007-05-15 19:32 +0000 [r6678]  robert:
+
+	* From Blasius Czink, "when creating windows with decorations
+	  (titlebar) the mouse position should be adjusted."
+
+2007-05-15 19:25 +0000 [r6677]  robert:
+
+	* From Laurens Voerman, "Attached is a version of
+	  src\osgViewer\GraphicsWindowWin32.cpp that allows to render in
+	  software. (maybe also in hardware w/o wglChoosePixelFormatARB)"
+
+2007-05-15 17:04 +0000 [r6675-6676]  robert:
+
+	* Added code to better compute the view frustum that is appropriate
+	  for a traversed subgraph.
+
+	* Changed back to use find Qt3 and Qt4 separately to avoid QT error
+	  reports
+
+2007-05-15 14:55 +0000 [r6673-6674]  robert:
+
+	* From John Kelso, Added support for new Sequence options. From
+	  Robert Osfield, updated the above changes to the .ive loader so
+	  that the new addition were tested against the IVE version number
+
+	* Added -n/--no-overlay option
+
+2007-05-15 11:31 +0000 [r6672]  robert:
+
+	* From Mathieu Marache, "I tried the latest developper release
+	  1.9.4 and found that I hadn't the osgsimpleviewerQt4 example in
+	  my Visual studio solutions... After looking into it it seems that
+	  you cannot have both Qt3 and Qt4 enabled. After modifying the
+	  root CMakeLists.txt to use : FIND_PACKAGE(Qt) which should ask
+	  you to choose betwwen Qt3 and Qt4 if you have both instead of :
+	  FIND_PACKAGE(Qt3) FIND_PACKAGE(Qt4) I had the project generated.
+	  But then due to the way CMake handles Qt4 I had to modify
+	  osgsimpleviewerQt4's CMakeLists.txt to have the binary link with
+	  QtOpengl4. "
+
+2007-05-15 11:25 +0000 [r6670-6671]  robert:
+
+	* From Farshid Lashkari, "I made a modification to the
+	  setClientActiveTextureUnit and setActiveTextureUnit methods of
+	  osg::State so they return false if the texture unit is outside
+	  the range of allowable units for the driver. Currently, the
+	  functions would return true even if the units are invalid. This
+	  would cause the osg::State to become out of sync with the actual
+	  driver state, which can cause some bugs in certain cases. The
+	  change I made would verify that the unit passed to
+	  setClientActiveTextureUnit is below GL_MAX_TEXTURE_COORDS, and
+	  the unit passed to setActiveTextureUnit is below
+	  max(GL_MAX_TEXTURE_COORDS,GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS). I
+	  modeled this behavior from the OpenGL docs for these commands
+	  which can be found here:
+	  http://www.opengl.org/sdk/docs/man/xhtml/glClientActiveTexture.xml
+	  http://www.opengl.org/sdk/docs/man/xhtml/glActiveTexture.xml "
+
+	* Futher work on new view dependent overlay node
+
+2007-05-14 20:23 +0000 [r6669]  robert:
+
+	* Set up new view dependent overlay technique control methods
+
+2007-05-14 17:01 +0000 [r6668]  robert:
+
+	* Added include of GraphicsWindow to fix wrapper build error
+
+2007-05-14 16:17 +0000 [r6664-6667]  robert:
+
+	* Removed redundent comment '.'
+
+	* Fixed parameter name
+
+	* Clean up comments and rebuilt wrappers. Added extra event
+	  handlers to osgsimulator example
+
+	* Replaced TARGET_ADD_LIBRARIES to TARGET_EXTERNAL_LIBRARIES for
+	  WxWidgets to avoid debug issues
+
+2007-05-14 15:16 +0000 [r6663]  robert:
+
+	* Renamed ViewerEventHandler to ViewerEventHandlers
+
+2007-05-14 15:07 +0000 [r6662]  robert:
+
+	* Renamed the ScreenHandler to WindowSizeHandler, fixed the code
+	  style to be conform more to the rest of the OSG, and moved the
+	  osgviewer across to using the event handlers in osgViewer.
+
+2007-05-14 14:41 +0000 [r6661]  robert:
+
+	* From Serge Lages, "Here is a ViewerEventHandler file with a
+	  collection of helper handlers for osgViewer. Most of the code is
+	  from the osgviewer application, I have took the fullscreen
+	  handler and the threading one, and I have just added a
+	  fonctionality to be able to change the screen resolution in
+	  windowed mode."
+
+2007-05-14 14:36 +0000 [r6660]  robert:
+
+	* Changed tabs to four spaces
+
+2007-05-14 09:43 +0000 [r6657]  robert:
+
+	* Updated authors file
+
+2007-05-14 09:33 +0000 [r6656]  robert:
+
+	* Updated wrappers and version numbers for 1.9.4 dev release
+
+2007-05-13 09:54 +0000 [r6655]  robert:
+
+	* Added TerrainNode::init() and
+	  s/getTreatBoundariesToValidDataAsDefaultValue flag.
+
+2007-05-11 20:16 +0000 [r6654]  robert:
+
+	* Added include
+
+2007-05-11 19:28 +0000 [r6652-6653]  robert:
+
+	* Updated wrappers
+
+	* Added new areThreadsRunning() method to Viewer and
+	  CompositeViewer. Added removeView(View*) method to
+	  CompositeViewer Added stopping/starting of threads in
+	  addView/removeView
+
+2007-05-11 18:25 +0000 [r6651]  robert:
+
+	* Added ValidDataOperator base class and NoDataValue and ValidRange
+	  subclasses, and support for it in osgTerrain::Layer and
+	  GeometryTechniqnue.
+
+2007-05-11 13:45 +0000 [r6649-6650]  robert:
+
+	* From Uwe Woessner, fixed handling of read/draw buffer in vertical
+	  interlaced stereo
+
+	* UPdated wrappers
+
+2007-05-11 12:46 +0000 [r6648]  robert:
+
+	* Fixed CMake support for osgsimpleviewWX
+
+2007-05-11 12:12 +0000 [r6647]  robert:
+
+	* From Doug McCorkle, removed pfdb from link line
+
+2007-05-11 09:07 +0000 [r6645-6646]  robert:
+
+	* From Gian Lorenzetto, osgsimpleviewWX example, CMake support
+	  added by Robert Osfield
+
+	* Updated wrappers
+
+2007-05-11 08:30 +0000 [r6644]  robert:
+
+	* From Brad Colbert, removed inappropriate rewind on non looping
+	  code path.
+
+2007-05-11 08:19 +0000 [r6643]  robert:
+
+	* From Michael Hartman, " Here is the MFC_OSG example. It is very
+	  basic and the community is welcome to enhance/improve this
+	  example. There is one bug documented in the Readme.txt file that
+	  I just have not had time to solve. Also, the code is built
+	  outside of the OSG environment and uses environment variables to
+	  get to the OSG distribution headers and examples. That should be
+	  the only change a user needs to make to get the code to compile."
+
+2007-05-10 18:07 +0000 [r6641-6642]  robert:
+
+	* Added supoort for transforming layers by an offset and scale
+
+	* Removed rendundent const
+
+2007-05-10 12:49 +0000 [r6640]  robert:
+
+	* Added automatic detection of alpha values, switching on blending
+	  when alpah!=1.0
+
+2007-05-10 12:33 +0000 [r6639]  robert:
+
+	* Added automatic enabling of blending when alpha value != 1.0
+	  occur in the color or transfer function data.
+
+2007-05-10 11:36 +0000 [r6638]  robert:
+
+	* From Daniel Sjolie, build fix for Windows
+
+2007-05-10 10:52 +0000 [r6637]  robert:
+
+	* Added getHWND, getHDC and getWGLContext methods
+
+2007-05-10 08:20 +0000 [r6636]  robert:
+
+	* Added checks against Options to osga plugin to ensure archives
+	  are only cached when requested, cleaned up the
+	  Registry::openArchiveImplementation function.
+
+2007-05-09 13:05 +0000 [r6635]  robert:
+
+	* Commented out debug messages
+
+2007-05-09 12:08 +0000 [r6634]  robert:
+
+	* Updated wrappers
+
+2007-05-09 11:11 +0000 [r6633]  robert:
+
+	* From John Kelso, "Attached are updates of src/osg/Sequence.spp
+	  and include/osg/Sequence. I've taken _sbegin/_send/_ubegin/_uend
+	  and _step our of the include file and made them local variables
+	  in whatever method might need them. I got rid of the _recalculate
+	  method as it was only getting used in one place. I also found a
+	  cut/paste bug in setMode's START case." Note from Robert Osfield,
+	  Also includes some guards against crashes that was occuring in
+	  this new code when handling empty Sequences.
+
+2007-05-09 10:42 +0000 [r6631-6632]  robert:
+
+	* Set default texture size back to 1024x1204
+
+	* Added GL_MAX_TEXTURE_SIZE check and use of OSG_MAX_TEXTURE_SIZE
+	  env var to help hint to osgText that the native OpenGL
+	  implementation only supports textures up to a given size.
+
+2007-05-09 10:31 +0000 [r6630]  robert:
+
+	* Added use of OSG_MAX_TEXTURE_SIZE for clamping texture sizes.
+
+2007-05-09 10:01 +0000 [r6629]  robert:
+
+	* From Mike Weiblen, with mods of using references by Robert
+	  Osfield for efficiency. Submission notes from Mike: "By
+	  repurpose, I'm creating a new plugin that uses much of the .osg
+	  fileformat, but with some changes. Specifically, I'm creating a
+	  ".osgfs" plugin, which represents the scenegraph hierarchy as a
+	  filesystem of nested subdirectories and individual files for each
+	  node, rather than nested braces with everything in a single
+	  monolithic file. I intend to incorporate file alteration monitor
+	  events to watch the filesystem for modifications and
+	  automatically reload. The problem I'm running into is osgDB is
+	  too tightly coupled to the .osg format.
+	  osgDB::Output::writeObject() contains literal .osg
+	  format-specific strings like "{" to represent the Object
+	  hierarchy at too low a semantic level. I propose using virtual
+	  methods; my plugin can then derive from osgDB::Output and
+	  represent Object hiearchy differently. "
+
+2007-05-09 09:43 +0000 [r6628]  robert:
+
+	* From Alan Harris, "Registry and Archive ~~~~~~~~~~~~~~~~~~~~~~~~~
+	  This is a simple change to permit databases other than those
+	  named "*.osga" to be used. It is hardcoded in read() at present.
+	  It is non-critical and does not affect existing program
+	  functionality. Registry and Registry.cpp
+	  ~~~~~~~~~~~~~~~~~~~~~~~~~ Added a new typedef: typedef
+	  std::vector< std::string> ArchiveExtensionList; a list of
+	  extensions: ArchiveExtensionList _archiveExtList; and an "add"
+	  method: addArchiveExtension(const std::string ext) This is
+	  initialised by adding "osga" in Registry() and used in
+	  Registry::read() where the list is searched for the extension
+	  used. Archive.cpp ~~~~~~~~~~~ This submission is a little more
+	  tentative. openArchive() is modified to automatically add the
+	  filename extension to the Registry extension list. "
+
+2007-05-09 09:26 +0000 [r6627]  robert:
+
+	* Added signOrZero template method, and to
+	  Matrix_implementation.cpp usage of this method in the get(Quat&)
+	  code.
+
+2007-05-09 07:54 +0000 [r6626]  robert:
+
+	* Added imageData block initialized to 0 for first construction of
+	  GlyphTexture
+
+2007-05-08 15:32 +0000 [r6625]  robert:
+
+	* Further work on dome correction
+
+2007-05-08 12:18 +0000 [r6624]  robert:
+
+	* Firt cut at full dome correction of wrap around movies and
+	  imagery
+
+2007-05-08 10:02 +0000 [r6623]  robert:
+
+	* Added CullSettings inheritance mask for LIGHTING_MODE and LIGHT
+
+2007-05-07 22:07 +0000 [r6622]  robert:
+
+	* Added s/getLightingMode and s/getLight to osg::View to allow
+	  control of the viewers global light source.
+
+2007-05-07 19:48 +0000 [r6621]  robert:
+
+	* Added missing HelpHandler::reset() implementation
+
+2007-05-07 07:58 +0000 [r6616]  robert:
+
+	* Updated ChangeLog and AUTHORS.txt for release
+
+2007-05-07 07:51 +0000 [r6615]  robert:
+
+	* Updated version numbers for 1.9.3 release, combined INSTALL.txt
+	  and README.txt
+
+2007-05-05 17:05 +0000 [r6613-6614]  robert:
+
+	* Added extra external libs
+
+	* Added extra libs to COLLADA plugin, but still need to set
+	  LD_LIBRARY to libs even though they are static!?#!?
+
 2007-05-05 16:24 +0000 [r6612]  robert:
 
 	* Added preliminary Performer plugin support, note, still missing

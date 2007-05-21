@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.9.4
+OpenSceneGraph Library 1.9.5
 
-252 Contributors:
+256 Contributors:
 
 Firstname Surname
 -----------------
@@ -21,9 +21,9 @@ Stephan Huber
 Mike Wittman
 Trajce Nikolov
 Pavel Moloshtan
+Luigi Calori
 Tom Jolley
 Norman Vine
-Luigi Calori
 Alberto Farre
 Ruben Lopez
 Randall Hopper
@@ -32,12 +32,12 @@ Don Tidrow
 Romano José Magacho da Silva
 Michael Gronager
 Chris Hanson
+Daniel Sjölie
 Colin McDonald
 Roger James
-Joran Jessurun
-Daniel Sjölie
-Anré Garneau
 Mathias Fröhlich
+Joran Jessurun
+Anré Garneau
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -48,22 +48,22 @@ Per Fahlberg
 Neil Salter
 Jason Beverage
 David Spilling
+David Callu
 Ben Discoe
 Sasa Bistrovic
 Rainer Oder
 Olaf Flebbe
+Mike Connell
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
 Gordon Tomlinson
-David Callu
 Andreas Ekstrand
 Vivek Rajan
 Stephane Simon
 Sean Spicer
 Ravi Mathur
-Mike Connell
 Michael Platings
 Loic Dachary
 Joseph Steel
@@ -79,18 +79,23 @@ Romano Magacho
 Paul de Repentigny
 Nikolaus Hanekamp
 Leandro Motta Barros
+Laurens Voerman
 Jeremy Moles
 Carlo Camporesi
 Bruce Clay
+Brad Colbert
 Brad Christiansen
 Alberto Barbati
+Uwe Woessner
 Sohey Yamamoto
 Phil Atkin
 Paul Melis
-Laurens Voerman
+Michael Hartman
+Mathieu Marache
 Ken Sewell
 Julian Ortiz
 John Shue
+John Kelso
 Jeremy Bell
 James French
 Gabor Dorka
@@ -98,11 +103,10 @@ Donn Mielcarek
 Domenico Mangieri
 Daniel Larimer
 Bryan Thrall
-Brad Colbert
+Andre Garneau
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
-Uwe Woessner
 Tugkan Calapoglu
 Tony Horrobin
 Tim Daoust
@@ -110,6 +114,7 @@ Terrex
 Steve Lunsford
 Stephan Eilemann
 Stanislav Blinov
+Serge Lages
 Roland Smeenk
 Riccardo Corsi
 Philip Lowman
@@ -136,6 +141,7 @@ Edgar Ellis
 David Ergo
 Daniel Trstenjak
 Antoine Hue
+Andy Skinner
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
@@ -166,6 +172,7 @@ Robert Swain
 Rick Pingry
 Reinhard Sainitzer
 Rein Kadijk
+Rafa Giatan
 Radu Mihai
 Qing Shen
 Philipp Siemoleit
@@ -184,13 +191,10 @@ Mauricio Hofmam
 Matthew May
 Matt Green
 Matt Burke
-Mathieu Narache
-Mathieu Marache
 Mathia Walker
 Mason Menninger
 Martin Spott
 Martin Amueller
-Lugi Calori
 Louis Hamilton
 Lewis Harmon
 Kristopher Bixler
@@ -198,7 +202,6 @@ Karsten Weiss
 José Delport
 Josh Portway
 John Tan
-John Kelso
 John Grant
 John Donovan
 John Davis
@@ -213,6 +216,7 @@ Henrique Bucher
 Gustavo Wagner
 Graeme Harkness
 Glenn Waldrom
+Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
 Frashid Lashkari
@@ -228,6 +232,7 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
+Doug McCorkle
 Donny Cipperly
 Dean Iverson
 David Jung
@@ -241,18 +246,17 @@ Carlos Garcea
 Brian Keener
 Brad Anderegg
 Bora Utka
+Blasius Czink
 Blake Williams
 Bart Gallet
 Axel Volley
-Andy Skinner
-Andy Skinnder
 Andrew Reyonolds
 Andreas Jochens
-Andre Garneau
 Anders Backman
 Allen Bierbaum
 Alberto Jaspe
 Alan Purvis
 Alan Ott
+Alan Harris
 Adrian Egli
 Adam Richard

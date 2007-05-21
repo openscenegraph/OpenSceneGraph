@@ -1041,7 +1041,7 @@ void Viewer::startThreading()
 {
     if (_threadsRunning) return;
     
-    osg::notify(osg::INFO)<<"Viewer::startThreading() - starting threading"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Viewer::startThreading() - starting threading"<<std::endl;
     
     // release any context held by the main thread.
     releaseContext();
@@ -1050,6 +1050,8 @@ void Viewer::startThreading()
 
     Contexts contexts;
     getContexts(contexts);
+    
+    osg::notify(osg::INFO)<<"Viewer::startThreading() - contexts.size()="<<contexts.size()<<std::endl;
 
     Cameras cameras;
     getCameras(cameras);
@@ -1306,17 +1308,12 @@ void Viewer::checkWindowStatus()
     Contexts contexts;
     getContexts(contexts);
     
-    osg::notify(osg::NOTICE)<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
     
     if (contexts.size()==0)
     {
         _done = true;
         if (areThreadsRunning()) stopThreading();
-    }
-    else if (_numWindowsOpenAtLastSetUpThreading != contexts.size() && _threadsRunning)
-    {
-        stopThreading();
-        startThreading();
     }
 }
 
@@ -1403,13 +1400,13 @@ void Viewer::getCameras(Cameras& cameras, bool onlyActive)
 {
     cameras.clear();
     
-    if (!onlyActive || _camera->getGraphicsContext()) cameras.push_back(_camera.get());
+    if (!onlyActive || (_camera->getGraphicsContext() && _camera->getGraphicsContext()->valid()) ) cameras.push_back(_camera.get());
 
     for(Slaves::iterator itr = _slaves.begin();
         itr != _slaves.end();
         ++itr)
     {
-        if (!onlyActive || itr->_camera->getGraphicsContext()) cameras.push_back(itr->_camera.get());
+        if (!onlyActive || (itr->_camera->getGraphicsContext() && itr->_camera->getGraphicsContext()->valid()) ) cameras.push_back(itr->_camera.get());
     }
         
 }
@@ -1646,7 +1643,7 @@ void Viewer::realize()
         osg::GraphicsContext* gc = *citr;
         gc->realize();
         
-        if (_realizeOperation.valid())
+        if (_realizeOperation.valid() && gc->valid())
         {
             gc->makeCurrent();
             
@@ -1901,11 +1898,12 @@ void Viewer::eventTraversal()
                 {
                     case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
                     {
-                        // stopThreading();
+                        bool wasThreading = areThreadsRunning();
+                        if (wasThreading) stopThreading();
                         
                         gw->close();
                         
-                        // startThreading();
+                        if (wasThreading) startThreading();
                         
                         break;
                     }
@@ -2141,7 +2139,7 @@ void Viewer::renderingTraversals()
         ++itr)
     {
         if (_done) return;
-        if (!((*itr)->getGraphicsThread()))
+        if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
         { 
             makeCurrent(*itr);
             (*itr)->runOperations();
@@ -2159,7 +2157,7 @@ void Viewer::renderingTraversals()
     {
         if (_done) return;
 
-        if (!((*itr)->getGraphicsThread()))
+        if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
         { 
             makeCurrent(*itr);
             (*itr)->swapBuffers();

@@ -49,7 +49,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
 
         void setOverlayTechnique(OverlayTechnique technique);
-        OverlayTechnique getOverlayTechnique() { return _overlayTechnique; }
+        OverlayTechnique getOverlayTechnique() const { return _overlayTechnique; }
 
 
         /** Set the overlay subgraph which will be rendered to texture.*/

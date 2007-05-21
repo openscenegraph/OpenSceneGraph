@@ -15,12 +15,14 @@
 #ifndef OSGMANIPULATOR_EXPORT_
 #define OSGMANIPULATOR_EXPORT_ 1
 
-#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
-    #  ifdef OSGMANIPULATOR_LIBRARY
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__) || defined( __MWERKS__)
+    #  if defined( OSG_LIBRARY_STATIC )
+    #    define OSGMANIPULATOR_EXPORT
+    #  elif defined( OSGMANIPULATOR_LIBRARY )
     #    define OSGMANIPULATOR_EXPORT   __declspec(dllexport)
     #  else
     #    define OSGMANIPULATOR_EXPORT   __declspec(dllimport)
-    #  endif /* OSGMANIPULATOR_LIBRARY */
+    #  endif
 #else
     #  define OSGMANIPULATOR_EXPORT
 #endif

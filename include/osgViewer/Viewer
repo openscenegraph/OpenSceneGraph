@@ -176,16 +176,16 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
             
             releaseContext();
             
-            if (gc && gc->makeCurrent()) _currentContext = gc;
+            if (gc && gc->valid() && gc->makeCurrent()) _currentContext = gc;
         }
         
         inline void releaseContext()
         {
-            if (_currentContext.valid())
+            if (_currentContext.valid() && _currentContext->valid())
             {
                 _currentContext->releaseContext();
-                _currentContext = 0;
             }
+            _currentContext = 0;
         }
         
         

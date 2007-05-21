@@ -429,15 +429,16 @@ void CompositeViewer::startThreading()
 
 void CompositeViewer::checkWindowStatus()
 {
-    unsigned int numThreadsIncludingMainThread = computeNumberOfThreadsIncludingMainRequired();
-    if (numThreadsIncludingMainThread != _numThreadsOnBarrier)
-    {
-        stopThreading();
-        
-        if (numThreadsIncludingMainThread > 1) startThreading();
-    }
+    Contexts contexts;
+    getContexts(contexts);
     
-    if (numThreadsIncludingMainThread==0) _done = true;
+    // osg::notify(osg::INFO)<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
+    
+    if (contexts.size()==0)
+    {
+        _done = true;
+        if (areThreadsRunning()) stopThreading();
+    }
 }
 
 
@@ -738,7 +739,7 @@ void CompositeViewer::realize()
         osg::GraphicsContext* gc = *citr;
         gc->realize();
         
-        if (_realizeOperation.valid())
+        if (_realizeOperation.valid() && gc->valid()) 
         {
             gc->makeCurrent();
             
@@ -1007,7 +1008,13 @@ void CompositeViewer::eventTraversal()
                 {
                     case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
                     {
+                        bool wasThreading = areThreadsRunning();
+                        if (wasThreading) stopThreading();
+                        
                         gw->close();
+
+                        if (wasThreading) startThreading();
+
                         break;
                     }
                     default:
@@ -1201,7 +1208,7 @@ void CompositeViewer::renderingTraversals()
         ++itr)
     {
         if (_done) return;
-        if (!((*itr)->getGraphicsThread()))
+        if (!((*itr)->getGraphicsThread())  && (*itr)->valid())
         { 
             (*itr)->makeCurrent();
             (*itr)->runOperations();
@@ -1220,7 +1227,7 @@ void CompositeViewer::renderingTraversals()
     {
         if (_done) return;
 
-        if (!((*itr)->getGraphicsThread()))
+        if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
         { 
             (*itr)->makeCurrent();
             (*itr)->swapBuffers();

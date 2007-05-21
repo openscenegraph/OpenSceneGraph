@@ -28,7 +28,7 @@ bool wxOsgApp::OnInit()
         wxSize(200, 200), wxSUNKEN_BORDER);
         
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile("cow.osg");
     if (!loadedModel)
     {
         return false;

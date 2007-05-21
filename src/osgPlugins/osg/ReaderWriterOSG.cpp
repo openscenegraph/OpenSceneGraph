@@ -50,6 +50,7 @@ class OSGReaderWriter : public ReaderWriter
         
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
+            fin.imbue(std::locale::classic());
 
             Input fr;
             fr.attach(&fin);
@@ -117,10 +118,13 @@ class OSGReaderWriter : public ReaderWriter
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
             Output fout(fileName.c_str());
-            fout.setOptions(options);
             if (fout)
             {
+                fout.setOptions(options);
+
                 setPrecision(fout,options);
+
+                fout.imbue(std::locale::classic());
 
                 fout.writeObject(obj);
                 fout.close();
@@ -131,14 +135,17 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
-            Output foutput;
-            foutput.setOptions(options);
-
-            std::ios &fios = foutput;
-            fios.rdbuf(fout.rdbuf());
 
             if (fout)
             {
+                Output foutput;
+                foutput.setOptions(options);
+
+                std::ios &fios = foutput;
+                fios.rdbuf(fout.rdbuf());
+
+                fout.imbue(std::locale::classic());
+
                 setPrecision(foutput,options);
 
                 foutput.writeObject(obj);
@@ -155,9 +162,12 @@ class OSGReaderWriter : public ReaderWriter
 
 
             Output fout(fileName.c_str());
-            fout.setOptions(options);
             if (fout)
             {
+                fout.setOptions(options);
+
+                fout.imbue(std::locale::classic());
+
                 setPrecision(fout,options);
 
                 fout.writeObject(node);
@@ -169,14 +179,18 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
-            Output foutput;
-            foutput.setOptions(options);
 
-            std::ios &fios = foutput;
-            fios.rdbuf(fout.rdbuf());
 
             if (fout)
             {
+                Output foutput;
+                foutput.setOptions(options);
+
+                std::ios &fios = foutput;
+                fios.rdbuf(fout.rdbuf());
+
+                foutput.imbue(std::locale::classic());
+
                 setPrecision(foutput,options);
 
                 foutput.writeObject(node);

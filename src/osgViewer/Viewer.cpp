@@ -1305,14 +1305,19 @@ void Viewer::checkWindowStatus()
 {
     Contexts contexts;
     getContexts(contexts);
-
-    if (_numWindowsOpenAtLastSetUpThreading != contexts.size() && _threadsRunning)
+    
+    osg::notify(osg::NOTICE)<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
+    
+    if (contexts.size()==0)
+    {
+        _done = true;
+        if (areThreadsRunning()) stopThreading();
+    }
+    else if (_numWindowsOpenAtLastSetUpThreading != contexts.size() && _threadsRunning)
     {
         stopThreading();
         startThreading();
     }
-
-    if (_numWindowsOpenAtLastSetUpThreading==0) _done = true;
 }
 
 

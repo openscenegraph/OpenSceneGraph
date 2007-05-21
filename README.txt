@@ -10,11 +10,11 @@ For the impatient, read the simplified build notes below.
 
 Robert Osfield.
 Project Lead.
-7th May 2007.
+21st May 2007.
 
 --
 
-Notes for 1.9.3 release
+Notes for 1.9.5 release
 =======================
 
 OpenThreads/include and src directories has now been merged directly into 

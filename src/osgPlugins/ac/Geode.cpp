@@ -252,25 +252,24 @@ void Geode::OutputTriangleStripDARR(const int iCurrentMaterial, const unsigned i
     unsigned int vindex = drawArrayLengths->getFirst();
     for(osg::DrawArrayLengths::const_iterator primItr = drawArrayLengths->begin(); primItr <drawArrayLengths->end(); ++primItr)
     {
-        unsigned int localPrimLength;
+        // RFJ!!!!!!!!!! fixes for indexing
+        int localPrimLength= *primItr;
         bool evenodd=true;
-        localPrimLength = 3;
         
-        for(GLsizei primCount = 0; primCount < *primItr-2; ++primCount)
+        for(GLsizei primCount = 0; primCount < localPrimLength - 2; ++primCount)
         {
-            OutputSurfHead(iCurrentMaterial,surfaceFlags,localPrimLength, fout);
+            OutputSurfHead(iCurrentMaterial, surfaceFlags, 3, fout);
             if (evenodd) {
-                OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
-                OutputVertex(vindex+1, pVertexIndices, pTexCoords, pTexIndices, fout);
+                OutputVertex(vindex + primCount, pVertexIndices, pTexCoords, pTexIndices, fout);
+                OutputVertex(vindex + primCount + 1, pVertexIndices, pTexCoords, pTexIndices, fout);
             } else {
-                OutputVertex(vindex+1, pVertexIndices, pTexCoords, pTexIndices, fout);
-                OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
+                OutputVertex(vindex + primCount + 1 , pVertexIndices, pTexCoords, pTexIndices, fout);
+                OutputVertex(vindex + primCount, pVertexIndices, pTexCoords, pTexIndices, fout);
             }
-            OutputVertex(vindex+2, pVertexIndices, pTexCoords, pTexIndices, fout);
-            ++vindex;
+            OutputVertex(vindex + primCount + 2, pVertexIndices, pTexCoords, pTexIndices, fout);
             evenodd=!evenodd;
-        }
-        
+        }       
+        vindex += localPrimLength;
     }
 }
 void Geode::OutputTriangleFanDARR(const int iCurrentMaterial, const unsigned int surfaceFlags,

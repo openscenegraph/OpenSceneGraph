@@ -487,42 +487,24 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
         {
             osg::View* view = camera->getView();
             osg::View::Slave* slave = view ? view->findSlaveForCamera(camera) : 0;
-
+            
             if (slave && camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
             {
-                slave->_projectionOffset *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+                switch(view->getCamera()->getProjectionResizePolicy())
+                {
+                    case(osg::Camera::HORIZONTAL): slave->_projectionOffset *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
+                    case(osg::Camera::VERTICAL): slave->_projectionOffset *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
+                    default: break;
+                }
             }
             else
             {
-#if 0            
-                osg::Matrixd& pm = camera->getProjectionMatrix();
-                bool orthographicCamera = (pm(0,3)==0.0) && (pm(1,3)==0.0) && (pm(2,3)==0.0) && (pm(3,3)==1.0); 
-
-                if (orthographicCamera)
+                switch(view->getCamera()->getProjectionResizePolicy())
                 {
-                    double left, right, bottom, top, zNear, zFar;
-                    camera->getProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
-
-                    double mid = (right+left)*0.5;
-                    double halfWidth = (right-left)*0.5;
-                    left = mid - halfWidth * aspectRatioChange;
-                    right = mid + halfWidth * aspectRatioChange;
-                    camera->setProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
+                    case(osg::Camera::HORIZONTAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
+                    case(osg::Camera::VERTICAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
+                    default: break;
                 }
-                else
-                {
-                    double left, right, bottom, top, zNear, zFar;
-                    camera->getProjectionMatrixAsFrustum(left, right, bottom, top, zNear, zFar);
-
-                    double mid = (right+left)*0.5;
-                    double halfWidth = (right-left)*0.5;
-                    left = mid - halfWidth * aspectRatioChange;
-                    right = mid + halfWidth * aspectRatioChange;
-                    camera->setProjectionMatrixAsFrustum(left, right, bottom, top, zNear, zFar);
-                }
-#else
-                camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
-#endif
             }
 
         }    

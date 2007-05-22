@@ -45,6 +45,12 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::TransformOrder)
 	I_EnumLabel(osg::Camera::POST_MULTIPLY);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osg::Camera::ProjectionResizePolicy)
+	I_EnumLabel(osg::Camera::FIXED);
+	I_EnumLabel(osg::Camera::HORIZONTAL);
+	I_EnumLabel(osg::Camera::VERTICAL);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osg::Camera::RenderOrder)
 	I_EnumLabel(osg::Camera::PRE_RENDER);
 	I_EnumLabel(osg::Camera::NESTED_RENDER);
@@ -222,6 +228,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          Properties::NON_VIRTUAL,
 	          __TransformOrder__getTransformOrder,
 	          "Get the transformation order. ",
+	          "");
+	I_Method1(void, setProjectionResizePolicy, IN, osg::Camera::ProjectionResizePolicy, policy,
+	          Properties::NON_VIRTUAL,
+	          __void__setProjectionResizePolicy__ProjectionResizePolicy,
+	          "Set the policy used to determin if and how the projection matrix should be adjusted on window resizes. ",
+	          "");
+	I_Method0(osg::Camera::ProjectionResizePolicy, getProjectionResizePolicy,
+	          Properties::NON_VIRTUAL,
+	          __ProjectionResizePolicy__getProjectionResizePolicy,
+	          "Get the policy used to determin if and how the projection matrix should be adjusted on window resizes. ",
 	          "");
 	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixf &, matrix,
 	          Properties::NON_VIRTUAL,
@@ -529,6 +545,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(const osg::Matrixd &, ProjectionMatrix, 
 	                 __C5_osg_Matrixd_R1__getProjectionMatrix, 
 	                 __void__setProjectionMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(osg::Camera::ProjectionResizePolicy, ProjectionResizePolicy, 
+	                 __ProjectionResizePolicy__getProjectionResizePolicy, 
+	                 __void__setProjectionResizePolicy__ProjectionResizePolicy);
 	I_SimpleProperty(GLenum, ReadBuffer, 
 	                 __GLenum__getReadBuffer, 
 	                 __void__setReadBuffer__GLenum);

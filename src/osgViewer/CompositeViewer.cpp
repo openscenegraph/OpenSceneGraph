@@ -867,13 +867,7 @@ void CompositeViewer::eventTraversal()
     {
         osg::Viewport* viewport = masterCamera->getViewport();
         masterCameraVPW *= viewport->computeWindowMatrix();
-        eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
     }
-    else
-    {
-        eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
-    }
-
 
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
@@ -904,6 +898,9 @@ void CompositeViewer::eventTraversal()
                 
                 switch(event->getEventType())
                 {
+                    case(osgGA::GUIEventAdapter::RESIZE):
+                        setCameraWithFocus(0);
+                        break;
                     case(osgGA::GUIEventAdapter::PUSH):
                     case(osgGA::GUIEventAdapter::RELEASE):
                     case(osgGA::GUIEventAdapter::DRAG):
@@ -930,6 +927,16 @@ void CompositeViewer::eventTraversal()
                                     {
                                         setCameraWithFocus(camera);
 
+                                        const osg::GraphicsContext::Traits* traits = gw ? gw->getTraits() : 0;
+                                        if (traits) 
+                                        {
+                                            eventState->setInputRange( 0, 0, traits->width, traits->height);
+                                        }
+                                        else
+                                        {
+                                            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+                                        }
+
                                         if (getViewWithFocus()!=masterView)
                                         {
                                             // need to reset the masterView
@@ -937,15 +944,11 @@ void CompositeViewer::eventTraversal()
                                             masterCamera = masterView->getCamera();
                                             eventState = masterView->getEventQueue()->getCurrentEventState(); 
                                             masterCameraVPW = masterCamera->getViewMatrix() * masterCamera->getProjectionMatrix();
+
                                             if (masterCamera->getViewport()) 
                                             {
                                                 osg::Viewport* viewport = masterCamera->getViewport();
                                                 masterCameraVPW *= viewport->computeWindowMatrix();
-                                                eventState->setInputRange( viewport->x(), viewport->y(), viewport->x() + viewport->width(), viewport->y() + viewport->height());
-                                            }
-                                            else
-                                            {
-                                                eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
                                             }
                                         }
                                     }

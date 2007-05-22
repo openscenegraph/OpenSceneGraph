@@ -68,7 +68,7 @@ class OSG_EXPORT AutoTransform : public Transform
             ROTATE_TO_CAMERA
         };
         
-        void setAutoRotateMode(AutoRotateMode mode) { _autoRotateMode = mode; }
+        void setAutoRotateMode(AutoRotateMode mode) { _autoRotateMode = mode; _firstTimeToInitEyePoint = true; }
 
         AutoRotateMode getAutoRotateMode() const { return _autoRotateMode; }
 

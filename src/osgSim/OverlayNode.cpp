@@ -373,7 +373,7 @@ public:
 
             Vertices& vertices = newFace.vertices;
 
-            osg::Vec3d side = fabs(plane.getNormal().x() < fabs(plane.getNormal().y())) ? 
+            osg::Vec3d side = ( fabs(plane.getNormal().x()) < fabs(plane.getNormal().y()) ) ? 
                               osg::Vec3(1.0, 0.0, 0.0) :
                               osg::Vec3(0.0, 1.0, 0.0);
                               

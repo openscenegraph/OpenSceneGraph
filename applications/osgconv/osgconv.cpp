@@ -9,6 +9,7 @@
 #include <osg/Texture2D>
 #include <osg/Texture3D>
 #include <osg/BlendFunc>
+#include <osg/Timer>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -603,7 +604,16 @@ int main( int argc, char **argv )
         fileNames.pop_back();
     }
 
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
+
     osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(fileNames);
+
+    if (root.valid())
+    {
+        osg::Timer_t endTick = osg::Timer::instance()->tick();
+        osg::notify(osg::INFO)<<"Time to load files "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
+    }
+
 
     if (pruneStateSet)
     {

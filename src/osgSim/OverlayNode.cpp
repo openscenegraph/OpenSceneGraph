@@ -43,6 +43,7 @@ public:
 
     Face& createFace() { _faces.push_back(Face()); return _faces.back(); }
 
+
     /** Create a Polytope which is a cube, centered at 0,0,0, with sides of 2 units.*/
     void setToUnitFrustum(bool withNear=true, bool withFar=true)
     {
@@ -199,9 +200,87 @@ public:
         }        
     }
 
+
+    void insertVertex(const osg::Vec3d& vertex)
+    {
+        // osg::notify(osg::NOTICE)<<"Inserting vertex "<<vertex<<std::endl;
+    
+        Faces removedFaces;
+    
+        Faces::iterator itr;
+        for(itr = _faces.begin();
+            itr != _faces.end();
+            )
+        {
+            Face& face = *itr;
+            if (face.plane.distance(vertex)<0.0)
+            {
+                removedFaces.push_back(face);
+                itr = _faces.erase(itr);
+            }
+            else
+            {
+                ++itr;
+            }
+        }
+        
+        if (removedFaces.empty()) return;        
+
+        typedef std::pair<osg::Vec3d, osg::Vec3d> Edge;
+        typedef std::map<Edge,int> Edges;
+        Edges edges;
+
+        double numVerticesAdded=0.0;        
+        osg::Vec3d center;
+        for(itr = removedFaces.begin();
+            itr != removedFaces.end();
+            ++itr)
+        {
+            Face& face = *itr;
+            Vertices& vertices = face.vertices;
+            for(unsigned int i=0; i<vertices.size(); ++i)
+            {
+                osg::Vec3d& a = vertices[i];
+                osg::Vec3d& b = vertices[ (i+1) % vertices.size()];
+                if (a<b) ++edges[Edge(a,b)];
+                else ++edges[Edge(b,a)];
+                
+                center += a;
+                numVerticesAdded += 1.0;
+            }
+        }
+        
+        if (numVerticesAdded==0.0) return;
+        center /= numVerticesAdded;
+        
+        for(Edges::iterator eitr = edges.begin();
+            eitr != edges.end();
+            ++eitr)
+        {
+            if (eitr->second==1) 
+            {
+                // osg::notify(osg::NOTICE)<<"     edge Ok"<<std::endl;
+                const Edge& edge = eitr->first;
+                Face face;
+                face.plane.set(vertex, edge.first, edge.second);
+                face.vertices.push_back(vertex);
+                face.vertices.push_back(edge.first);
+                face.vertices.push_back(edge.second);
+                if (face.plane.distance(center)<0.0) face.plane.flip();
+                
+                _faces.push_back(face);
+            }
+        }
+    
+
+        // osg::notify(osg::NOTICE)<<"  Removed faces "<<removedFaces.size()<<std::endl;
+    }
+
+
+
     void cut(const osg::Polytope& polytope)
     {
-        osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
         for(osg::Polytope::PlaneList::const_iterator itr = polytope.getPlaneList().begin();
             itr != polytope.getPlaneList().end();
             ++itr)
@@ -212,7 +291,7 @@ public:
 
     void cut(const CustomPolytope& polytope)
     {
-        osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
         for(Faces::const_iterator itr = polytope._faces.begin();
             itr != polytope._faces.end();
             ++itr)
@@ -223,7 +302,7 @@ public:
 
     void cut(const osg::Plane& plane)
     {
-        osg::notify(osg::NOTICE)<<"  Cutting plane "<<plane<<std::endl;
+        // osg::notify(osg::NOTICE)<<"  Cutting plane "<<plane<<std::endl;
         Face newFace;
         
         for(Faces::iterator itr = _faces.begin();
@@ -234,12 +313,12 @@ public:
             int intersect = plane.intersect(face.vertices);
             if (intersect==1)
             {
-                osg::notify(osg::NOTICE)<<"    Face inside"<<std::endl; 
+                // osg::notify(osg::NOTICE)<<"    Face inside"<<std::endl; 
                 ++itr;
             }
             else if (intersect==0)
             {
-                osg::notify(osg::NOTICE)<<"    Face intersecting - before "<<face.vertices.size()<<std::endl;
+                // osg::notify(osg::NOTICE)<<"    Face intersecting - before "<<face.vertices.size()<<std::endl;
                 
                 Vertices& vertices = face.vertices;
                 Vertices newVertices;
@@ -276,20 +355,20 @@ public:
                 
                 vertices.swap(newVertices);
                 
-                osg::notify(osg::NOTICE)<<"        intersecting - after "<<face.vertices.size()<<std::endl;
+                // osg::notify(osg::NOTICE)<<"        intersecting - after "<<face.vertices.size()<<std::endl;
 
                 ++itr;
             }
             else if (intersect==-1)
             {
-                osg::notify(osg::NOTICE)<<"    Face outside"<<_faces.size()<<std::endl; 
+                // osg::notify(osg::NOTICE)<<"    Face outside"<<_faces.size()<<std::endl; 
                 itr = _faces.erase(itr);
             }
         }
         
         if (!newFace.vertices.empty())
         {
-            osg::notify(osg::NOTICE)<<"    inserting newFace intersecting "<<newFace.vertices.size()<<std::endl;
+            // osg::notify(osg::NOTICE)<<"    inserting newFace intersecting "<<newFace.vertices.size()<<std::endl;
             newFace.plane = plane;
 
             Vertices& vertices = newFace.vertices;
@@ -336,7 +415,7 @@ public:
             
             newVertices.swap(vertices);
             
-            osg::notify(osg::NOTICE)<<"     after angle sort  "<<newFace.vertices.size()<<std::endl;
+            // osg::notify(osg::NOTICE)<<"     after angle sort  "<<newFace.vertices.size()<<std::endl;
 
             _faces.push_back(newFace);
         }
@@ -840,6 +919,11 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
         _overlaySubgraph->accept(cbbv);
         overlayPolytope.setToBoundingBox(cbbv.getBoundingBox());
+        
+        if (csn)
+        {
+            overlayPolytope.insertVertex(osg::Vec3d(0.0,0.0,0.0));
+        }
 
         frustum.cut(overlayPolytope);
         

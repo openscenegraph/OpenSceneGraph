@@ -144,7 +144,7 @@ public:
             face.vertices.push_back(v111);
             face.vertices.push_back(v101);
         }
-#if 0
+
         {   // bottom plane.
             Face& face = createFace();
             face.plane.set(0.0,1.0,0.0,-bb.yMin());
@@ -162,10 +162,9 @@ public:
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
         }
-#endif        
         {   // near plane
             Face& face = createFace();
-            face.plane.set(0.0,0.0,-1.0,bb.zMin());
+            face.plane.set(0.0,0.0,1.0,-bb.zMin());
             face.vertices.push_back(v000);
             face.vertices.push_back(v100);
             face.vertices.push_back(v101);
@@ -174,12 +173,13 @@ public:
         
         {   // far plane
             Face& face = createFace();
-            face.plane.set(0.0,0.0,1.0,-bb.zMax());
+            face.plane.set(0.0,0.0,-1.0,bb.zMax());
             face.vertices.push_back(v010);
             face.vertices.push_back(v011);
             face.vertices.push_back(v111);
             face.vertices.push_back(v110);
         }        
+        
     }
 
     void transform(const osg::Matrix& matrix, const osg::Matrix& inverse)
@@ -239,7 +239,7 @@ public:
             }
             else if (intersect==0)
             {
-                osg::notify(osg::NOTICE)<<"    Face intersecting"<<std::endl;
+                osg::notify(osg::NOTICE)<<"    Face intersecting - before "<<face.vertices.size()<<std::endl;
                 
                 Vertices& vertices = face.vertices;
                 Vertices newVertices;
@@ -276,6 +276,8 @@ public:
                 
                 vertices.swap(newVertices);
                 
+                osg::notify(osg::NOTICE)<<"        intersecting - after "<<face.vertices.size()<<std::endl;
+
                 ++itr;
             }
             else if (intersect==-1)
@@ -287,8 +289,55 @@ public:
         
         if (!newFace.vertices.empty())
         {
-            osg::notify(osg::NOTICE)<<"    inserting newFace intersecting"<<std::endl;
+            osg::notify(osg::NOTICE)<<"    inserting newFace intersecting "<<newFace.vertices.size()<<std::endl;
             newFace.plane = plane;
+
+            Vertices& vertices = newFace.vertices;
+
+            osg::Vec3d side = fabs(plane.getNormal().x() < fabs(plane.getNormal().y())) ? 
+                              osg::Vec3(1.0, 0.0, 0.0) :
+                              osg::Vec3(0.0, 1.0, 0.0);
+                              
+            osg::Vec3 v = plane.getNormal() ^ side;
+            v.normalize();
+            
+            osg::Vec3 u = v ^ plane.getNormal();
+            u.normalize();
+
+            osg::Vec3d center;
+            Vertices::iterator vitr;
+            for(vitr = vertices.begin();
+                vitr != vertices.end();
+                ++vitr)
+            {
+                center += *vitr;
+            }
+            center /= vertices.size();
+
+            typedef std::map<double, Vec3d> AnglePositions;
+            AnglePositions anglePositions;
+            for(vitr = vertices.begin();
+                vitr != vertices.end();
+                ++vitr)
+            {
+                osg::Vec3d delta = *vitr - center;
+                double angle = atan2(delta * u, delta * v);
+                anglePositions[angle] = *vitr;
+            }
+
+            
+            Vertices newVertices;
+            for(AnglePositions::iterator aitr = anglePositions.begin();
+                aitr != anglePositions.end();
+                ++aitr)
+            {
+                newVertices.push_back(aitr->second);
+            }
+            
+            newVertices.swap(vertices);
+            
+            osg::notify(osg::NOTICE)<<"     after angle sort  "<<newFace.vertices.size()<<std::endl;
+
             _faces.push_back(newFace);
         }
     }
@@ -794,10 +843,13 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         frustum.cut(overlayPolytope);
         
+        
 
         CustomPolytope::Vertices corners;
         frustum.getPoints(corners);
         
+        osg::notify(osg::NOTICE)<<"AFTER CUT corners = "<<corners.size()<<std::endl;
+
         if (corners.size()<8) return;
  
         osg::Vec3d center_near = (corners[0]+corners[1]+corners[2]+corners[3])*0.25;

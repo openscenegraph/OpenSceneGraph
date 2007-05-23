@@ -25,7 +25,7 @@ using namespace osgShadow;
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-char fragmentShaderSource_noBaseTexture[] = 
+static const char fragmentShaderSource_noBaseTexture[] = 
     "uniform sampler2DShadow shadowTexture; \n"
     "uniform vec2 ambientBias; \n"
     "\n"
@@ -37,7 +37,7 @@ char fragmentShaderSource_noBaseTexture[] =
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-char fragmentShaderSource_withBaseTexture[] = 
+static const char fragmentShaderSource_withBaseTexture[] = 
     "uniform sampler2D baseTexture; \n"
     "uniform sampler2DShadow shadowTexture; \n"
     "uniform vec2 ambientBias; \n"

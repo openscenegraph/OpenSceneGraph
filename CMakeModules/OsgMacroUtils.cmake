@@ -114,8 +114,12 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     ENDIF(NOT TARGET_LABEL)
     
 # here we use the command to generate the library    
-    
-    ADD_LIBRARY(${TARGET_TARGETNAME} MODULE ${TARGET_SRC} ${TARGET_H})
+
+    IF   (DYNAMIC_OPENSCENEGRAPH)
+        ADD_LIBRARY(${TARGET_TARGETNAME} MODULE ${TARGET_SRC} ${TARGET_H})
+    ELSE (DYNAMIC_OPENSCENEGRAPH)
+        ADD_LIBRARY(${TARGET_TARGETNAME} STATIC ${TARGET_SRC} ${TARGET_H})
+    ENDIF(DYNAMIC_OPENSCENEGRAPH)
     
     #not sure if needed, but for plugins only msvc need the d suffix
     IF(NOT MSVC)

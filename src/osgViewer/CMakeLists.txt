@@ -22,12 +22,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ViewerEventHandlers
 )
 
-SET(LIB_PRIVATE_HEADERS
-    ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
-    ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
-    ${HEADER_PATH}/api/X11/GraphicsWindowX11
-)
-
 SET(LIB_COMMON_FILES
     CompositeViewer.cpp
     Scene.cpp
@@ -42,36 +36,34 @@ SET(LIB_COMMON_FILES
 
 
 IF(WIN32)
-    ADD_LIBRARY(${LIB_NAME}
-        ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-        ${LIB_PUBLIC_HEADERS}
-        ${LIB_PRIVATE_HEADERS}
-        ${LIB_COMMON_FILES}
-        GraphicsWindowWin32.cpp
-    )
+
+    SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${HEADER_PATH}/api/Win32/GraphicsWindowWin32)
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} GraphicsWindowWin32.cpp)
+
 ELSE(WIN32)
     IF(APPLE)
+
         # FIXME: OS X needs selection mechanism for Cocoa, Carbon, X11
-        ADD_LIBRARY(${LIB_NAME}
-            ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-            ${LIB_PUBLIC_HEADERS}
-            ${LIB_PRIVATE_HEADERS}
-            ${LIB_COMMON_FILES}
-            GraphicsWindowCarbon.cpp
-        )
+        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon)
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} GraphicsWindowCarbon.cpp)
+
     ELSE(APPLE)
+    
         # X11 for everybody else
-        ADD_LIBRARY(${LIB_NAME}
-            ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-            ${LIB_PUBLIC_HEADERS}
-            ${LIB_PRIVATE_HEADERS}
-            ${LIB_COMMON_FILES}
-            GraphicsWindowX11.cpp
-        )
+        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${HEADER_PATH}/api/X11/GraphicsWindowX11)
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} GraphicsWindowX11.cpp)
+        
     ENDIF(APPLE)
 ENDIF(WIN32)
 
-    
+
+ADD_LIBRARY(${LIB_NAME}
+    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
+    ${LIB_PUBLIC_HEADERS}
+    ${LIB_PRIVATE_HEADERS}
+    ${LIB_COMMON_FILES}
+)
+
 
 LINK_INTERNAL(${LIB_NAME}     
     osgGA

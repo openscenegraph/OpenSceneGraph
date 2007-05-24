@@ -46,14 +46,14 @@ static inline void swap(unsigned& x, bool isSwapped)
 static inline unsigned char readByte(std::istream& stream)
 {
     unsigned char x;
-    stream.readsome(reinterpret_cast<std::istream::char_type*>(&x), 1);
+    stream.read(reinterpret_cast<std::istream::char_type*>(&x), 1);
     return x;
 }
 
 static inline unsigned short readShort(std::istream& stream, bool isSwapped)
 {
     unsigned short x;
-    stream.readsome(reinterpret_cast<std::istream::char_type*>(&x), 2);
+    stream.read(reinterpret_cast<std::istream::char_type*>(&x), 2);
     swap(x, isSwapped);
     return x;
 }
@@ -61,7 +61,7 @@ static inline unsigned short readShort(std::istream& stream, bool isSwapped)
 static inline unsigned readInt(std::istream& stream, bool isSwapped)
 {
     unsigned x;
-    stream.readsome(reinterpret_cast<std::istream::char_type*>(&x), 4);
+    stream.read(reinterpret_cast<std::istream::char_type*>(&x), 4);
     swap(x, isSwapped);
     return x;
 }

@@ -126,22 +126,22 @@ namespace osg {
                     break;
                 }
                 case(GL_LINES): {
-                    const Vec3* vlast = &_vertexArrayPtr[first+count];
+                    const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=2)
                         this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
                     break;
                 }
                 case(GL_LINE_STRIP): {
-                    const Vec3* vlast = &_vertexArrayPtr[first+count];
+                    const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=1)
                         this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
                     break;
                 }
                 case(GL_LINE_LOOP): {
-                    const Vec3* vlast = &_vertexArrayPtr[first+count];
+                    const Vec3* vlast = &_vertexArrayPtr[first+count-1];
                     for(const Vec3* vptr=&_vertexArrayPtr[first];vptr<vlast;vptr+=1)
                         this->operator()(*(vptr),*(vptr+1),_treatVertexDataAsTemporary);
-                    this->operator()(*(vlast-1),_vertexArrayPtr[first],_treatVertexDataAsTemporary);
+                    this->operator()(*(vlast),_vertexArrayPtr[first],_treatVertexDataAsTemporary);
                     break;
                 }
                 default:
@@ -214,26 +214,26 @@ namespace osg {
                     break;
                 }
                 case(GL_LINES): {
-                    IndexPointer ilast = &indices[count];
+                    IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=2)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
                                          _treatVertexDataAsTemporary);
                     break;
                 }
                 case(GL_LINE_STRIP): {
-                    IndexPointer ilast = &indices[count];
+                    IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
                                          _treatVertexDataAsTemporary);
                     break;
                 }
                 case(GL_LINE_LOOP): {
-                    IndexPointer ilast = &indices[count];
+                    IndexPointer ilast = &indices[count-1];
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
                                          _treatVertexDataAsTemporary);
                     break;
-                    this->operator()(_vertexArrayPtr[*(ilast-1)],_vertexArrayPtr[indices[0]],
+                    this->operator()(_vertexArrayPtr[*(ilast)],_vertexArrayPtr[indices[0]],
                                      _treatVertexDataAsTemporary);
                 }
                 default:

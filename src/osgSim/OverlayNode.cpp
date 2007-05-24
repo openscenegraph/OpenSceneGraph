@@ -15,6 +15,7 @@
 #include <osg/Texture2D>
 #include <osg/CoordinateSystemNode>
 #include <osg/TexEnv>
+#include <osg/Geometry>
 #include <osg/io_utils>
 
 #include <osgUtil/CullVisitor>
@@ -350,6 +351,8 @@ public:
                         osg::Vec3d intersection = (vb*distance_a - va*distance_b)/(distance_a-distance_b);
                         newVertices.push_back(intersection);
                         newFace.vertices.push_back(intersection);
+                        
+                        // osg::notify(osg::NOTICE)<<"  intersection distance "<<plane.distance(intersection)<<std::endl;                        
                     }
                 }
                 
@@ -401,6 +404,7 @@ public:
             {
                 osg::Vec3d delta = *vitr - center;
                 double angle = atan2(delta * u, delta * v);
+                if (angle<0.0) angle += 2.0*osg::PI;
                 anglePositions[angle] = *vitr;
             }
 
@@ -454,6 +458,40 @@ public:
         {
             vertices.push_back(*sitr);
         }
+    }
+
+
+    osg::Drawable* createDrawable(const osg::Vec4d& colour)
+    {
+        osg::Geometry* geometry = new osg::Geometry;
+        osg::Vec3Array* vertices = new osg::Vec3Array;
+        geometry->setVertexArray(vertices);
+
+        for(Faces::iterator itr = _faces.begin();
+            itr != _faces.end();
+            ++itr)
+        {
+            Face& face = *itr;
+            geometry->addPrimitiveSet( new osg::DrawArrays(GL_LINE_STRIP, vertices->size(), face.vertices.size()) );
+            for(Vertices::iterator vitr = face.vertices.begin();
+                vitr != face.vertices.end();
+                ++vitr)
+            {
+                vertices->push_back(*vitr);
+            }
+        }
+        
+        osg::Vec4Array* colours = new osg::Vec4Array;
+        colours->push_back(colour);
+        geometry->setColorArray(colours);
+        geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        
+        osg::StateSet* stateset = geometry->getOrCreateStateSet();
+        stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+        stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OFF);
+        stateset->setTextureMode(1, GL_TEXTURE_2D, osg::StateAttribute::OFF);
+        
+        return geometry;
     }
 
 protected:
@@ -593,6 +631,7 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
         texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
         texture->setBorderColor(osg::Vec4(_overlayClearColor));
+        texture->setBorderColor(osg::Vec4(1.0,0.0,0.0,0.5));
         overlayData._texture = texture;
     }   
 
@@ -860,7 +899,13 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
     if (_overlaySubgraph.valid()) 
     {
-        
+
+#if 0        
+        if (!overlayData._geode)
+        {
+            overlayData._geode = new osg::Geode;
+        }
+#endif        
         // see if we are within a coordinate system node.
         osg::CoordinateSystemNode* csn = 0;
         osg::NodePath& nodePath = nv.getNodePath();
@@ -908,7 +953,11 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         // create polytope for the view frustum in local coords
         CustomPolytope frustum;
-        frustum.setToUnitFrustum();
+#if 1
+        frustum.setToUnitFrustum(false, false);
+#else
+        frustum.setToUnitFrustum(true, true);
+#endif
         frustum.transform(inverseMVP, MVP);
         
 
@@ -925,29 +974,43 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             overlayPolytope.insertVertex(osg::Vec3d(0.0,0.0,0.0));
         }
 
-        frustum.cut(overlayPolytope);
         
-        
+        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>500)
+        {
+            overlayData._geode->removeDrawables(0, 3);
+        }        
+
+        if (overlayData._geode.valid())
+        {
+            overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,0.0f,1.0f)));
+            overlayData._geode->addDrawable(frustum.createDrawable(osg::Vec4d(0.0f,0.0f,1.0f,1.0f)));
+        }
+
 
         CustomPolytope::Vertices corners;
-        frustum.getPoints(corners);
         
+ #if 0
+//        frustum.cut(overlayPolytope);
+        frustum.getPoints(corners);
+#else
+      overlayPolytope.cut(frustum);
+      overlayPolytope.getPoints(corners);
+#endif
+        
+        if (overlayData._geode.valid())
+        {
+            overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,1.0f,1.0f)));
+        }
+
+
+
         osg::notify(osg::NOTICE)<<"AFTER CUT corners = "<<corners.size()<<std::endl;
 
-        if (corners.size()<8) return;
+        if (corners.empty()) return;
  
-        osg::Vec3d center_near = (corners[0]+corners[1]+corners[2]+corners[3])*0.25;
-        osg::Vec3d center_far = (corners[4]+corners[5]+corners[6]+corners[7])*0.25;
-        osg::Vec3d center = (center_near+center_far)*0.5;
-        osg::Vec3d frustum_axis = (center_far-center_near);
-        frustum_axis.normalize();
+        osg::Vec3d center = _overlaySubgraph->getBound().center();
+        osg::Vec3d frustum_axis = cv->getLookVectorLocal();
         
-        double diagonal = (corners[0]-corners[7]).length();
-        float diagonal_near = (corners[0]-center_near).length();
-        float diagonal_far = (corners[7]-center_far).length();
-        
-        osg::notify(osg::NOTICE)<<"    center ="<<center<<" diagonal ="<<diagonal<<std::endl;
-        osg::notify(osg::NOTICE)<<"    frustum_axis ="<<frustum_axis<<" diagonal_near ="<<diagonal_near<<" diagonal_far="<<diagonal_far<<std::endl;
 
         osg::Vec3d lookVector(0.0,0.0,-1.0);
         if (csn)
@@ -956,7 +1019,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             lookVector.normalize();
         }
         
-        osg::Vec3d sideVector = lookVector ^ frustum_axis;
+        //osg::Vec3d sideVector = lookVector ^ frustum_axis;
+        osg::Vec3d sideVector = lookVector ^ osg::Vec3d(0.0,0.0,1.0);
         sideVector.normalize();
         
         osg::Vec3d upVector = sideVector ^ lookVector;
@@ -986,6 +1050,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
         osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
 
+        osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
+        osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
 
 
         double bs_center = (bs.center()-center) * lookVector;
@@ -996,14 +1062,14 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::notify(osg::NOTICE)<<"    bs.radius()="<<bs.radius()<<std::endl;
 
 
-#if 1
+#if 0
         camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,bs_near+bs.center().length(),bs_far+bs.center().length());
         camera->setViewMatrixAsLookAt(osg::Vec3d(0.0f,0.0f,0.0f), bs.center(), upVector);
 
 #else        
         
-        camera->setProjectionMatrixAsOrtho(-bs.radius(),bs.radius(),-bs.radius(),bs.radius(),-bs.radius(),bs.radius());
-        camera->setViewMatrixAsLookAt(bs.center(), osg::Vec3d(0.0f,0.0f,0.0f), osg::Vec3(0.0,0.0,1.0));
+        camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
+        camera->setViewMatrixAsLookAt(bs.center(), osg::Vec3d(0.0f,0.0f,0.0f), upVector);
 #endif        
 
 
@@ -1032,6 +1098,11 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         _textureObjectValidList[contextID] = 1;
 
         overlayData._texgenNode->accept(*cv);
+
+        if (overlayData._geode.valid())
+        {
+               overlayData._geode->accept(*cv);
+        }
 
     }
     else

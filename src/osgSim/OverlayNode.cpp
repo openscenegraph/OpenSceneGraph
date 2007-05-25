@@ -561,6 +561,7 @@ OverlayNode::OverlayNode(OverlayTechnique technique):
     _textureSizeHint(1024),
     _overlayClearColor(0.0f,0.0f,0.0f,0.0f),
     _continuousUpdate(false),
+    _overlayBaseHeight(-100.0),
     _updateCamera(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
@@ -575,7 +576,8 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     _textureUnit(copy._textureUnit),
     _textureSizeHint(copy._textureSizeHint),
     _overlayClearColor(copy._overlayClearColor),
-    _continuousUpdate(copy._continuousUpdate)
+    _continuousUpdate(copy._continuousUpdate),
+    _overlayBaseHeight(copy._overlayBaseHeight)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
     init();
@@ -1027,13 +1029,12 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         
         if (em)
         {
-            double minHeight = -1000.0;
-            overlayPolytope.insertVertex(osg::Vec3d(0.0,0.0,0.0), em, minHeight);
+            overlayPolytope.insertVertex(osg::Vec3d(0.0,0.0,0.0), em, _overlayBaseHeight);
         }
         else
         {
             double minHeight = -1000.0;
-            overlayPolytope.projectDowntoBase(osg::Vec3d(0.0,0.0,1.0), minHeight);
+            overlayPolytope.projectDowntoBase(osg::Vec3d(0.0,0.0,1.0), _overlayBaseHeight);
         }
 
         

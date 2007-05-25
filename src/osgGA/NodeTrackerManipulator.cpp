@@ -135,10 +135,10 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
         osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
     }
     
-    osg::notify(osg::NOTICE)<<"setTrackNode("<<node->getName()<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"setTrackNode("<<node->getName()<<")"<<std::endl;
     for(unsigned int i=0; i<_trackNodePath.size(); ++i)
     {
-        osg::notify(osg::NOTICE)<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
+        osg::notify(osg::INFO)<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
     }
 
 }

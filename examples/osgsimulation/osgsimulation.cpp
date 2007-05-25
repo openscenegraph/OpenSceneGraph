@@ -393,7 +393,7 @@ int main(int argc, char **argv)
     }
     
 
-    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    // viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     return viewer.run();
 }

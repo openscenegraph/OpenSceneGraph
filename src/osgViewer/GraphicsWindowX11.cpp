@@ -1128,6 +1128,8 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     X11WindowingSystemInterface()
     {
+        osg::notify(osg::INFO)<<"X11WindowingSystemInterface()"<<std::endl;
+    
         XSetErrorHandler(X11ErrorHandling);
     
 #if 0
@@ -1145,6 +1147,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     ~X11WindowingSystemInterface()
     {
+        osg::notify(osg::INFO)<<"~X11WindowingSystemInterface()"<<std::endl;
         XSetErrorHandler(0);
     }
 
@@ -1204,13 +1207,18 @@ struct RegisterWindowingSystemInterfaceProxy
 {
     RegisterWindowingSystemInterfaceProxy()
     {
+        osg::notify(osg::INFO)<<"RegisterWindowingSystemInterfaceProxy()"<<std::endl;
         osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
     }
 
     ~RegisterWindowingSystemInterfaceProxy()
     {
+        osg::notify(osg::INFO)<<"~RegisterWindowingSystemInterfaceProxy()"<<std::endl;
         osg::GraphicsContext::setWindowingSystemInterface(0);
     }
 };
 
 RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
+
+// declare C entry point for static compilation.
+extern "C" void graphicswindow_X11(void) {}

@@ -202,7 +202,7 @@ public:
     }
 
 
-    void insertVertex(const osg::Vec3d& vertex)
+    void insertVertex(const osg::Vec3d& vertex, osg::EllipsoidModel* em=0, double minHeight=0.0)
     {
         // osg::notify(osg::NOTICE)<<"Inserting vertex "<<vertex<<std::endl;
     
@@ -254,6 +254,9 @@ public:
         if (numVerticesAdded==0.0) return;
         center /= numVerticesAdded;
         
+        typedef std::set<osg::Vec3> VertexSet;
+        VertexSet uniqueVertices;
+        
         for(Edges::iterator eitr = edges.begin();
             eitr != edges.end();
             ++eitr)
@@ -268,15 +271,61 @@ public:
                 face.vertices.push_back(edge.first);
                 face.vertices.push_back(edge.second);
                 if (face.plane.distance(center)<0.0) face.plane.flip();
-                
                 _faces.push_back(face);
+                
+                uniqueVertices.insert(edge.first);
+                uniqueVertices.insert(edge.second);
             }
+        }
+
+        // now trim the new polytope back the desired height
+        if (em)
+        {
+            // compute the base vertices at the new height
+            Vertices baseVertices;
+            for(VertexSet::iterator itr = uniqueVertices.begin();
+                itr != uniqueVertices.end();
+                ++itr)
+            {
+                const osg::Vec3d& point = *itr;
+                double latitude, longitude, height;
+                em->convertXYZToLatLongHeight(point.x(), point.y(), point.z(), latitude, longitude, height);
+                osg::Vec3d normal(point);
+                normal.normalize();
+                baseVertices.push_back(point - normal * (height - minHeight));
+            }
+            
+            //compute centroid of the base vertices
+            osg::Vec3d center;
+            double totalArea = 0;
+            for(unsigned int i=0; i<baseVertices.size()-1; ++i)
+            {
+                const osg::Vec3d& a = baseVertices[i];
+                const osg::Vec3d& b = baseVertices[i+1];
+                const osg::Vec3d& c = baseVertices[(i+2)%baseVertices.size()];
+                double area = ((a-b)^(b-c)).length()*0.5;
+                osg::Vec3d localCenter = (a+b+c)/3.0;
+                center += localCenter*area;
+                totalArea += area;
+            }
+            center /= totalArea;
+            osg::Vec3d normal(center);
+            normal.normalize();
+            
+            osg::Plane basePlane(normal, center);
+
+            cut(basePlane);
         }
     
 
         // osg::notify(osg::NOTICE)<<"  Removed faces "<<removedFaces.size()<<std::endl;
     }
 
+
+    void projectDowntoBase(const osg::Vec3d& normal, double minHeight)
+    {
+        osg::notify(osg::NOTICE)<<"CustomPolytop::projectDowntoBase not implementated yet."<<std::endl;
+    }
 
 
     void cut(const osg::Polytope& polytope)
@@ -621,7 +670,7 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
     
     if (!overlayData._texture) 
     { 
-        osg::notify(osg::NOTICE)<<"   setting up texture"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"   setting up texture"<<std::endl;
 
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setTextureSize(tex_width, tex_height);
@@ -630,15 +679,18 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
         texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
         texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+#if 1
         texture->setBorderColor(osg::Vec4(_overlayClearColor));
+#else
         texture->setBorderColor(osg::Vec4(1.0,0.0,0.0,0.5));
+#endif
         overlayData._texture = texture;
     }   
 
     // set up the render to texture camera.
     if (!overlayData._camera)
     {
-        osg::notify(osg::NOTICE)<<"   setting up camera"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"   setting up camera"<<std::endl;
 
         // create the camera
         overlayData._camera = new osg::Camera;
@@ -768,8 +820,10 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
                     csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
                 }
 
+                osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
+
   
-                if (csn)
+                if (em)
                 {
                     osg::Vec3d eyePoint(0.0,0.0,0.0); // center of the planet
                     double centerDistance = (eyePoint-osg::Vec3d(bs.center())).length();
@@ -900,7 +954,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
     if (_overlaySubgraph.valid()) 
     {
 
-#if 0        
+#if 0
         if (!overlayData._geode)
         {
             overlayData._geode = new osg::Geode;
@@ -915,6 +969,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         {
             csn = dynamic_cast<osg::CoordinateSystemNode*>(*itr);
         }
+
+        osg::EllipsoidModel* em = csn ? csn->getEllipsoidModel() : 0;
 
         osg::BoundingSphere bs = _overlaySubgraph->getBound();
 
@@ -969,9 +1025,15 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         _overlaySubgraph->accept(cbbv);
         overlayPolytope.setToBoundingBox(cbbv.getBoundingBox());
         
-        if (csn)
+        if (em)
         {
-            overlayPolytope.insertVertex(osg::Vec3d(0.0,0.0,0.0));
+            double minHeight = -1000.0;
+            overlayPolytope.insertVertex(osg::Vec3d(0.0,0.0,0.0), em, minHeight);
+        }
+        else
+        {
+            double minHeight = -1000.0;
+            overlayPolytope.projectDowntoBase(osg::Vec3d(0.0,0.0,1.0), minHeight);
         }
 
         
@@ -982,20 +1044,15 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         if (overlayData._geode.valid())
         {
-            overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,0.0f,1.0f)));
-            overlayData._geode->addDrawable(frustum.createDrawable(osg::Vec4d(0.0f,0.0f,1.0f,1.0f)));
+            //overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,0.0f,1.0f)));
+            //overlayData._geode->addDrawable(frustum.createDrawable(osg::Vec4d(0.0f,0.0f,1.0f,1.0f)));
         }
 
 
         CustomPolytope::Vertices corners;
         
- #if 0
-//        frustum.cut(overlayPolytope);
-        frustum.getPoints(corners);
-#else
-      overlayPolytope.cut(frustum);
-      overlayPolytope.getPoints(corners);
-#endif
+        overlayPolytope.cut(frustum);
+        overlayPolytope.getPoints(corners);
         
         if (overlayData._geode.valid())
         {
@@ -1004,7 +1061,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
 
 
-        osg::notify(osg::NOTICE)<<"AFTER CUT corners = "<<corners.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"AFTER CUT corners = "<<corners.size()<<std::endl;
 
         if (corners.empty()) return;
  
@@ -1013,20 +1070,23 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         
 
         osg::Vec3d lookVector(0.0,0.0,-1.0);
-        if (csn)
+        if (em)
         {
             lookVector = -center;
             lookVector.normalize();
         }
-        
-        //osg::Vec3d sideVector = lookVector ^ frustum_axis;
+
+#if 1        
+        osg::Vec3d sideVector = lookVector ^ frustum_axis;
+#else
         osg::Vec3d sideVector = lookVector ^ osg::Vec3d(0.0,0.0,1.0);
+#endif
         sideVector.normalize();
         
         osg::Vec3d upVector = sideVector ^ lookVector;
         upVector.normalize();
         
-        osg::notify(osg::NOTICE)<<"    lookVector ="<<lookVector<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    lookVector ="<<lookVector<<std::endl;
         
         double min_side = DBL_MAX;
         double max_side = -DBL_MAX;
@@ -1047,30 +1107,23 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             if (distance_up>max_up) max_up = distance_up;
         }
         
-        osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
-        osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
 
-        osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
-        osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
+        // osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
+        // osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
 
 
         double bs_center = (bs.center()-center) * lookVector;
         double bs_near = bs_center-bs.radius();
         double bs_far = bs_center+bs.radius();
         
-        osg::notify(osg::NOTICE)<<"    bs_near="<<bs_near<<"  bs_far="<<bs_far<<std::endl;
-        osg::notify(osg::NOTICE)<<"    bs.radius()="<<bs.radius()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    bs_near="<<bs_near<<"  bs_far="<<bs_far<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    bs.radius()="<<bs.radius()<<std::endl;
 
 
-#if 0
-        camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,bs_near+bs.center().length(),bs_far+bs.center().length());
-        camera->setViewMatrixAsLookAt(osg::Vec3d(0.0f,0.0f,0.0f), bs.center(), upVector);
-
-#else        
-        
         camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
         camera->setViewMatrixAsLookAt(bs.center(), osg::Vec3d(0.0f,0.0f,0.0f), upVector);
-#endif        
 
 
         // compute the matrix which takes a vertex from local coords into tex coords
@@ -1088,7 +1141,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         overlayData._textureFrustum.setToUnitFrustum(false,false);
         overlayData._textureFrustum.transformProvidingInverse(MVP);
 
-        osg::notify(osg::NOTICE)<<std::endl;
+        // osg::notify(osg::NOTICE)<<std::endl;
 
         unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 

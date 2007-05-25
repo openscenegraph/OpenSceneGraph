@@ -10,7 +10,7 @@
 using namespace osg;
 using namespace osgDB;
 
-class IVEReaderWriter : public ReaderWriter
+class ReaderWriterIVE : public ReaderWriter
 {
     public:
         virtual const char* className() const { return "IVE Reader/Writer"; }
@@ -186,4 +186,4 @@ class IVEReaderWriter : public ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-RegisterReaderWriterProxy<IVEReaderWriter> g_IVEReaderWriterProxy;
+REGISTER_OSGPLUGIN(ive, ReaderWriterIVE)

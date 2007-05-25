@@ -565,6 +565,29 @@ class RegisterReaderWriterProxy
         osg::ref_ptr<T> _rw;
 };
 
+extern "C"
+{
+    typedef void (* CPluginFunction) (void);
+}
+
+class PluginFunctionProxy
+{
+public:
+
+    PluginFunctionProxy(CPluginFunction function)
+    {
+        (function)();
+    }
+};
+
+#define USE_OSGPLUGIN(ext) \
+    extern "C" void osgdb_##ext(void); \
+    static osgDB::PluginFunctionProxy proxy_##ext(osgdb_##ext);
+
+#define REGISTER_OSGPLUGIN(ext, classname) \
+    extern "C" void osgdb_##ext(void) {} \
+    static RegisterReaderWriterProxy<classname> g_proxy_##classname;
+
 }
 
 #endif

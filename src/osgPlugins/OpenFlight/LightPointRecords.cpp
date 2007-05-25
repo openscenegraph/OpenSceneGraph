@@ -4,6 +4,8 @@
 //  Copyright (C) 2005-2006  Brede Johansen
 //
 
+#include <osgSim/MultiSwitch>
+#include <osgSim/LightPointSystem>
 #include <osgSim/LightPointNode>
 #include <osg/Texture2D>
 #include "Registry.h"
@@ -24,7 +26,34 @@ class LightPoint : public PrimaryRecord
     };
 
     // flags
-    static const unsigned int NO_BACK_COLOR_BIT = 0x80000000u >> 1;
+    enum Flags
+    {
+                                                // bit 0 = reserved
+        NO_BACK_COLOR    = 0x80000000u >> 1,        // bit 1 = no back color
+                                                // bit 2 = reserved
+        CALLIGRAPHIC    = 0x80000000u >> 3,        // bit 3 = calligraphic proximity occulting
+        REFLECTIVE        = 0x80000000u >> 4,        // bit 4 = reflective, non-emissive point
+                                                // bit 5-7 = randomize intensity
+                                                //   0 = never
+                                                //     1 = low
+                                                //   2 = medium
+                                                //   3 = high
+        PERSPECTIVE        = 0x80000000u >> 8,        // bit 8 = perspective mode
+        FLASHING        = 0x80000000u >> 9,        // bit 9 = flashing
+        ROTATING        = 0x80000000u >> 10,    // bit 10 = rotating
+        ROTATE_CC        = 0x80000000u >> 11,    // bit 11 = rotate counter clockwise
+                                                // bit 12 = reserved
+                                                // bit 13-14 = quality
+                                                //   0 = low
+                                                //     1 = medium
+                                                //   2 = high
+                                                //   3 = undefined
+        VISIBLE_DAY        = 0x80000000u >> 15,    // bit 15 = visible during day
+        VISIBLE_DUSK    = 0x80000000u >> 16,    // bit 16 = visible during dusk
+        VISIBLE_NIGHT    = 0x80000000u >> 17        // bit 17 = visible during night
+                                                // bit 18-31 = spare
+    };
+
 
     int16   _material;
     int16   _feature;
@@ -95,6 +124,20 @@ public:
                 osg::DegreesToRadians(_lobeRoll));
         }
 
+        // if the flashing or rotating bit is set in the flags, add a blink sequence
+        if ((_flags & FLASHING) || (_flags & ROTATING))
+        {
+            lp._blinkSequence = new osgSim::BlinkSequence();
+            if (lp._blinkSequence.valid())
+            {
+                lp._blinkSequence->setDataVariance(osg::Object::DataVariance::DYNAMIC);
+                lp._blinkSequence->setPhaseShift(_animationPhaseDelay);
+                lp._blinkSequence->addPulse(_animationPeriod - _animationPeriodEnable, 
+                    osg::Vec4f(0.0f, 0.0f, 0.0f, 0.0f));
+                lp._blinkSequence->addPulse(_animationPeriodEnable, lp._color);
+            }
+        }
+
         _lpn->addLightPoint(lp);
 
         // Create a new lightpoint if bi-directional.
@@ -104,7 +147,7 @@ public:
             lp._intensity = _intensityBack;
 
             // back color
-            if (!(_flags & NO_BACK_COLOR_BIT))
+            if (!(_flags & NO_BACK_COLOR))
                 lp._color = _backColor;
 
             // back sector
@@ -197,6 +240,7 @@ class IndexedLightPoint : public PrimaryRecord
 
     osg::ref_ptr<osgSim::LightPointNode> _lpn;
     osg::ref_ptr<LPAppearance> _appearance;
+    osg::ref_ptr<LPAnimation> _animation;
 
 public:
 
@@ -211,9 +255,10 @@ public:
     // Add lightpoint, add two if bidirectional.
     virtual void addVertex(Vertex& vertex)
     {
+        osgSim::LightPoint lp;
+
         if (_appearance.valid())
         {
-            osgSim::LightPoint lp;
             lp._position = vertex._coord;
             lp._radius = 0.5f * _appearance->actualPixelSize;
             lp._intensity = _appearance->intensityFront;
@@ -230,6 +275,59 @@ public:
                     osg::DegreesToRadians(_appearance->horizontalLobeAngle),
                     osg::DegreesToRadians(_appearance->verticalLobeAngle),
                     osg::DegreesToRadians(_appearance->lobeRollAngle));
+            }
+
+            // Blink sequence
+            if (_animation.valid())
+            {
+                osgSim::BlinkSequence* blinkSequence = new osgSim::BlinkSequence;
+                blinkSequence->setName(_animation->name);
+
+                switch (_animation->animationType)
+                {
+                case LPAnimation::ROTATING:
+                case LPAnimation::STROBE:
+                    blinkSequence->setPhaseShift(_animation->animationPhaseDelay);
+                    blinkSequence->addPulse(_animation->animationPeriod-_animation->animationEnabledPeriod, osg::Vec4(0,0,0,0));
+                    blinkSequence->addPulse(_animation->animationEnabledPeriod, lp._color);
+                    break;
+
+                case LPAnimation::MORSE_CODE:
+                    // todo
+                    //blinkSequence->addPulse(double length,lp._color);
+                    break;
+
+                case LPAnimation::FLASHING_SEQUENCE:
+                    {
+                        blinkSequence->setPhaseShift(_animation->animationPhaseDelay);
+
+                        for (LPAnimation::PulseArray::iterator itr=_animation->sequence.begin();
+                            itr!=_animation->sequence.end();
+                            ++itr)
+                        {
+                            double duration = itr->duration;
+
+                            osg::Vec4 color;
+                            switch (itr->state)
+                            {
+                            case LPAnimation::ON:
+                                color = lp._color;
+                                break;
+                            case LPAnimation::OFF:
+                                color = osg::Vec4(0,0,0,0);
+                                break;
+                            case LPAnimation::COLOR_CHANGE:
+                                color = itr->color;
+                                break;
+                            }
+
+                            blinkSequence->addPulse(duration, color);
+                        }
+                    }
+                    break;
+                }
+
+                lp._blinkSequence = blinkSequence;
             }
 
             _lpn->addLightPoint(lp);
@@ -265,11 +363,14 @@ protected:
     {
         std::string id = in.readString(8);
         int32 appearanceIndex = in.readInt32();
-        /*int32 animationIndex =*/ in.readInt32();
-        /*int32 drawOrder =*/ in.readInt32();           // for calligraphic lights
+        int32 animationIndex = in.readInt32();
+        int32 drawOrder = in.readInt32();           // for calligraphic lights
 
-        LightPointAppearancePool* lpaPool = document.getOrCreateLightPointAppearancePool();
-        _appearance = lpaPool->get(appearanceIndex);
+        LightPointAppearancePool* lpAppearancePool = document.getOrCreateLightPointAppearancePool();
+        _appearance = lpAppearancePool->get(appearanceIndex);
+
+        LightPointAnimationPool* lpAnimationPool = document.getOrCreateLightPointAnimationPool();
+        _animation = lpAnimationPool->get(animationIndex);
 
         _lpn = new osgSim::LightPointNode;
         _lpn->setName(id);
@@ -309,26 +410,80 @@ RegisterRecordProxy<IndexedLightPoint> g_IndexedLightPoint(INDEXED_LIGHT_POINT_O
 */
 class LightPointSystem : public PrimaryRecord
 {
+    float32 _intensity;
+    int32 _animationState;
+    int32  _flags;
+
+    osg::ref_ptr<osgSim::MultiSwitch> _switch;
+    osg::ref_ptr<osgSim::LightPointSystem> _lps;
+
 public:
 
-    LightPointSystem() {}
+    LightPointSystem():
+        _intensity(1.0f),
+        _animationState(0),
+        _flags(0)
+    {}
 
     META_Record(LightPointSystem)
+    META_addChild(_switch)
 
 protected:
 
     virtual ~LightPointSystem() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
+    virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
-        osg::notify(osg::INFO) << "ID: " << id << std::endl;
 
-        osg::Group* group = new osg::Group;
-        group->setName(id);
+        _intensity = in.readFloat32();
+        _animationState = in.readInt32(0);
+        _flags = in.readInt32(0);
+
+        _switch = new osgSim::MultiSwitch;
+        _lps = new osgSim::LightPointSystem;
+
+        _switch->setName(id);
+        _lps->setName(id);
+        _lps->setIntensity(_intensity);
+
+        switch (_animationState)
+        {
+            // Note that OpenFlight 15.8 spec says 0 means on and 1 means off.
+            // However, if animation is set on in Creator, it stores a 1, and
+            // a zero is stored for off! So, for now, we ignore the spec...
+            case 0:
+                _lps->setAnimationState( osgSim::LightPointSystem::ANIMATION_OFF );
+                break;
+            default:
+            case 1:
+                _lps->setAnimationState( osgSim::LightPointSystem::ANIMATION_ON );
+                break;
+            case 2:
+                _lps->setAnimationState( osgSim::LightPointSystem::ANIMATION_RANDOM );
+                break;
+        }
 
         if (_parent.valid())
-            _parent->addChild(*group);
+            _parent->addChild(*((osg::Group*)_switch.get()));
+    }
+
+    virtual void popLevel(Document& document)
+    {
+        // Set default sets: 0 for all off, 1 for all on
+        _switch->setAllChildrenOff( 0 );
+        _switch->setAllChildrenOn( 1 );
+
+        // set initial on/off state
+        unsigned int initialSet = ( (_flags & 0x80000000) != 0 ) ? 1 : 0;
+        _switch->setActiveSwitchSet( initialSet );
+
+        for (unsigned int i = 0; i < _switch->getNumChildren(); i++)
+        {
+            osg::Node* child = _switch->getChild(i);
+            if (osgSim::LightPointNode* lpn = dynamic_cast<osgSim::LightPointNode*>(child))
+                lpn->setLightPointSystem(_lps.get());
+        }
     }
 };
 

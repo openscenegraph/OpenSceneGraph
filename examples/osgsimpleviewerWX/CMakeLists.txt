@@ -6,6 +6,7 @@ INCLUDE(${wxWidgets_USE_FILE})
 
 #### end var setup  ###
 
-SETUP_EXAMPLE(osgsimpleviewerWX 1)
+SET(REQUIRE_WINMAIN_FLAG ON)
+SETUP_EXAMPLE(osgsimpleviewerWX)
 
 TARGET_LINK_LIBRARIES("${TARGET_DEFAULT_PREFIX}osgsimpleviewerWX" ${wxWidgets_LIBRARIES})

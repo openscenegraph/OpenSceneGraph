@@ -126,7 +126,9 @@ IF   (WIN32)
     ADD_SUBDIRECTORY(osgviewerMFC)
 ENDIF(WIN32)
 
-
+IF   (NOT DYNAMIC_OPENSCENEGRAPH)
+    ADD_SUBDIRECTORY(osgstaticviewer)
+ENDIF(NOT DYNAMIC_OPENSCENEGRAPH)
 
 #ADD_SUBDIRECTORY(osgcegui)
 #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)

@@ -71,6 +71,15 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         /** Get whether the OverlayNode should update the overlay texture on every frame.*/
         bool getContinuousUpdate() const { return _continuousUpdate; }
 
+        /** Set the base height that the overlay subgraph will be projected down to.
+          * Normally you'll set this to just below ground level, if you set it too high
+          * then the overlay texture can end up being clipped in certain viewing directions,
+          * while if its too low then there will be a limit to how close you can get to the
+          * terrain before pixaltion becomes an issue.*/
+        void setOverlayBaseHeight(double baseHeight) { _overlayBaseHeight = baseHeight; }
+
+        /** Get the base height that the overlay subgraph will be projected down to.*/
+        double getOverlayBaseHeight() const { return _overlayBaseHeight; }
 
         /** Set the clear color to use when rendering the overlay subgraph.*/
         void setOverlayClearColor(const osg::Vec4& color) { _overlayClearColor = _overlayClearColor; }
@@ -140,6 +149,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         osg::Vec4                       _overlayClearColor;
 
         bool                            _continuousUpdate;
+        double                          _overlayBaseHeight;
         bool                            _updateCamera;
 
     private:

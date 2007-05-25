@@ -34,10 +34,12 @@ static ref_ptr<GraphicsContext::WindowingSystemInterface> s_WindowingSystemInter
 void GraphicsContext::setWindowingSystemInterface(WindowingSystemInterface* callback)
 {
     s_WindowingSystemInterface = callback;
+    osg::notify(osg::INFO)<<"GraphicsContext::setWindowingSystemInterface() "<<s_WindowingSystemInterface.get()<<"\t"<<&s_WindowingSystemInterface<<std::endl;
 }
 
 GraphicsContext::WindowingSystemInterface* GraphicsContext::getWindowingSystemInterface()
 {
+    osg::notify(osg::INFO)<<"GraphicsContext::getWindowingSystemInterface() "<<s_WindowingSystemInterface.get()<<"\t"<<&s_WindowingSystemInterface<<std::endl;
     return s_WindowingSystemInterface.get();
 }
 

@@ -81,7 +81,7 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	               "",
 	               "");
 	I_Method0(void, setDefaults,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setDefaults,
 	          "",
 	          "");

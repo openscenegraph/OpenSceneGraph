@@ -118,6 +118,16 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          __bool__getContinuousUpdate,
 	          "Get whether the OverlayNode should update the overlay texture on every frame. ",
 	          "");
+	I_Method1(void, setOverlayBaseHeight, IN, double, baseHeight,
+	          Properties::NON_VIRTUAL,
+	          __void__setOverlayBaseHeight__double,
+	          "Set the base height that the overlay subgraph will be projected down to. ",
+	          "Normally you'll set this to just below ground level, if you set it too high then the overlay texture can end up being clipped in certain viewing directions, while if its too low then there will be a limit to how close you can get to the terrain before pixaltion becomes an issue. ");
+	I_Method0(double, getOverlayBaseHeight,
+	          Properties::NON_VIRTUAL,
+	          __double__getOverlayBaseHeight,
+	          "Get the base height that the overlay subgraph will be projected down to. ",
+	          "");
 	I_Method1(void, setOverlayClearColor, IN, const osg::Vec4 &, color,
 	          Properties::NON_VIRTUAL,
 	          __void__setOverlayClearColor__C5_osg_Vec4_R1,
@@ -224,6 +234,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_SimpleProperty(bool, ContinuousUpdate, 
 	                 __bool__getContinuousUpdate, 
 	                 __void__setContinuousUpdate__bool);
+	I_SimpleProperty(double, OverlayBaseHeight, 
+	                 __double__getOverlayBaseHeight, 
+	                 __void__setOverlayBaseHeight__double);
 	I_SimpleProperty(const osg::Vec4 &, OverlayClearColor, 
 	                 __C5_osg_Vec4_R1__getOverlayClearColor, 
 	                 __void__setOverlayClearColor__C5_osg_Vec4_R1);

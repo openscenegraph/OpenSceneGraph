@@ -107,11 +107,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_MethodWithDefaults1(void, setDefaults, IN, unsigned int, options, osgUtil::SceneView::STANDARD_SETTINGS,
-	                      Properties::NON_VIRTUAL,
-	                      __void__setDefaults__unsigned_int,
-	                      "Set scene view to use default global state, light, camera and render visitor. ",
-	                      "");
+	I_Method0(void, setDefaults,
+	          Properties::VIRTUAL,
+	          __void__setDefaults,
+	          "",
+	          "");
+	I_Method1(void, setDefaults, IN, unsigned int, options,
+	          Properties::VIRTUAL,
+	          __void__setDefaults__unsigned_int,
+	          "Set scene view to use default global state, light, camera and render visitor. ",
+	          "");
 	I_Method1(void, setCamera, IN, osg::Camera *, camera,
 	          Properties::NON_VIRTUAL,
 	          __void__setCamera__osg_Camera_P1,
@@ -698,7 +703,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          "",
 	          "");
 	I_Method1(void, inheritCullSettings, IN, const osg::CullSettings &, settings,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__inheritCullSettings__C5_CullSettings_R1,
 	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");

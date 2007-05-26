@@ -136,7 +136,7 @@ int CompositeViewer::run()
         ++itr)
     {
         osgViewer::View* view = itr->get();
-        if (view->getCameraManipulator()==0)
+        if ((view->getCameraManipulator()==0) && view->getCamera()->getAllowEventFocus())
         {
             view->setCameraManipulator(new osgGA::TrackballManipulator());
         }

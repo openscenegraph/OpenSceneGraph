@@ -39,7 +39,7 @@ Under unices (i.e. Linux, IRIX, Solaris, Free-BSD, HP-Ux, AIX, OSX) use the
 cmake or ccmake commandline utils:
  
   cd OpenSceneGraph
-  ccmake .
+  ./configure
   make
   sudo make install
   

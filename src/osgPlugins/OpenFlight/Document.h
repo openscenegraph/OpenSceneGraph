@@ -144,6 +144,11 @@ class Document
         LightPointAppearancePool* getOrCreateLightPointAppearancePool();
         bool getLightPointAppearancePoolParent() const { return _lightPointAppearancePoolParent; }
 
+        void setLightPointAnimationPool(LightPointAnimationPool* lpap, bool parent=false) { _lightPointAnimationPool = lpap; _lightPointAnimationPoolParent=parent; }
+        LightPointAnimationPool* getLightPointAnimationPool() { return _lightPointAnimationPool.get(); }
+        LightPointAnimationPool* getOrCreateLightPointAnimationPool();
+        bool getLightPointAnimationPoolParent() const { return _lightPointAnimationPoolParent; }
+
         void setShaderPool(ShaderPool* cp, bool parent=false) { _shaderPool = cp; _shaderPoolParent=parent; }
         ShaderPool* getShaderPool() { return _shaderPool.get(); }
         ShaderPool* getOrCreateShaderPool();
@@ -202,12 +207,14 @@ class Document
         osg::ref_ptr<MaterialPool> _materialPool;
         osg::ref_ptr<LightSourcePool> _lightSourcePool;
         osg::ref_ptr<LightPointAppearancePool> _lightPointAppearancePool;
+        osg::ref_ptr<LightPointAnimationPool> _lightPointAnimationPool;
         osg::ref_ptr<ShaderPool> _shaderPool;
         bool _colorPoolParent;
         bool _texturePoolParent;
         bool _materialPoolParent;
         bool _lightSourcePoolParent;
         bool _lightPointAppearancePoolParent;
+        bool _lightPointAnimationPoolParent;
         bool _shaderPoolParent;
 
         osg::ref_ptr<PrimaryRecord> _currentPrimaryRecord;
@@ -250,6 +257,13 @@ inline LightPointAppearancePool* Document::getOrCreateLightPointAppearancePool()
     if (!_lightPointAppearancePool.valid())
         _lightPointAppearancePool = new LightPointAppearancePool;
     return _lightPointAppearancePool.get();
+}
+
+inline LightPointAnimationPool* Document::getOrCreateLightPointAnimationPool()
+{
+    if (!_lightPointAnimationPool.valid())
+        _lightPointAnimationPool = new LightPointAnimationPool;
+    return _lightPointAnimationPool.get();
 }
 
 

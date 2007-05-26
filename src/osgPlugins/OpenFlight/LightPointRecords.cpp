@@ -130,7 +130,7 @@ public:
             lp._blinkSequence = new osgSim::BlinkSequence();
             if (lp._blinkSequence.valid())
             {
-                lp._blinkSequence->setDataVariance(osg::Object::DataVariance::DYNAMIC);
+                lp._blinkSequence->setDataVariance(osg::Object::DYNAMIC);
                 lp._blinkSequence->setPhaseShift(_animationPhaseDelay);
                 lp._blinkSequence->addPulse(_animationPeriod - _animationPeriodEnable, 
                     osg::Vec4f(0.0f, 0.0f, 0.0f, 0.0f));

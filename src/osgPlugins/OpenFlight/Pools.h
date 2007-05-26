@@ -202,6 +202,77 @@ protected:
 
 };
 
+struct LPAnimation : public osg::Referenced
+{
+    enum AnimationType 
+    {
+        FLASHING_SEQUENCE = 0,
+        ROTATING = 1,
+        STROBE = 2,
+        MORSE_CODE = 3
+    };
+
+    enum State
+    {
+        ON = 0,
+        OFF = 1,
+        COLOR_CHANGE = 2
+    };
+
+    struct Pulse
+    {
+        uint32 state;
+        float32 duration;
+        osg::Vec4 color;
+    };
+
+    typedef std::vector<Pulse>  PulseArray;
+
+    std::string name;                        // animation name
+    int32 index;                            // animation index
+    float32 animationPeriod;                // animation period, in seconds
+    float32 animationPhaseDelay;            // animation phase delay, in seconds from start of period
+    float32 animationEnabledPeriod;            // animation enabled period (time on), in seconds
+    osg::Vec3f axisOfRotation;                // axis of rotation for rotating animation (i, j, k)
+    uint32 flags;                            // flags (bits, from left to right)
+                                            //     0 = flashing
+                                            //   1 = rotating
+                                            //   2 = rotate counter clockwise
+                                            //   3-31 = spare
+    int32 animationType;                    // animation type
+                                            //     0 = flashing sequence
+                                            //   1 = rotating
+                                            //   2 = strobe
+                                            //   3 = morse code
+    int32 morseCodeTiming;                    // morse code timing
+                                            //     0 = standard timing
+                                            //   1 = Farnsworth timing
+    int32 wordRate;                            // word rate (for Farnsworth timing)
+    int32 characterRate;                    // character rate (for Farnsworth timing)
+    std::string morseCodeString;            // morse code string
+    PulseArray sequence;
+};
+
+
+class LightPointAnimationPool : public osg::Referenced , public std::map<int,osg::ref_ptr<LPAnimation> >
+{
+public:
+
+    LightPointAnimationPool() {}
+
+    LPAnimation* get(int index)
+    {
+        iterator itr = find(index);
+        if (itr != end())
+            return (*itr).second.get();
+        return NULL;
+    }
+
+protected:
+
+    virtual ~LightPointAnimationPool() {}
+
+};
 
 class ShaderPool : public osg::Referenced , public std::map<int,osg::ref_ptr<osg::Program> >
 {
@@ -250,6 +321,9 @@ public:
     void setLPAppearancePool(LightPointAppearancePool* pool) { _lpAppearancePool=pool; }
     LightPointAppearancePool* getLPAppearancePool() const { return _lpAppearancePool.get(); }
 
+    void setLPAnimationPool(LightPointAnimationPool* pool) { _lpAnimationPool=pool; }
+    LightPointAnimationPool* getLPAnimationPool() const { return _lpAnimationPool.get(); }
+
     void setShaderPool(ShaderPool* pool) { _shaderPool=pool; }
     ShaderPool* getShaderPool() const { return _shaderPool.get(); }
 
@@ -262,6 +336,7 @@ protected:
     osg::ref_ptr<TexturePool> _texturePool;
     osg::ref_ptr<LightSourcePool> _lightSourcePool;
     osg::ref_ptr<LightPointAppearancePool> _lpAppearancePool;
+    osg::ref_ptr<LightPointAnimationPool> _lpAnimationPool;
     osg::ref_ptr<ShaderPool> _shaderPool;
 };
 

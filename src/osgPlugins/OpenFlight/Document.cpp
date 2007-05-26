@@ -28,6 +28,7 @@ Document::Document() :
     _materialPoolParent(false),
     _lightSourcePoolParent(false),
     _lightPointAppearancePoolParent(false),
+    _lightPointAnimationPoolParent(false),
     _shaderPoolParent(false)
 {
 }

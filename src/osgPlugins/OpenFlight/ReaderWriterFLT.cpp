@@ -222,6 +222,8 @@ class FLTReaderWriter : public ReaderWriter
                         document.setLightSourcePool( pools->getLightSourcePool(), true );
                     if (pools->getLPAppearancePool())
                         document.setLightPointAppearancePool( pools->getLPAppearancePool(), true );
+                    if (pools->getLPAnimationPool())
+                        document.setLightPointAnimationPool( pools->getLPAnimationPool(), true );
                     if (pools->getShaderPool())
                         document.setShaderPool( pools->getShaderPool(), true );
                 }

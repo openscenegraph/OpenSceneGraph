@@ -636,28 +636,46 @@ protected:
 
     virtual ~LightPointAnimationPalette() {}
 
-    virtual void readRecord(RecordInputStream& in, Document& /*document*/)
+    virtual void readRecord(RecordInputStream& in, Document& document)
     {
+         if (document.getLightPointAnimationPoolParent())
+            // Using parent's light point animation pool -- ignore this record.
+            return;
+
+        osg::ref_ptr<LPAnimation> animation = new LPAnimation;
+
         in.forward(4);
-        std::string name = in.readString(256);
-        /*int32 index =*/ in.readInt32(-1);
-        /*float32 animationPeriod =*/ in.readFloat32();
-        /*float32 animationPhaseDelay =*/ in.readFloat32();
-        /*float32 animationEnabledPeriod =*/ in.readFloat32();
-        /*osg::Vec3f axisOfRotation =*/ in.readVec3f();
-        /*uint32 flags =*/ in.readUInt32();
-        /*int32 animationType =*/ in.readInt32();
-        /*int32 morseCodeTiming =*/ in.readInt32();
-        /*int32 wordRate =*/ in.readInt32();
-        /*int32 characterRate =*/ in.readInt32();
-        std::string morseCodeString = in.readString(1024);
+        animation->name = in.readString(256);
+        animation->index = in.readInt32(-1);
+        // Rotating or strobe
+        animation->animationPeriod = in.readFloat32();
+        animation->animationPhaseDelay = in.readFloat32();
+        animation->animationEnabledPeriod = in.readFloat32();
+        animation->axisOfRotation = in.readVec3f();
+        animation->flags = in.readUInt32();
+        animation->animationType = in.readInt32();
+
+        // Morse code
+        animation->morseCodeTiming = in.readInt32();
+        animation->wordRate = in.readInt32();
+        animation->characterRate = in.readInt32();
+        animation->morseCodeString = in.readString(1024);
+
+        // Flashing sequence
         int32 numberOfSequences = in.readInt32();
         for (int n=0; n<numberOfSequences; ++n)
         {
-            /*uint32 sequenceState =*/ in.readUInt32();
-            /*float32 sequenceDuration =*/ in.readFloat32();
-            /*osg::Vec4f sequenceColor =*/ in.readColor32();
+            LPAnimation::Pulse pulse;
+            pulse.state = in.readUInt32();
+            pulse.duration = in.readFloat32();
+            pulse.color = in.readColor32();
+
+            animation->sequence.push_back(pulse);
         }
+
+        // Add to pool
+        LightPointAnimationPool* lpaPool = document.getOrCreateLightPointAnimationPool();
+        (*lpaPool)[animation->index] = animation.get();
     }
 };
 

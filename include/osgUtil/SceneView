@@ -52,10 +52,13 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
                                 COMPILE_GLOBJECTS_AT_INIT                                
         };
 
+        /* Set defaults. */
+        virtual void setDefaults() { setDefaults(STANDARD_SETTINGS); }
+
         /** Set scene view to use default global state, light, camera
          *  and render visitor.
          */
-        void setDefaults(unsigned int options = STANDARD_SETTINGS);
+        virtual void setDefaults(unsigned int options);
 
         /** Set the camera used to represent the camera view of this SceneView.*/
         void setCamera(osg::Camera* camera);
@@ -423,7 +426,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         virtual osg::Matrixd computeRightEyeViewImplementation(const osg::Matrixd& view) const;
 
         /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
-        void inheritCullSettings(const CullSettings& settings) { inheritCullSettings(settings, _inheritanceMask); }
+        virtual void inheritCullSettings(const CullSettings& settings) { inheritCullSettings(settings, _inheritanceMask); }
 
         /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
         virtual void inheritCullSettings(const osg::CullSettings& settings, unsigned int inheritanceMask);

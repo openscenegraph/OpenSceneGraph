@@ -159,6 +159,8 @@ SceneView::~SceneView()
 
 void SceneView::setDefaults(unsigned int options)
 {
+    osg::CullSettings::setDefaults();
+
     _camera->getProjectionMatrix().makePerspective(50.0f,1.4f,1.0f,10000.0f);
     _camera->getViewMatrix().makeIdentity();
 

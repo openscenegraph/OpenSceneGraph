@@ -174,7 +174,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     return model;
 }
 
-osg::Node* createModel(bool overlay)
+osg::Node* createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique technique)
 {
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 100.0f;
@@ -186,7 +186,7 @@ osg::Node* createModel(bool overlay)
 
     if (overlay)
     {
-        osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode;
+        osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode(technique);
         overlayNode->setContinuousUpdate(true);
         overlayNode->setOverlaySubgraph(movingModel);
         overlayNode->addChild(baseModel);
@@ -211,11 +211,17 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
     while (arguments.read("--overlay")) overlay = true;
     
+    osgSim::OverlayNode::OverlayTechnique technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
+    while (arguments.read("--object")) { technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY; overlay=true; }
+    while (arguments.read("--ortho") || arguments.read("--orthographic")) { technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY; overlay=true; }
+    while (arguments.read("--persp") || arguments.read("--perspective")) { technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY; overlay=true; }
+    
+
     // initialize the viewer.
     osgViewer::Viewer viewer;
 
     // load the nodes from the commandline arguments.
-    osg::Node* model = createModel(overlay);
+    osg::Node* model = createModel(overlay, technique);
     if (!model)
     {
         return 1;

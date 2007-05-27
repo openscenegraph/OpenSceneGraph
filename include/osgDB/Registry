@@ -26,6 +26,10 @@
 #include <map>
 #include <string>
 
+extern "C"
+{
+    typedef void (* CPluginFunction) (void);
+}
 
 namespace osgDB {
 
@@ -565,10 +569,6 @@ class RegisterReaderWriterProxy
         osg::ref_ptr<T> _rw;
 };
 
-extern "C"
-{
-    typedef void (* CPluginFunction) (void);
-}
 
 class PluginFunctionProxy
 {

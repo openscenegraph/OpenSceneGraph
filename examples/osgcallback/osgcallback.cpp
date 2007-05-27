@@ -119,6 +119,26 @@ public:
     }
 };
 
+class CameraUpdateCallback : public osg::NodeCallback
+{
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    { 
+        std::cout<<"Camera update callback - pre traverse"<<node<<std::endl;
+        traverse(node,nv);
+        std::cout<<"Camera update callback - post traverse"<<node<<std::endl;
+    }
+};
+
+class CameraEventCallback : public osg::NodeCallback
+{
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    { 
+        std::cout<<"Camera event callback - pre traverse"<<node<<std::endl;
+        traverse(node,nv);
+        std::cout<<"Camera event callback - post traverse"<<node<<std::endl;
+    }
+};
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -146,6 +166,9 @@ int main( int argc, char **argv )
     // insert all the callbacks
     InsertCallbacksVisitor icv;
     rootnode->accept(icv);
+
+    viewer.getCamera()->setUpdateCallback(new CameraUpdateCallback());
+    viewer.getCamera()->setEventCallback(new CameraEventCallback());
 
     // set the scene to render
     viewer.setSceneData(rootnode);

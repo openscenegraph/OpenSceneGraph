@@ -71,20 +71,20 @@ void Scene::setDatabasePager(osgDB::DatabasePager* dp)
     _databasePager = dp;
 }
 
-void Scene::frameAdvance()
+void Scene::advance()
 {
     // double previousTime = _frameStamp->getReferenceTime();
     
     _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
-    
-    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
 
     // osg::notify(osg::NOTICE)<<"Frame rate = "<<1.0/(_frameStamp->getReferenceTime()-previousTime)<<std::endl;
 }
 
-void Scene::frameUpdateTraversal()
+void Scene::updateTraversal()
 {
+    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+
     if (!getSceneData()) return;
     
     getSceneData()->accept(*_updateVisitor);

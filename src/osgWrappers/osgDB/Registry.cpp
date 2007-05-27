@@ -49,7 +49,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::basic_type_wrapper)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::PluginFunctionProxy)
-	I_Constructor1(IN, osgDB::CPluginFunction, function,
+	I_Constructor1(IN, CPluginFunction, function,
 	               Properties::NON_EXPLICIT,
 	               ____PluginFunctionProxy__CPluginFunction,
 	               "",
@@ -599,6 +599,4 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
 	          "",
 	          "");
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(void(*, osgDB::CPluginFunction)
 

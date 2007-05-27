@@ -2056,6 +2056,17 @@ void Viewer::updateTraversal()
 
     double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
+    osgUtil::UpdateVisitor* uv = _scene.valid() ? _scene->getUpdateVisitor() : 0;
+
+    if (_camera.valid() && _camera->getUpdateCallback() && uv)
+    {
+        osg::NodeVisitor::TraversalMode tm = uv->getTraversalMode();
+        uv->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
+        _camera->accept(*uv);
+        uv->setTraversalMode(tm);
+        
+    }
+
     if (_scene.valid()) _scene->frameUpdateTraversal();
 
     if (_cameraManipulator.valid())

@@ -78,14 +78,14 @@ void Scene::frameAdvance()
     _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
     
+    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
+
     // osg::notify(osg::NOTICE)<<"Frame rate = "<<1.0/(_frameStamp->getReferenceTime()-previousTime)<<std::endl;
 }
 
 void Scene::frameUpdateTraversal()
 {
     if (!getSceneData()) return;
-    
-    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
     
     getSceneData()->accept(*_updateVisitor);
     

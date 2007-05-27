@@ -687,7 +687,7 @@ int Viewer::run()
         return 1;
     }
 
-    if (!getCameraManipulator())
+    if (!getCameraManipulator() && getCamera()->getAllowEventFocus())
     {
         setCameraManipulator(new osgGA::TrackballManipulator());
     }

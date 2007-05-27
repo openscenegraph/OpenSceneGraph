@@ -50,9 +50,9 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
         const osgUtil::UpdateVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
 
 
-        virtual void frameAdvance();
+        virtual void advance();
         
-        virtual void frameUpdateTraversal();
+        virtual void updateTraversal();
 
 
 

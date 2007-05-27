@@ -1136,9 +1136,26 @@ void CompositeViewer::eventTraversal()
                     _eventVisitor->addEvent( event );
 
                     view->getSceneData()->accept(*_eventVisitor);
+
+                    // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
+                    // leave that to the scene update traversal.
+                    osg::NodeVisitor::TraversalMode tm = _eventVisitor->getTraversalMode();
+                    _eventVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
+
+                    if (view->getCamera() && view->getCamera()->getEventCallback()) view->getCamera()->accept(*_eventVisitor);
+
+                    for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+                    {
+                        osg::Camera* camera = view->getSlave(i)._camera.get();
+                        if (camera && camera->getEventCallback()) camera->accept(*_eventVisitor);
+                    }
+
+                    _eventVisitor->setTraversalMode(tm);
+
                 }
             }
         }
+        
     }
 }
 
@@ -1153,7 +1170,8 @@ void CompositeViewer::updateTraversal()
         sitr != scenes.end();
         ++sitr)
     {
-        (*sitr)->frameUpdateTraversal();
+        (*sitr)->updateTraversal();
+
     }
 
 
@@ -1162,6 +1180,28 @@ void CompositeViewer::updateTraversal()
         ++vitr)
     {
         View* view = vitr->get();
+
+        Scene* scene = view->getScene();
+        osgUtil::UpdateVisitor* uv = scene ? scene->getUpdateVisitor() : 0;
+        if (uv)
+        {
+            // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
+            // leave that to the scene update traversal.
+            osg::NodeVisitor::TraversalMode tm = uv->getTraversalMode();
+            uv->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
+
+            if (view->getCamera() && view->getCamera()->getUpdateCallback()) view->getCamera()->accept(*uv);
+
+            for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+            {
+                osg::Camera* camera = view->getSlave(i)._camera.get();
+                if (camera && camera->getUpdateCallback()) camera->accept(*uv);
+            }
+
+            uv->setTraversalMode(tm);
+        }
+
+
         if (view->getCameraManipulator()) 
         {
             view->setFusionDistance( view->getCameraManipulator()->getFusionDistanceMode(),

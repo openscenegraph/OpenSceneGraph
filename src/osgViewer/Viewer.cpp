@@ -2033,10 +2033,25 @@ void Viewer::eventTraversal()
             _eventVisitor->addEvent( event );
 
             getSceneData()->accept(*_eventVisitor);
+
+            // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
+            // leave that to the scene update traversal.
+            osg::NodeVisitor::TraversalMode tm = _eventVisitor->getTraversalMode();
+            _eventVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
+
+            if (_camera.valid() && _camera->getEventCallback()) _camera->accept(*_eventVisitor);
+
+            for(unsigned int i=0; i<getNumSlaves(); ++i)
+            {
+                osg::Camera* camera = getSlave(i)._camera.get();
+                if (camera && camera->getEventCallback()) camera->accept(*_eventVisitor);
+            }
+
+            _eventVisitor->setTraversalMode(tm);
+
         }
     }
 
-    
     if (getStats() && getStats()->collectStats("event"))
     {
         double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
@@ -2056,18 +2071,27 @@ void Viewer::updateTraversal()
 
     double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
-    osgUtil::UpdateVisitor* uv = _scene.valid() ? _scene->getUpdateVisitor() : 0;
+    // do the update traversal of the scene.
+    if (_scene.valid()) _scene->updateTraversal();
 
-    if (_camera.valid() && _camera->getUpdateCallback() && uv)
+    osgUtil::UpdateVisitor* uv = _scene.valid() ? _scene->getUpdateVisitor() : 0;
+    if (uv)
     {
+        // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
+        // leave that to the scene update traversal.
         osg::NodeVisitor::TraversalMode tm = uv->getTraversalMode();
         uv->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
-        _camera->accept(*uv);
-        uv->setTraversalMode(tm);
-        
-    }
 
-    if (_scene.valid()) _scene->frameUpdateTraversal();
+        if (_camera.valid() && _camera->getUpdateCallback()) _camera->accept(*uv);
+
+        for(unsigned int i=0; i<getNumSlaves(); ++i)
+        {
+            osg::Camera* camera = getSlave(i)._camera.get();
+            if (camera && camera->getUpdateCallback()) camera->accept(*uv);
+        }
+
+        uv->setTraversalMode(tm);
+    }
 
     if (_cameraManipulator.valid())
     {

@@ -89,14 +89,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
 	          "",
 	          "");
-	I_Method0(void, frameAdvance,
+	I_Method0(void, advance,
 	          Properties::VIRTUAL,
-	          __void__frameAdvance,
+	          __void__advance,
 	          "",
 	          "");
-	I_Method0(void, frameUpdateTraversal,
+	I_Method0(void, updateTraversal,
 	          Properties::VIRTUAL,
-	          __void__frameUpdateTraversal,
+	          __void__updateTraversal,
 	          "",
 	          "");
 	I_Method0(void, init,

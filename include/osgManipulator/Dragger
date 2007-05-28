@@ -36,9 +36,9 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         PointerInfo();
 
         PointerInfo(const PointerInfo& rhs):
-            _pixel_x(rhs._pixel_x),
-            _pixel_y(rhs._pixel_y),
-            _camera(rhs._camera),
+            _nearPoint(rhs._nearPoint),
+            _farPoint(rhs._farPoint),
+            _eyeDir(rhs._eyeDir),
             _hitList(rhs._hitList)
         {
             _hitIter = _hitList.begin();
@@ -63,35 +63,43 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         typedef std::list< NodePathIntersectionPair> IntersectionList;
 
 
-        osg::Vec2 pointToProject() const { return osg::Vec2(_pixel_x, _pixel_y); }
         osg::Vec3 getLocalIntersectPoint() const { return _hitIter->second; }
 
-        bool projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const;
 
-        bool projectWindowXYIntoObject(osg::Vec3& nearPoint, osg::Vec3& farPoint) const
-        {
-            return projectWindowXYIntoObject(pointToProject(), nearPoint, farPoint);
+        
+        void setNearFarPoints (osg::Vec3 nearPoint, osg::Vec3 farPoint) {
+            _nearPoint = nearPoint;
+            _farPoint=farPoint;
+            _eyeDir = farPoint - nearPoint;
         }
-
-        bool projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const;
-
-        const osg::Matrix& getViewMatrix() const { return _camera->getViewMatrix(); }
+        
+        const osg::Vec3& getEyeDir() const {return _eyeDir;}
+        
+        void getNearFarPoints( osg::Vec3& nearPoint, osg::Vec3& farPoint) const {
+            nearPoint = _nearPoint;
+            farPoint = _farPoint;
+        }
 
         bool contains(const osg::Node* node) const;
 
         void setCamera(osg::Camera* camera)
         {
-            _camera = camera;
-            if (_camera)
+            
+            if (camera)
             {
-                _MVPW = _camera->getViewMatrix() * _camera->getProjectionMatrix();
-                if (_camera->getViewport()) _MVPW.postMult(_camera->getViewport()->computeWindowMatrix());
+                _MVPW = camera->getViewMatrix() * camera->getProjectionMatrix();
+                if (camera->getViewport()) _MVPW.postMult(camera->getViewport()->computeWindowMatrix());
                 _inverseMVPW.invert(_MVPW);
+                osg::Vec3 eye, center, up;
+                camera->getViewMatrix().getLookAt(eye, center, up);
+                _eyeDir = eye - center;
+
             }
             else
             {
                 _MVPW.makeIdentity();
                 _inverseMVPW.makeIdentity();
+                _eyeDir = osg::Vec3(0,0,1);
             }
 
         }
@@ -105,17 +113,19 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
         void setMousePosition(float pixel_x, float pixel_y)
         {   
-            _pixel_x = pixel_x;
-            _pixel_y = pixel_y;
+            projectWindowXYIntoObject(osg::Vec2(pixel_x, pixel_y), _nearPoint, _farPoint);
         }
+    protected:
+        bool projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const;
 
     public:
-
-        float _pixel_x, _pixel_y;
-        osg::Camera* _camera;
-
         IntersectionList _hitList;
-        IntersectionList::const_iterator _hitIter;
+        IntersectionList::iterator _hitIter;
+
+    protected:
+       
+        osg::Vec3 _nearPoint,_farPoint;
+        osg::Vec3 _eyeDir;
 
         osg::Matrix _MVPW;
         osg::Matrix _inverseMVPW;
@@ -139,14 +149,14 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
         const CommandManager* getCommandManager() const { return _commandManager; }
 
         /**
-	 * Set/Get parent dragger. For simple draggers parent points to itself.
-	 * For composite draggers parent points to the parent dragger that uses
-	 * this dragger.
-	 */
+         * Set/Get parent dragger. For simple draggers parent points to itself.
+         * For composite draggers parent points to the parent dragger that uses
+         * this dragger.
+         */
         virtual void setParentDragger(Dragger* parent) { _parentDragger = parent; }
         Dragger* getParentDragger() { return _parentDragger; }
         const Dragger* getParentDragger() const { return _parentDragger; }
-	
+
         /** Returns 0 if this Dragger is not a CompositeDragger. */
         virtual const CompositeDragger* getComposite() const { return 0; }
 
@@ -163,7 +173,7 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
         
         CommandManager* _commandManager;
 
-        Dragger*	_parentDragger;
+        Dragger*  _parentDragger;
        
 };
 
@@ -210,12 +220,12 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
  * could have a line with an invisible cylinder around it to enable picking on 
  * that line.
  */
-void setDrawableToAlwaysCull(osg::Drawable& drawable);
+void OSGMANIPULATOR_EXPORT setDrawableToAlwaysCull(osg::Drawable& drawable);
 
 /**
  * Convenience function for setting the material color on a node.
  */
-void setMaterialColor(const osg::Vec4& color, osg::Node& node);
+void OSGMANIPULATOR_EXPORT setMaterialColor(const osg::Vec4& color, osg::Node& node);
 
 }
 

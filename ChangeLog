@@ -1,3 +1,337 @@
+2007-05-28 10:14 +0000 [r6771]  robert:
+
+	* From Frauciel Luc, "Added support for other pointers than mouses
+	  by using a nearpoint and farpoint instead of mousex,mousey +
+	  Camera (see Dragger and Dragger.cpp). The major modification
+	  concern the LineProjector class in Projector.cpp. The
+	  intersection was previously done in window space, I've modified
+	  it to compute it in object space."
+
+2007-05-28 09:30 +0000 [r6770]  robert:
+
+	* Removed old ProgrammingGuide as this is now replaced by the
+	  proper Quick Start Guide.
+
+2007-05-27 19:35 +0000 [r6769]  robert:
+
+	* Updated wrappers
+
+2007-05-27 18:18 +0000 [r6768]  robert:
+
+	* Updated wrappers
+
+2007-05-27 17:29 +0000 [r6767]  robert:
+
+	* Added camera event callback support into osgViewer
+
+2007-05-27 15:24 +0000 [r6766]  robert:
+
+	* Updated calling of master camera's update callback
+
+2007-05-27 14:52 +0000 [r6764-6765]  robert:
+
+	* Added testing to see if camera allows events before automatically
+	  attaching a trackball manipulator
+
+	* Added option for using the different overlay techniques.
+
+2007-05-26 16:02 +0000 [r6763]  robert:
+
+	* Updated wrappers
+
+2007-05-26 15:55 +0000 [r6762]  robert:
+
+	* Added a basic configure script to allow the setting of Release
+	  build by default.
+
+2007-05-26 15:49 +0000 [r6760-6761]  robert:
+
+	* Fixes to help C# binding dev.
+
+	* From Blake Williams, "I discovered why the \u2013CompositeViewer
+	  option for the osghud example does not work. The run() function
+	  adds a camera manipulator to each view that does not have one
+	  assigned, which causes the view with the HUD camera to point
+	  somewhere other than where it should. I just added a check before
+	  a new default camera manipulator is added to ensure that the view
+	  allows event focus before a camera manipulator is added."
+
+2007-05-26 15:42 +0000 [r6759]  robert:
+
+	* From Charles Cole, "Attached are mods to the OpenFlight plug-in
+	  to help further implement the specification. With these mods,
+	  blink sequences are now created for flashing light point nodes,
+	  either palletized (v.15.8 and later) or non-palletized (15.7 and
+	  earlier). Thanks to Brede for his implementation of the
+	  palletized light point nodes. There is still work to do on adding
+	  the capability to properly handle light point system nodes, but
+	  this does add some capability that did not previously exist. So,
+	  I wanted to at least submit this and I will hopefully provide the
+	  additional capability in the near future. I've tested the code
+	  modifications with Visual Studio 2005. I don't have the means to
+	  test any other operating system, but I would suspect that there
+	  shouldn't be any issue (famous last words). I used the test files
+	  that I uploaded to the users forum to test the changes. In
+	  addition to the added capability, I changed the light point node
+	  radius to the "actualPixelSize" value in the file. Previously,
+	  the radius was set to half the actual pixel size (see
+	  LightPointRecords.cpp). Not sure why this was the case. But, it
+	  was brought to my attention by a co-worker who created the
+	  OpenFlight files and was testing them with different viewers. If
+	  there's some history for setting the radius to half the size,
+	  then this change can be omitted."
+
+2007-05-26 15:17 +0000 [r6758]  robert:
+
+	* Added exclude of svn directories.
+
+2007-05-25 19:35 +0000 [r6757]  robert:
+
+	* From Charles Cole, "he attached code implements the
+	  LightPointSystem class to allow for the OpenFlight plug-in to
+	  read and handle light point system nodes. The behavior is very
+	  similar to the old plug-in in that a MultiSwitch node is created
+	  to handle the "enabled" flag bit set in the node record. The code
+	  also reverts the changes for the actualPixelSize as mentioned
+	  above. And lastly, the code requires the previously submitted
+	  changes for the plug-in. As for the other changes, I've tested
+	  the code with Visual Studio 2005 and the files that I posted in
+	  the users forum. With all of the submitted changes, the
+	  OpenFlight plug-in should now be capable of loading files with
+	  light point system nodes and the use of palletized light points
+	  and non-palletized light points. "
+
+2007-05-25 19:32 +0000 [r6756]  robert:
+
+	* Comment out the setting of single threading.
+
+2007-05-25 16:00 +0000 [r6754-6755]  robert:
+
+	* Added s/getOverlayBaseHeight methods
+
+	* Added some debug message to the set/getWindowSystemInterface
+	  function
+
+2007-05-25 15:27 +0000 [r6751-6753]  robert:
+
+	* Introduce C entry point support for plugin setup for better
+	  static build support
+
+	* Added C entry point graphicswindow_X11() to help with static
+	  build support
+
+	* Added osgstaticviewer example to demonstrate how to put a static
+	  lib built viewer
+
+2007-05-25 13:15 +0000 [r6750]  robert:
+
+	* From Luigi Calori, build fixes for Win32 build osg WxWidgets
+	  example
+
+2007-05-25 10:14 +0000 [r6748-6749]  robert:
+
+	* Implemnet clampping of ovleray polytope to base plane
+
+	* Changed debug message to INFO
+
+2007-05-24 16:11 +0000 [r6747]  robert:
+
+	* From Colin McDonald, "The writeImage method in
+	  ReaderWriterPNM.cpp had an error checking the accepted file
+	  extensions, so that once the plugin was loaded in the Registry it
+	  would grab any image file write request, regardless of the file
+	  extension. This was a particular problem if it was statically
+	  loaded."
+
+2007-05-24 14:20 +0000 [r6746]  robert:
+
+	* Improved the polytope cutting and project calculation
+
+2007-05-24 10:15 +0000 [r6745]  robert:
+
+	* From Peter Hrenka, fixes regarding line-strips and -loops.
+
+2007-05-24 09:49 +0000 [r6744]  robert:
+
+	* From Olaf, "there are more dubious calls to istream::readsome
+	  instead of istream::read. IMHO it does make no sense here and
+	  potentially breaks this plugin."
+
+2007-05-24 08:51 +0000 [r6743]  robert:
+
+	* From Serge Lages, support for install api directories, with
+	  tweaks from Robert Osfield
+
+2007-05-23 19:30 +0000 [r6742]  robert:
+
+	* Fixed brackets
+
+2007-05-23 19:25 +0000 [r6741]  robert:
+
+	* Added automatic building of plugins as static when dynamic build
+	  is switch off.
+
+2007-05-23 15:24 +0000 [r6740]  robert:
+
+	* From Anders Backman, add -DJAS_WIN_MSVC_BUILD for Win32 build
+
+2007-05-23 15:14 +0000 [r6739]  robert:
+
+	* Made the local shaders definitions static const char to avoid
+	  multiple definiations
+
+2007-05-23 14:55 +0000 [r6738]  robert:
+
+	* Added insertion of center point into object polytope
+
+2007-05-23 13:26 +0000 [r6737]  robert:
+
+	* Added angular sorting of the points on the plane intersecting the
+	  cut plane.
+
+2007-05-23 12:35 +0000 [r6736]  robert:
+
+	* Updated wrappers
+
+2007-05-23 12:21 +0000 [r6735]  robert:
+
+	* Added platform specific GraphicsWindow* headers to public headers
+	  listings
+
+2007-05-23 11:05 +0000 [r6734]  robert:
+
+	* From Peter Hrenka, (note from Robert Osfield, renamed
+	  GenericPrimitiveFunctor mention below to
+	  TemplatePrimitiveFunctor). "Since we desperately needed a means
+	  for picking Lines and Points I implemented (hopefully!) proper
+	  geometrical tests for the PolytopeIntersector. First of all I
+	  implemented a new "GenericPrimiteFunctor" which is basically an
+	  extended copy TriangleFunctor which also handles Points, Lines
+	  and Quads through suitable overloads of operator(). I would have
+	  liked to call it "PrimitiveFunctor" but that name was already
+	  used... I used a template method to remove redundancy in the
+	  drawElements method overloads. If you know of platforms where
+	  this will not work I can change it to the style used in
+	  TriangleFunctor. In PolytopeIntersector.cpp I implemented a
+	  "PolytopePrimitiveIntersector" which provides the needed
+	  overloads for Points, Lines, Triangles and Quads to the
+	  GenericPrimitiveFunctor. This is then used in the intersect
+	  method of PolytopeIntersector. Implementation summary: - Points:
+	  Check distance to all planes - Lines: Check distance of both ends
+	  against each plane. If both are outside -> line is out If both
+	  are in -> continue checking One is in, one is out -> compute
+	  intersection point (candidate) Then check all candidates against
+	  all other polytope planes. The remaining candidates are the
+	  proper intersection points of the line with the polytope. -
+	  Triangles: Perform Line-Checks for all edges of the triangle as
+	  above. If there is an proper intersection -> done. In the case
+	  where there are more than 2 polytope plane to check against we
+	  have to check for the case where the triangle encloses the
+	  polytope. In that case the intersection lines of the polytope
+	  planes are computed and checked against the triangle. - Quads:
+	  handled as two triangles. This is implementation is certainly not
+	  the fastest. There are certainly ways and strategies to improve
+	  it. I also enabled the code for PolytopeIntersector in
+	  osgkeyboardmouse and added keybindings to switch the type of
+	  intersector ('p') and the picking coordinate system ('c') on the
+	  fly. Since the PolytopeIntersector does not have a canonical
+	  ordering for its intersections (as opposed to the
+	  LineSegementIntersector) I chaged the implementation to toggle
+	  all hit geometries. I tested the functionality with
+	  osgkeyboardmouse and several models and it seems to work for
+	  polygonal models. Special nodes such as billboards do not work.
+	  The next thing on my todo-list is to implement a an improved
+	  Intersection-Structure for the PolytopeIntersector. We need to
+	  know which primitives where hit (and where). "
+
+2007-05-23 10:57 +0000 [r6733]  robert:
+
+	* Added debug timing code
+
+2007-05-22 15:17 +0000 [r6732]  robert:
+
+	* Added _firstTimeToInitEyePoint = true to the setAutoRotateMode to
+	  force the AutoTransform to recompute its position on next frame.
+
+2007-05-22 14:00 +0000 [r6731]  robert:
+
+	* From Roger James, "Here is a small fix for the ac3d plugin
+	  geode.cpp. The fix is entirely localised to
+	  ac3d::Geode::OutputTriangleStripDARR. It resolves an issue when
+	  processing a DrawArrayLengths with multiple lengths where the
+	  vertex indices were incorrect for all but the first chunk."
+
+2007-05-22 13:48 +0000 [r6730]  robert:
+
+	* Changed the way the the InputRange is adjusted on the event state
+	  to fix bugs related to picking
+
+2007-05-22 09:32 +0000 [r6729]  robert:
+
+	* Added osg::Camera::ProjectionResizePolicy enum and associated
+	  methods for controlling how the field of view is adjust on window
+	  resizes.
+
+2007-05-21 18:46 +0000 [r6728]  robert:
+
+	* Added extra checks to make sure that graphics operations arn't
+	  done on no longer valid graphics contexts
+
+2007-05-21 18:17 +0000 [r6727]  robert:
+
+	* Fixed Viewer::checkWindowStatus() to work correctly when running
+	  single threaded
+
+2007-05-21 13:15 +0000 [r6725]  robert:
+
+	* Reverting Luigi's addition of argv[1] as it breaks the build.
+
+2007-05-21 12:34 +0000 [r6722]  robert:
+
+	* Updated readme
+
+2007-05-21 12:30 +0000 [r6716-6718]  robert:
+
+	* From Luigi Calori, changed hardwired "cow.osg" paramter to
+	  argv[1]
+
+	* Converted tabs to 4 spaces
+
+	* Updated version file for 1.9.5 release
+
+2007-05-21 11:49 +0000 [r6715]  robert:
+
+	* Fixed const method type
+
+2007-05-21 09:27 +0000 [r6714]  robert:
+
+	* Updated version numbers for 1.9.5 release
+
+2007-05-21 09:18 +0000 [r6713]  robert:
+
+	* Updated ChangeLog
+
+2007-05-21 08:01 +0000 [r6712]  robert:
+
+	* From Olaf Flebbe, "FlightGear/OSG on Windows did not load the
+	  Texture Fonts. 1) TXF Fonts are binary. 2) Do not rely on the
+	  result of istream::readsome if buffer _is_ empty and no data have
+	  been read before."
+
+2007-05-21 07:54 +0000 [r6711]  robert:
+
+	* Added static build support to export macros
+
+2007-05-21 06:57 +0000 [r6710]  robert:
+
+	* Added istream:imbue(std::locale::classic()) setting to prevent
+	  non classic locals from being used when the .osg plugin reads and
+	  writes.
+
+2007-05-20 17:38 +0000 [r6709]  robert:
+
+	* Introduced VERSION and SOVERSION'ing of libraries.
+
 2007-05-20 13:42 +0000 [r6706]  robert:
 
 	* From Stephan Huber, "attached you'll find some modifications and

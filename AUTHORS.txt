@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.9.5
+OpenSceneGraph Library 1.9.6
 
-256 Contributors:
+258 Contributors:
 
 Firstname Surname
 -----------------
@@ -19,9 +19,9 @@ Ulrich Hertlein
 Tree 
 Stephan Huber
 Mike Wittman
+Luigi Calori
 Trajce Nikolov
 Pavel Moloshtan
-Luigi Calori
 Tom Jolley
 Norman Vine
 Alberto Farre
@@ -31,13 +31,14 @@ Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Michael Gronager
-Chris Hanson
-Daniel Sjölie
 Colin McDonald
+Chris Hanson
 Roger James
+Daniel Sjölie
 Mathias Fröhlich
 Joran Jessurun
 Anré Garneau
+Olaf Flebbe
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -52,7 +53,6 @@ David Callu
 Ben Discoe
 Sasa Bistrovic
 Rainer Oder
-Olaf Flebbe
 Mike Connell
 Martin Naylor
 Martin Aumueller
@@ -88,6 +88,7 @@ Brad Christiansen
 Alberto Barbati
 Uwe Woessner
 Sohey Yamamoto
+Serge Lages
 Phil Atkin
 Paul Melis
 Michael Hartman
@@ -102,6 +103,7 @@ Gabor Dorka
 Donn Mielcarek
 Domenico Mangieri
 Daniel Larimer
+Charles Cole
 Bryan Thrall
 Andre Garneau
 Ali Botorabi
@@ -114,10 +116,10 @@ Terrex
 Steve Lunsford
 Stephan Eilemann
 Stanislav Blinov
-Serge Lages
 Roland Smeenk
 Riccardo Corsi
 Philip Lowman
+Peter Hrenka
 Perry Miller
 Nathan Monteleone
 Michael Henheffer
@@ -140,11 +142,13 @@ Fabio Mierlo
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
+Blake Williams
 Antoine Hue
 Andy Skinner
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
+Anders Backman
 Zbigniew Sroczynski
 Yuri Vilmanis
 Warren Macchi
@@ -219,6 +223,7 @@ Glenn Waldrom
 Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
+Frauciel Luc
 Frashid Lashkari
 Frank Warmerdam
 Frank Lindeman
@@ -241,18 +246,15 @@ Clay Fowler
 Chuck Sembroski
 Chuck Seberion
 Chris McGlone
-Charles Cole
 Carlos Garcea
 Brian Keener
 Brad Anderegg
 Bora Utka
 Blasius Czink
-Blake Williams
 Bart Gallet
 Axel Volley
 Andrew Reyonolds
 Andreas Jochens
-Anders Backman
 Allen Bierbaum
 Alberto Jaspe
 Alan Purvis

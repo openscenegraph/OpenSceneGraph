@@ -81,18 +81,18 @@ public:
             Face& face = createFace();
             face.plane.set(0.0,1.0,0.0,1.0);
             face.vertices.push_back(v000);
-            face.vertices.push_back(v010);
-            face.vertices.push_back(v110);
             face.vertices.push_back(v100);
+            face.vertices.push_back(v101);
+            face.vertices.push_back(v001);
         }
 
         {   // top plane.
             Face& face = createFace();
             face.plane.set(0.0,-1.0,0.0,1.0);
-            face.vertices.push_back(v001);
-            face.vertices.push_back(v101);
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v110);
         }
         
         if (withNear)
@@ -100,24 +100,30 @@ public:
             Face& face = createFace();
             face.plane.set(0.0,0.0,-1.0,1.0);
             face.vertices.push_back(v000);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v110);
             face.vertices.push_back(v100);
-            face.vertices.push_back(v101);
-            face.vertices.push_back(v001);
         }        
         
         if (withFar)
         {   // far plane
             Face& face = createFace();
             face.plane.set(0.0,0.0,1.0,1.0);
-            face.vertices.push_back(v010);
-            face.vertices.push_back(v011);
+            face.vertices.push_back(v001);
+            face.vertices.push_back(v101);
             face.vertices.push_back(v111);
-            face.vertices.push_back(v110);
+            face.vertices.push_back(v011);
         }        
+
     }
 
     void setToBoundingBox(const osg::BoundingBox& bb)
     {
+#if 0    
+        osg::notify(osg::NOTICE)<<"setToBoundingBox xrange "<<bb.xMin()<<" "<<bb.xMax()<<std::endl;
+        osg::notify(osg::NOTICE)<<"                        "<<bb.yMin()<<" "<<bb.yMax()<<std::endl;
+        osg::notify(osg::NOTICE)<<"                        "<<bb.zMin()<<" "<<bb.zMax()<<std::endl;
+#endif    
         const osg::Vec3d v000(bb.xMin(),bb.yMin(), bb.zMin());
         const osg::Vec3d v010(bb.xMin(),bb.yMax(), bb.zMin());
         const osg::Vec3d v001(bb.xMin(),bb.yMin(), bb.zMax());
@@ -129,7 +135,7 @@ public:
         
         _faces.clear();
 
-        {   // left plane.
+        {   // x min plane
             Face& face = createFace();
             face.plane.set(1.0,0.0,0.0,-bb.xMin());
             face.vertices.push_back(v000);
@@ -138,7 +144,7 @@ public:
             face.vertices.push_back(v010);
         }
 
-        {   // right plane.
+        {   // x max plane.
             Face& face = createFace();
             face.plane.set(-1.0,0.0,0.0,bb.xMax());
             face.vertices.push_back(v100);
@@ -147,39 +153,39 @@ public:
             face.vertices.push_back(v101);
         }
 
-        {   // bottom plane.
+        {   // y min plane.
             Face& face = createFace();
             face.plane.set(0.0,1.0,0.0,-bb.yMin());
             face.vertices.push_back(v000);
-            face.vertices.push_back(v010);
-            face.vertices.push_back(v110);
             face.vertices.push_back(v100);
+            face.vertices.push_back(v101);
+            face.vertices.push_back(v001);
         }
 
-        {   // top plane.
+        {   // y max plane.
             Face& face = createFace();
             face.plane.set(0.0,-1.0,0.0,bb.yMax());
-            face.vertices.push_back(v001);
-            face.vertices.push_back(v101);
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v110);
         }
-        {   // near plane
+        {   // z min plane
             Face& face = createFace();
             face.plane.set(0.0,0.0,1.0,-bb.zMin());
             face.vertices.push_back(v000);
+            face.vertices.push_back(v010);
+            face.vertices.push_back(v110);
             face.vertices.push_back(v100);
-            face.vertices.push_back(v101);
-            face.vertices.push_back(v001);
         }        
         
-        {   // far plane
+        {   // z max plane
             Face& face = createFace();
             face.plane.set(0.0,0.0,-1.0,bb.zMax());
-            face.vertices.push_back(v010);
-            face.vertices.push_back(v011);
+            face.vertices.push_back(v001);
+            face.vertices.push_back(v101);
             face.vertices.push_back(v111);
-            face.vertices.push_back(v110);
+            face.vertices.push_back(v011);
         }        
         
     }
@@ -322,9 +328,126 @@ public:
     }
 
 
-    void projectDowntoBase(const osg::Vec3d& normal, double minHeight)
+    void projectDowntoBase(const osg::Vec3d& control, const osg::Vec3d& normal)
     {
-        osg::notify(osg::NOTICE)<<"CustomPolytop::projectDowntoBase not implementated yet."<<std::endl;
+        // osg::notify(osg::NOTICE)<<"CustomPolytope::projectDowntoBase not implementated yet."<<std::endl;
+
+        Faces removedFaces;
+    
+        Faces::iterator itr;
+        for(itr = _faces.begin();
+            itr != _faces.end();
+            )
+        {
+            Face& face = *itr;
+            if ((face.plane.getNormal()*normal)>=0.0)
+            {
+                removedFaces.push_back(face);
+                itr = _faces.erase(itr);
+            }
+            else
+            {
+                ++itr;
+            }
+        }
+        
+        if (removedFaces.empty()) return;        
+
+        typedef std::pair<osg::Vec3d, osg::Vec3d> Edge;
+        typedef std::map<Edge,int> Edges;
+        Edges edges;
+
+        double numVerticesAdded=0.0;        
+        osg::Vec3d center;
+        for(itr = removedFaces.begin();
+            itr != removedFaces.end();
+            ++itr)
+        {
+            Face& face = *itr;
+            Vertices& vertices = face.vertices;
+            for(unsigned int i=0; i<vertices.size(); ++i)
+            {
+                osg::Vec3d& a = vertices[i];
+                osg::Vec3d& b = vertices[ (i+1) % vertices.size()];
+                if (a<b) ++edges[Edge(a,b)];
+                else ++edges[Edge(b,a)];
+                
+                center += a;
+                numVerticesAdded += 1.0;
+            }
+        }
+        
+        if (numVerticesAdded==0.0) return;
+        center /= numVerticesAdded;
+        
+        typedef std::set<osg::Vec3> VertexSet;
+        VertexSet uniqueVertices;
+        
+        for(Edges::iterator eitr = edges.begin();
+            eitr != edges.end();
+            ++eitr)
+        {
+            if (eitr->second==1) 
+            {
+                // osg::notify(osg::NOTICE)<<"     edge Ok"<<std::endl;
+                const Edge& edge = eitr->first;
+                
+                double h_first = (edge.first-control) * normal;
+                osg::Vec3d projected_first = edge.first - normal * h_first;
+                
+                double h_second = (edge.second-control) * normal;
+                osg::Vec3d projected_second = edge.second - normal * h_second;
+                
+                Face face;
+                face.plane.set(projected_first, edge.first, edge.second);
+                face.vertices.push_back(projected_first);
+                face.vertices.push_back(projected_second);
+                face.vertices.push_back(edge.second);
+                face.vertices.push_back(edge.first);
+
+                if (face.plane.distance(center)<0.0) face.plane.flip();
+                _faces.push_back(face);
+                
+                uniqueVertices.insert(projected_first);
+                uniqueVertices.insert(projected_second);
+            }
+        }
+        
+        Face newFace;
+        newFace.plane.set(normal,control);
+        
+        osg::Vec3d side = ( fabs(normal.x()) < fabs(normal.y()) ) ? 
+                          osg::Vec3(1.0, 0.0, 0.0) :
+                          osg::Vec3(0.0, 1.0, 0.0);
+
+        osg::Vec3 v = normal ^ side;
+        v.normalize();
+
+        osg::Vec3 u = v ^ normal;
+        u.normalize();
+
+        typedef std::map<double, Vec3d> AnglePositions;
+        AnglePositions anglePositions;
+        for(VertexSet::iterator vitr = uniqueVertices.begin();
+            vitr != uniqueVertices.end();
+            ++vitr)
+        {
+            osg::Vec3d delta = *vitr - center;
+            double angle = atan2(delta * u, delta * v);
+            if (angle<0.0) angle += 2.0*osg::PI;
+            anglePositions[angle] = *vitr;
+        }
+
+        for(AnglePositions::iterator aitr = anglePositions.begin();
+            aitr != anglePositions.end();
+            ++aitr)
+        {
+            newFace.vertices.push_back(aitr->second);
+        }
+        
+        _faces.push_back(newFace);
+
+        
     }
 
 
@@ -521,7 +644,7 @@ public:
             ++itr)
         {
             Face& face = *itr;
-            geometry->addPrimitiveSet( new osg::DrawArrays(GL_LINE_STRIP, vertices->size(), face.vertices.size()) );
+            geometry->addPrimitiveSet( new osg::DrawArrays(GL_LINE_LOOP, vertices->size(), face.vertices.size()) );
             for(Vertices::iterator vitr = face.vertices.begin();
                 vitr != face.vertices.end();
                 ++vitr)
@@ -1034,25 +1157,24 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         else
         {
             double minHeight = -1000.0;
-            overlayPolytope.projectDowntoBase(osg::Vec3d(0.0,0.0,1.0), _overlayBaseHeight);
+            overlayPolytope.projectDowntoBase(osg::Vec3d(0.0,0.0,_overlayBaseHeight), osg::Vec3d(0.0,0.0,1.0));
         }
 
         
-        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>500)
+        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>0)
         {
             overlayData._geode->removeDrawables(0, 3);
         }        
 
         if (overlayData._geode.valid())
         {
-            //overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,0.0f,1.0f)));
-            //overlayData._geode->addDrawable(frustum.createDrawable(osg::Vec4d(0.0f,0.0f,1.0f,1.0f)));
+            overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,0.0f,1.0f)));
+            overlayData._geode->addDrawable(frustum.createDrawable(osg::Vec4d(0.0f,0.0f,1.0f,1.0f)));
         }
-
 
         CustomPolytope::Vertices corners;
         
-        overlayPolytope.cut(frustum);
+        //overlayPolytope.cut(frustum);
         overlayPolytope.getPoints(corners);
         
         if (overlayData._geode.valid())

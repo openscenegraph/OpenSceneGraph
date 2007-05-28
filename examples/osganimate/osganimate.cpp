@@ -181,6 +181,7 @@ osg::Node* createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique techn
 
     osg::Group* root = new osg::Group;
 
+    float baseHeight = center.z()-radius*0.6;
     osg::Node* baseModel = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius);
     osg::Node* movingModel = createMovingModel(center,radius*0.8f);
 
@@ -189,6 +190,7 @@ osg::Node* createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique techn
         osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode(technique);
         overlayNode->setContinuousUpdate(true);
         overlayNode->setOverlaySubgraph(movingModel);
+        overlayNode->setOverlayBaseHeight(baseHeight);
         overlayNode->addChild(baseModel);
         root->addChild(overlayNode);
     }
@@ -259,6 +261,8 @@ int main( int argc, char **argv )
 #else
 
     // normal viewer usage.
+
+    viewer.setUpViewOnSingleScreen(1);
 
     return viewer.run();
 

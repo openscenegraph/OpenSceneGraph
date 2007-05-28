@@ -1174,7 +1174,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         CustomPolytope::Vertices corners;
         
-        //overlayPolytope.cut(frustum);
+        overlayPolytope.cut(frustum);
         overlayPolytope.getPoints(corners);
         
         if (overlayData._geode.valid())
@@ -1191,7 +1191,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::Vec3d center = _overlaySubgraph->getBound().center();
         osg::Vec3d frustum_axis = cv->getLookVectorLocal();
         
-
         osg::Vec3d lookVector(0.0,0.0,-1.0);
         if (em)
         {
@@ -1199,15 +1198,14 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             lookVector.normalize();
         }
 
-#if 1        
         osg::Vec3d sideVector = lookVector ^ frustum_axis;
-#else
-        osg::Vec3d sideVector = lookVector ^ osg::Vec3d(0.0,0.0,1.0);
-#endif
         sideVector.normalize();
         
         osg::Vec3d upVector = sideVector ^ lookVector;
         upVector.normalize();
+    
+        osg::Vec3d overlayLookVector = upVector ^ sideVector;
+        overlayLookVector.normalize();
         
         // osg::notify(osg::NOTICE)<<"    lookVector ="<<lookVector<<std::endl;
         
@@ -1230,23 +1228,24 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             if (distance_up>max_up) max_up = distance_up;
         }
         
-        // osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
-        // osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
+        //osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
+        //osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
 
-        // osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
-        // osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
-
-
-        double bs_center = (bs.center()-center) * lookVector;
-        double bs_near = bs_center-bs.radius();
-        double bs_far = bs_center+bs.radius();
-        
-        // osg::notify(osg::NOTICE)<<"    bs_near="<<bs_near<<"  bs_far="<<bs_far<<std::endl;
-        // osg::notify(osg::NOTICE)<<"    bs.radius()="<<bs.radius()<<std::endl;
+        //osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
+        //osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
 
 
         camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
-        camera->setViewMatrixAsLookAt(bs.center(), osg::Vec3d(0.0f,0.0f,0.0f), upVector);
+
+            
+        if (em)
+        {
+            camera->setViewMatrixAsLookAt(bs.center(), osg::Vec3d(0.0f,0.0f,0.0f), upVector);
+        }
+        else
+        {
+            camera->setViewMatrixAsLookAt(bs.center(), bs.center()+overlayLookVector, upVector);
+        }
 
 
         // compute the matrix which takes a vertex from local coords into tex coords

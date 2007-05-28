@@ -329,7 +329,7 @@ osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
 // MAIN SCENE GRAPH BUILDING FUNCTION
 //////////////////////////////////////////////////////////////////////////////
 
-void build_world(osg::Group *root, unsigned int testCase)
+void build_world(osg::Group *root, unsigned int testCase, bool useOverlay, osgSim::OverlayNode::OverlayTechnique technique)
 {
 
     // create terrain
@@ -567,8 +567,26 @@ void build_world(osg::Group *root, unsigned int testCase)
     }
     
 
-    root->addChild(terrainGeode.get());
+    if (useOverlay)
+    {
+        osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode(technique);
+        overlayNode->getOrCreateStateSet()->setTextureAttribute(1, new osg::TexEnv(osg::TexEnv::DECAL));
 
+        const osg::BoundingSphere& bs = terrainGeode->getBound();
+        osg::Group* overlaySubgraph = createOverlay(bs.center(), bs.radius()*0.5f);
+        overlaySubgraph->addChild(ss.get());
+        overlayNode->setOverlaySubgraph(overlaySubgraph);
+        overlayNode->setOverlayTextureSizeHint(1024);
+        overlayNode->setOverlayBaseHeight(0.0);
+        overlayNode->addChild(terrainGeode.get());
+
+        root->addChild(overlayNode);
+    }
+    else
+    {
+      root->addChild(terrainGeode.get());
+    }
+    
     // create particle effects
     {    
         osg::Vec3 position = computeTerrainIntersection(terrainGeode.get(),100.0f,100.0f);
@@ -626,12 +644,13 @@ int main(int argc, char **argv)
 
     // if user request help write it out to cout.
     unsigned int testCase = 0;
-    if (arguments.read("-t", testCase)) {}
+    while (arguments.read("-t", testCase)) {}
 
+    bool useOverlay = false;
     osgSim::OverlayNode::OverlayTechnique technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
-    while (arguments.read("--object")) technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
-    while (arguments.read("--ortho") || arguments.read("--orthographic")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
-    while (arguments.read("--persp") || arguments.read("--perspective")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY;
+    while (arguments.read("--object")) { useOverlay = true; technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY; }
+    while (arguments.read("--ortho") || arguments.read("--orthographic")) { useOverlay = true; technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY; }
+    while (arguments.read("--persp") || arguments.read("--perspective")) { useOverlay = true; technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY; }
     
 
     // if user request help write it out to cout.
@@ -652,7 +671,7 @@ int main(int argc, char **argv)
     }
     
     osg::Group *root = new osg::Group;
-    build_world(root, testCase);
+    build_world(root, testCase, useOverlay, technique);
    
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(root);

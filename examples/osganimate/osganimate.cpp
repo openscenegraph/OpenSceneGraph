@@ -181,8 +181,8 @@ osg::Node* createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique techn
 
     osg::Group* root = new osg::Group;
 
-    float baseHeight = center.z()-radius*0.6;
-    osg::Node* baseModel = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.5),radius);
+    float baseHeight = center.z()-radius*0.5;
+    osg::Node* baseModel = createBase(osg::Vec3(center.x(), center.y(), baseHeight),radius);
     osg::Node* movingModel = createMovingModel(center,radius*0.8f);
 
     if (overlay)
@@ -190,7 +190,7 @@ osg::Node* createModel(bool overlay, osgSim::OverlayNode::OverlayTechnique techn
         osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode(technique);
         overlayNode->setContinuousUpdate(true);
         overlayNode->setOverlaySubgraph(movingModel);
-        overlayNode->setOverlayBaseHeight(baseHeight);
+        overlayNode->setOverlayBaseHeight(baseHeight-0.01);
         overlayNode->addChild(baseModel);
         root->addChild(overlayNode);
     }
@@ -243,18 +243,18 @@ int main( int argc, char **argv )
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
-#if 0
+#if 1
 
     // use of custom simulation time.
     
     viewer.realize();
     
-    double simulationTime = 100.0;
+    double simulationTime = 0.0;
     
     while (!viewer.done())
     {
         viewer.frame(simulationTime);
-        simulationTime -= 0.01;
+        simulationTime += 0.001;
     }
     
     return 0;

@@ -11,9 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Camera>
-#include <osg/Matrix>
 #include <osg/Node>
-#include <osg/Vec2>
 #include <osg/Vec3>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
@@ -202,34 +200,24 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__next,
 	          "",
 	          "");
-	I_Method0(osg::Vec2, pointToProject,
-	          Properties::NON_VIRTUAL,
-	          __osg_Vec2__pointToProject,
-	          "",
-	          "");
 	I_Method0(osg::Vec3, getLocalIntersectPoint,
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3__getLocalIntersectPoint,
 	          "",
 	          "");
-	I_Method3(bool, projectWindowXYIntoObject, IN, const osg::Vec2 &, windowCoord, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	I_Method2(void, setNearFarPoints, IN, osg::Vec3, nearPoint, IN, osg::Vec3, farPoint,
 	          Properties::NON_VIRTUAL,
-	          __bool__projectWindowXYIntoObject__C5_osg_Vec2_R1__osg_Vec3_R1__osg_Vec3_R1,
+	          __void__setNearFarPoints__osg_Vec3__osg_Vec3,
 	          "",
 	          "");
-	I_Method2(bool, projectWindowXYIntoObject, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	I_Method0(const osg::Vec3 &, getEyeDir,
 	          Properties::NON_VIRTUAL,
-	          __bool__projectWindowXYIntoObject__osg_Vec3_R1__osg_Vec3_R1,
+	          __C5_osg_Vec3_R1__getEyeDir,
 	          "",
 	          "");
-	I_Method2(bool, projectObjectIntoWindow, IN, const osg::Vec3 &, object, IN, osg::Vec3 &, window,
+	I_Method2(void, getNearFarPoints, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
 	          Properties::NON_VIRTUAL,
-	          __bool__projectObjectIntoWindow__C5_osg_Vec3_R1__osg_Vec3_R1,
-	          "",
-	          "");
-	I_Method0(const osg::Matrix &, getViewMatrix,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Matrix_R1__getViewMatrix,
+	          __void__getNearFarPoints__osg_Vec3_R1__osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method1(bool, contains, IN, const osg::Node *, node,
@@ -252,21 +240,23 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__setMousePosition__float__float,
 	          "",
 	          "");
+	I_ProtectedMethod3(bool, projectWindowXYIntoObject, IN, const osg::Vec2 &, windowCoord, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__projectWindowXYIntoObject__C5_osg_Vec2_R1__osg_Vec3_R1__osg_Vec3_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 0, 
 	                 __void__setCamera__osg_Camera_P1);
+	I_SimpleProperty(const osg::Vec3 &, EyeDir, 
+	                 __C5_osg_Vec3_R1__getEyeDir, 
+	                 0);
 	I_SimpleProperty(osg::Vec3, LocalIntersectPoint, 
 	                 __osg_Vec3__getLocalIntersectPoint, 
 	                 0);
-	I_SimpleProperty(const osg::Matrix &, ViewMatrix, 
-	                 __C5_osg_Matrix_R1__getViewMatrix, 
-	                 0);
-	I_PublicMemberProperty(float, _pixel_x);
-	I_PublicMemberProperty(float, _pixel_y);
-	I_PublicMemberProperty(osg::Camera *, _camera);
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList, _hitList);
-	I_PublicMemberProperty(osg::Matrix, _MVPW);
-	I_PublicMemberProperty(osg::Matrix, _inverseMVPW);
+	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList::iterator, _hitIter);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)

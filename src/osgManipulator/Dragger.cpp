@@ -18,9 +18,9 @@
 using namespace osgManipulator;
 
 PointerInfo::PointerInfo():
-    _pixel_x(0.0),
-    _pixel_y(0.0),
-    _camera(0)
+    _nearPoint(osg::Vec3()),
+    _farPoint(osg::Vec3()),
+    _eyeDir(osg::Vec3(0,0,1))
 {
     _hitIter = _hitList.begin();
 }
@@ -36,12 +36,6 @@ bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::V
     nearPoint = osg::Vec3(windowCoord.x(),windowCoord.y(),0.0f)*_inverseMVPW;
     farPoint = osg::Vec3(windowCoord.x(),windowCoord.y(),1.0f)*_inverseMVPW;
 
-    return true;
-}
-
-bool PointerInfo::projectObjectIntoWindow(const osg::Vec3& object,osg::Vec3& window) const
-{
-    window = object * _MVPW;
     return true;
 }
 

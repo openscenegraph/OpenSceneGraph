@@ -10,11 +10,11 @@ For the impatient, read the simplified build notes below.
 
 Robert Osfield.
 Project Lead.
-21st May 2007.
+29th May 2007.
 
 --
 
-Notes for 1.9.5 release
+Notes for 1.9.6 release
 =======================
 
 OpenThreads/include and src directories has now been merged directly into 
@@ -36,7 +36,8 @@ If you don't already have CMake installed on your system you can grab it
 from http://www.cmake.org, version 2.4.6 or later.
 
 Under unices (i.e. Linux, IRIX, Solaris, Free-BSD, HP-Ux, AIX, OSX) use the
-cmake or ccmake commandline utils:
+cmake or ccmake commandline utils or use the included simple (one line) 
+configure script that'll run cmake for you:
  
   cd OpenSceneGraph
   ./configure
@@ -52,5 +53,3 @@ guide you through the process:
 For further details on compiliation, installation and platform specific information
 read "Getting Started" at http://www.openscenegraph.org, under 
 "Documentation".
-
-

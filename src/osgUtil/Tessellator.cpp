@@ -702,18 +702,52 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
         primItr!=_primList.end();
         ++primItr, ++_index)
         {
-              Prim* prim = primItr->get();
-              
-              osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
-              for(Prim::VecList::iterator vitr=prim->_vertices.begin();
-              vitr!=prim->_vertices.end();
-              ++vitr)
+              Prim* prim=primItr->get();
+              int ntris=0;
+
+              if(vertexPtrToIndexMap.size() <= 255)
               {
-                  elements->push_back(vertexPtrToIndexMap[*vitr]);
+                  osg::DrawElementsUByte* elements = new osg::DrawElementsUByte(prim->_mode);
+                  for(Prim::VecList::iterator vitr=prim->_vertices.begin();
+                  vitr!=prim->_vertices.end();
+                  ++vitr)
+                {
+                    elements->push_back(vertexPtrToIndexMap[*vitr]);
+                }
+
+                  // add to the drawn primitive list.
+                  geom.addPrimitiveSet(elements);
+                  ntris=elements->getNumIndices()/3;
               }
-              
-              // add to the drawn primitive list.
-              geom.addPrimitiveSet(elements);
+              else if(vertexPtrToIndexMap.size() > 255 && vertexPtrToIndexMap.size() <= 65535)
+              {
+                  osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(prim->_mode);
+                  for(Prim::VecList::iterator vitr=prim->_vertices.begin();
+                    vitr!=prim->_vertices.end();
+                    ++vitr)
+                  {
+                    elements->push_back(vertexPtrToIndexMap[*vitr]);
+                  }
+
+                  // add to the drawn primitive list.
+                  geom.addPrimitiveSet(elements);
+                  ntris=elements->getNumIndices()/3;
+              }
+              else
+              {
+                  osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(prim->_mode);
+                  for(Prim::VecList::iterator vitr=prim->_vertices.begin();
+                    vitr!=prim->_vertices.end();
+                    ++vitr)
+                  {
+                    elements->push_back(vertexPtrToIndexMap[*vitr]);
+                  }
+
+                  // add to the drawn primitive list.
+                  geom.addPrimitiveSet(elements);
+                  ntris=elements->getNumIndices()/3;
+              }
+
               if (primItr==_primList.begin()) 
               {   // first primitive so collect primitive normal & colour.
                   if (normals) {
@@ -754,7 +788,6 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
                     if (cols3) cols3->push_back(primCol3); // GWM Dec 2003 add flat shaded colour for new facet
                   }
                   if (prim->_mode==GL_TRIANGLES) {
-                      int ntris=elements->getNumIndices()/3;
                       if (geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE_SET ||
                           geom.getNormalBinding()==osg::Geometry::BIND_PER_PRIMITIVE) { // need one per triangle? Not one per set.
                           for (int ii=1; ii<ntris; ii++) {

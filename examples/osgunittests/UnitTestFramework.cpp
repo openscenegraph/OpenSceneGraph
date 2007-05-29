@@ -100,7 +100,7 @@ TestSuite* TestGraph::suite(const std::string& path, TestSuite* tsuite, bool cre
     // Dissect the path into it's constituent components
     do{
 
-        while( *it2 != '.' && it2 != path.end() ) ++it2;
+        while( it2 != path.end() && *it2 != '.' ) ++it2;
 
         // Consider a check for "" empty strings?
         pathComponents.push_back( std::string(it1,it2) );

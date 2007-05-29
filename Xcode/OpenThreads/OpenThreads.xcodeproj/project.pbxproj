@@ -1,0 +1,448 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00DAF8AA0BBE1A0E00EFEB98 /* Block in Headers */ = {isa = PBXBuildFile; fileRef = 00DAF8A70BBE1A0E00EFEB98 /* Block */; settings = {ATTRIBUTES = (Public, ); }; };
+		00DAF8AB0BBE1A0F00EFEB98 /* ReadWriteMutex in Headers */ = {isa = PBXBuildFile; fileRef = 00DAF8A80BBE1A0E00EFEB98 /* ReadWriteMutex */; settings = {ATTRIBUTES = (Public, ); }; };
+		00DAF8AC0BBE1A0F00EFEB98 /* ReentrantMutex in Headers */ = {isa = PBXBuildFile; fileRef = 00DAF8A90BBE1A0E00EFEB98 /* ReentrantMutex */; settings = {ATTRIBUTES = (Public, ); }; };
+		8D07F2BE0486CC7A007CD1D0 /* OpenThreads_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 32BAE0B70371A74B00C91783 /* OpenThreads_Prefix.pch */; };
+		8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
+		8D07F2C40486CC7A007CD1D0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
+		BE11833405D6FE3900EB53E5 /* PThreadBarrierPrivateData.h in Headers */ = {isa = PBXBuildFile; fileRef = BE11832C05D6FE3800EB53E5 /* PThreadBarrierPrivateData.h */; };
+		BE11833605D6FE3900EB53E5 /* PThreadConditionPrivateData.h in Headers */ = {isa = PBXBuildFile; fileRef = BE11832E05D6FE3800EB53E5 /* PThreadConditionPrivateData.h */; };
+		BE11833805D6FE3900EB53E5 /* PThreadMutexPrivateData.h in Headers */ = {isa = PBXBuildFile; fileRef = BE11833005D6FE3800EB53E5 /* PThreadMutexPrivateData.h */; };
+		BE11833905D6FE3900EB53E5 /* PThreadPrivateData.h in Headers */ = {isa = PBXBuildFile; fileRef = BE11833105D6FE3800EB53E5 /* PThreadPrivateData.h */; };
+		BE11835105D7022C00EB53E5 /* PThread.c++ in Sources */ = {isa = PBXBuildFile; fileRef = BE11832A05D6FE3800EB53E5 /* PThread.c++ */; };
+		BE11835205D7022C00EB53E5 /* PThreadBarrier.c++ in Sources */ = {isa = PBXBuildFile; fileRef = BE11832B05D6FE3800EB53E5 /* PThreadBarrier.c++ */; };
+		BE11835405D7022C00EB53E5 /* PThreadCondition.c++ in Sources */ = {isa = PBXBuildFile; fileRef = BE11832D05D6FE3800EB53E5 /* PThreadCondition.c++ */; };
+		BE11835605D7022C00EB53E5 /* PThreadMutex.c++ in Sources */ = {isa = PBXBuildFile; fileRef = BE11832F05D6FE3800EB53E5 /* PThreadMutex.c++ */; };
+		BE11837D05D7083B00EB53E5 /* Barrier in Headers */ = {isa = PBXBuildFile; fileRef = BE11836E05D7082A00EB53E5 /* Barrier */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE11837E05D7083B00EB53E5 /* Condition in Headers */ = {isa = PBXBuildFile; fileRef = BE11836F05D7082A00EB53E5 /* Condition */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE11837F05D7083B00EB53E5 /* Exports in Headers */ = {isa = PBXBuildFile; fileRef = BE11837005D7082A00EB53E5 /* Exports */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE11838005D7083B00EB53E5 /* Mutex in Headers */ = {isa = PBXBuildFile; fileRef = BE11837105D7082A00EB53E5 /* Mutex */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE11838105D7083B00EB53E5 /* ScopedLock in Headers */ = {isa = PBXBuildFile; fileRef = BE11837205D7082A00EB53E5 /* ScopedLock */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE11838205D7083B00EB53E5 /* Thread in Headers */ = {isa = PBXBuildFile; fileRef = BE11837305D7082A00EB53E5 /* Thread */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		00DAF8A70BBE1A0E00EFEB98 /* Block */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = Block; path = ../../include/OpenThreads/Block; sourceTree = SOURCE_ROOT; };
+		00DAF8A80BBE1A0E00EFEB98 /* ReadWriteMutex */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = ReadWriteMutex; path = ../../include/OpenThreads/ReadWriteMutex; sourceTree = SOURCE_ROOT; };
+		00DAF8A90BBE1A0E00EFEB98 /* ReentrantMutex */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = ReentrantMutex; path = ../../include/OpenThreads/ReentrantMutex; sourceTree = SOURCE_ROOT; };
+		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		32BAE0B70371A74B00C91783 /* OpenThreads_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenThreads_Prefix.pch; sourceTree = SOURCE_ROOT; };
+		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D07F2C80486CC7A007CD1D0 /* OpenThreads.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenThreads.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE11832A05D6FE3800EB53E5 /* PThread.c++ */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = "PThread.c++"; path = "../../src/OpenThreads/pthreads/PThread.c++"; sourceTree = SOURCE_ROOT; };
+		BE11832B05D6FE3800EB53E5 /* PThreadBarrier.c++ */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = "PThreadBarrier.c++"; path = "../../src/OpenThreads/pthreads/PThreadBarrier.c++"; sourceTree = SOURCE_ROOT; };
+		BE11832C05D6FE3800EB53E5 /* PThreadBarrierPrivateData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PThreadBarrierPrivateData.h; path = ../../src/OpenThreads/pthreads/PThreadBarrierPrivateData.h; sourceTree = SOURCE_ROOT; };
+		BE11832D05D6FE3800EB53E5 /* PThreadCondition.c++ */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = "PThreadCondition.c++"; path = "../../src/OpenThreads/pthreads/PThreadCondition.c++"; sourceTree = SOURCE_ROOT; };
+		BE11832E05D6FE3800EB53E5 /* PThreadConditionPrivateData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PThreadConditionPrivateData.h; path = ../../src/OpenThreads/pthreads/PThreadConditionPrivateData.h; sourceTree = SOURCE_ROOT; };
+		BE11832F05D6FE3800EB53E5 /* PThreadMutex.c++ */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = "PThreadMutex.c++"; path = "../../src/OpenThreads/pthreads/PThreadMutex.c++"; sourceTree = SOURCE_ROOT; };
+		BE11833005D6FE3800EB53E5 /* PThreadMutexPrivateData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PThreadMutexPrivateData.h; path = ../../src/OpenThreads/pthreads/PThreadMutexPrivateData.h; sourceTree = SOURCE_ROOT; };
+		BE11833105D6FE3800EB53E5 /* PThreadPrivateData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = PThreadPrivateData.h; path = ../../src/OpenThreads/pthreads/PThreadPrivateData.h; sourceTree = SOURCE_ROOT; };
+		BE11836E05D7082A00EB53E5 /* Barrier */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 30; name = Barrier; path = ../../include/OpenThreads/Barrier; sourceTree = SOURCE_ROOT; };
+		BE11836F05D7082A00EB53E5 /* Condition */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 30; name = Condition; path = ../../include/OpenThreads/Condition; sourceTree = SOURCE_ROOT; };
+		BE11837005D7082A00EB53E5 /* Exports */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 30; name = Exports; path = ../../include/OpenThreads/Exports; sourceTree = SOURCE_ROOT; };
+		BE11837105D7082A00EB53E5 /* Mutex */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 30; name = Mutex; path = ../../include/OpenThreads/Mutex; sourceTree = SOURCE_ROOT; };
+		BE11837205D7082A00EB53E5 /* ScopedLock */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 30; name = ScopedLock; path = ../../include/OpenThreads/ScopedLock; sourceTree = SOURCE_ROOT; };
+		BE11837305D7082A00EB53E5 /* Thread */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 30; name = Thread; path = ../../include/OpenThreads/Thread; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D07F2C30486CC7A007CD1D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2C40486CC7A007CD1D0 /* Carbon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DDFF38A45A11DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D07F2C80486CC7A007CD1D0 /* OpenThreads.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* OpenThreads */ = {
+			isa = PBXGroup;
+			children = (
+				BE11833F05D7005800EB53E5 /* Header */,
+				08FB77ACFE841707C02AAC07 /* Source */,
+				089C1665FE841158C02AAC07 /* Resources */,
+				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
+				034768DDFF38A45A11DB9C8B /* Products */,
+			);
+			name = OpenThreads;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AAFE841565C02AAC07 /* Carbon.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C1665FE841158C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D07F2C70486CC7A007CD1D0 /* Info.plist */,
+				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77ACFE841707C02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				BE11832A05D6FE3800EB53E5 /* PThread.c++ */,
+				BE11832B05D6FE3800EB53E5 /* PThreadBarrier.c++ */,
+				BE11832C05D6FE3800EB53E5 /* PThreadBarrierPrivateData.h */,
+				BE11832D05D6FE3800EB53E5 /* PThreadCondition.c++ */,
+				BE11832E05D6FE3800EB53E5 /* PThreadConditionPrivateData.h */,
+				BE11832F05D6FE3800EB53E5 /* PThreadMutex.c++ */,
+				BE11833005D6FE3800EB53E5 /* PThreadMutexPrivateData.h */,
+				BE11833105D6FE3800EB53E5 /* PThreadPrivateData.h */,
+				32BAE0B70371A74B00C91783 /* OpenThreads_Prefix.pch */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		BE11833F05D7005800EB53E5 /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				BE11835905D7027D00EB53E5 /* OpenThreads */,
+			);
+			name = Header;
+			sourceTree = "<group>";
+		};
+		BE11835905D7027D00EB53E5 /* OpenThreads */ = {
+			isa = PBXGroup;
+			children = (
+				BE11836E05D7082A00EB53E5 /* Barrier */,
+				00DAF8A70BBE1A0E00EFEB98 /* Block */,
+				BE11836F05D7082A00EB53E5 /* Condition */,
+				BE11837005D7082A00EB53E5 /* Exports */,
+				BE11837105D7082A00EB53E5 /* Mutex */,
+				00DAF8A80BBE1A0E00EFEB98 /* ReadWriteMutex */,
+				00DAF8A90BBE1A0E00EFEB98 /* ReentrantMutex */,
+				BE11837205D7082A00EB53E5 /* ScopedLock */,
+				BE11837305D7082A00EB53E5 /* Thread */,
+			);
+			name = OpenThreads;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8D07F2BD0486CC7A007CD1D0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00DAF8AA0BBE1A0E00EFEB98 /* Block in Headers */,
+				00DAF8AB0BBE1A0F00EFEB98 /* ReadWriteMutex in Headers */,
+				00DAF8AC0BBE1A0F00EFEB98 /* ReentrantMutex in Headers */,
+				BE11837D05D7083B00EB53E5 /* Barrier in Headers */,
+				BE11837E05D7083B00EB53E5 /* Condition in Headers */,
+				BE11837F05D7083B00EB53E5 /* Exports in Headers */,
+				BE11838005D7083B00EB53E5 /* Mutex in Headers */,
+				BE11838105D7083B00EB53E5 /* ScopedLock in Headers */,
+				BE11838205D7083B00EB53E5 /* Thread in Headers */,
+				8D07F2BE0486CC7A007CD1D0 /* OpenThreads_Prefix.pch in Headers */,
+				BE11833405D6FE3900EB53E5 /* PThreadBarrierPrivateData.h in Headers */,
+				BE11833605D6FE3900EB53E5 /* PThreadConditionPrivateData.h in Headers */,
+				BE11833805D6FE3900EB53E5 /* PThreadMutexPrivateData.h in Headers */,
+				BE11833905D6FE3900EB53E5 /* PThreadPrivateData.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8D07F2BC0486CC7A007CD1D0 /* OpenThreads */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0011012F0873634F0015C576 /* Build configuration list for PBXNativeTarget "OpenThreads" */;
+			buildPhases = (
+				8D07F2BD0486CC7A007CD1D0 /* Headers */,
+				8D07F2BF0486CC7A007CD1D0 /* Resources */,
+				8D07F2C10486CC7A007CD1D0 /* Sources */,
+				8D07F2C30486CC7A007CD1D0 /* Frameworks */,
+				8D07F2C50486CC7A007CD1D0 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenThreads;
+			productInstallPath = "$(HOME)/Library/Frameworks";
+			productName = OpenThreads;
+			productReference = 8D07F2C80486CC7A007CD1D0 /* OpenThreads.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 001101330873634F0015C576 /* Build configuration list for PBXProject "OpenThreads" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* OpenThreads */;
+			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
+			projectDirPath = "";
+			targets = (
+				8D07F2BC0486CC7A007CD1D0 /* OpenThreads */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D07F2BF0486CC7A007CD1D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D07F2C00486CC7A007CD1D0 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		8D07F2C50486CC7A007CD1D0 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D07F2C10486CC7A007CD1D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE11835105D7022C00EB53E5 /* PThread.c++ in Sources */,
+				BE11835205D7022C00EB53E5 /* PThreadBarrier.c++ in Sources */,
+				BE11835405D7022C00EB53E5 /* PThreadCondition.c++ in Sources */,
+				BE11835605D7022C00EB53E5 /* PThreadMutex.c++ in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C1666FE841158C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C1667FE841158C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		001101300873634F0015C576 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OpenThreads_Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_STYLE = Dynamic;
+				MACH_O_TYPE = mh_dylib;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x1FF00000,
+				);
+				PRODUCT_NAME = OpenThreads;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		001101310873634F0015C576 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OpenThreads_Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_STYLE = Dynamic;
+				MACH_O_TYPE = mh_dylib;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x1FF00000,
+				);
+				PRODUCT_NAME = OpenThreads;
+				SECTORDER_FLAGS = "";
+				STRIP_INSTALLED_PRODUCT = YES;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		001101320873634F0015C576 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_TRIGRAPHS = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = OpenThreads_Prefix.pch;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				LIBRARY_STYLE = Dynamic;
+				MACH_O_TYPE = mh_dylib;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-seg1addr",
+					0x1FF00000,
+				);
+				PRODUCT_NAME = OpenThreads;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Default;
+		};
+		001101340873634F0015C576 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../include,
+					"$(inherited)",
+				);
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				STRIP_STYLE = "non-global";
+			};
+			name = Development;
+		};
+		001101350873634F0015C576 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				DEPLOYMENT_POSTPROCESSING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = s;
+				HEADER_SEARCH_PATHS = ../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				STRIP_STYLE = "non-global";
+			};
+			name = Deployment;
+		};
+		001101360873634F0015C576 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				HEADER_SEARCH_PATHS = ../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				STRIP_STYLE = "non-global";
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0011012F0873634F0015C576 /* Build configuration list for PBXNativeTarget "OpenThreads" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001101300873634F0015C576 /* Development */,
+				001101310873634F0015C576 /* Deployment */,
+				001101320873634F0015C576 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		001101330873634F0015C576 /* Build configuration list for PBXProject "OpenThreads" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001101340873634F0015C576 /* Development */,
+				001101350873634F0015C576 /* Deployment */,
+				001101360873634F0015C576 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

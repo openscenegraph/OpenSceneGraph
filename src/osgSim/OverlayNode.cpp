@@ -834,6 +834,7 @@ void OverlayNode::OverlayData::setThreadSafeRefUnref(bool threadSafe)
 {
     if (_camera.valid()) _camera->setThreadSafeRefUnref(threadSafe);
     if (_texgenNode.valid()) _texgenNode->setThreadSafeRefUnref(threadSafe);
+    if (_overlayStateSet.valid()) _overlayStateSet->setThreadSafeRefUnref(threadSafe);
     if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->setThreadSafeRefUnref(threadSafe);
     if (_texture.valid()) _texture->setThreadSafeRefUnref(threadSafe);
 }
@@ -842,6 +843,7 @@ void OverlayNode::OverlayData::resizeGLObjectBuffers(unsigned int maxSize)
 {
     if (_camera.valid()) _camera->resizeGLObjectBuffers(maxSize);
     if (_texgenNode.valid()) _texgenNode->resizeGLObjectBuffers(maxSize);
+    if (_overlayStateSet.valid()) _overlayStateSet->resizeGLObjectBuffers(maxSize);
     if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->resizeGLObjectBuffers(maxSize);
     if (_texture.valid()) _texture->resizeGLObjectBuffers(maxSize);
 }
@@ -850,6 +852,7 @@ void OverlayNode::OverlayData::releaseGLObjects(osg::State* state) const
 {
     if (_camera.valid()) _camera->releaseGLObjects(state);
     if (_texgenNode.valid()) _texgenNode->releaseGLObjects(state);
+    if (_overlayStateSet.valid()) _overlayStateSet->releaseGLObjects(state);
     if (_mainSubgraphStateSet.valid()) _mainSubgraphStateSet->releaseGLObjects(state);
     if (_texture.valid()) _texture->releaseGLObjects(state);
 }
@@ -967,6 +970,12 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
     {
         overlayData._texgenNode = new osg::TexGenNode;
         overlayData._texgenNode->setTextureUnit(_textureUnit);
+    }
+
+    if (!overlayData._overlayStateSet) 
+    {
+        overlayData._overlayStateSet = new osg::StateSet;
+        // overlayData._overlayStateSet->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF);
     }
 
     if (!overlayData._mainSubgraphStateSet) 
@@ -1497,9 +1506,17 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 
+        cv->pushStateSet(overlayData._overlayStateSet.get());
+        
+        // _overlaySubgraph->setStateSet(overlayData._overlayStateSet.get());
+
         // if we need to redraw then do cull traversal on camera.
         camera->setClearColor(_overlayClearColor);
+        //camera->setStateSet(overlayData._overlayStateSet.get());
         camera->accept(*cv);
+
+        cv->popStateSet();
+
         _textureObjectValidList[contextID] = 1;
 
         overlayData._texgenNode->accept(*cv);

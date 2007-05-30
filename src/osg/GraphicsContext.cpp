@@ -501,7 +501,8 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
             }
             else
             {
-                switch(view->getCamera()->getProjectionResizePolicy())
+                Camera::ProjectionResizePolicy policy = view ? view->getCamera()->getProjectionResizePolicy() : camera->getProjectionResizePolicy();
+                switch(policy)
                 {
                     case(osg::Camera::HORIZONTAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
                     case(osg::Camera::VERTICAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;

@@ -1410,7 +1410,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                     osg::Vec2d v_max = va + (vb-va) * ( (max_up - va.y())/(vb.y()-va.y()) );
                     
                     double mid_va_side = (v_max.x() + v_min.x())*0.5;
-                    if (v_min.x() < mid_side &&
+                    if (v_min.x() > v_max.x() &&
+                        v_min.x() < mid_side &&
                         v_max.x() < mid_side &&
                         mid_va_side > min_side)
                     {
@@ -1427,7 +1428,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                     osg::Vec2d v_max = va + (vb-va) * ( (max_up - va.y())/(vb.y()-va.y()) );
 
                     double mid_va_side = (v_max.x() + v_min.x())*0.5;
-                    if (v_min.x() > mid_side &&
+                    if (v_min.x() < v_max.x() &&
+                        v_min.x() > mid_side &&
                         v_max.x() > mid_side &&
                         mid_va_side < max_side)
                     {
@@ -1442,7 +1444,10 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                     // osg::notify(osg::NOTICE)<<"Crossing va="<<va<<" vb="<<vb<<std::endl;
                 }
             }
-        }        
+        }
+        
+        if (topLeft.x() < min_side) min_side = topLeft.x();        
+        if (topRight.x() > max_side) max_side = topRight.x();        
 
 #if 0
         osg::notify(osg::NOTICE)<<"a  topLeft    = "<<topLeft<<std::endl;

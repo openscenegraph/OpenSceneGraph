@@ -38,6 +38,7 @@ public:
 
     struct Face
     {
+        std::string name;
         osg::Plane  plane;
         Vertices    vertices;
     };
@@ -61,6 +62,7 @@ public:
 
         {   // left plane.
             Face& face = createFace();
+            face.name = "left";
             face.plane.set(1.0,0.0,0.0,1.0);
             face.vertices.push_back(v000);
             face.vertices.push_back(v001);
@@ -70,6 +72,7 @@ public:
 
         {   // right plane.
             Face& face = createFace();
+            face.name = "right";
             face.plane.set(-1.0,0.0,0.0,1.0);
             face.vertices.push_back(v100);
             face.vertices.push_back(v110);
@@ -79,6 +82,7 @@ public:
 
         {   // bottom plane.
             Face& face = createFace();
+            face.name = "bottom";
             face.plane.set(0.0,1.0,0.0,1.0);
             face.vertices.push_back(v000);
             face.vertices.push_back(v100);
@@ -88,6 +92,7 @@ public:
 
         {   // top plane.
             Face& face = createFace();
+            face.name = "top";
             face.plane.set(0.0,-1.0,0.0,1.0);
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
@@ -98,6 +103,7 @@ public:
         if (withNear)
         {   // near plane
             Face& face = createFace();
+            face.name = "near";
             face.plane.set(0.0,0.0,-1.0,1.0);
             face.vertices.push_back(v000);
             face.vertices.push_back(v010);
@@ -108,6 +114,7 @@ public:
         if (withFar)
         {   // far plane
             Face& face = createFace();
+            face.name = "far";
             face.plane.set(0.0,0.0,1.0,1.0);
             face.vertices.push_back(v001);
             face.vertices.push_back(v101);
@@ -137,6 +144,7 @@ public:
 
         {   // x min plane
             Face& face = createFace();
+            face.name = "xMin";
             face.plane.set(1.0,0.0,0.0,-bb.xMin());
             face.vertices.push_back(v000);
             face.vertices.push_back(v001);
@@ -146,6 +154,7 @@ public:
 
         {   // x max plane.
             Face& face = createFace();
+            face.name = "xMax";
             face.plane.set(-1.0,0.0,0.0,bb.xMax());
             face.vertices.push_back(v100);
             face.vertices.push_back(v110);
@@ -155,6 +164,7 @@ public:
 
         {   // y min plane.
             Face& face = createFace();
+            face.name = "yMin";
             face.plane.set(0.0,1.0,0.0,-bb.yMin());
             face.vertices.push_back(v000);
             face.vertices.push_back(v100);
@@ -164,6 +174,7 @@ public:
 
         {   // y max plane.
             Face& face = createFace();
+            face.name = "yMax";
             face.plane.set(0.0,-1.0,0.0,bb.yMax());
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
@@ -172,6 +183,7 @@ public:
         }
         {   // z min plane
             Face& face = createFace();
+            face.name = "zMin";
             face.plane.set(0.0,0.0,1.0,-bb.zMin());
             face.vertices.push_back(v000);
             face.vertices.push_back(v010);
@@ -181,6 +193,7 @@ public:
         
         {   // z max plane
             Face& face = createFace();
+            face.name = "zMax";
             face.plane.set(0.0,0.0,-1.0,bb.zMax());
             face.vertices.push_back(v001);
             face.vertices.push_back(v101);
@@ -272,6 +285,7 @@ public:
                 // osg::notify(osg::NOTICE)<<"     edge Ok"<<std::endl;
                 const Edge& edge = eitr->first;
                 Face face;
+                face.name = "baseSide";
                 face.plane.set(vertex, edge.first, edge.second);
                 face.vertices.push_back(vertex);
                 face.vertices.push_back(edge.first);
@@ -320,7 +334,7 @@ public:
             
             osg::Plane basePlane(normal, center);
 
-            cut(basePlane);
+            cut(basePlane,"basePlane");
         }
     
 
@@ -399,6 +413,7 @@ public:
                 osg::Vec3d projected_second = edge.second - normal * h_second;
                 
                 Face face;
+                face.name = "baseSide";
                 face.plane.set(projected_first, edge.first, edge.second);
                 face.vertices.push_back(projected_first);
                 face.vertices.push_back(projected_second);
@@ -414,6 +429,7 @@ public:
         }
         
         Face newFace;
+        newFace.name = "basePlane";
         newFace.plane.set(normal,control);
         
         osg::Vec3d side = ( fabs(normal.x()) < fabs(normal.y()) ) ? 
@@ -450,6 +466,113 @@ public:
         
     }
 
+    void computeSilhoette(const osg::Vec3d& normal, Vertices& vertices)
+    {
+
+        typedef std::pair<osg::Vec3d, osg::Vec3d> EdgePair;
+        typedef std::vector<Face*> EdgeFaces;
+        typedef std::map<EdgePair, EdgeFaces> EdgeMap;
+
+        EdgeMap edgeMap;
+
+        
+        for(Faces::iterator itr = _faces.begin();
+            itr != _faces.end();
+            ++itr)
+        {
+            Face& face = *itr;
+            for(unsigned int i=0; i<face.vertices.size(); ++i)
+            {
+                osg::Vec3d& va = face.vertices[i];
+                osg::Vec3d& vb = face.vertices[(i+1)%face.vertices.size()];
+                if (va < vb) edgeMap[EdgePair(va,vb)].push_back(&face);
+                else edgeMap[EdgePair(vb,va)].push_back(&face);
+            }
+        }
+        
+        typedef std::set<osg::Vec3> VertexSet;
+        VertexSet uniqueVertices;
+        
+        for(EdgeMap::iterator eitr = edgeMap.begin();
+            eitr != edgeMap.end();
+            ++eitr)
+        {
+            const EdgePair& edge = eitr->first;
+            const EdgeFaces& edgeFaces = eitr->second;
+            if (edgeFaces.size()==1)
+            {
+                // osg::notify(osg::NOTICE)<<"Open edge found "<<edgeFaces.front()->name<<std::endl;
+            }
+            else if (edgeFaces.size()==2)
+            {
+                
+                double dotProduct0 = edgeFaces[0]->plane.getNormal() * normal;
+                double dotProduct1 = edgeFaces[1]->plane.getNormal() * normal;
+                if (dotProduct0 * dotProduct1 <0.0)
+                {
+                    // osg::notify(osg::NOTICE)<<"  Silhoette edge found "<<edgeFaces[0]->name<<" "<<edgeFaces[1]->name<<std::endl;
+                    uniqueVertices.insert(edge.first);
+                    uniqueVertices.insert(edge.second);
+                }
+                else
+                {
+                    // osg::notify(osg::NOTICE)<<"  Non silhoette edge found "<<edgeFaces[0]->name<<" "<<edgeFaces[1]->name<<std::endl;
+                }
+                
+            }
+            else
+            {
+                // osg::notify(osg::NOTICE)<<"Confused edge found "<<edgeFaces.size()<<std::endl;
+            }
+        }
+
+
+        // compute center
+        osg::Vec3d center;
+
+        VertexSet::iterator vitr;
+        for(vitr = uniqueVertices.begin();
+            vitr != uniqueVertices.end();
+            ++vitr)
+        {
+            center += *vitr;
+        }
+        center /= (double)(uniqueVertices.size());
+        
+        
+        // compute the ordered points around silhoette
+        osg::Vec3d side = ( fabs(normal.x()) < fabs(normal.y()) ) ? 
+                          osg::Vec3(1.0, 0.0, 0.0) :
+                          osg::Vec3(0.0, 1.0, 0.0);
+
+        osg::Vec3 v = normal ^ side;
+        v.normalize();
+
+        osg::Vec3 u = v ^ normal;
+        u.normalize();
+
+        typedef std::map<double, Vec3d> AnglePositions;
+        AnglePositions anglePositions;
+        for(vitr = uniqueVertices.begin();
+            vitr != uniqueVertices.end();
+            ++vitr)
+        {
+            osg::Vec3d delta = *vitr - center;
+            double angle = atan2(delta * u, delta * v);
+            if (angle<0.0) angle += 2.0*osg::PI;
+            anglePositions[angle] = *vitr;
+        }
+
+        for(AnglePositions::iterator aitr = anglePositions.begin();
+            aitr != anglePositions.end();
+            ++aitr)
+        {
+            vertices.push_back(aitr->second);
+        }
+        
+        
+    }
+
 
     void cut(const osg::Polytope& polytope)
     {
@@ -469,11 +592,11 @@ public:
             itr != polytope._faces.end();
             ++itr)
         {
-            cut(itr->plane);
+            cut(itr->plane, itr->name);
         }
     }
 
-    void cut(const osg::Plane& plane)
+    void cut(const osg::Plane& plane, const std::string& name=std::string())
     {
         // osg::notify(osg::NOTICE)<<"  Cutting plane "<<plane<<std::endl;
         Face newFace;
@@ -544,6 +667,7 @@ public:
         if (!newFace.vertices.empty())
         {
             // osg::notify(osg::NOTICE)<<"    inserting newFace intersecting "<<newFace.vertices.size()<<std::endl;
+            newFace.name = name;
             newFace.plane = plane;
 
             Vertices& vertices = newFace.vertices;
@@ -1134,7 +1258,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         // create polytope for the view frustum in local coords
         CustomPolytope frustum;
-#if 1
+#if 0
         frustum.setToUnitFrustum(false, false);
 #else
         frustum.setToUnitFrustum(true, true);
@@ -1172,21 +1296,12 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             overlayData._geode->addDrawable(frustum.createDrawable(osg::Vec4d(0.0f,0.0f,1.0f,1.0f)));
         }
 
-        CustomPolytope::Vertices corners;
         
-        overlayPolytope.cut(frustum);
-        overlayPolytope.getPoints(corners);
-        
-        if (overlayData._geode.valid())
-        {
-            overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,1.0f,1.0f)));
-        }
 
 
 
         // osg::notify(osg::NOTICE)<<"AFTER CUT corners = "<<corners.size()<<std::endl;
 
-        if (corners.empty()) return;
  
         osg::Vec3d center = _overlaySubgraph->getBound().center();
         osg::Vec3d frustum_axis = cv->getLookVectorLocal();
@@ -1207,36 +1322,151 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::Vec3d overlayLookVector = upVector ^ sideVector;
         overlayLookVector.normalize();
         
+        
+        overlayPolytope.cut(frustum);
+
+        CustomPolytope::Vertices corners;
+#if 0
+        overlayPolytope.getPoints(corners);
+#else
+        overlayPolytope.computeSilhoette(lookVector, corners);
+#endif
+        if (corners.empty()) return;
+        
+        if (overlayData._geode.valid())
+        {
+            overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,1.0f,1.0f)));
+        }
+        
+
         // osg::notify(osg::NOTICE)<<"    lookVector ="<<lookVector<<std::endl;
         
         double min_side = DBL_MAX;
         double max_side = -DBL_MAX;
         double min_up = DBL_MAX;
         double max_up = -DBL_MAX;
+        
+        unsigned int leftPointIndex = 0;
+        unsigned int rightPointIndex = 0;
 
-        for(CustomPolytope::Vertices::iterator itr = corners.begin();
-            itr != corners.end();
-            ++itr)
+        typedef std::vector<osg::Vec2d> ProjectedVertices;
+        ProjectedVertices projectedVertices;
+
+        unsigned int i;
+        for(i=0; i< corners.size(); ++i)
         {
-            osg::Vec3d delta = *itr - center;
+            osg::Vec3d delta = corners[i] - center;
             double distance_side = delta * sideVector;
             double distance_up = delta * upVector;
+            projectedVertices.push_back(osg::Vec2d(distance_side, distance_up));
             
-            if (distance_side<min_side) min_side = distance_side;
-            if (distance_side>max_side) max_side = distance_side;
+            if (distance_side<min_side)
+            {
+                min_side = distance_side;
+                leftPointIndex = i;
+            }
+            if (distance_side>max_side)
+            {
+                max_side = distance_side;
+                rightPointIndex = i;
+            }
             if (distance_up<min_up) min_up = distance_up;
             if (distance_up>max_up) max_up = distance_up;
         }
         
-        //osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
-        //osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
+        double mid_side = (min_side + max_side)*0.5;
+        
+        osg::Vec2d topLeft(min_side, max_up);
+        osg::Vec2d topRight(max_side, max_up);
+        osg::Vec2d lowerRight(max_side, min_up);
+        osg::Vec2d lowerLeft(min_side, min_up);
 
-        //osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
-        //osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
+#if 0        
+        osg::notify(osg::NOTICE)<<"b  topLeft    = "<<topLeft<<std::endl;
+        osg::notify(osg::NOTICE)<<"b  lowerLeft  = "<<lowerLeft<<std::endl;
+        osg::notify(osg::NOTICE)<<"b  topRight   = "<<topRight<<std::endl;
+        osg::notify(osg::NOTICE)<<"b  lowerRight = "<<lowerRight<<std::endl;
+#endif
+        for(i=0; i< projectedVertices.size(); ++i)
+        {
+            const osg::Vec2d& va = projectedVertices[i];
+            const osg::Vec2d& vb = projectedVertices[(i+1) % projectedVertices.size()];
+            
+            if (fabs(vb.y()-va.y())>0.001)
+            {            
+                if (va.x() <= mid_side && vb.x() <= mid_side)
+                {
+                    // osg::notify(osg::NOTICE)<<"Both on left va="<<va<<" vb="<<vb<<std::endl;
+                    osg::Vec2d v_min = va + (vb-va) * ( (min_up - va.y())/(vb.y()-va.y()) );
+                    osg::Vec2d v_max = va + (vb-va) * ( (max_up - va.y())/(vb.y()-va.y()) );
+                    
+                    double mid_va_side = (v_max.x() + v_min.x())*0.5;
+                    if (v_min.x() < mid_side &&
+                        v_max.x() < mid_side &&
+                        mid_va_side > min_side)
+                    {
+                        // osg::notify(osg::NOTICE)<<" Moving left in "<<std::endl;
+                        topLeft = v_max;
+                        lowerLeft = v_min;
+                        min_side = mid_va_side;
+                    }                
+                }
+                if (va.x() >= mid_side && vb.x() >= mid_side)
+                {
+                    // osg::notify(osg::NOTICE)<<"Both on right va="<<va<<" vb="<<vb<<std::endl;
+                    osg::Vec2d v_min = va + (vb-va) * ( (min_up - va.y())/(vb.y()-va.y()) );
+                    osg::Vec2d v_max = va + (vb-va) * ( (max_up - va.y())/(vb.y()-va.y()) );
 
+                    double mid_va_side = (v_max.x() + v_min.x())*0.5;
+                    if (v_min.x() > mid_side &&
+                        v_max.x() > mid_side &&
+                        mid_va_side < max_side)
+                    {
+                        // osg::notify(osg::NOTICE)<<" Moving right in "<<std::endl;
+                        topRight = v_max;
+                        lowerRight = v_min;
+                        max_side = mid_va_side;
+                    }                
+                }
+                else
+                {
+                    // osg::notify(osg::NOTICE)<<"Crossing va="<<va<<" vb="<<vb<<std::endl;
+                }
+            }
+        }        
+
+#if 0
+        osg::notify(osg::NOTICE)<<"a  topLeft    = "<<topLeft<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  lowerLeft  = "<<lowerLeft<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  topRight   = "<<topRight<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  lowerRight = "<<lowerRight<<std::endl;
+#endif        
+        double  ratio  = (lowerRight.x()-lowerLeft.x())/(topRight.x()-topLeft.x());
+        osg::notify(osg::NOTICE)<<"Tapper ratio = "<<ratio<<std::endl;
+
+
+        osg::Vec3d eyeLocal = cv->getEyeLocal();
+        osg::Vec3d eyeDelta = eyeLocal - center;
+        osg::Vec2d eyeProjected(eyeDelta * sideVector, eyeDelta * upVector);
+        
+        if (eyeProjected.x() >= min_side && eyeProjected.x() <= max_side &&
+            eyeProjected.y() >= min_up && eyeProjected.y() <= max_up)
+        {
+            osg::notify(osg::NOTICE)<<"EyeProjected inside "<<eyeProjected<<std::endl;
+        }
+        else        
+        {
+            osg::notify(osg::NOTICE)<<"EyeProjected outside "<<eyeProjected<<std::endl;
+        }
+        
+
+        osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
+        osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
+
+        osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
+        osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
 
         camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
-
             
         if (em)
         {

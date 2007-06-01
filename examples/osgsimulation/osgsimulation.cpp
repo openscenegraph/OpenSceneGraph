@@ -277,6 +277,9 @@ int main(int argc, char **argv)
     unsigned int screenNum = 0;    
     while (arguments.read("--screen", screenNum) || arguments.read("-s", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
 
+    std::string pathfile;
+    while (arguments.read("-p",pathfile)) {}
+
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -385,8 +388,7 @@ int main(int argc, char **argv)
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
 
-        std::string pathfile;
-        while (arguments.read("-p",pathfile))
+        if (!pathfile.empty())
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
             if (apm || !apm->valid()) 

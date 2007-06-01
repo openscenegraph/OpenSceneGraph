@@ -23,6 +23,23 @@
 #undef OUT
 #endif
 
+BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor0(____RecordCameraPathHandler,
+	               "",
+	               "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____ThreadingHandler,

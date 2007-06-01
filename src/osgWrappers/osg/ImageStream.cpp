@@ -139,6 +139,12 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __void__update,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, applyLoopingMode,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__applyLoopingMode,
+	                   "",
+	                   "");
 	I_SimpleProperty(double, Length, 
 	                 __double__getLength, 
 	                 0);

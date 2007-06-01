@@ -22,6 +22,31 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgViewer::GraphicsWindow::MouseCursor)
+	I_EnumLabel(osgViewer::GraphicsWindow::InheritCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::NoCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::RightArrowCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::LeftArrowCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::InfoCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::DestroyCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::HelpCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::CycleCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::SprayCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::WaitCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::TextCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::CrosshairCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::UpDownCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::LeftRightCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::TopSideCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::BottomSideCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::LeftSideCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::RightSideCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::TopLeftCorner);
+	I_EnumLabel(osgViewer::GraphicsWindow::TopRightCorner);
+	I_EnumLabel(osgViewer::GraphicsWindow::BottomRightCorner);
+	I_EnumLabel(osgViewer::GraphicsWindow::BottomLeftCorner);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_BaseType(osg::GraphicsContext);
 	I_BaseType(osgGA::GUIActionAdapter);
@@ -78,10 +103,15 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__grabFocusIfPointerInWindow,
 	          "Get focus on if the pointer is in this window. ",
 	          "");
-	I_Method1(void, useCursor, IN, bool, x,
+	I_Method1(void, useCursor, IN, bool, cursorOn,
 	          Properties::VIRTUAL,
 	          __void__useCursor__bool,
 	          "Switch on/off the cursor. ",
+	          "");
+	I_Method1(void, setCursor, IN, osgViewer::GraphicsWindow::MouseCursor, x,
+	          Properties::VIRTUAL,
+	          __void__setCursor__MouseCursor,
+	          "Set mouse cursor to a specific shape. ",
 	          "");
 	I_Method0(bool, valid,
 	          Properties::VIRTUAL,
@@ -143,6 +173,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__requestWarpPointer__float__float,
 	          "requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer to a specified x,y location on the window. ",
 	          "This is used by some camera manipulators to initialise the mouse pointer when mouse position relative to a controls neutral mouse position is required, i.e when mimicking a aircrafts joystick.");
+	I_SimpleProperty(osgViewer::GraphicsWindow::MouseCursor, Cursor, 
+	                 0, 
+	                 __void__setCursor__MouseCursor);
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);

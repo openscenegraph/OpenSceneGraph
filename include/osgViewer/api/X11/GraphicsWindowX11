@@ -41,8 +41,6 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
             _window(0),
             _visualInfo(0),
             _glxContext(0),
-            _defaultCursor(0),
-            _nullCursor(0),
             _currentCursor(0),
             _initialized(false),
             _realized(false),
@@ -108,9 +106,9 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Set the window's position and size.*/
         virtual void setWindowRectangle(int x, int y, int width, int height);
 
-        /** Switch on/off the cursor.*/
-        virtual void useCursor(bool cursorOn);
-        
+        /** Set mouse cursor to a specific shape.*/
+        virtual void setCursor(MouseCursor cursor);
+
         /** WindowData is used to pass in the X11 window handle attached the GraphicsContext::Traits structure. */
         struct WindowData : public osg::Referenced
         {
@@ -127,22 +125,20 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Display* getDisplay() const { return _display; }
         Display* getEventDisplay() const { return _eventDisplay; }
         Display* getDisplayToUse() const ;
-        
+
         
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
         GLXContext& getGLXContext() { return _glxContext; }
 
-        Cursor& getDefaultCursor() { return _defaultCursor; }
-        Cursor& getNullCursor() { return _nullCursor; }
-        Cursor& getCurrentCursor() { return _nullCursor; }
-        
-        
+        Cursor getCurrentCursor() { return _currentCursor; }
 
     protected:
     
         ~GraphicsWindowX11();
     
+        Cursor getOrCreateCursor(MouseCursor mouseShape);
+        
         bool createVisualInfo();
         
         void init();
@@ -158,8 +154,6 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         XVisualInfo*    _visualInfo;
         GLXContext      _glxContext;
 
-        Cursor          _defaultCursor;
-        Cursor          _nullCursor;     
         Cursor          _currentCursor;
 
         Atom            _deleteWindow;
@@ -168,6 +162,8 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         bool            _realized;
 
         double          _timeOfLastCheckEvents;
+
+        std::map<MouseCursor,Cursor> _mouseCursorMap;
 };
 
 }

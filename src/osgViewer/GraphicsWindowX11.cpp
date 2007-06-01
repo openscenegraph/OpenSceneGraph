@@ -384,28 +384,112 @@ void GraphicsWindowX11::setWindowRectangle(int x, int y, int width, int height)
     usleep(100000);
 }
 
-void GraphicsWindowX11::useCursor(bool cursorOn)
+void GraphicsWindowX11::setCursor(MouseCursor mouseCursor)
 {
+    Cursor newCursor = getOrCreateCursor(mouseCursor);
+    if (newCursor == _currentCursor) return;
+
+    _currentCursor = newCursor;
+    if (!_window) return;
     Display* display = getDisplayToUse();
+    if (!display) return;
+    XDefineCursor( display, _window, _currentCursor );
+    XFlush(display);
+    XSync(display, 0);
 
-    if (cursorOn)
-    {
-        _currentCursor = _defaultCursor;
-    }
-    else
-    {
-        _currentCursor = _nullCursor;
-    }
+    _traits->useCursor = (_currentCursor != getOrCreateCursor(NoCursor));
+}
 
-    if (display && _window)
+Cursor GraphicsWindowX11::getOrCreateCursor(MouseCursor mouseCursor)
+{
+    std::map<MouseCursor,Cursor>::iterator i = _mouseCursorMap.find(mouseCursor);
+    if (i != _mouseCursorMap.end()) return i->second;
+
+    Display* display = getDisplayToUse();
+    if (!display) return None;
+
+    switch (mouseCursor) {
+    case NoCursor:
     {
-        XDefineCursor( display, _window, _currentCursor );
+        // create an empty mouse cursor, note that it is safe to destroy the Pixmap just past cursor creation
+        // since the resource in the x server is reference counted.
+        char buff[2] = {0,0};
+        XColor ncol = {0,0,0,0,DoRed|DoGreen|DoBlue,0};
+        Pixmap pixmap = XCreateBitmapFromData( display, _parent, buff, 1, 1);
+        _mouseCursorMap[mouseCursor] = XCreatePixmapCursor( display, pixmap, pixmap, &ncol, &ncol, 0, 0 );
+        XFreePixmap(display, pixmap);
+        // Important to have the pixmap and the buffer still available when the request is sent to the server ...
         XFlush(display);
-        XSync(display,0);
+        XSync(display, 0);
+        break;
     }
+    case RightArrowCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_left_ptr );
+        break;
+    case LeftArrowCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_top_left_arrow );
+        break;
+    case InfoCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_hand1 );
+        break;
+    case DestroyCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_pirate );
+        break;
+    case HelpCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_question_arrow );
+        break;
+    case CycleCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_exchange );
+        break;
+    case SprayCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_spraycan );
+        break;
+    case WaitCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_watch );
+        break;
+    case TextCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_xterm );
+        break;
+    case CrosshairCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_crosshair );
+        break;
+    case UpDownCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_sb_v_double_arrow );
+        break;
+    case LeftRightCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_sb_h_double_arrow );
+        break;
+    case TopSideCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_top_side );
+        break;
+    case BottomSideCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_bottom_side );
+        break;
+    case LeftSideCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_left_side );
+        break;
+    case RightSideCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_right_side );
+        break;
+    case TopLeftCorner:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_top_left_corner );
+        break;
+    case TopRightCorner:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_top_right_corner );
+        break;
+    case BottomRightCorner:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_bottom_right_corner );
+        break;
+    case BottomLeftCorner:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_bottom_left_corner );
+        break;
 
-    _traits->useCursor = cursorOn;
-
+    case InheritCursor:
+    default:
+        _mouseCursorMap[mouseCursor] = None;
+        break;
+    };
+    return _mouseCursorMap[mouseCursor];
 }
 
 void GraphicsWindowX11::init()
@@ -540,20 +624,6 @@ void GraphicsWindowX11::init()
     XSetStandardProperties( _display, _window, _traits->windowName.c_str(), _traits->windowName.c_str(), None, 0, 0, &sh);
 
     setWindowDecoration(_traits->windowDecoration);
-
-    // Create  default Cursor
-    _defaultCursor = XCreateFontCursor( _display, XC_left_ptr );
-
-
-    // Create Null Cursor
-    {
-        Pixmap pixmap;
-        static char buff[2] = {0,0};
-        static XColor ncol = {0,0,0,0,DoRed|DoGreen|DoBlue,0};
-
-        pixmap = XCreateBitmapFromData( _display, _parent, buff, 1, 1);
-        _nullCursor = XCreatePixmapCursor( _display, pixmap, pixmap, &ncol, &ncol, 0, 0 );
-    }
 
     useCursor(_traits->useCursor);
 

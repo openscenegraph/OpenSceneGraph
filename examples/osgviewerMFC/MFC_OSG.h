@@ -25,11 +25,14 @@ public:
     void SetupCamera(void);
     void PreFrameUpdate(void);
     void PostFrameUpdate(void);
+    void Done(bool value) { mDone = value; }
+    bool Done(void) { return mDone; }
     static void Render(void* ptr);
 
     osgViewer::Viewer* getViewer() { return mViewer.get(); }
 
 private:
+    bool mDone;
     std::string m_ModelName;
     HWND m_hWnd;
     osg::ref_ptr<osgViewer::Viewer> mViewer;

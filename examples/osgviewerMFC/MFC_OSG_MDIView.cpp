@@ -77,13 +77,11 @@ void CMFC_OSG_MDIView::OnDestroy()
     // Make sure OSG was created before we try to close it.
     if(mOSG)
     {
-        // Force osg Viewer to shut down
-        mOSG->getViewer()->setDone(true);
-        
+       
         // Wait while the Viewer closes
-        while(!mOSG->getViewer()->done())
+        while(!mOSG->Done())
         {
-            Sleep(0); // Allow others processor time
+            Sleep(10); // Allow others processor time
         }
         
         // Remove mOSG

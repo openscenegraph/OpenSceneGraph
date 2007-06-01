@@ -5,7 +5,7 @@
 
 
 cOSG::cOSG(HWND hWnd) :
-   m_hWnd(hWnd)
+   m_hWnd(hWnd), mDone(false) 
 {
     //
     // We must set the pixelformat before we can create the OSG Rendering Surface
@@ -182,4 +182,7 @@ void cOSG::Render(void* ptr)
     // if you have multiple OSG windows up 
     // and you exit one then all stop rendering
     AfxMessageBox("Exit Rendering Thread");
+
+    // Set Done to indicate that thread has exited
+    osg->Done(true);
 }

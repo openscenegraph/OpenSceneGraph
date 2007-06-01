@@ -384,7 +384,17 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             virtual void operator () (const osg::Camera& /*camera*/) const {}
         };
         
-        /** Set the post draw callback for custom operations to do done after the drawing of the camera's subgraph has been completed.*/
+       /** Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph has been completed.*/
+        void setPreDrawCallback(DrawCallback* cb) { _preDrawCallback = cb; }
+
+        /** Get the pre draw callback.*/
+        DrawCallback* getPreDrawCallback() { return _preDrawCallback.get(); }
+
+        /** Get the const pre draw callback.*/
+        const DrawCallback* getPreDrawCallback() const { return _preDrawCallback.get(); }
+ 
+
+        /** Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph has been completed.*/
         void setPostDrawCallback(DrawCallback* cb) { _postDrawCallback = cb; }
 
         /** Get the post draw callback.*/
@@ -451,6 +461,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         
         buffered_object< ref_ptr<Object> >  _renderingCache;
         
+        ref_ptr<DrawCallback>               _preDrawCallback;
         ref_ptr<DrawCallback>               _postDrawCallback;
 };
 

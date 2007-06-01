@@ -52,6 +52,7 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _renderTargetImplementation(camera._renderTargetImplementation),
     _renderTargetFallback(camera._renderTargetFallback),
     _bufferAttachmentMap(camera._bufferAttachmentMap),
+    _preDrawCallback(camera._preDrawCallback),
     _postDrawCallback(camera._postDrawCallback)
 {
     // need to copy/share graphics context?

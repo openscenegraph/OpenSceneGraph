@@ -1,8 +1,8 @@
-SET(TARGET_SRC osgsimpleviewerQT3.cpp )
+SET(TARGET_SRC osgviewerQT3.cpp )
 
 SET(TARGET_EXTERNAL_LIBRARIES ${QT_LIBRARIES} )
 
 INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR} )
 
 #### end var setup  ###
-SETUP_EXAMPLE(osgsimpleviewerQT3)
+SETUP_EXAMPLE(osgviewerQT3)

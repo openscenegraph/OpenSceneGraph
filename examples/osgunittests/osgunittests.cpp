@@ -3,6 +3,7 @@
 
 #include <osg/Vec3>
 #include <osg/Matrix>
+#include <osg/Timer>
 #include <osg/io_utils>
 
 #include "UnitTestFramework.h"
@@ -143,36 +144,51 @@ void sizeOfTest()
 
 }
 
-/// Exercises the Matrix.get(Quat&) function, printout is generated on problems only
+/// Exercise the Matrix.getRotate function.
+/// Compare the output of:
+///  q1 * q2 
+/// versus
+///  (mat(q1)*mat(q2)*scale).getRotate()
+/// for a range of rotations
 void testGetQuatFromMatrix() {
+    
+    // Options
+    
     // acceptable error range
-    double eps=1e-3;
+    double eps=1e-6;
 
+    // scale matrix
+    // To not test with scale, use 1,1,1
+    // Not sure if 0's or negative values are acceptable
+    osg::Matrixd scalemat;
+    scalemat.makeScale(osg::Vec3d(0.9,0.5,0.1));
+    
+    // range of rotations
 #if 1
     // wide range
     double rol1start = 0.0;
     double rol1stop = 360.0;
-    double rol1step = 30.0;
+    double rol1step = 20.0;
 
     double pit1start = 0.0;
     double pit1stop = 90.0;
-    double pit1step = 30.0;
+    double pit1step = 20.0;
 
     double yaw1start = 0.0;
     double yaw1stop = 360.0;
-    double yaw1step = 30.0;
+    double yaw1step = 20.0;
 
     double rol2start = 0.0;
     double rol2stop = 360.0;
-    double rol2step = 30.0;
+    double rol2step = 20.0;
 
     double pit2start = 0.0;
     double pit2stop = 90.0;
-    double pit2step = 30.0;
+    double pit2step = 20.0;
 
     double yaw2start = 0.0;
     double yaw2stop = 360.0;
-    double yaw2step = 30.0;
+    double yaw2step = 20.0;
 #else
     // focussed range
     double rol1start = 0.0;
@@ -200,61 +216,73 @@ void testGetQuatFromMatrix() {
     double yaw2step = 0.1;
 #endif
     
+    std::cout << std::endl << "Starting " << __FUNCTION__ << ", it can take a while ..." << std::endl;
+
+    osg::Timer_t tstart, tstop;
+    tstart = osg::Timer::instance()->tick();
+    int count=0;
     for (double rol1 = rol1start; rol1 <= rol1stop; rol1 += rol1step) {
-	for (double pit1 = pit1start; pit1 <= pit1stop; pit1 += pit1step) {
-	    for (double yaw1 = yaw1start; yaw1 <= yaw1stop; yaw1 += yaw1step) {
-		for (double rol2 = rol2start; rol2 <= rol2stop; rol2 += rol2step) {
-		    for (double pit2 = pit2start; pit2 <= pit2stop; pit2 += pit2step) {
-			for (double yaw2 = yaw2start; yaw2 <= yaw2stop; yaw2 += yaw2step) {
-			    // create two quats based on the roll, pitch and yaw values
-			    osg::Quat rot_quat1 =
-				osg::Quat(osg::DegreesToRadians(rol1),osg::Vec3d(1,0,0),
-					  osg::DegreesToRadians(pit1),osg::Vec3d(0,1,0),
-					  osg::DegreesToRadians(yaw1),osg::Vec3d(0,0,1));
-			    
-			    osg::Quat rot_quat2 =
-				osg::Quat(osg::DegreesToRadians(rol2),osg::Vec3d(1,0,0),
-					  osg::DegreesToRadians(pit2),osg::Vec3d(0,1,0),
-					  osg::DegreesToRadians(yaw2),osg::Vec3d(0,0,1));
-			    
-			    // create an output quat using quaternion math
-			    osg::Quat out_quat1;
-			    out_quat1 = rot_quat2 * rot_quat1;
-			    
-			    // create two matrices based on the input quats
-			    osg::Matrixd mat1,mat2;
-			    mat1.makeRotate(rot_quat1);
-			    mat2.makeRotate(rot_quat2);
-			    
-			    // create an output quat by matrix multiplication and get
-			    osg::Matrixd out_mat;
-			    out_mat = mat2 * mat1;
-			    osg::Quat out_quat2;
-			    out_quat2 = out_mat.getRotate();
-			    
-			    // if the output quat length is not one 
-			    // or if the component magnitudes do not match,
-			    // something is amiss
-			    if (fabs(1.0-out_quat2.length()) > eps ||
-				(fabs(out_quat1.x())-fabs(out_quat2.x())) > eps ||
-				(fabs(out_quat1.y())-fabs(out_quat2.y())) > eps ||
-				(fabs(out_quat1.z())-fabs(out_quat2.z())) > eps ||
-				(fabs(out_quat1.w())-fabs(out_quat2.w())) > eps) {
-				std::cout << "problem at: r1=" << rol1
-					  << " p1=" << pit1
-					  << " y1=" << yaw1
-					  << " r2=" << rol2
-					  << " p2=" << pit2
-					  << " y2=" << yaw2 << "\n";
-				std::cout << "quats:        " << out_quat1 << " length: " << out_quat1.length() << "\n";
-				std::cout << "mats and get: " << out_quat2 << " length: " << out_quat2.length() << "\n\n";
-			    }
-			}
-		    }
-		}
-	    }
-	}
+    for (double pit1 = pit1start; pit1 <= pit1stop; pit1 += pit1step) {
+        for (double yaw1 = yaw1start; yaw1 <= yaw1stop; yaw1 += yaw1step) {
+        for (double rol2 = rol2start; rol2 <= rol2stop; rol2 += rol2step) {
+            for (double pit2 = pit2start; pit2 <= pit2stop; pit2 += pit2step) {
+            for (double yaw2 = yaw2start; yaw2 <= yaw2stop; yaw2 += yaw2step) {
+                count++;
+                // create two quats based on the roll, pitch and yaw values
+                osg::Quat rot_quat1 =
+                osg::Quat(osg::DegreesToRadians(rol1),osg::Vec3d(1,0,0),
+                      osg::DegreesToRadians(pit1),osg::Vec3d(0,1,0),
+                      osg::DegreesToRadians(yaw1),osg::Vec3d(0,0,1));
+                
+                osg::Quat rot_quat2 =
+                osg::Quat(osg::DegreesToRadians(rol2),osg::Vec3d(1,0,0),
+                      osg::DegreesToRadians(pit2),osg::Vec3d(0,1,0),
+                      osg::DegreesToRadians(yaw2),osg::Vec3d(0,0,1));
+                
+                // create an output quat using quaternion math
+                osg::Quat out_quat1;
+                out_quat1 = rot_quat2 * rot_quat1;
+                
+                // create two matrices based on the input quats
+                osg::Matrixd mat1,mat2;
+                mat1.makeRotate(rot_quat1);
+                mat2.makeRotate(rot_quat2);
+        
+                // create an output quat by matrix multiplication and getRotate
+                osg::Matrixd out_mat;
+                out_mat = mat2 * mat1;
+                // add matrix scale for even more nastiness
+                out_mat = out_mat * scalemat;
+                osg::Quat out_quat2;
+                out_quat2 = out_mat.getRotate();
+                
+                // if the output quat length is not one 
+                // or if the component magnitudes do not match,
+                // something is amiss
+                if (fabs(1.0-out_quat2.length()) > eps ||
+                (fabs(out_quat1.x())-fabs(out_quat2.x())) > eps ||
+                (fabs(out_quat1.y())-fabs(out_quat2.y())) > eps ||
+                (fabs(out_quat1.z())-fabs(out_quat2.z())) > eps ||
+                (fabs(out_quat1.w())-fabs(out_quat2.w())) > eps) {
+                std::cout << __FUNCTION__ << " problem at: \n"
+                      << " r1=" << rol1
+                      << " p1=" << pit1
+                      << " y1=" << yaw1
+                      << " r2=" << rol2
+                      << " p2=" << pit2
+                      << " y2=" << yaw2 << "\n";
+                std::cout << "quats:        " << out_quat1 << " length: " << out_quat1.length() << "\n";
+                std::cout << "mats and get: " << out_quat2 << " length: " << out_quat2.length() << "\n\n";
+                }
+            }
+            }
+        }
+        }
     }
+    }
+    tstop = osg::Timer::instance()->tick();
+    double duration = osg::Timer::instance()->delta_s(tstart,tstop);
+    std::cout << "Time for " << __FUNCTION__ << " with " << count << " iterations: " << duration << std::endl << std::endl;
 }
 
 void testQuatRotate(const osg::Vec3d& from, const osg::Vec3d& to)
@@ -313,9 +341,10 @@ void testQuat()
     testQuatRotate(osg::Vec3d(0.0,0.0,1.0),osg::Vec3d(0.0,0.0,-1.0));
     testQuatRotate(osg::Vec3d(0.0,0.0,-1.0),osg::Vec3d(0.0,0.0,1.0));
 
+    // Test a range of rotations
     testGetQuatFromMatrix();
 
-
+    // This is a specific test case for a matrix containing scale and rotation
     osg::Matrix matrix(0.5, 0.0, 0.0, 0.0,
                        0.0, 0.5, 0.0, 0.0,
                        0.0, 0.0, 0.5, 0.0,
@@ -324,8 +353,7 @@ void testQuat()
     osg::Quat quat;
     matrix.get(quat);
     
-    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<" rotation="<<quat<<std::endl;
-
+    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<"rotation = "<<quat<<", expected quat = (0,0,0,1)"<<std::endl;
 }
 
 

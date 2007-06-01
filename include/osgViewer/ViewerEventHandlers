@@ -14,6 +14,7 @@
 #ifndef OSGVIEWER_VIEWEREVENTHANDLER
 #define OSGVIEWER_VIEWEREVENTHANDLER 1
 
+#include <osg/AnimationPath>
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/GraphicsWindow>
 
@@ -100,6 +101,36 @@ protected:
 
         osg::Timer_t    _tickOrLastKeyPress;
         bool            _done;
+};
+
+/**
+Handler allowing the user to record the animation "path" of a camera. In it's current
+implementation, this handler cannot guarantee the final view matrix is correct; it is
+conceivable that the matrix may be one frame off. Eh--not a big deal! :)
+TODO: Find the good filename.
+TODO: Write as we go, not when it's all done.
+TODO: Create osgviewer on-screen indication that animation is taking place.
+TODO: Explore multi-cameras thing.
+TODO: Investigate crash if non-focused camera?
+*/
+class AnimationPathHandler : public osgGA::GUIEventHandler
+{
+public:
+
+        AnimationPathHandler();
+
+        virtual void getUsage(osg::ApplicationUsage &usage) const;
+
+        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
+
+protected:
+
+        bool                             _currentlyRecording;
+        double                           _interval;
+        double                           _delta;
+        osg::Timer_t                     _animStartTime;
+        osg::Timer_t                     _lastFrameTime;
+        osg::ref_ptr<osg::AnimationPath> _animPath;
 };
 
 }

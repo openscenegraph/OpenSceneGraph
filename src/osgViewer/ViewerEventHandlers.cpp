@@ -11,6 +11,7 @@
 * OpenSceneGraph Public License for more details.
 */
 
+#include <fstream>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
@@ -339,6 +340,99 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
     default:
         break;
     }
+    return false;
+}
+
+AnimationPathHandler::AnimationPathHandler():
+    _currentlyRecording(false),
+    _delta(0.0f),
+    _lastFrameTime(osg::Timer::instance()->tick()),
+    _animStartTime(0)
+{
+    _animPath = new osg::AnimationPath();
+
+    const char* str = getenv("OSG_CAMERA_ANIMATION_FPS");
+
+    if(str) _interval = 1.0f / atof(str);
+
+    else _interval = 1.0f / 25.0f;
+}
+
+void AnimationPathHandler::getUsage(osg::ApplicationUsage &usage) const
+{
+    usage.addKeyboardMouseBinding("z", "Toggle camera path recording.");
+}
+
+bool AnimationPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+{
+    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+
+    if (viewer == NULL)
+    {
+        return false;
+    }
+
+    switch(ea.getEventType())
+    {
+    case(osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (ea.getKey() == 'z')
+            {
+                // The user has requested to BEGIN recording.
+                if (!_currentlyRecording)
+                {
+                    _currentlyRecording = true;
+                    _animStartTime = osg::Timer::instance()->tick();
+
+                    osg::notify(osg::NOTICE)<<"Recording camera path."<<std::endl;
+                }
+
+                // THe user has requested to STOP recording, write the file!
+                else
+                {
+                    _currentlyRecording = false;
+                    _delta = 0.0f;
+
+                    // In the future this will need to be written continuously, rather
+                    // than all at once.
+                    std::string filename("saved_animation.path");
+                    std::ofstream out(filename.c_str());
+                    osg::notify(osg::NOTICE)<<"Writing camera file: "<<filename<<std::endl;
+                    _animPath->write(out);
+                    out.close();
+                }
+
+                return true;
+            }
+
+            break;
+        }
+    case(osgGA::GUIEventAdapter::FRAME):
+        {
+            // Calculate our current delta (difference) in time between the last frame and
+            // current frame, regardless of whether we actually store a ControlPoint...
+            osg::Timer_t time = osg::Timer::instance()->tick();
+            double delta = osg::Timer::instance()->delta_s(_lastFrameTime, time);
+            _lastFrameTime = time;
+
+            // If our internal _delta is finally large enough to warrant a ControlPoint
+            // insertion, do so now. Be sure and reset the internal _delta, so we can start
+            // calculating when the next insert should happen.
+            if (_currentlyRecording && _delta >= _interval)
+            {
+                const osg::Matrixd& m = viewer->getCamera()->getInverseViewMatrix();
+                _animPath->insert(osg::Timer::instance()->delta_s(_animStartTime, time), osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
+                _delta = 0.0f;
+            }
+
+            else _delta += delta;
+
+            break;
+        }
+    default:
+        break;
+    }
+
     return false;
 }
 

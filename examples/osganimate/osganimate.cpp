@@ -243,7 +243,9 @@ int main( int argc, char **argv )
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
-#if 1
+    // viewer.setUpViewOnSingleScreen(1);
+
+#if 0
 
     // use of custom simulation time.
     
@@ -261,9 +263,6 @@ int main( int argc, char **argv )
 #else
 
     // normal viewer usage.
-
-    viewer.setUpViewOnSingleScreen(1);
-
     return viewer.run();
 
 #endif

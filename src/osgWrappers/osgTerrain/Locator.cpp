@@ -106,8 +106,8 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
 	I_BaseType(osgTerrain::Locator);
-	I_ConstructorWithDefaults6(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f,
-	                           ____EllipsoidLocator__double__double__double__double__double__double,
+	I_ConstructorWithDefaults8(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f, IN, double, radiusEquator, osg::WGS_84_RADIUS_EQUATOR, IN, double, radiusPolar, osg::WGS_84_RADIUS_POLAR,
+	                           ____EllipsoidLocator__double__double__double__double__double__double__double__double,
 	                           "",
 	                           "");
 	I_MethodWithDefaults6(void, setExtents, IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f,
@@ -138,6 +138,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
 	I_Method0(double, getHeight,
 	          Properties::NON_VIRTUAL,
 	          __double__getHeight,
+	          "",
+	          "");
+	I_Method1(void, setEllipsoidModel, IN, osg::EllipsoidModel *, em,
+	          Properties::NON_VIRTUAL,
+	          __void__setEllipsoidModel__osg_EllipsoidModel_P1,
 	          "",
 	          "");
 	I_Method0(osg::EllipsoidModel *, getEllipsoidModel,
@@ -173,7 +178,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
 	                 0);
 	I_SimpleProperty(osg::EllipsoidModel *, EllipsoidModel, 
 	                 __osg_EllipsoidModel_P1__getEllipsoidModel, 
-	                 0);
+	                 __void__setEllipsoidModel__osg_EllipsoidModel_P1);
 	I_SimpleProperty(double, Height, 
 	                 __double__getHeight, 
 	                 0);

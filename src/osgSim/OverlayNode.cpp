@@ -18,6 +18,8 @@
 #include <osg/Geometry>
 #include <osg/io_utils>
 
+#include <osgDB/FileUtils>
+
 #include <osgUtil/CullVisitor>
 #include <osgSim/OverlayNode>
 
@@ -972,15 +974,75 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         overlayData._texgenNode->setTextureUnit(_textureUnit);
     }
 
+    if (!overlayData._y0)
+    {
+        overlayData._y0 = new osg::Uniform("y0",-2.0f);
+    }
+    
+    if (!overlayData._inverse_one_minus_y0)
+    {
+        overlayData._inverse_one_minus_y0 = new osg::Uniform("inverse_one_minus_y0",-1.0f/3.0f);
+    }
+
     if (!overlayData._overlayStateSet) 
     {
         overlayData._overlayStateSet = new osg::StateSet;
-        // overlayData._overlayStateSet->setMode(GL_LIGHTING, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF);
+        overlayData._overlayStateSet->addUniform(overlayData._y0.get());
+        overlayData._overlayStateSet->addUniform(overlayData._inverse_one_minus_y0.get());
+
+        osg::Program* program = new osg::Program;
+        overlayData._overlayStateSet->setAttribute(program);
+
+        // get shaders from source
+        std::string vertexShaderFile = osgDB::findDataFile("overlay.vert");
+        if (!vertexShaderFile.empty())
+        {
+            program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
+        }
+        else
+        {
+            char vertexShaderSource[] = 
+                "varying vec3 texcoord;\n"
+                "\n"
+                "void main(void)\n"
+                "{\n"
+                "    texcoord = gl_MultiTexCoord0.xyz;\n"
+                "    gl_Position     = ftransform();  \n"
+                "}\n";
+
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
+            program->addShader(vertex_shader);
+        }
+        
+        
+    }
+
+    if (!overlayData._mainSubgraphProgram)
+    {
+        overlayData._mainSubgraphProgram = new osg::Program;
+
+        // get shaders from source
+        std::string vertexShaderFile = osgDB::findDataFile("mainsubgraph.vert");
+        if (!vertexShaderFile.empty())
+        {
+            overlayData._mainSubgraphProgram->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
+        }
+
+        std::string fragmentShaderFile = osgDB::findDataFile("mainsubgraph.frag");
+        if (!fragmentShaderFile.empty())
+        {
+            overlayData._mainSubgraphProgram->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
+        }
     }
 
     if (!overlayData._mainSubgraphStateSet) 
     {
         overlayData._mainSubgraphStateSet = new osg::StateSet;
+
+        overlayData._mainSubgraphStateSet->addUniform(overlayData._y0.get());
+        overlayData._mainSubgraphStateSet->addUniform(overlayData._inverse_one_minus_y0.get());
+        overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_0",0));
+        overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_1",1));
 
         overlayData._mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, overlayData._texture.get(), osg::StateAttribute::ON);
         overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
@@ -1289,7 +1351,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         }
         else
         {
-            double minHeight = -1000.0;
             overlayPolytope.projectDowntoBase(osg::Vec3d(0.0,0.0,_overlayBaseHeight), osg::Vec3d(0.0,0.0,1.0));
         }
 
@@ -1354,132 +1415,98 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         double max_side = -DBL_MAX;
         double min_up = DBL_MAX;
         double max_up = -DBL_MAX;
-        
-        unsigned int leftPointIndex = 0;
-        unsigned int rightPointIndex = 0;
+        double min_distanceEye = DBL_MAX;
+        double max_distanceEye = -DBL_MAX;
 
         typedef std::vector<osg::Vec2d> ProjectedVertices;
         ProjectedVertices projectedVertices;
+        
+        osg::Vec3 eyeLocal = cv->getEyeLocal();
+        
 
+        // computed the expected near/far ratio
         unsigned int i;
         for(i=0; i< corners.size(); ++i)
         {
+            double distanceEye = (corners[i] - eyeLocal).length();
+            if (distanceEye < min_distanceEye) min_distanceEye = distanceEye;
+            if (distanceEye > max_distanceEye) max_distanceEye = distanceEye;
+
             osg::Vec3d delta = corners[i] - center;
             double distance_side = delta * sideVector;
             double distance_up = delta * upVector;
             projectedVertices.push_back(osg::Vec2d(distance_side, distance_up));
-            
+
             if (distance_side<min_side)
             {
                 min_side = distance_side;
-                leftPointIndex = i;
             }
             if (distance_side>max_side)
             {
                 max_side = distance_side;
-                rightPointIndex = i;
             }
             if (distance_up<min_up) min_up = distance_up;
             if (distance_up>max_up) max_up = distance_up;
         }
-        
-        double mid_side = (min_side + max_side)*0.5;
-        
-        osg::Vec2d topLeft(min_side, max_up);
-        osg::Vec2d topRight(max_side, max_up);
-        osg::Vec2d lowerRight(max_side, min_up);
-        osg::Vec2d lowerLeft(min_side, min_up);
+                
+        double mid_side = (min_side + max_side) * 0.5;
+        double ratio = min_distanceEye / max_distanceEye;
+        bool usePerspectiveShaders = ratio<0.95;
 
-#if 0        
-        osg::notify(osg::NOTICE)<<"b  topLeft    = "<<topLeft<<std::endl;
-        osg::notify(osg::NOTICE)<<"b  lowerLeft  = "<<lowerLeft<<std::endl;
-        osg::notify(osg::NOTICE)<<"b  topRight   = "<<topRight<<std::endl;
-        osg::notify(osg::NOTICE)<<"b  lowerRight = "<<lowerRight<<std::endl;
-#endif
-        for(i=0; i< projectedVertices.size(); ++i)
+        osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
+
+        if (usePerspectiveShaders)
         {
-            const osg::Vec2d& va = projectedVertices[i];
-            const osg::Vec2d& vb = projectedVertices[(i+1) % projectedVertices.size()];
-            
-            if (fabs(vb.y()-va.y())>0.001)
-            {            
-                if (va.x() <= mid_side && vb.x() <= mid_side)
-                {
-                    // osg::notify(osg::NOTICE)<<"Both on left va="<<va<<" vb="<<vb<<std::endl;
-                    osg::Vec2d v_min = va + (vb-va) * ( (min_up - va.y())/(vb.y()-va.y()) );
-                    osg::Vec2d v_max = va + (vb-va) * ( (max_up - va.y())/(vb.y()-va.y()) );
-                    
-                    double mid_va_side = (v_max.x() + v_min.x())*0.5;
-                    if (v_min.x() > v_max.x() &&
-                        v_min.x() < mid_side &&
-                        v_max.x() < mid_side &&
-                        mid_va_side > min_side)
-                    {
-                        // osg::notify(osg::NOTICE)<<" Moving left in "<<std::endl;
-                        topLeft = v_max;
-                        lowerLeft = v_min;
-                        min_side = mid_va_side;
-                    }                
-                }
-                if (va.x() >= mid_side && vb.x() >= mid_side)
-                {
-                    // osg::notify(osg::NOTICE)<<"Both on right va="<<va<<" vb="<<vb<<std::endl;
-                    osg::Vec2d v_min = va + (vb-va) * ( (min_up - va.y())/(vb.y()-va.y()) );
-                    osg::Vec2d v_max = va + (vb-va) * ( (max_up - va.y())/(vb.y()-va.y()) );
-
-                    double mid_va_side = (v_max.x() + v_min.x())*0.5;
-                    if (v_min.x() < v_max.x() &&
-                        v_min.x() > mid_side &&
-                        v_max.x() > mid_side &&
-                        mid_va_side < max_side)
-                    {
-                        // osg::notify(osg::NOTICE)<<" Moving right in "<<std::endl;
-                        topRight = v_max;
-                        lowerRight = v_min;
-                        max_side = mid_va_side;
-                    }                
-                }
-                else
-                {
-                    // osg::notify(osg::NOTICE)<<"Crossing va="<<va<<" vb="<<vb<<std::endl;
-                }
-            }
-        }
+            if (ratio<0.2) ratio = 0.2;
         
-        if (topLeft.x() < min_side) min_side = topLeft.x();        
-        if (topRight.x() > max_side) max_side = topRight.x();        
+            double base_up = min_up - (max_up - min_up) * ratio / (1.0 - ratio);
+            double max_side_over_up = 0.0;
+            for(i=0; i< projectedVertices.size(); ++i)
+            {
+                double delta_side = fabs(projectedVertices[i].x() - mid_side);
+                double delta_up = projectedVertices[i].y() - base_up;
+                double side_over_up = delta_side / delta_up;
+                if (side_over_up > max_side_over_up) max_side_over_up = side_over_up;
+            }
+            
+            double max_half_width = max_side_over_up*(max_up - base_up);
+            min_side = mid_side - max_half_width;
+            max_side = mid_side + max_half_width;
+            
+        
+            osg::notify(osg::NOTICE)<<"max_side_over_up = "<<max_side_over_up<<std::endl;
+        
+            double y0 = -(1.0+ratio)/(1.0-ratio); // suspect
+            double inverse_one_minus_y0 = 1.0/(1-y0);
+            
+            overlayData._y0->set(static_cast<float>(y0));
+            overlayData._inverse_one_minus_y0->set(static_cast<float>(inverse_one_minus_y0));
+            
+            osg::notify(osg::NOTICE)<<"y0 = "<<y0<<std::endl;
+            osg::notify(osg::NOTICE)<<"inverse_one_minus_y0 = "<<inverse_one_minus_y0<<std::endl;
+
+        
+            overlayData._mainSubgraphStateSet->setAttribute(overlayData._mainSubgraphProgram.get());
+            
+        }
+        else
+        {
+            overlayData._mainSubgraphStateSet->removeAttribute(osg::StateAttribute::PROGRAM);
+        }
+
 
 #if 0
         osg::notify(osg::NOTICE)<<"a  topLeft    = "<<topLeft<<std::endl;
         osg::notify(osg::NOTICE)<<"a  lowerLeft  = "<<lowerLeft<<std::endl;
         osg::notify(osg::NOTICE)<<"a  topRight   = "<<topRight<<std::endl;
         osg::notify(osg::NOTICE)<<"a  lowerRight = "<<lowerRight<<std::endl;
-#endif        
-        double  ratio  = (lowerRight.x()-lowerLeft.x())/(topRight.x()-topLeft.x());
-        osg::notify(osg::NOTICE)<<"Tapper ratio = "<<ratio<<std::endl;
-
-
-        osg::Vec3d eyeLocal = cv->getEyeLocal();
-        osg::Vec3d eyeDelta = eyeLocal - center;
-        osg::Vec2d eyeProjected(eyeDelta * sideVector, eyeDelta * upVector);
-        
-        if (eyeProjected.x() >= min_side && eyeProjected.x() <= max_side &&
-            eyeProjected.y() >= min_up && eyeProjected.y() <= max_up)
-        {
-            osg::notify(osg::NOTICE)<<"EyeProjected inside "<<eyeProjected<<std::endl;
-        }
-        else        
-        {
-            osg::notify(osg::NOTICE)<<"EyeProjected outside "<<eyeProjected<<std::endl;
-        }
-        
 
         osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
         osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
 
         osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
         osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
-
+#endif
         camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
             
         if (em)
@@ -1511,16 +1538,14 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 
-        cv->pushStateSet(overlayData._overlayStateSet.get());
+        if (usePerspectiveShaders) cv->pushStateSet(overlayData._overlayStateSet.get());
         
-        // _overlaySubgraph->setStateSet(overlayData._overlayStateSet.get());
-
         // if we need to redraw then do cull traversal on camera.
         camera->setClearColor(_overlayClearColor);
         //camera->setStateSet(overlayData._overlayStateSet.get());
         camera->accept(*cv);
 
-        cv->popStateSet();
+        if (usePerspectiveShaders) cv->popStateSet();
 
         _textureObjectValidList[contextID] = 1;
 

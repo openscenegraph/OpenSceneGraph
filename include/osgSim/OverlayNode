@@ -139,8 +139,12 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
 
         OverlayTechnique _overlayTechnique;
 
+
         // overlay subgraph is render to a texture
         osg::ref_ptr<osg::Node>         _overlaySubgraph;
+
+        osg::ref_ptr<osg::StateSet>     _overlayStateSet;
+        osg::ref_ptr<osg::StateSet>     _mainStateSet;
         
         // texture to render to, and to read from.
         GLenum                          _texEnvMode;
@@ -168,6 +172,10 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
             osg::ref_ptr<osg::Texture2D>    _texture;
             osg::Polytope                   _textureFrustum;
             osg::ref_ptr<osg::Geode>        _geode;
+
+            osg::ref_ptr<osg::Program>      _mainSubgraphProgram;            
+            osg::ref_ptr<osg::Uniform>      _y0;
+            osg::ref_ptr<osg::Uniform>      _inverse_one_minus_y0;
         };
         
         typedef std::map<osgUtil::CullVisitor*, OverlayData> OverlayDataMap;

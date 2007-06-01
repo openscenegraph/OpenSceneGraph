@@ -864,6 +864,12 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         
         if (!useThread) useContext->makeCurrent();
     }
+
+    if (_camera && _camera->getPreDrawCallback())
+    {
+        // if we have a camera with a post draw callback invoke it.
+        (*(_camera->getPreDrawCallback()))(*_camera);
+    }
     
     bool doCopyTexture = _texture.valid() ? 
                         (callingContext != useContext) :

@@ -469,10 +469,25 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_osg_Object_P1__getRenderingCache__unsigned_int,
 	          "Get the const Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
+	I_Method1(void, setPreDrawCallback, IN, osg::Camera::DrawCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setPreDrawCallback__DrawCallback_P1,
+	          "Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph has been completed. ",
+	          "");
+	I_Method0(osg::Camera::DrawCallback *, getPreDrawCallback,
+	          Properties::NON_VIRTUAL,
+	          __DrawCallback_P1__getPreDrawCallback,
+	          "Get the pre draw callback. ",
+	          "");
+	I_Method0(const osg::Camera::DrawCallback *, getPreDrawCallback,
+	          Properties::NON_VIRTUAL,
+	          __C5_DrawCallback_P1__getPreDrawCallback,
+	          "Get the const pre draw callback. ",
+	          "");
 	I_Method1(void, setPostDrawCallback, IN, osg::Camera::DrawCallback *, cb,
 	          Properties::NON_VIRTUAL,
 	          __void__setPostDrawCallback__DrawCallback_P1,
-	          "Set the post draw callback for custom operations to do done after the drawing of the camera's subgraph has been completed. ",
+	          "Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph has been completed. ",
 	          "");
 	I_Method0(osg::Camera::DrawCallback *, getPostDrawCallback,
 	          Properties::NON_VIRTUAL,
@@ -542,6 +557,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::DrawCallback *, PostDrawCallback, 
 	                 __DrawCallback_P1__getPostDrawCallback, 
 	                 __void__setPostDrawCallback__DrawCallback_P1);
+	I_SimpleProperty(osg::Camera::DrawCallback *, PreDrawCallback, 
+	                 __DrawCallback_P1__getPreDrawCallback, 
+	                 __void__setPreDrawCallback__DrawCallback_P1);
 	I_SimpleProperty(const osg::Matrixd &, ProjectionMatrix, 
 	                 __C5_osg_Matrixd_R1__getProjectionMatrix, 
 	                 __void__setProjectionMatrix__C5_osg_Matrixd_R1);

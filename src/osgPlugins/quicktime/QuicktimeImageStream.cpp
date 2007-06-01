@@ -222,6 +222,6 @@ void QuicktimeImageStream::run()
 
 
 void QuicktimeImageStream::applyLoopingMode() {
-    osg::notify(osg::ALWAYS) << "applying loop mode " << getLoopingMode() << std::endl;
+    osg::notify(osg::INFO) << "applying loop mode " << getLoopingMode() << std::endl;
     _data->setLooping(getLoopingMode() == osg::ImageStream::LOOPING);
 }

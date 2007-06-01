@@ -80,12 +80,11 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
 //
 // EllipsoidLocator
 //
-EllipsoidLocator::EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height, double heightScale)
+EllipsoidLocator::EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height, double heightScale, double radiusEquator, double radiusPolar)
 {
     setExtents(longitude, latitude, deltaLongitude, deltaLatitude, height, heightScale);
-    _em = new osg::EllipsoidModel;
+    _em = new osg::EllipsoidModel(radiusEquator, radiusPolar);
 }
-
 
 void EllipsoidLocator::setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height, double heightScale)
 {

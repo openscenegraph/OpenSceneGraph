@@ -1,7 +1,7 @@
-SET(TARGET_SRC osgsimpleviewerFLTK.cpp )
+SET(TARGET_SRC osgviewerFLTK.cpp )
 
 SET(TARGET_ADDED_LIBRARIES ${FLTK_LIBRARIES} )
 INCLUDE_DIRECTORIES(${FLTK_INCLUDE_DIR} )
 
 #### end var setup  ###
-SETUP_EXAMPLE(osgsimpleviewerFLTK)
+SETUP_EXAMPLE(osgviewerFLTK)

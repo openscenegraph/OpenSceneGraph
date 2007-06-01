@@ -15,6 +15,9 @@
 #define OSGTERRAIN_VALIDDATAOPERATOR 1
 
 #include <osg/Referenced>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgTerrain/Export>
 
 namespace osgTerrain {

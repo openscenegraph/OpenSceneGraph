@@ -195,6 +195,9 @@ int main(int argc, char **argv)
         
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
+        
+    // add the record camera path  handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
     // add the help handler
     viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
@@ -279,16 +282,6 @@ int main(int argc, char **argv)
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
-        return 1;
-    }
-
-    // any option left unread are converted into errors to write out later.
-    arguments.reportRemainingOptionsAsUnrecognized();
-
-    // report any errors if they have occured when parsing the program aguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
         return 1;
     }
     
@@ -385,15 +378,27 @@ int main(int argc, char **argv)
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
-        if (tm.valid()) keyswitchManipulator->addMatrixManipulator( '0', "Trackball", tm.get() );
+        if (tm.valid()) keyswitchManipulator->addMatrixManipulator( '0', "NodeTracker", tm.get() );
+
         keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
         keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
 
+        std::string pathfile;
+        while (arguments.read("-p",pathfile))
+        {
+            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+            if (apm || !apm->valid()) 
+            {
+                unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+                keyswitchManipulator->addMatrixManipulator( '5', "Path", apm );
+                keyswitchManipulator->selectMatrixManipulator(num);
+            }
+        }
+
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
-    
 
     // viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 

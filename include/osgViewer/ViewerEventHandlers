@@ -113,7 +113,7 @@ TODO: Create osgviewer on-screen indication that animation is taking place.
 TODO: Explore multi-cameras thing.
 TODO: Investigate crash if non-focused camera?
 */
-class RecordCameraPathHandler : public osgGA::GUIEventHandler
+class OSGVIEWER_EXPORT RecordCameraPathHandler : public osgGA::GUIEventHandler
 {
 public:
 

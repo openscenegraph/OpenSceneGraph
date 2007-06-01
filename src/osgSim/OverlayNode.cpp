@@ -1451,12 +1451,14 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                 
         double mid_side = (min_side + max_side) * 0.5;
         double ratio = min_distanceEye / max_distanceEye;
-        bool usePerspectiveShaders = ratio<0.95;
+        bool usePerspectiveShaders = (_overlayTechnique==VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY) &&
+                                     (ratio<0.95);
 
-        osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
 
         if (usePerspectiveShaders)
         {
+            osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
+
             if (ratio<0.2) ratio = 0.2;
         
             double base_up = min_up - (max_up - min_up) * ratio / (1.0 - ratio);

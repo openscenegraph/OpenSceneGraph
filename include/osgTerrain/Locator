@@ -60,7 +60,7 @@ class OSGTERRAIN_EXPORT EllipsoidLocator : public osgTerrain::Locator
     public:
 
 
-        EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f);
+        EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f, double radiusEquator = osg::WGS_84_RADIUS_EQUATOR, double radiusPolar = osg::WGS_84_RADIUS_POLAR);
 
         void setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f);
 
@@ -72,6 +72,7 @@ class OSGTERRAIN_EXPORT EllipsoidLocator : public osgTerrain::Locator
 
         double getHeight() const { return _height; }
 
+        void setEllipsoidModel(osg::EllipsoidModel* em) { _em=em; }
         osg::EllipsoidModel* getEllipsoidModel() { return _em.get(); }
         const osg::EllipsoidModel* getEllipsoidModel() const { return _em.get(); }
 

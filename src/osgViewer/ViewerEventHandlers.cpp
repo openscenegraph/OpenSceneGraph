@@ -343,7 +343,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
     return false;
 }
 
-AnimationPathHandler::AnimationPathHandler():
+RecordCameraPathHandler::RecordCameraPathHandler():
     _currentlyRecording(false),
     _delta(0.0f),
     _lastFrameTime(osg::Timer::instance()->tick()),
@@ -358,12 +358,12 @@ AnimationPathHandler::AnimationPathHandler():
     else _interval = 1.0f / 25.0f;
 }
 
-void AnimationPathHandler::getUsage(osg::ApplicationUsage &usage) const
+void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
 {
     usage.addKeyboardMouseBinding("z", "Toggle camera path recording.");
 }
 
-bool AnimationPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
     osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
 

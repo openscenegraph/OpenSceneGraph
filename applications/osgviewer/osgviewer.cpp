@@ -117,8 +117,8 @@ int main(int argc, char** argv)
     // add the help handler
     viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
 
-    // add the camera path handler
-    viewer.addEventHandler(new osgViewer::AnimationPathHandler);
+    // add the record camera path handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
     while (arguments.read("--SingleThreaded")) viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     while (arguments.read("--CullDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);

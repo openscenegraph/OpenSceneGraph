@@ -1,27 +1,43 @@
 // C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
-// (C) 2005 Mike Weiblen http://mew.cx/ released under the OSGPL.
-// Simple example using GLUT to create an OpenGL window and OSG for rendering.
-// Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
-#include <osgViewer/SimpleViewer>
+#include <osgViewer/Viewer>
+#include <osgViewer/StatsHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-class QWidget;
-#include <qtimer.h>
-#include <qgl.h>
-#include <qapplication.h>
+#if USE_QT3
+
+    class QWidget;
+    #include <qtimer.h>
+    #include <qgl.h>
+    #include <qapplication.h>
+
+#else
+
+    #include <QtCore/QTimer>
+    #include <QtGui/QKeyEvent>
+    #include <QtGui/QApplication>
+    #include <QtOpenGL/QGLWidget>
+
+    using Qt::WFlags;
+#endif
 
 #include <iostream>
 
-class GraphicsWindowQT : public QGLWidget, virtual public osgViewer::GraphicsWindow
+class AdapterWidget : public QGLWidget
 {
 public:
 
-    GraphicsWindowQT( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
-    virtual ~GraphicsWindowQT() {}
+    AdapterWidget( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
+
+    virtual ~AdapterWidget() {}
+    
+    osgViewer::GraphicsWindow* getGraphicsWindow() { return _gw.get(); }
+    const osgViewer::GraphicsWindow* getGraphicsWindow() const { return _gw.get(); }
 
 protected:
+
+    void init();
 
     virtual void resizeGL( int width, int height );
     virtual void keyPressEvent( QKeyEvent* event );
@@ -31,45 +47,36 @@ protected:
     virtual void mouseMoveEvent( QMouseEvent* event );
 
     QTimer _timer;
+    
+    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 };
 
-GraphicsWindowQT::GraphicsWindowQT( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f):
+AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f):
     QGLWidget(parent, name, shareWidget, f)
 {
     connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
     _timer.start(10);
+    
+    _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
 }
 
-void GraphicsWindowQT::resizeGL( int width, int height )
+void AdapterWidget::resizeGL( int width, int height )
 {
-    getEventQueue()->windowResize(0, 0, width, height );
+    _gw->getEventQueue()->windowResize(0, 0, width, height );
+    _gw->resized(0,0,width,height);
 }
 
-void GraphicsWindowQT::keyPressEvent( QKeyEvent* event )
+void AdapterWidget::keyPressEvent( QKeyEvent* event )
 {
-    getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
+    _gw->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
 }
 
-void GraphicsWindowQT::keyReleaseEvent( QKeyEvent* event )
+void AdapterWidget::keyReleaseEvent( QKeyEvent* event )
 {
-    getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
+    _gw->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
 }
 
-void GraphicsWindowQT::mousePressEvent( QMouseEvent* event )
-{
-    int button = 0;
-    switch(event->button())
-    {
-        case(Qt::LeftButton): button = 1; break;
-        case(Qt::MidButton): button = 2; break;
-        case(Qt::RightButton): button = 3; break;
-        case(Qt::NoButton): button = 0; break;
-        default: button = 0; break;
-    }
-    getEventQueue()->mouseButtonPress(event->x(), event->y(), button);
-}
-
-void GraphicsWindowQT::mouseReleaseEvent( QMouseEvent* event )
+void AdapterWidget::mousePressEvent( QMouseEvent* event )
 {
     int button = 0;
     switch(event->button())
@@ -80,26 +87,44 @@ void GraphicsWindowQT::mouseReleaseEvent( QMouseEvent* event )
         case(Qt::NoButton): button = 0; break;
         default: button = 0; break;
     }
-    getEventQueue()->mouseButtonRelease(event->x(), event->y(), button);
+    _gw->getEventQueue()->mouseButtonPress(event->x(), event->y(), button);
 }
 
-void GraphicsWindowQT::mouseMoveEvent( QMouseEvent* event )
+void AdapterWidget::mouseReleaseEvent( QMouseEvent* event )
 {
-    getEventQueue()->mouseMotion(event->x(), event->y());
+    int button = 0;
+    switch(event->button())
+    {
+        case(Qt::LeftButton): button = 1; break;
+        case(Qt::MidButton): button = 2; break;
+        case(Qt::RightButton): button = 3; break;
+        case(Qt::NoButton): button = 0; break;
+        default: button = 0; break;
+    }
+    _gw->getEventQueue()->mouseButtonRelease(event->x(), event->y(), button);
+}
+
+void AdapterWidget::mouseMoveEvent( QMouseEvent* event )
+{
+    _gw->getEventQueue()->mouseMotion(event->x(), event->y());
 }
 
 
-class SimpleViewerQT : public osgViewer::SimpleViewer, public GraphicsWindowQT
+class ViewerQT : public AdapterWidget, public osgViewer::Viewer
 {
     public:
 
-        SimpleViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):
-            GraphicsWindowQT( parent, name, shareWidget, f )
-            {}
+        ViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):
+            AdapterWidget( parent, name, shareWidget, f )
+        {
+            getCamera()->setViewport(new osg::Viewport(0,0,width(),height()));
+            getCamera()->setGraphicsContext(getGraphicsWindow());
+            setThreadingModel(osgViewer::Viewer::SingleThreaded);
+        }
 
         virtual void initializeGL()
         {
-            QGLWidget::initializeGL();    
+            QGLWidget::initializeGL();
         }
 
         virtual void paintGL()
@@ -128,10 +153,11 @@ int main( int argc, char **argv )
     }
 
 
-    SimpleViewerQT* viewerWindow = new SimpleViewerQT;
+    ViewerQT* viewerWindow = new ViewerQT;
 
     viewerWindow->setSceneData(loadedModel.get());
     viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
+    viewerWindow->addEventHandler(new osgViewer::StatsHandler);
 
     viewerWindow->show();
     a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );

@@ -1,6 +1,6 @@
 // C++ source file - (C) 2003 Robert Osfield, released under the OSGPL.
 //
-// Simple example of use of osgViewer::GraphicsWindow + SimpleViewer
+// Simple example of use of osgViewer::GraphicsWindow + Viewer
 // example that provides the user with control over view position with basic picking.
 
 #include <osg/Timer>
@@ -17,8 +17,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
 
-#include <osgViewer/SimpleViewer>
-#include <osgViewer/GraphicsWindow>
+#include <osgViewer/Viewer>
 
 #include <osgFX/Scribe>
 
@@ -100,43 +99,6 @@ public:
     
 };
 
-class ExitHandler : public osgGA::GUIEventHandler 
-{
-public: 
-
-    ExitHandler():
-        _done(false) {}
-        
-    bool done() const { return _done; }    
-
-    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&)
-    {
-        switch(ea.getEventType())
-        {
-            case(osgGA::GUIEventAdapter::KEYUP):
-            {
-                if (ea.getKey()==osgGA::GUIEventAdapter::KEY_Escape)
-                {
-                    _done = true;
-                }
-                return false;
-            }
-            case(osgGA::GUIEventAdapter::CLOSE_WINDOW):
-            case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
-            {
-                _done = true;
-            }
-            default: break;
-        }
-        
-        return false;
-    }
-    
-    bool _done;
-};
-
-
-
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler 
 {
@@ -151,7 +113,7 @@ public:
 
     bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
     {
-        osgViewer::SimpleViewer* viewer = dynamic_cast<osgViewer::SimpleViewer*>(&aa);
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
         if (!viewer) return false;
 
         switch(ea.getEventType())
@@ -218,7 +180,7 @@ public:
         }
     }
 
-    void pick(const osgGA::GUIEventAdapter& ea, osgViewer::SimpleViewer* viewer)
+    void pick(const osgGA::GUIEventAdapter& ea, osgViewer::Viewer* viewer)
     {
         osg::Node* scene = viewer->getSceneData();
         if (!scene) return;
@@ -391,45 +353,27 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    gw->realize();
-    gw->makeCurrent();
-
     // create the view of the scene.
-    osgViewer::SimpleViewer viewer;
+    osgViewer::Viewer viewer;
+    viewer.getCamera()->setGraphicsContext(gc.get());
+    viewer.getCamera()->setViewport(0,0,800,600);
     viewer.setSceneData(loadedModel.get());
     
-    viewer.setEventQueue(gw->getEventQueue());
-    viewer.getEventQueue()->windowResize(traits->x,traits->y,traits->width,traits->height);
-
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
     viewer.setCameraManipulator( new osgGA::TrackballManipulator );
 
-    osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
-    statesetManipulator->setStateSet(viewer.getSceneView()->getGlobalStateSet());
+    osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator(viewer.getCamera()->getStateSet());
     viewer.addEventHandler(statesetManipulator.get());
 
     // add the pick handler
     viewer.addEventHandler(new PickHandler());
 
-
-    // add the exit handler'
-    ExitHandler* exitHandler = new ExitHandler;
-    viewer.addEventHandler(exitHandler);
-
-    viewer.init();
+    viewer.realize();
 
     // main loop (note, window toolkits which take control over the main loop will require a window redraw callback containing the code below.)
-    while( gw->isRealized() && !exitHandler->done())
+    while(!viewer.done())
     {
-        gw->checkEvents();
-        
-        if (gw->isRealized() && !exitHandler->done())
-        {      
-            viewer.frame();
-
-            // Swap Buffers
-            gw->swapBuffers();
-        }
+        viewer.frame();
     }
 
     return 0;

@@ -150,6 +150,60 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 };
 
 
+class GraphicsWindowEmbedded : public GraphicsWindow
+{
+    public:
+    
+        GraphicsWindowEmbedded(osg::GraphicsContext::Traits* traits=0)
+        {
+            _traits = traits;
+
+            init();
+            
+        }
+
+        GraphicsWindowEmbedded(int x, int y, int width, int height)
+        {
+            _traits = new GraphicsContext::Traits;
+            _traits->x = x;
+            _traits->y = y;
+            _traits->width = width;
+            _traits->height = height;
+            
+            init();
+        }
+
+        void init()
+        {
+            if (valid())
+            {
+                setState( new osg::State );
+                getState()->setGraphicsContext(this);
+
+                if (_traits.valid() && _traits->sharedContext)
+                {
+                    getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+                    incrementContextIDUsageCount( getState()->getContextID() );   
+                }
+                else
+                {
+                    getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+                }
+            }
+        }
+
+        // dumy implementations, assume that graphics context is *always* current and valid.
+        virtual bool valid() const { return true; }
+        virtual bool realizeImplementation() { return true; }
+        virtual bool isRealizedImplementation() const  { return true; }
+        virtual void closeImplementation() {}
+        virtual bool makeCurrentImplementation() { return true; }
+        virtual bool releaseContextImplementation() { return true; }
+        virtual void swapBuffersImplementation() {}
+        virtual void grabFocus() {}
+        virtual void grabFocusIfPointerInWindow() {}
+};
+
 }
 
 #endif

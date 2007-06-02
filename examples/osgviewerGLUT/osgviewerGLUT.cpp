@@ -63,46 +63,6 @@ void keyboard( unsigned char key, int /*x*/, int /*y*/ )
     }
 }
 
-class GraphicsWindowEmbedded : public osgViewer::GraphicsWindow
-{
-public:
-    
-    GraphicsWindowEmbedded(osg::GraphicsContext::Traits* traits=0)
-    {
-            _traits = traits;
-
-            init();
-            
-            if (valid())
-            {
-                setState( new osg::State );
-                getState()->setGraphicsContext(this);
-
-                if (_traits.valid() && _traits->sharedContext)
-                {
-                    getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
-                    incrementContextIDUsageCount( getState()->getContextID() );   
-                }
-                else
-                {
-                    getState()->setContextID( osg::GraphicsContext::createNewContextID() );
-                }
-            }
-    }
-
-    void init() {}
-    
-    virtual bool valid() const { return true; }
-    virtual bool realizeImplementation() { return true; }
-    virtual bool isRealizedImplementation() const  { return true; }
-    virtual void closeImplementation() {}
-    virtual bool makeCurrentImplementation() {}
-    virtual bool releaseContextImplementation() {}
-    virtual void swapBuffersImplementation() {}
-    virtual void grabFocus() {}
-    virtual void grabFocusIfPointerInWindow() {}
-};
-
 int main( int argc, char **argv )
 {
     glutInit(&argc, argv);
@@ -131,12 +91,7 @@ int main( int argc, char **argv )
     glutMotionFunc( mousemove );
     glutKeyboardFunc( keyboard );
 
-    osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
-    traits->x = 100;
-    traits->y = 100;
-    traits->width = 800;
-    traits->height = 600;
-    window = new GraphicsWindowEmbedded(traits);
+    window = new osgViewer::GraphicsWindowEmbedded(100,100,800,600);
 
     // create the view of the scene.
     viewer = new osgViewer::Viewer;

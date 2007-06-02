@@ -3,7 +3,8 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
-#include <osgViewer/SimpleViewer>
+#include <osgViewer/Viewer>
+#include <osgViewer/StatsHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
@@ -104,14 +105,19 @@ int main( int argc, char **argv )
 
     SDL_EnableUNICODE(1);
     
-    osgViewer::SimpleViewer viewer;
-    viewer.setSceneData(loadedModel.get());
-    viewer.setCameraManipulator(new osgGA::TrackballManipulator);
-
     // If we used 0 to set the fields, query the values so we can pass it to osgViewer
     windowWidth = screen->w;
     windowHeight = screen->h;
-    viewer.getEventQueue()->windowResize(0, 0, windowWidth, windowHeight );
+    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gw = new osgViewer::GraphicsWindowEmbedded(0,0,windowWidth,windowHeight);
+    
+    osgViewer::Viewer viewer;
+    viewer.getCamera()->setGraphicsContext(gw.get());
+    viewer.getCamera()->setViewport(new osg::Viewport(0,0,windowWidth,windowHeight));
+    viewer.setSceneData(loadedModel.get());
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator);
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    viewer.realize();
 
     bool done = false;
     while( !done )
@@ -121,14 +127,22 @@ int main( int argc, char **argv )
         while ( SDL_PollEvent(&event) )
         {
             // pass the SDL event into the viewers event queue
-            convertEvent(event, *viewer.getEventQueue());
+            convertEvent(event, *(gw->getEventQueue()));
 
             switch (event.type) {
+
+                case SDL_VIDEORESIZE:
+                    gw->resized(0, 0, event.resize.w, event.resize.h );
+                    break;
 
                 case SDL_KEYUP:
 
                     if (event.key.keysym.sym==SDLK_ESCAPE) done = true;
-                    if (event.key.keysym.sym=='f') SDL_WM_ToggleFullScreen(screen);
+                    if (event.key.keysym.sym=='f') 
+                    {
+                        SDL_WM_ToggleFullScreen(screen);
+                        gw->resized(0, 0, screen->w, screen->h );
+                    }
 
                     break;
 

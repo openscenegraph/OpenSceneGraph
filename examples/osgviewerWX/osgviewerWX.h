@@ -5,10 +5,10 @@
 #include "wx/app.h"
 #include "wx/cursor.h"
 #include "wx/glcanvas.h"
-#include <osgViewer/SimpleViewer>
+#include <osgViewer/Viewer>
 #include <string>
 
-class GraphicsWindowWX: public wxGLCanvas, virtual osgViewer::GraphicsWindow
+class GraphicsWindowWX: public wxGLCanvas, public osgViewer::GraphicsWindow
 {
 public:
     GraphicsWindowWX(wxWindow *parent, wxWindowID id = wxID_ANY,
@@ -17,6 +17,8 @@ public:
         const wxString& name = wxT("TestGLCanvas"));
 
     ~GraphicsWindowWX();
+    
+    void init();
 
     void OnPaint(wxPaintEvent& event);
     void OnSize(wxSizeEvent& event);
@@ -36,32 +38,17 @@ public:
     bool makeCurrentImplementation();
     void swapBuffersImplementation();
 
+    // note implemented yet...just use dummy implementation to get working.    
+    virtual bool valid() const { return true; }
+    virtual bool realizeImplementation() { return true; }
+    virtual bool isRealizedImplementation() const  { return true; }
+    virtual void closeImplementation() {}
+    virtual bool releaseContextImplementation() { return true; }
+
 private:
     wxCursor _oldCursor;
 
     DECLARE_EVENT_TABLE()
-};
-
-class SimpleViewerWX : public osgViewer::SimpleViewer, public GraphicsWindowWX
-{
-public:
-    SimpleViewerWX(wxWindow *parent, wxWindowID id = wxID_ANY,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize, long style = 0,
-                    const wxString& name = wxT("TestGLCanvas")) :
-        GraphicsWindowWX(parent, id, pos, size, style, name)
-    {
-    }
-
-    void render()
-    { 
-        makeCurrentImplementation();
-
-        // update and render the scene graph
-        frame();
-
-        swapBuffersImplementation();
-    }
 };
 
 class MainFrame : public wxFrame
@@ -70,11 +57,11 @@ public:
     MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos, 
         const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
 
-    void SetSimpleViewer(SimpleViewerWX *viewer);
+    void SetViewer(osgViewer::Viewer *viewer);
     void OnIdle(wxIdleEvent& event);
 
 private:
-    SimpleViewerWX *_viewerWindow;
+    osg::ref_ptr<osgViewer::Viewer> _viewer;
 
     DECLARE_EVENT_TABLE()
 };

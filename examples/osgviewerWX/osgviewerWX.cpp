@@ -10,6 +10,9 @@
 #endif
 
 #include "osgviewerWX.h"
+
+
+#include <osgViewer/StatsHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 #include <wx/image.h>
@@ -24,8 +27,20 @@ bool wxOsgApp::OnInit()
 
     // create osg canvas
     //    - initialize
-    SimpleViewerWX *viewerWindow = new SimpleViewerWX(frame, wxID_ANY, wxDefaultPosition,
-        wxSize(200, 200), wxSUNKEN_BORDER);
+    
+
+    int width = 800;
+    int height = 600;
+
+    GraphicsWindowWX* gw = new GraphicsWindowWX(frame, wxID_ANY, wxDefaultPosition,
+                                                wxSize(width, height), wxSUNKEN_BORDER);
+    
+    
+    osgViewer::Viewer *viewer = new osgViewer::Viewer;
+    viewer->getCamera()->setGraphicsContext(gw);
+    viewer->getCamera()->setViewport(0,0,width,height);
+    viewer->addEventHandler(new osgViewer::StatsHandler);
+    viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
         
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile("cow.osg");
@@ -33,10 +48,11 @@ bool wxOsgApp::OnInit()
     {
         return false;
     }
-    viewerWindow->setSceneData(loadedModel.get());
-    viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
+    
+    viewer->setSceneData(loadedModel.get());
+    viewer->setCameraManipulator(new osgGA::TrackballManipulator);
 
-    frame->SetSimpleViewer(viewerWindow);
+    frame->SetViewer(viewer);
 
     /* Show the frame */
     frame->Show(true);
@@ -55,17 +71,17 @@ MainFrame::MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
     const wxSize& size, long style)
     : wxFrame(frame, wxID_ANY, title, pos, size, style)
 {
-    _viewerWindow = NULL;
 }
 
-void MainFrame::SetSimpleViewer(SimpleViewerWX *viewer)
+void MainFrame::SetViewer(osgViewer::Viewer *viewer)
 {
-    _viewerWindow = viewer;
+    _viewer = viewer;
 }
 
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
-    _viewerWindow->render();
+    _viewer->frame();
+    
     event.RequestMore();
 }
 
@@ -84,6 +100,34 @@ GraphicsWindowWX::GraphicsWindowWX(wxWindow *parent, wxWindowID id,
 {
     // default cursor to standard
     _oldCursor = *wxSTANDARD_CURSOR;
+    
+    _traits = new GraphicsContext::Traits;
+    _traits->x = pos.x;
+    _traits->y = pos.y;
+    _traits->width = size.x;
+    _traits->height = size.y;
+
+    init();
+    
+}
+
+void GraphicsWindowWX::init()
+{
+    if (valid())
+    {
+        setState( new osg::State );
+        getState()->setGraphicsContext(this);
+
+        if (_traits.valid() && _traits->sharedContext)
+        {
+            getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+            incrementContextIDUsageCount( getState()->getContextID() );   
+        }
+        else
+        {
+            getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+        }
+    }
 }
 
 GraphicsWindowWX::~GraphicsWindowWX()
@@ -107,6 +151,7 @@ void GraphicsWindowWX::OnSize(wxSizeEvent& event)
     
     // update the window dimensions, in case the window has been resized.
     getEventQueue()->windowResize(0, 0, width, height);
+    resized(0,0,width,height);
 }
 
 void GraphicsWindowWX::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
@@ -116,8 +161,12 @@ void GraphicsWindowWX::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 void GraphicsWindowWX::OnKeyDown(wxKeyEvent &event)
 {
+#if 1
+    int key = event.GetUnicodeKey();
+#else
     int key = event.GetKeyCode();
-    getEventQueue()->keyPress(key);
+#endif
+    getEventQueue()->keyPress(key);    
 
     // propagate event
     event.Skip();
@@ -125,7 +174,11 @@ void GraphicsWindowWX::OnKeyDown(wxKeyEvent &event)
 
 void GraphicsWindowWX::OnKeyUp(wxKeyEvent &event)
 {
+#if 1
+    int key = event.GetUnicodeKey();
+#else
     int key = event.GetKeyCode();
+#endif
     getEventQueue()->keyRelease(key);    
 
     // propagate event

@@ -13,11 +13,13 @@
 #  include <GL/glut.h>
 #endif
 
-#include <osgViewer/SimpleViewer>
+#include <osgViewer/Viewer>
+#include <osgViewer/StatsHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-osg::ref_ptr<osgViewer::SimpleViewer> viewer;
+osg::ref_ptr<osgViewer::Viewer> viewer;
+osg::ref_ptr<osgViewer::GraphicsWindow> window;
 
 void display(void)
 {
@@ -32,18 +34,19 @@ void display(void)
 void reshape( int w, int h )
 {
     // update the window dimensions, in case the window has been resized.
-    viewer->getEventQueue()->windowResize(0, 0, w, h );
+    window->resized(window->getTraits()->x, window->getTraits()->y, w, h);
+    window->getEventQueue()->windowResize(window->getTraits()->x, window->getTraits()->y, w, h );
 }
 
 void mousebutton( int button, int state, int x, int y )
 {
-    if (state==0) viewer->getEventQueue()->mouseButtonPress( x, y, button+1 );
-    else viewer->getEventQueue()->mouseButtonRelease( x, y, button+1 );
+    if (state==0) window->getEventQueue()->mouseButtonPress( x, y, button+1 );
+    else window->getEventQueue()->mouseButtonRelease( x, y, button+1 );
 }
 
 void mousemove( int x, int y )
 {
-    viewer->getEventQueue()->mouseMotion( x, y );
+    window->getEventQueue()->mouseMotion( x, y );
 }
 
 void keyboard( unsigned char key, int /*x*/, int /*y*/ )
@@ -54,11 +57,51 @@ void keyboard( unsigned char key, int /*x*/, int /*y*/ )
             glutDestroyWindow(glutGetWindow());
             break;
         default:
-            viewer->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
-            viewer->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
+            window->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
+            window->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
             break;
     }
 }
+
+class GraphicsWindowEmbedded : public osgViewer::GraphicsWindow
+{
+public:
+    
+    GraphicsWindowEmbedded(osg::GraphicsContext::Traits* traits=0)
+    {
+            _traits = traits;
+
+            init();
+            
+            if (valid())
+            {
+                setState( new osg::State );
+                getState()->setGraphicsContext(this);
+
+                if (_traits.valid() && _traits->sharedContext)
+                {
+                    getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+                    incrementContextIDUsageCount( getState()->getContextID() );   
+                }
+                else
+                {
+                    getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+                }
+            }
+    }
+
+    void init() {}
+    
+    virtual bool valid() const { return true; }
+    virtual bool realizeImplementation() { return true; }
+    virtual bool isRealizedImplementation() const  { return true; }
+    virtual void closeImplementation() {}
+    virtual bool makeCurrentImplementation() {}
+    virtual bool releaseContextImplementation() {}
+    virtual void swapBuffersImplementation() {}
+    virtual void grabFocus() {}
+    virtual void grabFocusIfPointerInWindow() {}
+};
 
 int main( int argc, char **argv )
 {
@@ -88,12 +131,26 @@ int main( int argc, char **argv )
     glutMotionFunc( mousemove );
     glutKeyboardFunc( keyboard );
 
+    osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
+    traits->x = 100;
+    traits->y = 100;
+    traits->width = 800;
+    traits->height = 600;
+    window = new GraphicsWindowEmbedded(traits);
+
     // create the view of the scene.
-    viewer = new osgViewer::SimpleViewer;
+    viewer = new osgViewer::Viewer;
+    viewer->getCamera()->setGraphicsContext(window.get());
+    viewer->getCamera()->setViewport(new osg::Viewport(0,0,800,600));
+    viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
     viewer->setSceneData(loadedModel.get());
     viewer->setCameraManipulator(new osgGA::TrackballManipulator);
+    viewer->addEventHandler(new osgViewer::StatsHandler);
+    viewer->realize();
 
     glutMainLoop();
+    
     return 0;
 }
 

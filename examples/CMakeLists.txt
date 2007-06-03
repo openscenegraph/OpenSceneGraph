@@ -109,11 +109,7 @@ IF   (wxWidgets_FOUND)
 ENDIF(wxWidgets_FOUND)
 
 IF   (QT_FOUND)
-    IF   (QT4_FOUND)
-        ADD_SUBDIRECTORY(osgviewerQT4)
-    ELSE(QT4_FOUND)
-        ADD_SUBDIRECTORY(osgviewerQT3)
-    ENDIF(QT4_FOUND)
+    ADD_SUBDIRECTORY(osgviewerQT)
 ENDIF(QT_FOUND)
 
 IF   (FLTK_FOUND)

@@ -5,14 +5,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
-#if USE_QT3
-
-    class QWidget;
-    #include <qtimer.h>
-    #include <qgl.h>
-    #include <qapplication.h>
-
-#else
+#if USE_QT4
 
     #include <QtCore/QTimer>
     #include <QtGui/QKeyEvent>
@@ -20,6 +13,14 @@
     #include <QtOpenGL/QGLWidget>
 
     using Qt::WFlags;
+
+#else
+
+    class QWidget;
+    #include <qtimer.h>
+    #include <qgl.h>
+    #include <qapplication.h>
+
 #endif
 
 #include <iostream>

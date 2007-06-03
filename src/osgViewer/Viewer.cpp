@@ -773,6 +773,15 @@ void Viewer::setSceneData(osg::Node* node)
     setUpRenderingSupport();
 }
 
+GraphicsWindowEmbedded* Viewer::setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height)
+{
+    setThreadingModel(SingleThreaded);
+    osgViewer::GraphicsWindowEmbedded* gw = new osgViewer::GraphicsWindowEmbedded(x,y,width,height);
+    getCamera()->setViewport(new osg::Viewport(0,0,width,height));
+    getCamera()->setGraphicsContext(gw);
+    return gw;
+}
+
 void Viewer::setThreadingModel(ThreadingModel threadingModel)
 {
     if (_threadingModel == threadingModel) return;

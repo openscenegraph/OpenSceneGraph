@@ -47,7 +47,14 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 
+        /** Set the sene graph data that viewer with view.*/
         virtual void setSceneData(osg::Node* node);
+
+
+        /** Convinience method for setting up the viewer so it can be used embedded in an external managed window.
+          * Returns the GraphicsWindowEmbedded that can be used by applications to pass in events to the viewer. */
+        virtual GraphicsWindowEmbedded* setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height);
+
 
         enum ThreadingModel
         {

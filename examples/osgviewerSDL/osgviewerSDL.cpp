@@ -108,15 +108,12 @@ int main( int argc, char **argv )
     // If we used 0 to set the fields, query the values so we can pass it to osgViewer
     windowWidth = screen->w;
     windowHeight = screen->h;
-    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gw = new osgViewer::GraphicsWindowEmbedded(0,0,windowWidth,windowHeight);
     
     osgViewer::Viewer viewer;
-    viewer.getCamera()->setGraphicsContext(gw.get());
-    viewer.getCamera()->setViewport(new osg::Viewport(0,0,windowWidth,windowHeight));
+    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> gw = viewer.setUpViewerAsEmbeddedInWindow(0,0,windowWidth,windowHeight);
     viewer.setSceneData(loadedModel.get());
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
     viewer.addEventHandler(new osgViewer::StatsHandler);
-    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     viewer.realize();
 
     bool done = false;

@@ -91,14 +91,9 @@ int main( int argc, char **argv )
     glutMotionFunc( mousemove );
     glutKeyboardFunc( keyboard );
 
-    window = new osgViewer::GraphicsWindowEmbedded(100,100,800,600);
-
     // create the view of the scene.
     viewer = new osgViewer::Viewer;
-    viewer->getCamera()->setGraphicsContext(window.get());
-    viewer->getCamera()->setViewport(new osg::Viewport(0,0,800,600));
-    viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-
+    window = viewer->setUpViewerAsEmbeddedInWindow(100,100,800,600);
     viewer->setSceneData(loadedModel.get());
     viewer->setCameraManipulator(new osgGA::TrackballManipulator);
     viewer->addEventHandler(new osgViewer::StatsHandler);

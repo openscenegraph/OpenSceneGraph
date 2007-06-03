@@ -16,6 +16,7 @@
 #include <osg/GraphicsThread>
 #include <osg/Node>
 #include <osg/Timer>
+#include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -102,8 +103,13 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
 	          Properties::VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,
-	          "",
+	          "Set the sene graph data that viewer with view. ",
 	          "");
+	I_Method4(osgViewer::GraphicsWindowEmbedded *, setUpViewerAsEmbeddedInWindow, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::VIRTUAL,
+	          __GraphicsWindowEmbedded_P1__setUpViewerAsEmbeddedInWindow__int__int__int__int,
+	          "Convinience method for setting up the viewer so it can be used embedded in an external managed window. ",
+	          "Returns the GraphicsWindowEmbedded that can be used by applications to pass in events to the viewer. ");
 	I_Method1(void, setThreadingModel, IN, osgViewer::Viewer::ThreadingModel, threadingModel,
 	          Properties::NON_VIRTUAL,
 	          __void__setThreadingModel__ThreadingModel,

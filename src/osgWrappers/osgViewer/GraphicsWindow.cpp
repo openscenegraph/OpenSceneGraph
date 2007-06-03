@@ -184,3 +184,66 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	                 __void__setWindowDecoration__bool);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
+	I_BaseType(osgViewer::GraphicsWindow);
+	I_ConstructorWithDefaults1(IN, osg::GraphicsContext::Traits *, traits, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____GraphicsWindowEmbedded__osg_GraphicsContext_Traits_P1,
+	                           "",
+	                           "");
+	I_Constructor4(IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	               ____GraphicsWindowEmbedded__int__int__int__int,
+	               "",
+	               "");
+	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
+	          __void__init,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::VIRTUAL,
+	          __bool__valid,
+	          "Return whether a valid and usable GraphicsContext has been created. ",
+	          "");
+	I_Method0(bool, realizeImplementation,
+	          Properties::VIRTUAL,
+	          __bool__realizeImplementation,
+	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
+	          "");
+	I_Method0(bool, isRealizedImplementation,
+	          Properties::VIRTUAL,
+	          __bool__isRealizedImplementation,
+	          "Return true if the graphics context has been realised, and is ready to use, implementation. ",
+	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	I_Method0(void, closeImplementation,
+	          Properties::VIRTUAL,
+	          __void__closeImplementation,
+	          "Close the graphics context implementation. ",
+	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	I_Method0(bool, makeCurrentImplementation,
+	          Properties::VIRTUAL,
+	          __bool__makeCurrentImplementation,
+	          "Make this graphics context current implementation. ",
+	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	I_Method0(bool, releaseContextImplementation,
+	          Properties::VIRTUAL,
+	          __bool__releaseContextImplementation,
+	          "Release the graphics context. ",
+	          "");
+	I_Method0(void, swapBuffersImplementation,
+	          Properties::VIRTUAL,
+	          __void__swapBuffersImplementation,
+	          "Swap the front and back buffers implementation. ",
+	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
+	I_Method0(void, grabFocus,
+	          Properties::VIRTUAL,
+	          __void__grabFocus,
+	          "Get focus. ",
+	          "");
+	I_Method0(void, grabFocusIfPointerInWindow,
+	          Properties::VIRTUAL,
+	          __void__grabFocusIfPointerInWindow,
+	          "Get focus on if the pointer is in this window. ",
+	          "");
+END_REFLECTOR
+

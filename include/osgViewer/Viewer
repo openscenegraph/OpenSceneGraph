@@ -51,7 +51,7 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         virtual void setSceneData(osg::Node* node);
 
 
-        /** Convinience method for setting up the viewer so it can be used embedded in an external managed window.
+        /** Convenience method for setting up the viewer so it can be used embedded in an external managed window.
           * Returns the GraphicsWindowEmbedded that can be used by applications to pass in events to the viewer. */
         virtual GraphicsWindowEmbedded* setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height);
 

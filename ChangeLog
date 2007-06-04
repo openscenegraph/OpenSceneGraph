@@ -1,3 +1,303 @@
+2007-06-04 15:11 +0000 [r6832]  robert:
+
+	* Fixed stray control character
+
+2007-06-04 15:05 +0000 [r6831]  robert:
+
+	* Warning fix
+
+2007-06-04 14:47 +0000 [r6829-6830]  robert:
+
+	* Cleaned up example
+
+	* From Martin Lavery and Robert Osfield, ported fltk example to
+	  osgViewer::Viewer
+
+2007-06-04 13:45 +0000 [r6828]  robert:
+
+	* Added local FindFLTK.cmake to avoid problems with FLTK no being
+	  found by standard CMake FindFLTK.cmake.
+
+2007-06-04 11:47 +0000 [r6827]  robert:
+
+	* From Roger James, "Here are my fixes for transparency in the
+	  Collada DAE reader."
+
+2007-06-04 11:14 +0000 [r6826]  robert:
+
+	* From Martin Lavery and Robert Osfield, added use of hardwarded
+	  value kCGLCEMPEngine to fix build failure on slightly older
+	  versions of OSX.
+
+2007-06-04 10:56 +0000 [r6825]  robert:
+
+	* Updated wrappers
+
+2007-06-04 10:47 +0000 [r6824]  robert:
+
+	* Added osg::Hint class
+
+2007-06-04 08:38 +0000 [r6823]  robert:
+
+	* Fixed spelling of Receives
+
+2007-06-03 10:00 +0000 [r6822]  robert:
+
+	* Updated wrappers
+
+2007-06-03 09:34 +0000 [r6821]  robert:
+
+	* Added Viewer::setUpViewerAsEmbeddedInWindow convinience method
+
+2007-06-03 09:11 +0000 [r6819-6820]  robert:
+
+	* Removed osgsimple example
+
+	* Merged the osgviewerQT3 and QT4 examples into a single
+	  osgviewerQT example, and ported across from SimpleViewer to using
+	  Viewer
+
+2007-06-03 08:58 +0000 [r6818]  robert:
+
+	* Changed external library specication
+
+2007-06-02 16:23 +0000 [r6817]  robert:
+
+	* Ported across from SimpleViewer to using Viewer
+
+2007-06-02 16:01 +0000 [r6816]  robert:
+
+	* Ported QT3 example across to use osgViewer::Viewer, and made it
+	  possible to use the same source for both QT3 and QT4
+
+2007-06-02 15:31 +0000 [r6815]  robert:
+
+	* Added osgViewer::GraphicsWindowEmbedded and ported GLUT, SDL and
+	  WX examples across from SimpleViewer to Viewer.
+
+2007-06-02 12:03 +0000 [r6814]  robert:
+
+	* Ported GLUT example to using osgViewer::Viewer rather than
+	  SimpleViewer by using a local GraphicsWindowEmbedded class to
+	  help the adaption.
+
+2007-06-01 22:41 +0000 [r6813]  robert:
+
+	* Renamed all osgsimpleviewer* files to osgviewer*
+
+2007-06-01 22:33 +0000 [r6812]  robert:
+
+	* Renamed osgsimpleviewer* examples to osgviewer* in prep for
+	  replacement of SimpleViewer by Viewer
+
+2007-06-01 22:28 +0000 [r6811]  robert:
+
+	* updated wrapper
+
+2007-06-01 21:38 +0000 [r6810]  robert:
+
+	* From J.P Delport, "attached find an updated osgunittests.cpp that
+	  allows for the testing of the matrix.getRotate() function when a
+	  matrix contains a scale as well as a rotation. The scale can
+	  optionally be switched off, see the top of testQuatFromMatrix().
+	  As expected, all the current methods for mat to quat conversion
+	  fail these new tests. When the scale is omitted, mk2 of getRotate
+	  with sign instead of signOrZero passes, as well as mk1. "
+
+2007-06-01 21:33 +0000 [r6809]  robert:
+
+	* From Maria Ten, "The constructor method of the EllipsoidLocator
+	  of osgTerrain assumes that the terrain is always the Earth
+	  planet. I changed the constructor method to accept the Equator
+	  radius and the Polar radius like parameters. By default, it
+	  assumes the Earth radius for the EllipsoidLocator. I added a
+	  setEllipsoidModel method, too. Now, we are developing some
+	  libraries for a GIS applicacion, and our libraries can visualize
+	  terrains of planets like Mars. I think that is a interesting
+	  change."
+
+2007-06-01 21:28 +0000 [r6808]  robert:
+
+	* From Michael Hartman, "CMakeLists.txt: Changed this back to
+	  setup_example since WIN32 flag is now supported. MFC_OSG.h: Added
+	  flag to indicate when the rendering thread has exited.
+	  MFC_OSG.cpp: Code modifications to support rendering flag thread
+	  exit. MFC_OSG_MDIView.cpp: Change to OnDestroy function to wait
+	  until we get render thread exit flag is true before we close the
+	  window. Main Exit Process: User presses escape button Viewer
+	  captures escape button and stops threading etc. Viewer sets Done
+	  when shutdown is complete MFC Render Thread monitors viewer->done
+	  for true MFC Render Thread exits while loop and sets MFC Done
+	  flag MFC View Window monitors MFC Done flag and then
+	  closes/destroys the window "
+
+2007-06-01 19:53 +0000 [r6807]  robert:
+
+	* Updated wrappers
+
+2007-06-01 19:45 +0000 [r6804-6806]  robert:
+
+	* From Wojciech Lewandowski, "I did few tests to see whether adding
+	  PreDraw callback would help us with SPI problems when using
+	  Viewer. Results were positive so I decided to give it a try and
+	  ask you to verify and maybe merge with existing codebase. I added
+	  _preDrawCallback member and neccessary access methods plus
+	  modified osgUtil RenderStage.cpp to invoke it before all
+	  drawInner calls are made. I tried to maintain symmetry with
+	  postDrawCallback but you know better where is a proper place for
+	  this call ;-) "
+
+	* Updates to OverlayData
+
+	* From Mathias Froelich, "have done an interface to change the
+	  mouse cursor in the X11 graphics window. The win32 implementation
+	  is still in its original shape since I have no win32
+	  implementation available. I have chosen the enum approach for the
+	  first cut. That is benefitial since the user does not need to
+	  track creation of mouse cursors for different windows and
+	  displays in presence of multiple viewer windows. The default set
+	  of available mouse shapes is the same set that was available with
+	  glut. That set served many OpenGL applications well, so the hope
+	  is that this is enough. Even though, that implementation is still
+	  extensible: I have digged out the way SDL defines new mouse
+	  cursors and added a still documented out function prototype in
+	  the GraphicsWindow that can be used to extend the current
+	  implemtation for arbitrary mouse shapes. That is not implemented
+	  yet. I hope that somebody with a win32 test system can catch up
+	  that implementation on win32."
+
+2007-06-01 19:21 +0000 [r6802-6803]  robert:
+
+	* Removed setViewUpOnScreen settings
+
+	* From Stephan Huber, "attached you'll find the modified
+	  ImageStream and a small fix for QuicktimeImageStream to disable
+	  debug-logging :)"
+
+2007-06-01 19:10 +0000 [r6801]  robert:
+
+	* From Mike Wittman, "Just found another issue building the C#
+	  wrappers: the osgTerrain ValidDataOperator file uses osg::Vec2,
+	  osg::Vec3, and osg::Vec4, but does not include their headers. The
+	  file with the relevant includes is attached. "
+
+2007-06-01 19:01 +0000 [r6799-6800]  robert:
+
+	* Removed the debug message for the ortho path.
+
+	* Improved the handling of the -p path option
+
+2007-06-01 18:27 +0000 [r6798]  robert:
+
+	* Work in progress on shaders support
+
+2007-06-01 16:14 +0000 [r6797]  robert:
+
+	* From Paul Martz, added Win32 export
+
+2007-06-01 11:21 +0000 [r6796]  robert:
+
+	* Added recording of camera paths
+
+2007-06-01 10:42 +0000 [r6794-6795]  robert:
+
+	* Changed name of AnimationPathHandler to RecordCameraPathHandler
+
+	* From Jeremy Moles, new event handler to record the camera path. A
+	  few small tweaks by Robert Osfield to make it more consistent
+	  with the old osgProducer::Viewer behavior.
+
+2007-05-30 17:56 +0000 [r6793]  robert:
+
+	* Improved taper ratio computation
+
+2007-05-30 16:36 +0000 [r6792]  robert:
+
+	* Added set up of overlay stateset
+
+2007-05-30 14:18 +0000 [r6791]  robert:
+
+	* Added trapezodial fitting code
+
+2007-05-30 09:25 +0000 [r6790]  robert:
+
+	* Fixed case of when view==NULL
+
+2007-05-29 18:39 +0000 [r6789]  ewing:
+
+	* Stephan Huber: Adding missing Xcode project file.
+
+2007-05-29 14:19 +0000 [r6788]  shuber:
+
+	* From Stephan Huber, updated OpenThreads-XCode-project files
+
+2007-05-29 13:28 +0000 [r6787]  robert:
+
+	* Added support for specifying which screen number to place the
+	  window
+
+2007-05-29 10:31 +0000 [r6786]  robert:
+
+	* From Sherman Wilcox, "The issue itself occurs when a model is
+	  tessellated that has greater than unsigned short number of
+	  vertexes. An object called vertexPtrToIndexMap contains vertexes
+	  and their indexes. This std::map object can obviously hold a
+	  quantity that is greater than unsigned short, however
+	  osg::DrawElementsUShort objects were being created to reference
+	  these vertexes and their indexes. osg::DrawElementsUShort can
+	  only hold indexes that are 16-bit quantities. ...
+	  proposed_patch_2\tessellator.cpp. This solution examines the size
+	  of vertexPtrToIndexMap and selects 1 of 3 possible
+	  osg::DrawElements objects: DrawElementsUByte, DrawElementsUShort,
+	  or DrawElementsUInt. The main drawback of this particular
+	  solution is the code duplication. However, the repair is
+	  straightforward."
+
+2007-05-29 10:01 +0000 [r6784]  robert:
+
+	* From Olaf Flebbe, "recently I discovered that the freetype plugin
+	  does not work, because CMake doesn't recognize it properly on
+	  windows. 1) the header detection on a directory "freetype" fails,
+	  it seems to need a filename: "ft2build.h" actually works. 2) the
+	  3rdparty I am supplying for FlightGear contains freetype-2.3.4. I
+	  added the correct library naming for this particular release. I
+	  double-checked my directory layout with the 3rdparty supplied by
+	  other OSG contributors."
+
+2007-05-29 09:57 +0000 [r6783]  robert:
+
+	* From Olar Flebbe, "Visual Studio 2005 triggered a small glitch in
+	  UnittestFramework.cpp Do not derefence it2 if it is at end()."
+
+2007-05-29 07:25 +0000 [r6782]  robert:
+
+	* Changed SHORT_NAMES = NO to SHORT_NAMES = YES to avoid crappy
+	  Windows problems
+
+2007-05-28 15:44 +0000 [r6779]  robert:
+
+	* Added --object, --ortho and --persp OverlayNode options
+
+2007-05-28 15:27 +0000 [r6778]  robert:
+
+	* Fixed handle on non ellipsoid models
+
+2007-05-28 15:17 +0000 [r6777]  robert:
+
+	* Improved the accuracy of the overlaynode settings
+
+2007-05-28 13:56 +0000 [r6776]  robert:
+
+	* Added project down to base implementation.
+
+2007-05-28 10:48 +0000 [r6773]  robert:
+
+	* Updated ChangeLog and AUTHORS.txt for 1.9.6 release
+
+2007-05-28 10:17 +0000 [r6772]  robert:
+
+	* Updated version number, wrappers and readme for release
+
 2007-05-28 10:14 +0000 [r6771]  robert:
 
 	* From Frauciel Luc, "Added support for other pointers than mouses

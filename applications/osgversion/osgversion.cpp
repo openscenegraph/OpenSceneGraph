@@ -196,6 +196,7 @@ bool validName(const std::string& first)
     if (first=="Vec4ub") return false;
     if (first=="Proxy") return false;
     if (first=="CullVistor") return false;
+    if (first=="SimpleViewer") return false;
     if (first=="TexMat(Matrix") return false;
     return true;
 }
@@ -258,6 +259,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Moule") return "Moiule";
     if (name=="Nicklov") return "Nikolov";
     if (name=="Olad") return "Olaf";
+    if (name=="Olar") return "Olaf";
     if (name=="Oritz") return "Ortiz";
     if (name=="Osfied") return "Osfield";
     if (name=="Pail") return "Paul";
@@ -291,6 +293,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Froehlich") return "Fröhlich";
     if (name=="Eileman") return "Eilemann";
     if (name=="Skinnder") return "Skinner";
+    if (name=="SimpleViewer") return "";
     
     return name;
 }

@@ -495,8 +495,8 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
     /** return the top left coord of a specific screen in global screen space */
     void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y) {
         CGRect bounds = CGDisplayBounds( getDisplayID(si) );
-        x = bounds.origin.x;
-        y = bounds.origin.y;
+        x = static_cast<int>(bounds.origin.x);
+        y = static_cast<int>(bounds.origin.y);
         
         // osg::notify(osg::DEBUG_INFO) << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
     }

@@ -159,6 +159,7 @@ class OSG_EXPORT StateAttribute : public Object
             POINTSPRITE,
             PROGRAM,
             CLAMPCOLOR,
+            HINT,
 
             /// osgFX namespace
             VALIDATOR,
@@ -179,7 +180,8 @@ class OSG_EXPORT StateAttribute : public Object
             OSGNVSLANG_PROGRAM,
 
             // osgNVParse
-            OSGNVPARSE_PROGRAM_PARSER
+            OSGNVPARSE_PROGRAM_PARSER,
+            
 
         };
         

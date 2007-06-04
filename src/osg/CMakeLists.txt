@@ -65,6 +65,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/GraphicsContext
 	${HEADER_PATH}/GraphicsThread
 	${HEADER_PATH}/Group
+	${HEADER_PATH}/Hint
 	${HEADER_PATH}/Image
 	${HEADER_PATH}/ImageStream
 	${HEADER_PATH}/LOD
@@ -215,6 +216,7 @@ ADD_LIBRARY(${LIB_NAME}
 	GraphicsContext.cpp
 	GraphicsThread.cpp
 	Group.cpp
+	Hint.cpp
 	Image.cpp
 	ImageStream.cpp
 	LOD.cpp

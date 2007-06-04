@@ -193,8 +193,8 @@ osg::Node* createModel(osg::ArgumentParser& arguments)
         osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
         ls->getLight()->setPosition(osg::Vec4(lightPosition,1.0));
         
-        shadowedScene->setRecievesShadowTraversalMask(0x1);
-        shadowed->setNodeMask(shadowedScene->getRecievesShadowTraversalMask());
+        shadowedScene->setReceivesShadowTraversalMask(0x1);
+        shadowed->setNodeMask(shadowedScene->getReceivesShadowTraversalMask());
         
         shadowedScene->setCastsShadowTraversalMask(0x2);
         shadower->setNodeMask(shadowedScene->getCastsShadowTraversalMask());
@@ -217,8 +217,8 @@ osg::Node* createModel(osg::ArgumentParser& arguments)
         osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
         ls->getLight()->setPosition(osg::Vec4(lightPosition,1.0));
         
-        shadowedScene->setRecievesShadowTraversalMask(0x1);
-        shadowed->setNodeMask(shadowedScene->getRecievesShadowTraversalMask());
+        shadowedScene->setReceivesShadowTraversalMask(0x1);
+        shadowed->setNodeMask(shadowedScene->getReceivesShadowTraversalMask());
         
         shadowedScene->setCastsShadowTraversalMask(0x2);
         shadower->setNodeMask(shadowedScene->getCastsShadowTraversalMask());

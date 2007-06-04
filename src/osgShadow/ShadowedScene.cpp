@@ -22,7 +22,7 @@
 using namespace osgShadow;
 
 ShadowedScene::ShadowedScene(ShadowTechnique* st):
-    _recievesShadowTraversalMask(0xffffffff),
+    _receivesShadowTraversalMask(0xffffffff),
     _castsShadowTraversalMask(0xffffffff)
 {
     setNumChildrenRequiringUpdateTraversal(1);
@@ -32,7 +32,7 @@ ShadowedScene::ShadowedScene(ShadowTechnique* st):
 
 ShadowedScene::ShadowedScene(const ShadowedScene& copy, const osg::CopyOp& copyop):
     osg::Group(copy,copyop),
-    _recievesShadowTraversalMask(copy._recievesShadowTraversalMask),
+    _receivesShadowTraversalMask(copy._receivesShadowTraversalMask),
     _castsShadowTraversalMask(copy._castsShadowTraversalMask)    
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);

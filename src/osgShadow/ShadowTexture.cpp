@@ -125,7 +125,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
         cv.pushStateSet(_stateset.get());
     
         cv.setTraversalMask( traversalMask & 
-                             getShadowedScene()->getRecievesShadowTraversalMask() );
+                             getShadowedScene()->getReceivesShadowTraversalMask() );
 
         _shadowedScene->osg::Group::traverse(cv);
         

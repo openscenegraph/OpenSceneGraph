@@ -36,8 +36,8 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
         
         virtual void traverse(osg::NodeVisitor& nv);
         
-        void setRecievesShadowTraversalMask(unsigned int mask) { _recievesShadowTraversalMask = mask; }
-        unsigned int getRecievesShadowTraversalMask() const { return _recievesShadowTraversalMask; }
+        void setReceivesShadowTraversalMask(unsigned int mask) { _receivesShadowTraversalMask = mask; }
+        unsigned int getReceivesShadowTraversalMask() const { return _receivesShadowTraversalMask; }
         
         void setCastsShadowTraversalMask(unsigned int mask) { _castsShadowTraversalMask = mask; }
         unsigned int getCastsShadowTraversalMask() const { return _castsShadowTraversalMask; }
@@ -56,7 +56,7 @@ class OSGSHADOW_EXPORT ShadowedScene : public osg::Group
 
         virtual ~ShadowedScene();
 
-        unsigned int _recievesShadowTraversalMask;
+        unsigned int _receivesShadowTraversalMask;
         unsigned int _castsShadowTraversalMask;
         
         osg::ref_ptr<ShadowTechnique> _shadowTechnique;

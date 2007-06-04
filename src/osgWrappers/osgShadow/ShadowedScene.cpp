@@ -70,14 +70,14 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
-	I_Method1(void, setRecievesShadowTraversalMask, IN, unsigned int, mask,
+	I_Method1(void, setReceivesShadowTraversalMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,
-	          __void__setRecievesShadowTraversalMask__unsigned_int,
+	          __void__setReceivesShadowTraversalMask__unsigned_int,
 	          "",
 	          "");
-	I_Method0(unsigned int, getRecievesShadowTraversalMask,
+	I_Method0(unsigned int, getReceivesShadowTraversalMask,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getRecievesShadowTraversalMask,
+	          __unsigned_int__getReceivesShadowTraversalMask,
 	          "",
 	          "");
 	I_Method1(void, setCastsShadowTraversalMask, IN, unsigned int, mask,
@@ -118,9 +118,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	I_SimpleProperty(unsigned int, CastsShadowTraversalMask, 
 	                 __unsigned_int__getCastsShadowTraversalMask, 
 	                 __void__setCastsShadowTraversalMask__unsigned_int);
-	I_SimpleProperty(unsigned int, RecievesShadowTraversalMask, 
-	                 __unsigned_int__getRecievesShadowTraversalMask, 
-	                 __void__setRecievesShadowTraversalMask__unsigned_int);
+	I_SimpleProperty(unsigned int, ReceivesShadowTraversalMask, 
+	                 __unsigned_int__getReceivesShadowTraversalMask, 
+	                 __void__setReceivesShadowTraversalMask__unsigned_int);
 	I_SimpleProperty(osgShadow::ShadowTechnique *, ShadowTechnique, 
 	                 __ShadowTechnique_P1__getShadowTechnique, 
 	                 __void__setShadowTechnique__ShadowTechnique_P1);

@@ -30,7 +30,7 @@
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
 
-const int RecievesShadowTraversalMask = 0x1;
+const int ReceivesShadowTraversalMask = 0x1;
 const int CastsShadowTraversalMask = 0x2;
   
 namespace ModelOne
@@ -352,7 +352,7 @@ namespace ModelTwo
 
         // the shadowed model
         osg::Node* shadowed = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
-        shadowed->setNodeMask(RecievesShadowTraversalMask);
+        shadowed->setNodeMask(ReceivesShadowTraversalMask);
         
         osg::Group* group = new osg::Group;
 
@@ -547,7 +547,7 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model.valid())
     {
-        model->setNodeMask(CastsShadowTraversalMask | RecievesShadowTraversalMask);
+        model->setNodeMask(CastsShadowTraversalMask | ReceivesShadowTraversalMask);
     }
     else
     {
@@ -573,7 +573,7 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
     
-    shadowedScene->setRecievesShadowTraversalMask(RecievesShadowTraversalMask);
+    shadowedScene->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
     shadowedScene->setCastsShadowTraversalMask(CastsShadowTraversalMask);
     
     
@@ -617,7 +617,7 @@ int main(int argc, char** argv)
         geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
                                                              widthVec*3.0f, depthVec*3.0f) );
                                                              
-        geode->setNodeMask(shadowedScene->getRecievesShadowTraversalMask());
+        geode->setNodeMask(shadowedScene->getReceivesShadowTraversalMask());
         
         geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
 

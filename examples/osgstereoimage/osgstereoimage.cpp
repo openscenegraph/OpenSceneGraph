@@ -399,6 +399,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
+    arguments.getApplicationUsage()->addCommandLineOption("--SingleThreaded","Select SingleThreaded threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullDrawThreadPerContext","Select CullDrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--DrawThreadPerContext","Select DrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullThreadPerCameraDrawThreadPerContext","Select CullThreadPerCameraDrawThreadPerContext threading model for viewer.");
     
 
     // construct the viewer.
@@ -427,6 +431,14 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+    osgViewer::Viewer::ThreadingModel threading = osgViewer::Viewer::SingleThreaded;
+    while (arguments.read("--SingleThreaded")) threading = osgViewer::Viewer::SingleThreaded;
+    while (arguments.read("--CullDrawThreadPerContext")) threading = osgViewer::Viewer::CullDrawThreadPerContext;
+    while (arguments.read("--DrawThreadPerContext")) threading = osgViewer::Viewer::DrawThreadPerContext;
+    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) threading = osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext;
+
+    viewer.setThreadingModel(threading);
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -485,6 +497,7 @@ int main( int argc, char **argv )
 
     // set the scene to render
     viewer.setSceneData(rootNode.get());
+
 
     // create the windows and run the threads.
     viewer.realize();

@@ -752,8 +752,14 @@ bool GraphicsWindowCarbon::realizeImplementation()
         CGLError cgerr = kCGLNoError;
         CGLContextObj ctx = CGLGetCurrentContext();
 
+#if 0
         cgerr =  CGLEnable( ctx, kCGLCEMPEngine);
-            
+#else
+        // the above use of kCGLCEMPEngine is not backwards compatible
+        // so we'll use the raw value of it to keep things compiling on older
+        // versions of OSX.
+        cgerr =  CGLEnable( ctx, static_cast <CGLContextEnable>(313) );
+#endif    
         if (cgerr != kCGLNoError )
         {
             osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;

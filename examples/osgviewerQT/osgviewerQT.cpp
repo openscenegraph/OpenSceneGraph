@@ -107,7 +107,7 @@ void AdapterWidget::mouseMoveEvent( QMouseEvent* event )
 
 
 class ViewerQT : public osgViewer::Viewer, public AdapterWidget
-{
+{
     public:
 
         ViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):

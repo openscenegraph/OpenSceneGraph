@@ -164,7 +164,6 @@ protected:
         hints->setColor(_hints_color);
         hints->setAlignment(osgText::Text::CENTER_BOTTOM);
         hints->setCharacterSize(13);
-        hints->setFontResolution(13, 13);
         hints->setPosition(osg::Vec3((client_rect.x0+client_rect.x1)/2, client_rect.y0 + 4, zPos));
         hints->setText("<RETURN> show/hide this panel      <LEFT> previous effect      <RIGHT> next effect      <DEL> enable/disable effects      'x' save to file      'r' rotate/stop");
         addDrawable(hints.get());
@@ -196,7 +195,6 @@ protected:
         ename->setColor(_name_color);
         ename->setAlignment(osgText::Text::CENTER_TOP);
         ename->setCharacterSize(32);
-        ename->setFontResolution(32, 32);
         ename->setPosition(osg::Vec3((client_rect.x0 + client_rect.x1) / 2, client_rect.y1 - 22, zPos));
         ename->setText(effect_name);
         addDrawable(ename.get());
@@ -207,7 +205,6 @@ protected:
         edesc->setColor(_desc_color);
         edesc->setAlignment(osgText::Text::LEFT_TOP);
         edesc->setCharacterSize(16);
-        edesc->setFontResolution(16, 16);
         edesc->setPosition(osg::Vec3(client_rect.x0 + 8, client_rect.y1 - 60, zPos));
         edesc->setText(effect_description);
         addDrawable(edesc.get());
@@ -296,6 +293,14 @@ int main(int argc, char *argv[])
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+
+    osgViewer::Viewer::ThreadingModel threading = osgViewer::Viewer::SingleThreaded;
+    while (arguments.read("--SingleThreaded")) threading = osgViewer::Viewer::SingleThreaded;
+    while (arguments.read("--CullDrawThreadPerContext")) threading = osgViewer::Viewer::CullDrawThreadPerContext;
+    while (arguments.read("--DrawThreadPerContext")) threading = osgViewer::Viewer::DrawThreadPerContext;
+    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) threading = osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext;
+
+    viewer.setThreadingModel(threading);
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();

@@ -3,7 +3,8 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
-#include <osgViewer/SimpleViewer>
+#include <osgViewer/Viewer>
+#include <osgViewer/StatsHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 
@@ -12,51 +13,58 @@
 
 #include <iostream>
 
-class GraphicsWindowFLTK : public Fl_Gl_Window,  virtual osgViewer::GraphicsWindow
+class AdapterWidget : public Fl_Gl_Window
 {
 public:
 
-    GraphicsWindowFLTK(int x, int y, int w, int h, const char *label=0);
-    virtual ~GraphicsWindowFLTK() {}
+    AdapterWidget(int x, int y, int w, int h, const char *label=0);
+    virtual ~AdapterWidget() {}
+
+    osgViewer::GraphicsWindow* getGraphicsWindow() { return _gw.get(); }
+    const osgViewer::GraphicsWindow* getGraphicsWindow() const { return _gw.get(); }
 
     virtual void resize(int x, int y, int w, int h);
 
 protected:
 
     virtual int handle(int event);
-
+    
+    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 };
 
-GraphicsWindowFLTK::GraphicsWindowFLTK(int x, int y, int w, int h, const char *label):
+AdapterWidget::AdapterWidget(int x, int y, int w, int h, const char *label):
     Fl_Gl_Window(x, y, w, h, label)
 {
-    getEventQueue()->windowResize(x, y, w, h );
+    _gw = new osgViewer::GraphicsWindowEmbedded(x,y,w,h);
 }
 
-void GraphicsWindowFLTK::resize(int x, int y, int w, int h)
+void AdapterWidget::resize(int x, int y, int w, int h)
 {
-    getEventQueue()->windowResize(x, y, w, h );
+    _gw->getEventQueue()->windowResize(x, y, w, h );
+    _gw->resized(x,y,w,h);
+
     Fl_Gl_Window::resize(x,y,w,h);
+
 }
 
-int GraphicsWindowFLTK::handle(int event)
+int AdapterWidget::handle(int event)
 {
     switch(event){
         case FL_PUSH:
-            getEventQueue()->mouseButtonPress(Fl::event_x(), Fl::event_y(), Fl::event_button());
+            _gw->getEventQueue()->mouseButtonPress(Fl::event_x(), Fl::event_y(), Fl::event_button());
             return 1;
         case FL_MOVE:
         case FL_DRAG:
-            getEventQueue()->mouseMotion(Fl::event_x(), Fl::event_y());
+            _gw->getEventQueue()->mouseMotion(Fl::event_x(), Fl::event_y());
             return 1;
         case FL_RELEASE:
-            getEventQueue()->mouseButtonRelease(Fl::event_x(), Fl::event_y(), Fl::event_button());
+            _gw->getEventQueue()->mouseButtonRelease(Fl::event_x(), Fl::event_y(), Fl::event_button());
             return 1;
         case FL_KEYDOWN:
-            getEventQueue()->keyPress((osgGA::GUIEventAdapter::KeySymbol)Fl::event_key());
+            _gw->getEventQueue()->keyPress((osgGA::GUIEventAdapter::KeySymbol)Fl::event_key());
             return 1;
         case FL_KEYUP:
-            getEventQueue()->keyRelease((osgGA::GUIEventAdapter::KeySymbol)Fl::event_key());
+            _gw->getEventQueue()->keyRelease((osgGA::GUIEventAdapter::KeySymbol)Fl::event_key());
             return 1;
         default:
             // pass other events to the base class
@@ -70,14 +78,19 @@ void idle_cb()
 }
 
 
-class SimpleViewerFLTK : public osgViewer::SimpleViewer, public GraphicsWindowFLTK
+class ViewerFLTK : public osgViewer::Viewer, public AdapterWidget
 {
-public:
-    SimpleViewerFLTK(int x, int y, int w, int h, const char *label=0):
-         GraphicsWindowFLTK(x,y,w,h,label) {}
+    public:
+        ViewerFLTK(int x, int y, int w, int h, const char *label=0):
+            AdapterWidget(x,y,w,h,label)
+            {
+                getCamera()->setViewport(new osg::Viewport(0,0,w,h));
+                getCamera()->setGraphicsContext(getGraphicsWindow());
+                setThreadingModel(osgViewer::Viewer::SingleThreaded);
+            }
 
-protected:
-    virtual void draw() { frame(); }
+    protected:
+        virtual void draw() { frame(); }
 
 };
 
@@ -99,12 +112,13 @@ int main( int argc, char **argv )
     }
 
 
-    SimpleViewerFLTK viewerWindow(100,100,800,600);
+    ViewerFLTK viewerWindow(100,100,800,600);
     viewerWindow.resizable(&viewerWindow);
 
     viewerWindow.setSceneData(loadedModel.get());
     viewerWindow.setCameraManipulator(new osgGA::TrackballManipulator);
-
+    viewerWindow.addEventHandler(new osgViewer::StatsHandler);
+    
     viewerWindow.show();
     
     Fl::set_idle(idle_cb);

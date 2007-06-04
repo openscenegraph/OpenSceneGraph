@@ -354,6 +354,9 @@ IF(APPLE)
             ENDIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
         ENDIF(EXISTS /Developer/SDKs/10.5.sdk)
     ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+    
+    OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
+    
 ENDIF(APPLE)
 
 

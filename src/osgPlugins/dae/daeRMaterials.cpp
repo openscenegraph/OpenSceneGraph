@@ -141,6 +141,39 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
     domProfile_COMMON::domTechnique::domBlinn *b = teq->getBlinn();
 
     ss->setMode( GL_CULL_FACE, GL_TRUE );
+
+    if (m_AuthoringTool == GOOGLE_SKETCHUP)
+    {
+        const domExtra_Array& ExtraArray = pc->getExtra_array();
+        size_t NumberOfExtras = ExtraArray.getCount();
+        size_t CurrentExtra;
+        for (CurrentExtra = 0; CurrentExtra < NumberOfExtras; CurrentExtra++)
+        {
+            const domTechnique_Array& TechniqueArray = ExtraArray[CurrentExtra]->getTechnique_array();
+            size_t NumberOfTechniques = TechniqueArray.getCount();
+            size_t CurrentTechnique;
+            for (CurrentTechnique = 0; CurrentTechnique < NumberOfTechniques; CurrentTechnique++)
+            {
+                if (strcmp(TechniqueArray[CurrentTechnique]->getProfile(), "GOOGLEEARTH") == 0)
+                {
+                    const daeElementRefArray& ElementArray = TechniqueArray[CurrentTechnique]->getContents();
+                    size_t NumberOfElements = ElementArray.getCount();
+                    size_t CurrentElement;
+                    for (CurrentElement = 0; CurrentElement < NumberOfElements; CurrentElement++)
+                    {
+                        domAny* pAny = (domAny*)ElementArray[CurrentElement].cast();
+                        if (strcmp(pAny->getElementName(), "double_sided") == 0)
+                        {
+                            daeString Value = pAny->getValue();
+                            if (strcmp(Value, "1") == 0)
+                                ss->setMode( GL_CULL_FACE, GL_FALSE );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     //ss->setMode( GL_LIGHTING, GL_FALSE );
 
     osg::ref_ptr< osg::Material > mat = new osg::Material();
@@ -167,7 +200,7 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
         insertMat = insertMat || tmp;
 
         osg::StateAttribute *sa2 = NULL;
-        sa2 = processTransparentType( b->getTransparent(), ss );
+        sa2 = processTransparencySettings(b->getTransparent(), b->getTransparency(), ss);
         if ( sa2 != NULL )
         {
             if ( sa == NULL )
@@ -204,7 +237,7 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
         insertMat = insertMat || tmp;
 
         osg::StateAttribute *sa2 = NULL;
-        sa2 = processTransparentType( p->getTransparent(), ss );
+        sa2 = processTransparencySettings(p->getTransparent(), p->getTransparency(), ss);
         if ( sa2 != NULL )
         {
             if ( sa == NULL )
@@ -238,7 +271,7 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
         }
 
         osg::StateAttribute *sa2 = NULL;
-        sa2 = processTransparentType( l->getTransparent(), ss );
+        sa2 = processTransparencySettings(l->getTransparent(), l->getTransparency(), ss);
         if ( sa2 != NULL )
         {
             if ( sa == NULL )
@@ -258,7 +291,7 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
         insertMat = processColorOrTextureType( c->getEmission(), osg::Material::EMISSION, mat.get() );
 
         osg::StateAttribute *sa2 = NULL;
-        sa2 = processTransparentType( c->getTransparent(), ss );
+        sa2 = processTransparencySettings(c->getTransparent(), c->getTransparency(), ss);
         if ( sa2 != NULL )
         {
             ss->setTextureMode( 0, GL_TEXTURE_2D, GL_TRUE );
@@ -644,33 +677,95 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
     return t2D;
 }
 
-osg::StateAttribute *daeReader::processTransparentType( domCommon_transparent_type *ctt, osg::StateSet *ss )
+osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transparent_type *ctt,  domCommon_float_or_param_type *pTransparency, osg::StateSet *ss )
 {
-    if ( ctt == NULL )
+    if (NULL == ctt && NULL == pTransparency)
+        return NULL;
+
+    if (ctt && ctt->getTexture() != NULL)
     {
-        return false;
-    }
-//  bool retVal = false;
-    osg::StateAttribute *sa = NULL;
-    if ( ctt->getColor() != NULL )
-    {
-        domFloat4 &f4 = ctt->getColor()->getValue();
-        //##compliant with OSG 1.0 API
-        osg::BlendColor *bc = new osg::BlendColor();
-        bc->setConstantColor(osg::Vec4( f4[0], f4[1], f4[2], f4[3] ));
-        ss->setAttribute( bc );
-        ss->setMode( GL_BLEND, GL_TRUE );
-        ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
-        ss->setRenderBinDetails( 10, "DepthSortedBin" );
-    }
-    else if ( ctt->getTexture() != NULL )
-    {
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // The transparency functionality needs to be put in here as well
+        // but I suspect it will neeed a shader program to acheive it.
+        // Whenever someone gets round to this the default setting stuff in the
+        // color path below needs making common to both paths. This will involve some
+        // reorganisation of the code.
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        osg::StateAttribute *sa = NULL;
         sa = processTexture( ctt->getTexture() );
         osg::BlendFunc *bf = new osg::BlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         ss->setAttribute( bf );
         ss->setMode( GL_BLEND, GL_TRUE );
         ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
         ss->setRenderBinDetails( 10, "DepthSortedBin" );
+        return sa;
     }
-    return sa;
+    
+    // Fix up defaults acoording to 1.4.1 release notes
+    domFloat4 f4;
+    domFx_opaque_enum Opaque = FX_OPAQUE_ENUM_A_ONE;
+    if (NULL == ctt)
+    {
+        f4.append(0.0f);
+        f4.append(0.0f);
+        f4.append(0.0f);
+        f4.append(1.0f);
+    }
+    else
+    {
+        Opaque = ctt->getOpaque();
+        if (NULL == ctt->getColor().cast())
+        {
+            // I test for a texture in the ctt above
+            // but there could still be a param rather than a color
+            // I don't know what to do with a param (Can anyone help here?)
+            // So I will just assume a default
+            f4.append(0.0f);
+            f4.append(0.0f);
+            f4.append(0.0f);
+            f4.append(1.0f);
+        }
+        f4 = ctt->getColor()->getValue();
+    }
+
+    domFloat Transparency;
+    if (NULL == pTransparency)
+        Transparency = 1.0f;
+    else
+    {
+        Transparency = pTransparency->getFloat()->getValue();
+        if (m_AuthoringTool == GOOGLE_SKETCHUP) // Google back to front support
+            Transparency = 1.0f - Transparency;
+    }
+
+    osg::BlendColor *bc = new osg::BlendColor();
+    bc->setConstantColor(osg::Vec4( f4[0] * Transparency, f4[1] * Transparency, f4[2] * Transparency, f4[3] * Transparency ));
+    ss->setAttribute( bc );
+    osg::BlendFunc *bf;
+    if (FX_OPAQUE_ENUM_A_ONE == Opaque)
+        bf = new osg::BlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+    else
+        bf = new osg::BlendFunc(GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_COLOR);
+    ss->setAttribute( bf );
+    ss->setMode( GL_BLEND, GL_TRUE );
+
+    if (FX_OPAQUE_ENUM_A_ONE == Opaque)
+    {
+        if (Transparency  * f4[3] > 0.99f)
+            // Material is really opaque so dont put it in the transparent bin
+            return NULL;
+    }
+    else
+    {
+        if ((Transparency  * f4[0] < 0.01f) &&
+            (Transparency  * f4[1] < 0.01f) &&
+            (Transparency  * f4[2] < 0.01f) &&
+            (Transparency  * f4[3] < 0.01f))
+            // Material is really opaque so dont put it in the transparent bin
+            return NULL;
+    }
+
+    ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+    ss->setRenderBinDetails( 10, "DepthSortedBin" );
+    return NULL;
 }

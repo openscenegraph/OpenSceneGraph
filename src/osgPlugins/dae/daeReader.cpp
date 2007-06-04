@@ -23,7 +23,8 @@ daeReader::daeReader(DAE *dae_) : dae(dae_),
                   m_numlights(0),
                   currentEffect(NULL),
                   geometryMap(),
-                  materialMap()
+                  materialMap(),
+                  m_AuthoringTool(UNKNOWN)
 {
 }
 
@@ -58,6 +59,23 @@ bool daeReader::convert( const std::string &fileURI )
         osg::notify( osg::WARN ) << "No scene found!" << std::endl;
         return false;
     }
+
+    if (document->getAsset())
+    {
+        const domAsset::domContributor_Array& ContributorArray = document->getAsset()->getContributor_array();
+        size_t NumberOfContributors = ContributorArray.getCount();
+        size_t CurrentContributor;
+        for (CurrentContributor = 0; CurrentContributor < NumberOfContributors; CurrentContributor++)
+        {
+            if (ContributorArray[CurrentContributor]->getAuthoring_tool())
+            {
+                xsString Tool = ContributorArray[CurrentContributor]->getAuthoring_tool()->getValue();
+                if (strncmp(Tool, "Google SketchUp", 15) == 0)
+                    m_AuthoringTool = GOOGLE_SKETCHUP;
+            }
+        }
+    }
+
 
     domInstanceWithExtra *ivs = document->getScene()->getInstance_visual_scene();
     domVisual_scene *vs = daeSafeCast< domVisual_scene >( getElementFromURI( ivs->getUrl() ) );

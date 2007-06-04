@@ -148,7 +148,7 @@ protected:
     osg::StateSet *processProfileCOMMON( domProfile_COMMON *pc );
     bool processColorOrTextureType( domCommon_color_or_texture_type *cot, 
         osg::Material::ColorMode channel, osg::Material *mat, domCommon_float_or_param_type *fop = NULL, osg::StateAttribute **sa = NULL );
-    osg::StateAttribute *processTransparentType( domCommon_transparent_type *ctt, osg::StateSet *ss );
+    osg::StateAttribute *processTransparencySettings( domCommon_transparent_type *ctt, domCommon_float_or_param_type *pTransparency, osg::StateSet *ss );
 
     osg::StateAttribute *processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex );
 
@@ -166,6 +166,12 @@ protected:
 
     std::map< domGeometry*, osg::Node* > geometryMap;
     std::map< domMaterial*, osg::StateSet* > materialMap;
+    enum AuthoringTool
+    {
+        UNKNOWN,
+        GOOGLE_SKETCHUP
+    };
+    AuthoringTool m_AuthoringTool;
 };
 
 };

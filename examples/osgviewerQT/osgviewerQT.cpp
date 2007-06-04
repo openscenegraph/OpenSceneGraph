@@ -27,37 +27,32 @@
 
 class AdapterWidget : public QGLWidget
 {
-public:
+    public:
 
-    AdapterWidget( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
+        AdapterWidget( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
 
-    virtual ~AdapterWidget() {}
-    
-    osgViewer::GraphicsWindow* getGraphicsWindow() { return _gw.get(); }
-    const osgViewer::GraphicsWindow* getGraphicsWindow() const { return _gw.get(); }
+        virtual ~AdapterWidget() {}
 
-protected:
+        osgViewer::GraphicsWindow* getGraphicsWindow() { return _gw.get(); }
+        const osgViewer::GraphicsWindow* getGraphicsWindow() const { return _gw.get(); }
 
-    void init();
+    protected:
 
-    virtual void resizeGL( int width, int height );
-    virtual void keyPressEvent( QKeyEvent* event );
-    virtual void keyReleaseEvent( QKeyEvent* event );
-    virtual void mousePressEvent( QMouseEvent* event );
-    virtual void mouseReleaseEvent( QMouseEvent* event );
-    virtual void mouseMoveEvent( QMouseEvent* event );
+        void init();
 
-    QTimer _timer;
-    
-    osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
+        virtual void resizeGL( int width, int height );
+        virtual void keyPressEvent( QKeyEvent* event );
+        virtual void keyReleaseEvent( QKeyEvent* event );
+        virtual void mousePressEvent( QMouseEvent* event );
+        virtual void mouseReleaseEvent( QMouseEvent* event );
+        virtual void mouseMoveEvent( QMouseEvent* event );
+
+        osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 };
 
 AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f):
     QGLWidget(parent, name, shareWidget, f)
 {
-    connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
-    _timer.start(10);
-    
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
 }
 
@@ -111,8 +106,8 @@ void AdapterWidget::mouseMoveEvent( QMouseEvent* event )
 }
 
 
-class ViewerQT : public AdapterWidget, public osgViewer::Viewer
-{
+class ViewerQT : public osgViewer::Viewer, public AdapterWidget
+{
     public:
 
         ViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):
@@ -121,18 +116,20 @@ class ViewerQT : public AdapterWidget, public osgViewer::Viewer
             getCamera()->setViewport(new osg::Viewport(0,0,width(),height()));
             getCamera()->setGraphicsContext(getGraphicsWindow());
             setThreadingModel(osgViewer::Viewer::SingleThreaded);
-        }
 
-        virtual void initializeGL()
-        {
-            QGLWidget::initializeGL();
+            connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
+            _timer.start(10);
         }
 
         virtual void paintGL()
         {
             frame();
         }
+    
+    protected:
 
+        QTimer _timer;
+    
 };
 
 int main( int argc, char **argv )

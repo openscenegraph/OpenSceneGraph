@@ -6,8 +6,8 @@ See http://collada.org/ and http://khronos.org/collada/ for further info.
 
 RUNTIME USAGE EXAMPLES
 
-	osgviewer myFile.dae
-	osgconv myFile.osg myFile.dae
+    osgviewer myFile.dae
+    osgconv myFile.osg myFile.dae
 
 
 RUNTIME PLUGIN OPTIONS
@@ -26,28 +26,22 @@ polygon : export polygons as COLLADA polygons instead of polylists.
 BUILD DEPENDENCIES
 
 - COLLADA DOM (document object model) v1.4.1
-  see http://sourceforge.net/projects/collada-dom
-  svn export -r 34 https://svn.sourceforge.net/svnroot/collada-dom/trunk
+  http://collada.org/mediawiki/index.php/DOM_guide:_Setting_up
 
 - libxml2
 
 - iconv
 
-UNIX BUILD
+A standard "ccmake ." while in the root of the OSG source will expose
+two CMake variables: COLLADA_INCLUDE_DIR and COLLADA_LIBRARY. Using
+these two variables correctly can be a bit tricky (especially as
+the "right" and "wrong" ways to use Collada are hard to define), but
+I will briefly explain them below.
 
-set the env vars:
+  COLLADA_INCLUDE_DIR: This variable wants the path where it can
+  find the COLLADA headers. On most systems this will be something
+  like /usr/include or /usr/include/collada.
 
-  COLLADA_INSTALLED = yes
-  COLLADA_DAE_HOME = root directory of COLLADA DOM
-   
-  And if you've compiled the debug version of the COLLADA DOM then define:
-  
-  COLLADA_DEBUG_LIBS = yes
-  
-  Note, Collada svn trunk currently defaults to debug build.
-
-The above env vars can also be setup in your own custom Make/depdendencies file (copy this and point
-to the locally modified copy using the env var OSG_DEPENDCIES so the the OSG's build system can find
-it.
-
-//EOF
+  COLLADA_LIBRARY: This variable is asking for the FULL PATH to the
+  file libcollada_dom.a. As long as it can find this file, the
+  OSG Collada ReaderWriter should build just fine.

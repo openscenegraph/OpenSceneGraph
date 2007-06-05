@@ -36,23 +36,25 @@ If you don't already have CMake installed on your system you can grab it
 from http://www.cmake.org, version 2.4.6 or later.
 
 Under unices (i.e. Linux, IRIX, Solaris, Free-BSD, HP-Ux, AIX, OSX) use the
-cmake or ccmake commandline utils or use the included simple (one line) 
-configure script that'll run cmake for you:
+cmake or ccmake commandline utils, or use the included tiny configure script 
+that'll run cmake for you.  The configure script simply runs 
+'cmake . -DCMAKE_BUILD_TYPE=Release' to ensure that you get the best 
+performance from your final libriaries/applications.
  
   cd OpenSceneGraph
   ./configure
   make
   sudo make install
-
+  
 Alternatively, you can create an out of source build directory and run configure
 from there. The advantage to this approach is that the temporary files
 created by CMake won't clutter the OpenSceneGraph source directory, also makes 
-it possilble to build multiple build targets. 
+it possilble to build multiple build targets by creating multiple build 
+directories. In a directory alongside the OpenSceneGraph use:
 
-  cd OpenSceneGraph
   mkdir build
   cd build
-  ../configure
+  cmake ../OpenSceneGraph -DCMAKE_BUILD_TYPE=Release
   make
   sudo make install
 

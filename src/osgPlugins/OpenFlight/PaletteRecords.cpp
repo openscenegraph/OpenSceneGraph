@@ -348,6 +348,42 @@ protected:
                 break;
             }
 
+            // Internal mode
+            switch(attr->intFormat)
+            {
+            case AttrData::INTERNAL_FORMAT_TX_I_12A_4:
+                texture->setInternalFormat(GL_LUMINANCE12_ALPHA4);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_IA_8:
+                texture->setInternalFormat(GL_LUMINANCE_ALPHA);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_RGB_5:
+                texture->setInternalFormat(GL_RGB5);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_RGBA_4:
+                texture->setInternalFormat(GL_RGBA4);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_IA_12:
+                texture->setInternalFormat(GL_LUMINANCE12_ALPHA12);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_RGBA_8:
+                texture->setInternalFormat(GL_RGBA8);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_RGBA_12:
+                texture->setInternalFormat(GL_RGBA12);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_I_16:
+                texture->setInternalFormat(GL_INTENSITY16);
+                break;
+            case AttrData::INTERNAL_FORMAT_TX_RGB_12:
+                texture->setInternalFormat(GL_RGB12);
+                break;
+            case AttrData::INTERNAL_FORMAT_DEFAULT:
+            default:
+                texture->setInternalFormat(GL_RGB);
+                break;
+            }
+
             osg::TexEnv* texenv = new osg::TexEnv;
             switch (attr->texEnvMode)
             {

@@ -52,7 +52,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         }
 
 
-        bool completed() const { return _hitIter==_hitList.end(); }
+        bool completed() { return _hitIter==_hitList.end(); }
 
         void next() 
         {

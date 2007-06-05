@@ -281,6 +281,7 @@
 				);
 				PRODUCT_NAME = OpenThreads;
 				SECTORDER_FLAGS = "";
+				SYMROOT = ../OpenSceneGraph/build;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",

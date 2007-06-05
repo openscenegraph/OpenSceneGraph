@@ -85,7 +85,19 @@ class AttrData : public osg::Object
             DATUM_NAD27 = 4
         };
 
-   
+        enum InternalFormat {
+            INTERNAL_FORMAT_DEFAULT = 0,
+            INTERNAL_FORMAT_TX_I_12A_4 = 1,
+            INTERNAL_FORMAT_TX_IA_8 = 2,
+            INTERNAL_FORMAT_TX_RGB_5 = 3,
+            INTERNAL_FORMAT_TX_RGBA_4 = 4,
+            INTERNAL_FORMAT_TX_IA_12 = 5,
+            INTERNAL_FORMAT_TX_RGBA_8 = 6,
+            INTERNAL_FORMAT_TX_RGBA_12 = 7,
+            INTERNAL_FORMAT_TX_I_16 = 8,
+            INTERNAL_FORMAT_TX_RGB_12 = 9
+        };
+  
         int32   texels_u;               // Number of texels in u direction
         int32   textel_v;               // Number of texels in v direction
         int32   direction_u;            // Real world size u direction

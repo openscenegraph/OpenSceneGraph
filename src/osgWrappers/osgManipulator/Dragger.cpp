@@ -256,7 +256,6 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	                 __osg_Vec3__getLocalIntersectPoint, 
 	                 0);
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList, _hitList);
-	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList::iterator, _hitIter);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)

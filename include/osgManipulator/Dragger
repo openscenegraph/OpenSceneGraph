@@ -52,7 +52,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         }
 
 
-        bool completed() { return _hitIter==_hitList.end(); }
+        bool completed() const { return _hitIter==_hitList.end(); }
 
         void next() 
         {
@@ -120,7 +120,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
     public:
         IntersectionList _hitList;
-        IntersectionList::iterator _hitIter;
+        IntersectionList::const_iterator _hitIter;
 
     protected:
        

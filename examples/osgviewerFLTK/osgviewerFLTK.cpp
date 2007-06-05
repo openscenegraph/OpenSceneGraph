@@ -4,6 +4,7 @@
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
 #include <osgViewer/Viewer>
+#include <osgViewer/CompositeViewer>
 #include <osgViewer/StatsHandler>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
@@ -77,7 +78,6 @@ void idle_cb()
     Fl::redraw();
 }
 
-
 class ViewerFLTK : public osgViewer::Viewer, public AdapterWidget
 {
     public:
@@ -94,6 +94,22 @@ class ViewerFLTK : public osgViewer::Viewer, public AdapterWidget
 
 };
 
+class CompositeViewerFLTK : public osgViewer::CompositeViewer, public AdapterWidget
+{
+    public:
+
+        CompositeViewerFLTK(int x, int y, int w, int h, const char *label=0):
+            AdapterWidget(x,y,w,h,label)
+        {
+            setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
+        }
+
+    protected:
+        virtual void draw() { frame(); }
+
+};
+
+
 int main( int argc, char **argv )
 {
     
@@ -103,8 +119,10 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    osg::ArgumentParser arguments(&argc, argv);
+
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel)
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;
@@ -112,16 +130,56 @@ int main( int argc, char **argv )
     }
 
 
-    ViewerFLTK viewerWindow(100,100,800,600);
-    viewerWindow.resizable(&viewerWindow);
+    if (arguments.read("--CompositeViewer"))
+    {
+        unsigned int width = 1024;
+        unsigned int height = 800;
 
-    viewerWindow.setSceneData(loadedModel.get());
-    viewerWindow.setCameraManipulator(new osgGA::TrackballManipulator);
-    viewerWindow.addEventHandler(new osgViewer::StatsHandler);
-    
-    viewerWindow.show();
-    
-    Fl::set_idle(idle_cb);
-    
-    return Fl::run();
+        CompositeViewerFLTK viewerWindow(100,100,width,height);
+        viewerWindow.resizable(&viewerWindow);
+        
+        {
+            osgViewer::View* view1 = new osgViewer::View;
+            view1->getCamera()->setGraphicsContext(viewerWindow.getGraphicsWindow());
+            view1->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height/2), 1.0, 1000.0);
+            view1->getCamera()->setViewport(new osg::Viewport(0,0,width,height/2));
+            view1->setCameraManipulator(new osgGA::TrackballManipulator);
+            view1->setSceneData(loadedModel.get());
+            
+            viewerWindow.addView(view1);
+        }
+        
+        {
+            osgViewer::View* view2 = new osgViewer::View;
+            view2->getCamera()->setGraphicsContext(viewerWindow.getGraphicsWindow());
+            view2->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height/2), 1.0, 1000.0);
+            view2->getCamera()->setViewport(new osg::Viewport(0,height/2,width,height/2));
+            view2->setCameraManipulator(new osgGA::TrackballManipulator);
+            view2->setSceneData(loadedModel.get());
+            
+            viewerWindow.addView(view2);
+        }
+
+        viewerWindow.show();
+
+        Fl::set_idle(idle_cb);
+
+        return Fl::run();
+    }
+    else
+    {
+
+        ViewerFLTK viewerWindow(100,100,800,600);
+        viewerWindow.resizable(&viewerWindow);
+
+        viewerWindow.setSceneData(loadedModel.get());
+        viewerWindow.setCameraManipulator(new osgGA::TrackballManipulator);
+        viewerWindow.addEventHandler(new osgViewer::StatsHandler);
+
+        viewerWindow.show();
+
+        Fl::set_idle(idle_cb);
+
+        return Fl::run();
+    }
 }

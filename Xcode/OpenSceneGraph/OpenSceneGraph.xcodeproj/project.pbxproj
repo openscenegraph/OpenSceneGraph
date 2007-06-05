@@ -2016,6 +2016,10 @@
 		00FB215A0B0166600052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		00FB21660B0168960052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		00FB217B0B016E850052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		5BC190790C15C310002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC190780C15C310002CF5BC /* ViewerEventHandlers.cpp */; };
+		5BC1907B0C15C374002CF5BC /* ViewerEventHandlers in Resources */ = {isa = PBXBuildFile; fileRef = 5BC1907A0C15C373002CF5BC /* ViewerEventHandlers */; };
+		5BC1907E0C15C3DC002CF5BC /* Hint in Resources */ = {isa = PBXBuildFile; fileRef = 5BC1907C0C15C3DC002CF5BC /* Hint */; };
+		5BC190800C15C404002CF5BC /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1907F0C15C404002CF5BC /* Hint.cpp */; };
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
@@ -3838,7 +3842,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6320CD0307845BC300FE3D2C /* osgTerrain */;
+			remoteGlobalIDString = 6320CD0307845BC300FE3D2C;
 			remoteInfo = osgTerrain;
 		};
 		00C59D1B0B0926A800E9BCA1 /* PBXContainerItemProxy */ = {
@@ -5855,6 +5859,10 @@
 		00FB211A0B01603A0052DD79 /* Version */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		5BC190780C15C310002CF5BC /* ViewerEventHandlers.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerEventHandlers.cpp; sourceTree = "<group>"; };
+		5BC1907A0C15C373002CF5BC /* ViewerEventHandlers */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ViewerEventHandlers; sourceTree = "<group>"; };
+		5BC1907C0C15C3DC002CF5BC /* Hint */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Hint; sourceTree = "<group>"; };
+		5BC1907F0C15C404002CF5BC /* Hint.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Hint.cpp; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BE117FB305D63B3800EB53E5 /* osg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -10386,6 +10394,7 @@
 		00FB210F0B015F4A0052DD79 /* osgViewer */ = {
 			isa = PBXGroup;
 			children = (
+				5BC190780C15C310002CF5BC /* ViewerEventHandlers.cpp */,
 				D4C6F0310B830A1E0052E667 /* HelpHandler.cpp */,
 				D4C6F0320B830A1E0052E667 /* StatsHandler.cpp */,
 				D40359220B512B6500CB9E15 /* GraphicsWindowCarbon.cpp */,
@@ -10403,6 +10412,7 @@
 		00FB21160B0160380052DD79 /* osgViewer */ = {
 			isa = PBXGroup;
 			children = (
+				5BC1907A0C15C373002CF5BC /* ViewerEventHandlers */,
 				D4C6F02D0B830A0D0052E667 /* HelpHandler */,
 				D4C6F02E0B830A0E0052E667 /* StatsHandler */,
 				D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */,
@@ -10655,6 +10665,7 @@
 			isa = PBXGroup;
 			children = (
 				00A79F2B0BE6875600F7C39E /* ComputeBoundsVisitor.cpp */,
+				5BC1907F0C15C404002CF5BC /* Hint.cpp */,
 				00A79F2C0BE6875600F7C39E /* TransferFunction.cpp */,
 				D4C6F0110B8308F40052E667 /* DeleteHandler.cpp */,
 				D4C6F0120B8308F40052E667 /* MatrixDecomposition.cpp */,
@@ -10804,6 +10815,7 @@
 			isa = PBXGroup;
 			children = (
 				00A79F270BE6868400F7C39E /* ComputeBoundsVisitor */,
+				5BC1907C0C15C3DC002CF5BC /* Hint */,
 				00A79F280BE6868500F7C39E /* TransferFunction */,
 				D4C6F0090B8308D90052E667 /* CameraNode */,
 				D4C6F00A0B8308D90052E667 /* DeleteHandler */,
@@ -16504,6 +16516,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BC1907B0C15C374002CF5BC /* ViewerEventHandlers in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16518,6 +16531,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BC1907E0C15C3DC002CF5BC /* Hint in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18191,6 +18205,7 @@
 				D40359230B512B6600CB9E15 /* GraphicsWindowCarbon.cpp in Sources */,
 				D4C6F0330B830A1E0052E667 /* HelpHandler.cpp in Sources */,
 				D4C6F0340B830A1E0052E667 /* StatsHandler.cpp in Sources */,
+				5BC190790C15C310002CF5BC /* ViewerEventHandlers.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18330,6 +18345,7 @@
 				D4C6F0180B8308F40052E667 /* StencilTwoSided.cpp in Sources */,
 				00A79F2D0BE6875700F7C39E /* ComputeBoundsVisitor.cpp in Sources */,
 				00A79F2E0BE6875700F7C39E /* TransferFunction.cpp in Sources */,
+				5BC190800C15C404002CF5BC /* Hint.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

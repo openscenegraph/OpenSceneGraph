@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>osgsimpleviewerSDL</string>
+	<string>osgviewerSDL</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.OpenSceneGraph.osgsimpleviewerSDL</string>
+	<string>org.OpenSceneGraph.osgviewerSDL</string>
 	<key>CFBundleVersion</key>
-	<string>1.2.0</string>
+	<string>1.9.7</string>
 </dict>
 </plist>

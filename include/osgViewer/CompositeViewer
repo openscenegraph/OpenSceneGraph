@@ -14,6 +14,7 @@
 #ifndef OSGVIEWER_CompositeViewer
 #define OSGVIEWER_CompositeViewer 1
 
+#include <osg/ArgumentParser>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/View>
 
@@ -25,6 +26,9 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
     public:
 
         CompositeViewer();
+
+        CompositeViewer(osg::ArgumentParser& arguments);
+
         virtual ~CompositeViewer();
 
         void addView(osgViewer::View* view);
@@ -160,7 +164,10 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
 
     protected:
 
+        void constructorInit();
+
         void init();
+
         void checkWindowStatus();
 
         typedef std::vector< osg::ref_ptr<osgViewer::View> > Views;

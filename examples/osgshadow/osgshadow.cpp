@@ -3,6 +3,7 @@
 #include <osg/Texture2D>
 #include <osg/ShapeDrawable>
 #include <osg/MatrixTransform>
+#include <osg/Geometry>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>

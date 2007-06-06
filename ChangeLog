@@ -1,3 +1,116 @@
+2007-06-06 11:34 +0000 [r6860]  robert:
+
+	* From Roger James, "These fix a couple of problems in the ac3d
+	  writer. 1. Number of child node of the world object set
+	  incorrectly in when scene contains shape drawables. 2. Incorrect
+	  handling of line primitives."
+
+2007-06-06 11:28 +0000 [r6859]  robert:
+
+	* From Olaf Flebbe, "an implementation of GraphicsWindow::setCursor
+	  for WIN32."
+
+2007-06-06 11:21 +0000 [r6858]  robert:
+
+	* Moved HelpHandler and StatsHandler classes into
+	  ViewerEventHandlers header, removed HelpHandler and StatsHandler
+	  headers
+
+2007-06-06 11:10 +0000 [r6857]  robert:
+
+	* Updated wrappers
+
+2007-06-06 10:58 +0000 [r6855-6856]  robert:
+
+	* Moved SimpleViewer from osgViewer into the osgviewerCocoa example
+	  directory as this is the only place in the OSG that now relies
+	  upon SimpleViewer.
+
+	* Added support for passing in ArgumentParser in Viewer and
+	  CompositeViewer constructor
+
+2007-06-06 08:59 +0000 [r6854]  robert:
+
+	* From Marin Lavery and Robert Osfield, XCode build fixes
+
+2007-06-05 20:42 +0000 [r6853]  robert:
+
+	* From Martin Lavery, XCode build fixes
+
+2007-06-05 19:44 +0000 [r6850-6852]  robert:
+
+	* Renamed osgmultiplecameras to osgcompositeviewer
+
+	* Renamed osgmultiplecamrea to osgcompositeviewer
+
+	* Added CompositeViewer support into FLTK example
+
+2007-06-05 19:36 +0000 [r6849]  shuber:
+
+	* from Stephan Huber: fixed build path for OpenThreads, so osg
+	  builds cleanly
+
+2007-06-05 19:10 +0000 [r6848]  robert:
+
+	* Added support for CompositeViewer
+
+2007-06-05 17:19 +0000 [r6846-6847]  robert:
+
+	* Improved the wording of CMake instructions
+
+	* From Martin Lavery, build fixes fo latest file additions
+
+2007-06-05 14:37 +0000 [r6845]  robert:
+
+	* Change interator to const_iterator to try and avoid Solaris build
+	  failure
+
+2007-06-05 11:18 +0000 [r6844]  robert:
+
+	* From Per Fahlberg, "added use of the internal format specified in
+	  the OpenFlight format attr files."
+
+2007-06-05 08:46 +0000 [r6843]  robert:
+
+	* Removed const to try and avoid Sun compiler error
+
+2007-06-05 08:30 +0000 [r6842]  robert:
+
+	* Removed redundent comma
+
+2007-06-04 21:32 +0000 [r6838-6839]  robert:
+
+	* Updated READEME
+
+	* Updated ChangeLog and AUTHORS.txt for 1.9.7 release
+
+2007-06-04 21:02 +0000 [r6837]  robert:
+
+	* Introduce OSG_BUILD_APPLICATION_BUNDLES option for OSX,
+	  defaulting to OFF.
+
+2007-06-04 20:32 +0000 [r6836]  robert:
+
+	* From Jeremy Moles and Rbert Osfeild, added extra details about
+	  CMake build options.
+
+2007-06-04 19:33 +0000 [r6835]  robert:
+
+	* Removed setting of font resolutions and added control of
+	  threading, with the default theading set to SingleThreading to
+	  avoid crashes associated with non thread safe sections of osgFX -
+	  the need to be fixed!!!
+
+2007-06-04 17:11 +0000 [r6834]  robert:
+
+	* Added control of threading model, setting default to
+	  SingleThreaded to avoid crash associated with mixing
+	  useCursor(false) and multi-threading.
+
+2007-06-04 16:20 +0000 [r6833]  robert:
+
+	* Updated version for 1.9.7 release
+
 2007-06-04 15:11 +0000 [r6832]  robert:
 
 	* Fixed stray control character

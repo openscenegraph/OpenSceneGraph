@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.9.7
+OpenSceneGraph Library 1.9.8
 
-263 Contributors:
+264 Contributors:
 
 Firstname Surname
 -----------------
@@ -27,25 +27,25 @@ Norman Vine
 Alberto Farre
 Ruben Lopez
 Randall Hopper
+Roger James
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
-Roger James
+Olaf Flebbe
 Michael Gronager
 Colin McDonald
 Chris Hanson
-Olaf Flebbe
 Daniel Sjölie
 Mathias Fröhlich
 Joran Jessurun
 Anré Garneau
+Per Fahlberg
 Frederic Marmond
 David Fries
 Boris Bralo
 Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
-Per Fahlberg
 Neil Salter
 Jason Beverage
 David Spilling
@@ -58,6 +58,7 @@ Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
+Jeremy Moles
 Gordon Tomlinson
 Andreas Ekstrand
 Vivek Rajan
@@ -67,7 +68,6 @@ Ravi Mathur
 Michael Platings
 Loic Dachary
 Joseph Steel
-Jeremy Moles
 Jason Daly
 David Guthrie
 Corbin Holtz
@@ -80,6 +80,7 @@ Romano Magacho
 Paul de Repentigny
 Nikolaus Hanekamp
 Michael Hartman
+Martin Lavery
 Leandro Motta Barros
 Laurens Voerman
 Carlo Camporesi
@@ -126,7 +127,6 @@ Michael Henheffer
 Maya Leonard
 Max Behensky
 Mathew May
-Martin Lavery
 Martijn Kragtwijk
 Kevin Moiule
 Keith Steffen
@@ -204,6 +204,7 @@ Mathia Walker
 Mason Menninger
 Martin Spott
 Martin Amueller
+Marin Lavery
 Maria Ten
 Louis Hamilton
 Lewis Harmon

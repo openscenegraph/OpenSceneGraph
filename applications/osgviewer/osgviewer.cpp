@@ -17,8 +17,6 @@
 #include <osgText/Text>
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
-#include <osgViewer/HelpHandler>
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osgGA/TrackballManipulator>

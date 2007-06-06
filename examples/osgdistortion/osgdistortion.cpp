@@ -28,8 +28,7 @@
 #include <osgDB/ReadFile>
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
-#include <osgViewer/HelpHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 using namespace osg;
 

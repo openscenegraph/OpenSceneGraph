@@ -17,8 +17,6 @@
 #endif // WIN32
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
-#include <osgViewer/HelpHandler>
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osg/Group>

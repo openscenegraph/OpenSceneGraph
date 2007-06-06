@@ -1459,7 +1459,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         {
             osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
 
-            if (ratio<0.2) ratio = 0.2;
+            double minRatio = 0.01;
+            if (ratio<minRatio) ratio = minRatio;
         
             double base_up = min_up - (max_up - min_up) * ratio / (1.0 - ratio);
             double max_side_over_up = 0.0;

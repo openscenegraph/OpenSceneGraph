@@ -78,6 +78,9 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         /** Switch on/off the cursor.*/
         virtual void useCursor(bool /*cursorOn*/);
         
+        /** Set mouse cursor to a specific shape.*/
+        virtual void setCursor(MouseCursor cursor);
+        
         /** Handle a native (Win32) windowing event as received from the system */
         virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         
@@ -119,14 +122,19 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                 
         void transformMouseXY(float& x, float& y);
         
+        HCURSOR getOrCreateCursor(MouseCursor mouseShape);
         
         HWND            _hwnd;
         HDC             _hdc;
         HGLRC           _hglrc;
+        HCURSOR         _currentCursor;
         
         WNDPROC         _windowProcedure;
         
         double          _timeOfLastCheckEvents;
+        
+        
+        
         
         int             _screenOriginX;
         int             _screenOriginY;
@@ -146,6 +154,8 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         bool            _closeWindow;
         bool            _destroyWindow;
         bool            _destroying;
+        
+        std::map<MouseCursor,HCURSOR> _mouseCursorMap;
 };
 
 }

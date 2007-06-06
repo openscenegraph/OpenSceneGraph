@@ -127,13 +127,30 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             std::vector<const osg::Geode *>::iterator itr;
             fout << "AC3Db" << std::endl;
             // output the Materials
-            for (itr=glist.begin();itr!= glist.end();itr++) {
+            int iNumGeodesWithGeometry = 0;
+            for (itr=glist.begin();itr!= glist.end();itr++)
+            {
                 iNumMaterials.push_back(const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(*itr))->ProcessMaterial(fout,itr-glist.begin()));
+                unsigned int iNumDrawables = (*itr)->getNumDrawables();
+                int iNumGeometries = 0;
+                for (unsigned int i = 0; i < iNumDrawables; i++)
+                {
+                    const osg::Drawable* pDrawable = (*itr)->getDrawable(i);
+                    if (NULL != pDrawable)
+                    {
+                        const osg::Geometry *pGeometry = pDrawable->asGeometry();
+                        if (NULL != pGeometry)
+                            iNumGeometries++;
+                    }
+                    if (iNumGeometries > 0)
+                        iNumGeodesWithGeometry++;
+                }
             }
             // output the Geometry
             unsigned int nfirstmat=0;
             fout << "OBJECT world" << std::endl;
-            fout << "kids " << (glist.end()-glist.begin()) << std::endl;
+
+            fout << "kids " << iNumGeodesWithGeometry << std::endl;
             for (itr=glist.begin();itr!= glist.end();itr++) {
                 const_cast<ac3d::Geode*>(static_cast<const ac3d::Geode*>(*itr))->ProcessGeometry(fout,nfirstmat);
                 nfirstmat+=iNumMaterials[itr-glist.begin()];

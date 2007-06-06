@@ -162,6 +162,28 @@ void Geode::OutputPolygon(const int iCurrentMaterial, const unsigned int surface
     }
 }
 //=======  draw array length cases
+void Geode::OutputLineDARR(const int iCurrentMaterial, const unsigned int surfaceFlags,
+        const osg::IndexArray *pVertexIndices, const osg::Vec2 *pTexCoords, const osg::IndexArray *pTexIndices,const osg::DrawArrayLengths* drawArrayLengths, ostream& fout)
+{
+    unsigned int vindex = drawArrayLengths->getFirst();
+    for(osg::DrawArrayLengths::const_iterator primItr = drawArrayLengths->begin(); primItr <drawArrayLengths->end(); ++primItr)
+    {
+        unsigned int localPrimLength;
+        localPrimLength = 2;
+        
+        for(GLsizei primCount = 0; primCount < *primItr; ++primCount)
+        {
+            if ((primCount%localPrimLength)==0)
+            {
+                OutputSurfHead(iCurrentMaterial,surfaceFlags,localPrimLength, fout);
+            }
+            OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
+            ++vindex;
+        }
+        
+    }
+}
+
 void Geode::OutputTriangleDARR(const int iCurrentMaterial, const unsigned int surfaceFlags,
         const osg::IndexArray *pVertexIndices, const osg::Vec2 *pTexCoords, const osg::IndexArray *pTexIndices,const osg::DrawArrayLengths* drawArrayLengths, ostream& fout)
 {
@@ -183,6 +205,7 @@ void Geode::OutputTriangleDARR(const int iCurrentMaterial, const unsigned int su
         
     }
 }
+
 void Geode::OutputQuadsDARR(const int iCurrentMaterial, const unsigned int surfaceFlags,
         const osg::IndexArray *pVertexIndices, const osg::Vec2 *pTexCoords, const osg::IndexArray *pTexIndices,const osg::DrawArrayLengths* drawArrayLengths, ostream& fout)
 {
@@ -980,6 +1003,9 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 const osg::DrawArrayLengths* drawArrayLengths = static_cast<const osg::DrawArrayLengths*>(primitiveset);
                                 switch(mode)
                                 {
+                                case(osg::PrimitiveSet::LINES):
+                                    OutputLineDARR(iCurrentMaterial,surfaceFlags, pVertexIndices, pTexCoords, pTexIndices, drawArrayLengths, fout);
+                                    break;
                                 case(osg::PrimitiveSet::TRIANGLES):
                                     OutputTriangleDARR(iCurrentMaterial,surfaceFlags, pVertexIndices, pTexCoords, pTexIndices, drawArrayLengths, fout);
                                     break;

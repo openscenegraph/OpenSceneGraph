@@ -31,6 +31,8 @@ namespace ac3d
         void OutputPolygon(const int iCurrentMaterial,const unsigned int surfaceFlags,
             const osg::IndexArray *pVertexIndices, const osg::Vec2 *pTexCoords, const osg::IndexArray *pTexIndices,const osg::DrawArrays* drawArray, std::ostream& fout);
         //== output for prims with draw array lengths
+        void OutputLineDARR(const int iCurrentMaterial,const unsigned int surfaceFlags,
+            const osg::IndexArray *pVertexIndices, const osg::Vec2 *pTexCoords, const osg::IndexArray *pTexIndices,const osg::DrawArrayLengths* drawArrayLengths, std::ostream& fout);
         void OutputTriangleDARR(const int iCurrentMaterial,const unsigned int surfaceFlags,
             const osg::IndexArray *pVertexIndices, const osg::Vec2 *pTexCoords, const osg::IndexArray *pTexIndices,const osg::DrawArrayLengths* drawArrayLengths, std::ostream& fout);
         void OutputTriangleStripDARR(const int iCurrentMaterial,const unsigned int surfaceFlags,

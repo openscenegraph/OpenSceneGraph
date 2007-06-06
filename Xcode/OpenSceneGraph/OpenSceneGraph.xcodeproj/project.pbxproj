@@ -244,11 +244,6 @@
 		0007BA1706C1982000C884E1 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		0007BA1806C1982000C884E1 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		0007BA1A06C1982000C884E1 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
-		0007BA3F06C19B6900C884E1 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		0007BA4006C19B6900C884E1 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		0007BA4106C19B6900C884E1 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
-		0007BA4206C19B6900C884E1 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
-		0007BA4406C19B6900C884E1 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		0007BA5406C19BAE00C884E1 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		0007BA5506C19BAE00C884E1 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		0007BA5606C19BAE00C884E1 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -951,104 +946,7 @@
 		001DFDE3065A9DB2003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		001DFDF2065A9E04003310BF /* ReaderWriterDW.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFDF1065A9E04003310BF /* ReaderWriterDW.cpp */; };
 		001DFE11065A9EA3003310BF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
-		001DFE1A065A9EC1003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		001DFE1B065A9EC1003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		001DFE23065A9FEE003310BF /* ReaderWriterBMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFD64065A98CC003310BF /* ReaderWriterBMP.cpp */; };
-		001DFE87065AA036003310BF /* AttrData.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE29065AA035003310BF /* AttrData.h */; };
-		001DFE88065AA036003310BF /* BoundingVolumeRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE2A065AA035003310BF /* BoundingVolumeRecords.cpp */; };
-		001DFE89065AA036003310BF /* BoundingVolumeRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE2B065AA035003310BF /* BoundingVolumeRecords.h */; };
-		001DFE8A065AA036003310BF /* BSPRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE2C065AA035003310BF /* BSPRecord.cpp */; };
-		001DFE8B065AA036003310BF /* BSPRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE2D065AA035003310BF /* BSPRecord.h */; };
-		001DFE8C065AA036003310BF /* ColorPaletteRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE2E065AA035003310BF /* ColorPaletteRecord.cpp */; };
-		001DFE8D065AA036003310BF /* ColorPaletteRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE2F065AA035003310BF /* ColorPaletteRecord.h */; };
-		001DFE8E065AA036003310BF /* CommentRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE30065AA035003310BF /* CommentRecord.cpp */; };
-		001DFE8F065AA036003310BF /* CommentRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE31065AA035003310BF /* CommentRecord.h */; };
-		001DFE90065AA036003310BF /* ControlRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE32065AA035003310BF /* ControlRecord.cpp */; };
-		001DFE91065AA036003310BF /* ControlRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE33065AA035003310BF /* ControlRecord.h */; };
-		001DFE92065AA036003310BF /* DofRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE34065AA035003310BF /* DofRecord.cpp */; };
-		001DFE93065AA036003310BF /* DofRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE35065AA035003310BF /* DofRecord.h */; };
-		001DFE94065AA036003310BF /* ExtensionRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE36065AA035003310BF /* ExtensionRecord.cpp */; };
-		001DFE95065AA036003310BF /* ExtensionRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE37065AA035003310BF /* ExtensionRecord.h */; };
-		001DFE96065AA036003310BF /* ExternalRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE38065AA035003310BF /* ExternalRecord.cpp */; };
-		001DFE97065AA036003310BF /* ExternalRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE39065AA035003310BF /* ExternalRecord.h */; };
-		001DFE98065AA036003310BF /* FaceRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE3A065AA035003310BF /* FaceRecord.cpp */; };
-		001DFE99065AA036003310BF /* FaceRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE3B065AA035003310BF /* FaceRecord.h */; };
-		001DFE9A065AA036003310BF /* flt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE3C065AA035003310BF /* flt.cpp */; };
-		001DFE9B065AA036003310BF /* flt.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE3D065AA035003310BF /* flt.h */; };
-		001DFE9C065AA036003310BF /* flt2osg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE3E065AA036003310BF /* flt2osg.cpp */; };
-		001DFE9D065AA036003310BF /* flt2osg.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE3F065AA036003310BF /* flt2osg.h */; };
-		001DFE9E065AA036003310BF /* FltFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE40065AA036003310BF /* FltFile.cpp */; };
-		001DFE9F065AA036003310BF /* FltFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE41065AA036003310BF /* FltFile.h */; };
-		001DFEA0065AA036003310BF /* FltRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE42065AA036003310BF /* FltRecords.h */; };
-		001DFEA1065AA036003310BF /* GeoSetBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE43065AA036003310BF /* GeoSetBuilder.cpp */; };
-		001DFEA2065AA036003310BF /* GeoSetBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE44065AA036003310BF /* GeoSetBuilder.h */; };
-		001DFEA3065AA036003310BF /* GroupRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE46065AA036003310BF /* GroupRecord.cpp */; };
-		001DFEA4065AA036003310BF /* GroupRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE47065AA036003310BF /* GroupRecord.h */; };
-		001DFEA5065AA036003310BF /* HeaderRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE48065AA036003310BF /* HeaderRecord.cpp */; };
-		001DFEA6065AA036003310BF /* HeaderRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE49065AA036003310BF /* HeaderRecord.h */; };
-		001DFEA7065AA036003310BF /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE4A065AA036003310BF /* Input.cpp */; };
-		001DFEA8065AA036003310BF /* Input.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE4B065AA036003310BF /* Input.h */; };
-		001DFEA9065AA036003310BF /* InstanceRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE4C065AA036003310BF /* InstanceRecords.cpp */; };
-		001DFEAA065AA036003310BF /* InstanceRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE4D065AA036003310BF /* InstanceRecords.h */; };
-		001DFEAB065AA036003310BF /* LightPointPaletteRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE4F065AA036003310BF /* LightPointPaletteRecords.cpp */; };
-		001DFEAC065AA036003310BF /* LightPointPaletteRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE50065AA036003310BF /* LightPointPaletteRecords.h */; };
-		001DFEAD065AA036003310BF /* LightPointRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE51065AA036003310BF /* LightPointRecord.cpp */; };
-		001DFEAE065AA036003310BF /* LightPointRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE52065AA036003310BF /* LightPointRecord.h */; };
-		001DFEAF065AA036003310BF /* LightSourcePaletteRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE53065AA036003310BF /* LightSourcePaletteRecord.cpp */; };
-		001DFEB0065AA036003310BF /* LightSourcePaletteRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE54065AA036003310BF /* LightSourcePaletteRecord.h */; };
-		001DFEB1065AA036003310BF /* LightSourceRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE55065AA036003310BF /* LightSourceRecord.cpp */; };
-		001DFEB2065AA036003310BF /* LightSourceRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE56065AA036003310BF /* LightSourceRecord.h */; };
-		001DFEB3065AA036003310BF /* LocalVertexPoolRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE57065AA036003310BF /* LocalVertexPoolRecord.cpp */; };
-		001DFEB4065AA036003310BF /* LocalVertexPoolRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE58065AA036003310BF /* LocalVertexPoolRecord.h */; };
-		001DFEB5065AA036003310BF /* LodRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE59065AA036003310BF /* LodRecord.cpp */; };
-		001DFEB6065AA036003310BF /* LodRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE5A065AA036003310BF /* LodRecord.h */; };
-		001DFEB7065AA036003310BF /* LongIDRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE5B065AA036003310BF /* LongIDRecord.cpp */; };
-		001DFEB8065AA036003310BF /* LongIDRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE5C065AA036003310BF /* LongIDRecord.h */; };
-		001DFEB9065AA036003310BF /* MaterialPaletteRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE5D065AA036003310BF /* MaterialPaletteRecord.cpp */; };
-		001DFEBA065AA036003310BF /* MaterialPaletteRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE5E065AA036003310BF /* MaterialPaletteRecord.h */; };
-		001DFEBB065AA036003310BF /* MeshPrimitiveRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE5F065AA036003310BF /* MeshPrimitiveRecord.cpp */; };
-		001DFEBC065AA036003310BF /* MeshPrimitiveRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE60065AA036003310BF /* MeshPrimitiveRecord.h */; };
-		001DFEBD065AA036003310BF /* MeshRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE61065AA036003310BF /* MeshRecord.cpp */; };
-		001DFEBE065AA036003310BF /* MeshRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE62065AA036003310BF /* MeshRecord.h */; };
-		001DFEBF065AA036003310BF /* MultiTextureRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE63065AA036003310BF /* MultiTextureRecord.cpp */; };
-		001DFEC0065AA036003310BF /* MultiTextureRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE64065AA036003310BF /* MultiTextureRecord.h */; };
-		001DFEC1065AA036003310BF /* ObjectRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE65065AA036003310BF /* ObjectRecord.cpp */; };
-		001DFEC2065AA036003310BF /* ObjectRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE66065AA036003310BF /* ObjectRecord.h */; };
-		001DFEC3065AA036003310BF /* OldMaterialPaletteRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE67065AA036003310BF /* OldMaterialPaletteRecord.cpp */; };
-		001DFEC4065AA036003310BF /* OldMaterialPaletteRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE68065AA036003310BF /* OldMaterialPaletteRecord.h */; };
-		001DFEC5065AA036003310BF /* OldVertexRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE69065AA036003310BF /* OldVertexRecords.cpp */; };
-		001DFEC6065AA036003310BF /* OldVertexRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE6A065AA036003310BF /* OldVertexRecords.h */; };
-		001DFEC7065AA036003310BF /* opcodes.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE6B065AA036003310BF /* opcodes.h */; };
-		001DFEC8065AA036003310BF /* Pool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE6C065AA036003310BF /* Pool.cpp */; };
-		001DFEC9065AA036003310BF /* Pool.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE6D065AA036003310BF /* Pool.h */; };
-		001DFECA065AA036003310BF /* ReaderWriterATTR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE6E065AA036003310BF /* ReaderWriterATTR.cpp */; };
-		001DFECB065AA036003310BF /* ReaderWriterFLT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE6F065AA036003310BF /* ReaderWriterFLT.cpp */; };
-		001DFECC065AA036003310BF /* ReaderWriterFLT.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE70065AA036003310BF /* ReaderWriterFLT.h */; };
-		001DFECD065AA036003310BF /* Record.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE71065AA036003310BF /* Record.cpp */; };
-		001DFECE065AA036003310BF /* Record.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE72065AA036003310BF /* Record.h */; };
-		001DFECF065AA036003310BF /* RecordVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE73065AA036003310BF /* RecordVisitor.cpp */; };
-		001DFED0065AA036003310BF /* RecordVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE74065AA036003310BF /* RecordVisitor.h */; };
-		001DFED1065AA036003310BF /* Registry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE75065AA036003310BF /* Registry.cpp */; };
-		001DFED2065AA036003310BF /* Registry.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE76065AA036003310BF /* Registry.h */; };
-		001DFED3065AA036003310BF /* RoadRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE77065AA036003310BF /* RoadRecords.cpp */; };
-		001DFED4065AA036003310BF /* RoadRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE78065AA036003310BF /* RoadRecords.h */; };
-		001DFED5065AA036003310BF /* SwitchRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE79065AA036003310BF /* SwitchRecord.cpp */; };
-		001DFED6065AA036003310BF /* SwitchRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE7A065AA036003310BF /* SwitchRecord.h */; };
-		001DFED7065AA036003310BF /* TextureMappingPaletteRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE7B065AA036003310BF /* TextureMappingPaletteRecord.cpp */; };
-		001DFED8065AA036003310BF /* TextureMappingPaletteRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE7C065AA036003310BF /* TextureMappingPaletteRecord.h */; };
-		001DFED9065AA036003310BF /* TexturePaletteRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE7D065AA036003310BF /* TexturePaletteRecord.cpp */; };
-		001DFEDA065AA036003310BF /* TexturePaletteRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE7E065AA036003310BF /* TexturePaletteRecord.h */; };
-		001DFEDB065AA036003310BF /* TransformationRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE7F065AA036003310BF /* TransformationRecords.cpp */; };
-		001DFEDC065AA036003310BF /* TransformationRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE80065AA036003310BF /* TransformationRecords.h */; };
-		001DFEDD065AA036003310BF /* UnknownRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE81065AA036003310BF /* UnknownRecord.cpp */; };
-		001DFEDE065AA036003310BF /* UnknownRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE82065AA036003310BF /* UnknownRecord.h */; };
-		001DFEDF065AA036003310BF /* UVListRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE83065AA036003310BF /* UVListRecord.cpp */; };
-		001DFEE0065AA036003310BF /* UVListRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE84065AA036003310BF /* UVListRecord.h */; };
-		001DFEE1065AA036003310BF /* VertexPoolRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFE85065AA036003310BF /* VertexPoolRecords.cpp */; };
-		001DFEE2065AA036003310BF /* VertexPoolRecords.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFE86065AA036003310BF /* VertexPoolRecords.h */; };
-		001DFEF2065AA0C1003310BF /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
-		001DFEF4065AA0C4003310BF /* osgSim.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 005580E10624BBB3000A808A /* osgSim.framework */; };
-		001DFF04065AA145003310BF /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		001DFFA9065AA3C7003310BF /* Point.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180AF05D63B8900EB53E5 /* Point.cpp */; };
 		001DFFB8065AA3F1003310BF /* Matrixd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180A405D63B8900EB53E5 /* Matrixd.cpp */; };
 		001DFFCF065AA472003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -1097,8 +995,6 @@
 		004099900924D20E009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099930924D21B009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		004099940924D223009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
-		004099970924D249009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
-		004099990924D25F009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		0040999C0924D27C009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		0040999D0924D284009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
 		0040999F0924D28B009ADD90 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
@@ -1461,8 +1357,6 @@
 		008F444E06CBF90F00F4220C /* GLObjectsVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F444D06CBF90E00F4220C /* GLObjectsVisitor.cpp */; };
 		008F446C06CBF99E00F4220C /* ReaderWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F446B06CBF99E00F4220C /* ReaderWriter.cpp */; };
 		008F447906CBFA4400F4220C /* GUIEventAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F447706CBFA4200F4220C /* GUIEventAdapter.cpp */; };
-		008F449F06CC00C100F4220C /* LightPointSystemRecord.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F449D06CC00BF00F4220C /* LightPointSystemRecord.cpp */; };
-		008F44A006CC00C100F4220C /* LightPointSystemRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = 008F449E06CC00C000F4220C /* LightPointSystemRecord.h */; };
 		008F44A506CC016100F4220C /* AutoTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F44A106CC015D00F4220C /* AutoTransform.cpp */; };
 		008F44A606CC016100F4220C /* CoordinateSystemNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F44A206CC015E00F4220C /* CoordinateSystemNode.cpp */; };
 		008F44A706CC016100F4220C /* EllipsoidModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F44A306CC015F00F4220C /* EllipsoidModel.cpp */; };
@@ -1694,8 +1588,6 @@
 		00A150DB084E6B38000150AD /* ReaderWriterHDR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A150D8084E6B37000150AD /* ReaderWriterHDR.cpp */; };
 		00A1514B084E740B000150AD /* osgParticle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557FC40624B86F000A808A /* osgParticle.framework */; };
 		00A152E4084FD745000150AD /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
-		00A1536A084FDE50000150AD /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		00A1536B084FDE50000150AD /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00A15395084FE10F000150AD /* ReaderWriterDDS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFDC3065A9A22003310BF /* ReaderWriterDDS.cpp */; };
 		00A6946006CBD6FB00F26612 /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
 		00A79F290BE6868500F7C39E /* ComputeBoundsVisitor in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F270BE6868400F7C39E /* ComputeBoundsVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1803,9 +1695,6 @@
 		00CE2F87065BD8E6003C8656 /* DirectionalSector.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CE2F81065BD8E6003C8656 /* DirectionalSector.h */; };
 		00CE2F88065BD8E6003C8656 /* EllipsoidModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00CE2F82065BD8E6003C8656 /* EllipsoidModel.cpp */; };
 		00CE2F89065BD8E6003C8656 /* EllipsoidModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 00CE2F83065BD8E6003C8656 /* EllipsoidModel.h */; };
-		00D3F0E809201A1E00817AAD /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		00D3F0E909201A2000817AAD /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		00D3F0EB09201A2A00817AAD /* hdrloader.h in Headers */ = {isa = PBXBuildFile; fileRef = 00A150D7084E6B37000150AD /* hdrloader.h */; };
 		00E1084D06CC114500FD597F /* osgSim.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 005580E10624BBB3000A808A /* osgSim.framework */; };
 		00E28136076763E8005AEE61 /* TexEnvFilter in Headers */ = {isa = PBXBuildFile; fileRef = 00E2813107676305005AEE61 /* TexEnvFilter */; settings = {ATTRIBUTES = (Public, ); }; };
 		00E2813C07676504005AEE61 /* dxtctool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E2813907676500005AEE61 /* dxtctool.cpp */; };
@@ -1815,8 +1704,6 @@
 		00E28145076766DA005AEE61 /* Archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E28143076766D7005AEE61 /* Archive.cpp */; };
 		00E28148076767D2005AEE61 /* NodeTrackerManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00E28147076767D1005AEE61 /* NodeTrackerManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		00E2814A07676854005AEE61 /* NodeTrackerManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */; };
-		00E281A607676B93005AEE61 /* FindExternalModelVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281A407676B91005AEE61 /* FindExternalModelVisitor.cpp */; };
-		00E281A707676B93005AEE61 /* FindExternalModelVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E281A507676B92005AEE61 /* FindExternalModelVisitor.h */; };
 		00E281B207676BE4005AEE61 /* ClipNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281A807676BD6005AEE61 /* ClipNode.cpp */; };
 		00E281B307676BE4005AEE61 /* ClipNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E281A907676BD7005AEE61 /* ClipNode.h */; };
 		00E281B407676BE4005AEE61 /* ClipPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281AA07676BD9005AEE61 /* ClipPlane.cpp */; };
@@ -2496,7 +2383,6 @@
 		D4DFC4870B57D6B0005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC4880B57D6C2005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC4890B57D6DA005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
-		D4DFC48A0B57D6DE005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC48B0B57D6FD005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759AB0B57D1BB006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759B80B57D22B006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -2869,27 +2755,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = BE11849905D7126100EB53E5;
 			remoteInfo = osgUtil;
-		};
-		001DFEFA065AA0D7003310BF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE11849905D7126100EB53E5;
-			remoteInfo = osgUtil;
-		};
-		001DFEFC065AA0DB003310BF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 005580E00624BBB3000A808A;
-			remoteInfo = osgSim;
-		};
-		001DFEFE065AA13B003310BF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BE11876905D75C2700EB53E5;
-			remoteInfo = osgText;
 		};
 		0040992F0924CC7D009ADD90 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -4619,7 +4484,6 @@
 		0007B9F806C1971200C884E1 /* osgdistortion.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgdistortion.cpp; path = ../../examples/osgdistortion/osgdistortion.cpp; sourceTree = SOURCE_ROOT; };
 		0007BA1B06C1982000C884E1 /* osgforest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgforest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0007BA2106C199B000C884E1 /* osgforest.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgforest.cpp; sourceTree = "<group>"; };
-		0007BA4506C19B6900C884E1 /* os.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = os.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0007BA5A06C19BAE00C884E1 /* osgfxbrowser.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgfxbrowser.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0007BA6406C19C1600C884E1 /* Frame.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Frame.cpp; sourceTree = "<group>"; };
 		0007BA6506C19C1600C884E1 /* Frame.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Frame.h; sourceTree = "<group>"; };
@@ -5098,7 +4962,6 @@
 		001DFDC3065A9A22003310BF /* ReaderWriterDDS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterDDS.cpp; path = ../../src/osgPlugins/dds/ReaderWriterDDS.cpp; sourceTree = SOURCE_ROOT; };
 		001DFDE4065A9DB2003310BF /* osgdb_dw.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_dw.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001DFDF1065A9E04003310BF /* ReaderWriterDW.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterDW.cpp; path = ../../src/osgPlugins/dw/ReaderWriterDW.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE1C065A9EC1003310BF /* osgdb_flt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_flt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001DFE29065AA035003310BF /* AttrData.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = AttrData.h; path = ../../src/osgPlugins/flt/AttrData.h; sourceTree = SOURCE_ROOT; };
 		001DFE2A065AA035003310BF /* BoundingVolumeRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = BoundingVolumeRecords.cpp; path = ../../src/osgPlugins/flt/BoundingVolumeRecords.cpp; sourceTree = SOURCE_ROOT; };
 		001DFE2B065AA035003310BF /* BoundingVolumeRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = BoundingVolumeRecords.h; path = ../../src/osgPlugins/flt/BoundingVolumeRecords.h; sourceTree = SOURCE_ROOT; };
@@ -5688,7 +5551,6 @@
 		00A150D6084E6B36000150AD /* hdrloader.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = hdrloader.cpp; path = ../../src/osgPlugins/hdr/hdrloader.cpp; sourceTree = SOURCE_ROOT; };
 		00A150D7084E6B37000150AD /* hdrloader.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = hdrloader.h; path = ../../src/osgPlugins/hdr/hdrloader.h; sourceTree = SOURCE_ROOT; };
 		00A150D8084E6B37000150AD /* ReaderWriterHDR.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterHDR.cpp; path = ../../src/osgPlugins/hdr/ReaderWriterHDR.cpp; sourceTree = SOURCE_ROOT; };
-		00A1536C084FDE50000150AD /* osgdb_.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A79F270BE6868400F7C39E /* ComputeBoundsVisitor */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ComputeBoundsVisitor; sourceTree = "<group>"; };
 		00A79F280BE6868500F7C39E /* TransferFunction */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = TransferFunction; sourceTree = "<group>"; };
 		00A79F2B0BE6875600F7C39E /* ComputeBoundsVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ComputeBoundsVisitor.cpp; sourceTree = "<group>"; };
@@ -5734,7 +5596,6 @@
 		00CE2F81065BD8E6003C8656 /* DirectionalSector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = DirectionalSector.h; path = ../../src/osgPlugins/ive/DirectionalSector.h; sourceTree = SOURCE_ROOT; };
 		00CE2F82065BD8E6003C8656 /* EllipsoidModel.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = EllipsoidModel.cpp; path = ../../src/osgPlugins/ive/EllipsoidModel.cpp; sourceTree = SOURCE_ROOT; };
 		00CE2F83065BD8E6003C8656 /* EllipsoidModel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = EllipsoidModel.h; path = ../../src/osgPlugins/ive/EllipsoidModel.h; sourceTree = SOURCE_ROOT; };
-		00D3F0E30920182C00817AAD /* osgdb___.so */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = osgdb___.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E2813107676305005AEE61 /* TexEnvFilter */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TexEnvFilter; path = ../../include/osg/TexEnvFilter; sourceTree = SOURCE_ROOT; };
 		00E2813907676500005AEE61 /* dxtctool.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = dxtctool.cpp; path = ../../src/osg/dxtctool.cpp; sourceTree = SOURCE_ROOT; };
 		00E2813A07676502005AEE61 /* dxtctool.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = dxtctool.h; path = ../../src/osg/dxtctool.h; sourceTree = SOURCE_ROOT; };
@@ -6326,20 +6187,6 @@
 				0007BA1A06C1982000C884E1 /* osgGA.framework in Frameworks */,
 				006CE834092197C400985402 /* OpenGL.framework in Frameworks */,
 				004099830924D1B2009ADD90 /* OpenThreads.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0007BA3E06C19B6900C884E1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D4DFC48A0B57D6DE005CBCD2 /* osgViewer.framework in Frameworks */,
-				0007BA3F06C19B6900C884E1 /* osg.framework in Frameworks */,
-				0007BA4006C19B6900C884E1 /* osgDB.framework in Frameworks */,
-				0007BA4106C19B6900C884E1 /* osgText.framework in Frameworks */,
-				0007BA4206C19B6900C884E1 /* osgUtil.framework in Frameworks */,
-				0007BA4406C19B6900C884E1 /* osgGA.framework in Frameworks */,
-				004099990924D25F009ADD90 /* OpenThreads.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7092,18 +6939,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		001DFE19065A9EC1003310BF /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				001DFE1A065A9EC1003310BF /* osg.framework in Frameworks */,
-				001DFE1B065A9EC1003310BF /* osgDB.framework in Frameworks */,
-				001DFEF2065AA0C1003310BF /* osgUtil.framework in Frameworks */,
-				001DFEF4065AA0C4003310BF /* osgSim.framework in Frameworks */,
-				001DFF04065AA145003310BF /* osgText.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		001DFFCE065AA472003310BF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7548,15 +7383,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00A15369084FDE50000150AD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00A1536A084FDE50000150AD /* osg.framework in Frameworks */,
-				00A1536B084FDE50000150AD /* osgDB.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		00C0CABF062651A40091ED7C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7624,16 +7450,6 @@
 				00C59DA40B09343B00E9BCA1 /* osgViewer.framework in Frameworks */,
 				00F2DF4F0B8536C400345D8E /* osgText.framework in Frameworks */,
 				5BC191690C15FC1D002CF5BC /* SDL.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00D3F0E10920182C00817AAD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00D3F0E809201A1E00817AAD /* osg.framework in Frameworks */,
-				00D3F0E909201A2000817AAD /* osgDB.framework in Frameworks */,
-				004099970924D249009ADD90 /* OpenThreads.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -10385,7 +10201,6 @@
 				001DFD7B065A9908003310BF /* osgdb_x.so */,
 				001DFDAC065A99E7003310BF /* osgdb_dds.so */,
 				001DFDE4065A9DB2003310BF /* osgdb_dw.so */,
-				001DFE1C065A9EC1003310BF /* osgdb_flt.so */,
 				001DFFD1065AA472003310BF /* osgdb_3ds.so */,
 				001D0060065AA52E003310BF /* osgdb_logo.so */,
 				001D0092065AA5E1003310BF /* osgdb_lwo.so */,
@@ -10412,7 +10227,6 @@
 				0007B99B06C1929E00C884E1 /* osgdepthshadow.app */,
 				0007B9EF06C196E400C884E1 /* osgdistortion.app */,
 				0007BA1B06C1982000C884E1 /* osgforest.app */,
-				0007BA4506C19B6900C884E1 /* os.app */,
 				0007BA5A06C19BAE00C884E1 /* osgfxbrowser.app */,
 				0007BACC06C1A5DF00C884E1 /* osgvertexprogram.app */,
 				0007BC8906C1A8FA00C884E1 /* osgspacewarp.app */,
@@ -10482,8 +10296,6 @@
 				00A14F28084E65B3000150AD /* osglogicop.app */,
 				00A14FB9084E68D6000150AD /* osgdb_dxf.so */,
 				00A150B9084E6ABB000150AD /* osgdb_hdr.so */,
-				00A1536C084FDE50000150AD /* osgdb_.so */,
-				00D3F0E30920182C00817AAD /* osgdb___.so */,
 				006CE90B0921A83D00985402 /* osgcamera.app */,
 				006CE9390921AA9300985402 /* osgdelaunay.app */,
 				006CE95B0921AB8300985402 /* osgdepthpartition.app */,
@@ -11208,13 +11020,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0007BA3A06C19B6900C884E1 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0007BA4F06C19BAE00C884E1 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -11783,62 +11588,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		001DFE17065A9EC1003310BF /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				001DFE87065AA036003310BF /* AttrData.h in Headers */,
-				001DFE89065AA036003310BF /* BoundingVolumeRecords.h in Headers */,
-				001DFE8B065AA036003310BF /* BSPRecord.h in Headers */,
-				001DFE8D065AA036003310BF /* ColorPaletteRecord.h in Headers */,
-				001DFE8F065AA036003310BF /* CommentRecord.h in Headers */,
-				001DFE91065AA036003310BF /* ControlRecord.h in Headers */,
-				001DFE93065AA036003310BF /* DofRecord.h in Headers */,
-				001DFE95065AA036003310BF /* ExtensionRecord.h in Headers */,
-				001DFE97065AA036003310BF /* ExternalRecord.h in Headers */,
-				001DFE99065AA036003310BF /* FaceRecord.h in Headers */,
-				001DFE9B065AA036003310BF /* flt.h in Headers */,
-				001DFE9D065AA036003310BF /* flt2osg.h in Headers */,
-				001DFE9F065AA036003310BF /* FltFile.h in Headers */,
-				001DFEA0065AA036003310BF /* FltRecords.h in Headers */,
-				001DFEA2065AA036003310BF /* GeoSetBuilder.h in Headers */,
-				001DFEA4065AA036003310BF /* GroupRecord.h in Headers */,
-				001DFEA6065AA036003310BF /* HeaderRecord.h in Headers */,
-				001DFEA8065AA036003310BF /* Input.h in Headers */,
-				001DFEAA065AA036003310BF /* InstanceRecords.h in Headers */,
-				001DFEAC065AA036003310BF /* LightPointPaletteRecords.h in Headers */,
-				001DFEAE065AA036003310BF /* LightPointRecord.h in Headers */,
-				001DFEB0065AA036003310BF /* LightSourcePaletteRecord.h in Headers */,
-				001DFEB2065AA036003310BF /* LightSourceRecord.h in Headers */,
-				001DFEB4065AA036003310BF /* LocalVertexPoolRecord.h in Headers */,
-				001DFEB6065AA036003310BF /* LodRecord.h in Headers */,
-				001DFEB8065AA036003310BF /* LongIDRecord.h in Headers */,
-				001DFEBA065AA036003310BF /* MaterialPaletteRecord.h in Headers */,
-				001DFEBC065AA036003310BF /* MeshPrimitiveRecord.h in Headers */,
-				001DFEBE065AA036003310BF /* MeshRecord.h in Headers */,
-				001DFEC0065AA036003310BF /* MultiTextureRecord.h in Headers */,
-				001DFEC2065AA036003310BF /* ObjectRecord.h in Headers */,
-				001DFEC4065AA036003310BF /* OldMaterialPaletteRecord.h in Headers */,
-				001DFEC6065AA036003310BF /* OldVertexRecords.h in Headers */,
-				001DFEC7065AA036003310BF /* opcodes.h in Headers */,
-				001DFEC9065AA036003310BF /* Pool.h in Headers */,
-				001DFECC065AA036003310BF /* ReaderWriterFLT.h in Headers */,
-				001DFECE065AA036003310BF /* Record.h in Headers */,
-				001DFED0065AA036003310BF /* RecordVisitor.h in Headers */,
-				001DFED2065AA036003310BF /* Registry.h in Headers */,
-				001DFED4065AA036003310BF /* RoadRecords.h in Headers */,
-				001DFED6065AA036003310BF /* SwitchRecord.h in Headers */,
-				001DFED8065AA036003310BF /* TextureMappingPaletteRecord.h in Headers */,
-				001DFEDA065AA036003310BF /* TexturePaletteRecord.h in Headers */,
-				001DFEDC065AA036003310BF /* TransformationRecords.h in Headers */,
-				001DFEDE065AA036003310BF /* UnknownRecord.h in Headers */,
-				001DFEE0065AA036003310BF /* UVListRecord.h in Headers */,
-				001DFEE2065AA036003310BF /* VertexPoolRecords.h in Headers */,
-				008F44A006CC00C100F4220C /* LightPointSystemRecord.h in Headers */,
-				00E281A707676B93005AEE61 /* FindExternalModelVisitor.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		001DFFCB065AA472003310BF /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -12273,13 +12022,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00A15367084FDE50000150AD /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		00C0CABD062651A40091ED7C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -12316,14 +12058,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00D3F0DF0920182C00817AAD /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00D3F0EB09201A2A00817AAD /* hdrloader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12912,29 +12646,6 @@
 			name = osgforest;
 			productName = osgtext;
 			productReference = 0007BA1B06C1982000C884E1 /* osgforest.app */;
-			productType = "com.apple.product-type.application";
-		};
-		0007BA3306C19B6900C884E1 /* os */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 001103A108736A190015C576 /* Build configuration list for PBXNativeTarget "os" */;
-			buildPhases = (
-				0007BA3A06C19B6900C884E1 /* Headers */,
-				0007BA3B06C19B6900C884E1 /* Resources */,
-				0007BA3C06C19B6900C884E1 /* Sources */,
-				0007BA3E06C19B6900C884E1 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				0007BA3406C19B6900C884E1 /* PBXTargetDependency */,
-				0007BA3506C19B6900C884E1 /* PBXTargetDependency */,
-				0007BA3606C19B6900C884E1 /* PBXTargetDependency */,
-				0007BA3706C19B6900C884E1 /* PBXTargetDependency */,
-				0007BA3806C19B6900C884E1 /* PBXTargetDependency */,
-			);
-			name = os;
-			productName = osgtext;
-			productReference = 0007BA4506C19B6900C884E1 /* os.app */;
 			productType = "com.apple.product-type.application";
 		};
 		0007BA4806C19BAE00C884E1 /* osgfxbrowser */ = {
@@ -14040,27 +13751,6 @@
 			productReference = 001DFDE4065A9DB2003310BF /* osgdb_dw.so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		001DFE15065A9EC1003310BF /* osgdb_flt */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 001101F508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_flt" */;
-			buildPhases = (
-				001DFE17065A9EC1003310BF /* Headers */,
-				001DFE18065A9EC1003310BF /* Sources */,
-				001DFE19065A9EC1003310BF /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				001DFE16065A9EC1003310BF /* PBXTargetDependency */,
-				001DFEFB065AA0D7003310BF /* PBXTargetDependency */,
-				001DFEFD065AA0DB003310BF /* PBXTargetDependency */,
-				001DFEFF065AA13B003310BF /* PBXTargetDependency */,
-			);
-			name = osgdb_flt;
-			productName = osgdb_3dc;
-			productReference = 001DFE1C065A9EC1003310BF /* osgdb_flt.so */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
 		001DFFC9065AA472003310BF /* osgdb_3ds */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 001101FD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_3ds" */;
@@ -14818,24 +14508,6 @@
 			productReference = 00A150B9084E6ABB000150AD /* osgdb_hdr.so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		00A15365084FDE50000150AD /* osgdb_ */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0011039108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_" */;
-			buildPhases = (
-				00A15367084FDE50000150AD /* Headers */,
-				00A15368084FDE50000150AD /* Sources */,
-				00A15369084FDE50000150AD /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00A15366084FDE50000150AD /* PBXTargetDependency */,
-			);
-			name = osgdb_;
-			productName = osgdb_3dc;
-			productReference = 00A1536C084FDE50000150AD /* osgdb_.so */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
 		00C0CAC0062651A40091ED7C /* osgdb_freetype */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 001101D108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_freetype" */;
@@ -14939,23 +14611,6 @@
 			productName = osgtext;
 			productReference = 00C59DA90B09343B00E9BCA1 /* osgviewerSDL.app */;
 			productType = "com.apple.product-type.application";
-		};
-		00D3F0E20920182C00817AAD /* osgdb___ */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00D3F0E40920187300817AAD /* Build configuration list for PBXNativeTarget "osgdb___" */;
-			buildPhases = (
-				00D3F0DF0920182C00817AAD /* Headers */,
-				00D3F0E00920182C00817AAD /* Sources */,
-				00D3F0E10920182C00817AAD /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = osgdb___;
-			productName = osgdb___;
-			productReference = 00D3F0E30920182C00817AAD /* osgdb___.so */;
-			productType = "com.apple.product-type.library.static";
 		};
 		00E281CE07676D1E005AEE61 /* osgdb_net */ = {
 			isa = PBXNativeTarget;
@@ -15647,7 +15302,6 @@
 				001DFD73065A9908003310BF /* osgdb_x */,
 				001DFDDD065A9DB2003310BF /* osgdb_dw */,
 				00A14FB0084E68D6000150AD /* osgdb_dxf */,
-				001DFE15065A9EC1003310BF /* osgdb_flt */,
 				00C0CAC0062651A40091ED7C /* osgdb_freetype */,
 				004BD03109273C2800A265A4 /* osgdb_geo */,
 				00A15008084E6ABB000150AD /* osgdb_hdr */,
@@ -15681,8 +15335,6 @@
 				008F44CB06CC023A00F4220C /* osgdb_trans */,
 				001D03F0065AB0B6003310BF /* osgdb_txp */,
 				001D049C065AB1AE003310BF /* osgdb_zip */,
-				00A15365084FDE50000150AD /* osgdb_ */,
-				00D3F0E20920182C00817AAD /* osgdb___ */,
 				00A14C6F084E5690000150AD /* Applications */,
 				00A14C01084E52BF000150AD /* osgarchive */,
 				000A25BD06CAD314009EE43A /* osgconv */,
@@ -15693,6 +15345,7 @@
 				0007B90B06C181CC00C884E1 /* osganimate */,
 				0007B96A06C18F9900C884E1 /* osgautotransform */,
 				000A24BA06CACA60009EE43A /* osgbillboard */,
+				00F238F90767744100528CDD /* osglauncher */,
 				00F238DE0767730700528CDD /* osgblendequation */,
 				000A253206CACDBF009EE43A /* osgcallback */,
 				006CE8F00921A83D00985402 /* osgcamera */,
@@ -15718,7 +15371,6 @@
 				0079505C09D36679003FC8A1 /* osgintrospection */,
 				000A26EC06CAE6DA009EE43A /* osgkeyboard */,
 				000A270006CAE6E6009EE43A /* osgkeyboardmouse */,
-				00F238F90767744100528CDD /* osglauncher */,
 				000A271406CAE6F2009EE43A /* osglight */,
 				000A272806CAE6FE009EE43A /* osglightpoint */,
 				00A14F17084E65B3000150AD /* osglogicop */,
@@ -15769,7 +15421,6 @@
 				0007BAB806C1A5DF00C884E1 /* osgvertexprogram */,
 				008F451706CC05A500F4220C /* osgvolume */,
 				00EF4F8906CB15BD008ACEFF /* osgwindows */,
-				0007BA3306C19B6900C884E1 /* os */,
 				00EF4E3606CB0AA6008ACEFF /* osgsimulation */,
 				00C59D900B09343B00E9BCA1 /* osgviewerSDL */,
 			);
@@ -15816,13 +15467,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		0007BA1106C1982000C884E1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0007BA3B06C19B6900C884E1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -16601,13 +16245,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		0007BA3C06C19B6900C884E1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		0007BA5106C19BAE00C884E1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -17365,60 +17002,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		001DFE18065A9EC1003310BF /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				001DFE88065AA036003310BF /* BoundingVolumeRecords.cpp in Sources */,
-				001DFE8A065AA036003310BF /* BSPRecord.cpp in Sources */,
-				001DFE8C065AA036003310BF /* ColorPaletteRecord.cpp in Sources */,
-				001DFE8E065AA036003310BF /* CommentRecord.cpp in Sources */,
-				001DFE90065AA036003310BF /* ControlRecord.cpp in Sources */,
-				001DFE92065AA036003310BF /* DofRecord.cpp in Sources */,
-				001DFE94065AA036003310BF /* ExtensionRecord.cpp in Sources */,
-				001DFE96065AA036003310BF /* ExternalRecord.cpp in Sources */,
-				001DFE98065AA036003310BF /* FaceRecord.cpp in Sources */,
-				001DFE9A065AA036003310BF /* flt.cpp in Sources */,
-				001DFE9C065AA036003310BF /* flt2osg.cpp in Sources */,
-				001DFE9E065AA036003310BF /* FltFile.cpp in Sources */,
-				001DFEA1065AA036003310BF /* GeoSetBuilder.cpp in Sources */,
-				001DFEA3065AA036003310BF /* GroupRecord.cpp in Sources */,
-				001DFEA5065AA036003310BF /* HeaderRecord.cpp in Sources */,
-				001DFEA7065AA036003310BF /* Input.cpp in Sources */,
-				001DFEA9065AA036003310BF /* InstanceRecords.cpp in Sources */,
-				001DFEAB065AA036003310BF /* LightPointPaletteRecords.cpp in Sources */,
-				001DFEAD065AA036003310BF /* LightPointRecord.cpp in Sources */,
-				001DFEAF065AA036003310BF /* LightSourcePaletteRecord.cpp in Sources */,
-				001DFEB1065AA036003310BF /* LightSourceRecord.cpp in Sources */,
-				001DFEB3065AA036003310BF /* LocalVertexPoolRecord.cpp in Sources */,
-				001DFEB5065AA036003310BF /* LodRecord.cpp in Sources */,
-				001DFEB7065AA036003310BF /* LongIDRecord.cpp in Sources */,
-				001DFEB9065AA036003310BF /* MaterialPaletteRecord.cpp in Sources */,
-				001DFEBB065AA036003310BF /* MeshPrimitiveRecord.cpp in Sources */,
-				001DFEBD065AA036003310BF /* MeshRecord.cpp in Sources */,
-				001DFEBF065AA036003310BF /* MultiTextureRecord.cpp in Sources */,
-				001DFEC1065AA036003310BF /* ObjectRecord.cpp in Sources */,
-				001DFEC3065AA036003310BF /* OldMaterialPaletteRecord.cpp in Sources */,
-				001DFEC5065AA036003310BF /* OldVertexRecords.cpp in Sources */,
-				001DFEC8065AA036003310BF /* Pool.cpp in Sources */,
-				001DFECA065AA036003310BF /* ReaderWriterATTR.cpp in Sources */,
-				001DFECB065AA036003310BF /* ReaderWriterFLT.cpp in Sources */,
-				001DFECD065AA036003310BF /* Record.cpp in Sources */,
-				001DFECF065AA036003310BF /* RecordVisitor.cpp in Sources */,
-				001DFED1065AA036003310BF /* Registry.cpp in Sources */,
-				001DFED3065AA036003310BF /* RoadRecords.cpp in Sources */,
-				001DFED5065AA036003310BF /* SwitchRecord.cpp in Sources */,
-				001DFED7065AA036003310BF /* TextureMappingPaletteRecord.cpp in Sources */,
-				001DFED9065AA036003310BF /* TexturePaletteRecord.cpp in Sources */,
-				001DFEDB065AA036003310BF /* TransformationRecords.cpp in Sources */,
-				001DFEDD065AA036003310BF /* UnknownRecord.cpp in Sources */,
-				001DFEDF065AA036003310BF /* UVListRecord.cpp in Sources */,
-				001DFEE1065AA036003310BF /* VertexPoolRecords.cpp in Sources */,
-				008F449F06CC00C100F4220C /* LightPointSystemRecord.cpp in Sources */,
-				00E281A607676B93005AEE61 /* FindExternalModelVisitor.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		001DFFCC065AA472003310BF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -17833,13 +17416,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00A15368084FDE50000150AD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		00C0CABE062651A40091ED7C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -17881,13 +17457,6 @@
 			files = (
 				5BC1913A0C15F7AE002CF5BC /* osgviewerSDL.cpp in Sources */,
 				5BC1913C0C15F7AE002CF5BC /* SDLMainForMacOSX.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00D3F0E00920182C00817AAD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18377,31 +17946,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0007BA3406C19B6900C884E1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE117FB205D63B3800EB53E5 /* osg */;
-			targetProxy = 001D06DD065AB7A5003310BF /* PBXContainerItemProxy */;
-		};
-		0007BA3506C19B6900C884E1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE11849905D7126100EB53E5 /* osgUtil */;
-			targetProxy = 001D06DF065AB7A5003310BF /* PBXContainerItemProxy */;
-		};
-		0007BA3606C19B6900C884E1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE11876905D75C2700EB53E5 /* osgText */;
-			targetProxy = 001D06E1065AB7A5003310BF /* PBXContainerItemProxy */;
-		};
-		0007BA3706C19B6900C884E1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE1188E605D764C400EB53E5 /* osgDB */;
-			targetProxy = 001D06E3065AB7A5003310BF /* PBXContainerItemProxy */;
-		};
-		0007BA3806C19B6900C884E1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00557CDF0624A947000A808A /* osgGA */;
-			targetProxy = 001D06E5065AB7A5003310BF /* PBXContainerItemProxy */;
-		};
 		001D0052065AA505003310BF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BE11849905D7126100EB53E5 /* osgUtil */;
@@ -18746,26 +18290,6 @@
 			isa = PBXTargetDependency;
 			target = BE1188E605D764C400EB53E5 /* osgDB */;
 			targetProxy = 001DFD06065A932A003310BF /* PBXContainerItemProxy */;
-		};
-		001DFE16065A9EC1003310BF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE1188E605D764C400EB53E5 /* osgDB */;
-			targetProxy = 001DFD06065A932A003310BF /* PBXContainerItemProxy */;
-		};
-		001DFEFB065AA0D7003310BF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE11849905D7126100EB53E5 /* osgUtil */;
-			targetProxy = 001DFEFA065AA0D7003310BF /* PBXContainerItemProxy */;
-		};
-		001DFEFD065AA0DB003310BF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 005580E00624BBB3000A808A /* osgSim */;
-			targetProxy = 001DFEFC065AA0DB003310BF /* PBXContainerItemProxy */;
-		};
-		001DFEFF065AA13B003310BF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE11876905D75C2700EB53E5 /* osgText */;
-			targetProxy = 001DFEFE065AA13B003310BF /* PBXContainerItemProxy */;
 		};
 		001DFFCA065AA472003310BF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -19606,11 +19130,6 @@
 			isa = PBXTargetDependency;
 			target = 00E2821307676FEB005AEE61 /* osgdb_stl */;
 			targetProxy = 00A150E6084E6B76000150AD /* PBXContainerItemProxy */;
-		};
-		00A15366084FDE50000150AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE1188E605D764C400EB53E5 /* osgDB */;
-			targetProxy = 001DFD06065A932A003310BF /* PBXContainerItemProxy */;
 		};
 		00A79F930BE69E1100F7C39E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -22190,96 +21709,6 @@
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgdb_dxf;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		001101F608736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_flt;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		001101F708736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_flt;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		001101F808736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_flt;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -30907,200 +30336,6 @@
 			};
 			name = Default;
 		};
-		0011039208736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		0011039308736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		0011039408736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		001103A208736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					../../../OpenThreads/Xcode/OpenThreads/build/Development,
-					../../../OpenThreads/Xcode/OpenThreads/build/Deployment,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "os-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = os;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		001103A308736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					../../../OpenThreads/Xcode/OpenThreads/build/Deployment,
-					../../../OpenThreads/Xcode/OpenThreads/build/Development,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "os-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = os;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		001103A408736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					../../../OpenThreads/Xcode/OpenThreads/build,
-					"$(HOME)/Library/Frameworks",
-					/Library/Frameworks,
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "os-Info.plist";
-				INSTALL_PATH = "$(USER_APPS_DIR)";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = os;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
 		001103AE08736A190015C576 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -31999,7 +31234,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgmultuiplecameras-Info.plist";
+				INFOPLIST_FILE = "osgcompositeviewer-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32030,7 +31265,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgmultuiplecameras-Info.plist";
+				INFOPLIST_FILE = "osgcompositeviewer-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32056,7 +31291,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgmultuiplecameras-Info.plist";
+				INFOPLIST_FILE = "osgcompositeviewer-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32797,7 +32032,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgsimpleviewerGLUT-Info.plist";
+				INFOPLIST_FILE = "osgviewerGLUT-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32828,7 +32063,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgsimpleviewerGLUT-Info.plist";
+				INFOPLIST_FILE = "osgviewerGLUT-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32854,7 +32089,7 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				HEADER_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "osgsimpleviewerGLUT-Info.plist";
+				INFOPLIST_FILE = "osgviewerGLUT-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -32970,7 +32205,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -32980,7 +32214,7 @@
 					/Library/Frameworks/SDL.framework/Headers,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgsimpleviewerSDL-Info.plist";
+				INFOPLIST_FILE = "osgviewerSDL-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -33007,7 +32241,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -33017,7 +32250,7 @@
 					/Library/Frameworks/SDL.framework/Headers,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgsimpleviewerSDL-Info.plist";
+				INFOPLIST_FILE = "osgviewerSDL-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -33040,7 +32273,6 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -33049,7 +32281,7 @@
 					/Library/Frameworks/SDL.framework/Headers,
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "osgsimpleviewerSDL-Info.plist";
+				INFOPLIST_FILE = "osgviewerSDL-Info.plist";
 				INSTALL_PATH = "$(USER_APPS_DIR)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -33062,68 +32294,6 @@
 				PRODUCT_NAME = osgviewerSDL;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		00D3F0E50920187300817AAD /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				EXECUTABLE_EXTENSION = so;
-				EXECUTABLE_PREFIX = "";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				MACH_O_TYPE = mh_bundle;
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				PRODUCT_NAME = osgdb___;
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		00D3F0E60920187300817AAD /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				EXECUTABLE_EXTENSION = so;
-				EXECUTABLE_PREFIX = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				MACH_O_TYPE = mh_bundle;
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				PRODUCT_NAME = osgdb___;
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		00D3F0E70920187300817AAD /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				EXECUTABLE_EXTENSION = so;
-				EXECUTABLE_PREFIX = "";
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				MACH_O_TYPE = mh_bundle;
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				PRODUCT_NAME = osgdb___;
-				ZERO_LINK = YES;
 			};
 			name = Default;
 		};
@@ -33798,16 +32968,6 @@
 				001101F208736A190015C576 /* Development */,
 				001101F308736A190015C576 /* Deployment */,
 				001101F408736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		001101F508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_flt" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				001101F608736A190015C576 /* Development */,
-				001101F708736A190015C576 /* Deployment */,
-				001101F808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
@@ -34792,26 +33952,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		0011039108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0011039208736A190015C576 /* Development */,
-				0011039308736A190015C576 /* Deployment */,
-				0011039408736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		001103A108736A190015C576 /* Build configuration list for PBXNativeTarget "os" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				001103A208736A190015C576 /* Development */,
-				001103A308736A190015C576 /* Deployment */,
-				001103A408736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
 		001103AD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgsimulation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -35035,16 +34175,6 @@
 		00C5AD570B0D6AE900E9BCA1 /* Build configuration list for PBXAggregateTarget "SDLdependentStuff" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		00D3F0E40920187300817AAD /* Build configuration list for PBXNativeTarget "osgdb___" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00D3F0E50920187300817AAD /* Development */,
-				00D3F0E60920187300817AAD /* Deployment */,
-				00D3F0E70920187300817AAD /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

@@ -1043,10 +1043,12 @@ Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
     
     if (contexts.empty()) return SingleThreaded;
 
+#if 0
 #ifdef _WIN32
     // temporary hack to disable multi-threading under Windows till we find good solutions for
     // crashes that users are seeing.
     return SingleThreaded;
+#endif
 #endif
 
     Cameras cameras;

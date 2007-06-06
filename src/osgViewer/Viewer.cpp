@@ -15,6 +15,7 @@
 #include <osg/DeleteHandler>
 #include <osgUtil/Optimizer>
 #include <osgUtil/GLObjectsVisitor>
+#include <osgDB/Registry>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 
@@ -590,21 +591,49 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
 };
 
 
-Viewer::Viewer():
-    _firstFrame(true),
-    _done(false),
-    _keyEventSetsDone(osgGA::GUIEventAdapter::KEY_Escape),
-    _quitEventSetsDone(true),
-//    _threadingModel(SingleThreaded),
-//    _threadingModel(CullDrawThreadPerContext),
-//    _threadingModel(CullThreadPerCameraDrawThreadPerContext),
-    _threadingModel(AutomaticSelection),
-    _threadsRunning(false),
-    _useMainThreadForRenderingTraversal(true),
-    _endBarrierPosition(AfterSwapBuffers),
-    _numWindowsOpenAtLastSetUpThreading(0),
-    _startTick(0)
+Viewer::Viewer()
 {
+    constructorInit();
+
+    osg::notify(osg::NOTICE)<<"Here22"<<std::endl;
+}
+
+Viewer::Viewer(osg::ArgumentParser& arguments)
+{
+    constructorInit();
+    
+    while (arguments.read("--SingleThreaded")) setThreadingModel(SingleThreaded);
+    while (arguments.read("--CullDrawThreadPerContext")) setThreadingModel(CullDrawThreadPerContext);
+    while (arguments.read("--DrawThreadPerContext")) setThreadingModel(DrawThreadPerContext);
+    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
+
+    osg::DisplaySettings::instance()->readCommandLine(arguments);
+    osgDB::readCommandLine(arguments);
+
+    std::string colorStr;
+    while (arguments.read("--clear-color",colorStr))
+    {
+        float r, g, b;
+        float a = 1.0f;
+        int cnt = sscanf( colorStr.c_str(), "%f,%f,%f,%f", &r, &g, &b, &a );
+        if( cnt==3 || cnt==4 ) getCamera()->setClearColor( osg::Vec4(r,g,b,a) );
+        else osg::notify(osg::WARN)<<"Invalid clear color \""<<colorStr<<"\""<<std::endl;
+    }
+}
+
+void Viewer::constructorInit()
+{
+    _firstFrame = true;
+    _done = false;
+    _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
+    _quitEventSetsDone = true;
+    _threadingModel = AutomaticSelection;
+    _threadsRunning = false;
+    _useMainThreadForRenderingTraversal = true;
+    _endBarrierPosition = AfterSwapBuffers;
+    _numWindowsOpenAtLastSetUpThreading = 0;
+    _startTick = 0;
+
     _frameStamp = new osg::FrameStamp;
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);

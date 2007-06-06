@@ -61,6 +61,8 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    osgViewer::Viewer viewer(arguments);
+    
     // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
@@ -74,8 +76,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    osgViewer::Viewer viewer;
-    
     // set up the camera manipulators.
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
@@ -119,11 +119,6 @@ int main(int argc, char** argv)
 
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
-
-    while (arguments.read("--SingleThreaded")) viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
-    while (arguments.read("--CullDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
-    while (arguments.read("--DrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
-    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
 
     unsigned int screenNum;
     while (arguments.read("--screen",screenNum))

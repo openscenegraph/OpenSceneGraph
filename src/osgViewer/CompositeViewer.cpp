@@ -15,21 +15,39 @@
 #include <osgUtil/GLObjectsVisitor>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/CompositeViewer>
+#include <osgDB/Registry>
 
 #include <osg/io_utils>
 
 using namespace osgViewer;
 
-CompositeViewer::CompositeViewer():
-    _firstFrame(true),
-    _done(false),
-    _keyEventSetsDone(osgGA::GUIEventAdapter::KEY_Escape),
-    _quitEventSetsDone(true),
-    _threadingModel(ThreadPerContext),
-    _endBarrierPosition(AfterSwapBuffers),
-    _numThreadsOnBarrier(0),
-    _startTick(0)
+CompositeViewer::CompositeViewer()
 {
+    constructorInit();
+}
+
+CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
+{
+    constructorInit();
+    
+    while (arguments.read("--SingleThreaded")) setThreadingModel(SingleThreaded);
+    while (arguments.read("--ThreadPerContext")) setThreadingModel(ThreadPerContext);
+
+    osg::DisplaySettings::instance()->readCommandLine(arguments);
+    osgDB::readCommandLine(arguments);
+}
+
+void CompositeViewer::constructorInit()
+{
+    _firstFrame = true;
+    _done = false;
+    _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
+    _quitEventSetsDone = true;
+    _threadingModel = ThreadPerContext;
+    _endBarrierPosition = AfterSwapBuffers;
+    _numThreadsOnBarrier = 0;
+    _startTick = 0;
+
     // make sure View is safe to reference multi-threaded.
     setThreadSafeRefUnref(true);
 

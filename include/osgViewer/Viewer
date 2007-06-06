@@ -14,9 +14,11 @@
 #ifndef OSGVIEWER_Viewer
 #define OSGVIEWER_Viewer 1
 
+#include <osg/ArgumentParser>
+#include <osgGA/EventVisitor>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/View>
-#include <osgGA/EventVisitor>
+
 
 namespace osgViewer {
 
@@ -26,6 +28,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
     public:
 
         Viewer();
+
+        Viewer(osg::ArgumentParser& arguments);
+
         virtual ~Viewer();
         
         /** Get whether at least of one of this viewers windows are realized.*/
@@ -174,6 +179,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     protected:
+    
+        void constructorInit();
     
         void checkWindowStatus();
         

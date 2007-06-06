@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ArgumentParser>
 #include <osg/Camera>
 #include <osg/FrameStamp>
 #include <osg/GraphicsThread>
@@ -46,6 +47,11 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CompositeViewer,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::ArgumentParser &, arguments,
+	               Properties::NON_EXPLICIT,
+	               ____CompositeViewer__osg_ArgumentParser_R1,
 	               "",
 	               "");
 	I_Method1(void, addView, IN, osgViewer::View *, view,
@@ -273,6 +279,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __void__setUpRenderingSupport,
 	          "Set up the Operations to render the various viewer cameras on the viewers graphics windows. ",
 	          "");
+	I_ProtectedMethod0(void, constructorInit,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__constructorInit,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, init,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
+#include <osg/ArgumentParser>
 #include <osg/Camera>
 #include <osg/FrameStamp>
 #include <osg/GraphicsThread>
@@ -53,6 +54,11 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::ArgumentParser &, arguments,
+	               Properties::NON_EXPLICIT,
+	               ____Viewer__osg_ArgumentParser_R1,
 	               "",
 	               "");
 	I_Method0(bool, isRealized,
@@ -275,6 +281,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this viewer. ",
 	          "");
+	I_ProtectedMethod0(void, constructorInit,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__constructorInit,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, checkWindowStatus,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

@@ -1021,6 +1021,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _destroying(false)
 {
     _traits = traits;
+    setCursor( LeftArrowCursor);
 
     init();
     
@@ -1772,6 +1773,89 @@ void GraphicsWindowWin32::useCursor( bool cursorOn )
     _traits->useCursor = cursorOn;
 }
 
+void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
+{
+    HCURSOR newCursor = getOrCreateCursor( mouseCursor);
+    if (newCursor == _currentCursor) return;
+
+    _currentCursor = newCursor;
+    _traits->useCursor = (_currentCursor != NULL);
+}
+
+HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
+{
+    std::map<MouseCursor,HCURSOR>::iterator i = _mouseCursorMap.find(mouseCursor);
+    if (i != _mouseCursorMap.end()) return i->second;
+
+    switch (mouseCursor) {
+    case NoCursor:
+        _mouseCursorMap[mouseCursor] = NULL;
+    break;
+    case RightArrowCursor:
+    _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_ARROW);
+        break;
+    case LeftArrowCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_ARROW);
+        break;
+    case InfoCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZEALL);
+        break;
+    case DestroyCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_NO );
+        break;
+    case HelpCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_HELP );
+        break;
+    case CycleCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_NO );
+        break;
+    case SprayCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZEALL );
+        break;
+    case WaitCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_WAIT);
+        break;
+    case TextCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_IBEAM );
+        break;
+    case CrosshairCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_CROSS );
+        break;
+    case UpDownCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENS );
+        break;
+    case LeftRightCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZEWE );
+        break;
+    case TopSideCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_UPARROW );
+        break;
+    case BottomSideCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_UPARROW );
+        break;
+    case LeftSideCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZEWE);
+        break;
+    case RightSideCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZEWE );
+        break;
+    case TopLeftCorner:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENWSE );
+        break;
+    case TopRightCorner:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENESW );
+        break;
+    case BottomRightCorner:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENWSE );
+        break;
+    case BottomLeftCorner:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENESW );
+        break;
+    }
+    
+    return _mouseCursorMap[mouseCursor];
+}
+
 void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )
 {
     modifierMask = 0;
@@ -2044,9 +2128,10 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         ///////////////////
         case WM_SETCURSOR :
         ///////////////////
-
-            if (_traits->useCursor) return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
-            ::SetCursor(NULL);
+            if (_traits->useCursor) 
+                ::SetCursor( _currentCursor);
+            else
+                ::SetCursor(NULL);
             return TRUE;
 
         /////////////////

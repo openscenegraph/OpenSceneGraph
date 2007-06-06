@@ -79,7 +79,7 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h> // handy for gluErrorString
 
-#include <osgViewer/SimpleViewer>
+#include "SimpleViewer"
 #include <osgGA/TrackballManipulator>
 // Needed to explicitly typecast keys to the OSG type
 #include <osgGA/GUIEventAdapter>

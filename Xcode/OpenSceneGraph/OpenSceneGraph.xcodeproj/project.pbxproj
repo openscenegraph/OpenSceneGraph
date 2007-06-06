@@ -1868,11 +1868,9 @@
 		00FB20FA0B015CF20052DD79 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00FB20FB0B015CF20052DD79 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		00FB20FC0B015CF20052DD79 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004099300924CC7D009ADD90 /* OpenThreads.framework */; };
-		00FB21140B015F4C0052DD79 /* SimpleViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FB21110B015F4B0052DD79 /* SimpleViewer.cpp */; };
 		00FB21150B015F4C0052DD79 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FB21120B015F4B0052DD79 /* Version.cpp */; };
 		00FB211B0B01603A0052DD79 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = 00FB21170B0160390052DD79 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
 		00FB211C0B01603A0052DD79 /* GraphicsWindow in Headers */ = {isa = PBXBuildFile; fileRef = 00FB21180B0160390052DD79 /* GraphicsWindow */; settings = {ATTRIBUTES = (Public, ); }; };
-		00FB211D0B01603A0052DD79 /* SimpleViewer in Headers */ = {isa = PBXBuildFile; fileRef = 00FB21190B0160390052DD79 /* SimpleViewer */; settings = {ATTRIBUTES = (Public, ); }; };
 		00FB211E0B01603A0052DD79 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 00FB211A0B01603A0052DD79 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
 		00FB21310B0163770052DD79 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00FB21320B0163820052DD79 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
@@ -1881,6 +1879,8 @@
 		00FB21590B0166460052DD79 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		00FB215A0B0166600052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		00FB21660B0168960052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		5B653AEB0C16C8F1002B54A3 /* SimpleViewer in Resources */ = {isa = PBXBuildFile; fileRef = 5B653AE90C16C8F0002B54A3 /* SimpleViewer */; };
+		5B653AEC0C16C8F1002B54A3 /* SimpleViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B653AEA0C16C8F1002B54A3 /* SimpleViewer.cpp */; };
 		5BC1910B0C15F462002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
 		5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910D0C15F48C002CF5BC /* Hint.cpp */; };
 		5BC1910F0C15F4AD002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
@@ -2318,8 +2318,6 @@
 		D4C6F0290B8309D40052E667 /* ExtendedTypeInfo in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F0270B8309D40052E667 /* ExtendedTypeInfo */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F02A0B8309D40052E667 /* type_traits in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F0280B8309D40052E667 /* type_traits */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F02C0B8309ED0052E667 /* Reflector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F02B0B8309ED0052E667 /* Reflector.cpp */; };
-		D4C6F02F0B830A0E0052E667 /* HelpHandler in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F02D0B830A0D0052E667 /* HelpHandler */; settings = {ATTRIBUTES = (Public, ); }; };
-		D4C6F0300B830A0E0052E667 /* StatsHandler in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F02E0B830A0E0052E667 /* StatsHandler */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F0330B830A1E0052E667 /* HelpHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F0310B830A1E0052E667 /* HelpHandler.cpp */; };
 		D4C6F0340B830A1E0052E667 /* StatsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F0320B830A1E0052E667 /* StatsHandler.cpp */; };
 		D4C6F0390B830A4B0052E667 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -5568,7 +5566,7 @@
 		00C0CAC1062651A40091ED7C /* osgdb_freetype.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_freetype.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C0CAE90626525D0091ED7C /* osgdb_osgText.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_osgText.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59D340B0926A800E9BCA1 /* osgviewerGLUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerGLUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		00C59D630B092D3B00E9BCA1 /* osgviewerCocoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59D630B092D3B00E9BCA1 /* osgviewerCocoa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = osgviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59DA90B09343B00E9BCA1 /* osgviewerSDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerSDL.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00CE2D30065BCCE7003C8656 /* CoordinateSystemNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CoordinateSystemNode.cpp; path = ../../src/osg/CoordinateSystemNode.cpp; sourceTree = SOURCE_ROOT; };
 		00CE2D3C065BCD25003C8656 /* CoordinateSystemNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = CoordinateSystemNode; path = ../../include/osg/CoordinateSystemNode; sourceTree = SOURCE_ROOT; };
@@ -5680,14 +5678,14 @@
 		00FB206C0B013D200052DD79 /* IntersectionVisitor */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = IntersectionVisitor; path = ../../include/osgUtil/IntersectionVisitor; sourceTree = SOURCE_ROOT; };
 		00FB20770B0141170052DD79 /* IntersectionVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = IntersectionVisitor.cpp; path = ../../src/osgUtil/IntersectionVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		00FB21010B015CF20052DD79 /* osgViewer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgViewer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		00FB21110B015F4B0052DD79 /* SimpleViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleViewer.cpp; sourceTree = "<group>"; };
 		00FB21120B015F4B0052DD79 /* Version.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Version.cpp; sourceTree = "<group>"; };
 		00FB21170B0160390052DD79 /* Export */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Export; sourceTree = "<group>"; };
 		00FB21180B0160390052DD79 /* GraphicsWindow */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = GraphicsWindow; sourceTree = "<group>"; };
-		00FB21190B0160390052DD79 /* SimpleViewer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SimpleViewer; sourceTree = "<group>"; };
 		00FB211A0B01603A0052DD79 /* Version */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
 		089C1667FE841158C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		5B653AE90C16C8F0002B54A3 /* SimpleViewer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SimpleViewer; sourceTree = "<group>"; };
+		5B653AEA0C16C8F1002B54A3 /* SimpleViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleViewer.cpp; sourceTree = "<group>"; };
 		5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerEventHandlers.cpp; sourceTree = "<group>"; };
 		5BC1910D0C15F48C002CF5BC /* Hint.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Hint.cpp; sourceTree = "<group>"; };
 		5BC191100C15F4D4002CF5BC /* Hint */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Hint; sourceTree = "<group>"; };
@@ -6084,8 +6082,6 @@
 		D4C6F0270B8309D40052E667 /* ExtendedTypeInfo */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ExtendedTypeInfo; sourceTree = "<group>"; };
 		D4C6F0280B8309D40052E667 /* type_traits */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = type_traits; sourceTree = "<group>"; };
 		D4C6F02B0B8309ED0052E667 /* Reflector.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Reflector.cpp; sourceTree = "<group>"; };
-		D4C6F02D0B830A0D0052E667 /* HelpHandler */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = HelpHandler; sourceTree = "<group>"; };
-		D4C6F02E0B830A0E0052E667 /* StatsHandler */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = StatsHandler; sourceTree = "<group>"; };
 		D4C6F0310B830A1E0052E667 /* HelpHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = HelpHandler.cpp; sourceTree = "<group>"; };
 		D4C6F0320B830A1E0052E667 /* StatsHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = StatsHandler.cpp; sourceTree = "<group>"; };
 		D4C6F0510B830C700052E667 /* ColorMask.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ColorMask.cpp; sourceTree = "<group>"; };
@@ -9545,7 +9541,7 @@
 				5BC191150C15F59C002CF5BC /* osgcompositeviewer.cpp */,
 			);
 			name = osgcompositeviewer;
-			path = ../../examples/osgmultiplecameras;
+			path = ../../examples/osgcompositeviewer;
 			sourceTree = SOURCE_ROOT;
 		};
 		006CEA1E0921AF9B00985402 /* osgparametric */ = {
@@ -9889,7 +9885,7 @@
 				5BC191350C15F734002CF5BC /* osgviewerGLUT.cpp */,
 			);
 			name = osgviewerGLUT;
-			path = ../../examples/osgsimpleviewerGLUT;
+			path = ../../examples/osgviewerCocoa;
 			sourceTree = SOURCE_ROOT;
 		};
 		00C59DBA0B0935E700E9BCA1 /* osgviewerSDL */ = {
@@ -9900,12 +9896,14 @@
 				5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */,
 			);
 			name = osgviewerSDL;
-			path = ../../examples/osgsimpleviewerSDL;
+			path = ../../examples/osgviewerSDL;
 			sourceTree = SOURCE_ROOT;
 		};
 		00C59ED50B09597100E9BCA1 /* osgviewerCocoa */ = {
 			isa = PBXGroup;
 			children = (
+				5B653AE90C16C8F0002B54A3 /* SimpleViewer */,
+				5B653AEA0C16C8F1002B54A3 /* SimpleViewer.cpp */,
 				5BC191270C15F6B2002CF5BC /* English.lproj */,
 				5BC1912C0C15F6B3002CF5BC /* Info.plist */,
 				5BC1912D0C15F6B3002CF5BC /* main.m */,
@@ -9913,7 +9911,7 @@
 				5BC1912F0C15F6B4002CF5BC /* SimpleViewerCocoa.mm */,
 			);
 			name = osgviewerCocoa;
-			path = ../../examples/osgsimpleviewerCocoa;
+			path = ../../examples/osgviewerCocoa;
 			sourceTree = SOURCE_ROOT;
 		};
 		00E281E707676DF6005AEE61 /* net */ = {
@@ -10152,7 +10150,6 @@
 				D48EC64D0B4EBF2F000E05A4 /* Scene.cpp */,
 				D48EC64E0B4EBF2F000E05A4 /* View.cpp */,
 				D48EC64F0B4EBF2F000E05A4 /* Viewer.cpp */,
-				00FB21110B015F4B0052DD79 /* SimpleViewer.cpp */,
 				00FB21120B015F4B0052DD79 /* Version.cpp */,
 			);
 			name = osgViewer;
@@ -10163,8 +10160,6 @@
 			isa = PBXGroup;
 			children = (
 				5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */,
-				D4C6F02D0B830A0D0052E667 /* HelpHandler */,
-				D4C6F02E0B830A0E0052E667 /* StatsHandler */,
 				D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */,
 				D48EC6550B4EBFCD000E05A4 /* CompositeViewer */,
 				D48EC6570B4EBFCD000E05A4 /* Scene */,
@@ -10172,7 +10167,6 @@
 				D48EC6590B4EBFCD000E05A4 /* Viewer */,
 				00FB21170B0160390052DD79 /* Export */,
 				00FB21180B0160390052DD79 /* GraphicsWindow */,
-				00FB21190B0160390052DD79 /* SimpleViewer */,
 				00FB211A0B01603A0052DD79 /* Version */,
 			);
 			name = osgViewer;
@@ -12232,15 +12226,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Headers */,
-				D4C6F02F0B830A0E0052E667 /* HelpHandler in Headers */,
-				D4C6F0300B830A0E0052E667 /* StatsHandler in Headers */,
 				D48EC65A0B4EBFCE000E05A4 /* CompositeViewer in Headers */,
 				D48EC65C0B4EBFCE000E05A4 /* Scene in Headers */,
 				D48EC65D0B4EBFCE000E05A4 /* View in Headers */,
 				D48EC65E0B4EBFCE000E05A4 /* Viewer in Headers */,
 				00FB211B0B01603A0052DD79 /* Export in Headers */,
 				00FB211C0B01603A0052DD79 /* GraphicsWindow in Headers */,
-				00FB211D0B01603A0052DD79 /* SimpleViewer in Headers */,
 				00FB211E0B01603A0052DD79 /* Version in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -15907,6 +15898,7 @@
 			files = (
 				5BC191300C15F6B4002CF5BC /* English.lproj in Resources */,
 				5BC191310C15F6B4002CF5BC /* Info.plist in Resources */,
+				5B653AEB0C16C8F1002B54A3 /* SimpleViewer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17448,6 +17440,7 @@
 			files = (
 				5BC191320C15F6B4002CF5BC /* main.m in Sources */,
 				5BC191340C15F6B4002CF5BC /* SimpleViewerCocoa.mm in Sources */,
+				5B653AEC0C16C8F1002B54A3 /* SimpleViewer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17657,7 +17650,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00FB21140B015F4C0052DD79 /* SimpleViewer.cpp in Sources */,
 				00FB21150B015F4C0052DD79 /* Version.cpp in Sources */,
 				D48EC6500B4EBF2F000E05A4 /* CompositeViewer.cpp in Sources */,
 				D48EC6520B4EBF2F000E05A4 /* Scene.cpp in Sources */,
@@ -32127,8 +32119,10 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
+					"-bind_at_load",
 				);
 				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
 				PRODUCT_NAME = osgviewerCocoa;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -32159,8 +32153,10 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
+					"-bind_at_load",
 				);
 				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
 				PRODUCT_NAME = osgviewerCocoa;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -32186,8 +32182,10 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
+					"-bind_at_load",
 				);
 				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
 				PRODUCT_NAME = osgviewerCocoa;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";

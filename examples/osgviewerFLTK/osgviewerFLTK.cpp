@@ -5,7 +5,7 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/CompositeViewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 

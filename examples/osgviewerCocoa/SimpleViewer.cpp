@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgViewer/SimpleViewer>
+#include "SimpleViewer"
 
 using namespace osgViewer;
 

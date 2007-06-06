@@ -4,7 +4,7 @@
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 

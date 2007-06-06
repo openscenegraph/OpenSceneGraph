@@ -12,7 +12,7 @@
 #include "osgviewerWX.h"
 
 
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 #include <wx/image.h>

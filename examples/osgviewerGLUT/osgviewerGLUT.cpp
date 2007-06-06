@@ -14,7 +14,7 @@
 #endif
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 

@@ -14,7 +14,7 @@
 #include <osgGA/StateSetManipulator>
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgShadow/ShadowedScene>
 #include <osgShadow/ShadowVolume>

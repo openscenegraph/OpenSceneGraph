@@ -14,7 +14,7 @@
 #include <osgText/FadeText>
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>

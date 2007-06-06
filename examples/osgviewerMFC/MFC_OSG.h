@@ -1,7 +1,7 @@
 #pragma once
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/api/win32/GraphicsWindowWin32>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/KeySwitchMatrixManipulator>

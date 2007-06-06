@@ -13,7 +13,7 @@
 #include <osgUtil/Optimizer>
 
 #include <osgViewer/Viewer>
-#include <osgViewer/StatsHandler>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <iostream>
 

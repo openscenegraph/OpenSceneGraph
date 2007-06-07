@@ -5265,7 +5265,7 @@
 		006CE74109218E6800985402 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		006CE74209218E6800985402 /* CameraView.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = CameraView.cpp; sourceTree = "<group>"; };
 		006CE74309218E6900985402 /* CameraView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CameraView.h; sourceTree = "<group>"; };
-		006CE90B0921A83D00985402 /* osgcamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgcamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		006CE90B0921A83D00985402 /* osgcamera.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = osgcamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		006CE9130921AA0100985402 /* osgcamera.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgcamera.cpp; sourceTree = "<group>"; };
 		006CE9390921AA9300985402 /* osgdelaunay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgdelaunay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		006CE95B0921AB8300985402 /* osgdepthpartition.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgdepthpartition.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6198,7 +6198,7 @@
 		D47A06CC0B83406700E19024 /* Translate2DDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Translate2DDragger.cpp; sourceTree = "<group>"; };
 		D47A06CD0B83406700E19024 /* TranslateAxisDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslateAxisDragger.cpp; sourceTree = "<group>"; };
 		D47A06CE0B83406700E19024 /* TranslatePlaneDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslatePlaneDragger.cpp; sourceTree = "<group>"; };
-		D47A070A0B83413800E19024 /* osgmanipulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgmanipulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D47A070A0B83413800E19024 /* osgshadow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgshadow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A07120B83417900E19024 /* osgmanipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmanipulator.cpp; sourceTree = "<group>"; };
 		D48EC64B0B4EBF2E000E05A4 /* CompositeViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeViewer.cpp; sourceTree = "<group>"; };
 		D48EC64D0B4EBF2F000E05A4 /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
@@ -10472,7 +10472,7 @@
 				D4C6F2610B8316100052E667 /* osgShadow.framework */,
 				D4C6F2AD0B8317AB0052E667 /* osgshadow.app */,
 				D47A06810B833F6E00E19024 /* osgManipulator.framework */,
-				D47A070A0B83413800E19024 /* osgmanipulator.app */,
+				D47A070A0B83413800E19024 /* osgshadow.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -15630,7 +15630,7 @@
 			);
 			name = osgmanipulator;
 			productName = osgtext;
-			productReference = D47A070A0B83413800E19024 /* osgmanipulator.app */;
+			productReference = D47A070A0B83413800E19024 /* osgshadow.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D4C6F2320B8316100052E667 /* osgShadow */ = {
@@ -32783,6 +32783,10 @@
 					0x2049a000,
 					"-framework",
 					OpenThreads,
+					"-framework",
+					Carbon,
+					"-framework",
+					AGL,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgViewer;

@@ -269,7 +269,8 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 //	osg::setNotifyLevel( osg::DEBUG_FP );
 	Viewer = new osgViewer::Viewer;
 	graphicsWindow = Viewer->setUpViewerAsEmbeddedInWindow(0,0,800,800);
-
+	// Builts in Stats handler
+	Viewer->addEventHandler(new osgViewer::StatsHandler);
 #ifdef VIEWER_USE_SHARED_CONTEXTS
 	// Workaround: osgViewer::Viewer automatically increments its context ID values.
 	// Since we're using a shared context, we want all Viewer's to use the same context ID.
@@ -282,6 +283,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 	Viewer->getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 	// Use a trackball manipulator...matches nicely with the Mighty Mouse Scrollball.
 	Viewer->setCameraManipulator(new osgGA::TrackballManipulator);
+	
 }
 
 - (void) initAnimationTimer

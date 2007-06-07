@@ -119,17 +119,17 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
 	          Properties::VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,
-	          "",
+	          "Set the scene graph that the View will use. ",
 	          "");
 	I_Method0(osg::Node *, getSceneData,
 	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getSceneData,
-	          "",
+	          "Get the View's scene graph. ",
 	          "");
 	I_Method0(const osg::Node *, getSceneData,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Node_P1__getSceneData,
-	          "",
+	          "Get the const View's scene graph. ",
 	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
@@ -149,38 +149,43 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator,
 	          Properties::NON_VIRTUAL,
 	          __void__setCameraManipulator__osgGA_MatrixManipulator_P1,
-	          "",
+	          "Set the CameraManipulator that moves the View's master Camera position in response to events. ",
 	          "");
 	I_Method0(osgGA::MatrixManipulator *, getCameraManipulator,
 	          Properties::NON_VIRTUAL,
 	          __osgGA_MatrixManipulator_P1__getCameraManipulator,
-	          "",
+	          "Get the View's CameraManipulator. ",
 	          "");
 	I_Method0(const osgGA::MatrixManipulator *, getCameraManipulator,
 	          Properties::NON_VIRTUAL,
 	          __C5_osgGA_MatrixManipulator_P1__getCameraManipulator,
-	          "",
+	          "Get the const View's CameraManipulator. ",
 	          "");
+	I_Method0(void, home,
+	          Properties::NON_VIRTUAL,
+	          __void__home,
+	          "Set the view to the CameraManipulator's home position, if non is attached home() is does nothing. ",
+	          "Note, to set the home position use getCamaraManipulator()->setHomePosition(...). ");
 	I_Method1(void, addEventHandler, IN, osgGA::GUIEventHandler *, eventHandler,
 	          Properties::NON_VIRTUAL,
 	          __void__addEventHandler__osgGA_GUIEventHandler_P1,
-	          "",
+	          "Add an EventHandler that adds handling of events to the View. ",
 	          "");
 	I_Method0(osgViewer::View::EventHandlers &, getEventHandlers,
 	          Properties::NON_VIRTUAL,
 	          __EventHandlers_R1__getEventHandlers,
-	          "",
+	          "Get the View's list of EventHandlers. ",
 	          "");
 	I_Method0(const osgViewer::View::EventHandlers &, getEventHandlers,
 	          Properties::NON_VIRTUAL,
 	          __C5_EventHandlers_R1__getEventHandlers,
-	          "",
+	          "Get the const View's list of EventHandlers. ",
 	          "");
 	I_Method1(void, setCoordinateSystemNodePath, IN, const osg::NodePath &, nodePath,
 	          Properties::NON_VIRTUAL,
 	          __void__setCoordinateSystemNodePath__C5_osg_NodePath_R1,
 	          "Set the NodePath to any active CoordinateSystemNode present in the Scene. ",
-	          "");
+	          "The CoordinateSystemNode path is used to help applications and CamaraManipualtors handle geocentric coordinates systems, such as known which way is the local up at any position on the a whole earth. ");
 	I_Method0(osg::NodePath, getCoordinateSystemNodePath,
 	          Properties::NON_VIRTUAL,
 	          __osg_NodePath__getCoordinateSystemNodePath,

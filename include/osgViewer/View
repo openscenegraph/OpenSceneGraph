@@ -66,26 +66,53 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         Scene* getScene() { return _scene.get(); }
         const Scene* getScene() const { return _scene.get(); }
 
+        /** Set the scene graph that the View will use.*/
         virtual void setSceneData(osg::Node* node);
+
+        /** Get the View's scene graph.*/
         osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }
+
+        /** Get the const View's scene graph.*/
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
 
+        /* Set the EventQueue that View uses to intregrate external non window related events.*/
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
+
+        /* Get the View's EventQueue.*/
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
+
+        /* Get the const View's EventQueue.*/
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
+        /** Set the CameraManipulator that moves the View's master Camera position in response to events.*/
         void setCameraManipulator(osgGA::MatrixManipulator* manipulator);
+
+        /** Get the View's CameraManipulator.*/
         osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
+
+        /** Get the const View's CameraManipulator.*/
         const osgGA::MatrixManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
+
+        /** Set the view to the CameraManipulator's home position, if non is attached home() is does nothing.
+          * Note, to set the home position use getCamaraManipulator()->setHomePosition(...). */
+        void home();
+        
 
         typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
         
+        /** Add an EventHandler that adds handling of events to the View.*/
         void addEventHandler(osgGA::GUIEventHandler* eventHandler);
+
+        /** Get the View's list of EventHandlers.*/
         EventHandlers& getEventHandlers() { return _eventHandlers; }
+
+        /** Get the const View's list of EventHandlers.*/
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
         
 
-        /** Set the NodePath to any active CoordinateSystemNode present in the Scene.*/
+        /** Set the NodePath to any active CoordinateSystemNode present in the Scene.
+          * The CoordinateSystemNode path is used to help applications and CamaraManipualtors handle geocentric coordinates systems,
+          * such as known which way is the local up at any position on the a whole earth. */
         void setCoordinateSystemNodePath(const osg::NodePath& nodePath);
 
         /** Get the NodePath to any active CoordinateSystemNode present in the Scene.*/

@@ -125,7 +125,6 @@ BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
 	I_EnumLabel(osgViewer::StatsHandler::NO_STATS);
 	I_EnumLabel(osgViewer::StatsHandler::FRAME_RATE);
 	I_EnumLabel(osgViewer::StatsHandler::VIEWER_STATS);
-	I_EnumLabel(osgViewer::StatsHandler::SCENE_STATS);
 	I_EnumLabel(osgViewer::StatsHandler::LAST);
 END_REFLECTOR
 

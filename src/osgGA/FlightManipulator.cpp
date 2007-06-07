@@ -67,7 +67,7 @@ void FlightManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     _velocity = 0.0;
 
     us.requestRedraw();
-
+    us.requestContinuousUpdate(false);
     us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
     flushMouseEventStack();

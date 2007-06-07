@@ -50,12 +50,14 @@ void TrackballManipulator::home(double /*currentTime*/)
 {
     if (getAutoComputeHomePosition()) computeHomePosition();
     computePosition(_homeEye, _homeCenter, _homeUp);
+    _thrown = false;
 }
 
 void TrackballManipulator::home(const GUIEventAdapter& ea ,GUIActionAdapter& us)
 {
     home(ea.getTime());
     us.requestRedraw();
+    us.requestContinuousUpdate(false);
 }
 
 
@@ -155,8 +157,6 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                 flushMouseEventStack();
                 _thrown = false;
                 home(ea,us);
-                us.requestRedraw();
-                us.requestContinuousUpdate(false);
                 return true;
             }
             return false;

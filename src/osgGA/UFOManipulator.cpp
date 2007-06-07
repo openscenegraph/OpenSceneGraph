@@ -162,9 +162,12 @@ void UFOManipulator::init(const GUIEventAdapter&, GUIActionAdapter&)
     _stop();
 }
 
-void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&) 
+void UFOManipulator::home(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us) 
 {
     home(ea.getTime());
+    us.requestRedraw();
+    us.requestContinuousUpdate(false);
+
 }
 
 void UFOManipulator::home(double) 

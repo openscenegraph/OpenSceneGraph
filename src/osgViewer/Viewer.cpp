@@ -594,8 +594,6 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
 Viewer::Viewer()
 {
     constructorInit();
-
-    osg::notify(osg::NOTICE)<<"Here22"<<std::endl;
 }
 
 Viewer::Viewer(osg::ArgumentParser& arguments)

@@ -480,6 +480,12 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 
 
 
+	I_ProtectedMethod0(void, destruct,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__destruct,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(osgDB::ReaderWriter::ReadResult, read, IN, const osgDB::Registry::ReadFunctor &, readFunctor,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

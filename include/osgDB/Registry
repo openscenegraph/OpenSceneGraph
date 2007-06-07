@@ -438,6 +438,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         };
 
    protected:
+   
+        void destruct();
+   
         // forward declare helper classes
         struct ReadObjectFunctor;
         struct ReadImageFunctor;

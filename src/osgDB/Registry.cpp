@@ -121,7 +121,8 @@ Registry* Registry::instance(bool erase)
 {
     static ref_ptr<Registry> s_registry = new Registry;
     if (erase) 
-    {
+    {   
+        s_registry->destruct();
         s_registry = 0;
     }
     return s_registry.get(); // will return NULL on erase
@@ -241,6 +242,11 @@ Registry::Registry()
 
 
 Registry::~Registry()
+{
+    destruct();
+}
+
+void Registry::destruct()
 {
     // switch off the pager and its associated thread before we clean up 
     // rest of the Registry.

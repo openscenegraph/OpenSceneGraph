@@ -150,7 +150,8 @@ void sizeOfTest()
 /// versus
 ///  (mat(q1)*mat(q2)*scale).getRotate()
 /// for a range of rotations
-void testGetQuatFromMatrix() {
+void testGetQuatFromMatrix(const osg::Vec3d& scale) 
+{
     
     // Options
     
@@ -161,7 +162,7 @@ void testGetQuatFromMatrix() {
     // To not test with scale, use 1,1,1
     // Not sure if 0's or negative values are acceptable
     osg::Matrixd scalemat;
-    scalemat.makeScale(osg::Vec3d(0.9,0.5,0.1));
+    scalemat.makeScale(scale);
     
     // range of rotations
 #if 1
@@ -300,7 +301,7 @@ void testQuatRotate(const osg::Vec3d& from, const osg::Vec3d& to)
     std::cout<<"  from * M4x4(q_original) = "<<from * osg::Matrixd::rotate(q_original)<<std::endl;
 }
 
-void testQuat()
+void testQuat(const osg::Vec3d& quat_scale)
 {
     osg::Quat q1;
     q1.makeRotate(osg::DegreesToRadians(30.0),0.0f,0.0f,1.0f);
@@ -342,7 +343,7 @@ void testQuat()
     testQuatRotate(osg::Vec3d(0.0,0.0,-1.0),osg::Vec3d(0.0,0.0,1.0));
 
     // Test a range of rotations
-    testGetQuatFromMatrix();
+    testGetQuatFromMatrix(quat_scale);
 
     // This is a specific test case for a matrix containing scale and rotation
     osg::Matrix matrix(0.5, 0.0, 0.0, 0.0,
@@ -366,6 +367,8 @@ int main( int argc, char** argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options]");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("qt","Display qualified tests.");
+    arguments.getApplicationUsage()->addCommandLineOption("quat","Display extended quaternion tests.");
+    arguments.getApplicationUsage()->addCommandLineOption("quat_scaled sx sy sz","Display extended quaternion tests of pre scaled matrix.");
     arguments.getApplicationUsage()->addCommandLineOption("sizeof","Display sizeof tests.");
     arguments.getApplicationUsage()->addCommandLineOption("matrix","Display qualified tests.");
     arguments.getApplicationUsage()->addCommandLineOption("performance","Display qualified tests.");
@@ -388,6 +391,9 @@ int main( int argc, char** argv )
 
     bool printQuatTest = false; 
     while (arguments.read("quat")) printQuatTest = true; 
+
+    osg::Vec3d quat_scale(1.0,1.0,1.0); 
+    while (arguments.read("quat_scaled", quat_scale.x(), quat_scale.y(), quat_scale.z() )) printQuatTest = true; 
 
     bool performanceTest = false; 
     while (arguments.read("p") || arguments.read("performance")) performanceTest = true; 
@@ -412,7 +418,7 @@ int main( int argc, char** argv )
     
     if (printQuatTest)
     {
-        testQuat();
+        testQuat(quat_scale);
     }
 
 

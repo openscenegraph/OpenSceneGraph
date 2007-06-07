@@ -198,6 +198,7 @@ void DriveManipulator::home(const GUIEventAdapter& ea,GUIActionAdapter& us)
     _pitch = 0.0;
 
     us.requestRedraw();
+    us.requestContinuousUpdate(false);
 
     us.requestWarpPointer((ea.getXmin()+ea.getXmax())/2.0f,(ea.getYmin()+ea.getYmax())/2.0f);
 
@@ -362,8 +363,6 @@ bool DriveManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
             {
                 flushMouseEventStack();
                 home(ea,us);
-                us.requestRedraw();
-                us.requestContinuousUpdate(false);
                 return true;
             }
             else if (ea.getKey()=='q')

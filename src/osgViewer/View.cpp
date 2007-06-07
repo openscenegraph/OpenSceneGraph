@@ -183,6 +183,16 @@ void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
     }
 }
 
+void View::home()
+{
+    if (_cameraManipulator.valid())
+    {
+        osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
+        _cameraManipulator->home(*dummyEvent, *this);
+    }
+}
+
+
 void View::addEventHandler(osgGA::GUIEventHandler* eventHandler)
 { 
     _eventHandlers.push_back(eventHandler);

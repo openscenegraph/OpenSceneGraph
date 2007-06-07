@@ -111,12 +111,14 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             _switch->setValue(_viewerChildNum, true);
                             break;
                         }
+#if 0
                         case(SCENE_STATS):
                         {
                             _switch->setValue(_sceneChildNum, true);
                             _camera->setNodeMask(0xffffffff);
                             break;
                         }
+#endif
                         default:
                             break;
                     }
@@ -672,7 +674,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
         }
 
     }
-
+#if 0
     // scene stats
     {
         pos.x() = leftPos;
@@ -694,6 +696,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
         _sceneChildNum = _switch->getNumChildren();
         _switch->addChild(geode, false);
     }
+#endif    
 }
 
 osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera)

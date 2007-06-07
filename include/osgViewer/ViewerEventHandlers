@@ -77,8 +77,7 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
             NO_STATS = 0,
             FRAME_RATE = 1,
             VIEWER_STATS = 2,
-            SCENE_STATS = 3,
-            LAST = 4
+            LAST = 3
         };
         
         void setKeyEventTogglesOnScreenStats(int key) { _keyEventTogglesOnScreenStats = key; }

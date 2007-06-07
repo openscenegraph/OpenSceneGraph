@@ -1879,8 +1879,13 @@
 		00FB21590B0166460052DD79 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		00FB215A0B0166600052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		00FB21660B0168960052DD79 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
-		5B653AEB0C16C8F1002B54A3 /* SimpleViewer in Resources */ = {isa = PBXBuildFile; fileRef = 5B653AE90C16C8F0002B54A3 /* SimpleViewer */; };
-		5B653AEC0C16C8F1002B54A3 /* SimpleViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B653AEA0C16C8F1002B54A3 /* SimpleViewer.cpp */; };
+		5B05E7280C17EE2800B0EAD8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1912D0C15F6B3002CF5BC /* main.m */; };
+		5B05E7AD0C18079100B0EAD8 /* ViewerCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B653DC70C1745FF002B54A3 /* ViewerCocoa.h */; };
+		5B05E7AE0C18079100B0EAD8 /* ViewerCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */; };
+		5B653DD40C174AA0002B54A3 /* tree0.rgba in Resources */ = {isa = PBXBuildFile; fileRef = 5B653D390C171337002B54A3 /* tree0.rgba */; };
+		5B653DD50C174AA0002B54A3 /* lz.rgb in Resources */ = {isa = PBXBuildFile; fileRef = 5B653D290C171331002B54A3 /* lz.rgb */; };
+		5B653DE00C174E16002B54A3 /* lz.rgb in Resources */ = {isa = PBXBuildFile; fileRef = 5B653DDE0C174E15002B54A3 /* lz.rgb */; };
+		5B653DE10C174E16002B54A3 /* tree0.rgba in Resources */ = {isa = PBXBuildFile; fileRef = 5B653DDF0C174E16002B54A3 /* tree0.rgba */; };
 		5BC1910B0C15F462002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
 		5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910D0C15F48C002CF5BC /* Hint.cpp */; };
 		5BC1910F0C15F4AD002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
@@ -1890,9 +1895,6 @@
 		5BC191180C15F59D002CF5BC /* osgcompositeviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191150C15F59C002CF5BC /* osgcompositeviewer.cpp */; };
 		5BC191300C15F6B4002CF5BC /* English.lproj in Resources */ = {isa = PBXBuildFile; fileRef = 5BC191270C15F6B2002CF5BC /* English.lproj */; };
 		5BC191310C15F6B4002CF5BC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5BC1912C0C15F6B3002CF5BC /* Info.plist */; };
-		5BC191320C15F6B4002CF5BC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1912D0C15F6B3002CF5BC /* main.m */; };
-		5BC191330C15F6B4002CF5BC /* SimpleViewerCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC1912E0C15F6B3002CF5BC /* SimpleViewerCocoa.h */; };
-		5BC191340C15F6B4002CF5BC /* SimpleViewerCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1912F0C15F6B4002CF5BC /* SimpleViewerCocoa.mm */; };
 		5BC191360C15F735002CF5BC /* osgviewerGLUT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191350C15F734002CF5BC /* osgviewerGLUT.cpp */; };
 		5BC1913A0C15F7AE002CF5BC /* osgviewerSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191370C15F7AD002CF5BC /* osgviewerSDL.cpp */; };
 		5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */; };
@@ -5566,7 +5568,7 @@
 		00C0CAC1062651A40091ED7C /* osgdb_freetype.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_freetype.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C0CAE90626525D0091ED7C /* osgdb_osgText.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_osgText.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59D340B0926A800E9BCA1 /* osgviewerGLUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerGLUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		00C59D630B092D3B00E9BCA1 /* osgviewerCocoa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = osgviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59D630B092D3B00E9BCA1 /* osgviewerCocoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59DA90B09343B00E9BCA1 /* osgviewerSDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerSDL.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00CE2D30065BCCE7003C8656 /* CoordinateSystemNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CoordinateSystemNode.cpp; path = ../../src/osg/CoordinateSystemNode.cpp; sourceTree = SOURCE_ROOT; };
 		00CE2D3C065BCD25003C8656 /* CoordinateSystemNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = CoordinateSystemNode; path = ../../include/osg/CoordinateSystemNode; sourceTree = SOURCE_ROOT; };
@@ -5686,6 +5688,159 @@
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		5B653AE90C16C8F0002B54A3 /* SimpleViewer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SimpleViewer; sourceTree = "<group>"; };
 		5B653AEA0C16C8F1002B54A3 /* SimpleViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleViewer.cpp; sourceTree = "<group>"; };
+		5B653CC50C17130C002B54A3 /* afterescher.geo */ = {isa = PBXFileReference; lastKnownFileType = file; name = afterescher.geo; path = "/Users/martin/OpenSceneGraph-Data/afterescher.geo"; sourceTree = "<absolute>"; };
+		5B653CC60C17130D002B54A3 /* axes.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = axes.osg; path = "/Users/martin/OpenSceneGraph-Data/axes.osg"; sourceTree = "<absolute>"; };
+		5B653CC80C17130D002B54A3 /* a.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = a.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/a.png"; sourceTree = "<absolute>"; };
+		5B653CC90C17130E002B54A3 /* b.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = b.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/b.png"; sourceTree = "<absolute>"; };
+		5B653CCA0C17130E002B54A3 /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ball.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/ball.png"; sourceTree = "<absolute>"; };
+		5B653CCB0C17130E002B54A3 /* boy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = boy.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/boy.png"; sourceTree = "<absolute>"; };
+		5B653CCC0C17130F002B54A3 /* broach.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = broach.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/broach.png"; sourceTree = "<absolute>"; };
+		5B653CCD0C17130F002B54A3 /* c.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = c.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/c.png"; sourceTree = "<absolute>"; };
+		5B653CCE0C17130F002B54A3 /* farm.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = farm.JPG; path = "/Users/martin/OpenSceneGraph-Data/Catch/farm.JPG"; sourceTree = "<absolute>"; };
+		5B653CCF0C171310002B54A3 /* girl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = girl.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/girl.png"; sourceTree = "<absolute>"; };
+		5B653CD00C171310002B54A3 /* m.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = m.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/m.png"; sourceTree = "<absolute>"; };
+		5B653CD10C171311002B54A3 /* n.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = n.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/n.png"; sourceTree = "<absolute>"; };
+		5B653CD20C171311002B54A3 /* RockStar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RockStar.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/RockStar.png"; sourceTree = "<absolute>"; };
+		5B653CD30C171311002B54A3 /* s.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = s.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/s.png"; sourceTree = "<absolute>"; };
+		5B653CD40C171312002B54A3 /* sky1.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = sky1.JPG; path = "/Users/martin/OpenSceneGraph-Data/Catch/sky1.JPG"; sourceTree = "<absolute>"; };
+		5B653CD50C171312002B54A3 /* sky2.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = sky2.JPG; path = "/Users/martin/OpenSceneGraph-Data/Catch/sky2.JPG"; sourceTree = "<absolute>"; };
+		5B653CD60C171313002B54A3 /* sky3.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = sky3.JPG; path = "/Users/martin/OpenSceneGraph-Data/Catch/sky3.JPG"; sourceTree = "<absolute>"; };
+		5B653CD70C171313002B54A3 /* t.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = t.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/t.png"; sourceTree = "<absolute>"; };
+		5B653CD80C171313002B54A3 /* u.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = u.png; path = "/Users/martin/OpenSceneGraph-Data/Catch/u.png"; sourceTree = "<absolute>"; };
+		5B653CD90C171314002B54A3 /* Welcome.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Welcome.jpg; path = "/Users/martin/OpenSceneGraph-Data/Catch/Welcome.jpg"; sourceTree = "<absolute>"; };
+		5B653CDA0C171314002B54A3 /* YouLost.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = YouLost.jpg; path = "/Users/martin/OpenSceneGraph-Data/Catch/YouLost.jpg"; sourceTree = "<absolute>"; };
+		5B653CDB0C171314002B54A3 /* YouWon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = YouWon.jpg; path = "/Users/martin/OpenSceneGraph-Data/Catch/YouWon.jpg"; sourceTree = "<absolute>"; };
+		5B653CDC0C171315002B54A3 /* cessna.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = cessna.osg; path = "/Users/martin/OpenSceneGraph-Data/cessna.osg"; sourceTree = "<absolute>"; };
+		5B653CDD0C171315002B54A3 /* cessnafire.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = cessnafire.osg; path = "/Users/martin/OpenSceneGraph-Data/cessnafire.osg"; sourceTree = "<absolute>"; };
+		5B653CDE0C171316002B54A3 /* cow.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = cow.osg; path = "/Users/martin/OpenSceneGraph-Data/cow.osg"; sourceTree = "<absolute>"; };
+		5B653CDF0C171316002B54A3 /* cube_mapped_torus.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = cube_mapped_torus.osg; path = "/Users/martin/OpenSceneGraph-Data/cube_mapped_torus.osg"; sourceTree = "<absolute>"; };
+		5B653CE10C171317002B54A3 /* negx.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = negx.png; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis/negx.png"; sourceTree = "<absolute>"; };
+		5B653CE20C171317002B54A3 /* negy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = negy.png; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis/negy.png"; sourceTree = "<absolute>"; };
+		5B653CE30C171317002B54A3 /* negz.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = negz.png; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis/negz.png"; sourceTree = "<absolute>"; };
+		5B653CE40C171318002B54A3 /* posx.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = posx.png; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis/posx.png"; sourceTree = "<absolute>"; };
+		5B653CE50C171318002B54A3 /* posy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = posy.png; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis/posy.png"; sourceTree = "<absolute>"; };
+		5B653CE60C171318002B54A3 /* posz.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = posz.png; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis/posz.png"; sourceTree = "<absolute>"; };
+		5B653CE80C171319002B54A3 /* negx.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = negx.jpg; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow/negx.jpg"; sourceTree = "<absolute>"; };
+		5B653CE90C171319002B54A3 /* negy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = negy.jpg; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow/negy.jpg"; sourceTree = "<absolute>"; };
+		5B653CEA0C17131A002B54A3 /* negz.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = negz.jpg; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow/negz.jpg"; sourceTree = "<absolute>"; };
+		5B653CEB0C17131A002B54A3 /* posx.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = posx.jpg; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow/posx.jpg"; sourceTree = "<absolute>"; };
+		5B653CEC0C17131A002B54A3 /* posy.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = posy.jpg; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow/posy.jpg"; sourceTree = "<absolute>"; };
+		5B653CED0C17131B002B54A3 /* posz.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = posz.jpg; path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow/posz.jpg"; sourceTree = "<absolute>"; };
+		5B653CEE0C17131B002B54A3 /* dumptruck.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = dumptruck.osg; path = "/Users/martin/OpenSceneGraph-Data/dumptruck.osg"; sourceTree = "<absolute>"; };
+		5B653CF00C17131C002B54A3 /* mag4catalog */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = mag4catalog; path = "/Users/martin/OpenSceneGraph-Data/Env/mag4catalog"; sourceTree = "<absolute>"; };
+		5B653CF20C17131D002B54A3 /* osganimation.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osganimation.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osganimation.jpg"; sourceTree = "<absolute>"; };
+		5B653CF30C17131D002B54A3 /* osgcubemap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgcubemap.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgcubemap.jpg"; sourceTree = "<absolute>"; };
+		5B653CF40C17131D002B54A3 /* osgdepthshadow.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgdepthshadow.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgdepthshadow.jpg"; sourceTree = "<absolute>"; };
+		5B653CF50C17131E002B54A3 /* osgdistortion.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgdistortion.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgdistortion.jpg"; sourceTree = "<absolute>"; };
+		5B653CF60C17131E002B54A3 /* osgfxbrowser.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgfxbrowser.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgfxbrowser.jpg"; sourceTree = "<absolute>"; };
+		5B653CF70C17131E002B54A3 /* osggeometry.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osggeometry.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osggeometry.jpg"; sourceTree = "<absolute>"; };
+		5B653CF80C17131F002B54A3 /* osghud.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osghud.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osghud.jpg"; sourceTree = "<absolute>"; };
+		5B653CF90C17131F002B54A3 /* osgkeyboard.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgkeyboard.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgkeyboard.jpg"; sourceTree = "<absolute>"; };
+		5B653CFA0C17131F002B54A3 /* osglight.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osglight.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osglight.jpg"; sourceTree = "<absolute>"; };
+		5B653CFB0C171320002B54A3 /* osgmotionblur.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgmotionblur.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgmotionblur.jpg"; sourceTree = "<absolute>"; };
+		5B653CFC0C171320002B54A3 /* osgmultitexture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgmultitexture.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgmultitexture.jpg"; sourceTree = "<absolute>"; };
+		5B653CFD0C171321002B54A3 /* osgparticle.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgparticle.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgparticle.jpg"; sourceTree = "<absolute>"; };
+		5B653CFE0C171321002B54A3 /* osgprerendercubemap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgprerendercubemap.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgprerendercubemap.jpg"; sourceTree = "<absolute>"; };
+		5B653CFF0C171321002B54A3 /* osgreflect.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgreflect.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgreflect.jpg"; sourceTree = "<absolute>"; };
+		5B653D000C171322002B54A3 /* osgscribe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgscribe.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgscribe.jpg"; sourceTree = "<absolute>"; };
+		5B653D010C171322002B54A3 /* osgvertexprogram.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgvertexprogram.jpg; path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails/osgvertexprogram.jpg"; sourceTree = "<absolute>"; };
+		5B653D030C171323002B54A3 /* arial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = arial.ttf; path = "/Users/martin/OpenSceneGraph-Data/fonts/arial.ttf"; sourceTree = "<absolute>"; };
+		5B653D040C171323002B54A3 /* dirtydoz.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = dirtydoz.ttf; path = "/Users/martin/OpenSceneGraph-Data/fonts/dirtydoz.ttf"; sourceTree = "<absolute>"; };
+		5B653D050C171323002B54A3 /* fudd.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = fudd.ttf; path = "/Users/martin/OpenSceneGraph-Data/fonts/fudd.ttf"; sourceTree = "<absolute>"; };
+		5B653D060C171324002B54A3 /* Times New Roman.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Times New Roman.ttf"; path = "/Users/martin/OpenSceneGraph-Data/fonts/Times New Roman.ttf"; sourceTree = "<absolute>"; };
+		5B653D070C171324002B54A3 /* times.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = times.ttf; path = "/Users/martin/OpenSceneGraph-Data/fonts/times.ttf"; sourceTree = "<absolute>"; };
+		5B653D080C171325002B54A3 /* fountain.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = fountain.osg; path = "/Users/martin/OpenSceneGraph-Data/fountain.osg"; sourceTree = "<absolute>"; };
+		5B653D090C171325002B54A3 /* glider.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = glider.osg; path = "/Users/martin/OpenSceneGraph-Data/glider.osg"; sourceTree = "<absolute>"; };
+		5B653D0A0C171325002B54A3 /* glsl_confetti.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = glsl_confetti.osg; path = "/Users/martin/OpenSceneGraph-Data/glsl_confetti.osg"; sourceTree = "<absolute>"; };
+		5B653D0B0C171326002B54A3 /* glsl_julia.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = glsl_julia.osg; path = "/Users/martin/OpenSceneGraph-Data/glsl_julia.osg"; sourceTree = "<absolute>"; };
+		5B653D0C0C171326002B54A3 /* glsl_mandelbrot.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = glsl_mandelbrot.osg; path = "/Users/martin/OpenSceneGraph-Data/glsl_mandelbrot.osg"; sourceTree = "<absolute>"; };
+		5B653D0D0C171327002B54A3 /* glsl_simple.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = glsl_simple.osg; path = "/Users/martin/OpenSceneGraph-Data/glsl_simple.osg"; sourceTree = "<absolute>"; };
+		5B653D0F0C171327002B54A3 /* clip.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = clip.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/clip.jpg"; sourceTree = "<absolute>"; };
+		5B653D100C171328002B54A3 /* industrie.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = industrie.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/industrie.jpg"; sourceTree = "<absolute>"; };
+		5B653D110C171328002B54A3 /* medical.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = medical.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/medical.jpg"; sourceTree = "<absolute>"; };
+		5B653D120C171328002B54A3 /* multi_screen.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = multi_screen.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/multi_screen.jpg"; sourceTree = "<absolute>"; };
+		5B653D130C171329002B54A3 /* multitex.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = multitex.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/multitex.jpg"; sourceTree = "<absolute>"; };
+		5B653D140C171329002B54A3 /* nachtflug.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = nachtflug.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/nachtflug.jpg"; sourceTree = "<absolute>"; };
+		5B653D150C171329002B54A3 /* osglauncher_lena.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osglauncher_lena.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/osglauncher_lena.jpg"; sourceTree = "<absolute>"; };
+		5B653D160C17132A002B54A3 /* osgplanets.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = osgplanets.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/osgplanets.jpg"; sourceTree = "<absolute>"; };
+		5B653D170C17132A002B54A3 /* pagedLOD.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = pagedLOD.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/pagedLOD.jpg"; sourceTree = "<absolute>"; };
+		5B653D180C17132A002B54A3 /* planets.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = planets.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/planets.jpg"; sourceTree = "<absolute>"; };
+		5B653D190C17132B002B54A3 /* prerender.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = prerender.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/prerender.jpg"; sourceTree = "<absolute>"; };
+		5B653D1A0C17132B002B54A3 /* science.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = science.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/science.jpg"; sourceTree = "<absolute>"; };
+		5B653D1B0C17132C002B54A3 /* shader.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = shader.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/shader.jpg"; sourceTree = "<absolute>"; };
+		5B653D1C0C17132C002B54A3 /* volume.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = volume.jpg; path = "/Users/martin/OpenSceneGraph-Data/Icons/volume.jpg"; sourceTree = "<absolute>"; };
+		5B653D1E0C17132D002B54A3 /* blueFlowers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blueFlowers.png; path = "/Users/martin/OpenSceneGraph-Data/Images/blueFlowers.png"; sourceTree = "<absolute>"; };
+		5B653D1F0C17132D002B54A3 /* Brick-Norman-Brown.TGA */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Brick-Norman-Brown.TGA"; path = "/Users/martin/OpenSceneGraph-Data/Images/Brick-Norman-Brown.TGA"; sourceTree = "<absolute>"; };
+		5B653D200C17132D002B54A3 /* Brick-Std-Orange.TGA */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Brick-Std-Orange.TGA"; path = "/Users/martin/OpenSceneGraph-Data/Images/Brick-Std-Orange.TGA"; sourceTree = "<absolute>"; };
+		5B653D210C17132E002B54A3 /* clockface.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = clockface.JPG; path = "/Users/martin/OpenSceneGraph-Data/Images/clockface.JPG"; sourceTree = "<absolute>"; };
+		5B653D220C17132E002B54A3 /* continous_smoke.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = continous_smoke.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/continous_smoke.rgb"; sourceTree = "<absolute>"; };
+		5B653D230C17132F002B54A3 /* dog_left_eye.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dog_left_eye.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/dog_left_eye.jpg"; sourceTree = "<absolute>"; };
+		5B653D240C17132F002B54A3 /* dog_right_eye.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = dog_right_eye.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/dog_right_eye.jpg"; sourceTree = "<absolute>"; };
+		5B653D250C17132F002B54A3 /* forestRoof.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forestRoof.png; path = "/Users/martin/OpenSceneGraph-Data/Images/forestRoof.png"; sourceTree = "<absolute>"; };
+		5B653D260C171330002B54A3 /* forestWall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = forestWall.png; path = "/Users/martin/OpenSceneGraph-Data/Images/forestWall.png"; sourceTree = "<absolute>"; };
+		5B653D270C171330002B54A3 /* land_ocean_ice_lights_2048.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = land_ocean_ice_lights_2048.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/land_ocean_ice_lights_2048.jpg"; sourceTree = "<absolute>"; };
+		5B653D280C171330002B54A3 /* land_shallow_topo_2048.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = land_shallow_topo_2048.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/land_shallow_topo_2048.jpg"; sourceTree = "<absolute>"; };
+		5B653D290C171331002B54A3 /* lz.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; path = lz.rgb; sourceTree = "<group>"; };
+		5B653D2A0C171331002B54A3 /* moon256128.TGA */ = {isa = PBXFileReference; lastKnownFileType = file; name = moon256128.TGA; path = "/Users/martin/OpenSceneGraph-Data/Images/moon256128.TGA"; sourceTree = "<absolute>"; };
+		5B653D2B0C171331002B54A3 /* osg128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osg128.png; path = "/Users/martin/OpenSceneGraph-Data/Images/osg128.png"; sourceTree = "<absolute>"; };
+		5B653D2C0C171332002B54A3 /* osg256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osg256.png; path = "/Users/martin/OpenSceneGraph-Data/Images/osg256.png"; sourceTree = "<absolute>"; };
+		5B653D2D0C171332002B54A3 /* osg64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osg64.png; path = "/Users/martin/OpenSceneGraph-Data/Images/osg64.png"; sourceTree = "<absolute>"; };
+		5B653D2E0C171332002B54A3 /* osgshaders1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osgshaders1.png; path = "/Users/martin/OpenSceneGraph-Data/Images/osgshaders1.png"; sourceTree = "<absolute>"; };
+		5B653D2F0C171333002B54A3 /* osgshaders2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = osgshaders2.png; path = "/Users/martin/OpenSceneGraph-Data/Images/osgshaders2.png"; sourceTree = "<absolute>"; };
+		5B653D300C171333002B54A3 /* particle.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = particle.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/particle.rgb"; sourceTree = "<absolute>"; };
+		5B653D310C171334002B54A3 /* primitives.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = primitives.gif; path = "/Users/martin/OpenSceneGraph-Data/Images/primitives.gif"; sourceTree = "<absolute>"; };
+		5B653D320C171334002B54A3 /* purpleFlowers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = purpleFlowers.png; path = "/Users/martin/OpenSceneGraph-Data/Images/purpleFlowers.png"; sourceTree = "<absolute>"; };
+		5B653D330C171334002B54A3 /* reflect.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = reflect.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/reflect.rgb"; sourceTree = "<absolute>"; };
+		5B653D340C171335002B54A3 /* road.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = road.png; path = "/Users/martin/OpenSceneGraph-Data/Images/road.png"; sourceTree = "<absolute>"; };
+		5B653D350C171335002B54A3 /* Saturn.TGA */ = {isa = PBXFileReference; lastKnownFileType = file; name = Saturn.TGA; path = "/Users/martin/OpenSceneGraph-Data/Images/Saturn.TGA"; sourceTree = "<absolute>"; };
+		5B653D360C171335002B54A3 /* skymap.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = skymap.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/skymap.jpg"; sourceTree = "<absolute>"; };
+		5B653D370C171336002B54A3 /* smoke.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = smoke.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/smoke.rgb"; sourceTree = "<absolute>"; };
+		5B653D380C171336002B54A3 /* tank.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = tank.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/tank.rgb"; sourceTree = "<absolute>"; };
+		5B653D390C171337002B54A3 /* tree0.rgba */ = {isa = PBXFileReference; lastKnownFileType = file; path = tree0.rgba; sourceTree = "<group>"; };
+		5B653D3A0C171337002B54A3 /* water.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = water.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/water.rgb"; sourceTree = "<absolute>"; };
+		5B653D3B0C171337002B54A3 /* white.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = white.rgb; path = "/Users/martin/OpenSceneGraph-Data/Images/white.rgb"; sourceTree = "<absolute>"; };
+		5B653D3C0C171338002B54A3 /* whitemetal_diffuse.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = whitemetal_diffuse.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/whitemetal_diffuse.jpg"; sourceTree = "<absolute>"; };
+		5B653D3D0C171338002B54A3 /* whitemetal_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = whitemetal_normal.jpg; path = "/Users/martin/OpenSceneGraph-Data/Images/whitemetal_normal.jpg"; sourceTree = "<absolute>"; };
+		5B653D3E0C171338002B54A3 /* lz.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = lz.osg; path = "/Users/martin/OpenSceneGraph-Data/lz.osg"; sourceTree = "<absolute>"; };
+		5B653D3F0C171339002B54A3 /* osg.conf */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = osg.conf; path = "/Users/martin/OpenSceneGraph-Data/osg.conf"; sourceTree = "<absolute>"; };
+		5B653D400C171339002B54A3 /* osg64.logo */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = osg64.logo; path = "/Users/martin/OpenSceneGraph-Data/osg64.logo"; sourceTree = "<absolute>"; };
+		5B653D410C171339002B54A3 /* osgcool.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = osgcool.osg; path = "/Users/martin/OpenSceneGraph-Data/osgcool.osg"; sourceTree = "<absolute>"; };
+		5B653D420C17133A002B54A3 /* README */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = README; path = "/Users/martin/OpenSceneGraph-Data/README"; sourceTree = "<absolute>"; };
+		5B653D430C17133A002B54A3 /* shader.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = shader.vert; path = "/Users/martin/OpenSceneGraph-Data/shader.vert"; sourceTree = "<absolute>"; };
+		5B653D450C17133B002B54A3 /* blocky.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = blocky.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/blocky.frag"; sourceTree = "<absolute>"; };
+		5B653D460C17133B002B54A3 /* blocky.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = blocky.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/blocky.vert"; sourceTree = "<absolute>"; };
+		5B653D470C17133C002B54A3 /* brick.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = brick.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/brick.frag"; sourceTree = "<absolute>"; };
+		5B653D480C17133C002B54A3 /* brick.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = brick.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/brick.vert"; sourceTree = "<absolute>"; };
+		5B653D490C17133C002B54A3 /* eroded.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = eroded.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/eroded.frag"; sourceTree = "<absolute>"; };
+		5B653D4A0C17133D002B54A3 /* eroded.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = eroded.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/eroded.vert"; sourceTree = "<absolute>"; };
+		5B653D4B0C17133D002B54A3 /* line_rain.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = line_rain.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/line_rain.vert"; sourceTree = "<absolute>"; };
+		5B653D4C0C17133E002B54A3 /* marble.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = marble.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/marble.frag"; sourceTree = "<absolute>"; };
+		5B653D4D0C17133E002B54A3 /* marble.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = marble.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/marble.vert"; sourceTree = "<absolute>"; };
+		5B653D4E0C17133E002B54A3 /* point_rain.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = point_rain.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/point_rain.frag"; sourceTree = "<absolute>"; };
+		5B653D4F0C17133F002B54A3 /* point_rain.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = point_rain.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/point_rain.vert"; sourceTree = "<absolute>"; };
+		5B653D500C17133F002B54A3 /* quad_rain.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = quad_rain.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/quad_rain.vert"; sourceTree = "<absolute>"; };
+		5B653D510C17133F002B54A3 /* rain.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = rain.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/rain.frag"; sourceTree = "<absolute>"; };
+		5B653D520C171340002B54A3 /* rain.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = rain.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/rain.vert"; sourceTree = "<absolute>"; };
+		5B653D530C171340002B54A3 /* screen.frag */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = screen.frag; path = "/Users/martin/OpenSceneGraph-Data/shaders/screen.frag"; sourceTree = "<absolute>"; };
+		5B653D540C171341002B54A3 /* screen.vert */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = screen.vert; path = "/Users/martin/OpenSceneGraph-Data/shaders/screen.vert"; sourceTree = "<absolute>"; };
+		5B653D550C171341002B54A3 /* skydome.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = skydome.osg; path = "/Users/martin/OpenSceneGraph-Data/skydome.osg"; sourceTree = "<absolute>"; };
+		5B653D560C171341002B54A3 /* SmokeBox.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = SmokeBox.osg; path = "/Users/martin/OpenSceneGraph-Data/SmokeBox.osg"; sourceTree = "<absolute>"; };
+		5B653D580C171342002B54A3 /* earth_clouds256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = earth_clouds256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/earth_clouds256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D590C171342002B54A3 /* jupiter256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = jupiter256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/jupiter256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D5A0C171343002B54A3 /* mars256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = mars256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/mars256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D5B0C171343002B54A3 /* mercury256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = mercury256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/mercury256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D5C0C171344002B54A3 /* moon256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = moon256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/moon256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D5D0C171344002B54A3 /* neptune256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = neptune256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/neptune256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D5E0C171344002B54A3 /* pluto256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = pluto256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/pluto256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D5F0C171345002B54A3 /* saturn256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = saturn256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/saturn256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D600C171345002B54A3 /* sun256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = sun256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/sun256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D610C171345002B54A3 /* venus256128.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = venus256128.jpg; path = "/Users/martin/OpenSceneGraph-Data/SolarSystem/venus256128.jpg"; sourceTree = "<absolute>"; };
+		5B653D620C171346002B54A3 /* spaceship.osg */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = spaceship.osg; path = "/Users/martin/OpenSceneGraph-Data/spaceship.osg"; sourceTree = "<absolute>"; };
+		5B653DC40C174400002B54A3 /* Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = "Info copy.plist"; path = "../../examples/osgviewerCocoa/Info copy.plist"; sourceTree = SOURCE_ROOT; };
+		5B653DC70C1745FF002B54A3 /* ViewerCocoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ViewerCocoa.h; sourceTree = "<group>"; };
+		5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewerCocoa.mm; sourceTree = "<group>"; };
+		5B653DDE0C174E15002B54A3 /* lz.rgb */ = {isa = PBXFileReference; lastKnownFileType = file; name = lz.rgb; path = /Users/martin/Images/lz.rgb; sourceTree = "<absolute>"; };
+		5B653DDF0C174E16002B54A3 /* tree0.rgba */ = {isa = PBXFileReference; lastKnownFileType = file; name = tree0.rgba; path = /Users/martin/Images/tree0.rgba; sourceTree = "<absolute>"; };
 		5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerEventHandlers.cpp; sourceTree = "<group>"; };
 		5BC1910D0C15F48C002CF5BC /* Hint.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Hint.cpp; sourceTree = "<group>"; };
 		5BC191100C15F4D4002CF5BC /* Hint */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Hint; sourceTree = "<group>"; };
@@ -9902,6 +10057,8 @@
 		00C59ED50B09597100E9BCA1 /* osgviewerCocoa */ = {
 			isa = PBXGroup;
 			children = (
+				5B653DC70C1745FF002B54A3 /* ViewerCocoa.h */,
+				5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */,
 				5B653AE90C16C8F0002B54A3 /* SimpleViewer */,
 				5B653AEA0C16C8F1002B54A3 /* SimpleViewer.cpp */,
 				5BC191270C15F6B2002CF5BC /* English.lproj */,
@@ -9909,6 +10066,7 @@
 				5BC1912D0C15F6B3002CF5BC /* main.m */,
 				5BC1912E0C15F6B3002CF5BC /* SimpleViewerCocoa.h */,
 				5BC1912F0C15F6B4002CF5BC /* SimpleViewerCocoa.mm */,
+				5B653DC40C174400002B54A3 /* Info copy.plist */,
 			);
 			name = osgviewerCocoa;
 			path = ../../examples/osgviewerCocoa;
@@ -10350,6 +10508,9 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5B653DDD0C174E15002B54A3 /* Images */,
+				5B653DCF0C1749F2002B54A3 /* Images */,
+				5B653CC40C1712AE002B54A3 /* OpenSceneGraph-Data */,
 				BE117FB405D63B3800EB53E5 /* osg-Info.plist */,
 				BE11849B05D7126100EB53E5 /* osgUtil-Info.plist */,
 				BE11876B05D75C2700EB53E5 /* osgText-Info.plist */,
@@ -10387,6 +10548,268 @@
 			);
 			name = Source;
 			sourceTree = "<group>";
+		};
+		5B653CC40C1712AE002B54A3 /* OpenSceneGraph-Data */ = {
+			isa = PBXGroup;
+			children = (
+				5B653D1D0C17132C002B54A3 /* Images */,
+				5B653CC50C17130C002B54A3 /* afterescher.geo */,
+				5B653CC60C17130D002B54A3 /* axes.osg */,
+				5B653CC70C17130D002B54A3 /* Catch */,
+				5B653CDC0C171315002B54A3 /* cessna.osg */,
+				5B653CDD0C171315002B54A3 /* cessnafire.osg */,
+				5B653CDE0C171316002B54A3 /* cow.osg */,
+				5B653CDF0C171316002B54A3 /* cube_mapped_torus.osg */,
+				5B653CE00C171316002B54A3 /* Cubemap_axis */,
+				5B653CE70C171319002B54A3 /* Cubemap_snow */,
+				5B653CEE0C17131B002B54A3 /* dumptruck.osg */,
+				5B653CEF0C17131C002B54A3 /* Env */,
+				5B653CF10C17131C002B54A3 /* ExampleThumbnails */,
+				5B653D020C171322002B54A3 /* fonts */,
+				5B653D080C171325002B54A3 /* fountain.osg */,
+				5B653D090C171325002B54A3 /* glider.osg */,
+				5B653D0A0C171325002B54A3 /* glsl_confetti.osg */,
+				5B653D0B0C171326002B54A3 /* glsl_julia.osg */,
+				5B653D0C0C171326002B54A3 /* glsl_mandelbrot.osg */,
+				5B653D0D0C171327002B54A3 /* glsl_simple.osg */,
+				5B653D0E0C171327002B54A3 /* Icons */,
+				5B653D3E0C171338002B54A3 /* lz.osg */,
+				5B653D3F0C171339002B54A3 /* osg.conf */,
+				5B653D400C171339002B54A3 /* osg64.logo */,
+				5B653D410C171339002B54A3 /* osgcool.osg */,
+				5B653D420C17133A002B54A3 /* README */,
+				5B653D430C17133A002B54A3 /* shader.vert */,
+				5B653D440C17133B002B54A3 /* shaders */,
+				5B653D550C171341002B54A3 /* skydome.osg */,
+				5B653D560C171341002B54A3 /* SmokeBox.osg */,
+				5B653D570C171342002B54A3 /* SolarSystem */,
+				5B653D620C171346002B54A3 /* spaceship.osg */,
+			);
+			name = "OpenSceneGraph-Data";
+			sourceTree = "<group>";
+		};
+		5B653CC70C17130D002B54A3 /* Catch */ = {
+			isa = PBXGroup;
+			children = (
+				5B653CC80C17130D002B54A3 /* a.png */,
+				5B653CC90C17130E002B54A3 /* b.png */,
+				5B653CCA0C17130E002B54A3 /* ball.png */,
+				5B653CCB0C17130E002B54A3 /* boy.png */,
+				5B653CCC0C17130F002B54A3 /* broach.png */,
+				5B653CCD0C17130F002B54A3 /* c.png */,
+				5B653CCE0C17130F002B54A3 /* farm.JPG */,
+				5B653CCF0C171310002B54A3 /* girl.png */,
+				5B653CD00C171310002B54A3 /* m.png */,
+				5B653CD10C171311002B54A3 /* n.png */,
+				5B653CD20C171311002B54A3 /* RockStar.png */,
+				5B653CD30C171311002B54A3 /* s.png */,
+				5B653CD40C171312002B54A3 /* sky1.JPG */,
+				5B653CD50C171312002B54A3 /* sky2.JPG */,
+				5B653CD60C171313002B54A3 /* sky3.JPG */,
+				5B653CD70C171313002B54A3 /* t.png */,
+				5B653CD80C171313002B54A3 /* u.png */,
+				5B653CD90C171314002B54A3 /* Welcome.jpg */,
+				5B653CDA0C171314002B54A3 /* YouLost.jpg */,
+				5B653CDB0C171314002B54A3 /* YouWon.jpg */,
+			);
+			name = Catch;
+			path = "/Users/martin/OpenSceneGraph-Data/Catch";
+			sourceTree = "<absolute>";
+		};
+		5B653CE00C171316002B54A3 /* Cubemap_axis */ = {
+			isa = PBXGroup;
+			children = (
+				5B653CE10C171317002B54A3 /* negx.png */,
+				5B653CE20C171317002B54A3 /* negy.png */,
+				5B653CE30C171317002B54A3 /* negz.png */,
+				5B653CE40C171318002B54A3 /* posx.png */,
+				5B653CE50C171318002B54A3 /* posy.png */,
+				5B653CE60C171318002B54A3 /* posz.png */,
+			);
+			name = Cubemap_axis;
+			path = "/Users/martin/OpenSceneGraph-Data/Cubemap_axis";
+			sourceTree = "<absolute>";
+		};
+		5B653CE70C171319002B54A3 /* Cubemap_snow */ = {
+			isa = PBXGroup;
+			children = (
+				5B653CE80C171319002B54A3 /* negx.jpg */,
+				5B653CE90C171319002B54A3 /* negy.jpg */,
+				5B653CEA0C17131A002B54A3 /* negz.jpg */,
+				5B653CEB0C17131A002B54A3 /* posx.jpg */,
+				5B653CEC0C17131A002B54A3 /* posy.jpg */,
+				5B653CED0C17131B002B54A3 /* posz.jpg */,
+			);
+			name = Cubemap_snow;
+			path = "/Users/martin/OpenSceneGraph-Data/Cubemap_snow";
+			sourceTree = "<absolute>";
+		};
+		5B653CEF0C17131C002B54A3 /* Env */ = {
+			isa = PBXGroup;
+			children = (
+				5B653CF00C17131C002B54A3 /* mag4catalog */,
+			);
+			name = Env;
+			path = "/Users/martin/OpenSceneGraph-Data/Env";
+			sourceTree = "<absolute>";
+		};
+		5B653CF10C17131C002B54A3 /* ExampleThumbnails */ = {
+			isa = PBXGroup;
+			children = (
+				5B653CF20C17131D002B54A3 /* osganimation.jpg */,
+				5B653CF30C17131D002B54A3 /* osgcubemap.jpg */,
+				5B653CF40C17131D002B54A3 /* osgdepthshadow.jpg */,
+				5B653CF50C17131E002B54A3 /* osgdistortion.jpg */,
+				5B653CF60C17131E002B54A3 /* osgfxbrowser.jpg */,
+				5B653CF70C17131E002B54A3 /* osggeometry.jpg */,
+				5B653CF80C17131F002B54A3 /* osghud.jpg */,
+				5B653CF90C17131F002B54A3 /* osgkeyboard.jpg */,
+				5B653CFA0C17131F002B54A3 /* osglight.jpg */,
+				5B653CFB0C171320002B54A3 /* osgmotionblur.jpg */,
+				5B653CFC0C171320002B54A3 /* osgmultitexture.jpg */,
+				5B653CFD0C171321002B54A3 /* osgparticle.jpg */,
+				5B653CFE0C171321002B54A3 /* osgprerendercubemap.jpg */,
+				5B653CFF0C171321002B54A3 /* osgreflect.jpg */,
+				5B653D000C171322002B54A3 /* osgscribe.jpg */,
+				5B653D010C171322002B54A3 /* osgvertexprogram.jpg */,
+			);
+			name = ExampleThumbnails;
+			path = "/Users/martin/OpenSceneGraph-Data/ExampleThumbnails";
+			sourceTree = "<absolute>";
+		};
+		5B653D020C171322002B54A3 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				5B653D030C171323002B54A3 /* arial.ttf */,
+				5B653D040C171323002B54A3 /* dirtydoz.ttf */,
+				5B653D050C171323002B54A3 /* fudd.ttf */,
+				5B653D060C171324002B54A3 /* Times New Roman.ttf */,
+				5B653D070C171324002B54A3 /* times.ttf */,
+			);
+			name = fonts;
+			path = "/Users/martin/OpenSceneGraph-Data/fonts";
+			sourceTree = "<absolute>";
+		};
+		5B653D0E0C171327002B54A3 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				5B653D0F0C171327002B54A3 /* clip.jpg */,
+				5B653D100C171328002B54A3 /* industrie.jpg */,
+				5B653D110C171328002B54A3 /* medical.jpg */,
+				5B653D120C171328002B54A3 /* multi_screen.jpg */,
+				5B653D130C171329002B54A3 /* multitex.jpg */,
+				5B653D140C171329002B54A3 /* nachtflug.jpg */,
+				5B653D150C171329002B54A3 /* osglauncher_lena.jpg */,
+				5B653D160C17132A002B54A3 /* osgplanets.jpg */,
+				5B653D170C17132A002B54A3 /* pagedLOD.jpg */,
+				5B653D180C17132A002B54A3 /* planets.jpg */,
+				5B653D190C17132B002B54A3 /* prerender.jpg */,
+				5B653D1A0C17132B002B54A3 /* science.jpg */,
+				5B653D1B0C17132C002B54A3 /* shader.jpg */,
+				5B653D1C0C17132C002B54A3 /* volume.jpg */,
+			);
+			name = Icons;
+			path = "/Users/martin/OpenSceneGraph-Data/Icons";
+			sourceTree = "<absolute>";
+		};
+		5B653D1D0C17132C002B54A3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				5B653D390C171337002B54A3 /* tree0.rgba */,
+				5B653D290C171331002B54A3 /* lz.rgb */,
+				5B653D1E0C17132D002B54A3 /* blueFlowers.png */,
+				5B653D1F0C17132D002B54A3 /* Brick-Norman-Brown.TGA */,
+				5B653D200C17132D002B54A3 /* Brick-Std-Orange.TGA */,
+				5B653D210C17132E002B54A3 /* clockface.JPG */,
+				5B653D220C17132E002B54A3 /* continous_smoke.rgb */,
+				5B653D230C17132F002B54A3 /* dog_left_eye.jpg */,
+				5B653D240C17132F002B54A3 /* dog_right_eye.jpg */,
+				5B653D250C17132F002B54A3 /* forestRoof.png */,
+				5B653D260C171330002B54A3 /* forestWall.png */,
+				5B653D270C171330002B54A3 /* land_ocean_ice_lights_2048.jpg */,
+				5B653D280C171330002B54A3 /* land_shallow_topo_2048.jpg */,
+				5B653D2A0C171331002B54A3 /* moon256128.TGA */,
+				5B653D2B0C171331002B54A3 /* osg128.png */,
+				5B653D2C0C171332002B54A3 /* osg256.png */,
+				5B653D2D0C171332002B54A3 /* osg64.png */,
+				5B653D2E0C171332002B54A3 /* osgshaders1.png */,
+				5B653D2F0C171333002B54A3 /* osgshaders2.png */,
+				5B653D300C171333002B54A3 /* particle.rgb */,
+				5B653D310C171334002B54A3 /* primitives.gif */,
+				5B653D320C171334002B54A3 /* purpleFlowers.png */,
+				5B653D330C171334002B54A3 /* reflect.rgb */,
+				5B653D340C171335002B54A3 /* road.png */,
+				5B653D350C171335002B54A3 /* Saturn.TGA */,
+				5B653D360C171335002B54A3 /* skymap.jpg */,
+				5B653D370C171336002B54A3 /* smoke.rgb */,
+				5B653D380C171336002B54A3 /* tank.rgb */,
+				5B653D3A0C171337002B54A3 /* water.rgb */,
+				5B653D3B0C171337002B54A3 /* white.rgb */,
+				5B653D3C0C171338002B54A3 /* whitemetal_diffuse.jpg */,
+				5B653D3D0C171338002B54A3 /* whitemetal_normal.jpg */,
+			);
+			name = Images;
+			path = "/Users/martin/OpenSceneGraph-Data/Images";
+			sourceTree = "<absolute>";
+		};
+		5B653D440C17133B002B54A3 /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				5B653D450C17133B002B54A3 /* blocky.frag */,
+				5B653D460C17133B002B54A3 /* blocky.vert */,
+				5B653D470C17133C002B54A3 /* brick.frag */,
+				5B653D480C17133C002B54A3 /* brick.vert */,
+				5B653D490C17133C002B54A3 /* eroded.frag */,
+				5B653D4A0C17133D002B54A3 /* eroded.vert */,
+				5B653D4B0C17133D002B54A3 /* line_rain.vert */,
+				5B653D4C0C17133E002B54A3 /* marble.frag */,
+				5B653D4D0C17133E002B54A3 /* marble.vert */,
+				5B653D4E0C17133E002B54A3 /* point_rain.frag */,
+				5B653D4F0C17133F002B54A3 /* point_rain.vert */,
+				5B653D500C17133F002B54A3 /* quad_rain.vert */,
+				5B653D510C17133F002B54A3 /* rain.frag */,
+				5B653D520C171340002B54A3 /* rain.vert */,
+				5B653D530C171340002B54A3 /* screen.frag */,
+				5B653D540C171341002B54A3 /* screen.vert */,
+			);
+			name = shaders;
+			path = "/Users/martin/OpenSceneGraph-Data/shaders";
+			sourceTree = "<absolute>";
+		};
+		5B653D570C171342002B54A3 /* SolarSystem */ = {
+			isa = PBXGroup;
+			children = (
+				5B653D580C171342002B54A3 /* earth_clouds256128.jpg */,
+				5B653D590C171342002B54A3 /* jupiter256128.jpg */,
+				5B653D5A0C171343002B54A3 /* mars256128.jpg */,
+				5B653D5B0C171343002B54A3 /* mercury256128.jpg */,
+				5B653D5C0C171344002B54A3 /* moon256128.jpg */,
+				5B653D5D0C171344002B54A3 /* neptune256128.jpg */,
+				5B653D5E0C171344002B54A3 /* pluto256128.jpg */,
+				5B653D5F0C171345002B54A3 /* saturn256128.jpg */,
+				5B653D600C171345002B54A3 /* sun256128.jpg */,
+				5B653D610C171345002B54A3 /* venus256128.jpg */,
+			);
+			name = SolarSystem;
+			path = "/Users/martin/OpenSceneGraph-Data/SolarSystem";
+			sourceTree = "<absolute>";
+		};
+		5B653DCF0C1749F2002B54A3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		5B653DDD0C174E15002B54A3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				5B653DDE0C174E15002B54A3 /* lz.rgb */,
+				5B653DDF0C174E16002B54A3 /* tree0.rgba */,
+			);
+			name = Images;
+			path = /Users/martin/Images;
+			sourceTree = "<absolute>";
 		};
 		6320CCFE07845B7C00FE3D2C /* osgTerrain */ = {
 			isa = PBXGroup;
@@ -12043,7 +12466,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC191330C15F6B4002CF5BC /* SimpleViewerCocoa.h in Headers */,
+				5B05E7AD0C18079100B0EAD8 /* ViewerCocoa.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15461,6 +15884,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B653DD40C174AA0002B54A3 /* tree0.rgba in Resources */,
+				5B653DD50C174AA0002B54A3 /* lz.rgb in Resources */,
+				5B653DE00C174E16002B54A3 /* lz.rgb in Resources */,
+				5B653DE10C174E16002B54A3 /* tree0.rgba in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15898,7 +16325,6 @@
 			files = (
 				5BC191300C15F6B4002CF5BC /* English.lproj in Resources */,
 				5BC191310C15F6B4002CF5BC /* Info.plist in Resources */,
-				5B653AEB0C16C8F1002B54A3 /* SimpleViewer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17438,9 +17864,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC191320C15F6B4002CF5BC /* main.m in Sources */,
-				5BC191340C15F6B4002CF5BC /* SimpleViewerCocoa.mm in Sources */,
-				5B653AEC0C16C8F1002B54A3 /* SimpleViewer.cpp in Sources */,
+				5B05E7280C17EE2800B0EAD8 /* main.m in Sources */,
+				5B05E7AE0C18079100B0EAD8 /* ViewerCocoa.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

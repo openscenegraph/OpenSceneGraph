@@ -49,7 +49,7 @@ namespace osgViewer
 	// Is SimpleViewer supposed use ref_ptr? (Doesn't look like it to me.)
 	// If so, remember ref_ptr is an object on the stack and the cdtors option must be activated.
 	// We could also make simpleViewer an object instead of a pointer, but again, turn on the option.
-	osgViewer::Viewer* Viewer;
+	osgViewer::Viewer* theViewer;
 	osgViewer::GraphicsWindowEmbedded* graphicsWindow;
 		
 

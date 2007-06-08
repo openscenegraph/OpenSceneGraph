@@ -267,10 +267,10 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 
 
 //	osg::setNotifyLevel( osg::DEBUG_FP );
-	Viewer = new osgViewer::Viewer;
-	graphicsWindow = Viewer->setUpViewerAsEmbeddedInWindow(0,0,800,800);
+	theViewer = new osgViewer::Viewer;
+	graphicsWindow = theViewer->setUpViewerAsEmbeddedInWindow(0,0,740,650); // numbers from Nib
 	// Builts in Stats handler
-	Viewer->addEventHandler(new osgViewer::StatsHandler);
+	theViewer->addEventHandler(new osgViewer::StatsHandler);
 #ifdef VIEWER_USE_SHARED_CONTEXTS
 	// Workaround: osgViewer::Viewer automatically increments its context ID values.
 	// Since we're using a shared context, we want all Viewer's to use the same context ID.
@@ -280,9 +280,9 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 #endif // VIEWER_USE_SHARED_CONTEXTS
 
 	// Cocoa follows the same coordinate convention as OpenGL. osgViewer's default is inverted.
-	Viewer->getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
+	theViewer->getEventQueue()->getCurrentEventState()->setMouseYOrientation(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 	// Use a trackball manipulator...matches nicely with the Mighty Mouse Scrollball.
-	Viewer->setCameraManipulator(new osgGA::TrackballManipulator);
+	theViewer->setCameraManipulator(new osgGA::TrackballManipulator);
 	
 }
 
@@ -325,15 +325,15 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 {
 	[animationTimer invalidate];
 	[animationTimer release];
-	delete Viewer;
-	Viewer = NULL;
+	delete theViewer;
+	theViewer = NULL;
 	[super dealloc];
 }
 
 - (void) finalize
 {
-	delete Viewer;
-	Viewer = NULL;
+	delete theViewer;
+	theViewer = NULL;
 	[super finalize];
 }
 
@@ -357,16 +357,22 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 	// Try new multithreaded OpenGL engine?
 	// See Technical Note TN2085 Enabling multi-threaded execution of the OpenGL framework
 	// http://developer.apple.com/technotes/tn2006/tn2085.html
+	// For this simple viewer, you are probably not going to see a speed boost, but possibly a speed hit,
+	// since we probably don't have much data to dispatch,
+	// but it is enabled anyway for demonstration purposes.
 	uint64_t num_cpus = 0;
 	size_t num_cpus_length = sizeof(num_cpus);
 	// Multithreaded engine only benefits with muliple CPUs, so do CPU count check
+	// I've been told that Apple has started doing this check behind the scenes in some version of Tiger.
 	if(sysctlbyname("hw.activecpu", &num_cpus, &num_cpus_length, NULL, 0) == 0)
 	{
 //		NSLog(@"Num CPUs=%d", num_cpus);
 		if(num_cpus >= 2)
 		{
 			// Cleared to enable multi-threaded engine
-			CGLError error_val = CGLEnable((CGLContextObj)[[self openGLContext] CGLContextObj], kCGLCEMPEngine);
+			// kCGLCEMPEngine may not be defined before certain versions of Tiger/Xcode,
+			// so use the numeric value 313 instead to keep things compiling.
+			CGLError error_val = CGLEnable((CGLContextObj)[[self openGLContext] CGLContextObj], static_cast<CGLContextEnable>(313));
 			if(error_val != 0)
 			{
 				// The likelihood of failure seems quite high on older hardware, at least for now.
@@ -422,7 +428,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
 	osg::ref_ptr<osg::Geode> the_geode = new osg::Geode;
 	the_geode->addDrawable(default_text.get());
 
-	Viewer->setSceneData(the_geode.get());
+	theViewer->setSceneData(the_geode.get());
 }
 
 /* disableScreenUpdatesUntilFlush was introduced in Tiger. It will prevent
@@ -457,6 +463,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
  */
 - (void) prepareForMiniaturization:(NSNotification*)notification
 {
+	[[self openGLContext] makeCurrentContext];
 	NSBitmapImageRep* ns_image_rep = [self renderOpenGLSceneToFramebuffer];
 	if([self lockFocusIfCanDraw])
 	{
@@ -517,7 +524,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	
-	Viewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
+	theViewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 	[self setNeedsDisplay:YES];
 }
 
@@ -555,7 +562,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	
-	Viewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
+	theViewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 	[self setNeedsDisplay:YES];
 }
 
@@ -590,7 +597,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	
-	Viewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
+	theViewer->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 	[self setNeedsDisplay:YES];
 }
 
@@ -644,11 +651,11 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	if([the_event clickCount] == 1)
 	{
-		Viewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
+		theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
 	}
 	else
 	{
-		Viewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 1);
+		theViewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 1);
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -660,7 +667,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	
-	Viewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 1);
+	theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 1);
 	[self setNeedsDisplay:YES];
 }
 
@@ -672,11 +679,11 @@ A -respondsToSelector: check has been used to provide compatibility with previou
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	if([the_event clickCount] == 1)
 	{
-		Viewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 3);
+		theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 3);
 	}
 	else
 	{
-		Viewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 3);
+		theViewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 3);
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -689,7 +696,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSPoint the_point = [the_event locationInWindow];
     NSPoint converted_point = [self convertPoint:the_point fromView:nil];
 	
-	Viewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 3);
+	theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 3);
 	[self setNeedsDisplay:YES];
 }
 
@@ -702,11 +709,11 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	
 	if([the_event clickCount] == 1)
 	{
-		Viewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 2);
+		theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 2);
 	}
 	else
 	{
-		Viewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 2);
+		theViewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 2);
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -720,11 +727,11 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
 	if([the_event clickCount] == 1)
 	{
-		Viewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, button_number+1);
+		theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, button_number+1);
 	}
 	else
 	{
-		Viewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, button_number+1);
+		theViewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, button_number+1);
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -736,7 +743,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	// local view coordinate system.	NSPoint the_point = [the_event locationInWindow];
  	NSPoint the_point = [the_event locationInWindow];
 	NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-	Viewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 2);
+	theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 2);
 	[self setNeedsDisplay:YES];
 }
 
@@ -746,7 +753,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	// local view coordinate system.	NSPoint the_point = [the_event locationInWindow];
 	NSPoint the_point = [the_event locationInWindow];
 	NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-	Viewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, button_number+1);
+	theViewer->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, button_number+1);
 	
 	[self setNeedsDisplay:YES];
 }
@@ -764,14 +771,14 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	// Unfortunately, it turns out mouseScroll2D doesn't actually do anything.
 	// The camera manipulators don't seem to implement any code that utilize the scroll values.
 	// This this call does nothing.
-//	Viewer->getEventQueue()->mouseScroll2D([the_event deltaX], [the_event deltaY]);
+//	theViewer->getEventQueue()->mouseScroll2D([the_event deltaX], [the_event deltaY]);
 
 	// With the absense of a useful mouseScroll2D API, we can manually simulate the desired effect.
 	NSPoint the_point = [the_event locationInWindow];
 	NSPoint converted_point = [self convertPoint:the_point fromView:nil];
-	Viewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
-	Viewer->getEventQueue()->mouseMotion(converted_point.x + -[the_event deltaX], converted_point.y + [the_event deltaY]);
-	Viewer->getEventQueue()->mouseButtonRelease(converted_point.x + -[the_event deltaX], converted_point.y + [the_event deltaY], 1);
+	theViewer->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
+	theViewer->getEventQueue()->mouseMotion(converted_point.x + -[the_event deltaX], converted_point.y + [the_event deltaY]);
+	theViewer->getEventQueue()->mouseButtonRelease(converted_point.x + -[the_event deltaX], converted_point.y + [the_event deltaY], 1);
 
 	[self setNeedsDisplay:YES];
 }
@@ -797,7 +804,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
 	unichar unicode_character = [event_characters characterAtIndex:0];
 //	NSLog(@"unicode_character: %d", unicode_character);
-	Viewer->getEventQueue()->keyPress(static_cast<osgGA::GUIEventAdapter::KeySymbol>(unicode_character));
+	theViewer->getEventQueue()->keyPress(static_cast<osgGA::GUIEventAdapter::KeySymbol>(unicode_character));
 
 	[self setNeedsDisplay:YES];
 }
@@ -808,7 +815,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSString* event_characters = [the_event characters];
 //	NSString* event_characters = [the_event charactersIgnoringModifiers];
 	unichar unicode_character = [event_characters characterAtIndex:0];
-	Viewer->getEventQueue()->keyRelease(static_cast<osgGA::GUIEventAdapter::KeySymbol>(unicode_character));
+	theViewer->getEventQueue()->keyRelease(static_cast<osgGA::GUIEventAdapter::KeySymbol>(unicode_character));
 	[self setNeedsDisplay:YES];
 }
 
@@ -842,7 +849,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	NSSize size_in_points = [self bounds].size;
 	// This coordinate system conversion seems to make things work with Quartz Debug.
 	NSSize size_in_window_coordinates = [self convertSize:size_in_points toView:nil];
-	Viewer->getEventQueue()->windowResize(0, 0, size_in_window_coordinates.width, size_in_window_coordinates.height);
+	theViewer->getEventQueue()->windowResize(0, 0, size_in_window_coordinates.width, size_in_window_coordinates.height);
 	graphicsWindow->resized(0, 0, size_in_window_coordinates.width, size_in_window_coordinates.height);
 }
 
@@ -861,13 +868,13 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 {
 	if([[NSGraphicsContext currentContext] isDrawingToScreen])
 	{
-//		[[self openGLContext] makeCurrentContext];
-		Viewer->frame();
+		[[self openGLContext] makeCurrentContext];
+		theViewer->frame();
 		[[self openGLContext] flushBuffer];
 	}
 	else // This is usually the print case
 	{
-//		[[self openGLContext] makeCurrentContext];
+		[[self openGLContext] makeCurrentContext];
 
 		// FIXME: We should be computing a size that fits best to the paper target
 		NSSize size_in_points = [self bounds].size;
@@ -903,7 +910,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 {
 	NSSize size_in_points = [self bounds].size;
 	NSSize size_in_window_coordinates = [self convertSize:size_in_points toView:nil];
-	const osg::Vec4& clear_color = Viewer->getCamera()->getClearColor();
+	const osg::Vec4& clear_color = theViewer->getCamera()->getClearColor();
 
 	return [self renderOpenGLSceneToFramebufferAsFormat:GL_RGB viewWidth:size_in_window_coordinates.width viewHeight:size_in_window_coordinates.height clearColorRed:clear_color[0] clearColorGreen:clear_color[1] clearColorBlue:clear_color[2] clearColorAlpha:clear_color[3]];
 }
@@ -911,7 +918,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 // Convenience version. Allows you to specify the view and height and format, but uses the current the current clear color.
 - (NSBitmapImageRep*) renderOpenGLSceneToFramebufferAsFormat:(int)gl_format viewWidth:(float)view_width viewHeight:(float)view_height
 {
-	const osg::Vec4& clear_color = Viewer->getCamera()->getClearColor();
+	const osg::Vec4& clear_color = theViewer->getCamera()->getClearColor();
 
 	return [self renderOpenGLSceneToFramebufferAsFormat:gl_format viewWidth:view_width viewHeight:view_height clearColorRed:clear_color[0] clearColorGreen:clear_color[1] clearColorBlue:clear_color[2] clearColorAlpha:clear_color[3]];
 }
@@ -1003,9 +1010,9 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	// Can't find a way to query Viewer for the current values, so recompute current view size.
 	NSSize original_size_in_points = [self bounds].size;
 	NSSize original_size_in_window_coordinates = [self convertSize:original_size_in_points toView:nil];
-//	Viewer->getEventQueue()->windowResize(0, 0, original_size_in_window_coordinates.width, original_size_in_window_coordinates.height);
+//	theViewer->getEventQueue()->windowResize(0, 0, original_size_in_window_coordinates.width, original_size_in_window_coordinates.height);
 
-	Viewer->getEventQueue()->windowResize(0, 0, viewport_width, viewport_height);
+	theViewer->getEventQueue()->windowResize(0, 0, viewport_width, viewport_height);
 	graphicsWindow->resized(0, 0, viewport_width, viewport_height);
 
 	/*
@@ -1024,7 +1031,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	 * But the problem doesn't seem critical. It just looks bad.
 	 */
 	//NSLog(@"Before camera glGetError: %s", gluErrorString(glGetError()));
-	osg::Camera* root_camera = Viewer->getCamera();
+	osg::Camera* root_camera = theViewer->getCamera();
 
 	// I originally tried the clone() method and the copy construction, but it didn't work right,
 	// so I manually copy the attributes.
@@ -1048,12 +1055,12 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
 	// We need to insert the new (second) camera into the scene (below the root camera) and attach 
 	// the scene data to the new camera.
-	osg::ref_ptr<osg::Node> root_node = Viewer->getSceneData();
+	osg::ref_ptr<osg::Node> root_node = theViewer->getSceneData();
 
 	the_camera->addChild(root_node.get());
 	// Don't call (bypass) Viewer's setSceneData, but the underlying SceneView's setSceneData.
 	// Otherwise, the camera position gets reset to the home position.
-	Viewer->setSceneData(the_camera);
+	theViewer->setSceneData(the_camera);
 
 	// set the camera to render before the main camera.
 	the_camera->setRenderOrder(osg::Camera::PRE_RENDER);
@@ -1070,7 +1077,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
 
 	// Render the scene
-	Viewer->frame();
+	theViewer->frame();
 
 	// Not sure if I really need this (seems to work without it), and if so, not sure if I need flush or finish
 	glFlush();
@@ -1088,8 +1095,8 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 //	the_camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER);
 	// Don't call (bypass) Viewer's setSceneData, but the underlying SceneView's setSceneData.
 	// Otherwise, the camera position gets reset to the home position.
-	Viewer->setSceneData(root_node.get());
-	Viewer->getEventQueue()->windowResize(0, 0, original_size_in_window_coordinates.width, original_size_in_window_coordinates.height);
+	theViewer->setSceneData(root_node.get());
+	theViewer->getEventQueue()->windowResize(0, 0, original_size_in_window_coordinates.width, original_size_in_window_coordinates.height);
 	graphicsWindow->resized(0, 0, original_size_in_window_coordinates.width, original_size_in_window_coordinates.height);
 
 
@@ -1170,7 +1177,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 			NSLog(@"File: %@ failed to load", single_file);
 			return NO;
 		}
-		Viewer->setSceneData(loaded_model.get());
+		theViewer->setSceneData(loaded_model.get());
 		return YES;
     }
 	else if([[paste_board types] containsObject:NSURLPboardType])
@@ -1189,7 +1196,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 			NSLog(@"URL: %@ failed to load, %@", file_url, file_path);
 			return NO;
 		}
-		Viewer->setSceneData(loaded_model.get());
+		theViewer->setSceneData(loaded_model.get());
 		return YES;
 	}
     return NO;
@@ -1224,6 +1231,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
 - (NSData*) dataWithTIFFOfContentView
 {
+	[[self openGLContext] makeCurrentContext];
 	NSBitmapImageRep * image = [self renderOpenGLSceneToFramebuffer];
 	NSData* data = nil;
 
@@ -1258,6 +1266,8 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 
 	// Create the image that will be dragged
 	NSString * type = NSTIFFPboardType;
+
+	[[self openGLContext] makeCurrentContext];
 
 	// I want two images. One to be rendered for the target, and one as the drag-image.
 	// I want the drag-image to be translucent.
@@ -1327,15 +1337,17 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 // Connect a button to this to stop and reset the position.
 - (IBAction) resetPosition:(id)the_sender
 {
-	//	osgGA::MatrixManipulator* camera_manipulator = Viewer->getCameraManipulator();
+	//	osgGA::MatrixManipulator* camera_manipulator = theViewer->getCameraManipulator();
 	// This only resets the position
 	//	camera_manipulator->home(0.0);
 	
-	// There is no external API from Viewer that I can see that will stop movement.
+	// There is no external API from SimpleViewer that I can see that will stop movement.
 	// So fake the 'spacebar' to stop things and reset.
-	printf("I'am here"); 
+	// (Changed in Viewer?)
+	//	printf("I'am here"); 
 	
-	Viewer->home();
+	// Reset to start position
+	theViewer->home();
 	[self setNeedsDisplay:YES];
 }
 
@@ -1347,7 +1359,7 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 {
 	NSColor* the_color = [the_sender color];
 
-	Viewer->getCamera()->setClearColor(
+	theViewer->getCamera()->setClearColor(
 		osg::Vec4(
 			[the_color redComponent],
 			[the_color greenComponent],

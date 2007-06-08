@@ -1,0 +1,12 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {copy = id; resetPosition = id; takeBackgroundColorFrom = id; }; 
+            CLASS = ViewerCocoa; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOpenGLView; 
+        }
+    ); 
+    IBVersion = 1; 
+}

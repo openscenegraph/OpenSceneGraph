@@ -14,6 +14,12 @@
 #include "FreeTypeLibrary.h"
 #include <osg/Notify>
 #include <ft2build.h>
+
+//#define PRINT_OUT_FONT_DETAILS
+#ifdef PRINT_OUT_FONT_DETAILS
+    #include <freetype/ftsnames.h>
+#endif
+
 #include FT_TRUETYPE_IDS_H
 
 FreeTypeLibrary::FreeTypeLibrary()
@@ -53,7 +59,7 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
 osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index)
 {
 
-    FT_Face face;      /* handle to face object */
+    FT_Face face; /* handle to face object */
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
     if (error == FT_Err_Unknown_File_Format)
     {
@@ -68,6 +74,23 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
         return 0;
     }
     
+#ifdef PRINT_OUT_FONT_DETAILS
+
+    osg::notify(osg::NOTICE)<<"Face"<<face<<std::endl;
+    unsigned int count = FT_Get_Sfnt_Name_Count(face);
+    for(unsigned int i=0; i<count; ++i)
+    {
+        FT_SfntName names;
+        FT_Error error = FT_Get_Sfnt_Name(face, i, &names);
+        
+        std::string name((char*)names.string, (char*)names.string + names.string_len);
+        
+        osg::notify(osg::NOTICE)<<"names "<<name<<std::endl;
+    }
+
+    osg::notify(osg::NOTICE)<<std::endl;
+#endif
+
     //
     // GT: Fix to handle symbol fonts in MS Windows
     //

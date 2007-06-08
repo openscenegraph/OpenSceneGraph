@@ -152,6 +152,10 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!rootnode) rootnode = osgDB::readNodeFile("cow.osg");
+
     if (!rootnode)
     {
         osg::notify(osg::NOTICE)<<"Please specify a file on the command line"<<std::endl;

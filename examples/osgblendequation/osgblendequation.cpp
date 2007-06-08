@@ -122,12 +122,16 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("cessnafire.osg");
+  
     if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-  
+
     osg::Group* root = new osg::Group;
     root->addChild(loadedModel);
     

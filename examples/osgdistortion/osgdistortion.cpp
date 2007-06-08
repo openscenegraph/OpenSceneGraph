@@ -30,6 +30,8 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <iostream>
+
 using namespace osg;
 
 osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearColour)
@@ -644,6 +646,18 @@ int main(int argc, char** argv)
 
     // construct the viewer.
     osgViewer::Viewer viewer;
+
+    // load the nodes from the commandline arguments.
+    osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("cessnafire.osg");
+  
+    if (!loadedModel)
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        return 1;
+    }
     
 
     if (arguments.read("--dome") || arguments.read("--puffer") )
@@ -651,18 +665,18 @@ int main(int argc, char** argv)
 
         setDomeCorrection(viewer, arguments);
     
-        viewer.setSceneData( osgDB::readNodeFiles(arguments) );
+        viewer.setSceneData( loadedModel );
     }
     else if (arguments.read("--faces"))
     {    
 
         setDomeFaces(viewer, arguments);
 
-        viewer.setSceneData( osgDB::readNodeFiles(arguments) );
+        viewer.setSceneData( loadedModel );
     }
     else
     {
-        osg::Node* distortionNode = createDistortionSubgraph( osgDB::readNodeFiles(arguments), viewer.getCamera()->getClearColor());
+        osg::Node* distortionNode = createDistortionSubgraph( loadedModel, viewer.getCamera()->getClearColor());
         viewer.setSceneData( distortionNode );
     }
 

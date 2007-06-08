@@ -25,11 +25,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::TexGenNode::ReferenceFrame)
+	I_DeclaringFile("osg/TexGenNode");
 	I_EnumLabel(osg::TexGenNode::RELATIVE_RF);
 	I_EnumLabel(osg::TexGenNode::ABSOLUTE_RF);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexGenNode)
+	I_DeclaringFile("osg/TexGenNode");
 	I_BaseType(osg::Group);
 	I_Constructor0(____TexGenNode,
 	               "",

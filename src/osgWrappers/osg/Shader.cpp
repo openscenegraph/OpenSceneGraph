@@ -24,12 +24,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
+	I_DeclaringFile("osg/Shader");
 	I_EnumLabel(osg::Shader::VERTEX);
 	I_EnumLabel(osg::Shader::FRAGMENT);
 	I_EnumLabel(osg::Shader::UNDEFINED);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Shader)
+	I_DeclaringFile("osg/Shader");
 	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults1(IN, osg::Shader::Type, type, osg::Shader::UNDEFINED,
 	                           Properties::NON_EXPLICIT,

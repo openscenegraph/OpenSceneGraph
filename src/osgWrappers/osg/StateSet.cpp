@@ -43,18 +43,21 @@ TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribu
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::StateSet::RefUniformPair >, osg::StateSet::UniformList)
 
 BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderingHint)
+	I_DeclaringFile("osg/StateSet");
 	I_EnumLabel(osg::StateSet::DEFAULT_BIN);
 	I_EnumLabel(osg::StateSet::OPAQUE_BIN);
 	I_EnumLabel(osg::StateSet::TRANSPARENT_BIN);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderBinMode)
+	I_DeclaringFile("osg/StateSet");
 	I_EnumLabel(osg::StateSet::INHERIT_RENDERBIN_DETAILS);
 	I_EnumLabel(osg::StateSet::USE_RENDERBIN_DETAILS);
 	I_EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateSet)
+	I_DeclaringFile("osg/StateSet");
 	I_BaseType(osg::Object);
 	I_Constructor0(____StateSet,
 	               "",
@@ -648,6 +651,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateSet::Callback)
+	I_DeclaringFile("osg/StateSet");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",
@@ -684,6 +688,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet::Callback)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");
@@ -723,6 +728,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateAttribute >)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

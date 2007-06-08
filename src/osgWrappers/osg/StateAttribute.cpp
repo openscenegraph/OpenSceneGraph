@@ -36,6 +36,7 @@ TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg:
 TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList)
 
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
+	I_DeclaringFile("osg/StateAttribute");
 	I_EnumLabel(osg::StateAttribute::OFF);
 	I_EnumLabel(osg::StateAttribute::ON);
 	I_EnumLabel(osg::StateAttribute::OVERRIDE);
@@ -44,6 +45,7 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
+	I_DeclaringFile("osg/StateAttribute");
 	I_EnumLabel(osg::StateAttribute::TEXTURE);
 	I_EnumLabel(osg::StateAttribute::POLYGONMODE);
 	I_EnumLabel(osg::StateAttribute::POLYGONOFFSET);
@@ -95,6 +97,7 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
+	I_DeclaringFile("osg/StateAttribute");
 	I_BaseType(osg::Object);
 	I_Constructor0(____StateAttribute,
 	               "",
@@ -273,6 +276,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
+	I_DeclaringFile("osg/StateAttribute");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",
@@ -309,6 +313,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)
+	I_DeclaringFile("osg/StateAttribute");
 	I_Constructor0(____ModeUsage,
 	               "",
 	               "");

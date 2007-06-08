@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ColorMask)
+	I_DeclaringFile("osg/ColorMask");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____ColorMask,
 	               "",

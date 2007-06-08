@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::AngularAccelOperator)
+	I_DeclaringFile("osgParticle/AngularAccelOperator");
 	I_BaseType(osgParticle::Operator);
 	I_Constructor0(____AngularAccelOperator,
 	               "",

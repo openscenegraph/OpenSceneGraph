@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
+	I_DeclaringFile("osgFX/MultiTextureControl");
 	I_BaseType(osg::Group);
 	I_Constructor0(____MultiTextureControl,
 	               "",

@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::BoxPlacer)
+	I_DeclaringFile("osgParticle/BoxPlacer");
 	I_BaseType(osgParticle::CenteredPlacer);
 	I_Constructor0(____BoxPlacer,
 	               "",

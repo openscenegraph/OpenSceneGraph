@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::FieldReader)
+	I_DeclaringFile("osgDB/FieldReader");
 	I_Constructor0(____FieldReader,
 	               "",
 	               "");

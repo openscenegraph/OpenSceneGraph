@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
+	I_DeclaringFile("osgFX/BumpMapping");
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____BumpMapping,
 	               "",

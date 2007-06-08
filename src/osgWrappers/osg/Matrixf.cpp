@@ -31,6 +31,7 @@
 TYPE_NAME_ALIAS(float, osg::Matrixf::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Matrixf)
+	I_DeclaringFile("osg/Matrixf");
 	I_Constructor0(____Matrixf,
 	               "",
 	               "");
@@ -493,6 +494,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::RefMatrixf)
+	I_DeclaringFile("osg/Matrixf");
 	I_BaseType(osg::Object);
 	I_BaseType(osg::Matrixf);
 	I_Constructor0(____RefMatrixf,

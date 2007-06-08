@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::FireEffect)
+	I_DeclaringFile("osgParticle/FireEffect");
 	I_BaseType(osgParticle::ParticleEffect);
 	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true,
 	                           Properties::EXPLICIT,

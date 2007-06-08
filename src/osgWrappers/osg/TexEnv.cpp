@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::TexEnv::Mode)
+	I_DeclaringFile("osg/TexEnv");
 	I_EnumLabel(osg::TexEnv::DECAL);
 	I_EnumLabel(osg::TexEnv::MODULATE);
 	I_EnumLabel(osg::TexEnv::BLEND);
@@ -34,6 +35,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnv::Mode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexEnv)
+	I_DeclaringFile("osg/TexEnv");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, osg::TexEnv::Mode, mode, osg::TexEnv::MODULATE,
 	                           Properties::NON_EXPLICIT,

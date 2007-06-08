@@ -31,6 +31,7 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContex
 TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
+	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Object);
 	I_Method1(void, add, IN, osg::Operation *, operation,
 	          Properties::NON_VIRTUAL,
@@ -376,6 +377,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::ResizedCallback)
+	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ResizedCallback,
 	               "",
@@ -388,6 +390,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::ResizedCallback)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
+	I_DeclaringFile("osg/GraphicsContext");
 	I_Constructor0(____ScreenIdentifier,
 	               "",
 	               "");
@@ -411,6 +414,7 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
+	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Referenced);
 	I_BaseType(osg::GraphicsContext::ScreenIdentifier);
 	I_Constructor0(____Traits,
@@ -447,6 +451,7 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
+	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____WindowingSystemInterface,
 	               "",
@@ -479,6 +484,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Operation >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

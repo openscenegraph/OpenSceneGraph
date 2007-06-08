@@ -28,6 +28,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Box)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Box,
 	               "",
@@ -141,6 +142,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Box)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Capsule)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Capsule,
 	               "",
@@ -265,6 +267,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shape > >, osg::CompositeShape::ChildList)
 
 BEGIN_OBJECT_REFLECTOR(osg::CompositeShape)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____CompositeShape,
 	               "",
@@ -366,6 +369,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CompositeShape)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Cone)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Cone,
 	               "",
@@ -504,6 +508,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Cone)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ConstShapeVisitor)
+	I_DeclaringFile("osg/Shape");
 	I_Constructor0(____ConstShapeVisitor,
 	               "",
 	               "");
@@ -560,6 +565,7 @@ BEGIN_VALUE_REFLECTOR(osg::ConstShapeVisitor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ConvexHull)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::TriangleMesh);
 	I_Constructor0(____ConvexHull,
 	               "",
@@ -606,6 +612,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ConvexHull)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Cylinder)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Cylinder,
 	               "",
@@ -730,6 +737,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::vector< float >, osg::HeightField::HeightList)
 
 BEGIN_OBJECT_REFLECTOR(osg::HeightField)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____HeightField,
 	               "",
@@ -939,6 +947,7 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::InfinitePlane)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_BaseType(osg::Plane);
 	I_Constructor0(____InfinitePlane,
@@ -986,6 +995,7 @@ BEGIN_OBJECT_REFLECTOR(osg::InfinitePlane)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shape)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Shape,
 	               "",
@@ -1032,6 +1042,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Shape)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ShapeVisitor)
+	I_DeclaringFile("osg/Shape");
 	I_Constructor0(____ShapeVisitor,
 	               "",
 	               "");
@@ -1088,6 +1099,7 @@ BEGIN_VALUE_REFLECTOR(osg::ShapeVisitor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Sphere)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____Sphere,
 	               "",
@@ -1174,6 +1186,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Sphere)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TriangleMesh)
+	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
 	I_Constructor0(____TriangleMesh,
 	               "",
@@ -1258,6 +1271,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(osg::HeightField, osg::Grid)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
+	I_DeclaringFile("osg/Texture3D");
 	I_BaseType(osg::Texture);
 	I_Constructor0(____Texture3D,
 	               "",
@@ -242,6 +243,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
+	I_DeclaringFile("osg/Texture3D");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -393,6 +395,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture3D::SubloadCallback)
+	I_DeclaringFile("osg/Texture3D");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____SubloadCallback,
 	               "",

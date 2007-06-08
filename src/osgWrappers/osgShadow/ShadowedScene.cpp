@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
+	I_DeclaringFile("osgShadow/ShadowedScene");
 	I_BaseType(osg::Group);
 	I_ConstructorWithDefaults1(IN, osgShadow::ShadowTechnique *, st, 0,
 	                           Properties::NON_EXPLICIT,

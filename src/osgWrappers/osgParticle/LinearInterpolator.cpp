@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::LinearInterpolator)
+	I_DeclaringFile("osgParticle/LinearInterpolator");
 	I_BaseType(osgParticle::Interpolator);
 	I_Constructor0(____LinearInterpolator,
 	               "",

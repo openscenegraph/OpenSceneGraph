@@ -32,6 +32,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec3Array > >, osgSim::SphereSegment::LineList)
 
 BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
+	I_DeclaringFile("osgSim/SphereSegment");
 	I_EnumLabel(osgSim::SphereSegment::SURFACE);
 	I_EnumLabel(osgSim::SphereSegment::SPOKES);
 	I_EnumLabel(osgSim::SphereSegment::EDGELINE);
@@ -40,6 +41,7 @@ BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
+	I_DeclaringFile("osgSim/SphereSegment");
 	I_BaseType(osg::Geode);
 	I_Constructor0(____SphereSegment,
 	               "Default constructor. ",
@@ -241,6 +243,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Vec3Array >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

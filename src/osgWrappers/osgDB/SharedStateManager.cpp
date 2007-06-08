@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
+	I_DeclaringFile("osgDB/SharedStateManager");
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_NONE);
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_TEXTURES);
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_STATESETS);
@@ -31,6 +32,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
+	I_DeclaringFile("osgDB/SharedStateManager");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____SharedStateManager,
 	               "",

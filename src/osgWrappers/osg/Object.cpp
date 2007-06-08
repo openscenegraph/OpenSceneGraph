@@ -24,12 +24,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Object::DataVariance)
+	I_DeclaringFile("osg/Object");
 	I_EnumLabel(osg::Object::DYNAMIC);
 	I_EnumLabel(osg::Object::STATIC);
 	I_EnumLabel(osg::Object::UNSPECIFIED);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
+	I_DeclaringFile("osg/Object");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____Object,
 	               "Construct an object. ",

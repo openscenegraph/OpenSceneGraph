@@ -27,6 +27,7 @@ TYPE_NAME_ALIAS(char, osg::Vec4b::value_type)
 BEGIN_VALUE_REFLECTOR(osg::Vec4b)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_DeclaringFile("osg/Vec4b");
 	I_Constructor0(____Vec4b,
 	               "",
 	               "");

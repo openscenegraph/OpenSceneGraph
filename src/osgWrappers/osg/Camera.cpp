@@ -41,23 +41,27 @@
 TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap)
 
 BEGIN_ENUM_REFLECTOR(osg::Camera::TransformOrder)
+	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::PRE_MULTIPLY);
 	I_EnumLabel(osg::Camera::POST_MULTIPLY);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Camera::ProjectionResizePolicy)
+	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::FIXED);
 	I_EnumLabel(osg::Camera::HORIZONTAL);
 	I_EnumLabel(osg::Camera::VERTICAL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Camera::RenderOrder)
+	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::PRE_RENDER);
 	I_EnumLabel(osg::Camera::NESTED_RENDER);
 	I_EnumLabel(osg::Camera::POST_RENDER);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Camera::RenderTargetImplementation)
+	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::FRAME_BUFFER_OBJECT);
 	I_EnumLabel(osg::Camera::PIXEL_BUFFER_RTT);
 	I_EnumLabel(osg::Camera::PIXEL_BUFFER);
@@ -66,6 +70,7 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::RenderTargetImplementation)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
+	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::DEPTH_BUFFER);
 	I_EnumLabel(osg::Camera::STENCIL_BUFFER);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER);
@@ -80,6 +85,7 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Camera)
+	I_DeclaringFile("osg/Camera");
 	I_BaseType(osg::Transform);
 	I_BaseType(osg::CullSettings);
 	I_Constructor0(____Camera,
@@ -603,6 +609,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Camera::Attachment)
+	I_DeclaringFile("osg/Camera");
 	I_Constructor0(____Attachment,
 	               "",
 	               "");
@@ -630,6 +637,7 @@ BEGIN_VALUE_REFLECTOR(osg::Camera::Attachment)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Camera::DrawCallback)
+	I_DeclaringFile("osg/Camera");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____DrawCallback,
 	               "",

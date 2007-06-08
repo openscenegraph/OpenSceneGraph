@@ -25,12 +25,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::CullFace::Mode)
+	I_DeclaringFile("osg/CullFace");
 	I_EnumLabel(osg::CullFace::FRONT);
 	I_EnumLabel(osg::CullFace::BACK);
 	I_EnumLabel(osg::CullFace::FRONT_AND_BACK);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CullFace)
+	I_DeclaringFile("osg/CullFace");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, osg::CullFace::Mode, mode, osg::CullFace::BACK,
 	                           Properties::NON_EXPLICIT,

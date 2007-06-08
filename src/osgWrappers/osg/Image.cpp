@@ -26,12 +26,14 @@
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
 
 BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
+	I_DeclaringFile("osg/Image");
 	I_EnumLabel(osg::Image::NO_DELETE);
 	I_EnumLabel(osg::Image::USE_NEW_DELETE);
 	I_EnumLabel(osg::Image::USE_MALLOC_FREE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Image)
+	I_DeclaringFile("osg/Image");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Image,
 	               "",

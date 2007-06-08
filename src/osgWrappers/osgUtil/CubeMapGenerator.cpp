@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CubeMapGenerator)
+	I_DeclaringFile("osgUtil/CubeMapGenerator");
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults1(IN, int, texture_size, 64,
 	                           Properties::EXPLICIT,

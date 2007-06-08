@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::TextureCubeMap::Face)
+	I_DeclaringFile("osg/TextureCubeMap");
 	I_EnumLabel(osg::TextureCubeMap::POSITIVE_X);
 	I_EnumLabel(osg::TextureCubeMap::NEGATIVE_X);
 	I_EnumLabel(osg::TextureCubeMap::POSITIVE_Y);
@@ -35,6 +36,7 @@ BEGIN_ENUM_REFLECTOR(osg::TextureCubeMap::Face)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
+	I_DeclaringFile("osg/TextureCubeMap");
 	I_BaseType(osg::Texture);
 	I_Constructor0(____TextureCubeMap,
 	               "",
@@ -224,6 +226,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
+	I_DeclaringFile("osg/TextureCubeMap");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -261,6 +264,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureCubeMap::SubloadCallback)
+	I_DeclaringFile("osg/TextureCubeMap");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____SubloadCallback,
 	               "",

@@ -37,6 +37,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Array * >, osg::Geometry::ArrayList)
 TYPE_NAME_ALIAS(std::vector< osg::DrawElements * >, osg::Geometry::DrawElementsList)
 
 BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
+	I_DeclaringFile("osg/Geometry");
 	I_EnumLabel(osg::Geometry::BIND_OFF);
 	I_EnumLabel(osg::Geometry::BIND_OVERALL);
 	I_EnumLabel(osg::Geometry::BIND_PER_PRIMITIVE_SET);
@@ -45,6 +46,7 @@ BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Geometry)
+	I_DeclaringFile("osg/Geometry");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____Geometry,
 	               "",
@@ -888,6 +890,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
+	I_DeclaringFile("osg/Geometry");
 	I_Constructor0(____ArrayData,
 	               "",
 	               "");
@@ -915,6 +918,7 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::ArrayData)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
+	I_DeclaringFile("osg/Geometry");
 	I_Constructor0(____Vec3ArrayData,
 	               "",
 	               "");
@@ -942,6 +946,7 @@ BEGIN_VALUE_REFLECTOR(osg::Geometry::Vec3ArrayData)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

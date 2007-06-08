@@ -28,6 +28,7 @@
 TYPE_NAME_ALIAS(double, osg::Viewport::value_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::Viewport)
+	I_DeclaringFile("osg/Viewport");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Viewport,
 	               "",

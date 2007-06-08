@@ -31,12 +31,14 @@
 TYPE_NAME_ALIAS(std::map< double COMMA  osg::AnimationPath::ControlPoint >, osg::AnimationPath::TimeControlPointMap)
 
 BEGIN_ENUM_REFLECTOR(osg::AnimationPath::LoopMode)
+	I_DeclaringFile("osg/AnimationPath");
 	I_EnumLabel(osg::AnimationPath::SWING);
 	I_EnumLabel(osg::AnimationPath::LOOP);
 	I_EnumLabel(osg::AnimationPath::NO_LOOPING);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
+	I_DeclaringFile("osg/AnimationPath");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____AnimationPath,
 	               "",
@@ -173,6 +175,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::AnimationPath::ControlPoint)
+	I_DeclaringFile("osg/AnimationPath");
 	I_Constructor0(____ControlPoint,
 	               "",
 	               "");
@@ -261,6 +264,7 @@ BEGIN_VALUE_REFLECTOR(osg::AnimationPath::ControlPoint)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
+	I_DeclaringFile("osg/AnimationPath");
 	I_BaseType(osg::NodeCallback);
 	I_Constructor0(____AnimationPathCallback,
 	               "",

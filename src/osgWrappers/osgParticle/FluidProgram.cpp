@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::FluidProgram)
+	I_DeclaringFile("osgParticle/FluidProgram");
 	I_BaseType(osgParticle::Program);
 	I_Constructor0(____FluidProgram,
 	               "",

@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Selection)
+	I_DeclaringFile("osgManipulator/Selection");
 	I_BaseType(osg::MatrixTransform);
 	I_Constructor0(____Selection,
 	               "",

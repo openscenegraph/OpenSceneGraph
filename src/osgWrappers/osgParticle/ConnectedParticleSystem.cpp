@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
+	I_DeclaringFile("osgParticle/ConnectedParticleSystem");
 	I_BaseType(osgParticle::ParticleSystem);
 	I_Constructor0(____ConnectedParticleSystem,
 	               "",

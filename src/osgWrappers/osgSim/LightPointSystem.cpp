@@ -23,12 +23,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgSim::LightPointSystem::AnimationState)
+	I_DeclaringFile("osgSim/LightPointSystem");
 	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_ON);
 	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_OFF);
 	I_EnumLabel(osgSim::LightPointSystem::ANIMATION_RANDOM);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::LightPointSystem)
+	I_DeclaringFile("osgSim/LightPointSystem");
 	I_BaseType(osg::Object);
 	I_Constructor0(____LightPointSystem,
 	               "",

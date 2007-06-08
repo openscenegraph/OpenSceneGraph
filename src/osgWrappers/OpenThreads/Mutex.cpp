@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(OpenThreads::Mutex)
+	I_DeclaringFile("OpenThreads/Mutex");
 	I_Constructor0(____Mutex,
 	               "Constructor. ",
 	               "");

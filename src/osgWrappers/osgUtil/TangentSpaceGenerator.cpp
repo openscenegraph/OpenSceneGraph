@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
+	I_DeclaringFile("osgUtil/TangentSpaceGenerator");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TangentSpaceGenerator,
 	               "",

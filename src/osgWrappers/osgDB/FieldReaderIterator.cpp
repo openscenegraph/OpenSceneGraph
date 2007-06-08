@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::FieldReaderIterator)
+	I_DeclaringFile("osgDB/FieldReaderIterator");
 	I_Constructor0(____FieldReaderIterator,
 	               "",
 	               "");

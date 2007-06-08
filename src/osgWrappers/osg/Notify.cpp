@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::NotifySeverity)
+	I_DeclaringFile("osg/Notify");
 	I_EnumLabel(osg::ALWAYS);
 	I_EnumLabel(osg::FATAL);
 	I_EnumLabel(osg::WARN);

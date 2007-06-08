@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Scribe)
+	I_DeclaringFile("osgFX/Scribe");
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____Scribe,
 	               "",

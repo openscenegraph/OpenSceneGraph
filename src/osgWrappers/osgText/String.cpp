@@ -23,6 +23,7 @@
 TYPE_NAME_ALIAS(osgText::VectorUInt, osgText::String::vector_type)
 
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
+	I_DeclaringFile("osgText/String");
 	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);
 	I_EnumLabel(osgText::String::ENCODING_ASCII);
 	I_EnumLabel(osgText::String::ENCODING_UTF8);
@@ -36,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::String)
+	I_DeclaringFile("osgText/String");
 	I_BaseType(osgText::VectorUInt);
 	I_Constructor0(____String,
 	               "",
@@ -82,6 +84,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::String)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::VectorUInt)
+	I_DeclaringFile("osgText/String");
 	I_BaseType(std::vector<unsigned int>);
 	I_Constructor0(____VectorUInt,
 	               "",

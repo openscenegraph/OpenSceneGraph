@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::RotateSphereDragger)
+	I_DeclaringFile("osgManipulator/RotateSphereDragger");
 	I_BaseType(osgManipulator::Dragger);
 	I_Constructor0(____RotateSphereDragger,
 	               "",

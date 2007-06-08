@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::VisibilityGroup)
+	I_DeclaringFile("osgSim/VisibilityGroup");
 	I_BaseType(osg::Group);
 	I_Constructor0(____VisibilityGroup,
 	               "",

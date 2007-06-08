@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Interpolator)
+	I_DeclaringFile("osgParticle/Interpolator");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Interpolator,
 	               "",

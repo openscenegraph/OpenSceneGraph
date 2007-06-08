@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
+	I_DeclaringFile("osg/TransferFunction");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TransferFunction,
 	               "",
@@ -71,6 +72,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
+	I_DeclaringFile("osg/TransferFunction");
 	I_BaseType(osg::TransferFunction);
 	I_Constructor0(____TransferFunction1D,
 	               "",

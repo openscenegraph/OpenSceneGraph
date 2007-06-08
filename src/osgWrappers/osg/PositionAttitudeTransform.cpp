@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::PositionAttitudeTransform)
+	I_DeclaringFile("osg/PositionAttitudeTransform");
 	I_BaseType(osg::Transform);
 	I_Constructor0(____PositionAttitudeTransform,
 	               "",

@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::InsertImpostorsVisitor)
+	I_DeclaringFile("osgSim/InsertImpostorsVisitor");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____InsertImpostorsVisitor,
 	               "Default to traversing all children. ",

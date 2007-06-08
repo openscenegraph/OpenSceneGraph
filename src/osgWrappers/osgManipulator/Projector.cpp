@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::CylinderProjector);
 	I_Constructor0(____CylinderPlaneProjector,
 	               "",
@@ -54,6 +55,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____CylinderProjector,
 	               "",
@@ -97,6 +99,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____LineProjector,
 	               "",
@@ -144,6 +147,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::PlaneProjector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____PlaneProjector,
 	               "",
@@ -174,6 +178,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::PlaneProjector)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Projector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____Projector,
 	               "",
@@ -207,6 +212,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Projector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::SphereProjector);
 	I_Constructor0(____SpherePlaneProjector,
 	               "",
@@ -234,6 +240,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::SphereProjector)
+	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::Projector);
 	I_Constructor0(____SphereProjector,
 	               "",

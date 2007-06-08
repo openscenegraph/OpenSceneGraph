@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Projection)
+	I_DeclaringFile("osg/Projection");
 	I_BaseType(osg::Group);
 	I_Constructor0(____Projection,
 	               "",

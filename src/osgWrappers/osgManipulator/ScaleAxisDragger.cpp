@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleAxisDragger)
+	I_DeclaringFile("osgManipulator/ScaleAxisDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____ScaleAxisDragger,
 	               "",

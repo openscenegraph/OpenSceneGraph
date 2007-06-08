@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
+	I_DeclaringFile("osg/FrameStamp");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____FrameStamp,
 	               "",

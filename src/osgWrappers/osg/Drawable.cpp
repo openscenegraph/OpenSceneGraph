@@ -40,6 +40,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList)
 TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType)
 
 BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
+	I_DeclaringFile("osg/Drawable");
 	I_EnumLabel(osg::Drawable::VERTICES);
 	I_EnumLabel(osg::Drawable::WEIGHTS);
 	I_EnumLabel(osg::Drawable::NORMALS);
@@ -60,6 +61,7 @@ BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
+	I_DeclaringFile("osg/Drawable");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Drawable,
 	               "",
@@ -520,6 +522,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
+	I_DeclaringFile("osg/Drawable");
 	I_Constructor0(____AttributeFunctor,
 	               "",
 	               "");
@@ -581,6 +584,7 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
+	I_DeclaringFile("osg/Drawable");
 	I_BaseType(osg::Object);
 	I_Constructor0(____ComputeBoundingBoxCallback,
 	               "",
@@ -622,6 +626,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
+	I_DeclaringFile("osg/Drawable");
 	I_Constructor0(____ConstAttributeFunctor,
 	               "",
 	               "");
@@ -683,6 +688,7 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
+	I_DeclaringFile("osg/Drawable");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____CullCallback,
 	               "",
@@ -729,6 +735,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
+	I_DeclaringFile("osg/Drawable");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____DrawCallback,
 	               "",
@@ -770,6 +777,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
+	I_DeclaringFile("osg/Drawable");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____EventCallback,
 	               "",
@@ -811,6 +819,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
+	I_DeclaringFile("osg/Drawable");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -1167,6 +1176,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
+	I_DeclaringFile("osg/Drawable");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____UpdateCallback,
 	               "",

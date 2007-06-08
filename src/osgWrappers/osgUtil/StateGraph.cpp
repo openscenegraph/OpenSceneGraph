@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgUtil::LessDepthSortFunctor)
+	I_DeclaringFile("osgUtil/StateGraph");
 	I_Constructor0(____LessDepthSortFunctor,
 	               "",
 	               "");
@@ -35,6 +36,7 @@ TYPE_NAME_ALIAS(std::map< const osg::StateSet * COMMA  osg::ref_ptr< osgUtil::St
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::RenderLeaf > >, osgUtil::StateGraph::LeafList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
+	I_DeclaringFile("osgUtil/StateGraph");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____StateGraph,
 	               "",
@@ -145,6 +147,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");
@@ -184,6 +187,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::StateGraph >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::PolygonStipple)
+	I_DeclaringFile("osg/PolygonStipple");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PolygonStipple,
 	               "",

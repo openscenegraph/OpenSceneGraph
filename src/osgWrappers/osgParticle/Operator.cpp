@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Operator)
+	I_DeclaringFile("osgParticle/Operator");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Operator,
 	               "",

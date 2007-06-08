@@ -23,6 +23,7 @@
 TYPE_NAME_ALIAS(short, osg::Vec2s::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Vec2s)
+	I_DeclaringFile("osg/Vec2s");
 	I_Constructor0(____Vec2s,
 	               "",
 	               "");

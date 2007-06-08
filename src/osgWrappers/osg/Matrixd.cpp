@@ -31,6 +31,7 @@
 TYPE_NAME_ALIAS(double, osg::Matrixd::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Matrixd)
+	I_DeclaringFile("osg/Matrixd");
 	I_Constructor0(____Matrixd,
 	               "",
 	               "");
@@ -493,6 +494,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixd)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::RefMatrixd)
+	I_DeclaringFile("osg/Matrixd");
 	I_BaseType(osg::Object);
 	I_BaseType(osg::Matrixd);
 	I_Constructor0(____RefMatrixd,

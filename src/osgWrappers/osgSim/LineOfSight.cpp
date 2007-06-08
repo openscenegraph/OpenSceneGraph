@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DatabaseCacheReadCallback)
+	I_DeclaringFile("osgSim/LineOfSight");
 	I_BaseType(osgUtil::IntersectionVisitor::ReadCallback);
 	I_Constructor0(____DatabaseCacheReadCallback,
 	               "",
@@ -60,6 +61,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgSim::LineOfSight::Intersections)
 
 BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
+	I_DeclaringFile("osgSim/LineOfSight");
 	I_Constructor0(____LineOfSight,
 	               "",
 	               "");

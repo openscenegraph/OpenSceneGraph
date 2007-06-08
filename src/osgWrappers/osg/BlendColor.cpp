@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
+	I_DeclaringFile("osg/BlendColor");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____BlendColor,
 	               "",
@@ -116,6 +117,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor::Extensions)
+	I_DeclaringFile("osg/BlendColor");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

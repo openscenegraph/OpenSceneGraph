@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
+	I_DeclaringFile("osg/BlendFunc");
 	I_EnumLabel(osg::BlendFunc::DST_ALPHA);
 	I_EnumLabel(osg::BlendFunc::DST_COLOR);
 	I_EnumLabel(osg::BlendFunc::ONE);
@@ -43,6 +44,7 @@ BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
+	I_DeclaringFile("osg/BlendFunc");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____BlendFunc,
 	               "",
@@ -206,6 +208,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
+	I_DeclaringFile("osg/BlendFunc");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

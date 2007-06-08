@@ -28,6 +28,7 @@ TYPE_NAME_ALIAS(double, osg::Vec2d::value_type)
 BEGIN_VALUE_REFLECTOR(osg::Vec2d)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_DeclaringFile("osg/Vec2d");
 	I_Constructor0(____Vec2d,
 	               "",
 	               "");

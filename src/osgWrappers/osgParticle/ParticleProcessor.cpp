@@ -28,11 +28,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleProcessor::ReferenceFrame)
+	I_DeclaringFile("osgParticle/ParticleProcessor");
 	I_EnumLabel(osgParticle::ParticleProcessor::RELATIVE_RF);
 	I_EnumLabel(osgParticle::ParticleProcessor::ABSOLUTE_RF);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
+	I_DeclaringFile("osgParticle/ParticleProcessor");
 	I_BaseType(osg::Node);
 	I_Constructor0(____ParticleProcessor,
 	               "",

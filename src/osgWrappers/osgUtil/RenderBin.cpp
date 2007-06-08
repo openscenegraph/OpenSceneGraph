@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgUtil::RegisterRenderBinProxy)
+	I_DeclaringFile("osgUtil/RenderBin");
 	I_Constructor2(IN, const std::string &, binName, IN, osgUtil::RenderBin *, proto,
 	               ____RegisterRenderBinProxy__C5_std_string_R1__RenderBin_P1,
 	               "",
@@ -42,6 +43,7 @@ TYPE_NAME_ALIAS(std::vector< osgUtil::StateGraph * >, osgUtil::RenderBin::StateG
 TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUtil::RenderBin::RenderBinList)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
+	I_DeclaringFile("osgUtil/RenderBin");
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE);
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE_THEN_FRONT_TO_BACK);
 	I_EnumLabel(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
@@ -49,6 +51,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
+	I_DeclaringFile("osgUtil/RenderBin");
 	I_BaseType(osg::Object);
 	I_Constructor0(____RenderBin,
 	               "",
@@ -324,6 +327,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::DrawCallback)
+	I_DeclaringFile("osgUtil/RenderBin");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____DrawCallback,
 	               "",
@@ -336,6 +340,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::DrawCallback)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::SortCallback)
+	I_DeclaringFile("osgUtil/RenderBin");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____SortCallback,
 	               "",
@@ -348,6 +353,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::RenderBin::SortCallback)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderBin >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

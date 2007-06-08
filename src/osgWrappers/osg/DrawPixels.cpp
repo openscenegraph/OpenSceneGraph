@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawPixels)
+	I_DeclaringFile("osg/DrawPixels");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____DrawPixels,
 	               "",

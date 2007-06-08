@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
+	I_DeclaringFile("osgGA/GUIEventHandler");
 	I_BaseType(osg::NodeCallback);
 	I_BaseType(osg::Drawable::EventCallback);
 	I_Constructor0(____GUIEventHandler,
@@ -86,6 +87,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgGA::GUIEventHandlerVisitor)
+	I_DeclaringFile("osgGA/GUIEventHandler");
 	I_Constructor0(____GUIEventHandlerVisitor,
 	               "",
 	               "");

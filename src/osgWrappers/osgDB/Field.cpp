@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgDB::Field::FieldType)
+	I_DeclaringFile("osgDB/Field");
 	I_EnumLabel(osgDB::Field::OPEN_BRACKET);
 	I_EnumLabel(osgDB::Field::CLOSE_BRACKET);
 	I_EnumLabel(osgDB::Field::STRING);
@@ -32,6 +33,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::Field::FieldType)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::Field)
+	I_DeclaringFile("osgDB/Field");
 	I_Constructor0(____Field,
 	               "",
 	               "");

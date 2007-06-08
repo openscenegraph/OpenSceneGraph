@@ -24,6 +24,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::ConvexPlanarPolygon::VertexList)
 
 BEGIN_VALUE_REFLECTOR(osg::ConvexPlanarPolygon)
+	I_DeclaringFile("osg/ConvexPlanarPolygon");
 	I_Constructor0(____ConvexPlanarPolygon,
 	               "",
 	               "");

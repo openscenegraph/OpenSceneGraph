@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Depth::Function)
+	I_DeclaringFile("osg/Depth");
 	I_EnumLabel(osg::Depth::NEVER);
 	I_EnumLabel(osg::Depth::LESS);
 	I_EnumLabel(osg::Depth::EQUAL);
@@ -36,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osg::Depth::Function)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Depth)
+	I_DeclaringFile("osg/Depth");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults4(IN, osg::Depth::Function, func, osg::Depth::LESS, IN, double, zNear, 0.0, IN, double, zFar, 1.0, IN, bool, writeMask, true,
 	                           ____Depth__Function__double__double__bool,

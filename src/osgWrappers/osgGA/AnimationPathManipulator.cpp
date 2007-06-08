@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
+	I_DeclaringFile("osgGA/AnimationPathManipulator");
 	I_BaseType(osgGA::MatrixManipulator);
 	I_ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0,
 	                           Properties::NON_EXPLICIT,

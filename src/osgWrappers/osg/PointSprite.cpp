@@ -25,11 +25,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::PointSprite::CoordOriginMode)
+	I_DeclaringFile("osg/PointSprite");
 	I_EnumLabel(osg::PointSprite::UPPER_LEFT);
 	I_EnumLabel(osg::PointSprite::LOWER_LEFT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
+	I_DeclaringFile("osg/PointSprite");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PointSprite,
 	               "",

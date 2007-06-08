@@ -34,6 +34,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullStack::Occlud
 TYPE_NAME_ALIAS(std::vector< osg::CullingSet >, osg::CullStack::CullingStack)
 
 BEGIN_OBJECT_REFLECTOR(osg::CullStack)
+	I_DeclaringFile("osg/CullStack");
 	I_BaseType(osg::CullSettings);
 	I_Constructor0(____CullStack,
 	               "",

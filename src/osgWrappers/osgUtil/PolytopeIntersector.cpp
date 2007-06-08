@@ -27,6 +27,7 @@
 TYPE_NAME_ALIAS(std::set< osgUtil::PolytopeIntersector::Intersection >, osgUtil::PolytopeIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PolytopeIntersector)
+	I_DeclaringFile("osgUtil/PolytopeIntersector");
 	I_BaseType(osgUtil::Intersector);
 	I_Constructor1(IN, const osg::Polytope &, polytope,
 	               Properties::NON_EXPLICIT,
@@ -95,6 +96,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PolytopeIntersector)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::PolytopeIntersector::Intersection)
+	I_DeclaringFile("osgUtil/PolytopeIntersector");
 	I_Constructor0(____Intersection,
 	               "",
 	               "");

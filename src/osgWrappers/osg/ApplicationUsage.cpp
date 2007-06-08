@@ -23,12 +23,14 @@
 TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osg::ApplicationUsage::UsageMap)
 
 BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
+	I_DeclaringFile("osg/ApplicationUsage");
 	I_EnumLabel(osg::ApplicationUsage::COMMAND_LINE_OPTION);
 	I_EnumLabel(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE);
 	I_EnumLabel(osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
+	I_DeclaringFile("osg/ApplicationUsage");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ApplicationUsage,
 	               "",
@@ -189,6 +191,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ApplicationUsageProxy)
+	I_DeclaringFile("osg/ApplicationUsage");
 	I_Constructor3(IN, osg::ApplicationUsage::Type, type, IN, const std::string &, option, IN, const std::string &, explanation,
 	               ____ApplicationUsageProxy__ApplicationUsage_Type__C5_std_string_R1__C5_std_string_R1,
 	               "register an explanation of commandline/evironmentalvaraible/keyboard mouse usage. ",

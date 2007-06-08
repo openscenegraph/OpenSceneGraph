@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(OpenThreads::Barrier)
+	I_DeclaringFile("OpenThreads/Barrier");
 	I_ConstructorWithDefaults1(IN, int, numThreads, 0,
 	                           Properties::NON_EXPLICIT,
 	                           ____Barrier__int,

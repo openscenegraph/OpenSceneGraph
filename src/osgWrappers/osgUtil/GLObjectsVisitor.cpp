@@ -29,6 +29,7 @@
 TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
+	I_DeclaringFile("osgUtil/GLObjectsVisitor");
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS);
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS);
 	I_EnumLabel(osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS);
@@ -41,6 +42,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
+	I_DeclaringFile("osgUtil/GLObjectsVisitor");
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES,
 	                           Properties::NON_EXPLICIT,

@@ -29,6 +29,7 @@ TYPE_NAME_ALIAS(std::vector< bool >, osgSim::MultiSwitch::ValueList)
 TYPE_NAME_ALIAS(std::vector< osgSim::MultiSwitch::ValueList >, osgSim::MultiSwitch::SwitchSetList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::MultiSwitch)
+	I_DeclaringFile("osgSim/MultiSwitch");
 	I_BaseType(osg::Group);
 	I_Constructor0(____MultiSwitch,
 	               "",

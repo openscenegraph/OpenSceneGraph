@@ -31,6 +31,7 @@ TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::VertexProgram::LocalPa
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::VertexProgram::MatrixList)
 
 BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
+	I_DeclaringFile("osg/VertexProgram");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____VertexProgram,
 	               "",
@@ -195,6 +196,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VertexProgram::Extensions)
+	I_DeclaringFile("osg/VertexProgram");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

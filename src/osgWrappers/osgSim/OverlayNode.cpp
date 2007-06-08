@@ -27,12 +27,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgSim::OverlayNode::OverlayTechnique)
+	I_DeclaringFile("osgSim/OverlayNode");
 	I_EnumLabel(osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);
 	I_EnumLabel(osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);
 	I_EnumLabel(osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
+	I_DeclaringFile("osgSim/OverlayNode");
 	I_BaseType(osg::Group);
 	I_ConstructorWithDefaults1(IN, osgSim::OverlayNode::OverlayTechnique, technique, osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY,
 	                           Properties::NON_EXPLICIT,

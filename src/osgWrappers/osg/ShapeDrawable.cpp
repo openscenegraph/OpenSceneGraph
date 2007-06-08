@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
+	I_DeclaringFile("osg/ShapeDrawable");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ShapeDrawable,
 	               "",
@@ -135,11 +136,13 @@ BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TessellationHints::TessellationMode)
+	I_DeclaringFile("osg/ShapeDrawable");
 	I_EnumLabel(osg::TessellationHints::USE_SHAPE_DEFAULTS);
 	I_EnumLabel(osg::TessellationHints::USE_TARGET_NUM_FACES);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TessellationHints)
+	I_DeclaringFile("osg/ShapeDrawable");
 	I_BaseType(osg::Object);
 	I_Constructor0(____TessellationHints,
 	               "",

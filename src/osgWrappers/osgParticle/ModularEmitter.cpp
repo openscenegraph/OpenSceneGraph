@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
+	I_DeclaringFile("osgParticle/ModularEmitter");
 	I_BaseType(osgParticle::Emitter);
 	I_Constructor0(____ModularEmitter,
 	               "",

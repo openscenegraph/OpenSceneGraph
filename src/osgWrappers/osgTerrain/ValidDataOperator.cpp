@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::NoDataValue)
+	I_DeclaringFile("osgTerrain/ValidDataOperator");
 	I_BaseType(osgTerrain::ValidDataOperator);
 	I_Constructor1(IN, float, value,
 	               Properties::NON_EXPLICIT,
@@ -50,6 +51,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::NoDataValue)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ValidDataOperator)
+	I_DeclaringFile("osgTerrain/ValidDataOperator");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ValidDataOperator,
 	               "",
@@ -57,6 +59,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ValidDataOperator)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ValidRange)
+	I_DeclaringFile("osgTerrain/ValidDataOperator");
 	I_BaseType(osgTerrain::ValidDataOperator);
 	I_Constructor2(IN, float, minValue, IN, float, maxValue,
 	               ____ValidRange__float__float,

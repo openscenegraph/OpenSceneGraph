@@ -35,12 +35,14 @@
 TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap)
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::CharacterSizeMode)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::OBJECT_COORDS);
 	I_EnumLabel(osgText::Text::SCREEN_COORDS);
 	I_EnumLabel(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::AlignmentType)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::LEFT_TOP);
 	I_EnumLabel(osgText::Text::LEFT_CENTER);
 	I_EnumLabel(osgText::Text::LEFT_BOTTOM);
@@ -60,6 +62,7 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::AlignmentType)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::AxisAlignment)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::XY_PLANE);
 	I_EnumLabel(osgText::Text::REVERSED_XY_PLANE);
 	I_EnumLabel(osgText::Text::XZ_PLANE);
@@ -70,18 +73,21 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::AxisAlignment)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::Layout)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::LEFT_TO_RIGHT);
 	I_EnumLabel(osgText::Text::RIGHT_TO_LEFT);
 	I_EnumLabel(osgText::Text::VERTICAL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::DrawModeMask)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::TEXT);
 	I_EnumLabel(osgText::Text::BOUNDINGBOX);
 	I_EnumLabel(osgText::Text::ALIGNMENT);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
 	I_EnumLabel(osgText::Text::DROP_SHADOW_CENTER_RIGHT);
 	I_EnumLabel(osgText::Text::DROP_SHADOW_TOP_RIGHT);
@@ -95,6 +101,7 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropImplementation)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::POLYGON_OFFSET);
 	I_EnumLabel(osgText::Text::NO_DEPTH_BUFFER);
 	I_EnumLabel(osgText::Text::DEPTH_RANGE);
@@ -102,12 +109,14 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropImplementation)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::ColorGradientMode)
+	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::SOLID);
 	I_EnumLabel(osgText::Text::PER_CHARACTER);
 	I_EnumLabel(osgText::Text::OVERALL);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::Text)
+	I_DeclaringFile("osgText/Text");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____Text,
 	               "",
@@ -742,6 +751,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec2 >, osgText::Text::GlyphQuads::TexCoords)
 TYPE_NAME_ALIAS(std::vector< osg::Vec4 >, osgText::Text::GlyphQuads::ColorCoords)
 
 BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
+	I_DeclaringFile("osgText/Text");
 	I_Constructor0(____GlyphQuads,
 	               "",
 	               "");
@@ -816,6 +826,7 @@ BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

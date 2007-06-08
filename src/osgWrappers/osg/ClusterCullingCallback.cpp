@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
+	I_DeclaringFile("osg/ClusterCullingCallback");
 	I_BaseType(osg::Drawable::CullCallback);
 	I_BaseType(osg::NodeCallback);
 	I_Constructor0(____ClusterCullingCallback,

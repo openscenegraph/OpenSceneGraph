@@ -26,6 +26,7 @@ TYPE_NAME_ALIAS(std::pair< int COMMA  const osg::Referenced * >, osg::DeleteHand
 TYPE_NAME_ALIAS(std::list< osg::DeleteHandler::FrameNumberObjectPair >, osg::DeleteHandler::ObjectsToDeleteList)
 
 BEGIN_OBJECT_REFLECTOR(osg::DeleteHandler)
+	I_DeclaringFile("osg/DeleteHandler");
 	I_ConstructorWithDefaults1(IN, int, numberOfFramesToRetainObjects, 0,
 	                           Properties::NON_EXPLICIT,
 	                           ____DeleteHandler__int,

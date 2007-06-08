@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate2DDragger)
+	I_DeclaringFile("osgManipulator/Translate2DDragger");
 	I_BaseType(osgManipulator::Dragger);
 	I_Constructor0(____Translate2DDragger,
 	               "",

@@ -27,6 +27,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Stats::AttributeMap >, osg::Stats::AttributeMa
 TYPE_NAME_ALIAS(std::map< std::string COMMA  bool >, osg::Stats::CollectMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::Stats)
+	I_DeclaringFile("osg/Stats");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, const std::string &, name,
 	               Properties::NON_EXPLICIT,

@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ClampColor)
+	I_DeclaringFile("osg/ClampColor");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____ClampColor,
 	               "",
@@ -130,6 +131,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ClampColor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ClampColor::Extensions)
+	I_DeclaringFile("osg/ClampColor");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

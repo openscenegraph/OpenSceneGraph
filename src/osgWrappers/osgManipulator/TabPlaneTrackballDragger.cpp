@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TabPlaneTrackballDragger)
+	I_DeclaringFile("osgManipulator/TabPlaneTrackballDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabPlaneTrackballDragger,
 	               "",

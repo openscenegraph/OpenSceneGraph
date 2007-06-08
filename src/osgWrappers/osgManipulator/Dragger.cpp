@@ -29,6 +29,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManipulator::CompositeDragger::DraggerList)
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
+	I_DeclaringFile("osgManipulator/Dragger");
 	I_BaseType(osgManipulator::Dragger);
 	I_Method0(const osgManipulator::CompositeDragger *, getComposite,
 	          Properties::VIRTUAL,
@@ -112,6 +113,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
+	I_DeclaringFile("osgManipulator/Dragger");
 	I_BaseType(osgManipulator::Selection);
 	I_Method1(void, setCommandManager, IN, osgManipulator::CommandManager *, cm,
 	          Properties::VIRTUAL,
@@ -177,6 +179,7 @@ TYPE_NAME_ALIAS(std::pair< osg::NodePath COMMA  osg::Vec3 >, osgManipulator::Poi
 TYPE_NAME_ALIAS(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >, osgManipulator::PointerInfo::IntersectionList)
 
 BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
+	I_DeclaringFile("osgManipulator/Dragger");
 	I_Constructor0(____PointerInfo,
 	               "",
 	               "");
@@ -259,6 +262,7 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

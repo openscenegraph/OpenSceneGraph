@@ -25,18 +25,21 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Mode)
+	I_DeclaringFile("osg/PolygonMode");
 	I_EnumLabel(osg::PolygonMode::POINT);
 	I_EnumLabel(osg::PolygonMode::LINE);
 	I_EnumLabel(osg::PolygonMode::FILL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Face)
+	I_DeclaringFile("osg/PolygonMode");
 	I_EnumLabel(osg::PolygonMode::FRONT_AND_BACK);
 	I_EnumLabel(osg::PolygonMode::FRONT);
 	I_EnumLabel(osg::PolygonMode::BACK);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::PolygonMode)
+	I_DeclaringFile("osg/PolygonMode");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PolygonMode,
 	               "",

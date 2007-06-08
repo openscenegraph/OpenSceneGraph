@@ -32,6 +32,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Matrix2)
+	I_DeclaringFile("osg/Uniform");
 	I_Constructor0(____Matrix2,
 	               "",
 	               "");
@@ -77,6 +78,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrix2)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Matrix3)
+	I_DeclaringFile("osg/Uniform");
 	I_Constructor0(____Matrix3,
 	               "",
 	               "");
@@ -124,6 +126,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::Uniform::ParentList)
 
 BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
+	I_DeclaringFile("osg/Uniform");
 	I_EnumLabel(osg::Uniform::FLOAT);
 	I_EnumLabel(osg::Uniform::FLOAT_VEC2);
 	I_EnumLabel(osg::Uniform::FLOAT_VEC3);
@@ -149,6 +152,7 @@ BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Uniform)
+	I_DeclaringFile("osg/Uniform");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Uniform,
 	               "",
@@ -820,6 +824,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Uniform::Callback)
+	I_DeclaringFile("osg/Uniform");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",

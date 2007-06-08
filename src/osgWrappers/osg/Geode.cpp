@@ -31,6 +31,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Drawable > >, osg::Geode::DrawableList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Geode)
+	I_DeclaringFile("osg/Geode");
 	I_BaseType(osg::Node);
 	I_Constructor0(____Geode,
 	               "",
@@ -173,6 +174,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Drawable >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

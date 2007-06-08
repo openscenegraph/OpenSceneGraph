@@ -30,6 +30,7 @@
 TYPE_NAME_ALIAS(osg::VectorGLsizei, osg::DrawArrayLengths::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrayLengths)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::PrimitiveSet);
 	I_BaseType(osg::VectorGLsizei);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -129,6 +130,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawArrayLengths)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::PrimitiveSet);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
 	                           Properties::NON_EXPLICIT,
@@ -232,6 +234,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::PrimitiveSet);
 	I_ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0,
 	                           ____DrawElements__Type__GLenum,
@@ -305,6 +308,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUByte)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::DrawElements);
 	I_BaseType(osg::VectorGLubyte);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -410,6 +414,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(osg::VectorGLuint, osg::DrawElementsUInt::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUInt)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::DrawElements);
 	I_BaseType(osg::VectorGLuint);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -515,6 +520,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(osg::VectorGLushort, osg::DrawElementsUShort::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::DrawElements);
 	I_BaseType(osg::VectorGLushort);
 	I_ConstructorWithDefaults1(IN, GLenum, mode, 0,
@@ -618,6 +624,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawElementsUShort)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveFunctor)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_Constructor0(____PrimitiveFunctor,
 	               "",
 	               "");
@@ -699,6 +706,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveFunctor)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveIndexFunctor)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_Constructor0(____PrimitiveIndexFunctor,
 	               "",
 	               "");
@@ -755,6 +763,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveIndexFunctor)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Type)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_EnumLabel(osg::PrimitiveSet::PrimitiveType);
 	I_EnumLabel(osg::PrimitiveSet::DrawArraysPrimitiveType);
 	I_EnumLabel(osg::PrimitiveSet::DrawArrayLengthsPrimitiveType);
@@ -764,6 +773,7 @@ BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Type)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Mode)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_EnumLabel(osg::PrimitiveSet::POINTS);
 	I_EnumLabel(osg::PrimitiveSet::LINES);
 	I_EnumLabel(osg::PrimitiveSet::LINE_STRIP);
@@ -777,6 +787,7 @@ BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Mode)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0,
 	                           ____PrimitiveSet__Type__GLenum,
@@ -927,6 +938,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLsizei)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(std::vector<GLsizei>);
 	I_Constructor0(____VectorGLsizei,
 	               "",
@@ -948,6 +960,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLsizei)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLubyte)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(std::vector<GLubyte>);
 	I_Constructor0(____VectorGLubyte,
 	               "",
@@ -969,6 +982,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLubyte)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLuint)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(std::vector<GLuint>);
 	I_Constructor0(____VectorGLuint,
 	               "",
@@ -990,6 +1004,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VectorGLuint)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::VectorGLushort)
+	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(std::vector<GLushort>);
 	I_Constructor0(____VectorGLushort,
 	               "",

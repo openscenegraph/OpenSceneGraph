@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(OpenThreads::ReentrantMutex)
+	I_DeclaringFile("OpenThreads/ReentrantMutex");
 	I_BaseType(OpenThreads::Mutex);
 	I_Constructor0(____ReentrantMutex,
 	               "",

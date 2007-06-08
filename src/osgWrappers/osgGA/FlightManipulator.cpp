@@ -26,11 +26,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgGA::FlightManipulator::YawControlMode)
+	I_DeclaringFile("osgGA/FlightManipulator");
 	I_EnumLabel(osgGA::FlightManipulator::YAW_AUTOMATICALLY_WHEN_BANKED);
 	I_EnumLabel(osgGA::FlightManipulator::NO_AUTOMATIC_YAW);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::FlightManipulator)
+	I_DeclaringFile("osgGA/FlightManipulator");
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____FlightManipulator,
 	               "",

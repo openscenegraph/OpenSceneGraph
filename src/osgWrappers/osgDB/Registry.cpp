@@ -38,6 +38,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::basic_type_wrapper)
+	I_DeclaringFile("osgDB/Registry");
 	I_Constructor0(____basic_type_wrapper,
 	               "",
 	               "");
@@ -49,6 +50,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::basic_type_wrapper)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::PluginFunctionProxy)
+	I_DeclaringFile("osgDB/Registry");
 	I_Constructor1(IN, CPluginFunction, function,
 	               Properties::NON_EXPLICIT,
 	               ____PluginFunctionProxy__CPluginFunction,
@@ -57,6 +59,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::PluginFunctionProxy)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
+	I_DeclaringFile("osgDB/Registry");
 	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE,
 	                           ____RegisterDotOsgWrapperProxy__osg_Object_P1__C5_std_string_R1__C5_std_string_R1__DotOsgWrapper_ReadFunc__DotOsgWrapper_WriteFunc__DotOsgWrapper_ReadWriteMode,
 	                           "",
@@ -64,6 +67,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
+	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
 	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, commandLine,
 	          Properties::NON_VIRTUAL,
@@ -525,6 +529,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
+	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ReadFileCallback,
 	               "",
@@ -557,6 +562,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
+	I_DeclaringFile("osgDB/Registry");
 	I_Constructor2(IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
 	               ____ReadFunctor__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	               "",
@@ -580,6 +586,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
+	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____WriteFileCallback,
 	               "",

@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgFlightUtil::Optimizer::OptimizationOptions)
+	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_EnumLabel(osgFlightUtil::Optimizer::TESSELLATE_POLYGON);
 	I_EnumLabel(osgFlightUtil::Optimizer::MERGE_GEODES);
 	I_EnumLabel(osgFlightUtil::Optimizer::MAKE_LIT);
@@ -32,6 +33,7 @@ BEGIN_ENUM_REFLECTOR(osgFlightUtil::Optimizer::OptimizationOptions)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgFlightUtil::Optimizer)
+	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_Constructor0(____Optimizer,
 	               "",
 	               "");
@@ -48,6 +50,7 @@ BEGIN_VALUE_REFLECTOR(osgFlightUtil::Optimizer)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
+	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MakeLitVisitor,
 	               "default to traversing all children. ",
@@ -60,6 +63,7 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
+	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MergeGeodesVisitor,
 	               "default to traversing all children. ",
@@ -83,6 +87,7 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
+	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____TessellateVisitor,
 	               "default to traversing all children. ",

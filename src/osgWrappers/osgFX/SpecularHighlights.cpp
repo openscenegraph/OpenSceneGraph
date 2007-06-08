@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgFX::SpecularHighlights)
+	I_DeclaringFile("osgFX/SpecularHighlights");
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____SpecularHighlights,
 	               "",

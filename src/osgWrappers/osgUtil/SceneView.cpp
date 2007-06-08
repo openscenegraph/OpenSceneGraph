@@ -46,6 +46,7 @@
 TYPE_NAME_ALIAS(osgUtil::SceneView::Options, osgUtil::SceneView::LightingMode)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::Options)
+	I_DeclaringFile("osgUtil/SceneView");
 	I_EnumLabel(osgUtil::SceneView::NO_SCENEVIEW_LIGHT);
 	I_EnumLabel(osgUtil::SceneView::HEADLIGHT);
 	I_EnumLabel(osgUtil::SceneView::SKY_LIGHT);
@@ -54,6 +55,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::Options)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::ActiveUniforms)
+	I_DeclaringFile("osgUtil/SceneView");
 	I_EnumLabel(osgUtil::SceneView::FRAME_NUMBER_UNIFORM);
 	I_EnumLabel(osgUtil::SceneView::FRAME_TIME_UNIFORM);
 	I_EnumLabel(osgUtil::SceneView::DELTA_FRAME_TIME_UNIFORM);
@@ -66,11 +68,13 @@ BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::ActiveUniforms)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::FusionDistanceMode)
+	I_DeclaringFile("osgUtil/SceneView");
 	I_EnumLabel(osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE);
 	I_EnumLabel(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
+	I_DeclaringFile("osgUtil/SceneView");
 	I_BaseType(osg::Object);
 	I_BaseType(osg::CullSettings);
 	I_ConstructorWithDefaults1(IN, osg::DisplaySettings *, ds, NULL,
@@ -890,6 +894,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::SceneView::ComputeStereoMatricesCallback)
+	I_DeclaringFile("osgUtil/SceneView");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ComputeStereoMatricesCallback,
 	               "",

@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Shooter)
+	I_DeclaringFile("osgParticle/Shooter");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Shooter,
 	               "",

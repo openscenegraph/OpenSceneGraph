@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
+	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_BaseType(osgSim::ElevationRange);
@@ -66,6 +67,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
+	I_DeclaringFile("osgSim/Sector");
 	I_Constructor0(____AzimRange,
 	               "",
 	               "");
@@ -87,6 +89,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::AzimRange)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
+	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::AzimRange);
 	I_Constructor0(____AzimSector,
@@ -128,6 +131,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::AzimSector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
+	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____ConeSector,
 	               "",
@@ -202,6 +206,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ConeSector)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
+	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osgSim::Sector);
 	I_Constructor0(____DirectionalSector,
 	               "",
@@ -312,6 +317,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DirectionalSector)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
+	I_DeclaringFile("osgSim/Sector");
 	I_Constructor0(____ElevationRange,
 	               "",
 	               "");
@@ -352,6 +358,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationRange)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
+	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osgSim::Sector);
 	I_BaseType(osgSim::ElevationRange);
 	I_Constructor0(____ElevationSector,
@@ -393,6 +400,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ElevationSector)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgSim::Sector)
+	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Sector,
 	               "",

@@ -26,6 +26,7 @@
 #include <osgUtil/StateGraph>
 	
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
+	I_DeclaringFile("osgUtil/RenderLeaf");
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
 	                           ____RenderLeaf__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,

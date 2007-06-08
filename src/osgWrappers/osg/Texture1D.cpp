@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture1D)
+	I_DeclaringFile("osg/Texture1D");
 	I_BaseType(osg::Texture);
 	I_Constructor0(____Texture1D,
 	               "",
@@ -213,6 +214,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture1D)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture1D::SubloadCallback)
+	I_DeclaringFile("osg/Texture1D");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____SubloadCallback,
 	               "",

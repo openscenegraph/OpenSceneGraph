@@ -22,12 +22,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::BarrierOperation::PreBlockOp)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_EnumLabel(osg::BarrierOperation::NO_OPERATION);
 	I_EnumLabel(osg::BarrierOperation::GL_FLUSH);
 	I_EnumLabel(osg::BarrierOperation::GL_FINISH);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Operation);
 	I_BaseType(OpenThreads::Barrier);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
@@ -43,6 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
 	               ____Operation__C5_std_string_R1__bool,
@@ -84,6 +87,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Referenced);
 	I_BaseType(OpenThreads::Thread);
 	I_Constructor0(____OperationsThread,
@@ -161,6 +165,7 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_VirtualBaseType(osg::Referenced);
 	I_BaseType(OpenThreads::Block);
 	I_Constructor0(____RefBlock,
@@ -169,6 +174,7 @@ BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Operation);
 	I_BaseType(osg::RefBlock);
 	I_Constructor0(____ReleaseContext_Block_MakeCurrentOperation,
@@ -182,6 +188,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
+	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Operation);
 	I_Constructor0(____SwapBuffersOperation,
 	               "",

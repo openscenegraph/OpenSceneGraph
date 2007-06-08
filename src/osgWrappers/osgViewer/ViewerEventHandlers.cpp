@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
 	                           Properties::NON_EXPLICIT,
@@ -105,6 +106,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____RecordCameraPathHandler,
 	               "",
@@ -122,6 +124,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_EnumLabel(osgViewer::StatsHandler::NO_STATS);
 	I_EnumLabel(osgViewer::StatsHandler::FRAME_RATE);
 	I_EnumLabel(osgViewer::StatsHandler::VIEWER_STATS);
@@ -129,6 +132,7 @@ BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____StatsHandler,
 	               "",
@@ -240,6 +244,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____ThreadingHandler,
 	               "",
@@ -309,6 +314,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::WindowSizeHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____WindowSizeHandler,
 	               "",

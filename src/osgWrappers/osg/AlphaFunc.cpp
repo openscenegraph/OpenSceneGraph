@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::AlphaFunc::ComparisonFunction)
+	I_DeclaringFile("osg/AlphaFunc");
 	I_EnumLabel(osg::AlphaFunc::NEVER);
 	I_EnumLabel(osg::AlphaFunc::LESS);
 	I_EnumLabel(osg::AlphaFunc::EQUAL);
@@ -36,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osg::AlphaFunc::ComparisonFunction)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AlphaFunc)
+	I_DeclaringFile("osg/AlphaFunc");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____AlphaFunc,
 	               "",

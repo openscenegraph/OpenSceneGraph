@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::BoundingSphere)
+	I_DeclaringFile("osg/BoundingSphere");
 	I_Constructor0(____BoundingSphere,
 	               "Construct a default bounding sphere with radius to -1.0f, representing an invalid/unset bounding sphere. ",
 	               "");

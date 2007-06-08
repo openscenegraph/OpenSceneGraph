@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateAxisDragger)
+	I_DeclaringFile("osgManipulator/TranslateAxisDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TranslateAxisDragger,
 	               "",

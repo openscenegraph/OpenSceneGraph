@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::SegmentPlacer)
+	I_DeclaringFile("osgParticle/SegmentPlacer");
 	I_BaseType(osgParticle::Placer);
 	I_Constructor0(____SegmentPlacer,
 	               "",

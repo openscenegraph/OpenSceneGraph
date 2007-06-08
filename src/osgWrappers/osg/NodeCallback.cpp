@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::NodeCallback)
+	I_DeclaringFile("osg/NodeCallback");
 	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____NodeCallback,
 	               "",

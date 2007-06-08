@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ModularProgram)
+	I_DeclaringFile("osgParticle/ModularProgram");
 	I_BaseType(osgParticle::Program);
 	I_Constructor0(____ModularProgram,
 	               "",

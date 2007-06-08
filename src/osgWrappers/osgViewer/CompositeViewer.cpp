@@ -34,17 +34,20 @@ TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Composite
 TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::CompositeViewer::Scenes)
 
 BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::ThreadingModel)
+	I_DeclaringFile("osgViewer/CompositeViewer");
 	I_EnumLabel(osgViewer::CompositeViewer::SingleThreaded);
 	I_EnumLabel(osgViewer::CompositeViewer::ThreadPerContext);
 	I_EnumLabel(osgViewer::CompositeViewer::ThreadPerCamera);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::BarrierPosition)
+	I_DeclaringFile("osgViewer/CompositeViewer");
 	I_EnumLabel(osgViewer::CompositeViewer::BeforeSwapBuffers);
 	I_EnumLabel(osgViewer::CompositeViewer::AfterSwapBuffers);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
+	I_DeclaringFile("osgViewer/CompositeViewer");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CompositeViewer,
 	               "",

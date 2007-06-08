@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osgDB::ParameterOutput)
+	I_DeclaringFile("osgDB/ParameterOutput");
 	I_Constructor1(IN, osgDB::Output &, fw,
 	               Properties::NON_EXPLICIT,
 	               ____ParameterOutput__Output_R1,

@@ -39,6 +39,7 @@ TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::Viewer::Threads
 TYPE_NAME_ALIAS(std::vector< osg::OperationsThread * >, osgViewer::Viewer::OperationsThreads)
 
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
+	I_DeclaringFile("osgViewer/Viewer");
 	I_EnumLabel(osgViewer::Viewer::SingleThreaded);
 	I_EnumLabel(osgViewer::Viewer::CullDrawThreadPerContext);
 	I_EnumLabel(osgViewer::Viewer::DrawThreadPerContext);
@@ -47,11 +48,13 @@ BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::BarrierPosition)
+	I_DeclaringFile("osgViewer/Viewer");
 	I_EnumLabel(osgViewer::Viewer::BeforeSwapBuffers);
 	I_EnumLabel(osgViewer::Viewer::AfterSwapBuffers);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
+	I_DeclaringFile("osgViewer/Viewer");
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
 	               "",

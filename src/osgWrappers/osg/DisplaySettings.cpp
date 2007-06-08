@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::DisplayType)
+	I_DeclaringFile("osg/DisplaySettings");
 	I_EnumLabel(osg::DisplaySettings::MONITOR);
 	I_EnumLabel(osg::DisplaySettings::POWERWALL);
 	I_EnumLabel(osg::DisplaySettings::REALITY_CENTER);
@@ -29,6 +30,7 @@ BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::DisplayType)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::StereoMode)
+	I_DeclaringFile("osg/DisplaySettings");
 	I_EnumLabel(osg::DisplaySettings::QUAD_BUFFER);
 	I_EnumLabel(osg::DisplaySettings::ANAGLYPHIC);
 	I_EnumLabel(osg::DisplaySettings::HORIZONTAL_SPLIT);
@@ -40,16 +42,19 @@ BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::StereoMode)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoHorizontalEyeMapping)
+	I_DeclaringFile("osg/DisplaySettings");
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT);
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_RIGHT_VIEWPORT);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoVerticalEyeMapping)
+	I_DeclaringFile("osg/DisplaySettings");
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT);
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
+	I_DeclaringFile("osg/DisplaySettings");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____DisplaySettings,
 	               "",

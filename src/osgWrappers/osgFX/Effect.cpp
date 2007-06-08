@@ -25,10 +25,12 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgFX::Effect::TechniqueSelection)
+	I_DeclaringFile("osgFX/Effect");
 	I_EnumLabel(osgFX::Effect::AUTO_DETECT);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
+	I_DeclaringFile("osgFX/Effect");
 	I_BaseType(osg::Group);
 	I_Constructor0(____Effect,
 	               "",

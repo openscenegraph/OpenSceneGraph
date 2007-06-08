@@ -28,6 +28,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgManipulator::MotionCommand::Stage)
+	I_DeclaringFile("osgManipulator/Command");
 	I_EnumLabel(osgManipulator::MotionCommand::NONE);
 	I_EnumLabel(osgManipulator::MotionCommand::START);
 	I_EnumLabel(osgManipulator::MotionCommand::MOVE);
@@ -35,6 +36,7 @@ BEGIN_ENUM_REFLECTOR(osgManipulator::MotionCommand::Stage)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____MotionCommand,
 	               "",
@@ -111,6 +113,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Rotate3DCommand,
 	               "",
@@ -154,6 +157,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Scale1DCommand,
 	               "",
@@ -236,6 +240,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____Scale2DCommand,
 	               "",
@@ -318,6 +323,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____ScaleUniformCommand,
 	               "",
@@ -374,6 +380,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____TranslateInLineCommand,
 	               "",
@@ -442,6 +449,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
+	I_DeclaringFile("osgManipulator/Command");
 	I_BaseType(osgManipulator::MotionCommand);
 	I_Constructor0(____TranslateInPlaneCommand,
 	               "",

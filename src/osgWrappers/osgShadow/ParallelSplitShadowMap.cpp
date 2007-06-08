@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
+	I_DeclaringFile("osgShadow/ParallelSplitShadowMap");
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ParallelSplitShadowMap,
 	               "",

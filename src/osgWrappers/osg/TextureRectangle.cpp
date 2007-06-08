@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
+	I_DeclaringFile("osg/TextureRectangle");
 	I_BaseType(osg::Texture);
 	I_Constructor0(____TextureRectangle,
 	               "",
@@ -227,6 +228,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::TextureRectangle::SubloadCallback)
+	I_DeclaringFile("osg/TextureRectangle");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____SubloadCallback,
 	               "",

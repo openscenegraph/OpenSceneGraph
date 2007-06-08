@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
+	I_DeclaringFile("osgShadow/ShadowTechnique");
 	I_BaseType(osg::Object);
 	I_Constructor0(____ShadowTechnique,
 	               "",

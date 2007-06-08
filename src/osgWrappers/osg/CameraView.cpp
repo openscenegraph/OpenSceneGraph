@@ -27,12 +27,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::CameraView::FieldOfViewMode)
+	I_DeclaringFile("osg/CameraView");
 	I_EnumLabel(osg::CameraView::UNCONSTRAINED);
 	I_EnumLabel(osg::CameraView::HORIZONTAL);
 	I_EnumLabel(osg::CameraView::VERTICAL);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CameraView)
+	I_DeclaringFile("osg/CameraView");
 	I_BaseType(osg::Transform);
 	I_Constructor0(____CameraView,
 	               "",

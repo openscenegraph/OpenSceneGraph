@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Placer)
+	I_DeclaringFile("osgParticle/Placer");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Placer,
 	               "",

@@ -658,10 +658,7 @@ protected:
         // Set parent pools as user data
         if (document.version() >= VERSION_14_2)
         {
-            in.forward(2);
-
-            if (document.version() >= VERSION_15_1)
-                in.forward(2);
+            in.forward(4);
 
             uint32 mask = in.readUInt32(~0);
 

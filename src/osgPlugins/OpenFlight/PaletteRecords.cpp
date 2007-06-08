@@ -380,7 +380,7 @@ protected:
                 break;
             case AttrData::INTERNAL_FORMAT_DEFAULT:
             default:
-                texture->setInternalFormat(GL_RGB);
+                // Do nothing, just use the image data format
                 break;
             }
 

@@ -125,6 +125,10 @@ int main( int argc, char **argv )
 
     // load the nodes from the commandline arguments.
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+    
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osg");
+    
     if (!loadedModel)
     {
         osg::notify(osg::NOTICE)<<"Please specify model filename on the command line."<<std::endl;

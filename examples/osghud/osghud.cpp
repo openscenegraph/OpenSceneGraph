@@ -191,6 +191,10 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
     
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!scene) scene = osgDB::readNodeFile("dumptruck.osg");
+    
+    
     if (!scene)
     {
         osg::notify(osg::NOTICE)<<"No model loaded"<<std::endl;

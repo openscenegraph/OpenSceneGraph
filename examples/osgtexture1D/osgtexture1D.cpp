@@ -149,6 +149,9 @@ int main( int argc, char **argv )
 
     // load the images specified on command line
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
+  
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osg");
     
     if (!loadedModel)
     {

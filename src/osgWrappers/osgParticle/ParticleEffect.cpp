@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
+	I_DeclaringFile("osgParticle/ParticleEffect");
 	I_BaseType(osg::Group);
 	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true,
 	                           Properties::EXPLICIT,

@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::PolygonOffset)
+	I_DeclaringFile("osg/PolygonOffset");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____PolygonOffset,
 	               "",

@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
+	I_DeclaringFile("osgManipulator/AntiSquish");
 	I_BaseType(osg::MatrixTransform);
 	I_Constructor0(____AntiSquish,
 	               "",

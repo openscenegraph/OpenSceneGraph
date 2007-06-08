@@ -23,12 +23,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::MouseButtonMask)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);
 	I_EnumLabel(osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON);
 	I_EnumLabel(osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::EventType)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::NONE);
 	I_EnumLabel(osgGA::GUIEventAdapter::PUSH);
 	I_EnumLabel(osgGA::GUIEventAdapter::RELEASE);
@@ -49,6 +51,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::EventType)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::KeySymbol)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::KEY_Space);
 	I_EnumLabel(osgGA::GUIEventAdapter::KEY_BackSpace);
 	I_EnumLabel(osgGA::GUIEventAdapter::KEY_Tab);
@@ -174,6 +177,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::KeySymbol)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ModKeyMask)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL);
@@ -191,11 +195,13 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ModKeyMask)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::MouseYOrientation)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::Y_INCREASING_UPWARDS);
 	I_EnumLabel(osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ScrollingMotion)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_NONE);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_LEFT);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL_RIGHT);
@@ -205,6 +211,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ScrollingMotion)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::TabletPointerType)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::UNKNOWN);
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN);
 	I_EnumLabel(osgGA::GUIEventAdapter::PUCK);
@@ -212,6 +219,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::TabletPointerType)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
+	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_BaseType(osg::Object);
 	I_Constructor0(____GUIEventAdapter,
 	               "",

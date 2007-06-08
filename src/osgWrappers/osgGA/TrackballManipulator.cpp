@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
+	I_DeclaringFile("osgGA/TrackballManipulator");
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____TrackballManipulator,
 	               "",

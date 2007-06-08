@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ClearNode)
+	I_DeclaringFile("osg/ClearNode");
 	I_BaseType(osg::Group);
 	I_Constructor0(____ClearNode,
 	               "",

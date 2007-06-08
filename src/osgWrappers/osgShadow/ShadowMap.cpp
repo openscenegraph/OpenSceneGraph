@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
+	I_DeclaringFile("osgShadow/ShadowMap");
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ShadowMap,
 	               "",

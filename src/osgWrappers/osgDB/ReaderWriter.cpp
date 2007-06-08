@@ -27,12 +27,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ArchiveStatus)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::READ);
 	I_EnumLabel(osgDB::ReaderWriter::WRITE);
 	I_EnumLabel(osgDB::ReaderWriter::CREATE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_BaseType(osg::Object);
 	I_Constructor0(____ReaderWriter,
 	               "",
@@ -164,6 +166,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_NONE);
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_NODES);
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_IMAGES);
@@ -174,6 +177,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Options,
 	               "",
@@ -262,6 +266,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_LOADED);
@@ -270,6 +275,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_ConstructorWithDefaults1(IN, osgDB::ReaderWriter::ReadResult::ReadStatus, status, osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED,
 	                           Properties::NON_EXPLICIT,
 	                           ____ReadResult__ReadStatus,
@@ -422,12 +428,14 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::WriteResult::WriteStatus)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::WriteResult::FILE_NOT_HANDLED);
 	I_EnumLabel(osgDB::ReaderWriter::WriteResult::FILE_SAVED);
 	I_EnumLabel(osgDB::ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::WriteResult)
+	I_DeclaringFile("osgDB/ReaderWriter");
 	I_ConstructorWithDefaults1(IN, osgDB::ReaderWriter::WriteResult::WriteStatus, status, osgDB::ReaderWriter::WriteResult::FILE_NOT_HANDLED,
 	                           Properties::NON_EXPLICIT,
 	                           ____WriteResult__WriteStatus,

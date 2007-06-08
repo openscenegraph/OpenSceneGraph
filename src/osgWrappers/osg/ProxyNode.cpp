@@ -29,11 +29,13 @@
 TYPE_NAME_ALIAS(std::vector< std::string >, osg::ProxyNode::FileNameList)
 
 BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
+	I_DeclaringFile("osg/ProxyNode");
 	I_EnumLabel(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
 	I_EnumLabel(osg::ProxyNode::USER_DEFINED_CENTER);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
+	I_DeclaringFile("osg/ProxyNode");
 	I_BaseType(osg::Group);
 	I_Constructor0(____ProxyNode,
 	               "",

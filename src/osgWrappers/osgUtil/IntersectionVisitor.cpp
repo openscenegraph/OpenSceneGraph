@@ -33,6 +33,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
+	I_DeclaringFile("osgUtil/IntersectionVisitor");
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults2(IN, osgUtil::Intersector *, intersector, 0, IN, osgUtil::IntersectionVisitor::ReadCallback *, readCallback, 0,
 	                           ____IntersectionVisitor__Intersector_P1__ReadCallback_P1,
@@ -93,6 +94,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	          __osg_RefMatrix_P1__getWindowMatrix,
 	          "",
 	          "");
+	I_Method0(const osg::RefMatrix *, getWindowMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_RefMatrix_P1__getWindowMatrix,
+	          "",
+	          "");
 	I_Method1(void, pushProjectionMatrix, IN, osg::RefMatrix *, matrix,
 	          Properties::NON_VIRTUAL,
 	          __void__pushProjectionMatrix__osg_RefMatrix_P1,
@@ -106,6 +112,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_Method0(osg::RefMatrix *, getProjectionMatrix,
 	          Properties::NON_VIRTUAL,
 	          __osg_RefMatrix_P1__getProjectionMatrix,
+	          "",
+	          "");
+	I_Method0(const osg::RefMatrix *, getProjectionMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_RefMatrix_P1__getProjectionMatrix,
 	          "",
 	          "");
 	I_Method1(void, pushViewMatrix, IN, osg::RefMatrix *, matrix,
@@ -123,6 +134,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	          __osg_RefMatrix_P1__getViewMatrix,
 	          "",
 	          "");
+	I_Method0(const osg::RefMatrix *, getViewMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_RefMatrix_P1__getViewMatrix,
+	          "",
+	          "");
 	I_Method1(void, pushModelMatrix, IN, osg::RefMatrix *, matrix,
 	          Properties::NON_VIRTUAL,
 	          __void__pushModelMatrix__osg_RefMatrix_P1,
@@ -136,6 +152,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_Method0(osg::RefMatrix *, getModelMatrix,
 	          Properties::NON_VIRTUAL,
 	          __osg_RefMatrix_P1__getModelMatrix,
+	          "",
+	          "");
+	I_Method0(const osg::RefMatrix *, getModelMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_RefMatrix_P1__getModelMatrix,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osg::Node &, node,
@@ -234,6 +255,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor::ReadCallback)
+	I_DeclaringFile("osgUtil/IntersectionVisitor");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ReadCallback,
 	               "",
@@ -246,6 +268,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor::ReadCallback)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Intersector::CoordinateFrame)
+	I_DeclaringFile("osgUtil/IntersectionVisitor");
 	I_EnumLabel(osgUtil::Intersector::WINDOW);
 	I_EnumLabel(osgUtil::Intersector::PROJECTION);
 	I_EnumLabel(osgUtil::Intersector::VIEW);
@@ -253,6 +276,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Intersector::CoordinateFrame)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::Intersector)
+	I_DeclaringFile("osgUtil/IntersectionVisitor");
 	I_BaseType(osg::Referenced);
 	I_ConstructorWithDefaults1(IN, osgUtil::Intersector::CoordinateFrame, cf, osgUtil::Intersector::MODEL,
 	                           Properties::NON_EXPLICIT,
@@ -322,6 +346,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Intersector > >, osgUtil::IntersectorGroup::Intersectors)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectorGroup)
+	I_DeclaringFile("osgUtil/IntersectionVisitor");
 	I_BaseType(osgUtil::Intersector);
 	I_Constructor0(____IntersectorGroup,
 	               "",
@@ -377,6 +402,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectorGroup)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Intersector >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

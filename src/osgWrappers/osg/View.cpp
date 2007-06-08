@@ -28,12 +28,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::View::LightingMode)
+	I_DeclaringFile("osg/View");
 	I_EnumLabel(osg::View::NO_LIGHT);
 	I_EnumLabel(osg::View::HEADLIGHT);
 	I_EnumLabel(osg::View::SKY_LIGHT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::View)
+	I_DeclaringFile("osg/View");
 	I_BaseType(osg::Object);
 	I_Constructor0(____View,
 	               "",
@@ -189,6 +191,7 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::View::Slave)
+	I_DeclaringFile("osg/View");
 	I_ConstructorWithDefaults1(IN, bool, useMastersSceneData, true,
 	                           Properties::NON_EXPLICIT,
 	                           ____Slave__bool,

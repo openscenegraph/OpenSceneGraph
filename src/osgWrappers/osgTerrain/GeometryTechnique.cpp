@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
+	I_DeclaringFile("osgTerrain/GeometryTechnique");
 	I_BaseType(osgTerrain::TerrainTechnique);
 	I_Constructor0(____GeometryTechnique,
 	               "",
@@ -65,6 +66,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainGeometry)
+	I_DeclaringFile("osgTerrain/GeometryTechnique");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____TerrainGeometry,
 	               "",

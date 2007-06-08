@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::RandomRateCounter)
+	I_DeclaringFile("osgParticle/RandomRateCounter");
 	I_BaseType(osgParticle::VariableRateCounter);
 	I_Constructor0(____RandomRateCounter,
 	               "",

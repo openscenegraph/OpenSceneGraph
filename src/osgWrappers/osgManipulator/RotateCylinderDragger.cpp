@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::RotateCylinderDragger)
+	I_DeclaringFile("osgManipulator/RotateCylinderDragger");
 	I_BaseType(osgManipulator::Dragger);
 	I_Constructor0(____RotateCylinderDragger,
 	               "",

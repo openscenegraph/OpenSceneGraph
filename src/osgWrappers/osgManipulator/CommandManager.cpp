@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
+	I_DeclaringFile("osgManipulator/CommandManager");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CommandManager,
 	               "",

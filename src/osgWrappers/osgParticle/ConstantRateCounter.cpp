@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ConstantRateCounter)
+	I_DeclaringFile("osgParticle/ConstantRateCounter");
 	I_BaseType(osgParticle::Counter);
 	I_Constructor0(____ConstantRateCounter,
 	               "",

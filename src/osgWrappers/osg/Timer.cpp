@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Timer)
+	I_DeclaringFile("osg/Timer");
 	I_Constructor0(____Timer,
 	               "",
 	               "");

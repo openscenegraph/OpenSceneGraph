@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::BlendEquation::Equation)
+	I_DeclaringFile("osg/BlendEquation");
 	I_EnumLabel(osg::BlendEquation::RGBA_MIN);
 	I_EnumLabel(osg::BlendEquation::RGBA_MAX);
 	I_EnumLabel(osg::BlendEquation::ALPHA_MIN);
@@ -36,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osg::BlendEquation::Equation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
+	I_DeclaringFile("osg/BlendEquation");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____BlendEquation,
 	               "",
@@ -121,6 +123,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
+	I_DeclaringFile("osg/BlendEquation");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

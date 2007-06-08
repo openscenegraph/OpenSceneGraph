@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Technique)
+	I_DeclaringFile("osgFX/Technique");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____Technique,
 	               "",

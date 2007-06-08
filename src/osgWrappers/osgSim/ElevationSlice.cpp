@@ -30,6 +30,7 @@ TYPE_NAME_ALIAS(std::pair< double COMMA  double >, osgSim::ElevationSlice::Dista
 TYPE_NAME_ALIAS(std::vector< osgSim::ElevationSlice::DistanceHeight >, osgSim::ElevationSlice::DistanceHeightList)
 
 BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
+	I_DeclaringFile("osgSim/ElevationSlice");
 	I_Constructor0(____ElevationSlice,
 	               "",
 	               "");

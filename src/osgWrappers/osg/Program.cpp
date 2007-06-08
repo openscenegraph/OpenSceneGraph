@@ -31,6 +31,7 @@ TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindi
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::Program)
+	I_DeclaringFile("osg/Program");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Program,
 	               "",
@@ -196,6 +197,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
+	I_DeclaringFile("osg/Program");
 	I_Constructor0(____ActiveVarInfo,
 	               "",
 	               "");
@@ -209,6 +211,7 @@ BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
+	I_DeclaringFile("osg/Program");
 	I_BaseType(osg::Referenced);
 	I_Constructor2(IN, const osg::Program *, program, IN, unsigned int, contextID,
 	               ____PerContextProgram__C5_Program_P1__unsigned_int,

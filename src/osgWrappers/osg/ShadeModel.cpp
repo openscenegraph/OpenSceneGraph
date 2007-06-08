@@ -25,11 +25,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::ShadeModel::Mode)
+	I_DeclaringFile("osg/ShadeModel");
 	I_EnumLabel(osg::ShadeModel::FLAT);
 	I_EnumLabel(osg::ShadeModel::SMOOTH);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ShadeModel)
+	I_DeclaringFile("osg/ShadeModel");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, osg::ShadeModel::Mode, mode, osg::ShadeModel::SMOOTH,
 	                           Properties::NON_EXPLICIT,

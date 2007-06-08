@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::TransformAttributeFunctor)
+	I_DeclaringFile("osgUtil/TransformAttributeFunctor");
 	I_BaseType(osg::Drawable::AttributeFunctor);
 	I_Constructor1(IN, const osg::Matrix &, m,
 	               Properties::NON_EXPLICIT,

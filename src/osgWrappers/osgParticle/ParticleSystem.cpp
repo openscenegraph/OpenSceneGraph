@@ -28,11 +28,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::Alignment)
+	I_DeclaringFile("osgParticle/ParticleSystem");
 	I_EnumLabel(osgParticle::ParticleSystem::BILLBOARD);
 	I_EnumLabel(osgParticle::ParticleSystem::FIXED);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
+	I_DeclaringFile("osgParticle/ParticleSystem");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ParticleSystem,
 	               "",

@@ -34,6 +34,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
+	I_DeclaringFile("osgSim/ImpostorSprite");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____ImpostorSprite,
 	               "",
@@ -246,6 +247,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSpriteManager)
+	I_DeclaringFile("osgSim/ImpostorSprite");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ImpostorSpriteManager,
 	               "",

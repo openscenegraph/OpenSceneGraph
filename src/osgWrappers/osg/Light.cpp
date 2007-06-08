@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Light)
+	I_DeclaringFile("osg/Light");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Light,
 	               "",

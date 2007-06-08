@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
+	I_DeclaringFile("osgShadow/ShadowVolume");
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ShadowVolume,
 	               "",

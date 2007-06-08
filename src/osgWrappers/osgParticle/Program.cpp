@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Program)
+	I_DeclaringFile("osgParticle/Program");
 	I_BaseType(osgParticle::ParticleProcessor);
 	I_Constructor0(____Program,
 	               "",

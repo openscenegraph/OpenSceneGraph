@@ -33,6 +33,7 @@ TYPE_NAME_ALIAS(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgUtil::PositionalStateContainer::AttrMatrixList >, osgUtil::PositionalStateContainer::TexUnitAttrMatrixListMap)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
+	I_DeclaringFile("osgUtil/PositionalStateContainer");
 	I_BaseType(osg::Object);
 	I_Constructor0(____PositionalStateContainer,
 	               "",
@@ -103,6 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PositionalStateContainer)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(OpenThreads::ReadWriteMutex)
+	I_DeclaringFile("OpenThreads/ReadWriteMutex");
 	I_Constructor0(____ReadWriteMutex,
 	               "",
 	               "");
@@ -52,6 +53,7 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::ReadWriteMutex)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(OpenThreads::ScopedReadLock)
+	I_DeclaringFile("OpenThreads/ReadWriteMutex");
 	I_Constructor1(IN, OpenThreads::ReadWriteMutex &, mutex,
 	               Properties::NON_EXPLICIT,
 	               ____ScopedReadLock__ReadWriteMutex_R1,
@@ -60,6 +62,7 @@ BEGIN_VALUE_REFLECTOR(OpenThreads::ScopedReadLock)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(OpenThreads::ScopedWriteLock)
+	I_DeclaringFile("OpenThreads/ReadWriteMutex");
 	I_Constructor1(IN, OpenThreads::ReadWriteMutex &, mutex,
 	               Properties::NON_EXPLICIT,
 	               ____ScopedWriteLock__ReadWriteMutex_R1,

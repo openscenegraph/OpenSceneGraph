@@ -42,6 +42,7 @@ TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompil
 TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts)
 
 BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
+	I_DeclaringFile("osgDB/DatabasePager");
 	I_EnumLabel(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
 	I_EnumLabel(osgDB::DatabasePager::USE_DISPLAY_LISTS);
 	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_BUFFER_OBJECTS);
@@ -49,6 +50,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
+	I_DeclaringFile("osgDB/DatabasePager");
 	I_BaseType(osg::NodeVisitor::DatabaseRequestHandler);
 	I_BaseType(OpenThreads::Thread);
 	I_Constructor0(____DatabasePager,
@@ -360,6 +362,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

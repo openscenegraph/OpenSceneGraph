@@ -23,18 +23,21 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageWindowMode)
+	I_DeclaringFile("osgDB/ImageOptions");
 	I_EnumLabel(osgDB::ImageOptions::ALL_IMAGE);
 	I_EnumLabel(osgDB::ImageOptions::RATIO_WINDOW);
 	I_EnumLabel(osgDB::ImageOptions::PIXEL_WINDOW);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageSamplingMode)
+	I_DeclaringFile("osgDB/ImageOptions");
 	I_EnumLabel(osgDB::ImageOptions::NEAREST);
 	I_EnumLabel(osgDB::ImageOptions::LINEAR);
 	I_EnumLabel(osgDB::ImageOptions::CUBIC);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
+	I_DeclaringFile("osgDB/ImageOptions");
 	I_BaseType(osgDB::ReaderWriter::Options);
 	I_Constructor0(____ImageOptions,
 	               "",
@@ -91,6 +94,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
+	I_DeclaringFile("osgDB/ImageOptions");
 	I_Constructor0(____PixelWindow,
 	               "",
 	               "");
@@ -106,6 +110,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::PixelWindow)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
+	I_DeclaringFile("osgDB/ImageOptions");
 	I_Constructor0(____RatioWindow,
 	               "",
 	               "");
@@ -121,6 +126,7 @@ BEGIN_VALUE_REFLECTOR(osgDB::ImageOptions::RatioWindow)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions::TexCoordRange)
+	I_DeclaringFile("osgDB/ImageOptions");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____TexCoordRange,
 	               "",

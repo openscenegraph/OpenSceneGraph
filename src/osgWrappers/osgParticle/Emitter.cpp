@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Emitter)
+	I_DeclaringFile("osgParticle/Emitter");
 	I_BaseType(osgParticle::ParticleProcessor);
 	I_Constructor0(____Emitter,
 	               "",

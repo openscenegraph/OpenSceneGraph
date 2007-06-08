@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(OpenThreads::Thread::ThreadPriority)
+	I_DeclaringFile("OpenThreads/Thread");
 	I_EnumLabel(OpenThreads::Thread::THREAD_PRIORITY_MAX);
 	I_EnumLabel(OpenThreads::Thread::THREAD_PRIORITY_HIGH);
 	I_EnumLabel(OpenThreads::Thread::THREAD_PRIORITY_NOMINAL);
@@ -30,6 +31,7 @@ BEGIN_ENUM_REFLECTOR(OpenThreads::Thread::ThreadPriority)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(OpenThreads::Thread::ThreadPolicy)
+	I_DeclaringFile("OpenThreads/Thread");
 	I_EnumLabel(OpenThreads::Thread::THREAD_SCHEDULE_FIFO);
 	I_EnumLabel(OpenThreads::Thread::THREAD_SCHEDULE_ROUND_ROBIN);
 	I_EnumLabel(OpenThreads::Thread::THREAD_SCHEDULE_TIME_SHARE);
@@ -37,6 +39,7 @@ BEGIN_ENUM_REFLECTOR(OpenThreads::Thread::ThreadPolicy)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(OpenThreads::Thread)
+	I_DeclaringFile("OpenThreads/Thread");
 	I_Constructor0(____Thread,
 	               "Constructor. ",
 	               "");

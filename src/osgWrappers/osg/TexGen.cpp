@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::TexGen::Mode)
+	I_DeclaringFile("osg/TexGen");
 	I_EnumLabel(osg::TexGen::OBJECT_LINEAR);
 	I_EnumLabel(osg::TexGen::EYE_LINEAR);
 	I_EnumLabel(osg::TexGen::SPHERE_MAP);
@@ -35,6 +36,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexGen::Mode)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TexGen::Coord)
+	I_DeclaringFile("osg/TexGen");
 	I_EnumLabel(osg::TexGen::S);
 	I_EnumLabel(osg::TexGen::T);
 	I_EnumLabel(osg::TexGen::R);
@@ -42,6 +44,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexGen::Coord)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexGen)
+	I_DeclaringFile("osg/TexGen");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexGen,
 	               "",

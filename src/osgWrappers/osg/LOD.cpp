@@ -31,16 +31,19 @@ TYPE_NAME_ALIAS(std::pair< float COMMA  float >, osg::LOD::MinMaxPair)
 TYPE_NAME_ALIAS(std::vector< osg::LOD::MinMaxPair >, osg::LOD::RangeList)
 
 BEGIN_ENUM_REFLECTOR(osg::LOD::CenterMode)
+	I_DeclaringFile("osg/LOD");
 	I_EnumLabel(osg::LOD::USE_BOUNDING_SPHERE_CENTER);
 	I_EnumLabel(osg::LOD::USER_DEFINED_CENTER);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::LOD::RangeMode)
+	I_DeclaringFile("osg/LOD");
 	I_EnumLabel(osg::LOD::DISTANCE_FROM_EYE_POINT);
 	I_EnumLabel(osg::LOD::PIXEL_SIZE_ON_SCREEN);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::LOD)
+	I_DeclaringFile("osg/LOD");
 	I_BaseType(osg::Group);
 	I_Constructor0(____LOD,
 	               "",

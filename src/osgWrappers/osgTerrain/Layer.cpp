@@ -31,6 +31,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
+	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osgTerrain::Layer);
 	I_Constructor0(____HeightFieldLayer,
 	               "",
@@ -95,6 +96,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
+	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osgTerrain::Layer);
 	I_Constructor0(____ImageLayer,
 	               "",
@@ -159,6 +161,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
+	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Layer,
 	               "",

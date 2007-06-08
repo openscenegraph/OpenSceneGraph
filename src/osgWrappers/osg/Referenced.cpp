@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Referenced)
+	I_DeclaringFile("osg/Referenced");
 	I_Constructor0(____Referenced,
 	               "",
 	               "");

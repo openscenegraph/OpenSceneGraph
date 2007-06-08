@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::BlinkSequence)
+	I_DeclaringFile("osgSim/BlinkSequence");
 	I_BaseType(osg::Object);
 	I_Constructor0(____BlinkSequence,
 	               "",
@@ -129,6 +130,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::BlinkSequence)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::SequenceGroup)
+	I_DeclaringFile("osgSim/BlinkSequence");
 	I_BaseType(osg::Object);
 	I_Constructor0(____SequenceGroup,
 	               "",

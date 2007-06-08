@@ -37,6 +37,7 @@ TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, os
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
+	I_DeclaringFile("osgUtil/Statistics");
 	I_EnumLabel(osgUtil::Statistics::STAT_NONE);
 	I_EnumLabel(osgUtil::Statistics::STAT_FRAMERATE);
 	I_EnumLabel(osgUtil::Statistics::STAT_GRAPHS);
@@ -48,6 +49,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
+	I_DeclaringFile("osgUtil/Statistics");
 	I_BaseType(osg::PrimitiveFunctor);
 	I_Constructor0(____Statistics,
 	               "",
@@ -229,6 +231,7 @@ TYPE_NAME_ALIAS(std::set< osg::Drawable * >, osgUtil::StatsVisitor::DrawableSet)
 TYPE_NAME_ALIAS(std::set< osg::StateSet * >, osgUtil::StatsVisitor::StateSetSet)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
+	I_DeclaringFile("osgUtil/Statistics");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____StatsVisitor,
 	               "",

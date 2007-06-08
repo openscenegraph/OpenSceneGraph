@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
+	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::Object);
 	I_Constructor0(____BufferObject,
 	               "",
@@ -119,6 +120,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::BufferObject::BufferEntry)
+	I_DeclaringFile("osg/BufferObject");
 	I_Constructor0(____BufferEntry,
 	               "",
 	               "");
@@ -133,6 +135,7 @@ BEGIN_VALUE_REFLECTOR(osg::BufferObject::BufferEntry)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
+	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -236,6 +239,7 @@ TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElemen
 TYPE_NAME_ALIAS(std::vector< osg::ElementBufferObject::BufferEntryDrawElementstPair >, osg::ElementBufferObject::BufferEntryDrawElementsPairs)
 
 BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
+	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::BufferObject);
 	I_Constructor0(____ElementBufferObject,
 	               "",
@@ -318,6 +322,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair)
 
 BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
+	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::BufferObject);
 	I_ConstructorWithDefaults1(IN, osg::Image *, image, 0,
 	                           Properties::NON_EXPLICIT,
@@ -393,6 +398,7 @@ TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Array * >,
 TYPE_NAME_ALIAS(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >, osg::VertexBufferObject::BufferEntryArrayPairs)
 
 BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
+	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::BufferObject);
 	I_Constructor0(____VertexBufferObject,
 	               "",

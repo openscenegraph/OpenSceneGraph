@@ -39,6 +39,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::Occlu
 TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask)
 
 BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
+	I_DeclaringFile("osg/CullingSet");
 	I_EnumLabel(osg::CullingSet::NO_CULLING);
 	I_EnumLabel(osg::CullingSet::VIEW_FRUSTUM_SIDES_CULLING);
 	I_EnumLabel(osg::CullingSet::NEAR_PLANE_CULLING);
@@ -51,6 +52,7 @@ BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
+	I_DeclaringFile("osg/CullingSet");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CullingSet,
 	               "",
@@ -226,6 +228,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

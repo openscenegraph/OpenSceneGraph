@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgSim::DOFTransform::MultOrder)
+	I_DeclaringFile("osgSim/DOFTransform");
 	I_EnumLabel(osgSim::DOFTransform::PRH);
 	I_EnumLabel(osgSim::DOFTransform::PHR);
 	I_EnumLabel(osgSim::DOFTransform::HPR);
@@ -35,6 +36,7 @@ BEGIN_ENUM_REFLECTOR(osgSim::DOFTransform::MultOrder)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::DOFTransform)
+	I_DeclaringFile("osgSim/DOFTransform");
 	I_BaseType(osg::Transform);
 	I_Constructor0(____DOFTransform,
 	               "constructor ",

@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::VariableRateCounter)
+	I_DeclaringFile("osgParticle/VariableRateCounter");
 	I_BaseType(osgParticle::Counter);
 	I_Constructor0(____VariableRateCounter,
 	               "",

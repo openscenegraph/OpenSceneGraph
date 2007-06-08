@@ -33,6 +33,7 @@ TYPE_NAME_ALIAS(double, osg::Quat::value_type)
 BEGIN_VALUE_REFLECTOR(osg::Quat)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_DeclaringFile("osg/Quat");
 	I_Constructor0(____Quat,
 	               "",
 	               "");

@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgParticle::Particle::Shape)
+	I_DeclaringFile("osgParticle/Particle");
 	I_EnumLabel(osgParticle::Particle::POINT);
 	I_EnumLabel(osgParticle::Particle::QUAD);
 	I_EnumLabel(osgParticle::Particle::QUAD_TRIANGLESTRIP);
@@ -35,6 +36,7 @@ BEGIN_ENUM_REFLECTOR(osgParticle::Particle::Shape)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
+	I_DeclaringFile("osgParticle/Particle");
 	I_Constructor0(____Particle,
 	               "",
 	               "");

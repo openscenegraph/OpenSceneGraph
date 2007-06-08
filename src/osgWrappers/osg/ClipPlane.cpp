@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ClipPlane)
+	I_DeclaringFile("osg/ClipPlane");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____ClipPlane,
 	               "",

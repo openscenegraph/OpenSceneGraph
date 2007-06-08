@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Cartoon)
+	I_DeclaringFile("osgFX/Cartoon");
 	I_BaseType(osgFX::Effect);
 	I_Constructor0(____Cartoon,
 	               "",

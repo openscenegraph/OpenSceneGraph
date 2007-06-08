@@ -26,12 +26,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Material::Face)
+	I_DeclaringFile("osg/Material");
 	I_EnumLabel(osg::Material::FRONT);
 	I_EnumLabel(osg::Material::BACK);
 	I_EnumLabel(osg::Material::FRONT_AND_BACK);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Material::ColorMode)
+	I_DeclaringFile("osg/Material");
 	I_EnumLabel(osg::Material::AMBIENT);
 	I_EnumLabel(osg::Material::DIFFUSE);
 	I_EnumLabel(osg::Material::SPECULAR);
@@ -41,6 +43,7 @@ BEGIN_ENUM_REFLECTOR(osg::Material::ColorMode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Material)
+	I_DeclaringFile("osg/Material");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Material,
 	               "",

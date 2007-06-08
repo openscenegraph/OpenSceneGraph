@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font)
+	I_DeclaringFile("osgText/Font");
 	I_BaseType(osg::Object);
 	I_ConstructorWithDefaults1(IN, osgText::Font::FontImplementation *, implementation, 0,
 	                           Properties::NON_EXPLICIT,
@@ -258,6 +259,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::FontImplementation)
+	I_DeclaringFile("osgText/Font");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____FontImplementation,
 	               "",
@@ -315,6 +317,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::Font::FontImplementation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
+	I_DeclaringFile("osgText/Font");
 	I_BaseType(osg::Image);
 	I_Constructor0(____Glyph,
 	               "",
@@ -457,6 +460,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
+	I_DeclaringFile("osgText/Font");
 	I_BaseType(osg::Texture2D);
 	I_Constructor0(____GlyphTexture,
 	               "",
@@ -528,6 +532,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::KerningType)
+	I_DeclaringFile("osgText/Font");
 	I_EnumLabel(osgText::KERNING_DEFAULT);
 	I_EnumLabel(osgText::KERNING_UNFITTED);
 	I_EnumLabel(osgText::KERNING_NONE);

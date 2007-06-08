@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::TexMat)
+	I_DeclaringFile("osg/TexMat");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexMat,
 	               "",

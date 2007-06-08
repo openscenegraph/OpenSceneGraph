@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ForceOperator)
+	I_DeclaringFile("osgParticle/ForceOperator");
 	I_BaseType(osgParticle::Operator);
 	I_Constructor0(____ForceOperator,
 	               "",

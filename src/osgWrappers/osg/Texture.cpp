@@ -32,12 +32,14 @@ TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::T
 TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::WRAP_S);
 	I_EnumLabel(osg::Texture::WRAP_T);
 	I_EnumLabel(osg::Texture::WRAP_R);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapMode)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::CLAMP);
 	I_EnumLabel(osg::Texture::CLAMP_TO_EDGE);
 	I_EnumLabel(osg::Texture::CLAMP_TO_BORDER);
@@ -46,11 +48,13 @@ BEGIN_ENUM_REFLECTOR(osg::Texture::WrapMode)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::FilterParameter)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::MIN_FILTER);
 	I_EnumLabel(osg::Texture::MAG_FILTER);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::FilterMode)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::LINEAR);
 	I_EnumLabel(osg::Texture::LINEAR_MIPMAP_LINEAR);
 	I_EnumLabel(osg::Texture::LINEAR_MIPMAP_NEAREST);
@@ -60,6 +64,7 @@ BEGIN_ENUM_REFLECTOR(osg::Texture::FilterMode)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::InternalFormatMode)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::USE_IMAGE_DATA_FORMAT);
 	I_EnumLabel(osg::Texture::USE_USER_DEFINED_FORMAT);
 	I_EnumLabel(osg::Texture::USE_ARB_COMPRESSION);
@@ -69,17 +74,20 @@ BEGIN_ENUM_REFLECTOR(osg::Texture::InternalFormatMode)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowCompareFunc)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::LEQUAL);
 	I_EnumLabel(osg::Texture::GEQUAL);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowTextureMode)
+	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::LUMINANCE);
 	I_EnumLabel(osg::Texture::INTENSITY);
 	I_EnumLabel(osg::Texture::ALPHA);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
+	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Texture,
 	               "",
@@ -570,6 +578,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
+	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
@@ -804,6 +813,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
+	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::Referenced);
 	I_Constructor2(IN, GLuint, id, IN, GLenum, target,
 	               ____TextureObject__GLuint__GLenum,
@@ -859,6 +869,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
+	I_DeclaringFile("osg/buffered_value");
 	I_Constructor0(____buffered_object,
 	               "",
 	               "");
@@ -898,6 +909,7 @@ BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::RenderInfo)
+	I_DeclaringFile("osg/RenderInfo");
 	I_Constructor0(____RenderInfo,
 	               "",
 	               "");

@@ -28,12 +28,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Transform::ReferenceFrame)
+	I_DeclaringFile("osg/Transform");
 	I_EnumLabel(osg::Transform::RELATIVE_RF);
 	I_EnumLabel(osg::Transform::ABSOLUTE_RF);
 	I_EnumLabel(osg::Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Transform)
+	I_DeclaringFile("osg/Transform");
 	I_BaseType(osg::Group);
 	I_Constructor0(____Transform,
 	               "",

@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TrackballDragger)
+	I_DeclaringFile("osgManipulator/TrackballDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_ConstructorWithDefaults1(IN, bool, useAutoTransform, false,
 	                           Properties::NON_EXPLICIT,

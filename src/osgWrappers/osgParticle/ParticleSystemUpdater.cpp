@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
+	I_DeclaringFile("osgParticle/ParticleSystemUpdater");
 	I_BaseType(osg::Node);
 	I_Constructor0(____ParticleSystemUpdater,
 	               "",

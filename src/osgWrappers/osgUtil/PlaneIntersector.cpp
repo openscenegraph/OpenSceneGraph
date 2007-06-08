@@ -29,6 +29,7 @@
 TYPE_NAME_ALIAS(std::vector< osgUtil::PlaneIntersector::Intersection >, osgUtil::PlaneIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)
+	I_DeclaringFile("osgUtil/PlaneIntersector");
 	I_BaseType(osgUtil::Intersector);
 	I_ConstructorWithDefaults2(IN, const osg::Plane &, plane, , IN, const osg::Polytope &, boundingPolytope, osg::Polytope(),
 	                           ____PlaneIntersector__C5_osg_Plane_R1__C5_osg_Polytope_R1,
@@ -114,6 +115,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgUtil::PlaneIntersector::Intersecti
 TYPE_NAME_ALIAS(std::vector< double >, osgUtil::PlaneIntersector::Intersection::Attributes)
 
 BEGIN_VALUE_REFLECTOR(osgUtil::PlaneIntersector::Intersection)
+	I_DeclaringFile("osgUtil/PlaneIntersector");
 	I_Constructor0(____Intersection,
 	               "",
 	               "");

@@ -25,11 +25,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgSim::LightPoint::BlendingMode)
+	I_DeclaringFile("osgSim/LightPoint");
 	I_EnumLabel(osgSim::LightPoint::ADDITIVE);
 	I_EnumLabel(osgSim::LightPoint::BLENDED);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgSim::LightPoint)
+	I_DeclaringFile("osgSim/LightPoint");
 	I_Constructor0(____LightPoint,
 	               "",
 	               "");

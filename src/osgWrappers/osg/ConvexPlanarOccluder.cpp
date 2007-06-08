@@ -26,6 +26,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::ConvexPlanarPolygon >, osg::ConvexPlanarOccluder::HoleList)
 
 BEGIN_OBJECT_REFLECTOR(osg::ConvexPlanarOccluder)
+	I_DeclaringFile("osg/ConvexPlanarOccluder");
 	I_BaseType(osg::Object);
 	I_Constructor0(____ConvexPlanarOccluder,
 	               "",

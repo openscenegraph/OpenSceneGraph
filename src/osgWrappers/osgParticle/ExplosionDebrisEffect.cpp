@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ExplosionDebrisEffect)
+	I_DeclaringFile("osgParticle/ExplosionDebrisEffect");
 	I_BaseType(osgParticle::ParticleEffect);
 	I_ConstructorWithDefaults1(IN, bool, automaticSetup, true,
 	                           Properties::EXPLICIT,

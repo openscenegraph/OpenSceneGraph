@@ -25,11 +25,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::FrontFace::Mode)
+	I_DeclaringFile("osg/FrontFace");
 	I_EnumLabel(osg::FrontFace::CLOCKWISE);
 	I_EnumLabel(osg::FrontFace::COUNTER_CLOCKWISE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::FrontFace)
+	I_DeclaringFile("osg/FrontFace");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, osg::FrontFace::Mode, face, osg::FrontFace::COUNTER_CLOCKWISE,
 	                           Properties::NON_EXPLICIT,

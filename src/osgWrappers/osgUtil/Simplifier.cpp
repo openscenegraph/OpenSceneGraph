@@ -25,6 +25,7 @@
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
+	I_DeclaringFile("osgUtil/Simplifier");
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults3(IN, float, sampleRatio, 1.0f, IN, float, maximumError, FLT_MAX, IN, float, maximumLength, 0.0,
 	                           ____Simplifier__float__float__float,
@@ -141,6 +142,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier::ContinueSimplificationCallback)
+	I_DeclaringFile("osgUtil/Simplifier");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ContinueSimplificationCallback,
 	               "",

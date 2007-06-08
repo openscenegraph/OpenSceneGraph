@@ -45,6 +45,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::NodeAcceptOp)
+	I_DeclaringFile("osg/NodeVisitor");
 	I_Constructor1(IN, osg::NodeVisitor &, nv,
 	               Properties::NON_EXPLICIT,
 	               ____NodeAcceptOp__NodeVisitor_R1,
@@ -53,6 +54,7 @@ BEGIN_VALUE_REFLECTOR(osg::NodeAcceptOp)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::TraversalMode)
+	I_DeclaringFile("osg/NodeVisitor");
 	I_EnumLabel(osg::NodeVisitor::TRAVERSE_NONE);
 	I_EnumLabel(osg::NodeVisitor::TRAVERSE_PARENTS);
 	I_EnumLabel(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
@@ -60,6 +62,7 @@ BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::TraversalMode)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::VisitorType)
+	I_DeclaringFile("osg/NodeVisitor");
 	I_EnumLabel(osg::NodeVisitor::NODE_VISITOR);
 	I_EnumLabel(osg::NodeVisitor::UPDATE_VISITOR);
 	I_EnumLabel(osg::NodeVisitor::EVENT_VISITOR);
@@ -68,6 +71,7 @@ BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::VisitorType)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
+	I_DeclaringFile("osg/NodeVisitor");
 	I_VirtualBaseType(osg::Referenced);
 	I_ConstructorWithDefaults1(IN, osg::NodeVisitor::TraversalMode, tm, osg::NodeVisitor::TRAVERSE_NONE,
 	                           Properties::NON_EXPLICIT,
@@ -369,6 +373,7 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor::DatabaseRequestHandler)
+	I_DeclaringFile("osg/NodeVisitor");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____DatabaseRequestHandler,
 	               "",

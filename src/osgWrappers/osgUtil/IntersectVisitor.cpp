@@ -38,6 +38,7 @@
 TYPE_NAME_ALIAS(std::vector< int >, osgUtil::Hit::VecIndexList)
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
+	I_DeclaringFile("osgUtil/IntersectVisitor");
 	I_Constructor0(____Hit,
 	               "Describes a point in space produced by an intersection of a line with a scene. ",
 	               "A Hit is always on a surface as rendered by the Open Scene Graph scene (usually a triangle or other primitive, but a special hit handler could return a different value perhaps: a sphere shape might return a Hit on the true sphere rather than the approximate tessellated sphere rendered.");
@@ -192,11 +193,13 @@ TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList)
 TYPE_NAME_ALIAS(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap)
 
 BEGIN_ENUM_REFLECTOR(osgUtil::IntersectVisitor::LODSelectionMode)
+	I_DeclaringFile("osgUtil/IntersectVisitor");
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_HIGHEST_LEVEL_OF_DETAIL);
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
+	I_DeclaringFile("osgUtil/IntersectVisitor");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____IntersectVisitor,
 	               "",
@@ -333,6 +336,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PickVisitor)
+	I_DeclaringFile("osgUtil/IntersectVisitor");
 	I_BaseType(osgUtil::IntersectVisitor);
 	I_Constructor5(IN, const osg::Viewport *, viewport, IN, const osg::Matrixd &, proj, IN, const osg::Matrixd &, view, IN, float, mx, IN, float, my,
 	               ____PickVisitor__C5_osg_Viewport_P1__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1__float__float,

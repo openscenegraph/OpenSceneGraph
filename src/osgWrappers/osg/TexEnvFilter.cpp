@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::TexEnvFilter)
+	I_DeclaringFile("osg/TexEnvFilter");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, float, lodBias, 0.0f,
 	                           Properties::NON_EXPLICIT,

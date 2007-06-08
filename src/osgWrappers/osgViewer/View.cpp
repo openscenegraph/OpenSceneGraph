@@ -33,6 +33,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
+	I_DeclaringFile("osgViewer/View");
 	I_BaseType(osg::State::DynamicObjectRenderingCompletedCallback);
 	I_Constructor1(IN, unsigned, int,
 	               Properties::NON_EXPLICIT,
@@ -72,6 +73,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers)
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::View)
+	I_DeclaringFile("osgViewer/View");
 	I_BaseType(osg::View);
 	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____View,
@@ -314,6 +316,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventHandler >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

@@ -32,6 +32,7 @@ TYPE_NAME_ALIAS(osgParticle::range< osg::Vec3 >, osgParticle::rangev3)
 TYPE_NAME_ALIAS(osgParticle::range< osg::Vec4 >, osgParticle::rangev4)
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< float >)
+	I_DeclaringFile("osgParticle/range");
 	I_Constructor0(____range,
 	               "Construct the object by calling default constructors for min and max. ",
 	               "");
@@ -64,6 +65,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< float >)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec2 >)
+	I_DeclaringFile("osgParticle/range");
 	I_Constructor0(____range,
 	               "Construct the object by calling default constructors for min and max. ",
 	               "");
@@ -96,6 +98,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec2 >)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec3 >)
+	I_DeclaringFile("osgParticle/range");
 	I_Constructor0(____range,
 	               "Construct the object by calling default constructors for min and max. ",
 	               "");
@@ -128,6 +131,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec3 >)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::range< osg::Vec4 >)
+	I_DeclaringFile("osgParticle/range");
 	I_Constructor0(____range,
 	               "Construct the object by calling default constructors for min and max. ",
 	               "");

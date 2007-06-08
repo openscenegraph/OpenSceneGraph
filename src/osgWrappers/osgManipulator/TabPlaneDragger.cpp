@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TabPlaneDragger)
+	I_DeclaringFile("osgManipulator/TabPlaneDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabPlaneDragger,
 	               "",

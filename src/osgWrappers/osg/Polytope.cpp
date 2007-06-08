@@ -34,6 +34,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Polytope::VertexList)
 TYPE_NAME_ALIAS(osg::fast_back_stack< osg::Polytope::ClippingMask >, osg::Polytope::MaskStack)
 
 BEGIN_VALUE_REFLECTOR(osg::Polytope)
+	I_DeclaringFile("osg/Polytope");
 	I_Constructor0(____Polytope,
 	               "",
 	               "");
@@ -218,6 +219,7 @@ BEGIN_VALUE_REFLECTOR(osg::Polytope)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::fast_back_stack< osg::Polytope::ClippingMask >)
+	I_DeclaringFile("osg/fast_back_stack");
 	I_Constructor0(____fast_back_stack,
 	               "",
 	               "");

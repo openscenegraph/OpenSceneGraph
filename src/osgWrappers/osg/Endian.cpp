@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Endian)
+	I_DeclaringFile("osg/Endian");
 	I_EnumLabel(osg::BigEndian);
 	I_EnumLabel(osg::LittleEndian);
 END_REFLECTOR

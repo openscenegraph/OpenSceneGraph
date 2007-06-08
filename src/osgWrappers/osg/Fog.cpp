@@ -26,17 +26,20 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Fog::Mode)
+	I_DeclaringFile("osg/Fog");
 	I_EnumLabel(osg::Fog::LINEAR);
 	I_EnumLabel(osg::Fog::EXP);
 	I_EnumLabel(osg::Fog::EXP2);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Fog::FogCoordinateSource)
+	I_DeclaringFile("osg/Fog");
 	I_EnumLabel(osg::Fog::FOG_COORDINATE);
 	I_EnumLabel(osg::Fog::FRAGMENT_DEPTH);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Fog)
+	I_DeclaringFile("osg/Fog");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Fog,
 	               "",

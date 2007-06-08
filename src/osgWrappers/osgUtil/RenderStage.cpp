@@ -38,6 +38,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
+	I_DeclaringFile("osgUtil/RenderStage");
 	I_BaseType(osgUtil::RenderBin);
 	I_Constructor0(____RenderStage,
 	               "",
@@ -444,6 +445,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::RenderStage::Attachment)
+	I_DeclaringFile("osgUtil/RenderStage");
 	I_Constructor0(____Attachment,
 	               "",
 	               "");

@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgSim::GeographicLocation)
+	I_DeclaringFile("osgSim/GeographicLocation");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____GeographicLocation,
 	               "",

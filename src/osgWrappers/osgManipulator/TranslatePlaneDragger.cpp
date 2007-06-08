@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslatePlaneDragger)
+	I_DeclaringFile("osgManipulator/TranslatePlaneDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TranslatePlaneDragger,
 	               "",

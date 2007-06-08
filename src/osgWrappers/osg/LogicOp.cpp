@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::LogicOp::Opcode)
+	I_DeclaringFile("osg/LogicOp");
 	I_EnumLabel(osg::LogicOp::CLEAR);
 	I_EnumLabel(osg::LogicOp::SET);
 	I_EnumLabel(osg::LogicOp::COPY);
@@ -44,6 +45,7 @@ BEGIN_ENUM_REFLECTOR(osg::LogicOp::Opcode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::LogicOp)
+	I_DeclaringFile("osg/LogicOp");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____LogicOp,
 	               "",

@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::LineWidth)
+	I_DeclaringFile("osg/LineWidth");
 	I_BaseType(osg::StateAttribute);
 	I_ConstructorWithDefaults1(IN, float, width, 1.0f,
 	                           Properties::NON_EXPLICIT,

@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
+	I_DeclaringFile("osgViewer/Scene");
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____Scene,
 	               "",

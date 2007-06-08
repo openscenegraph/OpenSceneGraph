@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Group)
+	I_DeclaringFile("osg/Group");
 	I_BaseType(osg::Node);
 	I_Constructor0(____Group,
 	               "",
@@ -187,6 +188,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osg::NodeList)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Node >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

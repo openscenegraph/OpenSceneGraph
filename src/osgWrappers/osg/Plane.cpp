@@ -39,6 +39,7 @@ TYPE_NAME_ALIAS(osg::Vec4d, osg::Plane::Vec4_type)
 BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_DeclaringFile("osg/Plane");
 	I_Constructor0(____Plane,
 	               "",
 	               "");

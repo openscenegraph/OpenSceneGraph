@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Stencil::Function)
+	I_DeclaringFile("osg/Stencil");
 	I_EnumLabel(osg::Stencil::NEVER);
 	I_EnumLabel(osg::Stencil::LESS);
 	I_EnumLabel(osg::Stencil::EQUAL);
@@ -36,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osg::Stencil::Function)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Stencil::Operation)
+	I_DeclaringFile("osg/Stencil");
 	I_EnumLabel(osg::Stencil::KEEP);
 	I_EnumLabel(osg::Stencil::ZERO);
 	I_EnumLabel(osg::Stencil::REPLACE);
@@ -47,6 +49,7 @@ BEGIN_ENUM_REFLECTOR(osg::Stencil::Operation)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Stencil)
+	I_DeclaringFile("osg/Stencil");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Stencil,
 	               "",

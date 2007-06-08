@@ -28,12 +28,14 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::AutoTransform::AutoRotateMode)
+	I_DeclaringFile("osg/AutoTransform");
 	I_EnumLabel(osg::AutoTransform::NO_ROTATION);
 	I_EnumLabel(osg::AutoTransform::ROTATE_TO_SCREEN);
 	I_EnumLabel(osg::AutoTransform::ROTATE_TO_CAMERA);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
+	I_DeclaringFile("osg/AutoTransform");
 	I_BaseType(osg::Transform);
 	I_Constructor0(____AutoTransform,
 	               "",

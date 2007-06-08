@@ -28,11 +28,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::LightSource::ReferenceFrame)
+	I_DeclaringFile("osg/LightSource");
 	I_EnumLabel(osg::LightSource::RELATIVE_RF);
 	I_EnumLabel(osg::LightSource::ABSOLUTE_RF);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::LightSource)
+	I_DeclaringFile("osg/LightSource");
 	I_BaseType(osg::Group);
 	I_Constructor0(____LightSource,
 	               "",

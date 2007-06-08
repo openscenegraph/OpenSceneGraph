@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgViewer::GraphicsWindow::MouseCursor)
+	I_DeclaringFile("osgViewer/GraphicsWindow");
 	I_EnumLabel(osgViewer::GraphicsWindow::InheritCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::NoCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::RightArrowCursor);
@@ -48,6 +49,7 @@ BEGIN_ENUM_REFLECTOR(osgViewer::GraphicsWindow::MouseCursor)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
+	I_DeclaringFile("osgViewer/GraphicsWindow");
 	I_BaseType(osg::GraphicsContext);
 	I_BaseType(osgGA::GUIActionAdapter);
 	I_Constructor0(____GraphicsWindow,
@@ -185,6 +187,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
+	I_DeclaringFile("osgViewer/GraphicsWindow");
 	I_BaseType(osgViewer::GraphicsWindow);
 	I_ConstructorWithDefaults1(IN, osg::GraphicsContext::Traits *, traits, 0,
 	                           Properties::NON_EXPLICIT,

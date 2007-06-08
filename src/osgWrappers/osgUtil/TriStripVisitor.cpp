@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
+	I_DeclaringFile("osgUtil/TriStripVisitor");
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
 	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
 	                           Properties::NON_EXPLICIT,

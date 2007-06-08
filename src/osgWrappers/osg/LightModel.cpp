@@ -26,11 +26,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::LightModel::ColorControl)
+	I_DeclaringFile("osg/LightModel");
 	I_EnumLabel(osg::LightModel::SEPARATE_SPECULAR_COLOR);
 	I_EnumLabel(osg::LightModel::SINGLE_COLOR);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::LightModel)
+	I_DeclaringFile("osg/LightModel");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____LightModel,
 	               "",

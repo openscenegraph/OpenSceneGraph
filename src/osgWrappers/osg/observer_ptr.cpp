@@ -21,6 +21,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Observer)
+	I_DeclaringFile("osg/observer_ptr");
 	I_Constructor0(____Observer,
 	               "",
 	               "");

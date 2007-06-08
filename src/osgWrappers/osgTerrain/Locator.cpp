@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::CartizianLocator)
+	I_DeclaringFile("osgTerrain/Locator");
 	I_BaseType(osgTerrain::Locator);
 	I_ConstructorWithDefaults6(IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,
 	                           ____CartizianLocator__double__double__double__double__double__double,
@@ -105,6 +106,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CartizianLocator)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
+	I_DeclaringFile("osgTerrain/Locator");
 	I_BaseType(osgTerrain::Locator);
 	I_ConstructorWithDefaults8(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f, IN, double, radiusEquator, osg::WGS_84_RADIUS_EQUATOR, IN, double, radiusPolar, osg::WGS_84_RADIUS_POLAR,
 	                           ____EllipsoidLocator__double__double__double__double__double__double__double__double,
@@ -191,6 +193,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
+	I_DeclaringFile("osgTerrain/Locator");
 	I_BaseType(osg::Object);
 	I_Constructor0(____Locator,
 	               "",

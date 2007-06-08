@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture2D)
+	I_DeclaringFile("osg/Texture2D");
 	I_BaseType(osg::Texture);
 	I_Constructor0(____Texture2D,
 	               "",
@@ -222,6 +223,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2D)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture2D::SubloadCallback)
+	I_DeclaringFile("osg/Texture2D");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____SubloadCallback,
 	               "",

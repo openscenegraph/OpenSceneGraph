@@ -31,6 +31,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
+	I_DeclaringFile("osgParticle/PrecipitationEffect");
 	I_BaseType(osg::Node);
 	I_Constructor0(____PrecipitationEffect,
 	               "",
@@ -301,6 +302,7 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::map< osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell COMMA  osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime >, osgParticle::PrecipitationEffect::PrecipitationDrawable::CellMatrixMap)
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
+	I_DeclaringFile("osgParticle/PrecipitationEffect");
 	I_BaseType(osg::Drawable);
 	I_Constructor0(____PrecipitationDrawable,
 	               "",
@@ -440,6 +442,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::Cell)
+	I_DeclaringFile("osgParticle/PrecipitationEffect");
 	I_Constructor3(IN, int, in_i, IN, int, in_j, IN, int, in_k,
 	               ____Cell__int__int__int,
 	               "",
@@ -450,6 +453,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::C
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::DepthMatrixStartTime)
+	I_DeclaringFile("osgParticle/PrecipitationEffect");
 	I_Constructor0(____DepthMatrixStartTime,
 	               "",
 	               "");
@@ -459,6 +463,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::D
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable::LessFunctor)
+	I_DeclaringFile("osgParticle/PrecipitationEffect");
 	I_Constructor0(____LessFunctor,
 	               "",
 	               "");

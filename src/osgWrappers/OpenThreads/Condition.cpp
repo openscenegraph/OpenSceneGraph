@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(OpenThreads::Condition)
+	I_DeclaringFile("OpenThreads/Condition");
 	I_Constructor0(____Condition,
 	               "Constructor. ",
 	               "");

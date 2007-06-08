@@ -28,6 +28,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
+	I_DeclaringFile("osgGA/MatrixManipulator");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
@@ -218,6 +219,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator::CoordinateFrameCallback)
+	I_DeclaringFile("osgGA/MatrixManipulator");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CoordinateFrameCallback,
 	               "",

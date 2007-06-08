@@ -27,6 +27,7 @@
 TYPE_NAME_ALIAS(unsigned int, osg::CullSettings::CullingMode)
 
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
+	I_DeclaringFile("osg/CullSettings");
 	I_EnumLabel(osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
 	I_EnumLabel(osg::CullSettings::CULLING_MODE);
 	I_EnumLabel(osg::CullSettings::LOD_SCALE);
@@ -48,12 +49,14 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::ComputeNearFarMode)
+	I_DeclaringFile("osg/CullSettings");
 	I_EnumLabel(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 	I_EnumLabel(osg::CullSettings::COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES);
 	I_EnumLabel(osg::CullSettings::COMPUTE_NEAR_FAR_USING_PRIMITIVES);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::CullingModeValues)
+	I_DeclaringFile("osg/CullSettings");
 	I_EnumLabel(osg::CullSettings::NO_CULLING);
 	I_EnumLabel(osg::CullSettings::VIEW_FRUSTUM_SIDES_CULLING);
 	I_EnumLabel(osg::CullSettings::NEAR_PLANE_CULLING);
@@ -67,6 +70,7 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::CullingModeValues)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::CullSettings)
+	I_DeclaringFile("osg/CullSettings");
 	I_Constructor0(____CullSettings,
 	               "",
 	               "");
@@ -303,6 +307,7 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::CullSettings::ClampProjectionMatrixCallback)
+	I_DeclaringFile("osg/CullSettings");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____ClampProjectionMatrixCallback,
 	               "",

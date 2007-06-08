@@ -31,6 +31,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::Polytope >, osg::ShadowVolumeOccluder::HoleList)
 
 BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)
+	I_DeclaringFile("osg/ShadowVolumeOccluder");
 	I_Constructor1(IN, const osg::ShadowVolumeOccluder &, svo,
 	               Properties::NON_EXPLICIT,
 	               ____ShadowVolumeOccluder__C5_ShadowVolumeOccluder_R1,

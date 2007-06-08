@@ -29,11 +29,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainNode::Filter)
+	I_DeclaringFile("osgTerrain/TerrainNode");
 	I_EnumLabel(osgTerrain::TerrainNode::NEAREST);
 	I_EnumLabel(osgTerrain::TerrainNode::LINEAR);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
+	I_DeclaringFile("osgTerrain/TerrainNode");
 	I_BaseType(osg::Group);
 	I_Constructor0(____TerrainNode,
 	               "",

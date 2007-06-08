@@ -25,11 +25,13 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::Sequence::LoopMode)
+	I_DeclaringFile("osg/Sequence");
 	I_EnumLabel(osg::Sequence::LOOP);
 	I_EnumLabel(osg::Sequence::SWING);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Sequence::SequenceMode)
+	I_DeclaringFile("osg/Sequence");
 	I_EnumLabel(osg::Sequence::START);
 	I_EnumLabel(osg::Sequence::STOP);
 	I_EnumLabel(osg::Sequence::PAUSE);
@@ -37,6 +39,7 @@ BEGIN_ENUM_REFLECTOR(osg::Sequence::SequenceMode)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Sequence)
+	I_DeclaringFile("osg/Sequence");
 	I_BaseType(osg::Group);
 	I_Constructor0(____Sequence,
 	               "",

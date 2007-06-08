@@ -29,6 +29,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ComputeBoundsVisitor)
+	I_DeclaringFile("osg/ComputeBoundsVisitor");
 	I_BaseType(osg::NodeVisitor);
 	I_ConstructorWithDefaults1(IN, osg::NodeVisitor::TraversalMode, traversalMode, osg::NodeVisitor::TRAVERSE_ALL_CHILDREN,
 	                           Properties::NON_EXPLICIT,

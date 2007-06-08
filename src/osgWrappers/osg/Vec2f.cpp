@@ -27,6 +27,7 @@ TYPE_NAME_ALIAS(float, osg::Vec2f::value_type)
 BEGIN_VALUE_REFLECTOR(osg::Vec2f)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
+	I_DeclaringFile("osg/Vec2f");
 	I_Constructor0(____Vec2f,
 	               "",
 	               "");

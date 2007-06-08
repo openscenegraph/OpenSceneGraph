@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::OccluderNode)
+	I_DeclaringFile("osg/OccluderNode");
 	I_BaseType(osg::Group);
 	I_Constructor0(____OccluderNode,
 	               "",

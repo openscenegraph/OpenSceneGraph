@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
+	I_DeclaringFile("osg/BoundingBox");
 	I_Constructor0(____BoundingBox,
 	               "Creates an uninitialized bounding box. ",
 	               "");

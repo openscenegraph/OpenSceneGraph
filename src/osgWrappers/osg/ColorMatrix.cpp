@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::ColorMatrix)
+	I_DeclaringFile("osg/ColorMatrix");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____ColorMatrix,
 	               "",

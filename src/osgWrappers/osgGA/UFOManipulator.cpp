@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
+	I_DeclaringFile("osgGA/UFOManipulator");
 	I_BaseType(osgGA::MatrixManipulator);
 	I_Constructor0(____UFOManipulator,
 	               "Default constructor. ",

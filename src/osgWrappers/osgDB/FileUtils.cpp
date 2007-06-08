@@ -23,11 +23,13 @@
 TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DirectoryContents)
 
 BEGIN_ENUM_REFLECTOR(osgDB::CaseSensitivity)
+	I_DeclaringFile("osgDB/FileUtils");
 	I_EnumLabel(osgDB::CASE_SENSITIVE);
 	I_EnumLabel(osgDB::CASE_INSENSITIVE);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::FileType)
+	I_DeclaringFile("osgDB/FileUtils");
 	I_EnumLabel(osgDB::FILE_NOT_FOUND);
 	I_EnumLabel(osgDB::REGULAR_FILE);
 	I_EnumLabel(osgDB::DIRECTORY);

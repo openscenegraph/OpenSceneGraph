@@ -27,6 +27,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::CombineParam)
+	I_DeclaringFile("osg/TexEnvCombine");
 	I_EnumLabel(osg::TexEnvCombine::REPLACE);
 	I_EnumLabel(osg::TexEnvCombine::MODULATE);
 	I_EnumLabel(osg::TexEnvCombine::ADD);
@@ -38,6 +39,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::CombineParam)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::SourceParam)
+	I_DeclaringFile("osg/TexEnvCombine");
 	I_EnumLabel(osg::TexEnvCombine::CONSTANT);
 	I_EnumLabel(osg::TexEnvCombine::PRIMARY_COLOR);
 	I_EnumLabel(osg::TexEnvCombine::PREVIOUS);
@@ -53,6 +55,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::SourceParam)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::OperandParam)
+	I_DeclaringFile("osg/TexEnvCombine");
 	I_EnumLabel(osg::TexEnvCombine::SRC_COLOR);
 	I_EnumLabel(osg::TexEnvCombine::ONE_MINUS_SRC_COLOR);
 	I_EnumLabel(osg::TexEnvCombine::SRC_ALPHA);
@@ -60,6 +63,7 @@ BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::OperandParam)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
+	I_DeclaringFile("osg/TexEnvCombine");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____TexEnvCombine,
 	               "",

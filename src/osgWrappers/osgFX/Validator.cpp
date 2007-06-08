@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Validator)
+	I_DeclaringFile("osgFX/Validator");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Validator,
 	               "",

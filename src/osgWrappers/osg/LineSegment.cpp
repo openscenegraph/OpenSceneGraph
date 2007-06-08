@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
+	I_DeclaringFile("osg/LineSegment");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____LineSegment,
 	               "",

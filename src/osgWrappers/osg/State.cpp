@@ -34,12 +34,14 @@
 TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
 
 BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
+	I_DeclaringFile("osg/State");
 	I_EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
 	I_EnumLabel(osg::State::ONCE_PER_FRAME);
 	I_EnumLabel(osg::State::ONCE_PER_ATTRIBUTE);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::State)
+	I_DeclaringFile("osg/State");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____State,
 	               "",
@@ -849,6 +851,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallback)
+	I_DeclaringFile("osg/State");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____DynamicObjectRenderingCompletedCallback,
 	               "",

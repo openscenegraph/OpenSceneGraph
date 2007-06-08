@@ -25,6 +25,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
+	I_DeclaringFile("osgParticle/MultiSegmentPlacer");
 	I_BaseType(osgParticle::Placer);
 	I_Constructor0(____MultiSegmentPlacer,
 	               "",

@@ -24,11 +24,13 @@
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >, osg::ArgumentParser::ErrorMessageMap)
 
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::ErrorSeverity)
+	I_DeclaringFile("osg/ArgumentParser");
 	I_EnumLabel(osg::ArgumentParser::BENIGN);
 	I_EnumLabel(osg::ArgumentParser::CRITICAL);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
+	I_DeclaringFile("osg/ArgumentParser");
 	I_Constructor2(IN, int *, argc, IN, char **, argv,
 	               ____ArgumentParser__int_P1__char_P1P1,
 	               "",
@@ -242,6 +244,7 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::Parameter::ParameterType)
+	I_DeclaringFile("osg/ArgumentParser");
 	I_EnumLabel(osg::ArgumentParser::Parameter::FLOAT_PARAMETER);
 	I_EnumLabel(osg::ArgumentParser::Parameter::DOUBLE_PARAMETER);
 	I_EnumLabel(osg::ArgumentParser::Parameter::INT_PARAMETER);
@@ -250,6 +253,7 @@ BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::Parameter::ParameterType)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArgumentParser::Parameter)
+	I_DeclaringFile("osg/ArgumentParser");
 	I_Constructor1(IN, float &, value,
 	               Properties::NON_EXPLICIT,
 	               ____Parameter__float_R1,

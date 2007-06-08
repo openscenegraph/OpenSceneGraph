@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osg::Point)
+	I_DeclaringFile("osg/Point");
 	I_BaseType(osg::StateAttribute);
 	I_Constructor0(____Point,
 	               "",
@@ -158,6 +159,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Point)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
+	I_DeclaringFile("osg/Point");
 	I_BaseType(osg::Referenced);
 	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,

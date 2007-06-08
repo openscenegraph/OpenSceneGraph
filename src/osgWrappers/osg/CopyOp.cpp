@@ -35,6 +35,7 @@
 TYPE_NAME_ALIAS(unsigned int, osg::CopyOp::CopyFlags)
 
 BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
+	I_DeclaringFile("osg/CopyOp");
 	I_EnumLabel(osg::CopyOp::SHALLOW_COPY);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_OBJECTS);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_NODES);
@@ -51,6 +52,7 @@ BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::CopyOp)
+	I_DeclaringFile("osg/CopyOp");
 	I_ConstructorWithDefaults1(IN, osg::CopyOp::CopyFlags, flags, osg::CopyOp::SHALLOW_COPY,
 	                           Properties::NON_EXPLICIT,
 	                           ____CopyOp__CopyFlags,

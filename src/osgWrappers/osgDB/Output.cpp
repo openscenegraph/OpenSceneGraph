@@ -23,6 +23,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osgDB::Output::PathNameHint)
+	I_DeclaringFile("osgDB/Output");
 	I_EnumLabel(osgDB::Output::AS_IS);
 	I_EnumLabel(osgDB::Output::FULL_PATH);
 	I_EnumLabel(osgDB::Output::RELATIVE_PATH);

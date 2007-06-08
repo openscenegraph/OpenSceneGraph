@@ -28,6 +28,7 @@
 TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::Archive::FileNameList)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Archive)
+	I_DeclaringFile("osgDB/Archive");
 	I_BaseType(osgDB::ReaderWriter);
 	I_Constructor0(____Archive,
 	               "",

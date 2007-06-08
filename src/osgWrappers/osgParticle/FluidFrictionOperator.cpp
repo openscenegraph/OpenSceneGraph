@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::FluidFrictionOperator)
+	I_DeclaringFile("osgParticle/FluidFrictionOperator");
 	I_BaseType(osgParticle::Operator);
 	I_Constructor0(____FluidFrictionOperator,
 	               "",

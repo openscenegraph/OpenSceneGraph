@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
+	I_DeclaringFile("osgGA/StateSetManipulator");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_ConstructorWithDefaults1(IN, osg::StateSet *, stateset, 0,
 	                           Properties::NON_EXPLICIT,

@@ -29,6 +29,7 @@
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgSim::ImpostorSprite > >, osgSim::Impostor::ImpostorSpriteList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
+	I_DeclaringFile("osgSim/Impostor");
 	I_BaseType(osg::LOD);
 	I_Constructor0(____Impostor,
 	               "",
@@ -127,6 +128,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgSim::ImpostorSprite >)
+	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
 	               "",
 	               "");

@@ -22,6 +22,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TabBoxDragger)
+	I_DeclaringFile("osgManipulator/TabBoxDragger");
 	I_BaseType(osgManipulator::CompositeDragger);
 	I_Constructor0(____TabBoxDragger,
 	               "",

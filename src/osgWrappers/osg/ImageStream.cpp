@@ -24,6 +24,7 @@
 #endif
 
 BEGIN_ENUM_REFLECTOR(osg::ImageStream::StreamStatus)
+	I_DeclaringFile("osg/ImageStream");
 	I_EnumLabel(osg::ImageStream::INVALID);
 	I_EnumLabel(osg::ImageStream::PLAYING);
 	I_EnumLabel(osg::ImageStream::PAUSED);
@@ -31,11 +32,13 @@ BEGIN_ENUM_REFLECTOR(osg::ImageStream::StreamStatus)
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::ImageStream::LoopingMode)
+	I_DeclaringFile("osg/ImageStream");
 	I_EnumLabel(osg::ImageStream::NO_LOOPING);
 	I_EnumLabel(osg::ImageStream::LOOPING);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
+	I_DeclaringFile("osg/ImageStream");
 	I_BaseType(osg::Image);
 	I_Constructor0(____ImageStream,
 	               "",

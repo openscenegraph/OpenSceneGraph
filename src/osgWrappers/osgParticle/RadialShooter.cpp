@@ -26,6 +26,7 @@
 #endif
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::RadialShooter)
+	I_DeclaringFile("osgParticle/RadialShooter");
 	I_BaseType(osgParticle::Shooter);
 	I_Constructor0(____RadialShooter,
 	               "",

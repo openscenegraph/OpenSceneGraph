@@ -19,12 +19,12 @@
 #include <osgDB/ReadFile>
 
 osg::ref_ptr<osgViewer::Viewer> viewer;
-osg::ref_ptr<osgViewer::GraphicsWindow> window;
+osg::observer_ptr<osgViewer::GraphicsWindow> window;
 
 void display(void)
 {
     // update and render the scene graph
-    viewer->frame();
+    if (viewer.valid()) viewer->frame();
 
     // Swap Buffers
     glutSwapBuffers();
@@ -34,19 +34,28 @@ void display(void)
 void reshape( int w, int h )
 {
     // update the window dimensions, in case the window has been resized.
-    window->resized(window->getTraits()->x, window->getTraits()->y, w, h);
-    window->getEventQueue()->windowResize(window->getTraits()->x, window->getTraits()->y, w, h );
+    if (window.valid()) 
+    {
+        window->resized(window->getTraits()->x, window->getTraits()->y, w, h);
+        window->getEventQueue()->windowResize(window->getTraits()->x, window->getTraits()->y, w, h );
+    }
 }
 
 void mousebutton( int button, int state, int x, int y )
 {
-    if (state==0) window->getEventQueue()->mouseButtonPress( x, y, button+1 );
-    else window->getEventQueue()->mouseButtonRelease( x, y, button+1 );
+    if (window.valid())
+    {
+        if (state==0) window->getEventQueue()->mouseButtonPress( x, y, button+1 );
+        else window->getEventQueue()->mouseButtonRelease( x, y, button+1 );
+    }
 }
 
 void mousemove( int x, int y )
 {
-    window->getEventQueue()->mouseMotion( x, y );
+    if (window.valid())
+    {
+        window->getEventQueue()->mouseMotion( x, y );
+    }
 }
 
 void keyboard( unsigned char key, int /*x*/, int /*y*/ )
@@ -54,11 +63,16 @@ void keyboard( unsigned char key, int /*x*/, int /*y*/ )
     switch( key )
     {
         case 27:
+            // clean up the viewer 
+            if (viewer.valid()) viewer = 0;
             glutDestroyWindow(glutGetWindow());
             break;
         default:
-            window->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
-            window->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
+            if (window.valid())
+            {
+                window->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) key );
+                window->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) key );
+            }
             break;
     }
 }

@@ -450,12 +450,6 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
     // extract the filenames from the arguments list.
     FileList fileList;
     for(int pos=1;pos<arguments.argc();++pos)
@@ -463,8 +457,14 @@ int main( int argc, char **argv )
         if (arguments.isString(pos)) fileList.push_back(arguments[pos]);
     }
 
-    if (fileList.size()<2)
+    if (fileList.empty())
     {
+        fileList.push_back("Images/dog_left_eye.jpg");
+         fileList.push_back("Images/dog_right_eye.jpg");
+    }
+    else if (fileList.size()<2)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
 

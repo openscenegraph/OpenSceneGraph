@@ -121,6 +121,12 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         /// install the standard os-eventhandler
         void installEventHandler();
+        
+        /// get the AGL context
+        AGLContext getAGLContext() { return _context; }
+        
+        // get the pixelformat
+        AGLPixelFormat getAGLPixelFormat() { return _pixelFormat; }
 
     protected:
     
@@ -128,7 +134,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         void transformMouseXY(float& x, float& y);
         
-        AGLContext& getAGLContext() { return _context; }
+        
         
 
 

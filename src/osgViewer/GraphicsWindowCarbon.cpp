@@ -475,7 +475,12 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
     
     /** @return a CGDirectDisplayID for a ScreenIdentifier */
     inline CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
-        return _displayIds[si.screenNum];
+        if (si.screenNum < _displayCount)
+            return _displayIds[si.screenNum];
+        else {
+            osg::notify(osg::WARN) << "GraphicsWindowCarbon :: invalid screen # " << si.screenNum << ", returning main-screen instead" << std::endl;
+            return _displayIds[0];
+        }
     }
 
     /** @return count of attached screens */

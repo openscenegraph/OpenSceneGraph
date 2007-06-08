@@ -242,6 +242,11 @@ namespace osgIntrospection
         /// this type, if any. Otherwise it returns the null pointer.
         inline const Comparator* getComparator() const;
 
+        /// Returns the path to the file where this type is declared,
+        /// relative the the OpenSceneGraph include directory.  Returns
+        /// the empty string if no path information is available.
+        inline const std::string &getDeclaringFile() const;
+
         /// Creates an instance of the reflected type. The returned Value 
         /// can be casted to T*, where T is the reflected type. If the type 
         ///    is abstract, an exception is thrown.
@@ -302,6 +307,8 @@ namespace osgIntrospection
 
         std::string _briefHelp;
         std::string _detailedHelp;
+
+        std::string _declaringFile;
     };
 
     // OPERATORS
@@ -550,6 +557,10 @@ namespace osgIntrospection
         return false;
     }
 
+    inline const std::string &Type::getDeclaringFile() const
+    {
+        return _declaringFile;
+    }
 }
 
 #endif

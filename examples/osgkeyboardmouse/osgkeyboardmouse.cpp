@@ -321,14 +321,14 @@ protected:
 
 int main( int argc, char **argv )
 {
-    if (argc<2) 
-    {
-        std::cout << argv[0] <<": requires filename argument." << std::endl;
-        return 1;
-    }
-
+    osg::ref_ptr<osg::Node> loadedModel;
+    
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(argv[1]);
+    if (argc>1) loadedModel = osgDB::readNodeFile(argv[1]);
+    
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osg");
+    
     if (!loadedModel) 
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;

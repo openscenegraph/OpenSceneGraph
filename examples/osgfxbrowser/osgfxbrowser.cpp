@@ -311,26 +311,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (arguments.argc() <= 1) {
-        arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
-
-    osg::Timer timer;
-    osg::Timer_t start_tick = timer.tick();
-
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
-    // if no model has been successfully loaded report failure.
-    if (!loadedModel) {
-        std::cout << arguments.getApplicationName() << ": No data loaded" << std::endl;
+    // if not loaded assume no arguments passed in, try use default mode instead.
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osg");
+  
+    if (!loadedModel)
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
-
-    osg::Timer_t end_tick = timer.tick();
-
-    std::cout << "Time to load = " << timer.delta_s(start_tick,end_tick) << std::endl;
 
     // optimize the scene graph, remove rendundent nodes and state etc.
     osgUtil::Optimizer optimizer;

@@ -115,15 +115,37 @@ osg::Sequence* createSequence(osg::ArgumentParser& arguments)
 {
     // assumes any remaining parameters are models
     osg::Sequence* seq = new osg::Sequence;
-    for (int i = 1; i < arguments.argc(); ++i)
+
+    typedef std::vector<std::string> Filenames;
+    Filenames filenames;
+    
+    if (arguments.argc() > 1)
+    {
+        for (int i = 1; i < arguments.argc(); ++i)
+        {
+            filenames.push_back(arguments[i]);
+        }
+    }
+    else
+    {
+        filenames.push_back("cow.osg");
+        filenames.push_back("dumptruck.osg");
+        filenames.push_back("cessna.osg");
+        filenames.push_back("glider.osg");
+    }
+    
+    for(Filenames::iterator itr = filenames.begin();
+        itr != filenames.end();
+        ++itr)        
     {
         // load model
-        osg::Node* node = osgDB::readNodeFile(arguments[i]);
-        if (!node) {
-            continue;
+        osg::Node* node = osgDB::readNodeFile(*itr);
+
+        if (node)
+        {
+            seq->addChild(createScaledNode(node, 100.0f));
+            seq->setTime(seq->getNumChildren()-1, 1.0f);
         }
-        seq->addChild(createScaledNode(node, 100.0f));
-        seq->setTime(seq->getNumChildren()-1, 1.0f);
     }
 
     // loop through all children

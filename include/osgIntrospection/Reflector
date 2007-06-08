@@ -113,6 +113,9 @@ namespace osgIntrospection
 
         /// Sets the current type's ReaderWriter object.
         void setReaderWriter(const ReaderWriter* rw);
+
+        /// Sets the current type's declaring file.
+        void setDeclaringFile(const std::string& file) const;
         
     private:
         struct PtrConstructor: ConstructorInfo
@@ -960,6 +963,12 @@ namespace osgIntrospection
     void Reflector<T>::setComparator(const Comparator* cmp)
     {
         _type->_cmp = cmp;
+    }
+
+    template<typename T>
+    void Reflector<T>::setDeclaringFile(const std::string& file) const
+    {
+        _type->_declaringFile = file;
     }
 
 }

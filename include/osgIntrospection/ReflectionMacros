@@ -164,6 +164,8 @@ namespace osgIntrospection
 // BASIC CONFIGURATION
 // --------------------------------------------------------------------------
 
+#define I_DeclaringFile(f)                   setDeclaringFile(f);
+
 #define I_Attribute(c)                       cap->addAttribute(new c);
 
 #define I_ReaderWriter(x)                    setReaderWriter(new x);

@@ -19,31 +19,31 @@ echo osgbillboard
 osgbillboard
 
 echo osgblendequation
-osgblendequation cessnafire.osg
+osgblendequation
 
 echo osgcallback
-osgcallback cow.osg
+osgcallback
 
 echo osgcatch
 osgcatch
 
 echo osgclip
-osgclip cow.osg
+osgclip
 
 echo osgcubemap
-osgcubemap cessna.osg
+osgcubemap
 
 echo osgdepthshadow
 osgdepthshadow
 
 echo osgdistortion
-osgdistortion cow.osg
+osgdistortion
 
 echo osgforest
 osgforest
 
 echo osgfxbrowser
-osgfxbrowser dumptruck.osg
+osgfxbrowser
 
 echo osggeometry
 osggeometry

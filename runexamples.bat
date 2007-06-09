@@ -163,7 +163,7 @@ echo osgspotlight
 osgspotlight
 
 echo osgstereoimage
-osgstereoimage Images/dog_left_eye.jpg Images/dog_right_eye.jpg
+osgstereoimage
 
 echo osgteapot
 osgteapot
@@ -175,7 +175,7 @@ echo osgtext
 osgtext
 
 echo osgtexture1D
-osgtexture1D dumptruck.osg
+osgtexture1D
 
 echo osgtexture2D
 osgtexture2D
@@ -190,4 +190,4 @@ echo osgvertexprogram
 osgvertexprogram
 
 echo osgwindows
-osgwindows cow.osg
+osgwindows

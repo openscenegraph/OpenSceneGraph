@@ -316,6 +316,10 @@ void View::setUpViewAcrossAllScreens()
             wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
             translate_x += double(width) / (double(height) * aspectRatio);
         }
+        
+        bool stereoSlitScreens = numScreens==2 &&
+                                 ds->getStereoMode()==osg::DisplaySettings::HORIZONTAL_SPLIT &&
+                                 ds->getStereo();
     
         for(unsigned int i=0; i<numScreens; ++i)
         {
@@ -335,7 +339,9 @@ void View::setUpViewAcrossAllScreens()
             traits->sharedContext = 0;
             traits->sampleBuffers = ds->getMultiSamples();
             traits->samples = ds->getNumMultiSamples();
-            if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER)) {
+            
+            if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+            {
                 traits->quadBufferStereo = true;
             }
 
@@ -362,11 +368,24 @@ void View::setUpViewAcrossAllScreens()
             camera->setDrawBuffer(buffer);
             camera->setReadBuffer(buffer);
 
-            double newAspectRatio = double(traits->width) / double(traits->height);
-            double aspectRatioChange = newAspectRatio / aspectRatio;
+            if (stereoSlitScreens)
+            {
+                unsigned int leftCameraNum = (ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT) ? 0 : 1;
+                
+                osg::ref_ptr<osg::DisplaySettings> ds_local = new osg::DisplaySettings(*ds);
+                ds_local->setStereoMode(leftCameraNum==i ? osg::DisplaySettings::LEFT_EYE : osg::DisplaySettings::RIGHT_EYE);
+                camera->setDisplaySettings(ds_local.get());
+                
+                addSlave(camera.get(), osg::Matrixd(), osg::Matrixd() );
+            }
+            else
+            {
+                double newAspectRatio = double(traits->width) / double(traits->height);
+                double aspectRatioChange = newAspectRatio / aspectRatio;
 
-            addSlave(camera.get(), osg::Matrixd::translate( translate_x - aspectRatioChange, 0.0, 0.0) * osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0), osg::Matrixd() );
-            translate_x -= aspectRatioChange * 2.0;
+                addSlave(camera.get(), osg::Matrixd::translate( translate_x - aspectRatioChange, 0.0, 0.0) * osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0), osg::Matrixd() );
+                translate_x -= aspectRatioChange * 2.0;
+            }
         }
     }
 

@@ -632,7 +632,7 @@ void CompositeViewer::setUpRenderingSupport()
 
             sceneView->setGlobalStateSet(view ? view->getCamera()->getStateSet() : 0);
             sceneView->setDefaults();
-            sceneView->setDisplaySettings(ds);
+            sceneView->setDisplaySettings(camera->getDisplaySettings()!=0 ? camera->getDisplaySettings() : ds);
             sceneView->setCamera(camera);
             sceneView->setState(state);
             sceneView->setFrameStamp(frameStamp);
@@ -677,7 +677,7 @@ void CompositeViewer::setUpRenderingSupport()
 
             sceneView->setGlobalStateSet(view->getCamera()->getStateSet());
             sceneView->setDefaults();
-            sceneView->setDisplaySettings(ds);
+            sceneView->setDisplaySettings(view->getCamera()->getDisplaySettings()!=0 ? view->getCamera()->getDisplaySettings() : ds);
             sceneView->setCamera(view->getCamera());
             sceneView->setState(view->getCamera()->getGraphicsContext()->getState());
             sceneView->setSceneData(view->getSceneData());
@@ -699,7 +699,7 @@ void CompositeViewer::setUpRenderingSupport()
                 sceneView->setGlobalStateSet(view->getCamera()->getStateSet());
                 sceneView->setDefaults();
                 sceneView->setCamera(slave._camera.get());
-                sceneView->setDisplaySettings(ds);
+                sceneView->setDisplaySettings(slave._camera->getDisplaySettings()!=0 ? slave._camera->getDisplaySettings() : ds);
                 sceneView->setState(slave._camera->getGraphicsContext()->getState());
                 sceneView->setSceneData(view->getSceneData());
                 sceneView->setFrameStamp(frameStamp);

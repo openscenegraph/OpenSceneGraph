@@ -38,6 +38,7 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _view(camera._view),
     _allowEventFocus(camera._allowEventFocus),
     _clearColor(camera._clearColor),
+    _displaySettings(camera._displaySettings),
     _clearMask(camera._clearMask),
     _colorMask(camera._colorMask),
     _viewport(camera._viewport),

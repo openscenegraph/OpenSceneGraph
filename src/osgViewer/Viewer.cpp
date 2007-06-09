@@ -1560,7 +1560,7 @@ void Viewer::setUpRenderingSupport()
 
                         sceneView->setGlobalStateSet(_camera->getStateSet());
                         sceneView->setDefaults(sceneViewOptions);
-                        sceneView->setDisplaySettings(ds);
+                        sceneView->setDisplaySettings(camera->getDisplaySettings()!=0 ? camera->getDisplaySettings() : ds);
                         sceneView->setCamera(camera);
                         sceneView->setState(state);
                         sceneView->setFrameStamp(frameStamp);
@@ -1584,6 +1584,7 @@ void Viewer::setUpRenderingSupport()
                     sceneView->setDefaults(sceneViewOptions);
                     sceneView->setDisplaySettings(ds);
                     sceneView->setCamera(camera);
+                    sceneView->setDisplaySettings(camera->getDisplaySettings()!=0 ? camera->getDisplaySettings() : ds);
                     sceneView->setState(state);
                     sceneView->setFrameStamp(frameStamp);
 
@@ -1619,7 +1620,7 @@ void Viewer::setUpRenderingSupport()
 
                 sceneView->setGlobalStateSet(_camera->getStateSet());
                 sceneView->setDefaults(sceneViewOptions);
-                sceneView->setDisplaySettings(ds);
+                sceneView->setDisplaySettings(camera->getDisplaySettings()!=0 ? camera->getDisplaySettings() : ds);
                 sceneView->setCamera(camera);
                 sceneView->setState(state);
                 sceneView->setFrameStamp(frameStamp);

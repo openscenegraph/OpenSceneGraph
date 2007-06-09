@@ -3,78 +3,11 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/AnimationPathManipulator>
 #include <iostream>
-
-class ThreadingHandler : public osgGA::GUIEventHandler 
-{
-public: 
-
-    ThreadingHandler() {}
-        
-    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
-    {
-        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
-        if (!viewer) return false;
-    
-        switch(ea.getEventType())
-        {
-            case(osgGA::GUIEventAdapter::KEYUP):
-            {
-                if (ea.getKey()=='m')
-                {
-                    switch(viewer->getThreadingModel())
-                    {
-                        case(osgViewer::Viewer::SingleThreaded):
-                            viewer->setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
-                            osg::notify(osg::NOTICE)<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::CullDrawThreadPerContext):
-                            viewer->setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
-                            osg::notify(osg::NOTICE)<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::DrawThreadPerContext):
-                            viewer->setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
-                            osg::notify(osg::NOTICE)<<"Threading model 'CullThreadPerCameraDrawThreadPerContext' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext):
-                            viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-                            osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::AutomaticSelection):
-                            viewer->setThreadingModel(viewer->suggestBestThreadingModel());
-                            osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
-                            break;
-                    }
-                    return true;
-                }
-                if (ea.getKey()=='e')
-                {
-                    switch(viewer->getEndBarrierPosition())
-                    {
-                        case(osgViewer::Viewer::BeforeSwapBuffers):
-                            viewer->setEndBarrierPosition(osgViewer::Viewer::AfterSwapBuffers);
-                            osg::notify(osg::NOTICE)<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
-                            break;
-                        case(osgViewer::Viewer::AfterSwapBuffers):
-                            viewer->setEndBarrierPosition(osgViewer::Viewer::BeforeSwapBuffers);
-                            osg::notify(osg::NOTICE)<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
-                            break;
-                    }
-                    return true;
-                }
-            }
-            default: break;
-        }
-        
-        return false;
-    }
-    
-    bool _done;
-};
-
 
 class ModelHandler : public osgGA::GUIEventHandler 
 {
@@ -175,7 +108,7 @@ void singleWindowMultipleCameras(osgViewer::Viewer& viewer)
     }
 }
 
-void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
+void multipleWindowMultipleCameras(osgViewer::Viewer& viewer, bool multipleScreens)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi) 
@@ -194,7 +127,7 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer)
     for(unsigned int i=0; i<numCameras;++i, translate_x -= 2.0)
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-        traits->screenNum = i / 3;
+        traits->screenNum = multipleScreens ? i / 3 : 0;
         traits->x = (i*width)/numCameras;
         traits->y = 0;
         traits->width = width/numCameras-1;
@@ -247,7 +180,7 @@ int main( int argc, char **argv )
         }
     }
 
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
     
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded); }
     while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext); }
@@ -260,10 +193,14 @@ int main( int argc, char **argv )
 
     // alternative viewer window setups.
     while (arguments.read("-1")) { singleWindowMultipleCameras(viewer); }
-    while (arguments.read("-2")) { multipleWindowMultipleCameras(viewer); }
+    while (arguments.read("-2")) { multipleWindowMultipleCameras(viewer, false); }
+    while (arguments.read("-3")) { multipleWindowMultipleCameras(viewer, true); }
 
     if (apm.valid()) viewer.setCameraManipulator(apm.get());
     else viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
+    
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+    viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     std::string configfile;
     while (arguments.read("--config", configfile))
@@ -299,6 +236,9 @@ int main( int argc, char **argv )
 
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osg");
+
     if (!loadedModel) 
     {
         std::cout << argv[0] <<": No data loaded." << std::endl;

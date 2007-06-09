@@ -24,7 +24,18 @@ View::View()
 
     setCamera(new osg::Camera);
 
+#if 1    
+    double height = osg::DisplaySettings::instance()->getScreenHeight();
+    double width = osg::DisplaySettings::instance()->getScreenWidth();
+    double distance = osg::DisplaySettings::instance()->getScreenWidth();
+    
+    double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
+
+    _camera->setProjectionMatrixAsPerspective( vfov, width/height, 1.0f,10000.0f);
+#else
     _camera->setProjectionMatrixAsFrustum(-0.325, 0.325, -0.26, 0.26, 1.0f,10000.0f);
+#endif
+
     _camera->setClearColor(osg::Vec4f(0.2f, 0.2f, 0.4f, 1.0f));
     
     osg::StateSet* stateset = _camera->getOrCreateStateSet();

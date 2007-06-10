@@ -286,27 +286,45 @@ int main(int argc, char **argv)
         return 1;
     }
     
+    
+    osg::ref_ptr<osgGA::NodeTrackerManipulator> tm;
+    
+    std::string overlayFilename;
+    while(arguments.read("--overlay", overlayFilename)) {}
+
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> root = osgDB::readNodeFiles(arguments);
 
     if (!root) root = createEarth();
-    
+
     if (!root) return 0;
 
-    // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData(root.get());
 
-    osg::ref_ptr<osgGA::NodeTrackerManipulator> tm;
-
-    osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
-    if (csn)
+    if (!overlayFilename.empty())
     {
+        //osg::Object *pObj = osgDB::readObjectFile("alaska_clean.shp");
+        //osg::ref_ptr<osg::Geode> shapefile = dynamic_cast<osg::Geode*> (pObj);
+        //
+        //ConvertLatLon2EllipsoidCoordinates latlon2em;
+        //shapefile->accept(latlon2em);
 
-        osg::ref_ptr<osgSim::OverlayNode> overlayNode;
-        if (useOverlay)
+        osg::ref_ptr<osg::Node> shapefile = osgDB::readNodeFile(overlayFilename);
+        
+        if (!shapefile)
         {
-            overlayNode = new osgSim::OverlayNode(technique);
-            
+            osg::notify(osg::NOTICE)<<"File `"<<overlayFilename<<"` not found"<<std::endl;
+            return 1;
+        }
+
+        osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
+        if (csn)
+        {
+
+            osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode(technique);
+            overlayNode->getOrCreateStateSet()->setTextureAttribute(1, new osg::TexEnv(osg::TexEnv::DECAL));
+            overlayNode->setOverlaySubgraph(shapefile.get());
+            overlayNode->setOverlayTextureSizeHint(1024);
+
             // insert the OverlayNode between the coordinate system node and its children.
             for(unsigned int i=0; i<csn->getNumChildren(); ++i)
             {
@@ -314,66 +332,104 @@ int main(int argc, char **argv)
             }
 
             csn->removeChildren(0, csn->getNumChildren());
-            csn->addChild(overlayNode.get());
-            
-            // tell the overlay node to continously update its overlay texture
-            // as we know we'll be tracking a moving target.
-            overlayNode->setContinuousUpdate(true);
-        }
-        
-        
-        osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
-        if (cessna)
-        {
-            double s = 200000.0 / cessna->getBound().radius();
-        
-            osg::MatrixTransform* scaler = new osg::MatrixTransform;
-            scaler->addChild(cessna);
-            scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
-            scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
-        
-            if (false)
-            {
-                osgSim::SphereSegment* ss = new osgSim::SphereSegment(
-                                    osg::Vec3(0.0f,0.0f,0.0f), // center
-                                    19.9f, // radius
-                                    osg::DegreesToRadians(135.0f),
-                                    osg::DegreesToRadians(240.0f),
-                                    osg::DegreesToRadians(-10.0f),
-                                    osg::DegreesToRadians(30.0f),
-                                    60);
-                                    
-                scaler->addChild(ss);
-            }
+            csn->addChild(overlayNode);
 
-            osg::MatrixTransform* mt = new osg::MatrixTransform;
-            mt->addChild(scaler);
-
-
-            if (!nc) nc = new ModelPositionCallback(speed);
-
-            mt->setUpdateCallback(nc);
-            
-            csn->addChild(mt);
-            
-            // if we are using an overaly node, use the cessna subgraph as the overlay subgraph
-            if (overlayNode.valid())
-            {
-                overlayNode->setOverlaySubgraph(mt);
-            }
-
-            tm = new osgGA::NodeTrackerManipulator;
-            tm->setTrackerMode(trackerMode);
-            tm->setRotationMode(rotationMode);
-            tm->setTrackNode(scaler);
+            viewer.setSceneData(csn);
         }
         else
         {
-             std::cout<<"Failed to read cessna.osg"<<std::endl;
-        }
-        
-    }    
+            osgSim::OverlayNode* overlayNode = new osgSim::OverlayNode(technique);
+            overlayNode->getOrCreateStateSet()->setTextureAttribute(1, new osg::TexEnv(osg::TexEnv::DECAL));
+            overlayNode->setOverlaySubgraph(shapefile.get());
+            overlayNode->setOverlayTextureSizeHint(1024);
+            overlayNode->addChild(root.get());
 
+            viewer.setSceneData(overlayNode);
+        }
+    }
+    else
+    {
+    
+
+        // add a viewport to the viewer and attach the scene graph.
+        viewer.setSceneData(root.get());
+
+        osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(root.get());
+        if (csn)
+        {
+
+            osg::ref_ptr<osgSim::OverlayNode> overlayNode;
+            if (useOverlay)
+            {
+                overlayNode = new osgSim::OverlayNode(technique);
+
+                // insert the OverlayNode between the coordinate system node and its children.
+                for(unsigned int i=0; i<csn->getNumChildren(); ++i)
+                {
+                    overlayNode->addChild( csn->getChild(i) );
+                }
+
+                csn->removeChildren(0, csn->getNumChildren());
+                csn->addChild(overlayNode.get());
+
+                // tell the overlay node to continously update its overlay texture
+                // as we know we'll be tracking a moving target.
+                overlayNode->setContinuousUpdate(true);
+            }
+
+
+            osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+            if (cessna)
+            {
+                double s = 200000.0 / cessna->getBound().radius();
+
+                osg::MatrixTransform* scaler = new osg::MatrixTransform;
+                scaler->addChild(cessna);
+                scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
+                scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
+
+                if (false)
+                {
+                    osgSim::SphereSegment* ss = new osgSim::SphereSegment(
+                                        osg::Vec3(0.0f,0.0f,0.0f), // center
+                                        19.9f, // radius
+                                        osg::DegreesToRadians(135.0f),
+                                        osg::DegreesToRadians(240.0f),
+                                        osg::DegreesToRadians(-10.0f),
+                                        osg::DegreesToRadians(30.0f),
+                                        60);
+
+                    scaler->addChild(ss);
+                }
+
+                osg::MatrixTransform* mt = new osg::MatrixTransform;
+                mt->addChild(scaler);
+
+
+                if (!nc) nc = new ModelPositionCallback(speed);
+
+                mt->setUpdateCallback(nc);
+
+                csn->addChild(mt);
+
+                // if we are using an overaly node, use the cessna subgraph as the overlay subgraph
+                if (overlayNode.valid())
+                {
+                    overlayNode->setOverlaySubgraph(mt);
+                }
+
+                tm = new osgGA::NodeTrackerManipulator;
+                tm->setTrackerMode(trackerMode);
+                tm->setRotationMode(rotationMode);
+                tm->setTrackNode(scaler);
+            }
+            else
+            {
+                 std::cout<<"Failed to read cessna.osg"<<std::endl;
+            }
+
+        }    
+    }
 
     // set up camera manipulators.
     {

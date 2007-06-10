@@ -222,32 +222,32 @@ int main( int argc, char **argv )
     while (arguments.read("--write-config", configfile)) { osgDB::writeObjectFile(viewer, configfile); }
 
 
-#if 0
-
-    ModelHandler* modelHandler = new ModelHandler;
-    for(int i=1; i<arguments.argc();++i)
+    if (arguments.read("-m"))
     {
-        modelHandler->add(arguments[i]);
+        ModelHandler* modelHandler = new ModelHandler;
+        for(int i=1; i<arguments.argc();++i)
+        {
+            modelHandler->add(arguments[i]);
+        }
+
+        viewer.addEventHandler(modelHandler);
+    }
+    else
+    {
+        // load the scene.
+        osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+
+        if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osg");
+
+        if (!loadedModel) 
+        {
+            std::cout << argv[0] <<": No data loaded." << std::endl;
+            return 1;
+        }
+
+        viewer.setSceneData(loadedModel.get());
     }
     
-    viewer.addEventHandler(modelHandler);
-
-#else
-
-    // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osg");
-
-    if (!loadedModel) 
-    {
-        std::cout << argv[0] <<": No data loaded." << std::endl;
-        return 1;
-    }
-
-    viewer.setSceneData(loadedModel.get());
-#endif
-
     viewer.realize();
 
     unsigned int numFrames = 0;

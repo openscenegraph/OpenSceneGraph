@@ -22,6 +22,11 @@
 
 #include <osgViewer/Export>
 
+extern "C"
+{
+    typedef void (* CGraphicsWindowFunction) (void);
+}
+
 namespace osgViewer {
 
 /** Base class for providing Windowing API agnostic access to creating and managing graphisc window and events.
@@ -203,6 +208,23 @@ class GraphicsWindowEmbedded : public GraphicsWindow
         virtual void grabFocus() {}
         virtual void grabFocusIfPointerInWindow() {}
 };
+
+struct GrapicsWindowFunctionProxy
+{
+    GrapicsWindowFunctionProxy(CGraphicsWindowFunction function) { (function)(); }
+};
+
+#define USE_GRAPICSWINDOW_IMPLEMENTATION(ext) \
+    extern "C" void graphicswindow_##ext(void); \
+    static osgViewer::GrapicsWindowFunctionProxy graphicswindowproxy_##ext(graphicswindow_##ext);
+
+#if defined(_WIN32)
+    #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Win32)
+#elif defined(__APPLE__)
+    #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Carbon)
+#else
+    #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(X11)
+#endif
 
 }
 

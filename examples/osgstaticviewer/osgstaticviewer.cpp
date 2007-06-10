@@ -29,15 +29,15 @@
 
 #include <iostream>
 
+// include the plugins we need
 USE_OSGPLUGIN(ive);
+USE_OSGPLUGIN(freetype);
 
-// extern "C" void graphicswindow_X11(void);
+// include the platform specific GraphicsWindow implementation.
+USE_GRAPHICSWINDOW();
 
 int main(int argc, char** argv)
 {
-
-    // graphicswindow_X11();
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 

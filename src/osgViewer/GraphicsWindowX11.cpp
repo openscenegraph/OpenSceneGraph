@@ -292,7 +292,7 @@ bool GraphicsWindowX11::createVisualInfo()
     return _visualInfo != 0;
 }
 
-void GraphicsWindowX11::setWindowDecoration(bool flag)
+bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
 {
     Display* display = getDisplayToUse();
 
@@ -361,15 +361,22 @@ void GraphicsWindowX11::setWindowDecoration(bool flag)
         // we don't add this sleep then any X11 calls right afterwards can produce
         // X11 errors.
         usleep(100000);
+        
+        return true;
 
     }
     else
+    {
         osg::notify(osg::NOTICE)<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
+        return false;
+    }
+
+    
 }
 
-void GraphicsWindowX11::setWindowRectangle(int x, int y, int width, int height)
+bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
-    if (!_realized) return;
+    if (!_realized) return false;
     
     Display* display = getDisplayToUse();
     
@@ -382,6 +389,8 @@ void GraphicsWindowX11::setWindowRectangle(int x, int y, int width, int height)
     // we don't add this sleep then any X11 calls right afterwards can produce
     // X11 errors.
     usleep(100000);
+    
+    return true;
 }
 
 void GraphicsWindowX11::setCursor(MouseCursor mouseCursor)
@@ -1291,4 +1300,7 @@ struct RegisterWindowingSystemInterfaceProxy
 RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
 
 // declare C entry point for static compilation.
-extern "C" void graphicswindow_X11(void) {}
+extern "C" void graphicswindow_X11(void)
+{
+    osg::GraphicsContext::setWindowingSystemInterface(new X11WindowingSystemInterface);
+}

@@ -92,7 +92,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         virtual void checkEvents();
 
         /** Set Window decoration.*/
-        virtual void setWindowDecoration(bool flag);
+        virtual bool setWindowDecorationImplementation(bool flag);
 
         /** Get focus.*/
         virtual void grabFocus();
@@ -104,7 +104,7 @@ class GraphicsWindowX11 : public osgViewer::GraphicsWindow
         virtual void requestWarpPointer(float x,float y);
 
         /** Set the window's position and size.*/
-        virtual void setWindowRectangle(int x, int y, int width, int height);
+        virtual bool setWindowRectangleImplementation(int x, int y, int width, int height);
 
         /** Set mouse cursor to a specific shape.*/
         virtual void setCursor(MouseCursor cursor);

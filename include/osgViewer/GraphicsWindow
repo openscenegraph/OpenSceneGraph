@@ -49,13 +49,32 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         virtual void checkEvents() {}
         
         /** Set the window's position and size.*/
-        virtual void setWindowRectangle(int /*x*/, int /*y*/, int /*width*/, int /*height*/) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowRectangle(..) not implemented."<<std::endl; }
+        void setWindowRectangle(int x, int y, int width, int height)
+        { 
+            if (setWindowRectangleImplementation(x ,y ,width, height) && _traits.valid())
+            {
+                resized(x,y,width,height);
+            }
+        }
+        
+        /** implementation of setWindowRectangle, should be implemented by derived classes */
+        virtual bool setWindowRectangleImplementation(int /*x*/, int /*y*/, int /*width*/, int /*height*/) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowRectangleImplementation(..) not implemented."<<std::endl; return false; }
 
         /** Get the window's position and size.*/
         virtual void getWindowRectangle(int& x, int& y, int& width, int& height) { if (_traits.valid()) { x = _traits->x; y = _traits->y; width = _traits->width; height = _traits->height; }  }
 
         /** Set Window decoration.*/
-        virtual void setWindowDecoration(bool /*flag*/) {  osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowDecoration(..) not implemented."<<std::endl; }
+        void setWindowDecoration(bool flag)
+        {  
+            if (setWindowDecorationImplementation(flag) && _traits.valid())
+            {
+                _traits->windowDecoration = flag;
+            }
+        }
+        
+        /** implementation of setWindowDecoration, should be implemented by derived classes */
+        virtual bool setWindowDecorationImplementation(bool /*flag*/) {  osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowDecorationImplementation(..) not implemented."<<std::endl; return false; }
+
 
         /** Set Window decoration.*/
         virtual bool getWindowDecoration() const { return _traits.valid() ? _traits->windowDecoration : false; }

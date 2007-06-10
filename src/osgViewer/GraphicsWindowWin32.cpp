@@ -1512,7 +1512,7 @@ bool GraphicsWindowWin32::setPixelFormat()
     return true;
 }
 
-void GraphicsWindowWin32::setWindowDecoration( bool decorated )
+bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
 {
     unsigned int windowStyle;
     unsigned int extendedStyle;
@@ -1527,7 +1527,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     if (!determineWindowPositionAndStyle(decorated, x, y, w, h, windowStyle, extendedStyle))
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to determine the window position and style", _traits->screenNum, 0);
-        return;
+        return false;
     }
 
     //
@@ -1540,7 +1540,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     if (result==0 && error)
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set window style", _traits->screenNum, error);
-        return;
+        return false;
     }
 
     //
@@ -1553,7 +1553,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     if (result==0 && error)
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set window extented style", _traits->screenNum, error);
-        return;
+        return false;
     }
 
     //
@@ -1563,7 +1563,7 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     if (!::SetWindowPos(_hwnd, HWND_TOP, x, y, w, h, SWP_FRAMECHANGED | SWP_NOZORDER | SWP_SHOWWINDOW))
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to set new window position and size", _traits->screenNum, ::GetLastError());
-        return;
+        return false;
     }
 
     //
@@ -1574,6 +1574,8 @@ void GraphicsWindowWin32::setWindowDecoration( bool decorated )
     {
         ::InvalidateRect(NULL, NULL, TRUE);
     }
+    
+    return true;
 }
 
 bool GraphicsWindowWin32::realizeImplementation()
@@ -1760,12 +1762,14 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
     getEventQueue()->mouseWarped(x,y);
 }
 
-void GraphicsWindowWin32::setWindowRectangle(int x, int y, int width, int height)
+bool GraphicsWindowWin32::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
     if (!::SetWindowPos(_hwnd, HWND_TOP, x, y, width, height, SWP_SHOWWINDOW | SWP_FRAMECHANGED))
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindowRectangle() - Unable to set new window position and size", _traits->screenNum, ::GetLastError());
+        return false;
     }
+    return true;
 }
 
 void GraphicsWindowWin32::useCursor( bool cursorOn )
@@ -2255,3 +2259,10 @@ struct RegisterWindowingSystemInterfaceProxy
 static RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
 
 }; // namespace OsgViewer
+
+
+// declare C entry point for static compilation.
+extern "C" void graphicswindow_Win32(void)
+{
+    osg::GraphicsContext::setWindowingSystemInterface(osgViewer::Win32WindowingSystem::getInterface());
+}

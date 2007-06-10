@@ -963,6 +963,17 @@ bool _findLowerAlphaValueInRow(unsigned int num, T* data,T value, unsigned int d
     return false;
 }
 
+template <typename T>    
+bool _maskedFindLowerAlphaValueInRow(unsigned int num, T* data,T value, T mask, unsigned int delta)
+{
+    for(unsigned int i=0;i<num;++i)
+    {
+        if ((*data & mask)<value) return true;
+        data += delta;
+    }
+    return false;
+}
+
 bool Image::isImageTranslucent() const
 {
     unsigned int offset = 0;
@@ -1022,6 +1033,47 @@ bool Image::isImageTranslucent() const
                     break;
                 case(GL_FLOAT):
                     if (_findLowerAlphaValueInRow(s(), (float*)d + offset, 1.0f, delta))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_SHORT_5_5_5_1):
+                    if (_maskedFindLowerAlphaValueInRow(s(), (unsigned short*)d,
+                                                        (unsigned short)0x0001,
+                                                        (unsigned short)0x0001, 1))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_SHORT_1_5_5_5_REV):
+                    if (_maskedFindLowerAlphaValueInRow(s(), (unsigned short*)d,
+                                                        (unsigned short)0x8000,
+                                                        (unsigned short)0x8000, 1))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_SHORT_4_4_4_4):
+                    if (_maskedFindLowerAlphaValueInRow(s(), (unsigned short*)d,
+                                                        (unsigned short)0x000f,
+                                                        (unsigned short)0x000f, 1))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_SHORT_4_4_4_4_REV):
+                    if (_maskedFindLowerAlphaValueInRow(s(), (unsigned short*)d,
+                                                        (unsigned short)0xf000,
+                                                        (unsigned short)0xf000, 1))
+                        return true;
+                    break;
+                case(GL_UNSIGNED_INT_10_10_10_2):
+                    if (_maskedFindLowerAlphaValueInRow(s(), (unsigned int*)d,
+                                                        0x00000003u,
+                                                        0x00000003u, 1))
+                        return true;
+                    break;                    
+                case(GL_UNSIGNED_INT_2_10_10_10_REV):
+                    if (_maskedFindLowerAlphaValueInRow(s(), (unsigned int*)d,
+                                                        0xc0000000u,
+                                                        0xc0000000u, 1))
+                        return true;
+                    break;
+                case(GL_HALF_FLOAT_NV):
+                    if (_findLowerAlphaValueInRow(s(), (unsigned short*)d + offset,
+                                                  (unsigned short)0x3c00, delta))
                         return true;
                     break;
             }

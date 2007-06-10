@@ -75,20 +75,30 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__checkEvents,
 	          "",
 	          "");
-	I_Method4(void, setWindowRectangle, IN, int, x, IN, int, x, IN, int, x, IN, int, x,
-	          Properties::VIRTUAL,
+	I_Method4(void, setWindowRectangle, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
+	          Properties::NON_VIRTUAL,
 	          __void__setWindowRectangle__int__int__int__int,
 	          "Set the window's position and size. ",
+	          "");
+	I_Method4(bool, setWindowRectangleImplementation, IN, int, x, IN, int, x, IN, int, x, IN, int, x,
+	          Properties::VIRTUAL,
+	          __bool__setWindowRectangleImplementation__int__int__int__int,
+	          "implementation of setWindowRectangle, should be implemented by derived classes ",
 	          "");
 	I_Method4(void, getWindowRectangle, IN, int &, x, IN, int &, y, IN, int &, width, IN, int &, height,
 	          Properties::VIRTUAL,
 	          __void__getWindowRectangle__int_R1__int_R1__int_R1__int_R1,
 	          "Get the window's position and size. ",
 	          "");
-	I_Method1(void, setWindowDecoration, IN, bool, x,
-	          Properties::VIRTUAL,
+	I_Method1(void, setWindowDecoration, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
 	          __void__setWindowDecoration__bool,
 	          "Set Window decoration. ",
+	          "");
+	I_Method1(bool, setWindowDecorationImplementation, IN, bool, x,
+	          Properties::VIRTUAL,
+	          __bool__setWindowDecorationImplementation__bool,
+	          "implementation of setWindowDecoration, should be implemented by derived classes ",
 	          "");
 	I_Method0(bool, getWindowDecoration,
 	          Properties::VIRTUAL,
@@ -184,6 +194,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_SimpleProperty(bool, WindowDecoration, 
 	                 __bool__getWindowDecoration, 
 	                 __void__setWindowDecoration__bool);
+	I_SimpleProperty(bool, WindowDecorationImplementation, 
+	                 0, 
+	                 __bool__setWindowDecorationImplementation__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
@@ -248,5 +261,14 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	          __void__grabFocusIfPointerInWindow,
 	          "Get focus on if the pointer is in this window. ",
 	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgViewer::GrapicsWindowFunctionProxy)
+	I_DeclaringFile("osgViewer/GraphicsWindow");
+	I_Constructor1(IN, CGraphicsWindowFunction, function,
+	               Properties::NON_EXPLICIT,
+	               ____GrapicsWindowFunctionProxy__CGraphicsWindowFunction,
+	               "",
+	               "");
 END_REFLECTOR
 

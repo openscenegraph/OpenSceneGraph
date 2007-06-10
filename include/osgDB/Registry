@@ -573,14 +573,9 @@ class RegisterReaderWriterProxy
 };
 
 
-class PluginFunctionProxy
+struct PluginFunctionProxy
 {
-public:
-
-    PluginFunctionProxy(CPluginFunction function)
-    {
-        (function)();
-    }
+    PluginFunctionProxy(CPluginFunction function) { (function)(); }
 };
 
 #define USE_OSGPLUGIN(ext) \
@@ -589,7 +584,7 @@ public:
 
 #define REGISTER_OSGPLUGIN(ext, classname) \
     extern "C" void osgdb_##ext(void) {} \
-    static RegisterReaderWriterProxy<classname> g_proxy_##classname;
+    static osgDB::RegisterReaderWriterProxy<classname> g_proxy_##classname;
 
 }
 

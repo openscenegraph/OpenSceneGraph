@@ -56,4 +56,4 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterFreeType> g_readerWriter_FreeType_Proxy;
+REGISTER_OSGPLUGIN(freetype, ReaderWriterFreeType)

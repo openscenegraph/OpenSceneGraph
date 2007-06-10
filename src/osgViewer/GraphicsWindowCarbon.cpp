@@ -611,25 +611,34 @@ void GraphicsWindowCarbon::init()
     _initialized = true;
 }
 
-void GraphicsWindowCarbon::setWindowDecoration(bool flag)
+bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
 {
     _useWindowDecoration = flag;
-    if (_realized) {
+
+    if (_realized)
+    {
         OSErr err = noErr;
         Rect bounds;
         GetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
 
-        if (_useWindowDecoration) {
+        if (_useWindowDecoration)
+        {
             err = ChangeWindowAttributes(getNativeWindowRef(),  kWindowStandardDocumentAttributes,  kWindowNoTitleBarAttribute | kWindowNoShadowAttribute);
             SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
-        } else {
+        }
+        else
+        {
             err = ChangeWindowAttributes(getNativeWindowRef(), kWindowNoTitleBarAttribute | kWindowNoShadowAttribute, kWindowStandardDocumentAttributes);
         }
 
-        if (err != noErr) {
+        if (err != noErr)
+        {
             osg::notify(osg::WARN) << "GraphicsWindowCarbon::setWindowDecoration failed with " << err << std::endl;
+            return false;
         }
     }
+
+    return true;
 }
 
 WindowAttributes GraphicsWindowCarbon::computeWindowAttributes(bool useWindowDecoration, bool supportsResize) {
@@ -1180,13 +1189,13 @@ void GraphicsWindowCarbon::checkEvents()
 }
 
 
-void GraphicsWindowCarbon::setWindowRectangle(int x, int y, int width, int height)
+bool GraphicsWindowCarbon::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
     Rect bounds = {y, x, y + height, x + width};
     SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
     aglUpdateContext(_context);
     MenubarController::instance()->update();
-
+    return true;
 }
 
 void GraphicsWindowCarbon::grabFocus()
@@ -1233,5 +1242,11 @@ struct RegisterWindowingSystemInterfaceProxy
 };
 
 RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
+
+// declare C entry point for static compilation.
+extern "C" void graphicswindow_Carbon(void)
+{
+    osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::OSXCarbonWindowingSystemInterface());
+}
 
 #endif

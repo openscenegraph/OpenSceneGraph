@@ -1840,87 +1840,6 @@
 		5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */; };
 		5BC1913C0C15F7AE002CF5BC /* SDLMainForMacOSX.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */; };
 		5BC191690C15FC1D002CF5BC /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC191680C15FC1C002CF5BC /* SDL.framework */; };
-		5BEBDA540C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA550C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA560C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA570C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA580C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA590C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA5A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA5B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA5C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA5D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA5E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA5F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA600C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA610C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA620C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA630C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA640C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA650C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA660C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA670C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA680C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA690C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA6A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA6B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA6C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA6D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA6E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA6F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA700C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA710C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA720C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA730C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA740C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA750C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA760C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA770C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA780C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA790C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA7A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA7B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA7C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA7D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA7E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA7F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA800C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA810C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA820C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA830C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA840C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA850C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA860C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA870C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA880C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA890C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA8A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA8B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA8C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA8D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA8E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA8F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA900C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA910C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA920C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA930C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA940C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA950C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA960C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA970C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA980C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA990C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA9A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA9B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA9C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA9D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA9E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDA9F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDAA00C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDAA10C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDAA20C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDAA30C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
-		5BEBDAA40C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */ = {isa = PBXBuildFile; fileRef = 5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */; };
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
@@ -5629,7 +5548,7 @@
 		00C0CAC1062651A40091ED7C /* osgdb_freetype.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_freetype.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C0CAE90626525D0091ED7C /* osgdb_osgText.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_osgText.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59D340B0926A800E9BCA1 /* osgviewerGLUT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerGLUT.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		00C59D630B092D3B00E9BCA1 /* osgviewerCocoa.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = osgviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00C59D630B092D3B00E9BCA1 /* osgviewerCocoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerCocoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00C59DA90B09343B00E9BCA1 /* osgviewerSDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgviewerSDL.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00CE2D30065BCCE7003C8656 /* CoordinateSystemNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CoordinateSystemNode.cpp; path = ../../src/osg/CoordinateSystemNode.cpp; sourceTree = SOURCE_ROOT; };
 		00CE2D3C065BCD25003C8656 /* CoordinateSystemNode */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = CoordinateSystemNode; path = ../../include/osg/CoordinateSystemNode; sourceTree = SOURCE_ROOT; };
@@ -5761,7 +5680,6 @@
 		5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMainForMacOSX.h; path = ../../examples/osgviewerSDL/SDLMainForMacOSX.h; sourceTree = SOURCE_ROOT; };
 		5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMainForMacOSX.m; path = ../../examples/osgviewerSDL/SDLMainForMacOSX.m; sourceTree = SOURCE_ROOT; };
 		5BC191680C15FC1C002CF5BC /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
-		5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = "OpenSceneGraph-Data"; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BE117FB305D63B3800EB53E5 /* osg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -10370,7 +10288,6 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				5BEBDA530C1EAB3300FA1B50 /* OpenSceneGraph-Data */,
 				BE117FB405D63B3800EB53E5 /* osg-Info.plist */,
 				BE11849B05D7126100EB53E5 /* osgUtil-Info.plist */,
 				BE11876B05D75C2700EB53E5 /* osgText-Info.plist */,
@@ -15486,7 +15403,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA550C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15494,7 +15410,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA560C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15502,7 +15417,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA630C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15510,7 +15424,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA640C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15518,7 +15431,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA540C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15526,7 +15438,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA660C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15534,7 +15445,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDAA20C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15542,7 +15452,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA920C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15550,7 +15459,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA930C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15558,7 +15466,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA960C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15566,7 +15473,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA570C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15574,7 +15480,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA5A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15582,7 +15487,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA5D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15590,7 +15494,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA5E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15605,7 +15508,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA5F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15613,7 +15515,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA600C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15621,7 +15522,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA670C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15629,7 +15529,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA680C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15637,7 +15536,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA6B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15645,7 +15543,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA6C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15653,7 +15550,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA6D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15661,7 +15557,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA6F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15669,7 +15564,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA700C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15677,7 +15571,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA710C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15685,7 +15578,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA720C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15693,7 +15585,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA740C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15701,7 +15592,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA770C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15709,7 +15599,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA790C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15717,7 +15606,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA7A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15725,7 +15613,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA7B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15733,7 +15620,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA7D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15741,7 +15627,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA7F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15749,7 +15634,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA800C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15757,7 +15641,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA820C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15765,7 +15648,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA830C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15773,7 +15655,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA850C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15781,7 +15662,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA860C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15789,7 +15669,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA870C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15797,7 +15676,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA9D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15812,7 +15690,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA840C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15848,7 +15725,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA690C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15856,7 +15732,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA6A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15864,7 +15739,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA5B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15872,7 +15746,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA610C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15880,7 +15753,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA620C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15888,7 +15760,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA780C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15896,7 +15767,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA7C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15904,7 +15774,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA8C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15912,7 +15781,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA910C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15920,7 +15788,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA650C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15928,7 +15795,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA6E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15936,7 +15802,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA970C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15944,7 +15809,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA5C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15952,7 +15816,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDAA10C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15989,7 +15852,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA7E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15997,7 +15859,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA730C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16005,7 +15866,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDAA30C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16017,7 +15877,6 @@
 				0037A1C30C19086E0089AA1C /* MainMenu.nib in Resources */,
 				0037A1C80C1908A70089AA1C /* InfoPlist.strings in Resources */,
 				0037A1C90C1908A70089AA1C /* Localizable.strings in Resources */,
-				5BEBDA900C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16025,7 +15884,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA9E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16033,7 +15891,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA880C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16041,7 +15898,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA890C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16049,7 +15905,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA8A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16057,7 +15912,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA8B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16065,7 +15919,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA8E0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16073,7 +15926,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA8F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16081,7 +15933,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDAA40C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16089,7 +15940,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA9F0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16097,7 +15947,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA950C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16105,7 +15954,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA980C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16113,7 +15961,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA990C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16121,7 +15968,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA9A0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16129,7 +15975,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA9B0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16137,7 +15982,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA9C0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16145,7 +15989,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA940C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16153,7 +15996,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDAA00C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16161,7 +16003,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA590C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16169,7 +16010,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA580C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16177,7 +16017,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA760C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16185,7 +16024,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA810C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16242,7 +16080,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA750C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16257,7 +16094,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BEBDA8D0C1EAB3400FA1B50 /* OpenSceneGraph-Data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

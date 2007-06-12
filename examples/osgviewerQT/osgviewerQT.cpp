@@ -88,12 +88,20 @@ void AdapterWidget::resizeGL( int width, int height )
 
 void AdapterWidget::keyPressEvent( QKeyEvent* event )
 {
+#if USE_QT4
+    _gw->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) *(event->text().toAscii().data() ) );
+#else
     _gw->getEventQueue()->keyPress( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
+#endif
 }
 
 void AdapterWidget::keyReleaseEvent( QKeyEvent* event )
 {
+#if USE_QT4
+    _gw->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) *(event->text().toAscii().data() ) );
+#else
     _gw->getEventQueue()->keyRelease( (osgGA::GUIEventAdapter::KeySymbol) event->ascii() );
+#endif
 }
 
 void AdapterWidget::mousePressEvent( QMouseEvent* event )

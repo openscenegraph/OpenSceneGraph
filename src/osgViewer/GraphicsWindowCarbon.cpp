@@ -329,11 +329,16 @@ class GraphicsContextCarbon : public osg::GraphicsContext
 
 #pragma mark * * * MenubarController * * * 
 
+/** the MenubarController class checks all open windows if they intersect with the menubar / dock and hide the menubar/dock if necessary */
 class MenubarController : public osg::Referenced 
 {
 
     public:
-        MenubarController() : osg::Referenced(), _list(), _menubarShown(false) {
+        MenubarController() : 
+            osg::Referenced(), 
+            _list(), 
+            _menubarShown(false) 
+        {
             // the following code will query the system for the available ect on the main-display (typically the displaying showing the menubar + the dock
 
             GDHandle mainScreenDevice;
@@ -629,6 +634,7 @@ bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
         else
         {
             err = ChangeWindowAttributes(getNativeWindowRef(), kWindowNoTitleBarAttribute | kWindowNoShadowAttribute, kWindowStandardDocumentAttributes);
+            SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);    
         }
 
         if (err != noErr)
@@ -636,10 +642,24 @@ bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
             osg::notify(osg::WARN) << "GraphicsWindowCarbon::setWindowDecoration failed with " << err << std::endl;
             return false;
         }
+        
+        // update titlebar-height
+        Rect titleRect;
+        GetWindowBounds(_window, kWindowTitleBarRgn, &titleRect);
+        _windowTitleHeight = abs(titleRect.bottom - titleRect.top);
+        
+        // sth: I don't know why I have to reattach the context to the window here, If I don't do this  I get blank areas, where the titlebar was. 
+        // InvalWindowRect doesn't help here :-/
+        
+        aglSetDrawable(_context, 0);
+        aglSetDrawable(_context, GetWindowPort(_window));
+                
+        MenubarController::instance()->update();
     }
 
     return true;
 }
+
 
 WindowAttributes GraphicsWindowCarbon::computeWindowAttributes(bool useWindowDecoration, bool supportsResize) {
     WindowAttributes attr; 

@@ -37,6 +37,10 @@ class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         
         ~GraphicsWindowWin32();
     
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowWin32*>(object)!=0; }
+        virtual const char* libraryName() const { return "osgViewer"; }
+        virtual const char* className() const { return "GraphicsWindowWin32"; }
+
         virtual bool valid() const { return _valid; }
         
         /** Realize the GraphicsContext.*/

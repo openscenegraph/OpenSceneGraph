@@ -358,6 +358,12 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Get the the const list of cameras associated with this graphics context.*/
         const Cameras& getCameras() const { return _cameras; }
 
+    public:
+
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsContext*>(object)!=0; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "GraphicsContext"; }
+
     protected:
         
         GraphicsContext();
@@ -367,9 +373,6 @@ class OSG_EXPORT GraphicsContext : public Object
 
         virtual Object* cloneType() const { return 0; }
         virtual Object* clone(const CopyOp&) const { return 0; }
-        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsContext*>(object)!=0; }
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "GraphicsContext"; }
 
         void addCamera(osg::Camera* camera);
         void removeCamera(osg::Camera* camera);

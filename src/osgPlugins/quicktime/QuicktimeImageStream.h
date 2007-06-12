@@ -101,7 +101,7 @@ public:
    inline float getCurrentTime() const { return _current; }
 
    /// @return the current moviedata-object
-   MovieData* getMovieData() { return _data; }
+   MovieData* getMovieData() { return _movieData; }
 
    /// loads a movie from fileName
    void load(std::string fileName);
@@ -144,7 +144,7 @@ private:
    float _current;
    float _currentRate;
 
-   MovieData* _data;
+   MovieData* _movieData;
 
    enum ThreadCommand {
       THREAD_IDLE = 0,

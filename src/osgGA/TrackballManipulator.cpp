@@ -108,7 +108,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
             {
             
                 double timeSinceLastRecordEvent = ea.getTime() - _ga_t0->getTime();
-                if (timeSinceLastRecordEvent>0.01) addMouseEvent(ea);
+                if (timeSinceLastRecordEvent>0.02) addMouseEvent(ea);
 
                 if (isMouseMoving())
                 {

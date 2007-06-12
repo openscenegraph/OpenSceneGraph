@@ -8,12 +8,13 @@
 
 #if USE_QT4
 
+    #include <QtCore/QString>
     #include <QtCore/QTimer>
     #include <QtGui/QKeyEvent>
     #include <QtGui/QApplication>
     #include <QtOpenGL/QGLWidget>
-
-    using Qt::WFlags;
+    
+    using Qt::WindowFlags;
 
 #else
 
@@ -21,6 +22,8 @@
     #include <qtimer.h>
     #include <qgl.h>
     #include <qapplication.h>
+
+    #define WindowFlags WFlags
 
 #endif
 
@@ -30,7 +33,7 @@ class AdapterWidget : public QGLWidget
 {
     public:
 
-        AdapterWidget( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0 );
+        AdapterWidget( QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WindowFlags f = 0 );
 
         virtual ~AdapterWidget() {}
 
@@ -51,8 +54,12 @@ class AdapterWidget : public QGLWidget
         osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 };
 
-AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidget * shareWidget, WFlags f):
+AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidget * shareWidget, WindowFlags f):
+#if USE_QT4
+    QGLWidget(parent, shareWidget, f)
+#else
     QGLWidget(parent, name, shareWidget, f)
+#endif
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
 }
@@ -111,7 +118,7 @@ class ViewerQT : public osgViewer::Viewer, public AdapterWidget
 {
     public:
 
-        ViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):
+        ViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WindowFlags f = 0):
             AdapterWidget( parent, name, shareWidget, f )
         {
             getCamera()->setViewport(new osg::Viewport(0,0,width(),height()));
@@ -136,7 +143,7 @@ class CompositeViewerQT : public osgViewer::CompositeViewer, public AdapterWidge
 {
     public:
 
-        CompositeViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WFlags f = 0):
+        CompositeViewerQT(QWidget * parent = 0, const char * name = 0, const QGLWidget * shareWidget = 0, WindowFlags f = 0):
             AdapterWidget( parent, name, shareWidget, f )
         {
             setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);

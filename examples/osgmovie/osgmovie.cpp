@@ -17,6 +17,7 @@
 */
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgDB/ReadFile>
 
@@ -750,6 +751,9 @@ int main(int argc, char** argv)
     MovieEventHandler* meh = new MovieEventHandler();
     meh->set(viewer.getSceneData());
     viewer.addEventHandler(meh);
+    
+    // add in support for stats
+    viewer.addEventHandler(new osgViewer::StatsHandler());
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())

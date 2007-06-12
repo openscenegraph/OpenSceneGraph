@@ -308,31 +308,50 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
 }
 
-osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector,
-                                        osg::ArgumentParser& arguments)
+class DomeModel
 {
-    double sphere_radius = 1.0;
-    if (arguments.read("--radius", sphere_radius)) {}
+public:
 
-    double collar_radius = 0.45;
-    if (arguments.read("--collar", collar_radius)) {}
+    DomeModel(osg::ArgumentParser& arguments):
+        sphere_radius(1.0),
+        collar_radius(0.45),
+        rotationDegrees(180.0),
+        distance(0.0),
+        flip(false),
+        texcoord_flip(false)
+    {
+        if (arguments.read("--radius", sphere_radius)) {}
+        if (arguments.read("--collar", collar_radius)) {}
+        if (arguments.read("--rotation", rotationDegrees)) {}
 
-    double rotationDegrees = 180.0;
-    if (arguments.read("--rotation", rotationDegrees)) {}
+        distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
+        if (arguments.read("--distance", distance)) {}
 
+        if (arguments.read("--flip")) { flip = true; }
+    }
+    
+    double sphere_radius;
+    double collar_radius;
+    double rotationDegrees;
+    double distance;
+    bool flip;
+    bool texcoord_flip;
+
+};
+
+
+osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, DomeModel& domeModel)
+{
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
     
-    double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
-    if (arguments.read("--distance", distance)) {}
-    
     bool centerProjection = false;
 
-    osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, distance);
+    osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, domeModel.distance);
     
     
     osg::notify(osg::NOTICE)<<"Projector position = "<<projector<<std::endl;
-    osg::notify(osg::NOTICE)<<"distance = "<<distance<<std::endl;
+    osg::notify(osg::NOTICE)<<"distance = "<<domeModel.distance<<std::endl;
 
 
     // create the quad to visualize.
@@ -363,15 +382,12 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
 
-    double rotation = osg::DegreesToRadians(rotationDegrees);
+    double rotation = osg::DegreesToRadians(domeModel.rotationDegrees);
 
     osg::Vec3 cursor = bottom;
     int i,j;
     
     int midSteps = noSteps/2;
-    
-    bool flip = false;
-    if (arguments.read("--flip")) { flip = true; }
     
     for(i=0;i<midSteps;++i)
     {
@@ -385,23 +401,23 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
             double phi = osg::PI_2 * delta.length() / screenRadius;
             if (phi > osg::PI_2) phi = osg::PI_2;
 
-            double f = distance * sin(phi);
-            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+            double f = domeModel.distance * sin(phi);
+            double e = domeModel.distance * cos(phi) + sqrt( domeModel.sphere_radius*domeModel.sphere_radius - f*f);
             double l = e * cos(phi);
             double h = e * sin(phi);
-            double gamma = atan2(h, l-distance);
+            double gamma = atan2(h, l-domeModel.distance);
 
             osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
 
             // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
-            if (flip)
+            if (domeModel.flip)
                 vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
             else
                 vertices->push_back(cursor);
             
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back(texcoord);
+            texcoords->push_back( domeModel.texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
 
             if (j+1<midSteps) cursor += dx;
         }
@@ -413,23 +429,23 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
             double phi = osg::PI_2 * delta.length() / screenRadius;
             if (phi > osg::PI_2) phi = osg::PI_2;
 
-            double f = distance * sin(phi);
-            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+            double f = domeModel.distance * sin(phi);
+            double e = domeModel.distance * cos(phi) + sqrt( domeModel.sphere_radius*domeModel.sphere_radius - f*f);
             double l = e * cos(phi);
             double h = e * sin(phi);
-            double gamma = atan2(h, l-distance);
+            double gamma = atan2(h, l-domeModel.distance);
 
             osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
 
             // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
-            if (flip)
+            if (domeModel.flip)
                 vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
             else
                 vertices->push_back(cursor);
 
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back(texcoord);
+            texcoords->push_back( domeModel.texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
 
             cursor += dx;
         }
@@ -447,23 +463,23 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
             double phi = osg::PI_2 * delta.length() / screenRadius;
             if (phi > osg::PI_2) phi = osg::PI_2;
 
-            double f = distance * sin(phi);
-            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
+            double f = domeModel.distance * sin(phi);
+            double e = domeModel.distance * cos(phi) + sqrt( domeModel.sphere_radius*domeModel.sphere_radius - f*f);
             double l = e * cos(phi);
             double h = e * sin(phi);
-            double gamma = atan2(h, l-distance);
+            double gamma = atan2(h, l-domeModel.distance);
 
             osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
 
             // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
-            if (flip)
+            if (domeModel.flip)
                 vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
             else
                 vertices->push_back(cursor);
 
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back(texcoord);
+            texcoords->push_back( domeModel.texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
 
             cursor += dx;
         }
@@ -516,6 +532,8 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
     while (arguments.read("--width",width)) {}
     while (arguments.read("--height",height)) {}
 
+    DomeModel domeModel(arguments);
+
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->screenNum = screenNum;
     traits->x = 0;
@@ -535,8 +553,6 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         return;
     }
 
-    osg::ref_ptr<osg::Drawable> distortionCorrectionMash = createDomeDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), arguments);
-
     osg::Texture* texture = 0;
     for(int i=1;i<arguments.argc() && !texture;++i)
     {
@@ -548,6 +564,8 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
 
             if (image)
             {
+                domeModel.texcoord_flip = image->getOrigin()==osg::Image::TOP_LEFT;
+            
 #if 1            
                 texture = new osg::TextureRectangle(image);
 #else
@@ -565,7 +583,7 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
     // distortion correction set up.
     {
         osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(distortionCorrectionMash.get());
+        geode->addDrawable( createDomeDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), domeModel) );
 
         // new we need to add the texture to the mesh, we do so by creating a 
         // StateSet to contain the Texture StateAttribute.

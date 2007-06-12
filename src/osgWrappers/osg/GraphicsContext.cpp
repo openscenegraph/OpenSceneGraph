@@ -13,6 +13,7 @@
 #include <OpenThreads/Mutex>
 #include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
+#include <osg/Object>
 #include <osg/State>
 #include <osg/Vec4>
 
@@ -268,6 +269,21 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __C5_Cameras_R1__getCameras,
 	          "Get the the const list of cameras associated with this graphics context. ",
 	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, object,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_StaticMethod1(void, setWindowingSystemInterface, IN, osg::GraphicsContext::WindowingSystemInterface *, wsInterface,
 	                __void__setWindowingSystemInterface__WindowingSystemInterface_P1_S,
 	                "Set the querry the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
@@ -310,24 +326,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	                   Properties::CONST,
 	                   __Object_P1__clone__C5_CopyOp_R1,
 	                   "Clone an object, with Object* return type. ",
-	                   "Must be defined by derived classes. ");
-	I_ProtectedMethod1(bool, isSameKindAs, IN, const osg::Object *, object,
-	                   Properties::VIRTUAL,
-	                   Properties::CONST,
-	                   __bool__isSameKindAs__C5_Object_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(const char *, libraryName,
-	                   Properties::VIRTUAL,
-	                   Properties::CONST,
-	                   __C5_char_P1__libraryName,
-	                   "return the name of the object's library. ",
-	                   "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_ProtectedMethod0(const char *, className,
-	                   Properties::VIRTUAL,
-	                   Properties::CONST,
-	                   __C5_char_P1__className,
-	                   "return the name of the object's class type. ",
 	                   "Must be defined by derived classes. ");
 	I_ProtectedMethod1(void, addCamera, IN, osg::Camera *, camera,
 	                   Properties::NON_VIRTUAL,

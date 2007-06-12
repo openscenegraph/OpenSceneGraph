@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/GraphicsContext>
+#include <osg/Object>
 #include <osgGA/EventQueue>
 #include <osgViewer/GraphicsWindow>
 
@@ -55,6 +56,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_Constructor0(____GraphicsWindow,
 	               "",
 	               "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, object,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
 	          __void__setEventQueue__osgGA_EventQueue_P1,
@@ -211,6 +227,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	               ____GraphicsWindowEmbedded__int__int__int__int,
 	               "",
 	               "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, object,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method0(void, init,
 	          Properties::NON_VIRTUAL,
 	          __void__init,

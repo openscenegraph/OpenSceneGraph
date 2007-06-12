@@ -41,6 +41,9 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
     
         GraphicsWindow() { _eventQueue = new osgGA::EventQueue; }
 
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindow*>(object)!=0; }
+        virtual const char* libraryName() const { return "osgViewer"; }
+        virtual const char* className() const { return "GraphicsWindow"; }
 
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
@@ -196,6 +199,10 @@ class GraphicsWindowEmbedded : public GraphicsWindow
             
             init();
         }
+
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowEmbedded*>(object)!=0; }
+        virtual const char* libraryName() const { return "osgViewer"; }
+        virtual const char* className() const { return "GraphicsWindowEmbedded"; }
 
         void init()
         {

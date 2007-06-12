@@ -127,6 +127,24 @@ class OSG_EXPORT Image : public Object
         */
         void copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source);
 
+
+        enum Origin 
+        {
+            BOTTOM_LEFT,
+            TOP_LEFT
+        };
+        
+        /** Set the origin of the image.
+          * The default value is BOTTOM_LEFT and is consistent with OpenGL.
+          * TOP_LEFT is used for imagery that follows standard Imagery convention, such as movies,
+          * and hasn't been flipped yet.  For such images one much flip the t axis of the tex coords.
+          * to handle this origin position. */
+        void setOrigin(Origin origin) { _origin = origin; }
+        
+        /** Get the origin of the image.*/
+        Origin getOrigin() const { return _origin; }
+        
+
         /** Width of image. */
         inline int s() const { return _s; }
 
@@ -270,6 +288,8 @@ class OSG_EXPORT Image : public Object
         Image& operator = (const Image&) { return *this; }
 
         std::string _fileName;
+
+        Origin _origin;
 
         int _s, _t, _r;
         GLint _internalTextureFormat;

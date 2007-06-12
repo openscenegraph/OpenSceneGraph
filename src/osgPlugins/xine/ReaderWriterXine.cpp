@@ -30,7 +30,10 @@ class XineImageStream : public osg::ImageStream
             _visual(0),
             _stream(0),
             _event_queue(0),
-            _ready(false) {}
+            _ready(false)
+        {
+            setOrigin(osg::Image::TOP_LEFT);
+        }
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         XineImageStream(const XineImageStream& image,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):

@@ -42,6 +42,8 @@ int QuicktimeImageStream::_qtInstanceCount = 0;
 // Constructor: setup and start thread
 QuicktimeImageStream::QuicktimeImageStream(std::string fileName) : ImageStream()
 {
+    setOrigin(osg::Image::TOP_LEFT);
+
     _len = 0;
     _movieData = new MovieData();
 

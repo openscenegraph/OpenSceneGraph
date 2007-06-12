@@ -32,6 +32,7 @@ Image::Image()
     setDataVariance(STATIC); 
 
     _fileName               = "";
+    _origin                 = BOTTOM_LEFT;
     _s = _t = _r            = 0;
     _internalTextureFormat  = 0;
     _pixelFormat            = (unsigned int)0;
@@ -47,6 +48,7 @@ Image::Image()
 Image::Image(const Image& image,const CopyOp& copyop):
     Object(image,copyop),
     _fileName(image._fileName),
+    _origin(image._origin),
     _s(image._s), _t(image._t), _r(image._r),
     _internalTextureFormat(image._internalTextureFormat),
     _pixelFormat(image._pixelFormat),

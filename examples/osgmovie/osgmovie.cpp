@@ -268,12 +268,13 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 
 osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle)
 {
+    bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
     if (useTextureRectangle)
     {
         osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
-                                           0.0f,image->t(), image->s(),0.0f);
+                                           0.0f, flip ? image->t() : 0.0, image->s(), flip ? 0.0 : image->t());
 
         osg::TextureRectangle* texture = new osg::TextureRectangle(image);
         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
@@ -291,7 +292,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
         osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
                                            osg::Vec3(0.0f,0.0f,height),
-                                           0.0f,1.0f, 1.0f,0.0f);
+                                           0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
                                     
         osg::Texture2D* texture = new osg::Texture2D(image);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);

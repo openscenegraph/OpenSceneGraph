@@ -32,6 +32,12 @@ BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
 	I_EnumLabel(osg::Image::USE_MALLOC_FREE);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osg::Image::Origin)
+	I_DeclaringFile("osg/Image");
+	I_EnumLabel(osg::Image::BOTTOM_LEFT);
+	I_EnumLabel(osg::Image::TOP_LEFT);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_DeclaringFile("osg/Image");
 	I_BaseType(osg::Object);
@@ -127,6 +133,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__copySubImage__int__int__int__osg_Image_P1,
 	          "Copy a source Image into a subpart of this Image at specified position. ",
 	          "Typically used to copy to an already allocated image, such as creating a 3D image from a stack 2D images. If this Image is empty then image data is created to accomodate the source image in its offset position. If source is NULL then no operation happens, this Image is left unchanged.");
+	I_Method1(void, setOrigin, IN, osg::Image::Origin, origin,
+	          Properties::NON_VIRTUAL,
+	          __void__setOrigin__Origin,
+	          "Set the origin of the image. ",
+	          "The default value is BOTTOM_LEFT and is consistent with OpenGL. TOP_LEFT is used for imagery that follows standard Imagery convention, such as movies, and hasn't been flipped yet. For such images one much flip the t axis of the tex coords. to handle this origin position. ");
+	I_Method0(osg::Image::Origin, getOrigin,
+	          Properties::NON_VIRTUAL,
+	          __Origin__getOrigin,
+	          "Get the origin of the image. ",
+	          "");
 	I_Method0(int, s,
 	          Properties::NON_VIRTUAL,
 	          __int__s,
@@ -374,6 +390,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(unsigned int, ModifiedCount, 
 	                 __unsigned_int__getModifiedCount, 
 	                 __void__setModifiedCount__unsigned_int);
+	I_SimpleProperty(osg::Image::Origin, Origin, 
+	                 __Origin__getOrigin, 
+	                 __void__setOrigin__Origin);
 	I_SimpleProperty(unsigned int, Packing, 
 	                 __unsigned_int__getPacking, 
 	                 __void__setPacking__unsigned_int);

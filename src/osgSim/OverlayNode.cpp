@@ -999,6 +999,7 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         {
             program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
         }
+#if 0
         else
         {
             char vertexShaderSource[] = 
@@ -1013,7 +1014,7 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
             osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
             program->addShader(vertex_shader);
         }
-        
+#endif        
         
     }
 
@@ -1294,8 +1295,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         osg::BoundingSphere bs = _overlaySubgraph->getBound();
 
-
-
         // push the stateset.
         cv->pushStateSet(overlayData._mainSubgraphStateSet.get());
 
@@ -1355,7 +1354,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         }
 
         
-        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>0)
+        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>18)
         {
             overlayData._geode->removeDrawables(0, 3);
         }        
@@ -1458,10 +1457,13 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         if (usePerspectiveShaders)
         {
             osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
+            double original_width = max_side-min_side;
 
-            double minRatio = 0.01;
+            double minRatio = 0.;
             if (ratio<minRatio) ratio = minRatio;
         
+            osg::notify(osg::NOTICE)<<" new ratio = "<<ratio<<std::endl;
+
             double base_up = min_up - (max_up - min_up) * ratio / (1.0 - ratio);
             double max_side_over_up = 0.0;
             for(i=0; i< projectedVertices.size(); ++i)
@@ -1476,8 +1478,36 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             min_side = mid_side - max_half_width;
             max_side = mid_side + max_half_width;
             
+            double new_width = max_side-min_side;
+            osg::notify(osg::NOTICE)<<"  width ratio  = "<<new_width/original_width<<std::endl;
+            osg::notify(osg::NOTICE)<<"  near ratio  = "<<ratio * new_width/original_width<<std::endl;
+            osg::notify(osg::NOTICE)<<"  angle  = "<<2.0*osg::RadiansToDegrees(atan(max_side_over_up))<<std::endl;
         
-            osg::notify(osg::NOTICE)<<"max_side_over_up = "<<max_side_over_up<<std::endl;
+            osg::Vec3d v000 = osg::Vec3d(-1.0, -1.0, -1.0) * inverseMVP; 
+            osg::Vec3d v010 = osg::Vec3d(-1.0, 1.0, -1.0) * inverseMVP; 
+            osg::Vec3d v100 = osg::Vec3d(1.0, -1.0, -1.0) * inverseMVP; 
+            osg::Vec3d v110 = osg::Vec3d(1.0, 1.0, -1.0) * inverseMVP; 
+
+            osg::Vec3d v001 = osg::Vec3d(-1.0, -1.0, 1.0) * inverseMVP; 
+            osg::Vec3d v011 = osg::Vec3d(-1.0, 1.0, 1.0) * inverseMVP; 
+            osg::Vec3d v101 = osg::Vec3d(1.0, -1.0, 1.0) * inverseMVP; 
+            osg::Vec3d v111 = osg::Vec3d(1.0, 1.0, 1.0) * inverseMVP; 
+
+
+            osg::Vec3d edgeBottomLeft = v001-v000;
+            osg::Vec3d edgeBottomRight = v101-v100;
+            osg::Vec3d edgeTopRight = v111-v110;
+            osg::Vec3d edgeTopLeft = v011-v010;
+            edgeBottomLeft.normalize();
+            edgeBottomRight.normalize();
+            edgeTopLeft.normalize();
+            edgeTopRight.normalize();
+            
+            
+            
+            double frustumDiagonal = osg::RadiansToDegrees(acos(edgeBottomLeft * edgeBottomRight));
+            osg::notify(osg::NOTICE)<<"  frustum base angle  = "<<frustumDiagonal<<std::endl;
+        
         
             double y0 = -(1.0+ratio)/(1.0-ratio); // suspect
             double inverse_one_minus_y0 = 1.0/(1-y0);
@@ -1485,16 +1515,22 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             overlayData._y0->set(static_cast<float>(y0));
             overlayData._inverse_one_minus_y0->set(static_cast<float>(inverse_one_minus_y0));
             
-            osg::notify(osg::NOTICE)<<"y0 = "<<y0<<std::endl;
-            osg::notify(osg::NOTICE)<<"inverse_one_minus_y0 = "<<inverse_one_minus_y0<<std::endl;
+            //osg::notify(osg::NOTICE)<<"y0 = "<<y0<<std::endl;
+            //osg::notify(osg::NOTICE)<<"inverse_one_minus_y0 = "<<inverse_one_minus_y0<<std::endl;
 
         
             overlayData._mainSubgraphStateSet->setAttribute(overlayData._mainSubgraphProgram.get());
+            
+            osg::Matrixd projection;
+            projection.makeOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
+
+            camera->setProjectionMatrix(projection);
             
         }
         else
         {
             overlayData._mainSubgraphStateSet->removeAttribute(osg::StateAttribute::PROGRAM);
+            camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
         }
 
 
@@ -1510,7 +1546,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
         osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
 #endif
-        camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
             
         if (em)
         {

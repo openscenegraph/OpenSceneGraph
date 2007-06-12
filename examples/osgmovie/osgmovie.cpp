@@ -292,6 +292,9 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     double collar_radius = 0.45;
     if (arguments.read("--collar", collar_radius)) {}
 
+    double rotationDegrees = 180.0;
+    if (arguments.read("--rotation", rotationDegrees)) {}
+
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
     
@@ -330,13 +333,20 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     osg::Vec3 dx = xAxis*(width/((float)(noSteps-2)));
     osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
     
+    osg::Vec3 top = origin + yAxis*height;
+
     osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
+
+    double rotation = osg::DegreesToRadians(rotationDegrees);
 
     osg::Vec3 cursor = bottom;
     int i,j;
     
     int midSteps = noSteps/2;
+    
+    bool flip = false;
+    if (arguments.read("--flip")) { flip = true; }
     
     for(i=0;i<midSteps;++i)
     {
@@ -346,6 +356,7 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
             osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
             double theta = atan2(delta.x(), -delta.y());
             theta += 2*osg::PI;
+
             double phi = osg::PI_2 * delta.length() / screenRadius;
             if (phi > osg::PI_2) phi = osg::PI_2;
 
@@ -359,7 +370,11 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
             // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
-            vertices->push_back(cursor);
+            if (flip)
+                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
+            else
+                vertices->push_back(cursor);
+            
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
             texcoords->push_back(texcoord);
 
@@ -383,7 +398,11 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
             // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
-            vertices->push_back(cursor);
+            if (flip)
+                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
+            else
+                vertices->push_back(cursor);
+
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
             texcoords->push_back(texcoord);
 
@@ -413,7 +432,11 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
 
             // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
 
-            vertices->push_back(cursor);
+            if (flip)
+                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
+            else
+                vertices->push_back(cursor);
+
             colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
             texcoords->push_back(texcoord);
 
@@ -458,13 +481,18 @@ void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments
         return;
     }
 
+    unsigned int screenNum = 0;
+    while (arguments.read("--screen",screenNum)) {}
+
+
     unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(screenNum), width, height);
 
     while (arguments.read("--width",width)) {}
     while (arguments.read("--height",height)) {}
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->screenNum = screenNum;
     traits->x = 0;
     traits->y = 0;
     traits->width = width;

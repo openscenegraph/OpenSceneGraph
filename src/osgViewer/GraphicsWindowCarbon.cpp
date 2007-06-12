@@ -731,7 +731,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     
     Rect titleRect;
     GetWindowBounds(_window, kWindowTitleBarRgn, &titleRect);
-    _windowTitleHeight = abs(titleRect.top);
+    _windowTitleHeight = abs(titleRect.bottom - titleRect.top);
     
     if ((_ownsWindow) || (windowData && windowData->installEventHandler()))
         installEventHandler();

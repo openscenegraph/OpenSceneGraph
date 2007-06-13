@@ -10,6 +10,10 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ApplicationUsage>
+#include <osg/Camera>
+#include <osgGA/GUIActionAdapter>
+#include <osgGA/GUIEventAdapter>
 #include <osgViewer/ViewerEventHandlers>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -20,12 +24,131 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
+BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_EnumLabel(osgViewer::StatsHandler::NO_STATS);
-	I_EnumLabel(osgViewer::StatsHandler::FRAME_RATE);
-	I_EnumLabel(osgViewer::StatsHandler::VIEWER_STATS);
-	I_EnumLabel(osgViewer::StatsHandler::LAST);
+	I_BaseType(osgGA::GUIEventHandler);
+	I_ConstructorWithDefaults1(IN, osg::ApplicationUsage *, au, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____HelpHandler__osg_ApplicationUsage_P1,
+	                           "",
+	                           "");
+	I_Method1(void, setApplicationUsage, IN, osg::ApplicationUsage *, au,
+	          Properties::NON_VIRTUAL,
+	          __void__setApplicationUsage__osg_ApplicationUsage_P1,
+	          "",
+	          "");
+	I_Method0(osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method0(const osg::ApplicationUsage *, getApplicationUsage,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ApplicationUsage_P1__getApplicationUsage,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventTogglesOnScreenHelp, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventTogglesOnScreenHelp__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventTogglesOnScreenHelp,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventTogglesOnScreenHelp,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
+	          __osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method0(const osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpHUDCamera__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpScene__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_SimpleProperty(osg::ApplicationUsage *, ApplicationUsage, 
+	                 __osg_ApplicationUsage_P1__getApplicationUsage, 
+	                 __void__setApplicationUsage__osg_ApplicationUsage_P1);
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
+	                 0);
+	I_SimpleProperty(int, KeyEventTogglesOnScreenHelp, 
+	                 __int__getKeyEventTogglesOnScreenHelp, 
+	                 __void__setKeyEventTogglesOnScreenHelp__int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
+	I_ConstructorWithDefaults1(IN, const std::string &, filename, "saved_animation.path",
+	                           Properties::NON_EXPLICIT,
+	                           ____RecordCameraPathHandler__C5_std_string_R1,
+	                           "",
+	                           "");
+	I_Method1(void, setKeyEventToggleRecord, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleRecord__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleRecord,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleRecord,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventTogglePlayback, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventTogglePlayback__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventTogglePlayback,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventTogglePlayback,
+	          "",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_SimpleProperty(int, KeyEventTogglePlayback, 
+	                 __int__getKeyEventTogglePlayback, 
+	                 __void__setKeyEventTogglePlayback__int);
+	I_SimpleProperty(int, KeyEventToggleRecord, 
+	                 __int__getKeyEventToggleRecord, 
+	                 __void__setKeyEventToggleRecord__int);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
@@ -36,31 +159,286 @@ BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
 	I_EnumLabel(osgViewer::StatsHandler::LAST);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgViewer::ThreadingHandler)
+BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor0(____StatsHandler,
+	               "",
+	               "");
+	I_Method1(void, setKeyEventTogglesOnScreenStats, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventTogglesOnScreenStats__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventTogglesOnScreenStats,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventTogglesOnScreenStats,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventPrintsOutStats, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventPrintsOutStats__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventPrintsOutStats,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventPrintsOutStats,
+	          "",
+	          "");
+	I_Method0(double, getBlockMultiplier,
+	          Properties::NON_VIRTUAL,
+	          __double__getBlockMultiplier,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
+	          __osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method0(const osg::Camera *, getCamera,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Camera_P1__getCamera,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpHUDCamera__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createGeometry, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numBlocks,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createGeometry__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createFrameMarkers, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numBlocks,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createFrameMarkers__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createTick, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numTicks,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createTick__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
+	                   "",
+	                   "");
+	I_ProtectedMethod7(osg::Node *, createCameraStats, IN, const std::string &, font, IN, osg::Vec3 &, pos, IN, float, startBlocks, IN, bool, aquireGPUStats, IN, float, characterSize, IN, osg::Stats *, viewerStats, IN, osg::Camera *, camera,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Node_P1__createCameraStats__C5_std_string_R1__osg_Vec3_R1__float__bool__float__osg_Stats_P1__osg_Camera_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::Viewer *, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpScene__osgViewer_Viewer_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(void, updateThreadingModelText,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateThreadingModelText,
+	                   "",
+	                   "");
+	I_SimpleProperty(double, BlockMultiplier, 
+	                 __double__getBlockMultiplier, 
+	                 0);
+	I_SimpleProperty(osg::Camera *, Camera, 
+	                 __osg_Camera_P1__getCamera, 
+	                 0);
+	I_SimpleProperty(int, KeyEventPrintsOutStats, 
+	                 __int__getKeyEventPrintsOutStats, 
+	                 __void__setKeyEventPrintsOutStats__int);
+	I_SimpleProperty(int, KeyEventTogglesOnScreenStats, 
+	                 __int__getKeyEventTogglesOnScreenStats, 
+	                 __void__setKeyEventTogglesOnScreenStats__int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____ThreadingHandler,
 	               "",
 	               "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method1(void, setKeyEventChangeThreadingModel, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventChangeThreadingModel__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventChangeThreadingModel,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventChangeThreadingModel,
+	          "",
+	          "");
+	I_Method1(void, setChangeThreadingModel, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setChangeThreadingModel__bool,
+	          "",
+	          "");
+	I_Method0(bool, getChangeThreadingModel,
+	          Properties::NON_VIRTUAL,
+	          __bool__getChangeThreadingModel,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventChangeEndBarrierPosition, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventChangeEndBarrierPosition__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventChangeEndBarrierPosition,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventChangeEndBarrierPosition,
+	          "",
+	          "");
+	I_Method1(void, setChangeEndBarrierPosition, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setChangeEndBarrierPosition__bool,
+	          "",
+	          "");
+	I_Method0(bool, getChangeEndBarrierPosition,
+	          Properties::NON_VIRTUAL,
+	          __bool__getChangeEndBarrierPosition,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_SimpleProperty(bool, ChangeEndBarrierPosition, 
+	                 __bool__getChangeEndBarrierPosition, 
+	                 __void__setChangeEndBarrierPosition__bool);
+	I_SimpleProperty(bool, ChangeThreadingModel, 
+	                 __bool__getChangeThreadingModel, 
+	                 __void__setChangeThreadingModel__bool);
+	I_SimpleProperty(int, KeyEventChangeEndBarrierPosition, 
+	                 __int__getKeyEventChangeEndBarrierPosition, 
+	                 __void__setKeyEventChangeEndBarrierPosition__int);
+	I_SimpleProperty(int, KeyEventChangeThreadingModel, 
+	                 __int__getKeyEventChangeThreadingModel, 
+	                 __void__setKeyEventChangeThreadingModel__int);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgViewer::ThreadingHandler)
+BEGIN_OBJECT_REFLECTOR(osgViewer::WindowSizeHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_Constructor0(____ThreadingHandler,
-	               "",
-	               "");
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osgViewer::WindowSizeHandler)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
 	I_Constructor0(____WindowSizeHandler,
 	               "",
 	               "");
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osgViewer::WindowSizeHandler)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_Constructor0(____WindowSizeHandler,
-	               "",
-	               "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_Method1(void, setKeyEventToggleFullscreen, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleFullscreen__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleFullscreen,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleFullscreen,
+	          "",
+	          "");
+	I_Method1(void, setToggleFullscreen, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setToggleFullscreen__bool,
+	          "",
+	          "");
+	I_Method0(bool, getToggleFullscreen,
+	          Properties::NON_VIRTUAL,
+	          __bool__getToggleFullscreen,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventWindowedResolutionUp, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventWindowedResolutionUp__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventWindowedResolutionUp,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventWindowedResolutionUp,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventWindowedResolutionDown, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventWindowedResolutionDown__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventWindowedResolutionDown,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventWindowedResolutionDown,
+	          "",
+	          "");
+	I_Method1(void, setChangeWindowedResolution, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setChangeWindowedResolution__bool,
+	          "",
+	          "");
+	I_Method0(bool, getChangeWindowedResolution,
+	          Properties::NON_VIRTUAL,
+	          __bool__getChangeWindowedResolution,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_ProtectedMethod1(void, toggleFullscreen, IN, osgViewer::GraphicsWindow *, window,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__toggleFullscreen__osgViewer_GraphicsWindow_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, changeWindowedResolution, IN, osgViewer::GraphicsWindow *, window, IN, bool, increase,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__changeWindowedResolution__osgViewer_GraphicsWindow_P1__bool,
+	                   "",
+	                   "");
+	I_ProtectedMethod4(unsigned int, getNearestResolution, IN, int, screenWidth, IN, int, screenHeight, IN, int, width, IN, int, height,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __unsigned_int__getNearestResolution__int__int__int__int,
+	                   "",
+	                   "");
+	I_SimpleProperty(bool, ChangeWindowedResolution, 
+	                 __bool__getChangeWindowedResolution, 
+	                 __void__setChangeWindowedResolution__bool);
+	I_SimpleProperty(int, KeyEventToggleFullscreen, 
+	                 __int__getKeyEventToggleFullscreen, 
+	                 __void__setKeyEventToggleFullscreen__int);
+	I_SimpleProperty(int, KeyEventWindowedResolutionDown, 
+	                 __int__getKeyEventWindowedResolutionDown, 
+	                 __void__setKeyEventWindowedResolutionDown__int);
+	I_SimpleProperty(int, KeyEventWindowedResolutionUp, 
+	                 __int__getKeyEventWindowedResolutionUp, 
+	                 __void__setKeyEventWindowedResolutionUp__int);
+	I_SimpleProperty(bool, ToggleFullscreen, 
+	                 __bool__getToggleFullscreen, 
+	                 __void__setToggleFullscreen__bool);
 END_REFLECTOR
 

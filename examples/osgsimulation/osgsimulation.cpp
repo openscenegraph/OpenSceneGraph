@@ -198,7 +198,7 @@ int main(int argc, char **argv)
     
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
@@ -289,9 +289,6 @@ int main(int argc, char **argv)
     while (arguments.read("--object")) technique = osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
     while (arguments.read("--ortho") || arguments.read("--orthographic")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
     while (arguments.read("--persp") || arguments.read("--perspective")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY;
-
-    unsigned int screenNum = 0;    
-    while (arguments.read("--screen", screenNum) || arguments.read("-s", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
 
     std::string pathfile;
     while (arguments.read("-p",pathfile)) {}

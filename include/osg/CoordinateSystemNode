@@ -158,7 +158,7 @@ inline void EllipsoidModel::convertXYZToLatLongHeight(double X, double Y, double
 {
     // http://www.colorado.edu/geography/gcraft/notes/datum/gif/xyzllh.gif
     double p = sqrt(X*X + Y*Y);
-    double theta = atan(Z*_radiusEquator/ (p*_radiusPolar));
+    double theta = atan2(Z*_radiusEquator , (p*_radiusPolar));
     double eDashSquared = (_radiusEquator*_radiusEquator - _radiusPolar*_radiusPolar)/
                           (_radiusPolar*_radiusPolar);
 

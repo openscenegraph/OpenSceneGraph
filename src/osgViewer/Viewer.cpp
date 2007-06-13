@@ -21,6 +21,8 @@
 
 #include <osg/io_utils>
 
+#include <sstream>
+
 using namespace osgViewer;
 
 
@@ -1042,6 +1044,8 @@ struct ViewerRunOperations : public osg::Operation
 };
 
 static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
+static osg::ApplicationUsageProxy Viewer_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN <value>","Set the default screen that windows should open up on.");
+static osg::ApplicationUsageProxy Viewer_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WINDOW x y width height","Set the default window dimensions that windows should open up on.");
 
 Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
 {
@@ -1675,11 +1679,35 @@ void Viewer::realize()
         osg::notify(osg::INFO)<<"Viewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
     
         // no windows are already set up so set up a default view        
-#if 1
-        setUpViewAcrossAllScreens();
-#else        
-        setUpViewOnSingleScreen(0);
-#endif
+        
+        const char* ptr = 0;
+        int screenNum = -1;
+        if ((ptr = getenv("OSG_SCREEN")) != 0)
+        {
+            if (strlen(ptr)!=0) screenNum = atoi(ptr);
+            else screenNum = -1;
+        }
+        
+        int x = -1, y = -1, width = -1, height = -1;
+        if ((ptr = getenv("OSG_WINDOW")) != 0)
+        {
+            std::istringstream iss(ptr);
+            iss >> x >> y >> width >> height;
+        }
+
+        if (width>0 && height>0)
+        {
+            if (screenNum>=0) setUpViewInWindow(x, y, width, height, screenNum);
+            else setUpViewInWindow(x,y,width,height);
+        }
+        else if (screenNum>=0)
+        {
+            setUpViewOnSingleScreen(screenNum);
+        }
+        else
+        {
+            setUpViewAcrossAllScreens();
+        }
 
         getContexts(contexts);
     }

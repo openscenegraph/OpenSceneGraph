@@ -233,6 +233,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __void__setUpViewAcrossAllScreens,
 	          "Convinience method for creating slave Cameras and associated GraphicsWindows across all screens. ",
 	          "");
+	I_MethodWithDefaults5(void, setUpViewInWindow, IN, int, x, , IN, int, y, , IN, int, width, , IN, int, height, , IN, unsigned int, screenNum, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setUpViewInWindow__int__int__int__int__unsigned_int,
+	                      "Convinience method for a single Camara on a single window. ",
+	                      "");
 	I_MethodWithDefaults1(void, setUpViewOnSingleScreen, IN, unsigned int, screenNum, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setUpViewOnSingleScreen__unsigned_int,

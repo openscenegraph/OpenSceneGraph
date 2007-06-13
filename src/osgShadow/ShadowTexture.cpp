@@ -22,7 +22,6 @@ using namespace osgShadow;
 ShadowTexture::ShadowTexture():
     _textureUnit(1)
 {
-    osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowTexture technique is in development."<<std::endl;
 }
 
 ShadowTexture::ShadowTexture(const ShadowTexture& copy, const osg::CopyOp& copyop):

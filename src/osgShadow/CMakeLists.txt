@@ -10,7 +10,6 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Export
 	${HEADER_PATH}/OccluderGeometry
-	${HEADER_PATH}/ParallelSplitShadowMap
 	${HEADER_PATH}/ShadowMap
 	${HEADER_PATH}/ShadowTechnique
 	${HEADER_PATH}/ShadowTexture
@@ -24,7 +23,6 @@ ADD_LIBRARY(${LIB_NAME}
 	${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
 	${LIB_PUBLIC_HEADERS}
 	OccluderGeometry.cpp
-	ParallelSplitShadowMap.cpp
 	ShadowMap.cpp
 	ShadowTechnique.cpp
 	ShadowTexture.cpp

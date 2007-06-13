@@ -1,6 +1,5 @@
 
 SET(TARGET_SRC 
-    ParallelSplitShadowMap.cpp
     ReaderWriterOsgShadow.cpp
     ShadowedScene.cpp
     ShadowMap.cpp

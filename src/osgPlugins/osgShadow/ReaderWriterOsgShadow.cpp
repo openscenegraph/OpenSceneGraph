@@ -14,7 +14,6 @@
 #include <osgShadow/ShadowVolume>
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowMap>
-#include <osgShadow/ParallelSplitShadowMap>
 
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
@@ -115,7 +114,7 @@ public:
             if      (params=="ShadowVolume" || params=="sv")             technique = new osgShadow::ShadowVolume;
             else if (params=="ShadowTexture" || params=="st")            technique = new osgShadow::ShadowTexture;
             else if (params=="ShadowMap" || params=="sm")                technique = new osgShadow::ShadowMap;
-            else if (params=="ParallelSplitShadowMap" || params=="pssm") technique = new osgShadow::ParallelSplitShadowMap;
+//            else if (params=="ParallelSplitShadowMap" || params=="pssm") technique = new osgShadow::ParallelSplitShadowMap;
             else subFileName += std::string(".") + params;
         }
 

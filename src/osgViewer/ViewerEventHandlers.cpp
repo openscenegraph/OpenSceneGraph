@@ -53,9 +53,9 @@ WindowSizeHandler::WindowSizeHandler() :
 
 void WindowSizeHandler::getUsage(osg::ApplicationUsage &usage) const
 {
-    usage.addKeyboardMouseBinding("f", "Toggle full screen.");
-    usage.addKeyboardMouseBinding(">", "Increase the screen resolution (in windowed mode).");
-    usage.addKeyboardMouseBinding("<", "Decrease the screen resolution (in windowed mode).");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleFullscreen), "Toggle full screen.");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventWindowedResolutionUp), "Increase the screen resolution (in windowed mode).");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventWindowedResolutionDown), "Decrease the screen resolution (in windowed mode).");
 }
 
 bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -272,8 +272,8 @@ ThreadingHandler::ThreadingHandler() :
 
 void ThreadingHandler::getUsage(osg::ApplicationUsage &usage) const
 {
-    usage.addKeyboardMouseBinding("m", "Toggle threading model.");
-    usage.addKeyboardMouseBinding("e", "Toggle the placement of the end of frame barrier.");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventChangeThreadingModel), "Toggle threading model.");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventChangeEndBarrierPosition), "Toggle the placement of the end of frame barrier.");
 }
 
 bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -345,6 +345,8 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 
 RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
     _filename(filename),
+    _keyEventToggleRecord('z'),
+    _keyEventTogglePlayback('Z'),
     _currentlyRecording(false),
     _currentlyPlaying(false),
     _delta(0.0f),
@@ -362,8 +364,8 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
 
 void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
 {
-    usage.addKeyboardMouseBinding("z", "Toggle camera path recording.");
-    usage.addKeyboardMouseBinding("Z", "Load local camera path recording.");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleRecord), "Toggle camera path recording.");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventTogglePlayback), "Toggle camera path playback.");
 }
 
 bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -380,7 +382,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
     case(osgGA::GUIEventAdapter::KEYUP):
         {
             // The user has requested to toggle recording.
-            if (ea.getKey() == 'z')
+            if (ea.getKey() ==_keyEventToggleRecord)
             {
                 // The user has requested to BEGIN recording.
                 if (!_currentlyRecording)
@@ -416,7 +418,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
             // EXTREMELY dirty, so I opted for a simpler solution. At a later date, someone may
             // want to implement the original recomendation (which is in a mailing list reply
             // from June 1st by Robert in a thread called "osgviewer Camera Animation (preliminary)".
-            else if (ea.getKey() == 'Z')
+            else if (ea.getKey() == _keyEventTogglePlayback)
             {
                 if (_currentlyRecording)
                 {

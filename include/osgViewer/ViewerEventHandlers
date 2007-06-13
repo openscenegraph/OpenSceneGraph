@@ -147,18 +147,18 @@ public:
         virtual void getUsage(osg::ApplicationUsage &usage) const;
 
         void setKeyEventToggleFullscreen(int key) { _keyEventToggleFullscreen = key; }
-        int getKeyEventToggleFullscreen() const { return (_keyEventToggleFullscreen); }
+        int getKeyEventToggleFullscreen() const { return _keyEventToggleFullscreen; }
 
         void setToggleFullscreen(bool flag) { _toggleFullscreen = flag; }
-        bool getToggleFullscreen() const { return (_toggleFullscreen); }
+        bool getToggleFullscreen() const { return _toggleFullscreen; }
 
         void setKeyEventWindowedResolutionUp(int key) { _keyEventWindowedResolutionUp = key; }
-        int getKeyEventWindowedResolutionUp() const { return (_keyEventWindowedResolutionUp); }
+        int getKeyEventWindowedResolutionUp() const { return _keyEventWindowedResolutionUp; }
         void setKeyEventWindowedResolutionDown(int key) { _keyEventWindowedResolutionDown = key; }
-        int getKeyEventWindowedResolutionDown() const { return (_keyEventWindowedResolutionUp); }
+        int getKeyEventWindowedResolutionDown() const { return _keyEventWindowedResolutionUp; }
 
         void setChangeWindowedResolution(bool flag) { _changeWindowedResolution = flag; }
-        bool getChangeWindowedResolution() const { return (_changeWindowedResolution); }
+        bool getChangeWindowedResolution() const { return _changeWindowedResolution; }
 
         virtual bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
@@ -190,16 +190,16 @@ public:
         virtual void getUsage(osg::ApplicationUsage &usage) const;
 
         void setKeyEventChangeThreadingModel(int key) { _keyEventChangeThreadingModel = key; }
-        int getKeyEventChangeThreadingModel() const { return (_keyEventChangeThreadingModel); }
+        int getKeyEventChangeThreadingModel() const { return _keyEventChangeThreadingModel; }
 
         void setChangeThreadingModel(bool flag) { _changeThreadingModel = flag; }
-        bool getChangeThreadingModel() const { return (_changeThreadingModel); }
+        bool getChangeThreadingModel() const { return _changeThreadingModel; }
 
         void setKeyEventChangeEndBarrierPosition(int key) { _keyEventChangeEndBarrierPosition = key; }
-        int getKeyEventChangeEndBarrierPosition() const { return (_keyEventChangeEndBarrierPosition); }
+        int getKeyEventChangeEndBarrierPosition() const { return _keyEventChangeEndBarrierPosition; }
 
         void setChangeEndBarrierPosition(bool flag) { _changeEndBarrierPosition = flag; }
-        bool getChangeEndBarrierPosition() const { return (_changeEndBarrierPosition); }
+        bool getChangeEndBarrierPosition() const { return _changeEndBarrierPosition; }
 
         bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
@@ -228,22 +228,33 @@ public:
 
         RecordCameraPathHandler(const std::string &filename = "saved_animation.path");
 
+        void setKeyEventToggleRecord(int key) { _keyEventToggleRecord = key; }
+        int getKeyEventToggleRecord() const { return _keyEventToggleRecord; }
+
+        void setKeyEventTogglePlayback(int key) { _keyEventTogglePlayback = key; }
+        int getKeyEventTogglePlayback() const { return _keyEventTogglePlayback; }
+
         virtual void getUsage(osg::ApplicationUsage &usage) const;
 
         bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
 
 protected:
 
-        std::string                                   _filename;
-        bool                                          _currentlyRecording;
-        bool                                          _currentlyPlaying;
-        double                                        _interval;
-        double                                        _delta;
-        osg::Timer_t                                  _animStartTime;
-        osg::Timer_t                                  _lastFrameTime;
-        osg::ref_ptr<osg::AnimationPath>              _animPath;
-        osg::ref_ptr<osgGA::AnimationPathManipulator> _animPathManipulator;
-        osg::ref_ptr<osgGA::MatrixManipulator>        _oldManipulator;
+        std::string                                     _filename;
+
+        int                                             _keyEventToggleRecord;
+        int                                             _keyEventTogglePlayback;
+
+
+        bool                                            _currentlyRecording;
+        bool                                            _currentlyPlaying;
+        double                                          _interval;
+        double                                          _delta;
+        osg::Timer_t                                    _animStartTime;
+        osg::Timer_t                                    _lastFrameTime;
+        osg::ref_ptr<osg::AnimationPath>                _animPath;
+        osg::ref_ptr<osgGA::AnimationPathManipulator>   _animPathManipulator;
+        osg::ref_ptr<osgGA::MatrixManipulator>          _oldManipulator;
 };
 
 }

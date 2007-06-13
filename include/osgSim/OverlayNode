@@ -174,8 +174,8 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
             osg::ref_ptr<osg::Geode>        _geode;
 
             osg::ref_ptr<osg::Program>      _mainSubgraphProgram;            
-            osg::ref_ptr<osg::Uniform>      _y0;
-            osg::ref_ptr<osg::Uniform>      _inverse_one_minus_y0;
+            osg::ref_ptr<osg::Uniform>      _exponent_scale;
+            osg::ref_ptr<osg::Uniform>      _exponent_offset;
         };
         
         typedef std::map<osgUtil::CullVisitor*, OverlayData> OverlayDataMap;

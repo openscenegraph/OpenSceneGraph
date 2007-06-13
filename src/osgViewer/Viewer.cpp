@@ -617,6 +617,24 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
         if( cnt==3 || cnt==4 ) getCamera()->setClearColor( osg::Vec4(r,g,b,a) );
         else osg::notify(osg::WARN)<<"Invalid clear color \""<<colorStr<<"\""<<std::endl;
     }
+    
+    int screenNum = -1;
+    while (arguments.read("--screen",screenNum)) {}
+    
+    int x = -1, y = -1, width = -1, height = -1;
+    while (arguments.read("--window",x,y,width,height)) {}
+
+    if (width>0 && height>0)
+    {
+        if (screenNum>=0) setUpViewInWindow(x, y, width, height, screenNum);
+        else setUpViewInWindow(x,y,width,height);
+        
+    }
+    else if (screenNum>=0)
+    {
+        setUpViewOnSingleScreen(screenNum);
+    }
+
 }
 
 void Viewer::constructorInit()

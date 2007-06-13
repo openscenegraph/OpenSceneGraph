@@ -118,12 +118,6 @@ int main(int argc, char** argv)
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
-    unsigned int screenNum;
-    while (arguments.read("--screen",screenNum))
-    {
-        viewer.setUpViewOnSingleScreen(screenNum);
-    }
-
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel) 

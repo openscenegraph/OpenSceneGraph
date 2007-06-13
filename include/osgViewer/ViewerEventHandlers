@@ -17,6 +17,7 @@
 #include <osg/AnimationPath>
 #include <osgText/Text>
 #include <osgGA/GUIEventHandler>
+#include <osgGA/AnimationPathManipulator>
 
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>
@@ -218,17 +219,14 @@ protected:
 Event handler allowing the user to record the animation "path" of a camera. In it's current
 implementation, this handler cannot guarantee the final view matrix is correct; it is
 conceivable that the matrix may be one frame off. Eh--not a big deal! :)
-TODO: Find the good filename.
-TODO: Write as we go, not when it's all done.
-TODO: Create osgviewer on-screen indication that animation is taking place.
-TODO: Explore multi-cameras thing.
-TODO: Investigate crash if non-focused camera?
+TODO: Write the file as we go, not when it's all done.
+TODO: Create an osgviewer on-screen indication that animation is taking place.
 */
 class OSGVIEWER_EXPORT RecordCameraPathHandler : public osgGA::GUIEventHandler
 {
 public:
 
-        RecordCameraPathHandler();
+        RecordCameraPathHandler(const std::string &filename = "saved_animation.path");
 
         virtual void getUsage(osg::ApplicationUsage &usage) const;
 
@@ -236,12 +234,16 @@ public:
 
 protected:
 
-        bool                             _currentlyRecording;
-        double                           _interval;
-        double                           _delta;
-        osg::Timer_t                     _animStartTime;
-        osg::Timer_t                     _lastFrameTime;
-        osg::ref_ptr<osg::AnimationPath> _animPath;
+        std::string                                   _filename;
+        bool                                          _currentlyRecording;
+        bool                                          _currentlyPlaying;
+        double                                        _interval;
+        double                                        _delta;
+        osg::Timer_t                                  _animStartTime;
+        osg::Timer_t                                  _lastFrameTime;
+        osg::ref_ptr<osg::AnimationPath>              _animPath;
+        osg::ref_ptr<osgGA::AnimationPathManipulator> _animPathManipulator;
+        osg::ref_ptr<osgGA::MatrixManipulator>        _oldManipulator;
 };
 
 }

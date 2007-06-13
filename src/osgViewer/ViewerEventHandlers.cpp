@@ -343,17 +343,19 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
     return false;
 }
 
-RecordCameraPathHandler::RecordCameraPathHandler():
+RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
+    _filename(filename),
     _currentlyRecording(false),
+    _currentlyPlaying(false),
     _delta(0.0f),
     _lastFrameTime(osg::Timer::instance()->tick()),
     _animStartTime(0)
 {
     _animPath = new osg::AnimationPath();
 
-    const char* str = getenv("OSG_CAMERA_ANIMATION_FPS");
+    const char* str = getenv("OSG_RECORD_CAMERA_PATH_FPS");
 
-    if(str) _interval = 1.0f / atof(str);
+    if (str) _interval = 1.0f / atof(str);
 
     else _interval = 1.0f / 25.0f;
 }
@@ -361,6 +363,7 @@ RecordCameraPathHandler::RecordCameraPathHandler():
 void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
 {
     usage.addKeyboardMouseBinding("z", "Toggle camera path recording.");
+    usage.addKeyboardMouseBinding("Z", "Load local camera path recording.");
 }
 
 bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
@@ -376,6 +379,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
     {
     case(osgGA::GUIEventAdapter::KEYUP):
         {
+            // The user has requested to toggle recording.
             if (ea.getKey() == 'z')
             {
                 // The user has requested to BEGIN recording.
@@ -383,6 +387,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                 {
                     _currentlyRecording = true;
                     _animStartTime = osg::Timer::instance()->tick();
+                    _animPath->clear();
 
                     osg::notify(osg::NOTICE)<<"Recording camera path."<<std::endl;
                 }
@@ -395,15 +400,65 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
                     // In the future this will need to be written continuously, rather
                     // than all at once.
-                    std::string filename("saved_animation.path");
-                    std::ofstream out(filename.c_str());
-                    osg::notify(osg::NOTICE)<<"Writing camera file: "<<filename<<std::endl;
+                    std::ofstream out(_filename.c_str());
+                    osg::notify(osg::NOTICE)<<"Writing camera file: "<<_filename<<std::endl;
                     _animPath->write(out);
                     out.close();
                 }
 
                 return true;
             }
+
+            // The user has requested to toggle playback. You'll notice in the code below that
+            // we take over the current manipulator; it was originally recommended that we
+            // check for a KeySwitchManipulator, create one if not present, and then add this
+            // to either the newly created one or the existing one. However, the code do that was
+            // EXTREMELY dirty, so I opted for a simpler solution. At a later date, someone may
+            // want to implement the original recomendation (which is in a mailing list reply
+            // from June 1st by Robert in a thread called "osgviewer Camera Animation (preliminary)".
+            else if (ea.getKey() == 'Z')
+            {
+                if (_currentlyRecording)
+                {
+                    _currentlyRecording = false;
+                    _delta = 0.0f;
+
+                    // In the future this will need to be written continuously, rather
+                    // than all at once.
+                    std::ofstream out(_filename.c_str());
+                    osg::notify(osg::NOTICE)<<"Writing camera file: "<<_filename<<std::endl;
+                    _animPath->write(out);
+                    out.close();
+                }
+
+                // The user has requested to BEGIN playback.
+                if (!_currentlyPlaying)
+                {
+                    _animPathManipulator = new osgGA::AnimationPathManipulator(_animPath.get());
+                    _animPathManipulator->home(ea,aa);
+
+
+                    // If we succesfully found our _filename file, set it and keep a copy
+                    // around of the original MatrixManipulator to restore later.
+                    if (_animPathManipulator.valid() && _animPathManipulator->valid())
+                    {
+                        _oldManipulator = viewer->getCameraManipulator();
+                        viewer->setCameraManipulator(_animPathManipulator.get());
+                        _currentlyPlaying = true;
+                    }
+                }
+
+                // The user has requested to STOP playback.
+                else
+                {
+                    // Restore the old manipulator if necessary and stop playback.
+                    if(_oldManipulator.valid()) viewer->setCameraManipulator(_oldManipulator.get());
+                    _currentlyPlaying = false;
+                    _oldManipulator = 0;
+                }
+
+                return true;
+            }        
 
             break;
         }

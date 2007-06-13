@@ -51,7 +51,6 @@ static const char fragmentShaderSource_withBaseTexture[] =
 ShadowMap::ShadowMap():
     _textureUnit(1)
 {
-    osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowMap technique is in development."<<std::endl;
 }
 
 ShadowMap::ShadowMap(const ShadowMap& copy, const osg::CopyOp& copyop):

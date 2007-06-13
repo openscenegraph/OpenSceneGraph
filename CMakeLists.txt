@@ -61,6 +61,10 @@ IF(CMAKE_SYSTEM MATCHES IRIX)
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")    
 ENDIF(CMAKE_SYSTEM MATCHES IRIX)
 
+IF(SunOS)
+    # SunOS requires -lrt to link otherwise undefined sybmol sched_yield is reported.
+    SET(CMAKE_THREAD_LIBS_INIT ${CMAKE_THREAD_LIBS_INIT} " " -lrt)
+ENDIF(SunOS)
 
 # Find OpenGL
 FIND_PACKAGE(OpenGL)

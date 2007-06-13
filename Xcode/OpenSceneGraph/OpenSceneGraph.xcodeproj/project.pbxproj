@@ -1840,6 +1840,16 @@
 		5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */; };
 		5BC1913C0C15F7AE002CF5BC /* SDLMainForMacOSX.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */; };
 		5BC191690C15FC1D002CF5BC /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC191680C15FC1C002CF5BC /* SDL.framework */; };
+		5BDF58F80C1FF8C4008DDEC0 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		5BDF58F90C1FF8C4008DDEC0 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		5BDF59070C1FF9BE008DDEC0 /* ReaderWriterOsgShadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59010C1FF9BD008DDEC0 /* ReaderWriterOsgShadow.cpp */; };
+		5BDF59080C1FF9BE008DDEC0 /* ShadowedScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59020C1FF9BD008DDEC0 /* ShadowedScene.cpp */; };
+		5BDF59090C1FF9BE008DDEC0 /* ShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59030C1FF9BD008DDEC0 /* ShadowMap.cpp */; };
+		5BDF590A0C1FF9BE008DDEC0 /* ShadowTechnique.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59040C1FF9BE008DDEC0 /* ShadowTechnique.cpp */; };
+		5BDF590B0C1FF9BE008DDEC0 /* ShadowTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59050C1FF9BE008DDEC0 /* ShadowTexture.cpp */; };
+		5BDF590C0C1FF9BE008DDEC0 /* ShadowVolume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */; };
+		5BDF59210C1FFA6B008DDEC0 /* osgShadow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4C6F2610B8316100052E667 /* osgShadow.framework */; };
+		5BDF59470C1FFAFB008DDEC0 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
@@ -2278,7 +2288,6 @@
 		D4C6F25C0B8316100052E667 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D4C6F2760B8316D60052E667 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F26D0B8316D50052E667 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F2770B8316D60052E667 /* OccluderGeometry in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F26E0B8316D50052E667 /* OccluderGeometry */; settings = {ATTRIBUTES = (Public, ); }; };
-		D4C6F2780B8316D60052E667 /* ParallelSplitShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F26F0B8316D50052E667 /* ParallelSplitShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F2790B8316D60052E667 /* ShadowedScene in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F2700B8316D50052E667 /* ShadowedScene */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F27A0B8316D60052E667 /* ShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F2710B8316D50052E667 /* ShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F27B0B8316D60052E667 /* ShadowTechnique in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F2720B8316D50052E667 /* ShadowTechnique */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2286,7 +2295,6 @@
 		D4C6F27D0B8316D60052E667 /* ShadowVolume in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F2740B8316D60052E667 /* ShadowVolume */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F27E0B8316D60052E667 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F2750B8316D60052E667 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F2870B8317150052E667 /* OccluderGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F27F0B8317150052E667 /* OccluderGeometry.cpp */; };
-		D4C6F2880B8317150052E667 /* ParallelSplitShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F2800B8317150052E667 /* ParallelSplitShadowMap.cpp */; };
 		D4C6F2890B8317150052E667 /* ShadowedScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F2810B8317150052E667 /* ShadowedScene.cpp */; };
 		D4C6F28A0B8317150052E667 /* ShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F2820B8317150052E667 /* ShadowMap.cpp */; };
 		D4C6F28B0B8317150052E667 /* ShadowTechnique.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4C6F2830B8317150052E667 /* ShadowTechnique.cpp */; };
@@ -4217,6 +4225,27 @@
 			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
+		5BDF58F30C1FF8C4008DDEC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		5BDF590F0C1FFA2B008DDEC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4C6F2320B8316100052E667 /* osgShadow */;
+			remoteInfo = osgShadow;
+		};
+		5BDF59230C1FFAEA008DDEC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5 /* osgUtil */;
+			remoteInfo = osgUtil;
+		};
 		6320CD4E07845CAE00FE3D2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -4919,98 +4948,6 @@
 		001DFDC3065A9A22003310BF /* ReaderWriterDDS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterDDS.cpp; path = ../../src/osgPlugins/dds/ReaderWriterDDS.cpp; sourceTree = SOURCE_ROOT; };
 		001DFDE4065A9DB2003310BF /* osgdb_dw.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_dw.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001DFDF1065A9E04003310BF /* ReaderWriterDW.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterDW.cpp; path = ../../src/osgPlugins/dw/ReaderWriterDW.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE29065AA035003310BF /* AttrData.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = AttrData.h; path = ../../src/osgPlugins/flt/AttrData.h; sourceTree = SOURCE_ROOT; };
-		001DFE2A065AA035003310BF /* BoundingVolumeRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = BoundingVolumeRecords.cpp; path = ../../src/osgPlugins/flt/BoundingVolumeRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE2B065AA035003310BF /* BoundingVolumeRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = BoundingVolumeRecords.h; path = ../../src/osgPlugins/flt/BoundingVolumeRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE2C065AA035003310BF /* BSPRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = BSPRecord.cpp; path = ../../src/osgPlugins/flt/BSPRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE2D065AA035003310BF /* BSPRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = BSPRecord.h; path = ../../src/osgPlugins/flt/BSPRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE2E065AA035003310BF /* ColorPaletteRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ColorPaletteRecord.cpp; path = ../../src/osgPlugins/flt/ColorPaletteRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE2F065AA035003310BF /* ColorPaletteRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ColorPaletteRecord.h; path = ../../src/osgPlugins/flt/ColorPaletteRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE30065AA035003310BF /* CommentRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CommentRecord.cpp; path = ../../src/osgPlugins/flt/CommentRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE31065AA035003310BF /* CommentRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = CommentRecord.h; path = ../../src/osgPlugins/flt/CommentRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE32065AA035003310BF /* ControlRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ControlRecord.cpp; path = ../../src/osgPlugins/flt/ControlRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE33065AA035003310BF /* ControlRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ControlRecord.h; path = ../../src/osgPlugins/flt/ControlRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE34065AA035003310BF /* DofRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = DofRecord.cpp; path = ../../src/osgPlugins/flt/DofRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE35065AA035003310BF /* DofRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = DofRecord.h; path = ../../src/osgPlugins/flt/DofRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE36065AA035003310BF /* ExtensionRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ExtensionRecord.cpp; path = ../../src/osgPlugins/flt/ExtensionRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE37065AA035003310BF /* ExtensionRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ExtensionRecord.h; path = ../../src/osgPlugins/flt/ExtensionRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE38065AA035003310BF /* ExternalRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ExternalRecord.cpp; path = ../../src/osgPlugins/flt/ExternalRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE39065AA035003310BF /* ExternalRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ExternalRecord.h; path = ../../src/osgPlugins/flt/ExternalRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE3A065AA035003310BF /* FaceRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = FaceRecord.cpp; path = ../../src/osgPlugins/flt/FaceRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE3B065AA035003310BF /* FaceRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FaceRecord.h; path = ../../src/osgPlugins/flt/FaceRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE3C065AA035003310BF /* flt.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = flt.cpp; path = ../../src/osgPlugins/flt/flt.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE3D065AA035003310BF /* flt.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = flt.h; path = ../../src/osgPlugins/flt/flt.h; sourceTree = SOURCE_ROOT; };
-		001DFE3E065AA036003310BF /* flt2osg.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = flt2osg.cpp; path = ../../src/osgPlugins/flt/flt2osg.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE3F065AA036003310BF /* flt2osg.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = flt2osg.h; path = ../../src/osgPlugins/flt/flt2osg.h; sourceTree = SOURCE_ROOT; };
-		001DFE40065AA036003310BF /* FltFile.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = FltFile.cpp; path = ../../src/osgPlugins/flt/FltFile.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE41065AA036003310BF /* FltFile.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FltFile.h; path = ../../src/osgPlugins/flt/FltFile.h; sourceTree = SOURCE_ROOT; };
-		001DFE42065AA036003310BF /* FltRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FltRecords.h; path = ../../src/osgPlugins/flt/FltRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE43065AA036003310BF /* GeoSetBuilder.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GeoSetBuilder.cpp; path = ../../src/osgPlugins/flt/GeoSetBuilder.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE44065AA036003310BF /* GeoSetBuilder.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = GeoSetBuilder.h; path = ../../src/osgPlugins/flt/GeoSetBuilder.h; sourceTree = SOURCE_ROOT; };
-		001DFE46065AA036003310BF /* GroupRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GroupRecord.cpp; path = ../../src/osgPlugins/flt/GroupRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE47065AA036003310BF /* GroupRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = GroupRecord.h; path = ../../src/osgPlugins/flt/GroupRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE48065AA036003310BF /* HeaderRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = HeaderRecord.cpp; path = ../../src/osgPlugins/flt/HeaderRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE49065AA036003310BF /* HeaderRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = HeaderRecord.h; path = ../../src/osgPlugins/flt/HeaderRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE4A065AA036003310BF /* Input.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Input.cpp; path = ../../src/osgPlugins/flt/Input.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE4B065AA036003310BF /* Input.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Input.h; path = ../../src/osgPlugins/flt/Input.h; sourceTree = SOURCE_ROOT; };
-		001DFE4C065AA036003310BF /* InstanceRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = InstanceRecords.cpp; path = ../../src/osgPlugins/flt/InstanceRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE4D065AA036003310BF /* InstanceRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = InstanceRecords.h; path = ../../src/osgPlugins/flt/InstanceRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE4F065AA036003310BF /* LightPointPaletteRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LightPointPaletteRecords.cpp; path = ../../src/osgPlugins/flt/LightPointPaletteRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE50065AA036003310BF /* LightPointPaletteRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LightPointPaletteRecords.h; path = ../../src/osgPlugins/flt/LightPointPaletteRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE51065AA036003310BF /* LightPointRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LightPointRecord.cpp; path = ../../src/osgPlugins/flt/LightPointRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE52065AA036003310BF /* LightPointRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LightPointRecord.h; path = ../../src/osgPlugins/flt/LightPointRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE53065AA036003310BF /* LightSourcePaletteRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LightSourcePaletteRecord.cpp; path = ../../src/osgPlugins/flt/LightSourcePaletteRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE54065AA036003310BF /* LightSourcePaletteRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LightSourcePaletteRecord.h; path = ../../src/osgPlugins/flt/LightSourcePaletteRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE55065AA036003310BF /* LightSourceRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LightSourceRecord.cpp; path = ../../src/osgPlugins/flt/LightSourceRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE56065AA036003310BF /* LightSourceRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LightSourceRecord.h; path = ../../src/osgPlugins/flt/LightSourceRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE57065AA036003310BF /* LocalVertexPoolRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LocalVertexPoolRecord.cpp; path = ../../src/osgPlugins/flt/LocalVertexPoolRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE58065AA036003310BF /* LocalVertexPoolRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LocalVertexPoolRecord.h; path = ../../src/osgPlugins/flt/LocalVertexPoolRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE59065AA036003310BF /* LodRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LodRecord.cpp; path = ../../src/osgPlugins/flt/LodRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE5A065AA036003310BF /* LodRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LodRecord.h; path = ../../src/osgPlugins/flt/LodRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE5B065AA036003310BF /* LongIDRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LongIDRecord.cpp; path = ../../src/osgPlugins/flt/LongIDRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE5C065AA036003310BF /* LongIDRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LongIDRecord.h; path = ../../src/osgPlugins/flt/LongIDRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE5D065AA036003310BF /* MaterialPaletteRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MaterialPaletteRecord.cpp; path = ../../src/osgPlugins/flt/MaterialPaletteRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE5E065AA036003310BF /* MaterialPaletteRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = MaterialPaletteRecord.h; path = ../../src/osgPlugins/flt/MaterialPaletteRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE5F065AA036003310BF /* MeshPrimitiveRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MeshPrimitiveRecord.cpp; path = ../../src/osgPlugins/flt/MeshPrimitiveRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE60065AA036003310BF /* MeshPrimitiveRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = MeshPrimitiveRecord.h; path = ../../src/osgPlugins/flt/MeshPrimitiveRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE61065AA036003310BF /* MeshRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MeshRecord.cpp; path = ../../src/osgPlugins/flt/MeshRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE62065AA036003310BF /* MeshRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = MeshRecord.h; path = ../../src/osgPlugins/flt/MeshRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE63065AA036003310BF /* MultiTextureRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MultiTextureRecord.cpp; path = ../../src/osgPlugins/flt/MultiTextureRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE64065AA036003310BF /* MultiTextureRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = MultiTextureRecord.h; path = ../../src/osgPlugins/flt/MultiTextureRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE65065AA036003310BF /* ObjectRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ObjectRecord.cpp; path = ../../src/osgPlugins/flt/ObjectRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE66065AA036003310BF /* ObjectRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ObjectRecord.h; path = ../../src/osgPlugins/flt/ObjectRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE67065AA036003310BF /* OldMaterialPaletteRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OldMaterialPaletteRecord.cpp; path = ../../src/osgPlugins/flt/OldMaterialPaletteRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE68065AA036003310BF /* OldMaterialPaletteRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = OldMaterialPaletteRecord.h; path = ../../src/osgPlugins/flt/OldMaterialPaletteRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE69065AA036003310BF /* OldVertexRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OldVertexRecords.cpp; path = ../../src/osgPlugins/flt/OldVertexRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE6A065AA036003310BF /* OldVertexRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = OldVertexRecords.h; path = ../../src/osgPlugins/flt/OldVertexRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE6B065AA036003310BF /* opcodes.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = opcodes.h; path = ../../src/osgPlugins/flt/opcodes.h; sourceTree = SOURCE_ROOT; };
-		001DFE6C065AA036003310BF /* Pool.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Pool.cpp; path = ../../src/osgPlugins/flt/Pool.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE6D065AA036003310BF /* Pool.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Pool.h; path = ../../src/osgPlugins/flt/Pool.h; sourceTree = SOURCE_ROOT; };
-		001DFE6E065AA036003310BF /* ReaderWriterATTR.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterATTR.cpp; path = ../../src/osgPlugins/flt/ReaderWriterATTR.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE6F065AA036003310BF /* ReaderWriterFLT.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterFLT.cpp; path = ../../src/osgPlugins/flt/ReaderWriterFLT.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE70065AA036003310BF /* ReaderWriterFLT.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ReaderWriterFLT.h; path = ../../src/osgPlugins/flt/ReaderWriterFLT.h; sourceTree = SOURCE_ROOT; };
-		001DFE71065AA036003310BF /* Record.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Record.cpp; path = ../../src/osgPlugins/flt/Record.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE72065AA036003310BF /* Record.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Record.h; path = ../../src/osgPlugins/flt/Record.h; sourceTree = SOURCE_ROOT; };
-		001DFE73065AA036003310BF /* RecordVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = RecordVisitor.cpp; path = ../../src/osgPlugins/flt/RecordVisitor.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE74065AA036003310BF /* RecordVisitor.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = RecordVisitor.h; path = ../../src/osgPlugins/flt/RecordVisitor.h; sourceTree = SOURCE_ROOT; };
-		001DFE75065AA036003310BF /* Registry.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Registry.cpp; path = ../../src/osgPlugins/flt/Registry.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE76065AA036003310BF /* Registry.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Registry.h; path = ../../src/osgPlugins/flt/Registry.h; sourceTree = SOURCE_ROOT; };
-		001DFE77065AA036003310BF /* RoadRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = RoadRecords.cpp; path = ../../src/osgPlugins/flt/RoadRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE78065AA036003310BF /* RoadRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = RoadRecords.h; path = ../../src/osgPlugins/flt/RoadRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE79065AA036003310BF /* SwitchRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = SwitchRecord.cpp; path = ../../src/osgPlugins/flt/SwitchRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE7A065AA036003310BF /* SwitchRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = SwitchRecord.h; path = ../../src/osgPlugins/flt/SwitchRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE7B065AA036003310BF /* TextureMappingPaletteRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TextureMappingPaletteRecord.cpp; path = ../../src/osgPlugins/flt/TextureMappingPaletteRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE7C065AA036003310BF /* TextureMappingPaletteRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TextureMappingPaletteRecord.h; path = ../../src/osgPlugins/flt/TextureMappingPaletteRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE7D065AA036003310BF /* TexturePaletteRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TexturePaletteRecord.cpp; path = ../../src/osgPlugins/flt/TexturePaletteRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE7E065AA036003310BF /* TexturePaletteRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TexturePaletteRecord.h; path = ../../src/osgPlugins/flt/TexturePaletteRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE7F065AA036003310BF /* TransformationRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransformationRecords.cpp; path = ../../src/osgPlugins/flt/TransformationRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE80065AA036003310BF /* TransformationRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = TransformationRecords.h; path = ../../src/osgPlugins/flt/TransformationRecords.h; sourceTree = SOURCE_ROOT; };
-		001DFE81065AA036003310BF /* UnknownRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UnknownRecord.cpp; path = ../../src/osgPlugins/flt/UnknownRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE82065AA036003310BF /* UnknownRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = UnknownRecord.h; path = ../../src/osgPlugins/flt/UnknownRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE83065AA036003310BF /* UVListRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UVListRecord.cpp; path = ../../src/osgPlugins/flt/UVListRecord.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE84065AA036003310BF /* UVListRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = UVListRecord.h; path = ../../src/osgPlugins/flt/UVListRecord.h; sourceTree = SOURCE_ROOT; };
-		001DFE85065AA036003310BF /* VertexPoolRecords.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = VertexPoolRecords.cpp; path = ../../src/osgPlugins/flt/VertexPoolRecords.cpp; sourceTree = SOURCE_ROOT; };
-		001DFE86065AA036003310BF /* VertexPoolRecords.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = VertexPoolRecords.h; path = ../../src/osgPlugins/flt/VertexPoolRecords.h; sourceTree = SOURCE_ROOT; };
 		001DFFD1065AA472003310BF /* osgdb_3ds.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_3ds.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001DFFD9065AA4BD003310BF /* atmosphere.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = atmosphere.cpp; sourceTree = "<group>"; };
 		001DFFDA065AA4BD003310BF /* atmosphere.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = atmosphere.h; sourceTree = "<group>"; };
@@ -5346,8 +5283,6 @@
 		008F444D06CBF90E00F4220C /* GLObjectsVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GLObjectsVisitor.cpp; path = ../../src/osgUtil/GLObjectsVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		008F446B06CBF99E00F4220C /* ReaderWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ReaderWriter.cpp; path = ../../src/osgDB/ReaderWriter.cpp; sourceTree = SOURCE_ROOT; };
 		008F447706CBFA4200F4220C /* GUIEventAdapter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GUIEventAdapter.cpp; path = ../../src/osgGA/GUIEventAdapter.cpp; sourceTree = SOURCE_ROOT; };
-		008F449D06CC00BF00F4220C /* LightPointSystemRecord.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = LightPointSystemRecord.cpp; path = ../../src/osgPlugins/flt/LightPointSystemRecord.cpp; sourceTree = SOURCE_ROOT; };
-		008F449E06CC00C000F4220C /* LightPointSystemRecord.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = LightPointSystemRecord.h; path = ../../src/osgPlugins/flt/LightPointSystemRecord.h; sourceTree = SOURCE_ROOT; };
 		008F44A106CC015D00F4220C /* AutoTransform.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = AutoTransform.cpp; path = ../../src/osgPlugins/osg/AutoTransform.cpp; sourceTree = SOURCE_ROOT; };
 		008F44A206CC015E00F4220C /* CoordinateSystemNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = CoordinateSystemNode.cpp; path = ../../src/osgPlugins/osg/CoordinateSystemNode.cpp; sourceTree = SOURCE_ROOT; };
 		008F44A306CC015F00F4220C /* EllipsoidModel.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = EllipsoidModel.cpp; path = ../../src/osgPlugins/osg/EllipsoidModel.cpp; sourceTree = SOURCE_ROOT; };
@@ -5584,8 +5519,6 @@
 		00E28143076766D7005AEE61 /* Archive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Archive.cpp; path = ../../src/osgDB/Archive.cpp; sourceTree = SOURCE_ROOT; };
 		00E28147076767D1005AEE61 /* NodeTrackerManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = NodeTrackerManipulator; sourceTree = "<group>"; };
 		00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = NodeTrackerManipulator.cpp; path = ../../src/osgGA/NodeTrackerManipulator.cpp; sourceTree = SOURCE_ROOT; };
-		00E281A407676B91005AEE61 /* FindExternalModelVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = FindExternalModelVisitor.cpp; path = ../../src/osgPlugins/flt/FindExternalModelVisitor.cpp; sourceTree = SOURCE_ROOT; };
-		00E281A507676B92005AEE61 /* FindExternalModelVisitor.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FindExternalModelVisitor.h; path = ../../src/osgPlugins/flt/FindExternalModelVisitor.h; sourceTree = SOURCE_ROOT; };
 		00E281A807676BD6005AEE61 /* ClipNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ClipNode.cpp; path = ../../src/osgPlugins/ive/ClipNode.cpp; sourceTree = SOURCE_ROOT; };
 		00E281A907676BD7005AEE61 /* ClipNode.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ClipNode.h; path = ../../src/osgPlugins/ive/ClipNode.h; sourceTree = SOURCE_ROOT; };
 		00E281AA07676BD9005AEE61 /* ClipPlane.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ClipPlane.cpp; path = ../../src/osgPlugins/ive/ClipPlane.cpp; sourceTree = SOURCE_ROOT; };
@@ -5680,6 +5613,13 @@
 		5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMainForMacOSX.h; path = ../../examples/osgviewerSDL/SDLMainForMacOSX.h; sourceTree = SOURCE_ROOT; };
 		5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMainForMacOSX.m; path = ../../examples/osgviewerSDL/SDLMainForMacOSX.m; sourceTree = SOURCE_ROOT; };
 		5BC191680C15FC1C002CF5BC /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
+		5BDF58FE0C1FF8C4008DDEC0 /* osgdb_3dc.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_3dc.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BDF59010C1FF9BD008DDEC0 /* ReaderWriterOsgShadow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ReaderWriterOsgShadow.cpp; sourceTree = "<group>"; };
+		5BDF59020C1FF9BD008DDEC0 /* ShadowedScene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowedScene.cpp; sourceTree = "<group>"; };
+		5BDF59030C1FF9BD008DDEC0 /* ShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowMap.cpp; sourceTree = "<group>"; };
+		5BDF59040C1FF9BE008DDEC0 /* ShadowTechnique.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowTechnique.cpp; sourceTree = "<group>"; };
+		5BDF59050C1FF9BE008DDEC0 /* ShadowTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowTexture.cpp; sourceTree = "<group>"; };
+		5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowVolume.cpp; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BE117FB305D63B3800EB53E5 /* osg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6072,7 +6012,6 @@
 		D4C6F2610B8316100052E667 /* osgShadow.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgShadow.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4C6F26D0B8316D50052E667 /* Export */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Export; sourceTree = "<group>"; };
 		D4C6F26E0B8316D50052E667 /* OccluderGeometry */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = OccluderGeometry; sourceTree = "<group>"; };
-		D4C6F26F0B8316D50052E667 /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
 		D4C6F2700B8316D50052E667 /* ShadowedScene */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ShadowedScene; sourceTree = "<group>"; };
 		D4C6F2710B8316D50052E667 /* ShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ShadowMap; sourceTree = "<group>"; };
 		D4C6F2720B8316D50052E667 /* ShadowTechnique */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ShadowTechnique; sourceTree = "<group>"; };
@@ -6080,7 +6019,6 @@
 		D4C6F2740B8316D60052E667 /* ShadowVolume */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ShadowVolume; sourceTree = "<group>"; };
 		D4C6F2750B8316D60052E667 /* Version */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
 		D4C6F27F0B8317150052E667 /* OccluderGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OccluderGeometry.cpp; sourceTree = "<group>"; };
-		D4C6F2800B8317150052E667 /* ParallelSplitShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelSplitShadowMap.cpp; sourceTree = "<group>"; };
 		D4C6F2810B8317150052E667 /* ShadowedScene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowedScene.cpp; sourceTree = "<group>"; };
 		D4C6F2820B8317150052E667 /* ShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowMap.cpp; sourceTree = "<group>"; };
 		D4C6F2830B8317150052E667 /* ShadowTechnique.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowTechnique.cpp; sourceTree = "<group>"; };
@@ -7687,6 +7625,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5BDF58F70C1FF8C4008DDEC0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5BDF58F80C1FF8C4008DDEC0 /* osg.framework in Frameworks */,
+				5BDF58F90C1FF8C4008DDEC0 /* osgDB.framework in Frameworks */,
+				5BDF59210C1FFA6B008DDEC0 /* osgShadow.framework in Frameworks */,
+				5BDF59470C1FFAFB008DDEC0 /* osgUtil.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6320CD4007845BC300FE3D2C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8906,110 +8855,6 @@
 			path = ../../src/osgPlugins/dw;
 			sourceTree = SOURCE_ROOT;
 		};
-		001DFE28065AA035003310BF /* flt */ = {
-			isa = PBXGroup;
-			children = (
-				001DFE29065AA035003310BF /* AttrData.h */,
-				001DFE2A065AA035003310BF /* BoundingVolumeRecords.cpp */,
-				001DFE2B065AA035003310BF /* BoundingVolumeRecords.h */,
-				001DFE2C065AA035003310BF /* BSPRecord.cpp */,
-				001DFE2D065AA035003310BF /* BSPRecord.h */,
-				001DFE2E065AA035003310BF /* ColorPaletteRecord.cpp */,
-				001DFE2F065AA035003310BF /* ColorPaletteRecord.h */,
-				001DFE30065AA035003310BF /* CommentRecord.cpp */,
-				001DFE31065AA035003310BF /* CommentRecord.h */,
-				001DFE32065AA035003310BF /* ControlRecord.cpp */,
-				001DFE33065AA035003310BF /* ControlRecord.h */,
-				001DFE34065AA035003310BF /* DofRecord.cpp */,
-				001DFE35065AA035003310BF /* DofRecord.h */,
-				001DFE36065AA035003310BF /* ExtensionRecord.cpp */,
-				001DFE37065AA035003310BF /* ExtensionRecord.h */,
-				001DFE38065AA035003310BF /* ExternalRecord.cpp */,
-				001DFE39065AA035003310BF /* ExternalRecord.h */,
-				001DFE3A065AA035003310BF /* FaceRecord.cpp */,
-				001DFE3B065AA035003310BF /* FaceRecord.h */,
-				00E281A407676B91005AEE61 /* FindExternalModelVisitor.cpp */,
-				00E281A507676B92005AEE61 /* FindExternalModelVisitor.h */,
-				001DFE3C065AA035003310BF /* flt.cpp */,
-				001DFE3D065AA035003310BF /* flt.h */,
-				001DFE3E065AA036003310BF /* flt2osg.cpp */,
-				001DFE3F065AA036003310BF /* flt2osg.h */,
-				001DFE40065AA036003310BF /* FltFile.cpp */,
-				001DFE41065AA036003310BF /* FltFile.h */,
-				001DFE42065AA036003310BF /* FltRecords.h */,
-				001DFE43065AA036003310BF /* GeoSetBuilder.cpp */,
-				001DFE44065AA036003310BF /* GeoSetBuilder.h */,
-				001DFE46065AA036003310BF /* GroupRecord.cpp */,
-				001DFE47065AA036003310BF /* GroupRecord.h */,
-				001DFE48065AA036003310BF /* HeaderRecord.cpp */,
-				001DFE49065AA036003310BF /* HeaderRecord.h */,
-				001DFE4A065AA036003310BF /* Input.cpp */,
-				001DFE4B065AA036003310BF /* Input.h */,
-				001DFE4C065AA036003310BF /* InstanceRecords.cpp */,
-				001DFE4D065AA036003310BF /* InstanceRecords.h */,
-				001DFE4F065AA036003310BF /* LightPointPaletteRecords.cpp */,
-				001DFE50065AA036003310BF /* LightPointPaletteRecords.h */,
-				001DFE51065AA036003310BF /* LightPointRecord.cpp */,
-				001DFE52065AA036003310BF /* LightPointRecord.h */,
-				001DFE53065AA036003310BF /* LightSourcePaletteRecord.cpp */,
-				001DFE54065AA036003310BF /* LightSourcePaletteRecord.h */,
-				001DFE55065AA036003310BF /* LightSourceRecord.cpp */,
-				001DFE56065AA036003310BF /* LightSourceRecord.h */,
-				001DFE57065AA036003310BF /* LocalVertexPoolRecord.cpp */,
-				001DFE58065AA036003310BF /* LocalVertexPoolRecord.h */,
-				008F449D06CC00BF00F4220C /* LightPointSystemRecord.cpp */,
-				008F449E06CC00C000F4220C /* LightPointSystemRecord.h */,
-				001DFE59065AA036003310BF /* LodRecord.cpp */,
-				001DFE5A065AA036003310BF /* LodRecord.h */,
-				001DFE5B065AA036003310BF /* LongIDRecord.cpp */,
-				001DFE5C065AA036003310BF /* LongIDRecord.h */,
-				001DFE5D065AA036003310BF /* MaterialPaletteRecord.cpp */,
-				001DFE5E065AA036003310BF /* MaterialPaletteRecord.h */,
-				001DFE5F065AA036003310BF /* MeshPrimitiveRecord.cpp */,
-				001DFE60065AA036003310BF /* MeshPrimitiveRecord.h */,
-				001DFE61065AA036003310BF /* MeshRecord.cpp */,
-				001DFE62065AA036003310BF /* MeshRecord.h */,
-				001DFE63065AA036003310BF /* MultiTextureRecord.cpp */,
-				001DFE64065AA036003310BF /* MultiTextureRecord.h */,
-				001DFE65065AA036003310BF /* ObjectRecord.cpp */,
-				001DFE66065AA036003310BF /* ObjectRecord.h */,
-				001DFE67065AA036003310BF /* OldMaterialPaletteRecord.cpp */,
-				001DFE68065AA036003310BF /* OldMaterialPaletteRecord.h */,
-				001DFE69065AA036003310BF /* OldVertexRecords.cpp */,
-				001DFE6A065AA036003310BF /* OldVertexRecords.h */,
-				001DFE6B065AA036003310BF /* opcodes.h */,
-				001DFE6C065AA036003310BF /* Pool.cpp */,
-				001DFE6D065AA036003310BF /* Pool.h */,
-				001DFE6E065AA036003310BF /* ReaderWriterATTR.cpp */,
-				001DFE6F065AA036003310BF /* ReaderWriterFLT.cpp */,
-				001DFE70065AA036003310BF /* ReaderWriterFLT.h */,
-				001DFE71065AA036003310BF /* Record.cpp */,
-				001DFE72065AA036003310BF /* Record.h */,
-				001DFE73065AA036003310BF /* RecordVisitor.cpp */,
-				001DFE74065AA036003310BF /* RecordVisitor.h */,
-				001DFE75065AA036003310BF /* Registry.cpp */,
-				001DFE76065AA036003310BF /* Registry.h */,
-				001DFE77065AA036003310BF /* RoadRecords.cpp */,
-				001DFE78065AA036003310BF /* RoadRecords.h */,
-				001DFE79065AA036003310BF /* SwitchRecord.cpp */,
-				001DFE7A065AA036003310BF /* SwitchRecord.h */,
-				001DFE7B065AA036003310BF /* TextureMappingPaletteRecord.cpp */,
-				001DFE7C065AA036003310BF /* TextureMappingPaletteRecord.h */,
-				001DFE7D065AA036003310BF /* TexturePaletteRecord.cpp */,
-				001DFE7E065AA036003310BF /* TexturePaletteRecord.h */,
-				001DFE7F065AA036003310BF /* TransformationRecords.cpp */,
-				001DFE80065AA036003310BF /* TransformationRecords.h */,
-				001DFE81065AA036003310BF /* UnknownRecord.cpp */,
-				001DFE82065AA036003310BF /* UnknownRecord.h */,
-				001DFE83065AA036003310BF /* UVListRecord.cpp */,
-				001DFE84065AA036003310BF /* UVListRecord.h */,
-				001DFE85065AA036003310BF /* VertexPoolRecords.cpp */,
-				001DFE86065AA036003310BF /* VertexPoolRecords.h */,
-			);
-			name = flt;
-			path = ../../src/osgPlugins/flt;
-			sourceTree = SOURCE_ROOT;
-		};
 		001DFFD8065AA4BD003310BF /* 3ds */ = {
 			isa = PBXGroup;
 			children = (
@@ -9372,6 +9217,7 @@
 		00558606062622D8000A808A /* osgPlugins */ = {
 			isa = PBXGroup;
 			children = (
+				5BDF58D10C1FF8A0008DDEC0 /* osgShadow */,
 				001DFCC9065A920F003310BF /* 3dc */,
 				001DFD20065A9660003310BF /* ac */,
 				001DFD62065A98CC003310BF /* bmp */,
@@ -9381,7 +9227,6 @@
 				001DFDEF065A9E04003310BF /* dw */,
 				00A14FD2084E6975000150AD /* dxf */,
 				0079504C09D36599003FC8A1 /* shp */,
-				001DFE28065AA035003310BF /* flt */,
 				0055860C062623D6000A808A /* freetype */,
 				004BD04A09273CFB00A265A4 /* geo */,
 				00A150D4084E6B36000150AD /* hdr */,
@@ -10253,6 +10098,7 @@
 				D47A06810B833F6E00E19024 /* osgManipulator.framework */,
 				D47A070A0B83413800E19024 /* osgmanipulator.app */,
 				0037A02D0C18D74C0089AA1C /* OpenThreads.framework */,
+				5BDF58FE0C1FF8C4008DDEC0 /* osgdb_3dc.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -10326,6 +10172,20 @@
 			);
 			name = Source;
 			sourceTree = "<group>";
+		};
+		5BDF58D10C1FF8A0008DDEC0 /* osgShadow */ = {
+			isa = PBXGroup;
+			children = (
+				5BDF59010C1FF9BD008DDEC0 /* ReaderWriterOsgShadow.cpp */,
+				5BDF59020C1FF9BD008DDEC0 /* ShadowedScene.cpp */,
+				5BDF59030C1FF9BD008DDEC0 /* ShadowMap.cpp */,
+				5BDF59040C1FF9BE008DDEC0 /* ShadowTechnique.cpp */,
+				5BDF59050C1FF9BE008DDEC0 /* ShadowTexture.cpp */,
+				5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */,
+			);
+			name = osgShadow;
+			path = ../../src/osgPlugins/osgShadow;
+			sourceTree = SOURCE_ROOT;
 		};
 		6320CCFE07845B7C00FE3D2C /* osgTerrain */ = {
 			isa = PBXGroup;
@@ -10889,7 +10749,6 @@
 			children = (
 				D4C6F26D0B8316D50052E667 /* Export */,
 				D4C6F26E0B8316D50052E667 /* OccluderGeometry */,
-				D4C6F26F0B8316D50052E667 /* ParallelSplitShadowMap */,
 				D4C6F2700B8316D50052E667 /* ShadowedScene */,
 				D4C6F2710B8316D50052E667 /* ShadowMap */,
 				D4C6F2720B8316D50052E667 /* ShadowTechnique */,
@@ -10905,7 +10764,6 @@
 			isa = PBXGroup;
 			children = (
 				D4C6F27F0B8317150052E667 /* OccluderGeometry.cpp */,
-				D4C6F2800B8317150052E667 /* ParallelSplitShadowMap.cpp */,
 				D4C6F2810B8317150052E667 /* ShadowedScene.cpp */,
 				D4C6F2820B8317150052E667 /* ShadowMap.cpp */,
 				D4C6F2830B8317150052E667 /* ShadowTechnique.cpp */,
@@ -12197,6 +12055,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5BDF58F40C1FF8C4008DDEC0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6320CD0507845BC300FE3D2C /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -12493,7 +12358,6 @@
 			files = (
 				D4C6F2760B8316D60052E667 /* Export in Headers */,
 				D4C6F2770B8316D60052E667 /* OccluderGeometry in Headers */,
-				D4C6F2780B8316D60052E667 /* ParallelSplitShadowMap in Headers */,
 				D4C6F2790B8316D60052E667 /* ShadowedScene in Headers */,
 				D4C6F27A0B8316D60052E667 /* ShadowMap in Headers */,
 				D4C6F27B0B8316D60052E667 /* ShadowTechnique in Headers */,
@@ -15047,6 +14911,26 @@
 			productReference = 00FB21010B015CF20052DD79 /* osgViewer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		5BDF58F10C1FF8C4008DDEC0 /* osgdb_osgShadow */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5BDF58FA0C1FF8C4008DDEC0 /* Build configuration list for PBXNativeTarget "osgdb_osgShadow" */;
+			buildPhases = (
+				5BDF58F40C1FF8C4008DDEC0 /* Headers */,
+				5BDF58F50C1FF8C4008DDEC0 /* Sources */,
+				5BDF58F70C1FF8C4008DDEC0 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5BDF58F20C1FF8C4008DDEC0 /* PBXTargetDependency */,
+				5BDF59100C1FFA2B008DDEC0 /* PBXTargetDependency */,
+				5BDF59240C1FFAEA008DDEC0 /* PBXTargetDependency */,
+			);
+			name = osgdb_osgShadow;
+			productName = osgdb_3dc;
+			productReference = 5BDF58FE0C1FF8C4008DDEC0 /* osgdb_3dc.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		6320CD0307845BC300FE3D2C /* osgTerrain */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0011038D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgTerrain" */;
@@ -15266,6 +15150,7 @@
 				D47A06550B833F6E00E19024 /* osgManipulator */,
 				005585CE06261D98000A808A /* osgPlugins */,
 				001DFCAB065A901A003310BF /* osgdb_3dc */,
+				5BDF58F10C1FF8C4008DDEC0 /* osgdb_osgShadow */,
 				001DFD0A065A9455003310BF /* osgdb_ac */,
 				001DFD4B065A9837003310BF /* osgdb_bmp */,
 				004E4CFA0A51F84900EC8521 /* osgdb_bsp */,
@@ -17655,6 +17540,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5BDF58F50C1FF8C4008DDEC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5BDF59070C1FF9BE008DDEC0 /* ReaderWriterOsgShadow.cpp in Sources */,
+				5BDF59080C1FF9BE008DDEC0 /* ShadowedScene.cpp in Sources */,
+				5BDF59090C1FF9BE008DDEC0 /* ShadowMap.cpp in Sources */,
+				5BDF590A0C1FF9BE008DDEC0 /* ShadowTechnique.cpp in Sources */,
+				5BDF590B0C1FF9BE008DDEC0 /* ShadowTexture.cpp in Sources */,
+				5BDF590C0C1FF9BE008DDEC0 /* ShadowVolume.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6320CD2407845BC300FE3D2C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -17910,7 +17808,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4C6F2870B8317150052E667 /* OccluderGeometry.cpp in Sources */,
-				D4C6F2880B8317150052E667 /* ParallelSplitShadowMap.cpp in Sources */,
 				D4C6F2890B8317150052E667 /* ShadowedScene.cpp in Sources */,
 				D4C6F28A0B8317150052E667 /* ShadowMap.cpp in Sources */,
 				D4C6F28B0B8317150052E667 /* ShadowTechnique.cpp in Sources */,
@@ -19670,6 +19567,21 @@
 			isa = PBXTargetDependency;
 			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
 			targetProxy = 00FB21700B016DDF0052DD79 /* PBXContainerItemProxy */;
+		};
+		5BDF58F20C1FF8C4008DDEC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = 5BDF58F30C1FF8C4008DDEC0 /* PBXContainerItemProxy */;
+		};
+		5BDF59100C1FFA2B008DDEC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4C6F2320B8316100052E667 /* osgShadow */;
+			targetProxy = 5BDF590F0C1FFA2B008DDEC0 /* PBXContainerItemProxy */;
+		};
+		5BDF59240C1FFAEA008DDEC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = 5BDF59230C1FFAEA008DDEC0 /* PBXContainerItemProxy */;
 		};
 		6320CD0407845BC300FE3D2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -32287,6 +32199,96 @@
 			};
 			name = Default;
 		};
+		5BDF58FB0C1FF8C4008DDEC0 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_3dc;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		5BDF58FC0C1FF8C4008DDEC0 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_3dc;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		5BDF58FD0C1FF8C4008DDEC0 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_3dc;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
 		D47A067E0B833F6E00E19024 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -34045,6 +34047,16 @@
 				00FB20FE0B015CF20052DD79 /* Development */,
 				00FB20FF0B015CF20052DD79 /* Deployment */,
 				00FB21000B015CF20052DD79 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		5BDF58FA0C1FF8C4008DDEC0 /* Build configuration list for PBXNativeTarget "osgdb_osgShadow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5BDF58FB0C1FF8C4008DDEC0 /* Development */,
+				5BDF58FC0C1FF8C4008DDEC0 /* Deployment */,
+				5BDF58FD0C1FF8C4008DDEC0 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

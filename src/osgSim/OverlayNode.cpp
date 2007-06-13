@@ -974,21 +974,21 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         overlayData._texgenNode->setTextureUnit(_textureUnit);
     }
 
-    if (!overlayData._y0)
+    if (!overlayData._exponent_scale)
     {
-        overlayData._y0 = new osg::Uniform("y0",-2.0f);
+        overlayData._exponent_scale = new osg::Uniform("exponent_scale",-2.0f);
     }
     
-    if (!overlayData._inverse_one_minus_y0)
+    if (!overlayData._exponent_offset)
     {
-        overlayData._inverse_one_minus_y0 = new osg::Uniform("inverse_one_minus_y0",-1.0f/3.0f);
+        overlayData._exponent_offset = new osg::Uniform("exponent_offset",-1.0f/3.0f);
     }
 
     if (!overlayData._overlayStateSet) 
     {
         overlayData._overlayStateSet = new osg::StateSet;
-        overlayData._overlayStateSet->addUniform(overlayData._y0.get());
-        overlayData._overlayStateSet->addUniform(overlayData._inverse_one_minus_y0.get());
+        overlayData._overlayStateSet->addUniform(overlayData._exponent_scale.get());
+        overlayData._overlayStateSet->addUniform(overlayData._exponent_offset.get());
 
         osg::Program* program = new osg::Program;
         overlayData._overlayStateSet->setAttribute(program);
@@ -1040,8 +1040,8 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
     {
         overlayData._mainSubgraphStateSet = new osg::StateSet;
 
-        overlayData._mainSubgraphStateSet->addUniform(overlayData._y0.get());
-        overlayData._mainSubgraphStateSet->addUniform(overlayData._inverse_one_minus_y0.get());
+        overlayData._mainSubgraphStateSet->addUniform(overlayData._exponent_scale.get());
+        overlayData._mainSubgraphStateSet->addUniform(overlayData._exponent_offset.get());
         overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_0",0));
         overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_1",1));
 
@@ -1462,7 +1462,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             double minRatio = 0.;
             if (ratio<minRatio) ratio = minRatio;
         
-//            osg::notify(osg::NOTICE)<<" new ratio = "<<ratio<<std::endl;
+            osg::notify(osg::NOTICE)<<" new ratio = "<<ratio<<std::endl;
 
             double base_up = min_up - (max_up - min_up) * ratio / (1.0 - ratio);
             double max_side_over_up = 0.0;
@@ -1507,18 +1507,18 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             
             
             double frustumDiagonal = osg::RadiansToDegrees(acos(edgeBottomLeft * edgeBottomRight));
-#if 0            
+#if 1            
             osg::notify(osg::NOTICE)<<"  frustum base angle  = "<<frustumDiagonal<<std::endl;
 #endif        
         
-            double y0 = -(1.0+ratio)/(1.0-ratio); // suspect
-            double inverse_one_minus_y0 = 1.0/(1-y0);
+            double exponent_scale = -log(ratio)/log(4.0);
+            double exponent_offset = -exponent_scale;
             
-            overlayData._y0->set(static_cast<float>(y0));
-            overlayData._inverse_one_minus_y0->set(static_cast<float>(inverse_one_minus_y0));
+            overlayData._exponent_scale->set(static_cast<float>(exponent_scale));
+            overlayData._exponent_offset->set(static_cast<float>(exponent_offset));
             
-            //osg::notify(osg::NOTICE)<<"y0 = "<<y0<<std::endl;
-            //osg::notify(osg::NOTICE)<<"inverse_one_minus_y0 = "<<inverse_one_minus_y0<<std::endl;
+            osg::notify(osg::NOTICE)<<"exponent_scale = "<<exponent_scale<<std::endl;
+            osg::notify(osg::NOTICE)<<"exponent_offset = "<<exponent_offset<<std::endl;
 
         
             overlayData._mainSubgraphStateSet->setAttribute(overlayData._mainSubgraphProgram.get());

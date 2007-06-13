@@ -1,3 +1,487 @@
+2007-06-13 11:09 +0000 [r6957]  robert:
+
+	* Added OSG_SCREEN and OSG_WINDOW env var checking in the
+	  Viewer::realize()
+
+2007-06-13 10:45 +0000 [r6956]  robert:
+
+	* Updated wrappers
+
+2007-06-13 10:38 +0000 [r6955]  robert:
+
+	* Added osgViewer::View::setUpViewInWindow(...) method and command
+	  line option into osgViewer::Viewer to allow you to specify the
+	  window dimentions and screen for the window on startup.
+
+2007-06-13 10:31 +0000 [r6954]  robert:
+
+	* From Martin Lavery, osgShadow plugin added to Xcode project.
+
+2007-06-13 10:12 +0000 [r6953]  robert:
+
+	* Fixed versioning
+
+2007-06-13 09:56 +0000 [r6952]  robert:
+
+	* Removed ParallelSplitShadowMap as its currently a non op.
+
+2007-06-13 08:56 +0000 [r6951]  robert:
+
+	* Added -lrt in for SunOS build
+
+2007-06-12 19:46 +0000 [r6950]  robert:
+
+	* Updated wrappers
+
+2007-06-12 18:58 +0000 [r6948-6949]  robert:
+
+	* Added StatsHandler
+
+	* Refactored the dome correction code to support movie flipping.
+
+2007-06-12 16:55 +0000 [r6947]  robert:
+
+	* Added Image::g/setOrigin to help movie plugins tell applications
+	  that the imagery is not the usual OpenGL BOTTOM_LEFT orientation,
+	  but with the origin TOP_LEFT. This allows geometry setup code to
+	  flip the t tex coord to render the movie the correct way up.
+
+2007-06-12 15:57 +0000 [r6946]  robert:
+
+	* Added in QT4 keyboard event adaption
+
+2007-06-12 15:52 +0000 [r6945]  robert:
+
+	* UPdated wrappers
+
+2007-06-12 15:38 +0000 [r6944]  robert:
+
+	* From Stephan Huber, "while porting my own code to the new
+	  osgViewer I discover more and more bugs in the
+	  Carbon-implementation of GraphicsWindow, so here's another fix
+	  for setWindowDecorationImplementation, now updates the
+	  titlebar-height, and fixes some display-issues when switching the
+	  decoration on/off. "
+
+2007-06-12 15:32 +0000 [r6943]  robert:
+
+	* Moved the className, libraryName and isSameAs into public.
+
+2007-06-12 14:43 +0000 [r6942]  robert:
+
+	* Changed _data to _movieData to avoid possible confusion
+
+2007-06-12 14:20 +0000 [r6941]  robert:
+
+	* From Martin Lavery and Robert Osfield, Updated examples to use a
+	  variation of the MIT License
+
+2007-06-12 11:31 +0000 [r6940]  robert:
+
+	* From Martin Lavery, fix to Xcode Resources
+
+2007-06-12 10:37 +0000 [r6939]  robert:
+
+	* From Martin Lavery, Fix of OpenSceneGraph-Data linking
+
+2007-06-12 10:19 +0000 [r6938]  robert:
+
+	* Build fixes for QT4
+
+2007-06-12 09:55 +0000 [r6937]  robert:
+
+	* Changed the throw dection time to 0.02
+
+2007-06-12 08:30 +0000 [r6934-6936]  robert:
+
+	* Work in progress on perspective view dependant codes
+
+	* Added screen number, and flip support into dome correction codes.
+
+	* From Stephan Huber, "the computation of the windowtitlebar-height
+	  was wrong, attached you'll find a fixed version for
+	  GraphicsWindowCarbon.cpp "
+
+2007-06-10 20:46 +0000 [r6933]  robert:
+
+	* Added support for specifying external overlay file.
+
+2007-06-10 20:12 +0000 [r6932]  robert:
+
+	* Updated wrappers
+
+2007-06-10 19:53 +0000 [r6931]  robert:
+
+	* From Stephan Huber and Robert Osfield, Stephan: "attached you'll
+	  find some modifications to the GraphicsWindow-class and their
+	  platform-dependant implementations. The problem:
+	  setWindowRectangle and setWindowDecoration do not update the
+	  traits-object, so, if you call setWindowRectangle on a
+	  not-realized-window it will open with another size when realized
+	  later. getWindowRectangle reports possible wrong sizes if
+	  setWindowRectangle called before. My solution: split the
+	  implementation in two parts: GraphicsWindow::setWindowRectangle
+	  will update its traits-object and call afterwards the virtual
+	  method setWindowRectangleImplementation (which is implemented by
+	  the derived platformspecific classess). For setWindowDecoration I
+	  am useing a similar mechanism. I hope you'll find the submission
+	  useful, the Win32 and X11 changes are not tested but should
+	  work." Changes to this made by Robert are call of resized in
+	  setWindowRectangle instead of setting of Traits, and use of a
+	  bool return type.
+
+2007-06-10 19:22 +0000 [r6930]  robert:
+
+	* From Vladimir Shabanov, "osg::Image::isImageTranslucent() now
+	  handles GL_UNSIGNED_SHORT_5_5_5_1, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+	  GL_UNSIGNED_SHORT_4_4_4_4, GL_UNSIGNED_SHORT_4_4_4_4_REV,
+	  GL_UNSIGNED_INT_10_10_10_2, GL_UNSIGNED_INT_2_10_10_10_REV and
+	  GL_HALF_FLOAT_NV pixel formats."
+
+2007-06-10 19:18 +0000 [r6929]  robert:
+
+	* From Vladimir Shabanov, "DDS plugin now works with these formats:
+	  R3G3B2, R5G6B5, A1R5G5B5, X1R5G5B5, A4R4G4B4, X4R4G4B4, R8G8B8
+	  (now without swaping of red and blue), A8R8G8B8 (also w/o
+	  swapping), X8R8G8B8, A8B8G8R8, X8B8G8R8, A2R10G10B10,
+	  A2B10G10R10, L4A4 (not work on my machine), L16A16, L16,
+	  A16B16G16R16, A16B16G16R16F, Q16W16V16U16, R32F, R16F and
+	  A32B32G32R32F. And these ones are correctly detected, but prints
+	  "unsupported" using osg::notify(osg::WARN) and are not loaded:
+	  A8R3G3B2, G16R16, G16R16F, G32R32F and CxV8U8. Also added
+	  checking of not supported DDPF_BUMPDUDV (V8U8, V16U16, Q8W8U8L8,
+	  A2W10U10V10 etc.) and DDPF_BUMPLUMINANCE (L6V5U5, X8L8V8U8, etc.)
+	  pixel formats. Mipmap handling is slightly modified and now
+	  support all additional formats. "
+
+2007-06-10 18:17 +0000 [r6928]  robert:
+
+	* From Olaf Flebbe, "support current zlib and libpng library names
+	  for win32 3rdParty builds."
+
+2007-06-10 09:51 +0000 [r6927]  robert:
+
+	* Improved the set up of static build, added freetype plugin to
+	  plugins that support static usage
+
+2007-06-09 19:18 +0000 [r6926]  robert:
+
+	* Added default file in case no file arguments are provided.
+	  Changed to use standard ThreadingHandler by default.
+
+2007-06-09 17:58 +0000 [r6925]  robert:
+
+	* Improved the detection of throwing of the mouse.
+
+2007-06-09 10:18 +0000 [r6924]  robert:
+
+	* Updated wrappers
+
+2007-06-09 10:07 +0000 [r6922-6923]  robert:
+
+	* Removed the command line parameters form the examples that now
+	  have a default file built into them.
+
+	* Added DisplaySettings to osg::Camera, and support into osg::View
+	  for initializing the Camera to the DisplaySettings
+	  ScreenWidth/Height/Distance. Added support for dual screen
+	  horizontal split stereo.
+
+2007-06-08 20:11 +0000 [r6921]  robert:
+
+	* Added debug code path that prints out font details.
+
+2007-06-08 16:47 +0000 [r6919]  robert:
+
+	* From Eric Wing, interface files
+
+2007-06-08 16:05 +0000 [r6917-6918]  robert:
+
+	* Removed empty directory
+
+	* Removed empty directory
+
+2007-06-08 15:37 +0000 [r6916]  robert:
+
+	* From Martin Lavery and Robert Osfield, added fallbacks for when
+	  now command line args are provided.
+
+2007-06-08 15:29 +0000 [r6914]  robert:
+
+	* Added fallback for when no command line args are provied.
+
+2007-06-08 15:11 +0000 [r6913]  robert:
+
+	* Added default file when no command line options are supplied.
+
+2007-06-08 15:06 +0000 [r6911-6912]  robert:
+
+	* Added fallback for when no command line args are passed in.
+
+	* From Martin Lavery, Linking of example Data files for the Xcode
+	  Projects
+
+2007-06-08 12:16 +0000 [r6908-6910]  robert:
+
+	* Removed command line args for examples ported across to not need
+	  them.
+
+	* Added default command line arg
+
+	* Added default file load to avoid the need for command line
+	  option.
+
+2007-06-08 11:04 +0000 [r6907]  robert:
+
+	* From Stephan Huber, "attached you'll find a new
+	  GraphicsWindowCarbon-header and .cpp, the changes I made: + put a
+	  warning in the console if a nonexistant screen is requested + add
+	  getters for the aglcontext and pixelformat -- I need access to
+	  them in my own code. "
+
+2007-06-08 10:58 +0000 [r6906]  robert:
+
+	* From Jason Daly, "We have a few OpenFlight files that used to
+	  display properly with the old loader, but appear very, very wrong
+	  with the new one. I traced the problem to the handling of the
+	  palette override flags in the external reference records. The
+	  current behavior for handling the palette override flags for
+	  external references has different offsets for different
+	  OpenFlight version (2 bytes for 14.2-15.1 and 4 bytes for 15.2
+	  and later). However, I believe this behavior is incorrect. I know
+	  that the original 14.2 OpenFlight spec (dated April 1995)
+	  specifies 2 bytes between the filename and the override flags,
+	  and the 15.4 and later specs specify 4 bytes. However, I also
+	  found a 14.2.4 OpenFlight spec (dated January 1996) that changes
+	  the specification to 4 bytes. Also, the databases in question
+	  were created using an old IRIX version of MultiGen II, which
+	  wrote OpenFlight 14.2 files natively. These files also have 4
+	  bytes between the filename and flags. Furthermore, these
+	  databases have always worked properly under earlier versions of
+	  OSG, under Performer, and in every MultiGen product we've used.
+	  This leads me to believe that the original 14.2 spec was
+	  incorrect (the 14.2.4 spec corrected this error), and there
+	  should be 4 bytes between the filename and flags for all
+	  OpenFlight files version 14.2 and later. The attached fix
+	  modifies the OpenFlight loader to behave in this way."
+
+2007-06-08 10:43 +0000 [r6903-6905]  robert:
+
+	* From Eric Wing, build fix
+
+	* From Eric Wing, build fix
+
+	* Updated wrappers
+
+2007-06-08 10:22 +0000 [r6902]  robert:
+
+	* From Jason Daly, "This changes the handling of textures in the
+	  OpenFlight loader. Currently, if the texture attribute file
+	  doesn't explicitly specify an internal format, the loader will
+	  force it to use GL_RGB, which keeps translucent textures (eg.
+	  GL_RGBA textures) from showing up properly. This patch changes
+	  the default behavior to simply use the image's format instead of
+	  forcing a particular format."
+
+2007-06-08 10:16 +0000 [r6901]  robert:
+
+	* From Eric Wing, "So, something strange happened to the repo and
+	  some of this project's files got messed up, most notiably the Nib
+	  and also the Localized strings file. I didn't notice the latter
+	  until now so Martin is missing this file. Anyway, the attached
+	  tar contains all new versions of all the necessary files. There
+	  are cleanups and fixes to a lot of things. Martin did a good job
+	  porting the thing to osg::Viewer so most of the code changes I
+	  made address other areas. Two things I noticed in the new port
+	  you might want to consider as feedback. First, there might be a
+	  bug with osgViewer when the view size goes to 0. If you play with
+	  the splitviews in this program and shrink the view until it is
+	  closed, and then re-expand it, the model doesn't come back, not
+	  even after a home() call. SimpleViewer didn't have this problem.
+	  Second, a more minor thing, this program has a
+	  take-screenshot--and-copy-to-clipboard feature via Cmd-C (or Menu
+	  item). I achieve this by using osg::Camera to render to an FBO
+	  and then copy the contents to Cocoa. To insert the camera, I
+	  manipulate the scenegraph so I can get the camera node in and
+	  out. I end up calling setSceneData at the end of eveything to
+	  restore everything to the original state before I started mucking
+	  with the scenegraph. This unfortunately, triggers a home() reset.
+	  So in this particular case, it make Copy look like it's changing
+	  the scene. The old SimpleViewer had the same problem, but I was
+	  able to work around it by directly invoking the underlying
+	  SceneView's setSceneData so the home() mechanism was bypassed.
+	  The viewer design seems to protect this data more carefully so
+	  the bypass trick won't work. My feedback is that maybe a flag or
+	  extra parameter can be introduced so a reset is not triggered if
+	  not desired. I have checked in a ton of Xcode fixes for the
+	  entire build process in general so once this piece gets checked
+	  in, hopefully everything will build cleanly."
+
+2007-06-08 10:11 +0000 [r6900]  robert:
+
+	* From Mike Wittman, "This change to genwrapper and
+	  osgIntrospection gives access to the declaring file for a given
+	  type via the new member function
+	  osgIntrospection::Type::getDeclaringFile. This information is
+	  useful in order to know what header to include when
+	  auto-generating wrappers for a given type. During the C# wrapper
+	  generator development I've been keeping the declaring file
+	  configuration state up-to-date manually with changes to OSG, and
+	  it's proven to require substantial effort. So it would be
+	  extremely valuable to get this change in before 2.0 to reduce
+	  maintenance during the lifetime of the release. It'll also be
+	  equally useful to others looking to create wrapper generators
+	  using osgIntrospection. This is a fairly simple change and was
+	  tested with a fresh rebuild of the entire suite of osgWrapper
+	  libraries, so it should be relatively low risk (fingers
+	  crossed)."
+
+2007-06-08 09:45 +0000 [r6899]  robert:
+
+	* Added clean up of the view before destruction of the window
+
+2007-06-08 09:17 +0000 [r6898]  robert:
+
+	* Added const get*Matrix() methods
+
+2007-06-08 05:03 +0000 [r6897]  ewing:
+
+	* Changed the version to 2.0.0 in the Info.plist in anticipation of
+	  the official release. I don't know what the OpenThreads version
+	  number will be, so that has been left alone.
+
+2007-06-08 04:57 +0000 [r6896]  ewing:
+
+	* Lots of various fixes to Xcode project. - Adding missing header
+	  files and making sure they are marked public. - Support to copy
+	  headers in Viewer/api into the proper location in framework -
+	  Internalized OpenThreads build so cross-project dependency is not
+	  needed. Can now delete copy of OpenThreads project. Frameworks
+	  use native Xcode linking mechanism. Plugins/Examples still use
+	  explicit -framework OpenThreads. Could potentially be problem is
+	  old OpenThreads is on the system. This can be changed to use
+	  native mechanism too, but requires some patience because it is
+	  tedious to change. - Lots of fixes to osgViewerCocoa (something
+	  got messed up pretty badly...files are missing from repo).
+	  Another submission will need to readd these files back.
+
+2007-06-07 21:43 +0000 [r6895]  shuber:
+
+	* Stephan Huber: fixed deploy-build for osgViewer
+
+2007-06-07 21:07 +0000 [r6894]  robert:
+
+	* Updated wrappers
+
+2007-06-07 20:26 +0000 [r6893]  robert:
+
+	* Commented out the Scene Stats entry as its not implemented yet.
+
+2007-06-07 20:22 +0000 [r6892]  robert:
+
+	* From Martin Lavery, StatsHandler added to the ViewerCocoa example
+
+2007-06-07 13:49 +0000 [r6890-6891]  robert:
+
+	* From Martin Lavery, update of *.nib files
+
+	* From Martin Lavery, update of *.nib files
+
+2007-06-07 13:44 +0000 [r6889]  robert:
+
+	* From Martin Lavery, update of *.nib files
+
+2007-06-07 13:31 +0000 [r6888]  robert:
+
+	* From Martin Lavery, update of *.nib files
+
+2007-06-07 13:25 +0000 [r6887]  robert:
+
+	* From Martin Lavery, update of *.nib files
+
+2007-06-07 12:55 +0000 [r6886]  robert:
+
+	* From Martin Lavery, port of ViewerCocoa and updates to Xcode
+	  projects
+
+2007-06-07 12:47 +0000 [r6884-6885]  robert:
+
+	* Removed the old SimpleView version of the Cocoa example
+
+	* Removed now not need SimpleViewer
+
+2007-06-07 12:23 +0000 [r6883]  robert:
+
+	* Added automatic stopping of animation when home() is called
+
+2007-06-07 12:05 +0000 [r6882]  robert:
+
+	* From Per Fahlberg, "To get the pfb (Performer) plugin to compile
+	  I had to remove some of the libraries listed under
+	  TARGET_EXTERNAL_LIBRARIES. The removed libraries are not needed
+	  when linking the plugin, they are loaded during runtime by
+	  Performer. The modified file is attached."
+
+2007-06-07 11:19 +0000 [r6881]  robert:
+
+	* Introduced a destruct method to help clean up the Registry.
+
+2007-06-07 11:06 +0000 [r6879-6880]  robert:
+
+	* Revert the signOrZero cade path in the getRotate() to fix bugs.
+
+	* Added support for using quat_scaled sx sy sz for testing getting
+	  quats from scaled matrices. Removed broken Matrixd/quat test
+
+2007-06-07 09:58 +0000 [r6878]  robert:
+
+	* Added View::home() method and updated wrappers
+
+2007-06-07 09:24 +0000 [r6877]  robert:
+
+	* Removed redundent files
+
+2007-06-07 08:52 +0000 [r6876]  robert:
+
+	* Updated wrappers
+
+2007-06-06 21:57 +0000 [r6873]  robert:
+
+	* Updated ChangeLog, AUTHORES and README to 1.9.8 release
+
+2007-06-06 21:43 +0000 [r6872]  robert:
+
+	* Updated version numbers for release
+
+2007-06-06 17:01 +0000 [r6866]  robert:
+
+	* Revert the setting of SingleThreaded under Windows in
+	  suggestBestThreadingModel()
+
+2007-06-06 16:27 +0000 [r6865]  robert:
+
+	* Added #include<osg/Geometry>
+
+2007-06-06 16:23 +0000 [r6864]  robert:
+
+	* Fixed includes
+
+2007-06-06 15:22 +0000 [r6863]  robert:
+
+	* From Ulrich Hertlein, "on my MacOS X/cmake setup the zlib plugin
+	  isn't built by default. This may be because zlib.h is installed
+	  in /opt/local/include on my system (courtesy of DarwinPorts).
+	  I've added a CMakeModule to look for zlib.h and the library in
+	  various places. The files are attached."
+
+2007-06-06 14:51 +0000 [r6862]  robert:
+
+	* Fixed includes
+
+2007-06-06 13:45 +0000 [r6861]  robert:
+
+	* From Martin Lavery, Updates to Xcode project
+
 2007-06-06 11:34 +0000 [r6860]  robert:
 
 	* From Roger James, "These fix a couple of problems in the ac3d

@@ -1,4 +1,4 @@
-OpenSceneGraph Library 1.9.8
+OpenSceneGraph Library 1.9.9
 
 264 Contributors:
 
@@ -14,32 +14,33 @@ Geoff Michel
 Farshid Lashkari
 Paul Martz
 Bob Kuehne
-Eric Sokolowsky
-Ulrich Hertlein
-Tree 
 Stephan Huber
+Ulrich Hertlein
+Eric Sokolowsky
+Tree 
 Mike Wittman
 Luigi Calori
 Trajce Nikolov
 Pavel Moloshtan
+Martin Lavery
 Tom Jolley
 Norman Vine
 Alberto Farre
 Ruben Lopez
 Randall Hopper
 Roger James
+Olaf Flebbe
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
-Olaf Flebbe
 Michael Gronager
 Colin McDonald
 Chris Hanson
 Daniel Sjölie
+Per Fahlberg
 Mathias Fröhlich
 Joran Jessurun
 Anré Garneau
-Per Fahlberg
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -47,6 +48,7 @@ Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
 Neil Salter
+Jason Daly
 Jason Beverage
 David Spilling
 David Callu
@@ -68,7 +70,6 @@ Ravi Mathur
 Michael Platings
 Loic Dachary
 Joseph Steel
-Jason Daly
 David Guthrie
 Corbin Holtz
 Toshiyuki Takahei
@@ -80,7 +81,6 @@ Romano Magacho
 Paul de Repentigny
 Nikolaus Hanekamp
 Michael Hartman
-Martin Lavery
 Leandro Motta Barros
 Laurens Voerman
 Carlo Camporesi
@@ -88,6 +88,7 @@ Bruce Clay
 Brad Colbert
 Brad Christiansen
 Alberto Barbati
+Vladimir Shabanov
 Uwe Woessner
 Sohey Yamamoto
 Serge Lages
@@ -159,7 +160,6 @@ Wang Lam
 Walter J. Altice
 Volker Walkiewicz
 Vladimir Vukicevic
-Vladimir Shabanov
 Vlad Danciu
 Vincent Vivanloc
 Vasily Radostev

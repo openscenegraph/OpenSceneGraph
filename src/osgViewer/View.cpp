@@ -272,7 +272,8 @@ void View::setUpViewAcrossAllScreens()
         traits->sharedContext = 0;
         traits->sampleBuffers = ds->getMultiSamples();
         traits->samples = ds->getNumMultiSamples();
-        if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER)) {
+        if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+        {
             traits->quadBufferStereo = true;
         }
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
@@ -392,6 +393,61 @@ void View::setUpViewAcrossAllScreens()
     assignSceneDataToCameras();
 }
 
+void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int screenNum)
+{
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    traits->screenNum = screenNum;
+    traits->x = x;
+    traits->y = y;
+    traits->width = width;
+    traits->height = height;
+    traits->alpha = ds->getMinimumNumAlphaBits();
+    traits->stencil = ds->getMinimumNumStencilBits();
+    traits->windowDecoration = true;
+    traits->doubleBuffer = true;
+    traits->sharedContext = 0;
+    traits->sampleBuffers = ds->getMultiSamples();
+    traits->samples = ds->getNumMultiSamples();
+    if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+    {
+        traits->quadBufferStereo = true;
+    }
+
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+    _camera->setGraphicsContext(gc.get());
+
+    osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+    if (gw)
+    {
+        osg::notify(osg::INFO)<<"View::setUpViewOnSingleScreen - GraphicsWindow has been created successfully."<<std::endl;
+        gw->getEventQueue()->getCurrentEventState()->setWindowRectangle(x, y, width, height );
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+    }
+
+    double fovy, aspectRatio, zNear, zFar;        
+    _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
+
+    double newAspectRatio = double(traits->width) / double(traits->height);
+    double aspectRatioChange = newAspectRatio / aspectRatio;
+    if (aspectRatioChange != 1.0)
+    {
+        _camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0);
+    }
+
+    _camera->setViewport(new osg::Viewport(0, 0, traits->width, traits->height));
+
+    GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
+
+    _camera->setDrawBuffer(buffer);
+    _camera->setReadBuffer(buffer);
+}
+
 void View::setUpViewOnSingleScreen(unsigned int screenNum)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
@@ -419,7 +475,8 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     traits->sharedContext = 0;
     traits->sampleBuffers = ds->getMultiSamples();
     traits->samples = ds->getNumMultiSamples();
-    if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER)) {
+    if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+    {
         traits->quadBufferStereo = true;
     }
 

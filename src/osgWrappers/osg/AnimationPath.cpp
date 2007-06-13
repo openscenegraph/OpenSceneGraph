@@ -147,6 +147,11 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	          __bool__empty,
 	          "",
 	          "");
+	I_Method0(void, clear,
+	          Properties::NON_VIRTUAL,
+	          __void__clear,
+	          "",
+	          "");
 	I_Method1(void, read, IN, std::istream &, in,
 	          Properties::NON_VIRTUAL,
 	          __void__read__std_istream_R1,

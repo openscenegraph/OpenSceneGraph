@@ -191,6 +191,8 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
         const TimeControlPointMap& getTimeControlPointMap() const { return _timeControlPointMap; }
         
         bool empty() const { return _timeControlPointMap.empty(); }
+        
+        void clear() { _timeControlPointMap.clear(); }
 
         /** Read the animation path from a flat ASCII file stream. */
         void read(std::istream& in);

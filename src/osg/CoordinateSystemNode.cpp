@@ -51,10 +51,6 @@ CoordinateFrame CoordinateSystemNode::computeLocalCoordinateFrame(const Vec3d& p
         double latitude, longitude, height;        
         _ellipsoidModel->convertXYZToLatLongHeight(position.x(),position.y(),position.z(),latitude, longitude, height);
         _ellipsoidModel->computeLocalToWorldTransformFromLatLongHeight(latitude, longitude, 0.0f, localToWorld);
-        
-        osg::notify(osg::INFO)<<"lat="<<latitude<<"\tlong="<<longitude<<"\theight"<<height<<std::endl;
-    
-        //_ellipsoidModel->computeLocalToWorldTransformFromXYZ(position.x(),position.y(),position.z(), localToWorld);
 
         return localToWorld;
     }

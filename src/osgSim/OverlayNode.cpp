@@ -974,21 +974,14 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         overlayData._texgenNode->setTextureUnit(_textureUnit);
     }
 
-    if (!overlayData._exponent_scale)
-    {
-        overlayData._exponent_scale = new osg::Uniform("exponent_scale",-2.0f);
-    }
-    
-    if (!overlayData._exponent_offset)
-    {
-        overlayData._exponent_offset = new osg::Uniform("exponent_offset",-1.0f/3.0f);
-    }
+    if (!overlayData._y0) overlayData._y0 = new osg::Uniform("y0",0.0f);
+    if (!overlayData._lightingEnabled) overlayData._lightingEnabled = new osg::Uniform("lightingEnabled",true);
 
     if (!overlayData._overlayStateSet) 
     {
         overlayData._overlayStateSet = new osg::StateSet;
-        overlayData._overlayStateSet->addUniform(overlayData._exponent_scale.get());
-        overlayData._overlayStateSet->addUniform(overlayData._exponent_offset.get());
+        overlayData._overlayStateSet->addUniform(overlayData._y0.get());
+        overlayData._overlayStateSet->addUniform(overlayData._lightingEnabled.get());
 
         osg::Program* program = new osg::Program;
         overlayData._overlayStateSet->setAttribute(program);
@@ -999,22 +992,84 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         {
             program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
         }
-#if 0
         else
         {
             char vertexShaderSource[] = 
-                "varying vec3 texcoord;\n"
-                "\n"
-                "void main(void)\n"
-                "{\n"
-                "    texcoord = gl_MultiTexCoord0.xyz;\n"
-                "    gl_Position     = ftransform();  \n"
-                "}\n";
+                "uniform float y0; \n"
+                "uniform bool lightingEnabled; \n"
+                " \n"
+                "vec4 warp(in vec4 source) \n"
+                "{ \n"
+                "    float divisor = source.y + y0; \n"
+                "    return vec4(source.x * (1.0 + y0 ), source.y * y0 + 1.0, (source.z * y0 + 1.0)*0.01, source.w * divisor); \n"
+                "} \n"
+                " \n"
+                "vec3 fnormal(void) \n"
+                "{ \n"
+                "    //Compute the normal  \n"
+                "    vec3 normal = gl_NormalMatrix * gl_Normal; \n"
+                "    normal = normalize(normal); \n"
+                "    return normal; \n"
+                "} \n"
+                " \n"
+                "void directionalLight(in int i, \n"
+                "                      in vec3 normal, \n"
+                "                      inout vec4 ambient, \n"
+                "                      inout vec4 diffuse, \n"
+                "                      inout vec4 specular) \n"
+                "{ \n"
+                "   float nDotVP;         // normal . light direction \n"
+                "   float nDotHV;         // normal . light half vector \n"
+                "   float pf;             // power factor \n"
+                " \n"
+                "   nDotVP = max(0.0, dot(normal, normalize(vec3 (gl_LightSource[i].position)))); \n"
+                "   nDotHV = max(0.0, dot(normal, vec3 (gl_LightSource[i].halfVector))); \n"
+                " \n"
+                "   if (nDotVP == 0.0) \n"
+                "   { \n"
+                "       pf = 0.0; \n"
+                "   } \n"
+                "   else \n"
+                "   { \n"
+                "       pf = pow(nDotHV, gl_FrontMaterial.shininess); \n"
+                " \n"
+                "   } \n"
+                "   ambient  += gl_LightSource[i].ambient; \n"
+                "   diffuse  += gl_LightSource[i].diffuse * nDotVP; \n"
+                "   specular += gl_LightSource[i].specular * pf; \n"
+                "} \n"
+                "void main() \n"
+                "{ \n"
+                "    gl_Position = warp(ftransform()); \n"
+                " \n"
+                "    if (lightingEnabled) \n"
+                "    {     \n"
+                "        vec4 ambient = vec4(0.0); \n"
+                "        vec4 diffuse = vec4(0.0); \n"
+                "        vec4 specular = vec4(0.0); \n"
+                " \n"
+                "        vec3 normal = fnormal(); \n"
+                " \n"
+                "        directionalLight(0, normal, ambient, diffuse, specular); \n"
+                " \n"
+                "        vec4 color = gl_FrontLightModelProduct.sceneColor + \n"
+                "                     ambient  * gl_FrontMaterial.ambient + \n"
+                "                     diffuse  * gl_FrontMaterial.diffuse + \n"
+                "                     specular * gl_FrontMaterial.specular; \n"
+                " \n"
+                "        gl_FrontColor = color; \n"
+                " \n"
+                "    } \n"
+                "    else \n"
+                "    { \n"
+                "        gl_FrontColor = gl_Color; \n"
+                "    } \n"
+                "   \n"
+                "} \n";
 
             osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
             program->addShader(vertex_shader);
         }
-#endif        
         
     }
 
@@ -1034,14 +1089,46 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         {
             overlayData._mainSubgraphProgram->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
         }
+        else
+        {
+            char fragmentShaderSource[] = 
+                "uniform sampler2D texture_0; \n"
+                "uniform sampler2D texture_1; \n"
+                " \n"
+                "uniform float y0; \n"
+                " \n"
+                "vec2 warp(in vec2 source) \n"
+                "{ \n"
+                "    float inv_divisor = 1.0 / (source.y + y0); \n"
+                "    return vec2(source.x * (1.0 + y0 ) * inv_divisor , (source.y * y0 + 1.0 ) * inv_divisor); \n"
+                "} \n"
+                " \n"
+                "void main() \n"
+                "{ \n"
+                "    vec2 coord = gl_TexCoord[1].xy; \n"
+                "    coord.x = coord.x*2.0 - 1.0; \n"
+                "    coord.y = coord.y*2.0 - 1.0; \n"
+                " \n"
+                "    vec2 warped = warp(coord); \n"
+                "    warped.x = (warped.x + 1.0)*0.5; \n"
+                "    warped.y = (warped.y + 1.0)*0.5; \n"
+                " \n"
+                "    vec4 base_color = texture2D(texture_0, gl_TexCoord[0].xy); \n"
+                "    vec4 overlay_color = texture2D(texture_1, warped ); \n"
+                "    vec3 mixed_color = mix(base_color.rgb, overlay_color.rgb, overlay_color.a); \n"
+                "    gl_FragColor = vec4(mixed_color, base_color.a); \n"
+                "} \n";
+
+            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
+            overlayData._mainSubgraphProgram->addShader(fragment_shader);
+        }
     }
 
     if (!overlayData._mainSubgraphStateSet) 
     {
         overlayData._mainSubgraphStateSet = new osg::StateSet;
 
-        overlayData._mainSubgraphStateSet->addUniform(overlayData._exponent_scale.get());
-        overlayData._mainSubgraphStateSet->addUniform(overlayData._exponent_offset.get());
+        overlayData._mainSubgraphStateSet->addUniform(overlayData._y0.get());
         overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_0",0));
         overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_1",1));
 
@@ -1450,19 +1537,15 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                 
         double mid_side = (min_side + max_side) * 0.5;
         double ratio = min_distanceEye / max_distanceEye;
-        bool usePerspectiveShaders = (_overlayTechnique==VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY) &&
-                                     (ratio<0.95);
-
+        bool usePerspectiveShaders = (_overlayTechnique==VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY);
 
         if (usePerspectiveShaders)
         {
 //            osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
             double original_width = max_side-min_side;
 
-            double minRatio = 0.;
+            double minRatio = 0.02;
             if (ratio<minRatio) ratio = minRatio;
-        
-            osg::notify(osg::NOTICE)<<" new ratio = "<<ratio<<std::endl;
 
             double base_up = min_up - (max_up - min_up) * ratio / (1.0 - ratio);
             double max_side_over_up = 0.0;
@@ -1473,17 +1556,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                 double side_over_up = delta_side / delta_up;
                 if (side_over_up > max_side_over_up) max_side_over_up = side_over_up;
             }
-            
-            double max_half_width = max_side_over_up*(max_up - base_up);
-            min_side = mid_side - max_half_width;
-            max_side = mid_side + max_half_width;
-            
-            double new_width = max_side-min_side;
-#if 0            
-            osg::notify(osg::NOTICE)<<"  width ratio  = "<<new_width/original_width<<std::endl;
-            osg::notify(osg::NOTICE)<<"  near ratio  = "<<ratio * new_width/original_width<<std::endl;
-            osg::notify(osg::NOTICE)<<"  angle  = "<<2.0*osg::RadiansToDegrees(atan(max_side_over_up))<<std::endl;
-#endif        
             osg::Vec3d v000 = osg::Vec3d(-1.0, -1.0, -1.0) * inverseMVP; 
             osg::Vec3d v010 = osg::Vec3d(-1.0, 1.0, -1.0) * inverseMVP; 
             osg::Vec3d v100 = osg::Vec3d(1.0, -1.0, -1.0) * inverseMVP; 
@@ -1504,22 +1576,57 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             edgeTopLeft.normalize();
             edgeTopRight.normalize();
             
-            
-            
+           
             double frustumDiagonal = osg::RadiansToDegrees(acos(edgeBottomLeft * edgeBottomRight));
-#if 1            
-            osg::notify(osg::NOTICE)<<"  frustum base angle  = "<<frustumDiagonal<<std::endl;
-#endif        
-        
-            double exponent_scale = -log(ratio)/log(4.0);
-            double exponent_offset = -exponent_scale;
             
-            overlayData._exponent_scale->set(static_cast<float>(exponent_scale));
-            overlayData._exponent_offset->set(static_cast<float>(exponent_offset));
             
-            osg::notify(osg::NOTICE)<<"exponent_scale = "<<exponent_scale<<std::endl;
-            osg::notify(osg::NOTICE)<<"exponent_offset = "<<exponent_offset<<std::endl;
+            //osg::notify(osg::NOTICE)<<"  width ratio  = "<<new_width/original_width<<std::endl;
+            //osg::notify(osg::NOTICE)<<"  near ratio  = "<<ratio * new_width/original_width<<std::endl;
+            double angle = 2.0*osg::RadiansToDegrees(atan(max_side_over_up));
 
+
+            if (angle > frustumDiagonal)
+            {
+                double maxHalfAngle = osg::DegreesToRadians(30.0);
+                
+                // move ratio back
+                max_side_over_up = tan(maxHalfAngle);
+                double lowest_up = min_up;
+                
+                for(i=0; i< projectedVertices.size(); ++i)
+                {
+                    double delta_side = fabs(projectedVertices[i].x() - mid_side);
+                    double delta_up = delta_side / max_side_over_up;                    
+                    double local_base_up = projectedVertices[i].y() - delta_up;
+                    if (local_base_up < lowest_up)
+                    {
+                        lowest_up = local_base_up;
+                        double side_over_up = delta_side / delta_up;
+                    }
+                }
+                
+                double new_ratio = (min_up-lowest_up)/(max_up-lowest_up);
+                
+                //osg::notify(osg::NOTICE)<<"  originalRatio  = "<<ratio<<" new_ratio="<<new_ratio<<std::endl;
+                
+                if (new_ratio > ratio) ratio = new_ratio;
+                
+                base_up = lowest_up;
+
+            }
+
+            double max_half_width = max_side_over_up*(max_up - base_up);
+            min_side = mid_side - max_half_width;
+            max_side = mid_side + max_half_width;
+            
+            double new_width = max_side-min_side;
+
+        
+            double y0 = (1.0 + ratio) / (1.0 - ratio);
+            overlayData._y0->set(static_cast<float>(y0));
+            
+
+            // osg::notify(osg::NOTICE)<<"y0 = "<<y0<<std::endl;
         
             overlayData._mainSubgraphStateSet->setAttribute(overlayData._mainSubgraphProgram.get());
             
@@ -1578,7 +1685,42 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 
-        if (usePerspectiveShaders) cv->pushStateSet(overlayData._overlayStateSet.get());
+        if (usePerspectiveShaders)
+        {
+            cv->pushStateSet(overlayData._overlayStateSet.get());
+            
+            typedef std::list<const osg::StateSet*> StateSetStack;
+            StateSetStack statesetStack;
+            
+            osgUtil::StateGraph* sg = cv->getCurrentStateGraph();
+            while(sg)
+            {
+                const osg::StateSet* stateset = sg->_stateset;
+                if (stateset)
+                {
+                    statesetStack.push_front(stateset);
+                }                
+                sg = sg->_parent;
+            }
+            
+            osg::StateAttribute::GLModeValue base_mode = osg::StateAttribute::ON;
+            for(StateSetStack::iterator itr = statesetStack.begin();
+                itr != statesetStack.end();
+                ++itr)
+            {
+                osg::StateAttribute::GLModeValue mode = (*itr)->getMode(GL_LIGHTING);
+                if ((mode & ~osg::StateAttribute::INHERIT)!=0)
+                {
+                    if ((mode & osg::StateAttribute::PROTECTED)!=0 ||
+                        (base_mode & osg::StateAttribute::OVERRIDE)==0)
+                    {
+                        base_mode = mode;
+                    }
+                }
+            }
+            
+            overlayData._lightingEnabled->set((base_mode & osg::StateAttribute::ON)!=0);
+        }
         
         // if we need to redraw then do cull traversal on camera.
         camera->setClearColor(_overlayClearColor);

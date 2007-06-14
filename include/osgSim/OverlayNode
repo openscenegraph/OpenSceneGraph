@@ -173,9 +173,10 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
             osg::Polytope                   _textureFrustum;
             osg::ref_ptr<osg::Geode>        _geode;
 
-            osg::ref_ptr<osg::Program>      _mainSubgraphProgram;            
-            osg::ref_ptr<osg::Uniform>      _exponent_scale;
-            osg::ref_ptr<osg::Uniform>      _exponent_offset;
+            osg::ref_ptr<osg::Program>      _mainSubgraphProgram;
+            
+            osg::ref_ptr<osg::Uniform>      _y0;
+            osg::ref_ptr<osg::Uniform>      _lightingEnabled;
         };
         
         typedef std::map<osgUtil::CullVisitor*, OverlayData> OverlayDataMap;

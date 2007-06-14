@@ -294,11 +294,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	          "");
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgViewer::GrapicsWindowFunctionProxy)
+BEGIN_VALUE_REFLECTOR(osgViewer::GraphicsWindowFunctionProxy)
 	I_DeclaringFile("osgViewer/GraphicsWindow");
 	I_Constructor1(IN, CGraphicsWindowFunction, function,
 	               Properties::NON_EXPLICIT,
-	               ____GrapicsWindowFunctionProxy__CGraphicsWindowFunction,
+	               ____GraphicsWindowFunctionProxy__CGraphicsWindowFunction,
 	               "",
 	               "");
 END_REFLECTOR

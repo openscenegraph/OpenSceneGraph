@@ -235,14 +235,14 @@ class GraphicsWindowEmbedded : public GraphicsWindow
         virtual void grabFocusIfPointerInWindow() {}
 };
 
-struct GrapicsWindowFunctionProxy
+struct GraphicsWindowFunctionProxy
 {
-    GrapicsWindowFunctionProxy(CGraphicsWindowFunction function) { (function)(); }
+    GraphicsWindowFunctionProxy(CGraphicsWindowFunction function) { (function)(); }
 };
 
 #define USE_GRAPICSWINDOW_IMPLEMENTATION(ext) \
     extern "C" void graphicswindow_##ext(void); \
-    static osgViewer::GrapicsWindowFunctionProxy graphicswindowproxy_##ext(graphicswindow_##ext);
+    static osgViewer::GraphicsWindowFunctionProxy graphicswindowproxy_##ext(graphicswindow_##ext);
 
 #if defined(_WIN32)
     #define USE_GRAPHICSWINDOW()  USE_GRAPICSWINDOW_IMPLEMENTATION(Win32)

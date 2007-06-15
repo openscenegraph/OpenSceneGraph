@@ -15,8 +15,7 @@
 #include <vector>
 #include <map>
 
-using namespace osgFlightUtil;
-
+using namespace osgSim;
 
 void Optimizer::optimize(osg::Node* node)
 {

@@ -25,7 +25,7 @@
 
 #include <osgSim/Export>
 
-namespace osgFlightUtil {
+namespace osgSim {
 
 /** Flight optimizer
   */

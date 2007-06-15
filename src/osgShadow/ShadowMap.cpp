@@ -64,6 +64,11 @@ void ShadowMap::setTextureUnit(unsigned int unit)
     _textureUnit = unit;
 }
 
+void ShadowMap::setAmbientBias(const osg::Vec2& ambientBias)
+{
+    _ambientBias = ambientBias;
+}
+
 void ShadowMap::init()
 {
     if (!_shadowedScene) return;
@@ -156,7 +161,7 @@ void ShadowMap::init()
             _stateset->addUniform(shadowTextureSampler);
         }
         
-        osg::Uniform* ambientBias = new osg::Uniform("ambientBias",osg::Vec2(0.3f,1.2f));
+        osg::Uniform* ambientBias = new osg::Uniform("ambientBias",_ambientBias);
         _stateset->addUniform(ambientBias);
 
 #endif

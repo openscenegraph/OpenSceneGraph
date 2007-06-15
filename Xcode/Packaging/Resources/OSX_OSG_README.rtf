@@ -11,7 +11,7 @@
 \f0\b\fs24 \cf0 OpenSceneGraph on Mac OS X
 \f1\b0 \
 \
-This is the readme for the entire OpenThreads/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 1.2 release.\
+This is the readme for the entire OpenThreads/OpenSceneGraph distribution for the OS X frameworks and Xcode projects. This readme was originally written for the binary distribution, but there is a lot of useful information in here so it has also been included with the source code in the Xcode section. This was sync'd with the OSG 2.0 release.\
 \
 The source code is available at {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/"}}{\fldrslt http://www.openscenegraph.org/}}\
 \
@@ -21,18 +21,42 @@ Also included is a framework for GDAL. You can get the source code and the full 
 
 \f0\b What's New in this release:
 \f1\b0 \
+\pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\ls1\ilvl0\cf0 The theme for the 2.0 release has been making the OpenSceneGraph easier to use, yet more flexible and powerful.\
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	\'a5	}Dwarf debugging format\
-{\listtext	\'a5	}osgsimpleviewerCocoa and osgsimpleviewerSDL\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
-\cf0 \
+\ls1\ilvl0\cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0 Features include:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li400\fi-400\ql\qnatural\pardirnatural
+\cf0     * New unified build system using CMake, which simplifies the build process, automatically detecting installed dependencies and providing build configuration as well as support for a wide range of development tools.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0     * New libraries:\
+          * osgViewer - replacing Producer as a windowing toolkit\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li760\fi-760\ql\qnatural\pardirnatural
+\cf0           * osgManipulator - provides a set of interactive manipulators for scaling, rotating and moving objects in the scene.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0           * osgShadow - provides an extensible framework for adding dynamic shadows to your scene. \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li400\fi-400\ql\qnatural\pardirnatural
+\cf0     * New low-level extensible intersection framework that includes support for line, plane and polytope intersections.\
+    * New high-level intersection classes that support paged databases, LineOfSight, HeightAboveTerrain and ElevationSlice.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural\pardirnatural
+\cf0     * View-dependent overlay\
+          * what does this do? \
+    * Plugins\
+          * Improvements to the OpenFlight, COLLADA and AC3D? plugins\
+          * New TXF texture font reader. \
+    * Easier 3rd party windowing integration\
+          * With examples showing integration with GLUT, SDL, Qt, WxWidgets and MFC. \
+    * OpenThreads is moved into the core of OpenSceneGraph and is no longer an external dependency.\
+    * Producer is no longer a dependency \
+\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f0\b \cf0 Notes for 1.2 release:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\b0 \cf0 1.2 was originally intended as a bug fix release for 1.1 (going for 1.1.1), but OSG broke ABI again so the number was bumped to 1.2. There are no significant changes to the Xcode projects or significant OS X specific changes.\
+\f1\b0 1.2 was originally intended as a bug fix release for 1.1 (going for 1.1.1), but OSG broke ABI again so the number was bumped to 1.2. There are no significant changes to the Xcode projects or significant OS X specific changes.\
 \
 Since the 1.1 release, we have learned of serious problems (freezing of the window manager) on the (Intel) MacBook Pros using osgText. We believe the problem is with a serious driver bug for ATI in OS X 10.4.7. We believe the bug affects the ATI Radeon X1600. (You can get this string by calling glGetString(GL_RENDERER) when you have a valid OpenGL Context. The string returned to us on affected MacBook Pros is "ATI Radeon X1600 OpenGL Engine".)\
 \
@@ -98,16 +122,16 @@ Don't forget to link against Carbon (-framework Carbon) if you use Gestalt.\
 \
 If you are affected by this, please file a bug report at {\field{\*\fldinst{HYPERLINK "https://bugreport.apple.com"}}{\fldrslt https://bugreport.apple.com}}. Apple lives and dies by the bug report system. If anything is to get done, it must be in the bug reporter. And they keep count of how many people file the same bug, so duplicates are good.\
 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f2\i (Note: We believe this has been fixed in 10.4.8)
+\f2\i \cf0 (Note: We believe this has been fixed in 10.4.8)
 \f1\i0 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f0\b \cf0 Notes for 1.1 release:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\b0 \cf0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
+\f1\b0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
 The Xcode projects are also set to build as Universal Binaries for both Development and Deployment\
 targets. If you do not need this and want to save build time, you should change the architecture option\
 to your desired setting (most likely to $(NATIVE_ARCH)). It is overridden in the top-level "OpenSceneGraph" project in the Group & Files panel. Don't forget to change OpenThreads \
@@ -128,9 +152,8 @@ PlugIns, the file size shrunk from about 1GB to about 100MB.\
 We have stopped maintaining the Xcode 1.5/2.0 projects.\
 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\b \cf0 Notes for 1.0 release:
+\f0\b Notes for 1.0 release:
 \f1\b0 \
 These projects were primarily developed with gcc 4.0.1 under Tiger 10.4.3 using Xcode 2.2. Starting with gcc 4.0, Apple no longer statically links in the C++ runtime. Apple has made available the g++ 4.0 dynamic runtime for Panther under the 10.3.9 release. To run under Panther, your system must have this update (or you must recompile the binaries for your system).\
 \
@@ -230,9 +253,8 @@ Also remember that OSG will still respond to standard OSG environmental variable
 \
 
 \f0\b Prebinding Addresses:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\b0 \cf0 \
+\f1\b0 \
 	These are now obsolete. Prebinding is now disabled. The old addresses were:\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -315,9 +337,8 @@ If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, t
 {\listtext	\'a5	}I noticed that for some reason, Xcode has problems compiling the Carbon header with the OpenThreads framework when autovectorization and precompiled headers were enabled. You might try disabling precompiled headers if it is not already. If the problem persists, you may also need to delete the entry that enables autovectorization. In the Groups and Files panel (left side panel), open the Info inspector for the project (top item) and click on the Build tab. Scroll down to the bottom, and remove the autovectorization option. \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f0\b \cf0 Universal Binaries:
+\f0\b Universal Binaries:
 \f1\b0 \
 \
 Be aware, when building you're own Universal Binaries and you use the 10.4 SDK, you must explicitly\

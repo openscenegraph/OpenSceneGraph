@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/Vec2>
 #include <osgShadow/ShadowMap>
 #include <osgUtil/CullVisitor>
 
@@ -69,6 +70,16 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          __unsigned_int__getTextureUnit,
 	          "Get the texture unit that the shadow texture will be applied on. ",
 	          "");
+	I_Method1(void, setAmbientBias, IN, const osg::Vec2 &, ambientBias,
+	          Properties::NON_VIRTUAL,
+	          __void__setAmbientBias__C5_osg_Vec2_R1,
+	          "Set the values for the ambient bias the shader will use. ",
+	          "");
+	I_Method0(const osg::Vec2 &, getAmbientBias,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec2_R1__getAmbientBias,
+	          "Get the values that are used for the ambient bias in the shader. ",
+	          "");
 	I_Method0(void, init,
 	          Properties::VIRTUAL,
 	          __void__init,
@@ -89,6 +100,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          __void__cleanSceneGraph,
 	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
 	          "");
+	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
+	                 __C5_osg_Vec2_R1__getAmbientBias, 
+	                 __void__setAmbientBias__C5_osg_Vec2_R1);
 	I_SimpleProperty(unsigned int, TextureUnit, 
 	                 __unsigned_int__getTextureUnit, 
 	                 __void__setTextureUnit__unsigned_int);

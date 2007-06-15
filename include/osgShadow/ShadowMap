@@ -36,8 +36,13 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
 
         /** Get the texture unit that the shadow texture will be applied on.*/
         unsigned int getTextureUnit() const { return _textureUnit; }
-        
-        
+
+        /** Set the values for the ambient bias the shader will use.*/
+        void setAmbientBias(const osg::Vec2& ambientBias );
+
+        /** Get the values that are used for the ambient bias in the shader.*/
+        const osg::Vec2& getAmbientBias() const { return _ambientBias; }
+     
         /** initialize the ShadowedScene and local cached data structures.*/
         virtual void init();
         
@@ -60,6 +65,7 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         osg::ref_ptr<osg::Texture2D>    _texture;
         osg::ref_ptr<osg::StateSet>     _stateset;
         unsigned int                    _textureUnit;
+        osg::Vec2                       _ambientBias;
         
 };
 

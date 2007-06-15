@@ -23,16 +23,16 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgFlightUtil::Optimizer::OptimizationOptions)
+BEGIN_ENUM_REFLECTOR(osgSim::Optimizer::OptimizationOptions)
 	I_DeclaringFile("osgSim/OpenFlightOptimizer");
-	I_EnumLabel(osgFlightUtil::Optimizer::TESSELLATE_POLYGON);
-	I_EnumLabel(osgFlightUtil::Optimizer::MERGE_GEODES);
-	I_EnumLabel(osgFlightUtil::Optimizer::MAKE_LIT);
-	I_EnumLabel(osgFlightUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
-	I_EnumLabel(osgFlightUtil::Optimizer::ALL_OPTIMIZATIONS);
+	I_EnumLabel(osgSim::Optimizer::TESSELLATE_POLYGON);
+	I_EnumLabel(osgSim::Optimizer::MERGE_GEODES);
+	I_EnumLabel(osgSim::Optimizer::MAKE_LIT);
+	I_EnumLabel(osgSim::Optimizer::DEFAULT_OPTIMIZATIONS);
+	I_EnumLabel(osgSim::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgFlightUtil::Optimizer)
+BEGIN_VALUE_REFLECTOR(osgSim::Optimizer)
 	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_Constructor0(____Optimizer,
 	               "",
@@ -49,7 +49,7 @@ BEGIN_VALUE_REFLECTOR(osgFlightUtil::Optimizer)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
+BEGIN_OBJECT_REFLECTOR(osgSim::Optimizer::MakeLitVisitor)
 	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MakeLitVisitor,
@@ -62,7 +62,7 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MakeLitVisitor)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
+BEGIN_OBJECT_REFLECTOR(osgSim::Optimizer::MergeGeodesVisitor)
 	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____MergeGeodesVisitor,
@@ -86,7 +86,7 @@ BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::MergeGeodesVisitor)
 	                   "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgFlightUtil::Optimizer::TessellateVisitor)
+BEGIN_OBJECT_REFLECTOR(osgSim::Optimizer::TessellateVisitor)
 	I_DeclaringFile("osgSim/OpenFlightOptimizer");
 	I_BaseType(osg::NodeVisitor);
 	I_Constructor0(____TessellateVisitor,

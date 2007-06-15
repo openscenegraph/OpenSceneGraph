@@ -708,7 +708,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          "");
 	I_Method1(void, inheritCullSettings, IN, const osg::CullSettings &, settings,
 	          Properties::VIRTUAL,
-	          __void__inheritCullSettings__C5_CullSettings_R1,
+	          __void__inheritCullSettings__C5_osg_CullSettings_R1,
 	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");
 	I_Method2(void, inheritCullSettings, IN, const osg::CullSettings &, settings, IN, unsigned int, inheritanceMask,

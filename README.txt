@@ -10,17 +10,7 @@ For the impatient, read the simplified build notes below.
 
 Robert Osfield.
 Project Lead.
-13th June 2007.
-
---
-
-Notes for 1.9.9 release
-=======================
-
-The OpenThreads/include and /src directories have now been merged 
-directly into the OpenSceneGraph distribution. This means that you 
-don't need to download, compile or install OpenThreads separately 
-anymore. You can remove any external OpenThreads from your system.
+15th June 2007.
 
 --
 

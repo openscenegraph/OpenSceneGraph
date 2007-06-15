@@ -21,28 +21,15 @@ const char* osgGetVersion()
     static int osg_version_init = 1;
     if (osg_version_init)
     {
-        if (OSG_VERSION_RELEASE==0)
+        if (OSG_VERSION_REVISION==0)
         {
-            if (OSG_VERSION_REVISION==0)
-            {
-                sprintf(osg_version,"%d.%d",OSG_VERSION_MAJOR,OSG_VERSION_MINOR);
-            }
-            else
-            {
-                sprintf(osg_version,"%d.%d-%d",OSG_VERSION_MAJOR,OSG_VERSION_MINOR,OSG_VERSION_REVISION);
-            }
+            sprintf(osg_version,"%d.%d.%d",OSG_VERSION_MAJOR,OSG_VERSION_MINOR,OSG_VERSION_RELEASE);
         }
         else
         {
-            if (OSG_VERSION_REVISION==0)
-            {
-                sprintf(osg_version,"%d.%d.%d",OSG_VERSION_MAJOR,OSG_VERSION_MINOR,OSG_VERSION_RELEASE);
-            }
-            else
-            {
-                sprintf(osg_version,"%d.%d.%d-%d",OSG_VERSION_MAJOR,OSG_VERSION_MINOR,OSG_VERSION_RELEASE,OSG_VERSION_REVISION);
-            }
+            sprintf(osg_version,"%d.%d.%d-%d",OSG_VERSION_MAJOR,OSG_VERSION_MINOR,OSG_VERSION_RELEASE,OSG_VERSION_REVISION);
         }
+
         osg_version_init = 0;
     }
     

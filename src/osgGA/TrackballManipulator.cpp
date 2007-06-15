@@ -108,7 +108,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
             {
             
                 double timeSinceLastRecordEvent = _ga_t0.valid() ? (ea.getTime() - _ga_t0->getTime()) : DBL_MAX;
-                if (timeSinceLastRecordEvent>0.02) addMouseEvent(ea);
+                if (timeSinceLastRecordEvent>0.02) flushMouseEventStack();
 
                 if (isMouseMoving())
                 {
@@ -250,9 +250,16 @@ bool TrackballManipulator::calcMovement()
 
     float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
     float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
+
+    float distance = sqrtf(dx*dx + dy*dy);
+    // return if movement is too fast, indicating an error in event values or change in screen.
+    if (distance>0.5)
+    {
+        return false;
+    }
     
     // return if there is no movement.
-    if (dx==0.0f && dy==0.0f)
+    if (distance==0.0f)
     {
         return false;
     }

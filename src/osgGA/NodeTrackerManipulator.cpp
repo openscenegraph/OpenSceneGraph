@@ -213,7 +213,7 @@ bool NodeTrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& 
             {
 
                 double timeSinceLastRecordEvent = _ga_t0.valid() ? (ea.getTime() - _ga_t0->getTime()) : DBL_MAX;
-                if (timeSinceLastRecordEvent>0.02) addMouseEvent(ea);
+                if (timeSinceLastRecordEvent>0.02) flushMouseEventStack();
 
                 if (isMouseMoving())
                 {
@@ -422,9 +422,18 @@ bool NodeTrackerManipulator::calcMovement()
     double dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
 
 
+    float distance = sqrtf(dx*dx + dy*dy);
+    // return if movement is too fast, indicating an error in event values or change in screen.
+    if (distance>0.5)
+    {
+        return false;
+    }
+    
     // return if there is no movement.
-    if (dx==0 && dy==0) return false;
-
+    if (distance==0.0f)
+    {
+        return false;
+    }
 
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;

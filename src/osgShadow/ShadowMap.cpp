@@ -49,13 +49,15 @@ static const char fragmentShaderSource_withBaseTexture[] =
     "}\n";
 
 ShadowMap::ShadowMap():
-    _textureUnit(1)
+    _textureUnit(1),
+    _ambientBias(0.3f,1.2f)
 {
 }
 
 ShadowMap::ShadowMap(const ShadowMap& copy, const osg::CopyOp& copyop):
     ShadowTechnique(copy,copyop),
-    _textureUnit(copy._textureUnit)
+    _textureUnit(copy._textureUnit),
+    _ambientBias(copy._ambientBias)
 {
 }
 

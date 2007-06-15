@@ -100,7 +100,8 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeM
             if (!intersections.empty())
             {
                 const osgUtil::LineSegmentIntersector::Intersection& intersection = *intersections.begin();
-                osg::Vec3d intersectionPoint = intersection.localIntersectionPoint * (*intersection.matrix);
+                osg::Vec3d intersectionPoint = intersection.matrix.valid() ? intersection.localIntersectionPoint * (*intersection.matrix) :
+                                               intersection.localIntersectionPoint;
                 _HATList[index]._hat = (_HATList[index]._point - intersectionPoint).length();
             }
         }

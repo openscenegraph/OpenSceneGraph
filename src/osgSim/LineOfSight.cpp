@@ -141,7 +141,8 @@ void LineOfSight::computeIntersections(osg::Node* scene, osg::Node::NodeMask tra
                 ++itr)
             {
                 const osgUtil::LineSegmentIntersector::Intersection& intersection = *itr;
-                intersectionsLOS.push_back( intersection.localIntersectionPoint * (*intersection.matrix) );
+                if (intersection.matrix.valid()) intersectionsLOS.push_back( intersection.localIntersectionPoint * (*intersection.matrix) );
+                else intersectionsLOS.push_back( intersection.localIntersectionPoint  );
             }
         }
     }

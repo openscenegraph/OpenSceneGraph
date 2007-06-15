@@ -212,7 +212,7 @@ bool NodeTrackerManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& 
             if (ea.getButtonMask()==0)
             {
 
-                double timeSinceLastRecordEvent = ea.getTime() - _ga_t0->getTime();
+                double timeSinceLastRecordEvent = _ga_t0.valid() ? (ea.getTime() - _ga_t0->getTime()) : DBL_MAX;
                 if (timeSinceLastRecordEvent>0.02) addMouseEvent(ea);
 
                 if (isMouseMoving())

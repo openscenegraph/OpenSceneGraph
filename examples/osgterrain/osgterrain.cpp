@@ -42,13 +42,69 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 
-
 #include <osgTerrain/TerrainNode>
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Layer>
 
 #include <iostream>
 
+class OSGVIEWER_EXPORT FilterHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+        FilterHandler(osgTerrain::GeometryTechnique* gt):
+            _gt(gt) {}
+
+        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+        {
+            if (!_gt) return false;
+            
+            switch(ea.getEventType())
+            {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+                {
+                    if (ea.getKey() == 'g')
+                    {
+                        osg::notify(osg::NOTICE)<<"Gaussian"<<std::endl;
+                        _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::GAUSSIAN);
+                        return true;
+                    }
+                    else if (ea.getKey() == 's')
+                    {
+                        osg::notify(osg::NOTICE)<<"Smooth"<<std::endl;
+                        _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::SMOOTH);
+                        return true;
+                    }
+                    else if (ea.getKey() == 'S')
+                    {
+                        osg::notify(osg::NOTICE)<<"Sharpen"<<std::endl;
+                        _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::SHARPEN);
+                        return true;
+                    }
+                    else if (ea.getKey() == '+')
+                    {
+                        _gt->setFilterWidth(_gt->getFilterWidth()*1.1);
+                        return true;
+                    }
+                    else if (ea.getKey() == '-')
+                    {
+                        _gt->setFilterWidth(_gt->getFilterWidth()/1.1);
+                        return true;
+                    }
+                    break;
+                }
+            default:
+                break;
+            }
+            return false;
+            
+        }
+
+protected:
+
+        osg::observer_ptr<osgTerrain::GeometryTechnique> _gt;
+
+};
 
 
 
@@ -57,7 +113,7 @@ int main(int argc, char** argv)
     osg::ArgumentParser arguments(&argc, argv);
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // set up the camera manipulators.
     {
@@ -91,6 +147,10 @@ int main(int argc, char** argv)
 
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add the record camera path handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
+
 
     double x = 0.0;
     double y = 0.0;
@@ -254,7 +314,7 @@ int main(int argc, char** argv)
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
                 terrain->setColorFilter(layerNum, osgTerrain::TerrainNode::NEAREST);
             }
-            else if (filterName=="LINEAER") 
+            else if (filterName=="LINEAR") 
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
                 terrain->setColorFilter(layerNum, osgTerrain::TerrainNode::LINEAR);
@@ -298,6 +358,8 @@ int main(int argc, char** argv)
     
     terrain->setTerrainTechnique(geometryTechnique.get());
     
+    viewer.addEventHandler(new FilterHandler(geometryTechnique.get()));
+
     if (!terrain) return 0;
     
     // return 0;

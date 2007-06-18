@@ -106,6 +106,25 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         virtual void cleanSceneGraph();
 
         virtual void dirty();
+        
+        
+        
+        void setFilterWidth(float filterWidth);
+        float getFilterWidth() const { return _filterWidth; }
+
+        void setFilterMatrix(const osg::Matrix3& matrix);
+        osg::Matrix3& getFilterMatrix() { return _filterMatrix; }
+        const osg::Matrix3& getFilterMatrix() const { return _filterMatrix; }
+        
+        enum FilterType
+        {
+            GAUSSIAN,
+            SMOOTH,
+            SHARPEN
+        };
+        
+        void setFilterMatrixAs(FilterType filterType);
+
 
     protected:
 
@@ -116,6 +135,11 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         osg::ref_ptr<TerrainGeometry>       _terrainGeometry;
         osg::ref_ptr<osg::Geometry>         _geometry;
+        
+        float                               _filterWidth;
+        osg::ref_ptr<osg::Uniform>          _filterWidthUniform;
+        osg::Matrix3                        _filterMatrix;
+        osg::ref_ptr<osg::Uniform>          _filterMatrixUniform;
 };
 
 }

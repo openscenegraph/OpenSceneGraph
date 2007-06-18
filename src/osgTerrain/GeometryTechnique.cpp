@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -29,6 +29,8 @@ using namespace osgTerrain;
 
 GeometryTechnique::GeometryTechnique()
 {
+    setFilterWidth(0.1);
+    setFilterMatrixAs(GAUSSIAN);
 }
 
 GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::CopyOp& copyop):
@@ -39,6 +41,44 @@ GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::Copy
 GeometryTechnique::~GeometryTechnique()
 {
 }
+
+void GeometryTechnique::setFilterWidth(float filterWidth)
+{
+    _filterWidth = filterWidth;
+    if (!_filterWidthUniform) _filterWidthUniform = new osg::Uniform("filterWidth",_filterWidth);
+    else _filterWidthUniform->set(filterWidth);
+}
+
+void GeometryTechnique::setFilterMatrix(const osg::Matrix3& matrix)
+{
+    _filterMatrix = matrix; 
+    if (!_filterMatrixUniform) _filterMatrixUniform = new osg::Uniform("filterMatrix",_filterMatrix);
+    else _filterMatrixUniform->set(_filterMatrix);
+}
+
+void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
+{
+    switch(filterType)
+    {
+        case(SMOOTH):
+            setFilterMatrix(osg::Matrix3(0.0, 0.5/2.5, 0.0,
+                                         0.5/2.5, 0.5/2.5, 0.5/2.5,
+                                         0.0, 0.5/2.5, 0.0));
+            break;
+        case(GAUSSIAN):
+            setFilterMatrix(osg::Matrix3(0.0, 1.0/8.0, 0.0,
+                                         1.0/8.0, 4.0/8.0, 1.0/8.0,
+                                         0.0, 1.0/8.0, 0.0));
+            break;
+        case(SHARPEN):
+            setFilterMatrix(osg::Matrix3(0.0, -1.0, 0.0,
+                                         -1.0, 5.0, -1.0,
+                                         0.0, -1.0, 0.0));
+            break;
+
+    };
+}
+
 
 void GeometryTechnique::init()
 {
@@ -417,7 +457,7 @@ void GeometryTechnique::init()
             stateset->setAttribute(program);
 
             // get shaders from source
-            std::string vertexShaderFile = osgDB::findDataFile("lookup.vert");
+            std::string vertexShaderFile = osgDB::findDataFile("shaders/lookup.vert");
             if (!vertexShaderFile.empty())
             {
                 program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
@@ -427,7 +467,7 @@ void GeometryTechnique::init()
                 osg::notify(osg::NOTICE)<<"Not found lookup.vert"<<std::endl;
             }
 
-            std::string fragmentShaderFile = osgDB::findDataFile("lookup.frag");
+            std::string fragmentShaderFile = osgDB::findDataFile("shaders/lookup.frag");
             if (!fragmentShaderFile.empty())
             {
                 program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
@@ -442,6 +482,12 @@ void GeometryTechnique::init()
 
             osg::Uniform* lookupTexture = new osg::Uniform("lookupTexture",tf_index);
             stateset->addUniform(lookupTexture);
+
+            stateset->addUniform(_filterWidthUniform.get());
+            stateset->addUniform(_filterMatrixUniform.get());
+
+            osg::Uniform* lightingEnabled = new osg::Uniform("lightingEnabled",true);
+            stateset->addUniform(lightingEnabled);
 
             osg::Uniform* minValue = new osg::Uniform("minValue", tf->getMinimum());
             stateset->addUniform(minValue);
@@ -477,6 +523,7 @@ void GeometryTechnique::init()
 
 void GeometryTechnique::update(osgUtil::UpdateVisitor* nv)
 {
+    
 }
 
 

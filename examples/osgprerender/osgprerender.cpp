@@ -404,7 +404,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--texture-rectangle","Use osg::TextureRectangle for doing the render to texure to.");
    
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

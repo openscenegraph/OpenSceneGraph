@@ -29,7 +29,7 @@
 namespace osgViewer
 {
 
-class GraphicsWindowWin32 : public osgViewer::GraphicsWindow
+class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
 {
     public:
 

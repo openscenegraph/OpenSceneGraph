@@ -11,15 +11,16 @@
  * OpenSceneGraph Public License for more details.
 */
 
-/* Note, elements of GraphicsWindowX11 have used Prodcer/RenderSurface_X11.cpp as both
+/* Note, elements of PixelBufferX11 have used Prodcer/RenderSurface_X11.cpp as both
  * a guide to use of X11/GLX and copiying directly in the case of setBorder().
  * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
-#ifndef OSGVIEWER_GRAPHICSWINDOWX11
-#define OSGVIEWER_GRAPHICSWINDOWX11 1
+#ifndef OSGVIEWER_PIXELBUFFERX11
+#define OSGVIEWER_PIXELBUFFERX11 1
 
-#include <osgViewer/GraphicsWindow>
+#include <osg/GraphicsContext>
+#include <osgViewer/Export>
 
 #define GLX_GLXEXT_PROTOTYPES  1
 
@@ -29,22 +30,19 @@
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
+class OSGVIEWER_EXPORT PixelBufferX11 : public osg::GraphicsContext
 {
     public:
 
-        GraphicsWindowX11(osg::GraphicsContext::Traits* traits):
+        PixelBufferX11(osg::GraphicsContext::Traits* traits):
             _valid(false),
             _display(0),
-            _eventDisplay(0),
             _parent(0),
             _window(0),
             _visualInfo(0),
             _glxContext(0),
-            _currentCursor(0),
             _initialized(false),
-            _realized(false),
-            _timeOfLastCheckEvents(-1.0)
+            _realized(false)
         {
             _traits = traits;
 
@@ -68,9 +66,9 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
             }
         }
     
-        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowX11*>(object)!=0; }
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const PixelBufferX11*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
-        virtual const char* className() const { return "GraphicsWindowX11"; }
+        virtual const char* className() const { return "PixelBufferX11"; }
 
         virtual bool valid() const { return _valid; }
 
@@ -86,88 +84,45 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Make this graphics context current.*/
         virtual bool makeCurrentImplementation();
 
+        /** Make this graphics context current with specified read context implementation. */
+        virtual bool makeContextCurrentImplementation(osg::GraphicsContext* readContext);
+
         /** Release the graphics context.*/
         virtual bool releaseContextImplementation();
 
+        /** Bind the graphics context to associated texture implementation.*/
+        virtual void bindPBufferToTextureImplementation(GLenum buffer);
+
         /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();
-        
-        /** Check to see if any events have been generated.*/
-        virtual void checkEvents();
-
-        /** Set Window decoration.*/
-        virtual bool setWindowDecorationImplementation(bool flag);
-
-        /** Get focus.*/
-        virtual void grabFocus();
-        
-        /** Get focus on if the pointer is in this window.*/
-        virtual void grabFocusIfPointerInWindow();
-
-        // Override from GUIActionAdapter
-        virtual void requestWarpPointer(float x,float y);
-
-        /** Set the window's position and size.*/
-        virtual bool setWindowRectangleImplementation(int x, int y, int width, int height);
-
-        /** Set mouse cursor to a specific shape.*/
-        virtual void setCursor(MouseCursor cursor);
-
-        /** WindowData is used to pass in the X11 window handle attached the GraphicsContext::Traits structure. */
-        struct WindowData : public osg::Referenced
-        {
-            WindowData(Window window):
-                _window(window) {}
-                
-            Window          _window;
-        };
 
     public:
     
         // X11 specific aces functions
 
         Display* getDisplay() const { return _display; }
-        Display* getEventDisplay() const { return _eventDisplay; }
-        Display* getDisplayToUse() const ;
-
         
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
         GLXContext& getGLXContext() { return _glxContext; }
 
-        Cursor getCurrentCursor() { return _currentCursor; }
-
     protected:
     
-        ~GraphicsWindowX11();
+        ~PixelBufferX11();
     
-        Cursor getOrCreateCursor(MouseCursor mouseShape);
-        
         bool createVisualInfo();
         
         void init();
 
-        void transformMouseXY(float& x, float& y);
-        void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);
-        
         bool            _valid;
         Display*        _display;
-        Display*        _eventDisplay;
         Window          _parent;
         Window          _window;
         XVisualInfo*    _visualInfo;
         GLXContext      _glxContext;
 
-        Cursor          _currentCursor;
-
-        Atom            _deleteWindow;
-        
         bool            _initialized;
         bool            _realized;
-
-        double          _timeOfLastCheckEvents;
-
-        std::map<MouseCursor,Cursor> _mouseCursorMap;
 };
 
 }

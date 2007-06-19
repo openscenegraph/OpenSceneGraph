@@ -48,7 +48,7 @@
 
 #include <iostream>
 
-class OSGVIEWER_EXPORT FilterHandler : public osgGA::GUIEventHandler 
+class FilterHandler : public osgGA::GUIEventHandler 
 {
 public: 
 
@@ -84,11 +84,25 @@ public:
                     else if (ea.getKey() == '+')
                     {
                         _gt->setFilterWidth(_gt->getFilterWidth()*1.1);
+                        osg::notify(osg::NOTICE)<<"Filter width = "<<_gt->getFilterWidth()<<std::endl;
                         return true;
                     }
                     else if (ea.getKey() == '-')
                     {
                         _gt->setFilterWidth(_gt->getFilterWidth()/1.1);
+                        osg::notify(osg::NOTICE)<<"Filter width = "<<_gt->getFilterWidth()<<std::endl;
+                        return true;
+                    }
+                    else if (ea.getKey() == '>')
+                    {
+                        _gt->setFilterBias(_gt->getFilterBias()+0.1);
+                        osg::notify(osg::NOTICE)<<"Filter bias = "<<_gt->getFilterBias()<<std::endl;
+                        return true;
+                    }
+                    else if (ea.getKey() == '<')
+                    {
+                        _gt->setFilterBias(_gt->getFilterBias()-0.1);
+                        osg::notify(osg::NOTICE)<<"Filter bias = "<<_gt->getFilterBias()<<std::endl;
                         return true;
                     }
                     break;

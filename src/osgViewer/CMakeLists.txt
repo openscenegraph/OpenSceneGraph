@@ -46,8 +46,14 @@ ELSE(WIN32)
     ELSE(APPLE)
     
         # X11 for everybody else
-        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${HEADER_PATH}/api/X11/GraphicsWindowX11)
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} GraphicsWindowX11.cpp)
+        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+            ${HEADER_PATH}/api/X11/GraphicsWindowX11
+            ${HEADER_PATH}/api/X11/PixelBufferX11
+        )
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+            GraphicsWindowX11.cpp 
+            PixelBufferX11.cpp
+        )
         
     ENDIF(APPLE)
 ENDIF(WIN32)

@@ -17,6 +17,7 @@
  */
 
 #include <osgViewer/api/X11/GraphicsWindowX11>
+#include <osgViewer/api/X11/PixelBufferX11>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -32,66 +33,6 @@
 #include <unistd.h>
 
 using namespace osgViewer;
-
-namespace osgViewer
-{
-
-class GraphicsContextX11 : public osg::GraphicsContext
-{
-    public:
-
-        GraphicsContextX11(osg::GraphicsContext::Traits* traits):
-            _valid(false),
-            _display(0),
-            _parent(0),
-            _window(0)
-        {
-            _traits = traits;
-        }
-    
-        virtual bool valid() const { return _valid; }
-
-        /** Realise the GraphicsContext implementation, 
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
-
-        /** Return true if the graphics context has been realised, and is ready to use, implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool isRealizedImplementation() const  { osg::notify(osg::NOTICE)<<"GraphicsWindow::isRealizedImplementation() not implemented."<<std::endl; return false; }
-
-        /** Close the graphics context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void closeImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::closeImplementation() not implemented."<<std::endl; }
-
-        /** Make this graphics context current implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false;}
-        
-        /** Make this graphics context current with specified read context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false; }
-
-        /** Release the graphics context.*/
-        virtual bool releaseContextImplementation() {  osg::notify(osg::NOTICE)<<"GraphicsWindow::releaseContextImplementation(..) not implemented."<<std::endl; return false; }
-
-        /** Pure virtual, Bind the graphics context to associated texture implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void bindPBufferToTextureImplementation(GLenum /*buffer*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; }
-
-        /** Swap the front and back buffers implementation.
-          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
-        virtual void swapBuffersImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow:: swapBuffersImplementation() not implemented."<<std::endl; }
-        
-    protected:
-        
-        bool        _valid;
-        Display*    _display;
-        Window      _parent;
-        Window      _window;
-
-};
-
-}
 
 class X11KeyboardMap
 {
@@ -559,15 +500,24 @@ void GraphicsWindowX11::init()
     }
     
     
-    GraphicsWindowX11* sharedContextX11 = dynamic_cast<GraphicsWindowX11*>(_traits->sharedContext);
-    if (sharedContextX11) 
+    GLXContext sharedContextGLX = NULL;
+
+    // get any shared GLX contexts    
+    GraphicsWindowX11* graphicsWindowX11 = dynamic_cast<GraphicsWindowX11*>(_traits->sharedContext);
+    if (graphicsWindowX11) 
     {
-        _glxContext = glXCreateContext( _display, _visualInfo, sharedContextX11->getGLXContext(), True );
+        sharedContextGLX = graphicsWindowX11->getGLXContext();
     }
     else
     {
-        _glxContext = glXCreateContext( _display, _visualInfo, NULL, True );
+        PixelBufferX11* pixelBufferX11 = dynamic_cast<PixelBufferX11*>(_traits->sharedContext);
+        if (pixelBufferX11)
+        {
+            sharedContextGLX = pixelBufferX11->getGLXContext();
+        }
     }
+    
+    _glxContext = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
     
     if (!_glxContext)
     {
@@ -695,7 +645,7 @@ bool GraphicsWindowX11::makeCurrentImplementation()
         return false;
     }
 
-    // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
     // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
 
     return glXMakeCurrent( _display, _window, _glxContext )==True;
@@ -709,8 +659,8 @@ bool GraphicsWindowX11::releaseContextImplementation()
         return false;
     }
 
-    // osg::notify(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
+    // osg::notify(osg::NOTICE)<<"GraphicsWindowX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<std::endl;
 
     return glXMakeCurrent( _display, None, NULL )==True;
 }
@@ -1268,9 +1218,15 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
     {
         if (traits->pbuffer)
         {
-            osg::ref_ptr<osgViewer::GraphicsContextX11> pbuffer = new GraphicsContextX11(traits);
+#if 1
+            osg::ref_ptr<osgViewer::PixelBufferX11> pbuffer = new PixelBufferX11(traits);
             if (pbuffer->valid()) return pbuffer.release();
             else return 0;
+#else
+            osg::ref_ptr<osgViewer::GraphicsWindowX11> window = new GraphicsWindowX11(traits);
+            if (window->valid()) return window.release();
+            else return 0;
+#endif
         }
         else
         {

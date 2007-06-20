@@ -62,6 +62,15 @@ bool PixelBufferWin32::valid() const
     return _valid;
 }
 
+void PixelBufferWin32::init()
+{
+    if (_initialized) return;
+
+    // don't do anything right now... waiting for an implementation...    
+    _valid = false;
+    return;
+}
+
 bool PixelBufferWin32::realizeImplementation()
 {
     osg::notify(osg::NOTICE) << "PixelBufferWin32::realizeImplementation() not implemented." << std::endl; return false;

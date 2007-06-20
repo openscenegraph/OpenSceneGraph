@@ -33,10 +33,18 @@ SET(LIB_COMMON_FILES
 
 IF(WIN32)
 
-    SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${HEADER_PATH}/api/Win32/GraphicsWindowWin32)
-    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} GraphicsWindowWin32.cpp)
+    SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+        ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
+        ${HEADER_PATH}/api/Win32/PixelBufferWin32
+    )
+        
+    SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+        GraphicsWindowWin32.cpp
+        PixelBufferWin32.cpp
+    )
 
 ELSE(WIN32)
+
     IF(APPLE)
 
         # FIXME: OS X needs selection mechanism for Cocoa, Carbon, X11
@@ -56,6 +64,7 @@ ELSE(WIN32)
         )
         
     ENDIF(APPLE)
+
 ENDIF(WIN32)
 
 

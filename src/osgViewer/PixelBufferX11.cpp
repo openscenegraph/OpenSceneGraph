@@ -25,6 +25,27 @@
 
 using namespace osgViewer;
 
+static GLXFBConfig getFBConfigFromVisual(::Display* dpy, XVisualInfo* visualInfo)
+{
+#if defined(__APPLE__) || defined(_AIX)
+    int screen = visualInfo->screen;
+    int nelements;
+    GLXFBConfig *configs = glXGetFBConfigs(dpy, screen, &nelements);
+    for( int i = 0; i < nelements; i++ )
+    {
+        int visual_id;
+        if( glXGetFBConfigAttrib( dpy, configs[i], GLX_VISUAL_ID, &visual_id ) == 0 )
+        {
+            if( (unsigned int)visual_id == visualInfo->visualid )
+                return configs[i];
+        }
+    }
+    return NULL;
+#else
+    return glXGetFBConfigFromVisualSGIX( dpy, visualInfo );
+#endif
+}
+
 PixelBufferX11::~PixelBufferX11()
 {
     close(true);
@@ -71,6 +92,8 @@ bool PixelBufferX11::createVisualInfo()
 void PixelBufferX11::init()
 {
     if (_initialized) return;
+
+#ifdef GLX_VERSION_1_3
 
     if (!_traits)
     {
@@ -180,14 +203,20 @@ void PixelBufferX11::init()
         mask |= CWOverrideRedirect;
     }
 
-    _window = XCreateWindow( _display, _parent,
-                             _traits->x,
-                             _traits->y,
-                             _traits->width, _traits->height, 0,
-                             _visualInfo->depth, InputOutput,
-                             _visualInfo->visual, mask, &swatt );
+    GLXFBConfig fbconfig = getFBConfigFromVisual( _display, _visualInfo );
+
+    typedef std::vector <int> AttributeList;
+
+    AttributeList attributes;
+    attributes.push_back( GLX_PBUFFER_WIDTH );
+    attributes.push_back( _traits->width );
+    attributes.push_back( GLX_PBUFFER_HEIGHT );
+    attributes.push_back( _traits->height );
+    attributes.push_back( 0L );
+
+    _pbuffer = glXCreatePbuffer(_display, fbconfig, &attributes.front() );
                              
-    if (!_window)
+    if (!_pbuffer)
     {
         osg::notify(osg::NOTICE)<<"Error: Unable to create Window."<<std::endl;
         XCloseDisplay( _display );
@@ -198,21 +227,16 @@ void PixelBufferX11::init()
     }
 
 
-
     XFlush( _display );
     XSync( _display, 0 );
 
-    // now update the window dimensions to account for any size changes made by the window manager,
-    XGetWindowAttributes( _display, _window, &watt );
-    
-    if (_traits->width != watt.width && _traits->height != watt.height)
-    {
-        resized( _traits->x, _traits->y, _traits->width, _traits->height );
-    }
-        
-
     _valid = true;
     _initialized = true;
+#else    
+    _valid = false;
+    _initialized = true;
+    return;
+#endif
 }
 
 bool PixelBufferX11::realizeImplementation()
@@ -226,12 +250,7 @@ bool PixelBufferX11::realizeImplementation()
     if (!_initialized) init();
     
     if (!_initialized) return false;
-    
-    XMapWindow( _display, _window );
-    
-//    Window temp = _window;
-//    XSetWMColormapWindows( _display, _window, &temp, 1);
-    
+
     _realized = true;
 
     return true;
@@ -245,15 +264,15 @@ bool PixelBufferX11::makeCurrentImplementation()
         return false;
     }
 
-    osg::notify(osg::NOTICE)<<"PixelBufferX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
+    // osg::notify(osg::NOTICE)<<"PixelBufferX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_pbuffer<<","<<_glxContext<<std::endl;
 
-    return glXMakeCurrent( _display, _window, _glxContext )==True;
+    return glXMakeCurrent( _display, _pbuffer, _glxContext )==True;
 }
 
 bool PixelBufferX11::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
 {
-    osg::notify(osg::NOTICE)<<"PixelBufferX11::makeContextCurrentImplementation() not implementation yet."<<std::endl;
+    // osg::notify(osg::NOTICE)<<"PixelBufferX11::makeContextCurrentImplementation() not implementation yet."<<std::endl;
     makeCurrentImplementation();
 }
 
@@ -266,8 +285,8 @@ bool PixelBufferX11::releaseContextImplementation()
         return false;
     }
 
-    osg::notify(osg::NOTICE)<<"PixelBufferX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<std::endl;
+    // osg::notify(osg::NOTICE)<<"PixelBufferX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<std::endl;
 
     return glXMakeCurrent( _display, None, NULL )==True;
 }
@@ -282,7 +301,6 @@ void PixelBufferX11::bindPBufferToTextureImplementation(GLenum buffer)
 void PixelBufferX11::closeImplementation()
 {
     // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
-
     if (_display)
     {
         if (_glxContext)
@@ -290,16 +308,19 @@ void PixelBufferX11::closeImplementation()
             glXDestroyContext(_display, _glxContext );
         }
     
-        if (_window)
+        if (_pbuffer)
         {
-            XDestroyWindow(_display, _window);
+#ifdef GLX_VERSION_1_3
+            glXDestroyPbuffer(_display, _pbuffer);
+#endif
         }
 
         XFlush( _display );
         XSync( _display,0 );
+
     }
     
-    _window = 0;
+    _pbuffer = 0;
     _parent = 0;
     _glxContext = 0;
 
@@ -308,7 +329,6 @@ void PixelBufferX11::closeImplementation()
         XFree(_visualInfo);
         _visualInfo = 0;
     }
-
 
     if (_display)
     {
@@ -325,7 +345,7 @@ void PixelBufferX11::swapBuffersImplementation()
 {
     if (!_realized) return;
 
-    osg::notify(osg::NOTICE)<<"PixelBufferX11::swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"PixelBufferX11::swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    glXSwapBuffers(_display, _window); 
+    glXSwapBuffers(_display, _pbuffer); 
 }

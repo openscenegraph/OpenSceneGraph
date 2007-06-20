@@ -51,12 +51,10 @@ class MyGraphicsContext {
             }
 
             if (_gc.valid()) 
-            
-            
             {
                 _gc->realize();
                 _gc->makeCurrent();
-                std::cout<<"Realized window"<<std::endl;
+                std::cout<<"Realized context"<<std::endl;
             }
         }
         

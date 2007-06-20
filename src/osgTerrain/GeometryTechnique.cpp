@@ -29,6 +29,7 @@ using namespace osgTerrain;
 
 GeometryTechnique::GeometryTechnique()
 {
+    setFilterBias(0);
     setFilterWidth(0.1);
     setFilterMatrixAs(GAUSSIAN);
 }
@@ -40,6 +41,13 @@ GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::Copy
 
 GeometryTechnique::~GeometryTechnique()
 {
+}
+
+void GeometryTechnique::setFilterBias(float filterBias)
+{
+    _filterBias = filterBias;
+    if (!_filterBiasUniform) _filterBiasUniform = new osg::Uniform("filterBias",_filterBias);
+    else _filterBiasUniform->set(filterBias);
 }
 
 void GeometryTechnique::setFilterWidth(float filterWidth)
@@ -418,6 +426,7 @@ void GeometryTechnique::init()
             texture2D->setResizeNonPowerOfTwoHint(false);
             stateset->setTextureAttributeAndModes(color_index, texture2D, osg::StateAttribute::ON);
 
+            texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
             texture2D->setFilter(osg::Texture::MAG_FILTER, filter==TerrainNode::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
             
             if (tf)
@@ -485,6 +494,7 @@ void GeometryTechnique::init()
 
             stateset->addUniform(_filterWidthUniform.get());
             stateset->addUniform(_filterMatrixUniform.get());
+            stateset->addUniform(_filterBiasUniform.get());
 
             osg::Uniform* lightingEnabled = new osg::Uniform("lightingEnabled",true);
             stateset->addUniform(lightingEnabled);

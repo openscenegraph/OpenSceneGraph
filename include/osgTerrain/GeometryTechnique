@@ -109,6 +109,9 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         
         
+        void setFilterBias(float filterBias);
+        float getFilterBias() const { return _filterBias; }
+        
         void setFilterWidth(float filterWidth);
         float getFilterWidth() const { return _filterWidth; }
 
@@ -136,6 +139,8 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         osg::ref_ptr<TerrainGeometry>       _terrainGeometry;
         osg::ref_ptr<osg::Geometry>         _geometry;
         
+        float                               _filterBias;
+        osg::ref_ptr<osg::Uniform>          _filterBiasUniform;
         float                               _filterWidth;
         osg::ref_ptr<osg::Uniform>          _filterWidthUniform;
         osg::Matrix3                        _filterMatrix;

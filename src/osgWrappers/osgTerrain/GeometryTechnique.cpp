@@ -16,6 +16,7 @@
 #include <osg/Object>
 #include <osg/PrimitiveSet>
 #include <osg/RenderInfo>
+#include <osg/Uniform>
 #include <osgTerrain/GeometryTechnique>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
@@ -27,6 +28,13 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_ENUM_REFLECTOR(osgTerrain::GeometryTechnique::FilterType)
+	I_DeclaringFile("osgTerrain/GeometryTechnique");
+	I_EnumLabel(osgTerrain::GeometryTechnique::GAUSSIAN);
+	I_EnumLabel(osgTerrain::GeometryTechnique::SMOOTH);
+	I_EnumLabel(osgTerrain::GeometryTechnique::SHARPEN);
+END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	I_DeclaringFile("osgTerrain/GeometryTechnique");
@@ -63,6 +71,58 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	          __void__dirty,
 	          "Dirty so that cached data structurese will be updated on next use. ",
 	          "");
+	I_Method1(void, setFilterBias, IN, float, filterBias,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilterBias__float,
+	          "",
+	          "");
+	I_Method0(float, getFilterBias,
+	          Properties::NON_VIRTUAL,
+	          __float__getFilterBias,
+	          "",
+	          "");
+	I_Method1(void, setFilterWidth, IN, float, filterWidth,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilterWidth__float,
+	          "",
+	          "");
+	I_Method0(float, getFilterWidth,
+	          Properties::NON_VIRTUAL,
+	          __float__getFilterWidth,
+	          "",
+	          "");
+	I_Method1(void, setFilterMatrix, IN, const osg::Matrix3 &, matrix,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilterMatrix__C5_osg_Matrix3_R1,
+	          "",
+	          "");
+	I_Method0(osg::Matrix3 &, getFilterMatrix,
+	          Properties::NON_VIRTUAL,
+	          __osg_Matrix3_R1__getFilterMatrix,
+	          "",
+	          "");
+	I_Method0(const osg::Matrix3 &, getFilterMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix3_R1__getFilterMatrix,
+	          "",
+	          "");
+	I_Method1(void, setFilterMatrixAs, IN, osgTerrain::GeometryTechnique::FilterType, filterType,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilterMatrixAs__FilterType,
+	          "",
+	          "");
+	I_SimpleProperty(float, FilterBias, 
+	                 __float__getFilterBias, 
+	                 __void__setFilterBias__float);
+	I_SimpleProperty(const osg::Matrix3 &, FilterMatrix, 
+	                 __C5_osg_Matrix3_R1__getFilterMatrix, 
+	                 __void__setFilterMatrix__C5_osg_Matrix3_R1);
+	I_SimpleProperty(osgTerrain::GeometryTechnique::FilterType, FilterMatrixAs, 
+	                 0, 
+	                 __void__setFilterMatrixAs__FilterType);
+	I_SimpleProperty(float, FilterWidth, 
+	                 __float__getFilterWidth, 
+	                 __void__setFilterWidth__float);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainGeometry)

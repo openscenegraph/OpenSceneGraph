@@ -17,6 +17,7 @@
  */
 
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
+#include <osgViewer/api/Win32/PixelBufferWin32>
 #include <vector>
 #include <map>
 #include <sstream>
@@ -299,59 +300,7 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
      Win32WindowingSystem& operator=( const Win32WindowingSystem& );
 };
 
-//
-// This is the class we need to create for pbuffers and display devices that are not attached to the desktop
-// (and thus cannot have windows created on their surface).
-//
-// Note its not a GraphicsWindow as it won't need any of the event handling and window mapping facilities.
-// 
-
-class GraphicsContextWin32 : public osg::GraphicsContext
-{
-    public:
-
-        GraphicsContextWin32(osg::GraphicsContext::Traits* traits);
-        ~GraphicsContextWin32();
-    
-        virtual bool valid() const;
-
-        /** Realise the GraphicsContext implementation, 
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool realizeImplementation();
-
-        /** Return true if the graphics context has been realised, and is ready to use, implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool isRealizedImplementation() const;
-
-        /** Close the graphics context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void closeImplementation();
-
-        /** Make this graphics context current implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeCurrentImplementation();
-          
-        /** Make this graphics context current with specified read context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/);
-
-        /** Release the graphics context.*/
-        virtual bool releaseContextImplementation();
- 
-        /** Pure virtual, Bind the graphics context to associated texture implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void bindPBufferToTextureImplementation(GLenum /*buffer*/);
-
-        /** Swap the front and back buffers implementation.
-          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
-        virtual void swapBuffersImplementation();
-        
-    protected:
-
-        bool   _valid;
-};
-
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 //                             Error reporting
 //////////////////////////////////////////////////////////////////////////////
 
@@ -955,7 +904,7 @@ osg::GraphicsContext* Win32WindowingSystem::createGraphicsContext( osg::Graphics
 {
     if (traits->pbuffer)
     {
-        osg::ref_ptr<osgViewer::GraphicsContextWin32> pbuffer = new GraphicsContextWin32(traits);
+        osg::ref_ptr<osgViewer::PixelBufferWin32> pbuffer = new PixelBufferWin32(traits);
         if (pbuffer->valid()) return pbuffer.release();
         else return 0;
     }
@@ -2177,67 +2126,6 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                                  ::CallWindowProc(_windowProcedure, hwnd, uMsg, wParam, lParam);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//                  GraphicsContextWin32 implementation
-//////////////////////////////////////////////////////////////////////////////
-
-GraphicsContextWin32::GraphicsContextWin32( osg::GraphicsContext::Traits* traits )
-: _valid(false)
-{
-    _traits = traits;
-}
-
-GraphicsContextWin32::~GraphicsContextWin32()
-{
-}
-    
-bool GraphicsContextWin32::valid() const
-{
-    return _valid;
-}
-
-bool GraphicsContextWin32::realizeImplementation()
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::realizeImplementation() not implemented." << std::endl; return false;
-}
-
-bool GraphicsContextWin32::isRealizedImplementation() const
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::isRealizedImplementation() not implemented." << std::endl; return false;
-}
-
-void GraphicsContextWin32::closeImplementation()
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::closeImplementation() not implemented." << std::endl;
-}
-
-bool GraphicsContextWin32::makeCurrentImplementation()
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::makeCurrentImplementation() not implemented." << std::endl;
-    return false;
-}
-        
-bool GraphicsContextWin32::makeContextCurrentImplementation( GraphicsContext* /*readContext*/ )
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::makeContextCurrentImplementation(..) not implemented." << std::endl;
-    return false;
-}
-
-bool GraphicsContextWin32::releaseContextImplementation()
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::releaseContextImplementation(..) not implemented." << std::endl;
-    return false;
-}
-
-void GraphicsContextWin32::bindPBufferToTextureImplementation( GLenum /*buffer*/ )
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32::void bindPBufferToTextureImplementation(..) not implemented." << std::endl;
-}
-
-void GraphicsContextWin32::swapBuffersImplementation() 
-{
-    osg::notify(osg::NOTICE) << "GraphicsContextWin32:: swapBuffersImplementation() not implemented." << std::endl;
-}
 
 //////////////////////////////////////////////////////////////////////////////
 //  Class responsible for registering the Win32 Windowing System interface

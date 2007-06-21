@@ -418,6 +418,7 @@ int main( int argc, char **argv )
     osgViewer::Viewer viewer;
 
     osg::ref_ptr<osgText::Text> updateText = new osgText::Text;
+    updateText->setDataVariance(osg::Object::DYNAMIC);
 
     // add the handler for doing the picking
     viewer.addEventHandler(new PickHandler(&viewer,updateText.get()));

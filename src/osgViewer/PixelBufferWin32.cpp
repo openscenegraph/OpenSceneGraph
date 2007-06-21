@@ -57,11 +57,6 @@ PixelBufferWin32::~PixelBufferWin32()
 {
 }
     
-bool PixelBufferWin32::valid() const
-{
-    return _valid;
-}
-
 void PixelBufferWin32::init()
 {
     if (_initialized) return;
@@ -74,11 +69,6 @@ void PixelBufferWin32::init()
 bool PixelBufferWin32::realizeImplementation()
 {
     osg::notify(osg::NOTICE) << "PixelBufferWin32::realizeImplementation() not implemented." << std::endl; return false;
-}
-
-bool PixelBufferWin32::isRealizedImplementation() const
-{
-    osg::notify(osg::NOTICE) << "PixelBufferWin32::isRealizedImplementation() not implemented." << std::endl; return false;
 }
 
 void PixelBufferWin32::closeImplementation()

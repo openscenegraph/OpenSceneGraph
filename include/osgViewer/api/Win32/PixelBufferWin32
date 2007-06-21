@@ -54,6 +54,7 @@ class OSGVIEWER_EXPORT PixelBufferWin32 : public osgViewer::GraphicsWindow
 
         /** Make this graphics context current.*/
         virtual bool makeCurrentImplementation();
+        virtual bool makeContextCurrentImplementation( GraphicsContext* /*readContext*/ );
 
         /** Release the graphics context.*/
         virtual bool releaseContextImplementation();
@@ -68,6 +69,8 @@ class OSGVIEWER_EXPORT PixelBufferWin32 : public osgViewer::GraphicsWindow
 
         /** Get native OpenGL graphics context.*/        
         HGLRC getWGLContext() const { return _hglrc; }
+        
+        virtual void bindPBufferToTextureImplementation( GLenum /*buffer*/ );
         
     protected:
     

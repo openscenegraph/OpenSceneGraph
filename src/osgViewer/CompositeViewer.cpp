@@ -580,12 +580,14 @@ struct CompositeViewerRenderingOperation : public osg::Operation
         _sceneView->cull();
         _sceneView->draw();
 
-        if (_databasePager.valid())
+        double availableTime = 0.004; // 4 ms
+
+        if (_databasePager.valid() && _databasePager->requiresExternalCompileGLObjects(_sceneView->getState()->getContextID()))
         {
-            double availableTime = 0.004; // 4 ms
             _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
-            _sceneView->flushDeletedGLObjects(availableTime);
         }
+
+        _sceneView->flushDeletedGLObjects(availableTime);
     }
     
     osg::observer_ptr<osgUtil::SceneView>    _sceneView;

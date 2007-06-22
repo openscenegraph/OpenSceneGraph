@@ -198,9 +198,9 @@ struct ViewerRenderingOperation : public osg::Operation, public ViewerQuerySuppo
         _sceneView->draw();
 
         double availableTime = 0.004; // 4 ms
-        if (_databasePager.valid())
+        if (_databasePager.valid() && _databasePager->requiresExternalCompileGLObjects(_sceneView->getState()->getContextID()))
         {
-            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
+             _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
         }
         _sceneView->flushDeletedGLObjects(availableTime);
 
@@ -422,7 +422,7 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
             sceneView->draw();
 
             double availableTime = 0.004; // 4 ms
-            if (_databasePager.valid())
+            if (_databasePager.valid() && _databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
             {
                 _databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
             }
@@ -511,7 +511,7 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         sceneView->draw();
 
         double availableTime = 0.004; // 4 ms
-        if (_databasePager.valid())
+        if (_databasePager.valid() && _databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
         {
             _databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
         }
@@ -1559,6 +1559,7 @@ void Viewer::setUpRenderingSupport()
             osg::GraphicsContext* gc = *gcitr;
             osg::GraphicsContext::Cameras& cameras = gc->getCameras();
             osg::State* state = gc->getState();
+            
             if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
 
             for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();

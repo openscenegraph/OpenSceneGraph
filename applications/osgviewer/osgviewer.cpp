@@ -74,6 +74,12 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    bool createBackgroundContextForCompiling = false;
+    while (arguments.read("--bc")) { createBackgroundContextForCompiling = true; }
+
+    bool createBackgroundThreadsForCompiling = false;
+    while (arguments.read("--bt")) { createBackgroundContextForCompiling = true; createBackgroundThreadsForCompiling = true; }
+
     // set up the camera manipulators.
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
@@ -142,6 +148,61 @@ int main(int argc, char** argv)
     optimizer.optimize(loadedModel.get());
 
     viewer.setSceneData( loadedModel.get() );
+
+    viewer.realize();
+    
+    if (createBackgroundContextForCompiling)
+    {
+    
+        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int processNum = 0;
+
+        osgDB::DatabasePager* dp = viewer.getScene()->getDatabasePager();
+        typedef std::vector< osg::ref_ptr<osg::GraphicsContext> > CompileContexts;
+        CompileContexts compileContexts;
+
+        osgViewer::Viewer::Windows windows;
+        viewer.getWindows(windows);
+        for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+            itr != windows.end();
+            ++itr)
+        {
+            const osg::GraphicsContext::Traits* src_traits = (*itr)->getTraits();
+
+            osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
+            traits->screenNum = src_traits->screenNum;
+            traits->displayNum = src_traits->displayNum;
+            traits->hostName = src_traits->hostName;
+            traits->width = 100;
+            traits->height = 100;
+            traits->red = src_traits->red;
+            traits->green = src_traits->green;
+            traits->blue = src_traits->blue;
+            traits->alpha = src_traits->alpha;
+            traits->depth = src_traits->depth;
+            traits->sharedContext = (*itr);
+            traits->pbuffer = true;
+
+            osg::GraphicsContext* gc = osg::GraphicsContext::createGraphicsContext(traits);
+
+            gc->realize();
+
+
+            if (createBackgroundThreadsForCompiling)
+            {
+                gc->createGraphicsThread();
+                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
+                gc->getGraphicsThread()->startThread();
+                
+                ++processNum;
+            }
+
+            dp->addCompileGraphicsContext(gc);
+
+            compileContexts.push_back(gc);
+        }
+    }
+    
 
     return viewer.run();
 }

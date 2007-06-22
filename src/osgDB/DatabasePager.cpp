@@ -455,14 +455,14 @@ void DatabasePager::run()
     
     do
     {
-    
+
         _databasePagerThreadBlock->block();
 
         if (_useFrameBlock)
         {
             _frameBlock->block();
         }      
-   
+
         //
         // delete any children if required.
         //
@@ -508,7 +508,7 @@ void DatabasePager::run()
                        
                 // load the data, note safe to write to the databaseRequest since once 
                 // it is created this thread is the only one to write to the _loadedModel pointer.
-                // osg::notify(osg::NOTICE)<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
+                //osg::notify(osg::NOTICE)<<"In DatabasePager thread readNodeFile("<<databaseRequest->_fileName<<")"<<std::endl;
                 //osg::Timer_t before = osg::Timer::instance()->tick();
                 
                 
@@ -567,32 +567,59 @@ void DatabasePager::run()
                 }            
 
                 // move the databaseRequest from the front of the fileRequest to the end of
-                // dataLoad list.
-                
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
-
-                DatabaseRequestList::iterator itr = std::find(_fileRequestList.begin(),_fileRequestList.end(),databaseRequest);
-                if (itr != _fileRequestList.end()) 
+                // dataToCompile or dataToMerge lists.
                 {
-                    if (databaseRequest->_loadedModel.valid())
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestListMutex);
+
+                    DatabaseRequestList::iterator itr = std::find(_fileRequestList.begin(),_fileRequestList.end(),databaseRequest);
+                    if (itr != _fileRequestList.end()) 
                     {
-                        if (loadedObjectsNeedToBeCompiled)
+                        if (databaseRequest->_loadedModel.valid())
                         {
-                            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
-                            _dataToCompileList.push_back(databaseRequest);
-                        }
-                        else
-                        {
-                            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
-                            _dataToMergeList.push_back(databaseRequest);
-                        }
-                    }        
-                    
-                    _fileRequestList.erase(itr);
+                            if (loadedObjectsNeedToBeCompiled)
+                            {
+                                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
+                                _dataToCompileList.push_back(databaseRequest);
+                            }
+                            else
+                            {
+                                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeListMutex);
+                                _dataToMergeList.push_back(databaseRequest);
+                            }
+                        }        
+
+                        _fileRequestList.erase(itr);
+                    }
+
+                    updateDatabasePagerThreadBlock();
                 }
-
-                updateDatabasePagerThreadBlock();
-
+                
+                if (loadedObjectsNeedToBeCompiled && !_compileGraphicsContexts.empty())
+                {
+                    for(CompileGraphicsContexts::iterator citr = _compileGraphicsContexts.begin();
+                        citr != _compileGraphicsContexts.end();
+                        ++citr)
+                    {
+                        osg::GraphicsContext* gc = citr->get();
+                        if (gc)
+                        {   
+                            osg::OperationsThread* gt = gc->getGraphicsThread();                            
+                            if (gt) gt->add(new DatabasePager::CompileOperation(this));
+                            else
+                            {
+                                gc->makeCurrent();
+                                
+                                // osg::notify(osg::NOTICE)<<"Database pager thread compiling"<<std::endl;
+                                
+                                compileAllGLObjects(*(gc->getState()));
+                                
+                                gc->releaseContext();
+                            }
+                        }
+                    }
+                    // osg::notify(osg::NOTICE)<<"Done compiling in paging thread"<<std::endl;                   
+                }
+                
             }
             else
             {
@@ -856,6 +883,37 @@ bool DatabasePager::requiresCompileGLObjects() const
     return !_dataToCompileList.empty();
 }
 
+void DatabasePager::addCompileGraphicsContext(osg::GraphicsContext* gc)
+{
+    for(CompileGraphicsContexts::iterator itr = _compileGraphicsContexts.begin();
+        itr != _compileGraphicsContexts.end();
+        ++itr)
+    {
+        if (*itr == gc)
+        {
+            return;
+        }
+    }
+    
+    _compileGraphicsContexts.push_back(gc);
+    
+    setCompileGLObjectsForContextID(gc->getState()->getContextID(),true);
+}
+
+void DatabasePager::removeCompileGraphicsContext(osg::GraphicsContext* gc)
+{
+    for(CompileGraphicsContexts::iterator itr = _compileGraphicsContexts.begin();
+        itr != _compileGraphicsContexts.end();
+        ++itr)
+    {
+        if (*itr == gc)
+        {
+            _compileGraphicsContexts.erase(itr);
+            return;
+        }
+    }
+}
+
 void DatabasePager::setCompileGLObjectsForContextID(unsigned int contextID, bool on)
 {
     if (on)
@@ -874,9 +932,48 @@ bool DatabasePager::getCompileGLObjectsForContextID(unsigned int contextID)
 }
 
 
+DatabasePager::CompileOperation::CompileOperation(osgDB::DatabasePager* databasePager):
+    osg::Operation("DatabasePager::CompileOperation",false),
+    _databasePager(databasePager)
+{
+}
+
+void DatabasePager::CompileOperation::operator () (osg::Object* object)
+{
+    osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+    if (!context) return;
+
+    // osg::notify(osg::NOTICE)<<"Background thread compiling"<<std::endl;
+    if (_databasePager.valid()) _databasePager->compileAllGLObjects(*(context->getState()));
+    
+}
+
+bool DatabasePager::requiresExternalCompileGLObjects(unsigned int contextID) const
+{
+    if (_activeGraphicsContexts.count(contextID)==0) return false;
+    
+    for(CompileGraphicsContexts::const_iterator citr = _compileGraphicsContexts.begin();
+        citr != _compileGraphicsContexts.end();
+        ++citr)
+    {
+        const osg::GraphicsContext* gc = citr->get();
+        if (gc && gc->getState()->getContextID()==contextID) return false;
+    }
+
+    return true;    
+}
+
+void DatabasePager::compileAllGLObjects(osg::State& state)
+{
+    double availableTime = DBL_MAX;
+    compileGLObjects(state, availableTime);
+}
+
 void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 {
-//    osg::notify(osg::NOTICE)<<"DatabasePager::compileGLObjects "<<_frameNumber<<std::endl;
+    // osg::notify(osg::NOTICE)<<"DatabasePager::compileGLObjects "<<_frameNumber<<std::endl;
+
+    bool compileAll = (availableTime==DBL_MAX);
 
     osg::RenderInfo renderInfo;
     renderInfo.setState(&state);
@@ -935,7 +1032,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
         // while there are valid databaseRequest's in the to compile list and there is
         // sufficient time left compile each databaseRequest's stateset and drawables.
-        while (databaseRequest.valid() && elapsedTime<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame) 
+        while (databaseRequest.valid() && (compileAll || (elapsedTime<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)) ) 
         {
             DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
             DataToCompile& dtc = dcm[state.getContextID()];
@@ -973,14 +1070,14 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 sslist.erase(sslist.begin(),itr);
             }
 
-            if (!dtc.second.empty() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
+            if (!dtc.second.empty() && (compileAll || ((elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)))
             {
                 // we have Drawable's to compile
                 //osg::notify(osg::INFO)<<"Compiling drawables"<<std::endl;
                 DrawableList& dwlist = dtc.second;
                 DrawableList::iterator itr=dwlist.begin();
                 for(;
-                    itr!=dwlist.end() && (elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame;
+                    itr!=dwlist.end() && (compileAll || ((elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame));
                     ++itr)
                 {
                     //osg::notify(osg::INFO)<<"    Compiling drawable "<<(*itr).get()<<std::endl;
@@ -1015,6 +1112,8 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             if (allCompiled)
             {
                 // we've compile all of the current databaseRequest so we can now pop it off the
+                // osg::notify(osg::NOTICE)<<"All compiled"<<std::endl;
+
                 // to compile list and place it on the merge list.
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
 
@@ -1035,7 +1134,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             }
             else 
             {
-                //osg::notify(osg::INFO)<<"Not all compiled"<<std::endl;
+                // osg::notify(osg::NOTICE)<<"Not all compiled"<<std::endl;
                 databaseRequest = 0;
             }
 

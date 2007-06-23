@@ -147,6 +147,8 @@ class ViewerQT : public osgViewer::Viewer, public AdapterWidget
         {
             getCamera()->setViewport(new osg::Viewport(0,0,width(),height()));
             getCamera()->setGraphicsContext(getGraphicsWindow());
+            getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f);
+
             setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
             connect(&_timer, SIGNAL(timeout()), this, SLOT(updateGL()));

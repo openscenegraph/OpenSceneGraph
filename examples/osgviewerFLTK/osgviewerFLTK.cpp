@@ -102,6 +102,7 @@ class ViewerFLTK : public osgViewer::Viewer, public AdapterWidget
             AdapterWidget(x,y,w,h,label)
             {
                 getCamera()->setViewport(new osg::Viewport(0,0,w,h));
+                getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(w)/static_cast<double>(h), 1.0f, 10000.0f);
                 getCamera()->setGraphicsContext(getGraphicsWindow());
                 setThreadingModel(osgViewer::Viewer::SingleThreaded);
             }

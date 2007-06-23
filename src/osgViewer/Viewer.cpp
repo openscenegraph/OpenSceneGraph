@@ -825,6 +825,7 @@ GraphicsWindowEmbedded* Viewer::setUpViewerAsEmbeddedInWindow(int x, int y, int 
     setThreadingModel(SingleThreaded);
     osgViewer::GraphicsWindowEmbedded* gw = new osgViewer::GraphicsWindowEmbedded(x,y,width,height);
     getCamera()->setViewport(new osg::Viewport(0,0,width,height));
+    getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height), 1.0f, 10000.0f);
     getCamera()->setGraphicsContext(gw);
     return gw;
 }

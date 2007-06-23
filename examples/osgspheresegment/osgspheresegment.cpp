@@ -658,7 +658,7 @@ int main(int argc, char **argv)
     
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // if user request help write it out to cout.
     unsigned int testCase = 0;

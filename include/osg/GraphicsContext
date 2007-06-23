@@ -58,7 +58,7 @@ class OSG_EXPORT GraphicsContext : public Object
                 width(0),
                 height(0),
                 windowDecoration(false),
-                supportsResize(false),
+                supportsResize(true),
                 red(8),
                 blue(8),
                 green(8),

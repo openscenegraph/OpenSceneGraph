@@ -232,61 +232,63 @@ bool GraphicsWindowX11::createVisualInfo()
 
     return _visualInfo != 0;
 }
+#define MWM_HINTS_FUNCTIONS   (1L << 0)
+#define MWM_HINTS_DECORATIONS (1L << 1)
+#define MWM_HINTS_INPUT_MODE  (1L << 2)
+#define MWM_HINTS_STATUS      (1L << 3)
+
+#define MWM_DECOR_ALL         (1L<<0)
+#define MWM_DECOR_BORDER      (1L<<1)
+#define MWM_DECOR_RESIZEH     (1L<<2)
+#define MWM_DECOR_TITLE       (1L<<3)
+#define MWM_DECOR_MENU        (1L<<4)
+#define MWM_DECOR_MINIMIZE    (1L<<5)
+#define MWM_DECOR_MAXIMIZE    (1L<<6)
+
+#define MWM_FUNC_ALL          (1L<<0)
+#define MWM_FUNC_RESIZE       (1L<<1)
+#define MWM_FUNC_MOVE         (1L<<2)
+#define MWM_FUNC_MINIMIZE     (1L<<3)
+#define MWM_FUNC_MAXIMIZE     (1L<<4)
+#define MWM_FUNC_CLOSE        (1L<<5)
+
 
 bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
 {
     Display* display = getDisplayToUse();
-
+    
     Atom atom;
     if( (atom = XInternAtom( display, "_MOTIF_WM_HINTS", 0 )) != None )
     {
-// Hack for sending 64 bit atom to Xserver
-#if defined( _MIPS_SIM) && (_MIPS_SIM == _MIPS_SIM_ABI64) || defined ( __ia64 ) || defined (__amd64 ) || defined(__x86_64__)
-        struct {
-            CARD32 flags0;
-            CARD32 flags1;
-            CARD32 functions0;
-            CARD32 functions1;
-            CARD32 decorations0;
-            CARD32 decorations1;
-            INT32 input_mode0;
-            INT32 input_mode1;
-            CARD32 status0;
-            CARD32 status1;
+    
+        struct
+        {
+            unsigned long flags;
+            unsigned long functions;
+            unsigned long decorations;
+            long          inputMode;
+            unsigned long status;
         } wmHints;
+        
+        wmHints.flags = 0;
+        wmHints.functions = MWM_FUNC_ALL;
+        wmHints.decorations = MWM_DECOR_ALL;
+        wmHints.inputMode = 0;
+        wmHints.status = 0;        
+        
+        if (!flag)
+        {
+            wmHints.flags = MWM_HINTS_DECORATIONS;
+            wmHints.decorations = 0;
+        }
+        else
+        {
+            wmHints.flags |= MWM_HINTS_FUNCTIONS;
+            if (_traits.valid() && !_traits->supportsResize) wmHints.functions |= MWM_FUNC_RESIZE;
+        }
 
-#if defined( __ia64 ) || defined (__amd64)  || defined (__x86_64__)
-        wmHints.flags0       = (1L << 1);
-        wmHints.functions0   = 0;
-        wmHints.decorations0 = flag;
-        wmHints.input_mode0  = 0;
-
-#else
-        wmHints.flags1       = (1L << 1);
-        wmHints.functions1   = 0;
-        wmHints.decorations1 = flag;
-        wmHints.input_mode1  = 0;
-#endif
-
-#else
-
-        struct {
-            CARD32 flags;
-            CARD32 functions;
-            CARD32 decorations;
-            INT32 input_mode;
-            CARD32 status;
-        } wmHints;
-
-        wmHints.flags       = (1L << 1);
-        wmHints.functions   = 0;
-        wmHints.decorations = flag;
-        wmHints.input_mode  = 0;
-#endif
-
-        XUnmapWindow(display, _window );
-        XChangeProperty( display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
         XMapWindow(display, _window );
+        XChangeProperty( display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
 
         XFlush(display);
         XSync(display,0);

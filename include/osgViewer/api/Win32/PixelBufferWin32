@@ -24,12 +24,13 @@
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT    0x0500
 #endif
+
 #include <windows.h>
 
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT PixelBufferWin32 : public osgViewer::GraphicsWindow
+class OSGVIEWER_EXPORT PixelBufferWin32 : public osg::GraphicsContext
 {
     public:
 

@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/FrameStamp>
+#include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
 #include <osg/Group>
 #include <osg/Node>
@@ -40,6 +41,8 @@ TYPE_NAME_ALIAS(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::Data
 TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompile >, osgDB::DatabasePager::DataToCompileMap)
 
 TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts)
+
+TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::GraphicsContext > >, osgDB::DatabasePager::CompileGraphicsContexts)
 
 BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
 	I_DeclaringFile("osgDB/DatabasePager");
@@ -256,6 +259,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __void__updateSceneGraph__double,
 	          "Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph. ",
 	          "Note, must only be called from single thread update phase. ");
+	I_Method1(void, addCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
+	          Properties::NON_VIRTUAL,
+	          __void__addCompileGraphicsContext__osg_GraphicsContext_P1,
+	          "Add a graphics context that should be used to compile/delete OpenGL objects. ",
+	          "");
+	I_Method1(void, removeCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
+	          Properties::NON_VIRTUAL,
+	          __void__removeCompileGraphicsContext__osg_GraphicsContext_P1,
+	          "Removed a graphics context that should be used to compile/delete OpenGL objects. ",
+	          "");
 	I_Method2(void, setCompileGLObjectsForContextID, IN, unsigned int, contextID, IN, bool, on,
 	          Properties::NON_VIRTUAL,
 	          __void__setCompileGLObjectsForContextID__unsigned_int__bool,
@@ -266,6 +279,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __bool__getCompileGLObjectsForContextID__unsigned_int,
 	          "Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false). ",
 	          "");
+	I_Method1(bool, requiresExternalCompileGLObjects, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __bool__requiresExternalCompileGLObjects__unsigned_int,
+	          "Rerturn true if an external draw thread should call compileGLObjects(. ",
+	          ".) or not. ");
 	I_Method0(bool, requiresCompileGLObjects,
 	          Properties::NON_VIRTUAL,
 	          __bool__requiresCompileGLObjects,
@@ -274,6 +292,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method2(void, compileGLObjects, IN, osg::State &, state, IN, double &, availableTime,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__osg_State_R1__double_R1,
+	          "Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph. ",
+	          "note, should only be called from the draw thread. Note, must only be called from a valid graphics context. ");
+	I_Method1(void, compileAllGLObjects, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileAllGLObjects__osg_State_R1,
 	          "Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph. ",
 	          "note, should only be called from the draw thread. Note, must only be called from a valid graphics context. ");
 	I_Method0(unsigned int, getFileRequestListSize,
@@ -361,6 +384,47 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                 __void__setUseFrameBlock__bool);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)
+	I_DeclaringFile("osg/observer_ptr");
+	I_BaseType(osg::Observer);
+	I_Constructor0(____observer_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::GraphicsContext *, t,
+	               Properties::NON_EXPLICIT,
+	               ____observer_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::observer_ptr< osg::GraphicsContext > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____observer_ptr__C5_observer_ptr_R1,
+	               "",
+	               "");
+	I_Method1(void, objectDeleted, IN, void *, x,
+	          Properties::VIRTUAL,
+	          __void__objectDeleted__void_P1,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::GraphicsContext *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(const osg::GraphicsContext *, get,
+	          Properties::NON_VIRTUAL,
+	          __C5_T_P1__get,
+	          "",
+	          "");
+	I_SimpleProperty(osg::GraphicsContext *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
 	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
@@ -410,4 +474,6 @@ STD_PAIR_REFLECTOR(std::pair< osgDB::DatabasePager::StateSetList COMMA  osgDB::D
 STD_SET_REFLECTOR(std::set< osg::ref_ptr< osg::StateSet > >)
 
 STD_SET_REFLECTOR(std::set< unsigned int >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::observer_ptr< osg::GraphicsContext > >)
 

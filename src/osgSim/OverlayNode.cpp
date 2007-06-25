@@ -955,6 +955,8 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
 
         // set viewport
         overlayData._camera->setViewport(0,0,tex_width,tex_height);
+        
+        overlayData._camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 
         // set the camera to render before the main camera.
         overlayData._camera->setRenderOrder(osg::Camera::PRE_RENDER);
@@ -1362,7 +1364,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
     if (_overlaySubgraph.valid()) 
     {
 
-#if 0
+#if 1
         if (!overlayData._geode)
         {
             overlayData._geode = new osg::Geode;
@@ -1441,7 +1443,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         }
 
         
-        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>18)
+        if (overlayData._geode.valid() && overlayData._geode->getNumDrawables()>100)
         {
             overlayData._geode->removeDrawables(0, 3);
         }        
@@ -1503,6 +1505,9 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         double max_up = -DBL_MAX;
         double min_distanceEye = DBL_MAX;
         double max_distanceEye = -DBL_MAX;
+
+        double zNear = -bs.radius();
+        double zFar = bs.radius();
 
         typedef std::vector<osg::Vec2d> ProjectedVertices;
         ProjectedVertices projectedVertices;
@@ -1631,7 +1636,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             overlayData._mainSubgraphStateSet->setAttribute(overlayData._mainSubgraphProgram.get());
             
             osg::Matrixd projection;
-            projection.makeOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
+            projection.makeOrtho(min_side,max_side,min_up,max_up,zNear ,zFar);
 
             camera->setProjectionMatrix(projection);
             
@@ -1639,7 +1644,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         else
         {
             overlayData._mainSubgraphStateSet->removeAttribute(osg::StateAttribute::PROGRAM);
-            camera->setProjectionMatrixAsOrtho(min_side,max_side,min_up,max_up,-bs.radius(),bs.radius());
+            camera->setProjectionMatrixAsOrtho(min_side, max_side, min_up, max_up, zNear ,zFar);
         }
 
 

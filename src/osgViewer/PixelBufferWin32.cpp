@@ -21,6 +21,7 @@
 #include <map>
 #include <sstream>
 #include <windowsx.h>
+#include <osg/TextureRectangle>
 
 #ifndef WGL_ARB_pbuffer
 #define WGL_ARB_pbuffer 1
@@ -126,6 +127,23 @@ DECLARE_HANDLE(HPBUFFERARB);
 #define WGL_AUX8_ARB                        0x208F
 #define WGL_AUX9_ARB                        0x2090
 #endif
+
+#ifndef WGL_NV_render_depth_texture
+#define WGL_NV_render_depth_texture 1
+#define WGL_BIND_TO_TEXTURE_DEPTH_NV   0x20A3
+#define WGL_BIND_TO_TEXTURE_RECTANGLE_DEPTH_NV 0x20A4
+#define WGL_DEPTH_TEXTURE_FORMAT_NV    0x20A5
+#define WGL_TEXTURE_DEPTH_COMPONENT_NV 0x20A6
+#define WGL_DEPTH_COMPONENT_NV         0x20A7
+#endif
+
+#ifndef WGL_NV_render_texture_rectangle
+#define WGL_NV_render_texture_rectangle 1
+#define WGL_BIND_TO_TEXTURE_RECTANGLE_RGB_NV 0x20A0
+#define WGL_BIND_TO_TEXTURE_RECTANGLE_RGBA_NV 0x20A1
+#define WGL_TEXTURE_RECTANGLE_NV       0x20A2
+#endif
+
 
 #ifndef WGL_SAMPLE_BUFFERS_ARB
 #define        WGL_SAMPLE_BUFFERS_ARB         0x2041
@@ -421,6 +439,7 @@ PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
         setState( new osg::State );
         getState()->setGraphicsContext(this);
 
+
         if (_traits.valid() && _traits->sharedContext && !_traits->target)
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
@@ -459,6 +478,198 @@ static void doInternalError( char *msg )
 void PixelBufferWin32::init()
 {
     if (_initialized) return;
+    if (!_traits) return;
+    if (!_traits->pbuffer) return;
+
+    WGLExtensions* wgle = WGLExtensions::instance();
+
+    if (!wgle || !wgle->isValid())
+    {
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: some wgl extensions not supported" << std::endl;
+        return;
+    }
+
+    std::vector<int> fAttribList;
+    std::vector<int> bAttribList;
+
+    fAttribList.push_back(WGL_DRAW_TO_PBUFFER_ARB);
+    fAttribList.push_back(true);
+    fAttribList.push_back(WGL_SUPPORT_OPENGL_ARB);
+    fAttribList.push_back(true);
+    fAttribList.push_back(WGL_PIXEL_TYPE_ARB);
+    fAttribList.push_back(WGL_TYPE_RGBA_ARB);
+
+    bAttribList.push_back(WGL_PBUFFER_LARGEST_ARB);
+    bAttribList.push_back(true);
+
+    fAttribList.push_back(WGL_RED_BITS_ARB);
+    fAttribList.push_back(_traits->red);
+    fAttribList.push_back(WGL_GREEN_BITS_ARB);
+    fAttribList.push_back(_traits->green);
+    fAttribList.push_back(WGL_BLUE_BITS_ARB);
+    fAttribList.push_back(_traits->blue);
+    if (_traits->alpha)
+    {
+        fAttribList.push_back(WGL_ALPHA_BITS_ARB);
+        fAttribList.push_back(_traits->alpha);
+    }
+
+    fAttribList.push_back(WGL_DEPTH_BITS_ARB);
+    fAttribList.push_back(_traits->depth);
+
+    if (_traits->stencil)
+    {
+        fAttribList.push_back(WGL_STENCIL_BITS_ARB);
+        fAttribList.push_back(_traits->stencil);
+    }
+
+    if (_traits->sampleBuffers)
+    {
+        fAttribList.push_back(WGL_SAMPLE_BUFFERS_ARB);
+        fAttribList.push_back(_traits->sampleBuffers);
+
+        fAttribList.push_back(WGL_SAMPLES_ARB);
+        fAttribList.push_back(_traits->samples);
+    }
+
+    if (_traits->doubleBuffer)
+    {
+        fAttribList.push_back(WGL_DOUBLE_BUFFER_ARB);
+        fAttribList.push_back(true);
+    }
+
+    if (_traits->target != 0)
+    {
+       // TODO: Cube Maps
+       if (_traits->target == GL_TEXTURE_RECTANGLE)
+       {
+         bAttribList.push_back(WGL_TEXTURE_TARGET_ARB);
+         bAttribList.push_back(WGL_TEXTURE_RECTANGLE_NV);
+       }
+       else
+       {
+           bAttribList.push_back(WGL_TEXTURE_TARGET_ARB);
+         bAttribList.push_back(WGL_TEXTURE_2D_ARB);
+       }
+
+           fAttribList.push_back(WGL_BIND_TO_TEXTURE_RGBA_ARB);
+        fAttribList.push_back(true);
+        
+        bAttribList.push_back(WGL_TEXTURE_FORMAT_ARB);
+        bAttribList.push_back(WGL_TEXTURE_RGBA_ARB);
+
+        if (_traits->mipMapGeneration)
+        {
+            fAttribList.push_back(WGL_MIPMAP_TEXTURE_ARB);
+            fAttribList.push_back(true);
+        }
+    }
+
+    fAttribList.push_back(0);
+    bAttribList.push_back(0);
+
+    HGLRC hglrc = 0;
+    HDC hdc = 0;
+    int format;
+    osg::ref_ptr<TemporaryWindow> tempWin;
+
+    HDC ohdc = 0;
+    HGLRC ohglrc = 0;
+
+    if (_traits->sharedContext && !_traits->target)
+    {
+        GraphicsWindowWin32* graphicsWindowWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
+        if (graphicsWindowWin32) 
+        {
+            hglrc = graphicsWindowWin32->getWGLContext();
+            hdc = graphicsWindowWin32->getHDC();
+        }
+        else
+        {
+            PixelBufferWin32* pixelBufferWin32 = dynamic_cast<PixelBufferWin32*>(_traits->sharedContext);
+            if (pixelBufferWin32)
+            {
+                hglrc = pixelBufferWin32->getWGLContext();
+                hdc = pixelBufferWin32->getHDC();
+            }
+        }
+
+        format = GetPixelFormat(hdc);
+    }
+    else
+    {
+        ohdc = wglGetCurrentDC();
+        ohglrc = wglGetCurrentContext();
+
+        tempWin = new TemporaryWindow;
+        hdc = tempWin->getDC();
+        tempWin->makeCurrent();
+
+        wgle = WGLExtensions::instance();
+
+        unsigned int nformats = 0;
+        wgle->wglChoosePixelFormatARB(hdc, &fAttribList[0], NULL, 1, &format, &nformats);
+        if (nformats == 0)
+        {
+            osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: Couldn't find a suitable pixel format" << std::endl;
+            return;
+        }
+    }
+
+    _hwnd = reinterpret_cast<HWND>(wgle->wglCreatePbufferARB(hdc, format, _traits->width, _traits->height, &bAttribList[0]));
+    if (!_hwnd)
+    {
+        //doInternalError("wglCreatePbufferARB() failed");
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreatePbufferARB failed" << std::endl;
+        if (ohdc)
+        {
+            wglMakeCurrent(ohdc,ohglrc);
+        }
+        return ;
+    }
+
+    _hdc = wgle->wglGetPbufferDCARB(reinterpret_cast<HPBUFFERARB>(_hwnd));
+    if (!_hdc)
+    {
+        //doInternalError("wglGetPbufferDCARB() failed");
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglGetPbufferDCARB failed" << std::endl;
+        if (ohdc)
+        {
+            wglMakeCurrent(ohdc,ohglrc);
+        }
+        return;
+    }
+    if (_traits->sharedContext && !_traits->target)
+    {
+        _hglrc = hglrc;
+    }
+    else
+    {
+        _hglrc = wglCreateContext(_hdc);
+        if (!_hglrc)
+        {
+            //doInternalError("wglCreateContext() failed");
+            osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreateContext failed" << std::endl;
+            if (ohdc)
+            {
+                wglMakeCurrent(ohdc,ohglrc);
+            }
+            return;
+        }
+    }
+
+    int iWidth = 0;
+    int iHeight = 0;
+    wgle->wglQueryPbufferARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_PBUFFER_WIDTH_ARB, &iWidth);
+    wgle->wglQueryPbufferARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_PBUFFER_HEIGHT_ARB, &iHeight);
+
+    _initialized = true;    
+    _valid = true;
+
+    if (ohdc)
+    {
+        wglMakeCurrent(ohdc,ohglrc);
+    }
 
     return;
 }

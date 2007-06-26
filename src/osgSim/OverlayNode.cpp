@@ -1364,7 +1364,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
     if (_overlaySubgraph.valid()) 
     {
 
-#if 1
+#if 0
         if (!overlayData._geode)
         {
             overlayData._geode = new osg::Geode;
@@ -1649,16 +1649,16 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
 
 #if 0
-        osg::notify(osg::NOTICE)<<"a  topLeft    = "<<topLeft<<std::endl;
-        osg::notify(osg::NOTICE)<<"a  lowerLeft  = "<<lowerLeft<<std::endl;
-        osg::notify(osg::NOTICE)<<"a  topRight   = "<<topRight<<std::endl;
-        osg::notify(osg::NOTICE)<<"a  lowerRight = "<<lowerRight<<std::endl;
+        double width = max_side-min_side;
+        double height = max_up-min_up;
+        double area = width*height;        
 
-        osg::notify(osg::NOTICE)<<"    upVector ="<<upVector<<"  min="<<min_side<<" max="<<max_side<<std::endl;
-        osg::notify(osg::NOTICE)<<"    sideVector ="<<sideVector<<"  min="<<min_up<<" max="<<max_up<<std::endl;
+        osg::notify(osg::NOTICE)<<"width = "<<width<<"\t height = "<<height<<"\t area = "<<area<<std::endl;
 
-        osg::notify(osg::NOTICE)<<"   delta_up = "<<max_up-min_up<<std::endl;
-        osg::notify(osg::NOTICE)<<"   delta_side = "<<max_side-min_side<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  min_side    = "<<min_side<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  max_side  = "<<max_side<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  min_up    = "<<min_up<<std::endl;
+        osg::notify(osg::NOTICE)<<"a  max_up  = "<<max_up<<std::endl;
 #endif
             
         if (em)

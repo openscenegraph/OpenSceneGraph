@@ -16,12 +16,12 @@
 
 #include <osgViewer/api/Win32/PixelBufferWin32>
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
+#include <osg/TextureRectangle>
 
 #include <vector>
 #include <map>
 #include <sstream>
 #include <windowsx.h>
-#include <osg/TextureRectangle>
 
 #ifndef WGL_ARB_pbuffer
 #define WGL_ARB_pbuffer 1
@@ -143,7 +143,6 @@ DECLARE_HANDLE(HPBUFFERARB);
 #define WGL_BIND_TO_TEXTURE_RECTANGLE_RGBA_NV 0x20A1
 #define WGL_TEXTURE_RECTANGLE_NV       0x20A2
 #endif
-
 
 #ifndef WGL_SAMPLE_BUFFERS_ARB
 #define        WGL_SAMPLE_BUFFERS_ARB         0x2041
@@ -439,7 +438,6 @@ PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
         setState( new osg::State );
         getState()->setGraphicsContext(this);
 
-
         if (_traits.valid() && _traits->sharedContext && !_traits->target)
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
@@ -480,6 +478,25 @@ void PixelBufferWin32::init()
     if (_initialized) return;
     if (!_traits) return;
     if (!_traits->pbuffer) return;
+
+    struct RestoreContext
+    {
+        RestoreContext()
+        {
+            _hdc = wglGetCurrentDC();
+            _hglrc = wglGetCurrentContext();
+        }
+        ~RestoreContext()
+        {
+            if (_hdc)
+            {
+                wglMakeCurrent(_hdc,_hglrc);
+            }
+        }
+    protected:
+        HDC        _hdc;
+        HGLRC    _hglrc;
+    } restoreContext;
 
     WGLExtensions* wgle = WGLExtensions::instance();
 
@@ -540,23 +557,37 @@ void PixelBufferWin32::init()
 
     if (_traits->target != 0)
     {
-       // TODO: Cube Maps
+        // TODO: Cube Maps
        if (_traits->target == GL_TEXTURE_RECTANGLE)
        {
-         bAttribList.push_back(WGL_TEXTURE_TARGET_ARB);
-         bAttribList.push_back(WGL_TEXTURE_RECTANGLE_NV);
+            bAttribList.push_back(WGL_TEXTURE_TARGET_ARB);
+            bAttribList.push_back(WGL_TEXTURE_RECTANGLE_NV);
+
+            if (_traits->alpha)
+                fAttribList.push_back(WGL_BIND_TO_TEXTURE_RECTANGLE_RGBA_NV);
+            else
+                fAttribList.push_back(WGL_BIND_TO_TEXTURE_RECTANGLE_RGB_NV);
+            fAttribList.push_back(true);
+
        }
        else
        {
-           bAttribList.push_back(WGL_TEXTURE_TARGET_ARB);
-         bAttribList.push_back(WGL_TEXTURE_2D_ARB);
+            bAttribList.push_back(WGL_TEXTURE_TARGET_ARB);
+            bAttribList.push_back(WGL_TEXTURE_2D_ARB);
+
+            if (_traits->alpha)
+                fAttribList.push_back(WGL_BIND_TO_TEXTURE_RGBA_ARB);
+            else
+                fAttribList.push_back(WGL_BIND_TO_TEXTURE_RGB_ARB);
+            fAttribList.push_back(true);
+
        }
 
-           fAttribList.push_back(WGL_BIND_TO_TEXTURE_RGBA_ARB);
-        fAttribList.push_back(true);
-        
         bAttribList.push_back(WGL_TEXTURE_FORMAT_ARB);
-        bAttribList.push_back(WGL_TEXTURE_RGBA_ARB);
+        if (_traits->alpha)
+            bAttribList.push_back(WGL_TEXTURE_RGBA_ARB);
+        else
+            bAttribList.push_back(WGL_TEXTURE_RGB_ARB);
 
         if (_traits->mipMapGeneration)
         {
@@ -572,9 +603,6 @@ void PixelBufferWin32::init()
     HDC hdc = 0;
     int format;
     osg::ref_ptr<TemporaryWindow> tempWin;
-
-    HDC ohdc = 0;
-    HGLRC ohglrc = 0;
 
     if (_traits->sharedContext && !_traits->target)
     {
@@ -598,9 +626,6 @@ void PixelBufferWin32::init()
     }
     else
     {
-        ohdc = wglGetCurrentDC();
-        ohglrc = wglGetCurrentContext();
-
         tempWin = new TemporaryWindow;
         hdc = tempWin->getDC();
         tempWin->makeCurrent();
@@ -621,10 +646,6 @@ void PixelBufferWin32::init()
     {
         //doInternalError("wglCreatePbufferARB() failed");
         osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreatePbufferARB failed" << std::endl;
-        if (ohdc)
-        {
-            wglMakeCurrent(ohdc,ohglrc);
-        }
         return ;
     }
 
@@ -633,10 +654,6 @@ void PixelBufferWin32::init()
     {
         //doInternalError("wglGetPbufferDCARB() failed");
         osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglGetPbufferDCARB failed" << std::endl;
-        if (ohdc)
-        {
-            wglMakeCurrent(ohdc,ohglrc);
-        }
         return;
     }
     if (_traits->sharedContext && !_traits->target)
@@ -650,10 +667,6 @@ void PixelBufferWin32::init()
         {
             //doInternalError("wglCreateContext() failed");
             osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreateContext failed" << std::endl;
-            if (ohdc)
-            {
-                wglMakeCurrent(ohdc,ohglrc);
-            }
             return;
         }
     }
@@ -665,11 +678,6 @@ void PixelBufferWin32::init()
 
     _initialized = true;    
     _valid = true;
-
-    if (ohdc)
-    {
-        wglMakeCurrent(ohdc,ohglrc);
-    }
 
     return;
 }

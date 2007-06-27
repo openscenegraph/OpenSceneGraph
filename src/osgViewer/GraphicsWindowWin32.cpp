@@ -1535,13 +1535,41 @@ bool GraphicsWindowWin32::realizeImplementation()
     {
         init();
         if (!_initialized) return false;
+    }
+    {
         
         if (_traits.valid() && _traits->sharedContext)
         {
             GraphicsWindowWin32* sharedContextWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
             if (sharedContextWin32)
             {
-                if (!makeCurrent()) return false;        
+                struct RestoreContext
+                {
+                    RestoreContext()
+                    {
+                        _hdc = wglGetCurrentDC();
+                        _hglrc = wglGetCurrentContext();
+                    }
+                    ~RestoreContext()
+                    {
+                        if (_hdc)
+                        {
+                            wglMakeCurrent(_hdc,_hglrc);
+                        }
+                    }
+                protected:
+                    HDC        _hdc;
+                    HGLRC    _hglrc;
+                } restoreContext;
+                
+                _realized = true;
+                bool result = makeCurrent();
+                _realized = false;
+
+                if (!result) 
+                {
+                    return false;        
+                }
                 if (!wglShareLists(sharedContextWin32->getWGLContext(), getWGLContext()))
                 {
                     reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to share OpenGL context", _traits->screenNum, ::GetLastError());

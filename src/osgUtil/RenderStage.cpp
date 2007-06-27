@@ -844,6 +844,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     osg::GraphicsContext* useContext = callingContext;
     osg::OperationsThread* useThread = 0;
     osg::RenderInfo useRenderInfo(renderInfo);
+    
+    RenderLeaf* saved_previous = previous;
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
     {
@@ -863,7 +865,11 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         useState->setDynamicObjectCount(state.getDynamicObjectCount());
         useState->setDynamicObjectRenderingCompletedCallback(state.getDynamicObjectRenderingCompletedCallback());
         
-        if (!useThread) useContext->makeCurrent();
+        if (!useThread) 
+        {
+            previous = 0;
+            useContext->makeCurrent();
+        }
     }
 
     if (_camera && _camera->getPreDrawCallback())
@@ -934,6 +940,9 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (callingContext && useContext != callingContext)
     {
         // restore the graphics context.
+        
+        previous = saved_previous;
+        
         callingContext->makeCurrent();
     }
 

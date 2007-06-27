@@ -48,8 +48,14 @@ ELSE(WIN32)
     IF(APPLE)
 
         # FIXME: OS X needs selection mechanism for Cocoa, Carbon, X11
-        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon)
-        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} GraphicsWindowCarbon.cpp)
+        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
+            ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
+        )
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+            GraphicsWindowCarbon.cpp
+            PixelBufferCarbon.cpp
+        )
 
     ELSE(APPLE)
     

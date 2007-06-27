@@ -437,6 +437,7 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_PublicMemberProperty(bool, quadBufferStereo);
 	I_PublicMemberProperty(bool, doubleBuffer);
 	I_PublicMemberProperty(GLenum, target);
+	I_PublicMemberProperty(GLenum, format);
 	I_PublicMemberProperty(unsigned int, level);
 	I_PublicMemberProperty(unsigned int, face);
 	I_PublicMemberProperty(unsigned int, mipMapGeneration);

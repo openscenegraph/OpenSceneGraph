@@ -503,7 +503,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
                         if (renderTargetImplemntation==osg::Camera::PIXEL_BUFFER_RTT)
                         {
-                            traits->target = bufferFormat;
+                            traits->target = attachment._texture.valid() ? attachment._texture->getTextureTarget() : 0;
                             traits->level = level;
                             traits->face = face;
                             traits->mipMapGeneration = attachment._mipMapGeneration;

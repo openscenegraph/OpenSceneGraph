@@ -13,6 +13,7 @@
 
 #ifdef __APPLE__
 #include <osg/observer_ptr>
+#include <osgViewer/api/Carbon/PixelBufferCarbon>
 #include <osgViewer/api/Carbon/GraphicsWindowCarbon>
 #include <Carbon/Carbon.h>
 #include <OpenGL/OpenGL.h>
@@ -194,138 +195,8 @@ static unsigned int remapOSXKey(unsigned int key, unsigned int rawkey)
     return s_OSXKeyboardMap.remapKey(key,rawkey);
 }
 
-/** creates a pixelformat from a Trait */        
-static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits) {
-
-    std::vector<GLint> attributes;
-    
-    if (!traits->pbuffer) attributes.push_back(AGL_NO_RECOVERY);
-    attributes.push_back(AGL_RGBA);
-    if (!traits->pbuffer) attributes.push_back(AGL_COMPLIANT);
-    
-    if (traits->doubleBuffer) attributes.push_back(AGL_DOUBLEBUFFER);
-    if (traits->quadBufferStereo) attributes.push_back(AGL_STEREO);
-    
-    attributes.push_back(AGL_RED_SIZE); attributes.push_back(traits->red);
-    attributes.push_back(AGL_GREEN_SIZE); attributes.push_back(traits->green);
-    attributes.push_back(AGL_BLUE_SIZE); attributes.push_back(traits->blue);
-    attributes.push_back(AGL_DEPTH_SIZE); attributes.push_back(traits->depth);
-    
-    if (traits->alpha) { attributes.push_back(AGL_ALPHA_SIZE); attributes.push_back(traits->alpha); }
-    
-    if (traits->stencil) { attributes.push_back(AGL_STENCIL_SIZE); attributes.push_back(traits->stencil); }
-    
-    // TODO 
-    // missing accumulation-buffer-stuff
-
-#if defined(AGL_SAMPLE_BUFFERS_ARB) && defined (AGL_SAMPLES_ARB)
-
-    if (traits->sampleBuffers) { attributes.push_back(AGL_SAMPLE_BUFFERS_ARB); attributes.push_back(traits->sampleBuffers); }
-    if (traits->sampleBuffers) { attributes.push_back(AGL_SAMPLES_ARB); attributes.push_back(traits->samples); }
-
-#endif
-    attributes.push_back(AGL_NONE);
-    
-    return aglChoosePixelFormat(NULL, 0, &(attributes.front()));
-}
 
 
-#pragma mark * * * GraphicsContextCarbon * * * 
-
-/** This is the class we need to create for pbuffers, note its not a GraphicsWindow as it won't need any of the event handling and window mapping facilities.*/
-class GraphicsContextCarbon : public osg::GraphicsContext
-{
-    public:
-
-        GraphicsContextCarbon(osg::GraphicsContext::Traits* traits):
-            _valid(false),
-            _realized(false),
-            _context(NULL)
-        {
-            _traits = traits;
-            
-            _valid = true;
-        }
-    
-        virtual bool valid() const { return _valid; }
-
-        /** Realise the GraphicsContext implementation, 
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool realizeImplementation() 
-        {
-            AGLPixelFormat pixelformat = createPixelFormat(_traits.get());
-            
-            if (!pixelformat) {
-                osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
-                return false;
-            }
-            
-            _context = aglCreateContext (pixelformat, NULL);
-            
-            if (!_context) {
-                osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
-                return false;
-            }
-            
-            aglDestroyPixelFormat(pixelformat);
-            
-            _realized = aglCreatePBuffer (_traits->width, _traits->height, _traits->target, GL_RGBA, _traits->level, &(_pbuffer));
-            if (!_realized) {
-                osg::notify(osg::WARN) << "GraphicsContext::realizeImplementation() aglCreatePBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
-            }
-            return _realized;
-        }
-
-        /** Return true if the graphics context has been realised, and is ready to use, implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool isRealizedImplementation() const  { return _realized; }
-
-        /** Close the graphics context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void closeImplementation()  
-        { 
-            if (_pbuffer) aglDestroyPBuffer(_pbuffer);
-            if (_context) aglDestroyContext(_context);
-            _valid = _realized = false;
-        }
-
-        /** Make this graphics context current implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeCurrentImplementation() 
-        { 
-            return (_realized) ? (aglSetCurrentContext(_context) == GL_TRUE) : false;
-        }
-        
-        /** Make this graphics context current with specified read context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false;}
-
-         /** Release the graphics context.*/
-        virtual bool releaseContextImplementation() 
-        {  
-             return (aglSetCurrentContext(NULL) == GL_TRUE);
-        }
-
-
-        /** Pure virtual, Bind the graphics context to associated texture implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
-        virtual void bindPBufferToTextureImplementation(GLenum /*buffer*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; }
-
-        /** Swap the front and back buffers implementation.
-          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
-        virtual void swapBuffersImplementation()  
-        { 
-             aglSwapBuffers(_context);
-        }
-        
-    protected:
-        
-        bool        _valid;
-        bool        _realized;
-        AGLContext    _context;
-        AGLPbuffer    _pbuffer;
-
-};
 
 #pragma mark * * * MenubarController * * * 
 
@@ -575,7 +446,7 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
     {
         if (traits->pbuffer)
         {
-            osg::ref_ptr<osgViewer::GraphicsContextCarbon> pbuffer = new GraphicsContextCarbon(traits);
+            osg::ref_ptr<osgViewer::PixelBufferCarbon> pbuffer = new PixelBufferCarbon(traits);
             if (pbuffer->valid()) return pbuffer.release();
             else return 0;
         }
@@ -609,7 +480,7 @@ void GraphicsWindowCarbon::init()
     _ownsWindow = false;
     _context = NULL;
     _window = NULL;
-    _pixelFormat = createPixelFormat(_traits.get());
+    _pixelFormat = PixelBufferCarbon::createPixelFormat(_traits.get());
     if (!_pixelFormat)
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::init could not create a valid pixelformat" << std::endl;
     _valid = (_pixelFormat != NULL);
@@ -763,15 +634,21 @@ bool GraphicsWindowCarbon::realizeImplementation()
     }
     
     // create the context
-    GraphicsWindowCarbon* sharedContextCarbon = dynamic_cast<GraphicsWindowCarbon*>(_traits->sharedContext);
-    if (sharedContextCarbon) 
+    AGLContext sharedContextCarbon = NULL;
+    
+    GraphicsWindowCarbon* graphicsWindowCarbon = dynamic_cast<GraphicsWindowCarbon*>(_traits->sharedContext);
+    if (graphicsWindowCarbon) 
     {
-        _context = aglCreateContext (_pixelFormat, sharedContextCarbon->getAGLContext());
+        sharedContextCarbon = graphicsWindowCarbon->getAGLContext();
     }
     else
     {
-        _context = aglCreateContext (_pixelFormat, NULL);
+        PixelBufferCarbon* pixelbuffer = dynamic_cast<PixelBufferCarbon*>(_traits->sharedContext);
+        if (pixelbuffer) {
+            sharedContextCarbon = pixelbuffer->getAGLContext();
+        }
     }
+    _context = aglCreateContext (_pixelFormat, sharedContextCarbon);
 
 
     if (!_context) {

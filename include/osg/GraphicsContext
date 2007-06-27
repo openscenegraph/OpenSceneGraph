@@ -71,6 +71,7 @@ class OSG_EXPORT GraphicsContext : public Object
                 quadBufferStereo(false),
                 doubleBuffer(false),
                 target(0),
+                format(0),
                 level(0),
                 face(0),
                 mipMapGeneration(false),
@@ -110,6 +111,7 @@ class OSG_EXPORT GraphicsContext : public Object
 
             // render to texture
             GLenum          target;
+            GLenum          format;
             unsigned int    level;
             unsigned int    face;
             unsigned int    mipMapGeneration;

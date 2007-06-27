@@ -575,7 +575,7 @@ class OSG_EXPORT Drawable : public Object
 
             void lowestCommonDenominator(const Extensions& rhs);
 
-            void setupGLExtenions(unsigned int contextID);
+            void setupGLExtensions(unsigned int contextID);
 
             void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
             bool isVertexProgramSupported() const { return _isVertexProgramSupported; }

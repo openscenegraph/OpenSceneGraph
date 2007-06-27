@@ -69,7 +69,7 @@ void Multisample::setExtensions(unsigned int contextID,Extensions* extensions)
 
 Multisample::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 Multisample::Extensions::Extensions(const Extensions& rhs):
@@ -86,7 +86,7 @@ void Multisample::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glSampleCoverage)        _glSampleCoverage = 0;
 }
 
-void Multisample::Extensions::setupGLExtenions(unsigned int contextID)
+void Multisample::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isMultisampleSupported = isGLExtensionSupported(contextID,"GL_ARB_multisample");
     _isMultisampleFilterHintSupported = isGLExtensionSupported(contextID,"GL_NV_multisample_filter_hint");

@@ -739,7 +739,7 @@ void Text::computeGlyphRepresentation()
 // Also sets avg_width and avg_height to 0.0f if the value is invalid.
 // This method is used several times in a loop for the same object which will produce the same values. 
 // Further optimization may try saving these values instead of recomputing them.
-bool Text::computeAverageGlypthWidthAndHeight(float& avg_width, float& avg_height) const
+bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height) const
 {
     float width = 0.0f;
     float height = 0.0f;
@@ -792,7 +792,7 @@ void Text::computePositions()
     unsigned int size = osg::maximum(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),_autoTransformCache.size());
     
     // FIXME: OPTIMIZE: This would be one of the ideal locations to
-    // call computeAverageGlypthWidthAndHeight(). It is out of the contextID loop
+    // call computeAverageGlyphWidthAndHeight(). It is out of the contextID loop
     // so the value would be computed fewer times. But the code will need changes
     // to get the value down to the locations it is needed. (Either pass through parameters
     // or member variables, but we would need a system to know if the values are stale.)
@@ -977,7 +977,7 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     // FIXME: OPTIMIZE: This function produces the same value regardless of contextID.
     // Since we tend to loop over contextID, we should cache this value some how
     // instead of recomputing it each time.
-    is_valid_size = computeAverageGlypthWidthAndHeight(avg_width, avg_height);
+    is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
     
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
@@ -1100,7 +1100,7 @@ void Text::computeBackdropBoundingBox() const
     
     // FIXME: OPTIMIZE: It is possible that this value has already been computed before
     // from previous calls to this function. This might be worth optimizing.
-    is_valid_size = computeAverageGlypthWidthAndHeight(avg_width, avg_height);
+    is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
 
     // Finally, we have one more issue to deal with.
     // Now that the text takes more space, we need

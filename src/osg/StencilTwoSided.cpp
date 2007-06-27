@@ -119,7 +119,7 @@ void StencilTwoSided::setExtensions(unsigned int contextID,Extensions* extension
 
 StencilTwoSided::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 StencilTwoSided::Extensions::Extensions(const Extensions& rhs):
@@ -138,7 +138,7 @@ void StencilTwoSided::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 }
 
-void StencilTwoSided::Extensions::setupGLExtenions(unsigned int contextID)
+void StencilTwoSided::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isStencilTwoSidedSupported = isGLExtensionSupported(contextID,"GL_EXT_stencil_two_side");
 

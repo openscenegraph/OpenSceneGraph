@@ -81,14 +81,14 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	          __void__setCounter__Counter_P1,
 	          "Set the Counter object. ",
 	          "");
-	I_Method0(float, getNumParticlesToCreateMovementCompenstationRatio,
+	I_Method0(float, getNumParticlesToCreateMovementCompensationRatio,
 	          Properties::NON_VIRTUAL,
-	          __float__getNumParticlesToCreateMovementCompenstationRatio,
-	          "Get the ratio between number of particle to create in compenstation for movement of the emitter. ",
+	          __float__getNumParticlesToCreateMovementCompensationRatio,
+	          "Get the ratio between number of particle to create in compensation for movement of the emitter. ",
 	          "");
-	I_Method1(void, setNumParticlesToCreateMovementCompenstationRatio, IN, float, r,
+	I_Method1(void, setNumParticlesToCreateMovementCompensationRatio, IN, float, r,
 	          Properties::NON_VIRTUAL,
-	          __void__setNumParticlesToCreateMovementCompenstationRatio__float,
+	          __void__setNumParticlesToCreateMovementCompensationRatio__float,
 	          "Set the ratio between number of particle to create in compenstation for movement of the emitter. ",
 	          "");
 	I_Method0(osgParticle::Placer *, getPlacer,
@@ -130,9 +130,9 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ModularEmitter)
 	I_SimpleProperty(osgParticle::Counter *, Counter, 
 	                 __Counter_P1__getCounter, 
 	                 __void__setCounter__Counter_P1);
-	I_SimpleProperty(float, NumParticlesToCreateMovementCompenstationRatio, 
+	I_SimpleProperty(float, NumParticlesToCreateMovementCompensationRatio, 
 	                 0, 
-	                 __void__setNumParticlesToCreateMovementCompenstationRatio__float);
+	                 __void__setNumParticlesToCreateMovementCompensationRatio__float);
 	I_SimpleProperty(osgParticle::Placer *, Placer, 
 	                 __Placer_P1__getPlacer, 
 	                 __void__setPlacer__Placer_P1);

@@ -154,7 +154,7 @@ void BufferObject::setExtensions(unsigned int contextID,Extensions* extensions)
 
 BufferObject::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 BufferObject::Extensions::Extensions(const Extensions& rhs):
@@ -189,7 +189,7 @@ void BufferObject::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glGetBufferParameteriv) _glGetBufferPointerv = rhs._glGetBufferPointerv;
 }
 
-void BufferObject::Extensions::setupGLExtenions(unsigned int contextID)
+void BufferObject::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _glGenBuffers = ((GenBuffersProc)osg::getGLExtensionFuncPtr("glGenBuffers","glGenBuffersARB"));
     _glBindBuffer = ((BindBufferProc)osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB"));

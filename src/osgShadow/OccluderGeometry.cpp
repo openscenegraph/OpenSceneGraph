@@ -681,7 +681,7 @@ void OccluderGeometry::buildEdgeMaps()
 }
 
 
-void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const
+void OccluderGeometry::computeLightDirectionSilhouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const
 {
     silhouetteIndices.clear();
     
@@ -709,7 +709,7 @@ void OccluderGeometry::computeLightDirectionSlihouetteEdges(const osg::Vec3& lig
     }
 }
 
-void OccluderGeometry::computeLightPositionSlihouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const
+void OccluderGeometry::computeLightPositionSilhouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const
 {
     silhouetteIndices.clear();
     
@@ -783,7 +783,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
 
         // compute the silhouette edge
         UIntList silhouetteIndices;
-        computeLightDirectionSlihouetteEdges(lightdirection, silhouetteIndices);
+        computeLightDirectionSilhouetteEdges(lightdirection, silhouetteIndices);
         
         osg::Vec3 offset( lightdirection*5.0f );
         
@@ -825,7 +825,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
 
         // osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
         UIntList silhouetteIndices;
-        computeLightPositionSlihouetteEdges(lightposition, silhouetteIndices);
+        computeLightPositionSilhouetteEdges(lightposition, silhouetteIndices);
         
         // osg::notify(osg::NOTICE)<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
         // osg::notify(osg::NOTICE)<<"lightpos  = "<<std::endl;

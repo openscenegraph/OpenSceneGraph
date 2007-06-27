@@ -570,7 +570,7 @@ protected:
     mutable osg::BoundingBox                            _textBB;
 
 
-    bool computeAverageGlypthWidthAndHeight(float& avg_width, float& avg_height) const;
+    bool computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height) const;
     void computePositions();
     void computePositions(unsigned int contextID) const;
     

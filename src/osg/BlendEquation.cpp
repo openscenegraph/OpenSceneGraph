@@ -85,7 +85,7 @@ void BlendEquation::setExtensions(unsigned int contextID,Extensions* extensions)
 
 BlendEquation::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 BlendEquation::Extensions::Extensions(const Extensions& rhs):
@@ -103,7 +103,7 @@ void BlendEquation::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glBlendEquation)           _glBlendEquation = 0;
 }
 
-void BlendEquation::Extensions::setupGLExtenions(unsigned int contextID)
+void BlendEquation::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isBlendEquationSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_equation") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;

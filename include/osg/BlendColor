@@ -81,7 +81,7 @@ class OSG_EXPORT BlendColor : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setBlendColorSupported(bool flag) { _isBlendColorSupported=flag; }
                 bool isBlendColorSupported() const { return _isBlendColorSupported; }

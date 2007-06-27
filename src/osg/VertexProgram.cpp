@@ -219,7 +219,7 @@ void VertexProgram::setExtensions(unsigned int contextID,Extensions* extensions)
 
 VertexProgram::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 VertexProgram::Extensions::Extensions(const Extensions& rhs):
@@ -246,7 +246,7 @@ void VertexProgram::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 }
 
-void VertexProgram::Extensions::setupGLExtenions(unsigned int contextID)
+void VertexProgram::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
 

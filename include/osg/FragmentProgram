@@ -240,7 +240,7 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setFragmentProgramSupported(bool flag) { _isFragmentProgramSupported=flag; }
                 bool isFragmentProgramSupported() const { return _isFragmentProgramSupported; }

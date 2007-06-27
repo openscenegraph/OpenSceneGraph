@@ -243,7 +243,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setVertexProgramSupported(bool flag) { _isVertexProgramSupported=flag; }
                 bool isVertexProgramSupported() const { return _isVertexProgramSupported; }

@@ -384,16 +384,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __C5_FilePathList_R1__getLibraryFilePathList,
 	          "get the const library file path which is used when search for library (dso/dll's) files. ",
 	          "");
-	I_Method1(void, updateTimeStampOfObjectsInCacheWithExtenalReferences, IN, double, currentTime,
+	I_Method1(void, updateTimeStampOfObjectsInCacheWithExternalReferences, IN, double, currentTime,
 	          Properties::NON_VIRTUAL,
-	          __void__updateTimeStampOfObjectsInCacheWithExtenalReferences__double,
+	          __void__updateTimeStampOfObjectsInCacheWithExternalReferences__double,
 	          "For each object in the cache which has an reference count greater than 1 (and therefore referenced by elsewhere in the application) set the time stamp for that object in the cache to specified time. ",
 	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required. Time value is time in sceonds. ");
 	I_Method1(void, removeExpiredObjectsInCache, IN, double, expiryTime,
 	          Properties::NON_VIRTUAL,
 	          __void__removeExpiredObjectsInCache__double,
 	          "Removed object in the cache which have a time stamp at or before the specified expiry time. ",
-	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required, and called after the a called after the call to updateTimeStampOfObjectsInCacheWithExtenalReferences(currentTime). Note, the currentTime is not the expiryTime, one would typically set the expiry time to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0. Time value is time in sceonds. ");
+	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required, and called after the a called after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(currentTime). Note, the currentTime is not the expiryTime, one would typically set the expiry time to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0. Time value is time in sceonds. ");
 	I_Method0(void, clearObjectCache,
 	          Properties::NON_VIRTUAL,
 	          __void__clearObjectCache,

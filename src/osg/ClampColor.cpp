@@ -75,7 +75,7 @@ void ClampColor::setExtensions(unsigned int contextID,Extensions* extensions)
 
 ClampColor::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 ClampColor::Extensions::Extensions(const Extensions& rhs):
@@ -91,7 +91,7 @@ void ClampColor::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glClampColor)          _glClampColor = 0;
 }
 
-void ClampColor::Extensions::setupGLExtenions(unsigned int contextID)
+void ClampColor::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isClampColorSupported = isGLExtensionSupported(contextID,"GL_ARB_color_buffer_float") ||
                              strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;

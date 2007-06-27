@@ -188,8 +188,8 @@ class OSGSHADOW_EXPORT OccluderGeometry : public osg::Drawable
         void computeNormals();
         void buildEdgeMaps();
         
-        void computeLightDirectionSlihouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const;
-        void computeLightPositionSlihouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const;
+        void computeLightDirectionSilhouetteEdges(const osg::Vec3& lightdirection, UIntList& silhouetteIndices) const;
+        void computeLightPositionSilhouetteEdges(const osg::Vec3& lightpos, UIntList& silhouetteIndices) const;
 
         osg::Polytope _boundingPolytope;
 

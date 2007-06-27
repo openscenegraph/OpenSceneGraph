@@ -57,11 +57,11 @@ namespace osgParticle
         /// Set the Counter object.
         inline void setCounter(Counter* c);
         
-        /// Get the ratio between number of particle to create in compenstation for movement of the emitter
-        inline float getNumParticlesToCreateMovementCompenstationRatio() const;
+        /// Get the ratio between number of particle to create in compensation for movement of the emitter
+        inline float getNumParticlesToCreateMovementCompensationRatio() const;
 
         /// Set the ratio between number of particle to create in compenstation for movement of the emitter
-        inline void setNumParticlesToCreateMovementCompenstationRatio(float r);
+        inline void setNumParticlesToCreateMovementCompensationRatio(float r);
 
 
         /// Get the Placer object.
@@ -113,12 +113,12 @@ namespace osgParticle
         _counter = c;
     }
 
-    inline float ModularEmitter::getNumParticlesToCreateMovementCompenstationRatio() const
+    inline float ModularEmitter::getNumParticlesToCreateMovementCompensationRatio() const
     {
         return _numParticleToCreateMovementCompensationRatio;
     }
 
-    inline void ModularEmitter::setNumParticlesToCreateMovementCompenstationRatio(float r)
+    inline void ModularEmitter::setNumParticlesToCreateMovementCompensationRatio(float r)
     {
         _numParticleToCreateMovementCompensationRatio = r;
     }

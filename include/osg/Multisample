@@ -105,7 +105,7 @@ class OSG_EXPORT Multisample : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setMultisampleSupported(bool flag) { _isMultisampleSupported=flag; }
                 void setMultisampleFilterHintSupported(bool flag) { _isMultisampleFilterHintSupported=flag; }

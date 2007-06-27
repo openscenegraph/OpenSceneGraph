@@ -219,7 +219,7 @@ void FragmentProgram::setExtensions(unsigned int contextID,Extensions* extension
 
 FragmentProgram::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 FragmentProgram::Extensions::Extensions(const Extensions& rhs):
@@ -246,7 +246,7 @@ void FragmentProgram::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 }
 
-void FragmentProgram::Extensions::setupGLExtenions(unsigned int contextID)
+void FragmentProgram::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isFragmentProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
 

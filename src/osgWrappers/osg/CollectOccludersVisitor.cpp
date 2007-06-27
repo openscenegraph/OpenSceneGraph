@@ -121,9 +121,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
 	          __bool__getCreateDrawablesOnOccludeNodes,
 	          "",
 	          "");
-	I_Method1(void, setCollectedOcculderSet, IN, const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, svol,
+	I_Method1(void, setCollectedOccluderSet, IN, const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, svol,
 	          Properties::NON_VIRTUAL,
-	          __void__setCollectedOcculderSet__C5_ShadowVolumeOccluderSet_R1,
+	          __void__setCollectedOccluderSet__C5_ShadowVolumeOccluderSet_R1,
 	          "",
 	          "");
 	I_Method0(osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, getCollectedOccluderSet,
@@ -153,12 +153,9 @@ BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
 	                   __void__handle_cull_callbacks_and_accept__osg_Node_R1__osg_Node_P1,
 	                   "",
 	                   "");
-	I_SimpleProperty(osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOccluderSet, 
-	                 __ShadowVolumeOccluderSet_R1__getCollectedOccluderSet, 
-	                 0);
-	I_SimpleProperty(const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOcculderSet, 
-	                 0, 
-	                 __void__setCollectedOcculderSet__C5_ShadowVolumeOccluderSet_R1);
+	I_SimpleProperty(const osg::CollectOccludersVisitor::ShadowVolumeOccluderSet &, CollectedOccluderSet, 
+	                 __C5_ShadowVolumeOccluderSet_R1__getCollectedOccluderSet, 
+	                 __void__setCollectedOccluderSet__C5_ShadowVolumeOccluderSet_R1);
 	I_SimpleProperty(bool, CreateDrawablesOnOccludeNodes, 
 	                 __bool__getCreateDrawablesOnOccludeNodes, 
 	                 __void__setCreateDrawablesOnOccludeNodes__bool);

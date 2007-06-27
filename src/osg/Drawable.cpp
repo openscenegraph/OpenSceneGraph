@@ -819,7 +819,7 @@ void Drawable::setExtensions(unsigned int contextID,Extensions* extensions)
 
 Drawable::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 Drawable::Extensions::Extensions(const Extensions& rhs):
@@ -928,7 +928,7 @@ void Drawable::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._gl_get_query_objectui64v) _gl_get_query_objectui64v = 0;
 }
 
-void Drawable::Extensions::setupGLExtenions(unsigned int contextID)
+void Drawable::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isVertexProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_vertex_program");
     _isSecondaryColorSupported = isGLExtensionSupported(contextID,"GL_EXT_secondary_color");

@@ -783,7 +783,7 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
             bool iteratorAdvanced = false;
             if (fr[0].matchWord("UniqueID") && fr[1].isString())
             {
-                fr.regisiterUniqueIDForObject(fr[1].getStr(),obj);
+                fr.registerUniqueIDForObject(fr[1].getStr(),obj);
                 fr += 2;
                 iteratorAdvanced = true;
             }
@@ -905,7 +905,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
             bool iteratorAdvanced = false;
             if (fr[0].matchWord("UniqueID") && fr[1].isString())
             {
-                fr.regisiterUniqueIDForObject(fr[1].getStr(),obj);
+                fr.registerUniqueIDForObject(fr[1].getStr(),obj);
                 fr += 2;
                 iteratorAdvanced = true;
             }
@@ -1790,7 +1790,7 @@ osg::Object* Registry::getFromObjectCache(const std::string& fileName)
     else return 0;
 }
 
-void Registry::updateTimeStampOfObjectsInCacheWithExtenalReferences(double currentTime)
+void Registry::updateTimeStampOfObjectsInCacheWithExternalReferences(double currentTime)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 

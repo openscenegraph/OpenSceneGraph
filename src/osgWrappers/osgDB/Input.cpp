@@ -104,9 +104,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	          __osg_Object_P1__getObjectForUniqueID__C5_std_string_R1,
 	          "",
 	          "");
-	I_Method2(void, regisiterUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj,
+	I_Method2(void, registerUniqueIDForObject, IN, const std::string &, uniqueID, IN, osg::Object *, obj,
 	          Properties::VIRTUAL,
-	          __void__regisiterUniqueIDForObject__C5_std_string_R1__osg_Object_P1,
+	          __void__registerUniqueIDForObject__C5_std_string_R1__osg_Object_P1,
 	          "",
 	          "");
 	I_SimpleProperty(const osgDB::ReaderWriter::Options *, Options, 

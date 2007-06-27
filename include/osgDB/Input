@@ -55,7 +55,7 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
         virtual osg::Node*           readNode(const std::string& fileName);
         
         virtual osg::Object*         getObjectForUniqueID(const std::string& uniqueID);
-        virtual void                 regisiterUniqueIDForObject(const std::string& uniqueID,osg::Object* obj);
+        virtual void                 registerUniqueIDForObject(const std::string& uniqueID,osg::Object* obj);
 
     private:
     

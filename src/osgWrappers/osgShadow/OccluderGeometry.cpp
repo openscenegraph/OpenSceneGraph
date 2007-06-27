@@ -145,16 +145,16 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	                   __void__buildEdgeMaps,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(void, computeLightDirectionSlihouetteEdges, IN, const osg::Vec3 &, lightdirection, IN, osgShadow::OccluderGeometry::UIntList &, silhouetteIndices,
+	I_ProtectedMethod2(void, computeLightDirectionSilhouetteEdges, IN, const osg::Vec3 &, lightdirection, IN, osgShadow::OccluderGeometry::UIntList &, silhouetteIndices,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __void__computeLightDirectionSlihouetteEdges__C5_osg_Vec3_R1__UIntList_R1,
+	                   __void__computeLightDirectionSilhouetteEdges__C5_osg_Vec3_R1__UIntList_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(void, computeLightPositionSlihouetteEdges, IN, const osg::Vec3 &, lightpos, IN, osgShadow::OccluderGeometry::UIntList &, silhouetteIndices,
+	I_ProtectedMethod2(void, computeLightPositionSilhouetteEdges, IN, const osg::Vec3 &, lightpos, IN, osgShadow::OccluderGeometry::UIntList &, silhouetteIndices,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __void__computeLightPositionSlihouetteEdges__C5_osg_Vec3_R1__UIntList_R1,
+	                   __void__computeLightPositionSilhouetteEdges__C5_osg_Vec3_R1__UIntList_R1,
 	                   "",
 	                   "");
 	I_SimpleProperty(const osg::Polytope &, BoundingPolytope, 

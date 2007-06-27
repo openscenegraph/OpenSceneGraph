@@ -2141,7 +2141,7 @@
 		D40358180B511E8400CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D403581B0B511E9100CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40359230B512B6600CB9E15 /* GraphicsWindowCarbon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40359220B512B6500CB9E15 /* GraphicsWindowCarbon.cpp */; };
-		D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Copy Subheaders to api */ = {isa = PBXBuildFile; fileRef = D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Copy Subheaders to api:Carbon */ = {isa = PBXBuildFile; fileRef = D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4035B2E0B51522600CB9E15 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		D4035EBA0B52E9ED00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4035F5B0B52E9FE00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -4445,16 +4445,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		0037A0D20C18DD5C0089AA1C /* Copy Subheaders to api */ = {
+		0037A0D20C18DD5C0089AA1C /* Copy Subheaders to api:Carbon */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			comments = "This could be bad. I'm telling it to copy to Headers/api, but remember Headers is only a symbolic link.\n";
-			dstPath = Headers/api;
+			dstPath = Headers/api/Carbon;
 			dstSubfolderSpec = 1;
 			files = (
-				D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Copy Subheaders to api */,
+				D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Copy Subheaders to api:Carbon */,
 			);
-			name = "Copy Subheaders to api";
+			name = "Copy Subheaders to api:Carbon";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -5962,7 +5962,7 @@
 		D47A06CC0B83406700E19024 /* Translate2DDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Translate2DDragger.cpp; sourceTree = "<group>"; };
 		D47A06CD0B83406700E19024 /* TranslateAxisDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslateAxisDragger.cpp; sourceTree = "<group>"; };
 		D47A06CE0B83406700E19024 /* TranslatePlaneDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslatePlaneDragger.cpp; sourceTree = "<group>"; };
-		D47A070A0B83413800E19024 /* osgmanipulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgmanipulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D47A070A0B83413800E19024 /* osgshadow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgshadow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A07120B83417900E19024 /* osgmanipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmanipulator.cpp; sourceTree = "<group>"; };
 		D48EC64B0B4EBF2E000E05A4 /* CompositeViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeViewer.cpp; sourceTree = "<group>"; };
 		D48EC64D0B4EBF2F000E05A4 /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
@@ -10096,7 +10096,7 @@
 				D4C6F2610B8316100052E667 /* osgShadow.framework */,
 				D4C6F2AD0B8317AB0052E667 /* osgshadow.app */,
 				D47A06810B833F6E00E19024 /* osgManipulator.framework */,
-				D47A070A0B83413800E19024 /* osgmanipulator.app */,
+				D47A070A0B83413800E19024 /* osgshadow.app */,
 				0037A02D0C18D74C0089AA1C /* OpenThreads.framework */,
 				5BDF58FE0C1FF8C4008DDEC0 /* osgdb_3dc.so */,
 			);
@@ -14895,7 +14895,7 @@
 				00FB20E80B015CF20052DD79 /* Sources */,
 				00FB20F80B015CF20052DD79 /* Rez */,
 				00FB20F90B015CF20052DD79 /* Frameworks */,
-				0037A0D20C18DD5C0089AA1C /* Copy Subheaders to api */,
+				0037A0D20C18DD5C0089AA1C /* Copy Subheaders to api:Carbon */,
 			);
 			buildRules = (
 			);
@@ -15076,7 +15076,7 @@
 			);
 			name = osgmanipulator;
 			productName = osgtext;
-			productReference = D47A070A0B83413800E19024 /* osgmanipulator.app */;
+			productReference = D47A070A0B83413800E19024 /* osgshadow.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D4C6F2320B8316100052E667 /* osgShadow */ = {

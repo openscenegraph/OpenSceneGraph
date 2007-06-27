@@ -273,7 +273,7 @@ bool PixelBufferX11::makeCurrentImplementation()
 bool PixelBufferX11::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
 {
     // osg::notify(osg::NOTICE)<<"PixelBufferX11::makeContextCurrentImplementation() not implementation yet."<<std::endl;
-    makeCurrentImplementation();
+    return makeCurrentImplementation();
 }
 
 

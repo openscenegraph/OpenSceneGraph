@@ -529,10 +529,10 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                   __void__computeGlyphRepresentation,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(bool, computeAverageGlypthWidthAndHeight, IN, float &, avg_width, IN, float &, avg_height,
+	I_ProtectedMethod2(bool, computeAverageGlyphWidthAndHeight, IN, float &, avg_width, IN, float &, avg_height,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __bool__computeAverageGlypthWidthAndHeight__float_R1__float_R1,
+	                   __bool__computeAverageGlyphWidthAndHeight__float_R1__float_R1,
 	                   "",
 	                   "");
 	I_ProtectedMethod0(void, computePositions,

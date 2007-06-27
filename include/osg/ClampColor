@@ -89,7 +89,7 @@ class OSG_EXPORT ClampColor : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setClampColorSupported(bool flag) { _isClampColorSupported=flag; }
                 bool isClampColorSupported() const { return _isClampColorSupported; }

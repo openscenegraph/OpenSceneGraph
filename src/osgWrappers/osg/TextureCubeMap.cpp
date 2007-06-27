@@ -243,9 +243,9 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap::Extensions)
 	          __void__lowestCommonDenominator__C5_Extensions_R1,
 	          "",
 	          "");
-	I_Method1(void, setupGLExtenions, IN, unsigned int, contextID,
+	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtenions__unsigned_int,
+	          __void__setupGLExtensions__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, setCubeMapSupported, IN, bool, flag,

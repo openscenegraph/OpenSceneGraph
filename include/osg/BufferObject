@@ -159,7 +159,7 @@ class OSG_EXPORT BufferObject : public Object
 
             void lowestCommonDenominator(const Extensions& rhs);
 
-            void setupGLExtenions(unsigned int contextID);
+            void setupGLExtensions(unsigned int contextID);
 
             bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
             bool isPBOSupported() const { return _isPBOSupported; }

@@ -72,7 +72,7 @@ void BlendColor::setExtensions(unsigned int contextID,Extensions* extensions)
 
 BlendColor::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 BlendColor::Extensions::Extensions(const Extensions& rhs):
@@ -87,7 +87,7 @@ void BlendColor::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glBlendColor)           _glBlendColor = 0;
 }
 
-void BlendColor::Extensions::setupGLExtenions(unsigned int contextID)
+void BlendColor::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isBlendColorSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;

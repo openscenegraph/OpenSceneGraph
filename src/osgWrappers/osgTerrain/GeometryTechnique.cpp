@@ -225,14 +225,14 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainGeometry)
 	          __void__addPrimitiveSet__osg_PrimitiveSet_P1,
 	          "",
 	          "");
-	I_Method1(osg::PrimitiveSet *, getPrimtitiveSet, IN, unsigned int, i,
+	I_Method1(osg::PrimitiveSet *, getPrimitiveSet, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
-	          __osg_PrimitiveSet_P1__getPrimtitiveSet__unsigned_int,
+	          __osg_PrimitiveSet_P1__getPrimitiveSet__unsigned_int,
 	          "",
 	          "");
-	I_Method1(const osg::PrimitiveSet *, getPrimtitiveSet, IN, unsigned int, i,
+	I_Method1(const osg::PrimitiveSet *, getPrimitiveSet, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_PrimitiveSet_P1__getPrimtitiveSet__unsigned_int,
+	          __C5_osg_PrimitiveSet_P1__getPrimitiveSet__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getNumPrimitiveSets,
@@ -256,6 +256,13 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainGeometry)
 	I_SimpleProperty(osg::Vec3Array *, Normals, 
 	                 __osg_Vec3Array_P1__getNormals, 
 	                 __void__setNormals__osg_Vec3Array_P1);
+	I_ArrayProperty(osg::PrimitiveSet *, PrimitiveSet, 
+	                __osg_PrimitiveSet_P1__getPrimitiveSet__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumPrimitiveSets, 
+	                __void__addPrimitiveSet__osg_PrimitiveSet_P1, 
+	                0, 
+	                0);
 	I_IndexedProperty(osg::Array *, TexCoords, 
 	                  __osg_Array_P1__getTexCoords__unsigned_int, 
 	                  __void__setTexCoords__unsigned_int__osg_Array_P1, 

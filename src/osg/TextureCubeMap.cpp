@@ -379,7 +379,7 @@ void TextureCubeMap::setExtensions(unsigned int contextID,Extensions* extensions
 
 TextureCubeMap::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 TextureCubeMap::Extensions::Extensions(const Extensions& rhs):
@@ -393,7 +393,7 @@ void TextureCubeMap::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isCubeMapSupported) _isCubeMapSupported = false;
 }
 
-void TextureCubeMap::Extensions::setupGLExtenions(unsigned int contextID)
+void TextureCubeMap::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isCubeMapSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
                           isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||

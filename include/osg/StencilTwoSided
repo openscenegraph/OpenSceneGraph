@@ -148,7 +148,7 @@ class OSG_EXPORT StencilTwoSided : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setStencilTwoSidedSupported(bool flag) { _isStencilTwoSidedSupported=flag; }
                 bool isStencilTwoSidedSupported() const { return _isStencilTwoSidedSupported; }

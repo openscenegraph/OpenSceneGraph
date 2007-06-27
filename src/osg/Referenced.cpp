@@ -223,7 +223,7 @@ void Referenced::removeObserver(Observer* observer)
     }
 }
 
-void Referenced::deletUsingDeleteHandler() const
+void Referenced::deleteUsingDeleteHandler() const
 {
     getDeleteHandler()->requestDelete(this);
 }

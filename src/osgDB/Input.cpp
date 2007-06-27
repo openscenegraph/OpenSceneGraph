@@ -36,7 +36,7 @@ osg::Object* Input::getObjectForUniqueID(const std::string& uniqueID)
 }
 
 
-void Input::regisiterUniqueIDForObject(const std::string& uniqueID,osg::Object* obj)
+void Input::registerUniqueIDForObject(const std::string& uniqueID,osg::Object* obj)
 {
     _uniqueIDToObjectMap[uniqueID] = obj;
 }

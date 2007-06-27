@@ -108,7 +108,7 @@ class OSG_EXPORT Referenced
     
         virtual ~Referenced();
         
-        void deletUsingDeleteHandler() const;
+        void deleteUsingDeleteHandler() const;
         
         mutable OpenThreads::Mutex*     _refMutex;
 
@@ -148,7 +148,7 @@ inline void Referenced::unref() const
 
     if (needDelete)
     {
-        if (getDeleteHandler()) deletUsingDeleteHandler();
+        if (getDeleteHandler()) deleteUsingDeleteHandler();
         else delete this;
     }
 }

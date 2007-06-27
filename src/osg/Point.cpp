@@ -104,7 +104,7 @@ void Point::setExtensions(unsigned int contextID,Extensions* extensions)
 
 Point::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtenions(contextID);
+    setupGLExtensions(contextID);
 }
 
 Point::Extensions::Extensions(const Extensions& rhs):
@@ -121,7 +121,7 @@ void Point::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glPointParameterfv)          _glPointParameterfv = 0;
 }
 
-void Point::Extensions::setupGLExtenions(unsigned int contextID)
+void Point::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isPointParametersSupported = strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0 ||
                                   isGLExtensionSupported(contextID,"GL_ARB_point_parameters") ||

@@ -103,7 +103,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
                 
                 void lowestCommonDenominator(const Extensions& rhs);
                 
-                void setupGLExtenions(unsigned int contextID);
+                void setupGLExtensions(unsigned int contextID);
 
                 void setBlendEquationSupported(bool flag) { _isBlendEquationSupported=flag; }
                 bool isBlendEquationSupported() const { return _isBlendEquationSupported; }

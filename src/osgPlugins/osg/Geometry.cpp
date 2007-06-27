@@ -718,7 +718,7 @@ Array* Array_readLocalData(Input& fr)
     
     if (return_array) 
     {
-        if (!uniqueID.empty()) fr.regisiterUniqueIDForObject(uniqueID.c_str(),return_array);
+        if (!uniqueID.empty()) fr.registerUniqueIDForObject(uniqueID.c_str(),return_array);
     }
     
     return return_array;

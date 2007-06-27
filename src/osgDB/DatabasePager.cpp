@@ -843,7 +843,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         osgDB::Registry::instance()->getSharedStateManager()->prune();
 
     // update the Registry object cache.
-    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExtenalReferences(currentFrameTime);
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(currentFrameTime);
     osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);
 
 

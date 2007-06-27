@@ -111,7 +111,7 @@ void SmokeEffect::setUpEmitterAndProgram()
     if (!_emitter)
     {
         _emitter = new osgParticle::ModularEmitter;
-        _emitter->setNumParticlesToCreateMovementCompenstationRatio(1.5f);
+        _emitter->setNumParticlesToCreateMovementCompensationRatio(1.5f);
         _emitter->setCounter(new osgParticle::RandomRateCounter);
         _emitter->setPlacer(new osgParticle::SectorPlacer);
         _emitter->setShooter(new osgParticle::RadialShooter);

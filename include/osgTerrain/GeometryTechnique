@@ -54,8 +54,8 @@ class OSGTERRAIN_EXPORT TerrainGeometry : public osg::Drawable
 
         void addPrimitiveSet(osg::PrimitiveSet* primitiveSet) { _primitiveSets.push_back(primitiveSet); }
         
-        osg::PrimitiveSet* getPrimtitiveSet(unsigned int i) { return _primitiveSets[i].get(); }
-        const osg::PrimitiveSet* getPrimtitiveSet(unsigned int i) const { return _primitiveSets[i].get(); }
+        osg::PrimitiveSet* getPrimitiveSet(unsigned int i) { return _primitiveSets[i].get(); }
+        const osg::PrimitiveSet* getPrimitiveSet(unsigned int i) const { return _primitiveSets[i].get(); }
         unsigned int getNumPrimitiveSets() const { return _primitiveSets.size(); }
 
 

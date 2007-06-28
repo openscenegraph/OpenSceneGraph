@@ -55,6 +55,7 @@ Material.cpp
 MatrixTransform.cpp
 MultiSwitch.cpp
 MultiTextureControl.cpp
+Multisample.cpp
 Node.cpp
 Object.cpp
 OccluderNode.cpp

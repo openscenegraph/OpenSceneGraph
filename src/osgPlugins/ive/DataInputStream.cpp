@@ -50,6 +50,8 @@
 #include "Scissor.h"
 #include "Image.h"
 #include "PointSprite.h"
+#include "Multisample.h"
+
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -1086,6 +1088,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEPOINTSPRITE){
         attribute = new osg::PointSprite();
         ((ive::PointSprite*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEMULTISAMPLE){
+        attribute = new osg::Multisample();
+        ((ive::Multisample*)(attribute))->read(this);
     }
     else if(attributeID == IVESTENCIL){
         attribute = new osg::Stencil();

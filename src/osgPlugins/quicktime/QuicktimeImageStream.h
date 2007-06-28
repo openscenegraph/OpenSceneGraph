@@ -131,6 +131,10 @@ public:
      return 0.0;
    }
 
+    // Get and Set the playback volume of the stream.
+    virtual void setVolume(float volume);
+    virtual float getVolume() const;
+
 
 protected:
    /// apply the looping mode to quicktime

@@ -16,6 +16,8 @@
 
 #include "QTUtils.h"
 
+#include <math.h>
+
 
     /** 
      * the class MovieData encapsulates all quicktime-related stuff, so it doesn't polute the namespaces
@@ -60,8 +62,8 @@
             void setMovieRate(float rate);
             
             /** sets the volume for the soundtrack of this movie */
-            void setVolume(float volume) { SetMovieVolume(_movie,(short)(volume*255));}
-            float getVolume() { return GetMovieVolume(_movie) / 255.0f; }
+            void setVolume(float volume) { SetMovieVolume(_movie,(short)(ceil(volume*255.0f)));}
+            float getVolume() const { return GetMovieVolume(_movie) / 255.0f; }
             
             void setAudioBalance(float f) {
                 Float32 balance = f;

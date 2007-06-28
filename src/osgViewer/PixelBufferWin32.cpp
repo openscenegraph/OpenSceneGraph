@@ -436,9 +436,9 @@ PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
     if (valid())
     {
         setState( new osg::State );
-        getState()->setGraphicsContext(this);
+        getState()->setGraphicsContext( this );
 
-        if (_traits.valid() && _traits->sharedContext && !_traits->target)
+        if (_traits.valid() && _traits->sharedContext )
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
             incrementContextIDUsageCount( getState()->getContextID() );   
@@ -604,41 +604,18 @@ void PixelBufferWin32::init()
     int format;
     osg::ref_ptr<TemporaryWindow> tempWin;
 
-    if (_traits->sharedContext && !_traits->target)
+    tempWin = new TemporaryWindow;
+    hdc = tempWin->getDC();
+    tempWin->makeCurrent();
+
+    wgle = WGLExtensions::instance();
+
+    unsigned int nformats = 0;
+    wgle->wglChoosePixelFormatARB(hdc, &fAttribList[0], NULL, 1, &format, &nformats);
+    if (nformats == 0)
     {
-        GraphicsWindowWin32* graphicsWindowWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
-        if (graphicsWindowWin32) 
-        {
-            hglrc = graphicsWindowWin32->getWGLContext();
-            hdc = graphicsWindowWin32->getHDC();
-        }
-        else
-        {
-            PixelBufferWin32* pixelBufferWin32 = dynamic_cast<PixelBufferWin32*>(_traits->sharedContext);
-            if (pixelBufferWin32)
-            {
-                hglrc = pixelBufferWin32->getWGLContext();
-                hdc = pixelBufferWin32->getHDC();
-            }
-        }
-
-        format = GetPixelFormat(hdc);
-    }
-    else
-    {
-        tempWin = new TemporaryWindow;
-        hdc = tempWin->getDC();
-        tempWin->makeCurrent();
-
-        wgle = WGLExtensions::instance();
-
-        unsigned int nformats = 0;
-        wgle->wglChoosePixelFormatARB(hdc, &fAttribList[0], NULL, 1, &format, &nformats);
-        if (nformats == 0)
-        {
-            osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: Couldn't find a suitable pixel format" << std::endl;
-            return;
-        }
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: Couldn't find a suitable pixel format" << std::endl;
+        return;
     }
 
     _hwnd = reinterpret_cast<HWND>(wgle->wglCreatePbufferARB(hdc, format, _traits->width, _traits->height, &bAttribList[0]));
@@ -656,25 +633,26 @@ void PixelBufferWin32::init()
         osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglGetPbufferDCARB failed" << std::endl;
         return;
     }
-    if (_traits->sharedContext && !_traits->target)
+
+    _hglrc = wglCreateContext(_hdc);
+    if (!_hglrc)
     {
-        _hglrc = hglrc;
-    }
-    else
-    {
-        _hglrc = wglCreateContext(_hdc);
-        if (!_hglrc)
-        {
-            //doInternalError("wglCreateContext() failed");
-            osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreateContext failed" << std::endl;
-            return;
-        }
+        //doInternalError("wglCreateContext() failed");
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreateContext failed" << std::endl;
+        return;
     }
 
     int iWidth = 0;
     int iHeight = 0;
     wgle->wglQueryPbufferARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_PBUFFER_WIDTH_ARB, &iWidth);
     wgle->wglQueryPbufferARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_PBUFFER_HEIGHT_ARB, &iHeight);
+
+    if (_traits->width != iWidth || _traits->height != iHeight)
+    {
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), pbuffer created with different size then requsted" << std::endl;
+        osg::notify(osg::NOTICE) << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
+        osg::notify(osg::NOTICE) << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
+    }
 
     _initialized = true;    
     _valid = true;
@@ -696,7 +674,7 @@ bool PixelBufferWin32::realizeImplementation()
 
     makeCurrentImplementation();
 
-    if (_traits->sharedContext && _traits->target)
+    if (_traits->sharedContext)
     {
         HGLRC hglrc;
 
@@ -725,7 +703,7 @@ void PixelBufferWin32::closeImplementation()
 {
     if (_hwnd)
     {
-        if (!_traits->sharedContext || _traits->target) wglDeleteContext(_hglrc);
+        wglDeleteContext(_hglrc);
 
         WGLExtensions* wgle = WGLExtensions::instance();
         if (wgle && wgle->isValid())
@@ -768,6 +746,12 @@ bool PixelBufferWin32::makeContextCurrentImplementation( GraphicsContext* readCo
         if (WGLExtensions::instance()->wglMakeContextCurrentARB(_hdc, graphicsWindowWin32->getHDC(), _hglrc))
             return true;
     }
+    PixelBufferWin32* pixelBufferWin32 = dynamic_cast<PixelBufferWin32*>(_traits->sharedContext);
+    if (pixelBufferWin32)
+    {
+        if (WGLExtensions::instance()->wglMakeContextCurrentARB(_hdc, pixelBufferWin32->getHDC(), _hglrc))
+            return true;
+    }
     return false;
 }
 
@@ -779,7 +763,7 @@ bool PixelBufferWin32::releaseContextImplementation()
         return false;
     }
 
-    return wglMakeCurrent( 0, 0 ) == TRUE?true:false;
+    return wglMakeCurrent( _hdc, 0 ) == TRUE?true:false;
 }
 
 void PixelBufferWin32::bindPBufferToTextureImplementation( GLenum buffer )

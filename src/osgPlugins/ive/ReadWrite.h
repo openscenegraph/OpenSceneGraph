@@ -81,6 +81,7 @@ namespace ive {
 #define IVEPOLYGONMODE                  0x00001129
 #define IVETEXTURERECTANGLE             0x00001130
 #define IVEPOINTSPRITE                  0x00001131
+#define IVEMULTISAMPLE                  0x00001132
 
 // Drawables
 #define IVEDRAWABLE                     0x00001000

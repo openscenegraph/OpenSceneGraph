@@ -53,6 +53,7 @@
 #include "Scissor.h"
 #include "Image.h"
 #include "PointSprite.h"
+#include "Multisample.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -770,6 +771,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a PointSprite
         else if(dynamic_cast<const osg::PointSprite*>(attribute)){
             ((ive::PointSprite*)(attribute))->write(this);
+        }
+        // This is a Multisample
+        else if(dynamic_cast<const osg::Multisample*>(attribute)){
+            ((ive::Multisample*)(attribute))->write(this);
         }
 
         else{

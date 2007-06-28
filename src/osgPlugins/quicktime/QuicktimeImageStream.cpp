@@ -130,6 +130,16 @@ void QuicktimeImageStream::quit(bool wiatForThreadToExit)
    }
 }
 
+void QuicktimeImageStream::setVolume(float volume)
+{
+    _movieData->setVolume(volume);
+}
+
+// Get and Set the playback volume of the stream.
+float QuicktimeImageStream::getVolume() const
+{
+    return _movieData->getVolume();
+}
 
 void QuicktimeImageStream::run()
 {

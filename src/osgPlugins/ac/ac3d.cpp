@@ -142,9 +142,9 @@ class ReaderWriterAC : public osgDB::ReaderWriter
                         if (NULL != pGeometry)
                             iNumGeometries++;
                     }
-                    if (iNumGeometries > 0)
-                        iNumGeodesWithGeometry++;
                 }
+                if (iNumGeometries > 0)
+                    iNumGeodesWithGeometry++;
             }
             // output the Geometry
             unsigned int nfirstmat=0;

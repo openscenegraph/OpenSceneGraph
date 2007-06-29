@@ -111,11 +111,16 @@ Point::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
     _isPointParametersSupported = rhs._isPointParametersSupported;
+    _isPointSpriteCoordOriginSupported = rhs._isPointSpriteCoordOriginSupported;
+    _glPointParameteri = rhs._glPointParameteri;
+    _glPointParameterf = rhs._glPointParameterf;
+    _glPointParameterfv = rhs._glPointParameterfv;
 }
 
 void Point::Extensions::lowestCommonDenominator(const Extensions& rhs)
 {
     if (!rhs._isPointParametersSupported)  _isPointParametersSupported = false;
+    if (!rhs._isPointSpriteCoordOriginSupported)  _isPointSpriteCoordOriginSupported = false;
     if (!rhs._glPointParameteri)           _glPointParameteri = 0;
     if (!rhs._glPointParameterf)           _glPointParameterf = 0;
     if (!rhs._glPointParameterfv)          _glPointParameterfv = 0;
@@ -128,6 +133,8 @@ void Point::Extensions::setupGLExtensions(unsigned int contextID)
                                   isGLExtensionSupported(contextID,"GL_EXT_point_parameters") ||
                                   isGLExtensionSupported(contextID,"GL_SGIS_point_parameters");
             
+    _isPointSpriteCoordOriginSupported = strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
+
     _glPointParameteri = getGLExtensionFuncPtr("glPointParameteri", "glPointParameteriARB");
     if (!_glPointParameteri) _glPointParameteri = getGLExtensionFuncPtr("glPointParameteriEXT", "glPointParameteriSGIS");
 

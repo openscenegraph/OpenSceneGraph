@@ -93,7 +93,10 @@ class OSG_EXPORT Point : public StateAttribute
 
                 void setPointParametersSupported(bool flag) { _isPointParametersSupported=flag; }
                 bool isPointParametersSupported() const { return _isPointParametersSupported; }
-                
+
+                void setPointSpriteCoordOriginSupported(bool flag) { _isPointSpriteCoordOriginSupported=flag; }
+                bool isPointSpriteCoordOriginSupported() const { return _isPointSpriteCoordOriginSupported; }
+
                 void glPointParameteri(GLenum pname, GLint param) const;
                 void glPointParameterf(GLenum pname, GLfloat param) const;
                 void glPointParameterfv(GLenum pname, const GLfloat *params) const;
@@ -102,7 +105,8 @@ class OSG_EXPORT Point : public StateAttribute
 
                 ~Extensions() {}
                 
-                bool    _isPointParametersSupported;
+                bool _isPointParametersSupported;
+                bool _isPointSpriteCoordOriginSupported;
 
                 void*   _glPointParameteri;
                 void*   _glPointParameterf;

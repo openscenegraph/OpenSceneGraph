@@ -26,6 +26,7 @@
 #include <OpenThreads/Mutex>
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Thread>
+#include <OpenThreads/ReentrantMutex>
 
 #include <osg/AlphaFunc>
 #include <osg/AnimationPath>
@@ -146,7 +147,6 @@
 #include <osg/TriangleFunctor>
 #include <osg/TriangleIndexFunctor>
 #include <osg/Uniform>
-#include <osg/UnitTestFramework>
 #include <osg/Vec2>
 #include <osg/Vec2b>
 #include <osg/Vec2d>
@@ -186,7 +186,6 @@
 #include <osgDB/ParameterOutput>
 #include <osgDB/ReadFile>
 #include <osgDB/ReaderWriter>
-#include <osgDB/ReentrantMutex>
 #include <osgDB/Registry>
 #include <osgDB/SharedStateManager>
 #include <osgDB/Version>
@@ -213,11 +212,9 @@
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/GUIEventHandler>
-#include <osgGA/GUIEventHandlerVisitor>
 #include <osgGA/KeySwitchMatrixManipulator>
 #include <osgGA/MatrixManipulator>
 #include <osgGA/NodeTrackerManipulator>
-#include <osgGA/SetSceneViewVisitor>
 #include <osgGA/StateSetManipulator>
 #include <osgGA/TerrainManipulator>
 #include <osgGA/TrackballManipulator>
@@ -319,8 +316,10 @@
  * you should comment out this block.
  */
 #include <osgTerrain/Export>
-#include <osgTerrain/HeightFieldNode>
-#include <osgTerrain/HeightFieldRenderer>
+#include <osgTerrain/Layer>
+#include <osgTerrain/Locator>
+#include <osgTerrain/TerrainNode>
+#include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Version>
 
 #include <osgText/Export>

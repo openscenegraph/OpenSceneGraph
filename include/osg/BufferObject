@@ -93,6 +93,16 @@ class OSG_EXPORT BufferObject : public Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "BufferObject"; }
 
+        /** Set what type of usage the buffer object will have. Options are: 
+          *          GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, 
+          *          GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, 
+          *          GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.
+          */
+        void setUsage(GLenum usage) { _usage = usage; }
+        
+        /** Get the type of usage the buffer object has been set up for.*/
+        GLenum getUsage() const { return _usage; }
+
         struct BufferEntry
         {
             BufferEntry(): dataSize(0),offset(0) {}

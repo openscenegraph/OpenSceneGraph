@@ -100,6 +100,10 @@ color_read(Lib3dsRgba rgb, FILE *f)
           rgb[3]=1.0f;
         }
         break;
+      case LIB3DS_COLOR_F:
+        // sth: this will fix 3ds-files exported from cinema 4d
+        lib3ds_rgb_read(rgb, f);
+        break;
       default:
         lib3ds_chunk_unknown(chunk);
     }

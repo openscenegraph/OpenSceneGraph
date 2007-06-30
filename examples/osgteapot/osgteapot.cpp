@@ -332,6 +332,23 @@ osg::Geode* createTeapot()
 
 int main(int , char **)
 {
+#if 1    
+
+    // create viewer on heap as a test, this looks to be causing problems
+    // on init on some platforms, and seg fault on exit when multi-threading on linux.   
+    // Normal stack based version below works fine though... 
+
+    // construct the viewer.
+    osg::ref_ptr<osgViewer::Viewer> viewer = new osgViewer::Viewer;
+
+    // add model to viewer.
+    viewer->setSceneData( createTeapot() );
+
+    // create the windows and run the threads.
+    return viewer->run();
+    
+#else
+
     // construct the viewer.
     osgViewer::Viewer viewer;
 
@@ -340,4 +357,7 @@ int main(int , char **)
 
     // create the windows and run the threads.
     return viewer.run();
+
+#endif
+
 }

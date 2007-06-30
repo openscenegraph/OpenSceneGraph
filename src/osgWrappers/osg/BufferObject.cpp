@@ -51,6 +51,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setUsage, IN, GLenum, usage,
+	          Properties::NON_VIRTUAL,
+	          __void__setUsage__GLenum,
+	          "Set what type of usage the buffer object will have. ",
+	          "Options are: GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.");
+	I_Method0(GLenum, getUsage,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__getUsage,
+	          "Get the type of usage the buffer object has been set up for. ",
+	          "");
 	I_Method1(bool, isBufferObjectSupported, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
 	          __bool__isBufferObjectSupported__unsigned_int,
@@ -117,6 +127,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "setExtensions allows users to override the extensions across graphics contexts. ",
 	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_SimpleProperty(GLenum, Usage, 
+	                 __GLenum__getUsage, 
+	                 __void__setUsage__GLenum);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::BufferObject::BufferEntry)

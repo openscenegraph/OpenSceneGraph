@@ -137,6 +137,16 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __double__getTimeMultiplier,
 	          "",
 	          "");
+	I_Method1(void, setVolume, IN, float, x,
+	          Properties::VIRTUAL,
+	          __void__setVolume__float,
+	          "",
+	          "");
+	I_Method0(float, getVolume,
+	          Properties::VIRTUAL,
+	          __float__getVolume,
+	          "",
+	          "");
 	I_Method0(void, update,
 	          Properties::VIRTUAL,
 	          __void__update,
@@ -163,5 +173,8 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	I_SimpleProperty(double, TimeMultiplier, 
 	                 __double__getTimeMultiplier, 
 	                 __void__setTimeMultiplier__double);
+	I_SimpleProperty(float, Volume, 
+	                 __float__getVolume, 
+	                 __void__setVolume__float);
 END_REFLECTOR
 

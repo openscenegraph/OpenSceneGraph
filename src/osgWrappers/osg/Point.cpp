@@ -191,6 +191,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
 	          __bool__isPointParametersSupported,
 	          "",
 	          "");
+	I_Method1(void, setPointSpriteCoordOriginSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setPointSpriteCoordOriginSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isPointSpriteCoordOriginSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isPointSpriteCoordOriginSupported,
+	          "",
+	          "");
 	I_Method2(void, glPointParameteri, IN, GLenum, pname, IN, GLint, param,
 	          Properties::NON_VIRTUAL,
 	          __void__glPointParameteri__GLenum__GLint,
@@ -209,5 +219,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
 	I_SimpleProperty(bool, PointParametersSupported, 
 	                 0, 
 	                 __void__setPointParametersSupported__bool);
+	I_SimpleProperty(bool, PointSpriteCoordOriginSupported, 
+	                 0, 
+	                 __void__setPointSpriteCoordOriginSupported__bool);
 END_REFLECTOR
 

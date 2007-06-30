@@ -1724,6 +1724,7 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
 
     RECT windowRect;
 
+#if 0
     if (!::GetWindowRect(_hwnd, &windowRect))
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to get window rectangle", _traits->screenNum, ::GetLastError());
@@ -1734,8 +1735,24 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to set cursor position", _traits->screenNum, ::GetLastError());
         return;
+    } 
+#else
+    // MIKEC: NEW CODE
+    POINT pt;
+    pt.x=x;
+    pt.y=y;
+    // convert point in client area coordinates to screen coordinates
+    if (!::ClientToScreen(_hwnd,&pt))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to convert cursor position to screen coordinates", _traits->screenNum, ::GetLastError());
     }
-   
+    if (!::SetCursorPos(pt.x,pt.y))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to set cursor position", _traits->screenNum, ::GetLastError());
+        return;
+    }
+#endif
+
     getEventQueue()->mouseWarped(x,y);
 }
 

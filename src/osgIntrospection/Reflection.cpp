@@ -1,3 +1,17 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+ */
+//osgIntrospection - Copyright (C) 2005 Marco Jez
+
 #include <osgIntrospection/Reflection>
 #include <osgIntrospection/Exceptions>
 #include <osgIntrospection/Type>
@@ -36,12 +50,12 @@ Reflection::StaticData& Reflection::getOrCreateStaticData()
     static OpenThreads::Mutex access_mtx;
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(access_mtx);
 
-    if (!_static_data) 
-    {                
+    if (!_static_data)
+    {
         _static_data = new StaticData;
         std::auto_ptr<Type> tvoid(new Type(extended_typeid<void>()));
         _static_data->typemap.insert(std::make_pair(extended_typeid<void>(), tvoid.get()));
-        _static_data->type_void = tvoid.release();            
+        _static_data->type_void = tvoid.release();
     }
     return *_static_data;
 }
@@ -126,15 +140,28 @@ bool Reflection::getConversionPath(const Type& source, const Type& dest, Convert
 {
     ConverterList temp;
     std::vector<const Type* > chain;
-    if (accum_conv_path(source, dest, temp, chain))
+
+    if (accum_conv_path(source, dest, temp, chain, STATIC_CAST))
     {
         conv.swap(temp);
         return true;
     }
+
+    if (source.isPointer() && dest.isPointer())
+    {
+        chain.clear();
+        temp.clear();
+        if (accum_conv_path(source, dest, temp, chain, DYNAMIC_CAST))
+        {
+            conv.swap(temp);
+            return true;
+        }
+    }
+
     return false;
 }
 
-bool Reflection::accum_conv_path(const Type& source, const Type& dest, ConverterList& conv, std::vector<const Type* > &chain)
+bool Reflection::accum_conv_path(const Type& source, const Type& dest, ConverterList& conv, std::vector<const Type* > &chain, CastType castType)
 {
     // break unwanted loops
     if (std::find(chain.begin(), chain.end(), &source) != chain.end())
@@ -143,22 +170,28 @@ bool Reflection::accum_conv_path(const Type& source, const Type& dest, Converter
     // store the type being processed to avoid loops
     chain.push_back(&source);
 
+    // search a converter from "source"
     StaticData::ConverterMapMap::const_iterator i = getOrCreateStaticData().convmap.find(&source);
-    if (i == getOrCreateStaticData().convmap.end()) 
+    if (i == getOrCreateStaticData().convmap.end())
         return false;
 
+    // search a converter to "dest"
     const StaticData::ConverterMap& cmap = i->second;
     StaticData::ConverterMap::const_iterator j = cmap.find(&dest);
-    if (j != cmap.end())
+    if (j != cmap.end() && (j->second->getCastType() == castType))
     {
         conv.push_back(j->second);
         return true;
     }
 
+    // search a undirect converter from "source" to ... to "dest"
     for (j=cmap.begin(); j!=cmap.end(); ++j)
     {
-        if (accum_conv_path(*j->first, dest, conv, chain))
+        if ((j->second->getCastType() == castType) && accum_conv_path(*j->first, dest, conv, chain, castType))
+        {
+            conv.push_front(j->second);
             return true;
+        }
     }
 
     return false;

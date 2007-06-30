@@ -853,6 +853,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         // now as an experiment.
         callingContext->releaseContext();
     
+        // osg::notify(osg::NOTICE)<<"  enclosing state before - "<<state.getStateSetStackSize()<<std::endl;
+
         useState = _graphicsContext->getState();
         useContext = _graphicsContext.get();
         useThread = useContext->getGraphicsThread();
@@ -869,8 +871,12 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         {
             previous = 0;
             useContext->makeCurrent();
+            
+            // osg::notify(osg::NOTICE)<<"  nested state before - "<<useState->getStateSetStackSize()<<std::endl;
         }
     }
+
+    unsigned int originalStackSize = useState->getStateSetStackSize();
 
     if (_camera && _camera->getPreDrawCallback())
     {
@@ -927,11 +933,16 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
     {
+        useState->popStateSetStackToSize(originalStackSize);
+
         if (!useThread)
         {
+
+
             // flush any command left in the useContex's FIFO
             // to ensure that textures are updated before main thread commenses.
             glFlush();
+            
         
             useContext->releaseContext();
         }
@@ -943,6 +954,9 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         
         previous = saved_previous;
         
+        // osg::notify(osg::NOTICE)<<"  nested state after - "<<useState->getStateSetStackSize()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"  enclosing state after - "<<state.getStateSetStackSize()<<std::endl;
+
         callingContext->makeCurrent();
     }
 

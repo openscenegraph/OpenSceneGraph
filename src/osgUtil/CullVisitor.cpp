@@ -829,6 +829,12 @@ void CullVisitor::apply(Billboard& node)
         // need to modify isCulled to handle the billboard offset.
         // if (isCulled(drawable->getBound())) continue;
 
+        if( drawable->getCullCallback() )
+        {
+            if( drawable->getCullCallback()->cull( this, drawable, &_renderInfo ) == true )
+                continue;
+        }
+
         RefMatrix* billboard_matrix = createOrReuseMatrix(modelview);
 
         node.computeMatrix(*billboard_matrix,eye_local,pos);

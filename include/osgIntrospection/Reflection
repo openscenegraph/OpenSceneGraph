@@ -21,6 +21,7 @@
 #include <typeinfo>
 #include <map>
 #include <vector>
+#include <list>
 
 /// This macro emulates the behavior of the standard typeid operator,
 /// returning the Type object associated to the type of the given
@@ -34,12 +35,19 @@ namespace osgIntrospection
     class Type;
     struct Converter;
     
-    typedef std::vector<const Converter* > ConverterList;
+    typedef std::list<const Converter* > ConverterList;
 
     /// A map of types, indexed by their associated ExtendedTypeInfo
     /// structure.
     typedef std::map<ExtendedTypeInfo, Type*> TypeMap;
 
+    enum CastType
+    {
+        STATIC_CAST,
+        DYNAMIC_CAST,
+        REINTERPRET_CAST,
+        COMPOSITE_CAST
+    };
 
     /// This class provides basic reflection services such as registration
     /// of new types and queries on the global type map.
@@ -94,7 +102,7 @@ namespace osgIntrospection
         static void registerConverter(const Type& source, const Type& dest, const Converter* cvt);
 
     private:
-        static bool accum_conv_path(const Type& source, const Type& dest, ConverterList& conv, std::vector<const Type* > &chain);
+        static bool accum_conv_path(const Type& source, const Type& dest, ConverterList& conv, std::vector<const Type* > &chain, CastType castType);
         static StaticData* _static_data;
     };
 

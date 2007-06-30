@@ -59,6 +59,12 @@ Value Value::tryConvertTo(const Type& outtype) const
         wopt->setForceNumericOutput(true);
     }
 
+
+    // ** never converte a pointer to another pointer with the ReaderWriter method
+    // **  in this case, the ReaderWriter method always work and
+    // **  using a pointer with a bad type cause a SEGFAULT
+    if (_type->isPointer() && outtype.isPointer()) return Value();
+
     const ReaderWriter* src_rw = _type->getReaderWriter();
     if (src_rw)
     {

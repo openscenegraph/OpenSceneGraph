@@ -16,18 +16,18 @@
 #define OSGINTROSPECTION_CONVERTER_
 
 #include <osgIntrospection/Value>
-#include <vector>
+#include <list>
 
 namespace osgIntrospection
 {
-
     struct Converter
     {
+        virtual CastType getCastType() const = 0;
         virtual Value convert(const Value& ) const = 0;
         virtual ~Converter() {}
     };
     
-    typedef std::vector<const Converter* > ConverterList;
+    typedef std::list<const Converter* > ConverterList;
     
     class CompositeConverter: public Converter
     {
@@ -44,6 +44,7 @@ namespace osgIntrospection
             return accum;
         }
 
+        virtual CastType getCastType() const { return COMPOSITE_CAST; }
     private:
         ConverterList cvt_;
     };
@@ -56,6 +57,8 @@ namespace osgIntrospection
         {
             return static_cast<D>(variant_cast<S>(src));
         }
+
+        virtual CastType getCastType() const { return STATIC_CAST; }
     };
 
     template<typename S, typename D>
@@ -66,6 +69,8 @@ namespace osgIntrospection
         {
             return dynamic_cast<D>(variant_cast<S>(src));
         }
+
+        virtual CastType getCastType() const { return DYNAMIC_CAST; }
     };
 
     template<typename S, typename D>
@@ -76,6 +81,8 @@ namespace osgIntrospection
         {
             return reinterpret_cast<D>(variant_cast<S>(src));
         }
+
+        virtual CastType getCastType() const { return REINTERPRET_CAST; }
     };
 
 }

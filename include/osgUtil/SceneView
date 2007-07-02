@@ -471,8 +471,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 
         virtual ~SceneView();
 
-        /** Do cull traversal of attached scene graph using Cull NodeVisitor.*/
-        virtual void cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage);
+        /** Do cull traversal of attached scene graph using Cull NodeVisitor. Return true if computeNearFar has been done during the cull traversal.*/
+        virtual bool cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage);
 
         const osg::Matrix computeMVPW() const;
 

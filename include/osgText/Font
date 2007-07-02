@@ -23,14 +23,13 @@
 #include <osg/StateSet>
 #include <osg/buffered_value>
 #include <osg/TexEnv>
-
+#include <osgDB/ReaderWriter>
 #include <osgText/Export>
 
 namespace osgText {
 
 class Font;
 class Text;
-
 enum KerningType
 {
     KERNING_DEFAULT,    //default locked to integer kerning values
@@ -57,10 +56,10 @@ enum KerningType
   * If the given file could not be found, the path part will be stripped and
   * the file will be searched again in the OS specific directories.
   */
-extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename);
+extern OSGTEXT_EXPORT Font* readFontFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0);
 
 /** read a font from specified stream.*/
-extern OSGTEXT_EXPORT Font* readFontStream(std::istream& stream);
+extern OSGTEXT_EXPORT Font* readFontStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0);
 
 extern OSGTEXT_EXPORT std::string findFontFile(const std::string& str);
 

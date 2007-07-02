@@ -81,17 +81,21 @@ std::string osgText::findFontFile(const std::string& str)
     return std::string();
 }
 
-osgText::Font* osgText::readFontFile(const std::string& filename)
+osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions)
 {
     if (filename=="") return 0;
 
     std::string foundFile = findFontFile(filename);
     if (foundFile.empty()) return 0;
     
-    osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
-    options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+    osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
+    if (!userOptions)
+    {
+        localOptions = new osgDB::ReaderWriter::Options;
+        localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+    }
 
-    osg::Object* object = osgDB::readObjectFile(foundFile, options.get());
+    osg::Object* object = osgDB::readObjectFile(foundFile, userOptions ? userOptions : localOptions.get());
 
     // if the object is a font then return it.
     osgText::Font* font = dynamic_cast<osgText::Font*>(object);
@@ -102,15 +106,19 @@ osgText::Font* osgText::readFontFile(const std::string& filename)
     return 0;
 }
 
-osgText::Font* osgText::readFontStream(std::istream& stream)
+osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions)
 {
-    osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
-    options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+    osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
+    if (!userOptions)
+    {
+        localOptions = new osgDB::ReaderWriter::Options;
+        localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+    }
 
     // there should be a better way to get the FreeType ReaderWriter by name...
     osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
     if (reader == 0) return 0;
-    osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, options.get());
+    osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
         osg::notify(osg::WARN) << rr.message() << std::endl;

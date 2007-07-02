@@ -17,17 +17,19 @@
 #include <osg/Notify>  
 #include <osgDB/WriteFile>
 
-FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face):
+FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face, unsigned int flags):
     _filename(filename),
     _buffer(0),
-    _face(face)
+    _face(face),
+    _flags(flags)
 {
 }
 
-FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face):
+FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags):
     _filename(""),
     _buffer(buffer),
-    _face(face)
+    _face(face),
+    _flags(flags)
 {
 }
 
@@ -105,7 +107,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
         }
     }
 
-    FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP );
+    FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP|_flags );
     if (error)
     {
         osg::notify(osg::WARN) << "FT_Load_Char(...) error "<<error<<std::endl;
@@ -143,13 +145,33 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     glyph->setInternalTextureFormat(GL_ALPHA);
 
     // copy image across to osgText::Glyph image.     
-    for(int r=sourceHeight-1;r>=0;--r)
+    switch(glyphslot->bitmap.pixel_mode)
     {
-        unsigned char* ptr = buffer+r*pitch;
-        for(unsigned int c=0;c<sourceWidth;++c,++ptr)
-        {
-            (*data++)=*ptr;
-        }
+        case FT_PIXEL_MODE_MONO:
+            for(int r=sourceHeight-1;r>=0;--r)
+            {
+                unsigned char* ptr = buffer+r*pitch;
+                for(unsigned int c=0;c<sourceWidth;++c)
+                {
+                    (*data++)= (ptr[c >> 3] & (1 << (~c & 7))) ? 255 : 0;
+                }
+            }
+            break;
+
+        
+        case FT_PIXEL_MODE_GRAY:
+            for(int r=sourceHeight-1;r>=0;--r)
+            {
+                unsigned char* ptr = buffer+r*pitch;
+                for(unsigned int c=0;c<sourceWidth;++c,++ptr)
+                {
+                    (*data++)=*ptr;
+                }
+            }
+            break;
+            
+        default:
+            osg::notify(osg::WARN) << "FT_Load_Char(...) returned bitmap with unknown pixel_mode " << glyphslot->bitmap.pixel_mode << std::endl;
     }
 
 

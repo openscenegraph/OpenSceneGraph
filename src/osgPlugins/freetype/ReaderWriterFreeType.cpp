@@ -23,6 +23,17 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                    osgDB::equalCaseInsensitive(extension,"fnt");    // Windows bitmap fonts
         }
 
+        static unsigned int getFlags(const osgDB::ReaderWriter::Options* options)
+        {
+            unsigned int flags = 0;
+            if (options && options->getOptionString().find("monochrome") != std::string::npos)
+            {
+                flags |= FT_LOAD_MONOCHROME;
+            }
+            
+            return flags;
+        }
+
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -38,10 +49,10 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            return freeTypeLibrary->getFont(fileName,0);
+            return freeTypeLibrary->getFont(fileName,0,getFlags(options));
         }
 
-        virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options*) const
+        virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options* options) const
         {
             FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
             if (!freeTypeLibrary) 
@@ -50,7 +61,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            return freeTypeLibrary->getFont(stream, 0);
+            return freeTypeLibrary->getFont(stream, 0, getFlags(options));
         }
 };
 

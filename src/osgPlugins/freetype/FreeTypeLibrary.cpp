@@ -56,7 +56,7 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
     return s_library.get();
 }
 
-osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index)
+osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index, unsigned int flags)
 {
 
     FT_Face face; /* handle to face object */
@@ -96,7 +96,7 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
     //
     verifyCharacterMap(face);
     
-    FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face);
+    FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
 
     _fontImplementationSet.insert(fontImp);
@@ -105,7 +105,7 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
 
 }
 
-osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int index)
+osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int index, unsigned int flags)
 {
     FT_Face face;    /* handle to face object */
     FT_Open_Args args;
@@ -148,7 +148,7 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
     //
     verifyCharacterMap(face);
     
-    FreeTypeFont* fontImp = new FreeTypeFont(buffer,face);
+    FreeTypeFont* fontImp = new FreeTypeFont(buffer,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
     
     _fontImplementationSet.insert(fontImp);

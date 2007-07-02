@@ -572,8 +572,6 @@ void SceneView::cull()
         _renderStage = new RenderStage;
     }
 
-    bool computeNearFar = (_cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR) && getSceneData()!=0;
-
     if (_displaySettings.valid() && _displaySettings->getStereo()) 
     {
 
@@ -581,7 +579,7 @@ void SceneView::cull()
         {
             // set up the left eye.
             _cullVisitor->setTraversalMask(_cullMaskLeft);
-            cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
             if (computeNearFar)
             {
@@ -595,7 +593,7 @@ void SceneView::cull()
         {
             // set up the right eye.
             _cullVisitor->setTraversalMask(_cullMaskRight);
-            cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            bool computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
             if (computeNearFar)
             {
@@ -619,14 +617,14 @@ void SceneView::cull()
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorLeft->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-            cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
 
 
             // set up the right eye.
             _cullVisitorRight->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorRight->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
-            cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+            computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
            
             if (computeNearFar)
             {
@@ -642,7 +640,7 @@ void SceneView::cull()
     {
 
         _cullVisitor->setTraversalMask(_cullMask);
-        cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+        bool computeNearFar = cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
 
         if (computeNearFar)
         {
@@ -655,10 +653,10 @@ void SceneView::cull()
     
 }
 
-void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage)
+bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage)
 {
 
-    if (!_camera || !getViewport()) return;
+    if (!_camera || !getViewport()) return false;
 
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
@@ -721,6 +719,7 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     }
 
     cullVisitor->inheritCullSettings(*this);
+
 
     cullVisitor->setClearNode(NULL); // reset earth sky on each frame.
     
@@ -813,6 +812,10 @@ void SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     
     // set the number of dynamic objects in the scene.    
     _dynamicObjectCount += renderStage->computeNumberOfDynamicRenderLeaves();
+
+
+    bool computeNearFar = (cullVisitor->getComputeNearFarMode()!=osgUtil::CullVisitor::DO_NOT_COMPUTE_NEAR_FAR) && getSceneData()!=0;
+    return computeNearFar;
 }
 
 void SceneView::releaseAllGLObjects()

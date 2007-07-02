@@ -29,8 +29,8 @@ public:
     /** get the singleton instance.*/
     static FreeTypeLibrary* instance();
 
-    osgText::Font* getFont(const std::string& fontfile,unsigned int index=0);
-    osgText::Font* getFont(std::istream& fontstream, unsigned int index=0);
+    osgText::Font* getFont(const std::string& fontfile,unsigned int index=0, unsigned int flags=0);
+    osgText::Font* getFont(std::istream& fontstream, unsigned int index=0, unsigned int flags=0);
     
     void removeFontImplmentation(FreeTypeFont* fontImpl) { _fontImplementationSet.erase(fontImpl); }
 

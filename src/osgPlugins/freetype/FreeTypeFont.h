@@ -24,8 +24,8 @@ class FreeTypeFont : public osgText::Font::FontImplementation
 // declare the interface to a font.
 public:
 
-    FreeTypeFont(const std::string& filename, FT_Face face);
-    FreeTypeFont(FT_Byte* buffer, FT_Face face);
+    FreeTypeFont(const std::string& filename, FT_Face face, unsigned int flags);
+    FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags);
 
     virtual ~FreeTypeFont();
 
@@ -44,7 +44,7 @@ protected:
     std::string     _filename;
     FT_Byte*        _buffer;
     FT_Face         _face;
-
+    unsigned int    _flags;
 };
 
 #endif

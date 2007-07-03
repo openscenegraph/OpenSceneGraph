@@ -40,6 +40,8 @@ bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
     osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
     if (!viewer) return false;
     
+    if (ea.getHandled()) return false;
+
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::KEYDOWN):

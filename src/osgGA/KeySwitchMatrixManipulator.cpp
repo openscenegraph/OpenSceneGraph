@@ -162,7 +162,9 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
 {
     if (!_current) return false;
 
-    if(ea.getEventType()==GUIEventAdapter::KEYDOWN)
+    bool handled = false;
+
+    if (!ea.getHandled() && ea.getEventType()==GUIEventAdapter::KEYDOWN)
     {
 
         KeyManipMap::iterator it=_manips.find(ea.getKey());
@@ -178,11 +180,12 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
             _current = it->second.second;
 
             //_cameraManipChangeCallbacks.notify(this);
-
+            
+            handled = true;
         }
     }
 
-    return _current->handle(ea,aa);
+    return _current->handle(ea,aa) || handled;
 }
 
 void KeySwitchMatrixManipulator::getUsage(osg::ApplicationUsage& usage) const

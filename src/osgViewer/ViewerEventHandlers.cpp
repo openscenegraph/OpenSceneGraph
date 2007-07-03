@@ -67,9 +67,11 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
         return false;
     }
 
+    if (ea.getHandled()) return false;
+
     switch(ea.getEventType())
     {
-    case(osgGA::GUIEventAdapter::KEYUP):
+        case(osgGA::GUIEventAdapter::KEYUP):
         {
             if (_toggleFullscreen == true && ea.getKey() == _keyEventToggleFullscreen)
             {
@@ -285,9 +287,11 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
         return false;
     }
 
+    if (ea.getHandled()) return false;
+
     switch(ea.getEventType())
     {
-    case(osgGA::GUIEventAdapter::KEYUP):
+        case(osgGA::GUIEventAdapter::KEYUP):
         {
             double    delta = osg::Timer::instance()->delta_s(_tickOrLastKeyPress, osg::Timer::instance()->tick());
 
@@ -377,9 +381,33 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
         return false;
     }
 
+    if(ea.getEventType()==osgGA::GUIEventAdapter::FRAME)
+    {
+        // Calculate our current delta (difference) in time between the last frame and
+        // current frame, regardless of whether we actually store a ControlPoint...
+        osg::Timer_t time = osg::Timer::instance()->tick();
+        double delta = osg::Timer::instance()->delta_s(_lastFrameTime, time);
+        _lastFrameTime = time;
+
+        // If our internal _delta is finally large enough to warrant a ControlPoint
+        // insertion, do so now. Be sure and reset the internal _delta, so we can start
+        // calculating when the next insert should happen.
+        if (_currentlyRecording && _delta >= _interval)
+        {
+            const osg::Matrixd& m = viewer->getCamera()->getInverseViewMatrix();
+            _animPath->insert(osg::Timer::instance()->delta_s(_animStartTime, time), osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
+            _delta = 0.0f;
+        }
+        else _delta += delta;
+        
+        return true;
+    }
+
+    if (ea.getHandled()) return false;
+
     switch(ea.getEventType())
     {
-    case(osgGA::GUIEventAdapter::KEYUP):
+        case(osgGA::GUIEventAdapter::KEYUP):
         {
             // The user has requested to toggle recording.
             if (ea.getKey() ==_keyEventToggleRecord)
@@ -461,28 +489,6 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
                 return true;
             }        
-
-            break;
-        }
-    case(osgGA::GUIEventAdapter::FRAME):
-        {
-            // Calculate our current delta (difference) in time between the last frame and
-            // current frame, regardless of whether we actually store a ControlPoint...
-            osg::Timer_t time = osg::Timer::instance()->tick();
-            double delta = osg::Timer::instance()->delta_s(_lastFrameTime, time);
-            _lastFrameTime = time;
-
-            // If our internal _delta is finally large enough to warrant a ControlPoint
-            // insertion, do so now. Be sure and reset the internal _delta, so we can start
-            // calculating when the next insert should happen.
-            if (_currentlyRecording && _delta >= _interval)
-            {
-                const osg::Matrixd& m = viewer->getCamera()->getInverseViewMatrix();
-                _animPath->insert(osg::Timer::instance()->delta_s(_animStartTime, time), osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
-                _delta = 0.0f;
-            }
-
-            else _delta += delta;
 
             break;
         }

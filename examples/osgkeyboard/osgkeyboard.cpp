@@ -17,6 +17,7 @@
 */
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osg/io_utils>
 
 #include <osg/MatrixTransform>
@@ -395,6 +396,7 @@ int main(int , char **)
 
     osg::ref_ptr<KeyboardModel> keyboardModel = new KeyboardModel;
 
+    viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.addEventHandler(new KeyboardEventHandler(keyboardModel.get()));
     viewer.setSceneData( keyboardModel->getScene() );
 

@@ -58,6 +58,12 @@ Node* OrientationConverter::convert( Node *node )
     transform->setDataVariance(osg::Object::STATIC);
     transform->setMatrix( C * R * S * T );
     
+    if (!S.isIdentity())
+    {
+        // Add a normalize state. This will be removed if the FlattenStaticTransformsVisitor works
+        transform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+    }
+
     root->addChild(transform);
     transform->addChild(node);
 

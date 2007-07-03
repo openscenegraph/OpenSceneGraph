@@ -44,12 +44,15 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
+    int xoffset = 40;
+    int yoffset = 40;
+
     // left window + left slave camera
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-        traits->x = 0;
-        traits->y = 0;
-        traits->width = 640;
+        traits->x = xoffset + 0;
+        traits->y = yoffset + 0;
+        traits->width = 600;
         traits->height = 480;
         traits->windowDecoration = true;
         traits->doubleBuffer = true;
@@ -64,16 +67,16 @@ int main( int argc, char **argv )
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
 
-        // add this slave camra to the viewer, with a shift left of the projection matrix
+        // add this slave camera to the viewer, with a shift left of the projection matrix
         viewer.addSlave(camera.get(), osg::Matrixd::translate(1.0,0.0,0.0), osg::Matrixd());
     }
     
-    // left window + left slave camera
+    // right window + right slave camera
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-        traits->x = 640;
-        traits->y = 0;
-        traits->width = 640;
+        traits->x = xoffset + 600;
+        traits->y = yoffset + 0;
+        traits->width = 600;
         traits->height = 480;
         traits->windowDecoration = true;
         traits->doubleBuffer = true;
@@ -88,7 +91,7 @@ int main( int argc, char **argv )
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
 
-        // add this slave camra to the viewer, with a shift right of the projection matrix
+        // add this slave camera to the viewer, with a shift right of the projection matrix
         viewer.addSlave(camera.get(), osg::Matrixd::translate(-1.0,0.0,0.0), osg::Matrixd());
     }
 

@@ -63,6 +63,8 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                    (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode);
     }
 
+    if (ea.getHandled()) return false;
+
     if(ea.getEventType()==GUIEventAdapter::KEYDOWN)
     {
 

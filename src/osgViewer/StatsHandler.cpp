@@ -45,6 +45,8 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
         updateThreadingModelText();
     }
 
+    if (ea.getHandled()) return false;
+
     switch(ea.getEventType())
     {
         case(osgGA::GUIEventAdapter::KEYDOWN):

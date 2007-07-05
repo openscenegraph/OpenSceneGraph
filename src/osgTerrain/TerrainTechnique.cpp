@@ -40,14 +40,16 @@ void TerrainTechnique::init()
     _dirty = false;
 }
 
-void TerrainTechnique::update(osgUtil::UpdateVisitor*)
+void TerrainTechnique::update(osgUtil::UpdateVisitor* uv)
 {
     osg::notify(osg::NOTICE)<<className()<<"::update(..) not implementated yet"<<std::endl;
+    if (_terrainNode) _terrainNode->osg::Group::traverse(*uv);
 }
 
-void TerrainTechnique::cull(osgUtil::CullVisitor*)
+void TerrainTechnique::cull(osgUtil::CullVisitor* cv)
 {
     osg::notify(osg::NOTICE)<<className()<<"::cull(..) not implementated yet"<<std::endl;
+    if (_terrainNode) _terrainNode->osg::Group::traverse(*cv);
 }
 
 void TerrainTechnique::cleanSceneGraph()

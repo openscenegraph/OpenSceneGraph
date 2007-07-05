@@ -121,6 +121,23 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         bool getTreatBoundariesToValidDataAsDefaultValue() const { return _treatBoundariesToValidDataAsDefaultValue; }
 
 
+        /** Set an OperationsThread to do an data initialization and update work.*/
+        void setOperationsThread(osg::OperationsThread* operationsThread) { _operationsThread = operationsThread; }
+
+        /** Get the OperationsThread if one is attached, return NULL otherwise.*/
+        osg::OperationsThread* getOperationsThread() { return _operationsThread.get(); }
+
+        /** Get the const OperationsThread if one is attached, return NULL otherwise.*/
+        const osg::OperationsThread* getOperationsThread() const { return _operationsThread.get(); }
+
+
+        /** Add a graphics context that should be used to compile/delete OpenGL objects.*/
+        void addCompileGraphicsContext(osg::GraphicsContext* gc);
+        
+        /** Removed a graphics context that should be used to compile/delete OpenGL objects.*/
+        void removeCompileGraphicsContext(osg::GraphicsContext* gc);
+
+
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
         virtual osg::BoundingSphere computeBound() const;
 
@@ -162,6 +179,11 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
         
         bool                                _requiresNormals;
         bool                                _treatBoundariesToValidDataAsDefaultValue;
+
+        osg::ref_ptr<osg::OperationsThread> _operationsThread;
+
+        typedef std::vector< osg::observer_ptr<osg::GraphicsContext> >  CompileGraphicsContexts;
+        CompileGraphicsContexts             _compileGraphicsContexts;
 };
 
 }

@@ -99,6 +99,36 @@ void TerrainNode::setColorFilter(unsigned int i, Filter filter)
     _colorLayers[i].filter = filter;
 }
 
+void TerrainNode::addCompileGraphicsContext(osg::GraphicsContext* gc)
+{
+    for(CompileGraphicsContexts::iterator itr = _compileGraphicsContexts.begin();
+        itr != _compileGraphicsContexts.end();
+        ++itr)
+    {
+        if (*itr == gc)
+        {
+            return;
+        }
+    }
+    
+    _compileGraphicsContexts.push_back(gc);
+}
+
+void TerrainNode::removeCompileGraphicsContext(osg::GraphicsContext* gc)
+{
+    for(CompileGraphicsContexts::iterator itr = _compileGraphicsContexts.begin();
+        itr != _compileGraphicsContexts.end();
+        ++itr)
+    {
+        if (*itr == gc)
+        {
+            _compileGraphicsContexts.erase(itr);
+            return;
+        }
+    }
+}
+
+
 osg::BoundingSphere TerrainNode::computeBound() const
 {
     osg::BoundingSphere bs;

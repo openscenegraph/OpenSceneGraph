@@ -531,18 +531,22 @@ void GeometryTechnique::init()
 }
 
 
-void GeometryTechnique::update(osgUtil::UpdateVisitor* nv)
+void GeometryTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-    
+    if (_terrainNode) _terrainNode->osg::Group::traverse(*uv);
 }
 
 
-void GeometryTechnique::cull(osgUtil::CullVisitor* nv)
+void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
 {
+#if 0
+    if (_terrainNode) _terrainNode->osg::Group::traverse(*cv);
+#else
     if (_transform.valid())
     {
-        _transform->accept(*nv);
+        _transform->accept(*cv);
     }
+#endif    
 }
 
 void GeometryTechnique::cleanSceneGraph()

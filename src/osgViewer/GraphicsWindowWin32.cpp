@@ -970,7 +970,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _destroying(false)
 {
     _traits = traits;
-    setCursor( LeftArrowCursor);
+    if (_traits->useCursor) setCursor(LeftArrowCursor);
 
     init();
     
@@ -1722,9 +1722,8 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
         return;
     }
 
-    RECT windowRect;
-
 #if 0
+    RECT windowRect;
     if (!::GetWindowRect(_hwnd, &windowRect))
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to get window rectangle", _traits->screenNum, ::GetLastError());
@@ -1735,7 +1734,7 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to set cursor position", _traits->screenNum, ::GetLastError());
         return;
-    } 
+    }
 #else
     // MIKEC: NEW CODE
     POINT pt;
@@ -1752,7 +1751,7 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
         return;
     }
 #endif
-
+   
     getEventQueue()->mouseWarped(x,y);
 }
 

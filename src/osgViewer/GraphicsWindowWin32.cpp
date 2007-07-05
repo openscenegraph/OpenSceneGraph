@@ -2104,7 +2104,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(wParam, lParam, keySymbol, modifierMask);
-                getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyPress(keySymbol, eventTime);
             }
             break;
@@ -2118,7 +2118,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(wParam, lParam, keySymbol, modifierMask);
-                getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyRelease(keySymbol, eventTime);
             }
             break;

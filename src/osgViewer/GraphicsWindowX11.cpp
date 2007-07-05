@@ -963,7 +963,7 @@ void GraphicsWindowX11::checkEvents()
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);
 
-                getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyPress(keySymbol, eventTime);
                 break;
             }
@@ -978,7 +978,7 @@ void GraphicsWindowX11::checkEvents()
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);
                 
-                getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyRelease(keySymbol, eventTime);
                 break;
             }

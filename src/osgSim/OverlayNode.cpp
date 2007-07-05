@@ -1462,7 +1462,6 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
  
         osg::Vec3d center = _overlaySubgraph->getBound().center();
-        osg::Vec3d frustum_axis = cv->getLookVectorLocal();
         
         osg::Vec3d lookVector(0.0,0.0,-1.0);
         if (em)
@@ -1471,7 +1470,13 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             lookVector.normalize();
         }
 
-        osg::Vec3d sideVector = lookVector ^ frustum_axis;
+        osg::Vec3d sideVectorLV = lookVector ^ cv->getLookVectorLocal();
+        osg::Vec3d sideVectorUP = lookVector ^ cv->getUpLocal();
+        
+        osg::Vec3d sideVector = sideVectorLV.length() > sideVectorUP.length() ?
+            sideVectorLV :
+            sideVectorUP;
+        
         sideVector.normalize();
         
         osg::Vec3d upVector = sideVector ^ lookVector;

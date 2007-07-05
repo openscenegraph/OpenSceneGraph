@@ -692,12 +692,7 @@ Viewer::~Viewer()
     {
         (*citr)->close();
     }
-
-    if (osg::Referenced::getDeleteHandler())
-    {
-        osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
-        osg::Referenced::getDeleteHandler()->flushAll();
-    }
+    
     //osg::notify(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
     
     getAllThreads(threads);

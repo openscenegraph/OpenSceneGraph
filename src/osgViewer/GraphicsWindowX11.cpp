@@ -1178,7 +1178,7 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     ~X11WindowingSystemInterface()
     {
-        osg::notify(osg::INFO)<<"~X11WindowingSystemInterface()"<<std::endl;
+        //osg::notify(osg::NOTICE)<<"~X11WindowingSystemInterface()"<<std::endl;
         XSetErrorHandler(0);
     }
 

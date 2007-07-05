@@ -37,7 +37,7 @@ class OSG_EXPORT DeleteHandler
 
         DeleteHandler(int numberOfFramesToRetainObjects=0);
 
-        virtual ~DeleteHandler() { flushAll(); }
+        virtual ~DeleteHandler();
 
         /** Set the number of frames to retain objects that are have been requested for deletion.
           * When set to zero objects are deleted immediately, by set to 1 there are kept around for an extra frame etc.

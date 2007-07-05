@@ -13,6 +13,7 @@
 #include <osg/View>
 #include <osg/Notify>
 #include <osg/TexEnv>
+#include <osg/DeleteHandler>
 
 using namespace osg;
 
@@ -71,6 +72,17 @@ View::~View()
         cd._camera->setView(0);
         cd._camera->setCullCallback(0);
     }
+    
+    _camera = 0;
+    _slaves.clear();
+    _light = 0;    
+
+    if (osg::Referenced::getDeleteHandler())
+    {
+        // osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+        osg::Referenced::getDeleteHandler()->flushAll();
+    }
+
     
     osg::notify(osg::INFO)<<"Done destructing osg::View"<<std::endl;
 }

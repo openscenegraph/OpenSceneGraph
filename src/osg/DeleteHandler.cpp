@@ -67,6 +67,11 @@ DeleteHandler::DeleteHandler(int numberOfFramesToRetainObjects):
 {
 }
 
+DeleteHandler::~DeleteHandler()
+{
+    // flushAll();
+}
+
 void DeleteHandler::flush()
 {
     typedef std::list<const osg::Referenced*> DeletionList;
@@ -105,12 +110,37 @@ void DeleteHandler::flush()
 
 void DeleteHandler::flushAll()
 {
-    int temp = _numFramesToRetainObjects;
+    int temp_numFramesToRetainObjects = _numFramesToRetainObjects;
     _numFramesToRetainObjects = 0;
 
-    flush();
+    typedef std::list<const osg::Referenced*> DeletionList;
+    DeletionList deletionList;
 
-    _numFramesToRetainObjects = temp;
+    {
+        // gather all the objects to delete whilst holding the mutex to the _objectsToDelete
+        // list, but delete the objects outside this scoped lock so that if any objects deleted
+        // unref their children then no deadlock happens.
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        ObjectsToDeleteList::iterator itr;
+        for(itr = _objectsToDelete.begin();
+            itr != _objectsToDelete.end();
+            ++itr)
+        {
+            deletionList.push_back(itr->second);
+            itr->second = 0;            
+        }
+
+        _objectsToDelete.erase( _objectsToDelete.begin(), _objectsToDelete.end());
+    }
+
+    for(DeletionList::iterator ditr = deletionList.begin();
+        ditr != deletionList.end();
+        ++ditr)
+    {
+        doDelete(*ditr);
+    }
+
+    _numFramesToRetainObjects = temp_numFramesToRetainObjects;
 }
 
 void DeleteHandler::requestDelete(const osg::Referenced* object)

@@ -150,7 +150,7 @@ int main(int argc, char** argv)
     viewer.setSceneData( loadedModel.get() );
 
     viewer.realize();
-    
+
     if (createBackgroundContextForCompiling)
     {
     
@@ -158,37 +158,12 @@ int main(int argc, char** argv)
         int processNum = 0;
 
         osgDB::DatabasePager* dp = viewer.getScene()->getDatabasePager();
-        typedef std::vector< osg::ref_ptr<osg::GraphicsContext> > CompileContexts;
-        CompileContexts compileContexts;
 
-        osgViewer::Viewer::Windows windows;
-        viewer.getWindows(windows);
-        for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
-            itr != windows.end();
-            ++itr)
+        for(unsigned int i=0; i<osg::GraphicsContext::getMaxContextID(); ++i)
         {
-            const osg::GraphicsContext::Traits* src_traits = (*itr)->getTraits();
+            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
 
-            osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
-            traits->screenNum = src_traits->screenNum;
-            traits->displayNum = src_traits->displayNum;
-            traits->hostName = src_traits->hostName;
-            traits->width = 100;
-            traits->height = 100;
-            traits->red = src_traits->red;
-            traits->green = src_traits->green;
-            traits->blue = src_traits->blue;
-            traits->alpha = src_traits->alpha;
-            traits->depth = src_traits->depth;
-            traits->sharedContext = (*itr);
-            traits->pbuffer = true;
-
-            osg::GraphicsContext* gc = osg::GraphicsContext::createGraphicsContext(traits);
-
-            gc->realize();
-
-
-            if (createBackgroundThreadsForCompiling)
+            if (gc && createBackgroundThreadsForCompiling)
             {
                 gc->createGraphicsThread();
                 gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
@@ -198,11 +173,9 @@ int main(int argc, char** argv)
             }
 
             dp->addCompileGraphicsContext(gc);
-
-            compileContexts.push_back(gc);
         }
     }
-    
 
-    return viewer.run();
+   viewer.run();
+
 }

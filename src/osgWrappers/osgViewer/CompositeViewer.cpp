@@ -351,8 +351,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >)
-
 STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >)
 
 STD_VECTOR_REFLECTOR(std::vector< osgViewer::Scene * >)

@@ -165,12 +165,32 @@ class OSG_EXPORT GraphicsContext : public Object
           * Automatically increments the usage count of the contextID to 1.*/
         static unsigned int createNewContextID();
 
+        /** Get the current max ContextID.*/
+        static unsigned int getMaxContextID();
+
         /** Increment the usage count associate with a contextID. The usage count speficies how many graphics contexts a specific contextID is shared between.*/
         static void incrementContextIDUsageCount(unsigned int contextID);
 
         /** Decrement the usage count associate with a contextID. Once the contextID goes to 0 the contextID is then free to be reused.*/
         static void decrementContextIDUsageCount(unsigned int contextID);
     
+        typedef std::vector<GraphicsContext*> GraphicsContexts;
+        
+        /** Get all the registered graphics contexts.*/
+        static GraphicsContexts getAllRegisteredGraphicsContexts();
+        
+        /** Get all the registered graphics contexts associated with a specific contextID.*/
+        static GraphicsContexts getRegisteredGraphicsContexts(unsigned int contextID);
+        
+        /** Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID.*/
+        static void setCompileContext(unsigned int contextID, GraphicsContext* gc);
+
+        /** Get existing or create a new GraphicsContext to do background compilation for GraphicsContexts associated with specified contextID.*/
+        static  GraphicsContext* getOrCreateCompileContext(unsigned int contextID);
+        
+        /** Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID.*/
+        static GraphicsContext* getCompileContext(unsigned int contextID);
+
     public:
     
         /** Add operation to end of OperationQueue.*/
@@ -375,6 +395,13 @@ class OSG_EXPORT GraphicsContext : public Object
 
         virtual Object* cloneType() const { return 0; }
         virtual Object* clone(const CopyOp&) const { return 0; }
+
+        /** Register a GraphicsContext.*/
+        static void registerGraphicsContext(GraphicsContext* gc);
+
+        /** Unregister a GraphicsContext.*/
+        static void unregisterGraphicsContext(GraphicsContext* gc);
+
 
         void addCamera(osg::Camera* camera);
         void removeCamera(osg::Camera* camera);

@@ -12,6 +12,8 @@
 
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
+#include <osg/GraphicsContext>
+#include <osg/GraphicsThread>
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/TransferFunction>
@@ -194,6 +196,31 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __bool__getTreatBoundariesToValidDataAsDefaultValue,
 	          "Get whether the TeatBoundariesToValidDataAsDefaultValue hint. ",
 	          "");
+	I_Method1(void, setOperationsThread, IN, osg::OperationsThread *, operationsThread,
+	          Properties::NON_VIRTUAL,
+	          __void__setOperationsThread__osg_OperationsThread_P1,
+	          "Set an OperationsThread to do an data initialization and update work. ",
+	          "");
+	I_Method0(osg::OperationsThread *, getOperationsThread,
+	          Properties::NON_VIRTUAL,
+	          __osg_OperationsThread_P1__getOperationsThread,
+	          "Get the OperationsThread if one is attached, return NULL otherwise. ",
+	          "");
+	I_Method0(const osg::OperationsThread *, getOperationsThread,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_OperationsThread_P1__getOperationsThread,
+	          "Get the const OperationsThread if one is attached, return NULL otherwise. ",
+	          "");
+	I_Method1(void, addCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
+	          Properties::NON_VIRTUAL,
+	          __void__addCompileGraphicsContext__osg_GraphicsContext_P1,
+	          "Add a graphics context that should be used to compile/delete OpenGL objects. ",
+	          "");
+	I_Method1(void, removeCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
+	          Properties::NON_VIRTUAL,
+	          __void__removeCompileGraphicsContext__osg_GraphicsContext_P1,
+	          "Removed a graphics context that should be used to compile/delete OpenGL objects. ",
+	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingSphere__computeBound,
@@ -220,6 +247,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
+	I_SimpleProperty(osg::OperationsThread *, OperationsThread, 
+	                 __osg_OperationsThread_P1__getOperationsThread, 
+	                 __void__setOperationsThread__osg_OperationsThread_P1);
 	I_SimpleProperty(bool, RequiresNormals, 
 	                 __bool__getRequiresNormals, 
 	                 __void__setRequiresNormals__bool);

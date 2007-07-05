@@ -359,6 +359,7 @@ void KeyboardModel::createKeyboard()
 
 
 
+
 class KeyboardEventHandler : public osgGA::GUIEventHandler
 {
 public:
@@ -368,6 +369,31 @@ public:
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&)
         {
+
+#if 1
+            #define PRINT(mask) osg::notify(osg::NOTICE)<<#mask<<" ="<<(ea.getModKeyMask() & mask)<<std::endl;
+            switch(ea.getEventType())
+            {
+                case(osgGA::GUIEventAdapter::KEYDOWN):
+                case(osgGA::GUIEventAdapter::KEYUP):
+                {
+                    osg::notify(osg::NOTICE)<<std::endl;
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_SHIFT);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_SHIFT);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_ALT);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_ALT);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_CTRL);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_META);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_META);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_NUM_LOCK);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK);
+                    break;
+                }
+                default:
+                    break;
+            }
+#endif
             switch(ea.getEventType())
             {
                 case(osgGA::GUIEventAdapter::KEYDOWN):

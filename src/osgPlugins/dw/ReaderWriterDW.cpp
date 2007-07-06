@@ -973,5 +973,5 @@ int dwfgets(char *clin, int max, FILE *fin)
 
 // now register with osg::Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterDW> g_readerWriter_DW_Proxy;
+REGISTER_OSGPLUGIN(dw, ReaderWriterDW)
 

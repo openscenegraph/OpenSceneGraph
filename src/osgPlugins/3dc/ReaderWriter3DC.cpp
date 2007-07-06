@@ -154,4 +154,4 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriter3DC> g_readerWriter_3DX_Proxy;
+REGISTER_OSGPLUGIN(3dc, ReaderWriter3DC)

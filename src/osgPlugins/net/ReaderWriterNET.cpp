@@ -466,8 +466,4 @@ class NetReader : public osgDB::ReaderWriter
         
 };
 
-osgDB::RegisterReaderWriterProxy<NetReader> g_netReader_Proxy;
-
-                
-
-
+REGISTER_OSGPLUGIN(net, NetReader)

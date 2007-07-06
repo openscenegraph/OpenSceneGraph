@@ -492,4 +492,4 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterBMP> g_readerWriter_BMP_Proxy;
+REGISTER_OSGPLUGIN(bmp, ReaderWriterBMP)

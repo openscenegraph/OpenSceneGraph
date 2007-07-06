@@ -59,4 +59,4 @@ class ReaderWriterTXF : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterTXF> g_readerWriter_TXF_Proxy;
+REGISTER_OSGPLUGIN(txf, ReaderWriterTXF)

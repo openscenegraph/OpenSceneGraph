@@ -70,7 +70,7 @@ class ReaderWriterVRML2 : public osgDB::ReaderWriter
 };
 
 // Register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterVRML2> g_readerWriter_VRML_Proxy;
+REGISTER_OSGPLUGIN(vrml, ReaderWriterVRML2)
 
 osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &fileName, const Options*) const
 {

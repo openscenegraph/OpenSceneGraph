@@ -515,4 +515,4 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterJP2> g_readerWriter_JP2_Proxy;
+REGISTER_OSGPLUGIN(jp2, ReaderWriterJP2)

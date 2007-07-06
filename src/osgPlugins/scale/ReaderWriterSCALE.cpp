@@ -172,7 +172,7 @@ public:
 
 
 // Add ourself to the Registry to instantiate the reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterSCALE> g_readerWriter_SCALE_Proxy;
+REGISTER_OSGPLUGIN(scale, ReaderWriterSCALE)
 
 /*EOF*/
 

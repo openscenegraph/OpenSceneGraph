@@ -176,7 +176,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterATTR> g_readerWriter_ATTR_Proxy;
+REGISTER_OSGPLUGIN(attr, ReaderWriterATTR)
 
 
 

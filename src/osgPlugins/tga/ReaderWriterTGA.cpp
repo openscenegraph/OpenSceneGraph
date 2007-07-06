@@ -530,4 +530,4 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterTGA> g_readerWriter_TGA_Proxy;
+REGISTER_OSGPLUGIN(tga, ReaderWriterTGA)

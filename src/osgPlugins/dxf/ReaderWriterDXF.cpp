@@ -40,7 +40,7 @@ protected:
 };
 
 // register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterdxf> g_dxfReaderWriterProxy;
+REGISTER_OSGPLUGIN(dxf, ReaderWriterdxf)
 
 
 // read file and convert to OSG.

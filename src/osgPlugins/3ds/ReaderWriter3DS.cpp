@@ -123,7 +123,7 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriter3DS> g_readerWriter_3DS_Proxy;
+REGISTER_OSGPLUGIN(3ds, ReaderWriter3DS)
 
 ReaderWriter3DS::ReaderWriter3DS()
 {

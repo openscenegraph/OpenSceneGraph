@@ -1,5 +1,5 @@
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlight loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2006  Brede Johansen
 //
@@ -286,9 +286,7 @@ class FLTReaderWriter : public ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-RegisterReaderWriterProxy<FLTReaderWriter> g_FLTReaderWriterProxy;
-
-
+REGISTER_OSGPLUGIN(OpenFlight, FLTReaderWriter)
 
 
 

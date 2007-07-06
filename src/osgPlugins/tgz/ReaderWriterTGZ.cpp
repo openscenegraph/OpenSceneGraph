@@ -140,4 +140,4 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
 
 // now register with sgRegistry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterTGZ> g_readerWriter_TGZ_Proxy;
+REGISTER_OSGPLUGIN(tgz, ReaderWriterTGZ)

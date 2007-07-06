@@ -652,4 +652,4 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterRGB> g_readerWriter_RGB_Proxy;
+REGISTER_OSGPLUGIN(rgb, ReaderWriterRGB)

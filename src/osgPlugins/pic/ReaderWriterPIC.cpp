@@ -241,4 +241,4 @@ class ReaderWriterPIC : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterPIC> g_readerWriter_PIC_Proxy;
+REGISTER_OSGPLUGIN(pic, ReaderWriterPIC)

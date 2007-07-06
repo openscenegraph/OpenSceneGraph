@@ -19,7 +19,7 @@
 #include "GroupSoLOD.h"
 
 // Register with Registry to instantiate the inventor reader.
-osgDB::RegisterReaderWriterProxy<ReaderWriterIV> g_ivReaderWriterProxy;
+REGISTER_OSGPLUGIN(Inventor, ReaderWriterIV)
 
 ReaderWriterIV::ReaderWriterIV()
 {

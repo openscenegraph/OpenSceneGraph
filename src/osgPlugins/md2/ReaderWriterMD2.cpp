@@ -56,7 +56,7 @@ public:
     virtual ReadResult readNode (const std::string& filename, const osgDB::ReaderWriter::Options* options) const;
 };
 
-osgDB::RegisterReaderWriterProxy<ReaderWriterMD2> g_readerWriter_MD2_Proxy;
+REGISTER_OSGPLUGIN(md2, ReaderWriterMD2)
 
 osgDB::ReaderWriter::ReadResult
 ReaderWriterMD2::readNode (const std::string& file, const osgDB::ReaderWriter::Options* options) const

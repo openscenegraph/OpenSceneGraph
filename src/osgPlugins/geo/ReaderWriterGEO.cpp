@@ -2228,4 +2228,4 @@ class ReaderWriterGEO : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterGEO> gReaderWriter_GEO_Proxy;
+REGISTER_OSGPLUGIN(geo, ReaderWriterGEO)

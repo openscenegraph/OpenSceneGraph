@@ -51,7 +51,7 @@ private:
 };
 
 // Register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterQ3BSP> g_readerWriter_Q3BSP_Proxy;
+REGISTER_OSGPLUGIN(bsp, ReaderWriterQ3BSP)
 
 
 

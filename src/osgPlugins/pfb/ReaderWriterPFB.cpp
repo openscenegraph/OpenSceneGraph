@@ -242,4 +242,4 @@ void ReaderWriterPFB::initPerformer()
 
 // now register with sgRegistry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterPFB> g_readerWriter_PFB_Proxy;
+REGISTER_OSGPLUGIN(pfb, ReaderWriterPFB)

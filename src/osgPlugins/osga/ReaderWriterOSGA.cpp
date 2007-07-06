@@ -102,4 +102,4 @@ protected:
 
 
 // register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterOSGA> g_osgaReaderWriterProxy;
+REGISTER_OSGPLUGIN(osga, ReaderWriterOSGA)

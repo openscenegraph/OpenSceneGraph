@@ -280,7 +280,7 @@ void GraphicsContext::setCompileContext(unsigned int contextID, GraphicsContext*
 
 GraphicsContext* GraphicsContext::getCompileContext(unsigned int contextID)
 {
-    osg::notify(osg::NOTICE)<<"GraphicsContext::getCompileContext "<<contextID<<std::endl;
+    //osg::notify(osg::NOTICE)<<"GraphicsContext::getCompileContext "<<contextID<<std::endl;
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
     return s_contextIDMap[contextID]._compileContext.get();
 }

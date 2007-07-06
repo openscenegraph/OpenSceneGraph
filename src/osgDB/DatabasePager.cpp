@@ -292,7 +292,6 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             setSchedulePriority(_threadPriorityDuringFrame);
             startThread();
         }
-                
     }
 }
 
@@ -594,22 +593,23 @@ void DatabasePager::run()
                     updateDatabasePagerThreadBlock();
                 }
                 
-                if (loadedObjectsNeedToBeCompiled && !_compileGraphicsContexts.empty())
+                if (loadedObjectsNeedToBeCompiled)
                 {
-                    for(CompileGraphicsContexts::iterator citr = _compileGraphicsContexts.begin();
-                        citr != _compileGraphicsContexts.end();
-                        ++citr)
+                    for(ActiveGraphicsContexts::iterator itr = _activeGraphicsContexts.begin();
+                        itr != _activeGraphicsContexts.end();
+                        ++itr)
                     {
-                        osg::GraphicsContext* gc = citr->get();
+                        osg::GraphicsContext* gc = osg::GraphicsContext::getCompileContext(*itr);
                         if (gc)
                         {   
-                            osg::OperationsThread* gt = gc->getGraphicsThread();                            
-                            if (gt) gt->add(new DatabasePager::CompileOperation(this));
+                            osg::OperationsThread* gt = gc->getGraphicsThread();
+                            if (gt)
+                            {
+                                gt->add(new DatabasePager::CompileOperation(this));
+                            }
                             else
                             {
                                 gc->makeCurrent();
-                                
-                                // osg::notify(osg::NOTICE)<<"Database pager thread compiling"<<std::endl;
                                 
                                 compileAllGLObjects(*(gc->getState()));
                                 
@@ -617,6 +617,7 @@ void DatabasePager::run()
                             }
                         }
                     }
+
                     // osg::notify(osg::NOTICE)<<"Done compiling in paging thread"<<std::endl;                   
                 }
                 
@@ -883,37 +884,6 @@ bool DatabasePager::requiresCompileGLObjects() const
     return !_dataToCompileList.empty();
 }
 
-void DatabasePager::addCompileGraphicsContext(osg::GraphicsContext* gc)
-{
-    for(CompileGraphicsContexts::iterator itr = _compileGraphicsContexts.begin();
-        itr != _compileGraphicsContexts.end();
-        ++itr)
-    {
-        if (*itr == gc)
-        {
-            return;
-        }
-    }
-    
-    _compileGraphicsContexts.push_back(gc);
-    
-    setCompileGLObjectsForContextID(gc->getState()->getContextID(),true);
-}
-
-void DatabasePager::removeCompileGraphicsContext(osg::GraphicsContext* gc)
-{
-    for(CompileGraphicsContexts::iterator itr = _compileGraphicsContexts.begin();
-        itr != _compileGraphicsContexts.end();
-        ++itr)
-    {
-        if (*itr == gc)
-        {
-            _compileGraphicsContexts.erase(itr);
-            return;
-        }
-    }
-}
-
 void DatabasePager::setCompileGLObjectsForContextID(unsigned int contextID, bool on)
 {
     if (on)
@@ -951,16 +921,8 @@ void DatabasePager::CompileOperation::operator () (osg::Object* object)
 bool DatabasePager::requiresExternalCompileGLObjects(unsigned int contextID) const
 {
     if (_activeGraphicsContexts.count(contextID)==0) return false;
-    
-    for(CompileGraphicsContexts::const_iterator citr = _compileGraphicsContexts.begin();
-        citr != _compileGraphicsContexts.end();
-        ++citr)
-    {
-        const osg::GraphicsContext* gc = citr->get();
-        if (gc && gc->getState()->getContextID()==contextID) return false;
-    }
 
-    return true;    
+    return osg::GraphicsContext::getCompileContext(contextID)==0;
 }
 
 void DatabasePager::compileAllGLObjects(osg::State& state)

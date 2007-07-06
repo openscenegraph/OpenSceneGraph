@@ -259,16 +259,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __void__updateSceneGraph__double,
 	          "Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph. ",
 	          "Note, must only be called from single thread update phase. ");
-	I_Method1(void, addCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
-	          Properties::NON_VIRTUAL,
-	          __void__addCompileGraphicsContext__osg_GraphicsContext_P1,
-	          "Add a graphics context that should be used to compile/delete OpenGL objects. ",
-	          "");
-	I_Method1(void, removeCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
-	          Properties::NON_VIRTUAL,
-	          __void__removeCompileGraphicsContext__osg_GraphicsContext_P1,
-	          "Removed a graphics context that should be used to compile/delete OpenGL objects. ",
-	          "");
 	I_Method2(void, setCompileGLObjectsForContextID, IN, unsigned int, contextID, IN, bool, on,
 	          Properties::NON_VIRTUAL,
 	          __void__setCompileGLObjectsForContextID__unsigned_int__bool,

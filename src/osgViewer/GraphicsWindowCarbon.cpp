@@ -343,9 +343,15 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
     }
     
     /** dtor */
-    ~OSXCarbonWindowingSystemInterface() {
-        if (_displayIds)
-            delete[] _displayIds;
+    ~OSXCarbonWindowingSystemInterface()
+    {
+        if (osg::Referenced::getDeleteHandler())
+        {
+            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+            osg::Referenced::getDeleteHandler()->flushAll();
+        }
+
+        if (_displayIds) delete[] _displayIds;
         _displayIds = NULL;
     }
     
@@ -1134,6 +1140,12 @@ struct RegisterWindowingSystemInterfaceProxy
 
     ~RegisterWindowingSystemInterfaceProxy()
     {
+        if (osg::Referenced::getDeleteHandler())
+        {
+            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+            osg::Referenced::getDeleteHandler()->flushAll();
+        }
+
         osg::GraphicsContext::setWindowingSystemInterface(0);
     }
 };

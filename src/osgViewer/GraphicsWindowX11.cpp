@@ -19,6 +19,8 @@
 #include <osgViewer/api/X11/GraphicsWindowX11>
 #include <osgViewer/api/X11/PixelBufferX11>
 
+#include <osg/DeleteHandler>
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
@@ -1178,6 +1180,12 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
 
     ~X11WindowingSystemInterface()
     {
+        if (osg::Referenced::getDeleteHandler())
+        {
+            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+            osg::Referenced::getDeleteHandler()->flushAll();
+        }
+
         //osg::notify(osg::NOTICE)<<"~X11WindowingSystemInterface()"<<std::endl;
         XSetErrorHandler(0);
     }
@@ -1251,7 +1259,15 @@ struct RegisterWindowingSystemInterfaceProxy
     ~RegisterWindowingSystemInterfaceProxy()
     {
         osg::notify(osg::INFO)<<"~RegisterWindowingSystemInterfaceProxy()"<<std::endl;
+
+        if (osg::Referenced::getDeleteHandler())
+        {
+            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+            osg::Referenced::getDeleteHandler()->flushAll();
+        }
+
         osg::GraphicsContext::setWindowingSystemInterface(0);
+
     }
 };
 

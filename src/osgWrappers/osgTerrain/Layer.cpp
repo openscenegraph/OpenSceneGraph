@@ -90,9 +90,27 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec4_R1,
 	          "",
 	          "");
+	I_Method0(void, dirty,
+	          Properties::VIRTUAL,
+	          __void__dirty,
+	          "increment the modified count. ",
+	          "\" ");
+	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          Properties::VIRTUAL,
+	          __void__setModifiedCount__unsigned_int,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
 	I_SimpleProperty(osg::HeightField *, HeightField, 
 	                 __osg_HeightField_P1__getHeightField, 
 	                 __void__setHeightField__osg_HeightField_P1);
+	I_SimpleProperty(unsigned int, ModifiedCount, 
+	                 __unsigned_int__getModifiedCount, 
+	                 __void__setModifiedCount__unsigned_int);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
@@ -155,9 +173,27 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec4_R1,
 	          "",
 	          "");
+	I_Method0(void, dirty,
+	          Properties::VIRTUAL,
+	          __void__dirty,
+	          "increment the modified count. ",
+	          "\" ");
+	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          Properties::VIRTUAL,
+	          __void__setModifiedCount__unsigned_int,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __osg_Image_P1__getImage, 
 	                 __void__setImage__osg_Image_P1);
+	I_SimpleProperty(unsigned int, ModifiedCount, 
+	                 __unsigned_int__getModifiedCount, 
+	                 __void__setModifiedCount__unsigned_int);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
@@ -300,6 +336,21 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __bool__getInterpolatedValue__double__double__float_R1,
 	          "",
 	          "");
+	I_Method0(void, dirty,
+	          Properties::VIRTUAL,
+	          __void__dirty,
+	          "increment the modified count. ",
+	          "\" ");
+	I_Method1(void, setModifiedCount, IN, unsigned, int,
+	          Properties::VIRTUAL,
+	          __void__setModifiedCount__unsigned,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingSphere__computeBound,
@@ -311,6 +362,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
+	I_SimpleProperty(unsigned, ModifiedCount, 
+	                 0, 
+	                 __void__setModifiedCount__unsigned);
 	I_SimpleProperty(osgTerrain::ValidDataOperator *, ValidDataOperator, 
 	                 __ValidDataOperator_P1__getValidDataOperator, 
 	                 __void__setValidDataOperator__ValidDataOperator_P1);

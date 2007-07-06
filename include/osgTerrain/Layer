@@ -141,6 +141,15 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
             return false;
         }
 
+        /** increment the modified count."*/
+        virtual void dirty() {};
+
+        /** Set the modified count value.  */
+        virtual void setModifiedCount(unsigned int /*value*/) {};
+
+        /** Get modified count value. */
+        virtual unsigned int getModifiedCount() const { return 0; }
+
         virtual osg::BoundingSphere computeBound() const;
 
     protected:
@@ -176,6 +185,10 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
         virtual bool getValue(unsigned int i, unsigned int j, osg::Vec3& value) const;
         virtual bool getValue(unsigned int i, unsigned int j, osg::Vec4& value) const;
 
+        virtual void dirty();
+        virtual void setModifiedCount(unsigned int value);
+        virtual unsigned int getModifiedCount() const;
+
     protected:
 
         virtual ~ImageLayer() {}
@@ -207,11 +220,16 @@ class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
         virtual bool getValue(unsigned int i, unsigned int j, osg::Vec3& value) const;
         virtual bool getValue(unsigned int i, unsigned int j, osg::Vec4& value) const;
 
+        virtual void dirty();
+        virtual void setModifiedCount(unsigned int value);
+        virtual unsigned int getModifiedCount() const;
+
     protected:
 
         virtual ~HeightFieldLayer() {}
 
-        osg::ref_ptr<osg::HeightField> _heightField;
+        unsigned int                    _modifiedCount;
+        osg::ref_ptr<osg::HeightField>  _heightField;
 
 };
 

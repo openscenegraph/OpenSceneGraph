@@ -144,7 +144,11 @@ bool ImageLayer::transform(float offset, float scale)
 {
     if (!_image.valid()) return false;
 
+    osg::notify(osg::NOTICE)<<"ImageLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
+
     processImage(_image.get(), TransformOperator(offset,scale));
+    
+    dirty();
 
     return true;
 }
@@ -208,24 +212,46 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) cons
     return false;
 }
 
+void ImageLayer::dirty()
+{
+    if (_image.valid()) _image->dirty();
+}
+
+void ImageLayer::setModifiedCount(unsigned int value)
+{
+    if (!_image) return;
+    else _image->setModifiedCount(value);
+}
+
+unsigned int ImageLayer::getModifiedCount() const
+{
+    if (!_image) return 0;
+    else return _image->getModifiedCount();
+}
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // HieghtFieldLayer
 //
-HeightFieldLayer::HeightFieldLayer()
+HeightFieldLayer::HeightFieldLayer():
+    _modifiedCount(0)
 {
 }
 
 HeightFieldLayer::HeightFieldLayer(const HeightFieldLayer& hfLayer,const osg::CopyOp& copyop):
     Layer(hfLayer,copyop),
+    _modifiedCount(0),
     _heightField(hfLayer._heightField)
 {
+    if (_heightField.valid()) ++_modifiedCount;
 }
 
 
 void HeightFieldLayer::setHeightField(osg::HeightField* hf)
 {
     _heightField = hf;
+    dirty();
 }
 
 
@@ -237,12 +263,16 @@ bool HeightFieldLayer::transform(float offset, float scale)
     osg::FloatArray* heights = _heightField->getFloatArray();
     if (!heights) return false;
     
+    osg::notify(osg::NOTICE)<<"HeightFieldLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
+
     for(osg::FloatArray::iterator itr = heights->begin();
         itr != heights->end();
         ++itr)
     {
         *itr = offset + (*itr) * scale;
     }
+    
+    dirty();
 
     return true;
 }
@@ -275,4 +305,19 @@ bool HeightFieldLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value
     value.z() = _defaultValue.z();
     value.w() = _defaultValue.w();
     return true;
+}
+
+void HeightFieldLayer::dirty()
+{
+    ++_modifiedCount;
+}
+
+void HeightFieldLayer::setModifiedCount(unsigned int value)
+{
+    _modifiedCount = value;
+}
+
+unsigned int HeightFieldLayer::getModifiedCount() const
+{
+    return _modifiedCount;
 }

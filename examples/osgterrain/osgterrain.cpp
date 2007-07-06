@@ -122,6 +122,49 @@ protected:
 
 
 
+class LayerHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+        LayerHandler(osgTerrain::Layer* layer):
+            _layer(layer) {}
+
+        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+        {
+            if (!_layer) return false;
+            
+            float scale = 1.2;
+            
+            switch(ea.getEventType())
+            {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+                {
+                    if (ea.getKey() == 'q')
+                    {
+                        _layer->transform(0.0, scale);
+                        return true;
+                    }
+                    else if (ea.getKey() == 'a')
+                    {
+                        _layer->transform(0.0, 1.0f/scale);
+                        return true;
+                    }
+                    break;
+                }
+            default:
+                break;
+            }
+            return false;
+            
+        }
+
+protected:
+
+        osg::observer_ptr<osgTerrain::Layer> _layer;
+
+};
+
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -174,6 +217,7 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
     osg::ref_ptr<osgTerrain::ValidDataOperator> validDataOperator = new osgTerrain::NoDataValue(0.0);
+    osg::ref_ptr<osgTerrain::Layer> lastAppliedLayer;
 
     unsigned int layerNum = 0;
 
@@ -183,6 +227,7 @@ int main(int argc, char** argv)
     float minValue, maxValue;
     float scale = 1.0f;
     float offset = 0.0f;
+
 
     int pos = 1;
     while(pos<arguments.argc())
@@ -243,6 +288,8 @@ int main(int argc, char** argv)
                 
                 terrain->setElevationLayer(hfl.get());
                 
+                lastAppliedLayer = hfl.get();
+                
                 osg::notify(osg::NOTICE)<<"created osgTerrain::HeightFieldLayer"<<std::endl;
             }
             else
@@ -275,6 +322,8 @@ int main(int argc, char** argv)
                 
                 terrain->setElevationLayer(imageLayer.get());
                 
+                lastAppliedLayer = imageLayer.get();
+
                 osg::notify(osg::NOTICE)<<"created Elevation osgTerrain::ImageLayer"<<std::endl;
             }
             else
@@ -306,7 +355,9 @@ int main(int argc, char** argv)
                 }
 
                 terrain->setColorLayer(layerNum, imageLayer.get());
-                
+
+                lastAppliedLayer = imageLayer.get();
+
                 osg::notify(osg::NOTICE)<<"created Color osgTerrain::ImageLayer"<<std::endl;
             }
             else
@@ -373,6 +424,8 @@ int main(int argc, char** argv)
     terrain->setTerrainTechnique(geometryTechnique.get());
     
     viewer.addEventHandler(new FilterHandler(geometryTechnique.get()));
+    
+    viewer.addEventHandler(new LayerHandler(lastAppliedLayer.get()));
 
     if (!terrain) return 0;
     

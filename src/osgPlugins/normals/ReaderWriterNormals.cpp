@@ -90,6 +90,4 @@ class NormalsReader: public osgDB::ReaderWriter
         }
 };
 
-osgDB::RegisterReaderWriterProxy<NormalsReader> g_normalsReader_Proxy;
-
-
+REGISTER_OSGPLUGIN(normals, NormalsReader)

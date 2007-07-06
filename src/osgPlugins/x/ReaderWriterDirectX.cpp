@@ -70,7 +70,7 @@ private:
 };
 
 // Register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterDirectX> g_readerWriter_DirectX_Proxy;
+REGISTER_OSGPLUGIN(x, ReaderWriterDirectX)
 
 
 // Read node

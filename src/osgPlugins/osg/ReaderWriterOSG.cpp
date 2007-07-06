@@ -203,4 +203,4 @@ class OSGReaderWriter : public ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-RegisterReaderWriterProxy<OSGReaderWriter> g_OSGReaderWriterProxy;
+REGISTER_OSGPLUGIN(osg, OSGReaderWriter)

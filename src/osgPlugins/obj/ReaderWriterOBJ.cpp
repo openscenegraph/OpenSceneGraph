@@ -103,7 +103,7 @@ inline osg::Vec3 ReaderWriterOBJ::transformNormal(const osg::Vec3& vec, const bo
 
 
 // register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterOBJ> g_objReaderWriterProxy;
+REGISTER_OSGPLUGIN(obj, ReaderWriterOBJ)
 
 void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap) const
 {

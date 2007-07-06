@@ -459,4 +459,4 @@ public:
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterQT> g_readerWriter_QT_Proxy;
+REGISTER_OSGPLUGIN(quicktime, ReaderWriterQT)

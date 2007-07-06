@@ -79,4 +79,4 @@ lwosg::SceneLoader::Options ReaderWriterLWS::parse_options(const Options *option
 
 
 // register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterLWS> g_lwsReaderWriterProxy;
+REGISTER_OSGPLUGIN(lws, ReaderWriterLWS)

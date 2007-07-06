@@ -398,4 +398,4 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterGIF> g_readerWriter_GIF_Proxy;
+REGISTER_OSGPLUGIN(gif, ReaderWriterGIF)

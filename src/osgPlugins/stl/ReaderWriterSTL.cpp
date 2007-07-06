@@ -81,7 +81,7 @@ private:
 
 
 // Register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterSTL> g_readerWriter_STL_Proxy;
+REGISTER_OSGPLUGIN(stl, ReaderWriterSTL)
 
 
 /*

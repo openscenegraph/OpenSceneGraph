@@ -188,7 +188,7 @@ private:
 
 // now register with osg::Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterAC> g_readerWriter_AC_Proxy;
+REGISTER_OSGPLUGIN(ac, ReaderWriterAC)
 
 
 namespace ac3d {

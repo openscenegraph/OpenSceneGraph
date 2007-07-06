@@ -153,5 +153,5 @@ public:
 
 
 // Add ourself to the Registry to instantiate the reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterOsgViewer> g_readerWriter_OsgViewer_Proxy;
+REGISTER_OSGPLUGIN(osgViewer, ReaderWriterOsgViewer)
 

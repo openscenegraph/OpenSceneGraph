@@ -1005,4 +1005,4 @@ public:
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterDDS> g_readerWriter_DDS_Proxy;
+REGISTER_OSGPLUGIN(dds, ReaderWriterDDS)

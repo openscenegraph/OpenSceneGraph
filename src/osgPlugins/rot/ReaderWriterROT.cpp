@@ -162,7 +162,7 @@ public:
 
 
 // Add ourself to the Registry to instantiate the reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterROT> g_readerWriter_ROT_Proxy;
+REGISTER_OSGPLUGIN(rot, ReaderWriterROT)
 
 /*EOF*/
 

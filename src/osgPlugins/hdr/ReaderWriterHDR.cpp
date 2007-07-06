@@ -173,4 +173,4 @@ public:
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterHDR> g_readerWriter_HDR_Proxy;
+REGISTER_OSGPLUGIN(hdr, ReaderWriterHDR)

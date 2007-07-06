@@ -787,4 +787,4 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterTIFF> g_readerWriter_TIFF_Proxy;
+REGISTER_OSGPLUGIN(tiff, ReaderWriterTIFF)

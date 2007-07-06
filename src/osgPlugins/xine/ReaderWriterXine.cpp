@@ -352,4 +352,4 @@ class ReaderWriterXine : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterXine> g_readerWriter_Xine_Proxy;
+REGISTER_OSGPLUGIN(xine, ReaderWriterXine)

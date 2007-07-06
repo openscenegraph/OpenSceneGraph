@@ -869,5 +869,5 @@ osg::Node* ReaderWriterTXP::getTileContent(const TXPArchive::TileInfo &info, con
     return tileGroup;
 }
 
-osgDB::RegisterReaderWriterProxy<ReaderWriterTXP> g_txpReaderWriterProxy;
+REGISTER_OSGPLUGIN(txp, ReaderWriterTXP)
 

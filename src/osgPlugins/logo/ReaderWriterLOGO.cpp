@@ -286,6 +286,4 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-
-osgDB::RegisterReaderWriterProxy<LOGOReaderWriter> g_LOGOReaderWriterProxy;
-
+REGISTER_OSGPLUGIN(logo, LOGOReaderWriter)

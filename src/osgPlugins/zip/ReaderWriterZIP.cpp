@@ -122,4 +122,4 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
 // now register with sgRegistry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterZIP> g_readerWriter_ZIP_Proxy;
+REGISTER_OSGPLUGIN(zip, ReaderWriterZIP)

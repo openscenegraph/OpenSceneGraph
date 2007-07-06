@@ -122,7 +122,7 @@ lwosg::Converter::Options ReaderWriterLWO::parse_options(const Options *options)
 
 
 // register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterLWO> g_lwoReaderWriterProxy;
+REGISTER_OSGPLUGIN(lwo, ReaderWriterLWO)
 
 osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO2(const std::string &fileName, const osgDB::ReaderWriter::Options *options) const
 {

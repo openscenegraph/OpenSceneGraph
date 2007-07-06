@@ -36,5 +36,4 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
     private:
 };
 
-osgDB::RegisterReaderWriterProxy<ESRIShapeReaderWriter> g_esriShapeReaderWriter_Proxy;
-
+REGISTER_OSGPLUGIN(shp, ESRIShapeReaderWriter)

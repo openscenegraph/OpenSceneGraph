@@ -116,4 +116,4 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 
 // now register with sgRegistry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<sgReaderWriterOSGTGZ> g_readerWriter_OSGTGZ_Proxy;
+REGISTER_OSGPLUGIN(osgtgz, sgReaderWriterOSGTGZ)

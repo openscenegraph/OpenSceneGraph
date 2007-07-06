@@ -151,6 +151,6 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 ///////////////////////////////////////////////////////////////////////////
 // Add ourself to the Registry to instantiate the reader/writer.
 
-osgDB::RegisterReaderWriterProxy<ReaderWriterDAE> g_readerWriter_DAE_Proxy;
+REGISTER_OSGPLUGIN(dae, ReaderWriterDAE)
 
 // vim: set sw=4 ts=8 et ic ai:

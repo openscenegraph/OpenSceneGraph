@@ -18,6 +18,9 @@
 
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
 #include <osgViewer/api/Win32/PixelBufferWin32>
+
+#include <osg/DeleteHandler>
+
 #include <vector>
 #include <map>
 #include <sstream>

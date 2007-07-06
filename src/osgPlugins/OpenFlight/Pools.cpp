@@ -20,8 +20,14 @@ osg::Vec4 ColorPool::getColor(int indexIntensity) const
         // bit 12    fixed intensity bit
         bool fixedIntensity = (indexIntensity & 0x1000) ? true : false;
         unsigned int index = (fixedIntensity) ? (indexIntensity & 0x0fff)+(4096>>7) : indexIntensity >> 7;
-        assert(index<size());
-        osg::Vec4 col = at(index);
+
+        if (index>=size())
+        {
+            // color index not available.
+            return osg::Vec4(1,1,1,1);
+        }
+
+        osg::Vec4 col =  operator[](index);
         if (!fixedIntensity)
         {
             float intensity = (float)(indexIntensity & 0x7f)/127.f;
@@ -35,15 +41,15 @@ osg::Vec4 ColorPool::getColor(int indexIntensity) const
     {
         // bit 0-6:  intensity
         // bit 7-15  color index
-        int index = indexIntensity >> 7;
+        unsigned int index = indexIntensity >> 7;
 
-        if (index<0 || index>=(int)size())
+        if (index>=size())
         {
             // color index not available.
             return osg::Vec4(1,1,1,1);
         }
 
-        osg::Vec4 col = at(index);
+        osg::Vec4 col =  operator[](index);
         float intensity = (float)(indexIntensity & 0x7f)/127.f;
         col[0] *= intensity;
         col[1] *= intensity;

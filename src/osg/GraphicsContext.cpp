@@ -28,6 +28,7 @@
 
 #include <map>
 #include <sstream>
+#include <algorithm>
 
 using namespace osg;
 

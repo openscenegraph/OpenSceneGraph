@@ -59,6 +59,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/GL
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLExtensions
+    ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
     ${HEADER_PATH}/Geode
     ${HEADER_PATH}/Geometry
@@ -212,6 +213,7 @@ ADD_LIBRARY(${LIB_NAME}
     FrameStamp.cpp
     FrontFace.cpp
     GLExtensions.cpp
+    GLObjects.cpp
     Geode.cpp
     Geometry.cpp
     GraphicsContext.cpp

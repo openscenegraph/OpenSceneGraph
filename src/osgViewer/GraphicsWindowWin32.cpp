@@ -567,6 +567,12 @@ Win32WindowingSystem::Win32WindowingSystem()
 
 Win32WindowingSystem::~Win32WindowingSystem()
 {
+    if (osg::Referenced::getDeleteHandler())
+    {
+        osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+        osg::Referenced::getDeleteHandler()->flushAll();
+    }
+    
     unregisterWindowClasses();
 }
 
@@ -2184,6 +2190,12 @@ struct RegisterWindowingSystemInterfaceProxy
 
     ~RegisterWindowingSystemInterfaceProxy()
     {
+        if (osg::Referenced::getDeleteHandler())
+        {
+            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
+            osg::Referenced::getDeleteHandler()->flushAll();
+        }
+
         osg::GraphicsContext::setWindowingSystemInterface(0);
     }
 };

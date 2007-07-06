@@ -157,8 +157,6 @@ int main(int argc, char** argv)
         int numProcessors = OpenThreads::GetNumberOfProcessors();
         int processNum = 0;
 
-        osgDB::DatabasePager* dp = viewer.getScene()->getDatabasePager();
-
         for(unsigned int i=0; i<osg::GraphicsContext::getMaxContextID(); ++i)
         {
             osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
@@ -171,8 +169,6 @@ int main(int argc, char** argv)
                 
                 ++processNum;
             }
-
-            dp->addCompileGraphicsContext(gc);
         }
     }
 

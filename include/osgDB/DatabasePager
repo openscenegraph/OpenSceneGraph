@@ -218,20 +218,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             addLoadedDataToSceneGraph(currentFrameTime);
         }
         
-        
-        /** Add a graphics context that should be used to compile/delete OpenGL objects.*/
-        void addCompileGraphicsContext(osg::GraphicsContext* gc);
-        
-        /** Removed a graphics context that should be used to compile/delete OpenGL objects.*/
-        void removeCompileGraphicsContext(osg::GraphicsContext* gc);
-
-        
         /** Turn the compilation of rendering objects for specfied graphics context on (true) or off(false). */
         void setCompileGLObjectsForContextID(unsigned int contextID, bool on);
         
         /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false). */
         bool getCompileGLObjectsForContextID(unsigned int contextID);
-
 
         /** Rerturn true if an external draw thread should call compileGLObjects(..) or not.*/
         bool requiresExternalCompileGLObjects(unsigned int contextID) const;
@@ -375,7 +366,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double                          _expiryDelay;
 
         ActiveGraphicsContexts          _activeGraphicsContexts;
-        CompileGraphicsContexts         _compileGraphicsContexts;
+        // CompileGraphicsContexts         _compileGraphicsContexts;
         
         bool                            _doPreCompile;
         double                          _targetFrameRate;

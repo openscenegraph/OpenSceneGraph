@@ -35,12 +35,11 @@
 #include <osg/Light>
 #include <osg/LightSource>
 
-
-
 #include <osg/Notify>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <assert.h>
 #include <map>
@@ -72,8 +71,15 @@ class ReaderWriterVRML2 : public osgDB::ReaderWriter
 // Register with Registry to instantiate the above reader/writer.
 REGISTER_OSGPLUGIN(vrml, ReaderWriterVRML2)
 
-osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &fileName, const Options*) const
+osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &fname, const Options* opt) const
 {
+    std::string fileName = osgDB::findDataFile(fname, opt);
+    if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+    // convert possible Windows backslashes to Unix slashes
+    // OpenVRML doesn't like backslashes, even on Windows
+    fileName = "file:///" + osgDB::convertFileNameToUnixStyle(fileName);
+
     std::fstream null;
     openvrml::browser *browser = new openvrml::browser(null, null);
 

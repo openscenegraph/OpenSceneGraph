@@ -44,6 +44,7 @@ void CompositeViewer::constructorInit()
     _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
     _quitEventSetsDone = true;
     _threadingModel = ThreadPerContext;
+    _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
     _numThreadsOnBarrier = 0;
     _startTick = 0;

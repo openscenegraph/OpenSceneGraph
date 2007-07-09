@@ -35,34 +35,73 @@ class RefBlock: virtual public osg::Referenced, public OpenThreads::Block
 };
 
 /** Base class for implementing graphics operations.*/
-struct Operation : virtual public Referenced
+class Operation : virtual public Referenced
 {
-    Operation(const std::string& name, bool keep):
-        _name(name),
-        _keep(keep) {}
+    public:
+        Operation(const std::string& name, bool keep):
+            _name(name),
+            _keep(keep) {}
+
+
+        /** Set the human readable name of the operation.*/
+        void setName(const std::string& name) { _name = name; }
+
+        /** Get the human readable name of the operation.*/
+        const std::string& getName() const { return _name; }
+
+        /** Set whether the operation should be kept once its been applied.*/ 
+        void setKeep(bool keep) { _keep = keep; }
+
+        /** Get whether the operation should be kept once its been applied.*/ 
+        bool getKeep() const { return _keep; }
+
+        /** if this operation is a barrier then release it.*/
+        virtual void release() {}
+
+        /** Do the actual task of this operation.*/ 
+        virtual void operator () (Object*) = 0;
+
+    protected:
+
+        virtual ~Operation() {}
+
+        std::string _name;
+        bool        _keep;
+};
+
+class OSG_EXPORT OperationQueue : public Referenced
+{
+    public:
+    
+        OperationQueue();
         
-    virtual ~Operation() {}
+        RefBlock* getOperationsBlock() { return _operationsBlock.get(); }
+        
+        const RefBlock* getOperationsBlock() const { return _operationsBlock.get(); }
 
-    /** Set the human readable name of the operation.*/
-    void setName(const std::string& name) { _name = name; }
+        /** Add operation to end of OperationQueue, this will be 
+          * executed by the operation thread once this operation gets to the head of the queue.*/
+        void add(Operation* operation);
+        
+        /** Remove operation from OperationQueue.*/
+        void remove(Operation* operation);
 
-    /** Get the human readable name of the operation.*/
-    const std::string& getName() const { return _name; }
+        /** Remove named operation from OperationQueue.*/
+        void remove(const std::string& name);
 
-    /** Set whether the operation should be kept once its been applied.*/ 
-    void setKeep(bool keep) { _keep = keep; }
+        /** Remove all operations from OperationQueue.*/
+        void removeAllOperations();
+        
+    protected:
 
-    /** Get whether the operation should be kept once its been applied.*/ 
-    bool getKeep() const { return _keep; }
+        virtual ~OperationQueue();
 
-    /** if this operation is a barrier then release it.*/
-    virtual void release() {}
+        typedef std::list< ref_ptr<Operation> > Operations;
 
-    /** Do the actual task of this operation.*/ 
-    virtual void operator () (Object*) = 0;
+        OpenThreads::Mutex          _operationsMutex;
+        osg::ref_ptr<osg::RefBlock> _operationsBlock;
+        Operations _operations;
 
-    std::string _name;
-    bool        _keep;
 };
 
 /** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
@@ -110,13 +149,13 @@ class OSG_EXPORT OperationsThread : public Referenced, public OpenThreads::Threa
         
         observer_ptr<Object>   _parent;
 
-        typedef std::list< ref_ptr<Operation> > OperationQueue;
+        typedef std::list< ref_ptr<Operation> > Operations;
 
         bool                        _done;
 
         OpenThreads::Mutex          _operationsMutex;
         osg::ref_ptr<osg::RefBlock> _operationsBlock;
-        OperationQueue              _operations;
+        Operations                  _operations;
         osg::ref_ptr<Operation>     _currentOperation;
 
 };

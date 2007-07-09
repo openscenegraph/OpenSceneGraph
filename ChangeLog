@@ -1,3 +1,569 @@
+2007-07-09 11:05 +0000 [r7085-7087]  robert:
+
+	* Updated version number for 2.1.0 dev release
+
+	* Added OpertionQueue
+
+	* Added OperationQueue class for future work on support thread
+	  pools that share a single OpeationQueue.
+
+2007-07-09 10:48 +0000 [r7083-7084]  robert:
+
+	* Updated wrappers
+
+	* Improved the consistency of setting of rotation and auto rotate
+	  modes in setAxisAlingment method
+
+2007-07-09 10:12 +0000 [r7082]  robert:
+
+	* Fixed missinged intialization of the _threadsRunning variable.
+
+2007-07-07 16:05 +0000 [r7081]  robert:
+
+	* From Jean-Sebastien Guay and Jan Ciger, added search path can
+	  improved handling of backslashes/forward slashes
+
+2007-07-06 20:00 +0000 [r7080]  robert:
+
+	* Updared wrappers
+
+2007-07-06 16:54 +0000 [r7079]  robert:
+
+	* Added include of DeleteHandler
+
+2007-07-06 16:47 +0000 [r7078]  robert:
+
+	* Added dirty count support to osgTerrain::Layer clases. Added
+	  LayerHandler to osgterrain example that modifies the layers in
+	  response to pressing the 's' and 'q' keys
+
+2007-07-06 14:07 +0000 [r7077]  robert:
+
+	* From Jea-Sebastien Guay and Robert Osfield, build fixes for
+	  Windows
+
+2007-07-06 13:54 +0000 [r7076]  robert:
+
+	* From Rudolf Wiedemann, "I need to link OpenSceneGraph statically
+	  to my application, so I completed the new registration of the
+	  plugin-readerwriters ("REGISTER_OSGPLUGIN") according to your
+	  osgstaticviewer-example (see attachment, based on today's svn)."
+
+2007-07-06 13:33 +0000 [r7075]  robert:
+
+	* From Brede Johansen, "Attached is a fix that returns a default
+	  color (white) if an invalid index to the color palette is used."
+
+2007-07-06 13:08 +0000 [r7074]  robert:
+
+	* Added include/osg/GLObjects + .cpp which provide
+	  osg::flush*DeletedGLObjects() methods. Added and cleaned up
+	  DeleteHandler calls in osgViewer to help avoid crashes on exit.
+	  Changed DatabasePager across to dynamically checcking
+	  osg::getCompileContext(..) Updated wrappers.
+
+2007-07-06 09:06 +0000 [r7073]  robert:
+
+	* Added #include<algorithm>
+
+2007-07-05 18:41 +0000 [r7072]  robert:
+
+	* Updated wrappers.
+
+2007-07-05 18:33 +0000 [r7068-7071]  robert:
+
+	* Added support for managing a CompileContext. Rearranged the
+	  DeleteHandler::flushAll call.
+
+	* Added debug messages to catch key modified state
+
+	* Improved the computation of the side vector
+
+	* Improved the mapping of update and cull traversal
+
+2007-07-05 10:57 +0000 [r7067]  robert:
+
+	* From Adndre Garneau, "Attached is a fix to prevent a cursor being
+	  shown in graphics windows when traits specify that none should be
+	  used (a recent change forced a left-pointer cursor as the
+	  default). "
+
+2007-07-05 10:51 +0000 [r7066]  robert:
+
+	* Commented out "fix" that explictly sets the key modifier state as
+	  this change actually broke the key modifier state management.
+
+2007-07-03 17:32 +0000 [r7065]  robert:
+
+	* From Thibault Genessay, "You'll find attached a fix for the
+	  comments of the osgwindows example. It fixes a typo in the
+	  comments which is quite disturbing for newbies trying to learn
+	  using the source (twice 'left' instead of 'left' and 'right').
+	  I've also added a little offset to the windows' positions so that
+	  their decoration falls inside the desktop and we can manipulate
+	  them - it looks a bit less "made out of wood"."
+
+2007-07-03 13:26 +0000 [r7064]  robert:
+
+	* Added checking of GUIEventAdpter::getHandled().
+
+2007-07-03 10:00 +0000 [r7063]  robert:
+
+	* From Roger James, added GL_NORMALIZE mode to scaled models
+
+2007-07-02 13:17 +0000 [r7061-7062]  robert:
+
+	* Changed the way that computeNearFar is computed to avoid
+	  inconsistencies when in stereo mode
+
+	* Updated wrappers
+
+2007-07-02 12:43 +0000 [r7060]  robert:
+
+	* From Csaba Halasz, support reading "monochrome" option string and
+	  use of monocrhome FreetType support
+
+2007-07-02 12:30 +0000 [r7059]  robert:
+
+	* From Csaba Halasz and Robert Osfield, support for passing in
+	  ReaderWriter::Options object into readFontFile
+
+2007-06-30 16:19 +0000 [r7058]  robert:
+
+	* From Mike Connell, "This is a tiny fix for win32. The current
+	  code takes the mouse cursor position and adds it to the window
+	  (left,top) position, and sends the mouse cursor there. But this
+	  doesn't take into account the window decoration. The new code
+	  converts the given (x,y) coordinates from the client area
+	  coordinate system to the screen instead using ClientToScreen. I
+	  think this is the natural windows way to do it. Tested on XP with
+	  osgviewer " Note from Robet Osfield, made a few changes to layout
+	  to make it more consistent with the rest of the OSG and used #if
+	  0 instead if (0) blocks.
+
+2007-06-30 15:40 +0000 [r7057]  robert:
+
+	* From Stephan Huber, "attached you'll find a small fix for the
+	  3ds-plugin, so 3ds-files exported from cinema 4d are imported
+	  correctly. It's not cinema's fault, because the 3ds-files show up
+	  correctly in 3dStudio Max."
+
+2007-06-30 14:30 +0000 [r7053-7056]  robert:
+
+	* Updated wrappers
+
+	* Added s/getUsage() method
+
+	* Added balancing of stack size on entry/exit from rendering nested
+	  camera.
+
+	* Added debug path that creates the viewer on the heap.
+
+2007-06-30 14:21 +0000 [r7052]  robert:
+
+	* From David Callu, " Found in the join file the fix for the bug
+	  found by Rafa. Problem : osgIntrospection::Value grp(new
+	  osg::Group); osgIntrospection::ValueList vlcall;
+	  vlcall.push_back(osgIntrospection::Value("toto")); const
+	  osgIntrospection::MethodInfo *m =
+	  grp->getType.getCompatibleMethod("setName", vlcall, true); if (m)
+	  { m->invoke(grp, vlcall); // ** SEGFAULT here } Algorithm
+	  explanation : The "invoke" method try to convert "grp", which
+	  reflect an "osg::Group*", in a "osgIntrospection::Value", which
+	  reflect a "osg::Node*". This because the "setName(const char *)"
+	  method found by "grp->getType.getCompatibleMethod" is an
+	  "osg::Object" type method. When osgIntrospection do this
+	  conversion it try : - to found a "osgIntrospection::Converter" to
+	  convert from "osg::Group*" to "osg::Node*" - to found a chain of
+	  "osgIntrospection::Converter" to convert from "osg::Group*" to
+	  "one or many type" to "osg::Node*" - to converte an Enum to int
+	  or unsigned int - to convert the value in its "value string
+	  representation", then converte this string in the destination
+	  value Else it throw a "TypeConversionException". Bug : 1) When
+	  osgIntrospection try to found a chain of
+	  "osgIntrospection::Converter" It could do any downcast or (Type
+	  to SuperType) or upcast (SuperType to Type). This mean the the
+	  chain could be : osg::Group to osg::Transform to osg::Camera to
+	  osg::CullSettings to osg::CullStack to
+	  osg::CollectOccludersVisitor to osg::NodeVisitor to
+	  osg::Referenced to osg::Object During the convertion with this
+	  chain, A METTRE failed and the pointer in "grp" is set NULL. But
+	  the "grp" is always a valid "osgIntrospection::Value" and so,
+	  osgIntrospection accept the conversion. Then it try to use this
+	  pointer to call the "setName" function. And Bing SEGFAULT. 2) In
+	  "bool Reflection::accum_conv_path( ... )" the convection path
+	  isn't accumulate in the recursive loop. this cause multi request
+	  of a conversion path, and a slowdown in the conversion algorithm.
+	  3) Use of the last conversion way in a conversion from pointer to
+	  pointer this mean you can do this : "osg::Node*" to " value
+	  string representation" to "osg::Material*" What a bad thing !!!
+	  Solution : 1) Introduce the concept of dynamic_cast and
+	  static_cast. now, to do a conversion, osgIntrospection does this
+	  : - to found a "osgIntrospection::Converter" to convert from
+	  "osg::Group*" to "osg::Node*" - to found a chain of
+	  "osgIntrospection::Converter" to convert from "osg::Group*" to
+	  "one or many type" to "osg::Node*" only with static_cast,
+	  downcast (Type to SuperType) - to found, if the source and the
+	  destination are two pointer, a chain of
+	  "osgIntrospection::Converter" to convert from "osg::Group*" to
+	  "one or many type" to "osg::Node*" only with dynamic_cast, upcast
+	  (SuperType to Type) - to convert an Enum to int or to unsigned
+	  int - to convert the value in its "value string representation",
+	  then convert this string in the destination value Else it throw a
+	  "TypeConversionException". Add the "enum CastType" to distinguish
+	  the static_cast or dynamic_cast converter. Add file
+	  OpenSceneGraph/include/osgIntrospection/CastType 2) add a line to
+	  accumulate converter in converter Path. 3) add a line to check if
+	  source and destination are pointer. "
+
+2007-06-30 09:27 +0000 [r7051]  robert:
+
+	* From Sherman Wilcox, added check for Drawable cull callbck into
+	  apply(Billboard)
+
+2007-06-30 07:09 +0000 [r7050]  robert:
+
+	* Removed the old references to files now removed
+
+2007-06-29 17:01 +0000 [r7049]  robert:
+
+	* Added Point::Extension::isPointSpriteCoordOriginSupported()
+	  method
+
+2007-06-29 16:37 +0000 [r7048]  robert:
+
+	* From Sherman Wilcox, added serach for freetype234
+
+2007-06-29 16:10 +0000 [r7045-7047]  robert:
+
+	* From Paul Martz, "Attached is src/osg/CMakeLists.txt. Adding
+	  TemplatePrimitiveFunctor to the source code list for the project.
+	  This makes this header file show up in the VS IDE as part of this
+	  project, and therefore facilitates IDE searching of
+	  project-related files, as well as making other tasks easier."
+
+	* Fixed indenting to use 4 spaces instead of tabs
+
+	* From Jan Ciger, "I am attaching a fix for the COLLADA plugin on
+	  non-windows systems. The COLLADA modules STLDatabase,
+	  LIBXMLPlugin and stdErrPlugin are statically included in the main
+	  COLLADA library on Linux and shouldn't be linked separately -
+	  those libraries do not exist in the default Linux build and the
+	  compilation will fail. Second issue - the current version of the
+	  COLLADA plugin (both current HEAD in Subversion and the one in
+	  stable 2.0) do not work right with the stable COLLADA DOM 1.4.1.
+	  I am getting the following error: "
+
+2007-06-29 16:00 +0000 [r7044]  robert:
+
+	* From Roger James, bug fix to counting of number geode with
+	  drawables
+
+2007-06-28 20:56 +0000 [r7043]  robert:
+
+	* From Brad Colbert, get/setVolume methods
+
+2007-06-28 14:19 +0000 [r7042]  robert:
+
+	* From Brad Colbert with ammendments by Robert Osfield, add
+	  set/getVolume support
+
+2007-06-28 12:59 +0000 [r7041]  robert:
+
+	* From Trajce Nikolov, fixes to pbuffer setup
+
+2007-06-28 09:51 +0000 [r7040]  robert:
+
+	* From Nikolaus Hanekamp, added support for osg::Multisample
+
+2007-06-27 20:44 +0000 [r7039]  robert:
+
+	* From Stephan Huber, "attached you'll find a first implementation
+	  of pbuffer-support for os x. I used osgprerender --pbuffer to
+	  test the carbon-implementation, for now it works :) "
+
+2007-06-27 20:36 +0000 [r7037-7038]  robert:
+
+	* From Paul Melis, "Here is a list of fixes to misspelled APIs.
+	  Unfortunately, more than one of these are public APIs and
+	  therefore will break linkage to existing shared libraries." Note
+	  from Robert Osfield, updated wrappers.
+
+	* Added temporary reset of the RenderLeaf pointer for any internal
+	  calls to other graphics contexts.
+
+2007-06-27 19:51 +0000 [r7036]  ewing:
+
+	* Minor build fixes. Changed/fixed GraphicsWindowCarbon to go into
+	  api/Carbon instead of just api/
+
+2007-06-27 17:01 +0000 [r7034]  robert:
+
+	* From Andy Skinner, fixed return value.
+
+2007-06-27 11:14 +0000 [r7033]  robert:
+
+	* Updated wrappers
+
+2007-06-27 10:37 +0000 [r7032]  robert:
+
+	* From Rajce Nickolov, improvements to PixelBufferWin32 and
+	  GraphicsWindowWin32
+
+2007-06-27 10:12 +0000 [r7031]  robert:
+
+	* Added texture format into Traits.
+
+2007-06-27 09:44 +0000 [r7030]  robert:
+
+	* Fixed target setting bug in PixelBuffer RTT set up.
+
+2007-06-26 17:12 +0000 [r7029]  robert:
+
+	* Added missing cmake macros
+
+2007-06-26 11:31 +0000 [r7028]  robert:
+
+	* Reverted to using non silhouette computation.
+
+2007-06-25 13:48 +0000 [r7027]  robert:
+
+	* Changed the RTT Camera so that it doesn't automatically recompute
+	  the near and far planes
+
+2007-06-25 11:32 +0000 [r7026]  robert:
+
+	* From Trajce Nickolov, improvements to PixelBufferWin32.
+
+2007-06-25 08:35 +0000 [r7025]  robert:
+
+	* Set the eol style on CMake .txt files to native
+
+2007-06-24 10:55 +0000 [r7024]  robert:
+
+	* Updated wrappers
+
+2007-06-24 10:18 +0000 [r7023]  robert:
+
+	* From Trajce Nikolov, PixelBufferWin32 implementation
+
+2007-06-23 21:55 +0000 [r7021-7022]  robert:
+
+	* Simplified decoration code and added support for reading
+	  Traits::supportsResize
+
+	* Set the Traits::supportsResize flag to true in default
+	  constructor.
+
+2007-06-23 11:24 +0000 [r7019-7020]  robert:
+
+	* Reorder the setProjectionMatrix.. mathod
+
+	* Added setting of the Camera's projection matrix to fit the
+	  windowing aspect ratio.
+
+2007-06-22 14:48 +0000 [r7017-7018]  robert:
+
+	* Added optional set up of pbuffers for background compilation of
+	  the OpenGL objects when database paging.
+
+	* Added ability to compile OpenGL objects via pbuffers in the
+	  DatabasePager/Viewer
+
+2007-06-21 16:14 +0000 [r7016]  robert:
+
+	* Added explicit setting of updateText to have DYNAMIC data
+	  variance.
+
+2007-06-21 11:20 +0000 [r7014]  robert:
+
+	* From Trajce Nikolov, windows build fixes
+
+2007-06-20 12:34 +0000 [r7013]  robert:
+
+	* Added dummy init method
+
+2007-06-20 12:29 +0000 [r7012]  robert:
+
+	* Added placeholder for PixelBufferWin32
+
+2007-06-20 12:01 +0000 [r7008-7011]  robert:
+
+	* Corrected graphics context creation message
+
+	* Added code of support for contouring shaders
+
+	* Updated wrappers
+
+	* Completed implementation of PixelBufferX11.
+
+2007-06-19 17:12 +0000 [r7007]  robert:
+
+	* Added beginnings of osgViewer::PixelBufferX11
+
+2007-06-19 16:19 +0000 [r7006]  robert:
+
+	* Added passing of arguments into constructor.
+
+2007-06-19 09:16 +0000 [r7005]  robert:
+
+	* Removed OSGVIEWER_EXPORT
+
+2007-06-18 12:10 +0000 [r7003]  robert:
+
+	* Added use of GLSL filters
+
+2007-06-15 17:47 +0000 [r7002]  robert:
+
+	* From Martin Lavery, Updates to Packages
+
+2007-06-15 16:17 +0000 [r6999]  robert:
+
+	* Updated ChangeLog
+
+2007-06-15 16:08 +0000 [r6998]  robert:
+
+	* Fixed namespace
+
+2007-06-15 14:57 +0000 [r6997]  robert:
+
+	* Added default values for ambientBias
+
+2007-06-15 14:26 +0000 [r6996]  robert:
+
+	* From Martin Lavery, Update to Packaging
+
+2007-06-15 14:02 +0000 [r6995]  robert:
+
+	* Removed now redundent file
+
+2007-06-15 13:43 +0000 [r6994]  robert:
+
+	* For Win32 added BUILD_MFC_EXAMPLE option, default to OFF to try
+	  and avoid issues with users without MFC installed. --This line,
+	  and
+
+2007-06-15 13:12 +0000 [r6993]  robert:
+
+	* Fixed handling of cases when no matrix is attached to
+	  intersections
+
+2007-06-15 12:59 +0000 [r6991]  robert:
+
+	* Added ShadowMap::s/getAmbientBias, updated NEWS and wrappers
+
+2007-06-15 12:48 +0000 [r6990]  robert:
+
+	* Updated README.
+
+2007-06-15 12:41 +0000 [r6989]  robert:
+
+	* Changed the version format.
+
+2007-06-15 10:15 +0000 [r6987-6988]  robert:
+
+	* Updated version numbers for 2.0 release
+
+	* Added handling of when mouse delta is too high, indicating a
+	  inconsitency in the the events. These changes prevent irratic
+	  high speed spinning when releasing the mouse point in a different
+	  screen from when the mouse event started.
+
+2007-06-15 09:29 +0000 [r6986]  robert:
+
+	* Fixed null pointer derefence bug
+
+2007-06-15 08:36 +0000 [r6985]  robert:
+
+	* Addded missing namespace
+
+2007-06-14 22:22 +0000 [r6984]  robert:
+
+	* From Martin Lavery, Packaging Update
+
+2007-06-14 21:03 +0000 [r6983]  robert:
+
+	* Updated wrappers
+
+2007-06-14 20:58 +0000 [r6981]  robert:
+
+	* Included shaders directly into source, added support for toggle
+	  lighting on/off
+
+2007-06-14 20:49 +0000 [r6979-6980]  robert:
+
+	* From Martin Lavery, Packaging Updates
+
+	* From Martin Lavery, Packaging Updates
+
+2007-06-14 20:22 +0000 [r6978]  robert:
+
+	* From Martin Lavery, Install script for the Xcode build
+
+2007-06-14 19:17 +0000 [r6977]  robert:
+
+	* Fixed typo
+
+2007-06-14 16:09 +0000 [r6975]  robert:
+
+	* From Martin Lavery, Fix to packaging
+
+2007-06-14 15:51 +0000 [r6974]  robert:
+
+	* From Martin Lavery, addition of Packaging directory
+
+2007-06-13 21:15 +0000 [r6971]  robert:
+
+	* Updated wrapers, changelog, README and AUTHORS files for 1.9.9
+	  release
+
+2007-06-13 21:00 +0000 [r6970]  robert:
+
+	* Updated wrappers and Version numbers for 1.9.9 release
+
+2007-06-13 20:56 +0000 [r6969]  robert:
+
+	* From Paul Mellis, "Here's an updated README.txt with a few
+	  spelling and grammer mistakes fixed. I changed the wording
+	  slightly here and there. Hope you don't mind me fiddling with
+	  this one... "
+
+2007-06-13 20:52 +0000 [r6968]  robert:
+
+	* Added ability to set the keyboard bindings in the
+	  RecordaAnimationPathHandler
+
+2007-06-13 20:34 +0000 [r6967]  robert:
+
+	* From Jeremy Moles & Robert Osfield, Added support for playback of
+	  animation paths using 'Z' key
+
+2007-06-13 19:54 +0000 [r6965-6966]  robert:
+
+	* Added clear()
+
+	* Added new shader support
+
+2007-06-13 19:44 +0000 [r6964]  robert:
+
+	* From John Shue, fixed typo in CMakeLists.txt
+
+2007-06-13 15:32 +0000 [r6962]  robert:
+
+	* Added passing of arugments into viewer constructor
+
+2007-06-13 14:42 +0000 [r6961]  robert:
+
+	* Removed SunOS hack as it didn't work..
+
+2007-06-13 14:05 +0000 [r6960]  robert:
+
+	* Wired up new shaders
+
+2007-06-13 13:41 +0000 [r6958]  robert:
+
+	* Added better handling of 0,0,0 values
+
 2007-06-13 11:09 +0000 [r6957]  robert:
 
 	* Added OSG_SCREEN and OSG_WINDOW env var checking in the

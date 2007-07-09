@@ -1,6 +1,6 @@
-OpenSceneGraph Library 1.9.9
+OpenSceneGraph Library 2.1.0
 
-264 Contributors:
+266 Contributors:
 
 Firstname Surname
 -----------------
@@ -18,17 +18,18 @@ Stephan Huber
 Ulrich Hertlein
 Eric Sokolowsky
 Tree 
+Martin Lavery
+Trajce Nikolov
 Mike Wittman
 Luigi Calori
-Trajce Nikolov
 Pavel Moloshtan
-Martin Lavery
 Tom Jolley
 Norman Vine
 Alberto Farre
+Roger James
 Ruben Lopez
 Randall Hopper
-Roger James
+André Garneau
 Olaf Flebbe
 Gideon May
 Don Tidrow
@@ -40,33 +41,35 @@ Daniel Sjölie
 Per Fahlberg
 Mathias Fröhlich
 Joran Jessurun
-Anré Garneau
 Frederic Marmond
 David Fries
+David Callu
 Boris Bralo
 Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
 Neil Salter
+Mike Connell
+Jeremy Moles
 Jason Daly
 Jason Beverage
 David Spilling
-David Callu
 Ben Discoe
 Sasa Bistrovic
 Rainer Oder
-Mike Connell
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
-Jeremy Moles
 Gordon Tomlinson
+Brad Colbert
 Andreas Ekstrand
 Vivek Rajan
 Stephane Simon
 Sean Spicer
 Ravi Mathur
+Paul Melis
+Nikolaus Hanekamp
 Michael Platings
 Loic Dachary
 Joseph Steel
@@ -79,27 +82,27 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
-Nikolaus Hanekamp
 Michael Hartman
 Leandro Motta Barros
 Laurens Voerman
+John Shue
+Jean-Sebastien Guay
 Carlo Camporesi
 Bruce Clay
-Brad Colbert
 Brad Christiansen
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Sohey Yamamoto
+Sherman Wilcox
 Serge Lages
 Phil Atkin
-Paul Melis
 Mathieu Marache
 Ken Sewell
 Julian Ortiz
-John Shue
 John Kelso
 Jeremy Bell
+Jan Ciger
 James French
 Gabor Dorka
 Donn Mielcarek
@@ -107,7 +110,7 @@ Domenico Mangieri
 Daniel Larimer
 Charles Cole
 Bryan Thrall
-Andre Garneau
+Andy Skinner
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
@@ -135,8 +138,6 @@ José Delport
 Joseph Winston
 John Aughey
 Johan Nouvel
-Jean-Sebastien Guay
-Jan Ciger
 Igor Kravtchenko
 Gerrick Bivins
 George Tarantilis
@@ -145,9 +146,9 @@ Fabio Mierlo
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
+Csaba Halasz
 Blake Williams
 Antoine Hue
-Andy Skinner
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
@@ -168,13 +169,14 @@ Tyge
 Troy Yee
 Tino Schwarze
 Thom Carlo
+Thibault Genessay
 Tery Welsh
 Tanguy Fautré
 Sylvan Marie
 Sylvain Marie
-Sherman Wilcox
 Shane Arnott
 Sebastien Kuntz
+Rudolf Wiedemann
 Ronny Krueger
 Robert Swain
 Rick Pingry
@@ -188,7 +190,7 @@ Paul Fredrikson
 Orhun Birsoy
 Nicolas Brodu
 Nathan Cournia
-MornÃ© Pistorius
+Morné Pistorius
 Mikkel GjÃ¸l
 Mihai Radu
 Michael Polak

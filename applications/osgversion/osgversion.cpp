@@ -209,6 +209,12 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
+    if (name=="Jea-Sebastien") return "Jean-Sebastien";
+    if (name=="Robet") return "Robert";
+    if (name=="MornÃ©") return "Morné";
+    if (name=="Adndre") return "Andre";
+    if (name=="Mellis") return "Melis";
+    if (name=="Rajce") return "Trajce";
     if (name=="Trastenjak") return "Trstenjak";
     if (name=="Baverage") return "Beverage";
     if (name=="Bistroviae") return "Bistrovic";
@@ -258,6 +264,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Moloshton") return "Moloshtan";
     if (name=="Moule") return "Moiule";
     if (name=="Nicklov") return "Nikolov";
+    if (name=="Nickolov") return "Nikolov";
     if (name=="Olad") return "Olaf";
     if (name=="Olar") return "Olaf";
     if (name=="Oritz") return "Ortiz";
@@ -285,7 +292,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Antonoine") return "Antoine";
     if (name=="Andew") return "Andrew";
     if (name=="Daneil") return "Daniel";
-    if (name=="AndrÃ©") return "Anré";
+    if (name=="AndrÃ©") return "André";
     if (name=="GarcÃ­a") return "Garcea";
     if (name=="SjÃ¶lie") return "Sjölie";
     if (name=="JosÃ©") return "José";
@@ -300,6 +307,11 @@ std::string typoCorrection(const std::string& name)
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Andre" && name.second=="Garneau")
+    {
+        name.first = "André";
+        name.second = "Garneau";
+    }
     if (name.first=="Eric" && name.second=="Hammil")
     {
         name.first = "Chris";

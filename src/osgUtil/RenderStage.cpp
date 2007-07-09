@@ -890,9 +890,23 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     if (useThread)
     {
+#if 1
+        ref_ptr<osg::BlockAndFlushOperation> block = new osg::BlockAndFlushOperation;
+    
+        useThread->add(new DrawInnerOperation( this, renderInfo ));
+        
+        useThread->add(block.get());
+        
+        // wait till the DrawInnerOperations is complete.
+        block->block();
+        
+        doCopyTexture = false;
+        
+#else
         useThread->add(new DrawInnerOperation( this, renderInfo ), true);
         
         doCopyTexture = false;
+#endif        
     }
     else
     {

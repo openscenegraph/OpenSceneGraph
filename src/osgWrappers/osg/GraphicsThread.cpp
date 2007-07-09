@@ -44,172 +44,18 @@ BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_PublicMemberProperty(osg::BarrierOperation::PreBlockOp, _preBlockOp);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
+BEGIN_OBJECT_REFLECTOR(osg::BlockAndFlushOperation)
 	I_DeclaringFile("osg/GraphicsThread");
-	I_VirtualBaseType(osg::Referenced);
-	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
-	               ____Operation__C5_std_string_R1__bool,
+	I_BaseType(osg::Operation);
+	I_BaseType(OpenThreads::Block);
+	I_Constructor0(____BlockAndFlushOperation,
 	               "",
 	               "");
-	I_Method1(void, setName, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __void__setName__C5_std_string_R1,
-	          "Set the human readable name of the operation. ",
-	          "");
-	I_Method0(const std::string &, getName,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string_R1__getName,
-	          "Get the human readable name of the operation. ",
-	          "");
-	I_Method1(void, setKeep, IN, bool, keep,
-	          Properties::NON_VIRTUAL,
-	          __void__setKeep__bool,
-	          "Set whether the operation should be kept once its been applied. ",
-	          "");
-	I_Method0(bool, getKeep,
-	          Properties::NON_VIRTUAL,
-	          __bool__getKeep,
-	          "Get whether the operation should be kept once its been applied. ",
-	          "");
 	I_Method0(void, release,
 	          Properties::VIRTUAL,
 	          __void__release,
-	          "if this operation is a barrier then release it. ",
-	          "");
-	I_SimpleProperty(bool, Keep, 
-	                 __bool__getKeep, 
-	                 __void__setKeep__bool);
-	I_SimpleProperty(const std::string &, Name, 
-	                 __C5_std_string_R1__getName, 
-	                 __void__setName__C5_std_string_R1);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::OperationQueue)
-	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____OperationQueue,
-	               "",
-	               "");
-	I_Method0(osg::RefBlock *, getOperationsBlock,
-	          Properties::NON_VIRTUAL,
-	          __RefBlock_P1__getOperationsBlock,
 	          "",
 	          "");
-	I_Method0(const osg::RefBlock *, getOperationsBlock,
-	          Properties::NON_VIRTUAL,
-	          __C5_RefBlock_P1__getOperationsBlock,
-	          "",
-	          "");
-	I_Method1(void, add, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__add__Operation_P1,
-	          "Add operation to end of OperationQueue, this will be executed by the operation thread once this operation gets to the head of the queue. ",
-	          "");
-	I_Method1(void, remove, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__remove__Operation_P1,
-	          "Remove operation from OperationQueue. ",
-	          "");
-	I_Method1(void, remove, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __void__remove__C5_std_string_R1,
-	          "Remove named operation from OperationQueue. ",
-	          "");
-	I_Method0(void, removeAllOperations,
-	          Properties::NON_VIRTUAL,
-	          __void__removeAllOperations,
-	          "Remove all operations from OperationQueue. ",
-	          "");
-	I_SimpleProperty(osg::RefBlock *, OperationsBlock, 
-	                 __RefBlock_P1__getOperationsBlock, 
-	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
-	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::Referenced);
-	I_BaseType(OpenThreads::Thread);
-	I_Constructor0(____OperationsThread,
-	               "",
-	               "");
-	I_Method1(void, setParent, IN, osg::Object *, parent,
-	          Properties::NON_VIRTUAL,
-	          __void__setParent__Object_P1,
-	          "",
-	          "");
-	I_Method0(osg::Object *, getParent,
-	          Properties::NON_VIRTUAL,
-	          __Object_P1__getParent,
-	          "",
-	          "");
-	I_Method0(const osg::Object *, getParent,
-	          Properties::NON_VIRTUAL,
-	          __C5_Object_P1__getParent,
-	          "",
-	          "");
-	I_MethodWithDefaults2(void, add, IN, osg::Operation *, operation, , IN, bool, waitForCompletion, false,
-	                      Properties::NON_VIRTUAL,
-	                      __void__add__Operation_P1__bool,
-	                      "Add operation to end of OperationQueue, this will be executed by the graphics thread once this operation gets to the head of the queue. ",
-	                      "");
-	I_Method1(void, remove, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__remove__Operation_P1,
-	          "Remove operation from OperationQueue. ",
-	          "");
-	I_Method1(void, remove, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __void__remove__C5_std_string_R1,
-	          "Remove named operation from OperationQueue. ",
-	          "");
-	I_Method0(void, removeAllOperations,
-	          Properties::NON_VIRTUAL,
-	          __void__removeAllOperations,
-	          "Remove all operations from OperationQueue. ",
-	          "");
-	I_Method0(osg::ref_ptr< osg::Operation >, getCurrentOperation,
-	          Properties::NON_VIRTUAL,
-	          __osg_ref_ptrT1_Operation___getCurrentOperation,
-	          "Get the operation currently being run. ",
-	          "");
-	I_Method0(void, run,
-	          Properties::VIRTUAL,
-	          __void__run,
-	          "Run does the graphics thread run loop. ",
-	          "");
-	I_Method1(void, setDone, IN, bool, done,
-	          Properties::NON_VIRTUAL,
-	          __void__setDone__bool,
-	          "",
-	          "");
-	I_Method0(bool, getDone,
-	          Properties::NON_VIRTUAL,
-	          __bool__getDone,
-	          "",
-	          "");
-	I_Method0(int, cancel,
-	          Properties::VIRTUAL,
-	          __int__cancel,
-	          "Cancel this graphics thread. ",
-	          "");
-	I_SimpleProperty(osg::ref_ptr< osg::Operation >, CurrentOperation, 
-	                 __osg_ref_ptrT1_Operation___getCurrentOperation, 
-	                 0);
-	I_SimpleProperty(bool, Done, 
-	                 __bool__getDone, 
-	                 __void__setDone__bool);
-	I_SimpleProperty(osg::Object *, Parent, 
-	                 __Object_P1__getParent, 
-	                 __void__setParent__Object_P1);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
-	I_DeclaringFile("osg/GraphicsThread");
-	I_VirtualBaseType(osg::Referenced);
-	I_BaseType(OpenThreads::Block);
-	I_Constructor0(____RefBlock,
-	               "",
-	               "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)

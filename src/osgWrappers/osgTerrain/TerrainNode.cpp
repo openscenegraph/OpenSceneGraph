@@ -13,9 +13,9 @@
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/GraphicsContext>
-#include <osg/GraphicsThread>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/OperationsThread>
 #include <osg/TransferFunction>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>

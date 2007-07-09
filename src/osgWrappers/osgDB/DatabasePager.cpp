@@ -12,9 +12,9 @@
 
 #include <osg/FrameStamp>
 #include <osg/GraphicsContext>
-#include <osg/GraphicsThread>
 #include <osg/Group>
 #include <osg/Node>
+#include <osg/OperationsThread>
 #include <osg/PagedLOD>
 #include <osg/State>
 #include <osgDB/DatabasePager>

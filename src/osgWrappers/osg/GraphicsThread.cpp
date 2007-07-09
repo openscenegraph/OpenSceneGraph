@@ -82,8 +82,47 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	I_SimpleProperty(const std::string &, Name, 
 	                 __C5_std_string_R1__getName, 
 	                 __void__setName__C5_std_string_R1);
-	I_PublicMemberProperty(std::string, _name);
-	I_PublicMemberProperty(bool, _keep);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::OperationQueue)
+	I_DeclaringFile("osg/GraphicsThread");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____OperationQueue,
+	               "",
+	               "");
+	I_Method0(osg::RefBlock *, getOperationsBlock,
+	          Properties::NON_VIRTUAL,
+	          __RefBlock_P1__getOperationsBlock,
+	          "",
+	          "");
+	I_Method0(const osg::RefBlock *, getOperationsBlock,
+	          Properties::NON_VIRTUAL,
+	          __C5_RefBlock_P1__getOperationsBlock,
+	          "",
+	          "");
+	I_Method1(void, add, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
+	          __void__add__Operation_P1,
+	          "Add operation to end of OperationQueue, this will be executed by the operation thread once this operation gets to the head of the queue. ",
+	          "");
+	I_Method1(void, remove, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
+	          __void__remove__Operation_P1,
+	          "Remove operation from OperationQueue. ",
+	          "");
+	I_Method1(void, remove, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
+	          __void__remove__C5_std_string_R1,
+	          "Remove named operation from OperationQueue. ",
+	          "");
+	I_Method0(void, removeAllOperations,
+	          Properties::NON_VIRTUAL,
+	          __void__removeAllOperations,
+	          "Remove all operations from OperationQueue. ",
+	          "");
+	I_SimpleProperty(osg::RefBlock *, OperationsBlock, 
+	                 __RefBlock_P1__getOperationsBlock, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)

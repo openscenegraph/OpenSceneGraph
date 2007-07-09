@@ -63,7 +63,8 @@ struct DeleteHandlerPointer
 
 
 DeleteHandler::DeleteHandler(int numberOfFramesToRetainObjects):
-    _numFramesToRetainObjects(numberOfFramesToRetainObjects)
+    _numFramesToRetainObjects(numberOfFramesToRetainObjects),
+    _currentFrameNumber(0)
 {
 }
 

@@ -71,7 +71,9 @@ class OSG_EXPORT DeleteHandler
 
     protected:
 
-        DeleteHandler(const DeleteHandler&) {}
+        DeleteHandler(const DeleteHandler&):
+            _numFramesToRetainObjects(0),
+            _currentFrameNumber(0) {}
         DeleteHandler operator = (const DeleteHandler&) { return *this; }
 
         int                 _numFramesToRetainObjects;

@@ -16,13 +16,13 @@
 #include <osg/CopyOp>
 #include <osg/DisplaySettings>
 #include <osg/GraphicsContext>
-#include <osg/GraphicsThread>
 #include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Matrixd>
 #include <osg/Matrixf>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/OperationsThread>
 #include <osg/State>
 #include <osg/Stats>
 #include <osg/Texture>

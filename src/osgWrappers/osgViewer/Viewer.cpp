@@ -14,8 +14,8 @@
 #include <osg/ArgumentParser>
 #include <osg/Camera>
 #include <osg/FrameStamp>
-#include <osg/GraphicsThread>
 #include <osg/Node>
+#include <osg/OperationsThread>
 #include <osg/Timer>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>

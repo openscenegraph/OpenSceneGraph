@@ -12,8 +12,8 @@
 
 #include <OpenThreads/Mutex>
 #include <osg/GraphicsContext>
-#include <osg/GraphicsThread>
 #include <osg/Object>
+#include <osg/OperationsThread>
 #include <osg/State>
 #include <osg/Vec4>
 

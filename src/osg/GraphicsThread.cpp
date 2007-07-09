@@ -39,6 +39,88 @@ struct BlockOperation : public Operation, public Block
     }
 };
 
+/////////////////////////////////////////////////////////////////////////////
+//
+//  OperationsQueue
+//
+
+OperationQueue::OperationQueue()
+{
+}
+
+OperationQueue::~OperationQueue()
+{
+}
+
+void OperationQueue::add(Operation* operation)
+{
+    osg::notify(osg::INFO)<<"Doing add"<<std::endl;
+
+    {
+        // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+        // add the operation to the end of the list
+        _operations.push_back(operation);
+        
+        _operationsBlock->set(true);
+    }
+}
+
+void OperationQueue::remove(Operation* operation)
+{
+    osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
+
+    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+    for(Operations::iterator itr = _operations.begin();
+        itr!=_operations.end();)
+    {
+        if ((*itr)==operation) itr = _operations.erase(itr);
+        else ++itr;
+    }
+}
+
+void OperationQueue::remove(const std::string& name)
+{
+    osg::notify(osg::INFO)<<"Doing remove named operation"<<std::endl;
+    
+    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+    // find the remove all operations with specificed name
+    for(Operations::iterator itr = _operations.begin();
+        itr!=_operations.end();)
+    {
+        if ((*itr)->getName()==name) itr = _operations.erase(itr);
+        else ++itr;
+    }
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
+}
+
+void OperationQueue::removeAllOperations()
+{
+    osg::notify(osg::INFO)<<"Doing remove all operations"<<std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+    _operations.clear();
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+//  OperationsThread
+//
 
 OperationsThread::OperationsThread():
     _parent(0),
@@ -92,7 +174,7 @@ int OperationsThread::cancel()
 
         osg::notify(osg::INFO)<<"   Doing cancel "<<this<<std::endl;
 
-        for(OperationQueue::iterator itr = _operations.begin();
+        for(Operations::iterator itr = _operations.begin();
             itr != _operations.end();
             ++itr)
         {
@@ -110,7 +192,7 @@ int OperationsThread::cancel()
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
-                for(OperationQueue::iterator itr = _operations.begin();
+                for(Operations::iterator itr = _operations.begin();
                     itr != _operations.end();
                     ++itr)
                 {
@@ -168,7 +250,7 @@ void OperationsThread::remove(Operation* operation)
     // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
-    for(OperationQueue::iterator itr = _operations.begin();
+    for(Operations::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {
         if ((*itr)==operation) itr = _operations.erase(itr);
@@ -184,7 +266,7 @@ void OperationsThread::remove(const std::string& name)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
     // find the remove all operations with specificed name
-    for(OperationQueue::iterator itr = _operations.begin();
+    for(Operations::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {
         if ((*itr)->getName()==name) itr = _operations.erase(itr);
@@ -224,7 +306,7 @@ void OperationsThread::run()
 
     bool firstTime = true;
 
-    OperationQueue::iterator itr = _operations.begin();
+    Operations::iterator itr = _operations.begin();
 
     do
     {

@@ -164,6 +164,7 @@ protected:
 
 };
 
+#if 1
 
 int main(int argc, char** argv)
 {
@@ -436,3 +437,71 @@ int main(int argc, char** argv)
 
     return viewer.run();
 }
+
+#else
+
+#include <osg/OperationsThread>
+#include <osg/Notify>
+
+struct MyOperation : public osg::Operation
+{
+
+    MyOperation(const std::string& str, bool keep, double number):
+        osg::Operation(str,keep),
+        _number(number) {}
+
+    virtual void operator () (osg::Object* object)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        
+        osg::notify(osg::NOTICE)<<getName()<<" "<<_number<<" object="<<object<<std::endl;
+        ++_number;
+        if (_number>1000) setKeep(false);
+    }
+    
+    OpenThreads::Mutex _mutex;
+    double _number;
+}; 
+
+
+
+int main(int argc, char** argv)
+{
+    osg::ArgumentParser arguments(&argc, argv);
+
+    osg::ref_ptr<osg::OperationQueue> operations = new osg::OperationQueue;
+    operations->add(new MyOperation("one ",true, 0.0));
+    operations->add(new MyOperation("two ",true, 0.0));
+    
+    {
+        typedef std::list< osg::ref_ptr<osg::OperationsThread> > Threads;
+        Threads threads;
+
+        unsigned int numberThreads = 2;
+        while (arguments.read("--threads",numberThreads)) {}
+
+        for(unsigned int i=0; i<numberThreads; ++i)    
+        {
+            osg::ref_ptr<osg::OperationsThread> thread = new osg::OperationsThread;
+            thread->setOperationQueue(operations.get());
+            threads.push_back(thread.get());
+            thread->startThread();
+        }
+
+        while(!operations->empty())
+        {
+            osg::notify(osg::NOTICE)<<"Main loop"<<std::endl;
+            osg::ref_ptr<osg::Operation> operation = operations->getNextOperation();
+            if (operation.valid()) (*operation)(0);
+        }
+
+        osg::notify(osg::NOTICE)<<"Completed main loop ******************************* "<<std::endl;
+    }
+    
+    osg::notify(osg::NOTICE)<<"Exiting main -------------------------------- "<<std::endl;
+
+    return 0;
+
+}
+
+#endif

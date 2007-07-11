@@ -24,11 +24,11 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::CartizianLocator)
+BEGIN_OBJECT_REFLECTOR(osgTerrain::CartesianLocator)
 	I_DeclaringFile("osgTerrain/Locator");
 	I_BaseType(osgTerrain::Locator);
 	I_ConstructorWithDefaults6(IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,
-	                           ____CartizianLocator__double__double__double__double__double__double,
+	                           ____CartesianLocator__double__double__double__double__double__double,
 	                           "",
 	                           "");
 	I_MethodWithDefaults6(void, setExtents, IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,

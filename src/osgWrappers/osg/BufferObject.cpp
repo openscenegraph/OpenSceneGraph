@@ -247,9 +247,9 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferObject::Extensions)
 
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >, osg::ElementBufferObject::BufferEntryDrawElementstPair)
+TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >, osg::ElementBufferObject::BufferEntryDrawElementsPair)
 
-TYPE_NAME_ALIAS(std::vector< osg::ElementBufferObject::BufferEntryDrawElementstPair >, osg::ElementBufferObject::BufferEntryDrawElementsPairs)
+TYPE_NAME_ALIAS(std::vector< osg::ElementBufferObject::BufferEntryDrawElementsPair >, osg::ElementBufferObject::BufferEntryDrawElementsPairs)
 
 BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
 	I_DeclaringFile("osg/BufferObject");
@@ -497,7 +497,7 @@ STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawEle
 
 STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::ElementBufferObject::BufferEntryDrawElementstPair >)
+STD_VECTOR_REFLECTOR(std::vector< osg::ElementBufferObject::BufferEntryDrawElementsPair >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >)
 

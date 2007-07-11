@@ -43,7 +43,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, setPrintOutTimingInfo, IN, bool, printOutTiminInfo,
+	I_Method1(void, setPrintOutTimingInfo, IN, bool, printOutTimingInfo,
 	          Properties::NON_VIRTUAL,
 	          __void__setPrintOutTimingInfo__bool,
 	          "",

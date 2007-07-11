@@ -174,14 +174,14 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __int__getSplitStereoVerticalSeparation,
 	          "",
 	          "");
-	I_Method1(void, setSplitStereoAutoAjustAspectRatio, IN, bool, flag,
+	I_Method1(void, setSplitStereoAutoAdjustAspectRatio, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
-	          __void__setSplitStereoAutoAjustAspectRatio__bool,
+	          __void__setSplitStereoAutoAdjustAspectRatio__bool,
 	          "",
 	          "");
-	I_Method0(bool, getSplitStereoAutoAjustAspectRatio,
+	I_Method0(bool, getSplitStereoAutoAdjustAspectRatio,
 	          Properties::NON_VIRTUAL,
-	          __bool__getSplitStereoAutoAjustAspectRatio,
+	          __bool__getSplitStereoAutoAdjustAspectRatio,
 	          "",
 	          "");
 	I_Method1(void, setScreenWidth, IN, float, width,
@@ -393,9 +393,9 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(float, ScreenWidth, 
 	                 __float__getScreenWidth, 
 	                 __void__setScreenWidth__float);
-	I_SimpleProperty(bool, SplitStereoAutoAjustAspectRatio, 
-	                 __bool__getSplitStereoAutoAjustAspectRatio, 
-	                 __void__setSplitStereoAutoAjustAspectRatio__bool);
+	I_SimpleProperty(bool, SplitStereoAutoAdjustAspectRatio, 
+	                 __bool__getSplitStereoAutoAdjustAspectRatio, 
+	                 __void__setSplitStereoAutoAdjustAspectRatio__bool);
 	I_SimpleProperty(osg::DisplaySettings::SplitStereoHorizontalEyeMapping, SplitStereoHorizontalEyeMapping, 
 	                 __SplitStereoHorizontalEyeMapping__getSplitStereoHorizontalEyeMapping, 
 	                 __void__setSplitStereoHorizontalEyeMapping__SplitStereoHorizontalEyeMapping);

@@ -303,10 +303,10 @@ BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	                   __bool__needsTexEnvCombiner__GLint,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(void, computeNeedoForTexEnvCombiners,
+	I_ProtectedMethod0(void, computeNeedForTexEnvCombiners,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__computeNeedoForTexEnvCombiners,
+	                   __void__computeNeedForTexEnvCombiners,
 	                   "",
 	                   "");
 	I_SimpleProperty(GLint, Combine_Alpha, 

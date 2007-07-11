@@ -26,7 +26,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osgGA::NodeTrackerManipulator::ObserveredNodePath)
+TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osgGA::NodeTrackerManipulator::ObserverNodePath)
 
 BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::TrackerMode)
 	I_DeclaringFile("osgGA/NodeTrackerManipulator");
@@ -57,14 +57,14 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	          __void__setTrackNodePath__C5_osg_NodePath_R1,
 	          "",
 	          "");
-	I_Method1(void, setTrackNodePath, IN, const osgGA::NodeTrackerManipulator::ObserveredNodePath &, nodePath,
+	I_Method1(void, setTrackNodePath, IN, const osgGA::NodeTrackerManipulator::ObserverNodePath &, nodePath,
 	          Properties::NON_VIRTUAL,
-	          __void__setTrackNodePath__C5_ObserveredNodePath_R1,
+	          __void__setTrackNodePath__C5_ObserverNodePath_R1,
 	          "",
 	          "");
-	I_Method0(osgGA::NodeTrackerManipulator::ObserveredNodePath &, getTrackNodePath,
+	I_Method0(osgGA::NodeTrackerManipulator::ObserverNodePath &, getTrackNodePath,
 	          Properties::NON_VIRTUAL,
-	          __ObserveredNodePath_R1__getTrackNodePath,
+	          __ObserverNodePath_R1__getTrackNodePath,
 	          "",
 	          "");
 	I_Method1(void, setTrackNode, IN, osg::Node *, node,
@@ -277,8 +277,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_SimpleProperty(osg::Node *, TrackNode, 
 	                 __osg_Node_P1__getTrackNode, 
 	                 __void__setTrackNode__osg_Node_P1);
-	I_SimpleProperty(osgGA::NodeTrackerManipulator::ObserveredNodePath &, TrackNodePath, 
-	                 __ObserveredNodePath_R1__getTrackNodePath, 
+	I_SimpleProperty(osgGA::NodeTrackerManipulator::ObserverNodePath &, TrackNodePath, 
+	                 __ObserverNodePath_R1__getTrackNodePath, 
 	                 0);
 	I_SimpleProperty(osgGA::NodeTrackerManipulator::TrackerMode, TrackerMode, 
 	                 __TrackerMode__getTrackerMode, 

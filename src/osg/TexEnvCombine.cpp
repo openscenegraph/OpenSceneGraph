@@ -107,13 +107,13 @@ void TexEnvCombine::apply(State& state) const
 void TexEnvCombine::setCombine_RGB(GLint cm) { _combine_RGB = cm; }
 void TexEnvCombine::setCombine_Alpha(GLint cm) { _combine_Alpha = cm; }
 
-void TexEnvCombine::setSource0_RGB(GLint sp) { _source0_RGB = sp; computeNeedoForTexEnvCombiners(); }
-void TexEnvCombine::setSource1_RGB(GLint sp) { _source1_RGB = sp; computeNeedoForTexEnvCombiners(); }
-void TexEnvCombine::setSource2_RGB(GLint sp) { _source2_RGB = sp; computeNeedoForTexEnvCombiners(); }
+void TexEnvCombine::setSource0_RGB(GLint sp) { _source0_RGB = sp; computeNeedForTexEnvCombiners(); }
+void TexEnvCombine::setSource1_RGB(GLint sp) { _source1_RGB = sp; computeNeedForTexEnvCombiners(); }
+void TexEnvCombine::setSource2_RGB(GLint sp) { _source2_RGB = sp; computeNeedForTexEnvCombiners(); }
 
-void TexEnvCombine::setSource0_Alpha(GLint sp) { _source0_Alpha = sp; computeNeedoForTexEnvCombiners(); }
-void TexEnvCombine::setSource1_Alpha(GLint sp) { _source1_Alpha = sp; computeNeedoForTexEnvCombiners(); }
-void TexEnvCombine::setSource2_Alpha(GLint sp) { _source2_Alpha = sp; computeNeedoForTexEnvCombiners(); }
+void TexEnvCombine::setSource0_Alpha(GLint sp) { _source0_Alpha = sp; computeNeedForTexEnvCombiners(); }
+void TexEnvCombine::setSource1_Alpha(GLint sp) { _source1_Alpha = sp; computeNeedForTexEnvCombiners(); }
+void TexEnvCombine::setSource2_Alpha(GLint sp) { _source2_Alpha = sp; computeNeedForTexEnvCombiners(); }
 
 void TexEnvCombine::setOperand0_RGB(GLint op) { _operand0_RGB = op; }
 void TexEnvCombine::setOperand1_RGB(GLint op) { _operand1_RGB = op; }

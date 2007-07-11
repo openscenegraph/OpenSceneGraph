@@ -11,7 +11,7 @@ SET(LIBRARY_OUTPUT_PATH "${LIBRARY_OUTPUT_PATH}/${OSG_PLUGINS}")
 
 
 OPTION(BUILD_OSG_COMMON_PLUGINS "Build with Common  Plugins" TRUE)
-OPTION(BUILD_OSG_IMAGE_PLUGINS "Build with Imagege texture Plugins" TRUE)
+OPTION(BUILD_OSG_IMAGE_PLUGINS "Build with Image texture Plugins" TRUE)
 OPTION(BUILD_OSG_3D_PLUGINS "Build with 3D formats Plugins" TRUE)
 OPTION(BUILD_OSG_OTHER_PLUGINS "Build with other formats Plugins" TRUE)
 OPTION(BUILD_OSG_NET_PLUGINS "Build with net Plugin" TRUE)

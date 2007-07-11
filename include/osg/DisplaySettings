@@ -125,8 +125,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setSplitStereoVerticalSeparation(int s) { _splitStereoVerticalSeparation = s; }
         int getSplitStereoVerticalSeparation() const { return _splitStereoVerticalSeparation; }
 
-        void setSplitStereoAutoAjustAspectRatio(bool flag) { _splitStereoAutoAdjustAspectRatio=flag; }
-        bool getSplitStereoAutoAjustAspectRatio() const { return _splitStereoAutoAdjustAspectRatio; }
+        void setSplitStereoAutoAdjustAspectRatio(bool flag) { _splitStereoAutoAdjustAspectRatio=flag; }
+        bool getSplitStereoAutoAdjustAspectRatio() const { return _splitStereoAutoAdjustAspectRatio; }
 
 
         void setScreenWidth(float width) { _screenWidth = width; }

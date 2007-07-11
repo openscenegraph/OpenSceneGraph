@@ -236,7 +236,7 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         return;
     }
 
-    ViewIdenitifier viewIndentifier(cv, nv.getNodePath());
+    ViewIdentifier viewIndentifier(cv, nv.getNodePath());
     
     {
         PrecipitationDrawableSet* precipitationDrawableSet = 0;

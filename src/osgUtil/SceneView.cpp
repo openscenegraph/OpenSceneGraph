@@ -372,7 +372,7 @@ osg::Matrixd SceneView::computeLeftEyeProjectionImplementation(const osg::Matrix
     double scale_x = 1.0;
     double scale_y = 1.0;
 
-    if (_displaySettings->getSplitStereoAutoAjustAspectRatio())
+    if (_displaySettings->getSplitStereoAutoAdjustAspectRatio())
     {
         switch(_displaySettings->getStereoMode())
         {
@@ -437,7 +437,7 @@ osg::Matrixd SceneView::computeRightEyeProjectionImplementation(const osg::Matri
     double scale_x = 1.0;
     double scale_y = 1.0;
 
-    if (_displaySettings->getSplitStereoAutoAjustAspectRatio())
+    if (_displaySettings->getSplitStereoAutoAdjustAspectRatio())
     {
         switch(_displaySettings->getStereoMode())
         {
@@ -665,42 +665,42 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         //std::cout << "Scene graph contains occluder nodes, searching for them"<<std::endl;
         
         
-        if (!_collectOccludersVisistor) _collectOccludersVisistor = new osg::CollectOccludersVisitor;
+        if (!_collectOccludersVisitor) _collectOccludersVisitor = new osg::CollectOccludersVisitor;
         
-        _collectOccludersVisistor->inheritCullSettings(*this);
+        _collectOccludersVisitor->inheritCullSettings(*this);
         
-        _collectOccludersVisistor->reset();
+        _collectOccludersVisitor->reset();
         
-        _collectOccludersVisistor->setFrameStamp(_frameStamp.get());
+        _collectOccludersVisitor->setFrameStamp(_frameStamp.get());
 
         // use the frame number for the traversal number.
         if (_frameStamp.valid())
         {
-             _collectOccludersVisistor->setTraversalNumber(_frameStamp->getFrameNumber());
+             _collectOccludersVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
 
-        _collectOccludersVisistor->pushViewport(getViewport());
-        _collectOccludersVisistor->pushProjectionMatrix(proj.get());
-        _collectOccludersVisistor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
+        _collectOccludersVisitor->pushViewport(getViewport());
+        _collectOccludersVisitor->pushProjectionMatrix(proj.get());
+        _collectOccludersVisitor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
 
         // traverse the scene graph to search for occluder in there new positions.
         for(unsigned int i=0; i< _camera->getNumChildren(); ++i)
         {
-            _camera->getChild(i)->accept(*_collectOccludersVisistor);
+            _camera->getChild(i)->accept(*_collectOccludersVisitor);
         }
 
-        _collectOccludersVisistor->popModelViewMatrix();
-        _collectOccludersVisistor->popProjectionMatrix();
-        _collectOccludersVisistor->popViewport();
+        _collectOccludersVisitor->popModelViewMatrix();
+        _collectOccludersVisitor->popProjectionMatrix();
+        _collectOccludersVisitor->popViewport();
         
         // sort the occluder from largest occluder volume to smallest.
-        _collectOccludersVisistor->removeOccludedOccluders();
+        _collectOccludersVisitor->removeOccludedOccluders();
         
         
-        osg::notify(osg::DEBUG_INFO) << "finished searching for occluder - found "<<_collectOccludersVisistor->getCollectedOccluderSet().size()<<std::endl;
+        osg::notify(osg::DEBUG_INFO) << "finished searching for occluder - found "<<_collectOccludersVisitor->getCollectedOccluderSet().size()<<std::endl;
            
         cullVisitor->getOccluderList().clear();
-        std::copy(_collectOccludersVisistor->getCollectedOccluderSet().begin(),_collectOccludersVisistor->getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
+        std::copy(_collectOccludersVisitor->getCollectedOccluderSet().begin(),_collectOccludersVisitor->getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
     }
     
 

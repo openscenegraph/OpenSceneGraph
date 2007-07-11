@@ -239,7 +239,7 @@ class OSG_EXPORT TexEnvCombine : public StateAttribute
             return true;
         }
 
-        void computeNeedoForTexEnvCombiners()
+        void computeNeedForTexEnvCombiners()
         {
             _needsTexEnvCrossbar = (needsTexEnvCombiner(_source0_RGB) ||
                                     needsTexEnvCombiner(_source1_RGB) ||

@@ -51,7 +51,7 @@ namespace osgParticle
         inline void setFluidDensity(float d)
         {
             _density = d;
-            _densityCoefficeint = 0.2f * osg::PI * _density;
+            _densityCoefficient = 0.2f * osg::PI * _density;
         }
 
         /// Get the density of the fluid.
@@ -105,7 +105,7 @@ namespace osgParticle
         osg::Vec3   _wind;
 
         float       _viscosityCoefficient;
-        float       _densityCoefficeint;
+        float       _densityCoefficient;
     };
     
 

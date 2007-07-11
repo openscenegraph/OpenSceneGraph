@@ -526,7 +526,7 @@ void ElementBufferObject::compileBuffer(State& state) const
         itr != _bufferEntryDrawElementsPairs.end();
         ++itr)
     {
-        const BufferEntryDrawElementstPair& bep = *itr;
+        const BufferEntryDrawElementsPair& bep = *itr;
         if (bep.second)
         {
             totalSizeRequired += bep.second->getTotalDataSize();
@@ -578,7 +578,7 @@ void ElementBufferObject::compileBuffer(State& state) const
         itr != _bufferEntryDrawElementsPairs.end();
         ++itr)
     {
-        const BufferEntryDrawElementstPair& bep = *itr;
+        const BufferEntryDrawElementsPair& bep = *itr;
         const DrawElements* de = bep.second;
         if (de)
         {

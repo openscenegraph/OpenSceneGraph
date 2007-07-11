@@ -60,7 +60,7 @@ NodeTrackerManipulator::~NodeTrackerManipulator()
 osg::NodePath NodeTrackerManipulator::getNodePath() const
 {
     osg::NodePath nodePath;
-    for(ObserveredNodePath::const_iterator itr = _trackNodePath.begin();
+    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
         itr != _trackNodePath.end();
         ++itr)
     {
@@ -71,14 +71,14 @@ osg::NodePath NodeTrackerManipulator::getNodePath() const
 
 bool NodeTrackerManipulator::validateNodePath() const
 {
-    for(ObserveredNodePath::const_iterator itr = _trackNodePath.begin();
+    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
         itr != _trackNodePath.begin();
         ++itr)
     {
         if (*itr==0) 
         {
             osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
-            const_cast<ObserveredNodePath&>(_trackNodePath).clear();
+            const_cast<ObserverNodePath&>(_trackNodePath).clear();
             return false;
         }
     }

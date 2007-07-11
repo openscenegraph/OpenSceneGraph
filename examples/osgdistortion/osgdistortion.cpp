@@ -698,6 +698,16 @@ int main(int argc, char** argv)
         viewer.setSceneData( distortionNode );
     }
 
+    while (arguments.read("--sky-light"))
+    {
+        viewer.setLightingMode(osg::View::SKY_LIGHT);
+    }
+    
+    if (viewer.getLightingMode()==osg::View::HEADLIGHT)
+    {
+        viewer.getLight()->setPosition(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
+    }
+
 
     // load the nodes from the commandline arguments.
     if (!viewer.getSceneData())

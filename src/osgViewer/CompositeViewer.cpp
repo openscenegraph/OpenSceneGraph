@@ -1191,8 +1191,8 @@ void CompositeViewer::updateTraversal()
         sitr != scenes.end();
         ++sitr)
     {
+        (*sitr)->setFrameStamp(_frameStamp.get());
         (*sitr)->updateTraversal();
-
     }
 
 

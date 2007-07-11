@@ -41,8 +41,8 @@ class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
         
         virtual const char* className() const { return "AnimationPath"; }
 
-        void setPrintOutTimingInfo(bool printOutTiminInfo) { _printOutTiminInfo=printOutTiminInfo; }
-        bool getPrintOutTimingInfo() const { return _printOutTiminInfo; }
+        void setPrintOutTimingInfo(bool printOutTimingInfo) { _printOutTimingInfo=printOutTimingInfo; }
+        bool getPrintOutTimingInfo() const { return _printOutTimingInfo; }
         
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
         virtual void setByMatrix(const osg::Matrixd& matrix) { _matrix = matrix; }
@@ -79,7 +79,7 @@ class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
 
         bool _valid;
         
-        bool _printOutTiminInfo;
+        bool _printOutTimingInfo;
 
         void handleFrame( double time );
 

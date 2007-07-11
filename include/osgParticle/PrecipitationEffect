@@ -231,8 +231,8 @@ namespace osgParticle
         osg::ref_ptr<osg::Uniform>  _particleSizeUniform;
         osg::ref_ptr<osg::Uniform>  _particleColorUniform;
 
-        typedef std::pair< osg::NodeVisitor*, osg::NodePath > ViewIdenitifier;
-        typedef std::map< ViewIdenitifier, PrecipitationDrawableSet >  ViewDrawableMap;
+        typedef std::pair< osg::NodeVisitor*, osg::NodePath > ViewIdentifier;
+        typedef std::map< ViewIdentifier, PrecipitationDrawableSet >  ViewDrawableMap;
 
         OpenThreads::Mutex _mutex;
         ViewDrawableMap _viewDrawableMap;

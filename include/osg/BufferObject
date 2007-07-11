@@ -291,8 +291,8 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
 
         META_Object(osg,ElementBufferObject);
         
-        typedef std::pair< BufferEntry, DrawElements* > BufferEntryDrawElementstPair;
-        typedef std::vector< BufferEntryDrawElementstPair > BufferEntryDrawElementsPairs;
+        typedef std::pair< BufferEntry, DrawElements* > BufferEntryDrawElementsPair;
+        typedef std::vector< BufferEntryDrawElementsPair > BufferEntryDrawElementsPairs;
 
         unsigned int addDrawElements(osg::DrawElements* PrimitiveSet);
         void removeDrawElements(osg::DrawElements* PrimitiveSet);

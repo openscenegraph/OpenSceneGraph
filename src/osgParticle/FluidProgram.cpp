@@ -13,7 +13,7 @@ osgParticle::FluidProgram::FluidProgram(const FluidProgram& copy, const osg::Cop
     _density(copy._density),
     _wind(copy._wind),
     _viscosityCoefficient(copy._viscosityCoefficient),
-    _densityCoefficeint(copy._densityCoefficeint)
+    _densityCoefficient(copy._densityCoefficient)
 {
 }
 
@@ -37,7 +37,7 @@ void osgParticle::FluidProgram::execute(double dt)
             // compute force due to friction
             osg::Vec3 velBefore = particle->getVelocity();
             osg::Vec3 relative_wind = particle->getVelocity()-_wind;            
-            osg::Vec3 wind_force = - relative_wind * Area * (_viscosityCoefficient + _densityCoefficeint*relative_wind.length());
+            osg::Vec3 wind_force = - relative_wind * Area * (_viscosityCoefficient + _densityCoefficient*relative_wind.length());
             osg::Vec3 wind_accel = wind_force * particle->getMassInv();
 
             double critical_dt2 = relative_wind.length2()/wind_accel.length2();

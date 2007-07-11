@@ -6,7 +6,7 @@ using namespace osgGA;
 
 AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animationPath) 
 {
-    _printOutTiminInfo = true;
+    _printOutTimingInfo = true;
 
     _animationPath = animationPath;
     _timeOffset = 0.0;
@@ -20,7 +20,7 @@ AnimationPathManipulator::AnimationPathManipulator(osg::AnimationPath* animation
 
 AnimationPathManipulator::AnimationPathManipulator( const std::string& filename ) 
 {
-    _printOutTiminInfo = true;
+    _printOutTimingInfo = true;
 
     _animationPath = new osg::AnimationPath;
     _animationPath->setLoopMode(osg::AnimationPath::LOOP);
@@ -137,7 +137,7 @@ void AnimationPathManipulator::handleFrame( double time )
     
     ++_numOfFramesSinceStartOfTimedPeriod;
     
-    if (_printOutTiminInfo)
+    if (_printOutTimingInfo)
     {
         double delta = (animTime-_animStartOfTimedPeriod);
         if (delta>=_animationPath->getPeriod())

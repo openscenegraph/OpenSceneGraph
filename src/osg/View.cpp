@@ -28,7 +28,7 @@ View::View()
 #if 1    
     double height = osg::DisplaySettings::instance()->getScreenHeight();
     double width = osg::DisplaySettings::instance()->getScreenWidth();
-    double distance = osg::DisplaySettings::instance()->getScreenWidth();
+    double distance = osg::DisplaySettings::instance()->getScreenDistance();
     
     double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
 

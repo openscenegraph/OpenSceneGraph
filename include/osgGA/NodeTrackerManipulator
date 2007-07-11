@@ -29,7 +29,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         virtual const char* className() const { return "NodeTrackerManipulator"; }
 
-        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserveredNodePath;
+        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserverNodePath;
 
         void setTrackNodePath(const osg::NodePath& nodePath)
         {
@@ -38,8 +38,8 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
            std::copy(nodePath.begin(), nodePath.end(), std::back_inserter(_trackNodePath));
         }
 
-        void setTrackNodePath(const ObserveredNodePath& nodePath) { _trackNodePath = nodePath; }
-        ObserveredNodePath& getTrackNodePath() { return _trackNodePath; }
+        void setTrackNodePath(const ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
+        ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
 
         void setTrackNode(osg::Node* node);
         osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
@@ -165,7 +165,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         osg::ref_ptr<osg::Node> _node;
         
-        ObserveredNodePath      _trackNodePath;
+        ObserverNodePath      _trackNodePath;
 
         TrackerMode             _trackerMode;
         RotationMode            _rotationMode;

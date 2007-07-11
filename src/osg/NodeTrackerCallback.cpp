@@ -87,14 +87,14 @@ void NodeTrackerCallback::operator()(Node* node, NodeVisitor* nv)
 
 bool NodeTrackerCallback::validateNodePath() const
 {
-    for(ObserveredNodePath::const_iterator itr = _trackNodePath.begin();
+    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
         itr != _trackNodePath.begin();
         ++itr)
     {
         if (*itr==0) 
         {
             osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
-            const_cast<ObserveredNodePath&>(_trackNodePath).clear();
+            const_cast<ObserverNodePath&>(_trackNodePath).clear();
             return false;
         }
     }
@@ -107,7 +107,7 @@ void NodeTrackerCallback::update(osg::Node& node)
     if (!validateNodePath()) return;
     
     osg::NodePath nodePath;
-    for(ObserveredNodePath::iterator itr = _trackNodePath.begin();
+    for(ObserverNodePath::iterator itr = _trackNodePath.begin();
         itr != _trackNodePath.end();
         ++itr)
     {

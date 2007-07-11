@@ -209,7 +209,7 @@ void View::setCoordinateSystemNodePath(const osg::NodePath& nodePath)
 osg::NodePath View::getCoordinateSystemNodePath() const
 {
     osg::NodePath nodePath;
-    for(ObserveredNodePath::const_iterator itr = _coordinateSystemNodePath.begin();
+    for(ObserverNodePath::const_iterator itr = _coordinateSystemNodePath.begin();
         itr != _coordinateSystemNodePath.end();
         ++itr)
     {

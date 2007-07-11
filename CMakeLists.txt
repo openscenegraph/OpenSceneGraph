@@ -89,6 +89,7 @@ INCLUDE_DIRECTORIES(
 
 IF(WIN32)
     ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
     #needed for net plugin
     SET (OSG_SOCKET_LIBS wsock32.lib)
     # Both Cygwin and Msys need -DNOMINMAX ???

@@ -157,7 +157,7 @@ Font::Font(FontImplementation* implementation):
     char *ptr;
     if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
     {
-        GLint osg_max_size = atoi(ptr);
+        unsigned int osg_max_size = atoi(ptr);
 
         if (osg_max_size<_textureWidthHint) _textureWidthHint = osg_max_size;
         if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;
@@ -236,7 +236,7 @@ void Font::setTextureSizeHint(unsigned int width,unsigned int height)
     char *ptr;
     if( (ptr = getenv("OSG_MAX_TEXTURE_SIZE")) != 0)
     {
-        GLint osg_max_size = atoi(ptr);
+        unsigned int osg_max_size = atoi(ptr);
 
         if (osg_max_size<_textureWidthHint) _textureWidthHint = osg_max_size;
         if (osg_max_size<_textureHeightHint) _textureHeightHint = osg_max_size;

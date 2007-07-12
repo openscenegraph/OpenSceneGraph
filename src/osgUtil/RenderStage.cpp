@@ -842,7 +842,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     osg::State* useState = &state;
     osg::GraphicsContext* callingContext = state.getGraphicsContext();
     osg::GraphicsContext* useContext = callingContext;
-    osg::OperationsThread* useThread = 0;
+    osg::OperationThread* useThread = 0;
     osg::RenderInfo useRenderInfo(renderInfo);
     
     RenderLeaf* saved_previous = previous;

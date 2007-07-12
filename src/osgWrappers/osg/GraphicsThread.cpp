@@ -58,6 +58,19 @@ BEGIN_OBJECT_REFLECTOR(osg::BlockAndFlushOperation)
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
+	I_DeclaringFile("osg/GraphicsThread");
+	I_BaseType(osg::OperationThread);
+	I_Constructor0(____GraphicsThread,
+	               "",
+	               "");
+	I_Method0(void, run,
+	          Properties::VIRTUAL,
+	          __void__run,
+	          "Run does the graphics thread run loop. ",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Operation);

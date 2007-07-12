@@ -14,9 +14,19 @@
 #ifndef OSG_GRAPHICSTHREAD
 #define OSG_GRAPHICSTHREAD 1
 
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 
 namespace osg {
+
+class OSG_EXPORT GraphicsThread : public osg::OperationThread
+{
+    public:
+    
+        GraphicsThread();
+        
+        /** Run does the graphics thread run loop.*/        
+        virtual void run();
+};
 
 /** SwapBufferOperation calls swap buffers on the GraphicsContext.*/
 struct OSG_EXPORT SwapBuffersOperation : public Operation

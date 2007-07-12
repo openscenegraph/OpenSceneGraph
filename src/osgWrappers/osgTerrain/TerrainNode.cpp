@@ -12,10 +12,9 @@
 
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
-#include <osg/GraphicsContext>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 #include <osg/TransferFunction>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
@@ -196,30 +195,20 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __bool__getTreatBoundariesToValidDataAsDefaultValue,
 	          "Get whether the TeatBoundariesToValidDataAsDefaultValue hint. ",
 	          "");
-	I_Method1(void, setOperationsThread, IN, osg::OperationsThread *, operationsThread,
+	I_Method1(void, setOperationQueue, IN, osg::OperationQueue *, operations,
 	          Properties::NON_VIRTUAL,
-	          __void__setOperationsThread__osg_OperationsThread_P1,
-	          "Set an OperationsThread to do an data initialization and update work. ",
+	          __void__setOperationQueue__osg_OperationQueue_P1,
+	          "Set an OperationQueue to do an data initialization and update work. ",
 	          "");
-	I_Method0(osg::OperationsThread *, getOperationsThread,
+	I_Method0(osg::OperationQueue *, getOperationQueue,
 	          Properties::NON_VIRTUAL,
-	          __osg_OperationsThread_P1__getOperationsThread,
-	          "Get the OperationsThread if one is attached, return NULL otherwise. ",
+	          __osg_OperationQueue_P1__getOperationQueue,
+	          "Get the OperationsQueue if one is attached, return NULL otherwise. ",
 	          "");
-	I_Method0(const osg::OperationsThread *, getOperationsThread,
+	I_Method0(const osg::OperationQueue *, getOperationsQueue,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_OperationsThread_P1__getOperationsThread,
-	          "Get the const OperationsThread if one is attached, return NULL otherwise. ",
-	          "");
-	I_Method1(void, addCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
-	          Properties::NON_VIRTUAL,
-	          __void__addCompileGraphicsContext__osg_GraphicsContext_P1,
-	          "Add a graphics context that should be used to compile/delete OpenGL objects. ",
-	          "");
-	I_Method1(void, removeCompileGraphicsContext, IN, osg::GraphicsContext *, gc,
-	          Properties::NON_VIRTUAL,
-	          __void__removeCompileGraphicsContext__osg_GraphicsContext_P1,
-	          "Removed a graphics context that should be used to compile/delete OpenGL objects. ",
+	          __C5_osg_OperationQueue_P1__getOperationsQueue,
+	          "Get the const OperationsQueue if one is attached, return NULL otherwise. ",
 	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
@@ -247,9 +236,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
-	I_SimpleProperty(osg::OperationsThread *, OperationsThread, 
-	                 __osg_OperationsThread_P1__getOperationsThread, 
-	                 __void__setOperationsThread__osg_OperationsThread_P1);
+	I_SimpleProperty(osg::OperationQueue *, OperationQueue, 
+	                 __osg_OperationQueue_P1__getOperationQueue, 
+	                 __void__setOperationQueue__osg_OperationQueue_P1);
+	I_SimpleProperty(const osg::OperationQueue *, OperationsQueue, 
+	                 __C5_osg_OperationQueue_P1__getOperationsQueue, 
+	                 0);
 	I_SimpleProperty(bool, RequiresNormals, 
 	                 __bool__getRequiresNormals, 
 	                 __void__setRequiresNormals__bool);

@@ -472,11 +472,11 @@ void GraphicsContext::createGraphicsThread()
 {
     if (!_graphicsThread)
     {
-        setGraphicsThread(new OperationsThread);
+        setGraphicsThread(new GraphicsThread);
     }
 }
 
-void GraphicsContext::setGraphicsThread(OperationsThread* gt)
+void GraphicsContext::setGraphicsThread(GraphicsThread* gt)
 {
     if (_graphicsThread==gt) return; 
 

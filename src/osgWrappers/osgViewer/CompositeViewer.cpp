@@ -13,7 +13,7 @@
 #include <osg/ArgumentParser>
 #include <osg/Camera>
 #include <osg/FrameStamp>
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
 #include <osgViewer/CompositeViewer>

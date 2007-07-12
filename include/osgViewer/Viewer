@@ -151,8 +151,8 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         typedef std::vector<OpenThreads::Thread*> Threads;
         void getAllThreads(Threads& threads, bool onlyActive=true);
 
-        typedef std::vector<osg::OperationsThread*> OperationsThreads;
-        void getOperationsThreads(OperationsThreads& threads, bool onlyActive=true);
+        typedef std::vector<osg::OperationThread*> OperationThreads;
+        void getOperationThreads(OperationThreads& threads, bool onlyActive=true);
 
         /** Set the graphics operation to call on realization of the viewers graphics windows.*/
         void setRealizeOperation(osg::Operation* op) { _realizeOperation = op; }

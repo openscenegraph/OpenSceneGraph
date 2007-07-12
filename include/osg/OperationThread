@@ -170,7 +170,7 @@ class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
         /** Get the operation currently being run.*/
         osg::ref_ptr<Operation> getCurrentOperation() { return _currentOperation; }
 
-        /** Run does the graphics thread run loop.*/        
+        /** Run does the opertion thread run loop.*/
         virtual void run();
         
         void setDone(bool done);

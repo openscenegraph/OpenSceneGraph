@@ -12,7 +12,7 @@
 */
 
 
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 #include <osg/GraphicsContext>
 #include <osg/Notify>
 
@@ -347,13 +347,6 @@ void OperationThread::removeAllOperations()
 
 void OperationThread::run()
 {
-    // make the graphics context current.
-    GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());
-    if (graphicsContext)
-    {        
-        graphicsContext->makeCurrent();
-    }
-
     osg::notify(osg::INFO)<<"Doing run "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     bool firstTime = true;
@@ -402,11 +395,6 @@ void OperationThread::run()
         // osg::notify(osg::NOTICE)<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
 
     } while (!testCancel() && !_done);
-
-    if (graphicsContext)
-    {    
-        graphicsContext->releaseContext();
-    }
 
     osg::notify(osg::INFO)<<"exit loop "<<this<<" isRunning()="<<isRunning()<<std::endl;
 

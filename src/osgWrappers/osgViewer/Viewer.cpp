@@ -15,7 +15,7 @@
 #include <osg/Camera>
 #include <osg/FrameStamp>
 #include <osg/Node>
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 #include <osg/Timer>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>
@@ -36,7 +36,7 @@ TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::Viewer::Cameras)
 
 TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::Viewer::Threads)
 
-TYPE_NAME_ALIAS(std::vector< osg::OperationsThread * >, osgViewer::Viewer::OperationsThreads)
+TYPE_NAME_ALIAS(std::vector< osg::OperationThread * >, osgViewer::Viewer::OperationThreads)
 
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
 	I_DeclaringFile("osgViewer/Viewer");
@@ -239,9 +239,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__getAllThreads__Threads_R1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, getOperationsThreads, IN, osgViewer::Viewer::OperationsThreads &, threads, , IN, bool, onlyActive, true,
+	I_MethodWithDefaults2(void, getOperationThreads, IN, osgViewer::Viewer::OperationThreads &, threads, , IN, bool, onlyActive, true,
 	                      Properties::NON_VIRTUAL,
-	                      __void__getOperationsThreads__OperationsThreads_R1__bool,
+	                      __void__getOperationThreads__OperationThreads_R1__bool,
 	                      "",
 	                      "");
 	I_Method1(void, setRealizeOperation, IN, osg::Operation *, op,
@@ -350,5 +350,5 @@ STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Camera * >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::OperationsThread * >)
+STD_VECTOR_REFLECTOR(std::vector< osg::OperationThread * >)
 

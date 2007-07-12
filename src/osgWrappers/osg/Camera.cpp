@@ -22,7 +22,7 @@
 #include <osg/Matrixf>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 #include <osg/State>
 #include <osg/Stats>
 #include <osg/Texture>
@@ -446,19 +446,19 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __void__createCameraThread,
 	          "Create a operation thread for this camera. ",
 	          "");
-	I_Method1(void, setCameraThread, IN, osg::OperationsThread *, gt,
+	I_Method1(void, setCameraThread, IN, osg::OperationThread *, gt,
 	          Properties::NON_VIRTUAL,
-	          __void__setCameraThread__OperationsThread_P1,
+	          __void__setCameraThread__OperationThread_P1,
 	          "Assign a operation thread to the camera. ",
 	          "");
-	I_Method0(osg::OperationsThread *, getCameraThread,
+	I_Method0(osg::OperationThread *, getCameraThread,
 	          Properties::NON_VIRTUAL,
-	          __OperationsThread_P1__getCameraThread,
+	          __OperationThread_P1__getCameraThread,
 	          "Get the operation thread assigned to this camera. ",
 	          "");
-	I_Method0(const osg::OperationsThread *, getCameraThread,
+	I_Method0(const osg::OperationThread *, getCameraThread,
 	          Properties::NON_VIRTUAL,
-	          __C5_OperationsThread_P1__getCameraThread,
+	          __C5_OperationThread_P1__getCameraThread,
 	          "Get the const operation thread assigned to this camera. ",
 	          "");
 	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context,
@@ -552,9 +552,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::BufferAttachmentMap &, BufferAttachmentMap, 
 	                 __BufferAttachmentMap_R1__getBufferAttachmentMap, 
 	                 0);
-	I_SimpleProperty(osg::OperationsThread *, CameraThread, 
-	                 __OperationsThread_P1__getCameraThread, 
-	                 __void__setCameraThread__OperationsThread_P1);
+	I_SimpleProperty(osg::OperationThread *, CameraThread, 
+	                 __OperationThread_P1__getCameraThread, 
+	                 __void__setCameraThread__OperationThread_P1);
 	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
 	                 __C5_Vec4_R1__getClearColor, 
 	                 __void__setClearColor__C5_Vec4_R1);

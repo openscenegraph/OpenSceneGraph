@@ -313,11 +313,11 @@ void Camera::createCameraThread()
 {
     if (!_cameraThread)
     {
-        setCameraThread(new OperationsThread);
+        setCameraThread(new OperationThread);
     }
 }
 
-void Camera::setCameraThread(OperationsThread* gt)
+void Camera::setCameraThread(OperationThread* gt)
 {
     if (_cameraThread==gt) return; 
 

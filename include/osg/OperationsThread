@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_OPERATIONSTHREAD
-#define OSG_OPERATIONSTHREAD 1
+#ifndef OSG_OPERATIONTHREAD
+#define OSG_OPERATIONTHREAD 1
 
 #include <osg/observer_ptr>
 #include <osg/Object>
@@ -23,6 +23,7 @@
 #include <OpenThreads/Block>
 
 #include <list>
+#include <set>
 
 namespace osg {
 
@@ -71,6 +72,8 @@ class Operation : virtual public Referenced
         bool        _keep;
 };
 
+class OperationThread;
+
 class OSG_EXPORT OperationQueue : public Referenced
 {
     public:
@@ -103,25 +106,35 @@ class OSG_EXPORT OperationQueue : public Referenced
         /** Release operations block that is used to block threads that are waiting on an empty operations queue.*/
         void releaseOperationsBlock();
 
+        typedef std::set<OperationThread*> OperationThreads;
+        
+        /** Get the set of OperationThreads that are sharing this OperationQueue. */
+        const OperationThreads& getOperationThreads() const { return _operationThreads; }
 
     protected:
 
         virtual ~OperationQueue();
 
-        typedef std::list< ref_ptr<Operation> > Operations;
+        friend class OperationThread;
+        
+        void addOperationThread(OperationThread* thread);
+        void removeOperationThread(OperationThread* thread);
+        
+        typedef std::list< osg::ref_ptr<Operation> > Operations;
 
         OpenThreads::Mutex          _operationsMutex;
         osg::ref_ptr<osg::RefBlock> _operationsBlock;
         Operations                  _operations;
         Operations::iterator        _currentOperationIterator;
 
+        OperationThreads            _operationThreads;
 };
 
 /** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
-class OSG_EXPORT OperationsThread : public Referenced, public OpenThreads::Thread
+class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
 {
     public:
-        OperationsThread();
+        OperationThread();
 
         void setParent(Object* parent) { _parent = parent; }
 
@@ -169,7 +182,7 @@ class OSG_EXPORT OperationsThread : public Referenced, public OpenThreads::Threa
 
     protected:
     
-        virtual ~OperationsThread();
+        virtual ~OperationThread();
         
         observer_ptr<Object>            _parent;
 
@@ -180,6 +193,8 @@ class OSG_EXPORT OperationsThread : public Referenced, public OpenThreads::Threa
         osg::ref_ptr<Operation>         _currentOperation;
 
 };
+
+typedef OperationThread OperationsThread;
 
 }
 

@@ -199,20 +199,30 @@ void OperationQueue::releaseOperationsBlock()
 }
 
 
+void OperationQueue::addOperationThread(OperationThread* thread)
+{
+    _operationThreads.insert(thread);
+}
+
+void OperationQueue::removeOperationThread(OperationThread* thread)
+{
+    _operationThreads.erase(thread);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //
-//  OperationsThread
+//  OperationThread
 //
 
-OperationsThread::OperationsThread():
+OperationThread::OperationThread():
     osg::Referenced(true),
     _parent(0),
     _done(false)
 {
-    _operationQueue = new OperationQueue;
+    setOperationQueue(new OperationQueue);
 }
 
-OperationsThread::~OperationsThread()
+OperationThread::~OperationThread()
 {
     //osg::notify(osg::NOTICE)<<"Destructing graphics thread "<<this<<std::endl;
 
@@ -221,13 +231,20 @@ OperationsThread::~OperationsThread()
     //osg::notify(osg::NOTICE)<<"Done Destructing graphics thread "<<this<<std::endl;
 }
 
-void OperationsThread::setOperationQueue(OperationQueue* opq)
+void OperationThread::setOperationQueue(OperationQueue* opq)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
+
+    if (_operationQueue == opq) return;
+
+    if (_operationQueue.valid()) _operationQueue->removeOperationThread(this);
+
     _operationQueue = opq;
+
+    if (_operationQueue.valid()) _operationQueue->addOperationThread(this);
 }
 
-void OperationsThread::setDone(bool done)
+void OperationThread::setDone(bool done)
 {
     if (_done==done) return;
 
@@ -250,9 +267,9 @@ void OperationsThread::setDone(bool done)
     }
 }
 
-int OperationsThread::cancel()
+int OperationThread::cancel()
 {
-    osg::notify(osg::INFO)<<"Cancelling OperationsThread "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    osg::notify(osg::INFO)<<"Cancelling OperationThread "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     int result = 0;
     if( isRunning() )
@@ -293,42 +310,42 @@ int OperationsThread::cancel()
 #endif
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
-            osg::notify(osg::INFO)<<"   Waiting for OperationsThread to cancel "<<this<<std::endl;
+            osg::notify(osg::INFO)<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
     }
 
-    osg::notify(osg::INFO)<<"  OperationsThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    osg::notify(osg::INFO)<<"  OperationThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     return result;
 }
 
-void OperationsThread::add(Operation* operation)
+void OperationThread::add(Operation* operation)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
     if (!_operationQueue) _operationQueue = new OperationQueue;
     _operationQueue->add(operation);
 }
 
-void OperationsThread::remove(Operation* operation)
+void OperationThread::remove(Operation* operation)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
     if (_operationQueue.valid()) _operationQueue->remove(operation);
 }
 
-void OperationsThread::remove(const std::string& name)
+void OperationThread::remove(const std::string& name)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
     if (_operationQueue.valid()) _operationQueue->remove(name);
 }
 
-void OperationsThread::removeAllOperations()
+void OperationThread::removeAllOperations()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
     if (_operationQueue.valid()) _operationQueue->removeAllOperations();
 }
 
-void OperationsThread::run()
+void OperationThread::run()
 {
     // make the graphics context current.
     GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());

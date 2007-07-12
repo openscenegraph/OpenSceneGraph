@@ -1,3 +1,61 @@
+2007-07-11 16:06 +0000 [r7102-7103]  robert:
+
+	* Updated wrappers
+
+	* Fixed typo
+
+2007-07-11 15:51 +0000 [r7100-7101]  robert:
+
+	* From Paul Melis, fixes to spelling mistakes/typos.
+
+	* Updated version number in prep for 2.1.1 dev release
+
+2007-07-11 15:30 +0000 [r7099]  robert:
+
+	* From Andre Garneau, minor warning fixes
+
+2007-07-11 14:16 +0000 [r7098]  robert:
+
+	* Added support for --sky-light and headlight with local position
+	  at 0,0,0
+
+2007-07-11 13:48 +0000 [r7097]  robert:
+
+	* Added setting of the Scene's FrameStamp on each
+	  CompositeViewer::updateTraversal() call to fix animation path
+	  issue.
+
+2007-07-11 09:00 +0000 [r7096]  robert:
+
+	* From Martin Lavery, update of Xcode projects to meet the latest
+	  SVN revision
+
+2007-07-10 19:29 +0000 [r7095]  robert:
+
+	* Added OperationsThread
+
+2007-07-10 17:36 +0000 [r7093-7094]  robert:
+
+	* Added test code path which stress tests new thread pool support
+	  in OperationsThread
+
+	* Wired up OperationsThread to use the new OperationQueue and
+	  thereby support thread pooling where multiple OperationsThreads
+	  share a single OperationsQueue
+
+2007-07-09 19:04 +0000 [r7092]  robert:
+
+	* Separated OperationsThread out from the GraphicsThread header and
+	  introduced new OperationQueue class.
+
+2007-07-09 15:02 +0000 [r7091]  robert:
+
+	* Fixed unitialized variables.
+
+2007-07-09 11:37 +0000 [r7088]  robert:
+
+	* Updated ChangeLog, osgversion and AUTHORS.txt for 2.1 dev release
+
 2007-07-09 11:05 +0000 [r7085-7087]  robert:
 
 	* Updated version number for 2.1.0 dev release

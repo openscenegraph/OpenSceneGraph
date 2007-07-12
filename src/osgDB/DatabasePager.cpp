@@ -602,7 +602,7 @@ void DatabasePager::run()
                         osg::GraphicsContext* gc = osg::GraphicsContext::getCompileContext(*itr);
                         if (gc)
                         {   
-                            osg::OperationsThread* gt = gc->getGraphicsThread();
+                            osg::GraphicsThread* gt = gc->getGraphicsThread();
                             if (gt)
                             {
                                 gt->add(new DatabasePager::CompileOperation(this));

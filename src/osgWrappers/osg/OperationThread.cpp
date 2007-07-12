@@ -11,7 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Object>
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -22,7 +22,7 @@
 #endif
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
-	I_DeclaringFile("osg/OperationsThread");
+	I_DeclaringFile("osg/OperationThread");
 	I_VirtualBaseType(osg::Referenced);
 	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
 	               ____Operation__C5_std_string_R1__bool,
@@ -61,8 +61,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	                 __void__setName__C5_std_string_R1);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::set< osg::OperationThread * >, osg::OperationQueue::OperationThreads)
+
 BEGIN_OBJECT_REFLECTOR(osg::OperationQueue)
-	I_DeclaringFile("osg/OperationsThread");
+	I_DeclaringFile("osg/OperationThread");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____OperationQueue,
 	               "",
@@ -107,13 +109,33 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationQueue)
 	          __void__releaseOperationsBlock,
 	          "Release operations block that is used to block threads that are waiting on an empty operations queue. ",
 	          "");
+	I_Method0(const osg::OperationQueue::OperationThreads &, getOperationThreads,
+	          Properties::NON_VIRTUAL,
+	          __C5_OperationThreads_R1__getOperationThreads,
+	          "Get the set of OperationThreads that are sharing this OperationQueue. ",
+	          "");
+	I_ProtectedMethod1(void, addOperationThread, IN, osg::OperationThread *, thread,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__addOperationThread__OperationThread_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, removeOperationThread, IN, osg::OperationThread *, thread,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeOperationThread__OperationThread_P1,
+	                   "",
+	                   "");
+	I_SimpleProperty(const osg::OperationQueue::OperationThreads &, OperationThreads, 
+	                 __C5_OperationThreads_R1__getOperationThreads, 
+	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
-	I_DeclaringFile("osg/OperationsThread");
+BEGIN_OBJECT_REFLECTOR(osg::OperationThread)
+	I_DeclaringFile("osg/OperationThread");
 	I_BaseType(osg::Referenced);
 	I_BaseType(OpenThreads::Thread);
-	I_Constructor0(____OperationsThread,
+	I_Constructor0(____OperationThread,
 	               "",
 	               "");
 	I_Method1(void, setParent, IN, osg::Object *, parent,
@@ -174,7 +196,7 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 	I_Method0(void, run,
 	          Properties::VIRTUAL,
 	          __void__run,
-	          "Run does the graphics thread run loop. ",
+	          "Run does the opertion thread run loop. ",
 	          "");
 	I_Method1(void, setDone, IN, bool, done,
 	          Properties::NON_VIRTUAL,
@@ -206,11 +228,13 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationsThread)
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
-	I_DeclaringFile("osg/OperationsThread");
+	I_DeclaringFile("osg/OperationThread");
 	I_VirtualBaseType(osg::Referenced);
 	I_BaseType(OpenThreads::Block);
 	I_Constructor0(____RefBlock,
 	               "",
 	               "");
 END_REFLECTOR
+
+STD_SET_REFLECTOR(std::set< osg::OperationThread * >)
 

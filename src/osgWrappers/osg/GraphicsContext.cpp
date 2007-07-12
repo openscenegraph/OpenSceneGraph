@@ -12,8 +12,9 @@
 
 #include <OpenThreads/Mutex>
 #include <osg/GraphicsContext>
+#include <osg/GraphicsThread>
 #include <osg/Object>
-#include <osg/OperationsThread>
+#include <osg/OperationThread>
 #include <osg/State>
 #include <osg/Vec4>
 
@@ -181,19 +182,19 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__createGraphicsThread,
 	          "Create a graphics thread to the graphics context, so that the thread handles all OpenGL operations. ",
 	          "");
-	I_Method1(void, setGraphicsThread, IN, osg::OperationsThread *, gt,
+	I_Method1(void, setGraphicsThread, IN, osg::GraphicsThread *, gt,
 	          Properties::NON_VIRTUAL,
-	          __void__setGraphicsThread__OperationsThread_P1,
+	          __void__setGraphicsThread__GraphicsThread_P1,
 	          "Assign a graphics thread to the graphics context, so that the thread handles all OpenGL operations. ",
 	          "");
-	I_Method0(osg::OperationsThread *, getGraphicsThread,
+	I_Method0(osg::GraphicsThread *, getGraphicsThread,
 	          Properties::NON_VIRTUAL,
-	          __OperationsThread_P1__getGraphicsThread,
+	          __GraphicsThread_P1__getGraphicsThread,
 	          "Get the graphics thread assigned the graphics context. ",
 	          "");
-	I_Method0(const osg::OperationsThread *, getGraphicsThread,
+	I_Method0(const osg::GraphicsThread *, getGraphicsThread,
 	          Properties::NON_VIRTUAL,
-	          __C5_OperationsThread_P1__getGraphicsThread,
+	          __C5_GraphicsThread_P1__getGraphicsThread,
 	          "Get the const graphics thread assigned the graphics context. ",
 	          "");
 	I_Method0(bool, realizeImplementation,
@@ -377,9 +378,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(osg::Operation *, CurrentOperation, 
 	                 __Operation_P1__getCurrentOperation, 
 	                 0);
-	I_SimpleProperty(osg::OperationsThread *, GraphicsThread, 
-	                 __OperationsThread_P1__getGraphicsThread, 
-	                 __void__setGraphicsThread__OperationsThread_P1);
+	I_SimpleProperty(osg::GraphicsThread *, GraphicsThread, 
+	                 __GraphicsThread_P1__getGraphicsThread, 
+	                 __void__setGraphicsThread__GraphicsThread_P1);
 	I_SimpleProperty(osg::RefBlock *, OperationsBlock, 
 	                 __osg_RefBlock_P1__getOperationsBlock, 
 	                 0);

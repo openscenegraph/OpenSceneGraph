@@ -1469,11 +1469,11 @@ void Viewer::getCameras(Cameras& cameras, bool onlyActive)
 
 void Viewer::getAllThreads(Threads& threads, bool onlyActive)
 {
-    OperationsThreads operationsThreads;
-    getOperationsThreads(operationsThreads);
+    OperationThreads operationThreads;
+    getOperationThreads(operationThreads);
     
-    for(OperationsThreads::iterator itr = operationsThreads.begin();
-        itr != operationsThreads.end();
+    for(OperationThreads::iterator itr = operationThreads.begin();
+        itr != operationThreads.end();
         ++itr)
     {
         threads.push_back(*itr);
@@ -1488,7 +1488,7 @@ void Viewer::getAllThreads(Threads& threads, bool onlyActive)
 }
 
 
-void Viewer::getOperationsThreads(OperationsThreads& threads, bool onlyActive)
+void Viewer::getOperationThreads(OperationThreads& threads, bool onlyActive)
 {
     threads.clear();
     

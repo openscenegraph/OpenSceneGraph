@@ -19,6 +19,28 @@
 using namespace osg;
 using namespace OpenThreads;
 
+GraphicsThread::GraphicsThread()
+{
+}   
+
+void GraphicsThread::run()
+{
+    // make the graphics context current.
+    GraphicsContext* graphicsContext = dynamic_cast<GraphicsContext*>(_parent.get());
+    if (graphicsContext)
+    {        
+        graphicsContext->makeCurrent();
+    }
+
+    OperationThread::run();
+
+    if (graphicsContext)
+    {    
+        graphicsContext->releaseContext();
+    }
+
+}
+
 struct BlockOperation : public Operation, public Block
 {
     BlockOperation():

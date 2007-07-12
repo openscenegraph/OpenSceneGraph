@@ -352,13 +352,13 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         void createCameraThread();
 
         /** Assign a operation thread to the camera.*/
-        void setCameraThread(OperationsThread* gt);
+        void setCameraThread(OperationThread* gt);
 
         /** Get the operation thread assigned to this camera.*/
-        OperationsThread* getCameraThread() { return _cameraThread.get(); }
+        OperationThread* getCameraThread() { return _cameraThread.get(); }
 
         /** Get the const operation thread assigned to this camera.*/
-        const OperationsThread* getCameraThread() const { return _cameraThread.get(); }
+        const OperationThread* getCameraThread() const { return _cameraThread.get(); }
 
 
 
@@ -467,7 +467,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         RenderTargetImplementation          _renderTargetFallback;
         BufferAttachmentMap                 _bufferAttachmentMap;
 
-        ref_ptr<OperationsThread>           _cameraThread;
+        ref_ptr<OperationThread>           _cameraThread;
         
         ref_ptr<GraphicsContext>            _graphicsContext;
         

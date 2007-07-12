@@ -15,7 +15,7 @@ mv Binary/Applications/osg*.app Binary/Applications/Bundles/
 
 
 echo Copy Frameworks
-cp -r ../OpenSceneGraph/build/Development/*.framework Binary/Frameworks/
+cp -r ../OpenSceneGraph/build/Deployment/*.framework Binary/Frameworks/
 
 echo Copy Plugins
 cp ../OpenSceneGraph/build/Deployment/*.so Binary/Plugins/

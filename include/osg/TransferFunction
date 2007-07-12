@@ -20,8 +20,11 @@
 namespace osg {
 
 
-/** TransferFunction used to manage the mapping for 1D, 2D or 3D input to output Vec4 values.
-  */
+/** TransferFunction is a class that provide a 1D,2D or 3D colour look up table
+  * that can be used on the GPU as a 1D, 2D or 3D texture.  
+  * Typically uses include mapping heights to colours when contouring terrain, 
+  * or mapping intensities to colours when volume rendering.
+*/
 class OSG_EXPORT TransferFunction : public osg::Referenced
 {
     public :
@@ -49,6 +52,7 @@ class OSG_EXPORT TransferFunction : public osg::Referenced
 
 };
 
+/** 1D variant of TransferFunction. */
 class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
 {
     public:

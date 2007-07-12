@@ -1,5 +1,5 @@
 echo Copy Examples
-cp -r ../OpenSceneGraph/build/Development/*.app Binary/Examples/
+cp -r ../OpenSceneGraph/build/Deployment/*.app Binary/Examples/
 
 echo Copy Applications
 mv Binary/Examples/osgviewer.app Binary/Applications
@@ -18,9 +18,7 @@ echo Copy Frameworks
 cp -r ../OpenSceneGraph/build/Development/*.framework Binary/Frameworks/
 
 echo Copy Plugins
-cp ../OpenSceneGraph/build/Development/*.so Binary/Plugins/
-cp ../OpenSceneGraph/build/Development/osgtext Binary/Plugins/
-cp ../OpenSceneGraph/build/Development/osgpick Binary/Plugins/
+cp ../OpenSceneGraph/build/Deployment/*.so Binary/Plugins/
 
 echo Copying Complete
 

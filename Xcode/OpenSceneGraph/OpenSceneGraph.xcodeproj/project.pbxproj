@@ -1662,9 +1662,7 @@
 		5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */; };
 		5BC1913C0C15F7AE002CF5BC /* SDLMainForMacOSX.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */; };
 		5BC191690C15FC1D002CF5BC /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC191680C15FC1C002CF5BC /* SDL.framework */; };
-		5BC2F62A0C441C8200671A68 /* OperationsThread in Resources */ = {isa = PBXBuildFile; fileRef = 5BC2F6290C441C8200671A68 /* OperationsThread */; };
 		5BC2F62F0C441CA200671A68 /* GLObjects in Resources */ = {isa = PBXBuildFile; fileRef = 5BC2F62E0C441CA100671A68 /* GLObjects */; };
-		5BC2F6310C441CC900671A68 /* OperationsThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F6300C441CC800671A68 /* OperationsThread.cpp */; };
 		5BC2F6330C441CE100671A68 /* GLObjects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F6320C441CE100671A68 /* GLObjects.cpp */; };
 		5BC2F6410C441D5200671A68 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		5BC2F6420C441D5200671A68 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -1862,6 +1860,9 @@
 		5BC2F7F90C44C9CF00671A68 /* Viewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F73D0C44C9CE00671A68 /* Viewport.h */; };
 		5BC2F7FA0C44C9CF00671A68 /* VisibilityGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F73E0C44C9CE00671A68 /* VisibilityGroup.cpp */; };
 		5BC2F7FB0C44C9CF00671A68 /* VisibilityGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F73F0C44C9CE00671A68 /* VisibilityGroup.h */; };
+		5BC2F8040C468B0500671A68 /* OperationThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F8030C468B0500671A68 /* OperationThread.cpp */; };
+		5BC2F8050C468B0500671A68 /* OperationThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F8030C468B0500671A68 /* OperationThread.cpp */; };
+		5BC2F8230C468B3100671A68 /* OperationThread in Resources */ = {isa = PBXBuildFile; fileRef = 5BC2F8220C468B3100671A68 /* OperationThread */; };
 		5BDF58F80C1FF8C4008DDEC0 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		5BDF58F90C1FF8C4008DDEC0 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		5BDF59070C1FF9BE008DDEC0 /* ReaderWriterOsgShadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59010C1FF9BD008DDEC0 /* ReaderWriterOsgShadow.cpp */; };
@@ -5463,9 +5464,7 @@
 		5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMainForMacOSX.h; path = ../../examples/osgviewerSDL/SDLMainForMacOSX.h; sourceTree = SOURCE_ROOT; };
 		5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMainForMacOSX.m; path = ../../examples/osgviewerSDL/SDLMainForMacOSX.m; sourceTree = SOURCE_ROOT; };
 		5BC191680C15FC1C002CF5BC /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
-		5BC2F6290C441C8200671A68 /* OperationsThread */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = OperationsThread; sourceTree = "<group>"; };
 		5BC2F62E0C441CA100671A68 /* GLObjects */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = GLObjects; sourceTree = "<group>"; };
-		5BC2F6300C441CC800671A68 /* OperationsThread.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OperationsThread.cpp; sourceTree = "<group>"; };
 		5BC2F6320C441CE100671A68 /* GLObjects.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GLObjects.cpp; sourceTree = "<group>"; };
 		5BC2F6360C441D2D00671A68 /* ReaderWriterTXF.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ReaderWriterTXF.cpp; sourceTree = "<group>"; };
 		5BC2F6370C441D2D00671A68 /* TXFFont.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TXFFont.cpp; sourceTree = "<group>"; };
@@ -5662,6 +5661,8 @@
 		5BC2F73D0C44C9CE00671A68 /* Viewport.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Viewport.h; sourceTree = "<group>"; };
 		5BC2F73E0C44C9CE00671A68 /* VisibilityGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = VisibilityGroup.cpp; sourceTree = "<group>"; };
 		5BC2F73F0C44C9CE00671A68 /* VisibilityGroup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VisibilityGroup.h; sourceTree = "<group>"; };
+		5BC2F8030C468B0500671A68 /* OperationThread.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OperationThread.cpp; sourceTree = "<group>"; };
+		5BC2F8220C468B3100671A68 /* OperationThread */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = OperationThread; sourceTree = "<group>"; };
 		5BDF58FE0C1FF8C4008DDEC0 /* osgdb_3dc.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_3dc.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BDF59010C1FF9BD008DDEC0 /* ReaderWriterOsgShadow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ReaderWriterOsgShadow.cpp; sourceTree = "<group>"; };
 		5BDF59020C1FF9BD008DDEC0 /* ShadowedScene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowedScene.cpp; sourceTree = "<group>"; };
@@ -10288,7 +10289,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
-				5BC2F6300C441CC800671A68 /* OperationsThread.cpp */,
+				5BC2F8030C468B0500671A68 /* OperationThread.cpp */,
 				5BC2F6320C441CE100671A68 /* GLObjects.cpp */,
 				5BC1910D0C15F48C002CF5BC /* Hint.cpp */,
 				00A79F2B0BE6875600F7C39E /* ComputeBoundsVisitor.cpp */,
@@ -10441,8 +10442,8 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				5BC2F8220C468B3100671A68 /* OperationThread */,
 				5BC2F62E0C441CA100671A68 /* GLObjects */,
-				5BC2F6290C441C8200671A68 /* OperationsThread */,
 				0037A0A40C18DA690089AA1C /* TemplatePrimitiveFunctor */,
 				5BC191100C15F4D4002CF5BC /* Hint */,
 				00A79F270BE6868400F7C39E /* ComputeBoundsVisitor */,
@@ -16049,8 +16050,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC2F62A0C441C8200671A68 /* OperationsThread in Resources */,
 				5BC2F62F0C441CA200671A68 /* GLObjects in Resources */,
+				5BC2F8230C468B3100671A68 /* OperationThread in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16907,6 +16908,7 @@
 				5BC2F7F60C44C9CF00671A68 /* VertexProgram.cpp in Sources */,
 				5BC2F7F80C44C9CF00671A68 /* Viewport.cpp in Sources */,
 				5BC2F7FA0C44C9CF00671A68 /* VisibilityGroup.cpp in Sources */,
+				5BC2F8040C468B0500671A68 /* OperationThread.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17822,8 +17824,8 @@
 				00A79F2D0BE6875700F7C39E /* ComputeBoundsVisitor.cpp in Sources */,
 				00A79F2E0BE6875700F7C39E /* TransferFunction.cpp in Sources */,
 				5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */,
-				5BC2F6310C441CC900671A68 /* OperationsThread.cpp in Sources */,
 				5BC2F6330C441CE100671A68 /* GLObjects.cpp in Sources */,
+				5BC2F8050C468B0500671A68 /* OperationThread.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

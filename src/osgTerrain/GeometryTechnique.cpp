@@ -27,7 +27,10 @@
 
 using namespace osgTerrain;
 
-GeometryTechnique::GeometryTechnique()
+GeometryTechnique::GeometryTechnique():
+    _currentReadOnlyBuffer(1),
+    _currentWriteBuffer(0)
+    
 {
     setFilterBias(0);
     setFilterWidth(0.1);
@@ -41,6 +44,11 @@ GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::Copy
 
 GeometryTechnique::~GeometryTechnique()
 {
+}
+
+void GeometryTechnique::swapBuffers()
+{
+    std::swap(_currentReadOnlyBuffer,_currentWriteBuffer);
 }
 
 void GeometryTechnique::setFilterBias(float filterBias)
@@ -94,6 +102,8 @@ void GeometryTechnique::init()
     
     if (!_terrainNode) return;
 
+
+    BufferData& buffer = getWriteBuffer();
 
     osgTerrain::Layer* elevationLayer = _terrainNode->getElevationLayer();
     osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer(0);
@@ -158,23 +168,19 @@ void GeometryTechnique::init()
     osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
     
-    _geode = new osg::Geode;
+    buffer._geode = new osg::Geode;
 
-    _transform = new osg::MatrixTransform;
-    _transform->addChild(_geode.get());
+    buffer._transform = new osg::MatrixTransform;
+    buffer._transform->addChild(buffer._geode.get());
 
     osg::Vec3d centerNDC = (bottomLeftNDC + topRightNDC)*0.5;
     osg::Vec3d centerModel = (bottomLeftNDC + topRightNDC)*0.5;
     masterLocator->convertLocalToModel(centerNDC, centerModel);
     
-    _transform->setMatrix(osg::Matrix::translate(centerModel));
+    buffer._transform->setMatrix(osg::Matrix::translate(centerModel));
     
-
-    _terrainGeometry = 0; // new osgTerrain::TerrainGeometry;
-    if (_terrainGeometry.valid()) _geode->addDrawable(_terrainGeometry.get());
-
-    _geometry = new osg::Geometry;
-    if (_geometry.valid()) _geode->addDrawable(_geometry.get());
+    buffer._geometry = new osg::Geometry;
+    if (buffer._geometry.valid()) buffer._geode->addDrawable(buffer._geometry.get());
 
     
     unsigned int numRows = 100;
@@ -193,16 +199,14 @@ void GeometryTechnique::init()
 
     // allocate and assign vertices
     osg::Vec3Array* _vertices = new osg::Vec3Array;
-    if (_terrainGeometry.valid()) _terrainGeometry->setVertices(_vertices);
-    if (_geometry.valid()) _geometry->setVertexArray(_vertices);
+    if (buffer._geometry.valid()) buffer._geometry->setVertexArray(_vertices);
 
     // allocate and assign normals
     osg::Vec3Array* _normals = new osg::Vec3Array;
-    if (_terrainGeometry.valid()) _terrainGeometry->setNormals(_normals);
-    if (_geometry.valid())
+    if (buffer._geometry.valid())
     {
-        _geometry->setNormalArray(_normals);
-        _geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        buffer._geometry->setNormalArray(_normals);
+        buffer._geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     }
     
     int texcoord_index = 0;
@@ -221,9 +225,7 @@ void GeometryTechnique::init()
 
         _texcoords = new osg::Vec2Array;
         
-        if (_terrainGeometry.valid()) _terrainGeometry->setTexCoords(color_index, _texcoords);
-
-        if (_geometry.valid()) _geometry->setTexCoordArray(color_index, _texcoords);
+        if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(color_index, _texcoords);
     }
 
     osg::FloatArray* _elevations = new osg::FloatArray;
@@ -236,8 +238,7 @@ void GeometryTechnique::init()
         if (!colorLayer)
         {
             // _elevations = new osg::FloatArray(numVertices);
-            if (_terrainGeometry.valid()) _terrainGeometry->setTexCoords(tf_index, _elevations);
-            if (_geometry.valid()) _geometry->setTexCoordArray(tf_index, _elevations);
+            if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(tf_index, _elevations);
 
             minHeight = tf->getMinimum();
             scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
@@ -253,11 +254,10 @@ void GeometryTechnique::init()
     osg::Vec4Array* _colors = new osg::Vec4Array(1);
     (*_colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     
-    if (_terrainGeometry.valid()) _terrainGeometry->setColors(_colors);
-    if (_geometry.valid())
+    if (buffer._geometry.valid())
     {
-        _geometry->setColorArray(_colors);
-        _geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+        buffer._geometry->setColorArray(_colors);
+        buffer._geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
 
 
@@ -336,8 +336,7 @@ void GeometryTechnique::init()
     osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
     elements->reserve((numRows-1) * (numColumns-1) * 6);
 
-    if (_terrainGeometry.valid()) _terrainGeometry->addPrimitiveSet(elements);
-    if (_geometry.valid()) _geometry->addPrimitiveSet(elements);
+    if (buffer._geometry.valid()) buffer._geometry->addPrimitiveSet(elements);
 
     for(j=0; j<numRows-1; ++j)
     {
@@ -419,7 +418,7 @@ void GeometryTechnique::init()
         if (imageLayer)
         {
             osg::Image* image = imageLayer->getImage();
-            osg::StateSet* stateset = _geode->getOrCreateStateSet();
+            osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
 
             osg::Texture2D* texture2D = new osg::Texture2D;
             texture2D->setImage(image);
@@ -448,7 +447,7 @@ void GeometryTechnique::init()
     {
         osg::notify(osg::NOTICE)<<"Requires TransferFunction"<<std::endl;
         osg::Image* image = tf->getImage();
-        osg::StateSet* stateset = _geode->getOrCreateStateSet();
+        osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
         osg::Texture1D* texture1D = new osg::Texture1D;
         texture1D->setImage(image);
         texture1D->setResizeNonPowerOfTwoHint(false);
@@ -513,21 +512,23 @@ void GeometryTechnique::init()
     
     if (containsTransparency)
     {
-        osg::StateSet* stateset = _geode->getOrCreateStateSet();
+        osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
         stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
 
     // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
-    if (_geometry.valid()) _geometry->setUseVertexBufferObjects(true);
+    if (buffer._geometry.valid()) buffer._geometry->setUseVertexBufferObjects(true);
 
-    if (_geometry.valid())
+    if (buffer._geometry.valid())
     {
         osgUtil::SmoothingVisitor smoother;
-        smoother.smooth(*_geometry);    
+        smoother.smooth(*buffer._geometry);
     }
 
     _dirty = false;    
+
+    swapBuffers();
 }
 
 
@@ -539,12 +540,14 @@ void GeometryTechnique::update(osgUtil::UpdateVisitor* uv)
 
 void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
 {
+    BufferData& buffer = getReadOnlyBuffer();
+
 #if 0
-    if (_terrainNode) _terrainNode->osg::Group::traverse(*cv);
+    if (buffer._terrainNode) buffer._terrainNode->osg::Group::traverse(*cv);
 #else
-    if (_transform.valid())
+    if (buffer._transform.valid())
     {
-        _transform->accept(*cv);
+        buffer._transform->accept(*cv);
     }
 #endif    
 }
@@ -558,115 +561,3 @@ void GeometryTechnique::dirty()
     TerrainTechnique::dirty();
 }
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//  TerrainGeometry
-//
-TerrainGeometry::TerrainGeometry()
-{
-}
-
-
-TerrainGeometry::TerrainGeometry(const TerrainGeometry& geometry,const osg::CopyOp& copyop):
-    osg::Drawable(geometry, copyop),
-    _vertices(geometry._vertices),
-    _normals(geometry._normals),
-    _colors(geometry._colors),
-    _texcoords(geometry._texcoords),
-    _primitiveSets(geometry._primitiveSets)
-
-{
-}
-
-osg::BoundingBox TerrainGeometry::computeBound() const
-{
-    osg::BoundingBox bb;
-    
-    if (_vertices.first.valid())
-    {
-        for(osg::Vec3Array::const_iterator itr = _vertices.first->begin();
-            itr != _vertices.first->end();
-            ++itr)
-        {
-            bb.expandBy(*itr);
-        }
-    }
-    return bb;
-}
-
-void TerrainGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
-{
-#if 0
-    osg::notify(osg::NOTICE)<<"TerrainGeometry::drawImplementation"<<std::endl;
-    
-    if (_vertices.first.valid() && _vertices.first->getDataVariance()==DYNAMIC)
-    {
-        osg::notify(osg::NOTICE)<<"  Vertices DYNAMIC"<<std::endl;
-    }
-    else
-    {
-        osg::notify(osg::NOTICE)<<"  Vertices STATIC"<<std::endl;
-    }
-#endif
-    
-    osg::State& state = *renderInfo.getState();
-    const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(state.getContextID(),true);
-    
-    //
-    // Non Vertex Buffer Object path for defining vertex arrays.
-    //            
-    if( _vertices.first.valid() )
-        state.setVertexPointer(_vertices.first->getDataSize(), _vertices.first->getDataType(), 0, _vertices.first->getDataPointer());
-    else
-        state.disableVertexPointer();
-
-    if (_normals.first.valid())
-    {
-        state.setNormalPointer(_normals.first->getDataType(),0,_normals.first->getDataPointer());
-    }
-    else
-    {
-        state.disableNormalPointer();
-        glNormal3f(0.0f,0.0f,1.0f);
-    }
-
-    if (_colors.first.valid() && _colors.first->getNumElements()==_vertices.first->getNumElements())
-    {
-        state.setColorPointer(_colors.first->getDataSize(),_colors.first->getDataType(),0,_colors.first->getDataPointer());
-    }
-    else
-    {
-        state.disableColorPointer();
-
-        if (_colors.first.valid() && _colors.first->getNumElements()>=1)
-        {
-            glColor4fv(static_cast<const GLfloat*>(_colors.first->getDataPointer()));
-        }
-        else
-        {
-            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        } 
-    }
-
-    unsigned int unit;
-    for(unit=0;unit<_texcoords.size();++unit)
-    {
-        const osg::Array* array = _texcoords[unit].first.get();
-        if (array)
-            state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
-        else
-            state.disableTexCoordPointer(unit);
-    }
-    state.disableTexCoordPointersAboveAndIncluding(unit);
-
-    bool usingVertexBufferObjects = false;
-
-    for(PrimitiveSetList::const_iterator itr = _primitiveSets.begin();
-        itr != _primitiveSets.end();
-        ++itr)
-    {
-        (*itr)->draw(state, usingVertexBufferObjects);
-
-    }
-}

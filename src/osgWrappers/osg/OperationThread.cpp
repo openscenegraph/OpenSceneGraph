@@ -236,5 +236,7 @@ BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
 	               "");
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(osg::OperationThread, osg::OperationsThread)
+
 STD_SET_REFLECTOR(std::set< osg::OperationThread * >)
 

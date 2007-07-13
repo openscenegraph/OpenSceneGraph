@@ -26,7 +26,6 @@
 
 #include <X11/Xmd.h>
 #include <X11/keysym.h>
-#include <X11/Xmu/WinUtil.h>
 #include <X11/cursorfont.h>
 #include <X11/Intrinsic.h>
 

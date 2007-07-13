@@ -128,10 +128,10 @@ public:
 
 
 // Draw operation, that does a draw on the scene graph.
-struct ViewerRenderingOperation : public osg::Operation, public ViewerQuerySupport
+struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQuerySupport
 {
     ViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::Timer_t startTick):
-        osg::Operation("Render",true),
+        osg::GraphicsOperation("Render",true),
         ViewerQuerySupport(startTick),
         _sceneView(sceneView),
         _databasePager(databasePager)
@@ -141,7 +141,7 @@ struct ViewerRenderingOperation : public osg::Operation, public ViewerQuerySuppo
     
     osg::Camera* getCamera() { return _sceneView->getCamera(); }
 
-    virtual void operator () (osg::Object*)
+    virtual void operator () (osg::GraphicsContext*)
     {
         if (!_sceneView) return;
 
@@ -989,19 +989,16 @@ void Viewer::stopThreading()
 }
 
 // Compile operation, that compile OpenGL objects.
-struct ViewerCompileOperation : public osg::Operation
+struct ViewerCompileOperation : public osg::GraphicsOperation
 {
     ViewerCompileOperation(osg::Node* scene):
-        osg::Operation("Compile",false),
+        osg::GraphicsOperation("Compile",false),
         _scene(scene)
     {
     }
     
-    virtual void operator () (osg::Object* object)
+    virtual void operator () (osg::GraphicsContext* context)
     {
-        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
-        if (!context) return;
-
         // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
         // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
@@ -1023,18 +1020,15 @@ struct ViewerCompileOperation : public osg::Operation
 
 
 // Draw operation, that does a draw on the scene graph.
-struct ViewerRunOperations : public osg::Operation
+struct ViewerRunOperations : public osg::GraphicsOperation
 {
     ViewerRunOperations():
-        osg::Operation("RunOperation",true)
+        osg::GraphicsOperation("RunOperation",true)
     {
     }
     
-    virtual void operator () (osg::Object* object)
+    virtual void operator () (osg::GraphicsContext* context)
     {
-        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
-        if (!context) return;
-
         context->runOperations();
     }
 };

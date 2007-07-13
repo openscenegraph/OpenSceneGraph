@@ -178,6 +178,7 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         GUIEventAdapter* createEvent();
         
         
+        void setCurrentEventState(GUIEventAdapter* ea) { _accumulateEventState = ea; }
         GUIEventAdapter* getCurrentEventState() { return _accumulateEventState.get(); }
         const GUIEventAdapter* getCurrentEventState() const { return _accumulateEventState.get(); }
 

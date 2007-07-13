@@ -485,6 +485,10 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
 
 void GraphicsWindowCarbon::init()
 {
+    if (_initialized) return;
+
+    getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
+
     _windowTitleHeight = 0;
     _closeRequested = false;
     _ownsWindow = false;

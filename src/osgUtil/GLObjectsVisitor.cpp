@@ -138,3 +138,19 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         stateset.checkValidityOfAssociatedModes(*_renderInfo.getState());
     }
 }
+
+GLObjectsOperation::GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mode mode):
+    osg::GraphicsOperation("GLObjectOperation",false),
+    _subgraph(subgraph),
+    _mode(mode)
+{
+}
+
+void GLObjectsOperation::operator () (osg::GraphicsContext* context)
+{
+    GLObjectsVisitor glObjectsVisitor(_mode);
+    
+    glObjectsVisitor.setState(context->getState());
+    
+    _subgraph->accept(glObjectsVisitor);
+}

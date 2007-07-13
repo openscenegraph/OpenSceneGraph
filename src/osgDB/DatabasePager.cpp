@@ -903,17 +903,15 @@ bool DatabasePager::getCompileGLObjectsForContextID(unsigned int contextID)
 
 
 DatabasePager::CompileOperation::CompileOperation(osgDB::DatabasePager* databasePager):
-    osg::Operation("DatabasePager::CompileOperation",false),
+    osg::GraphicsOperation("DatabasePager::CompileOperation",false),
     _databasePager(databasePager)
 {
 }
 
-void DatabasePager::CompileOperation::operator () (osg::Object* object)
+void DatabasePager::CompileOperation::operator () (osg::GraphicsContext* context)
 {
-    osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
-    if (!context) return;
-
     // osg::notify(osg::NOTICE)<<"Background thread compiling"<<std::endl;
+
     if (_databasePager.valid()) _databasePager->compileAllGLObjects(*(context->getState()));
     
 }

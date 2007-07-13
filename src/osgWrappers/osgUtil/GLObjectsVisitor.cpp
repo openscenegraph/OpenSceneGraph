@@ -12,6 +12,7 @@
 
 #include <osg/Drawable>
 #include <osg/Geode>
+#include <osg/GraphicsContext>
 #include <osg/Node>
 #include <osg/RenderInfo>
 #include <osg/State>
@@ -25,6 +26,15 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsOperation)
+	I_DeclaringFile("osgUtil/GLObjectsVisitor");
+	I_BaseType(osg::GraphicsOperation);
+	I_ConstructorWithDefaults2(IN, osg::Node *, subgraph, , IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES,
+	                           ____GLObjectsOperation__osg_Node_P1__GLObjectsVisitor_Mode,
+	                           "",
+	                           "");
+END_REFLECTOR
 
 TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode)
 

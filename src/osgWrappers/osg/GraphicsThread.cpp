@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
 #include <osg/Object>
 
@@ -30,7 +31,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_BaseType(OpenThreads::Barrier);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
 	                           ____BarrierOperation__int__PreBlockOp,
@@ -46,7 +47,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BlockAndFlushOperation)
 	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_BaseType(OpenThreads::Block);
 	I_Constructor0(____BlockAndFlushOperation,
 	               "",
@@ -56,6 +57,15 @@ BEGIN_OBJECT_REFLECTOR(osg::BlockAndFlushOperation)
 	          __void__release,
 	          "",
 	          "");
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsOperation)
+	I_DeclaringFile("osg/GraphicsThread");
+	I_BaseType(osg::Operation);
+	I_Constructor2(IN, const std::string &, name, IN, bool, keep,
+	               ____GraphicsOperation__C5_std_string_R1__bool,
+	               "",
+	               "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsThread)
@@ -73,7 +83,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_BaseType(osg::RefBlock);
 	I_Constructor0(____ReleaseContext_Block_MakeCurrentOperation,
 	               "",
@@ -81,13 +91,13 @@ BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	I_Method0(void, release,
 	          Properties::VIRTUAL,
 	          __void__release,
-	          "if this operation is a barrier then release it. ",
+	          "",
 	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
 	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::Operation);
+	I_BaseType(osg::GraphicsOperation);
 	I_Constructor0(____SwapBuffersOperation,
 	               "",
 	               "");

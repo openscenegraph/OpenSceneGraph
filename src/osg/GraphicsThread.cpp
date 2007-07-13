@@ -41,35 +41,16 @@ void GraphicsThread::run()
 
 }
 
-struct BlockOperation : public Operation, public Block
+void GraphicsOperation::operator () (Object* object)
 {
-    BlockOperation():
-        Operation("Block",false)
-    {
-        reset();
-    }
-
-    virtual void release()
-    {
-        Block::release();
-    }
-
-    virtual void operator () (Object*)
-    {
-        glFlush();
-        Block::release();
-    }
-};
-
+    osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
+    if (context) operator() (context);
+}
  
-void SwapBuffersOperation::operator () (Object* object)
+void SwapBuffersOperation::operator () (GraphicsContext* context)
 {
-    GraphicsContext* context = dynamic_cast<GraphicsContext*>(object);
-    if (context)
-    {
-        context->swapBuffersImplementation();
-        context->clear();
-    }
+    context->swapBuffersImplementation();
+    context->clear();
 }
 
 void BarrierOperation::release()
@@ -77,7 +58,7 @@ void BarrierOperation::release()
     Barrier::release();
 }
 
-void BarrierOperation::operator () (Object*)
+void BarrierOperation::operator () (GraphicsContext*)
 {
     if (_preBlockOp==GL_FLUSH) glFlush();
     if (_preBlockOp==GL_FINISH) glFinish();
@@ -91,11 +72,8 @@ void ReleaseContext_Block_MakeCurrentOperation::release()
 }
 
 
-void ReleaseContext_Block_MakeCurrentOperation::operator () (Object* object)
+void ReleaseContext_Block_MakeCurrentOperation::operator () (GraphicsContext* context)
 {
-    GraphicsContext* context = dynamic_cast<GraphicsContext*>(object);
-    if (!context) return;
-    
     // release the graphics context.
     context->releaseContext();
     
@@ -111,7 +89,7 @@ void ReleaseContext_Block_MakeCurrentOperation::operator () (Object* object)
 
 
 BlockAndFlushOperation::BlockAndFlushOperation():
-    Operation("Block",false)
+    GraphicsOperation("Block",false)
 {
     reset();
 }
@@ -121,7 +99,7 @@ void BlockAndFlushOperation::release()
     Block::release();
 }
 
-void BlockAndFlushOperation::operator () (Object*)
+void BlockAndFlushOperation::operator () (GraphicsContext*)
 {
     glFlush();
     Block::release();

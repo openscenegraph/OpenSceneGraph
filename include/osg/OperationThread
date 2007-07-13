@@ -130,7 +130,7 @@ class OSG_EXPORT OperationQueue : public Referenced
         OperationThreads            _operationThreads;
 };
 
-/** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
+/** OperationThread is a helper class for running Operation within a single thread.*/
 class OSG_EXPORT OperationThread : public Referenced, public OpenThreads::Thread
 {
     public:

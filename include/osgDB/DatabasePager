@@ -373,11 +373,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
         unsigned int                    _maximumNumOfObjectsToCompilePerFrame;
         
-        struct CompileOperation : public osg::Operation
+        struct CompileOperation : public osg::GraphicsOperation
         {
             CompileOperation(DatabasePager* databasePager);
             
-            virtual void operator () (osg::Object* object);
+            virtual void operator () (osg::GraphicsContext* context);
             
             osg::observer_ptr<DatabasePager> _databasePager;
         };

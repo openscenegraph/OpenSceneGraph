@@ -15,6 +15,13 @@
 
 using namespace osgGA;
 
+
+osg::ref_ptr<GUIEventAdapter>& GUIEventAdapter::getAccumulatedEventState()
+{
+    static osg::ref_ptr<GUIEventAdapter> s_eventState = new GUIEventAdapter;
+    return s_eventState;
+}
+
 GUIEventAdapter::GUIEventAdapter():
     _handled(false),
     _eventType(NONE),

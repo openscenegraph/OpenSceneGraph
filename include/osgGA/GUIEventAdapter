@@ -254,6 +254,13 @@ public:
 
         META_Object(osgGA, GUIEventAdapter);
         
+
+        /** Get the accumulated event state singleton.
+          * Typically all EventQueue will share this single GUIEventAdapter object for tracking
+          * the mouse position, keyboard and mouse masks. */
+        static osg::ref_ptr<GUIEventAdapter>& getAccumulatedEventState();
+        
+
         /** Set whether this event has been handled by an event handler or not.*/
         void setHandled(bool handled) { _handled = handled; }
 

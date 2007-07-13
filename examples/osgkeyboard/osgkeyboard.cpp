@@ -371,6 +371,9 @@ public:
         {
 
 #if 1
+
+//            osg::notify(osg::NOTICE)<<"Mouse "<<ea.getButtonMask()<<std::endl;
+
             #define PRINT(mask) osg::notify(osg::NOTICE)<<#mask<<" ="<<(ea.getModKeyMask() & mask)<<std::endl;
             switch(ea.getEventType())
             {
@@ -423,6 +426,7 @@ int main(int , char **)
     osg::ref_ptr<KeyboardModel> keyboardModel = new KeyboardModel;
 
     viewer.addEventHandler(new osgViewer::StatsHandler);
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler());
     viewer.addEventHandler(new KeyboardEventHandler(keyboardModel.get()));
     viewer.setSceneData( keyboardModel->getScene() );
 

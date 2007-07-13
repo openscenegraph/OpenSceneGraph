@@ -18,6 +18,9 @@
 
 namespace osg {
 
+class GraphicsContext;
+
+/** GraphicsThread is a helper class for running OpenGL GraphicsOperation within a single thread assigned to a specific GraphicsContext.*/
 class OSG_EXPORT GraphicsThread : public osg::OperationThread
 {
     public:
@@ -28,17 +31,30 @@ class OSG_EXPORT GraphicsThread : public osg::OperationThread
         virtual void run();
 };
 
+struct OSG_EXPORT GraphicsOperation : public Operation
+{
+    GraphicsOperation(const std::string& name, bool keep):
+        Operation(name,keep) {}
+
+    /** Override the standard Operation opertator and dynamic cast object to a GraphicsContext,
+      * on success call operation()(GraphicsContext*).*/
+    virtual void operator () (Object* object);
+
+    virtual void operator () (GraphicsContext* context) = 0;
+};
+
+
 /** SwapBufferOperation calls swap buffers on the GraphicsContext.*/
-struct OSG_EXPORT SwapBuffersOperation : public Operation
+struct OSG_EXPORT SwapBuffersOperation : public GraphicsOperation
 {
     SwapBuffersOperation():
-        Operation("SwapBuffers",true) {}
+        GraphicsOperation("SwapBuffers",true) {}
 
-    virtual void operator () (Object* context);
+    virtual void operator () (GraphicsContext* context);
 };
 
 /** BarrierOperation allows one to syncronize multiple GraphicsThreads with each other.*/
-struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barrier
+struct OSG_EXPORT BarrierOperation : public GraphicsOperation, public OpenThreads::Barrier
 {
     enum PreBlockOp
     {
@@ -48,36 +64,36 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
     };
 
     BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION):
-        Operation("Barrier", true),
+        GraphicsOperation("Barrier", true),
         OpenThreads::Barrier(numThreads),
         _preBlockOp(op) {}
 
     virtual void release();
 
-    virtual void operator () (Object* context);
+    virtual void operator () (GraphicsContext* context);
     
     PreBlockOp _preBlockOp;
 };
 
 /** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to aquire, 
   * then blocks waiting for context to be released, once the block is release the context is re-aqquired.*/
-struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public Operation, public RefBlock
+struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsOperation, public RefBlock
 {
     ReleaseContext_Block_MakeCurrentOperation():
-        Operation("ReleaseContext_Block_MakeCurrent", false) {}
+        GraphicsOperation("ReleaseContext_Block_MakeCurrent", false) {}
 
     virtual void release();
 
-    virtual void operator () (Object* context);
+    virtual void operator () (GraphicsContext* context);
 };
 
-struct OSG_EXPORT BlockAndFlushOperation : public Operation, public OpenThreads::Block
+struct OSG_EXPORT BlockAndFlushOperation : public GraphicsOperation, public OpenThreads::Block
 {
     BlockAndFlushOperation();
 
     virtual void release();
 
-    virtual void operator () (Object*);
+    virtual void operator () (GraphicsContext*);
 };
 
 }

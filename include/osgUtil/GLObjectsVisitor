@@ -113,6 +113,20 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
 
 };
 
+class GLObjectsOperation : public osg::GraphicsOperation
+{
+    public:
+
+        GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mode mode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
+
+        virtual void operator () (osg::GraphicsContext* context);
+
+    protected:
+    
+        osg::ref_ptr<osg::Node> _subgraph;
+        GLObjectsVisitor::Mode  _mode;
+};
+
 }
 
 #endif

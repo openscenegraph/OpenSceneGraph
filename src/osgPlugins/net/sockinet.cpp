@@ -34,9 +34,6 @@
 //  The constructors of isockinet, osockinet and iosockinet are changed.
 
 #include "sockinet.h"
-#if defined( __APPLE__ ) && ( __GNUC__ < 4 )
-typedef int socklen_t;
-#endif
 
 #if defined(__CYGWIN__) || !defined(WIN32)
 extern "C" {
@@ -53,7 +50,6 @@ extern "C" {
 
 }
 #else
-#    define socklen_t int
 # define EADDRNOTAVAIL                WSAEADDRNOTAVAIL
 # define EADDRINUSE                        WSAEADDRINUSE
 #    define ENOPROTOOPT                    WSAENOPROTOOPT
@@ -61,6 +57,12 @@ extern "C" {
 
 #ifndef INADDR_NONE
 #define INADDR_NONE             ((in_addr_t) 0xffffffff)
+#endif
+
+// Do not include anything below that define. That should in no case change any forward decls in
+// system headers ...
+#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || !defined(_XOPEN_SOURCE_EXTENDED)
+#define socklen_t int
 #endif
 
 void    herror(const char*);
@@ -162,13 +164,8 @@ sockinetbuf::sockinetbuf(sockbuf::type ty, int proto)
 sockinetaddr sockinetbuf::localaddr() const
 {
   sockinetaddr sin;
-  int len = sin.size();
-#ifdef __sgi
-  if (::getsockname(rep->sock, sin.addr (), (int *) // LN
-#else
-  if (::getsockname(rep->sock, sin.addr (), (socklen_t*) // LN
-#endif
-                    &len) == -1)
+  socklen_t len = sin.size();
+  if (::getsockname(rep->sock, sin.addr (), &len) == -1)
     throw sockerr (errno, "sockinetbuf::localaddr");
   return sin;
 }
@@ -190,13 +187,8 @@ const char* sockinetbuf::localhost() const
 sockinetaddr sockinetbuf::peeraddr() const
 {
   sockinetaddr sin;
-  int len = sin.size();
-#ifdef __sgi
-  if (::getpeername(rep->sock, sin.addr (), (int *) // LN
-#else
-  if (::getpeername(rep->sock, sin.addr (), (socklen_t*) // LN
-#endif
-                    &len) == -1)
+  socklen_t len = sin.size();
+  if (::getpeername(rep->sock, sin.addr (), &len) == -1)
     throw sockerr (errno, "sockinetbuf::peeraddr");
   return sin;
 }

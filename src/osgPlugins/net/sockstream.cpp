@@ -64,10 +64,6 @@
 #include <sstream>
 #include <string>
 
-#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || defined (__sgi)
-typedef int socklen_t;
-#endif
-
 #if defined(__CYGWIN__) || !defined(WIN32)
 extern "C" {
 #    include <sys/time.h>
@@ -139,6 +135,12 @@ extern "C" {
 #  undef FD_ZERO    // bzero causes so much trouble to us
 #endif
 #define FD_ZERO(p) (memset ((p), 0, sizeof *(p)))
+
+// Do not include anything below that define. That should in no case change any forward decls in
+// system headers ...
+#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || !defined(_XOPEN_SOURCE_EXTENDED)
+#define socklen_t int
+#endif
 
 const char* sockerr::errstr () const
 {
@@ -558,11 +560,10 @@ int sockbuf::recvfrom (sockAddr& sa, void* buf, int len, int msgf)
     throw sockoob ();
 
   int rval = 0;
-  int __sa_len = sa.size ();
-  
+  socklen_t __sa_len = sa.size ();
+
   if ((rval = ::recvfrom (rep->sock, (char*) buf, len,
-                          msgf, sa.addr (), (socklen_t*) // LN
-                          &__sa_len)) == -1)
+                          msgf, sa.addr (), &__sa_len)) == -1)
     throw sockerr (errno, "sockbuf::recvfrom", sockname.c_str());
   return rval;
 }
@@ -729,8 +730,8 @@ void sockbuf::shutdown (shuthow sh)
 
 int sockbuf::getopt (int op, void* buf, int len, int level) const
 {
-    if (::getsockopt (rep->sock, level, op, (char*) buf, (socklen_t*) // LN
-                      &len) == -1)
+  socklen_t salen = len;
+  if (::getsockopt (rep->sock, level, op, (char*) buf, &salen) == -1)
     throw sockerr (errno, "sockbuf::getopt", sockname.c_str());
   return len;
 }

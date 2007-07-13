@@ -233,6 +233,11 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __GUIEventAdapter_P1__createEvent,
 	          "convinience method for create an event ready to fill in. ",
 	          "Clones the getCurrentEventState() to produce a up to date event state. ");
+	I_Method1(void, setCurrentEventState, IN, osgGA::GUIEventAdapter *, ea,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrentEventState__GUIEventAdapter_P1,
+	          "",
+	          "");
 	I_Method0(osgGA::GUIEventAdapter *, getCurrentEventState,
 	          Properties::NON_VIRTUAL,
 	          __GUIEventAdapter_P1__getCurrentEventState,
@@ -255,7 +260,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          "");
 	I_SimpleProperty(osgGA::GUIEventAdapter *, CurrentEventState, 
 	                 __GUIEventAdapter_P1__getCurrentEventState, 
-	                 0);
+	                 __void__setCurrentEventState__GUIEventAdapter_P1);
 	I_SimpleProperty(osgGA::EventQueue::Events &, Events, 
 	                 0, 
 	                 __void__setEvents__Events_R1);

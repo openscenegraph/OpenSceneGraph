@@ -463,6 +463,10 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __MouseYOrientation__getMouseYOrientation,
 	          "",
 	          "");
+	I_StaticMethod0(osg::ref_ptr< osgGA::GUIEventAdapter > &, getAccumulatedEventState,
+	                __osg_ref_ptrT1_GUIEventAdapter__R1__getAccumulatedEventState_S,
+	                "Get the accumulated event state singleton. ",
+	                "Typically all EventQueue will share this single GUIEventAdapter object for tracking the mouse position, keyboard and mouse masks. ");
 	I_SimpleProperty(int, Button, 
 	                 __int__getButton, 
 	                 __void__setButton__int);

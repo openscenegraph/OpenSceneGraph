@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
 #include <osg/Referenced>
 #include <osg/RenderInfo>
 #include <osg/State>
@@ -72,6 +73,21 @@ BEGIN_VALUE_REFLECTOR(osg::RenderInfo)
 	          __C5_View_P1__getView,
 	          "",
 	          "");
+	I_Method1(void, pushCamera, IN, osg::Camera *, camera,
+	          Properties::NON_VIRTUAL,
+	          __void__pushCamera__Camera_P1,
+	          "",
+	          "");
+	I_Method0(void, popCamera,
+	          Properties::NON_VIRTUAL,
+	          __void__popCamera,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, getCurrentCamera,
+	          Properties::NON_VIRTUAL,
+	          __Camera_P1__getCurrentCamera,
+	          "",
+	          "");
 	I_Method1(void, setUserData, IN, osg::Referenced *, userData,
 	          Properties::NON_VIRTUAL,
 	          __void__setUserData__Referenced_P1,
@@ -89,6 +105,9 @@ BEGIN_VALUE_REFLECTOR(osg::RenderInfo)
 	          "");
 	I_SimpleProperty(unsigned int, ContextID, 
 	                 __unsigned_int__getContextID, 
+	                 0);
+	I_SimpleProperty(osg::Camera *, CurrentCamera, 
+	                 __Camera_P1__getCurrentCamera, 
 	                 0);
 	I_SimpleProperty(osg::State *, State, 
 	                 __State_P1__getState, 

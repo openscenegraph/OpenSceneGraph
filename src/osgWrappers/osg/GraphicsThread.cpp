@@ -31,7 +31,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_DeclaringFile("osg/GraphicsThread");
-	I_BaseType(osg::GraphicsOperation);
+	I_BaseType(osg::Operation);
 	I_BaseType(OpenThreads::Barrier);
 	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
 	                           ____BarrierOperation__int__PreBlockOp,

@@ -988,7 +988,10 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
         notify(FATAL) << "Error: cannot draw stage due to undefined viewport."<< std::endl;
         return;
     }
-     
+
+    // push the stages camera so that drawing code can querry it     
+    if (_camera) renderInfo.pushCamera(_camera);
+
     // set up the back buffer.
     state.applyAttribute(_viewport.get());
 
@@ -1048,6 +1051,10 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
     RenderBin::drawImplementation(renderInfo,previous);
 
     state.apply();
+
+    // pop the render stages camera.
+    if (_camera) renderInfo.popCamera();
+
 }
 
 void RenderStage::drawPostRenderStages(osg::RenderInfo& renderInfo,RenderLeaf*& previous)

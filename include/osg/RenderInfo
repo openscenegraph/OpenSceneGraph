@@ -30,6 +30,7 @@ public:
     RenderInfo(const RenderInfo& rhs):
         _state(rhs._state),
         _view(rhs._view),
+        _cameras(rhs._cameras),
         _userData(rhs._userData) {}
 
     RenderInfo(State* state, View* view):
@@ -40,6 +41,7 @@ public:
     {
         _state = rhs._state;
         _view = rhs._view;
+        _cameras = rhs._cameras;
         _userData = rhs._userData;
         return *this;
     }
@@ -53,6 +55,11 @@ public:
     void setView(View* view) { _view = view; }
     View* getView() { return _view.get(); }
     const View* getView() const { return _view.get(); }
+    
+    void pushCamera(Camera* camera) { _cameras.push_back(camera); }    
+    void popCamera() { if (_cameras.empty()) _cameras.pop_back(); }
+    
+    Camera* getCurrentCamera() { return _cameras.empty() ? 0 : _cameras.back(); }
 
     void setUserData(Referenced* userData) { _userData = userData; }
     Referenced* getUserData() { return _userData.get(); }
@@ -60,8 +67,11 @@ public:
 
 protected:
 
+    typedef std::vector<Camera*> Cameras;
+
     ref_ptr<State>          _state;
     observer_ptr<View>      _view;
+    Cameras                 _cameras;
     ref_ptr<Referenced>     _userData;
 };
 

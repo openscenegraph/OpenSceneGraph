@@ -54,7 +54,7 @@ struct OSG_EXPORT SwapBuffersOperation : public GraphicsOperation
 };
 
 /** BarrierOperation allows one to syncronize multiple GraphicsThreads with each other.*/
-struct OSG_EXPORT BarrierOperation : public GraphicsOperation, public OpenThreads::Barrier
+struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barrier
 {
     enum PreBlockOp
     {
@@ -64,13 +64,13 @@ struct OSG_EXPORT BarrierOperation : public GraphicsOperation, public OpenThread
     };
 
     BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION):
-        GraphicsOperation("Barrier", true),
+        Operation("Barrier", true),
         OpenThreads::Barrier(numThreads),
         _preBlockOp(op) {}
 
     virtual void release();
 
-    virtual void operator () (GraphicsContext* context);
+    virtual void operator () (Object* object);
     
     PreBlockOp _preBlockOp;
 };

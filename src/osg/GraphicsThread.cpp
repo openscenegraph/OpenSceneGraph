@@ -58,11 +58,15 @@ void BarrierOperation::release()
     Barrier::release();
 }
 
-void BarrierOperation::operator () (GraphicsContext*)
+void BarrierOperation::operator () (Object* object)
 {
-    if (_preBlockOp==GL_FLUSH) glFlush();
-    if (_preBlockOp==GL_FINISH) glFinish();
-    
+    if (_preBlockOp!=NO_OPERATION)
+    {
+        GraphicsContext* context = dynamic_cast<GraphicsContext*>(object);
+        if (_preBlockOp==GL_FLUSH) glFlush();
+        else if (_preBlockOp==GL_FINISH) glFinish();
+    }
+        
     block();
 }
 

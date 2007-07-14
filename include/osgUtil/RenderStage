@@ -236,7 +236,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         double                              _clearDepth;
         int                                 _clearStencil;
 
-        bool                                    _cameraRequiresSetUp;
+        bool                                _cameraRequiresSetUp;
         osg::Camera*                        _camera;
         
         osg::ref_ptr<osg::Texture>              _texture;

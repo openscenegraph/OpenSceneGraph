@@ -53,11 +53,18 @@ class MasterOperation : public osg::Operation
 {
 public:
 
+    typedef std::set<std::string> Files;
+    typedef std::map<std::string, osg::ref_ptr<osg::Node> >  FilenameNodeMap;
+    typedef std::vector< osg::ref_ptr<osg::Node> >  Nodes;
+
+
     MasterOperation(const std::string& filename):
         Operation("Master reading operation",true),
-        _filename(filename) {}
-
-    virtual void operator () (osg::Object* object)
+        _filename(filename)
+    {
+    }
+    
+    bool readMasterFile(Files& files) const
     {
         std::ifstream fin(_filename.c_str());
         if (fin)
@@ -65,8 +72,8 @@ public:
             osgDB::Input fr;
             fr.attach(&fin);
 
-            Files files;
-            
+            bool readFilename;
+
             while(!fr.eof())
             {
                 bool itrAdvanced = false;
@@ -75,75 +82,105 @@ public:
                     files.insert(fr[1].getStr());
                     fr += 2;
                     itrAdvanced = true;
+                    readFilename = true;
                 }
-                
+
                 if (!itrAdvanced)
                 {
                     ++fr;
                 }
             }
             
-
-            Files newFiles;
-            Files removedFiles;
-
-            {            
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-
-                for(Files::iterator fitr = files.begin();
-                    fitr != files.end();
-                    ++fitr)
-                {
-                    if (_existingFilenameNodeMap.count(*fitr)==0) newFiles.insert(*fitr);
-                }
-
-                for(FilenameNodeMap::iterator litr = _existingFilenameNodeMap.begin();
-                    litr != _existingFilenameNodeMap.end();
-                    ++litr)
-                {
-                    if (files.count(litr->first)==0)
-                    {
-                        removedFiles.insert(litr->first);
-                    }
-                }
-            }
-                    
-            // first load the files.
-            FilenameNodeMap nodesToAdd;
-            for(Files::iterator nitr = newFiles.begin();
-                nitr != newFiles.end();
-                ++nitr)
-            {
-                osg::notify(osg::NOTICE)<<"loading files "<<*nitr<<std::endl;
-                osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
-                if (loadedModel.get()) nodesToAdd[*nitr] = loadedModel;
-            }
-            
-            for(Files::iterator ritr = removedFiles.begin();
-                ritr != removedFiles.end();
-                ++ritr)
-            {
-                osg::notify(osg::NOTICE)<<"Removed files "<<*ritr<<std::endl;
-            }
-
-            
-            // swap the data.
-            {
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-                _nodesToRemove.swap(removedFiles);
-                _nodesToAdd.swap(nodesToAdd);
-            }
-            
-            // now block so we don't try to load anything till the new data has been merged
-            // otherwise _existingFilenameNodeMap will get out of sync.
-            _updatesMergedBlock.block();
-
+            return readFilename;
         }
+        return false;
+    }
+    
+    bool open(osg::Group* group)
+    {
+        Files files;
+        readMasterFile(files);
+        for(Files::iterator itr = files.begin();
+            itr != files.end();
+            ++itr)
+        {
+            osg::Node* model = osgDB::readNodeFile(*itr);
+            if (model)
+            {
+                osg::notify(osg::NOTICE)<<"open: Loaded file "<<*itr<<std::endl;
+                group->addChild(model);
+                _existingFilenameNodeMap[*itr] = model;
+            }
+        }
+        
+        return true;
+    }
+    
+
+    virtual void operator () (osg::Object* object)
+    {
+        Files files;
+        readMasterFile(files);
+
+        Files newFiles;
+        Files removedFiles;
+
+        {            
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+            for(Files::iterator fitr = files.begin();
+                fitr != files.end();
+                ++fitr)
+            {
+                if (_existingFilenameNodeMap.count(*fitr)==0) newFiles.insert(*fitr);
+            }
+
+            for(FilenameNodeMap::iterator litr = _existingFilenameNodeMap.begin();
+                litr != _existingFilenameNodeMap.end();
+                ++litr)
+            {
+                if (files.count(litr->first)==0)
+                {
+                    removedFiles.insert(litr->first);
+                }
+            }
+        }
+
+        // first load the files.
+        FilenameNodeMap nodesToAdd;
+        for(Files::iterator nitr = newFiles.begin();
+            nitr != newFiles.end();
+            ++nitr)
+        {
+            osg::notify(osg::NOTICE)<<"loading files "<<*nitr<<std::endl;
+            osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
+            if (loadedModel.get()) nodesToAdd[*nitr] = loadedModel;
+        }
+
+        for(Files::iterator ritr = removedFiles.begin();
+            ritr != removedFiles.end();
+            ++ritr)
+        {
+            osg::notify(osg::NOTICE)<<"Removed files "<<*ritr<<std::endl;
+        }
+
+
+        // swap the data.
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            _nodesToRemove.swap(removedFiles);
+            _nodesToAdd.swap(nodesToAdd);
+        }
+
+        // now block so we don't try to load anything till the new data has been merged
+        // otherwise _existingFilenameNodeMap will get out of sync.
+        _updatesMergedBlock.block();
+
     }
     
     void update(osg::Group* scene)
     {
-        osg::notify(osg::NOTICE)<<"update"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"update"<<std::endl;
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         
@@ -156,6 +193,8 @@ public:
                 FilenameNodeMap::iterator fnmItr = _existingFilenameNodeMap.find(*itr);
                 if (fnmItr != _existingFilenameNodeMap.end())
                 {
+                    osg::notify(osg::NOTICE)<<"  removing "<<*itr<<std::endl;
+                
                     scene->removeChild(fnmItr->second.get());
                     _existingFilenameNodeMap.erase(fnmItr);
                 }
@@ -187,10 +226,6 @@ public:
     }
 
     
-    typedef std::set<std::string> Files;
-    typedef std::map<std::string, osg::ref_ptr<osg::Node> >  FilenameNodeMap;
-    typedef std::vector< osg::ref_ptr<osg::Node> >  Nodes;
-
     std::string         _filename;
     
     OpenThreads::Mutex  _mutex;
@@ -367,34 +402,41 @@ int main(int argc, char** argv)
     double y = 0.0;
     double w = 1.0;
     double h = 1.0;
-    
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel.valid()) return 0;
-    
-    osg::ref_ptr<osg::Group> scene = dynamic_cast<osg::Group*>(loadedModel.get());
-    if (!scene.valid())
+
+    osg::ref_ptr<MasterOperation> masterOperation;
+    std::string masterFilename;
+    while(arguments.read("-m",masterFilename))
     {
-        scene = new osg::Group;
-        scene->addChild(loadedModel.get());
+        masterOperation = new MasterOperation(masterFilename);
     }
     
+    osg::ref_ptr<osg::Group> scene = new osg::Group;
+    
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    if (!masterOperation && !loadedModel) return 0;
+
+    if (masterOperation.valid()) masterOperation->open(scene.get());
+    if (loadedModel.valid()) scene->addChild(loadedModel.get());
     
     viewer.setSceneData(scene.get());
+
     viewer.realize();
 
-    osg::ref_ptr<osg::OperationThread> operationThread = new osg::OperationThread;
-    osg::ref_ptr<MasterOperation> masterOperation = new MasterOperation("master.terrain");
-    operationThread->startThread();
-    operationThread->add(masterOperation.get());
-
+    osg::ref_ptr<osg::OperationThread> operationThread;
+    if (masterOperation.valid()) 
+    {
+        operationThread = new osg::OperationThread;
+        operationThread->startThread();
+        operationThread->add(masterOperation.get());
+    }
+    
     while (!viewer.done())
     {
         viewer.advance();
-        
         viewer.eventTraversal();
         viewer.updateTraversal();
         
-        masterOperation->update(scene.get());
+        if () masterOperation->update(scene.get());
         
         viewer.frame();
     }

@@ -49,75 +49,227 @@
 #include <iostream>
 
 
-class FilterHandler : public osgGA::GUIEventHandler 
+class MasterOperation : public osg::Operation
 {
-    public: 
+public:
 
-        FilterHandler(osgTerrain::GeometryTechnique* gt):
-            _gt(gt) {}
+    MasterOperation(const std::string& filename):
+        Operation("Master reading operation",true),
+        _filename(filename) {}
 
-        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+    virtual void operator () (osg::Object* object)
+    {
+        std::ifstream fin(_filename.c_str());
+        if (fin)
         {
-            if (!_gt) return false;
+            osgDB::Input fr;
+            fr.attach(&fin);
+
+            Files files;
             
-            switch(ea.getEventType())
+            while(!fr.eof())
             {
-            case(osgGA::GUIEventAdapter::KEYDOWN):
+                bool itrAdvanced = false;
+                if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
                 {
-                    if (ea.getKey() == 'g')
-                    {
-                        osg::notify(osg::NOTICE)<<"Gaussian"<<std::endl;
-                        _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::GAUSSIAN);
-                        return true;
-                    }
-                    else if (ea.getKey() == 's')
-                    {
-                        osg::notify(osg::NOTICE)<<"Smooth"<<std::endl;
-                        _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::SMOOTH);
-                        return true;
-                    }
-                    else if (ea.getKey() == 'S')
-                    {
-                        osg::notify(osg::NOTICE)<<"Sharpen"<<std::endl;
-                        _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::SHARPEN);
-                        return true;
-                    }
-                    else if (ea.getKey() == '+')
-                    {
-                        _gt->setFilterWidth(_gt->getFilterWidth()*1.1);
-                        osg::notify(osg::NOTICE)<<"Filter width = "<<_gt->getFilterWidth()<<std::endl;
-                        return true;
-                    }
-                    else if (ea.getKey() == '-')
-                    {
-                        _gt->setFilterWidth(_gt->getFilterWidth()/1.1);
-                        osg::notify(osg::NOTICE)<<"Filter width = "<<_gt->getFilterWidth()<<std::endl;
-                        return true;
-                    }
-                    else if (ea.getKey() == '>')
-                    {
-                        _gt->setFilterBias(_gt->getFilterBias()+0.1);
-                        osg::notify(osg::NOTICE)<<"Filter bias = "<<_gt->getFilterBias()<<std::endl;
-                        return true;
-                    }
-                    else if (ea.getKey() == '<')
-                    {
-                        _gt->setFilterBias(_gt->getFilterBias()-0.1);
-                        osg::notify(osg::NOTICE)<<"Filter bias = "<<_gt->getFilterBias()<<std::endl;
-                        return true;
-                    }
-                    break;
+                    files.insert(fr[1].getStr());
+                    fr += 2;
+                    itrAdvanced = true;
                 }
-            default:
-                break;
+                
+                if (!itrAdvanced)
+                {
+                    ++fr;
+                }
             }
-            return false;
             
+
+            Files newFiles;
+            Files removedFiles;
+
+            {            
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+                for(Files::iterator fitr = files.begin();
+                    fitr != files.end();
+                    ++fitr)
+                {
+                    if (_existingFilenameNodeMap.count(*fitr)==0) newFiles.insert(*fitr);
+                }
+
+                for(FilenameNodeMap::iterator litr = _existingFilenameNodeMap.begin();
+                    litr != _existingFilenameNodeMap.end();
+                    ++litr)
+                {
+                    if (files.count(litr->first)==0)
+                    {
+                        removedFiles.insert(litr->first);
+                    }
+                }
+            }
+                    
+            // first load the files.
+            FilenameNodeMap nodesToAdd;
+            for(Files::iterator nitr = newFiles.begin();
+                nitr != newFiles.end();
+                ++nitr)
+            {
+                osg::notify(osg::NOTICE)<<"loading files "<<*nitr<<std::endl;
+                osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
+                if (loadedModel.get()) nodesToAdd[*nitr] = loadedModel;
+            }
+            
+            for(Files::iterator ritr = removedFiles.begin();
+                ritr != removedFiles.end();
+                ++ritr)
+            {
+                osg::notify(osg::NOTICE)<<"Removed files "<<*ritr<<std::endl;
+            }
+
+            
+            // swap the data.
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+                _nodesToRemove.swap(removedFiles);
+                _nodesToAdd.swap(nodesToAdd);
+            }
+            
+            // now block so we don't try to load anything till the new data has been merged
+            // otherwise _existingFilenameNodeMap will get out of sync.
+            _updatesMergedBlock.block();
+
+        }
+    }
+    
+    void update(osg::Group* scene)
+    {
+        osg::notify(osg::NOTICE)<<"update"<<std::endl;
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        
+        if (!_nodesToRemove.empty())
+        {
+            for(Files::iterator itr = _nodesToRemove.begin();
+                itr != _nodesToRemove.end();
+                ++itr)
+            {
+                FilenameNodeMap::iterator fnmItr = _existingFilenameNodeMap.find(*itr);
+                if (fnmItr != _existingFilenameNodeMap.end())
+                {
+                    scene->removeChild(fnmItr->second.get());
+                    _existingFilenameNodeMap.erase(fnmItr);
+                }
+            }
+
+            _nodesToRemove.clear();
+        }
+        
+        if (!_nodesToAdd.empty())
+        {
+            for(FilenameNodeMap::iterator itr = _nodesToAdd.begin();
+                itr != _nodesToAdd.end();
+                ++itr)
+            {
+                scene->addChild(itr->second.get());
+                _existingFilenameNodeMap[itr->first] = itr->second;
+            }
+            
+            _nodesToAdd.clear();
         }
 
-    protected:
+        _updatesMergedBlock.release();
+
+    }
     
-        osg::observer_ptr<osgTerrain::GeometryTechnique> _gt;
+    virtual void release()
+    {
+        _updatesMergedBlock.release();
+    }
+
+    
+    typedef std::set<std::string> Files;
+    typedef std::map<std::string, osg::ref_ptr<osg::Node> >  FilenameNodeMap;
+    typedef std::vector< osg::ref_ptr<osg::Node> >  Nodes;
+
+    std::string         _filename;
+    
+    OpenThreads::Mutex  _mutex;
+    FilenameNodeMap     _existingFilenameNodeMap;
+    Files               _nodesToRemove;
+    FilenameNodeMap     _nodesToAdd;
+    OpenThreads::Block  _updatesMergedBlock;
+    
+};
+
+class FilterHandler : public osgGA::GUIEventHandler 
+{
+public: 
+
+    FilterHandler(osgTerrain::GeometryTechnique* gt):
+        _gt(gt) {}
+
+    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+    {
+        if (!_gt) return false;
+
+        switch(ea.getEventType())
+        {
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                if (ea.getKey() == 'g')
+                {
+                    osg::notify(osg::NOTICE)<<"Gaussian"<<std::endl;
+                    _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::GAUSSIAN);
+                    return true;
+                }
+                else if (ea.getKey() == 's')
+                {
+                    osg::notify(osg::NOTICE)<<"Smooth"<<std::endl;
+                    _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::SMOOTH);
+                    return true;
+                }
+                else if (ea.getKey() == 'S')
+                {
+                    osg::notify(osg::NOTICE)<<"Sharpen"<<std::endl;
+                    _gt->setFilterMatrixAs(osgTerrain::GeometryTechnique::SHARPEN);
+                    return true;
+                }
+                else if (ea.getKey() == '+')
+                {
+                    _gt->setFilterWidth(_gt->getFilterWidth()*1.1);
+                    osg::notify(osg::NOTICE)<<"Filter width = "<<_gt->getFilterWidth()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey() == '-')
+                {
+                    _gt->setFilterWidth(_gt->getFilterWidth()/1.1);
+                    osg::notify(osg::NOTICE)<<"Filter width = "<<_gt->getFilterWidth()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey() == '>')
+                {
+                    _gt->setFilterBias(_gt->getFilterBias()+0.1);
+                    osg::notify(osg::NOTICE)<<"Filter bias = "<<_gt->getFilterBias()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey() == '<')
+                {
+                    _gt->setFilterBias(_gt->getFilterBias()-0.1);
+                    osg::notify(osg::NOTICE)<<"Filter bias = "<<_gt->getFilterBias()<<std::endl;
+                    return true;
+                }
+                break;
+            }
+        default:
+            break;
+        }
+        return false;
+
+    }
+
+protected:
+
+    osg::observer_ptr<osgTerrain::GeometryTechnique> _gt;
 
 };
 
@@ -125,43 +277,43 @@ class FilterHandler : public osgGA::GUIEventHandler
 
 class LayerHandler : public osgGA::GUIEventHandler 
 {
-    public: 
+public: 
 
-        LayerHandler(osgTerrain::Layer* layer):
-            _layer(layer) {}
+    LayerHandler(osgTerrain::Layer* layer):
+        _layer(layer) {}
 
-        bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+    bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
+    {
+        if (!_layer) return false;
+
+        float scale = 1.2;
+
+        switch(ea.getEventType())
         {
-            if (!_layer) return false;
-            
-            float scale = 1.2;
-            
-            switch(ea.getEventType())
+        case(osgGA::GUIEventAdapter::KEYDOWN):
             {
-            case(osgGA::GUIEventAdapter::KEYDOWN):
+                if (ea.getKey() == 'q')
                 {
-                    if (ea.getKey() == 'q')
-                    {
-                        _layer->transform(0.0, scale);
-                        return true;
-                    }
-                    else if (ea.getKey() == 'a')
-                    {
-                        _layer->transform(0.0, 1.0f/scale);
-                        return true;
-                    }
-                    break;
+                    _layer->transform(0.0, scale);
+                    return true;
                 }
-            default:
+                else if (ea.getKey() == 'a')
+                {
+                    _layer->transform(0.0, 1.0f/scale);
+                    return true;
+                }
                 break;
             }
-            return false;
-            
+        default:
+            break;
         }
+        return false;
 
-    protected:
+    }
 
-        osg::observer_ptr<osgTerrain::Layer> _layer;
+protected:
+
+    osg::observer_ptr<osgTerrain::Layer> _layer;
 
 };
 
@@ -216,20 +368,39 @@ int main(int argc, char** argv)
     double w = 1.0;
     double h = 1.0;
     
-    osg::ref_ptr<osg::Node> test = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    if (!loadedModel.valid()) return 0;
     
-    if (!test.valid()) return 0;
+    osg::ref_ptr<osg::Group> scene = dynamic_cast<osg::Group*>(loadedModel.get());
+    if (!scene.valid())
+    {
+        scene = new osg::Group;
+        scene->addChild(loadedModel.get());
+    }
     
-    viewer.setSceneData(test.get());
+    
+    viewer.setSceneData(scene.get());
     viewer.realize();
+
+    osg::ref_ptr<osg::OperationThread> operationThread = new osg::OperationThread;
+    osg::ref_ptr<MasterOperation> masterOperation = new MasterOperation("master.terrain");
+    operationThread->startThread();
+    operationThread->add(masterOperation.get());
 
     while (!viewer.done())
     {
         viewer.advance();
+        
         viewer.eventTraversal();
         viewer.updateTraversal();
+        
+        masterOperation->update(scene.get());
+        
         viewer.frame();
     }
+    
+    // kill the operation thread
+    operationThread = 0;
     
     return 0;
 

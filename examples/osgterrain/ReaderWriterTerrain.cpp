@@ -294,24 +294,18 @@ osg::TransferFunction* ReaderWriterTerrain::readTransferFunction(osgDB::Input& f
 {
     osg::ref_ptr<osg::TransferFunction1D> tf = new osg::TransferFunction1D;
     
-    tf->allocate(6);
-    tf->setValue(0, osg::Vec4(1.0,1.0,1.0,1.0));
-    tf->setValue(1, osg::Vec4(1.0,0.0,1.0,1.0));
-    tf->setValue(2, osg::Vec4(1.0,0.0,0.0,1.0));
-    tf->setValue(3, osg::Vec4(1.0,1.0,0.0,1.0));
-    tf->setValue(4, osg::Vec4(0.0,1.0,1.0,1.0));
-    tf->setValue(5, osg::Vec4(0.0,1.0,0.0,1.0));
-
     int entry = fr[0].getNoNestedBrackets();
 
     fr += 2;
+
+    std::vector<osg::Vec4> colours;
 
     while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
     {
         bool itrAdvanced = false;
         if (fr.matchSequence("range %f %f"))
         {
-            double minValue,maxValue;
+            float minValue,maxValue;
             fr[1].getFloat(minValue);
             fr[2].getFloat(maxValue);
         
@@ -321,15 +315,63 @@ osg::TransferFunction* ReaderWriterTerrain::readTransferFunction(osgDB::Input& f
             itrAdvanced = true;
         }
 
+        if (fr.matchSequence("color %f %f %f %f"))
+        {
+            float r,g,b,a;
+            fr[1].getFloat(r);
+            fr[2].getFloat(g);
+            fr[3].getFloat(b);
+            fr[4].getFloat(a);
+        
+            colours.push_back(osg::Vec4(r,g,b,a));
+            
+            fr += 5;
+            itrAdvanced = true;
+        }
+
+        if (fr.matchSequence("color %f %f %f"))
+        {
+            float r,g,b;
+            fr[1].getFloat(r);
+            fr[2].getFloat(g);
+            fr[3].getFloat(b);
+        
+            colours.push_back(osg::Vec4(r,g,b,1.0f));
+            
+            fr += 5;
+            itrAdvanced = true;
+        }
+
         if (!itrAdvanced)
         {
             if (fr[0].getStr()) osg::notify(osg::NOTICE)<<"TransferFunction - unreconised token : "<<fr[0].getStr() << std::endl;
             ++fr;
         }
     }
+    
 
     // step over trailing }
     ++fr;
+    
+    if (!colours.empty())
+    {
+        tf->allocate(colours.size());
+        for(unsigned int i=0; i<colours.size(); ++i)
+        {
+            tf->setValue(i, colours[i]);
+        }
+    }
+
+    if (tf->getNumberCellsX()==0)
+    {
+        tf->allocate(6);
+        tf->setValue(0, osg::Vec4(1.0,1.0,1.0,1.0));
+        tf->setValue(1, osg::Vec4(1.0,0.0,1.0,1.0));
+        tf->setValue(2, osg::Vec4(1.0,0.0,0.0,1.0));
+        tf->setValue(3, osg::Vec4(1.0,1.0,0.0,1.0));
+        tf->setValue(4, osg::Vec4(0.0,1.0,1.0,1.0));
+        tf->setValue(5, osg::Vec4(0.0,1.0,0.0,1.0));
+    }
 
     return tf.release();
 }

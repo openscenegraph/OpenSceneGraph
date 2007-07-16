@@ -48,9 +48,10 @@
 
 #include <iostream>
 
+
 class FilterHandler : public osgGA::GUIEventHandler 
 {
-public: 
+    public: 
 
         FilterHandler(osgTerrain::GeometryTechnique* gt):
             _gt(gt) {}
@@ -114,8 +115,8 @@ public:
             
         }
 
-protected:
-
+    protected:
+    
         osg::observer_ptr<osgTerrain::GeometryTechnique> _gt;
 
 };
@@ -124,7 +125,7 @@ protected:
 
 class LayerHandler : public osgGA::GUIEventHandler 
 {
-public: 
+    public: 
 
         LayerHandler(osgTerrain::Layer* layer):
             _layer(layer) {}
@@ -158,7 +159,7 @@ public:
             
         }
 
-protected:
+    protected:
 
         osg::observer_ptr<osgTerrain::Layer> _layer;
 
@@ -214,6 +215,23 @@ int main(int argc, char** argv)
     double y = 0.0;
     double w = 1.0;
     double h = 1.0;
+    
+    osg::ref_ptr<osg::Node> test = osgDB::readNodeFile("test.terrain");
+    
+    if (!test.valid()) return 0;
+    
+    viewer.setSceneData(test.get());
+    viewer.realize();
+
+    while (!viewer.done())
+    {
+        viewer.advance();
+        viewer.eventTraversal();
+        viewer.updateTraversal();
+        viewer.frame();
+    }
+    
+    return 0;
 
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);

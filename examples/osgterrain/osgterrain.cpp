@@ -216,7 +216,7 @@ int main(int argc, char** argv)
     double w = 1.0;
     double h = 1.0;
     
-    osg::ref_ptr<osg::Node> test = osgDB::readNodeFile("test.terrain");
+    osg::ref_ptr<osg::Node> test = osgDB::readNodeFiles(arguments);
     
     if (!test.valid()) return 0;
     

@@ -126,9 +126,12 @@ public:
         Files files;
         readMasterFile(files);
 
+        // osg::notify(osg::NOTICE)<<"void operator () files.size()="<<files.size()<<std::endl;
+
         Files newFiles;
         Files removedFiles;
 
+        // find out which files are new, and which ones have been removed.
         {            
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -150,51 +153,90 @@ public:
             }
         }
         
-        if (newFiles.empty()) 
 
-        // first load the files.
+        // first load the new files.
         FilenameNodeMap nodesToAdd;
-        for(Files::iterator nitr = newFiles.begin();
-            nitr != newFiles.end();
-            ++nitr)
+        if (!newFiles.empty())
         {
-            osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
-            
-            if (loadedModel.get())
+
+            typedef std::vector< osg::ref_ptr<osg::GraphicsThread> > GraphicsThreads;
+            GraphicsThreads threads;
+        
+            for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
             {
-                osg::notify(osg::NOTICE)<<"Loadinged file "<<*nitr<<std::endl;
+                osg::GraphicsContext* gc = osg::GraphicsContext::getCompileContext(i);
+                osg::GraphicsThread* gt = gc ? gc->getGraphicsThread() : 0;
+                if (gt) threads.push_back(gt);
+            }
 
-                nodesToAdd[*nitr] = loadedModel;
-                osg::ref_ptr<osgUtil::GLObjectsOperation> compileOperation = new osgUtil::GLObjectsOperation(loadedModel.get());
+            bool requiresBarrier = false;
+            
+            for(Files::iterator nitr = newFiles.begin();
+                nitr != newFiles.end();
+                ++nitr)
+            {
+                osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
 
-#if 1
-                for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
+                if (loadedModel.get())
                 {
-                    osg::GraphicsContext* gc = osg::GraphicsContext::getCompileContext(i);
-                    osg::GraphicsThread* gt = gc ? gc->getGraphicsThread() : 0;
-                    if (gt)
+                    nodesToAdd[*nitr] = loadedModel;
+
+                    osg::ref_ptr<osgUtil::GLObjectsOperation> compileOperation = new osgUtil::GLObjectsOperation(loadedModel.get());
+                
+                    for(GraphicsThreads::iterator gitr = threads.begin();
+                        gitr != threads.end();
+                        ++gitr)
                     {
-                        osg::notify(osg::NOTICE)<<"Adding compile op. to compile context "<<i<<std::endl;
-                        gt->add( compileOperation.get() );
+                        (*gitr)->add( compileOperation.get() );
+                        requiresBarrier = true;
                     }
                 }
-#endif                
+            }
+            
+            if (requiresBarrier)
+            {
+                _barrier = new osg::BarrierOperation(threads.size()+1);
+                _barrier->setKeep(false);
+                
+                for(GraphicsThreads::iterator gitr = threads.begin();
+                    gitr != threads.end();
+                    ++gitr)
+                {
+                    (*gitr)->add(_barrier.get());
+                }
+                
+                // wait for the graphics threads to complete.
+                _barrier->block();
             }
         }
-
-        // swap the data.
+        
+        bool requiresBlock = false;
+        
+        // pass the locally peppared data to MasterOperations shared data
+        // so that updated thread can merge these changes with the main scene 
+        // graph.  This merge is carried out via the update(..) method.
+        if (!removedFiles.empty() || !nodesToAdd.empty())        
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             _nodesToRemove.swap(removedFiles);
             _nodesToAdd.swap(nodesToAdd);
+            requiresBlock = true;
         }
 
         // now block so we don't try to load anything till the new data has been merged
         // otherwise _existingFilenameNodeMap will get out of sync.
-        _updatesMergedBlock.block();
+        if (requiresBlock)
+        {
+            _updatesMergedBlock.block();
+        }
+        else
+        {
+            OpenThreads::Thread::YieldCurrentThread();
+        }
 
     }
     
+    // merge the changes with the main scene graph.
     void update(osg::Group* scene)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
@@ -235,20 +277,23 @@ public:
 
     }
     
+    // add release implementation so that any thread cancellation can
+    // work even when blocks and barriers are used.
     virtual void release()
     {
         _updatesMergedBlock.release();
+        if (_barrier.valid()) _barrier.release();
     }
 
     
-    std::string         _filename;
+    std::string                         _filename;
     
-    OpenThreads::Mutex  _mutex;
-    FilenameNodeMap     _existingFilenameNodeMap;
-    Files               _nodesToRemove;
-    FilenameNodeMap     _nodesToAdd;
-    OpenThreads::Block  _updatesMergedBlock;
-    
+    OpenThreads::Mutex                  _mutex;
+    FilenameNodeMap                     _existingFilenameNodeMap;
+    Files                               _nodesToRemove;
+    FilenameNodeMap                     _nodesToAdd;
+    OpenThreads::Block                  _updatesMergedBlock;
+    osg::ref_ptr<osg::BarrierOperation> _barrier;
 };
 
 class FilterHandler : public osgGA::GUIEventHandler 
@@ -364,10 +409,7 @@ public:
 protected:
 
     osg::observer_ptr<osgTerrain::Layer> _layer;
-
 };
-
-#if 1
 
 int main(int argc, char** argv)
 {
@@ -432,62 +474,6 @@ int main(int argc, char** argv)
         masterOperation = new MasterOperation(masterFilename);
     }
     
-    osg::ref_ptr<osg::Group> scene = new osg::Group;
-    
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!masterOperation && !loadedModel) return 0;
-
-    if (masterOperation.valid()) masterOperation->open(scene.get());
-    if (loadedModel.valid()) scene->addChild(loadedModel.get());
-    
-    viewer.setSceneData(scene.get());
-
-    viewer.realize();
-
-    osg::ref_ptr<osg::OperationThread> operationThread;
-    if (masterOperation.valid()) 
-    {
-        operationThread = new osg::OperationThread;
-        operationThread->startThread();
-        operationThread->add(masterOperation.get());
-    }
-    
-    if (createBackgroundContextForCompiling)
-    {
-    
-        int numProcessors = OpenThreads::GetNumberOfProcessors();
-        int processNum = 0;
-
-        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
-        {
-            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
-
-            if (gc && createBackgroundThreadsForCompiling)
-            {
-                gc->createGraphicsThread();
-                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-                gc->getGraphicsThread()->startThread();
-                
-                ++processNum;
-            }
-        }
-    }
-
-    while (!viewer.done())
-    {
-        viewer.advance();
-        viewer.eventTraversal();
-        viewer.updateTraversal();
-        
-        if (masterOperation.valid()) masterOperation->update(scene.get());
-        
-        viewer.frame();
-    }
-    
-    // kill the operation thread
-    operationThread = 0;
-    
-    return 0;
 
     osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
@@ -502,7 +488,6 @@ int main(int argc, char** argv)
     float minValue, maxValue;
     float scale = 1.0f;
     float offset = 0.0f;
-
 
     int pos = 1;
     while(pos<arguments.argc())
@@ -694,88 +679,84 @@ int main(int argc, char** argv)
     }
     
 
-    osg::ref_ptr<osgTerrain::GeometryTechnique> geometryTechnique = new osgTerrain::GeometryTechnique;
-    
-    terrain->setTerrainTechnique(geometryTechnique.get());
-    
-    viewer.addEventHandler(new FilterHandler(geometryTechnique.get()));
-    
-    viewer.addEventHandler(new LayerHandler(lastAppliedLayer.get()));
+    osg::ref_ptr<osg::Group> scene = new osg::Group;
 
-    if (!terrain) return 0;
-    
-    // return 0;
-
-    // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData(terrain.get());
-
-    return viewer.run();
-}
-
-#else
-
-#include <osg/OperationsThread>
-#include <osg/Notify>
-
-struct MyOperation : public osg::Operation
-{
-
-    MyOperation(const std::string& str, bool keep, double number):
-        osg::Operation(str,keep),
-        _number(number) {}
-
-    virtual void operator () (osg::Object* object)
+    if (terrain.valid() && (terrain->getElevationLayer() || terrain->getColorLayer(0)))
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        osg::notify(osg::NOTICE)<<"Terrain created"<<std::endl;
+    
+        scene->addChild(terrain.get());
+
+        osg::ref_ptr<osgTerrain::GeometryTechnique> geometryTechnique = new osgTerrain::GeometryTechnique;
+        terrain->setTerrainTechnique(geometryTechnique.get());
+        viewer.addEventHandler(new FilterHandler(geometryTechnique.get()));
+        viewer.addEventHandler(new LayerHandler(lastAppliedLayer.get()));
+    }
+
+    if (masterOperation.valid())
+    {
+        osg::notify(osg::NOTICE)<<"Master operation created"<<std::endl;
+
+        masterOperation->open(scene.get());
+    }
+    
+    if (scene->getNumChildren()==0)
+    {
+        osg::notify(osg::NOTICE)<<"No model created, please specify terrain or master file on command line."<<std::endl;
+        return 0;
+    }
+    
+    viewer.setSceneData(scene.get());
+
+
+    // start operation thread if a master file has been used.
+    osg::ref_ptr<osg::OperationThread> operationThread;
+    if (masterOperation.valid()) 
+    {
+        operationThread = new osg::OperationThread;
+        operationThread->startThread();
+        operationThread->add(masterOperation.get());
+    }
+
+    // realize the graphics windows.
+    viewer.realize();
+    
+    // set up any compile contexts that are required.
+    if (createBackgroundContextForCompiling)
+    {
+    
+        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int processNum = 0;
+
+        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
+        {
+            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
+
+            if (gc && createBackgroundThreadsForCompiling)
+            {
+                gc->createGraphicsThread();
+                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
+                gc->getGraphicsThread()->startThread();
+                
+                ++processNum;
+            }
+        }
+    }
+
+
+    // run main loop, with syncing with masterOperation
+    while (!viewer.done())
+    {
+        viewer.advance();
+        viewer.eventTraversal();
+        viewer.updateTraversal();
         
-        osg::notify(osg::NOTICE)<<getName()<<" "<<_number<<" object="<<object<<std::endl;
-        ++_number;
-        if (_number>1000) setKeep(false);
+        if (masterOperation.valid()) masterOperation->update(scene.get());
+        
+        viewer.frame();
     }
     
-    OpenThreads::Mutex _mutex;
-    double _number;
-}; 
-
-
-
-int main(int argc, char** argv)
-{
-    osg::ArgumentParser arguments(&argc, argv);
-
-    osg::ref_ptr<osg::OperationQueue> operations = new osg::OperationQueue;
-    operations->add(new MyOperation("one ",true, 0.0));
-    operations->add(new MyOperation("two ",true, 0.0));
-    
-    {
-        typedef std::list< osg::ref_ptr<osg::OperationsThread> > Threads;
-        Threads threads;
-
-        unsigned int numberThreads = 2;
-        while (arguments.read("--threads",numberThreads)) {}
-
-        for(unsigned int i=0; i<numberThreads; ++i)    
-        {
-            osg::ref_ptr<osg::OperationsThread> thread = new osg::OperationsThread;
-            thread->setOperationQueue(operations.get());
-            threads.push_back(thread.get());
-            thread->startThread();
-        }
-
-        while(!operations->empty())
-        {
-            osg::notify(osg::NOTICE)<<"Main loop"<<std::endl;
-            osg::ref_ptr<osg::Operation> operation = operations->getNextOperation();
-            if (operation.valid()) (*operation)(0);
-        }
-
-        osg::notify(osg::NOTICE)<<"Completed main loop ******************************* "<<std::endl;
-    }
-    
-    osg::notify(osg::NOTICE)<<"Exiting main -------------------------------- "<<std::endl;
-
-    return 0;
+    // kill the operation thread
+    operationThread = 0;
 
 }
-
-#endif

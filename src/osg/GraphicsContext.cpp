@@ -147,8 +147,14 @@ unsigned int GraphicsContext::createNewContextID()
 unsigned int GraphicsContext::getMaxContextID()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-
-    return s_contextIDMap.size();
+    unsigned int maxContextID = 0;
+    for(ContextIDMap::iterator itr = s_contextIDMap.begin();
+        itr != s_contextIDMap.end();
+        ++itr)
+    {
+        if (itr->first > maxContextID) maxContextID = itr->first;
+    }
+    return maxContextID;
 }
 
 
@@ -260,16 +266,19 @@ GraphicsContext* GraphicsContext::getOrCreateCompileContext(unsigned int context
     traits->sharedContext = src_gc;
     traits->pbuffer = true;
 
-    osg::GraphicsContext* gc = osg::GraphicsContext::createGraphicsContext(traits);
-    gc->realize();
-
+    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits);
+    if (gc.valid() && gc->realize())
     {    
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
         s_contextIDMap[contextID]._compileContext = gc;
+        osg::notify(osg::INFO)<<"   succeded GraphicsContext::createCompileContext."<<std::endl;
+        return gc.release();
+    }
+    else
+    {
+        return 0;
     }
     
-    osg::notify(osg::INFO)<<"   succeded GraphicsContext::createCompileContext."<<std::endl;
-    return gc;
 }
 
 void GraphicsContext::setCompileContext(unsigned int contextID, GraphicsContext* gc)
@@ -280,9 +289,11 @@ void GraphicsContext::setCompileContext(unsigned int contextID, GraphicsContext*
 
 GraphicsContext* GraphicsContext::getCompileContext(unsigned int contextID)
 {
-    //osg::notify(osg::NOTICE)<<"GraphicsContext::getCompileContext "<<contextID<<std::endl;
+    // osg::notify(osg::NOTICE)<<"GraphicsContext::getCompileContext "<<contextID<<std::endl;
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
-    return s_contextIDMap[contextID]._compileContext.get();
+    ContextIDMap::iterator itr = s_contextIDMap.find(contextID);
+    if (itr != s_contextIDMap.end()) return itr->second._compileContext.get();
+    else return 0;
 }
 
 

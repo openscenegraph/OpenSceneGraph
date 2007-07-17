@@ -29,6 +29,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
 
+#include <osgUtil/GLObjectsVisitor>
+
 #include <osgText/FadeText>
 
 #include <osgViewer/Viewer>
@@ -119,6 +121,8 @@ public:
 
     virtual void operator () (osg::Object* object)
     {
+        // osg::notify(osg::NOTICE)<<"void operator ()"<<std::endl;
+    
         Files files;
         readMasterFile(files);
 
@@ -145,6 +149,8 @@ public:
                 }
             }
         }
+        
+        if (newFiles.empty()) 
 
         // first load the files.
         FilenameNodeMap nodesToAdd;
@@ -152,18 +158,29 @@ public:
             nitr != newFiles.end();
             ++nitr)
         {
-            osg::notify(osg::NOTICE)<<"loading files "<<*nitr<<std::endl;
             osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(*nitr);
-            if (loadedModel.get()) nodesToAdd[*nitr] = loadedModel;
-        }
+            
+            if (loadedModel.get())
+            {
+                osg::notify(osg::NOTICE)<<"Loadinged file "<<*nitr<<std::endl;
 
-        for(Files::iterator ritr = removedFiles.begin();
-            ritr != removedFiles.end();
-            ++ritr)
-        {
-            osg::notify(osg::NOTICE)<<"Removed files "<<*ritr<<std::endl;
-        }
+                nodesToAdd[*nitr] = loadedModel;
+                osg::ref_ptr<osgUtil::GLObjectsOperation> compileOperation = new osgUtil::GLObjectsOperation(loadedModel.get());
 
+#if 1
+                for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
+                {
+                    osg::GraphicsContext* gc = osg::GraphicsContext::getCompileContext(i);
+                    osg::GraphicsThread* gt = gc ? gc->getGraphicsThread() : 0;
+                    if (gt)
+                    {
+                        osg::notify(osg::NOTICE)<<"Adding compile op. to compile context "<<i<<std::endl;
+                        gt->add( compileOperation.get() );
+                    }
+                }
+#endif                
+            }
+        }
 
         // swap the data.
         {
@@ -180,8 +197,6 @@ public:
     
     void update(osg::Group* scene)
     {
-        // osg::notify(osg::NOTICE)<<"update"<<std::endl;
-
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         
         if (!_nodesToRemove.empty())
@@ -403,6 +418,13 @@ int main(int argc, char** argv)
     double w = 1.0;
     double h = 1.0;
 
+    bool createBackgroundContextForCompiling = false;
+    while (arguments.read("--bc")) { createBackgroundContextForCompiling = true; }
+
+    bool createBackgroundThreadsForCompiling = false;
+    while (arguments.read("--bt")) { createBackgroundContextForCompiling = true; createBackgroundThreadsForCompiling = true; }
+
+
     osg::ref_ptr<MasterOperation> masterOperation;
     std::string masterFilename;
     while(arguments.read("-m",masterFilename))
@@ -430,6 +452,27 @@ int main(int argc, char** argv)
         operationThread->add(masterOperation.get());
     }
     
+    if (createBackgroundContextForCompiling)
+    {
+    
+        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int processNum = 0;
+
+        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
+        {
+            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
+
+            if (gc && createBackgroundThreadsForCompiling)
+            {
+                gc->createGraphicsThread();
+                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
+                gc->getGraphicsThread()->startThread();
+                
+                ++processNum;
+            }
+        }
+    }
+
     while (!viewer.done())
     {
         viewer.advance();

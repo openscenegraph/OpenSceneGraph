@@ -552,6 +552,42 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
 #endif    
 }
 
+
+void GeometryTechnique::traverse(osg::NodeVisitor& nv)
+{
+    if (!_terrainNode) return;
+
+    // if app traversal update the frame count.
+    if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
+    {
+        if (_dirty) init();
+
+        osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
+        if (uv)
+        {
+            update(uv);
+            return;
+        }        
+        
+    }
+    else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    {
+        osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
+        if (cv)
+        {
+            cull(cv);
+            return;
+        }
+    }
+
+
+    if (_dirty) init();
+
+    BufferData& buffer = getReadOnlyBuffer();
+    if (buffer._transform.valid()) buffer._transform->accept(nv);
+}
+
+
 void GeometryTechnique::cleanSceneGraph()
 {
 }

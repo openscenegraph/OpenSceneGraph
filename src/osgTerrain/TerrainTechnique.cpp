@@ -90,6 +90,8 @@ void TerrainTechnique::traverse(osg::NodeVisitor& nv)
         }
     }
 
+    if (_dirty) init();
+
     // otherwise fallback to the Group::traverse()
     _terrainNode->osg::Group::traverse(nv);
 }

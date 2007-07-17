@@ -37,6 +37,9 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 
         virtual void cull(osgUtil::CullVisitor* nv);
 
+        /** Traverse the terain subgraph.*/
+        virtual void traverse(osg::NodeVisitor& nv);
+
         virtual void cleanSceneGraph();
 
         virtual void dirty();

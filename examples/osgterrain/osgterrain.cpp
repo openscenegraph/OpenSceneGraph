@@ -436,7 +436,7 @@ int main(int argc, char** argv)
         viewer.eventTraversal();
         viewer.updateTraversal();
         
-        if () masterOperation->update(scene.get());
+        if (masterOperation.valid()) masterOperation->update(scene.get());
         
         viewer.frame();
     }

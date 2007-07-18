@@ -237,10 +237,22 @@ public:
     }
     
     // merge the changes with the main scene graph.
-    void update(osg::Group* scene)
+    void update(osg::Node* scene)
     {
+        osg::Group* group = dynamic_cast<osg::Group*>(scene);
+        if (!group)
+        {
+            osg::notify(osg::NOTICE)<<"Error, MasterOperation::update(Node*) can only work with a Group as Viewer::getSceneData()."<<std::endl;
+            return;
+        }
+    
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
         
+        if (!_nodesToRemove.empty() || !_nodesToAdd.empty())
+        {
+            osg::notify(osg::NOTICE)<<"update().................. "<<std::endl;
+        }
+
         if (!_nodesToRemove.empty())
         {
             for(Files::iterator itr = _nodesToRemove.begin();
@@ -250,9 +262,9 @@ public:
                 FilenameNodeMap::iterator fnmItr = _existingFilenameNodeMap.find(*itr);
                 if (fnmItr != _existingFilenameNodeMap.end())
                 {
-                    osg::notify(osg::NOTICE)<<"  removing "<<*itr<<std::endl;
+                    osg::notify(osg::NOTICE)<<"  update():removing "<<*itr<<std::endl;
                 
-                    scene->removeChild(fnmItr->second.get());
+                    group->removeChild(fnmItr->second.get());
                     _existingFilenameNodeMap.erase(fnmItr);
                 }
             }
@@ -266,7 +278,8 @@ public:
                 itr != _nodesToAdd.end();
                 ++itr)
             {
-                scene->addChild(itr->second.get());
+                osg::notify(osg::NOTICE)<<"  update():inserting "<<itr->first<<std::endl;
+                group->addChild(itr->second.get());
                 _existingFilenameNodeMap[itr->first] = itr->second;
             }
             
@@ -411,12 +424,60 @@ protected:
     osg::observer_ptr<osgTerrain::Layer> _layer;
 };
 
+class CustomViewer : public osgViewer::Viewer
+{
+public:
+    CustomViewer(osg::ArgumentParser& arguments):
+        Viewer(arguments) {}
+        
+
+    void setMasterOperation(MasterOperation* masterOp) { _masterOperation = masterOp; }
+    MasterOperation* getMasterOperation() { return _masterOperation.get(); }
+        
+    // override the realize to create the compile graphics contexts + threads for us.
+    virtual void realize()
+    {
+        Viewer::realize();
+        
+        
+        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int processNum = (getThreadingModel()==osgViewer::Viewer::SingleThreaded) ? 1 : 0;
+
+        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
+        {
+            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
+
+            if (gc)
+            {
+                gc->createGraphicsThread();
+                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
+                gc->getGraphicsThread()->startThread();
+                
+                ++processNum;
+            }
+        }
+    }
+        
+    // override the updateTraversal to add the merging of data from the MasterOperation.
+    virtual void updateTraversal()
+    {
+        Viewer::updateTraversal();
+        
+        if (_masterOperation.valid()) _masterOperation->update(getSceneData());
+    }
+
+protected:
+
+    osg::ref_ptr<MasterOperation>   _masterOperation;
+};
+
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
 
     // construct the viewer.
-    osgViewer::Viewer viewer(arguments);
+    CustomViewer viewer(arguments);
 
     // set up the camera manipulators.
     {
@@ -472,6 +533,7 @@ int main(int argc, char** argv)
     while(arguments.read("-m",masterFilename))
     {
         masterOperation = new MasterOperation(masterFilename);
+        viewer.setMasterOperation(masterOperation.get());
     }
     
 
@@ -717,46 +779,13 @@ int main(int argc, char** argv)
         operationThread->startThread();
         operationThread->add(masterOperation.get());
     }
+    
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     // realize the graphics windows.
     viewer.realize();
-    
-    // set up any compile contexts that are required.
-    if (createBackgroundContextForCompiling)
-    {
-    
-        int numProcessors = OpenThreads::GetNumberOfProcessors();
-        int processNum = 0;
 
-        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
-        {
-            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
-
-            if (gc && createBackgroundThreadsForCompiling)
-            {
-                gc->createGraphicsThread();
-                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-                gc->getGraphicsThread()->startThread();
-                
-                ++processNum;
-            }
-        }
-    }
-
-
-    // run main loop, with syncing with masterOperation
-    while (!viewer.done())
-    {
-        viewer.advance();
-        viewer.eventTraversal();
-        viewer.updateTraversal();
-        
-        if (masterOperation.valid()) masterOperation->update(scene.get());
-        
-        viewer.frame();
-    }
-    
-    // kill the operation thread
-    operationThread = 0;
+    // run the viewers main loop
+    return viewer.run();
 
 }

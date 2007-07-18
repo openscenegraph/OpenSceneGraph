@@ -30,6 +30,8 @@ void GraphicsThread::run()
     if (graphicsContext)
     {        
         graphicsContext->makeCurrent();
+        
+        graphicsContext->getState()->initializeExtensionProcs();
     }
 
     OperationThread::run();

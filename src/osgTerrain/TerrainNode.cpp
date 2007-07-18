@@ -21,6 +21,7 @@ TerrainNode::TerrainNode():
     _treatBoundariesToValidDataAsDefaultValue(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
+    setThreadSafeRefUnref(true);
 }
 
 TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):

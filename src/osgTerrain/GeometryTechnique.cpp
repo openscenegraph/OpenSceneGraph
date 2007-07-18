@@ -35,6 +35,7 @@ GeometryTechnique::GeometryTechnique():
     setFilterBias(0);
     setFilterWidth(0.1);
     setFilterMatrixAs(GAUSSIAN);
+    
 }
 
 GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::CopyOp& copyop):
@@ -526,6 +527,8 @@ void GeometryTechnique::init()
         smoother.smooth(*buffer._geometry);
     }
 
+    if (buffer._transform.valid()) buffer._transform->setThreadSafeRefUnref(true);
+
     _dirty = false;    
 
     swapBuffers();
@@ -581,7 +584,11 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     }
 
 
-    if (_dirty) init();
+    if (_dirty) 
+    {
+        osg::notify(osg::NOTICE)<<"******* Doing init ***********"<<std::endl;
+        init();
+    }
 
     BufferData& buffer = getReadOnlyBuffer();
     if (buffer._transform.valid()) buffer._transform->accept(nv);

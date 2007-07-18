@@ -20,6 +20,7 @@ TerrainTechnique::TerrainTechnique():
     _terrainNode(0),
     _dirty(true)
 {
+    setThreadSafeRefUnref(true);
 }
 
 TerrainTechnique::TerrainTechnique(const TerrainTechnique& TerrainTechnique,const osg::CopyOp& copyop):

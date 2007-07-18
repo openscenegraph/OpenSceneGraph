@@ -113,7 +113,7 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
 
 };
 
-class GLObjectsOperation : public osg::GraphicsOperation
+class OSGUTIL_EXPORT GLObjectsOperation : public osg::GraphicsOperation
 {
     public:
 

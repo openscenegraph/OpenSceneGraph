@@ -152,5 +152,7 @@ void GLObjectsOperation::operator () (osg::GraphicsContext* context)
     
     glObjectsVisitor.setState(context->getState());
     
+    // osg::notify(osg::NOTICE)<<"GLObjectsOperation::before <<<<<<<<<<<"<<std::endl;
     _subgraph->accept(glObjectsVisitor);
+    // osg::notify(osg::NOTICE)<<"GLObjectsOperation::after >>>>>>>>>>> "<<std::endl;
 }

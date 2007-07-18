@@ -431,6 +431,10 @@ bool GraphicsContext::makeCurrent()
     if (result)
     {
         _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+
+        // initialize extension proces, not only initializes on first
+        // call, will be a non-op on subsequent calls.        
+        getState()->initializeExtensionProcs();
     }
     
     return result;
@@ -443,6 +447,10 @@ bool GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
     if (result)
     {
         _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+
+        // initialize extension proces, not only initializes on first
+        // call, will be a non-op on subsequent calls.        
+        getState()->initializeExtensionProcs();
     }
     
     return result;

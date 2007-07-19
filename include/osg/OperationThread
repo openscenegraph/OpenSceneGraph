@@ -27,12 +27,22 @@
 
 namespace osg {
 
-class RefBlock: virtual public osg::Referenced, public OpenThreads::Block
+class RefBlock : virtual public osg::Referenced, public OpenThreads::Block
 {
     public:
 
         RefBlock():
             osg::Referenced(true) {}
+
+};
+
+class RefBlockCount : virtual public osg::Referenced, public OpenThreads::BlockCount
+{
+    public:
+
+        RefBlockCount(unsigned blockCount):
+            osg::Referenced(true),
+            OpenThreads::BlockCount(blockCount) {}
 
 };
 

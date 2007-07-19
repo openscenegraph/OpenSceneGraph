@@ -16,6 +16,8 @@
 *  THE SOFTWARE.
 */
 
+#include <OpenThreads/Block>
+
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/ShapeDrawable>
@@ -25,6 +27,7 @@
 #include <osg/CoordinateSystemNode>
 #include <osg/ClusterCullingCallback>
 #include <osg/ArgumentParser>
+
 
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
@@ -53,96 +56,13 @@
 
 typedef std::vector< osg::ref_ptr<osg::GraphicsThread> > GraphicsThreads;
 
-class CountedBlock : public osg::Referenced
-{
-    public:
-    
-        CountedBlock(unsigned int blockCount);
-    
-        void completed();
 
-        void block();
-        
-        void reset();
-
-        void release();
-
-        void setBlockCount(unsigned int blockCount);
-
-    protected:
-
-        ~CountedBlock();
-
-        OpenThreads::Mutex _mut;
-        OpenThreads::Condition _cond;
-        unsigned int _numberOfBlocks;
-        unsigned int _blockCount;
-};
-
-CountedBlock::CountedBlock(unsigned int numberOfBlocks):
-    _numberOfBlocks(numberOfBlocks),
-    _blockCount(0)
-{
-}
-
-void CountedBlock::completed()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_blockCount>0)
-    {
-        --_blockCount;
-
-        if (_blockCount==0)
-        {
-            // osg::notify(osg::NOTICE)<<"Released"<<std::endl;
-            _cond.broadcast();
-        }
-    }
-}
-
-void CountedBlock::block()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_blockCount)
-        _cond.wait(&_mut);
-}
-
-void CountedBlock::release()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_blockCount)
-    {
-        _blockCount = 0;
-        _cond.broadcast();
-    }
-}
-
-void CountedBlock::reset()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_numberOfBlocks!=_blockCount)
-    {
-        if (_numberOfBlocks==0) _cond.broadcast();
-        _blockCount = _numberOfBlocks;
-    }
-}
-
-void CountedBlock::setBlockCount(unsigned int blockCount)
-{
-    _numberOfBlocks = blockCount;
-}
-
-CountedBlock::~CountedBlock()
-{
-    _blockCount = 0;
-    release();
-}
 
 class LoadAndCompileOperation : public osg::Operation
 {
 public:
 
-    LoadAndCompileOperation(const std::string& filename, GraphicsThreads& graphicsThreads, CountedBlock* block):
+    LoadAndCompileOperation(const std::string& filename, GraphicsThreads& graphicsThreads, osg::RefBlockCount* block):
         Operation("Load and compile Operation", false),
         _filename(filename),
         _graphicsThreads(graphicsThreads),
@@ -174,7 +94,7 @@ public:
     std::string                 _filename;
     GraphicsThreads             _graphicsThreads;
     osg::ref_ptr<osg::Node>     _loadedModel;
-    osg::ref_ptr<CountedBlock>  _block;
+    osg::ref_ptr<osg::RefBlockCount> _block;
 
 };
 
@@ -308,7 +228,7 @@ public:
             {
                 // osg::notify(osg::NOTICE)<<"Using OperationQueue"<<std::endl;
 
-                _endOfLoadBlock = new CountedBlock(newFiles.size());
+                _endOfLoadBlock = new osg::RefBlockCount(newFiles.size());
      
                 typedef std::list< osg::ref_ptr<LoadAndCompileOperation> > LoadAndCompileList;
                 LoadAndCompileList loadAndCompileList;
@@ -493,7 +413,7 @@ public:
     OpenThreads::Block                  _updatesMergedBlock;
 
     osg::ref_ptr<osg::BarrierOperation> _endOfCompilebarrier;
-    osg::ref_ptr<CountedBlock>          _endOfLoadBlock;
+    osg::ref_ptr<osg::RefBlockCount>    _endOfLoadBlock;
     
     osg::ref_ptr<osg::OperationQueue>   _operationQueue;
 };

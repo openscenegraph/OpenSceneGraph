@@ -236,6 +236,17 @@ BEGIN_OBJECT_REFLECTOR(osg::RefBlock)
 	               "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::RefBlockCount)
+	I_DeclaringFile("osg/OperationThread");
+	I_VirtualBaseType(osg::Referenced);
+	I_BaseType(OpenThreads::BlockCount);
+	I_Constructor1(IN, unsigned, blockCount,
+	               Properties::NON_EXPLICIT,
+	               ____RefBlockCount__unsigned,
+	               "",
+	               "");
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(osg::OperationThread, osg::OperationsThread)
 
 STD_SET_REFLECTOR(std::set< osg::OperationThread * >)

@@ -52,3 +52,53 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::Block)
 	          "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(OpenThreads::BlockCount)
+	I_DeclaringFile("OpenThreads/Block");
+	I_Constructor1(IN, unsigned int, blockCount,
+	               Properties::NON_EXPLICIT,
+	               ____BlockCount__unsigned_int,
+	               "",
+	               "");
+	I_Method0(void, completed,
+	          Properties::NON_VIRTUAL,
+	          __void__completed,
+	          "",
+	          "");
+	I_Method0(void, block,
+	          Properties::NON_VIRTUAL,
+	          __void__block,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(void, release,
+	          Properties::NON_VIRTUAL,
+	          __void__release,
+	          "",
+	          "");
+	I_Method1(void, setBlockCount, IN, unsigned int, blockCount,
+	          Properties::NON_VIRTUAL,
+	          __void__setBlockCount__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getBlockCount,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getBlockCount,
+	          "",
+	          "");
+	I_Method0(unsigned int, getCurrentCount,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getCurrentCount,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, BlockCount, 
+	                 __unsigned_int__getBlockCount, 
+	                 __void__setBlockCount__unsigned_int);
+	I_SimpleProperty(unsigned int, CurrentCount, 
+	                 __unsigned_int__getCurrentCount, 
+	                 0);
+END_REFLECTOR
+

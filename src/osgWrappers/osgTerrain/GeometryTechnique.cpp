@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/NodeVisitor>
 #include <osg/Uniform>
 #include <osgTerrain/GeometryTechnique>
 #include <osgUtil/CullVisitor>
@@ -55,6 +56,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	          Properties::VIRTUAL,
 	          __void__cull__osgUtil_CullVisitor_P1,
 	          "",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	          Properties::VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse the terain subgraph. ",
 	          "");
 	I_Method0(void, cleanSceneGraph,
 	          Properties::VIRTUAL,

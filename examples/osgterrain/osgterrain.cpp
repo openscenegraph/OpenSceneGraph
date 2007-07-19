@@ -198,7 +198,6 @@ public:
 
         // osg::notify(osg::NOTICE)<<"Now equal "<<files.size()<<std::endl;
 
-        // osg::notify(osg::NOTICE)<<"void operator () files.size()="<<files.size()<<std::endl;
 
         Files newFiles;
         Files removedFiles;
@@ -225,6 +224,12 @@ public:
             }
         }
         
+#if 0
+        if (!newFiles.empty() || !removedFiles.empty())
+        {
+            osg::notify(osg::NOTICE)<<std::endl<<std::endl<<"void operator () files.size()="<<files.size()<<std::endl;
+        }
+#endif
 
         // first load the new files.
         FilenameNodeMap nodesToAdd;
@@ -249,6 +254,8 @@ public:
                 // osg::notify(osg::NOTICE)<<"Using OperationQueue"<<std::endl;
 
                 _endOfLoadBlock = new osg::RefBlockCount(newFiles.size());
+                
+                _endOfLoadBlock->reset();
      
                 typedef std::list< osg::ref_ptr<LoadAndCompileOperation> > LoadAndCompileList;
                 LoadAndCompileList loadAndCompileList;
@@ -257,18 +264,21 @@ public:
                     nitr != newFiles.end();
                     ++nitr)
                 {
+                    // osg::notify(osg::NOTICE)<<"Adding LoadAndCompileOperation "<<*nitr<<std::endl;
+
                     osg::ref_ptr<LoadAndCompileOperation> loadAndCompile = new LoadAndCompileOperation( *nitr, threads, _endOfLoadBlock.get() );
                     loadAndCompileList.push_back(loadAndCompile);
                     _operationQueue->add( loadAndCompile.get() );
                 }
-                
+
+#if 1
                 osg::ref_ptr<osg::Operation> operation;
                 while ((operation=_operationQueue->getNextOperation()).valid())
                 {
                     // osg::notify(osg::NOTICE)<<"Local running of operation"<<std::endl;
                     (*operation)(0);
                 }
-                                
+#endif                                
                 // osg::notify(osg::NOTICE)<<"Waiting for completion of LoadAndCompile operations"<<std::endl;
                 _endOfLoadBlock->block();
                 // osg::notify(osg::NOTICE)<<"done ... Waiting for completion of LoadAndCompile operations"<<std::endl;

@@ -174,9 +174,29 @@ public:
     virtual void operator () (osg::Object* object)
     {
         // osg::notify(osg::NOTICE)<<"void operator ()"<<std::endl;
-    
+        Files filesA;
+        Files filesB;
+        
+        readMasterFile(filesB);
+        // osg::notify(osg::NOTICE)<<"First read "<<filesA.size()<<std::endl;
+
+        // itererate until the master file is stable
+        do
+        {
+            usleep(100000);
+
+            filesB.swap(filesA);
+            filesB.clear();
+            readMasterFile(filesB);
+
+            // osg::notify(osg::NOTICE)<<"second read "<<filesB.size()<<std::endl;
+            
+        } while (filesA!=filesB);
+
         Files files;
-        readMasterFile(files);
+        files.swap(filesB);
+
+        // osg::notify(osg::NOTICE)<<"Now equal "<<files.size()<<std::endl;
 
         // osg::notify(osg::NOTICE)<<"void operator () files.size()="<<files.size()<<std::endl;
 

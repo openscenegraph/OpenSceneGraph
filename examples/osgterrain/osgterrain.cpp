@@ -183,7 +183,7 @@ public:
         // itererate until the master file is stable
         do
         {
-            usleep(100000);
+            OpenThreads::Thread::microSleep(100000);
 
             filesB.swap(filesA);
             filesB.clear();

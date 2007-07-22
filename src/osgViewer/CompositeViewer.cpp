@@ -564,6 +564,8 @@ struct CompositeViewerRenderingOperation : public osg::Operation
         _databasePager(databasePager)
     {
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+        
+        _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
     }
     
     virtual void operator () (osg::Object*)
@@ -577,6 +579,9 @@ struct CompositeViewerRenderingOperation : public osg::Operation
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_sceneView->getCamera()->getView());
         if (view) _sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
 
+        osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(_sceneView->getState()->getContextID());
+        osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
+
         _sceneView->inheritCullSettings(*(_sceneView->getCamera()));
         _sceneView->cull();
         _sceneView->draw();
@@ -588,11 +593,19 @@ struct CompositeViewerRenderingOperation : public osg::Operation
             _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
         }
 
-        _sceneView->flushDeletedGLObjects(availableTime);
+        if (compileThread)
+        {
+            compileThread->add(_flushOperation.get());
+        }
+        else
+        {
+            _sceneView->flushDeletedGLObjects(availableTime);
+        }
     }
     
-    osg::observer_ptr<osgUtil::SceneView>    _sceneView;
-    osg::observer_ptr<osgDB::DatabasePager>  _databasePager;
+    osg::observer_ptr<osgUtil::SceneView>               _sceneView;
+    osg::observer_ptr<osgDB::DatabasePager>             _databasePager;
+    osg::ref_ptr<osg::FlushDeletedGLObjectsOperation>   _flushOperation;
 };
 
 void CompositeViewer::setUpRenderingSupport()

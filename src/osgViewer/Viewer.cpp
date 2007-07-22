@@ -137,6 +137,8 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQu
         _databasePager(databasePager)
     {
         _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
+        
+        _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
     }
     
     osg::Camera* getCamera() { return _sceneView->getCamera(); }
@@ -202,7 +204,18 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQu
         {
              _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
         }
-        _sceneView->flushDeletedGLObjects(availableTime);
+
+        osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(_sceneView->getState()->getContextID());
+        osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
+
+        if (compileThread)
+        {
+            compileThread->add(_flushOperation.get());
+        }
+        else
+        {
+            _sceneView->flushDeletedGLObjects(availableTime);
+        }
 
         if (aquireGPUStats)
         {
@@ -225,8 +238,9 @@ struct ViewerRenderingOperation : public osg::GraphicsOperation, public ViewerQu
         
     }
     
-    osg::observer_ptr<osgUtil::SceneView>       _sceneView;
-    osg::observer_ptr<osgDB::DatabasePager>     _databasePager;
+    osg::observer_ptr<osgUtil::SceneView>               _sceneView;
+    osg::observer_ptr<osgDB::DatabasePager>             _databasePager;
+    osg::ref_ptr<osg::FlushDeletedGLObjectsOperation>   _flushOperation;
 
 };
 
@@ -261,6 +275,9 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
              _lockHeld[_currentCull] = true;
         }
     
+        
+        _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
+
         // osg::notify(osg::NOTICE)<<"constructed"<<std::endl;
     }
     
@@ -366,6 +383,9 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
 
         osgUtil::SceneView* sceneView = _sceneView[_currentDraw].get();
         
+        osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
+        osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
+
         if (sceneView || _done)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
@@ -427,7 +447,14 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
                 _databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
             }
 
-            sceneView->flushDeletedGLObjects(availableTime);
+            if (compileThread)
+            {
+                compileThread->add(_flushOperation.get());
+            }
+            else
+            {
+                sceneView->flushDeletedGLObjects(availableTime);
+            }
 
             if (aquireGPUStats)
             {
@@ -456,6 +483,9 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
     {
         osgUtil::SceneView* sceneView = _sceneView[_currentDraw].get();
         if (!sceneView || _done) return;
+
+        osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
+        osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
 
@@ -515,7 +545,15 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
         {
             _databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
         }
-        sceneView->flushDeletedGLObjects(availableTime);
+
+        if (compileThread)
+        {
+            compileThread->add(_flushOperation.get());
+        }
+        else
+        {
+            sceneView->flushDeletedGLObjects(availableTime);
+        }
 
         if (aquireGPUStats)
         {
@@ -589,6 +627,7 @@ struct ViewerDoubleBufferedRenderingOperation : public osg::Operation, public Vi
     int                                     _frameNumber[2];
     osg::observer_ptr<osgDB::DatabasePager> _databasePager;
 
+    osg::ref_ptr<osg::FlushDeletedGLObjectsOperation> _flushOperation;
 
 };
 

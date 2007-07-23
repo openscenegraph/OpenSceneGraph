@@ -10,6 +10,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+#include <stdlib.h>
+#include <limits.h>
+
 #include <osgDB/FileNameUtils>
 
 #ifdef WIN32

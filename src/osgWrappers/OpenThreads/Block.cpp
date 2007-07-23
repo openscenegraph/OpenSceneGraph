@@ -52,7 +52,7 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::Block)
 	          "");
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(OpenThreads::BlockCount)
+BEGIN_OBJECT_REFLECTOR(OpenThreads::BlockCount)
 	I_DeclaringFile("OpenThreads/Block");
 	I_Constructor1(IN, unsigned int, blockCount,
 	               Properties::NON_EXPLICIT,

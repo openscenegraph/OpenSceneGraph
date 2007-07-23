@@ -96,6 +96,16 @@ struct OSG_EXPORT BlockAndFlushOperation : public GraphicsOperation, public Open
     virtual void operator () (GraphicsContext*);
 };
 
+
+struct OSG_EXPORT FlushDeletedGLObjectsOperation : public GraphicsOperation
+{
+    FlushDeletedGLObjectsOperation(double availableTime, bool keep=false);
+
+    virtual void operator () (GraphicsContext*);
+    
+    double _availableTime;
+};
+
 }
 
 #endif

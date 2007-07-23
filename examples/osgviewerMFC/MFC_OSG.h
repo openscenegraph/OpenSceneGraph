@@ -15,7 +15,7 @@ class cOSG
 {
 public:
     cOSG(HWND hWnd);
-    ~cOSG(){};
+    ~cOSG();
 
     void InitOSG(std::string filename);
     void InitManipulators(void);
@@ -29,13 +29,13 @@ public:
     bool Done(void) { return mDone; }
     static void Render(void* ptr);
 
-    osgViewer::Viewer* getViewer() { return mViewer.get(); }
+    osgViewer::Viewer* getViewer() { return mViewer; }
 
 private:
     bool mDone;
     std::string m_ModelName;
     HWND m_hWnd;
-    osg::ref_ptr<osgViewer::Viewer> mViewer;
+    osgViewer::Viewer* mViewer;
     osg::ref_ptr<osg::Group> mRoot;
     osg::ref_ptr<osg::Node> mModel;
     osg::ref_ptr<osgGA::TrackballManipulator> trackball;

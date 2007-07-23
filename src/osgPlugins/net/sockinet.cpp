@@ -61,7 +61,8 @@ extern "C" {
 
 // Do not include anything below that define. That should in no case change any forward decls in
 // system headers ...
-#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || !defined(_XOPEN_SOURCE_EXTENDED)
+#if (defined(__APPLE__)&&(__GNUC__<4)) || (defined(WIN32)&&!defined(__CYGWIN__)) || \
+ (!defined(__APPLE__) && !defined(WIN32) && !defined(_XOPEN_SOURCE_EXTENDED))
 #define socklen_t int
 #endif
 

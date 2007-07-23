@@ -14,6 +14,7 @@
 
 #include <osg/GraphicsThread>
 #include <osg/GraphicsContext>
+#include <osg/GLObjects>
 #include <osg/Notify>
 
 using namespace osg;
@@ -109,4 +110,20 @@ void BlockAndFlushOperation::operator () (GraphicsContext*)
 {
     glFlush();
     Block::release();
+}
+
+FlushDeletedGLObjectsOperation::FlushDeletedGLObjectsOperation(double availableTime, bool keep):
+    GraphicsOperation("FlushDeletedGLObjectsOperation",keep)
+{
+}
+
+void FlushDeletedGLObjectsOperation::operator () (GraphicsContext* context)
+{
+    State* state = context->getState();
+    unsigned int contextID = state ? state->getContextID() : 0;
+    const FrameStamp* frameStamp = state ? state->getFrameStamp() : 0;
+    double currentTime = frameStamp ? frameStamp->getReferenceTime() : 0.0;
+    double availableTime = _availableTime;
+
+    flushDeletedGLObjects(contextID, currentTime, availableTime);
 }

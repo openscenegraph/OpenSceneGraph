@@ -5,49 +5,17 @@
 
 
 cOSG::cOSG(HWND hWnd) :
-   m_hWnd(hWnd), mDone(false) 
+   m_hWnd(hWnd) 
 {
-    //
-    // We must set the pixelformat before we can create the OSG Rendering Surface
-    //
-    PIXELFORMATDESCRIPTOR pixelFormat =
-    {
-        sizeof(PIXELFORMATDESCRIPTOR),
-        1,
-        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER, 
-        PFD_TYPE_RGBA,    
-        24,
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0,
-        24,
-        0,
-        0,
-        PFD_MAIN_PLANE,
-        0,
-        0, 0, 0
-    };
+}
 
-    HDC hdc = ::GetDC(m_hWnd);
-    if (hdc==0)
-    {
-        ::DestroyWindow(m_hWnd);
-        return;
-    }
+cOSG::~cOSG()
+{
+    mViewer->setDone(true);
+    Sleep(1000);
+    mViewer->stopThreading();
 
-    int pixelFormatIndex = ::ChoosePixelFormat(hdc, &pixelFormat);
-    if (pixelFormatIndex==0)
-    {
-        ::ReleaseDC(m_hWnd, hdc);
-        ::DestroyWindow(m_hWnd);
-        return;
-    }
-
-    if (!::SetPixelFormat(hdc, pixelFormatIndex, &pixelFormat))
-    {
-        ::ReleaseDC(m_hWnd, hdc);
-        ::DestroyWindow(m_hWnd);
-        return;
-    }
+    delete mViewer;
 }
 
 void cOSG::InitOSG(std::string modelname)
@@ -100,7 +68,7 @@ void cOSG::InitCameraConfig(void)
     RECT rect;
 
     // Create the viewer for this window
-    mViewer = new osgViewer::Viewer;
+    mViewer = new osgViewer::Viewer();
 
     // Add a Stats Handler to the viewer
     mViewer->addEventHandler(new osgViewer::StatsHandler);
@@ -122,6 +90,7 @@ void cOSG::InitCameraConfig(void)
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
+    traits->setInheritedWindowPixelFormat = true;
     traits->inheritedWindowData = windata;
 
     // Create the Graphics Context
@@ -183,6 +152,5 @@ void cOSG::Render(void* ptr)
     // and you exit one then all stop rendering
     AfxMessageBox("Exit Rendering Thread");
 
-    // Set Done to indicate that thread has exited
-    osg->Done(true);
+    _endthread();
 }

@@ -74,21 +74,10 @@ int CMFC_OSG_MDIView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CMFC_OSG_MDIView::OnDestroy()
 {
-    // Make sure OSG was created before we try to close it.
-    if(mOSG)
-    {
-       
-        // Wait while the Viewer closes
-        while(!mOSG->Done())
-        {
-            Sleep(10); // Allow others processor time
-        }
-        
-        // Remove mOSG
-        delete mOSG;
-    }
+    if(mOSG != 0) delete mOSG;
 
-    // Destroy Window
+    WaitForSingleObject(mThreadHandle, 1000);
+
     CView::OnDestroy();
 }
 
@@ -103,7 +92,7 @@ void CMFC_OSG_MDIView::OnInitialUpdate()
     mOSG->InitOSG(csFileName.GetString());
 
     // Start the thread to do OSG Rendering
-    _beginthread(&cOSG::Render, 0, mOSG); 
+    mThreadHandle = (HANDLE)_beginthread(&cOSG::Render, 0, mOSG); 
 }
 
 void CMFC_OSG_MDIView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)

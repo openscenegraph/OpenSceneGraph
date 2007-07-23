@@ -59,6 +59,16 @@ BEGIN_OBJECT_REFLECTOR(osg::BlockAndFlushOperation)
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::FlushDeletedGLObjectsOperation)
+	I_DeclaringFile("osg/GraphicsThread");
+	I_BaseType(osg::GraphicsOperation);
+	I_ConstructorWithDefaults2(IN, double, availableTime, , IN, bool, keep, false,
+	                           ____FlushDeletedGLObjectsOperation__double__bool,
+	                           "",
+	                           "");
+	I_PublicMemberProperty(double, _availableTime);
+END_REFLECTOR
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsOperation)
 	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Operation);

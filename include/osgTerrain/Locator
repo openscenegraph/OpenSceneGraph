@@ -97,8 +97,7 @@ class OSGTERRAIN_EXPORT CartesianLocator : public osgTerrain::Locator
 {
     public:
 
-        CartesianLocator(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 
-1.0f); 
+        CartesianLocator(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 1.0f); 
 
         void setExtents(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 1.0f); 
 

@@ -27,7 +27,7 @@ FOX_OSG_MDIView::FOX_OSG_MDIView(FXMDIClient *p, const FXString &name,
 	// characteristics only once.
 	FXGLVisual* glVisual=new FXGLVisual(getApp(),VISUAL_DOUBLEBUFFER|VISUAL_STEREO);
 
-	m_gwFox = new GraphicsWindowFOX(this, glVisual, NULL, NULL, LAYOUT_FILL_X|LAYOUT_FILL_Y, x, y, w, h );
+	m_gwFox = new GraphicsWindowFOX(this, glVisual, NULL, 0, LAYOUT_FILL_X|LAYOUT_FILL_Y, x, y, w, h );
 
 	osgViewer::Viewer *viewer = new osgViewer::Viewer;
 	viewer->getCamera()->setGraphicsContext(m_gwFox);

@@ -105,6 +105,10 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerSDL)
     ENDIF(SDL_FOUND)
 
+    IF   (FOX_FOUND)
+        ADD_SUBDIRECTORY(osgviewerFOX)
+    ENDIF(FOX_FOUND)
+
     IF   (wxWidgets_FOUND)
         ADD_SUBDIRECTORY(osgviewerWX)
     ENDIF(wxWidgets_FOUND)

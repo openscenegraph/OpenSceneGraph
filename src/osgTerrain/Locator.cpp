@@ -134,7 +134,7 @@ bool EllipsoidLocator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& 
 
 CartesianLocator::CartesianLocator(double originX, double originY, double lengthX, double lengthY, double height, double heightScale)
 {
-    setExtents(originX, originY, lengthY, lengthY, height, heightScale);
+    setExtents(originX, originY, lengthX, lengthY, height, heightScale);
 }
 
 void CartesianLocator::setExtents(double originX, double originY, double lengthX, double lengthY, double height, double heightScale)

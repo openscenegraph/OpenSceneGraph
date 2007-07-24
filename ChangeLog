@@ -1,3 +1,236 @@
+2007-07-24 14:30 +0000 [r7155]  robert:
+
+	* Fixed warning
+
+2007-07-24 14:02 +0000 [r7154]  robert:
+
+	* From Alexandre Amalric, Fox example From Robert Osfield, CMake
+	  build support for FOX example
+
+2007-07-23 20:37 +0000 [r7152]  robert:
+
+	* From Michael Hartman, "Here is an update for the closing issue
+	  with the example osgviewerMFC where the MFC rendering thread
+	  would not exit before the application and the thread would be
+	  left running in the background and the user would have to use
+	  TaskManager to kill the process. Changes: MFC_OSG.cpp: Removed
+	  pixelformatdesciptor from the class initialization. Used
+	  setInheritedWindowPixelFormat to true so it will setup the
+	  pixelformat for the window. Added class destructor code.
+	  MFC_OSG.h: Removed the ref_ptr on osgViewer::Viewer
+	  MFC_OSG_MDIViewer.cpp: Changed the OnDestroy function code. Added
+	  WaitforSingleObject with thread handle for the MFC render handle.
+	  MFC_OSG_MDIView.h: Added class variable for MFC Render Thread
+	  Handle for use with the WaitforSingleObject. "
+
+2007-07-23 20:10 +0000 [r7150-7151]  robert:
+
+	* From Andy Skinner, addition of standard c library includes to
+	  avoid issues with using STLport on some platforms.
+
+	* Converted tabs to four spaces
+
+2007-07-23 18:19 +0000 [r7149]  robert:
+
+	* Updated wrappers
+
+2007-07-23 18:13 +0000 [r7148]  robert:
+
+	* From Mathias Froehlich, compile fix for OSX.
+
+2007-07-23 16:42 +0000 [r7147]  robert:
+
+	* Added FlushDeletedGLObjectsOperation.
+
+2007-07-22 20:33 +0000 [r7146]  robert:
+
+	* Added support for using the CompileContext to do GL object
+	  deletion.
+
+2007-07-21 20:11 +0000 [r7144]  robert:
+
+	* Converted usleep call to OpenThreads::Thread::microSleep() to
+	  avoid VS build problems
+
+2007-07-19 18:59 +0000 [r7143]  robert:
+
+	* Added reset it to set block correctly before use.
+
+2007-07-19 17:02 +0000 [r7142]  robert:
+
+	* Improved the filtering of changes to master file to prevent using
+	  reading from files that are still under going changes.
+
+2007-07-19 16:42 +0000 [r7141]  robert:
+
+	* Updated wrappers
+
+2007-07-19 15:24 +0000 [r7140]  robert:
+
+	* Added osg::RefBlockCount subclassed from the new
+	  OpenThreads::BlockCount and used it into osgterrain example
+
+2007-07-19 12:09 +0000 [r7138]  robert:
+
+	* Added support for using multiple load threads as a thread pool
+	  used by the MasterOperation
+
+2007-07-18 16:48 +0000 [r7137]  robert:
+
+	* Added setting of ThreadSafeRefUnref to true.
+
+2007-07-18 16:17 +0000 [r7135-7136]  robert:
+
+	* Refactored the viewer setup code to use a CustomViewer subclass
+	  of Viewer which wraps up the set up of compile contexts and
+	  merging of changes.
+
+	* Commented out debug messages
+
+2007-07-18 14:54 +0000 [r7134]  robert:
+
+	* Added call to State::initializeExtensionsProcs() to prevent
+	  crashes before these variables are initialized.
+
+2007-07-18 09:05 +0000 [r7133]  robert:
+
+	* Added missing export symbol.
+
+2007-07-17 17:36 +0000 [r7132]  robert:
+
+	* Added traverse method implementation into GeometryTechnique.
+
+2007-07-17 16:18 +0000 [r7131]  robert:
+
+	* Merged the new master operation/operation thread code with older
+	  standard terrain set up code.
+
+2007-07-17 10:54 +0000 [r7130]  robert:
+
+	* Fixed GraphcicsContext::getMaxContextID so it properly returns
+	  the current max contextID. Fixed the osgviewer's compile context
+	  code to account for the above fix. Added compile context support
+	  into osgterrain example.
+
+2007-07-17 09:15 +0000 [r7129]  robert:
+
+	* Fixed typo
+
+2007-07-16 21:39 +0000 [r7128]  robert:
+
+	* Work in progress on support for dynamically reading a master file
+	  in a background thread
+
+2007-07-16 17:40 +0000 [r7127]  robert:
+
+	* Added MasterOperation to do file querry and loading and
+	  background thread.
+
+2007-07-16 15:47 +0000 [r7126]  robert:
+
+	* Added custom colour support to TransferFunction setup.
+
+2007-07-16 15:13 +0000 [r7125]  robert:
+
+	* Improvements to the .terrain file support
+
+2007-07-16 12:37 +0000 [r7124]  robert:
+
+	* First steps at provide a .terrain file format to experiment with
+	  file definitions of terrain subgraphs
+
+2007-07-14 17:16 +0000 [r7123]  robert:
+
+	* Updated wrappers
+
+2007-07-14 17:07 +0000 [r7122]  robert:
+
+	* Added support into osg::RenderInfo for a stack of Cameras that
+	  allow querries of which camera is currently active to be querried
+	  from within the draw traversal.
+
+2007-07-14 09:17 +0000 [r7121]  robert:
+
+	* Changed BarrierOperation so that it isn't limited to jut working
+	  within GraphicsContexts.
+
+2007-07-13 19:24 +0000 [r7119-7120]  robert:
+
+	* Converted Operations to GraphicsOperations where apporpriate.
+
+	* Removed all the plugins BUILD_OSG_* options as these just get in
+	  the way of browsing standard CMake options.
+
+2007-07-13 17:25 +0000 [r7118]  robert:
+
+	* Introduce GraphicsOperation subclass from osg::Operation, and
+	  osgUtil::GLObjectOperation for compiling subgraphs.
+
+2007-07-13 11:49 +0000 [r7117]  robert:
+
+	* Updated wrappers
+
+2007-07-13 11:42 +0000 [r7115-7116]  robert:
+
+	* From Mathias Froehlich, "This patch removes the X11/Xmu/WinUtil.h
+	  header from GraphicsWindowX11.cpp. That one is not used and
+	  appears not to be present on every platform we compile on."
+
+	* From Mathias Froehlich, "This change makes the net plugin compile
+	  on hp-ux. It tries to unify some partly ugly ifdefs in the socket
+	  classes. The change is also tested on a solaris 8, irix 6.5 and
+	  suse 9.0 machine."
+
+2007-07-13 11:31 +0000 [r7114]  robert:
+
+	* Added setCurrentEventState method
+
+2007-07-13 11:22 +0000 [r7113]  robert:
+
+	* Updated wrappers
+
+2007-07-13 11:17 +0000 [r7112]  robert:
+
+	* Introduced new GUIEventAdatper singleton for sharing the current
+	  state between multiple GraphicsWindows, this singleton is
+	  accessable via GUIEventEvent::getAccumulatedEventState(). Added
+	  use of this new singleton in GraphicsWindow* implementations.
+	  Added WindowSizeHandler to osgkeyboard to help with debugging of
+	  event state between windows.
+
+2007-07-12 20:12 +0000 [r7110-7111]  robert:
+
+	* Removed redundent TerrainGeometry classes, and adding double
+	  buffer of internal data within GeometryTechinque in prep for
+	  support multi-threaded set up and rendering of terrain.
+
+	* Fixed spelling of cartesian.
+
+2007-07-12 16:37 +0000 [r7109]  robert:
+
+	* From Martin Lavery, updates to Xcode projects
+
+2007-07-12 15:54 +0000 [r7108]  robert:
+
+	* Renamed include/osg/OperationsThread to OperationThread. Created
+	  a new GraphicsThread subclass from OperationThread which allows
+	  the GraphicsContext specific calls to be moved out of the base
+	  OperationThread class. Updated the rest of the OSG to respect
+	  these changes.
+
+2007-07-12 12:15 +0000 [r7107]  robert:
+
+	* Renamed OperationsThread to OperationThread and add two way link
+	  between OperationQueue and OperationThread
+
+2007-07-12 09:03 +0000 [r7106]  robert:
+
+	* From Martin Lavery, Update to Packaging files for Xcode build
+
+2007-07-12 08:29 +0000 [r7105]  robert:
+
+	* Added better description of TransferFunction.
+
 2007-07-11 16:06 +0000 [r7102-7103]  robert:
 
 	* Updated wrappers

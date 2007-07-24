@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.0
+OpenSceneGraph Library 2.1.2
 
-266 Contributors:
+267 Contributors:
 
 Firstname Surname
 -----------------
@@ -16,9 +16,9 @@ Paul Martz
 Bob Kuehne
 Stephan Huber
 Ulrich Hertlein
+Martin Lavery
 Eric Sokolowsky
 Tree 
-Martin Lavery
 Trajce Nikolov
 Mike Wittman
 Luigi Calori
@@ -27,10 +27,11 @@ Tom Jolley
 Norman Vine
 Alberto Farre
 Roger James
+André Garneau
 Ruben Lopez
 Randall Hopper
-André Garneau
 Olaf Flebbe
+Mathias Fröhlich
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
@@ -39,7 +40,6 @@ Colin McDonald
 Chris Hanson
 Daniel Sjölie
 Per Fahlberg
-Mathias Fröhlich
 Joran Jessurun
 Frederic Marmond
 David Fries
@@ -57,6 +57,7 @@ David Spilling
 Ben Discoe
 Sasa Bistrovic
 Rainer Oder
+Paul Melis
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
@@ -68,9 +69,9 @@ Vivek Rajan
 Stephane Simon
 Sean Spicer
 Ravi Mathur
-Paul Melis
 Nikolaus Hanekamp
 Michael Platings
+Michael Hartman
 Loic Dachary
 Joseph Steel
 David Guthrie
@@ -82,7 +83,6 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
-Michael Hartman
 Leandro Motta Barros
 Laurens Voerman
 John Shue
@@ -90,6 +90,7 @@ Jean-Sebastien Guay
 Carlo Camporesi
 Bruce Clay
 Brad Christiansen
+Andy Skinner
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
@@ -110,7 +111,6 @@ Domenico Mangieri
 Daniel Larimer
 Charles Cole
 Bryan Thrall
-Andy Skinner
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
@@ -264,6 +264,7 @@ Axel Volley
 Andrew Reyonolds
 Andreas Jochens
 Allen Bierbaum
+Alexandre Amalric
 Alberto Jaspe
 Alan Purvis
 Alan Ott

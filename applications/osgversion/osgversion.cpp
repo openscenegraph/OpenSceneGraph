@@ -198,6 +198,8 @@ bool validName(const std::string& first)
     if (first=="CullVistor") return false;
     if (first=="SimpleViewer") return false;
     if (first=="TexMat(Matrix") return false;
+    if (first=="GraphicsWindowX11") return false;
+    if (first=="OperationThread") return false;
     return true;
 }
 

@@ -516,9 +516,12 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
 
             img = osgDB::readImageFile( filename );
 
+            osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
+            
+            //Moved this below the osg::notify - Parag, 24/7/2007
             delete [] path;
 
-            osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
+            
         }
         else
         {

@@ -960,6 +960,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
 : _hwnd(0),
   _hdc(0),
   _hglrc(0),
+  _currentCursor(0),
   _windowProcedure(0),
   _timeOfLastCheckEvents(-1.0),
   _screenOriginX(0),

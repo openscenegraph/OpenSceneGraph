@@ -21,4 +21,10 @@ namespace osgIntrospection
         // Avoid trying to register void & / const void &, which are
         // illegal types.
     }
+    template<>
+    void Reflector<void>::init_void_converter()
+    {
+        // Avoid 
+    }
+
 }

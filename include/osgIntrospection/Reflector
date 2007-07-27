@@ -25,6 +25,8 @@
 #include <osgIntrospection/ReaderWriter>
 #include <osgIntrospection/TypedConstructorInfo>
 #include <osgIntrospection/Comparator>
+#include <osgIntrospection/ConverterProxy>
+#include <osgIntrospection/Converter>
 #include <osgIntrospection/Utility>
 
 #include <string>
@@ -79,7 +81,7 @@ namespace osgIntrospection
 
         /// Declares a new base type for the current type.
         void addBaseType(const Type& type);
-        
+
         /// Sets the comparator object for the current type.
         void setComparator(const Comparator* cmp);
 
@@ -116,7 +118,7 @@ namespace osgIntrospection
 
         /// Sets the current type's declaring file.
         void setDeclaringFile(const std::string& file) const;
-        
+
     private:
         struct PtrConstructor: ConstructorInfo
         {
@@ -127,19 +129,24 @@ namespace osgIntrospection
 
             Value createInstance(ValueList& ) const { T* x = 0; return x; }
         };
-        
+
         struct ConstPtrConstructor: ConstructorInfo
         {
             ConstPtrConstructor(const Type* pt)
             :    ConstructorInfo(*pt, ParameterInfoList())
             {
             }
-            
+
             Value createInstance(ValueList& ) const { const T *x = 0; return x; }
         };
-        
+
+
+
+
+
         void init();
         void init_reference_types();
+        void init_void_converter();
         static std::string purify(const std::string& s);
         static void split_qualified_name(const std::string& q, std::string& n, std::string& ns);
 
@@ -297,14 +304,14 @@ namespace osgIntrospection
     struct StdVectorReflector: ValueReflector<T>
     {
         typedef typename ValueReflector<T>::instance_creator_type instance_creator_type;
-    
+
         struct Getter: PropertyGetter
         {
             virtual Value get(Value& instance, int i) const
             {
                 return getInstance<T>(instance).at(i);
             }
-            
+
             virtual Value get(const Value& instance, int i) const
             {
                 return getInstance<T>(instance).at(i);
@@ -688,7 +695,7 @@ namespace osgIntrospection
                 T& ctr = getInstance<T>(instance);
 
                 switch (_i)
-                {                
+                {
                 case 0: ctr.first = variant_cast<const typename T::first_type& >(v); break;
                 case 1: ctr.second = variant_cast<const typename T::second_type& >(v); break;
                 }
@@ -700,7 +707,7 @@ namespace osgIntrospection
         StdPairReflector(const std::string& name): ValueReflector<T>(name)
         {
             addConstructor(new TypedConstructorInfo0<T, instance_creator_type>(ParameterInfoList()));
-            
+
             PropertyInfo* pi1 = new PropertyInfo(typeof(T), typeof(typename T::first_type), "first", 0, 0);
             pi1->addAttribute(new CustomPropertyGetAttribute(new Accessor(0)));
             pi1->addAttribute(new CustomPropertySetAttribute(new Accessor(0)));
@@ -786,10 +793,11 @@ namespace osgIntrospection
         }
 
         init_reference_types();
+        init_void_converter();
 
         _type->_is_defined = true;
     }
-    
+
     template<typename T>
     void Reflector<T>::init_reference_types()
     {
@@ -814,13 +822,32 @@ namespace osgIntrospection
             cptype->_is_defined = true;
         }
     }
-    
+
     template<>
     void Reflector<void>::init_reference_types();
-    
+
+
+    template<typename T>
+    void Reflector<T>::init_void_converter()
+    {
+        const osgIntrospection::Type& st = typeof(T*);
+        const osgIntrospection::Type& cst = typeof(const T*);
+        const osgIntrospection::Type& dt = typeof(void*);
+        const osgIntrospection::Type& cdt = typeof(const void*);
+        osgIntrospection::ConverterProxy cp1(st, dt, new osgIntrospection::ReinterpretConverter<T* , void*>);
+        osgIntrospection::ConverterProxy cp2(cst, cdt, new osgIntrospection::ReinterpretConverter<const T* , const void*>);
+        osgIntrospection::ConverterProxy cp1c(st, cdt, new osgIntrospection::ReinterpretConverter<T* , const void*>);
+        osgIntrospection::ConverterProxy cp3(dt, st, new osgIntrospection::ReinterpretConverter<void*, T* >);
+        osgIntrospection::ConverterProxy cp4(cdt, cst, new osgIntrospection::ReinterpretConverter<const void*, const T* >);
+        osgIntrospection::ConverterProxy cp3c(dt, cst, new osgIntrospection::ReinterpretConverter<void*, const T* >);
+    }
+
+    template<>
+    void Reflector<void>::init_void_converter();
+
     template<typename T>
     std::string Reflector<T>::purify(const std::string& s)
-    {        
+    {
         std::string r(s);
         while (true)
         {
@@ -830,7 +857,7 @@ namespace osgIntrospection
         };
         return r;
     }
-    
+
     template<typename T>
     void Reflector<T>::split_qualified_name(const std::string& q, std::string& n, std::string& ns)
     {
@@ -880,7 +907,7 @@ namespace osgIntrospection
             if (mi->overrides(*i))
                 return *i;
         }
-        
+
         _temp_methods.push_back(mi);
         _type->_methods.push_back(mi);
         return mi;
@@ -894,7 +921,7 @@ namespace osgIntrospection
             if (mi->overrides(*i))
                 return *i;
         }
-        
+
         _temp_protected_methods.push_back(mi);
         _type->_protected_methods.push_back(mi);
         return mi;
@@ -958,7 +985,7 @@ namespace osgIntrospection
     {
         _type->_rw = rw;
     }
-    
+
     template<typename T>
     void Reflector<T>::setComparator(const Comparator* cmp)
     {

@@ -269,6 +269,7 @@ Drawable::Drawable(const Drawable& drawable,const CopyOp& copyop):
     _parents(), // leave empty as parentList is managed by Geode
     _stateset(copyop(drawable._stateset.get())),
     _initialBound(drawable._initialBound),
+    _computeBoundCallback(drawable._computeBoundCallback),
     _boundingBox(drawable._boundingBox),
     _boundingBoxComputed(drawable._boundingBoxComputed),
     _shape(copyop(drawable._shape.get())),

@@ -33,7 +33,6 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
     OSStatus            result = eventNotHandledErr; /* report failure by default */
     
     
-    result = CallNextEventHandler (nextHandler, event);
 
     GraphicsWindowCarbon* w = (GraphicsWindowCarbon*)userData;
     if (!w)
@@ -77,8 +76,9 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
                         result = noErr;
                         break;
                     
-                    case kEventWindowClosed:
+                    case kEventWindowClose:
                         w->requestClose();
+                        result = noErr;
                         break;
          
                     default: 
@@ -88,6 +88,10 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
         default:
             break;
     }
+    
+    if (result == eventNotHandledErr)
+        result = CallNextEventHandler (nextHandler, event);
+        
     return result;
 }
 
@@ -570,7 +574,7 @@ void GraphicsWindowCarbon::installEventHandler() {
     // register window event handler to receive resize-events
     EventTypeSpec   windEventList[] = {
         { kEventClassWindow, kEventWindowBoundsChanged},
-        { kEventClassWindow, kEventWindowClosed},
+        { kEventClassWindow, kEventWindowClose},
         
         {kEventClassMouse, kEventMouseDown},
         {kEventClassMouse, kEventMouseUp},
@@ -730,6 +734,7 @@ bool GraphicsWindowCarbon::releaseContextImplementation()
 
 void GraphicsWindowCarbon::closeImplementation()
 {
+    // osg::notify(osg::INFO) << "GraphicsWindowCarbon::closeImplementation" << std::endl;
     _valid = false;
     _realized = false;
     
@@ -1090,7 +1095,7 @@ void GraphicsWindowCarbon::checkEvents()
         ReleaseEvent(theEvent);        
     }  
     if (_closeRequested)
-        close(true);
+        getEventQueue()->closeWindow();
         
     if (s_quit_requested) {
         getEventQueue()->quitApplication();

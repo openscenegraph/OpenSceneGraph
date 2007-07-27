@@ -2017,6 +2017,7 @@ void Viewer::eventTraversal()
                         if (wasThreading) stopThreading();
                         
                         gw->close();
+                        _currentContext = NULL; 
                         
                         if (wasThreading) startThreading();
                         

@@ -11,6 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include <osg/ApplicationUsage>
 #include <osg/Math>
 #include <osg/ref_ptr>

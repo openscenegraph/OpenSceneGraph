@@ -13,6 +13,7 @@
 /* file:   src/osg/Uniform.cpp
  * author: Mike Weiblen 2006-05-15
 */
+#include <string.h>
 
 #include <osg/Notify>
 #include <osg/Uniform>

@@ -12,6 +12,7 @@
 */
 #include <osg/Version>
 #include <string>
+#include <stdio.h>
 
 extern "C" {
 

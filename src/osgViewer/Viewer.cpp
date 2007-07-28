@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdio.h>
+
 #include <osg/GLExtensions>
 #include <osg/DeleteHandler>
 #include <osgUtil/Optimizer>

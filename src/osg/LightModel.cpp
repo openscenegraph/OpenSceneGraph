@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+#include <string.h>
 #include <string>
 #include <osg/GL>
 #include <osg/LightModel>

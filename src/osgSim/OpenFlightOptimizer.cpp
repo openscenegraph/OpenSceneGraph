@@ -4,6 +4,8 @@
 //  Copyright (C) 2005-2006  Brede Johansen
 //
 
+#include <stdlib.h>
+
 #include <osgSim/OpenFlightOptimizer>
 
 #include <osg/Notify>

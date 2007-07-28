@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdio.h>
+
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osg/PolygonMode>

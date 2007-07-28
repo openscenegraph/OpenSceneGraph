@@ -12,6 +12,7 @@
 */
 
 #include <fstream>
+#include <stdio.h>
 
 #include "obj.h"
 

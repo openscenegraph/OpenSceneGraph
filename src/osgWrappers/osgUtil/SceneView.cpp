@@ -121,11 +121,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __void__setDefaults__unsigned_int,
 	          "Set scene view to use default global state, light, camera and render visitor. ",
 	          "");
-	I_Method1(void, setCamera, IN, osg::Camera *, camera,
-	          Properties::NON_VIRTUAL,
-	          __void__setCamera__osg_Camera_P1,
-	          "Set the camera used to represent the camera view of this SceneView. ",
-	          "");
+	I_MethodWithDefaults2(void, setCamera, IN, osg::Camera *, camera, , IN, bool, assumeOwnershipOfCamera, true,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setCamera__osg_Camera_P1__bool,
+	                      "Set the camera used to represent the camera view of this SceneView. ",
+	                      "");
 	I_Method0(osg::Camera *, getCamera,
 	          Properties::NON_VIRTUAL,
 	          __osg_Camera_P1__getCamera,
@@ -784,7 +784,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	                 __void__setActiveUniforms__int);
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
-	                 __void__setCamera__osg_Camera_P1);
+	                 0);
 	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
 	                 __C5_osg_Vec4_R1__getClearColor, 
 	                 __void__setClearColor__C5_osg_Vec4_R1);

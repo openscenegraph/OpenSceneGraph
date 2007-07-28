@@ -476,19 +476,19 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_GraphicsContext_P1__getGraphicsContext,
 	          "Get the const GraphicsContext. ",
 	          "");
-	I_Method2(void, setRenderingCache, IN, unsigned int, contextID, IN, osg::Object *, rc,
+	I_Method1(void, setRenderer, IN, osg::Object *, rc,
 	          Properties::NON_VIRTUAL,
-	          __void__setRenderingCache__unsigned_int__osg_Object_P1,
+	          __void__setRenderer__osg_Object_P1,
 	          "Set the Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
-	I_Method1(osg::Object *, getRenderingCache, IN, unsigned int, contextID,
+	I_Method0(osg::Object *, getRenderer,
 	          Properties::NON_VIRTUAL,
-	          __osg_Object_P1__getRenderingCache__unsigned_int,
+	          __osg_Object_P1__getRenderer,
 	          "Get the Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
-	I_Method1(const osg::Object *, getRenderingCache, IN, unsigned int, contextID,
+	I_Method0(const osg::Object *, getRenderer,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Object_P1__getRenderingCache__unsigned_int,
+	          __C5_osg_Object_P1__getRenderer,
 	          "Get the const Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
 	I_Method1(void, setPreDrawCallback, IN, osg::Camera::DrawCallback *, cb,
@@ -606,10 +606,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::RenderTargetImplementation, RenderTargetImplementation, 
 	                 __RenderTargetImplementation__getRenderTargetImplementation, 
 	                 __void__setRenderTargetImplementation__RenderTargetImplementation);
-	I_IndexedProperty(osg::Object *, RenderingCache, 
-	                  __osg_Object_P1__getRenderingCache__unsigned_int, 
-	                  __void__setRenderingCache__unsigned_int__osg_Object_P1, 
-	                  0);
+	I_SimpleProperty(osg::Object *, Renderer, 
+	                 __osg_Object_P1__getRenderer, 
+	                 __void__setRenderer__osg_Object_P1);
 	I_SimpleProperty(osg::Stats *, Stats, 
 	                 __osg_Stats_P1__getStats, 
 	                 __void__setStats__osg_Stats_P1);

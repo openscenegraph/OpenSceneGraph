@@ -75,7 +75,7 @@ class FLTReaderWriter : public ReaderWriter
 
         virtual bool acceptsExtension(const std::string& extension) const
         {
-            return equalCaseInsensitive(extension,"flt");
+            return equalCaseInsensitive(extension,"flt") || extension.empty();
         }
 
         virtual ReadResult readObject(const std::string& file, const Options* options) const

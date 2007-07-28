@@ -1190,11 +1190,11 @@ void CullVisitor::apply(osg::Camera& camera)
 
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderingCache(contextID));
+        osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderer());
         if (!rsCache)
         {
             rsCache = new osgUtil::RenderStageCache;
-            camera.setRenderingCache(contextID, rsCache.get());
+            camera.setRenderer(rsCache.get());
         }
         
         osg::ref_ptr<osgUtil::RenderStage> rtts = rsCache->getRenderStage(this);

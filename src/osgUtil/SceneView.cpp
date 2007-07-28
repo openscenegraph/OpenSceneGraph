@@ -95,7 +95,7 @@ SceneView::SceneView(DisplaySettings* ds)
     
     _prioritizeTextures = false;
     
-    _camera = new Camera;
+    setCamera(new Camera);
     _camera->setViewport(new Viewport);
     _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
     
@@ -132,6 +132,7 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     _prioritizeTextures = rhs._prioritizeTextures;
     
     _camera = rhs._camera;
+    _cameraWithOwnership = rhs._cameraWithOwnership;
     
     _initCalled = rhs._initCalled;
 
@@ -231,7 +232,7 @@ void SceneView::setDefaults(unsigned int options)
     _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
 }
 
-void SceneView::setCamera(osg::Camera* camera)
+void SceneView::setCamera(osg::Camera* camera, bool assumeOwnershipOfCamera)
 {
     if (camera)
     {
@@ -240,6 +241,15 @@ void SceneView::setCamera(osg::Camera* camera)
     else
     {
         osg::notify(osg::NOTICE)<<"Warning: attempt to assign a NULL camera to SceneView not permitted."<<std::endl;
+    }
+    
+    if (assumeOwnershipOfCamera)
+    {
+        _cameraWithOwnership = _camera.get();
+    }
+    else
+    {
+        _cameraWithOwnership = 0;
     }
 }
 

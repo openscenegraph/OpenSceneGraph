@@ -61,7 +61,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         virtual void setDefaults(unsigned int options);
 
         /** Set the camera used to represent the camera view of this SceneView.*/
-        void setCamera(osg::Camera* camera);
+        void setCamera(osg::Camera* camera, bool assumeOwnershipOfCamera = true);
 
         /** Get the camera used to represent the camera view of this SceneView.*/
         osg::Camera* getCamera() { return _camera.get(); }
@@ -502,7 +502,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         
         osg::ref_ptr<osg::FrameStamp>               _frameStamp;
         
-        osg::ref_ptr<osg::Camera>                   _camera;
+        osg::observer_ptr<osg::Camera>              _camera;
+        osg::ref_ptr<osg::Camera>                   _cameraWithOwnership;
         
         osg::ref_ptr<osg::StateSet>                 _globalStateSet;
         osg::ref_ptr<osg::Light>                    _light;

@@ -1,3 +1,80 @@
+2007-07-30 15:25 +0000 [r7172]  robert:
+
+	* Updated version number for 2.1.3 dev release
+
+2007-07-30 10:52 +0000 [r7171]  robert:
+
+	* Ported across Viewer's to use osgUtil::GLObjectOperation, added
+	  second option in GLObjectOperation to handle cases when no
+	  subgraph is registered, in these case the code now compile all
+	  Camera subgraphs.
+
+2007-07-28 10:44 +0000 [r7170]  robert:
+
+	* From Andy Skinner, adding C includes to avoid issues when mixing
+	  C and C++ standard includes
+
+2007-07-28 10:28 +0000 [r7169]  robert:
+
+	* Introduce Camera::s/getRenderer().
+
+2007-07-27 17:16 +0000 [r7167-7168]  robert:
+
+	* From David Callu, "After the mail of Emmanuel Roche to convert a
+	  void * in a known pointer (for example osg::Geode *), I has
+	  searched an elegant way to introduce this feature. I just add
+	  ReinterpretCastConverter in the Reflector to convert void* in T*
+	  and T* in void* files joint :
+	  OpenSceneGraph/include/osgIntrospection/Reflector // modified
+	  file OpenSceneGraph/src/osgIntrospection/Reflector.cpp //
+	  modified file "
+
+	* From Bryan Thrall, added copying of boundingbox callback to copy
+	  constructor.
+
+2007-07-27 17:07 +0000 [r7166]  robert:
+
+	* From Stephan Huber, added reset of _currentContext when graphics
+	  context is closed.
+
+2007-07-27 16:48 +0000 [r7165]  robert:
+
+	* From Stephan Huber, "attached you'll find a fix for the dead
+	  locks when closing a window under OS X."
+
+2007-07-27 15:26 +0000 [r7164]  robert:
+
+	* Updated svn::externals
+
+2007-07-26 19:31 +0000 [r7163]  robert:
+
+	* From Thibault Genessay, "Attached is an unitialized variable fix
+	  I spotted with Purify. The _currentCursor (of type HCURSOR)
+	  member of the graphics window was not properly initialized,
+	  causing potential problems if setCursor() was called before
+	  anything else set it."
+
+2007-07-25 10:12 +0000 [r7162]  robert:
+
+	* From Parag Chaudhur, "In daeRMaterials.cpp in the COLLADA plugin,
+	  in the processTexture function, Lines 519-522 of the source file:
+	  The "delete [] path" appears before the "osg::notify", causing
+	  the data pointed to by "filename" to be deleted before access
+	  causing an access violation. ... I have put a comment on line 521
+	  where I have moved the "delete []path" below. "
+
+2007-07-24 14:52 +0000 [r7158]  robert:
+
+	* Updated AUTHORS
+
+2007-07-24 14:47 +0000 [r7157]  robert:
+
+	* Updated ChangeLog
+
+2007-07-24 14:43 +0000 [r7156]  robert:
+
+	* Updated version for dev release
+
 2007-07-24 14:30 +0000 [r7155]  robert:
 
 	* Fixed warning

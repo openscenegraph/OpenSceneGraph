@@ -139,6 +139,12 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     }
 }
 
+GLObjectsOperation::GLObjectsOperation(GLObjectsVisitor::Mode mode):
+    osg::GraphicsOperation("GLObjectOperation",false),
+    _mode(mode)
+{
+}
+
 GLObjectsOperation::GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mode mode):
     osg::GraphicsOperation("GLObjectOperation",false),
     _subgraph(subgraph),
@@ -150,9 +156,23 @@ void GLObjectsOperation::operator () (osg::GraphicsContext* context)
 {
     GLObjectsVisitor glObjectsVisitor(_mode);
     
+    context->getState()->initializeExtensionProcs();
+
     glObjectsVisitor.setState(context->getState());
     
     // osg::notify(osg::NOTICE)<<"GLObjectsOperation::before <<<<<<<<<<<"<<std::endl;
-    _subgraph->accept(glObjectsVisitor);
+    if (_subgraph.valid())
+    {
+        _subgraph->accept(glObjectsVisitor);
+    }
+    else
+    {
+        for(osg::GraphicsContext::Cameras::iterator itr = context->getCameras().begin();
+            itr != context->getCameras().end();
+            ++itr)
+        {
+            (*itr)->accept(glObjectsVisitor);
+        }
+    }
     // osg::notify(osg::NOTICE)<<"GLObjectsOperation::after >>>>>>>>>>> "<<std::endl;
 }

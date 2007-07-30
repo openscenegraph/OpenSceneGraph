@@ -117,6 +117,8 @@ class OSGUTIL_EXPORT GLObjectsOperation : public osg::GraphicsOperation
 {
     public:
 
+        GLObjectsOperation(GLObjectsVisitor::Mode mode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
+
         GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mode mode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
 
         virtual void operator () (osg::GraphicsContext* context);

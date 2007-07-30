@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.2
+OpenSceneGraph Library 2.1.3
 
-267 Contributors:
+268 Contributors:
 
 Firstname Surname
 -----------------
@@ -41,9 +41,9 @@ Chris Hanson
 Daniel Sjölie
 Per Fahlberg
 Joran Jessurun
+David Callu
 Frederic Marmond
 David Fries
-David Callu
 Boris Bralo
 Yefei He
 Sondra Iverson
@@ -76,6 +76,7 @@ Loic Dachary
 Joseph Steel
 David Guthrie
 Corbin Holtz
+Andy Skinner
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -88,9 +89,9 @@ Laurens Voerman
 John Shue
 Jean-Sebastien Guay
 Carlo Camporesi
+Bryan Thrall
 Bruce Clay
 Brad Christiansen
-Andy Skinner
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
@@ -110,13 +111,13 @@ Donn Mielcarek
 Domenico Mangieri
 Daniel Larimer
 Charles Cole
-Bryan Thrall
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
 Tugkan Calapoglu
 Tony Horrobin
 Tim Daoust
+Thibault Genessay
 Terrex 
 Steve Lunsford
 Stephan Eilemann
@@ -169,7 +170,6 @@ Tyge
 Troy Yee
 Tino Schwarze
 Thom Carlo
-Thibault Genessay
 Tery Welsh
 Tanguy Fautré
 Sylvan Marie
@@ -187,6 +187,7 @@ Radu Mihai
 Qing Shen
 Philipp Siemoleit
 Paul Fredrikson
+Parag Chaudhur
 Orhun Birsoy
 Nicolas Brodu
 Nathan Cournia

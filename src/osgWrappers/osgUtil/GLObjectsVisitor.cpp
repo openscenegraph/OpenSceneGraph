@@ -30,6 +30,11 @@
 BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsOperation)
 	I_DeclaringFile("osgUtil/GLObjectsVisitor");
 	I_BaseType(osg::GraphicsOperation);
+	I_ConstructorWithDefaults1(IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES,
+	                           Properties::NON_EXPLICIT,
+	                           ____GLObjectsOperation__GLObjectsVisitor_Mode,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, osg::Node *, subgraph, , IN, osgUtil::GLObjectsVisitor::Mode, mode, osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES,
 	                           ____GLObjectsOperation__osg_Node_P1__GLObjectsVisitor_Mode,
 	                           "",

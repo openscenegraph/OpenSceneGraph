@@ -1029,37 +1029,6 @@ void Viewer::stopThreading()
     osg::notify(osg::INFO)<<"Viewer::stopThreading() - stopped threading."<<std::endl;
 }
 
-// Compile operation, that compile OpenGL objects.
-struct ViewerCompileOperation : public osg::GraphicsOperation
-{
-    ViewerCompileOperation(osg::Node* scene):
-        osg::GraphicsOperation("Compile",false),
-        _scene(scene)
-    {
-    }
-    
-    virtual void operator () (osg::GraphicsContext* context)
-    {
-        // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
-        // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-
-        // context->makeCurrent();
-        
-        context->getState()->initializeExtensionProcs();
-
-        osgUtil::GLObjectsVisitor compileVisitor;
-        compileVisitor.setState(context->getState());
-
-        // do the compile traversal
-        if (_scene.valid()) _scene->accept(compileVisitor);
-
-        // osg::notify(osg::NOTICE)<<"Done Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    }
-    
-    osg::ref_ptr<osg::Node> _scene;
-};
-
-
 // Draw operation, that does a draw on the scene graph.
 struct ViewerRunOperations : public osg::GraphicsOperation
 {
@@ -1265,7 +1234,7 @@ void Viewer::startThreading()
         if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
         threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
 
-        gc->getGraphicsThread()->add(new ViewerCompileOperation(getSceneData()));
+        gc->getGraphicsThread()->add(new osgUtil::GLObjectsOperation());
 
         // add the startRenderingBarrier
         if (_threadingModel==CullDrawThreadPerContext && _startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());

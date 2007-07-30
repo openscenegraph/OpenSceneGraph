@@ -254,39 +254,6 @@ void CompositeViewer::stopThreading()
     _numThreadsOnBarrier = 0;
 }
 
-// Compile operation, that compile OpenGL objects.
-struct CompositeViewerCompileOperation : public osg::Operation
-{
-    CompositeViewerCompileOperation():
-        osg::Operation("Compile",false)
-    {
-    }
-    
-    virtual void operator () (osg::Object* object)
-    {
-        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
-        if (!context) return;
-
-        // OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
-        // osg::notify(osg::NOTICE)<<"Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-
-        context->getState()->initializeExtensionProcs();
-
-        osgUtil::GLObjectsVisitor compileVisitor;
-        compileVisitor.setState(context->getState());
-        
-        for(osg::GraphicsContext::Cameras::iterator itr = context->getCameras().begin();
-            itr != context->getCameras().end();
-            ++itr)
-        {
-            (*itr)->accept(compileVisitor);
-        }
-
-        // osg::notify(osg::NOTICE)<<"Done Compile "<<context<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    }
-};
-
-
 // Draw operation, that does a draw on the scene graph.
 struct CompositeViewerRunOperations : public osg::Operation
 {
@@ -400,7 +367,7 @@ void CompositeViewer::startThreading()
 
         if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
 
-        gc->getGraphicsThread()->add(new CompositeViewerCompileOperation());
+        gc->getGraphicsThread()->add(new osgUtil::GLObjectsOperation());
 
         // add the startRenderingBarrier
         gc->getGraphicsThread()->add(_startRenderingBarrier.get());

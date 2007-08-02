@@ -1649,6 +1649,9 @@
 		5B05E7280C17EE2800B0EAD8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1912D0C15F6B3002CF5BC /* main.m */; };
 		5B05E7AD0C18079100B0EAD8 /* ViewerCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B653DC70C1745FF002B54A3 /* ViewerCocoa.h */; };
 		5B05E7AE0C18079100B0EAD8 /* ViewerCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */; };
+		5B724E770C61FF19001377CD /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B724E760C61FF18001377CD /* Renderer.cpp */; };
+		5B724E790C61FF39001377CD /* Renderer in Resources */ = {isa = PBXBuildFile; fileRef = 5B724E780C61FF39001377CD /* Renderer */; };
+		5B724E7A0C61FF5A001377CD /* Renderer in Headers */ = {isa = PBXBuildFile; fileRef = 5B724E780C61FF39001377CD /* Renderer */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BC1910B0C15F462002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
 		5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910D0C15F48C002CF5BC /* Hint.cpp */; };
 		5BC1910F0C15F4AD002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
@@ -1862,7 +1865,7 @@
 		5BC2F7FB0C44C9CF00671A68 /* VisibilityGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F73F0C44C9CE00671A68 /* VisibilityGroup.h */; };
 		5BC2F8040C468B0500671A68 /* OperationThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F8030C468B0500671A68 /* OperationThread.cpp */; };
 		5BC2F8050C468B0500671A68 /* OperationThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F8030C468B0500671A68 /* OperationThread.cpp */; };
-		5BC2F8230C468B3100671A68 /* OperationThread in Resources */ = {isa = PBXBuildFile; fileRef = 5BC2F8220C468B3100671A68 /* OperationThread */; };
+		5BC2F8230C468B3100671A68 /* OperationThread in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F8220C468B3100671A68 /* OperationThread */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BDF58F80C1FF8C4008DDEC0 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		5BDF58F90C1FF8C4008DDEC0 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		5BDF59070C1FF9BE008DDEC0 /* ReaderWriterOsgShadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BDF59010C1FF9BD008DDEC0 /* ReaderWriterOsgShadow.cpp */; };
@@ -4251,7 +4254,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BE11876905D75C2700EB53E5 /* osgText */;
+			remoteGlobalIDString = BE11876905D75C2700EB53E5;
 			remoteInfo = osgText;
 		};
 		5BDF58F30C1FF8C4008DDEC0 /* PBXContainerItemProxy */ = {
@@ -5295,7 +5298,7 @@
 		00A14B7C084D6284000150AD /* IO_ParticleEffect.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IO_ParticleEffect.cpp; path = ../../src/osgPlugins/osgParticle/IO_ParticleEffect.cpp; sourceTree = SOURCE_ROOT; };
 		00A14B7D084D6284000150AD /* IO_SmokeEffect.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IO_SmokeEffect.cpp; path = ../../src/osgPlugins/osgParticle/IO_SmokeEffect.cpp; sourceTree = SOURCE_ROOT; };
 		00A14B84084D6293000150AD /* IO_Impostor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IO_Impostor.cpp; path = ../../src/osgPlugins/osgSim/IO_Impostor.cpp; sourceTree = SOURCE_ROOT; };
-		00A14C12084E52BF000150AD /* osgarchive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgarchive.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00A14C12084E52BF000150AD /* osgarchive.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = osgarchive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14C59084E5674000150AD /* osgarchive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgarchive.cpp; path = ../../applications/osgarchive/osgarchive.cpp; sourceTree = SOURCE_ROOT; };
 		00A14C84084E573B000150AD /* OrientationConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OrientationConverter.cpp; path = ../../applications/osgconv/OrientationConverter.cpp; sourceTree = SOURCE_ROOT; };
 		00A14C85084E573C000150AD /* OrientationConverter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OrientationConverter.h; path = ../../applications/osgconv/OrientationConverter.h; sourceTree = SOURCE_ROOT; };
@@ -5452,6 +5455,8 @@
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		5B653DC70C1745FF002B54A3 /* ViewerCocoa.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ViewerCocoa.h; sourceTree = "<group>"; };
 		5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewerCocoa.mm; sourceTree = "<group>"; };
+		5B724E760C61FF18001377CD /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
+		5B724E780C61FF39001377CD /* Renderer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Renderer; sourceTree = "<group>"; };
 		5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerEventHandlers.cpp; sourceTree = "<group>"; };
 		5BC1910D0C15F48C002CF5BC /* Hint.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Hint.cpp; sourceTree = "<group>"; };
 		5BC191100C15F4D4002CF5BC /* Hint */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Hint; sourceTree = "<group>"; };
@@ -9783,6 +9788,7 @@
 		00FB210F0B015F4A0052DD79 /* osgViewer */ = {
 			isa = PBXGroup;
 			children = (
+				5B724E760C61FF18001377CD /* Renderer.cpp */,
 				5BC2F6740C44C7E100671A68 /* PixelBufferCarbon.cpp */,
 				5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */,
 				D4C6F0310B830A1E0052E667 /* HelpHandler.cpp */,
@@ -9804,6 +9810,7 @@
 				5BC2F6760C44C82700671A68 /* api */,
 				5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */,
 				D48EC6550B4EBFCD000E05A4 /* CompositeViewer */,
+				5B724E780C61FF39001377CD /* Renderer */,
 				D48EC6570B4EBFCD000E05A4 /* Scene */,
 				D48EC6580B4EBFCD000E05A4 /* View */,
 				D48EC6590B4EBFCD000E05A4 /* Viewer */,
@@ -12135,6 +12142,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B724E7A0C61FF5A001377CD /* Renderer in Headers */,
 				5BC191130C15F4FC002CF5BC /* ViewerEventHandlers in Headers */,
 				D48EC65A0B4EBFCE000E05A4 /* CompositeViewer in Headers */,
 				D48EC65C0B4EBFCE000E05A4 /* Scene in Headers */,
@@ -12180,6 +12188,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BC2F8230C468B3100671A68 /* OperationThread in Headers */,
 				0037A0A50C18DA690089AA1C /* TemplatePrimitiveFunctor in Headers */,
 				5BC191110C15F4D5002CF5BC /* Hint in Headers */,
 				00A79F290BE6868500F7C39E /* ComputeBoundsVisitor in Headers */,
@@ -16036,6 +16045,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC2F67D0C44C88400671A68 /* PixelBufferCarbon in Resources */,
+				5B724E790C61FF39001377CD /* Renderer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16051,7 +16061,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC2F62F0C441CA200671A68 /* GLObjects in Resources */,
-				5BC2F8230C468B3100671A68 /* OperationThread in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17662,6 +17671,7 @@
 				D4C6F0340B830A1E0052E667 /* StatsHandler.cpp in Sources */,
 				5BC1910F0C15F4AD002CF5BC /* ViewerEventHandlers.cpp in Sources */,
 				5BC2F6750C44C7E100671A68 /* PixelBufferCarbon.cpp in Sources */,
+				5B724E770C61FF19001377CD /* Renderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

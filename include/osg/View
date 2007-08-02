@@ -127,10 +127,13 @@ class OSG_EXPORT View : public osg::Object
         
         void updateSlave(unsigned int i);
 
+
     protected :
     
         virtual ~View();
         
+        virtual osg::GraphicsOperation* createRenderer(osg::Camera* camera) {}
+
         osg::ref_ptr<osg::Stats>    _stats;
         
         LightingMode                _lightingMode;

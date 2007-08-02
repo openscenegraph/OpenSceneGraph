@@ -373,13 +373,23 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         
         
         /** Set the Rendering object that is used to implement rendering of the subgraph.*/
-        void setRenderer(osg::Object* rc) { _renderer = rc; }
+        void setRenderer(osg::GraphicsOperation* rc) { _renderer = rc; }
 
         /** Get the Rendering object that is used to implement rendering of the subgraph.*/
-        osg::Object* getRenderer() { return _renderer.get(); }
+        osg::GraphicsOperation* getRenderer() { return _renderer.get(); }
 
         /** Get the const Rendering object that is used to implement rendering of the subgraph.*/
-        const osg::Object* getRenderer() const { return _renderer.get(); }
+        const osg::GraphicsOperation* getRenderer() const { return _renderer.get(); }
+        
+
+        /** Set the Rendering cache that is used for cached objects associated with rendering of subgraphs.*/
+        void setRenderingCache(osg::Object* rc) { _renderingCache = rc; }
+
+        /** Get the Rendering cache that is used for cached objects associated with rendering of subgraphs.*/
+        osg::Object* getRenderingCache() { return _renderingCache.get(); }
+
+        /** Get the const Rendering cache that is used for cached objects associated with rendering of subgraphs.*/
+        const osg::Object* getRenderingCache() const { return _renderingCache.get(); }
  
 
         /** Draw callback for custom operations.*/
@@ -471,7 +481,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         
         ref_ptr<GraphicsContext>            _graphicsContext;
         
-        ref_ptr<Object>                     _renderer;
+        ref_ptr<GraphicsOperation>          _renderer;
+        ref_ptr<Object>                     _renderingCache;
         
         ref_ptr<DrawCallback>               _preDrawCallback;
         ref_ptr<DrawCallback>               _postDrawCallback;

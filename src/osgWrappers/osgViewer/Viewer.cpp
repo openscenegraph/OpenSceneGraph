@@ -274,11 +274,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __void__startThreading,
 	          "Start any threads required by the viewer. ",
 	          "");
-	I_Method0(void, setUpRenderingSupport,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpRenderingSupport,
-	          "Set up the Operations to render the various viewer cameras on the viewers graphics windows. ",
-	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,

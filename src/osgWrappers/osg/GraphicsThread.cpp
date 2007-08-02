@@ -105,6 +105,14 @@ BEGIN_OBJECT_REFLECTOR(osg::ReleaseContext_Block_MakeCurrentOperation)
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osg::RunOperations)
+	I_DeclaringFile("osg/GraphicsThread");
+	I_BaseType(osg::GraphicsOperation);
+	I_Constructor0(____RunOperations,
+	               "",
+	               "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::SwapBuffersOperation)
 	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::GraphicsOperation);

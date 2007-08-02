@@ -122,13 +122,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         void computeActiveCoordinateSystemNodePath();
 
         
-        /** Set the DsplaySettings object associated with this view.*/
+        /** Set the DisplaySettings object associated with this view.*/
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
         
-        /** Set the DsplaySettings object associated with this view.*/
+        /** Set the DisplaySettings object associated with this view.*/
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
         
-        /** Set the DsplaySettings object associated with this view.*/
+        /** Set the DisplaySettings object associated with this view.*/
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
         /** Set the FusionDistanceMode and Value. Note, is used only when working in stereo.*/
@@ -176,8 +176,6 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);
         virtual void requestWarpPointer(float x,float y);
-        
-        
 
     public:
         
@@ -186,8 +184,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
     protected:
     
-
         virtual ~View();
+
+        virtual osg::GraphicsOperation* createRenderer(osg::Camera* camera);
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;

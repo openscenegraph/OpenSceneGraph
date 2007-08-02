@@ -14,6 +14,7 @@
 #include <stdio.h>
 
 #include <osgViewer/ViewerEventHandlers>
+#include <osgViewer/Renderer>
 
 #include <osg/PolygonMode>
 #include <osg/Geometry>
@@ -34,6 +35,7 @@ StatsHandler::StatsHandler():
     _blockMultiplier(10000.0)
 {
     _camera = new osg::Camera;
+    _camera->setRenderer(new Renderer(_camera.get()));
 }
 
 bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -224,7 +226,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
     // only clear the depth buffer
     _camera->setClearMask(0);
 
-    viewer->setUpRenderingSupport();
+    _camera->setRenderer(new Renderer(_camera.get()));
     
     _initialized = true;
 }
@@ -479,13 +481,13 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
     // collect all the relevant camers
     typedef std::vector<osg::Camera*> Cameras;
     Cameras cameras;
-    if (viewer->getCamera()->getStats()) 
+    if (viewer->getCamera()->getStats() && viewer->getCamera()->getGraphicsContext()) 
     {
         cameras.push_back(viewer->getCamera());            
     }
     for(unsigned int si=0; si<viewer->getNumSlaves(); ++si)
     {
-        if (viewer->getSlave(si)._camera->getStats()) 
+        if (viewer->getSlave(si)._camera->getStats()  && viewer->getSlave(si)._camera->getGraphicsContext()) 
         {
             cameras.push_back(viewer->getSlave(si)._camera.get());
         }
@@ -497,11 +499,14 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
         citr != cameras.end();
         ++citr)
     {
-        unsigned int contextID = (*citr)->getGraphicsContext()->getState()->getContextID();
-        const osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(contextID, false);
-        if (extensions && extensions->isTimerQuerySupported())
+        if ((*citr)->getGraphicsContext())
         {
-            ++numCamrasWithTimerQuerySupport;
+            unsigned int contextID = (*citr)->getGraphicsContext()->getState()->getContextID();
+            const osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(contextID, false);
+            if (extensions && extensions->isTimerQuerySupported())
+            {
+                ++numCamrasWithTimerQuerySupport;
+            }
         }
     }
 

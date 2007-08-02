@@ -23,19 +23,15 @@ View::View()
 
     setLightingMode(HEADLIGHT);
 
-    setCamera(new osg::Camera);
+    _camera = new osg::Camera;
+    _camera->setView(this);
 
-#if 1    
     double height = osg::DisplaySettings::instance()->getScreenHeight();
     double width = osg::DisplaySettings::instance()->getScreenWidth();
     double distance = osg::DisplaySettings::instance()->getScreenDistance();
-    
     double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
 
     _camera->setProjectionMatrixAsPerspective( vfov, width/height, 1.0f,10000.0f);
-#else
-    _camera->setProjectionMatrixAsFrustum(-0.325, 0.325, -0.26, 0.26, 1.0f,10000.0f);
-#endif
 
     _camera->setClearColor(osg::Vec4f(0.2f, 0.2f, 0.4f, 1.0f));
     
@@ -107,7 +103,12 @@ void View::setCamera(osg::Camera* camera)
     
     _camera = camera;
 
-    if (_camera.valid()) _camera->setView(this);
+    if (_camera.valid())
+    {
+        _camera->setView(this);
+        
+        _camera->setRenderer(createRenderer(camera));
+    }
 }
 
 void View::updateSlaves()
@@ -145,6 +146,8 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
     _slaves.push_back(Slave(camera, projectionOffset, viewOffset, useMastersSceneData));
 
     updateSlave(i);
+    
+    camera->setRenderer(createRenderer(camera));    
 
     return true;
 }

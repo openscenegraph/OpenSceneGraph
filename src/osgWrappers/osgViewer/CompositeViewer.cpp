@@ -277,11 +277,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __void__startThreading,
 	          "Start any threads required by the viewer, as per viewers ThreadingModel. ",
 	          "");
-	I_Method0(void, setUpRenderingSupport,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpRenderingSupport,
-	          "Set up the Operations to render the various viewer cameras on the viewers graphics windows. ",
-	          "");
 	I_ProtectedMethod0(void, constructorInit,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

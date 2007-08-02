@@ -15,6 +15,7 @@
 #include <osgUtil/GLObjectsVisitor>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/CompositeViewer>
+#include <osgViewer/Renderer>
 #include <osgDB/Registry>
 
 #include <osg/io_utils>
@@ -105,7 +106,6 @@ void CompositeViewer::addView(osgViewer::View* view)
 
     _views.push_back(view);
     
-    setUpRenderingSupport();
     if (threadsWereRuinning) startThreading();
 }
 
@@ -122,7 +122,6 @@ void CompositeViewer::removeView(osgViewer::View* view)
 
             _views.erase(itr);
 
-            setUpRenderingSupport();
             if (threadsWereRuinning) startThreading();
 
             return;
@@ -254,22 +253,6 @@ void CompositeViewer::stopThreading()
     _numThreadsOnBarrier = 0;
 }
 
-// Draw operation, that does a draw on the scene graph.
-struct CompositeViewerRunOperations : public osg::Operation
-{
-    CompositeViewerRunOperations():
-        osg::Operation("RunOperation",true)
-    {
-    }
-    
-    virtual void operator () (osg::Object* object)
-    {
-        osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
-        if (!context) return;
-
-        context->runOperations();
-    }
-};
 
 unsigned int CompositeViewer::computeNumberOfThreadsIncludingMainRequired()
 {
@@ -373,7 +356,7 @@ void CompositeViewer::startThreading()
         gc->getGraphicsThread()->add(_startRenderingBarrier.get());
 
         // add the rendering operation itself.
-        gc->getGraphicsThread()->add(new CompositeViewerRunOperations());
+        gc->getGraphicsThread()->add(new osg::RunOperations());
 
         if (_endBarrierPosition==BeforeSwapBuffers)
         {
@@ -521,183 +504,6 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
     }
 }
 
-
-// Draw operation, that does a draw on the scene graph.
-struct CompositeViewerRenderingOperation : public osg::Operation
-{
-    CompositeViewerRenderingOperation(osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager):
-        osg::Operation("Render",true),
-        _sceneView(sceneView),
-        _databasePager(databasePager)
-    {
-        _sceneView->getCullVisitor()->setDatabaseRequestHandler(_databasePager.get());
-        
-        _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
-    }
-    
-    virtual void operator () (osg::Object*)
-    {
-        if (!_sceneView) return;
-    
-
-        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
-        
-        // pass on the fusion distance settings from the View to the SceneView
-        osgViewer::View* view = dynamic_cast<osgViewer::View*>(_sceneView->getCamera()->getView());
-        if (view) _sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
-
-        osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(_sceneView->getState()->getContextID());
-        osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
-
-        _sceneView->inheritCullSettings(*(_sceneView->getCamera()));
-        _sceneView->cull();
-        _sceneView->draw();
-
-        double availableTime = 0.004; // 4 ms
-
-        if (_databasePager.valid() && _databasePager->requiresExternalCompileGLObjects(_sceneView->getState()->getContextID()))
-        {
-            _databasePager->compileGLObjects(*(_sceneView->getState()), availableTime);
-        }
-
-        if (compileThread)
-        {
-            compileThread->add(_flushOperation.get());
-        }
-        else
-        {
-            _sceneView->flushDeletedGLObjects(availableTime);
-        }
-    }
-    
-    osg::observer_ptr<osgUtil::SceneView>               _sceneView;
-    osg::observer_ptr<osgDB::DatabasePager>             _databasePager;
-    osg::ref_ptr<osg::FlushDeletedGLObjectsOperation>   _flushOperation;
-};
-
-void CompositeViewer::setUpRenderingSupport()
-{
-#if 1
-    _cameraSceneViewMap.clear();
-
-    Contexts contexts;
-    getContexts(contexts);
-    
-    osg::FrameStamp* frameStamp = getFrameStamp();
-
-    for(Contexts::iterator gcitr = contexts.begin();
-        gcitr != contexts.end();
-        ++gcitr)
-    {
-        (*gcitr)->removeAllOperations();
-
-        osg::GraphicsContext* gc = *gcitr;
-        osg::GraphicsContext::Cameras& cameras = gc->getCameras();
-        osg::State* state = gc->getState();
-        
-        for(osg::GraphicsContext::Cameras::iterator citr = cameras.begin();
-            citr != cameras.end();
-            ++citr)
-        {
-            osg::Camera* camera = *citr;
-            osgViewer::View* view = dynamic_cast<osgViewer::View*>(camera->getView());
-            osgViewer::Scene* scene = view ? view->getScene() : 0;
-            
-            osg::DisplaySettings* ds = view ? view->getDisplaySettings() : 0;
-            if (!ds) ds = osg::DisplaySettings::instance();
-        
-            osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
-
-            camera->setStats(new osg::Stats("Camera"));
-
-            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
-            _cameraSceneViewMap[camera] = sceneView;
-
-            sceneView->setGlobalStateSet(view ? view->getCamera()->getStateSet() : 0);
-            sceneView->setDefaults();
-            sceneView->setDisplaySettings(camera->getDisplaySettings()!=0 ? camera->getDisplaySettings() : ds);
-            sceneView->setCamera(camera);
-            sceneView->setState(state);
-            sceneView->setFrameStamp(frameStamp);
-
-            if (dp) dp->setCompileGLObjectsForContextID(state->getContextID(), true);
-
-            gc->add(new CompositeViewerRenderingOperation(sceneView, dp));
-            
-        }
-    }
-
-#else
-    osg::FrameStamp* frameStamp = getFrameStamp();
-
-    // what should we do with the old sceneViews?
-    _cameraSceneViewMap.clear();
-
-    Contexts contexts;
-    getContexts(contexts);
-
-    // clear out all the previously assigned operations
-    for(Contexts::iterator citr = contexts.begin();
-        citr != contexts.end();
-        ++citr)
-    {
-        (*citr)->removeAllOperations();
-    }
-
-    for(Views::iterator itr = _views.begin();
-        itr != _views.end();
-        ++itr)
-    {
-        osgViewer::View* view = itr->get();
-        osg::DisplaySettings* ds = view->getDisplaySettings() ? view->getDisplaySettings() : osg::DisplaySettings::instance();
-        
-        osgDB::DatabasePager* dp = view->getScene() ? view->getScene()->getDatabasePager() : 0;
-
-        if (view->getCamera() && view->getCamera()->getGraphicsContext())
-        {
-            osgUtil::SceneView* sceneView = new osgUtil::SceneView;
-            _cameraSceneViewMap[view->getCamera()] = sceneView;
-
-            sceneView->setGlobalStateSet(view->getCamera()->getStateSet());
-            sceneView->setDefaults();
-            sceneView->setDisplaySettings(view->getCamera()->getDisplaySettings()!=0 ? view->getCamera()->getDisplaySettings() : ds);
-            sceneView->setCamera(view->getCamera());
-            sceneView->setState(view->getCamera()->getGraphicsContext()->getState());
-            sceneView->setSceneData(view->getSceneData());
-            sceneView->setFrameStamp(frameStamp);
-
-            if (dp) dp->setCompileGLObjectsForContextID(view->getCamera()->getGraphicsContext()->getState()->getContextID(), true);
-
-            view->getCamera()->getGraphicsContext()->add(new CompositeViewerRenderingOperation(sceneView, dp));
-        }
-
-        for(unsigned i=0; i<view->getNumSlaves(); ++i)
-        {
-            View::Slave& slave = view->getSlave(i);
-            if (slave._camera.valid() && slave._camera->getGraphicsContext())
-            {
-                osgUtil::SceneView* sceneView = new osgUtil::SceneView;
-                _cameraSceneViewMap[slave._camera] = sceneView;
-
-                sceneView->setGlobalStateSet(view->getCamera()->getStateSet());
-                sceneView->setDefaults();
-                sceneView->setCamera(slave._camera.get());
-                sceneView->setDisplaySettings(slave._camera->getDisplaySettings()!=0 ? slave._camera->getDisplaySettings() : ds);
-                sceneView->setState(slave._camera->getGraphicsContext()->getState());
-                sceneView->setSceneData(view->getSceneData());
-                sceneView->setFrameStamp(frameStamp);
-
-                if (dp) dp->setCompileGLObjectsForContextID(slave._camera->getGraphicsContext()->getState()->getContextID(), true);
-
-                slave._camera->getGraphicsContext()->add(new CompositeViewerRenderingOperation(sceneView, dp));
-            }
-        }
-
-    }
-#endif
-}
-
-
 void CompositeViewer::realize()
 {
     //osg::notify(osg::INFO)<<"CompositeViewer::realize()"<<std::endl;
@@ -730,8 +536,6 @@ void CompositeViewer::realize()
         _done = true;
         return;
     }
-    
-    setUpRenderingSupport();
     
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();

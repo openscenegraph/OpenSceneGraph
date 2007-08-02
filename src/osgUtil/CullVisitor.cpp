@@ -1124,13 +1124,10 @@ void CullVisitor::apply(osg::Camera& camera)
     // activate all active cull settings from this Camera
     inheritCullSettings(camera);
 
-    bool hasSetCullMask =
-        (camera.getInheritanceMask() & osg::CullSettings::CULL_MASK) == 0;
-
-    if (hasSetCullMask)
-    {
-        setTraversalMask(camera.getCullMask());
-    }
+    // set the cull mask.
+    unsigned int savedTraversalMask = getTraversalMask();
+    bool mustSetCullMask = (camera.getInheritanceMask() & osg::CullSettings::CULL_MASK) == 0;
+    if (mustSetCullMask) setTraversalMask(camera.getCullMask());
 
     RefMatrix& originalModelView = *getModelViewMatrix();
 
@@ -1190,11 +1187,11 @@ void CullVisitor::apply(osg::Camera& camera)
 
         // use render to texture stage.
         // create the render to texture stage.
-        osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderer());
+        osg::ref_ptr<osgUtil::RenderStageCache> rsCache = dynamic_cast<osgUtil::RenderStageCache*>(camera.getRenderingCache());
         if (!rsCache)
         {
             rsCache = new osgUtil::RenderStageCache;
-            camera.setRenderer(rsCache.get());
+            camera.setRenderingCache(rsCache.get());
         }
         
         osg::ref_ptr<osgUtil::RenderStage> rtts = rsCache->getRenderStage(this);
@@ -1316,6 +1313,9 @@ void CullVisitor::apply(osg::Camera& camera)
 
 
     if (camera.getViewport()) popViewport();
+
+    // restore the previous traversal mask settings
+    if (mustSetCullMask) setTraversalMask(savedTraversalMask);
 
     // restore the previous cull settings
     setCullSettings(saved_cull_settings);

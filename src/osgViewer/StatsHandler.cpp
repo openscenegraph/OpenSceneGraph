@@ -36,6 +36,7 @@ StatsHandler::StatsHandler():
 {
     _camera = new osg::Camera;
     _camera->setRenderer(new Renderer(_camera.get()));
+    _camera->setProjectionResizePolicy(osg::Camera::FIXED);
 }
 
 bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)

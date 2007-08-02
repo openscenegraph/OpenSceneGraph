@@ -579,6 +579,14 @@ void GraphicsContext::removeAllOperations()
 
 void GraphicsContext::runOperations()
 {
+    for(osg::GraphicsContext::Cameras::iterator itr = _cameras.begin();
+        itr != _cameras.end();
+        ++itr)
+    {
+        osg::Camera* camera = *itr;
+        if (camera->getRenderer()) (*(camera->getRenderer()))(this);
+    }
+
     for(OperationQueue::iterator itr = _operations.begin();
         itr != _operations.end();
         )

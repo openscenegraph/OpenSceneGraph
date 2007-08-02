@@ -201,17 +201,17 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
 	          Properties::NON_VIRTUAL,
 	          __void__setDisplaySettings__osg_DisplaySettings_P1,
-	          "Set the DsplaySettings object associated with this view. ",
+	          "Set the DisplaySettings object associated with this view. ",
 	          "");
 	I_Method0(osg::DisplaySettings *, getDisplaySettings,
 	          Properties::NON_VIRTUAL,
 	          __osg_DisplaySettings_P1__getDisplaySettings,
-	          "Set the DsplaySettings object associated with this view. ",
+	          "Set the DisplaySettings object associated with this view. ",
 	          "");
 	I_Method0(const osg::DisplaySettings *, getDisplaySettings,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
-	          "Set the DsplaySettings object associated with this view. ",
+	          "Set the DisplaySettings object associated with this view. ",
 	          "");
 	I_MethodWithDefaults2(void, setFusionDistance, IN, osgUtil::SceneView::FusionDistanceMode, mode, , IN, float, value, 1.0f,
 	                      Properties::NON_VIRTUAL,
@@ -288,6 +288,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __void__init,
 	          "",
 	          "");
+	I_ProtectedMethod1(osg::GraphicsOperation *, createRenderer, IN, osg::Camera *, camera,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_GraphicsOperation_P1__createRenderer__osg_Camera_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
 	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);

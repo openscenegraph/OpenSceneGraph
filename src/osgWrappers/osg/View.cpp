@@ -169,6 +169,12 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	          __void__updateSlave__unsigned_int,
 	          "",
 	          "");
+	I_ProtectedMethod1(osg::GraphicsOperation *, createRenderer, IN, osg::Camera *, camera,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_GraphicsOperation_P1__createRenderer__osg_Camera_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 __void__setCamera__osg_Camera_P1);

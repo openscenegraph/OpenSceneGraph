@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <osgViewer/Renderer>
 #include <osgViewer/View>
 #include <osgViewer/GraphicsWindow>
 
@@ -126,6 +127,9 @@ View::View():
 
     // make sure View is safe to reference multi-threaded.
     setThreadSafeRefUnref(true);
+    
+    // need to attach a Renderer to the maaster camera which has been default constructed
+    getCamera()->setRenderer(createRenderer(getCamera()));
 
     setEventQueue(new osgGA::EventQueue);
 }
@@ -143,6 +147,14 @@ View::~View()
 {
     // osg::notify(osg::NOTICE)<<"Destructing osgViewer::View"<<std::endl;
 }
+
+osg::GraphicsOperation* View::createRenderer(osg::Camera* camera)
+{
+    Renderer* render = new Renderer(camera);
+    camera->setStats(new osg::Stats("Camera"));
+    return render;
+}
+
 
 void View::init()
 {

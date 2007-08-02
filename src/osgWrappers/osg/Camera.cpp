@@ -16,6 +16,7 @@
 #include <osg/CopyOp>
 #include <osg/DisplaySettings>
 #include <osg/GraphicsContext>
+#include <osg/GraphicsThread>
 #include <osg/Image>
 #include <osg/Matrix>
 #include <osg/Matrixd>
@@ -476,20 +477,35 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_GraphicsContext_P1__getGraphicsContext,
 	          "Get the const GraphicsContext. ",
 	          "");
-	I_Method1(void, setRenderer, IN, osg::Object *, rc,
+	I_Method1(void, setRenderer, IN, osg::GraphicsOperation *, rc,
 	          Properties::NON_VIRTUAL,
-	          __void__setRenderer__osg_Object_P1,
+	          __void__setRenderer__osg_GraphicsOperation_P1,
 	          "Set the Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
-	I_Method0(osg::Object *, getRenderer,
+	I_Method0(osg::GraphicsOperation *, getRenderer,
 	          Properties::NON_VIRTUAL,
-	          __osg_Object_P1__getRenderer,
+	          __osg_GraphicsOperation_P1__getRenderer,
 	          "Get the Rendering object that is used to implement rendering of the subgraph. ",
 	          "");
-	I_Method0(const osg::Object *, getRenderer,
+	I_Method0(const osg::GraphicsOperation *, getRenderer,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Object_P1__getRenderer,
+	          __C5_osg_GraphicsOperation_P1__getRenderer,
 	          "Get the const Rendering object that is used to implement rendering of the subgraph. ",
+	          "");
+	I_Method1(void, setRenderingCache, IN, osg::Object *, rc,
+	          Properties::NON_VIRTUAL,
+	          __void__setRenderingCache__osg_Object_P1,
+	          "Set the Rendering cache that is used for cached objects associated with rendering of subgraphs. ",
+	          "");
+	I_Method0(osg::Object *, getRenderingCache,
+	          Properties::NON_VIRTUAL,
+	          __osg_Object_P1__getRenderingCache,
+	          "Get the Rendering cache that is used for cached objects associated with rendering of subgraphs. ",
+	          "");
+	I_Method0(const osg::Object *, getRenderingCache,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Object_P1__getRenderingCache,
+	          "Get the const Rendering cache that is used for cached objects associated with rendering of subgraphs. ",
 	          "");
 	I_Method1(void, setPreDrawCallback, IN, osg::Camera::DrawCallback *, cb,
 	          Properties::NON_VIRTUAL,
@@ -606,9 +622,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::RenderTargetImplementation, RenderTargetImplementation, 
 	                 __RenderTargetImplementation__getRenderTargetImplementation, 
 	                 __void__setRenderTargetImplementation__RenderTargetImplementation);
-	I_SimpleProperty(osg::Object *, Renderer, 
-	                 __osg_Object_P1__getRenderer, 
-	                 __void__setRenderer__osg_Object_P1);
+	I_SimpleProperty(osg::GraphicsOperation *, Renderer, 
+	                 __osg_GraphicsOperation_P1__getRenderer, 
+	                 __void__setRenderer__osg_GraphicsOperation_P1);
+	I_SimpleProperty(osg::Object *, RenderingCache, 
+	                 __osg_Object_P1__getRenderingCache, 
+	                 __void__setRenderingCache__osg_Object_P1);
 	I_SimpleProperty(osg::Stats *, Stats, 
 	                 __osg_Stats_P1__getStats, 
 	                 __void__setStats__osg_Stats_P1);

@@ -621,10 +621,15 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__setFrameStamp__FrameStamp_P1,
 	          "Set the frame stamp for the current frame. ",
 	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
+	          __FrameStamp_P1__getFrameStamp,
+	          "Get the frame stamp for the current frame. ",
+	          "");
 	I_Method0(const osg::FrameStamp *, getFrameStamp,
 	          Properties::NON_VIRTUAL,
 	          __C5_FrameStamp_P1__getFrameStamp,
-	          "Get the frame stamp for the current frame. ",
+	          "Get the const frame stamp for the current frame. ",
 	          "");
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, vs,
 	          Properties::NON_VIRTUAL,
@@ -795,7 +800,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	                 0, 
 	                 __void__setFogCoordPointer__C5_Array_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
-	                 0, 
+	                 __FrameStamp_P1__getFrameStamp, 
 	                 __void__setFrameStamp__FrameStamp_P1);
 	I_SimpleProperty(const osg::StateAttribute *, GlobalDefaultAttribute, 
 	                 0, 

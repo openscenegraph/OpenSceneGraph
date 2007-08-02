@@ -12,6 +12,7 @@
 */
 
 #include <osgViewer/ViewerEventHandlers>
+#include <osgViewer/Renderer>
 
 #include <osg/PolygonMode>
 
@@ -26,6 +27,7 @@ HelpHandler::HelpHandler(osg::ApplicationUsage* au):
     _initialized(false)
 {
     _camera = new osg::Camera;
+    _camera->setRenderer(new Renderer(_camera.get()));
 }
 
 
@@ -76,14 +78,20 @@ bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
 
 void HelpHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
 {
-    osgViewer::Viewer::Windows windows;
-    viewer->getWindows(windows);
+    osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
 
-    if (windows.empty()) return;
+    if (!window)
+    {    
+        osgViewer::Viewer::Windows windows;
+        viewer->getWindows(windows);
 
-    osgViewer::GraphicsWindow* window = windows.front();
+        if (windows.empty()) return;
 
-    _camera = new osg::Camera;
+        window = windows.front();
+
+        _camera->setGraphicsContext(window);
+    }
+
     _camera->setGraphicsContext(window);
     _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
 
@@ -94,8 +102,6 @@ void HelpHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
     // only clear the depth buffer
     _camera->setClearMask(0);
 
-    viewer->setUpRenderingSupport();
-    
     _initialized = true;
 }
 

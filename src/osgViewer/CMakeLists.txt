@@ -12,6 +12,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CompositeViewer
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GraphicsWindow
+    ${HEADER_PATH}/Renderer
     ${HEADER_PATH}/Scene
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/View
@@ -21,9 +22,10 @@ SET(LIB_PUBLIC_HEADERS
 
 SET(LIB_COMMON_FILES
     CompositeViewer.cpp
+    HelpHandler.cpp
+    Renderer.cpp
     Scene.cpp
     StatsHandler.cpp
-    HelpHandler.cpp
     Version.cpp
     View.cpp
     Viewer.cpp

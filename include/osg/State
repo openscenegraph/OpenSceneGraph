@@ -957,6 +957,9 @@ class OSG_EXPORT State : public Referenced
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
 
         /** Get the frame stamp for the current frame.*/
+        inline FrameStamp* getFrameStamp() { return _frameStamp.get(); }
+
+        /** Get the const frame stamp for the current frame.*/
         inline const FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
 

@@ -127,3 +127,9 @@ void FlushDeletedGLObjectsOperation::operator () (GraphicsContext* context)
 
     flushDeletedGLObjects(contextID, currentTime, availableTime);
 }
+
+
+void RunOperations::operator () (osg::GraphicsContext* context)
+{
+    context->runOperations();
+}

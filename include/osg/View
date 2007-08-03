@@ -132,7 +132,7 @@ class OSG_EXPORT View : public osg::Object
     
         virtual ~View();
         
-        virtual osg::GraphicsOperation* createRenderer(osg::Camera* camera) { return 0; }
+        virtual osg::GraphicsOperation* createRenderer(osg::Camera*) { return 0; }
 
         osg::ref_ptr<osg::Stats>    _stats;
         

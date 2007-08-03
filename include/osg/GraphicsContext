@@ -29,24 +29,24 @@ class OSG_EXPORT GraphicsContext : public Object
     
         struct OSG_EXPORT ScreenIdentifier
         {
-            ScreenIdentifier():
-                displayNum(0),
-                screenNum(0) {}
+            ScreenIdentifier();
 
-            ScreenIdentifier(unsigned int in_screenNum):
-                displayNum(0),
-                screenNum(in_screenNum) {}
+            ScreenIdentifier(int in_screenNum);
 
-            ScreenIdentifier(const std::string& in_hostName,unsigned int in_displayNum, unsigned int in_screenNum):
-                hostName(in_hostName),
-                displayNum(in_displayNum),
-                screenNum(in_screenNum) {}
-                
+            ScreenIdentifier(const std::string& in_hostName,int in_displayNum, int in_screenNum);
+            
+            /** Return the display name in the form hostName::displayNum:screenNum. */    
             std::string displayName() const;
+            
+            /** Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly.*/
+            void readDISPLAY();
+            
+            /** Set the screenIndentifier from the displayName string.*/
+            void setScreenIdentifier(const std::string& displayName);
 
             std::string  hostName;
-            unsigned int displayNum;
-            unsigned int screenNum;
+            int displayNum;
+            int screenNum;
         };
     
         /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
@@ -138,6 +138,7 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Callback to be implemented to provide access to Windowing API's ability to create Windows/pbuffers.*/
         struct WindowingSystemInterface : public osg::Referenced
         {
+        
             virtual unsigned int getNumScreens(const ScreenIdentifier& screenIdentifier = ScreenIdentifier()) = 0;
 
             virtual void getScreenResolution(const ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height) = 0;

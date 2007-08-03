@@ -266,13 +266,24 @@ void View::setUpViewAcrossAllScreens()
     double fovy, aspectRatio, zNear, zFar;        
     _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
-    unsigned int numScreens = wsi->getNumScreens();
+    osg::GraphicsContext::ScreenIdentifier si;
+    si.readDISPLAY();
+    
+    // displayNum has not been set so reset it to 0.
+    if (si.displayNum<0) si.displayNum = 0;
+    
+    unsigned int numScreens = wsi->getNumScreens(si);
     if (numScreens==1)
     {
+        if (si.screenNum<0) si.screenNum = 0;
+    
         unsigned int width, height;
-        wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+        wsi->getScreenResolution(si, width, height);
 
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->hostName = si.hostName;
+        traits->displayNum = si.displayNum;
+        traits->screenNum = si.screenNum;
         traits->x = 0;
         traits->y = 0;
         traits->width = width;
@@ -336,10 +347,15 @@ void View::setUpViewAcrossAllScreens()
     
         for(unsigned int i=0; i<numScreens; ++i)
         {
+            si.screenNum = i;
+        
             unsigned int width, height;
-            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
+            wsi->getScreenResolution(si, width, height);
 
             osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            traits->hostName = si.hostName;
+            traits->displayNum = si.displayNum;
+            traits->screenNum = si.screenNum;
             traits->screenNum = i;
             traits->x = 0;
             traits->y = 0;
@@ -410,6 +426,10 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+
+    traits->readDISPLAY();
+    if (traits->displayNum<0) traits->displayNum = 0;
+    
     traits->screenNum = screenNum;
     traits->x = x;
     traits->y = y;
@@ -471,11 +491,21 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
 
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
 
+    osg::GraphicsContext::ScreenIdentifier si;
+    si.readDISPLAY();
+    
+    // displayNum has not been set so reset it to 0.
+    if (si.displayNum<0) si.displayNum = 0;
+
+    si.screenNum = screenNum;
+
     unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(screenNum), width, height);
+    wsi->getScreenResolution(si, width, height);
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->screenNum = screenNum;
+    traits->hostName = si.hostName;
+    traits->displayNum = si.displayNum;
+    traits->screenNum = si.screenNum;
     traits->x = 0;
     traits->y = 0;
     traits->width = width;

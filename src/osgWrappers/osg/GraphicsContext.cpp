@@ -419,23 +419,36 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	I_Constructor0(____ScreenIdentifier,
 	               "",
 	               "");
-	I_Constructor1(IN, unsigned int, in_screenNum,
+	I_Constructor1(IN, int, in_screenNum,
 	               Properties::NON_EXPLICIT,
-	               ____ScreenIdentifier__unsigned_int,
+	               ____ScreenIdentifier__int,
 	               "",
 	               "");
-	I_Constructor3(IN, const std::string &, in_hostName, IN, unsigned int, in_displayNum, IN, unsigned int, in_screenNum,
-	               ____ScreenIdentifier__C5_std_string_R1__unsigned_int__unsigned_int,
+	I_Constructor3(IN, const std::string &, in_hostName, IN, int, in_displayNum, IN, int, in_screenNum,
+	               ____ScreenIdentifier__C5_std_string_R1__int__int,
 	               "",
 	               "");
 	I_Method0(std::string, displayName,
 	          Properties::NON_VIRTUAL,
 	          __std_string__displayName,
-	          "",
+	          "Return the display name in the form hostName::displayNum:screenNum. ",
 	          "");
+	I_Method0(void, readDISPLAY,
+	          Properties::NON_VIRTUAL,
+	          __void__readDISPLAY,
+	          "Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly. ",
+	          "");
+	I_Method1(void, setScreenIdentifier, IN, const std::string &, displayName,
+	          Properties::NON_VIRTUAL,
+	          __void__setScreenIdentifier__C5_std_string_R1,
+	          "Set the screenIndentifier from the displayName string. ",
+	          "");
+	I_SimpleProperty(const std::string &, ScreenIdentifier, 
+	                 0, 
+	                 __void__setScreenIdentifier__C5_std_string_R1);
 	I_PublicMemberProperty(std::string, hostName);
-	I_PublicMemberProperty(unsigned int, displayNum);
-	I_PublicMemberProperty(unsigned int, screenNum);
+	I_PublicMemberProperty(int, displayNum);
+	I_PublicMemberProperty(int, screenNum);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)

@@ -59,6 +59,18 @@ GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
         return 0;    
 }
 
+GraphicsContext::ScreenIdentifier::ScreenIdentifier():
+    displayNum(0),
+    screenNum(0) {}
+
+GraphicsContext::ScreenIdentifier::ScreenIdentifier(int in_screenNum):
+    displayNum(0),
+    screenNum(in_screenNum) {}
+
+GraphicsContext::ScreenIdentifier::ScreenIdentifier(const std::string& in_hostName,int in_displayNum, int in_screenNum):
+    hostName(in_hostName),
+    displayNum(in_displayNum),
+    screenNum(in_screenNum) {}
 
 std::string GraphicsContext::ScreenIdentifier::displayName() const
 {
@@ -67,6 +79,60 @@ std::string GraphicsContext::ScreenIdentifier::displayName() const
     return ostr.str();
 }
 
+void GraphicsContext::ScreenIdentifier::readDISPLAY()
+{
+    const char* ptr = 0;
+    if ((ptr=getenv("DISPLAY")) != 0)
+    {
+        setScreenIdentifier(ptr);
+    }
+}
+
+void GraphicsContext::ScreenIdentifier::setScreenIdentifier(const std::string& displayName)
+{
+    std::string::size_type colon = displayName.find_last_of(':');
+    std::string::size_type point = displayName.find_last_of('.');
+    
+    if (point!=std::string::npos && 
+        colon==std::string::npos && 
+        point < colon) point = std::string::npos;
+
+    if (colon==std::string::npos)
+    {
+        hostName = "";
+    }
+    else
+    {
+        hostName = displayName.substr(0,colon);
+    }
+    
+    std::string::size_type startOfDisplayNum = (colon==std::string::npos) ? 0 : colon+1;
+    std::string::size_type endOfDisplayNum = (point==std::string::npos) ?  displayName.size() : point;
+
+    if (startOfDisplayNum<endOfDisplayNum)
+    {
+        displayNum = atoi(displayName.substr(startOfDisplayNum,endOfDisplayNum-startOfDisplayNum).c_str());
+    }
+    else
+    {
+        displayNum = -1;
+    }
+
+    if (point!=std::string::npos && point+1<displayName.size())
+    {
+        screenNum = atoi(displayName.substr(point+1,displayName.size()-point-1).c_str());
+    }
+    else
+    {
+        screenNum = -1;
+    }
+
+#if 0    
+    osg::notify(osg::NOTICE)<<"   hostName ["<<hostName<<"]"<<std::endl;
+    osg::notify(osg::NOTICE)<<"   displayNum "<<displayNum<<std::endl;
+    osg::notify(osg::NOTICE)<<"   screenNum "<<screenNum<<std::endl;
+#endif
+}
 
 class ContextData
 {

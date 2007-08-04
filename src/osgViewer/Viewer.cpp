@@ -440,11 +440,13 @@ Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
         if (numProcessors==1) return SingleThreaded;
         else return DrawThreadPerContext;
     }
-
+    
+#if 0
     if (numProcessors >= static_cast<int>(cameras.size()+contexts.size()))
     {
         return CullThreadPerCameraDrawThreadPerContext;
     }
+#endif
 
     return DrawThreadPerContext;
 }

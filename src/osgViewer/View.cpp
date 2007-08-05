@@ -295,10 +295,17 @@ void View::setUpViewAcrossAllScreens()
         traits->sharedContext = 0;
         traits->sampleBuffers = ds->getMultiSamples();
         traits->samples = ds->getNumMultiSamples();
-        if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+        if (ds->getStereo())
         {
-            traits->quadBufferStereo = true;
+            switch(ds->getStereoMode())
+            {
+                case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
+                case(osg::DisplaySettings::VERTICAL_INTERLACE):
+                case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
+                default: break;
+            }
         }
+        
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
         _camera->setGraphicsContext(gc.get());
@@ -368,10 +375,15 @@ void View::setUpViewAcrossAllScreens()
             traits->sharedContext = 0;
             traits->sampleBuffers = ds->getMultiSamples();
             traits->samples = ds->getNumMultiSamples();
-            
-            if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+            if (ds->getStereo())
             {
-                traits->quadBufferStereo = true;
+                switch(ds->getStereoMode())
+                {
+                    case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
+                    case(osg::DisplaySettings::VERTICAL_INTERLACE):
+                    case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
+                    default: break;
+                }
             }
 
             osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
@@ -442,9 +454,15 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
     traits->sharedContext = 0;
     traits->sampleBuffers = ds->getMultiSamples();
     traits->samples = ds->getNumMultiSamples();
-    if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+    if (ds->getStereo())
     {
-        traits->quadBufferStereo = true;
+        switch(ds->getStereoMode())
+        {
+            case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
+            case(osg::DisplaySettings::VERTICAL_INTERLACE):
+            case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
+            default: break;
+        }
     }
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
@@ -517,9 +535,15 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     traits->sharedContext = 0;
     traits->sampleBuffers = ds->getMultiSamples();
     traits->samples = ds->getNumMultiSamples();
-    if (ds->getStereo() && (ds->getStereoMode() == osg::DisplaySettings::QUAD_BUFFER))
+    if (ds->getStereo())
     {
-        traits->quadBufferStereo = true;
+        switch(ds->getStereoMode())
+        {
+            case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
+            case(osg::DisplaySettings::VERTICAL_INTERLACE):
+            case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
+            default: break;
+        }
     }
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());

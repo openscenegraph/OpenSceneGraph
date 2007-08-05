@@ -10,6 +10,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+#include <stdlib.h>
+#include <string.h>
 
 #include <osg/CullSettings>
 #include <osg/ArgumentParser>

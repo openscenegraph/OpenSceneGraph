@@ -15,6 +15,8 @@
     #pragma warning( disable : 4786 )
 #endif
 
+#include <stdlib.h>
+
 #include <osgGA/DriveManipulator>
 #include <osgUtil/IntersectVisitor>
 #include <osg/Notify>

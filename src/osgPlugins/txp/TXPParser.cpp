@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include <osg/AlphaFunc>
 #include <osg/Group>
 #include <osg/Material>

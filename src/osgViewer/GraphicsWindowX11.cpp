@@ -976,7 +976,23 @@ void GraphicsWindowX11::checkEvents()
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
-
+#if 1                
+                // Check for following KeyPress events and see if
+                // the pair are the result of auto-repeat. If so, drop
+                // this one on the floor, to be consistent with
+                // Windows and Mac ports. The idea comes from libSDL sources. 
+                XEvent nextev;
+                if (XPending(display))
+                {
+                    XPeekEvent(display, &nextev);
+                    if ((nextev.type == KeyPress)
+                        && (nextev.xkey.keycode == ev.xkey.keycode)
+                        && (nextev.xmotion.time - ev.xmotion.time < 2))
+                    {
+                        break;
+                    }
+                }
+#endif                
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(ev.xkey, keySymbol, modifierMask);

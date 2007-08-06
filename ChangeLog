@@ -1,3 +1,79 @@
+2007-08-06 09:28 +0000 [r7189]  robert:
+
+	* Changed debug message to INFO level
+
+2007-08-05 17:06 +0000 [r7188]  robert:
+
+	* Added support for enabling the stencil buffer when horizontal and
+	  vertical split stereo are used.
+
+2007-08-05 14:59 +0000 [r7187]  robert:
+
+	* From Tim More, "This patch causes GraphicsWindowX11 to not send
+	  key release events when a key press / release is caused by
+	  auto-repeat. This is consistent with Windows and Mac behavior, as
+	  well as other toolkits such as SDL."
+
+2007-08-05 14:51 +0000 [r7186]  robert:
+
+	* From Andy Skinner, fixes for avoiding warnings about mixing c and
+	  c++ versions of c libs.
+
+2007-08-04 17:04 +0000 [r7185]  robert:
+
+	* Disable the selection of CullPerCameraDrawPerContext until I am
+	  able to fix this threading model
+
+2007-08-04 10:30 +0000 [r7184]  robert:
+
+	* From John Shue, "Recent changes to sockstream.cpp and
+	  sockinet.cpp to better deal with various operating system
+	  differences between socklen_t and int have broken the FreeBSD
+	  build. Change was to add __FreeBSD__ to the list of defines that
+	  are checked."
+
+2007-08-03 16:08 +0000 [r7183]  robert:
+
+	* Updated wrappers
+
+2007-08-03 14:50 +0000 [r7182]  robert:
+
+	* Added perlimnary support for reading the DISPLAY variable.
+
+2007-08-02 16:23 +0000 [r7181]  robert:
+
+	* Changed the projection matrix resize policy.
+
+2007-08-02 12:36 +0000 [r7180]  robert:
+
+	* From Martin Lavery, XCode updates for the new Renderer class
+
+2007-08-02 12:27 +0000 [r7179]  robert:
+
+	* Added return 0;
+
+2007-08-02 11:02 +0000 [r7178]  robert:
+
+	* Introduce new osgViewer::Renderer class for implementing of the
+	  rendering of cameras in viewers
+
+2007-08-02 08:50 +0000 [r7177]  robert:
+
+	* Added save and restoring of the cull mask to Camera handling code
+
+2007-07-31 17:28 +0000 [r7176]  robert:
+
+	* From Andy Skinner,adding c includes to avoid problems with mixing
+	  c and c++ versions of c functions.
+
+2007-07-30 16:02 +0000 [r7174]  robert:
+
+	* Updated AUTHORS file for release
+
+2007-07-30 15:56 +0000 [r7173]  robert:
+
+	* Updated ChangeLog for release
+
 2007-07-30 15:25 +0000 [r7172]  robert:
 
 	* Updated version number for 2.1.3 dev release

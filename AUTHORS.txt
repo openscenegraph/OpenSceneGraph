@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.3
+OpenSceneGraph Library 2.1.4
 
-268 Contributors:
+269 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,8 +15,8 @@ Farshid Lashkari
 Paul Martz
 Bob Kuehne
 Stephan Huber
-Ulrich Hertlein
 Martin Lavery
+Ulrich Hertlein
 Eric Sokolowsky
 Tree 
 Trajce Nikolov
@@ -55,6 +55,7 @@ Jason Daly
 Jason Beverage
 David Spilling
 Ben Discoe
+Andy Skinner
 Sasa Bistrovic
 Rainer Oder
 Paul Melis
@@ -74,9 +75,9 @@ Michael Platings
 Michael Hartman
 Loic Dachary
 Joseph Steel
+John Shue
 David Guthrie
 Corbin Holtz
-Andy Skinner
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -86,7 +87,6 @@ Romano Magacho
 Paul de Repentigny
 Leandro Motta Barros
 Laurens Voerman
-John Shue
 Jean-Sebastien Guay
 Carlo Camporesi
 Bryan Thrall
@@ -169,6 +169,7 @@ Vaclav Bilek
 Tyge 
 Troy Yee
 Tino Schwarze
+Tim Moore
 Thom Carlo
 Tery Welsh
 Tanguy Fautré

@@ -243,6 +243,14 @@ void Viewer::setSceneData(osg::Node* node)
     _scene->setSceneData(node);
     _scene->setFrameStamp(_frameStamp.get());
     
+    if (getSceneData())
+    {        
+        // now make sure the scene graph is set up with the correct DataVariance to protect the dyamic elements of
+        // the scene graph from being run in parallel.
+        osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
+        getSceneData()->accept(sodv);
+    }
+
     computeActiveCoordinateSystemNodePath();
 
     setReferenceTime(0.0);
@@ -539,11 +547,6 @@ void Viewer::startThreading()
         
         if (!osg::Referenced::getDeleteHandler()) osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
         else osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
-        
-        // now make sure the scene graph is set up with the correct DataVariance to protect the dyamic elements of
-        // the scene graph from being run in parallel.
-        osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
-        getSceneData()->accept(sodv);
     }
     
     if (numThreadsOnBarrier>1)

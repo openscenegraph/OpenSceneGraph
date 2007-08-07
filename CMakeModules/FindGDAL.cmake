@@ -10,6 +10,7 @@
 # Created by Robert Osfield. 
 
 FIND_PATH(GDAL_INCLUDE_DIR gdal.h
+        ${GDAL_DIR}/include
     $ENV{GDAL_DIR}/include
     $ENV{GDAL_DIR}
     $ENV{OSGDIR}/include
@@ -28,8 +29,9 @@ FIND_PATH(GDAL_INCLUDE_DIR gdal.h
 )
 
 FIND_LIBRARY(GDAL_LIBRARY 
-    NAMES gdal
+    NAMES gdal gdal_i gdal1.4.0 gdal1.3.2
     PATHS
+    ${GDAL_DIR}/lib
     $ENV{GDAL_DIR}/lib
     $ENV{GDAL_DIR}
     $ENV{OSGDIR}/lib

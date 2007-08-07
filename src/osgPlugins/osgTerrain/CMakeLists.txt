@@ -2,7 +2,6 @@
 
 
 SET(TARGET_SRC 
-    TerrainNode.cpp
     ReaderWriterOsgTerrain.cpp
 )
 

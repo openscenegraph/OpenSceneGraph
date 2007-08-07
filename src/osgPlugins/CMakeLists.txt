@@ -74,6 +74,9 @@ ENDIF(PNG_FOUND)
 IF(TIFF_FOUND)
 	ADD_SUBDIRECTORY(tiff)
 ENDIF(TIFF_FOUND)
+IF(GDAL_FOUND)
+	ADD_SUBDIRECTORY(gdal)
+ENDIF(GDAL_FOUND)
 
 ############################################################
 #

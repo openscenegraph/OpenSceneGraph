@@ -47,7 +47,7 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 
-#include <osgTerrain/TerrainNode>
+#include <osgTerrain/Terrain>
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Layer>
 
@@ -672,7 +672,7 @@ int main(int argc, char** argv)
     }
     
 
-    osg::ref_ptr<osgTerrain::TerrainNode> terrain = new osgTerrain::TerrainNode;
+    osg::ref_ptr<osgTerrain::Terrain> terrain = new osgTerrain::Terrain;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
     osg::ref_ptr<osgTerrain::ValidDataOperator> validDataOperator = new osgTerrain::NoDataValue(0.0);
     osg::ref_ptr<osgTerrain::Layer> lastAppliedLayer;
@@ -834,12 +834,12 @@ int main(int argc, char** argv)
             if (filterName=="NEAREST")
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
-                terrain->setColorFilter(layerNum, osgTerrain::TerrainNode::NEAREST);
+                terrain->setColorFilter(layerNum, osgTerrain::Terrain::NEAREST);
             }
             else if (filterName=="LINEAR") 
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
-                terrain->setColorFilter(layerNum, osgTerrain::TerrainNode::LINEAR);
+                terrain->setColorFilter(layerNum, osgTerrain::Terrain::LINEAR);
             }
             else
             {

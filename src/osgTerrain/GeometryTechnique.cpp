@@ -12,7 +12,7 @@
 */
 
 #include <osgTerrain/GeometryTechnique>
-#include <osgTerrain/TerrainNode>
+#include <osgTerrain/Terrain>
 
 #include <osgUtil/SmoothingVisitor>
 
@@ -101,15 +101,15 @@ void GeometryTechnique::init()
 {
     osg::notify(osg::NOTICE)<<"Doing init()"<<std::endl;
     
-    if (!_terrainNode) return;
+    if (!_terrain) return;
 
 
     BufferData& buffer = getWriteBuffer();
 
-    osgTerrain::Layer* elevationLayer = _terrainNode->getElevationLayer();
-    osgTerrain::Layer* colorLayer = _terrainNode->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrainNode->getColorTransferFunction(0);
-    osgTerrain::TerrainNode::Filter filter = _terrainNode->getColorFilter(0);
+    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
+    osgTerrain::Terrain::Filter filter = _terrain->getColorFilter(0);
 
     // if the elevationLayer and colorLayer are the same, and there is colorTF then
     // simply assing as a texture coordinate.
@@ -193,7 +193,7 @@ void GeometryTechnique::init()
         numRows = elevationLayer->getNumRows();
     }
     
-    bool treatBoundariesToValidDataAsDefaultValue = _terrainNode->getTreatBoundariesToValidDataAsDefaultValue();
+    bool treatBoundariesToValidDataAsDefaultValue = _terrain->getTreatBoundariesToValidDataAsDefaultValue();
     osg::notify(osg::NOTICE)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
     unsigned int numVertices = numRows * numColumns;
@@ -427,7 +427,7 @@ void GeometryTechnique::init()
             stateset->setTextureAttributeAndModes(color_index, texture2D, osg::StateAttribute::ON);
 
             texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-            texture2D->setFilter(osg::Texture::MAG_FILTER, filter==TerrainNode::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
+            texture2D->setFilter(osg::Texture::MAG_FILTER, filter==Terrain::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
             
             if (tf)
             {
@@ -537,7 +537,7 @@ void GeometryTechnique::init()
 
 void GeometryTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-    if (_terrainNode) _terrainNode->osg::Group::traverse(*uv);
+    if (_terrain) _terrain->osg::Group::traverse(*uv);
 }
 
 
@@ -546,7 +546,7 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
     BufferData& buffer = getReadOnlyBuffer();
 
 #if 0
-    if (buffer._terrainNode) buffer._terrainNode->osg::Group::traverse(*cv);
+    if (buffer._terrain) buffer._terrain->osg::Group::traverse(*cv);
 #else
     if (buffer._transform.valid())
     {
@@ -558,7 +558,7 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
 
 void GeometryTechnique::traverse(osg::NodeVisitor& nv)
 {
-    if (!_terrainNode) return;
+    if (!_terrain) return;
 
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)

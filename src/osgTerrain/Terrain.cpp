@@ -11,12 +11,12 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/TerrainNode>
+#include <osgTerrain/Terrain>
 
 using namespace osg;
 using namespace osgTerrain;
 
-TerrainNode::TerrainNode():
+Terrain::Terrain():
     _requiresNormals(true),
     _treatBoundariesToValidDataAsDefaultValue(false)
 {
@@ -24,7 +24,7 @@ TerrainNode::TerrainNode():
     setThreadSafeRefUnref(true);
 }
 
-TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
+Terrain::Terrain(const Terrain& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
@@ -36,11 +36,11 @@ TerrainNode::TerrainNode(const TerrainNode& terrain,const osg::CopyOp& copyop):
     if (terrain.getTerrainTechnique()) setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
 }
 
-TerrainNode::~TerrainNode()
+Terrain::~Terrain()
 {
 }
 
-void TerrainNode::traverse(osg::NodeVisitor& nv)
+void Terrain::traverse(osg::NodeVisitor& nv)
 {
     if (_terrainTechnique.valid())
     {
@@ -52,7 +52,7 @@ void TerrainNode::traverse(osg::NodeVisitor& nv)
     }
 }
 
-void TerrainNode::init()
+void Terrain::init()
 {
     if (_terrainTechnique.valid() && _terrainTechnique->isDirty())
     {
@@ -61,46 +61,46 @@ void TerrainNode::init()
 }
 
 
-void TerrainNode::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique)
+void Terrain::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique)
 {
     if (_terrainTechnique == terrainTechnique) return; 
 
-    if (_terrainTechnique.valid()) _terrainTechnique->_terrainNode = 0;
+    if (_terrainTechnique.valid()) _terrainTechnique->_terrain = 0;
 
     _terrainTechnique = terrainTechnique;
     
-    if (_terrainTechnique.valid()) _terrainTechnique->_terrainNode = this;
+    if (_terrainTechnique.valid()) _terrainTechnique->_terrain = this;
     
 }
 
 
-void TerrainNode::setElevationLayer(osgTerrain::Layer* layer)
+void Terrain::setElevationLayer(osgTerrain::Layer* layer)
 {
     _elevationLayer = layer;
 }
 
-void TerrainNode::setColorLayer(unsigned int i, osgTerrain::Layer* layer)
+void Terrain::setColorLayer(unsigned int i, osgTerrain::Layer* layer)
 {
     if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
     
     _colorLayers[i].layer = layer;
 }
 
-void TerrainNode::setColorTransferFunction(unsigned int i, osg::TransferFunction* tf)
+void Terrain::setColorTransferFunction(unsigned int i, osg::TransferFunction* tf)
 {
     if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
     
     _colorLayers[i].transferFunction = tf;
 }
 
-void TerrainNode::setColorFilter(unsigned int i, Filter filter)
+void Terrain::setColorFilter(unsigned int i, Filter filter)
 {
     if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
     
     _colorLayers[i].filter = filter;
 }
 
-osg::BoundingSphere TerrainNode::computeBound() const
+osg::BoundingSphere Terrain::computeBound() const
 {
     osg::BoundingSphere bs;
     

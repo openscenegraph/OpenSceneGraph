@@ -76,8 +76,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             int destX = 0;
             int destY = 0;
-            int destWidth = osg::minimum(dataWidth,1024);
-            int destHeight = osg::minimum(dataHeight,1024);
+            int destWidth = osg::minimum(dataWidth,4096);
+            int destHeight = osg::minimum(dataHeight,4096);
 //             int destWidth = osg::minimum(dataWidth,4096);
 //             int destHeight = osg::minimum(dataHeight,4096);
 
@@ -530,8 +530,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             int destX = 0;
             int destY = 0;
-            int destWidth = osg::minimum(dataWidth,1024);
-            int destHeight = osg::minimum(dataHeight,1024);
+            int destWidth = osg::minimum(dataWidth,4096);
+            int destHeight = osg::minimum(dataHeight,4096);
 
             osgDB::ImageOptions::TexCoordRange* texCoordRange = 0;
 
@@ -711,7 +711,9 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
                         hf->setHeight(c,copy_r,temp);
                     }
                 }
-
+                hf->setOrigin(osg::Vec3(BottomLeft[0],-BottomLeft[1],0));
+                hf->setXInterval((BottomRight[0]-BottomLeft[0])/destWidth);
+                hf->setYInterval((TopLeft[1]-BottomLeft[1])/destHeight);
                 return hf;
             }
                    

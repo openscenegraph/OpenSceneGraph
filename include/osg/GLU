@@ -16,10 +16,15 @@
 
 #if defined(__APPLE__) || defined (_AIX)
     #include <OpenGL/glu.h>
-    #define GLU_TESS_CALLBACK GLvoid (CALLBACK*)(...)
+    #define GLU_CALLBACK_PARAMETER ...
 #else
     #include <GL/glu.h>
-    #define GLU_TESS_CALLBACK GLvoid (CALLBACK*)()
 #endif
+
+#if !defined(GLU_CALLBACK_PARAMETER)
+    #define GLU_CALLBACK_PARAMETER
+#endif
+
+#define GLU_TESS_CALLBACK GLvoid (CALLBACK*)(GLU_CALLBACK_PARAMETER)
 
 #endif  // __osgGLU_h

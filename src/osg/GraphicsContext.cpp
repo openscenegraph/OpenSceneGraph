@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdlib.h>
 
 #include <osg/GraphicsContext>
 #include <osg/Camera>

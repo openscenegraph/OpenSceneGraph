@@ -11,7 +11,6 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Locator
 	${HEADER_PATH}/Layer
 	${HEADER_PATH}/Terrain
-	${HEADER_PATH}/TerrainNode
 	${HEADER_PATH}/TerrainTechnique
 	${HEADER_PATH}/GeometryTechnique
 	${HEADER_PATH}/ValidDataOperator

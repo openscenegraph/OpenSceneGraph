@@ -18,7 +18,7 @@
 #include <osg/TransferFunction>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
-#include <osgTerrain/TerrainNode>
+#include <osgTerrain/Terrain>
 #include <osgTerrain/TerrainTechnique>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -29,20 +29,20 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainNode::Filter)
-	I_DeclaringFile("osgTerrain/TerrainNode");
-	I_EnumLabel(osgTerrain::TerrainNode::NEAREST);
-	I_EnumLabel(osgTerrain::TerrainNode::LINEAR);
+BEGIN_ENUM_REFLECTOR(osgTerrain::Terrain::Filter)
+	I_DeclaringFile("osgTerrain/Terrain");
+	I_EnumLabel(osgTerrain::Terrain::NEAREST);
+	I_EnumLabel(osgTerrain::Terrain::LINEAR);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
-	I_DeclaringFile("osgTerrain/TerrainNode");
+BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
+	I_DeclaringFile("osgTerrain/Terrain");
 	I_BaseType(osg::Group);
-	I_Constructor0(____TerrainNode,
+	I_Constructor0(____Terrain,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgTerrain::TerrainNode &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____TerrainNode__C5_TerrainNode_R1__C5_osg_CopyOp_R1,
+	I_ConstructorWithDefaults2(IN, const osgTerrain::Terrain &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____Terrain__C5_Terrain_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
@@ -160,12 +160,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __C5_osg_TransferFunction_P1__getColorTransferFunction__unsigned_int,
 	          "Get const color transfer function with specified layer number. ",
 	          "");
-	I_Method2(void, setColorFilter, IN, unsigned int, i, IN, osgTerrain::TerrainNode::Filter, filter,
+	I_Method2(void, setColorFilter, IN, unsigned int, i, IN, osgTerrain::Terrain::Filter, filter,
 	          Properties::NON_VIRTUAL,
 	          __void__setColorFilter__unsigned_int__Filter,
 	          "Set a color filter with specified layer number. ",
 	          "");
-	I_Method1(osgTerrain::TerrainNode::Filter, getColorFilter, IN, unsigned int, i,
+	I_Method1(osgTerrain::Terrain::Filter, getColorFilter, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
 	          __Filter__getColorFilter__unsigned_int,
 	          "Set const color filter with specified layer number. ",
@@ -215,7 +215,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainNode)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
-	I_IndexedProperty(osgTerrain::TerrainNode::Filter, ColorFilter, 
+	I_IndexedProperty(osgTerrain::Terrain::Filter, ColorFilter, 
 	                  __Filter__getColorFilter__unsigned_int, 
 	                  __void__setColorFilter__unsigned_int__Filter, 
 	                  0);

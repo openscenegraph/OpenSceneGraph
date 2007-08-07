@@ -13,7 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osgTerrain/TerrainNode>
+#include <osgTerrain/Terrain>
 #include <osgTerrain/TerrainTechnique>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
@@ -61,14 +61,14 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(osgTerrain::TerrainNode *, getTerrainNode,
+	I_Method0(osgTerrain::Terrain *, getTerrain,
 	          Properties::NON_VIRTUAL,
-	          __TerrainNode_P1__getTerrainNode,
+	          __Terrain_P1__getTerrain,
 	          "",
 	          "");
-	I_Method0(const osgTerrain::TerrainNode *, getTerrainNode,
+	I_Method0(const osgTerrain::Terrain *, getTerrain,
 	          Properties::NON_VIRTUAL,
-	          __C5_TerrainNode_P1__getTerrainNode,
+	          __C5_Terrain_P1__getTerrain,
 	          "",
 	          "");
 	I_Method0(void, init,
@@ -106,8 +106,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          __bool__isDirty,
 	          "Return true if cached data structurese need updating. ",
 	          "");
-	I_SimpleProperty(osgTerrain::TerrainNode *, TerrainNode, 
-	                 __TerrainNode_P1__getTerrainNode, 
+	I_SimpleProperty(osgTerrain::Terrain *, Terrain, 
+	                 __Terrain_P1__getTerrain, 
 	                 0);
 END_REFLECTOR
 

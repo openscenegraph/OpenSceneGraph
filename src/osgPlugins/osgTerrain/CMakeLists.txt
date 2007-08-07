@@ -2,9 +2,12 @@
 
 
 SET(TARGET_SRC 
+    Terrain.cpp
     ReaderWriterOsgTerrain.cpp
 )
 
 SET(TARGET_ADDED_LIBRARIES osgTerrain )
 #### end var setup  ###
 SETUP_PLUGIN(osgTerrain)
+
+

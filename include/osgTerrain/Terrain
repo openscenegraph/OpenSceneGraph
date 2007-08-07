@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAIN_TERRAINNODE
-#define OSGTERRAIN_TERRAINNODE 1
+#ifndef OSGTERRAIN_TERRAIN
+#define OSGTERRAIN_TERRAIN 1
 
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
@@ -26,16 +26,16 @@ namespace osgTerrain {
 
 /** Terrain provides a framework for loosly coupling height field data with height rendering algorithms.
   * This allows TerrainTechnique's to be pluged in at runtime.*/
-class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
+class OSGTERRAIN_EXPORT Terrain : public osg::Group
 {
     public:
 
-        TerrainNode();
+        Terrain();
         
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        TerrainNode(const TerrainNode&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        Terrain(const Terrain&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Node(osgTerrain, TerrainNode);
+        META_Node(osgTerrain, Terrain);
 
         virtual void traverse(osg::NodeVisitor& nv);
 
@@ -135,7 +135,7 @@ class OSGTERRAIN_EXPORT TerrainNode : public osg::Group
 
     protected:
 
-        virtual ~TerrainNode();
+        virtual ~Terrain();
 
         struct LayerData
         {

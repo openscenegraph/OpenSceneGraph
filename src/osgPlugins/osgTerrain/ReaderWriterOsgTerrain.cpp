@@ -11,10 +11,6 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
-#include <osgTerrain/TerrainNode>
-#include <osgTerrain/GeometryTechnique>
-#include <osgTerrain/Layer>
-
 class ReaderWriterTerrain : public osgDB::ReaderWriter
 {
     public:

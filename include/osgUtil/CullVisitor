@@ -53,9 +53,18 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
     
 
         CullVisitor();
-        virtual ~CullVisitor();
+        
+        /// Copy constructor that does a shallow copy.
+        CullVisitor(const CullVisitor&);
 
-        virtual CullVisitor* cloneType() const { return new CullVisitor(); }
+        /** Create a shallow copy on the CullVisitor.*/
+        virtual CullVisitor* clone() const { return new CullVisitor(*this); }
+
+        /** get the prototype singleton used by CullVisitor::create().*/
+        static osg::ref_ptr<CullVisitor>& prototype();
+        
+        /** create a CullVisitor by cloning CullVisitor::prototype().*/
+        static CullVisitor* create();
 
         virtual void reset();
 
@@ -257,6 +266,8 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         const osg::RenderInfo& getRenderInfo() const { return _renderInfo; }
 
     protected:
+
+        virtual ~CullVisitor();
 
         /** Prevent unwanted copy operator.*/
         CullVisitor& operator = (const CullVisitor&) { return *this; }

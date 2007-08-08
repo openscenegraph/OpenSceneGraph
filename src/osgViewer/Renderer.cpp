@@ -156,8 +156,8 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0]->setDisplaySettings(ds);
     _sceneView[1]->setDisplaySettings(ds);
 
-    _sceneView[0]->setCamera(_camera.get());
-    _sceneView[1]->setCamera(_camera.get());
+    _sceneView[0]->setCamera(_camera.get(), false);
+    _sceneView[1]->setCamera(_camera.get(), false);
 
     _currentCull = 0;
     _currentDraw = 0;

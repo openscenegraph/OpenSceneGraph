@@ -45,6 +45,19 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         DatabasePager();
 
+        DatabasePager(const DatabasePager& rhs);
+        
+        /** Create a shallow copy on the DatabasePager.*/
+        virtual DatabasePager* clone() const { return new DatabasePager(*this); }
+
+        /** get the prototype singleton used by DatabasePager::create().*/
+        static osg::ref_ptr<DatabasePager>& prototype();
+        
+        /** create a DatabasePager by cloning DatabasePager::prototype().*/
+        static DatabasePager* create();
+
+        
+
         /** Add a request to load a node file to end the the database request list.*/
         virtual void requestNodeFile(const std::string& fileName,osg::Group* group,
                                      float priority, const osg::FrameStamp* framestamp);

@@ -115,10 +115,61 @@ DatabasePager::DatabasePager()
         //osgDB::Registry::instance()->setUseObjectCacheHint(true);
 }
 
+DatabasePager::DatabasePager(const DatabasePager& rhs)
+{
+    //osg::notify(osg::INFO)<<"Constructing DatabasePager(const DatabasePager& )"<<std::endl;
+    
+    _startThreadCalled = false;
+
+    _done = false;
+    _acceptNewRequests = true;
+    _databasePagerThreadPaused = false;
+    
+    _useFrameBlock = rhs._useFrameBlock;
+    _numFramesActive = 0;
+    _frameNumber = 0;
+    _frameBlock = new osg::RefBlock;
+    _databasePagerThreadBlock = new osg::RefBlock;
+
+    _threadPriorityDuringFrame = rhs._threadPriorityDuringFrame;
+    _threadPriorityOutwithFrame = rhs._threadPriorityOutwithFrame;
+
+    _drawablePolicy = rhs._drawablePolicy;
+
+    _changeAutoUnRef = rhs._changeAutoUnRef;
+    _valueAutoUnRef = rhs._valueAutoUnRef;
+    _changeAnisotropy = rhs._changeAnisotropy;
+    _valueAnisotropy = rhs._valueAnisotropy;
+
+
+    _deleteRemovedSubgraphsInDatabaseThread = rhs._deleteRemovedSubgraphsInDatabaseThread;
+    
+    _expiryDelay = rhs._expiryDelay;
+    _doPreCompile = rhs._doPreCompile;
+    _targetFrameRate = rhs._targetFrameRate;
+    _minimumTimeAvailableForGLCompileAndDeletePerFrame = rhs._minimumTimeAvailableForGLCompileAndDeletePerFrame;
+    _maximumNumOfObjectsToCompilePerFrame = rhs._maximumNumOfObjectsToCompilePerFrame;
+}
+
+
 DatabasePager::~DatabasePager()
 {
     cancel();
 }
+
+osg::ref_ptr<DatabasePager>& DatabasePager::prototype()
+{
+    static osg::ref_ptr<DatabasePager> s_DatabasePager = new DatabasePager;
+    return s_DatabasePager;
+}
+
+DatabasePager* DatabasePager::create()
+{
+    return DatabasePager::prototype().valid() ? 
+           DatabasePager::prototype()->clone() :
+           new DatabasePager; 
+}
+
 
 int DatabasePager::cancel()
 {

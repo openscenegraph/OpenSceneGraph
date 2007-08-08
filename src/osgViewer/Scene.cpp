@@ -26,7 +26,7 @@ Scene::Scene():
     _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
     
-    setDatabasePager(new osgDB::DatabasePager);
+    setDatabasePager(osgDB::DatabasePager::create());
 }
 
 Scene::~Scene()

@@ -217,7 +217,7 @@ void SceneView::setDefaults(unsigned int options)
     
     _updateVisitor = new UpdateVisitor;
 
-    _cullVisitor = new CullVisitor;
+    _cullVisitor = CullVisitor::create();
 
     _cullVisitor->setStateGraph(_rendergraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
@@ -566,7 +566,7 @@ void SceneView::cull()
     if (!_cullVisitor)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
-        _cullVisitor = new CullVisitor;
+        _cullVisitor = CullVisitor::create();
     }
     if (!_rendergraph)
     {
@@ -613,11 +613,11 @@ void SceneView::cull()
         else
         {
 
-            if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
+            if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->clone());
             if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<StateGraph*>(_rendergraph->cloneType());
             if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 
-            if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->cloneType());
+            if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->clone());
             if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<StateGraph*>(_rendergraph->cloneType());
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
             

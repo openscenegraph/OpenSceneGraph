@@ -59,6 +59,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Constructor0(____DatabasePager,
 	               "",
 	               "");
+	I_Constructor1(IN, const osgDB::DatabasePager &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____DatabasePager__C5_DatabasePager_R1,
+	               "",
+	               "");
+	I_Method0(osgDB::DatabasePager *, clone,
+	          Properties::VIRTUAL,
+	          __DatabasePager_P1__clone,
+	          "Create a shallow copy on the DatabasePager. ",
+	          "");
 	I_Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp,
 	          Properties::VIRTUAL,
 	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1,
@@ -299,6 +309,14 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __unsigned_int__getDataToCompileListSize,
 	          "Report how many items are in the _dataToCompileList queue. ",
 	          "");
+	I_StaticMethod0(osg::ref_ptr< osgDB::DatabasePager > &, prototype,
+	                __osg_ref_ptrT1_DatabasePager__R1__prototype_S,
+	                "get the prototype singleton used by DatabasePager::create(). ",
+	                "");
+	I_StaticMethod0(osgDB::DatabasePager *, create,
+	                __DatabasePager_P1__create_S,
+	                "create a DatabasePager by cloning DatabasePager::prototype(). ",
+	                "");
 	I_ProtectedMethod0(void, updateDatabasePagerThreadBlock,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -451,6 +469,46 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
 	          "",
 	          "");
 	I_SimpleProperty(osg::PagedLOD *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::DatabasePager >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgDB::DatabasePager *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgDB::DatabasePager > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgDB::DatabasePager *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgDB::DatabasePager *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgDB::DatabasePager > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgDB::DatabasePager *, , 
 	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR

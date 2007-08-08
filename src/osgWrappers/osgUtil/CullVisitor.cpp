@@ -57,10 +57,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_Constructor0(____CullVisitor,
 	               "",
 	               "");
-	I_Method0(osgUtil::CullVisitor *, cloneType,
+	I_Constructor1(IN, const osgUtil::CullVisitor &, x,
+	               Properties::NON_EXPLICIT,
+	               ____CullVisitor__C5_CullVisitor_R1,
+	               "Copy constructor that does a shallow copy. ",
+	               "");
+	I_Method0(osgUtil::CullVisitor *, clone,
 	          Properties::VIRTUAL,
-	          __CullVisitor_P1__cloneType,
-	          "",
+	          __CullVisitor_P1__clone,
+	          "Create a shallow copy on the CullVisitor. ",
 	          "");
 	I_Method0(void, reset,
 	          Properties::VIRTUAL,
@@ -327,6 +332,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          __C5_osg_RenderInfo_R1__getRenderInfo,
 	          "",
 	          "");
+	I_StaticMethod0(osg::ref_ptr< osgUtil::CullVisitor > &, prototype,
+	                __osg_ref_ptrT1_CullVisitor__R1__prototype_S,
+	                "get the prototype singleton used by CullVisitor::create(). ",
+	                "");
+	I_StaticMethod0(osgUtil::CullVisitor *, create,
+	                __CullVisitor_P1__create_S,
+	                "create a CullVisitor by cloning CullVisitor::prototype(). ",
+	                "");
 	I_ProtectedMethod1(void, handle_cull_callbacks_and_traverse, IN, osg::Node &, node,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -380,6 +393,46 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	                 __void__setStateGraph__StateGraph_P1);
 	I_SimpleProperty(osg::Vec3, ViewPoint, 
 	                 __osg_Vec3__getViewPoint, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::CullVisitor >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgUtil::CullVisitor *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgUtil::CullVisitor > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgUtil::CullVisitor *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgUtil::CullVisitor *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgUtil::CullVisitor > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgUtil::CullVisitor *, , 
+	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR
 

@@ -98,13 +98,36 @@ CullVisitor::CullVisitor():
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0)
 {
-    // _nearFarRatio = 0.000005f;     
 }
 
+CullVisitor::CullVisitor(const CullVisitor& rhs):
+    NodeVisitor(rhs),
+    CullStack(rhs),
+    _currentStateGraph(NULL),
+    _currentRenderBin(NULL),
+    _computed_znear(FLT_MAX),
+    _computed_zfar(-FLT_MAX),
+    _currentReuseRenderLeafIndex(0),
+    _numberOfEncloseOverrideRenderBinDetails(0)
+{
+}
 
 CullVisitor::~CullVisitor()
 {
     reset();
+}
+
+osg::ref_ptr<CullVisitor>& CullVisitor::prototype()
+{
+    static osg::ref_ptr<CullVisitor> s_CullVisitor = new CullVisitor;
+    return s_CullVisitor;
+}
+
+CullVisitor* CullVisitor::create()
+{
+    return CullVisitor::prototype().valid() ? 
+           CullVisitor::prototype()->clone() :
+           new CullVisitor; 
 }
 
 

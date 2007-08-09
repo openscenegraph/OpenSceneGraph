@@ -20,7 +20,7 @@
 
 namespace osgViewer {
 
-class OpenGLQuerySupport
+class OSGVIEWER_EXPORT OpenGLQuerySupport
 {
     public:
         OpenGLQuerySupport();
@@ -36,7 +36,7 @@ class OpenGLQuerySupport
         
         GLuint createQueryObject();
         void beginQuery(int frameNumber);
-        inline void endQuery();
+        void endQuery();
         void initialize(osg::State* state);
 
     protected:

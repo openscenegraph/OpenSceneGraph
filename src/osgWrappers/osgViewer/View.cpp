@@ -13,9 +13,11 @@
 #include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/DisplaySettings>
+#include <osg/FrameStamp>
 #include <osg/Node>
 #include <osg/Object>
-#include <osg/State>
+#include <osg/Timer>
+#include <osgDB/DatabasePager>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
@@ -31,44 +33,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_OBJECT_REFLECTOR(osgViewer::EndOfDynamicDrawBlock)
-	I_DeclaringFile("osgViewer/View");
-	I_BaseType(osg::State::DynamicObjectRenderingCompletedCallback);
-	I_Constructor1(IN, unsigned, int,
-	               Properties::NON_EXPLICIT,
-	               ____EndOfDynamicDrawBlock__unsigned,
-	               "",
-	               "");
-	I_Method1(void, completed, IN, osg::State *, state,
-	          Properties::VIRTUAL,
-	          __void__completed__osg_State_P1,
-	          "",
-	          "");
-	I_Method0(void, block,
-	          Properties::NON_VIRTUAL,
-	          __void__block,
-	          "",
-	          "");
-	I_Method0(void, reset,
-	          Properties::NON_VIRTUAL,
-	          __void__reset,
-	          "",
-	          "");
-	I_Method0(void, release,
-	          Properties::NON_VIRTUAL,
-	          __void__release,
-	          "",
-	          "");
-	I_Method1(void, setNumOfBlocks, IN, unsigned int, blockCount,
-	          Properties::NON_VIRTUAL,
-	          __void__setNumOfBlocks__unsigned_int,
-	          "",
-	          "");
-	I_SimpleProperty(unsigned int, NumOfBlocks, 
-	                 0, 
-	                 __void__setNumOfBlocks__unsigned_int);
-END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventHandler > >, osgViewer::View::EventHandlers)
 
@@ -108,6 +72,31 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
+	          Properties::VIRTUAL,
+	          __void__setStartTick__osg_Timer_t,
+	          "",
+	          "");
+	I_Method0(osg::Timer_t, getStartTick,
+	          Properties::NON_VIRTUAL,
+	          __osg_Timer_t__getStartTick,
+	          "",
+	          "");
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
+	          Properties::NON_VIRTUAL,
+	          __void__setFrameStamp__osg_FrameStamp_P1,
+	          "",
+	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
+	          __osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
+	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_FrameStamp_P1__getFrameStamp,
+	          "",
+	          "");
 	I_Method0(osgViewer::Scene *, getScene,
 	          Properties::NON_VIRTUAL,
 	          __Scene_P1__getScene,
@@ -132,6 +121,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Node_P1__getSceneData,
 	          "Get the const View's scene graph. ",
+	          "");
+	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
+	          Properties::NON_VIRTUAL,
+	          __void__setDatabasePager__osgDB_DatabasePager_P1,
+	          "Set the View's database pager. ",
+	          "");
+	I_Method0(osgDB::DatabasePager *, getDatabasePager,
+	          Properties::NON_VIRTUAL,
+	          __osgDB_DatabasePager_P1__getDatabasePager,
+	          "Get the View's database pager. ",
+	          "");
+	I_Method0(const osgDB::DatabasePager *, getDatabasePager,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
+	          "Get the const View's database pager. ",
 	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
@@ -300,6 +304,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osg::NodePath, CoordinateSystemNodePath, 
 	                 __osg_NodePath__getCoordinateSystemNodePath, 
 	                 __void__setCoordinateSystemNodePath__C5_osg_NodePath_R1);
+	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
+	                 __osgDB_DatabasePager_P1__getDatabasePager, 
+	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
 	I_SimpleProperty(osg::DisplaySettings *, DisplaySettings, 
 	                 __osg_DisplaySettings_P1__getDisplaySettings, 
 	                 __void__setDisplaySettings__osg_DisplaySettings_P1);
@@ -309,6 +316,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
+	                 __osg_FrameStamp_P1__getFrameStamp, 
+	                 __void__setFrameStamp__osg_FrameStamp_P1);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);
@@ -321,6 +331,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);
+	I_SimpleProperty(osg::Timer_t, StartTick, 
+	                 __osg_Timer_t__getStartTick, 
+	                 __void__setStartTick__osg_Timer_t);
 	I_SimpleProperty(unsigned int, UpViewOnSingleScreen, 
 	                 0, 
 	                 __void__setUpViewOnSingleScreen__unsigned_int);

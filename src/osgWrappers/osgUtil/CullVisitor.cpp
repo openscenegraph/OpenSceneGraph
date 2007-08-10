@@ -65,7 +65,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_Method0(osgUtil::CullVisitor *, clone,
 	          Properties::VIRTUAL,
 	          __CullVisitor_P1__clone,
-	          "Create a shallow copy on the CullVisitor. ",
+	          "Create a shallow copy of the CullVisitor, used by CullVisitor::create() to clone the prototype. ",
 	          "");
 	I_Method0(void, reset,
 	          Properties::VIRTUAL,

@@ -13,7 +13,6 @@
 #include <osg/ApplicationUsage>
 #include <osg/ArgumentParser>
 #include <osg/Camera>
-#include <osg/FrameStamp>
 #include <osg/Node>
 #include <osg/OperationThread>
 #include <osg/Timer>
@@ -85,13 +84,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          "",
 	          "");
 	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setStartTick__osg_Timer_t,
-	          "",
-	          "");
-	I_Method0(osg::Timer_t, getStartTick,
-	          Properties::NON_VIRTUAL,
-	          __osg_Timer_t__getStartTick,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, setReferenceTime, IN, double, time, 0.0,
@@ -99,16 +93,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__setReferenceTime__double,
 	                      "",
 	                      "");
-	I_Method0(osg::FrameStamp *, getFrameStamp,
-	          Properties::NON_VIRTUAL,
-	          __osg_FrameStamp_P1__getFrameStamp,
-	          "",
-	          "");
-	I_Method0(const osg::FrameStamp *, getFrameStamp,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_FrameStamp_P1__getFrameStamp,
-	          "",
-	          "");
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
 	          Properties::VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,
@@ -312,9 +296,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(osgViewer::Viewer::BarrierPosition, EndBarrierPosition, 
 	                 __BarrierPosition__getEndBarrierPosition, 
 	                 __void__setEndBarrierPosition__BarrierPosition);
-	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
-	                 __osg_FrameStamp_P1__getFrameStamp, 
-	                 0);
 	I_SimpleProperty(int, KeyEventSetsDone, 
 	                 __int__getKeyEventSetsDone, 
 	                 __void__setKeyEventSetsDone__int);
@@ -331,7 +312,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                 0, 
 	                 __void__setSceneData__osg_Node_P1);
 	I_SimpleProperty(osg::Timer_t, StartTick, 
-	                 __osg_Timer_t__getStartTick, 
+	                 0, 
 	                 __void__setStartTick__osg_Timer_t);
 	I_SimpleProperty(osgViewer::Viewer::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 

@@ -14,7 +14,6 @@
 #ifndef OSGVIEWER_SCENE
 #define OSGVIEWER_SCENE 1
 
-#include <osgUtil/UpdateVisitor>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/EventVisitor>
 #include <osgDB/DatabasePager>
@@ -26,7 +25,7 @@
 namespace osgViewer{
 
 /** Scene holds the highe level reference to a single scene graph.*/
-class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
+class OSGVIEWER_EXPORT Scene : public osg::Referenced
 {
     public:
 
@@ -37,37 +36,18 @@ class OSGVIEWER_EXPORT Scene : public virtual osg::Referenced
         osg::Node* getSceneData();
         const osg::Node* getSceneData() const;
 
-        void setFrameStamp(osg::FrameStamp* frameStamp);
-        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
-        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
-
         void setDatabasePager(osgDB::DatabasePager* dp);
         osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
         const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
 
-        void setUpdateVisitor(osgUtil::UpdateVisitor* uv) { _updateVisitor = uv; }
-        osgUtil::UpdateVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
-        const osgUtil::UpdateVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
+        /** Get the Scene object that has the specified node assigned to it.
+          * return 0 if no Scene has yet been assigned the specified node.*/
+        static Scene* getScene(osg::Node* node);
 
-
-        virtual void advance();
-        
-        virtual void updateTraversal();
-
-
-
-    public:
-
-        void init();
 
     protected:
     
-        bool                                _firstFrame;
-        osg::ref_ptr<osg::FrameStamp>       _frameStamp;
-
         osg::ref_ptr<osg::Node>             _sceneData;
-
-        osg::ref_ptr<osgUtil::UpdateVisitor>  _updateVisitor;
 
         osg::ref_ptr<osgDB::DatabasePager>  _databasePager;
 };

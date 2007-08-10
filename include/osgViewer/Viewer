@@ -16,6 +16,7 @@
 
 #include <osg/ArgumentParser>
 #include <osgGA/EventVisitor>
+#include <osgUtil/UpdateVisitor>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/View>
 
@@ -43,14 +44,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         bool done() const { return _done; }
         
-        void setStartTick(osg::Timer_t tick);
-        osg::Timer_t getStartTick() const { return _startTick; }
+        virtual void setStartTick(osg::Timer_t tick);
 
         void setReferenceTime(double time=0.0);
-
-        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
-        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
-
 
         /** Set the sene graph data that viewer with view.*/
         virtual void setSceneData(osg::Node* node);
@@ -200,34 +196,34 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         }
         
         
-        bool _firstFrame;
+        bool            _firstFrame;
         
-        bool _done;
-        int _keyEventSetsDone;
-        bool _quitEventSetsDone;
+        bool            _done;
+        int             _keyEventSetsDone;
+        bool            _quitEventSetsDone;
         
-        ThreadingModel      _threadingModel;
-        bool                _threadsRunning;
+        ThreadingModel  _threadingModel;
+        bool            _threadsRunning;
         
-        bool                _useMainThreadForRenderingTraversal;
-        BarrierPosition     _endBarrierPosition;
+        bool            _useMainThreadForRenderingTraversal;
+        BarrierPosition _endBarrierPosition;
 
-        osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
-        osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;
-        osg::ref_ptr<EndOfDynamicDrawBlock> _endDynamicDrawBlock;
+        osg::ref_ptr<osg::BarrierOperation>         _startRenderingBarrier;
+        osg::ref_ptr<osg::BarrierOperation>         _endRenderingDispatchBarrier;
+        osg::ref_ptr<osg::EndOfDynamicDrawBlock>    _endDynamicDrawBlock;
 
-        unsigned int _numWindowsOpenAtLastSetUpThreading;
+        unsigned int                                _numWindowsOpenAtLastSetUpThreading;
         
-        osg::Timer_t                        _startTick;
-        osg::ref_ptr<osg::FrameStamp>       _frameStamp;
+        osg::observer_ptr<osg::Camera>              _cameraWithFocus;
+        
+        osg::ref_ptr<osgGA::EventVisitor>           _eventVisitor;
+        
+        osg::ref_ptr<osg::OperationQueue>           _updateOperations;
+        osg::ref_ptr<osgUtil::UpdateVisitor>        _updateVisitor;
+        
+        osg::ref_ptr<osg::Operation>                _realizeOperation;
 
-        osg::observer_ptr<osg::Camera>      _cameraWithFocus;
-        
-        osg::ref_ptr<osgGA::EventVisitor>   _eventVisitor;
-        
-        osg::ref_ptr<osg::Operation>        _realizeOperation;
-        
-        osg::observer_ptr<osg::GraphicsContext> _currentContext;
+        osg::observer_ptr<osg::GraphicsContext>     _currentContext;
 };
 
 

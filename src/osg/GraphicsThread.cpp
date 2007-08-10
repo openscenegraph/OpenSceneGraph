@@ -133,3 +133,18 @@ void RunOperations::operator () (osg::GraphicsContext* context)
 {
     context->runOperations();
 }
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// EndOfDynamicDrawBlock
+//
+EndOfDynamicDrawBlock::EndOfDynamicDrawBlock(unsigned int numberOfBlocks):
+    BlockCount(numberOfBlocks)
+{
+}
+
+void EndOfDynamicDrawBlock::completed(osg::State* /*state*/)
+{
+    BlockCount::completed();
+}

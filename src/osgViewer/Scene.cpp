@@ -16,34 +16,34 @@
 
 using namespace osgViewer;
 
-Scene::Scene():
-    _firstFrame(true)
-{
-    _frameStamp = new osg::FrameStamp;
-    _frameStamp->setFrameNumber(0);
-    _frameStamp->setReferenceTime(0);
+typedef std::vector< osg::observer_ptr<Scene> >  SceneCache;
+static OpenThreads::Mutex s_sceneCacheMutex;
+static SceneCache s_sceneCache;
 
-    _updateVisitor = new osgUtil::UpdateVisitor;
-    _updateVisitor->setFrameStamp(_frameStamp.get());
-    
+Scene::Scene():
+    osg::Referenced(true)
+{
     setDatabasePager(osgDB::DatabasePager::create());
+    
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_sceneCacheMutex);
+    s_sceneCache.push_back(this);
 }
 
 Scene::~Scene()
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_sceneCacheMutex);
+    for(SceneCache::iterator itr = s_sceneCache.begin();
+        itr != s_sceneCache.end();
+        ++itr)
+    {
+        Scene* scene = itr->get();
+        if (scene==this)
+        {
+            s_sceneCache.erase(itr);
+            break;
+        }
+    }
 }
-
-void Scene::setFrameStamp(osg::FrameStamp* frameStamp)
-{
-    _frameStamp = frameStamp;
-    _updateVisitor->setFrameStamp(_frameStamp.get());
-}
-
-void Scene::init()
-{
-    osg::notify(osg::NOTICE)<<"Scene::init() not implementated yet."<<std::endl;
-}
-
 
 void Scene::setSceneData(osg::Node* node)
 {
@@ -71,31 +71,17 @@ void Scene::setDatabasePager(osgDB::DatabasePager* dp)
     _databasePager = dp;
 }
 
-void Scene::advance()
+
+Scene* Scene::getScene(osg::Node* node)
 {
-    // double previousTime = _frameStamp->getReferenceTime();
-    
-    _frameStamp->setReferenceTime(osg::Timer::instance()->time_s());
-    _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
-
-    // osg::notify(osg::NOTICE)<<"Frame rate = "<<1.0/(_frameStamp->getReferenceTime()-previousTime)<<std::endl;
-}
-
-void Scene::updateTraversal()
-{
-    _updateVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
-
-    if (!getSceneData()) return;
-    
-    getSceneData()->accept(*_updateVisitor);
-    
-    if (_databasePager.valid())
-    {    
-        // syncronize changes required by the DatabasePager thread to the scene graph
-        _databasePager->updateSceneGraph(_frameStamp->getReferenceTime());
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_sceneCacheMutex);
+    for(SceneCache::iterator itr = s_sceneCache.begin();
+        itr != s_sceneCache.end();
+        ++itr)
+    {
+        Scene* scene = itr->get();
+        if (scene && scene->getSceneData()==node) return scene;
     }
+    return 0;
 }
-
-
- 
 

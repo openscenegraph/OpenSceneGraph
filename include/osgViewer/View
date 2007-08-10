@@ -25,33 +25,6 @@
 
 namespace osgViewer {
 
-class OSGVIEWER_EXPORT EndOfDynamicDrawBlock : public osg::State::DynamicObjectRenderingCompletedCallback
-{
-    public:
-    
-        EndOfDynamicDrawBlock(unsigned int);
-    
-        void completed(osg::State* state);
-
-        void block();
-        
-        void reset();
-
-        void release();
-
-        void setNumOfBlocks(unsigned int blockCount);
-
-    protected:
-
-        ~EndOfDynamicDrawBlock();
-
-        OpenThreads::Mutex _mut;
-        OpenThreads::Condition _cond;
-        unsigned int _numberOfBlocks;
-        unsigned int _blockCount;
-};
-
-
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
 class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 {
@@ -62,6 +35,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         View(const osgViewer::View& view, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgViewer,View);
+
+        virtual void setStartTick(osg::Timer_t tick);
+        osg::Timer_t getStartTick() const { return _startTick; }
+
+        void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
+        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
+        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
         Scene* getScene() { return _scene.get(); }
         const Scene* getScene() const { return _scene.get(); }
@@ -74,6 +54,12 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Get the const View's scene graph.*/
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
+
+        /** Get the View's database pager.*/
+        osgDB::DatabasePager* getDatabasePager();
+
+        /** Get the const View's database pager.*/
+        const osgDB::DatabasePager* getDatabasePager() const;
 
         /* Set the EventQueue that View uses to intregrate external non window related events.*/
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
@@ -187,6 +173,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         virtual ~View();
 
         virtual osg::GraphicsOperation* createRenderer(osg::Camera* camera);
+
+        osg::Timer_t                            _startTick;
+        osg::ref_ptr<osg::FrameStamp>           _frameStamp;
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;

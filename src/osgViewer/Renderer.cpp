@@ -20,7 +20,6 @@
 
 #include <osgViewer/Renderer>
 #include <osgViewer/View>
-#include <osgViewer/Viewer>
 
 #include <osgDB/DatabasePager>
 
@@ -232,12 +231,10 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     }
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(view);
-    Scene* scene = view ? view->getScene() : 0;
-    osgDB::DatabasePager* databasePager = scene ? scene->getDatabasePager() : 0;
+    osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
     sceneView->getCullVisitor()->setDatabaseRequestHandler(databasePager);
     
-    sceneView->setFrameStamp(scene ? scene->getFrameStamp() : state->getFrameStamp());
+    sceneView->setFrameStamp(view ? view->getFrameStamp() : state->getFrameStamp());
     
     if (databasePager) databasePager->setCompileGLObjectsForContextID(state->getContextID(), true);
     
@@ -246,7 +243,7 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
 
     sceneView->setDisplaySettings(ds);
 
-    if (viewer) _startTick = viewer->getStartTick();
+    if (view) _startTick = view->getStartTick();
 }
 
 
@@ -330,8 +327,7 @@ void Renderer::draw()
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
 
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-        Scene* scene = view ? view->getScene() : 0;
-        osgDB::DatabasePager* databasePager = scene ? scene->getDatabasePager() : 0;
+        osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
         // osg::notify(osg::NOTICE)<<"Drawing buffer "<<_currentDraw<<std::endl;
 
@@ -433,8 +429,7 @@ void Renderer::cull_draw()
     updateSceneView(sceneView);
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-    Scene* scene = view ? view->getScene() : 0;
-    osgDB::DatabasePager* databasePager = scene ? scene->getDatabasePager() : 0;
+    osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
     osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;

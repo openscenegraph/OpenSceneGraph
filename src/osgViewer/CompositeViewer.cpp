@@ -61,6 +61,11 @@ void CompositeViewer::constructorInit()
     setEventQueue(new osgGA::EventQueue);
 
     _eventVisitor = new osgGA::EventVisitor;
+    _eventVisitor->setFrameStamp(_frameStamp.get());
+
+    _updateVisitor = new osgUtil::UpdateVisitor;
+    _updateVisitor->setFrameStamp(_frameStamp.get());
+
 }
 
 CompositeViewer::~CompositeViewer()
@@ -105,6 +110,8 @@ void CompositeViewer::addView(osgViewer::View* view)
     if (threadsWereRuinning) stopThreading();
 
     _views.push_back(view);
+    
+    view->setFrameStamp(_frameStamp.get());
     
     if (threadsWereRuinning) startThreading();
 }
@@ -176,6 +183,13 @@ int CompositeViewer::run()
 void CompositeViewer::setStartTick(osg::Timer_t tick)
 {
     _startTick = tick;
+    
+    for(Views::iterator vitr = _views.begin();
+        vitr != _views.end();
+        ++vitr)
+    {
+        (*vitr)->setStartTick(tick);
+    }
     
     Contexts contexts;
     getContexts(contexts,false);
@@ -970,16 +984,24 @@ void CompositeViewer::updateTraversal()
 
     Scenes scenes;
     getScenes(scenes);
-    
     for(Scenes::iterator sitr = scenes.begin();
         sitr != scenes.end();
         ++sitr)
     {
-        (*sitr)->setFrameStamp(_frameStamp.get());
-        (*sitr)->updateTraversal();
+        Scene* scene = *sitr;
+        if (scene->getSceneData())
+        {
+            scene->getSceneData()->accept(*_updateVisitor);
+        }
+
+        if (scene->getDatabasePager())
+        {    
+            // syncronize changes required by the DatabasePager thread to the scene graph
+            scene->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
+        }
+
     }
-
-
+    
     for(Views::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
@@ -987,23 +1009,22 @@ void CompositeViewer::updateTraversal()
         View* view = vitr->get();
 
         Scene* scene = view->getScene();
-        osgUtil::UpdateVisitor* uv = scene ? scene->getUpdateVisitor() : 0;
-        if (uv)
+
         {
             // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
             // leave that to the scene update traversal.
-            osg::NodeVisitor::TraversalMode tm = uv->getTraversalMode();
-            uv->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
+            osg::NodeVisitor::TraversalMode tm = _updateVisitor->getTraversalMode();
+            _updateVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-            if (view->getCamera() && view->getCamera()->getUpdateCallback()) view->getCamera()->accept(*uv);
+            if (view->getCamera() && view->getCamera()->getUpdateCallback()) view->getCamera()->accept(*_updateVisitor);
 
             for(unsigned int i=0; i<view->getNumSlaves(); ++i)
             {
                 osg::Camera* camera = view->getSlave(i)._camera.get();
-                if (camera && camera->getUpdateCallback()) camera->accept(*uv);
+                if (camera && camera->getUpdateCallback()) camera->accept(*_updateVisitor);
             }
 
-            uv->setTraversalMode(tm);
+            _updateVisitor->setTraversalMode(tm);
         }
 
 

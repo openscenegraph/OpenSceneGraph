@@ -197,6 +197,7 @@ void View::setSceneData(osg::Node* node)
 
     Scene* scene = Scene::getScene(node);
     
+
     if (scene)
     {
         osg::notify(osg::INFO)<<"View::setSceneData() Sharing scene "<<scene<<std::endl;
@@ -231,14 +232,19 @@ void View::setSceneData(osg::Node* node)
     assignSceneDataToCameras();
 }
 
+void View::setDatabasePager(osgDB::DatabasePager* dp)
+{
+    _scene->setDatabasePager(dp);
+}
+
 osgDB::DatabasePager* View::getDatabasePager()
 {
-    return _scene.valid() ? _scene->getDatabasePager() : 0;
+    return _scene->getDatabasePager();
 }
 
 const osgDB::DatabasePager* View::getDatabasePager() const
 {
-    return _scene.valid() ? _scene->getDatabasePager() : 0;
+    return _scene->getDatabasePager();
 }
 
 

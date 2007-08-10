@@ -55,6 +55,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the const View's scene graph.*/
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
 
+        /** Set the View's database pager.*/
+        void setDatabasePager(osgDB::DatabasePager* dp);
+
         /** Get the View's database pager.*/
         osgDB::DatabasePager* getDatabasePager();
 

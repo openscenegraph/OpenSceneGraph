@@ -13,6 +13,7 @@
 #include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
 #include <osg/Object>
+#include <osg/State>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -55,6 +56,22 @@ BEGIN_OBJECT_REFLECTOR(osg::BlockAndFlushOperation)
 	I_Method0(void, release,
 	          Properties::VIRTUAL,
 	          __void__release,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::EndOfDynamicDrawBlock)
+	I_DeclaringFile("osg/GraphicsThread");
+	I_BaseType(OpenThreads::BlockCount);
+	I_BaseType(osg::State::DynamicObjectRenderingCompletedCallback);
+	I_Constructor1(IN, unsigned, int,
+	               Properties::NON_EXPLICIT,
+	               ____EndOfDynamicDrawBlock__unsigned,
+	               "",
+	               "");
+	I_Method1(void, completed, IN, osg::State *, state,
+	          Properties::VIRTUAL,
+	          __void__completed__osg_State_P1,
 	          "",
 	          "");
 END_REFLECTOR

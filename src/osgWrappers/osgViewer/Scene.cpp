@@ -10,10 +10,8 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/FrameStamp>
 #include <osg/Node>
 #include <osgDB/DatabasePager>
-#include <osgUtil/UpdateVisitor>
 #include <osgViewer/Scene>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -26,7 +24,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_DeclaringFile("osgViewer/Scene");
-	I_VirtualBaseType(osg::Referenced);
+	I_BaseType(osg::Referenced);
 	I_Constructor0(____Scene,
 	               "",
 	               "");
@@ -45,21 +43,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __C5_osg_Node_P1__getSceneData,
 	          "",
 	          "");
-	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, frameStamp,
-	          Properties::NON_VIRTUAL,
-	          __void__setFrameStamp__osg_FrameStamp_P1,
-	          "",
-	          "");
-	I_Method0(osg::FrameStamp *, getFrameStamp,
-	          Properties::NON_VIRTUAL,
-	          __osg_FrameStamp_P1__getFrameStamp,
-	          "",
-	          "");
-	I_Method0(const osg::FrameStamp *, getFrameStamp,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_FrameStamp_P1__getFrameStamp,
-	          "",
-	          "");
 	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
 	          Properties::NON_VIRTUAL,
 	          __void__setDatabasePager__osgDB_DatabasePager_P1,
@@ -75,47 +58,15 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
 	          "",
 	          "");
-	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, uv,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
-	          "",
-	          "");
-	I_Method0(osgUtil::UpdateVisitor *, getUpdateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __osgUtil_UpdateVisitor_P1__getUpdateVisitor,
-	          "",
-	          "");
-	I_Method0(const osgUtil::UpdateVisitor *, getUpdateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
-	          "",
-	          "");
-	I_Method0(void, advance,
-	          Properties::VIRTUAL,
-	          __void__advance,
-	          "",
-	          "");
-	I_Method0(void, updateTraversal,
-	          Properties::VIRTUAL,
-	          __void__updateTraversal,
-	          "",
-	          "");
-	I_Method0(void, init,
-	          Properties::NON_VIRTUAL,
-	          __void__init,
-	          "",
-	          "");
+	I_StaticMethod1(osgViewer::Scene *, getScene, IN, osg::Node *, node,
+	                __Scene_P1__getScene__osg_Node_P1_S,
+	                "Get the Scene object that has the specified node assigned to it. ",
+	                "return 0 if no Scene has yet been assigned the specified node. ");
 	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
 	                 __osgDB_DatabasePager_P1__getDatabasePager, 
 	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
-	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
-	                 __osg_FrameStamp_P1__getFrameStamp, 
-	                 __void__setFrameStamp__osg_FrameStamp_P1);
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);
-	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
-	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
-	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
 END_REFLECTOR
 

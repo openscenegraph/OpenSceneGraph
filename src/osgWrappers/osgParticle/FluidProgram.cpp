@@ -108,7 +108,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::FluidProgram)
 	                      Properties::NON_VIRTUAL,
 	                      __void__setToGravity__float,
 	                      "Set the acceleration vector to the gravity on earth (0, 0, -9.81). ",
-	                      "The acceleration will be multiplied by the scale parameter.");
+	                      "The acceleration will be multiplied by the scale parameter. ");
 	I_Method0(void, setFluidToAir,
 	          Properties::NON_VIRTUAL,
 	          __void__setFluidToAir,

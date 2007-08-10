@@ -49,11 +49,11 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_Constructor7(IN, const osg::Vec3 &, centre, IN, float, radius, IN, float, azMin, IN, float, azMax, IN, float, elevMin, IN, float, elevMax, IN, int, density,
 	               ____SphereSegment__C5_osg_Vec3_R1__float__float__float__float__float__int,
 	               "Construct by angle ranges. ",
-	               " param centre sphere centre  radius radius of sphere  azMin azimuth minimum  azMax azimuth maximum  elevMin elevation minimum  elevMax elevation maximum  density number of units to divide the azimuth and elevation ranges into ");
+	               " param centre sphere centre  radius radius of sphere  azMin azimuth minimum  azMax azimuth maximum  elevMin elevation minimum  elevMax elevation maximum  density number of units to divide the azimuth and elevation ranges into  ");
 	I_Constructor6(IN, const osg::Vec3 &, centre, IN, float, radius, IN, const osg::Vec3 &, vec, IN, float, azRange, IN, float, elevRange, IN, int, density,
 	               ____SphereSegment__C5_osg_Vec3_R1__float__C5_osg_Vec3_R1__float__float__int,
 	               "Construct by vector. ",
-	               " param centre sphere centre  radius radius of sphere  vec vector pointing from sphere centre to centre point of rendered area on sphere surface  azRange azimuth range in radians (with centre along vec)  elevRange elevation range in radians (with centre along vec)  density number of units to divide the azimuth and elevation ranges into ");
+	               " param centre sphere centre  radius radius of sphere  vec vector pointing from sphere centre to centre point of rendered area on sphere surface  azRange azimuth range in radians (with centre along vec)  elevRange elevation range in radians (with centre along vec)  density number of units to divide the azimuth and elevation ranges into  ");
 	I_Constructor2(IN, const osgSim::SphereSegment &, rhs, IN, const osg::CopyOp &, co,
 	               ____SphereSegment__C5_SphereSegment_R1__C5_osg_CopyOp_R1,
 	               "Copy constructor. ",
@@ -82,22 +82,22 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          Properties::NON_VIRTUAL,
 	          __void__setArea__C5_osg_Vec3_R1__float__float,
 	          "Set the area of the sphere segment. ",
-	          " param vec vector pointing from sphere centre to centre point of rendered area on sphere surface  azRange azimuth range in radians (with centre along vec)  elevRange elevation range in radians (with centre along vec) ");
+	          " param vec vector pointing from sphere centre to centre point of rendered area on sphere surface  azRange azimuth range in radians (with centre along vec)  elevRange elevation range in radians (with centre along vec)  ");
 	I_Method3(void, getArea, IN, osg::Vec3 &, vec, IN, float &, azRange, IN, float &, elevRange,
 	          Properties::NON_VIRTUAL,
 	          __void__getArea__osg_Vec3_R1__float_R1__float_R1,
 	          "Get the area of the sphere segment. ",
-	          " param vec vector pointing from sphere centre to centre point of rendered area on sphere surface (normalized)  azRange azimuth range in radians (with centre along vec)  elevRange elevation range in radians (with centre along vec) ");
+	          " param vec vector pointing from sphere centre to centre point of rendered area on sphere surface (normalized)  azRange azimuth range in radians (with centre along vec)  elevRange elevation range in radians (with centre along vec)  ");
 	I_Method4(void, setArea, IN, float, azMin, IN, float, azMax, IN, float, elevMin, IN, float, elevMax,
 	          Properties::NON_VIRTUAL,
 	          __void__setArea__float__float__float__float,
 	          "Set the area of the sphere segment. ",
-	          " param azMin azimuth minimum  azMax azimuth maximum  elevMin elevation minimum  elevMax elevation maximum ");
+	          " param azMin azimuth minimum  azMax azimuth maximum  elevMin elevation minimum  elevMax elevation maximum  ");
 	I_Method4(void, getArea, IN, float &, azMin, IN, float &, azMax, IN, float &, elevMin, IN, float &, elevMax,
 	          Properties::NON_VIRTUAL,
 	          __void__getArea__float_R1__float_R1__float_R1__float_R1,
 	          "Get the area of the sphere segment. ",
-	          " param azMin azimuth minimum  azMax azimuth maximum  elevMin elevation minimum  elevMax elevation maximum ");
+	          " param azMin azimuth minimum  azMax azimuth maximum  elevMin elevation minimum  elevMax elevation maximum  ");
 	I_Method1(void, setDensity, IN, int, d,
 	          Properties::NON_VIRTUAL,
 	          __void__setDensity__int,
@@ -112,7 +112,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          Properties::NON_VIRTUAL,
 	          __void__setDrawMask__DrawMask,
 	          "Specify the DrawMask. ",
-	          " param dm Bitmask specifying which parts of the sphere segment should be drawn.   see DrawMask");
+	          " param dm Bitmask specifying which parts of the sphere segment should be drawn.   see DrawMask ");
 	I_Method0(osgSim::SphereSegment::DrawMask, getDrawMask,
 	          Properties::NON_VIRTUAL,
 	          __DrawMask__getDrawMask,

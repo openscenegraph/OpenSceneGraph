@@ -99,12 +99,12 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          Properties::NON_VIRTUAL,
 	          __float__getRadius,
 	          "Get the physical radius of the particle. ",
-	          "For built-in operators to work correctly, lengths must be expressed in meters.");
+	          "For built-in operators to work correctly, lengths must be expressed in meters. ");
 	I_Method0(float, getMass,
 	          Properties::NON_VIRTUAL,
 	          __float__getMass,
 	          "Get the mass of the particle. ",
-	          "For built-in operators to work correctly, remember that the mass is expressed in kg.");
+	          "For built-in operators to work correctly, remember that the mass is expressed in kg. ");
 	I_Method0(float, getMassInv,
 	          Properties::NON_VIRTUAL,
 	          __float__getMassInv,
@@ -119,7 +119,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getVelocity,
 	          "Get the velocity vector. ",
-	          "For built-in operators to work correctly, remember that velocity components are expressed in meters per second.");
+	          "For built-in operators to work correctly, remember that velocity components are expressed in meters per second. ");
 	I_Method0(const osg::Vec3 &, getPreviousPosition,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_R1__getPreviousPosition,
@@ -219,12 +219,12 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          Properties::NON_VIRTUAL,
 	          __void__setRadius__float,
 	          "Set the physical radius of the particle. ",
-	          "For built-in operators to work correctly, lengths must be expressed in meters.");
+	          "For built-in operators to work correctly, lengths must be expressed in meters. ");
 	I_Method1(void, setMass, IN, float, m,
 	          Properties::NON_VIRTUAL,
 	          __void__setMass__float,
 	          "Set the mass of the particle. ",
-	          "For built-in operators to work correctly, remember that the mass is expressed in kg.");
+	          "For built-in operators to work correctly, remember that the mass is expressed in kg. ");
 	I_Method1(void, setPosition, IN, const osg::Vec3 &, p,
 	          Properties::NON_VIRTUAL,
 	          __void__setPosition__C5_osg_Vec3_R1,
@@ -234,7 +234,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          Properties::NON_VIRTUAL,
 	          __void__setVelocity__C5_osg_Vec3_R1,
 	          "Set the velocity vector. ",
-	          "For built-in operators to work correctly, remember that velocity components are expressed in meters per second.");
+	          "For built-in operators to work correctly, remember that velocity components are expressed in meters per second. ");
 	I_Method1(void, addVelocity, IN, const osg::Vec3 &, dv,
 	          Properties::NON_VIRTUAL,
 	          __void__addVelocity__C5_osg_Vec3_R1,
@@ -259,7 +259,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          Properties::NON_VIRTUAL,
 	          __void__setAngularVelocity__C5_osg_Vec3_R1,
 	          "Set the angular velocity vector. ",
-	          "Components x, y and z are angles of rotation around the respective axis (in radians).");
+	          "Components x, y and z are angles of rotation around the respective axis (in radians). ");
 	I_Method1(void, addAngularVelocity, IN, const osg::Vec3 &, dv,
 	          Properties::NON_VIRTUAL,
 	          __void__addAngularVelocity__C5_osg_Vec3_R1,
@@ -274,7 +274,7 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          Properties::NON_VIRTUAL,
 	          __bool__update__double,
 	          "Update the particle (don't call this method manually). ",
-	          "This method is called automatically by ParticleSystem::update(); it updates the graphical properties of the particle for the current time, checks whether the particle is still alive, and then updates its position by computing P = P + V * dt (where P is the position and V is the velocity).");
+	          "This method is called automatically by ParticleSystem::update(); it updates the graphical properties of the particle for the current time, checks whether the particle is still alive, and then updates its position by computing P = P + V * dt (where P is the position and V is the velocity). ");
 	I_Method0(void, beginRender,
 	          Properties::NON_VIRTUAL,
 	          __void__beginRender,

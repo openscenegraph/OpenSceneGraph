@@ -73,7 +73,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Emitter)
 	          Properties::NON_VIRTUAL,
 	          __void__setUseDefaultTemplate__bool,
 	          "Set whether the default particle template should be used. ",
-	          "When this flag is true, the particle template is ignored, and the particle system's default template is used instead.");
+	          "When this flag is true, the particle template is ignored, and the particle system's default template is used instead. ");
 	I_ProtectedMethod1(void, process, IN, double, dt,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,

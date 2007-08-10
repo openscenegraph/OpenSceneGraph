@@ -50,7 +50,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	          Properties::VIRTUAL,
 	          __void__setParentDragger__Dragger_P1,
 	          "Set/Get parent dragger. ",
-	          "For simple draggers parent points to itself. For composite draggers parent points to the parent dragger that uses this dragger.");
+	          "For simple draggers parent points to itself. For composite draggers parent points to the parent dragger that uses this dragger. ");
 	I_Method3(bool, handle, IN, const osgManipulator::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
@@ -134,7 +134,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          Properties::VIRTUAL,
 	          __void__setParentDragger__Dragger_P1,
 	          "Set/Get parent dragger. ",
-	          "For simple draggers parent points to itself. For composite draggers parent points to the parent dragger that uses this dragger.");
+	          "For simple draggers parent points to itself. For composite draggers parent points to the parent dragger that uses this dragger. ");
 	I_Method0(osgManipulator::Dragger *, getParentDragger,
 	          Properties::NON_VIRTUAL,
 	          __Dragger_P1__getParentDragger,

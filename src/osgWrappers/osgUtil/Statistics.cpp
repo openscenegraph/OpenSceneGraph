@@ -68,17 +68,17 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec3_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
-	          "Somehow mimics the OpenGL glVertexPointer() function.");
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, x,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec2_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
-	          "Somehow mimics the OpenGL glVertexPointer() function.");
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, x,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec4_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
-	          "Somehow mimics the OpenGL glVertexPointer() function.");
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
 	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, x, IN, GLsizei, count,
 	          Properties::VIRTUAL,
 	          __void__drawArrays__GLenum__GLint__GLsizei,

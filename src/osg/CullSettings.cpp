@@ -48,6 +48,28 @@ void CullSettings::setDefaults()
     //_nearFarRatio = 0.00005f;
 }
 
+void CullSettings::setCullSettings(const CullSettings& rhs)
+{
+    _inheritanceMask = rhs._inheritanceMask;
+
+    _computeNearFar = rhs._computeNearFar;
+    _cullingMode = rhs._cullingMode;
+    _LODScale = rhs._LODScale;
+    _smallFeatureCullingPixelSize = rhs._smallFeatureCullingPixelSize;
+
+    _clampProjectionMatrixCallback = rhs._clampProjectionMatrixCallback;
+    _nearFarRatio = rhs._nearFarRatio;
+    _impostorActive = rhs._impostorActive;
+    _depthSortImpostorSprites = rhs._depthSortImpostorSprites;
+    _impostorPixelErrorThreshold = rhs._impostorPixelErrorThreshold;
+    _numFramesToKeepImpostorSprites = rhs._numFramesToKeepImpostorSprites;    
+
+    _cullMask = rhs._cullMask;
+    _cullMaskLeft = rhs._cullMaskLeft;
+    _cullMaskRight =  rhs._cullMaskRight;
+}
+
+
 void CullSettings::inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask)
 {
     if (inheritanceMask & COMPUTE_NEAR_FAR_MODE) _computeNearFar = settings._computeNearFar;

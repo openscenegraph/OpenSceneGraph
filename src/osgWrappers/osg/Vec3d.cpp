@@ -120,6 +120,6 @@ BEGIN_VALUE_REFLECTOR(osg::Vec3d)
 	          Properties::NON_VIRTUAL,
 	          __value_type__normalize,
 	          "Normalize the vector so that it has length unity. ",
-	          "Returns the previous length of the vector.");
+	          "Returns the previous length of the vector. ");
 END_REFLECTOR
 

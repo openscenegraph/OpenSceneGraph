@@ -87,7 +87,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          Properties::VIRTUAL,
 	          __bool__addChild__Node_P1,
 	          "Add Node to Group. ",
-	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes.");
+	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes. ");
 	I_Method2(bool, addChild, IN, osg::Node *, child, IN, double, t,
 	          Properties::VIRTUAL,
 	          __bool__addChild__Node_P1__double,
@@ -97,7 +97,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          Properties::VIRTUAL,
 	          __bool__insertChild__unsigned_int__Node_P1,
 	          "Insert Node to Group at specific location. ",
-	          "The new child node is inserted into the child list before the node at the specified index. No nodes are removed from the group with this operation.");
+	          "The new child node is inserted into the child list before the node at the specified index. No nodes are removed from the group with this operation. ");
 	I_Method3(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child, IN, double, t,
 	          Properties::VIRTUAL,
 	          __bool__insertChild__unsigned_int__Node_P1__double,
@@ -107,7 +107,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          Properties::VIRTUAL,
 	          __bool__removeChild__Node_P1,
 	          "Remove Node from Group. ",
-	          "If Node is contained in Group then remove it from the child list, decrement its reference count, and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. If Node is not found then return false and do not change the reference count of the Node. Note, do not override, only override removeChildren(,) is required.");
+	          "If Node is contained in Group then remove it from the child list, decrement its reference count, and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. If Node is not found then return false and do not change the reference count of the Node. Note, do not override, only override removeChildren(,) is required. ");
 	I_Method2(bool, removeChildren, IN, unsigned int, pos, IN, unsigned int, numChildrenToRemove,
 	          Properties::VIRTUAL,
 	          __bool__removeChildren__unsigned_int__unsigned_int,

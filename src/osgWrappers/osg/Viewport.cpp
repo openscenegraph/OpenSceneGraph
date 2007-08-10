@@ -130,17 +130,17 @@ BEGIN_OBJECT_REFLECTOR(osg::Viewport)
 	          Properties::NON_VIRTUAL,
 	          __double__aspectRatio,
 	          "Return the aspectRatio of the viewport, which is equal to width/height. ",
-	          "If height is zero, the potental division by zero is avoided by simply returning 1.0f.");
+	          "If height is zero, the potental division by zero is avoided by simply returning 1.0f. ");
 	I_Method0(const osg::Matrix, computeWindowMatrix,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Matrix__computeWindowMatrix,
 	          "Compute the Window Matrix which takes projected coords into Window coordinates. ",
-	          "To convert local coordinates into window coordinates use v_window = v_local * MVPW matrix, where the MVPW matrix is ModelViewMatrix * ProjectionMatrix * WindowMatrix, the latter supplied by Viewport::computeWindowMatrix(), the ModelView and Projection Matrix can either be sourced from the current osg::State object, via osgUtil::SceneView or CullVisitor.");
+	          "To convert local coordinates into window coordinates use v_window = v_local * MVPW matrix, where the MVPW matrix is ModelViewMatrix * ProjectionMatrix * WindowMatrix, the latter supplied by Viewport::computeWindowMatrix(), the ModelView and Projection Matrix can either be sourced from the current osg::State object, via osgUtil::SceneView or CullVisitor. ");
 	I_Method1(void, apply, IN, osg::State &, state,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);

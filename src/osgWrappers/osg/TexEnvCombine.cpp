@@ -296,7 +296,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_ProtectedMethod1(bool, needsTexEnvCombiner, IN, GLint, value,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

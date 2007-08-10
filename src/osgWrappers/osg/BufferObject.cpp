@@ -55,7 +55,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          Properties::NON_VIRTUAL,
 	          __void__setUsage__GLenum,
 	          "Set what type of usage the buffer object will have. ",
-	          "Options are: GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.");
+	          "Options are: GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY. ");
 	I_Method0(GLenum, getUsage,
 	          Properties::NON_VIRTUAL,
 	          __GLenum__getUsage,

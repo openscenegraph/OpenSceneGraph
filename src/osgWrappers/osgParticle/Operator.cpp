@@ -63,12 +63,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Operator)
 	          Properties::PURE_VIRTUAL,
 	          __void__operate__Particle_P1__double,
 	          "Do something on a particle. ",
-	          "This method is called by ModularProgram objects to perform some operations on the particles. You must override it in descendant classes. Common operations consist of modifying the particle's velocity vector. The dt parameter is the time elapsed from last operation.");
+	          "This method is called by ModularProgram objects to perform some operations on the particles. You must override it in descendant classes. Common operations consist of modifying the particle's velocity vector. The dt parameter is the time elapsed from last operation. ");
 	I_Method1(void, beginOperate, IN, osgParticle::Program *, x,
 	          Properties::VIRTUAL,
 	          __void__beginOperate__Program_P1,
 	          "Do something before processing particles via the operate() method. ",
-	          "Overriding this method could be necessary to query the calling Program object for the current reference frame. If the reference frame is RELATIVE_RF, then your class should prepare itself to do all operations in local coordinates.");
+	          "Overriding this method could be necessary to query the calling Program object for the current reference frame. If the reference frame is RELATIVE_RF, then your class should prepare itself to do all operations in local coordinates. ");
 	I_Method0(void, endOperate,
 	          Properties::VIRTUAL,
 	          __void__endOperate,

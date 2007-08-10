@@ -68,7 +68,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          Properties::NON_VIRTUAL,
 	          __void__setParent__Impostor_P1,
 	          "Set the parent, which must be an Impostor. ",
-	          "Unlike conventional Drawables, ImpostorSprites can only ever have one parent.");
+	          "Unlike conventional Drawables, ImpostorSprites can only ever have one parent. ");
 	I_Method0(osgSim::Impostor *, getParent,
 	          Properties::NON_VIRTUAL,
 	          __Impostor_P1__getParent,
@@ -103,7 +103,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3_P1__getCoords,
 	          "Get the coordinates of the corners of the quad. ",
-	          "Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.");
+	          "Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left. ");
 	I_Method0(const osg::Vec3 *, getCoords,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_P1__getCoords,
@@ -113,7 +113,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec2_P1__getTexCoords,
 	          "Get the texture coordinates of the corners of the quad. ",
-	          "Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.");
+	          "Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left. ");
 	I_Method0(const osg::Vec2 *, getTexCoords,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec2_P1__getTexCoords,
@@ -123,7 +123,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3_P1__getControlCoords,
 	          "Get the control coordinates of the corners of the quad. ",
-	          "The control coordinates are the corners of the quad projected out onto the front face of bounding box which enclosed the impostor geometry when it was pre-rendered into the impostor sprite's texture. At the point of creation/or update of the impostor sprite the control coords will lie on top of the corners of the quad in screen space - with a pixel error of zero. Once the camera moves relative to the impostor sprite the control coords will no longer lie on top of the corners of the quad in screen space - a pixel error will have accumulated. This pixel error can then be used to determine whether the impostor needs to be updated. Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left.");
+	          "The control coordinates are the corners of the quad projected out onto the front face of bounding box which enclosed the impostor geometry when it was pre-rendered into the impostor sprite's texture. At the point of creation/or update of the impostor sprite the control coords will lie on top of the corners of the quad in screen space - with a pixel error of zero. Once the camera moves relative to the impostor sprite the control coords will no longer lie on top of the corners of the quad in screen space - a pixel error will have accumulated. This pixel error can then be used to determine whether the impostor needs to be updated. Stored in the order, [0] - top_left, [1] - bottom_left, [2] - bottom_right, [3] - top_left. ");
 	I_Method0(const osg::Vec3 *, getControlCoords,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec3_P1__getControlCoords,

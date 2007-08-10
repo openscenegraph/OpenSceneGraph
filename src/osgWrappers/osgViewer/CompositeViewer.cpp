@@ -186,7 +186,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          Properties::VIRTUAL,
 	          __int__run,
 	          "Execute a main frame loop. ",
-	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned.");
+	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned. ");
 	I_MethodWithDefaults1(void, frame, IN, double, simulationTime, USE_REFERENCE_TIME,
 	                      Properties::VIRTUAL,
 	                      __void__frame__double,

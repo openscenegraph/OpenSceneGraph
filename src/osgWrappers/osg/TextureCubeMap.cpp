@@ -114,7 +114,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureSize__int__int,
 	          "Set the texture width and height. ",
-	          "If width or height are zero then the repsective size value is calculated from the source image sizes.");
+	          "If width or height are zero then the repsective size value is calculated from the source image sizes. ");
 	I_Method1(void, setTextureWidth, IN, int, width,
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureWidth__int,
@@ -159,7 +159,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	          Properties::NON_VIRTUAL,
 	          __void__setNumMipmapLevels__unsigned_int,
 	          "Set the number of mip map levels the the texture has been created with. ",
-	          "Should only be called within an osg::Texuture::apply() and custom OpenGL texture load.");
+	          "Should only be called within an osg::Texuture::apply() and custom OpenGL texture load. ");
 	I_Method0(unsigned int, getNumMipmapLevels,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumMipmapLevels,
@@ -174,15 +174,15 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureCubeMap)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "On first apply (unless already compiled), create the mipmapped texture and bind it. ",
-	          "Subsequent apply will simple bind to texture.");
+	          "Subsequent apply will simple bind to texture. ");
 	I_StaticMethod2(osg::TextureCubeMap::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",
-	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.");
+	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID. ");
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::TextureCubeMap::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "The setExtensions method allows users to override the extensions across graphics contexts. ",
-	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions.");
+	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
 	I_ProtectedMethod0(bool, imagesValid,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

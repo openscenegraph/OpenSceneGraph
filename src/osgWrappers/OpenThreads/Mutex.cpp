@@ -29,16 +29,16 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::Mutex)
 	          Properties::VIRTUAL,
 	          __int__lock,
 	          "Lock the mutex. ",
-	          "0 if normal, -1 if errno set, errno code otherwise. ");
+	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 	I_Method0(int, unlock,
 	          Properties::VIRTUAL,
 	          __int__unlock,
 	          "Unlock the mutex. ",
-	          "0 if normal, -1 if errno set, errno code otherwise. ");
+	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 	I_Method0(int, trylock,
 	          Properties::VIRTUAL,
 	          __int__trylock,
 	          "Test if mutex can be locked. ",
-	          "0 if normal, -1 if errno set, errno code otherwise. ");
+	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 END_REFLECTOR
 

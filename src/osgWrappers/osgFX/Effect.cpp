@@ -83,7 +83,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
 	          Properties::VIRTUAL,
 	          __void__setUpDemo,
 	          "optional: set effect parameters to produce a visually significant result to be used in demo applications like osgfxbrowser. ",
-	          "Default is to do nothing.");
+	          "Default is to do nothing. ");
 	I_Method0(int, getNumTechniques,
 	          Properties::NON_VIRTUAL,
 	          __int__getNumTechniques,
@@ -136,7 +136,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Effect)
 	                   Properties::NON_CONST,
 	                   __bool__define_techniques,
 	                   "abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect. ",
-	                   "You will usually call addTechnique() inside this method.");
+	                   "You will usually call addTechnique() inside this method. ");
 	I_SimpleProperty(bool, Enabled, 
 	                 __bool__getEnabled, 
 	                 __void__setEnabled__bool);

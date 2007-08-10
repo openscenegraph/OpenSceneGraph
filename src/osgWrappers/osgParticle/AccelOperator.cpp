@@ -74,7 +74,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::AccelOperator)
 	                      Properties::NON_VIRTUAL,
 	                      __void__setToGravity__float,
 	                      "Quickly set the acceleration vector to the gravity on earth (0, 0, -9.81). ",
-	                      "The acceleration will be multiplied by the scale parameter.");
+	                      "The acceleration will be multiplied by the scale parameter. ");
 	I_Method2(void, operate, IN, osgParticle::Particle *, P, IN, double, dt,
 	          Properties::VIRTUAL,
 	          __void__operate__Particle_P1__double,

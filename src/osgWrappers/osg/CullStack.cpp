@@ -39,6 +39,11 @@ BEGIN_OBJECT_REFLECTOR(osg::CullStack)
 	I_Constructor0(____CullStack,
 	               "",
 	               "");
+	I_Constructor1(IN, const osg::CullStack &, cs,
+	               Properties::NON_EXPLICIT,
+	               ____CullStack__C5_CullStack_R1,
+	               "",
+	               "");
 	I_Method0(void, reset,
 	          Properties::NON_VIRTUAL,
 	          __void__reset,

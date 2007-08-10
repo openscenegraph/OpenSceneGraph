@@ -149,7 +149,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__State_R1,

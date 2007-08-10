@@ -74,27 +74,27 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	          Properties::VIRTUAL,
 	          __bool__addDrawable__Drawable_P1,
 	          "Add a Drawable to the Geode. ",
-	          " param drawable The Drawable to be added to the Geode.   return true for success; false otherwise.");
+	          " param drawable The Drawable to be added to the Geode.   return true for success; false otherwise. ");
 	I_Method1(bool, removeDrawable, IN, osg::Drawable *, drawable,
 	          Properties::VIRTUAL,
 	          __bool__removeDrawable__Drawable_P1,
 	          "Remove a Drawable from the Geode. ",
-	          " param drawable The drawable to be removed.   return true if at least one Drawable was removed. false otherwise.");
+	          " param drawable The drawable to be removed.   return true if at least one Drawable was removed. false otherwise. ");
 	I_MethodWithDefaults2(bool, removeDrawables, IN, unsigned int, i, , IN, unsigned int, numDrawablesToRemove, 1,
 	                      Properties::VIRTUAL,
 	                      __bool__removeDrawables__unsigned_int__unsigned_int,
 	                      "Remove Drawable(s) from the specified position in Geode's drawable list. ",
-	                      " param i The index of the first Drawable to remove.  numDrawablesToRemove The number of Drawable to remove.   return true if at least one Drawable was removed. false otherwise.");
+	                      " param i The index of the first Drawable to remove.  numDrawablesToRemove The number of Drawable to remove.   return true if at least one Drawable was removed. false otherwise. ");
 	I_Method2(bool, replaceDrawable, IN, osg::Drawable *, origDraw, IN, osg::Drawable *, newDraw,
 	          Properties::VIRTUAL,
 	          __bool__replaceDrawable__Drawable_P1__Drawable_P1,
 	          "Replace specified Drawable with another Drawable. ",
-	          "Equivalent to setDrawable(getDrawableIndex(origDraw),newDraw), see docs for setDrawable() for further details on implementation.");
+	          "Equivalent to setDrawable(getDrawableIndex(origDraw),newDraw), see docs for setDrawable() for further details on implementation. ");
 	I_Method2(bool, setDrawable, IN, unsigned int, i, IN, osg::Drawable *, drawable,
 	          Properties::VIRTUAL,
 	          __bool__setDrawable__unsigned_int__Drawable_P1,
 	          "Set Drawable at position i. ",
-	          "Decrement the reference count origGSet and increments the reference count of newGset, and dirty the bounding sphere to force it to recompute on next getBound() and returns true. If origDrawable is not found then return false and do not add newGset. If newGset is NULL then return false and do not remove origGset. true if set correctly, false on failure (if node==NULL || i is out of range). ");
+	          "Decrement the reference count origGSet and increments the reference count of newGset, and dirty the bounding sphere to force it to recompute on next getBound() and returns true. If origDrawable is not found then return false and do not add newGset. If newGset is NULL then return false and do not remove origGset. true if set correctly, false on failure (if node==NULL || i is out of range).  ");
 	I_Method0(unsigned int, getNumDrawables,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumDrawables,
@@ -119,7 +119,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getDrawableIndex__C5_Drawable_P1,
 	          "Get the index number of drawable. ",
-	          "A value between 0 and getNumDrawables()-1 if drawable is found; if not found, then getNumDrawables() is returned. ");
+	          "A value between 0 and getNumDrawables()-1 if drawable is found; if not found, then getNumDrawables() is returned.  ");
 	I_Method0(const osg::Geode::DrawableList &, getDrawableList,
 	          Properties::NON_VIRTUAL,
 	          __C5_DrawableList_R1__getDrawableList,

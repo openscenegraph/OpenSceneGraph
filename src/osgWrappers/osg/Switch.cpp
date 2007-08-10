@@ -86,7 +86,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	          Properties::VIRTUAL,
 	          __bool__addChild__Node_P1,
 	          "Add Node to Group. ",
-	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes.");
+	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes. ");
 	I_Method2(bool, addChild, IN, osg::Node *, child, IN, bool, value,
 	          Properties::VIRTUAL,
 	          __bool__addChild__Node_P1__bool,
@@ -96,7 +96,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	          Properties::VIRTUAL,
 	          __bool__insertChild__unsigned_int__Node_P1,
 	          "Insert Node to Group at specific location. ",
-	          "The new child node is inserted into the child list before the node at the specified index. No nodes are removed from the group with this operation.");
+	          "The new child node is inserted into the child list before the node at the specified index. No nodes are removed from the group with this operation. ");
 	I_Method3(bool, insertChild, IN, unsigned int, index, IN, osg::Node *, child, IN, bool, value,
 	          Properties::VIRTUAL,
 	          __bool__insertChild__unsigned_int__Node_P1__bool,

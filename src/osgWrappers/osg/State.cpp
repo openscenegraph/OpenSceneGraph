@@ -200,7 +200,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          Properties::NON_VIRTUAL,
 	          __bool__applyMode__StateAttribute_GLMode__bool,
 	          "Apply an OpenGL mode if required. ",
-	          "This is a wrapper around glEnable() and glDisable(), that just actually calls these functions if the enabled flag is different than the current state. true if the state was actually changed. false otherwise. Notice that a false return does not indicate an error, it just means that the mode was already set to the same value as the enabled parameter. ");
+	          "This is a wrapper around glEnable() and glDisable(), that just actually calls these functions if the enabled flag is different than the current state. true if the state was actually changed. false otherwise. Notice that a false return does not indicate an error, it just means that the mode was already set to the same value as the enabled parameter.  ");
 	I_Method3(void, setGlobalDefaultTextureModeValue, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode, IN, bool, enabled,
 	          Properties::NON_VIRTUAL,
 	          __void__setGlobalDefaultTextureModeValue__unsigned_int__StateAttribute_GLMode__bool,

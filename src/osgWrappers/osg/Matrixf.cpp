@@ -208,37 +208,37 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	          Properties::NON_VIRTUAL,
 	          __void__makeOrtho__double__double__double__double__double__double,
 	          "Set to an orthographic projection. ",
-	          "See glOrtho for further details.");
+	          "See glOrtho for further details. ");
 	I_Method6(bool, getOrtho, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar,
 	          Properties::NON_VIRTUAL,
 	          __bool__getOrtho__double_R1__double_R1__double_R1__double_R1__double_R1__double_R1,
 	          "Get the othogrraphic settings of the orthographic projection matrix. ",
-	          "Note, if matrix is not an orthographic matrix then invalid values will be returned.");
+	          "Note, if matrix is not an orthographic matrix then invalid values will be returned. ");
 	I_Method4(void, makeOrtho2D, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top,
 	          Properties::NON_VIRTUAL,
 	          __void__makeOrtho2D__double__double__double__double,
 	          "Set to a 2D orthographic projection. ",
-	          "See glOrtho2D for further details.");
+	          "See glOrtho2D for further details. ");
 	I_Method6(void, makeFrustum, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar,
 	          Properties::NON_VIRTUAL,
 	          __void__makeFrustum__double__double__double__double__double__double,
 	          "Set to a perspective projection. ",
-	          "See glFrustum for further details.");
+	          "See glFrustum for further details. ");
 	I_Method6(bool, getFrustum, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar,
 	          Properties::NON_VIRTUAL,
 	          __bool__getFrustum__double_R1__double_R1__double_R1__double_R1__double_R1__double_R1,
 	          "Get the frustum settings of a perspective projection matrix. ",
-	          "Note, if matrix is not a perspective matrix then invalid values will be returned.");
+	          "Note, if matrix is not a perspective matrix then invalid values will be returned. ");
 	I_Method4(void, makePerspective, IN, double, fovy, IN, double, aspectRatio, IN, double, zNear, IN, double, zFar,
 	          Properties::NON_VIRTUAL,
 	          __void__makePerspective__double__double__double__double,
 	          "Set to a symmetrical perspective projection. ",
-	          "See gluPerspective for further details. Aspect ratio is defined as width/height.");
+	          "See gluPerspective for further details. Aspect ratio is defined as width/height. ");
 	I_Method4(bool, getPerspective, IN, double &, fovy, IN, double &, aspectRatio, IN, double &, zNear, IN, double &, zFar,
 	          Properties::NON_VIRTUAL,
 	          __bool__getPerspective__double_R1__double_R1__double_R1__double_R1,
 	          "Get the frustum settings of a symmetric perspective projection matrix. ",
-	          "Return false if matrix is not a perspective matrix, where parameter values are undefined. Note, if matrix is not a symmetric perspective matrix then the shear will be lost. Asymmetric matrices occur when stereo, power walls, caves and reality center display are used. In these configuration one should use the AsFrustum method instead.");
+	          "Return false if matrix is not a perspective matrix, where parameter values are undefined. Note, if matrix is not a symmetric perspective matrix then the shear will be lost. Asymmetric matrices occur when stereo, power walls, caves and reality center display are used. In these configuration one should use the AsFrustum method instead. ");
 	I_Method3(void, makeLookAt, IN, const osg::Vec3d &, eye, IN, const osg::Vec3d &, center, IN, const osg::Vec3d &, up,
 	          Properties::NON_VIRTUAL,
 	          __void__makeLookAt__C5_Vec3d_R1__C5_Vec3d_R1__C5_Vec3d_R1,
@@ -445,19 +445,19 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_StaticMethod6(osg::Matrixf, ortho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar,
 	                __Matrixf__ortho__double__double__double__double__double__double_S,
 	                "Create an orthographic projection matrix. ",
-	                "See glOrtho for further details.");
+	                "See glOrtho for further details. ");
 	I_StaticMethod4(osg::Matrixf, ortho2D, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top,
 	                __Matrixf__ortho2D__double__double__double__double_S,
 	                "Create a 2D orthographic projection. ",
-	                "See glOrtho for further details.");
+	                "See glOrtho for further details. ");
 	I_StaticMethod6(osg::Matrixf, frustum, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar,
 	                __Matrixf__frustum__double__double__double__double__double__double_S,
 	                "Create a perspective projection. ",
-	                "See glFrustum for further details.");
+	                "See glFrustum for further details. ");
 	I_StaticMethod4(osg::Matrixf, perspective, IN, double, fovy, IN, double, aspectRatio, IN, double, zNear, IN, double, zFar,
 	                __Matrixf__perspective__double__double__double__double_S,
 	                "Create a symmetrical perspective projection. ",
-	                "See gluPerspective for further details. Aspect ratio is defined as width/height.");
+	                "See gluPerspective for further details. Aspect ratio is defined as width/height. ");
 	I_StaticMethod3(osg::Matrixf, lookAt, IN, const osg::Vec3f &, eye, IN, const osg::Vec3f &, center, IN, const osg::Vec3f &, up,
 	                __Matrixf__lookAt__C5_Vec3f_R1__C5_Vec3f_R1__C5_Vec3f_R1_S,
 	                "Create the position and orientation as per a camera, using the same convention as gluLookAt. ",

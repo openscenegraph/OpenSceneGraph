@@ -41,7 +41,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 	          Properties::VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given plane. ",
-	          "Returns true on successful projection.");
+	          "Returns true on successful projection. ");
 	I_Method0(bool, isProjectionOnCylinder,
 	          Properties::NON_VIRTUAL,
 	          __bool__isProjectionOnCylinder,
@@ -79,7 +79,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
 	          Properties::VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given plane. ",
-	          "Returns true on successful projection.");
+	          "Returns true on successful projection. ");
 	I_Method2(bool, isPointInFront, IN, const osgManipulator::PointerInfo &, pi, IN, const osg::Matrix &, localToWorld,
 	          Properties::NON_VIRTUAL,
 	          __bool__isPointInFront__C5_PointerInfo_R1__C5_osg_Matrix_R1,
@@ -137,7 +137,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 	          Properties::VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given line. ",
-	          "Returns true on successful projection.");
+	          "Returns true on successful projection. ");
 	I_SimpleProperty(osg::Vec3 &, LineEnd, 
 	                 __osg_Vec3_R1__getLineEnd, 
 	                 0);
@@ -171,7 +171,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::PlaneProjector)
 	          Properties::VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given plane. ",
-	          "Returns true on successful projection.");
+	          "Returns true on successful projection. ");
 	I_SimpleProperty(const osg::Plane &, Plane, 
 	                 __C5_osg_Plane_R1__getPlane, 
 	                 __void__setPlane__C5_osg_Plane_R1);
@@ -187,7 +187,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Projector)
 	          Properties::PURE_VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object/world coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto some shape or geometry (implemented in derived classes). ",
-	          "SceneView in used for i projecting window coordinates into object coordinates and vice versa. Returns true on successful projection.");
+	          "SceneView in used for i projecting window coordinates into object coordinates and vice versa. Returns true on successful projection. ");
 	I_Method1(void, setLocalToWorld, IN, const osg::Matrix &, localToWorld,
 	          Properties::NON_VIRTUAL,
 	          __void__setLocalToWorld__C5_osg_Matrix_R1,
@@ -226,7 +226,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
 	          Properties::VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given sphere. ",
-	          "Returns true on successful projection.");
+	          "Returns true on successful projection. ");
 	I_Method0(bool, isProjectionOnSphere,
 	          Properties::NON_VIRTUAL,
 	          __bool__isProjectionOnSphere,
@@ -264,7 +264,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::SphereProjector)
 	          Properties::VIRTUAL,
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given sphere. ",
-	          "Returns true on successful projection.");
+	          "Returns true on successful projection. ");
 	I_Method2(bool, isPointInFront, IN, const osgManipulator::PointerInfo &, pi, IN, const osg::Matrix &, localToWorld,
 	          Properties::NON_VIRTUAL,
 	          __bool__isPointInFront__C5_PointerInfo_R1__C5_osg_Matrix_R1,

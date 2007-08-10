@@ -96,7 +96,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Material)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_Method1(void, setColorMode, IN, osg::Material::ColorMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setColorMode__ColorMode,
@@ -141,7 +141,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Material)
 	          Properties::NON_VIRTUAL,
 	          __void__setSpecular__Face__C5_Vec4_R1,
 	          "Set specular value of specified face(s) of the material, valid specular[0. ",
-	          ".3] range is 0.0 to 1.0.");
+	          ".3] range is 0.0 to 1.0. ");
 	I_Method1(const osg::Vec4 &, getSpecular, IN, osg::Material::Face, face,
 	          Properties::NON_VIRTUAL,
 	          __C5_Vec4_R1__getSpecular__Face,
@@ -156,7 +156,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Material)
 	          Properties::NON_VIRTUAL,
 	          __void__setEmission__Face__C5_Vec4_R1,
 	          "Set emission value of specified face(s) of the material, valid emission[0. ",
-	          ".3] range is 0.0 to 1.0.");
+	          ".3] range is 0.0 to 1.0. ");
 	I_Method1(const osg::Vec4 &, getEmission, IN, osg::Material::Face, face,
 	          Properties::NON_VIRTUAL,
 	          __C5_Vec4_R1__getEmission__Face,
@@ -171,7 +171,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Material)
 	          Properties::NON_VIRTUAL,
 	          __void__setShininess__Face__float,
 	          "Set shininess of specified face(s) of the material. ",
-	          "valid shininess range is 0.0 to 128.0.");
+	          "valid shininess range is 0.0 to 128.0. ");
 	I_Method1(float, getShininess, IN, osg::Material::Face, face,
 	          Properties::NON_VIRTUAL,
 	          __float__getShininess__Face,
@@ -186,12 +186,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Material)
 	          Properties::NON_VIRTUAL,
 	          __void__setTransparency__Face__float,
 	          "Set the alpha value of ambient, diffuse, specular and emission colors of specified face, to 1-transparency. ",
-	          "Valid transparency range is 0.0 to 1.0.");
+	          "Valid transparency range is 0.0 to 1.0. ");
 	I_Method2(void, setAlpha, IN, osg::Material::Face, face, IN, float, alpha,
 	          Properties::NON_VIRTUAL,
 	          __void__setAlpha__Face__float,
 	          "Set the alpha value of ambient, diffuse, specular and emission colors. ",
-	          "Valid transparency range is 0.0 to 1.0.");
+	          "Valid transparency range is 0.0 to 1.0. ");
 	I_IndexedProperty(const osg::Vec4 &, Ambient, 
 	                  __C5_Vec4_R1__getAmbient__Face, 
 	                  __void__setAmbient__Face__C5_Vec4_R1, 

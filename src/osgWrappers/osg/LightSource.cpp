@@ -77,7 +77,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LightSource)
 	          Properties::NON_VIRTUAL,
 	          __void__setReferenceFrame__ReferenceFrame,
 	          "Set the light sources's ReferenceFrame, either to be relative to its parent reference frame, or relative to an absolute coordinate frame. ",
-	          "RELATIVE_RF is the default. Note: setting the ReferenceFrame to be ABSOLUTE_RF will also set the CullingActive flag on the light source, and hence all of its parents, to false, thereby disabling culling of it and all its parents. This is necessary to prevent inappropriate culling, but may impact cull times if the absolute light source is deep in the scene graph. It is therefore recommended to only use absolute light source at the top of the scene.");
+	          "RELATIVE_RF is the default. Note: setting the ReferenceFrame to be ABSOLUTE_RF will also set the CullingActive flag on the light source, and hence all of its parents, to false, thereby disabling culling of it and all its parents. This is necessary to prevent inappropriate culling, but may impact cull times if the absolute light source is deep in the scene graph. It is therefore recommended to only use absolute light source at the top of the scene. ");
 	I_Method0(osg::LightSource::ReferenceFrame, getReferenceFrame,
 	          Properties::NON_VIRTUAL,
 	          __ReferenceFrame__getReferenceFrame,

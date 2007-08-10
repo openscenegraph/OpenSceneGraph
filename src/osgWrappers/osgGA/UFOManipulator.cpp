@@ -36,17 +36,17 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return className ",
-	          "returns constant \"UFO\" ");
+	          "returns constant \"UFO\"  ");
 	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
 	          Properties::VIRTUAL,
 	          __void__setByMatrix__C5_osg_Matrixd_R1,
 	          "Set the current position with a matrix. ",
-	          " param matrix A viewpoint matrix. ");
+	          " param matrix A viewpoint matrix.  ");
 	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, invmat,
 	          Properties::VIRTUAL,
 	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
 	          "Set the current position with the invers matrix. ",
-	          " param invmat The inverse of a viewpoint matrix ");
+	          " param invmat The inverse of a viewpoint matrix  ");
 	I_Method0(osg::Matrixd, getMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrixd__getMatrix,
@@ -61,7 +61,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,
 	          "Set the subgraph this manipulator is driving the eye through. ",
-	          " param node root of subgraph ");
+	          " param node root of subgraph  ");
 	I_Method0(const osg::Node *, getNode,
 	          Properties::VIRTUAL,
 	          __C5_osg_Node_P1__getNode,
@@ -86,12 +86,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	          Properties::VIRTUAL,
 	          __void__home__double,
 	          "Move the camera to the default position. ",
-	          "This version does not require GUIEventAdapter and GUIActionAdapter so may be called from somewhere other than a handle() method in GUIEventHandler. Application must be aware of implications.");
+	          "This version does not require GUIEventAdapter and GUIActionAdapter so may be called from somewhere other than a handle() method in GUIEventHandler. Application must be aware of implications. ");
 	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Start/restart the manipulator. ",
-	          "FIXME: what does this actually mean? Provide examples.");
+	          "FIXME: what does this actually mean? Provide examples. ");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,

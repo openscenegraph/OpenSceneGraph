@@ -144,7 +144,7 @@ Renderer::Renderer(osg::Camera* camera):
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
-                               ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance());
+                               ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance());
 
     _sceneView[0]->setGlobalStateSet(stateset);
     _sceneView[1]->setGlobalStateSet(stateset);

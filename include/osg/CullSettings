@@ -85,7 +85,7 @@ class OSG_EXPORT CullSettings
         unsigned int getInheritanceMask() const { return _inheritanceMask; }
         
         /** Set the local cull settings values from specified CullSettings object.*/
-        void setCullSettings(const CullSettings& settings) { inheritCullSettings(settings, ALL_VARIABLES); }
+        void setCullSettings(const CullSettings& settings);
 
         /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
         virtual void inheritCullSettings(const CullSettings& settings) { inheritCullSettings(settings, _inheritanceMask); }

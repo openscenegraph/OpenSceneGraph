@@ -152,7 +152,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	          Properties::NON_VIRTUAL,
 	          __bool__isAlive,
 	          "Check whether the processor is alive with respect to start time and life duration. ",
-	          "Note that this method may return true even if the processor has been disabled by calling setEnabled(false). To test whether the processor is actually processing particles or not, you should evaluate (isEnabled() && isAlive()).");
+	          "Note that this method may return true even if the processor has been disabled by calling setEnabled(false). To test whether the processor is actually processing particles or not, you should evaluate (isEnabled() && isAlive()). ");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,

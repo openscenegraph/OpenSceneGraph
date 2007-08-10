@@ -318,12 +318,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          Properties::NON_VIRTUAL,
 	          __C5_StateSet_P1__getParent__unsigned_int,
 	          "Get a single const parent of this Uniform. ",
-	          " param i index of the parent to get.   return the parent i.");
+	          " param i index of the parent to get.   return the parent i. ");
 	I_Method0(unsigned int, getNumParents,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of this Uniform. ",
-	          "the number of parents of this Uniform. ");
+	          "the number of parents of this Uniform.  ");
 	I_Method1(bool, set, IN, float, f,
 	          Properties::NON_VIRTUAL,
 	          __bool__set__float,

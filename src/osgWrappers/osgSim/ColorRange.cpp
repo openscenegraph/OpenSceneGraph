@@ -27,11 +27,11 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
 	I_Constructor2(IN, float, min, IN, float, max,
 	               ____ColorRange__float__float,
 	               "Constructor for a ColorRange with a default list of colors set to Red-Yellow-Green-Blue-Cyan. ",
-	               " param min minimum scalar value  max maximum scalar value ");
+	               " param min minimum scalar value  max maximum scalar value  ");
 	I_Constructor3(IN, float, min, IN, float, max, IN, const std::vector< osg::Vec4 > &, colors,
 	               ____ColorRange__float__float__C5_std_vectorT1_osg_Vec4__R1,
 	               "Constructor for a ColorRange. ",
-	               " param min minimum scalar value  max maximum scalar value  colors optional range of colors, ");
+	               " param min minimum scalar value  max maximum scalar value  colors optional range of colors,  ");
 	I_Method1(void, setColors, IN, const std::vector< osg::Vec4 > &, colors,
 	          Properties::NON_VIRTUAL,
 	          __void__setColors__C5_std_vectorT1_osg_Vec4__R1,

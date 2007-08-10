@@ -145,7 +145,7 @@ BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
 	          Properties::NON_VIRTUAL,
 	          __void__prepareGeometry__osg_Geometry_P1,
 	          "prepare a Geometry for bump lighting. ",
-	          "Tangent-space basis vectors are generated and attached to the geometry as vertex attribute arrays.");
+	          "Tangent-space basis vectors are generated and attached to the geometry as vertex attribute arrays. ");
 	I_Method1(void, prepareNode, IN, osg::Node *, node,
 	          Properties::NON_VIRTUAL,
 	          __void__prepareNode__osg_Node_P1,
@@ -166,7 +166,7 @@ BEGIN_OBJECT_REFLECTOR(osgFX::BumpMapping)
 	                   Properties::NON_CONST,
 	                   __bool__define_techniques,
 	                   "abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect. ",
-	                   "You will usually call addTechnique() inside this method.");
+	                   "You will usually call addTechnique() inside this method. ");
 	I_SimpleProperty(int, DiffuseTextureUnit, 
 	                 __int__getDiffuseTextureUnit, 
 	                 __void__setDiffuseTextureUnit__int);

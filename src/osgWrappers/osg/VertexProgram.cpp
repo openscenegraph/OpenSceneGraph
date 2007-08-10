@@ -149,7 +149,7 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__State_R1,
@@ -176,11 +176,11 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
 	I_StaticMethod2(osg::VertexProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",
-	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID.");
+	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID. ");
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::VertexProgram::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "The setExtensions method allows users to override the extensions across graphics contexts. ",
-	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions.");
+	                "Typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
 	I_SimpleProperty(const osg::VertexProgram::LocalParamList &, LocalParameters, 
 	                 __C5_LocalParamList_R1__getLocalParameters, 
 	                 __void__setLocalParameters__C5_LocalParamList_R1);

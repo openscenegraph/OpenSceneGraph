@@ -136,7 +136,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Depth)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_SimpleProperty(osg::Depth::Function, Function, 
 	                 __Function__getFunction, 
 	                 __void__setFunction__Function);

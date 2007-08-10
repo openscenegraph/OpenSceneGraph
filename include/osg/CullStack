@@ -31,6 +31,7 @@ class OSG_EXPORT CullStack : public osg::CullSettings
     
     
         CullStack();
+        CullStack(const CullStack& cs);
         
         ~CullStack();
     

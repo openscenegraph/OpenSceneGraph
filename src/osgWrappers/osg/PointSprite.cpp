@@ -94,7 +94,7 @@ BEGIN_OBJECT_REFLECTOR(osg::PointSprite)
 	          Properties::VIRTUAL,
 	          __void__apply__osg_State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_Method1(void, setCoordOriginMode, IN, osg::PointSprite::CoordOriginMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setCoordOriginMode__CoordOriginMode,

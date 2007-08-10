@@ -104,7 +104,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	          Properties::NON_VIRTUAL,
 	          __void__setUserData__Referenced_P1,
 	          "Set user data, data must be subclassed from Referenced to allow automatic memory handling. ",
-	          "If your own data isn't directly subclassed from Referenced then create an adapter object which points to your own object and handles the memory addressing.");
+	          "If your own data isn't directly subclassed from Referenced then create an adapter object which points to your own object and handles the memory addressing. ");
 	I_Method0(osg::Referenced *, getUserData,
 	          Properties::NON_VIRTUAL,
 	          __Referenced_P1__getUserData,

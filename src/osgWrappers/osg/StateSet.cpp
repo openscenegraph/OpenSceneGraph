@@ -115,12 +115,12 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          Properties::NON_VIRTUAL,
 	          __C5_Object_P1__getParent__unsigned_int,
 	          "Get a single const parent of this StateSet. ",
-	          " param i index of the parent to get.   return the parent i.");
+	          " param i index of the parent to get.   return the parent i. ");
 	I_Method0(unsigned int, getNumParents,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of this StateSet. ",
-	          "the number of parents of this StateSet. ");
+	          "the number of parents of this StateSet.  ");
 	I_Method0(void, computeDataVariance,
 	          Properties::VIRTUAL,
 	          __void__computeDataVariance,
@@ -140,22 +140,22 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          Properties::NON_VIRTUAL,
 	          __void__merge__C5_StateSet_R1,
 	          "Merge this StateSet with the StateSet passed as parameter. ",
-	          "Every mode and attribute in this StateSet that is marked with StateAttribute::OVERRIDE is replaced with the equivalent mode or attribute from rhs.");
+	          "Every mode and attribute in this StateSet that is marked with StateAttribute::OVERRIDE is replaced with the equivalent mode or attribute from rhs. ");
 	I_Method2(void, setMode, IN, osg::StateAttribute::GLMode, mode, IN, osg::StateAttribute::GLModeValue, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setMode__StateAttribute_GLMode__StateAttribute_GLModeValue,
 	          "Set this StateSet to contain the specified GLMode with a given value. ",
-	          "Don't use this method to set modes related to textures. For this purpose, use setTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call. ");
+	          "Don't use this method to set modes related to textures. For this purpose, use setTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call.  ");
 	I_Method1(void, removeMode, IN, osg::StateAttribute::GLMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__removeMode__StateAttribute_GLMode,
 	          "Remove mode from this StateSet. ",
-	          "Don't use this method to remove modes related to textures. For this purpose, use removeTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call. ");
+	          "Don't use this method to remove modes related to textures. For this purpose, use removeTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call.  ");
 	I_Method1(osg::StateAttribute::GLModeValue, getMode, IN, osg::StateAttribute::GLMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __StateAttribute_GLModeValue__getMode__StateAttribute_GLMode,
 	          "Get the value for a given GLMode. ",
-	          " param mode The GLMode whose value is desired.   return If mode is contained within this StateSet, returns the value associated with it. Otherwise, returns StateAttribute::INHERIT.  note Don't use this method to get the value of modes related to textures. For this purpose, use removeTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call.");
+	          " param mode The GLMode whose value is desired.   return If mode is contained within this StateSet, returns the value associated with it. Otherwise, returns StateAttribute::INHERIT.  note Don't use this method to get the value of modes related to textures. For this purpose, use removeTextureMode(), that accepts an extra parameter specifying which texture unit shall be affected by the call. ");
 	I_Method1(void, setModeList, IN, osg::StateSet::ModeList &, ml,
 	          Properties::NON_VIRTUAL,
 	          __void__setModeList__ModeList_R1,
@@ -225,7 +225,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureMode__unsigned_int__StateAttribute_GLMode__StateAttribute_GLModeValue,
 	          "Set this StateSet to contain specified GLMode with a given value. ",
-	          " param unit The texture unit to be affected (used with multi-texturing).  mode The OpenGL mode to be added to the StateSet.  value The value to be assigned to mode. ");
+	          " param unit The texture unit to be affected (used with multi-texturing).  mode The OpenGL mode to be added to the StateSet.  value The value to be assigned to mode.  ");
 	I_Method2(void, removeTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__removeTextureMode__unsigned_int__StateAttribute_GLMode,
@@ -365,7 +365,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          Properties::NON_VIRTUAL,
 	          __void__setRenderingHint__int,
 	          "Set the RenderingHint of this StateSet. ",
-	          "RenderingHint is used by the renderer to determine which draw bin to drop associated osg::Drawables in. Typically, users will set this to either StateSet::OPAQUE_BIN or StateSet::TRANSPARENT_BIN. Drawables in the opaque bin are sorted by their StateSet, so that the number of expensive changes in the OpenGL state is minimized. Drawables in the transparent bin are sorted by depth, so that objects farther from the viewer are rendered first (and hence alpha blending works nicely for translucent objects).");
+	          "RenderingHint is used by the renderer to determine which draw bin to drop associated osg::Drawables in. Typically, users will set this to either StateSet::OPAQUE_BIN or StateSet::TRANSPARENT_BIN. Drawables in the opaque bin are sorted by their StateSet, so that the number of expensive changes in the OpenGL state is minimized. Drawables in the transparent bin are sorted by depth, so that objects farther from the viewer are rendered first (and hence alpha blending works nicely for translucent objects). ");
 	I_Method0(int, getRenderingHint,
 	          Properties::NON_VIRTUAL,
 	          __int__getRenderingHint,

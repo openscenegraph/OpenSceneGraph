@@ -104,7 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osgFX::Scribe)
 	                   Properties::NON_CONST,
 	                   __bool__define_techniques,
 	                   "abstract method to be implemented in derived classes; its purpose if to create the techniques that can be used for obtaining the desired effect. ",
-	                   "You will usually call addTechnique() inside this method.");
+	                   "You will usually call addTechnique() inside this method. ");
 	I_SimpleProperty(const osg::Vec4 &, WireframeColor, 
 	                 __C5_osg_Vec4_R1__getWireframeColor, 
 	                 __void__setWireframeColor__C5_osg_Vec4_R1);

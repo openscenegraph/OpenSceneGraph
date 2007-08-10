@@ -181,12 +181,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          Properties::NON_VIRTUAL,
 	          __void__pushStateSet__C5_osg_StateSet_P1,
 	          "Push state set on the current state group. ",
-	          "If the state exists in a child state group of the current state group then move the current state group to that child. Otherwise, create a new state group for the state set, add it to the current state group then move the current state group pointer to the new state group.");
+	          "If the state exists in a child state group of the current state group then move the current state group to that child. Otherwise, create a new state group for the state set, add it to the current state group then move the current state group pointer to the new state group. ");
 	I_Method0(void, popStateSet,
 	          Properties::NON_VIRTUAL,
 	          __void__popStateSet,
 	          "Pop the top state set and hence associated state group. ",
-	          "Move the current state group to the parent of the popped state group.");
+	          "Move the current state group to the parent of the popped state group. ");
 	I_Method1(void, setStateGraph, IN, osgUtil::StateGraph *, rg,
 	          Properties::NON_VIRTUAL,
 	          __void__setStateGraph__StateGraph_P1,

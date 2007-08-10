@@ -349,7 +349,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          Properties::NON_VIRTUAL,
 	          __void__setBackdropType__BackdropType,
 	          "BackdropType gives you a background shadow text behind your regular text. ",
-	          "This helps give text extra contrast which can be useful when placing text against noisy backgrounds. The color of the background shadow text is specified by setBackdropColor(). DROP_SHADOW_BOTTOM_RIGHT will draw backdrop text to the right and down of the normal text. Other DROW_SHADOW_* modes do the same for their repective directions. OUTLINE will draw backdrop text so that it appears the text has an outline or border around the normal text. This mode is particularly useful against really noisy backgrounds that may put text on top of things that have all types of colors which you don't have control over. Some real world examples of this general technique in use that I know of are Google Earth, Sid Meier's Pirates (2004 Remake), and Star Control 2 (PC 1993). The default is NONE.");
+	          "This helps give text extra contrast which can be useful when placing text against noisy backgrounds. The color of the background shadow text is specified by setBackdropColor(). DROP_SHADOW_BOTTOM_RIGHT will draw backdrop text to the right and down of the normal text. Other DROW_SHADOW_* modes do the same for their repective directions. OUTLINE will draw backdrop text so that it appears the text has an outline or border around the normal text. This mode is particularly useful against really noisy backgrounds that may put text on top of things that have all types of colors which you don't have control over. Some real world examples of this general technique in use that I know of are Google Earth, Sid Meier's Pirates (2004 Remake), and Star Control 2 (PC 1993). The default is NONE. ");
 	I_Method0(osgText::Text::BackdropType, getBackdropType,
 	          Properties::NON_VIRTUAL,
 	          __BackdropType__getBackdropType,
@@ -359,7 +359,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                      Properties::NON_VIRTUAL,
 	                      __void__setBackdropOffset__float,
 	                      "Sets the amount text is offset to create the backdrop/shadow effect. ",
-	                      "Set the value too high and for example, in OUTLINE mode you will get a \"Brady Bunch\" effect where you see duplicates of the text in a 3x3 grid. Set the value too small and you won't see anything. The values represent percentages. 1.0 means 100% so a value of 1.0 in DROW_SHADOW_LEFT_CENTER mode would cause each glyph to be echoed next to it self. So the letter 'e' might look like 'ee'. Good values tend to be in the 0.03 to 0.10 range (but will be subject to your specific font and display characteristics). Note that the text bounding boxes are updated to include backdrop offsets. However, other metric information such as getCharacterHeight() are unaffected by this. This means that individual glyph spacing (kerning?) are unchanged even when this mode is used. The default is 0.07 (7% offset).");
+	                      "Set the value too high and for example, in OUTLINE mode you will get a \"Brady Bunch\" effect where you see duplicates of the text in a 3x3 grid. Set the value too small and you won't see anything. The values represent percentages. 1.0 means 100% so a value of 1.0 in DROW_SHADOW_LEFT_CENTER mode would cause each glyph to be echoed next to it self. So the letter 'e' might look like 'ee'. Good values tend to be in the 0.03 to 0.10 range (but will be subject to your specific font and display characteristics). Note that the text bounding boxes are updated to include backdrop offsets. However, other metric information such as getCharacterHeight() are unaffected by this. This means that individual glyph spacing (kerning?) are unchanged even when this mode is used. The default is 0.07 (7% offset). ");
 	I_Method2(void, setBackdropOffset, IN, float, horizontal, IN, float, vertical,
 	          Properties::NON_VIRTUAL,
 	          __void__setBackdropOffset__float__float,
@@ -379,7 +379,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          Properties::NON_VIRTUAL,
 	          __void__setBackdropColor__C5_osg_Vec4_R1,
 	          "This specifies the color of the backdrop text. ",
-	          "The default is black.");
+	          "The default is black. ");
 	I_Method0(const osg::Vec4 &, getBackdropColor,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getBackdropColor,
@@ -399,7 +399,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          Properties::NON_VIRTUAL,
 	          __void__setColorGradientMode__ColorGradientMode,
 	          "This sets different types of text coloring modes. ",
-	          "When the coloring mode is not set to SOLID, the colors specified in setColorGradientCorners() determine the colors for the text. When the gradient mode is OVERALL, the coloring scheme attempts to approximate the effect as if the entire text box/region were a single polygon and you had applied colors to each of the four corners with GL_SMOOTH enabled. In this mode, OpenGL interpolates the colors across the polygon, and this is what OVERALL tries to emulate. This can be used to give nice embellishments on things like logos and names. PER_CHARACTER is similar to OVERALL except that it applies the color interpolation to the four corners of each character instead of across the overall text box. The default is SOLID (a.k.a. off).");
+	          "When the coloring mode is not set to SOLID, the colors specified in setColorGradientCorners() determine the colors for the text. When the gradient mode is OVERALL, the coloring scheme attempts to approximate the effect as if the entire text box/region were a single polygon and you had applied colors to each of the four corners with GL_SMOOTH enabled. In this mode, OpenGL interpolates the colors across the polygon, and this is what OVERALL tries to emulate. This can be used to give nice embellishments on things like logos and names. PER_CHARACTER is similar to OVERALL except that it applies the color interpolation to the four corners of each character instead of across the overall text box. The default is SOLID (a.k.a. off). ");
 	I_Method0(osgText::Text::ColorGradientMode, getColorGradientMode,
 	          Properties::NON_VIRTUAL,
 	          __ColorGradientMode__getColorGradientMode,
@@ -409,7 +409,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          Properties::NON_VIRTUAL,
 	          __void__setColorGradientCorners__C5_osg_Vec4_R1__C5_osg_Vec4_R1__C5_osg_Vec4_R1__C5_osg_Vec4_R1,
 	          "Used only for gradient mode, let's you specify the colors of the 4 corners. ",
-	          "If ColorGradients are off, these values are ignored (and the value from setColor() is the only one that is relevant.");
+	          "If ColorGradients are off, these values are ignored (and the value from setColor() is the only one that is relevant. ");
 	I_Method0(const osg::Vec4 &, getColorGradientTopLeft,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColorGradientTopLeft,

@@ -98,7 +98,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LineStipple)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_SimpleProperty(GLint, Factor, 
 	                 __GLint__getFactor, 
 	                 __void__setFactor__GLint);

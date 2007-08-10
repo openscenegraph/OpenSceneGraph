@@ -217,7 +217,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_StaticMethod2(void, deleteFrameBufferObject, IN, unsigned int, contextID, IN, GLuint, program,
 	                __void__deleteFrameBufferObject__unsigned_int__GLuint_S,
 	                "Mark internal FBO for deletion. ",

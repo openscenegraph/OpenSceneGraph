@@ -35,7 +35,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
 	          Properties::NON_VIRTUAL,
 	          __void__stripify__osg_Geometry_R1,
 	          "Convert mesh primitives in Geometry into Tri Strips. ",
-	          "Converts all primitive types except points and lines, linestrips which it leaves unchanged.");
+	          "Converts all primitive types except points and lines, linestrips which it leaves unchanged. ");
 	I_Method0(void, stripify,
 	          Properties::NON_VIRTUAL,
 	          __void__stripify,

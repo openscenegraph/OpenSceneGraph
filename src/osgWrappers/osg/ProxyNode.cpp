@@ -83,7 +83,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	          Properties::VIRTUAL,
 	          __bool__addChild__Node_P1,
 	          "Add Node to Group. ",
-	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes.");
+	          "If node is not NULL and is not contained in Group then increment its reference count, add it to the child list and dirty the bounding sphere to force it to recompute on next getBound() and return true for success. Otherwise return false. Scene nodes can't be added as child nodes. ");
 	I_Method2(bool, addChild, IN, osg::Node *, child, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
 	          __bool__addChild__Node_P1__C5_std_string_R1,

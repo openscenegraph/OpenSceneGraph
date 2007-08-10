@@ -114,17 +114,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          Properties::NON_VIRTUAL,
 	          __Node_P1__getParent__unsigned_int,
 	          "Get a single parent of Drawable. ",
-	          " param i index of the parent to get.   return the parent i.");
+	          " param i index of the parent to get.   return the parent i. ");
 	I_Method1(const osg::Node *, getParent, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
 	          __C5_Node_P1__getParent__unsigned_int,
 	          "Get a single const parent of Drawable. ",
-	          " param i index of the parent to get.   return the parent i.");
+	          " param i index of the parent to get.   return the parent i. ");
 	I_Method0(unsigned int, getNumParents,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of node. ",
-	          "the number of parents of this node. ");
+	          "the number of parents of this node.  ");
 	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset,
 	          Properties::NON_VIRTUAL,
 	          __void__setStateSet__StateSet_P1,
@@ -164,7 +164,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          Properties::NON_VIRTUAL,
 	          __C5_BoundingBox_R1__getBound,
 	          "Get BoundingBox of Drawable. ",
-	          "If the BoundingBox is not up to date then its updated via an internal call to computeBond().");
+	          "If the BoundingBox is not up to date then its updated via an internal call to computeBond(). ");
 	I_Method0(osg::BoundingBox, computeBound,
 	          Properties::VIRTUAL,
 	          __BoundingBox__computeBound,
@@ -189,7 +189,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          Properties::NON_VIRTUAL,
 	          __void__setShape__Shape_P1,
 	          "Set the Shape of the Drawable. ",
-	          "The shape can be used to speed up collision detection or as a guide for procedural geometry generation. osg::Shape. ");
+	          "The shape can be used to speed up collision detection or as a guide for procedural geometry generation. osg::Shape.  ");
 	I_Method0(osg::Shape *, getShape,
 	          Properties::NON_VIRTUAL,
 	          __Shape_P1__getShape,
@@ -249,12 +249,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          Properties::NON_VIRTUAL,
 	          __void__draw__RenderInfo_R1,
 	          "Draw OpenGL primitives. ",
-	          "If the Drawable has _useDisplayList set to true, then use an OpenGL display list, automatically compiling one if required. Otherwise, call drawImplementation(). This method should not be overridden in subclasses, as it manages the optional display list (notice this is not even virtual). Subclasses should override drawImplementation() instead. ");
+	          "If the Drawable has _useDisplayList set to true, then use an OpenGL display list, automatically compiling one if required. Otherwise, call drawImplementation(). This method should not be overridden in subclasses, as it manages the optional display list (notice this is not even virtual). Subclasses should override drawImplementation() instead.  ");
 	I_Method1(void, compileGLObjects, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__RenderInfo_R1,
 	          "Immediately compile this Drawable into an OpenGL Display List. ",
-	          "Operation is ignored if _useDisplayList is false. ");
+	          "Operation is ignored if _useDisplayList is false.  ");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
 	          Properties::VIRTUAL,
 	          __void__setThreadSafeRefUnref__bool,

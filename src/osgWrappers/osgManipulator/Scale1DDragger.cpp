@@ -73,7 +73,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          Properties::NON_VIRTUAL,
 	          __void__setPickColor__C5_osg_Vec4_R1,
 	          "Set/Get pick color for dragger. ",
-	          "Pick color is color of the dragger when picked. It gives a visual feedback to show that the dragger has been picked.");
+	          "Pick color is color of the dragger when picked. It gives a visual feedback to show that the dragger has been picked. ");
 	I_Method0(const osg::Vec4, getPickColor,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4__getPickColor,

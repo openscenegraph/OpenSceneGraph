@@ -554,7 +554,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPrimitiveSetIndex__C5_PrimitiveSet_P1,
 	          "Get the index number of a primitive set, return a value between 0 and getNumPrimitiveSet()-1 if found, if not found then return getNumPrimitiveSet(). ",
-	          "When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet())");
+	          "When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet()) ");
 	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag,
 	          Properties::VIRTUAL,
 	          __void__setUseVertexBufferObjects__bool,
@@ -609,7 +609,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          Properties::NON_VIRTUAL,
 	          __bool__areFastPathsUsed,
 	          "Return true if OpenGL fast paths will be used with drawing this Geometry. ",
-	          "Fast paths use vertex arrays, and glDrawArrays/glDrawElements. Slow paths use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed arrays will drop the rendering path off the fast path.");
+	          "Fast paths use vertex arrays, and glDrawArrays/glDrawElements. Slow paths use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed arrays will drop the rendering path off the fast path. ");
 	I_Method0(bool, computeFastPathsUsed,
 	          Properties::NON_VIRTUAL,
 	          __bool__computeFastPathsUsed,
@@ -669,7 +669,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,
 	          "Draw Geometry directly ignoring an OpenGL display list which could be attached. ",
-	          "This is the internal draw method which does the drawing itself, and is the method to override when deriving from Geometry for user-drawn objects.");
+	          "This is the internal draw method which does the drawing itself, and is the method to override when deriving from Geometry for user-drawn objects. ");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
 	          Properties::VIRTUAL,
 	          __bool__supports__C5_Drawable_AttributeFunctor_R1,

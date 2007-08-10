@@ -96,7 +96,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,
 	          "Draw ShapeDrawable directly ignoring an OpenGL display list which could be attached. ",
-	          "This is the internal draw method which does the drawing itself, and is the method to override when deriving from ShapeDrawable for user-drawn objects.");
+	          "This is the internal draw method which does the drawing itself, and is the method to override when deriving from ShapeDrawable for user-drawn objects. ");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
 	          Properties::VIRTUAL,
 	          __bool__supports__C5_AttributeFunctor_R1,

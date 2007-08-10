@@ -112,7 +112,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          Properties::NON_VIRTUAL,
 	          __void__setDefaultBoundingBox__C5_osg_BoundingBox_R1,
 	          "Set the default bounding box. ",
-	          "The default bounding box is used when a real bounding box cannot be computed, for example because no particles has been updated yet.");
+	          "The default bounding box is used when a real bounding box cannot be computed, for example because no particles has been updated yet. ");
 	I_Method0(bool, getDoublePassRendering,
 	          Properties::NON_VIRTUAL,
 	          __bool__getDoublePassRendering,
@@ -122,7 +122,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          Properties::NON_VIRTUAL,
 	          __void__setDoublePassRendering__bool,
 	          "Set the double pass rendering flag. ",
-	          "Double pass rendering avoids overdraw problems between particle systems and other opaque objects. If you can render all the particle systems after the opaque objects, then double pass is not necessary and can be turned off (best choice). If you set the default attributes with setDefaultAttributes, then the particle system will fall into a transparent bin.");
+	          "Double pass rendering avoids overdraw problems between particle systems and other opaque objects. If you can render all the particle systems after the opaque objects, then double pass is not necessary and can be turned off (best choice). If you set the default attributes with setDefaultAttributes, then the particle system will fall into a transparent bin. ");
 	I_Method0(bool, isFrozen,
 	          Properties::NON_VIRTUAL,
 	          __bool__isFrozen,
@@ -132,7 +132,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          Properties::NON_VIRTUAL,
 	          __void__setFrozen__bool,
 	          "Set or reset the frozen state. ",
-	          "When the particle system is frozen, emitters and programs won't do anything on it.");
+	          "When the particle system is frozen, emitters and programs won't do anything on it. ");
 	I_Method0(int, numParticles,
 	          Properties::NON_VIRTUAL,
 	          __int__numParticles,
@@ -207,7 +207,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	                      Properties::NON_VIRTUAL,
 	                      __void__setDefaultAttributes__C5_std_string_R1__bool__bool__int,
 	                      "A useful method to set the most common StateAttribute's in one call. ",
-	                      "If texturefile is empty, then texturing is turned off.");
+	                      "If texturefile is empty, then texturing is turned off. ");
 	I_Method0(int, getLevelOfDetail,
 	          Properties::NON_VIRTUAL,
 	          __int__getLevelOfDetail,
@@ -217,7 +217,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          Properties::NON_VIRTUAL,
 	          __void__setLevelOfDetail__int,
 	          "(EXPERIMENTAL) Set the level of detail. ",
-	          "The total number of particles is divided by the detail value to get the actual number of particles to be drawn. This value must be greater than zero.");
+	          "The total number of particles is divided by the detail value to get the actual number of particles to be drawn. This value must be greater than zero. ");
 	I_Method1(void, update, IN, double, dt,
 	          Properties::VIRTUAL,
 	          __void__update__double,

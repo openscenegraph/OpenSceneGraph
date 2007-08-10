@@ -170,12 +170,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	          Properties::NON_VIRTUAL,
 	          __C5_StateSet_P1__getParent__unsigned_int,
 	          "Get a single const parent of this StateAttribute. ",
-	          " param i index of the parent to get.   return the parent i.");
+	          " param i index of the parent to get.   return the parent i. ");
 	I_Method0(unsigned int, getNumParents,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of this StateAttribute. ",
-	          "the number of parents of this StateAttribute. ");
+	          "the number of parents of this StateAttribute.  ");
 	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
 	          Properties::VIRTUAL,
 	          __bool__getModeUsage__ModeUsage_R1,
@@ -220,7 +220,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_Method1(void, compileGLObjects, IN, osg::State &, x,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__State_R1,

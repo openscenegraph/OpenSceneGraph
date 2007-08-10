@@ -87,7 +87,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	          Properties::NON_VIRTUAL,
 	          __void__setTessellationNormal__C5_osg_Vec3,
 	          "Define the normal to the tessellated polygon - this provides a hint how to tessellate the contours; see gluTessNormal in red book or man pages. ",
-	          "GWM July 2005. Can improve teselation \"For example, if you know that all polygons lie in the x-y plane, call gluTessNormal(tess, 0.0, 0.0, 1.0) before rendering any polygons.\"");
+	          "GWM July 2005. Can improve teselation \"For example, if you know that all polygons lie in the x-y plane, call gluTessNormal(tess, 0.0, 0.0, 1.0) before rendering any polygons.\" ");
 	I_Method0(osg::Geometry::PrimitiveSetList, getContours,
 	          Properties::NON_VIRTUAL,
 	          __osg_Geometry_PrimitiveSetList__getContours,

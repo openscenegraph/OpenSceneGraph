@@ -52,6 +52,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Shooter)
 	          Properties::PURE_VIRTUAL,
 	          __void__shoot__Particle_P1,
 	          "Shoot a particle. ",
-	          "Must be overriden by descendants. This method should only set the velocity vector of particle P, leaving other attributes unchanged.");
+	          "Must be overriden by descendants. This method should only set the velocity vector of particle P, leaving other attributes unchanged. ");
 END_REFLECTOR
 

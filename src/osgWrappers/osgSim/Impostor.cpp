@@ -77,7 +77,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::Impostor)
 	          Properties::NON_VIRTUAL,
 	          __void__setImpostorThreshold__float,
 	          "Set the Impostor threshold distance. ",
-	          "For eye points further than this threshold the Imposter is used if appropriate, otherwise the LOD children as chosen as per a standard LOD node.");
+	          "For eye points further than this threshold the Imposter is used if appropriate, otherwise the LOD children as chosen as per a standard LOD node. ");
 	I_Method0(float, getImpostorThreshold,
 	          Properties::NON_VIRTUAL,
 	          __float__getImpostorThreshold,

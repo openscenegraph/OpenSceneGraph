@@ -31,7 +31,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Selection)
 	          Properties::VIRTUAL,
 	          __bool__receive__C5_MotionCommand_R1,
 	          "Receive motion commands and set the MatrixTransform accordingly to transform selections. ",
-	          "Returns true on success.");
+	          "Returns true on success. ");
 	I_Method1(bool, receive, IN, const osgManipulator::TranslateInLineCommand &, command,
 	          Properties::VIRTUAL,
 	          __bool__receive__C5_TranslateInLineCommand_R1,

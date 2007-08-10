@@ -102,7 +102,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TexGen)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_Method1(void, setMode, IN, osg::TexGen::Mode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setMode__Mode,
@@ -132,7 +132,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TexGen)
 	          Properties::NON_VIRTUAL,
 	          __void__setPlanesFromMatrix__C5_Matrixd_R1,
 	          "Set the tex gen planes from specified matrix. ",
-	          "Typical usage would be to pass in a projection matrix to set up projective texturing.");
+	          "Typical usage would be to pass in a projection matrix to set up projective texturing. ");
 	I_SimpleProperty(osg::TexGen::Mode, Mode, 
 	                 __Mode__getMode, 
 	                 __void__setMode__Mode);

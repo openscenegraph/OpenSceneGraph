@@ -124,12 +124,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	          Properties::NON_VIRTUAL,
 	          __C5_Group_P1__getParent__unsigned_int,
 	          "Get a single const parent of node. ",
-	          " param i index of the parent to get.   return the parent i.");
+	          " param i index of the parent to get.   return the parent i. ");
 	I_Method0(unsigned int, getNumParents,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of node. ",
-	          "the number of parents of this node. ");
+	          "the number of parents of this node.  ");
 	I_MethodWithDefaults1(osg::NodePathList, getParentalNodePaths, IN, osg::Node *, haltTraversalAtNode, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __NodePathList__getParentalNodePaths__osg_Node_P1,

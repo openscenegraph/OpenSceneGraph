@@ -32,6 +32,21 @@ CullStack::CullStack()
     _referenceViewPoints.push_back(osg::Vec3(0.0f,0.0f,0.0f));
 }
 
+CullStack::CullStack(const CullStack& cs):
+    CullSettings(cs)
+{
+    _frustumVolume=-1.0f;
+    _bbCornerNear = 0;
+    _bbCornerFar = 7;
+    _currentReuseMatrixIndex=0;
+    _identity = new RefMatrix();
+
+    _index_modelviewCullingStack = 0;
+    _back_modelviewCullingStack = 0;
+    
+    _referenceViewPoints.push_back(osg::Vec3(0.0f,0.0f,0.0f));
+}
+
 
 CullStack::~CullStack()
 {

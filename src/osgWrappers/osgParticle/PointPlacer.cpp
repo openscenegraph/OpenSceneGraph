@@ -63,7 +63,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PointPlacer)
 	          Properties::VIRTUAL,
 	          __void__place__Particle_P1,
 	          "Place a particle. ",
-	          "This method is called automatically by ModularEmitter and should not be called manually.");
+	          "This method is called automatically by ModularEmitter and should not be called manually. ");
 	I_Method0(osg::Vec3, getControlPosition,
 	          Properties::VIRTUAL,
 	          __osg_Vec3__getControlPosition,

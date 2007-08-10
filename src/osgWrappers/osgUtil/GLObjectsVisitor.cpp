@@ -63,7 +63,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	                           Properties::NON_EXPLICIT,
 	                           ____GLObjectsVisitor__Mode,
 	                           "Construct a GLObjectsVisitor to traverse all children, operating on node according to specified mode, such as to compile or release display list/texture objects etc. ",
-	                           "Default mode is to compile GL objects.");
+	                           "Default mode is to compile GL objects. ");
 	I_Method0(void, reset,
 	          Properties::VIRTUAL,
 	          __void__reset,

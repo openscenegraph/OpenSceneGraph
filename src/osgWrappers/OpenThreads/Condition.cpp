@@ -35,16 +35,16 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::Condition)
 	          Properties::VIRTUAL,
 	          __int__wait__Mutex_P1__unsigned_long_int,
 	          "Wait on a mutex for a given amount of time (ms). ",
-	          "0 if normal, -1 if errno set, errno code otherwise. ");
+	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 	I_Method0(int, signal,
 	          Properties::VIRTUAL,
 	          __int__signal,
 	          "Signal a SINGLE thread to wake if it's waiting. ",
-	          "0 if normal, -1 if errno set, errno code otherwise. ");
+	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 	I_Method0(int, broadcast,
 	          Properties::VIRTUAL,
 	          __int__broadcast,
 	          "Wake all threads waiting on this condition. ",
-	          "0 if normal, -1 if errno set, errno code otherwise. ");
+	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 END_REFLECTOR
 

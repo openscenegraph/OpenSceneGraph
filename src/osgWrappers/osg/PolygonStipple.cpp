@@ -88,7 +88,7 @@ BEGIN_OBJECT_REFLECTOR(osg::PolygonStipple)
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
-	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state.");
+	          "The render info for the current OpenGL context is passed in to allow the StateAttribute to obtain details on the the current context and state. ");
 	I_SimpleProperty(const GLubyte *, Mask, 
 	                 __C5_GLubyte_P1__getMask, 
 	                 __void__setMask__C5_GLubyte_P1);

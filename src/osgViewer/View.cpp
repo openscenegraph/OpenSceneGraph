@@ -17,6 +17,7 @@
 
 #include <osg/io_utils>
 
+#include <osgUtil/Optimizer>
 #include <osgUtil/IntersectionVisitor>
 
 using namespace osgViewer;
@@ -125,6 +126,15 @@ View::View():
 {
     // osg::notify(osg::NOTICE)<<"Constructing osgViewer::View"<<std::endl;
 
+    _startTick = 0;
+
+    _frameStamp = new osg::FrameStamp;
+    _frameStamp->setFrameNumber(0);
+    _frameStamp->setReferenceTime(0);
+    _frameStamp->setSimulationTime(0);
+
+    _scene = new Scene;
+
     // make sure View is safe to reference multi-threaded.
     setThreadSafeRefUnref(true);
     
@@ -141,12 +151,19 @@ View::View(const osgViewer::View& view, const osg::CopyOp& copyop):
     _fusionDistanceMode(view._fusionDistanceMode),
     _fusionDistanceValue(view._fusionDistanceValue)
 {
+    _scene = new Scene;
+
+    // need to attach a Renderer to the maaster camera which has been default constructed
+    getCamera()->setRenderer(createRenderer(getCamera()));
+
+    setEventQueue(new osgGA::EventQueue);
 }
 
 View::~View()
 {
     // osg::notify(osg::NOTICE)<<"Destructing osgViewer::View"<<std::endl;
 }
+
 
 osg::GraphicsOperation* View::createRenderer(osg::Camera* camera)
 {
@@ -169,15 +186,61 @@ void View::init()
     }
 }
 
+void View::setStartTick(osg::Timer_t tick)
+{
+    _startTick = tick;
+}
+
 void View::setSceneData(osg::Node* node)
 {
-    _scene = new osgViewer::Scene;
-    _scene->setSceneData(node);
+    if (_scene->getSceneData()==node) return;
+
+    Scene* scene = Scene::getScene(node);
+    
+    if (scene)
+    {
+        osg::notify(osg::INFO)<<"View::setSceneData() Sharing scene "<<scene<<std::endl;
+        _scene = scene;
+    }
+    else
+    {
+        if (_scene->referenceCount()!=1)
+        {
+            // we are not the only reference to the Scene so we cannot reuse it.
+            _scene = new Scene;
+            osg::notify(osg::INFO)<<"View::setSceneData() Allocating new scene"<<_scene.get()<<std::endl;
+        }
+        else
+        {
+            osg::notify(osg::INFO)<<"View::setSceneData() Reusing exisitng scene"<<_scene.get()<<std::endl;
+        }
+
+        _scene->setSceneData(node);
+    }
+
+    if (getSceneData())
+    {        
+        // now make sure the scene graph is set up with the correct DataVariance to protect the dyamic elements of
+        // the scene graph from being run in parallel.
+        osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
+        getSceneData()->accept(sodv);
+    }
     
     computeActiveCoordinateSystemNodePath();
 
     assignSceneDataToCameras();
 }
+
+osgDB::DatabasePager* View::getDatabasePager()
+{
+    return _scene.valid() ? _scene->getDatabasePager() : 0;
+}
+
+const osgDB::DatabasePager* View::getDatabasePager() const
+{
+    return _scene.valid() ? _scene->getDatabasePager() : 0;
+}
+
 
 void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 {
@@ -828,68 +891,4 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
         intersections.clear();
         return false;
     }
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// EndOfDynamicDrawBlock
-//
-EndOfDynamicDrawBlock::EndOfDynamicDrawBlock(unsigned int numberOfBlocks):
-    _numberOfBlocks(numberOfBlocks),
-    _blockCount(0)
-{
-}
-
-void EndOfDynamicDrawBlock::completed(osg::State* /*state*/)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_blockCount>0)
-    {
-        --_blockCount;
-
-        if (_blockCount==0)
-        {
-            // osg::notify(osg::NOTICE)<<"Released"<<std::endl;
-            _cond.broadcast();
-        }
-    }
-}
-
-void EndOfDynamicDrawBlock::block()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_blockCount)
-        _cond.wait(&_mut);
-}
-
-void EndOfDynamicDrawBlock::release()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_blockCount)
-    {
-        _blockCount = 0;
-        _cond.broadcast();
-    }
-}
-
-void EndOfDynamicDrawBlock::reset()
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> mutlock(_mut);
-    if (_numberOfBlocks!=_blockCount)
-    {
-        if (_numberOfBlocks==0) _cond.broadcast();
-        _blockCount = _numberOfBlocks;
-    }
-}
-
-void EndOfDynamicDrawBlock::setNumOfBlocks(unsigned int blockCount)
-{
-    _numberOfBlocks = blockCount;
-}
-
-EndOfDynamicDrawBlock::~EndOfDynamicDrawBlock()
-{
-    _blockCount = 0;
-    release();
 }

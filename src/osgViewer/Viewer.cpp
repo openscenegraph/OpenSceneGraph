@@ -16,7 +16,6 @@
 #include <osg/DeleteHandler>
 #include <osg/io_utils>
 
-#include <osgUtil/Optimizer>
 #include <osgUtil/GLObjectsVisitor>
 #include <osgDB/Registry>
 #include <osgGA/TrackballManipulator>
@@ -86,16 +85,14 @@ void Viewer::constructorInit()
     _useMainThreadForRenderingTraversal = true;
     _endBarrierPosition = AfterSwapBuffers;
     _numWindowsOpenAtLastSetUpThreading = 0;
-    _startTick = 0;
-
-    _frameStamp = new osg::FrameStamp;
-    _frameStamp->setFrameNumber(0);
-    _frameStamp->setReferenceTime(0);
-    _frameStamp->setSimulationTime(0);
 
     _eventVisitor = new osgGA::EventVisitor;
     _eventVisitor->setActionAdapter(this);
+    _eventVisitor->setFrameStamp(_frameStamp.get());
     
+    _updateVisitor = new osgUtil::UpdateVisitor;
+    _updateVisitor->setFrameStamp(_frameStamp.get());
+
     setStats(new osg::Stats("Viewer"));
 }
 
@@ -205,7 +202,7 @@ int Viewer::run()
 
 void Viewer::setStartTick(osg::Timer_t tick)
 {
-    _startTick = tick;
+    View::setStartTick(tick);
     
     Contexts contexts;
     getContexts(contexts,false);
@@ -239,23 +236,9 @@ void Viewer::setReferenceTime(double time)
 
 void Viewer::setSceneData(osg::Node* node)
 {
-    _scene = new osgViewer::Scene;
-    _scene->setSceneData(node);
-    _scene->setFrameStamp(_frameStamp.get());
-    
-    if (getSceneData())
-    {        
-        // now make sure the scene graph is set up with the correct DataVariance to protect the dyamic elements of
-        // the scene graph from being run in parallel.
-        osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
-        getSceneData()->accept(sodv);
-    }
-
-    computeActiveCoordinateSystemNodePath();
-
     setReferenceTime(0.0);
-    
-    assignSceneDataToCameras();
+
+    View::setSceneData(node);
 }
 
 GraphicsWindowEmbedded* Viewer::setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height)
@@ -543,7 +526,7 @@ void Viewer::startThreading()
     {
         _startRenderingBarrier = 0;
         _endRenderingDispatchBarrier = 0;
-        _endDynamicDrawBlock = new EndOfDynamicDrawBlock(numViewerDoubleBufferedRenderingOperation);
+        _endDynamicDrawBlock = new osg::EndOfDynamicDrawBlock(numViewerDoubleBufferedRenderingOperation);
         
         if (!osg::Referenced::getDeleteHandler()) osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
         else osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
@@ -1349,26 +1332,32 @@ void Viewer::updateTraversal()
 
     double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
-    // do the update traversal of the scene.
-    if (_scene.valid()) _scene->updateTraversal();
+    if (getSceneData())
+    {
+        getSceneData()->accept(*_updateVisitor);
+    }
+    
+    if (_scene->getDatabasePager())
+    {    
+        // syncronize changes required by the DatabasePager thread to the scene graph
+        _scene->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
+    }
 
-    osgUtil::UpdateVisitor* uv = _scene.valid() ? _scene->getUpdateVisitor() : 0;
-    if (uv)
     {
         // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
         // leave that to the scene update traversal.
-        osg::NodeVisitor::TraversalMode tm = uv->getTraversalMode();
-        uv->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
+        osg::NodeVisitor::TraversalMode tm = _updateVisitor->getTraversalMode();
+        _updateVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
 
-        if (_camera.valid() && _camera->getUpdateCallback()) _camera->accept(*uv);
+        if (_camera.valid() && _camera->getUpdateCallback()) _camera->accept(*_updateVisitor);
 
         for(unsigned int i=0; i<getNumSlaves(); ++i)
         {
             osg::Camera* camera = getSlave(i)._camera.get();
-            if (camera && camera->getUpdateCallback()) camera->accept(*uv);
+            if (camera && camera->getUpdateCallback()) camera->accept(*_updateVisitor);
         }
 
-        uv->setTraversalMode(tm);
+        _updateVisitor->setTraversalMode(tm);
     }
 
     if (_cameraManipulator.valid())

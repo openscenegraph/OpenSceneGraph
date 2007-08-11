@@ -27,6 +27,12 @@ CompositeViewer::CompositeViewer()
     constructorInit();
 }
 
+CompositeViewer::CompositeViewer(const CompositeViewer& cv,const osg::CopyOp& copyop):
+    osg::Object(cv,copyop)
+{
+    constructorInit();
+}
+
 CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
 {
     constructorInit();
@@ -978,6 +984,26 @@ void CompositeViewer::eventTraversal()
     }
 }
 
+
+void CompositeViewer::addUpdateOperation(osg::Operation* operation)
+{
+    if (!operation) return;
+
+    if (!_updateOperations) _updateOperations = new osg::OperationQueue;
+    
+    _updateOperations->add(operation);
+}
+
+void CompositeViewer::removeUpdateOperation(osg::Operation* operation)
+{
+    if (!operation) return;
+
+    if (_updateOperations.valid())
+    {
+        _updateOperations->remove(operation);
+    } 
+}
+
 void CompositeViewer::updateTraversal()
 {
     if (_done) return;
@@ -1001,7 +1027,12 @@ void CompositeViewer::updateTraversal()
         }
 
     }
-    
+
+    if (_updateOperations.valid())
+    {
+        _updateOperations->runOperations(this);
+    }
+
     for(Views::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)

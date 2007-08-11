@@ -1326,6 +1326,25 @@ void Viewer::eventTraversal()
 
 }
 
+void Viewer::addUpdateOperation(osg::Operation* operation)
+{
+    if (!operation) return;
+
+    if (!_updateOperations) _updateOperations = new osg::OperationQueue;
+    
+    _updateOperations->add(operation);
+}
+
+void Viewer::removeUpdateOperation(osg::Operation* operation)
+{
+    if (!operation) return;
+
+    if (_updateOperations.valid())
+    {
+        _updateOperations->remove(operation);
+    } 
+}
+
 void Viewer::updateTraversal()
 {
     if (_done) return;
@@ -1341,6 +1360,11 @@ void Viewer::updateTraversal()
     {    
         // syncronize changes required by the DatabasePager thread to the scene graph
         _scene->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
+    }
+
+    if (_updateOperations.valid())
+    {
+        _updateOperations->runOperations(this);
     }
 
     {

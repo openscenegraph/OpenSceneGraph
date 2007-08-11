@@ -16,6 +16,8 @@
 #include <osg/Node>
 #include <osg/OperationThread>
 #include <osg/Timer>
+#include <osgGA/EventVisitor>
+#include <osgUtil/UpdateVisitor>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>
 
@@ -138,6 +140,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __BarrierPosition__getEndBarrierPosition,
 	          "Get the end barrier position. ",
 	          "");
+	I_Method1(void, setEventVisitor, IN, osgGA::EventVisitor *, eventVisitor,
+	          Properties::NON_VIRTUAL,
+	          __void__setEventVisitor__osgGA_EventVisitor_P1,
+	          "Set the EventVisitor. ",
+	          "");
+	I_Method0(osgGA::EventVisitor *, getEventVisitor,
+	          Properties::NON_VIRTUAL,
+	          __osgGA_EventVisitor_P1__getEventVisitor,
+	          "Get the EventVisitor. ",
+	          "");
+	I_Method0(const osgGA::EventVisitor *, getEventVisitor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgGA_EventVisitor_P1__getEventVisitor,
+	          "Get the const EventVisitor. ",
+	          "");
 	I_Method1(void, setKeyEventSetsDone, IN, int, key,
 	          Properties::NON_VIRTUAL,
 	          __void__setKeyEventSetsDone__int,
@@ -158,6 +175,46 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __bool__getQuitEventSetsDone,
 	          "",
 	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
+	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, updateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
+	          "Set the UpdateVisitor. ",
+	          "");
+	I_Method0(osgUtil::UpdateVisitor *, getUpdateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __osgUtil_UpdateVisitor_P1__getUpdateVisitor,
+	          "Get the UpdateVisitor. ",
+	          "");
+	I_Method0(const osgUtil::UpdateVisitor *, getUpdateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
+	          "Get the const UpdateVisitor. ",
+	          "");
+	I_Method1(void, setUpdateOperations, IN, osg::OperationQueue *, operations,
+	          Properties::NON_VIRTUAL,
+	          __void__setUpdateOperations__osg_OperationQueue_P1,
+	          "Set the Update OperationQueue. ",
+	          "");
+	I_Method0(osg::OperationQueue *, getUpdateOperations,
+	          Properties::NON_VIRTUAL,
+	          __osg_OperationQueue_P1__getUpdateOperations,
+	          "Get the Update OperationQueue. ",
+	          "");
+	I_Method0(const osg::OperationQueue *, getUpdateOperations,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_OperationQueue_P1__getUpdateOperations,
+	          "Get the const Update OperationQueue. ",
+	          "");
+	I_Method1(void, addUpdateOperation, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
+	          __void__addUpdateOperation__osg_Operation_P1,
+	          "Add an update operation. ",
+	          "");
+	I_Method1(void, removeUpdateOperation, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
+	          __void__removeUpdateOperation__osg_Operation_P1,
+	          "Remove an update operation. ",
+	          "");
 	I_Method0(int, run,
 	          Properties::VIRTUAL,
 	          __int__run,
@@ -296,6 +353,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(osgViewer::Viewer::BarrierPosition, EndBarrierPosition, 
 	                 __BarrierPosition__getEndBarrierPosition, 
 	                 __void__setEndBarrierPosition__BarrierPosition);
+	I_SimpleProperty(osgGA::EventVisitor *, EventVisitor, 
+	                 __osgGA_EventVisitor_P1__getEventVisitor, 
+	                 __void__setEventVisitor__osgGA_EventVisitor_P1);
 	I_SimpleProperty(int, KeyEventSetsDone, 
 	                 __int__getKeyEventSetsDone, 
 	                 __void__setKeyEventSetsDone__int);
@@ -317,6 +377,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(osgViewer::Viewer::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);
+	I_SimpleProperty(osg::OperationQueue *, UpdateOperations, 
+	                 __osg_OperationQueue_P1__getUpdateOperations, 
+	                 __void__setUpdateOperations__osg_OperationQueue_P1);
+	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
+	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
+	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
 	I_SimpleProperty(bool, UseMainThreadForRenderingTraversals, 
 	                 __bool__getUseMainThreadForRenderingTraversals, 
 	                 __void__setUseMainThreadForRenderingTraversals__bool);

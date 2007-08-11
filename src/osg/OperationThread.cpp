@@ -181,6 +181,40 @@ void OperationQueue::removeAllOperations()
     }
 }
 
+void OperationQueue::runOperations(Object* callingObject)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
+
+    // reset current operation iterator to begining if at end.
+    if (_currentOperationIterator==_operations.end()) _currentOperationIterator = _operations.begin();
+    
+    for(;
+        _currentOperationIterator != _operations.end();
+        )
+    {
+        ref_ptr<Operation> operation = *_currentOperationIterator;
+
+        if (!operation->getKeep())
+        {
+            _currentOperationIterator = _operations.erase(_currentOperationIterator);
+        }
+        else
+        {
+            ++_currentOperationIterator;
+        }
+                
+        // osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
+
+        // call the graphics operation.
+        (*operation)(callingObject);
+    }
+
+    if (_operations.empty())
+    {
+        _operationsBlock->set(false);
+    }
+}
+
 void OperationQueue::releaseOperationsBlock()
 {
     _operationsBlock->release();

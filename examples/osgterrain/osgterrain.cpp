@@ -574,47 +574,12 @@ protected:
     osg::observer_ptr<osgTerrain::Layer> _layer;
 };
 
-class CustomViewer : public osgViewer::Viewer
-{
-public:
-    CustomViewer(osg::ArgumentParser& arguments):
-        Viewer(arguments) {}
-        
-    // override the realize to create the compile graphics contexts + threads for us.
-    virtual void realize()
-    {
-        Viewer::realize();
-        
-        
-        int numProcessors = OpenThreads::GetNumberOfProcessors();
-        int processNum = (getThreadingModel()==osgViewer::Viewer::SingleThreaded) ? 1 : 0;
-
-        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
-        {
-            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
-
-            if (gc)
-            {
-                gc->createGraphicsThread();
-                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-                gc->getGraphicsThread()->startThread();
-                
-                ++processNum;
-            }
-        }
-    }
-
-protected:
-
-};
-
-
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
 
     // construct the viewer.
-    CustomViewer viewer(arguments);
+    osgViewer::Viewer viewer(arguments);
 
     // set up the camera manipulators.
     {
@@ -934,6 +899,9 @@ int main(int argc, char** argv)
     }
     
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    
+    // enable the use of compile contexts and associated threads.
+    osg::DisplaySettings::instance()->setCompileContextsHint(true);
 
     // realize the graphics windows.
     viewer.realize();

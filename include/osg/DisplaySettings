@@ -174,6 +174,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setNumMultiSamples(unsigned int samples) { _numMultiSamples = samples; }
         unsigned int getNumMultiSamples() const { return _numMultiSamples; }
         bool getMultiSamples() const { return _numMultiSamples!=0; }
+        
+        void setCompileContextsHint(bool useCompileContexts) { _compileContextsHint = useCompileContexts; }
+        bool getCompileContextsHint() const { return _compileContextsHint; }
 
     protected:
     
@@ -207,6 +210,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int                    _maxNumOfGraphicsContexts;
         
         unsigned int                    _numMultiSamples;
+        
+        bool                            _compileContextsHint;
 
 };
 

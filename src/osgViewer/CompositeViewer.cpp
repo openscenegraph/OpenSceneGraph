@@ -597,6 +597,27 @@ void CompositeViewer::realize()
 
     // pass on the start tick to all the associated eventqueues
     setStartTick(osg::Timer::instance()->getStartTick());
+
+    if (osg::DisplaySettings::instance()->getCompileContextsHint())
+    {
+        int numProcessors = OpenThreads::GetNumberOfProcessors();
+        int processNum = 0;
+
+        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
+        {
+            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
+
+            if (gc)
+            {
+                gc->createGraphicsThread();
+                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
+                gc->getGraphicsThread()->startThread();
+                
+                ++processNum;
+            }
+        }
+    }
+
 }
 
 

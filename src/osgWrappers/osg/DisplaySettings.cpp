@@ -329,6 +329,16 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __bool__getMultiSamples,
 	          "",
 	          "");
+	I_Method1(void, setCompileContextsHint, IN, bool, useCompileContexts,
+	          Properties::NON_VIRTUAL,
+	          __void__setCompileContextsHint__bool,
+	          "",
+	          "");
+	I_Method0(bool, getCompileContextsHint,
+	          Properties::NON_VIRTUAL,
+	          __bool__getCompileContextsHint,
+	          "",
+	          "");
 	I_StaticMethod0(osg::DisplaySettings *, instance,
 	                __DisplaySettings_P1__instance_S,
 	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
@@ -339,6 +349,9 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(bool, AlphaBuffer, 
 	                 __bool__getAlphaBuffer, 
 	                 0);
+	I_SimpleProperty(bool, CompileContextsHint, 
+	                 __bool__getCompileContextsHint, 
+	                 __void__setCompileContextsHint__bool);
 	I_SimpleProperty(bool, DepthBuffer, 
 	                 __bool__getDepthBuffer, 
 	                 __void__setDepthBuffer__bool);

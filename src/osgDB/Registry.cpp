@@ -160,7 +160,7 @@ Registry::Registry()
     }
 
     addFileExtensionAlias("shadow",  "osgShadow");
-
+    addFileExtensionAlias("terrain", "osgTerrain");
     addFileExtensionAlias("view",  "osgViewer");
 
     addFileExtensionAlias("sgi",  "rgb");

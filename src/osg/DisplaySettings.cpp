@@ -70,6 +70,8 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
 
     _maxNumOfGraphicsContexts = vs._maxNumOfGraphicsContexts;
     _numMultiSamples = vs._numMultiSamples;
+    
+    _compileContextsHint = vs._compileContextsHint;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -85,6 +87,9 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     if (vs._minimumNumberAlphaBits>_minimumNumberAlphaBits) _minimumNumberAlphaBits = vs._minimumNumberAlphaBits;
     if (vs._minimumNumberStencilBits>_minimumNumberStencilBits) _minimumNumberStencilBits = vs._minimumNumberStencilBits;
     if (vs._numMultiSamples>_numMultiSamples) _numMultiSamples = vs._numMultiSamples;
+
+    if (vs._compileContextsHint) _compileContextsHint = vs._compileContextsHint;
+
 }
 
 void DisplaySettings::setDefaults()
@@ -123,6 +128,8 @@ void DisplaySettings::setDefaults()
     // switch on anti-aliasing by default, just in case we have an Onyx :-)
     _numMultiSamples = 4;
     #endif
+    
+    _compileContextsHint = false;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -157,7 +164,7 @@ static ApplicationUsageProxy DisplaySetting_e9(ApplicationUsage::ENVIRONMENTAL_V
 static ApplicationUsageProxy DisplaySetting_e10(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_AUTO_ADJUST_ASPECT_RATIO <mode>","OFF | ON  Default to ON to compenstate for the compression of the aspect ratio when viewing in split screen stereo.  Note, if you are setting fovx and fovy explicityly OFF should be used.");
 static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>","number of pixels between viewports");
 static ApplicationUsageProxy DisplaySetting_e12(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
-
+static ApplicationUsageProxy DisplaySetting_e13(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_COMPIlE_CONTEXTS <mode>","OFF | ON Enable/disable the use a backgrouind compile contexts and threads.");
 void DisplaySettings::readEnvironmentalVariables()
 {
     const char* ptr = 0;
@@ -308,6 +315,19 @@ void DisplaySettings::readEnvironmentalVariables()
     {
         _maxNumOfGraphicsContexts = atoi(ptr);
     }
+
+    if( (ptr = getenv("OSG_COMPIlE_CONTEXTS")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _compileContextsHint = false;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _compileContextsHint = true;
+        }
+    }
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
@@ -324,6 +344,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--accum-rgb","Request a rgb accumulator buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--accum-rgba","Request a rgb accumulator buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--samples <num>","Request a multisample visual");
+        arguments.getApplicationUsage()->addCommandLineOption("--cc","Request use of compile contexts and threads");
     }
 
     std::string str;
@@ -376,4 +397,10 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     {
         _numMultiSamples = atoi(str.c_str());
     }
+
+    while(arguments.read("--cc"))
+    {
+        _compileContextsHint = true;
+    }
+
 }

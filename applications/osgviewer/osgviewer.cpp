@@ -74,12 +74,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    bool createBackgroundContextForCompiling = false;
-    while (arguments.read("--bc")) { createBackgroundContextForCompiling = true; }
-
-    bool createBackgroundThreadsForCompiling = false;
-    while (arguments.read("--bt")) { createBackgroundContextForCompiling = true; createBackgroundThreadsForCompiling = true; }
-
     // set up the camera manipulators.
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
@@ -150,27 +144,6 @@ int main(int argc, char** argv)
     viewer.setSceneData( loadedModel.get() );
 
     viewer.realize();
-
-    if (createBackgroundContextForCompiling)
-    {
-    
-        int numProcessors = OpenThreads::GetNumberOfProcessors();
-        int processNum = 0;
-
-        for(unsigned int i=0; i<= osg::GraphicsContext::getMaxContextID(); ++i)
-        {
-            osg::GraphicsContext* gc = osg::GraphicsContext::getOrCreateCompileContext(i);
-
-            if (gc && createBackgroundThreadsForCompiling)
-            {
-                gc->createGraphicsThread();
-                gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-                gc->getGraphicsThread()->startThread();
-                
-                ++processNum;
-            }
-        }
-    }
 
     viewer.run();
 

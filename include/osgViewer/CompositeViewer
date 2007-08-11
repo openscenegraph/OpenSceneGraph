@@ -22,13 +22,17 @@
 namespace osgViewer {
 
 /** CompsiteViewer holds a or more views to a one more scenes.*/
-class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
+class OSGVIEWER_EXPORT CompositeViewer : public osg::Object
 {
     public:
 
         CompositeViewer();
 
+        CompositeViewer(const CompositeViewer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
         CompositeViewer(osg::ArgumentParser& arguments);
+        
+        META_Object(osg,CompositeViewer);
 
         virtual ~CompositeViewer();
 
@@ -88,6 +92,18 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         /** Get the end barrier position.*/
         BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
 
+
+
+        /** Set the EventVisitor. */
+        void setEventVisitor(osgGA::EventVisitor* eventVisitor) { _eventVisitor = eventVisitor; }
+
+        /** Get the EventVisitor. */
+        osgGA::EventVisitor* getEventVisitor() { return _eventVisitor.get(); }
+
+        /** Get the const EventVisitor. */
+        const osgGA::EventVisitor* getEventVisitor() const { return _eventVisitor.get(); }
+
+
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
@@ -106,6 +122,34 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Referenced
         
         /** @return true if the viewer respond to the QUIT_APPLICATION-event */
         bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
+
+
+
+        /** Set the UpdateVisitor. */
+        void setUpdateVisitor(osgUtil::UpdateVisitor* updateVisitor) { _updateVisitor = updateVisitor; }
+
+        /** Get the UpdateVisitor. */
+        osgUtil::UpdateVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
+
+        /** Get the const UpdateVisitor. */
+        const osgUtil::UpdateVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
+
+
+        /** Set the Update OperationQueue. */
+        void setUpdateOperations(osg::OperationQueue* operations) { _updateOperations = operations; }
+
+        /** Get the Update OperationQueue. */
+        osg::OperationQueue* getUpdateOperations() { return _updateOperations.get(); }
+        
+        /** Get the const Update OperationQueue. */
+        const osg::OperationQueue* getUpdateOperations() const { return _updateOperations.get(); }
+        
+        /** Add an update operation.*/
+        void addUpdateOperation(osg::Operation* operation);
+
+        /** Remove an update operation.*/
+        void removeUpdateOperation(osg::Operation* operation);
+
 
         /** Execute a main frame loop.
           * Equivialant to while (!viewer.done()) viewer.frame();

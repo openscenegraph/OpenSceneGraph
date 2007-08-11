@@ -12,10 +12,14 @@
 
 #include <osg/ArgumentParser>
 #include <osg/Camera>
+#include <osg/CopyOp>
 #include <osg/FrameStamp>
+#include <osg/Object>
 #include <osg/OperationThread>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
+#include <osgGA/EventVisitor>
+#include <osgUtil/UpdateVisitor>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
 
@@ -48,15 +52,44 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_DeclaringFile("osgViewer/CompositeViewer");
-	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Object);
 	I_Constructor0(____CompositeViewer,
 	               "",
 	               "");
+	I_ConstructorWithDefaults2(IN, const osgViewer::CompositeViewer &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____CompositeViewer__C5_CompositeViewer_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
 	I_Constructor1(IN, osg::ArgumentParser &, arguments,
 	               Properties::NON_EXPLICIT,
 	               ____CompositeViewer__osg_ArgumentParser_R1,
 	               "",
 	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method1(void, addView, IN, osgViewer::View *, view,
 	          Properties::NON_VIRTUAL,
 	          __void__addView__osgViewer_View_P1,
@@ -147,6 +180,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __BarrierPosition__getEndBarrierPosition,
 	          "Get the end barrier position. ",
 	          "");
+	I_Method1(void, setEventVisitor, IN, osgGA::EventVisitor *, eventVisitor,
+	          Properties::NON_VIRTUAL,
+	          __void__setEventVisitor__osgGA_EventVisitor_P1,
+	          "Set the EventVisitor. ",
+	          "");
+	I_Method0(osgGA::EventVisitor *, getEventVisitor,
+	          Properties::NON_VIRTUAL,
+	          __osgGA_EventVisitor_P1__getEventVisitor,
+	          "Get the EventVisitor. ",
+	          "");
+	I_Method0(const osgGA::EventVisitor *, getEventVisitor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgGA_EventVisitor_P1__getEventVisitor,
+	          "Get the const EventVisitor. ",
+	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
 	          __void__setEventQueue__osgGA_EventQueue_P1,
@@ -182,6 +230,46 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __bool__getQuitEventSetsDone,
 	          "",
 	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
+	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, updateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
+	          "Set the UpdateVisitor. ",
+	          "");
+	I_Method0(osgUtil::UpdateVisitor *, getUpdateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __osgUtil_UpdateVisitor_P1__getUpdateVisitor,
+	          "Get the UpdateVisitor. ",
+	          "");
+	I_Method0(const osgUtil::UpdateVisitor *, getUpdateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
+	          "Get the const UpdateVisitor. ",
+	          "");
+	I_Method1(void, setUpdateOperations, IN, osg::OperationQueue *, operations,
+	          Properties::NON_VIRTUAL,
+	          __void__setUpdateOperations__osg_OperationQueue_P1,
+	          "Set the Update OperationQueue. ",
+	          "");
+	I_Method0(osg::OperationQueue *, getUpdateOperations,
+	          Properties::NON_VIRTUAL,
+	          __osg_OperationQueue_P1__getUpdateOperations,
+	          "Get the Update OperationQueue. ",
+	          "");
+	I_Method0(const osg::OperationQueue *, getUpdateOperations,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_OperationQueue_P1__getUpdateOperations,
+	          "Get the const Update OperationQueue. ",
+	          "");
+	I_Method1(void, addUpdateOperation, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
+	          __void__addUpdateOperation__osg_Operation_P1,
+	          "Add an update operation. ",
+	          "");
+	I_Method1(void, removeUpdateOperation, IN, osg::Operation *, operation,
+	          Properties::NON_VIRTUAL,
+	          __void__removeUpdateOperation__osg_Operation_P1,
+	          "Remove an update operation. ",
+	          "");
 	I_Method0(int, run,
 	          Properties::VIRTUAL,
 	          __int__run,
@@ -313,6 +401,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(osgGA::EventVisitor *, EventVisitor, 
+	                 __osgGA_EventVisitor_P1__getEventVisitor, 
+	                 __void__setEventVisitor__osgGA_EventVisitor_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
 	                 0);
@@ -334,6 +425,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(osgViewer::CompositeViewer::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);
+	I_SimpleProperty(osg::OperationQueue *, UpdateOperations, 
+	                 __osg_OperationQueue_P1__getUpdateOperations, 
+	                 __void__setUpdateOperations__osg_OperationQueue_P1);
+	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
+	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
+	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
 	I_ArrayProperty(osgViewer::View *, View, 
 	                __osgViewer_View_P1__getView__unsigned, 
 	                0, 

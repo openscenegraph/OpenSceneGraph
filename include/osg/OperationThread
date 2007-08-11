@@ -109,6 +109,9 @@ class OSG_EXPORT OperationQueue : public Referenced
 
         /** Remove all operations from OperationQueue.*/
         void removeAllOperations();
+        
+        /** Run the operations. */
+        void runOperations(Object* callingObject=0);
 
         /** Call release on all operations. */
         void releaseAllOperations(); 

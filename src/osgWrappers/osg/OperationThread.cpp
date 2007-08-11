@@ -99,6 +99,11 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationQueue)
 	          __void__removeAllOperations,
 	          "Remove all operations from OperationQueue. ",
 	          "");
+	I_MethodWithDefaults1(void, runOperations, IN, osg::Object *, callingObject, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__runOperations__Object_P1,
+	                      "Run the operations. ",
+	                      "");
 	I_Method0(void, releaseAllOperations,
 	          Properties::NON_VIRTUAL,
 	          __void__releaseAllOperations,

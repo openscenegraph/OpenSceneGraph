@@ -65,7 +65,6 @@
 #endif
 
 #include <osg/Notify>
-#include <osg/Version>
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
@@ -75,7 +74,6 @@
 #include <stack>
 
 
-const std::string OSG_PLUGINS(std::string("osgPlugins-")+std::string(osgGetVersion())+std::string("/"));
 
 bool osgDB::makeDirectory( const std::string &path )
 {
@@ -317,9 +315,8 @@ std::string osgDB::findLibraryFile(const std::string& filename,CaseSensitivity c
         if (!fileFound.empty()) return fileFound;
     }
 
-    // failed with direct paths,
-    // now try prepending the filename with "osgPlugins/"
-    return findFileInPath(OSG_PLUGINS+simpleFileName,filepath,caseSensitivity);
+    // failed return empty string.
+    return std::string();
 }
 
 std::string osgDB::findFileInDirectory(const std::string& fileName,const std::string& dirName,CaseSensitivity caseSensitivity)

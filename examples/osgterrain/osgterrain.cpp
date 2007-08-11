@@ -171,9 +171,18 @@ public:
     }
     
 
-    virtual void operator () (osg::Object* object)
+    virtual void operator () (osg::Object* callingObject)
     {
-        // osg::notify(osg::NOTICE)<<"void operator ()"<<std::endl;
+        // decided which method to call according to whole has called me.
+        osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(callingObject);
+
+        if (viewer) update(viewer->getSceneData());
+        else load();
+    }
+
+    void load()
+    {
+        //osg::notify(osg::NOTICE)<<"void load(Object)"<<std::endl;
         Files filesA;
         Files filesB;
         
@@ -371,6 +380,8 @@ public:
     // merge the changes with the main scene graph.
     void update(osg::Node* scene)
     {
+        // osg::notify(osg::NOTICE)<<"void update(Node*)"<<std::endl;
+
         osg::Group* group = dynamic_cast<osg::Group*>(scene);
         if (!group)
         {
@@ -569,10 +580,6 @@ public:
     CustomViewer(osg::ArgumentParser& arguments):
         Viewer(arguments) {}
         
-
-    void setMasterOperation(MasterOperation* masterOp) { _masterOperation = masterOp; }
-    MasterOperation* getMasterOperation() { return _masterOperation.get(); }
-        
     // override the realize to create the compile graphics contexts + threads for us.
     virtual void realize()
     {
@@ -596,18 +603,9 @@ public:
             }
         }
     }
-        
-    // override the updateTraversal to add the merging of data from the MasterOperation.
-    virtual void updateTraversal()
-    {
-        Viewer::updateTraversal();
-        
-        if (_masterOperation.valid()) _masterOperation->update(getSceneData());
-    }
 
 protected:
 
-    osg::ref_ptr<MasterOperation>   _masterOperation;
 };
 
 
@@ -668,7 +666,6 @@ int main(int argc, char** argv)
     while(arguments.read("-m",masterFilename))
     {
         masterOperation = new MasterOperation(masterFilename);
-        viewer.setMasterOperation(masterOperation.get());
     }
     
 
@@ -932,6 +929,8 @@ int main(int argc, char** argv)
                 generalThreadList.push_back(thread);
             }
         }
+        
+        viewer.addUpdateOperation(masterOperation.get());
     }
     
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);

@@ -57,6 +57,26 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	          __Intersection__getFirstIntersection,
 	          "",
 	          "");
+	I_Method1(void, setStart, IN, const osg::Vec3d &, start,
+	          Properties::NON_VIRTUAL,
+	          __void__setStart__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getStart,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3d_R1__getStart,
+	          "",
+	          "");
+	I_Method1(void, setEnd, IN, const osg::Vec3d &, end,
+	          Properties::NON_VIRTUAL,
+	          __void__setEnd__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, setEnd,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3d_R1__setEnd,
+	          "",
+	          "");
 	I_Method1(osgUtil::Intersector *, clone, IN, osgUtil::IntersectionVisitor &, iv,
 	          Properties::VIRTUAL,
 	          __Intersector_P1__clone__osgUtil_IntersectionVisitor_R1,
@@ -99,12 +119,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	                   __bool__intersectAndClip__osg_Vec3d_R1__osg_Vec3d_R1__C5_osg_BoundingBox_R1,
 	                   "",
 	                   "");
+	I_SimpleProperty(const osg::Vec3d &, End, 
+	                 0, 
+	                 __void__setEnd__C5_osg_Vec3d_R1);
 	I_SimpleProperty(osgUtil::LineSegmentIntersector::Intersection, FirstIntersection, 
 	                 __Intersection__getFirstIntersection, 
 	                 0);
 	I_SimpleProperty(osgUtil::LineSegmentIntersector::Intersections &, Intersections, 
 	                 __Intersections_R1__getIntersections, 
 	                 0);
+	I_SimpleProperty(const osg::Vec3d &, Start, 
+	                 __C5_osg_Vec3d_R1__getStart, 
+	                 __void__setStart__C5_osg_Vec3d_R1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::LineSegmentIntersector::Intersection::IndexList)

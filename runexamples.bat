@@ -33,9 +33,6 @@ osgclip
 echo osgcubemap
 osgcubemap
 
-echo osgdepthshadow
-osgdepthshadow
-
 echo osgdistortion
 osgdistortion
 
@@ -144,11 +141,17 @@ osgviewer glsl_mandelbrot.osg
 echo osgviewer glsl_julia.osg
 osgviewer glsl_julia.osg
 
-echo osgshadowtexture
-osgshadowtexture cessna.osg
-
 echo osgshape
 osgshape
+
+echo osgshadow -3 --sm
+osgshadow -3 --sm
+
+echo osgshadow -2 --st
+osgshadow -2 --st
+
+echo osgshadow -3 --ssm
+osgshadow -3 --ssm
 
 echo osgsimplifier
 osgsimplifier --ratio 0.1 cessna.osg

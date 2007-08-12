@@ -39,6 +39,7 @@
 #include <osgShadow/ShadowVolume>
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowMap>
+#include <osgShadow/SoftShadowMap>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -490,7 +491,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--noUpdate", "Disable the updating the of light source.");
     arguments.getApplicationUsage()->addCommandLineOption("--base", "Add a base geometry to test shadows.");
     arguments.getApplicationUsage()->addCommandLineOption("--sv", "Select ShadowVolume implementation.");
-    arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--ssm", "Select SoftShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
 //    arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
@@ -619,6 +620,11 @@ int main(int argc, char** argv)
         shadowedScene->setShadowTechnique(pssm.get());
     }
 #endif    
+    else if (arguments.read("--ssm"))
+    {
+        osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
+        shadowedScene->setShadowTechnique(sm.get());
+    }
     else /* if (arguments.read("--sm")) */
     {
         osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;

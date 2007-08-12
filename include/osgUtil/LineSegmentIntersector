@@ -74,7 +74,10 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
         inline Intersection getFirstIntersection() { Intersections& intersections = getIntersections(); return intersections.empty() ? Intersection() : *(intersections.begin()); }
         
         inline void setStart(const osg::Vec3d& start) { _start = start; }
+        inline const osg::Vec3d& getStart() const { return _start; }
+
         inline void setEnd(const osg::Vec3d& end) { _end = end; }
+        inline const osg::Vec3d& setEnd() const { return _end; }
 
     public:
 

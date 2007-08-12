@@ -1,0 +1,94 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGSHADOW_SOFTSHADOWMAP
+#define OSGSHADOW_SOFTSHADOWMAP 1
+
+#include <osg/Camera>
+#include <osg/Material>
+
+#include <osgShadow/ShadowTechnique>
+
+namespace osgShadow {
+
+/** SoftShadowMap provides an implementation of soft shadows with shadow maps.*/
+class OSGSHADOW_EXPORT SoftShadowMap : public ShadowTechnique
+{
+    public :
+        SoftShadowMap();
+
+        SoftShadowMap(const SoftShadowMap& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgShadow, SoftShadowMap);
+
+        /** Set the texture unit that the shadow texture will be applied on.*/
+        void setTextureUnit(unsigned int unit);
+
+        /** Get the texture unit that the shadow texture will be applied on.*/
+        unsigned int getTextureUnit() const { return _textureUnit; }
+
+        /** Set the values for the ambient bias the shader will use.*/
+        void setAmbientBias(const osg::Vec2& ambientBias );
+
+        /** Set the values for width of the soft penumbra the shader will use.
+         *  Zero is for hard shadow (no penumbra). 0.01 is already very soft penumbra.
+         *  Default is 0.005.*/
+        void setSoftnessWidth(const float softnesswidth );
+
+        /** Set the values for jittering scale the shader will use.
+         *  Zero is no jittering (i.e. see the banding in penumbra)
+         *  High values (>64) cause 'pixelization' of the penumbra.
+         *  Usually but not necessarily power of two number.
+         *  Default is 32. */
+        void setJitteringScale(const float jitteringscale );
+
+        /** Get the values that are used for the ambient bias in the shader.*/
+        const osg::Vec2& getAmbientBias() const { return _ambientBias; }
+
+        /** Get the value used for width of the soft penumbra in the shader.*/
+        const float getSoftnessWidth() const { return _softnesswidth; }
+
+        /** Get the value used for jittering scale in the shader.*/
+        const float getJitteringScale() const { return _jitteringscale; }
+
+        /** initialize the ShadowedScene and local cached data structures.*/
+        virtual void init();
+
+        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
+        virtual void update(osg::NodeVisitor& nv);
+
+        /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
+        virtual void cull(osgUtil::CullVisitor& cv);
+
+        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        virtual void cleanSceneGraph();
+
+
+    protected :
+
+        virtual ~SoftShadowMap() {}
+        void initJittering(osg::StateSet *);
+
+        osg::ref_ptr<osg::Camera>       _camera;
+        osg::ref_ptr<osg::TexGen>       _texgen;
+        osg::ref_ptr<osg::Texture2D>    _texture;
+        osg::ref_ptr<osg::StateSet>     _stateset;
+        unsigned int                    _textureUnit;
+        osg::Vec2                       _ambientBias;
+        float                           _softnesswidth;
+        float                           _jitteringscale;
+};
+
+}
+
+#endif

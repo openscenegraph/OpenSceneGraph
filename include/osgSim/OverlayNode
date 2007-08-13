@@ -51,6 +51,8 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         void setOverlayTechnique(OverlayTechnique technique);
         OverlayTechnique getOverlayTechnique() const { return _overlayTechnique; }
 
+        /** Set the implementation to be used when creating the overlay texture. */
+        void setRenderTargetImplementation(osg::Camera::RenderTargetImplementation impl);
 
         /** Set the overlay subgraph which will be rendered to texture.*/
         void setOverlaySubgraph(osg::Node* node);
@@ -155,6 +157,8 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         bool                            _continuousUpdate;
         double                          _overlayBaseHeight;
         bool                            _updateCamera;
+        
+        osg::Camera::RenderTargetImplementation _renderTargetImpl;
 
     private:
         

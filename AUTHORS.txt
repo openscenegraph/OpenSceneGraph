@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.4
+OpenSceneGraph Library 2.1.5
 
-269 Contributors:
+270 Contributors:
 
 Firstname Surname
 -----------------
@@ -45,6 +45,7 @@ David Callu
 Frederic Marmond
 David Fries
 Boris Bralo
+Andy Skinner
 Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
@@ -55,7 +56,6 @@ Jason Daly
 Jason Beverage
 David Spilling
 Ben Discoe
-Andy Skinner
 Sasa Bistrovic
 Rainer Oder
 Paul Melis
@@ -76,6 +76,7 @@ Michael Hartman
 Loic Dachary
 Joseph Steel
 John Shue
+Jean-Sebastien Guay
 David Guthrie
 Corbin Holtz
 Toshiyuki Takahei
@@ -87,7 +88,6 @@ Romano Magacho
 Paul de Repentigny
 Leandro Motta Barros
 Laurens Voerman
-Jean-Sebastien Guay
 Carlo Camporesi
 Bryan Thrall
 Bruce Clay
@@ -133,6 +133,7 @@ Maya Leonard
 Max Behensky
 Mathew May
 Martijn Kragtwijk
+Luc Frauciel
 Kevin Moiule
 Keith Steffen
 José Delport
@@ -233,7 +234,6 @@ Glenn Waldrom
 Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
-Frauciel Luc
 Frashid Lashkari
 Frank Warmerdam
 Frank Lindeman
@@ -257,6 +257,7 @@ Chuck Sembroski
 Chuck Seberion
 Chris McGlone
 Carlos Garcea
+Bruno Herbelin
 Brian Keener
 Brad Anderegg
 Bora Utka

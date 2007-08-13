@@ -1,3 +1,159 @@
+2007-08-12 13:30 +0000 [r7223]  robert:
+
+	* Updated wrappers
+
+2007-08-12 13:18 +0000 [r7221-7222]  robert:
+
+	* Added getStart()/getEnd()
+
+	* From Jean-Sebastien Guay, "adds
+	  osgUtil::LineSegmentIntersector::setStart(osg::Vec3d) and
+	  setEnd(osg::Vec3d)."
+
+2007-08-12 13:10 +0000 [r7220]  robert:
+
+	* Removed now redundent osgshadowtexture and osgdepthshadow
+	  examples
+
+2007-08-12 12:15 +0000 [r7217-7219]  robert:
+
+	* Added support for SoftShadowMap into osgshadow example
+
+	* Added fix for typo of name in submission
+
+	* From Bruno Hebelin, "I have adapted to osgShadow the soft shadow
+	  map technique described in "Efficient Soft-Edged Shadows Using
+	  Pixel Shader Branching" by Yury Uralsky, Chapter 17 of GPU Gems 2
+	  (Matt Pharr ed. Addison-Wesley). Here is my code in attachment:
+	  basically, it works in the same way as osgShadow/ShadowMap (core
+	  code is copied from it) but implements a specific GLSL shader for
+	  the soft rendering of penumbra. I have tested it under Linux with
+	  a NVidia graphic card, but there should be no dependency on
+	  platform nor on the graphics driver (as far as they support GLSL
+	  2). Screenshots attached show the current results (frame rate
+	  bound to v-sync, but the shader takes actually not much time)."
+
+2007-08-11 17:44 +0000 [r7216]  robert:
+
+	* Added preprending of osgPlugins-version to plugin names
+
+2007-08-11 14:49 +0000 [r7215]  robert:
+
+	* Added DisplaySetting::s/getCompileContextHint() and use of this
+	  hint in osgViewer::Viewer/CompositeViewer. Removed the
+	  CustomViewer in osgterrain example as the above now removes the
+	  need for it.
+
+2007-08-11 12:43 +0000 [r7214]  robert:
+
+	* Refactored the use of the MasterOperation so that it now gets
+	  attached to the Viewer via the new Viewer::addUpdateOperation()
+	  method, rather than need a custom Viewer::updateTraversal().
+
+2007-08-11 10:28 +0000 [r7213]  robert:
+
+	* Added support for an update OperationQueue to Viewer and
+	  CompositeViewer to allow asyncrnous adding of operations to be
+	  added to the view to be done during syncronous updateTraversal().
+	  This feature can be used for doing things like merging subgraphs
+	  that have been loaded in a background thread.
+
+2007-08-10 17:44 +0000 [r7212]  robert:
+
+	* Updated wrappers
+
+2007-08-10 10:58 +0000 [r7210-7211]  robert:
+
+	* Updated wrappers
+
+	* Added View::setDatabasePager(..)
+
+2007-08-10 10:52 +0000 [r7209]  robert:
+
+	* Refactored the way the Scene is used in Viewer and
+	  CompositeViewer to ensure that only on Scene exists per scene
+	  graph.
+
+2007-08-09 08:19 +0000 [r7208]  robert:
+
+	* Compile fix
+
+2007-08-09 08:15 +0000 [r7207]  robert:
+
+	* Removed now redundent ReaderWriterTerrain.cpp
+
+2007-08-08 09:12 +0000 [r7206]  robert:
+
+	* Updated wrappers
+
+2007-08-08 08:10 +0000 [r7205]  robert:
+
+	* Added new statc prototype() and create() methods to CullVisitor
+	  and DatabasePager to allow overriding of the default
+	  implementations
+
+2007-08-08 05:59 +0000 [r7204]  robert:
+
+	* Removed unneeeded includes
+
+2007-08-07 22:56 +0000 [r7203]  robert:
+
+	* Updated wrappers
+
+2007-08-07 22:31 +0000 [r7202]  robert:
+
+	* Updated CMakeLists.txt to reflect renaming of TerrainNode.
+
+2007-08-07 19:53 +0000 [r7201]  robert:
+
+	* Renamed osgTerrain::TerrainNode to osgTerrain::Terrain and
+	  introduced basic .osg read support for osgTerrain::Terrain.
+
+2007-08-07 15:51 +0000 [r7200]  robert:
+
+	* Removed TerrainNode.cpp from CMakeLists.txt
+
+2007-08-07 15:30 +0000 [r7199]  robert:
+
+	* Added preliminary shell of osgTerrain plugin
+
+2007-08-07 14:49 +0000 [r7198]  robert:
+
+	* From Luc Fruciel, "Gdal plugins reads lots of information that is
+	  not taken into account in ReadHeigthField for example. Attached a
+	  modification that read the HeigthField position and X,Yintervals.
+	  I also removed the limitation to 1024*1024 to 4096*4096, because
+	  when you are preprocessing your data with OSG, it can be useful
+	  to read large images/heigthfields. Is there a reason (other than
+	  hardware limitations for textures) for this limit ?"
+
+2007-08-07 10:37 +0000 [r7197]  robert:
+
+	* Re-introduceed GDAL plugin
+
+2007-08-07 10:33 +0000 [r7195-7196]  robert:
+
+	* Re-introduced GDAL plugin.
+
+	* Added preliminary code to allow build specification of glu
+	  tesscallback with ... parameter
+
+2007-08-07 08:18 +0000 [r7194]  robert:
+
+	* From Andy Skinner, The attached file adds #include <stdlib.h> to
+	  GraphicsContext.cpp, so that it compiles with the solaris
+	  compiler we use.
+
+2007-08-06 11:52 +0000 [r7191-7192]  robert:
+
+	* Updated README
+
+	* Updated ChangeLog, and AUTHORS file for release
+
+2007-08-06 11:24 +0000 [r7190]  robert:
+
+	* Updated version numbers for release
+
 2007-08-06 09:28 +0000 [r7189]  robert:
 
 	* Changed debug message to INFO level

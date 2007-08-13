@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/NodeVisitor>
@@ -89,6 +90,11 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	          Properties::NON_VIRTUAL,
 	          __OverlayTechnique__getOverlayTechnique,
 	          "",
+	          "");
+	I_Method1(void, setRenderTargetImplementation, IN, osg::Camera::RenderTargetImplementation, impl,
+	          Properties::NON_VIRTUAL,
+	          __void__setRenderTargetImplementation__osg_Camera_RenderTargetImplementation,
+	          "Set the implementation to be used when creating the overlay texture. ",
 	          "");
 	I_Method1(void, setOverlaySubgraph, IN, osg::Node *, node,
 	          Properties::NON_VIRTUAL,
@@ -254,6 +260,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	I_SimpleProperty(unsigned int, OverlayTextureUnit, 
 	                 __unsigned_int__getOverlayTextureUnit, 
 	                 __void__setOverlayTextureUnit__unsigned_int);
+	I_SimpleProperty(osg::Camera::RenderTargetImplementation, RenderTargetImplementation, 
+	                 0, 
+	                 __void__setRenderTargetImplementation__osg_Camera_RenderTargetImplementation);
 	I_SimpleProperty(GLenum, TexEnvMode, 
 	                 __GLenum__getTexEnvMode, 
 	                 __void__setTexEnvMode__GLenum);

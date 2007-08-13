@@ -65,7 +65,7 @@ class ReaderWriterVRML2 : public osgDB::ReaderWriter
 
         virtual ReadResult readNode(const std::string&, const osgDB::ReaderWriter::Options *options = NULL) const;
     private:
-        osg::Node* convertFromVRML(openvrml::node *obj) const;
+        osg::ref_ptr<osg::Node> convertFromVRML(openvrml::node *obj) const;
 };
 
 // Register with Registry to instantiate the above reader/writer.
@@ -78,7 +78,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
 
     // convert possible Windows backslashes to Unix slashes
     // OpenVRML doesn't like backslashes, even on Windows
-    fileName = "file:///" + osgDB::convertFileNameToUnixStyle(fileName);
+    std::string unixFileName = osgDB::convertFileNameToUnixStyle(fileName);
+
+    if(unixFileName[0] == '/') // absolute path
+        fileName = "file://" + unixFileName;
+    else // relative path
+        fileName = unixFileName;
 
     std::fstream null;
     openvrml::browser *browser = new openvrml::browser(null, null);
@@ -95,34 +100,33 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
         return ReadResult::FILE_NOT_HANDLED;
 
     } else {
-        osg::MatrixTransform *osg_root = new osg::MatrixTransform(osg::Matrix(1, 0, 0, 0,
+        osg::ref_ptr<osg::MatrixTransform> osg_root = new osg::MatrixTransform(osg::Matrix(1, 0, 0, 0,
                                          0, 0, 1, 0,
                                          0, -1, 0, 0,
                                          0, 0, 0, 1));
 
         for (unsigned i = 0; i < mfn.size(); i++) {
             openvrml::node *vrml_node = mfn[i].get();
-            osg_root->addChild(convertFromVRML(vrml_node));
+            osg_root->addChild(convertFromVRML(vrml_node).get());
         }
 
-        return osg_root;
+        return osg_root.get();
     }
 }
 
-osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
+osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 {
     std::string name = obj->id();
     static int osgLightNum = 0;  //light
 
-    //std::cout << obj->type.id << " Node " << " ["<< name <<']' << std::endl;
+    // std::cout << obj->type.id << " Node " << " ["<< name <<']' << std::endl;
 
-    if (obj->type.id == "Transform") // Handle transforms
+    if (obj->type.id == "Group") // Group node
     {
-        openvrml::vrml97_node::transform_node *vrml_transform;
-        vrml_transform = dynamic_cast<openvrml::vrml97_node::transform_node *>(obj);
+        openvrml::vrml97_node::group_node *vrml_group;
+        vrml_group = dynamic_cast<openvrml::vrml97_node::group_node *>(obj);
 
-        openvrml::mat4f vrml_m = vrml_transform->transform();
-        osg::MatrixTransform *osg_m = new osg::MatrixTransform(osg::Matrix(vrml_m[0][0], vrml_m[0][1], vrml_m[0][2], vrml_m[0][3], vrml_m[1][0], vrml_m[1][1], vrml_m[1][2], vrml_m[1][3], vrml_m[2][0], vrml_m[2][1], vrml_m[2][2], vrml_m[2][3], vrml_m[3][0], vrml_m[3][1], vrml_m[3][2], vrml_m[3][3]));
+        osg::ref_ptr<osg::Group> osg_group = new osg::Group;
 
         try
         {
@@ -132,7 +136,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                 const openvrml::mfnode &mfn = dynamic_cast<const openvrml::mfnode &>(fv);
                 for (unsigned i = 0; i < mfn.value.size(); i++) {
                     openvrml::node *node = mfn.value[i].get();
-                    osg_m->addChild(convertFromVRML(node));
+                    osg_group->addChild(convertFromVRML(node).get());
                 }
             }
         } catch (openvrml::unsupported_interface &e)
@@ -140,13 +144,44 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
             // no children
         }
 
-        return osg_m;
+        return osg_group.get();
+
+    } else if (obj->type.id == "Transform") // Handle transforms
+    {
+        openvrml::vrml97_node::transform_node *vrml_transform;
+        vrml_transform = dynamic_cast<openvrml::vrml97_node::transform_node *>(obj);
+
+        openvrml::mat4f vrml_m = vrml_transform->transform();
+        osg::ref_ptr<osg::MatrixTransform> osg_m = new osg::MatrixTransform(osg::Matrix(vrml_m[0][0], vrml_m[0][1], vrml_m[0][2], vrml_m[0][3], vrml_m[1][0], vrml_m[1][1], vrml_m[1][2], vrml_m[1][3], vrml_m[2][0], vrml_m[2][1], vrml_m[2][2], vrml_m[2][3], vrml_m[3][0], vrml_m[3][1], vrml_m[3][2], vrml_m[3][3]));
+
+        try
+        {
+            const openvrml::field_value &fv = obj->field("children");
+
+            if ( fv.type() == openvrml::field_value::mfnode_id ) {
+                const openvrml::mfnode &mfn = dynamic_cast<const openvrml::mfnode &>(fv);
+                for (unsigned i = 0; i < mfn.value.size(); i++) {
+                    openvrml::node *node = mfn.value[i].get();
+                    osg_m->addChild(convertFromVRML(node).get());
+                }
+            }
+        } catch (openvrml::unsupported_interface &e)
+        {
+            // no children
+        }
+
+        return osg_m.get();
 
     } else if (obj->type.id == "Shape") // Handle Shape node
     {
-        osg::Geode *osg_geode = new osg::Geode();
-        osg::Geometry *osg_geom = new osg::Geometry();
-        osg_geode->addDrawable(osg_geom);
+        osg::ref_ptr<osg::Geode> osg_geode = new osg::Geode();
+        osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
+        osg_geode->addDrawable(osg_geom.get());
+        osg::StateSet *osg_stateset = osg_geom->getOrCreateStateSet();
+
+        osg::ref_ptr<osg::Material> osg_mat = new osg::Material();
+        osg_stateset->setAttributeAndModes(osg_mat.get());
+        osg_mat->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
 
         osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
 
@@ -168,7 +203,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                             dynamic_cast<openvrml::vrml97_node::coordinate_node *>(sfn.value.get());
 
                         const std::vector<openvrml::vec3f> &vrml_coord = vrml_coord_node->point();
-                        osg::Vec3Array *osg_vertices = new osg::Vec3Array();
+                        osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
 
                         unsigned i;
                         for (i = 0; i < vrml_coord.size(); i++)
@@ -177,13 +212,13 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                             osg_vertices->push_back(osg::Vec3(vec[0], vec[1], vec[2]));
                         }
 
-                        osg_geom->setVertexArray(osg_vertices);
+                        osg_geom->setVertexArray(osg_vertices.get());
 
                         // get array of vertex indices
                         const openvrml::field_value &fv2 = vrml_ifs->field("coordIndex");
                         const openvrml::mfint32 &vrml_coord_index = dynamic_cast<const openvrml::mfint32 &>(fv2);
 
-                        osg::IntArray *osg_vert_index = new osg::IntArray();
+                        osg::ref_ptr<osg::IntArray> osg_vert_index = new osg::IntArray();
 
                         int num_vert = 0;
                         for (i = 0; i < vrml_coord_index.value.size(); i++)
@@ -198,7 +233,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                             }
                         }
 
-                        osg_geom->setVertexIndices(osg_vert_index);
+                        osg_geom->setVertexIndices(osg_vert_index.get());
                     }
 
                     {
@@ -211,7 +246,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                         if (vrml_tex_coord_node != 0) // if no texture, node is NULL pointer
                         {
                             const std::vector<openvrml::vec2f> &vrml_tex_coord = vrml_tex_coord_node->point();
-                            osg::Vec2Array *osg_texcoords = new osg::Vec2Array();
+                            osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array();
 
                             unsigned i;
                             for (i = 0; i < vrml_tex_coord.size(); i++)
@@ -220,25 +255,28 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                                 osg_texcoords->push_back(osg::Vec2(vec[0], vec[1]));
                             }
 
-                            osg_geom->setTexCoordArray(0, osg_texcoords);
+                            osg_geom->setTexCoordArray(0, osg_texcoords.get());
 
                             // get array of texture indices
                             const openvrml::field_value &fv2 = vrml_ifs->field("texCoordIndex");
                             const openvrml::mfint32 &vrml_tex_coord_index = dynamic_cast<const openvrml::mfint32 &>(fv2);
 
-                            osg::IntArray *osg_tex_coord_index = new osg::IntArray();
+                            osg::ref_ptr<osg::IntArray> osg_tex_coord_index = new osg::IntArray();
 
-                            for (i = 0; i < vrml_tex_coord_index.value.size(); i++)
+                            if(vrml_tex_coord_index.value.size() > 0)
                             {
-                                int index = vrml_tex_coord_index.value[i];
-                                if (index != -1) {
-                                    osg_tex_coord_index->push_back(index);
+                                for (i = 0; i < vrml_tex_coord_index.value.size(); i++)
+                                {
+                                    int index = vrml_tex_coord_index.value[i];
+                                    if (index != -1) {
+                                        osg_tex_coord_index->push_back(index);
+                                    }
                                 }
-                            }
-
-                            osg_geom->setTexCoordIndices(0, osg_tex_coord_index);
+                                osg_geom->setTexCoordIndices(0, osg_tex_coord_index.get());
+                            } else 
+                                // no indices defined, use coordIndex
+                                osg_geom->setTexCoordIndices(0, osg_geom->getVertexIndices());
                         }
-
                     }
 
                     // get array of normals per vertex (if specified)
@@ -252,7 +290,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                         {
                             const std::vector<openvrml::vec3f> &vrml_normal_coord = vrml_normal_node->vector();
 
-                            osg::Vec3Array *osg_normalcoords = new osg::Vec3Array();
+                            osg::ref_ptr<osg::Vec3Array> osg_normalcoords = new osg::Vec3Array();
 
                             unsigned i;
                             for (i = 0; i < vrml_normal_coord.size(); i++)
@@ -260,27 +298,31 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                                 const openvrml::vec3f vec = vrml_normal_coord[i];
                                 osg_normalcoords->push_back(osg::Vec3(vec[0], vec[1], vec[2]));
                             }
+                            osg_geom->setNormalArray(osg_normalcoords.get());
 
-                            // get array of texture indices
+                            // get array of normal indices
                             const openvrml::field_value &fv2 = vrml_ifs->field("normalIndex");
                             const openvrml::mfint32 &vrml_normal_index = dynamic_cast<const openvrml::mfint32 &>(fv2);
 
-                            osg::IntArray *osg_normal_index = new osg::IntArray();
+                            osg::ref_ptr<osg::IntArray> osg_normal_index = new osg::IntArray();
 
-                            for (i = 0; i < vrml_normal_index.value.size(); i++)
+                            if(vrml_normal_index.value.size() > 0)
                             {
-                                int index = vrml_normal_index.value[i];
-                                if (index != -1) {
-                                    osg_normal_index->push_back(index);
+                                for (i = 0; i < vrml_normal_index.value.size(); i++)
+                                {
+                                    int index = vrml_normal_index.value[i];
+                                    if (index != -1) {
+                                        osg_normal_index->push_back(index);
+                                    }
                                 }
-                            }
+                                osg_geom->setNormalIndices(osg_normal_index.get());
+                            } else
+                                // unspecified, use the coordIndex field
+                                osg_geom->setNormalIndices(osg_geom->getVertexIndices());
 
                             // get normal binding
                             const openvrml::field_value &fv3 = vrml_ifs->field("normalPerVertex");
                             const openvrml::sfbool &vrml_norm_per_vertex = dynamic_cast<const openvrml::sfbool &>(fv3);
-
-                            osg_geom->setNormalArray(osg_normalcoords);
-                            osg_geom->setNormalIndices(osg_normal_index);
 
                             if (vrml_norm_per_vertex.value)
                             {
@@ -288,6 +330,61 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                             } else
                             {
                                 osg_geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+                            }
+                        }
+                    }
+
+                    // get array of colours per vertex (if specified)
+                    {
+                        const openvrml::field_value &fv = vrml_ifs->field("color");
+                        const openvrml::sfnode &sfn = dynamic_cast<const openvrml::sfnode &>(fv);
+                        openvrml::vrml97_node::color_node *vrml_color_node =
+                            dynamic_cast<openvrml::vrml97_node::color_node *>(sfn.value.get());
+
+                        if (vrml_color_node != 0) // if no colors, node is NULL pointer
+                        {
+                            const std::vector<openvrml::color> &vrml_colors = vrml_color_node->color();
+
+                            osg::ref_ptr<osg::Vec3Array> osg_colors = new osg::Vec3Array();
+
+                            unsigned i;
+                            for (i = 0; i < vrml_colors.size(); i++)
+                            {
+                                const openvrml::color color = vrml_colors[i];
+                                osg_colors->push_back(osg::Vec3(color.r(), color.g(), color.b()));
+                            }
+                            osg_geom->setColorArray(osg_colors.get());
+
+                            // get array of color indices
+                            const openvrml::field_value &fv2 = vrml_ifs->field("colorIndex");
+                            const openvrml::mfint32 &vrml_color_index = dynamic_cast<const openvrml::mfint32 &>(fv2);
+
+                            osg::ref_ptr<osg::IntArray> osg_color_index = new osg::IntArray();
+
+                            if(vrml_color_index.value.size() > 0)
+                            {
+                                for (i = 0; i < vrml_color_index.value.size(); i++)
+                                {
+                                    int index = vrml_color_index.value[i];
+                                    if (index != -1) {
+                                        osg_color_index->push_back(index);
+                                    }
+                                }
+                                osg_geom->setColorIndices(osg_color_index.get());
+                            } else 
+                                // unspecified, use coordIndices field
+                                osg_geom->setColorIndices(osg_geom->getVertexIndices());
+
+                            // get color binding
+                            const openvrml::field_value &fv3 = vrml_ifs->field("colorPerVertex");
+                            const openvrml::sfbool &vrml_color_per_vertex = dynamic_cast<const openvrml::sfbool &>(fv3);
+
+                            if (vrml_color_per_vertex.value)
+                            {
+                                osg_geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+                            } else
+                            {
+                                osg_geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
                             }
                         }
                     }
@@ -303,8 +400,6 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 
             if (fv.type() == openvrml::field_value::sfnode_id)
             {
-                osg::StateSet *osg_stateset = osg_geom->getOrCreateStateSet();
-
                 const openvrml::sfnode &sfn = dynamic_cast<const openvrml::sfnode &>(fv);
                 //              std::cerr << "FV->sfnode OK" << std::endl << std::flush;
 
@@ -320,7 +415,6 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                 //              std::cerr << "sfnode->Material OK" << std::endl << std::flush;
 
                 if (vrml_material != NULL) {
-                    osg::Material *osg_mat = new osg::Material();
                     osg_mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(vrml_material->ambient_intensity(),
                                         vrml_material->ambient_intensity(),
                                         vrml_material->ambient_intensity(),
@@ -345,7 +439,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 
                     //osg_mat->setColorMode(osg::Material::OFF);
 
-                    osg_stateset->setAttributeAndModes(osg_mat);
+                    osg_stateset->setAttributeAndModes(osg_mat.get());
                     osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);  //bhbn
 
                 }
@@ -362,12 +456,11 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 
                     const std::string &url = mfs.value[0];
 
-                    osg::Image* image = 0;
-                    image = osgDB::readImageFile(url);
+                    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(url);
 
                     if (image != 0) {
-                        osg::Texture2D *texture = new osg::Texture2D;
-                        texture->setImage(image);
+                        osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
+                        texture->setImage(image.get());
 
                         // defaults
                         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
@@ -398,7 +491,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                             // nothing specified
                         }
 
-                        osg_stateset->setTextureAttributeAndModes(0, texture);
+                        osg_stateset->setTextureAttributeAndModes(0, texture.get());
                         //osg_stateset->setMode(GL_BLEND,osg::StateAttribute::ON);  //bhbn
 
                     } else {
@@ -408,7 +501,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
             }
         }
 
-        return osg_geode;
+        return osg_geode.get();
     } else {
         return 0;
     }

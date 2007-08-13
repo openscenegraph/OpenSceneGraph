@@ -811,7 +811,8 @@ OverlayNode::OverlayNode(OverlayTechnique technique):
     _overlayClearColor(0.0f,0.0f,0.0f,0.0f),
     _continuousUpdate(false),
     _overlayBaseHeight(-100.0),
-    _updateCamera(false)
+    _updateCamera(false),
+    _renderTargetImpl(osg::Camera::FRAME_BUFFER_OBJECT)
 {
     setNumChildrenRequiringUpdateTraversal(1);
     init();
@@ -826,7 +827,8 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     _textureSizeHint(copy._textureSizeHint),
     _overlayClearColor(copy._overlayClearColor),
     _continuousUpdate(copy._continuousUpdate),
-    _overlayBaseHeight(copy._overlayBaseHeight)
+    _overlayBaseHeight(copy._overlayBaseHeight),
+    _renderTargetImpl(copy._renderTargetImpl)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
     init();
@@ -910,6 +912,15 @@ void OverlayNode::setOverlayTechnique(OverlayTechnique technique)
     init();
 }
 
+void OverlayNode::setRenderTargetImplementation(osg::Camera::RenderTargetImplementation impl)
+{
+    if(_renderTargetImpl==impl) return;
+
+    _renderTargetImpl = impl;
+
+    init();
+}
+
 OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_overlayDataMapMutex);
@@ -942,7 +953,7 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
     }   
 
     // set up the render to texture camera.
-    if (!overlayData._camera)
+    if (!overlayData._camera || overlayData._camera->getRenderTargetImplementation() != _renderTargetImpl)
     {
         // osg::notify(osg::NOTICE)<<"   setting up camera"<<std::endl;
 
@@ -962,7 +973,7 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         overlayData._camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        overlayData._camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+        overlayData._camera->setRenderTargetImplementation(_renderTargetImpl);
 
         // attach the texture and use it as the color buffer.
         overlayData._camera->attach(osg::Camera::COLOR_BUFFER, overlayData._texture.get());
@@ -1826,7 +1837,7 @@ void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
 
 void OverlayNode::updateMainSubgraphStateSet()
 {
-   osg::notify(osg::NOTICE)<<"OverlayNode::updateMainSubgraphStateSet()"<<std::endl;
+   osg::notify(osg::INFO)<<"OverlayNode::updateMainSubgraphStateSet()"<<std::endl;
 
    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
         itr != _overlayDataMap.end();

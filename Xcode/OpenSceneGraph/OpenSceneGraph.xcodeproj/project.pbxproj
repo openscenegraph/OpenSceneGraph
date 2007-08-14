@@ -468,7 +468,7 @@
 		000A28FF06CAFE60009EE43A /* osgprerender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A28FC06CAFE5F009EE43A /* osgprerender.cpp */; };
 		000A291106CAFF80009EE43A /* osgprerendercubemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A290E06CAFF7F009EE43A /* osgprerendercubemap.cpp */; };
 		000A291F06CB0128009EE43A /* osgreflect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 000A291C06CB0127009EE43A /* osgreflect.cpp */; };
-		001852A0078C583400D3FC44 /* TerrainNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529C078C583000D3FC44 /* TerrainNode.cpp */; };
+		001852A0078C583400D3FC44 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529C078C583000D3FC44 /* Terrain.cpp */; };
 		001852A1078C583400D3FC44 /* TerrainTechnique.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529D078C583200D3FC44 /* TerrainTechnique.cpp */; };
 		001852A2078C583400D3FC44 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529E078C583300D3FC44 /* Version.cpp */; };
 		001D0006065AA4BD003310BF /* atmosphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFD9065AA4BD003310BF /* atmosphere.cpp */; };
@@ -1388,7 +1388,6 @@
 		00A79F6F0BE69CCD00F7C39E /* GeometryTechnique in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F680BE69CCB00F7C39E /* GeometryTechnique */; settings = {ATTRIBUTES = (Public, ); }; };
 		00A79F700BE69CCD00F7C39E /* Layer in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F690BE69CCB00F7C39E /* Layer */; settings = {ATTRIBUTES = (Public, ); }; };
 		00A79F710BE69CCD00F7C39E /* Locator in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F6A0BE69CCC00F7C39E /* Locator */; settings = {ATTRIBUTES = (Public, ); }; };
-		00A79F720BE69CCD00F7C39E /* TerrainNode in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F6B0BE69CCC00F7C39E /* TerrainNode */; settings = {ATTRIBUTES = (Public, ); }; };
 		00A79F730BE69CCD00F7C39E /* TerrainTechnique in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F6C0BE69CCD00F7C39E /* TerrainTechnique */; settings = {ATTRIBUTES = (Public, ); }; };
 		00A79F740BE69CCD00F7C39E /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 00A79F6D0BE69CCD00F7C39E /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
 		00A79F780BE69D0B00F7C39E /* GeometryTechnique.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00A79F750BE69D0A00F7C39E /* GeometryTechnique.cpp */; };
@@ -1665,7 +1664,7 @@
 		5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */; };
 		5BC1913C0C15F7AE002CF5BC /* SDLMainForMacOSX.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191390C15F7AE002CF5BC /* SDLMainForMacOSX.m */; };
 		5BC191690C15FC1D002CF5BC /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BC191680C15FC1C002CF5BC /* SDL.framework */; };
-		5BC2F62F0C441CA200671A68 /* GLObjects in Resources */ = {isa = PBXBuildFile; fileRef = 5BC2F62E0C441CA100671A68 /* GLObjects */; };
+		5BC2F62F0C441CA200671A68 /* GLObjects in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F62E0C441CA100671A68 /* GLObjects */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BC2F6330C441CE100671A68 /* GLObjects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F6320C441CE100671A68 /* GLObjects.cpp */; };
 		5BC2F6410C441D5200671A68 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		5BC2F6420C441D5200671A68 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -2274,6 +2273,9 @@
 		D48EC7B60B4FCA2A000E05A4 /* UnitTestFramework.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48EC7B30B4FCA29000E05A4 /* UnitTestFramework.cpp */; };
 		D48EC7B70B4FCA2A000E05A4 /* UnitTestFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = D48EC7B40B4FCA29000E05A4 /* UnitTestFramework.h */; };
 		D48EC7B80B4FCA2A000E05A4 /* UnitTests_osg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48EC7B50B4FCA2A000E05A4 /* UnitTests_osg.cpp */; };
+		D48ED2A40C71D36C00A72121 /* Terrain in Headers */ = {isa = PBXBuildFile; fileRef = D48ED2A30C71D36C00A72121 /* Terrain */; settings = {ATTRIBUTES = (Public, ); }; };
+		D48ED2AA0C71D39700A72121 /* SoftShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */; };
+		D48ED2AC0C71D3AD00A72121 /* SoftShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F00D0B8308D90052E667 /* CameraNode in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F0090B8308D90052E667 /* CameraNode */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F00E0B8308D90052E667 /* DeleteHandler in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F00A0B8308D90052E667 /* DeleteHandler */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F00F0B8308D90052E667 /* Stats in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F00B0B8308D90052E667 /* Stats */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -4593,7 +4595,7 @@
 		000A28FC06CAFE5F009EE43A /* osgprerender.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgprerender.cpp; sourceTree = "<group>"; };
 		000A290E06CAFF7F009EE43A /* osgprerendercubemap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgprerendercubemap.cpp; sourceTree = "<group>"; };
 		000A291C06CB0127009EE43A /* osgreflect.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgreflect.cpp; sourceTree = "<group>"; };
-		0018529C078C583000D3FC44 /* TerrainNode.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TerrainNode.cpp; path = ../../src/osgTerrain/TerrainNode.cpp; sourceTree = SOURCE_ROOT; };
+		0018529C078C583000D3FC44 /* Terrain.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Terrain.cpp; path = ../../src/osgTerrain/Terrain.cpp; sourceTree = SOURCE_ROOT; };
 		0018529D078C583200D3FC44 /* TerrainTechnique.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TerrainTechnique.cpp; path = ../../src/osgTerrain/TerrainTechnique.cpp; sourceTree = SOURCE_ROOT; };
 		0018529E078C583300D3FC44 /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgTerrain/Version.cpp; sourceTree = SOURCE_ROOT; };
 		001D0000065AA4BD003310BF /* tracks.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = tracks.h; sourceTree = "<group>"; };
@@ -5298,7 +5300,7 @@
 		00A14B7C084D6284000150AD /* IO_ParticleEffect.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IO_ParticleEffect.cpp; path = ../../src/osgPlugins/osgParticle/IO_ParticleEffect.cpp; sourceTree = SOURCE_ROOT; };
 		00A14B7D084D6284000150AD /* IO_SmokeEffect.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IO_SmokeEffect.cpp; path = ../../src/osgPlugins/osgParticle/IO_SmokeEffect.cpp; sourceTree = SOURCE_ROOT; };
 		00A14B84084D6293000150AD /* IO_Impostor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = IO_Impostor.cpp; path = ../../src/osgPlugins/osgSim/IO_Impostor.cpp; sourceTree = SOURCE_ROOT; };
-		00A14C12084E52BF000150AD /* osgarchive.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = osgarchive.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00A14C12084E52BF000150AD /* osgarchive.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgarchive.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A14C59084E5674000150AD /* osgarchive.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgarchive.cpp; path = ../../applications/osgarchive/osgarchive.cpp; sourceTree = SOURCE_ROOT; };
 		00A14C84084E573B000150AD /* OrientationConverter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OrientationConverter.cpp; path = ../../applications/osgconv/OrientationConverter.cpp; sourceTree = SOURCE_ROOT; };
 		00A14C85084E573C000150AD /* OrientationConverter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = OrientationConverter.h; path = ../../applications/osgconv/OrientationConverter.h; sourceTree = SOURCE_ROOT; };
@@ -5344,7 +5346,6 @@
 		00A79F680BE69CCB00F7C39E /* GeometryTechnique */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = GeometryTechnique; sourceTree = "<group>"; };
 		00A79F690BE69CCB00F7C39E /* Layer */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Layer; sourceTree = "<group>"; };
 		00A79F6A0BE69CCC00F7C39E /* Locator */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Locator; sourceTree = "<group>"; };
-		00A79F6B0BE69CCC00F7C39E /* TerrainNode */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = TerrainNode; sourceTree = "<group>"; };
 		00A79F6C0BE69CCD00F7C39E /* TerrainTechnique */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = TerrainTechnique; sourceTree = "<group>"; };
 		00A79F6D0BE69CCD00F7C39E /* Version */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
 		00A79F750BE69D0A00F7C39E /* GeometryTechnique.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GeometryTechnique.cpp; path = ../../src/osgTerrain/GeometryTechnique.cpp; sourceTree = SOURCE_ROOT; };
@@ -6037,6 +6038,9 @@
 		D48EC7B30B4FCA29000E05A4 /* UnitTestFramework.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UnitTestFramework.cpp; sourceTree = "<group>"; };
 		D48EC7B40B4FCA29000E05A4 /* UnitTestFramework.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = UnitTestFramework.h; sourceTree = "<group>"; };
 		D48EC7B50B4FCA2A000E05A4 /* UnitTests_osg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = UnitTests_osg.cpp; sourceTree = "<group>"; };
+		D48ED2A30C71D36C00A72121 /* Terrain */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Terrain; sourceTree = "<group>"; };
+		D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SoftShadowMap.cpp; sourceTree = "<group>"; };
+		D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SoftShadowMap; sourceTree = "<group>"; };
 		D4C6F0090B8308D90052E667 /* CameraNode */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = CameraNode; sourceTree = "<group>"; };
 		D4C6F00A0B8308D90052E667 /* DeleteHandler */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = DeleteHandler; sourceTree = "<group>"; };
 		D4C6F00B0B8308D90052E667 /* Stats */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Stats; sourceTree = "<group>"; };
@@ -9512,11 +9516,11 @@
 		00A79F660BE69CCA00F7C39E /* osgTerrain */ = {
 			isa = PBXGroup;
 			children = (
+				D48ED2A30C71D36C00A72121 /* Terrain */,
 				00A79F670BE69CCB00F7C39E /* Export */,
 				00A79F680BE69CCB00F7C39E /* GeometryTechnique */,
 				00A79F690BE69CCB00F7C39E /* Layer */,
 				00A79F6A0BE69CCC00F7C39E /* Locator */,
-				00A79F6B0BE69CCC00F7C39E /* TerrainNode */,
 				00A79F6C0BE69CCD00F7C39E /* TerrainTechnique */,
 				0037A1500C18FFD40089AA1C /* ValidDataOperator */,
 				00A79F6D0BE69CCD00F7C39E /* Version */,
@@ -10286,7 +10290,7 @@
 				00A79F750BE69D0A00F7C39E /* GeometryTechnique.cpp */,
 				00A79F760BE69D0A00F7C39E /* Layer.cpp */,
 				00A79F770BE69D0B00F7C39E /* Locator.cpp */,
-				0018529C078C583000D3FC44 /* TerrainNode.cpp */,
+				0018529C078C583000D3FC44 /* Terrain.cpp */,
 				0018529D078C583200D3FC44 /* TerrainTechnique.cpp */,
 				0018529E078C583300D3FC44 /* Version.cpp */,
 			);
@@ -10844,6 +10848,7 @@
 		D4C6F26C0B8316D50052E667 /* osgShadow */ = {
 			isa = PBXGroup;
 			children = (
+				D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */,
 				D4C6F26D0B8316D50052E667 /* Export */,
 				D4C6F26E0B8316D50052E667 /* OccluderGeometry */,
 				D4C6F2700B8316D50052E667 /* ShadowedScene */,
@@ -10860,6 +10865,7 @@
 		D4C6F28F0B83171D0052E667 /* osgShadow */ = {
 			isa = PBXGroup;
 			children = (
+				D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */,
 				D4C6F27F0B8317150052E667 /* OccluderGeometry.cpp */,
 				D4C6F2810B8317150052E667 /* ShadowedScene.cpp */,
 				D4C6F2820B8317150052E667 /* ShadowMap.cpp */,
@@ -12173,12 +12179,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48ED2A40C71D36C00A72121 /* Terrain in Headers */,
 				0037A1510C18FFD50089AA1C /* ValidDataOperator in Headers */,
 				00A79F6E0BE69CCD00F7C39E /* Export in Headers */,
 				00A79F6F0BE69CCD00F7C39E /* GeometryTechnique in Headers */,
 				00A79F700BE69CCD00F7C39E /* Layer in Headers */,
 				00A79F710BE69CCD00F7C39E /* Locator in Headers */,
-				00A79F720BE69CCD00F7C39E /* TerrainNode in Headers */,
 				00A79F730BE69CCD00F7C39E /* TerrainTechnique in Headers */,
 				00A79F740BE69CCD00F7C39E /* Version in Headers */,
 			);
@@ -12188,6 +12194,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BC2F62F0C441CA200671A68 /* GLObjects in Headers */,
 				5BC2F8230C468B3100671A68 /* OperationThread in Headers */,
 				0037A0A50C18DA690089AA1C /* TemplatePrimitiveFunctor in Headers */,
 				5BC191110C15F4D5002CF5BC /* Hint in Headers */,
@@ -12464,6 +12471,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48ED2AC0C71D3AD00A72121 /* SoftShadowMap in Headers */,
 				D4C6F2760B8316D60052E667 /* Export in Headers */,
 				D4C6F2770B8316D60052E667 /* OccluderGeometry in Headers */,
 				D4C6F2790B8316D60052E667 /* ShadowedScene in Headers */,
@@ -16060,7 +16068,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC2F62F0C441CA200671A68 /* GLObjects in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17701,7 +17708,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001852A0078C583400D3FC44 /* TerrainNode.cpp in Sources */,
+				001852A0078C583400D3FC44 /* Terrain.cpp in Sources */,
 				001852A1078C583400D3FC44 /* TerrainTechnique.cpp in Sources */,
 				001852A2078C583400D3FC44 /* Version.cpp in Sources */,
 				00A79F780BE69D0B00F7C39E /* GeometryTechnique.cpp in Sources */,
@@ -17960,6 +17967,7 @@
 				D4C6F28C0B8317150052E667 /* ShadowTexture.cpp in Sources */,
 				D4C6F28D0B8317150052E667 /* ShadowVolume.cpp in Sources */,
 				D4C6F28E0B8317150052E667 /* Version.cpp in Sources */,
+				D48ED2AA0C71D39700A72121 /* SoftShadowMap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

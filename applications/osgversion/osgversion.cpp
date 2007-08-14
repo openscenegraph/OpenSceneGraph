@@ -627,6 +627,7 @@ void buildContributors(NameMap& names)
     ++names[NamePair("Marco","Jez")];
     ++names[NamePair("Mike","Weiblen")];
     ++names[NamePair("Geoff","Michel")];
+    ++names[NamePair("Ben","van Basten")];
     
     // contributors that don't appear in the ChangeLog due to their contributions
     // being before CVS started for the OSG, or before the name logging began.

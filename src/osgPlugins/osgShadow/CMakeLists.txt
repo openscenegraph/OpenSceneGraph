@@ -10,4 +10,4 @@ SET(TARGET_SRC
 SET(TARGET_ADDED_LIBRARIES osgShadow )
 
 #### end var setup  ###
-SETUP_PLUGIN(osgShadow)
+SETUP_PLUGIN(osgshadow)

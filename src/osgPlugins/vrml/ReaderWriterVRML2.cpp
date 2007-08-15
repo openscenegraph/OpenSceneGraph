@@ -80,10 +80,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
     // OpenVRML doesn't like backslashes, even on Windows
     std::string unixFileName = osgDB::convertFileNameToUnixStyle(fileName);
 
+#ifdef WIN32
+    fileName = "file://" + unixFileName;
+#else
     if(unixFileName[0] == '/') // absolute path
         fileName = "file://" + unixFileName;
     else // relative path
         fileName = unixFileName;
+#endif
 
     std::fstream null;
     openvrml::browser *browser = new openvrml::browser(null, null);

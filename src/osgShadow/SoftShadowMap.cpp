@@ -34,9 +34,11 @@ using namespace osgShadow;
 // GPU Gems 2, Matt Pharr ed. Addison-Wesley.
 //
 static const char fShaderSource_noBaseTexture[] =
-    "#define SAMPLECOUNT 64 \n"
+   "#define SAMPLECOUNT 64 \n"
+    "#define SAMPLECOUNT_FLOAT 64.0 \n"
     "#define SAMPLECOUNT_D2 32 \n"
-    "#define INV_SAMPLECOUNT (1.0f / SAMPLECOUNT) \n"
+    "#define SAMPLECOUNT_D2_FLOAT 32.0 \n"
+    "#define INV_SAMPLECOUNT (1.0 / SAMPLECOUNT_FLOAT) \n"
 
     "uniform sampler2DShadow shadowTexture; \n"
     "uniform sampler3D jitterMapSampler; \n"
@@ -53,12 +55,12 @@ static const char fShaderSource_noBaseTexture[] =
     "  vec3 jitterCoord = vec3( gl_FragCoord.xy / jscale, 0.0 ); \n"
     "  vec4 shadow = vec4(0.0, 0.0, 0.0, 0.0); \n"
 // First "cheap" sample test
-    "  const float pass_div = 1.0f / (2.0 * 4); \n"
+    "  const float pass_div = 1.0 / (2.0 * 4.0); \n"
     "  for ( int i = 0; i < 4; ++i ) \n"
     "  { \n"
 // Get jitter values in [0,1]; adjust to have values in [-1,1]
     "    vec4 offset = 2.0 * texture3D( jitterMapSampler, jitterCoord ) -1.0; \n"
-    "    jitterCoord.z += 1.0 / SAMPLECOUNT_D2; \n"
+    "    jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "    smCoord.xy = sceneShadowProj.xy  + (offset.xy) * softFactor; \n"
     "    shadow +=  shadow2DProj( shadowTexture, smCoord ) * pass_div; \n"
@@ -67,12 +69,12 @@ static const char fShaderSource_noBaseTexture[] =
     "    shadow +=  shadow2DProj( shadowTexture, smCoord ) *pass_div; \n"
     "  } \n"
 // skip all the expensive shadow sampling if not needed
-    "  if ( shadow * (shadow -1.0) != 0 ) \n"
+    "  if ( shadow * (shadow -1.0) != 0.0 ) \n"
     "  { \n"
     "    shadow *= pass_div; \n"
-    "    for (int i=0; i<SAMPLECOUNT_D2 -4; ++i){ \n"
+    "    for (int i=0; i<SAMPLECOUNT_D2 - 4; ++i){ \n"
     "      vec4 offset = 2.0 * texture3D( jitterMapSampler, jitterCoord ) - 1.0; \n"
-    "      jitterCoord.z += 1.0 / SAMPLECOUNT_D2; \n"
+    "      jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "      smCoord.xy = sceneShadowProj.xy  + offset.xy * softFactor; \n"
     "      shadow +=  shadow2DProj( shadowTexture, smCoord ) * INV_SAMPLECOUNT; \n"
@@ -92,8 +94,10 @@ static const char fShaderSource_noBaseTexture[] =
 //
 static const char fShaderSource_withBaseTexture[] =
     "#define SAMPLECOUNT 64 \n"
+    "#define SAMPLECOUNT_FLOAT 64.0 \n"
     "#define SAMPLECOUNT_D2 32 \n"
-    "#define INV_SAMPLECOUNT (1.0f / SAMPLECOUNT) \n"
+    "#define SAMPLECOUNT_D2_FLOAT 32.0 \n"
+    "#define INV_SAMPLECOUNT (1.0 / SAMPLECOUNT_FLOAT) \n"
 
     "uniform sampler2D baseTexture; \n"
     "uniform sampler2DShadow shadowTexture; \n"
@@ -111,12 +115,12 @@ static const char fShaderSource_withBaseTexture[] =
     "  vec3 jitterCoord = vec3( gl_FragCoord.xy / jscale, 0.0 ); \n"
     "  vec4 shadow = vec4(0.0, 0.0, 0.0, 0.0); \n"
 // First "cheap" sample test
-    "  const float pass_div = 1.0f / (2.0 * 4); \n"
+    "  const float pass_div = 1.0 / (2.0 * 4.0); \n"
     "  for ( int i = 0; i < 4; ++i ) \n"
     "  { \n"
 // Get jitter values in [0,1]; adjust to have values in [-1,1]
     "    vec4 offset = 2.0 * texture3D( jitterMapSampler, jitterCoord ) -1.0; \n"
-    "    jitterCoord.z += 1.0 / SAMPLECOUNT_D2; \n"
+    "    jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "    smCoord.xy = sceneShadowProj.xy  + (offset.xy) * softFactor; \n"
     "    shadow +=  shadow2DProj( shadowTexture, smCoord ) * pass_div; \n"
@@ -125,12 +129,12 @@ static const char fShaderSource_withBaseTexture[] =
     "    shadow +=  shadow2DProj( shadowTexture, smCoord ) *pass_div; \n"
     "  } \n"
 // skip all the expensive shadow sampling if not needed
-    "  if ( shadow * (shadow -1.0) != 0 ) \n"
+    "  if ( shadow * (shadow -1.0) != 0.0 ) \n"
     "  { \n"
     "    shadow *= pass_div; \n"
     "    for (int i=0; i<SAMPLECOUNT_D2 -4; ++i){ \n"
     "      vec4 offset = 2.0 * texture3D( jitterMapSampler, jitterCoord ) - 1.0; \n"
-    "      jitterCoord.z += 1.0 / SAMPLECOUNT_D2; \n"
+    "      jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "      smCoord.xy = sceneShadowProj.xy  + offset.xy * softFactor; \n"
     "      shadow +=  shadow2DProj( shadowTexture, smCoord ) * INV_SAMPLECOUNT; \n"

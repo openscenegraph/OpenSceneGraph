@@ -1372,6 +1372,10 @@ void Viewer::updateTraversal()
 
     double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
+    _updateVisitor->reset();
+    _updateVisitor->setFrameStamp(getFrameStamp());
+    _updateVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());
+
     if (getSceneData())
     {
         getSceneData()->accept(*_updateVisitor);

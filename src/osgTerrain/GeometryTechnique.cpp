@@ -143,7 +143,7 @@ Locator* GeometryTechnique::computeMasterLocator()
     return masterLocator;
 }
 
-const osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
+osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
 {
     BufferData& buffer = getWriteBuffer();
     

@@ -13,7 +13,9 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Uniform>
+#include <osg/Vec3d>
 #include <osgTerrain/GeometryTechnique>
+#include <osgTerrain/Locator>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
 
@@ -45,6 +47,41 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	I_Method0(void, init,
 	          Properties::VIRTUAL,
 	          __void__init,
+	          "",
+	          "");
+	I_Method0(osgTerrain::Locator *, computeMasterLocator,
+	          Properties::VIRTUAL,
+	          __Locator_P1__computeMasterLocator,
+	          "",
+	          "");
+	I_Method1(osg::Vec3d, computeCenterModel, IN, osgTerrain::Locator *, masterLocator,
+	          Properties::VIRTUAL,
+	          __osg_Vec3d__computeCenterModel__Locator_P1,
+	          "",
+	          "");
+	I_Method2(void, generateGeometry, IN, osgTerrain::Locator *, masterLocator, IN, const osg::Vec3d &, centerModel,
+	          Properties::VIRTUAL,
+	          __void__generateGeometry__Locator_P1__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(void, applyColorLayers,
+	          Properties::VIRTUAL,
+	          __void__applyColorLayers,
+	          "",
+	          "");
+	I_Method0(void, applyTransferFunctions,
+	          Properties::VIRTUAL,
+	          __void__applyTransferFunctions,
+	          "",
+	          "");
+	I_Method0(void, applyTransparency,
+	          Properties::VIRTUAL,
+	          __void__applyTransparency,
+	          "",
+	          "");
+	I_Method0(void, smoothGeometry,
+	          Properties::VIRTUAL,
+	          __void__smoothGeometry,
 	          "",
 	          "");
 	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,

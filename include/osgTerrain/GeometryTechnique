@@ -36,7 +36,7 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         virtual Locator* computeMasterLocator();
         
-        virtual const osg::Vec3d computeCenterModel(Locator* masterLocator);
+        virtual osg::Vec3d computeCenterModel(Locator* masterLocator);
         
         virtual void generateGeometry(Locator* masterLocator, const osg::Vec3d& centerModel);
         

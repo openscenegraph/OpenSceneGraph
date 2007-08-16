@@ -30,6 +30,15 @@
 #include <algorithm>
 #include <set>
 
+#if defined(__sgi)
+    #include <ctype.h>
+#elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
+    #include <cctype>
+    using std::tolower;
+    using std::strlen;    
+#endif
+
+
 using namespace osg;
 using namespace osgDB;
 
@@ -545,14 +554,20 @@ std::string Registry::trim( const std::string& str )
 
 std::string Registry::createLibraryNameForFile(const std::string& fileName)
 {
-    std::string ext = getLowerCaseFileExtension(fileName);
-    return createLibraryNameForExtension(ext);
+    return createLibraryNameForExtension(getFileExtension(fileName));
 }
 
 std::string Registry::createLibraryNameForExtension(const std::string& ext)
 {
+    std::string lowercase_ext;
+    for(std::string::const_iterator itr=ext.begin();
+        itr!=ext.end();
+        ++itr)
+    {
+        lowercase_ext.push_back(tolower(*itr));
+    }
 
-    ExtensionAliasMap::iterator itr=_extAliasMap.find(ext);
+    ExtensionAliasMap::iterator itr=_extAliasMap.find(lowercase_ext);
     if (itr!=_extAliasMap.end() && ext != itr->second) return createLibraryNameForExtension(itr->second);
 
 #ifdef OSG_JAVA_BUILD
@@ -569,23 +584,23 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 #if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
     #ifdef __CYGWIN__
-        return "cyg"+prepend+"osgdb_"+ext+".dll";
+        return "cyg"+prepend+"osgdb_"+lowercase_ext+".dll";
     #elif defined(__MINGW32__)
-        return "lib"+prepend+"osgdb_"+ext+".dll";
+        return "lib"+prepend+"osgdb_"+lowercase_ext+".dll";
     #else
         #ifdef _DEBUG
-            return prepend+"osgdb_"+ext+"d.dll";
+            return prepend+"osgdb_"+lowercase_ext+"d.dll";
         #else
-            return prepend+"osgdb_"+ext+".dll";
+            return prepend+"osgdb_"+lowercase_ext+".dll";
         #endif
     #endif
 #elif macintosh
-    return prepend+"osgdb_"+ext;
+    return prepend+"osgdb_"+lowercase_ext;
 #elif defined(__hpux__)
     // why don't we use PLUGIN_EXT from the makefiles here?
-    return prepend+"osgdb_"+ext+".sl";
+    return prepend+"osgdb_"+lowercase_ext+".sl";
 #else
-    return prepend+"osgdb_"+ext+".so";
+    return prepend+"osgdb_"+lowercase_ext+".so";
 #endif
 
 }

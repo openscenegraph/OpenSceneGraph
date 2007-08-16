@@ -20,8 +20,9 @@ Layer::Layer()
 {
 }
 
-Layer::Layer(const Layer& Layer,const osg::CopyOp& copyop):
-    osg::Object(Layer,copyop)
+Layer::Layer(const Layer& layer,const osg::CopyOp& copyop):
+    osg::Object(layer,copyop),
+    _filename(layer._filename)
 {
 }
 
@@ -321,3 +322,19 @@ unsigned int HeightFieldLayer::getModifiedCount() const
 {
     return _modifiedCount;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// HieghtFieldLayer
+//
+CompositeLayer::CompositeLayer()
+{
+}
+
+CompositeLayer::CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop):
+    Layer(compositeLayer,copyop)
+{
+}
+
+

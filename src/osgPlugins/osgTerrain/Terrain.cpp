@@ -38,6 +38,27 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
     while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
     {
         bool itrAdvanced = false;
+        
+        if (fr.matchSequence("Images {") || fr.matchSequence("images {"))
+        {
+            osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
+            
+            int local_entry = fr[0].getNoNestedBrackets();
+
+            fr += 2;
+            while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
+            {
+                cl->addLayer(fr[0].getStr());
+                ++fr;
+            }
+            
+            layer = cl.get();
+        
+            itrAdvanced = true;
+            
+            ++fr;
+        }
+
         if (fr.matchSequence("Image %w") || fr.matchSequence("image %w") || 
             fr.matchSequence("Image %s") || fr.matchSequence("image %s"))
         {

@@ -96,28 +96,39 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
     };
 }
 
-
 void GeometryTechnique::init()
 {
     osg::notify(osg::NOTICE)<<"Doing init()"<<std::endl;
     
     if (!_terrain) return;
 
-
     BufferData& buffer = getWriteBuffer();
+    
+    Locator* masterLocator = computeMasterLocator();
+    
+    osg::Vec3d centerModel = computeCenterModel(masterLocator);
+    
+    generateGeometry(masterLocator, centerModel);
+    
+    applyColorLayers();
+    
+    applyTransferFunctions();
+    
+    applyTransparency();
+    
+    smoothGeometry();
 
+    if (buffer._transform.valid()) buffer._transform->setThreadSafeRefUnref(true);
+
+    _dirty = false;    
+
+    swapBuffers();
+}
+
+Locator* GeometryTechnique::computeMasterLocator()
+{
     osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
     osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
-    osgTerrain::Terrain::Filter filter = _terrain->getColorFilter(0);
-
-    // if the elevationLayer and colorLayer are the same, and there is colorTF then
-    // simply assing as a texture coordinate.
-    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
-    
-    osg::notify(osg::NOTICE)<<"elevationLayer = "<<elevationLayer<<std::endl;
-    osg::notify(osg::NOTICE)<<"colorLayer = "<<colorLayer<<std::endl;
-    osg::notify(osg::NOTICE)<<"colorTF = "<<colorTF<<std::endl;
 
     Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
     Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
@@ -126,12 +137,28 @@ void GeometryTechnique::init()
     if (!masterLocator)
     {
         osg::notify(osg::NOTICE)<<"Problem, no locator found in any of the terrain layers"<<std::endl;
-        return;
+        return 0;
     }
+    
+    return masterLocator;
+}
+
+const osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
+{
+    BufferData& buffer = getWriteBuffer();
+    
+    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
+
+    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
+
+    Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
+    Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
     
     if (!elevationLocator) elevationLocator = masterLocator;
     if (!colorLocator) colorLocator = masterLocator;
-    
+
     osg::Vec3d bottomLeftNDC(DBL_MAX, DBL_MAX, 0.0);
     osg::Vec3d topRightNDC(-DBL_MAX, -DBL_MAX, 0.0);
     
@@ -168,11 +195,7 @@ void GeometryTechnique::init()
     osg::notify(osg::NOTICE)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
     osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
-    
-    buffer._geode = new osg::Geode;
-
     buffer._transform = new osg::MatrixTransform;
-    buffer._transform->addChild(buffer._geode.get());
 
     osg::Vec3d centerNDC = (bottomLeftNDC + topRightNDC)*0.5;
     osg::Vec3d centerModel = (bottomLeftNDC + topRightNDC)*0.5;
@@ -180,9 +203,29 @@ void GeometryTechnique::init()
     
     buffer._transform->setMatrix(osg::Matrix::translate(centerModel));
     
+    return centerModel;
+}
+
+void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3d& centerModel)
+{
+    BufferData& buffer = getWriteBuffer();
+    
+    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
+    
+    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
+
+    Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
+
+    if (!colorLocator) colorLocator = masterLocator;
+    
+    buffer._geode = new osg::Geode;
+    if(buffer._transform.valid())
+        buffer._transform->addChild(buffer._geode.get());
+    
     buffer._geometry = new osg::Geometry;
     if (buffer._geometry.valid()) buffer._geode->addDrawable(buffer._geometry.get());
-
     
     unsigned int numRows = 100;
     unsigned int numColumns = 100;
@@ -329,7 +372,6 @@ void GeometryTechnique::init()
         }
     }
 
-
     // populate primitive sets
     bool optimizeOrientations = _elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
@@ -339,7 +381,7 @@ void GeometryTechnique::init()
 
     if (buffer._geometry.valid()) buffer._geometry->addPrimitiveSet(elements);
 
-    for(j=0; j<numRows-1; ++j)
+    for(unsigned int j=0; j<numRows-1; ++j)
     {
         for(unsigned int i=0; i<numColumns-1; ++i)
         {
@@ -409,12 +451,26 @@ void GeometryTechnique::init()
             
         }
     }
+    
+    // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
+    if (buffer._geometry.valid()) buffer._geometry->setUseVertexBufferObjects(true);
+}
 
-
-    bool containsTransparency = false;
-
+void GeometryTechnique::applyColorLayers()
+{
+    BufferData& buffer = getWriteBuffer();
+    
+    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
+    osgTerrain::Terrain::Filter filter = _terrain->getColorFilter(0);
+    
+    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
+    
+    int color_index = -1;
+    
     if (colorLayer)
     {
+        color_index++;
         osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
         if (imageLayer)
         {
@@ -435,18 +491,30 @@ void GeometryTechnique::init()
                 //image->setInternalTextureFormat(GL_LUMINANCE32F_ARB);
                 image->setInternalTextureFormat(GL_LUMINANCE16);
             }
-            else
-            {
-                containsTransparency = image->isImageTranslucent();
-            }
         }
-        
     }
+}
 
-
+void GeometryTechnique::applyTransferFunctions()
+{
+    BufferData& buffer = getWriteBuffer();
+    
+    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
+    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
+    
+    int color_index = -1;
+    int tf_index = -1;
+    
+    if (colorLayer) {
+        color_index++;
+        tf_index++;
+    }
+    
     if (tf)
     {
         osg::notify(osg::NOTICE)<<"Requires TransferFunction"<<std::endl;
+        tf_index++;
         osg::Image* image = tf->getImage();
         osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
         osg::Texture1D* texture1D = new osg::Texture1D;
@@ -455,8 +523,6 @@ void GeometryTechnique::init()
         texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
         texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
         stateset->setTextureAttributeAndModes(tf_index, texture1D, osg::StateAttribute::ON);
-
-        containsTransparency = image->isImageTranslucent();
 
         if (colorLayer)
         {
@@ -510,6 +576,31 @@ void GeometryTechnique::init()
             osg::notify(osg::NOTICE)<<"Using standard OpenGL fixed function pipeline"<<std::endl;
         }
     }
+}
+
+void GeometryTechnique::applyTransparency()
+{
+    BufferData& buffer = getWriteBuffer();
+    
+    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
+
+    // if the elevationLayer and colorLayer are the same, and there is colorTF then
+    // simply assing as a texture coordinate.
+    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
+    
+    bool containsTransparency = false;
+    
+    if (colorLayer)
+    {
+        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
+        if (imageLayer) {
+            osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
+            if (tf) containsTransparency = tf->getImage()->isImageTranslucent();
+            else containsTransparency = imageLayer->getImage()->isImageTranslucent();
+        }  
+    }
     
     if (containsTransparency)
     {
@@ -518,22 +609,18 @@ void GeometryTechnique::init()
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
 
-    // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
-    if (buffer._geometry.valid()) buffer._geometry->setUseVertexBufferObjects(true);
+}
 
+void GeometryTechnique::smoothGeometry()
+{
+    BufferData& buffer = getWriteBuffer();
+    
     if (buffer._geometry.valid())
     {
         osgUtil::SmoothingVisitor smoother;
         smoother.smooth(*buffer._geometry);
     }
-
-    if (buffer._transform.valid()) buffer._transform->setThreadSafeRefUnref(true);
-
-    _dirty = false;    
-
-    swapBuffers();
 }
-
 
 void GeometryTechnique::update(osgUtil::UpdateVisitor* uv)
 {

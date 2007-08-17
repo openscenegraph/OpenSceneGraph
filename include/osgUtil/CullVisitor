@@ -228,7 +228,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             if (result)
             {
                 znear = zn;
-                zfar = zn;
+                zfar = zf;
                 return true;
             }
             else 
@@ -249,7 +249,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             if (result)
             {
                 znear = zn;
-                zfar = zn;
+                zfar = zf;
                 return true;
             }
             else 

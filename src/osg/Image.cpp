@@ -478,7 +478,7 @@ void Image::allocateImage(int s,int t,int r,
         _internalTextureFormat = 0;
     }
     
-    ++_modifiedCount;
+    dirty();
 }
 
 void Image::setImage(int s,int t,int r,
@@ -502,7 +502,7 @@ void Image::setImage(int s,int t,int r,
 
     _packing = packing;
         
-    ++_modifiedCount;
+    dirty();
 
 }
 
@@ -626,7 +626,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             extensions->glGetCompressedTexImage(textureMode, i, getMipmapData(i));
         }
 
-        ++_modifiedCount;
+        dirty();
     
     }
     else
@@ -685,7 +685,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexImage(textureMode,i,_pixelFormat,_dataType,getMipmapData(i));
         }
 
-        ++_modifiedCount;
+        dirty();
     }    
 }
 
@@ -748,7 +748,7 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
     }
     
-    ++_modifiedCount;
+    dirty();
 }
 
 void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source)
@@ -847,7 +847,7 @@ void Image::flipHorizontal()
         return;
     }
         
-    ++_modifiedCount;
+    dirty();
 }
 
 void flipImageVertical(unsigned char* top, unsigned char* bottom, unsigned int rowSize)
@@ -931,7 +931,7 @@ void Image::flipVertical()
        }
     }   
 
-    ++_modifiedCount;
+    dirty();
 }
 
 

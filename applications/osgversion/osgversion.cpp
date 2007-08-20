@@ -294,6 +294,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Yefrei") return "Yefei";
     if (name=="Yfei") return "Yefei";
     if (name=="Antonoine") return "Antoine";
+    if (name=="Antione") return "Antoine";
     if (name=="Andew") return "Andrew";
     if (name=="Daneil") return "Daniel";
     if (name=="AndrÃ©") return "André";

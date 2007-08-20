@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.5
+OpenSceneGraph Library 2.1.6
 
-270 Contributors:
+271 Contributors:
 
 Firstname Surname
 -----------------
@@ -13,8 +13,8 @@ Brede Johansen
 Geoff Michel
 Farshid Lashkari
 Paul Martz
-Bob Kuehne
 Stephan Huber
+Bob Kuehne
 Martin Lavery
 Ulrich Hertlein
 Eric Sokolowsky
@@ -63,6 +63,7 @@ Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
+Jean-Sebastien Guay
 Gordon Tomlinson
 Brad Colbert
 Andreas Ekstrand
@@ -76,9 +77,10 @@ Michael Hartman
 Loic Dachary
 Joseph Steel
 John Shue
-Jean-Sebastien Guay
+Jan Ciger
 David Guthrie
 Corbin Holtz
+Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -91,7 +93,6 @@ Laurens Voerman
 Carlo Camporesi
 Bryan Thrall
 Bruce Clay
-Brad Christiansen
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
@@ -100,17 +101,19 @@ Sherman Wilcox
 Serge Lages
 Phil Atkin
 Mathieu Marache
+Luc Frauciel
 Ken Sewell
 Julian Ortiz
+José Delport
 John Kelso
 Jeremy Bell
-Jan Ciger
 James French
 Gabor Dorka
 Donn Mielcarek
 Domenico Mangieri
 Daniel Larimer
 Charles Cole
+Antoine Hue
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
@@ -133,10 +136,9 @@ Maya Leonard
 Max Behensky
 Mathew May
 Martijn Kragtwijk
-Luc Frauciel
+Maria Ten
 Kevin Moiule
 Keith Steffen
-José Delport
 Joseph Winston
 John Aughey
 Johan Nouvel
@@ -150,7 +152,6 @@ David Ergo
 Daniel Trstenjak
 Csaba Halasz
 Blake Williams
-Antoine Hue
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
@@ -210,7 +211,6 @@ Mason Menninger
 Martin Spott
 Martin Amueller
 Marin Lavery
-Maria Ten
 Louis Hamilton
 Lewis Harmon
 Kristopher Bixler
@@ -262,6 +262,7 @@ Brian Keener
 Brad Anderegg
 Bora Utka
 Blasius Czink
+Ben van Basten
 Bart Gallet
 Axel Volley
 Andrew Reyonolds

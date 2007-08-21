@@ -338,3 +338,7 @@ CompositeLayer::CompositeLayer(const CompositeLayer& compositeLayer,const osg::C
 }
 
 
+void CompositeLayer::clear()
+{
+    _layers.clear();
+}

@@ -84,7 +84,8 @@ static const GLubyte patternHorzEven[] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
-SceneView::SceneView(DisplaySettings* ds)
+SceneView::SceneView(DisplaySettings* ds):
+    osg::Object(true)
 {
     _displaySettings = ds;
 
@@ -131,17 +132,25 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     
     _prioritizeTextures = rhs._prioritizeTextures;
     
-    _camera = rhs._camera;
-    _cameraWithOwnership = rhs._cameraWithOwnership;
+    if (rhs._camera.valid())
+    {
+        setCamera(new osg::Camera(*rhs._camera,copyop), rhs._camera.get()==rhs._cameraWithOwnership.get());
+    }
+    else
+    {
+        setCamera(new Camera);
+        _camera->setViewport(new Viewport);
+        _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
+    }
     
-    _initCalled = rhs._initCalled;
+    _initCalled = false;
 
     _requiresFlush = rhs._requiresFlush;
     
     _activeUniforms = rhs._activeUniforms;
     
-    _previousFrameTime = rhs._previousFrameTime;
-    _previousSimulationTime = rhs._previousSimulationTime;
+    _previousFrameTime = 0;
+    _previousSimulationTime = 0;
     
     _redrawInterlacedStereoStencilMask = rhs._redrawInterlacedStereoStencilMask;
     _interlacedStereoStencilWidth = rhs._interlacedStereoStencilWidth;

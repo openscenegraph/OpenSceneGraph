@@ -8,7 +8,7 @@
 # script. This just copies all the already built binaries 
 # into a structure that is near-ready for distribution.
 # 
-# Usage: You should run this from the directory above the 3-projects
+# Usage: You should run this from the directory above the OSG-projects
 # ("AnyDirectory" in the picture below)
 # bash OpenSceneGraph/Xcode/Misc/ArrangeDMG.sh
 #
@@ -40,12 +40,14 @@
 # CpMac is deprecated now that cp works properly in Tiger
 #COPY="/Developer/Tools/CpMac -r"
 COPY="/bin/cp -R"
+SVN="svn"
 #COPY="mv -f"
 
 #BUILDACTION="clean build"
+#CONFIGURATION="Development"
 CONFIGURATION="Deployment"
 
-GDAL_LOCATION="/Library/Frameworks"
+#GDAL_LOCATION="/Library/Frameworks"
 
 # Clean up from previous builds?
 echo "Deleteing PackageDir to begin anew"
@@ -65,17 +67,20 @@ mkdir -p PackageDir/XcodeTemplates
 
 mkdir -p PackageDir/Resources
 
+mkdir -p PackageDir/.background
+
 
 # Everything should be built now. Move all the things to be distrubuted 
 # to the PackageDir with the appropriate layout.
 
 echo "Copying Frameworks..."
 
-$COPY OpenThreads/Xcode/OpenThreads/build/$CONFIGURATION/OpenThreads.framework PackageDir/Frameworks
-$COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/osg*.framework PackageDir/Frameworks/
+#$COPY OpenThreads/Xcode/OpenThreads/build/$CONFIGURATION/OpenThreads.framework PackageDir/Frameworks
+#$COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/osg*.framework PackageDir/Frameworks/
+$COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/*.framework PackageDir/Frameworks/
 
 # Copy the gdal framework 
-$COPY $GDAL_LOCATION/gdal.framework PackageDir/Frameworks
+#$COPY $GDAL_LOCATION/gdal.framework PackageDir/Frameworks
 
 echo "Copying PlugIns..."
 $COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/*.so PackageDir/PlugIns/
@@ -86,14 +91,18 @@ $COPY OpenSceneGraph/Xcode/OpenSceneGraph/build/$CONFIGURATION/*.app PackageDir/
 echo "Copying Xcode templates..."
 $COPY OpenSceneGraph/Xcode/XcodeTemplates PackageDir
 # If we are in CVS, all the CVS junk got copied in so we need to remove it
-find -d PackageDir/XcodeTemplates -name CVS -exec rm -rf {} \;
+#find -d PackageDir/XcodeTemplates -name CVS -exec rm -rf {} \;
+find -d PackageDir/XcodeTemplates -name .svn -exec rm -rf {} \;
 
 
 echo "Copying License and ReadMe files..."
-$COPY OpenThreads/COPYING.txt PackageDir/LICENSE_OpenThreads.txt
+#$COPY OpenThreads/COPYING.txt PackageDir/LICENSE_OpenThreads.txt
 $COPY OpenSceneGraph/LICENSE.txt PackageDir/LICENSE_OSG.txt
 $COPY OpenSceneGraph/Xcode/OSX_OSG_README.rtf PackageDir
 
+# Copy the background image and .DS_Store for 'fancy' DMG
+$COPY OpenSceneGraph/Xcode/Packaging/Resources/instlogo.pdf PackageDir/.background
+$COPY OpenSceneGraph/Xcode/Misc/DSStoreForDMG PackageDir/.DS_Store
 
 
 # Sorry, I think this is bourne only
@@ -108,21 +117,40 @@ echo "Setting up symbolic links for the .app's..."
 		)
 	done
 )
-#echo ""
+
+echo "Testing for OpenSceneGraph-Data..."
 
 
-# Not sure how to find the OSG data, so it has to be done manually
-# Would Spotlight help?
-echo "Next, you must (manually) copy all the OSG-data to PackageDir/Resources and the LICENCE_GDAL.rtf to PackageDir."
+# If OpenSceneGraph-Data/ resides next to OpenSceneGraph/, then use it
+if [ -d OpenSceneGraph-Data ]; then
+	echo "Found OpenSceneGraph-Data and will copy into PackageDir/Resources."
+	# Determine if it is a subversion copy or not; we don't want the repo info
+	if [ -d OpenSceneGraph-Data/.svn ]; then
+		$SVN export --force OpenSceneGraph-Data PackageDir/Resources	
+	else
+		$COPY OpenSceneGraph-Data PackageDir/Resources
+	fi
 
-echo "Looking up location for OpenSceneGraph-Data"
-#/usr/bin/perl OpenSceneGraph/Xcode/Misc/FindOSGData.pl
-/usr/bin/perl OpenSceneGraph/Xcode/Misc/FindOSGData.pl --single
-echo "Looking up location for LICENSE_GDAL.rtf"
-/usr/bin/perl OpenSceneGraph/Xcode/Misc/FindOSGData.pl --single LICENSE_GDAL.rtf
+	echo "Creating DMG using:"
+	echo "hdiutil create -ov -fs HFS+ -volname OpenSceneGraph -srcfolder PackageDir OpenSceneGraph.dmg"
+	/usr/bin/hdiutil create -ov -fs HFS+ -volname OpenSceneGraph -srcfolder PackageDir OpenSceneGraph.dmg
 
-echo "After you copy the remaining resources, you will want to package up the DMG. You can use the following line as the basis:"
-echo "hdiutil create -ov -fs HFS+ -volname OpenSceneGraph -srcfolder PackageDir OpenSceneGraph.dmg"
+else
+	# Not sure how to find the OSG data, so it has to be done manually
+	# Would Spotlight help?
+	#echo "Next, you must (manually) copy all the OSG-data to PackageDir/Resources and the LICENCE_GDAL.rtf to PackageDir."
+	echo "Did not find OpenSceneGraph-Data/ aside OpenSceneGraph/."
+	echo "Next, you must (manually) copy all the OSG-data to PackageDir/Resources."
+
+	echo "Looking up possible location for OpenSceneGraph-Data"
+	#/usr/bin/perl OpenSceneGraph/Xcode/Misc/FindOSGData.pl
+	/usr/bin/perl OpenSceneGraph/Xcode/Misc/FindOSGData.pl --single
+	#echo "Looking up location for LICENSE_GDAL.rtf"
+	#/usr/bin/perl OpenSceneGraph/Xcode/Misc/FindOSGData.pl --single LICENSE_GDAL.rtf
+
+	echo "After you copy the remaining resources, you will want to package up the DMG. You can use the following line as the basis:"
+	echo "hdiutil create -ov -fs HFS+ -volname OpenSceneGraph -srcfolder PackageDir OpenSceneGraph.dmg"
+fi
 
 
 # Now we want to package up everything into a .dmg

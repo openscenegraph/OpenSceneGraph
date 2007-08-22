@@ -26,7 +26,8 @@
 using namespace std;
 using namespace osg;
 
-State::State()
+State::State():
+    Referenced(true)
 {
     _graphicsContext = 0;
     _contextID = 0;

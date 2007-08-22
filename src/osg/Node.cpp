@@ -53,6 +53,7 @@ namespace osg
 }
 
 Node::Node()
+    :Object(true)
 {
     _boundingSphereComputed = false;
     _nodeMask = 0xffffffff;

@@ -28,6 +28,7 @@ using namespace osg;
 using namespace std;
 
 Image::Image()
+    :Object(true)
 {
     setDataVariance(STATIC); 
 

@@ -72,12 +72,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         /** Get the threading model the rendering traversals will use.*/
         ThreadingModel getThreadingModel() const { return _threadingModel; }
 
-        /** Set whether the main thread, calling frame(), should be used for the rendering traversals.*/
-        void setUseMainThreadForRenderingTraversals(bool flag);
-        
-        /** Get whether the main thread, calling frame(), should be used for the rendering traversals.*/
-        bool getUseMainThreadForRenderingTraversals() const { return _useMainThreadForRenderingTraversal; }
-
         /** Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available.*/
         ThreadingModel suggestBestThreadingModel();
 
@@ -246,7 +240,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         ThreadingModel  _threadingModel;
         bool            _threadsRunning;
         
-        bool            _useMainThreadForRenderingTraversal;
         BarrierPosition _endBarrierPosition;
 
         osg::ref_ptr<osg::BarrierOperation>         _startRenderingBarrier;

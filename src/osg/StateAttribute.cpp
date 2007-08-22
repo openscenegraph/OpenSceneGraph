@@ -18,6 +18,13 @@
 
 using namespace osg;
 
+
+StateAttribute::StateAttribute()
+    :Object(true)
+{
+}
+
+
 void StateAttribute::addParent(osg::StateSet* object)
 {
     _parents.push_back(object);

@@ -91,6 +91,7 @@ void View::setLightingMode(LightingMode lightingMode)
     if (_lightingMode != NO_LIGHT && !_light) 
     {
         _light = new osg::Light;
+        _light->setThreadSafeRefUnref(true);
         _light->setLightNum(0);
         _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
         _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));

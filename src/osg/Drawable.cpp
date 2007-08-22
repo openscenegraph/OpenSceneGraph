@@ -245,6 +245,7 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
 
 
 Drawable::Drawable()
+    :Object(true)
 {
     _boundingBoxComputed = false;
 

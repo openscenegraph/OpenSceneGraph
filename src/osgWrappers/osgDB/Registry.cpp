@@ -530,7 +530,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
 	I_DeclaringFile("osgDB/Registry");
-	I_BaseType(osg::Referenced);
+	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____ReadFileCallback,
 	               "",
 	               "");
@@ -587,7 +587,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
 	I_DeclaringFile("osgDB/Registry");
-	I_BaseType(osg::Referenced);
+	I_VirtualBaseType(osg::Referenced);
 	I_Constructor0(____WriteFileCallback,
 	               "",
 	               "");

@@ -161,7 +161,7 @@ View::View(const osgViewer::View& view, const osg::CopyOp& copyop):
 
 View::~View()
 {
-    // osg::notify(osg::NOTICE)<<"Destructing osgViewer::View"<<std::endl;
+    osg::notify(osg::INFO)<<"Destructing osgViewer::View"<<std::endl;
 }
 
 

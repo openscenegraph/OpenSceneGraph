@@ -27,7 +27,7 @@ DisplaySettings* DisplaySettings::instance()
     return s_displaySettings.get();
 }
 
-DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced()
+DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced(true)
 {
     setDisplaySettings(vs);
 }

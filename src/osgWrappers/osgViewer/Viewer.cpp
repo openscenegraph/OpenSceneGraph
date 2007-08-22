@@ -115,16 +115,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __ThreadingModel__getThreadingModel,
 	          "Get the threading model the rendering traversals will use. ",
 	          "");
-	I_Method1(void, setUseMainThreadForRenderingTraversals, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setUseMainThreadForRenderingTraversals__bool,
-	          "Set whether the main thread, calling frame(), should be used for the rendering traversals. ",
-	          "");
-	I_Method0(bool, getUseMainThreadForRenderingTraversals,
-	          Properties::NON_VIRTUAL,
-	          __bool__getUseMainThreadForRenderingTraversals,
-	          "Get whether the main thread, calling frame(), should be used for the rendering traversals. ",
-	          "");
 	I_Method0(osgViewer::Viewer::ThreadingModel, suggestBestThreadingModel,
 	          Properties::NON_VIRTUAL,
 	          __ThreadingModel__suggestBestThreadingModel,
@@ -383,9 +373,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
 	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
 	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
-	I_SimpleProperty(bool, UseMainThreadForRenderingTraversals, 
-	                 __bool__getUseMainThreadForRenderingTraversals, 
-	                 __void__setUseMainThreadForRenderingTraversals__bool);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >)

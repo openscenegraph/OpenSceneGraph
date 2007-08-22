@@ -130,7 +130,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         bool                 writeObject(const osg::Object& obj,Output& fw);
 
         
-        class ReadFileCallback : public osg::Referenced
+        class ReadFileCallback : public virtual osg::Referenced
         {
         public:
         
@@ -211,7 +211,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
 
 
-        class WriteFileCallback : public osg::Referenced
+        class WriteFileCallback : public virtual osg::Referenced
         {
         public:
         

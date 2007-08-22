@@ -430,7 +430,7 @@ Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
         else return DrawThreadPerContext;
     }
     
-#if 0
+#if 1
     if (numProcessors >= static_cast<int>(cameras.size()+contexts.size()))
     {
         return CullThreadPerCameraDrawThreadPerContext;
@@ -459,20 +459,25 @@ void Viewer::startThreading()
     Cameras cameras;
     getCameras(cameras);
     
-    unsigned int numThreadsOnBarrier = 0;
+    unsigned int numThreadsOnStartBarrier = 0;
+    unsigned int numThreadsOnEndBarrier = 0;
     switch(_threadingModel)
     {
         case(SingleThreaded): 
-            numThreadsOnBarrier = 1;
+            numThreadsOnStartBarrier = 1;
+            numThreadsOnEndBarrier = 1;
             return;
         case(CullDrawThreadPerContext): 
-            numThreadsOnBarrier = contexts.size()+1;
+            numThreadsOnStartBarrier = contexts.size()+1;
+            numThreadsOnEndBarrier = contexts.size()+1;
             break;
         case(DrawThreadPerContext): 
-            numThreadsOnBarrier = 1;
+            numThreadsOnStartBarrier = 1;
+            numThreadsOnEndBarrier = 1;
             break;
         case(CullThreadPerCameraDrawThreadPerContext): 
-            numThreadsOnBarrier = cameras.size()+1;
+            numThreadsOnStartBarrier = cameras.size()+1;
+            numThreadsOnEndBarrier = 1; 
             break;
         default:
             osg::notify(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
@@ -508,9 +513,12 @@ void Viewer::startThreading()
     {
         osg::Camera* camera = *camItr;
         Renderer* renderer = dynamic_cast<Renderer*>(camera->getRenderer());
-        renderer->setGraphicsThreadDoesCull(graphicsThreadsDoesCull);
-        renderer->setDone(false);
-        ++numViewerDoubleBufferedRenderingOperation;
+        if (renderer)
+        {
+            renderer->setGraphicsThreadDoesCull(graphicsThreadsDoesCull);
+            renderer->setDone(false);
+            ++numViewerDoubleBufferedRenderingOperation;
+        }
     }
 
     if (_threadingModel==CullDrawThreadPerContext)
@@ -530,10 +538,14 @@ void Viewer::startThreading()
         else osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
     }
     
-    if (numThreadsOnBarrier>1)
+    if (numThreadsOnStartBarrier>1)
     {
-        _startRenderingBarrier = new osg::BarrierOperation(numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
-        _endRenderingDispatchBarrier = new osg::BarrierOperation(numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
+        _startRenderingBarrier = new osg::BarrierOperation(numThreadsOnStartBarrier, osg::BarrierOperation::NO_OPERATION);
+    }
+
+    if (numThreadsOnEndBarrier>1)
+    {
+        _endRenderingDispatchBarrier = new osg::BarrierOperation(numThreadsOnEndBarrier, osg::BarrierOperation::NO_OPERATION);
     }
 
 
@@ -586,11 +598,11 @@ void Viewer::startThreading()
 
     }
 
-    if (_threadingModel==CullThreadPerCameraDrawThreadPerContext && numThreadsOnBarrier>1)
+    if (_threadingModel==CullThreadPerCameraDrawThreadPerContext && numThreadsOnStartBarrier>1)
     {
-        Cameras::iterator camItr = cameras.begin();
+        Cameras::iterator camItr;
 
-        for(;
+        for(camItr = cameras.begin();
             camItr != cameras.end();
             ++camItr, ++processNum)
         {
@@ -606,7 +618,7 @@ void Viewer::startThreading()
             if (_startRenderingBarrier.valid()) camera->getCameraThread()->add(_startRenderingBarrier.get());
 
             Renderer* renderer = dynamic_cast<Renderer*>(camera->getRenderer());
-            renderer->setGraphicsThreadDoesCull(true);
+            renderer->setGraphicsThreadDoesCull(false);
             camera->getCameraThread()->add(renderer);
             
             if (_endRenderingDispatchBarrier.valid())
@@ -1442,7 +1454,7 @@ void Viewer::renderingTraversals()
         dp->signalBeginFrame(getFrameStamp());
     }
 
-    // osg::notify(osg::NOTICE)<<std::endl<<"Joing _startRenderingBarrier block"<<std::endl;
+    // osg::notify(osg::NOTICE)<<std::endl<<"Start frame"<<std::endl;
     
 
     Contexts contexts;
@@ -1489,7 +1501,7 @@ void Viewer::renderingTraversals()
         }
     }
 
-    // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block "<<_endRenderingDispatchBarrier.get()<<std::endl;
 
     // wait till the rendering dispatch is done.
     if (_endRenderingDispatchBarrier.valid()) _endRenderingDispatchBarrier->block();

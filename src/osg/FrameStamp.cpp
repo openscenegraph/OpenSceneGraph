@@ -14,7 +14,7 @@
 
 using namespace osg;
 
-FrameStamp::FrameStamp():Referenced()
+FrameStamp::FrameStamp():Referenced(true)
 {
     _frameNumber=0;
     _referenceTime=0;
@@ -32,7 +32,7 @@ FrameStamp::FrameStamp():Referenced()
 
 }
 
-FrameStamp::FrameStamp(const FrameStamp& fs):Referenced()
+FrameStamp::FrameStamp(const FrameStamp& fs):Referenced(true)
 {
     _frameNumber = fs._frameNumber;
     _referenceTime = fs._referenceTime;

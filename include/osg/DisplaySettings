@@ -36,13 +36,15 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         static DisplaySettings* instance();
 
 
-        DisplaySettings()
+        DisplaySettings():
+            Referenced(true)
         {
             setDefaults();
             readEnvironmentalVariables();
         }
         
-        DisplaySettings(ArgumentParser& arguments)
+        DisplaySettings(ArgumentParser& arguments):
+            Referenced(true)
         {
             setDefaults();
             readEnvironmentalVariables();

@@ -17,7 +17,8 @@
 
 using namespace osg;
 
-View::View()
+View::View():
+    Object(true)
 {
     // osg::notify(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
 
@@ -73,12 +74,13 @@ View::~View()
     _slaves.clear();
     _light = 0;    
 
+#if 0
     if (osg::Referenced::getDeleteHandler())
     {
         // osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
         osg::Referenced::getDeleteHandler()->flushAll();
     }
-
+#endif
     
     osg::notify(osg::INFO)<<"Done destructing osg::View"<<std::endl;
 }

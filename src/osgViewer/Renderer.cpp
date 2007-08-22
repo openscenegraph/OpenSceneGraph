@@ -119,20 +119,46 @@ void OpenGLQuerySupport::initialize(osg::State* state)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-//  Renderer
+//  TheadSafeQueue
 
+osgUtil::SceneView* Renderer::TheadSafeQueue::takeFront()
+{
+    if (_queue.empty()) _block.block();
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    if (_queue.empty()) return 0;
+
+    osgUtil::SceneView* front = _queue.front();
+    _queue.pop_front();
+
+    if (_queue.empty()) _block.set(false);
+    
+    return front;
+}
+
+void Renderer::TheadSafeQueue::add(osgUtil::SceneView* sv)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    _queue.push_back(sv);
+    _block.set(true);
+}
+
+static OpenThreads::Mutex s_drawSerializerMutex;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//
+//  Renderer
 Renderer::Renderer(osg::Camera* camera):
     osg::GraphicsOperation("Renderer",true),
     OpenGLQuerySupport(),
+    _serializeDraw(true),
     _camera(camera),
     _done(false),
     _graphicsThreadDoesCull(true)
 {
 
     DEBUG_MESSAGE<<"Render::Render() "<<this<<std::endl;
-
-    _lockHeld[0]  = false;
-    _lockHeld[1]  = false;
 
     _sceneView[0] = new osgUtil::SceneView;
     _sceneView[1] = new osgUtil::SceneView;
@@ -158,16 +184,12 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0]->setCamera(_camera.get(), false);
     _sceneView[1]->setCamera(_camera.get(), false);
 
-    _currentCull = 0;
-    _currentDraw = 0;
-
     // lock the mutex for the current cull SceneView to
     // prevent the draw traversal from reading from it before the cull traversal has been completed.
-    if (!_graphicsThreadDoesCull)
-    {
-         _mutex[_currentCull].lock();
-         _lockHeld[_currentCull] = true;
-    }
+    _availableQueue.add(_sceneView[0].get());
+    _availableQueue.add(_sceneView[1].get());
+        
+    DEBUG_MESSAGE<<"_availableQueue.size()="<<_availableQueue._queue.size()<<std::endl;
 
     _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
 }
@@ -182,35 +204,6 @@ void Renderer::setGraphicsThreadDoesCull(bool flag)
     if (_graphicsThreadDoesCull==flag) return;
 
     _graphicsThreadDoesCull = flag;
-
-    _currentCull = 0;
-    _currentDraw = 0;
-
-    if (_graphicsThreadDoesCull)
-    {
-        // need to disable any locks held by the cull
-        if (_lockHeld[0])
-        {
-            _lockHeld[0] = false;
-            _mutex[0].unlock();
-        }
-
-        if (_lockHeld[1])
-        {
-            _lockHeld[1] = false;
-            _mutex[1].unlock();
-        }
-
-        DEBUG_MESSAGE<<"Disabling locks in Renderer"<<std::endl;
-    }
-    else
-    {
-        DEBUG_MESSAGE<<"Enable locks in Renderer"<<std::endl;
-    
-        // need to set a lock for cull
-        _mutex[_currentCull].lock();
-        _lockHeld[_currentCull] = true;
-    }
 }
 
 void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
@@ -254,7 +247,9 @@ void Renderer::cull()
     if (_done || _graphicsThreadDoesCull) return;
 
     // note we assume lock has already been aquired.
-    osgUtil::SceneView* sceneView = _sceneView[_currentCull].get();
+    osgUtil::SceneView* sceneView = _availableQueue.takeFront();
+
+    DEBUG_MESSAGE<<"cull() got SceneView "<<sceneView<<std::endl;
 
     if (sceneView)
     {
@@ -270,8 +265,6 @@ void Renderer::cull()
         osg::State* state = sceneView->getState();
         const osg::FrameStamp* fs = state->getFrameStamp();
         int frameNumber = fs ? fs->getFrameNumber() : 0;
-
-        _frameNumber[_currentCull] = frameNumber;
 
         // do cull taversal
         osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
@@ -296,19 +289,10 @@ void Renderer::cull()
             stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
             stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
         }
+
+        _drawQueue.add(sceneView);
+
     }
-
-
-    // relase the mutex associated with this cull traversal, let the draw commence.
-    _lockHeld[_currentCull] = false;
-    _mutex[_currentCull].unlock();
-
-    // swap which SceneView we need to do cull traversal on next.
-    _currentCull = 1 - _currentCull;
-
-    // aquire the lock for it for the new cull traversal
-    _mutex[_currentCull].lock();
-    _lockHeld[_currentCull] = true;
 
     DEBUG_MESSAGE<<"end cull() "<<this<<std::endl;
 }
@@ -317,15 +301,19 @@ void Renderer::draw()
 {
     DEBUG_MESSAGE<<"draw() "<<this<<std::endl;
 
-    osgUtil::SceneView* sceneView = _sceneView[_currentDraw].get();
+    osg::Timer_t startDrawTick = osg::Timer::instance()->tick();
+
+    osgUtil::SceneView* sceneView = _drawQueue.takeFront();
+
+
+
+    DEBUG_MESSAGE<<"draw() got SceneView "<<sceneView<<std::endl;
 
     osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
 
     if (sceneView || _done)
     {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
-
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
         osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
@@ -347,7 +335,7 @@ void Renderer::draw()
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
-        int frameNumber = _frameNumber[_currentDraw];
+        int frameNumber = state->getFrameStamp()->getFrameNumber();
 
         if (!_initialized)
         {
@@ -361,8 +349,6 @@ void Renderer::draw()
             // osg::notify(osg::NOTICE)<<"Completed in cull"<<std::endl;
             state->getDynamicObjectRenderingCompletedCallback()->completed(state);
         }
-
-        osg::Timer_t beforeDrawTick = osg::Timer::instance()->tick();
 
         bool aquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
 
@@ -378,7 +364,21 @@ void Renderer::draw()
             beginQuery(frameNumber);
         }
 
-        sceneView->draw();
+        osg::Timer_t beforeDrawTick;
+
+        if (_serializeDraw) 
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
+            beforeDrawTick = osg::Timer::instance()->tick();
+            sceneView->draw();
+        }
+        else
+        {
+            beforeDrawTick = osg::Timer::instance()->tick();
+            sceneView->draw();
+        }
+
+        _availableQueue.add(sceneView);
 
         double availableTime = 0.004; // 4 ms
         if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
@@ -401,10 +401,12 @@ void Renderer::draw()
             checkQuery(stats);
         }
 
-        glFlush();
-
-
+        //glFlush();
+        
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
+
+//        osg::notify(osg::NOTICE)<<"Time wait for draw = "<<osg::Timer::instance()->delta_m(startDrawTick, beforeDrawTick)<<std::endl;
+//        osg::notify(osg::NOTICE)<<"     time for draw = "<<osg::Timer::instance()->delta_m(beforeDrawTick, afterDrawTick)<<std::endl;
 
         if (stats && stats->collectStats("rendering"))
         {
@@ -414,8 +416,6 @@ void Renderer::draw()
         }
     }
 
-    _currentDraw = 1-_currentDraw;
-
     DEBUG_MESSAGE<<"end draw() "<<this<<std::endl;
 }
 
@@ -423,7 +423,7 @@ void Renderer::cull_draw()
 {
     DEBUG_MESSAGE<<"cull_draw() "<<this<<std::endl;
 
-    osgUtil::SceneView* sceneView = _sceneView[_currentDraw].get();
+    osgUtil::SceneView* sceneView = _sceneView[0].get();
     if (!sceneView || _done) return;
 
     updateSceneView(sceneView);
@@ -433,8 +433,6 @@ void Renderer::cull_draw()
 
     osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex[_currentDraw]);
 
     if (_done)
     {
@@ -479,6 +477,7 @@ void Renderer::cull_draw()
     }
 #endif
 
+
     // do draw traveral
     if (aquireGPUStats) 
     {
@@ -486,7 +485,20 @@ void Renderer::cull_draw()
         beginQuery(frameNumber);
     }
 
-    sceneView->draw();
+    osg::Timer_t beforeDrawTick;
+
+    if (_serializeDraw) 
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
+        
+        beforeDrawTick = osg::Timer::instance()->tick();
+        sceneView->draw();
+    }
+    else
+    {
+        beforeDrawTick = osg::Timer::instance()->tick();
+        sceneView->draw();
+    }
 
     double availableTime = 0.004; // 4 ms
     if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
@@ -519,9 +531,9 @@ void Renderer::cull_draw()
         stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
         stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
 
-        stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
+        stats->setAttribute(frameNumber, "Draw traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeDrawTick));
         stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
-        stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(afterCullTick, afterDrawTick));
+        stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(beforeDrawTick, afterDrawTick));
     }
 
     DEBUG_MESSAGE<<"end cull_draw() "<<this<<std::endl;
@@ -554,15 +566,6 @@ void Renderer::release()
     osg::notify(osg::INFO)<<"Renderer::release()"<<std::endl;
     _done = true;
 
-    if (_lockHeld[0])
-    {
-        _lockHeld[0] = false;
-        _mutex[0].unlock();
-    }
-
-    if (_lockHeld[1])
-    {
-        _lockHeld[1] = false;
-        _mutex[1].unlock();
-    }
+    _availableQueue.release();
+    _drawQueue.release();
 }

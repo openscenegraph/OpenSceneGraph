@@ -139,6 +139,7 @@ osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::Reader
 
 
 Font::Font(FontImplementation* implementation):
+    osg::Object(true),
     _width(16),
     _height(16),
     _margin(1),

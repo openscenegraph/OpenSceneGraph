@@ -82,7 +82,6 @@ void Viewer::constructorInit()
     _quitEventSetsDone = true;
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
-    _useMainThreadForRenderingTraversal = true;
     _endBarrierPosition = AfterSwapBuffers;
     _numWindowsOpenAtLastSetUpThreading = 0;
 
@@ -239,6 +238,16 @@ void Viewer::setSceneData(osg::Node* node)
     setReferenceTime(0.0);
 
     View::setSceneData(node);
+
+    if (_threadingModel!=SingleThreaded)
+    {
+        // make sure that existing scene graph objects are allocated with thread safe ref/unref
+        getSceneData()->setThreadSafeRefUnref(true);
+        
+        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+        getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+    }
+
 }
 
 GraphicsWindowEmbedded* Viewer::setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height)
@@ -295,17 +304,6 @@ void Viewer::setUpThreading()
     
 }
 
-
-void Viewer::setUseMainThreadForRenderingTraversals(bool flag)
-{
-    if (_useMainThreadForRenderingTraversal==flag) return;
-
-    if (_threadsRunning) stopThreading();
-    
-    _useMainThreadForRenderingTraversal = flag;
-    
-    if (_threadingModel!=SingleThreaded) startThreading();
-}
 
 void Viewer::setEndBarrierPosition(BarrierPosition bp)
 {
@@ -474,7 +472,7 @@ void Viewer::startThreading()
             numThreadsOnBarrier = 1;
             break;
         case(CullThreadPerCameraDrawThreadPerContext): 
-            numThreadsOnBarrier = _useMainThreadForRenderingTraversal ? cameras.size() : cameras.size()+1;
+            numThreadsOnBarrier = cameras.size()+1;
             break;
         default:
             osg::notify(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
@@ -591,7 +589,6 @@ void Viewer::startThreading()
     if (_threadingModel==CullThreadPerCameraDrawThreadPerContext && numThreadsOnBarrier>1)
     {
         Cameras::iterator camItr = cameras.begin();
-        if (_useMainThreadForRenderingTraversal) ++camItr;
 
         for(;
             camItr != cameras.end();

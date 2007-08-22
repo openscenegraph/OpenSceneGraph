@@ -75,7 +75,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
 
         virtual void release();
 
-    protected:
+    private:
     
         void updateSceneView(osgUtil::SceneView* sceneView);
     

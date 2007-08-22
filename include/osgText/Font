@@ -199,6 +199,9 @@ public:
     {
     public:
     
+        FontImplementation():
+            osg::Referenced(true) {}
+    
         virtual std::string getFileName() const = 0;
 
         /** Set the pixel width and height hint.*/

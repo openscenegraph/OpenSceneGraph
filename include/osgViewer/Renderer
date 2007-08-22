@@ -81,20 +81,39 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
     
         virtual ~Renderer();
 
+        
+        bool                                                _serializeDraw;
+
         osg::observer_ptr<osg::Camera>                      _camera;
         
         bool                                                _done;
         bool                                                _graphicsThreadDoesCull;
-        unsigned int                                        _currentCull;
-        unsigned int                                        _currentDraw;
-
-        OpenThreads::Mutex                                  _mutex[2];
-        bool                                                _lockHeld[2];
+        
         osg::ref_ptr<osgUtil::SceneView>                    _sceneView[2];
-        int                                                 _frameNumber[2];
         
         osg::ref_ptr<osg::FlushDeletedGLObjectsOperation>   _flushOperation;
     
+
+        struct TheadSafeQueue
+        {
+            OpenThreads::Mutex _mutex;
+            OpenThreads::Block _block;
+            typedef std::list<osgUtil::SceneView*> SceneViewList;
+            SceneViewList _queue;
+            
+            void release()
+            {
+                _block.release();
+            }
+            
+            osgUtil::SceneView* takeFront();
+            
+            void add(osgUtil::SceneView* sv);
+        };
+
+
+        TheadSafeQueue _availableQueue;
+        TheadSafeQueue _drawQueue;
 
 };
 

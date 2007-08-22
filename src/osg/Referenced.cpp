@@ -79,6 +79,8 @@ struct DeleteHandlerPointer
 
 typedef std::set<Observer*> ObserverSet;
 
+//#define ENFORCE_THREADSAFE
+
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
 // static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 static DeleteHandlerPointer s_deleteHandler(0);
@@ -111,7 +113,10 @@ Referenced::Referenced():
     _refCount(0),
     _observers(0)
 {
-    if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
+#ifndef ENFORCE_THREADSAFE
+    if (s_useThreadSafeReferenceCounting)
+#endif
+        _refMutex = new OpenThreads::Mutex;
 }
 
 Referenced::Referenced(bool threadSafeRefUnref):
@@ -119,7 +124,12 @@ Referenced::Referenced(bool threadSafeRefUnref):
     _refCount(0),
     _observers(0)
 {
-    if (threadSafeRefUnref) _refMutex = new OpenThreads::Mutex;
+    // if (!threadSafeRefUnref) osg::notify(osg::NOTICE)<<"Not ThreadSaef "<<std::endl;
+
+#ifndef ENFORCE_THREADSAFE
+    if (threadSafeRefUnref)
+#endif
+        _refMutex = new OpenThreads::Mutex;
 }
 
 Referenced::Referenced(const Referenced&):
@@ -127,7 +137,10 @@ Referenced::Referenced(const Referenced&):
     _refCount(0),
     _observers(0)
 {
-    if (s_useThreadSafeReferenceCounting) _refMutex = new OpenThreads::Mutex;
+#ifndef ENFORCE_THREADSAFE
+    if (s_useThreadSafeReferenceCounting)
+#endif
+        _refMutex = new OpenThreads::Mutex;
 }
 
 Referenced::~Referenced()

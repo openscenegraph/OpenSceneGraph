@@ -370,6 +370,7 @@ void View::setUpViewAcrossAllScreens()
             {
                 case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
                 case(osg::DisplaySettings::VERTICAL_INTERLACE):
+                case(osg::DisplaySettings::CHECKERBOARD):
                 case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
                 default: break;
             }
@@ -450,6 +451,7 @@ void View::setUpViewAcrossAllScreens()
                 {
                     case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
                     case(osg::DisplaySettings::VERTICAL_INTERLACE):
+                    case(osg::DisplaySettings::CHECKERBOARD):
                     case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
                     default: break;
                 }
@@ -529,6 +531,7 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
         {
             case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
             case(osg::DisplaySettings::VERTICAL_INTERLACE):
+            case(osg::DisplaySettings::CHECKERBOARD):
             case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
             default: break;
         }
@@ -610,6 +613,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
         {
             case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
             case(osg::DisplaySettings::VERTICAL_INTERLACE):
+            case(osg::DisplaySettings::CHECKERBOARD):
             case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
             default: break;
         }

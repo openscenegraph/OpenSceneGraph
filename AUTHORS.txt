@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.6
+OpenSceneGraph Library 2.1.7
 
-271 Contributors:
+272 Contributors:
 
 Firstname Surname
 -----------------
@@ -42,6 +42,7 @@ Daniel Sjölie
 Per Fahlberg
 Joran Jessurun
 David Callu
+Jean-Sebastien Guay
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -63,7 +64,6 @@ Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
-Jean-Sebastien Guay
 Gordon Tomlinson
 Brad Colbert
 Andreas Ekstrand
@@ -234,6 +234,7 @@ Glenn Waldrom
 Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
+Galen Faidley
 Frashid Lashkari
 Frank Warmerdam
 Frank Lindeman

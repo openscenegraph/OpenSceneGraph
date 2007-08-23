@@ -72,6 +72,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _numMultiSamples = vs._numMultiSamples;
     
     _compileContextsHint = vs._compileContextsHint;
+    _serializeDrawDispatch = vs._serializeDrawDispatch;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -89,7 +90,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     if (vs._numMultiSamples>_numMultiSamples) _numMultiSamples = vs._numMultiSamples;
 
     if (vs._compileContextsHint) _compileContextsHint = vs._compileContextsHint;
-
+    if (vs._serializeDrawDispatch) _serializeDrawDispatch = vs._serializeDrawDispatch;
 }
 
 void DisplaySettings::setDefaults()
@@ -130,6 +131,7 @@ void DisplaySettings::setDefaults()
     #endif
     
     _compileContextsHint = false;
+    _serializeDrawDispatch = true;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -165,6 +167,8 @@ static ApplicationUsageProxy DisplaySetting_e10(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SPLIT_STEREO_VERTICAL_SEPARATION <float>","number of pixels between viewports");
 static ApplicationUsageProxy DisplaySetting_e12(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
 static ApplicationUsageProxy DisplaySetting_e13(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_COMPIlE_CONTEXTS <mode>","OFF | ON Enable/disable the use a backgrouind compile contexts and threads.");
+static ApplicationUsageProxy DisplaySetting_e14(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SERIALIZE_DRAW_DISPATCH <mode>","OFF | ON Enable/disable the use a muetx to serialize the draw dispatch when there are multiple graphics threads.");
+
 void DisplaySettings::readEnvironmentalVariables()
 {
     const char* ptr = 0;
@@ -328,6 +332,21 @@ void DisplaySettings::readEnvironmentalVariables()
             _compileContextsHint = true;
         }
     }
+    
+    if( (ptr = getenv("OSG_SERIALIZE_DRAW_DISPATCH")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0)
+        {
+            _serializeDrawDispatch = false;
+        }
+        else
+        if (strcmp(ptr,"ON")==0)
+        {
+            _serializeDrawDispatch = true;
+        }
+    }
+
+    
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
@@ -345,6 +364,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--accum-rgba","Request a rgb accumulator buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--samples <num>","Request a multisample visual");
         arguments.getApplicationUsage()->addCommandLineOption("--cc","Request use of compile contexts and threads");
+        arguments.getApplicationUsage()->addCommandLineOption("--serialize-draw <mode>","OFF | ON - set the serialization of draw dispatch");
     }
 
     std::string str;
@@ -401,6 +421,12 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while(arguments.read("--cc"))
     {
         _compileContextsHint = true;
+    }
+
+    while(arguments.read("--serialize-draw",str))
+    {
+        if (str=="ON") _serializeDrawDispatch = true;
+        else if (str=="OFF") _serializeDrawDispatch = false;
     }
 
 }

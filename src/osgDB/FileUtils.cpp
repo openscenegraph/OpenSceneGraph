@@ -165,7 +165,9 @@ void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathL
             start = end+1;
         }
 
-        filepath.push_back(std::string(paths,start,std::string::npos));
+        std::string lastPath(paths,start,std::string::npos);
+        if (!lastPath.empty())
+            filepath.push_back(lastPath);
     }
  
 }
@@ -469,13 +471,89 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 
     void osgDB::appendPlatformSpecificLibraryFilePaths(FilePathList& filepath)
     {
+        // See http://msdn2.microsoft.com/en-us/library/ms682586.aspx
+
+        // Safe DLL search mode changes the DLL search order to search for 
+        // DLLs in the current directory right after the application's 
+        // directory, instead of after the system directories. According to 
+        // the article linked above, on Windows XP and Windows 2000, Safe DLL 
+        // search mode is disabled by default. However, it is a good idea to
+        // enable it. We will search as if it was enabled.
+
+        // So if SafeDllSearchMode is enabled, the search order is as follows:
+
+        //   1. The directory from which the application loaded.
+        DWORD retval = 0;
+        const DWORD size = MAX_PATH;
+        char path[size];
+        retval = GetModuleFileName(NULL, path, size);
+        if (retval != 0 && retval < size)
+        {
+            std::string pathstr(path);
+            std::string executableDir(pathstr, 0, 
+                                      pathstr.find_last_of("\\/"));
+            convertStringPathIntoFilePathList(executableDir, filepath);
+        }
+        else
+        {
+            osg::notify(osg::WARN) << "Could not get application directory "
+                "using Win32 API. It will not be searched." << std::endl;
+        }
+
+        //   2. The system directory. Use the GetSystemDirectory function to 
+        //      get the path of this directory.
+        char systemDir[(UINT)size];
+        retval = GetSystemDirectory(systemDir, (UINT)size);
+        if (retval != 0 && retval < size)
+        {
+            convertStringPathIntoFilePathList(std::string(systemDir), 
+                                              filepath);
+        }
+        else
+        {
+            osg::notify(osg::WARN) << "Could not get system directory using "
+                "Win32 API, using default directory." << std::endl;
+            convertStringPathIntoFilePathList("C:\\Windows\\System32", 
+                                              filepath);
+        }
+
+        //   3. The 16-bit system directory. There is no function that obtains 
+        //      the path of this directory, but it is searched.
+        //   4. The Windows directory. Use the GetWindowsDirectory function to 
+        //      get the path of this directory.
+        char windowsDir[(UINT)size];
+        retval = GetWindowsDirectory(windowsDir, (UINT)size);
+        if (retval != 0 && retval < size)
+        {
+            convertStringPathIntoFilePathList(std::string(windowsDir) + 
+                                              "\\System", filepath);
+            convertStringPathIntoFilePathList(std::string(windowsDir), 
+                                              filepath);
+        }
+        else
+        {
+            osg::notify(osg::WARN) << "Could not get Windows directory using "
+                "Win32 API, using default directory." << std::endl;
+            convertStringPathIntoFilePathList("C:\\Windows", filepath);
+            convertStringPathIntoFilePathList("C:\\Windows\\System", filepath);
+        }
+
+
+        //   5. The current directory.
+        convertStringPathIntoFilePathList(".", filepath);
+
+        //   6. The directories that are listed in the PATH environment 
+        //      variable. Note that this does not include the per-application 
+        //      path specified by the App Paths registry key.
         char* ptr;
         if ((ptr = getenv( "PATH" )))
         {
-            convertStringPathIntoFilePathList(ptr,filepath);
+            // Note that on any sane Windows system, some of the paths above
+            // will also be on the PATH (the values gotten in systemDir and
+            // windowsDir), but the DLL search goes sequentially and stops
+            // when a DLL is found, so I see no point in removing duplicates.
+            convertStringPathIntoFilePathList(ptr, filepath);
         }
-
-        convertStringPathIntoFilePathList("C:/Windows/System/",filepath);
     }
     
 #elif defined(__APPLE__)

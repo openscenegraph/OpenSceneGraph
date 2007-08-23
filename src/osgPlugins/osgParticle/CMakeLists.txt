@@ -35,4 +35,4 @@ IO_VariableRateCounter.cpp
 )
 SET(TARGET_ADDED_LIBRARIES osgParticle )
 #### end var setup  ###
-SETUP_PLUGIN(osgParticle)
+SETUP_PLUGIN(osgparticle)

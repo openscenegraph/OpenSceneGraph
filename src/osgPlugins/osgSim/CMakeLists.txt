@@ -14,4 +14,4 @@ IO_VisibilityGroup.cpp
 SET(TARGET_H IO_LightPoint.h )
 SET(TARGET_ADDED_LIBRARIES osgSim )
 #### end var setup  ###
-SETUP_PLUGIN(osgSim)
+SETUP_PLUGIN(osgsim)

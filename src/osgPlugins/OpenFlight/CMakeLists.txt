@@ -2,38 +2,41 @@
 
 
 SET(TARGET_SRC
-AncillaryRecords.cpp
-AttrData.cpp
-ControlRecords.cpp
-DataInputStream.cpp
-Document.cpp
-GeometryRecords.cpp
-LightPointRecords.cpp
-PaletteRecords.cpp
-Pools.cpp
-PrimaryRecords.cpp
-ReaderWriterATTR.cpp
-ReaderWriterFLT.cpp
-Record.cpp
-RecordInputStream.cpp
-Registry.cpp
-ReservedRecords.cpp
-RoadRecords.cpp
-Vertex.cpp
-VertexRecords.cpp
+    AncillaryRecords.cpp
+    AttrData.cpp
+    ControlRecords.cpp
+    DataInputStream.cpp
+    Document.cpp
+    GeometryRecords.cpp
+    LightPointRecords.cpp
+    PaletteRecords.cpp
+    Pools.cpp
+    PrimaryRecords.cpp
+    ReaderWriterATTR.cpp
+    ReaderWriterFLT.cpp
+    Record.cpp
+    RecordInputStream.cpp
+    Registry.cpp
+    ReservedRecords.cpp
+    RoadRecords.cpp
+    Vertex.cpp
+    VertexRecords.cpp
 )
+
 SET(TARGET_H
-AttrData.h
-DataInputStream.h
-Document.h
-Pools.h
-Record.h
-RecordInputStream.h
-Registry.h
-Vertex.h
-opcodes.h
-types.h
+    AttrData.h
+    DataInputStream.h
+    Document.h
+    Pools.h
+    Record.h
+    RecordInputStream.h
+    Registry.h
+    Vertex.h
+    opcodes.h
+    types.h
 )
+
 SET(TARGET_ADDED_LIBRARIES osgSim )
+
 #### end var setup  ###
-SETUP_PLUGIN(OpenFlight)
+SETUP_PLUGIN(openflight)

@@ -306,7 +306,7 @@ void Renderer::draw()
 
     DEBUG_MESSAGE<<"draw() got SceneView "<<sceneView<<std::endl;
 
-    osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
+    osg::GraphicsContext* compileContext = sceneView ? osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID()) : 0;
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
 
     if (sceneView || _done)

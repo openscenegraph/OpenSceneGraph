@@ -33,6 +33,7 @@ bool validName(const std::string& first)
     
     if (first.size()>=2 && (first[1]<'a' || first[1]>'z') && (first[1]!='.')  && (first[1]!=',')) return false; 
 
+    if (first=="Xcode") return false;
     if (first=="Added") return false;
     if (first=="Camera") return false;
     if (first=="CameraNode") return false;

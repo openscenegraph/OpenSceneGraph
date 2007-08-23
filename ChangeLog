@@ -1,3 +1,152 @@
+2007-08-23 14:35 +0000 [r7278]  robert:
+
+	* From Stephan Huber, fix for crash on exit
+
+2007-08-23 14:31 +0000 [r7277]  robert:
+
+	* From Galen Faidley," Please find attached the modifications to
+	  get the new checkerboard stereo format to work. It's a good thing
+	  I tested these on a TV before submitting them since I did indeed
+	  have a bug. One thing I did not test was to see how this would
+	  work in windowed mode. Does the interlaced stereo code have
+	  support for 'absolute' positions? For example a given pixel on
+	  the screen is always shown in a given eye no matter where the
+	  graphics context is placed? "
+
+2007-08-23 14:10 +0000 [r7276]  robert:
+
+	* From Jean-Sebastien Guay,"As discussed yesterday on the osg-users
+	  list, I have altered src/osgDB/FileUtils.cpp to implement the
+	  official Windows DLL search order as described on the page
+	  http://msdn2.microsoft.com/en-us/library/ms682586.aspx . As
+	  mentioned, the search order is now: 1. The directory from which
+	  the application loaded. 2. The system directory.
+	  (C:\Windows\System32 by default, gotten using the
+	  GetSystemDirectory function) 3. The 16-bit system directory.
+	  (C:\Windows\System by default, gotten by adding "\System" to the
+	  path gotten in the next step...) 4. The Windows directory.
+	  (C:\Windows by default, gotten using the GetWindowsDirectory
+	  function) 5. The current directory. (".") 6. The directories that
+	  are listed in the PATH environment variable. (as before) The
+	  first four directories are obtained using Win32 API calls, so
+	  they should work correctly even on non-standard Windows installs.
+	  The changes are well commented and should be clear, even to
+	  someone not familiar with the Win32 API. I have tested in a few
+	  scenarios and it works as expected. Serge Lages has also tested
+	  the changes and confirmed they worked as described. I have not
+	  had any other reports though (positive or negative). I also fixed
+	  the issue with a trailing semicolon on the PATH adding an empty
+	  string to the end of the search paths, as this was an
+	  inconsistent side effect rather than a desirable effect. This
+	  change will take effect on other platforms as well, but since it
+	  tests for an empty string in the last item added to the search
+	  paths, it should have no adverse effect. "
+
+2007-08-23 11:06 +0000 [r7275]  robert:
+
+	* Updated wrappers
+
+2007-08-23 11:00 +0000 [r7274]  robert:
+
+	* Addd control for serializing draw dispatch.
+
+2007-08-22 19:31 +0000 [r7273]  robert:
+
+	* From Jean-Sebastien Guay, "After a bit more testing, it was still
+	  not 100% robust, so this fix will bring the change in line with
+	  what is done on other OSes (Linux) and works in all tested cases.
+	  For reference, this was tested with: osgviewer <file>.wrl (file
+	  in current directory) osgviewer <dir>\<file>.wrl (file in child
+	  directory, relative) osgviewer .\<dir>\<file>.wrl (file in child
+	  directory, specify current) osgviewer <drive>:\<dir>\<file>.wrl
+	  (absolute path) "
+
+2007-08-22 19:26 +0000 [r7272]  robert:
+
+	* Updated wrappers
+
+2007-08-22 17:18 +0000 [r7270-7271]  robert:
+
+	* Updated wrappers
+
+	* Refactored the implementation of cull/draw for
+	  DrawThreadPerContex and CullThreadPerCameraDrawThreadPerContex
+	  and added an experimental draw serialization.
+
+2007-08-22 14:32 +0000 [r7269]  ewing:
+
+	* Documentation updates.
+
+2007-08-22 12:33 +0000 [r7268]  robert:
+
+	* Updated wrappers
+
+2007-08-22 12:21 +0000 [r7267]  robert:
+
+	* Cleaned up the thread setup and fixed the
+	  CullThreadPerCameraDrawThreadPerContext path
+
+2007-08-22 12:14 +0000 [r7266]  robert:
+
+	* Added thread safe ref/unref by default.
+
+2007-08-22 11:04 +0000 [r7265]  ewing:
+
+	* Fixes to DMG script to reflect removal of GDAL and external
+	  OpenThreads. Support for OpenSceneGraph-Data repo aside
+	  OpenSceneGraph repo. Added background image support to DMG.
+	  Pre-laid-out .DS_Store included.
+
+2007-08-22 10:56 +0000 [r7264]  ewing:
+
+	* Removed missing shadow examples from Xcode project.
+
+2007-08-22 10:34 +0000 [r7263]  robert:
+
+	* Set main scene graph elements to use thread safe ref/unref by
+	  default
+
+2007-08-22 09:50 +0000 [r7256-7262]  robert:
+
+	* Cleaned up copy constructor and switched on thread safe
+	  ref/unref.
+
+	* Added debug ENFORCE_THREADSAFE paths into osg::Referenced, these
+	  are off by default.
+
+	* Simplified the thread set up.
+
+	* Added thread safe ref/unref
+
+	* Added debug message to destructor
+
+	* Added setting of thread safe ref/unref.
+
+	* Added default setting of use of thread safe ref/unref.
+
+2007-08-22 09:05 +0000 [r7255]  robert:
+
+	* Changed ReadFileCallback and WriteFileCallback to use virtual
+	  inhertinace.
+
+2007-08-21 09:32 +0000 [r7254]  robert:
+
+	* Added missing clear() implementation
+
+2007-08-20 13:09 +0000 [r7253]  robert:
+
+	* Fixed the install path of plugins under Windows.
+
+2007-08-20 10:15 +0000 [r7250-7251]  robert:
+
+	* Updated README date
+
+	* Updated AUTHORS file for 2.1.6 release
+
+2007-08-20 10:06 +0000 [r7249]  robert:
+
+	* Updated ChangeLog
+
 2007-08-20 09:28 +0000 [r7247-7248]  robert:
 
 	* Updated version number for 2.1.6 release and updated wrappers

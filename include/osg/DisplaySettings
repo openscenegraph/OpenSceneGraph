@@ -94,7 +94,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
             LEFT_EYE,
             RIGHT_EYE,
             HORIZONTAL_INTERLACE,
-            VERTICAL_INTERLACE
+            VERTICAL_INTERLACE,
+            CHECKERBOARD
         };
         
         void setStereoMode(StereoMode mode) { _stereoMode = mode; }

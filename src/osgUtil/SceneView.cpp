@@ -84,8 +84,44 @@ static const GLubyte patternHorzEven[] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00,
     0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00};
 
-SceneView::SceneView(DisplaySettings* ds):
-    osg::Object(true)
+// 32 x 32 bit array every row is a horizontal line of pixels
+//  and the (bitwise) columns a vertical line 
+//  The following is a checkerboard pattern
+static const GLubyte patternCheckerboard[] = {
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA,
+    0x55, 0x55, 0x55, 0x55,
+    0xAA, 0xAA, 0xAA, 0xAA};
+
+SceneView::SceneView(DisplaySettings* ds)
 {
     _displaySettings = ds;
 
@@ -132,16 +168,8 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     
     _prioritizeTextures = rhs._prioritizeTextures;
     
-    if (rhs._camera.valid())
-    {
-        setCamera(new osg::Camera(*rhs._camera,copyop), rhs._camera.get()==rhs._cameraWithOwnership.get());
-    }
-    else
-    {
-        setCamera(new Camera);
-        _camera->setViewport(new Viewport);
-        _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
-    }
+    _camera = rhs._camera;
+    _cameraWithOwnership = rhs._cameraWithOwnership;
     
     _initCalled = false;
 
@@ -1278,6 +1306,83 @@ void SceneView::draw()
                     glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
                     glStencilFunc(GL_ALWAYS, 1, ~0u);
                     glPolygonStipple(patternHorzEven);
+                    glEnable(GL_POLYGON_STIPPLE);
+                    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+                    glRecti(static_cast<GLint>(getViewport()->x()),
+                            static_cast<GLint>(getViewport()->y()),
+                            static_cast<GLint>(getViewport()->width()),
+                            static_cast<GLint>(getViewport()->height()) );
+                            
+                    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+                    glDisable(GL_POLYGON_STIPPLE);
+                    glEnable(GL_LIGHTING);
+                    glEnable(GL_DEPTH_TEST);
+                    
+                    _redrawInterlacedStereoStencilMask = false;
+                    _interlacedStereoStencilWidth = static_cast<int>(getViewport()->width());
+                    _interlacedStereoStencilHeight = static_cast<int>(getViewport()->height());
+                }
+
+                _renderStageLeft->setClearMask(_renderStageLeft->getClearMask() & ~(GL_STENCIL_BUFFER_BIT));
+                _renderStageRight->setClearMask(_renderStageRight->getClearMask() & ~(GL_STENCIL_BUFFER_BIT|GL_COLOR_BUFFER_BIT));
+
+                glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+                glStencilFunc(GL_EQUAL, 0, ~0u);    
+                _renderStageLeft->draw(_renderInfo,previous);
+                
+                glStencilFunc(GL_NOTEQUAL, 0, ~0u);
+                _renderStageRight->draw(_renderInfo,previous);
+                glDisable(GL_STENCIL_TEST);
+            }
+            break;
+        case(osg::DisplaySettings::CHECKERBOARD):
+            {
+         if( getDrawBufferValue() !=  GL_NONE)
+         {
+           _renderStageLeft->setDrawBuffer(getDrawBufferValue());
+           _renderStageLeft->setReadBuffer(getDrawBufferValue());
+           _renderStageRight->setDrawBuffer(getDrawBufferValue());
+           _renderStageRight->setReadBuffer(getDrawBufferValue());
+         }
+                _localStateSet->setAttribute(getViewport());
+
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
+
+                _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+                _renderStageRight->drawPreRenderStages(_renderInfo,previous);
+
+                glEnable(GL_STENCIL_TEST);
+
+                if(_redrawInterlacedStereoStencilMask ||
+                   _interlacedStereoStencilWidth != getViewport()->width() ||
+                  _interlacedStereoStencilHeight != getViewport()->height() )
+                {
+                    getViewport()->apply(*state);
+                    glMatrixMode(GL_PROJECTION);
+                    glLoadIdentity();
+                    glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
+                    glMatrixMode(GL_MODELVIEW);
+                    glLoadIdentity();
+                    glDisable(GL_LIGHTING);
+                    glDisable(GL_DEPTH_TEST);
+                    glStencilMask(~0u);
+                    glClear(GL_STENCIL_BUFFER_BIT);
+                    glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+                    glStencilFunc(GL_ALWAYS, 1, ~0u);
+                    glPolygonStipple(patternCheckerboard);
                     glEnable(GL_POLYGON_STIPPLE);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 

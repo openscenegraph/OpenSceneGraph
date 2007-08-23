@@ -230,6 +230,10 @@ void DisplaySettings::readEnvironmentalVariables()
         {
             _stereoMode = VERTICAL_INTERLACE;
         }
+        else if (strcmp(ptr,"CHECKERBOARD")==0)
+        {
+            _stereoMode = CHECKERBOARD;
+        }
     }
 
     if( (ptr = getenv("OSG_STEREO")) != 0)
@@ -357,7 +361,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     {
         arguments.getApplicationUsage()->addCommandLineOption("--display <type>","MONITOR | POWERWALL | REALITY_CENTER | HEAD_MOUNTED_DISPLAY");
         arguments.getApplicationUsage()->addCommandLineOption("--stereo","Use default stereo mode which is ANAGLYPHIC if not overriden by environmental variable");
-        arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | ON | OFF ");
+        arguments.getApplicationUsage()->addCommandLineOption("--stereo <mode>","ANAGLYPHIC | QUAD_BUFFER | HORIZONTAL_SPLIT | VERTICAL_SPLIT | LEFT_EYE | RIGHT_EYE | HORIZONTAL_INTERLACE | VERTICAL_INTERLACE | CHECKERBOARD | ON | OFF ");
         arguments.getApplicationUsage()->addCommandLineOption("--rgba","Request a RGBA color buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--stencil","Request a stencil buffer visual");
         arguments.getApplicationUsage()->addCommandLineOption("--accum-rgb","Request a rgb accumulator buffer visual");
@@ -385,6 +389,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         else if (arguments.match(pos+1,"VERTICAL_SPLIT"))   { arguments.remove(pos,2); _stereo = true;_stereoMode = VERTICAL_SPLIT; }
         else if (arguments.match(pos+1,"HORIZONTAL_INTERLACE")) { arguments.remove(pos,2); _stereo = true;_stereoMode = HORIZONTAL_INTERLACE; }
         else if (arguments.match(pos+1,"VERTICAL_INTERLACE"))   { arguments.remove(pos,2); _stereo = true;_stereoMode = VERTICAL_INTERLACE; }
+        else if (arguments.match(pos+1,"CHECKERBOARD"))     { arguments.remove(pos,2); _stereo = true;_stereoMode = CHECKERBOARD; }
         else if (arguments.match(pos+1,"LEFT_EYE"))         { arguments.remove(pos,2); _stereo = true;_stereoMode = LEFT_EYE; }
         else if (arguments.match(pos+1,"RIGHT_EYE"))        { arguments.remove(pos,2); _stereo = true;_stereoMode = RIGHT_EYE; }
         else if (arguments.match(pos+1,"ON"))               { arguments.remove(pos,2); _stereo = true; }

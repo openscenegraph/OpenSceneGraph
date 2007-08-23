@@ -152,7 +152,6 @@ static OpenThreads::Mutex s_drawSerializerMutex;
 Renderer::Renderer(osg::Camera* camera):
     osg::GraphicsOperation("Renderer",true),
     OpenGLQuerySupport(),
-    _serializeDraw(true),
     _camera(camera),
     _done(false),
     _graphicsThreadDoesCull(true)
@@ -305,8 +304,6 @@ void Renderer::draw()
 
     osgUtil::SceneView* sceneView = _drawQueue.takeFront();
 
-
-
     DEBUG_MESSAGE<<"draw() got SceneView "<<sceneView<<std::endl;
 
     osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
@@ -365,8 +362,11 @@ void Renderer::draw()
         }
 
         osg::Timer_t beforeDrawTick;
+        
+        
+        bool serializeDraw = sceneView->getDisplaySettings()->getSerializeDrawDispatch();
 
-        if (_serializeDraw) 
+        if (serializeDraw) 
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
             beforeDrawTick = osg::Timer::instance()->tick();
@@ -487,7 +487,9 @@ void Renderer::cull_draw()
 
     osg::Timer_t beforeDrawTick;
 
-    if (_serializeDraw) 
+    bool serializeDraw = sceneView->getDisplaySettings()->getSerializeDrawDispatch();
+
+    if (serializeDraw) 
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
         

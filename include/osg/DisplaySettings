@@ -179,6 +179,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         
         void setCompileContextsHint(bool useCompileContexts) { _compileContextsHint = useCompileContexts; }
         bool getCompileContextsHint() const { return _compileContextsHint; }
+        
+        void setSerializeDrawDispatch(bool serializeDrawDispatch) { _serializeDrawDispatch = serializeDrawDispatch; }
+        bool getSerializeDrawDispatch() const { return _serializeDrawDispatch; }
 
     protected:
     
@@ -214,6 +217,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int                    _numMultiSamples;
         
         bool                            _compileContextsHint;
+        bool                            _serializeDrawDispatch;
 
 };
 

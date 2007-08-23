@@ -81,9 +81,6 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
     
         virtual ~Renderer();
 
-        
-        bool                                                _serializeDraw;
-
         osg::observer_ptr<osg::Camera>                      _camera;
         
         bool                                                _done;

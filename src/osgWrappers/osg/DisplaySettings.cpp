@@ -339,6 +339,16 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __bool__getCompileContextsHint,
 	          "",
 	          "");
+	I_Method1(void, setSerializeDrawDispatch, IN, bool, serializeDrawDispatch,
+	          Properties::NON_VIRTUAL,
+	          __void__setSerializeDrawDispatch__bool,
+	          "",
+	          "");
+	I_Method0(bool, getSerializeDrawDispatch,
+	          Properties::NON_VIRTUAL,
+	          __bool__getSerializeDrawDispatch,
+	          "",
+	          "");
 	I_StaticMethod0(osg::DisplaySettings *, instance,
 	                __DisplaySettings_P1__instance_S,
 	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
@@ -406,6 +416,9 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(float, ScreenWidth, 
 	                 __float__getScreenWidth, 
 	                 __void__setScreenWidth__float);
+	I_SimpleProperty(bool, SerializeDrawDispatch, 
+	                 __bool__getSerializeDrawDispatch, 
+	                 __void__setSerializeDrawDispatch__bool);
 	I_SimpleProperty(bool, SplitStereoAutoAdjustAspectRatio, 
 	                 __bool__getSplitStereoAutoAdjustAspectRatio, 
 	                 __void__setSplitStereoAutoAdjustAspectRatio__bool);

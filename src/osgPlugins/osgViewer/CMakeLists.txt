@@ -6,4 +6,4 @@ SET(TARGET_SRC
 SET(TARGET_ADDED_LIBRARIES osgViewer )
 
 #### end var setup  ###
-SETUP_PLUGIN(osgViewer)
+SETUP_PLUGIN(osgviewer)

@@ -4,4 +4,4 @@
 SET(TARGET_SRC IO_Text.cpp )
 SET(TARGET_ADDED_LIBRARIES osgText )
 #### end var setup  ###
-SETUP_PLUGIN(osgText)
+SETUP_PLUGIN(osgtext)

@@ -12,4 +12,4 @@ IO_SpecularHighlights.cpp
 )
 SET(TARGET_ADDED_LIBRARIES osgFX )
 #### end var setup  ###
-SETUP_PLUGIN(osgFX)
+SETUP_PLUGIN(osgfX)

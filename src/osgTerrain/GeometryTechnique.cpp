@@ -98,7 +98,7 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
 
 void GeometryTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<"Doing init()"<<std::endl;
+    osg::notify(osg::INFO)<<"Doing init()"<<std::endl;
     
     if (!_terrain) return;
 
@@ -192,8 +192,8 @@ osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
         }
     }
 
-    osg::notify(osg::NOTICE)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
-    osg::notify(osg::NOTICE)<<"topRightNDC = "<<topRightNDC<<std::endl;
+    osg::notify(osg::INFO)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
+    osg::notify(osg::INFO)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
     buffer._transform = new osg::MatrixTransform;
 
@@ -237,7 +237,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
     
     bool treatBoundariesToValidDataAsDefaultValue = _terrain->getTreatBoundariesToValidDataAsDefaultValue();
-    osg::notify(osg::NOTICE)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
+    osg::notify(osg::INFO)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
     unsigned int numVertices = numRows * numColumns;
 
@@ -324,7 +324,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             {
                 float value = 0.0f;
                 validValue = elevationLayer->getValidValue(i,j, value);
-                // osg::notify(osg::NOTICE)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
+                // osg::notify(osg::INFO)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
                 ndc.z() = value;
             }
             
@@ -513,7 +513,7 @@ void GeometryTechnique::applyTransferFunctions()
     
     if (tf)
     {
-        osg::notify(osg::NOTICE)<<"Requires TransferFunction"<<std::endl;
+        osg::notify(osg::INFO)<<"Requires TransferFunction"<<std::endl;
         tf_index++;
         osg::Image* image = tf->getImage();
         osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
@@ -526,7 +526,7 @@ void GeometryTechnique::applyTransferFunctions()
 
         if (colorLayer)
         {
-            osg::notify(osg::NOTICE)<<"Using fragment program"<<std::endl;
+            osg::notify(osg::INFO)<<"Using fragment program"<<std::endl;
         
             osg::Program* program = new osg::Program;
             stateset->setAttribute(program);
@@ -539,7 +539,7 @@ void GeometryTechnique::applyTransferFunctions()
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Not found lookup.vert"<<std::endl;
+                osg::notify(osg::INFO)<<"Not found lookup.vert"<<std::endl;
             }
 
             std::string fragmentShaderFile = osgDB::findDataFile("shaders/lookup.frag");
@@ -549,7 +549,7 @@ void GeometryTechnique::applyTransferFunctions()
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Not found lookup.frag"<<std::endl;
+                osg::notify(osg::INFO)<<"Not found lookup.frag"<<std::endl;
             }
 
             osg::Uniform* sourceSampler = new osg::Uniform("sourceTexture",color_index);
@@ -573,7 +573,7 @@ void GeometryTechnique::applyTransferFunctions()
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Using standard OpenGL fixed function pipeline"<<std::endl;
+            osg::notify(osg::INFO)<<"Using standard OpenGL fixed function pipeline"<<std::endl;
         }
     }
 }
@@ -673,7 +673,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
 
     if (_dirty) 
     {
-        osg::notify(osg::NOTICE)<<"******* Doing init ***********"<<std::endl;
+        osg::notify(osg::INFO)<<"******* Doing init ***********"<<std::endl;
         init();
     }
 

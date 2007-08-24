@@ -45,7 +45,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                     osg::notify(osg::NOTICE)<<"["<<itr->first<<"] = "<<"["<<itr->second<<"]"<<std::endl;
                 }
 #else
-                std::istringstream fin(file);
+                std::istringstream fin(osgDB::getNameLessExtension(file));
                 if (fin) return readNode(fin,opt);
 #endif
                 return 0;

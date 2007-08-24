@@ -145,6 +145,8 @@ Locator* GeometryTechnique::computeMasterLocator()
 
 osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
 {
+    if (!masterLocator) return osg::Vec3d(0.0,0.0,0.0);
+
     BufferData& buffer = getWriteBuffer();
     
     osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();

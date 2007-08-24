@@ -34,6 +34,10 @@ FOX_OSG_MDIView::FOX_OSG_MDIView(FXMDIClient *p, const FXString &name,
     viewer->getCamera()->setViewport(0,0,w,h);
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
+    // FOX example does not catch the close of the graphics window, so
+    // don't allow the default escape sets to done to be active.
+    viewer->setKeyEventSetsDone(0);
+
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile("cow.osg");
     if (!loadedModel)

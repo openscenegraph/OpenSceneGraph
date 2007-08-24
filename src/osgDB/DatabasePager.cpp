@@ -34,14 +34,11 @@ DatabasePager::DatabasePager()
     _acceptNewRequests = true;
     _databasePagerThreadPaused = false;
     
-    _useFrameBlock = false;
     _numFramesActive = 0;
     _frameNumber = 0;
-    _frameBlock = new osg::RefBlock;
     _databasePagerThreadBlock = new osg::RefBlock;
-
-    _threadPriorityDuringFrame = THREAD_PRIORITY_MIN;
-    _threadPriorityOutwithFrame = THREAD_PRIORITY_MIN;
+    
+    setSchedulePriority(THREAD_PRIORITY_MIN);
 
 #if __APPLE__
     // OSX really doesn't like compiling display lists, and performs poorly when they are used,
@@ -108,6 +105,10 @@ DatabasePager::DatabasePager()
         _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
     }
 
+
+    // initialize the stats variables
+    resetStats();
+
     // make sure a SharedStateManager exists.
     //osgDB::Registry::instance()->getOrCreateSharedStateManager();
     
@@ -125,14 +126,9 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _acceptNewRequests = true;
     _databasePagerThreadPaused = false;
     
-    _useFrameBlock = rhs._useFrameBlock;
     _numFramesActive = 0;
     _frameNumber = 0;
-    _frameBlock = new osg::RefBlock;
     _databasePagerThreadBlock = new osg::RefBlock;
-
-    _threadPriorityDuringFrame = rhs._threadPriorityDuringFrame;
-    _threadPriorityOutwithFrame = rhs._threadPriorityOutwithFrame;
 
     _drawablePolicy = rhs._drawablePolicy;
 
@@ -149,6 +145,9 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _targetFrameRate = rhs._targetFrameRate;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = rhs._minimumTimeAvailableForGLCompileAndDeletePerFrame;
     _maximumNumOfObjectsToCompilePerFrame = rhs._maximumNumOfObjectsToCompilePerFrame;
+
+    // initialize the stats variables
+    resetStats();
 }
 
 
@@ -184,7 +183,6 @@ int DatabasePager::cancel()
         //join();
 
         // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.
-        _frameBlock->release();
         _databasePagerThreadBlock->release();
 
         // then wait for the the thread to stop running.
@@ -230,6 +228,15 @@ void DatabasePager::clear()
     
     // ??
     // _activeGraphicsContexts
+}
+
+void DatabasePager::resetStats()
+{
+    // initialize the stats variables
+    _minimumTimeToMergeTile = DBL_MAX;
+    _maximumTimeToMergeTile = -DBL_MAX;
+    _totalTimeToMergeTiles = 0.0;
+    _numTilesMerges = 0;
 }
 
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
@@ -340,7 +347,6 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             _startThreadCalled = true;
             _done = false;
             osg::notify(osg::DEBUG_INFO)<<"DatabasePager::startThread()"<<std::endl;
-            setSchedulePriority(_threadPriorityDuringFrame);
             startThread();
         }
     }
@@ -348,28 +354,17 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
 void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
 {
-
     if (framestamp)
     {
         //osg::notify(osg::INFO) << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
         _frameNumber = framestamp->getFrameNumber();
         
     } //else osg::notify(osg::INFO) << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
-
-    updateFrameBlock(1);
-
-    if (_numFramesActive>0 && _threadPriorityDuringFrame!=getSchedulePriority())
-        setSchedulePriority(_threadPriorityDuringFrame);
 }
 
 void DatabasePager::signalEndFrame()
 {
     //osg::notify(osg::INFO) << "signalEndFrame <<<<<<<<<<<<<<<<<<<< "<<std::endl;
-    updateFrameBlock(-1);
-
-    if (_numFramesActive<=0 && _threadPriorityOutwithFrame!=getSchedulePriority())
-        setSchedulePriority(_threadPriorityOutwithFrame);
-
 }
 
 class DatabasePager::FindCompileableGLObjectsVisitor : public osg::NodeVisitor
@@ -507,11 +502,6 @@ void DatabasePager::run()
     {
 
         _databasePagerThreadBlock->block();
-
-        if (_useFrameBlock)
-        {
-            _frameBlock->block();
-        }      
 
         //
         // delete any children if required.
@@ -749,8 +739,18 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
             plod->setTimeStamp(plod->getNumChildren(),timeStamp);
         } 
         group->addChild(databaseRequest->_loadedModel.get());
-        osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests."<<std::endl;
 
+        osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
+    
+        double timeToMerge = timeStamp-databaseRequest->_timestampFirstRequest;
+
+        if (timeToMerge<_minimumTimeToMergeTile) _minimumTimeToMergeTile = timeToMerge;
+        if (timeToMerge>_maximumTimeToMergeTile) _maximumTimeToMergeTile = timeToMerge;
+        
+        _totalTimeToMergeTiles += timeToMerge;
+        ++_numTilesMerges;
+
+        // osg::notify(osg::NOTICE)<<"curr = "<<timeToMerge<<" min "<<getMinimumTimeToMergeTile()*1000.0<<" max = "<<getMaximumTimeToMergeTile()*1000.0<<" average = "<<getAverageTimToMergeTiles()*1000.0<<std::endl;
     }
 
     // osg::notify(osg::NOTICE)<<"Done DatabasePager::addLoadedDataToSceneGraph"<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms  objects"<<localFileLoadedList.size()<<std::endl;

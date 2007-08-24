@@ -14,7 +14,6 @@
 #include <osg/GraphicsContext>
 #include <osg/Group>
 #include <osg/Node>
-#include <osg/OperationThread>
 #include <osg/PagedLOD>
 #include <osg/State>
 #include <osgDB/DatabasePager>
@@ -113,41 +112,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          Properties::NON_VIRTUAL,
 	          __bool__getAcceptNewDatabaseRequests,
 	          "Get whether new database request calls are accepted or ignored. ",
-	          "");
-	I_Method1(void, setUseFrameBlock, IN, bool, useFrameBlock,
-	          Properties::NON_VIRTUAL,
-	          __void__setUseFrameBlock__bool,
-	          "Set the use of the frame block which, if enabled, blocks the DatabasePager from executing which the current frame is being drawn. ",
-	          "When a single processor machine is being used it can be useful to block on frame to help prevent the database paging thread from slowing the cull and draw traversals which in turn can cause frame drops. ");
-	I_Method0(bool, getUseFrameBlock,
-	          Properties::NON_VIRTUAL,
-	          __bool__getUseFrameBlock,
-	          "Get the whether UseFrameBlock is on or off. ",
-	          "");
-	I_Method0(osg::RefBlock *, getFrameBlock,
-	          Properties::NON_VIRTUAL,
-	          __osg_RefBlock_P1__getFrameBlock,
-	          "",
-	          "");
-	I_Method1(void, setThreadPriorityDuringFrame, IN, osgDB::DatabasePager::ThreadPriority, duringFrame,
-	          Properties::NON_VIRTUAL,
-	          __void__setThreadPriorityDuringFrame__ThreadPriority,
-	          "Set the priority of the database pager thread during the frame (i.e. ",
-	          "while cull and draw are running.) ");
-	I_Method0(osgDB::DatabasePager::ThreadPriority, getThreadPriorityDuringFrame,
-	          Properties::NON_VIRTUAL,
-	          __ThreadPriority__getThreadPriorityDuringFrame,
-	          "Get the priority of the database pager thread during the frame. ",
-	          "");
-	I_Method1(void, setThreadPriorityOutwithFrame, IN, osgDB::DatabasePager::ThreadPriority, outwithFrame,
-	          Properties::NON_VIRTUAL,
-	          __void__setThreadPriorityOutwithFrame__ThreadPriority,
-	          "Set the priority of the database pager thread when the frame is not being exectuted (i.e. ",
-	          "before or after cull and draw have run.) ");
-	I_Method0(osgDB::DatabasePager::ThreadPriority, getThreadPriorityOutwithFrame,
-	          Properties::NON_VIRTUAL,
-	          __ThreadPriority__getThreadPriorityOutwithFrame,
-	          "Get the priority of the database pager thread when the frame is not being exectuted. ",
 	          "");
 	I_Method0(int, getNumFramesActive,
 	          Properties::NON_VIRTUAL,
@@ -309,6 +273,26 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __unsigned_int__getDataToCompileListSize,
 	          "Report how many items are in the _dataToCompileList queue. ",
 	          "");
+	I_Method0(double, getMinimumTimeToMergeTile,
+	          Properties::NON_VIRTUAL,
+	          __double__getMinimumTimeToMergeTile,
+	          "Get the minimum time between the first request for a tile to be loaded and the time of its merge into the main scene graph. ",
+	          "");
+	I_Method0(double, getMaximumTimeToMergeTile,
+	          Properties::NON_VIRTUAL,
+	          __double__getMaximumTimeToMergeTile,
+	          "Get the maximum time between the first request for a tile to be loaded and the time of its merge into the main scene graph. ",
+	          "");
+	I_Method0(double, getAverageTimeToMergeTiles,
+	          Properties::NON_VIRTUAL,
+	          __double__getAverageTimeToMergeTiles,
+	          "Get the average time between the first request for a tile to be loaded and the time of its merge into the main scene graph. ",
+	          "");
+	I_Method0(void, resetStats,
+	          Properties::NON_VIRTUAL,
+	          __void__resetStats,
+	          "Reset the Stats variables. ",
+	          "");
 	I_StaticMethod0(osg::ref_ptr< osgDB::DatabasePager > &, prototype,
 	                __osg_ref_ptrT1_DatabasePager__R1__prototype_S,
 	                "get the prototype singleton used by DatabasePager::create(). ",
@@ -321,12 +305,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__updateDatabasePagerThreadBlock,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(void, updateFrameBlock, IN, int, delta,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__updateFrameBlock__int,
 	                   "",
 	                   "");
 	I_ProtectedMethod1(void, removeExpiredSubgraphs, IN, double, currentFrameTime,
@@ -344,6 +322,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(bool, AcceptNewDatabaseRequests, 
 	                 __bool__getAcceptNewDatabaseRequests, 
 	                 __void__setAcceptNewDatabaseRequests__bool);
+	I_SimpleProperty(double, AverageTimeToMergeTiles, 
+	                 __double__getAverageTimeToMergeTiles, 
+	                 0);
 	I_IndexedProperty(bool, CompileGLObjectsForContextID, 
 	                  __bool__getCompileGLObjectsForContextID__unsigned_int, 
 	                  __void__setCompileGLObjectsForContextID__unsigned_int__bool, 
@@ -369,27 +350,21 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(unsigned int, FileRequestListSize, 
 	                 __unsigned_int__getFileRequestListSize, 
 	                 0);
-	I_SimpleProperty(osg::RefBlock *, FrameBlock, 
-	                 __osg_RefBlock_P1__getFrameBlock, 
-	                 0);
 	I_SimpleProperty(unsigned int, MaximumNumOfObjectsToCompilePerFrame, 
 	                 __unsigned_int__getMaximumNumOfObjectsToCompilePerFrame, 
 	                 __void__setMaximumNumOfObjectsToCompilePerFrame__unsigned_int);
+	I_SimpleProperty(double, MaximumTimeToMergeTile, 
+	                 __double__getMaximumTimeToMergeTile, 
+	                 0);
 	I_SimpleProperty(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame, 
 	                 __double__getMinimumTimeAvailableForGLCompileAndDeletePerFrame, 
 	                 __void__setMinimumTimeAvailableForGLCompileAndDeletePerFrame__double);
+	I_SimpleProperty(double, MinimumTimeToMergeTile, 
+	                 __double__getMinimumTimeToMergeTile, 
+	                 0);
 	I_SimpleProperty(double, TargetFrameRate, 
 	                 __double__getTargetFrameRate, 
 	                 __void__setTargetFrameRate__double);
-	I_SimpleProperty(osgDB::DatabasePager::ThreadPriority, ThreadPriorityDuringFrame, 
-	                 __ThreadPriority__getThreadPriorityDuringFrame, 
-	                 __void__setThreadPriorityDuringFrame__ThreadPriority);
-	I_SimpleProperty(osgDB::DatabasePager::ThreadPriority, ThreadPriorityOutwithFrame, 
-	                 __ThreadPriority__getThreadPriorityOutwithFrame, 
-	                 __void__setThreadPriorityOutwithFrame__ThreadPriority);
-	I_SimpleProperty(bool, UseFrameBlock, 
-	                 __bool__getUseFrameBlock, 
-	                 __void__setUseFrameBlock__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)

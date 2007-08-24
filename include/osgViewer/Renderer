@@ -98,6 +98,8 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
             typedef std::list<osgUtil::SceneView*> SceneViewList;
             SceneViewList _queue;
             
+            TheadSafeQueue();
+            
             void release()
             {
                 _block.release();

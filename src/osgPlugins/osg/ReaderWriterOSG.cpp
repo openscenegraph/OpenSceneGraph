@@ -30,6 +30,14 @@ class OSGReaderWriter : public ReaderWriter
         virtual ReadResult readNode(const std::string& file, const Options* opt) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
+                        
+            if (equalCaseInsensitive(ext,"osgs"))
+            {   
+                std::istringstream fin(osgDB::getNameLessExtension(file));
+                if (fin) return readNode(fin,opt);
+                return ReadResult::ERROR_IN_READING_FILE;
+            }            
+            
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
             std::string fileName = osgDB::findDataFile( file, opt );

@@ -619,9 +619,9 @@ void Font::GlyphTexture::apply(osg::State& state) const
         }
 
         const char* str = getenv("OSG_TEXT_INCREMENTAL_SUBLOADING");
-        if (str && (strcmp(str,"OFF")==0 || strcmp(str,"Off")==0 || strcmp(str,"Off")==0))
+        if (str)
         {
-            s_subloadAllGlyphsTogether = true;
+            s_subloadAllGlyphsTogether = strcmp(str,"OFF")==0 || strcmp(str,"Off")==0 || strcmp(str,"Off")==0;
         }
     }
 

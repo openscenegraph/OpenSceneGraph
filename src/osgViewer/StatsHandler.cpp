@@ -103,6 +103,11 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                         case(VIEWER_STATS):
                         {
+                            if (viewer->getDatabasePager() && viewer->getDatabasePager()->isRunning())
+                            {
+                                viewer->getDatabasePager()->resetStats();
+                            }
+                        
                             viewer->getStats()->collectStats("event",true);
                             viewer->getStats()->collectStats("update",true);
 
@@ -410,6 +415,69 @@ struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
     int                         _numFrames;
 };
 
+struct PagerCallback : public virtual osg::NodeCallback
+{
+
+    PagerCallback(osgDB::DatabasePager* dp, osgText::Text* minValue, osgText::Text* maxValue, osgText::Text* averageValue, double multiplier):
+        _dp(dp),
+        _minValue(minValue),
+        _maxValue(maxValue),
+        _averageValue(averageValue),
+        _multiplier(multiplier)
+    {
+    }
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    { 
+        if (_dp.valid())
+        {            
+            double value = _dp->getAverageTimeToMergeTiles();
+            if (value>= 0.0 && value <= 1000)
+            { 
+                sprintf(_tmpText,"%4.0f",value * _multiplier);
+                _averageValue->setText(_tmpText);
+            }
+            else
+            {
+                _averageValue->setText("");
+            }
+            
+            value = _dp->getMinimumTimeToMergeTile();
+            if (value>= 0.0 && value <= 1000)
+            { 
+                sprintf(_tmpText,"%4.0f",value * _multiplier);
+                _minValue->setText(_tmpText);
+            }
+            else
+            {
+                _minValue->setText("");
+            }
+
+            value = _dp->getMaximumTimeToMergeTile();
+            if (value>= 0.0 && value <= 1000)
+            { 
+                sprintf(_tmpText,"%4.0f",value * _multiplier);
+                _maxValue->setText(_tmpText);
+            }
+            else
+            {
+                _maxValue->setText("");
+            }
+        }
+
+        traverse(node,nv);
+    }
+
+    osg::observer_ptr<osgDB::DatabasePager> _dp;
+    
+    osg::ref_ptr<osgText::Text> _minValue;
+    osg::ref_ptr<osgText::Text> _maxValue;
+    osg::ref_ptr<osgText::Text> _averageValue;
+    double _multiplier;
+    char                _tmpText[128];
+    osg::Timer_t        _tickLastUpdated;
+};
+
 
 osg::Geometry* StatsHandler::createFrameMarkers(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
 {
@@ -522,6 +590,8 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
     osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
     osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
     osg::Vec4 colorUpdateAlpha( 0.0f,1.0f,0.0f,0.5f);
+
+    osg::Vec4 colorDP( 1.0f,1.0f,0.5f,1.0f);
 
 
     // frame rate stats
@@ -682,6 +752,87 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
             frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getStats(), 0, _numBlocks + 1));
             geode->addDrawable(frameMarkers);
         }
+
+
+        osgDB::DatabasePager* dp = viewer->getDatabasePager();
+        if (dp && dp->isRunning())
+        {
+            pos.y() -= characterSize*1.5f;
+            
+            pos.x() = leftPos;
+
+            osg::ref_ptr<osgText::Text> averageLabel = new osgText::Text;
+            geode->addDrawable( averageLabel.get() );
+
+            averageLabel->setColor(colorDP);
+            averageLabel->setFont(font);
+            averageLabel->setCharacterSize(characterSize);
+            averageLabel->setPosition(pos);
+            averageLabel->setText("DatabasePager time to merge new tiles - average: ");
+
+            pos.x() = averageLabel->getBound().xMax();
+
+            osg::ref_ptr<osgText::Text> averageValue = new osgText::Text;
+            geode->addDrawable( averageValue.get() );
+
+            averageValue->setColor(colorDP);
+            averageValue->setFont(font);
+            averageValue->setCharacterSize(characterSize);
+            averageValue->setPosition(pos);
+            averageValue->setText("1000");
+
+            pos.x() = averageValue->getBound().xMax() + 2.0f*characterSize;
+
+
+            osg::ref_ptr<osgText::Text> minLabel = new osgText::Text;
+            geode->addDrawable( minLabel.get() );
+
+            minLabel->setColor(colorDP);
+            minLabel->setFont(font);
+            minLabel->setCharacterSize(characterSize);
+            minLabel->setPosition(pos);
+            minLabel->setText("min: ");
+
+            pos.x() = minLabel->getBound().xMax();
+
+            osg::ref_ptr<osgText::Text> minValue = new osgText::Text;
+            geode->addDrawable( minValue.get() );
+
+            minValue->setColor(colorDP);
+            minValue->setFont(font);
+            minValue->setCharacterSize(characterSize);
+            minValue->setPosition(pos);
+            minValue->setText("1000");
+
+            pos.x() = minValue->getBound().xMax() + 2.0f*characterSize;
+
+
+            osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
+            geode->addDrawable( maxLabel.get() );
+
+            maxLabel->setColor(colorDP);
+            maxLabel->setFont(font);
+            maxLabel->setCharacterSize(characterSize);
+            maxLabel->setPosition(pos);
+            maxLabel->setText("max: ");
+
+            pos.x() = maxLabel->getBound().xMax();
+
+            osg::ref_ptr<osgText::Text> maxValue = new osgText::Text;
+            geode->addDrawable( maxValue.get() );
+
+            maxValue->setColor(colorDP);
+            maxValue->setFont(font);
+            maxValue->setCharacterSize(characterSize);
+            maxValue->setPosition(pos);
+            maxValue->setText("1000");
+
+            pos.x() = maxLabel->getBound().xMax();
+
+            geode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), 1000.0));
+        }
+
+        pos.x() = leftPos;
 
     }
 #if 0

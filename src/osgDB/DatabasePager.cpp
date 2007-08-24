@@ -24,6 +24,8 @@ static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
 static osg::ApplicationUsageProxy DatabasePager_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
 static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_DRAWABLE <mode>","Set the drawable policy for setting of loaded drawable to specified type.  mode can be one of DoNotModify, DisplayList, VBO or VertexArrays>.");
+static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
+
 DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
@@ -38,7 +40,34 @@ DatabasePager::DatabasePager()
     _frameNumber = 0;
     _databasePagerThreadBlock = new osg::RefBlock;
     
-    setSchedulePriority(THREAD_PRIORITY_MIN);
+    const char* str = getenv("OSG_DATABASE_PAGER_PRIORITY");
+    if (str)
+    {
+        if (strcmp(str,"DEFAULT")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_DEFAULT);
+        }
+        else if (strcmp(str,"MIN")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_MIN);
+        }
+        else if (strcmp(str,"LOW")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_LOW);
+        }
+        else if (strcmp(str,"NOMINAL")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_NOMINAL);
+        }
+        else if (strcmp(str,"HIGH")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_HIGH);
+        } 
+        else if (strcmp(str,"MAX")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_MAX);
+        } 
+    }
 
 #if __APPLE__
     // OSX really doesn't like compiling display lists, and performs poorly when they are used,
@@ -48,7 +77,7 @@ DatabasePager::DatabasePager()
     _drawablePolicy = DO_NOT_MODIFY_DRAWABLE_SETTINGS;
 #endif    
     
-    const char* str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
+    str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
     if (!str) str = getenv("OSG_DATABASE_PAGER_DRAWABLE");
     if (str)
     {

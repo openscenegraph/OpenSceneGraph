@@ -27,28 +27,28 @@ bool wxOsgApp::OnInit()
 
     // create osg canvas
     //    - initialize
-    
+
 
     int width = 800;
     int height = 600;
 
     GraphicsWindowWX* gw = new GraphicsWindowWX(frame, wxID_ANY, wxDefaultPosition,
                                                 wxSize(width, height), wxSUNKEN_BORDER);
-    
-    
+
+
     osgViewer::Viewer *viewer = new osgViewer::Viewer;
     viewer->getCamera()->setGraphicsContext(gw);
     viewer->getCamera()->setViewport(0,0,width,height);
     viewer->addEventHandler(new osgViewer::StatsHandler);
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
-        
+
     // load the scene.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile("cow.osg");
     if (!loadedModel)
     {
         return false;
     }
-    
+
     viewer->setSceneData(loadedModel.get());
     viewer->setCameraManipulator(new osgGA::TrackballManipulator);
 
@@ -81,7 +81,7 @@ void MainFrame::SetViewer(osgViewer::Viewer *viewer)
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
     _viewer->frame();
-    
+
     event.RequestMore();
 }
 
@@ -100,7 +100,7 @@ GraphicsWindowWX::GraphicsWindowWX(wxWindow *parent, wxWindowID id,
 {
     // default cursor to standard
     _oldCursor = *wxSTANDARD_CURSOR;
-    
+
     _traits = new GraphicsContext::Traits;
     _traits->x = pos.x;
     _traits->y = pos.y;
@@ -108,7 +108,7 @@ GraphicsWindowWX::GraphicsWindowWX(wxWindow *parent, wxWindowID id,
     _traits->height = size.y;
 
     init();
-    
+
 }
 
 void GraphicsWindowWX::init()
@@ -121,7 +121,7 @@ void GraphicsWindowWX::init()
         if (_traits.valid() && _traits->sharedContext)
         {
             getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
-            incrementContextIDUsageCount( getState()->getContextID() );   
+            incrementContextIDUsageCount( getState()->getContextID() );
         }
         else
         {
@@ -148,7 +148,7 @@ void GraphicsWindowWX::OnSize(wxSizeEvent& event)
     // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
     int width, height;
     GetClientSize(&width, &height);
-    
+
     // update the window dimensions, in case the window has been resized.
     getEventQueue()->windowResize(0, 0, width, height);
     resized(0,0,width,height);
@@ -161,12 +161,12 @@ void GraphicsWindowWX::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
 
 void GraphicsWindowWX::OnKeyDown(wxKeyEvent &event)
 {
-#if 1
+#if wxUSE_UNICODE
     int key = event.GetUnicodeKey();
 #else
     int key = event.GetKeyCode();
 #endif
-    getEventQueue()->keyPress(key);    
+    getEventQueue()->keyPress(key);
 
     // propagate event
     event.Skip();
@@ -174,12 +174,12 @@ void GraphicsWindowWX::OnKeyDown(wxKeyEvent &event)
 
 void GraphicsWindowWX::OnKeyUp(wxKeyEvent &event)
 {
-#if 1
+#if wxUSE_UNICODE
     int key = event.GetUnicodeKey();
 #else
     int key = event.GetKeyCode();
 #endif
-    getEventQueue()->keyRelease(key);    
+    getEventQueue()->keyRelease(key);
 
     // propagate event
     event.Skip();

@@ -121,6 +121,11 @@ void OpenGLQuerySupport::initialize(osg::State* state)
 //
 //  TheadSafeQueue
 
+Renderer::TheadSafeQueue::TheadSafeQueue()
+{
+    _block.set(false);
+}
+
 osgUtil::SceneView* Renderer::TheadSafeQueue::takeFront()
 {
     if (_queue.empty()) _block.block();

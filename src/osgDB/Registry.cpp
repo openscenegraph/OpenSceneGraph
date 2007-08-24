@@ -169,6 +169,7 @@ Registry::Registry()
     #endif
     }
 
+    addFileExtensionAlias("osgs", "osg");
     addFileExtensionAlias("shadow",  "osgShadow");
     addFileExtensionAlias("terrain", "osgTerrain");
     addFileExtensionAlias("view",  "osgViewer");

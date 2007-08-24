@@ -34,6 +34,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
             
             if (osgDB::equalCaseInsensitive(ext,"terrain"))
             {
+#if 0            
                 KeywordValueMap keywordValueMap;
                 parseTerrainString(osgDB::getNameLessExtension(file), keywordValueMap);
             
@@ -43,7 +44,10 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                 {
                     osg::notify(osg::NOTICE)<<"["<<itr->first<<"] = "<<"["<<itr->second<<"]"<<std::endl;
                 }
-
+#else
+                std::istringstream fin(file);
+                if (fin) return readNode(fin,opt);
+#endif
                 return 0;
             }
 

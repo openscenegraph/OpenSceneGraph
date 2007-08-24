@@ -39,6 +39,30 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
     {
         bool itrAdvanced = false;
         
+        if (fr.matchSequence("CompositeLayer {"))
+        {
+            
+            osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
+
+            int local_entry = fr[0].getNoNestedBrackets();
+
+            fr += 2;
+            while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
+            {
+                osgTerrain::Layer* layer = readLayer(fr);
+                if (layer) cl->addLayer(layer);                
+
+                ++fr;
+            }
+            
+            layer = cl.get();
+        
+            itrAdvanced = true;
+            
+            ++fr;
+
+        }
+
         if (fr.matchSequence("Images {") || fr.matchSequence("images {"))
         {
             osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
@@ -297,9 +321,118 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
     return itrAdvanced;
 }
 
+bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
+{
+    const osgTerrain::CartesianLocator* cartesian = dynamic_cast<const osgTerrain::CartesianLocator*>(&locator);
+    if (cartesian)
+    {
+        fw.indent()<<"CartesianLocator "<<cartesian->getOriginX()<<" "<<cartesian->getOriginY()<<" "<<cartesian->getLengthX()<<" "<<cartesian->getLengthY()<<std::endl;
+        return true;
+    }
+
+    const osgTerrain::EllipsoidLocator* ellipsoid = dynamic_cast<const osgTerrain::EllipsoidLocator*>(&locator);
+    if (ellipsoid)
+    {
+        fw.indent()<<"CartesianLocator "<<ellipsoid->getLongitude()<<" "<<ellipsoid->getLatitude()<<" "<<ellipsoid->getDeltaLongitude()<<" "<<ellipsoid->getDeltaLatitude()<<std::endl;
+        return true;
+    }
+
+    return false;
+}
+
+bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
+{
+    if (layer.getLocator()) 
+    {
+        writeLocator(*layer.getLocator(),fw);
+    }
+
+    const osgTerrain::ImageLayer* imageLayer = dynamic_cast<const osgTerrain::ImageLayer*>(&layer);
+    if (imageLayer)
+    {
+        fw.indent()<<"Image "<<imageLayer->getFileName()<<std::endl;
+        return true;
+    }
+    
+    const osgTerrain::HeightFieldLayer* hfLayer = dynamic_cast<const osgTerrain::HeightFieldLayer*>(&layer);
+    if (hfLayer)
+    {
+        fw.indent()<<"HeightField "<<hfLayer->getFileName()<<std::endl;
+        return true;
+    }
+    
+    
+    const osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<const osgTerrain::CompositeLayer*>(&layer);
+    if (compositeLayer)
+    {
+        fw.indent()<<"CompositeLayer {"<<std::endl;
+        fw.moveIn();
+        for(unsigned int i=0; i<compositeLayer->getNumLayers();++i)
+        {
+            if (compositeLayer->getLayer(i))
+            {
+                writeLayer(*(compositeLayer->getLayer(i)), fw);
+            }
+            else if (!compositeLayer->getFileName(i).empty())
+            {
+                fw.indent()<<"image "<<compositeLayer->getFileName(i)<<std::endl;
+            }
+        }
+        fw.moveOut();
+        fw.indent()<<"}"<<std::endl;
+        
+        return true;
+        
+    }
+    
+    return false;
+}
+
 bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgTerrain::Terrain& terrain = static_cast<const osgTerrain::Terrain&>(obj);
+
+    if (terrain.getLocator()) 
+    {
+        writeLocator(*terrain.getLocator(),fw);
+    }
+
+    if (terrain.getElevationLayer())
+    {
+        fw.indent()<<"ElevationLayer {"<<std::endl;
+
+        fw.moveIn();
+        
+        writeLayer(*terrain.getElevationLayer(), fw);
+        
+        fw.moveOut();
+
+        fw.indent()<<"}"<<std::endl;
+    }
+
+    for(unsigned int i=0; i<terrain.getNumColorLayers(); ++i)
+    {
+        const osgTerrain::Layer* layer = terrain.getColorLayer(i);
+        if (layer)
+        {
+            if (i>0)
+            {
+                fw.indent()<<"ColorLayer "<<i<<" {"<<std::endl;
+            }
+            else
+            {
+                fw.indent()<<"ColorLayer {"<<std::endl;
+            }
+
+            fw.moveIn();
+
+            writeLayer(*layer, fw);
+
+            fw.moveOut();
+
+            fw.indent()<<"}"<<std::endl;
+        }
+    }
     
     return true;
 }

@@ -474,11 +474,11 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         // See http://msdn2.microsoft.com/en-us/library/ms682586.aspx
 
         // Safe DLL search mode changes the DLL search order to search for 
-        // DLLs in the current directory right after the application's 
-        // directory, instead of after the system directories. According to 
-        // the article linked above, on Windows XP and Windows 2000, Safe DLL 
-        // search mode is disabled by default. However, it is a good idea to
-        // enable it. We will search as if it was enabled.
+        // DLLs in the current directory after the system directories, instead
+        // of right after the application's directory. According to the article 
+        // linked above, on Windows XP and Windows 2000, Safe DLL search mode 
+        // is disabled by default. However, it is a good idea to enable it. We 
+        // will search as if it was enabled.
 
         // So if SafeDllSearchMode is enabled, the search order is as follows:
 

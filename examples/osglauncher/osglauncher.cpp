@@ -237,7 +237,7 @@ int runApp(std::string xapp)
 } // end printList()
 
 
-void readConfFile(char* confFile)                                                                // read confFile            1
+void readConfFile(const char* confFile)                                                                // read confFile            1
 {
     osg::notify(osg::INFO) << "Start reading confFile" << std::endl;
     

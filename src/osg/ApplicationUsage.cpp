@@ -258,7 +258,7 @@ void ApplicationUsage::writeEnvironmentSettings(std::ostream& output)
         std::string::size_type len = citr->first.find_first_of("\n\r\t ");
         if (len == std::string::npos) len = citr->first.size();
         line.replace(optionPos,len,citr->first.substr(0,len));
-        char *cp = getenv(citr->first.substr(0, len).c_str());
+        const char *cp = getenv(citr->first.substr(0, len).c_str());
         if (!cp) cp = "[not set]";
         else if (!*cp) cp = "[set]";
         line += std::string(cp) + "\n";

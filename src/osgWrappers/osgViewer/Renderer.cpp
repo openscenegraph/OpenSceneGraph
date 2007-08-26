@@ -132,6 +132,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	          __void__release,
 	          "if this operation is a barrier then release it. ",
 	          "");
+	I_ProtectedMethod1(void, updateSceneView, IN, osgUtil::SceneView *, sceneView,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateSceneView__osgUtil_SceneView_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);

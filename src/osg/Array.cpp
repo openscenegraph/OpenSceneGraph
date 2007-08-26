@@ -14,7 +14,7 @@
 
 using namespace osg;
 
-static char* s_ArrayNames[] =
+static const char* s_ArrayNames[] =
 {
     "Array", // 0
     "ByteArray",     // 1

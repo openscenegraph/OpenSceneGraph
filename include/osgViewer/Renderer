@@ -75,7 +75,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
 
         virtual void release();
 
-    private:
+    protected:
     
         void updateSceneView(osgUtil::SceneView* sceneView);
     
@@ -91,7 +91,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         osg::ref_ptr<osg::FlushDeletedGLObjectsOperation>   _flushOperation;
     
 
-        struct TheadSafeQueue
+        struct OSGVIEWER_EXPORT TheadSafeQueue
         {
             OpenThreads::Mutex _mutex;
             OpenThreads::Block _block;
@@ -99,6 +99,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
             SceneViewList _queue;
             
             TheadSafeQueue();
+            ~TheadSafeQueue();
             
             void release()
             {

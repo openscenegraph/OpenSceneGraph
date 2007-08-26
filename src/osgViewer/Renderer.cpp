@@ -126,6 +126,10 @@ Renderer::TheadSafeQueue::TheadSafeQueue()
     _block.set(false);
 }
 
+Renderer::TheadSafeQueue::~TheadSafeQueue()
+{
+}
+
 osgUtil::SceneView* Renderer::TheadSafeQueue::takeFront()
 {
     if (_queue.empty()) _block.block();

@@ -24,7 +24,10 @@ checks for installed dependenciesand then generates the appropriate
 build system.
 
 If you don't already have CMake installed on your system you can grab 
-it from http://www.cmake.org, use version 2.4.6 or later.
+it from http://www.cmake.org, use version 2.4.6 or later.  Details on the 
+OpenSceneGraph's CMake build can be found at:
+
+    http://www.openscenegraph.org/projects/osg/wiki/Build/CMake
 
 Under unices (i.e. Linux, IRIX, Solaris, Free-BSD, HP-Ux, AIX, OSX) 
 use the cmake or ccmake command-line utils, or use the included tiny 
@@ -32,10 +35,10 @@ configure script that'll run cmake for you.  The configure script
 simply runs 'cmake . -DCMAKE_BUILD_TYPE=Release' to ensure that you 
 get the best performance from your final libraries/applications.
  
-  cd OpenSceneGraph
-  ./configure
-  make
-  sudo make install
+    cd OpenSceneGraph
+    ./configure
+    make
+    sudo make install
   
 Alternatively, you can create an out-of-source build directory and run 
 cmake or ccmake from there. The advantage to this approach is that the 
@@ -44,22 +47,23 @@ source directory, and also makes it possible to have multiple
 independent build targets by creating multiple build directories. In a 
 directory alongside the OpenSceneGraph use:
 
-  mkdir build
-  cd build
-  cmake ../OpenSceneGraph -DCMAKE_BUILD_TYPE=Release
-  make
-  sudo make install
+    mkdir build
+    cd build
+    cmake ../OpenSceneGraph -DCMAKE_BUILD_TYPE=Release
+    make
+    sudo make install
 
 Under Windows use the GUI tool CMakeSetup to build your VisualStudio 
 files. The following page on our wiki dedicated to the CMake build 
 system should help guide you through the process:
 
-   http://www.openscenegraph.com/index.php?page=Build.CMake
+    http://www.openscenegraph.org/projects/osg/wiki/Support/PlatformSpecifics/VisualStudio
 
 Under OSX you can either use the CMake build system above, or use the 
 Xcode projects that you will find in the OpenSceneGraph/Xcode 
 directory.
 
 For further details on compilation, installation and platform-specific 
-information read "Getting Started" at http://www.openscenegraph.org, 
-under "Documentation".
+information read "Getting Started" guide:
+
+    http://www.openscenegraph.org/projects/osg/wiki/Support/GettingStarted

@@ -20,6 +20,8 @@
 #include <osgUtil/Optimizer>
 #include <osgUtil/SmoothingVisitor>
 
+#include <osgViewer/GraphicsWindow>
+
 #include <iostream>
 
 #include "OrientationConverter.h"
@@ -54,7 +56,14 @@ class MyGraphicsContext {
             {
                 _gc->realize();
                 _gc->makeCurrent();
-                std::cout<<"Realized context"<<std::endl;
+                if (dynamic_cast<osgViewer::GraphicsWindow*>(_gc.get()))
+                {
+                    std::cout<<"Realized graphics window for OpenGL operations."<<std::endl;
+                }
+                else
+                {
+                    std::cout<<"Realized pbuffer for OpenGL operations."<<std::endl;
+                }
             }
         }
         

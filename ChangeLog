@@ -1,3 +1,33 @@
+2007-08-24 10:58 +0000 [r7285]  robert:
+
+	* Added setting of block into the ThreadSafeQueue's contructor.
+
+2007-08-24 09:45 +0000 [r7284]  robert:
+
+	* Disable the escape sets done on the viewer
+
+2007-08-24 09:42 +0000 [r7283]  robert:
+
+	* From Mario Valle, osgviewerWX: "To make the example compile using
+	  a wx build non UNICODE based. Tested on Linux with wxGTK 2.8.4"
+	  osgviewerFOX: "Added removeChore() call in the FOX_OSG_MDIView
+	  destructor to get rid of a Trace/BPT trap error on exit on Linux.
+	  BTW this is suggested also in the FOX documentation."
+
+2007-08-23 16:56 +0000 [r7282]  robert:
+
+	* Made plugin build names lowercase
+
+2007-08-23 16:33 +0000 [r7281]  robert:
+
+	* Changed the plugin name to openflight instead of OpenFlight to
+	  avoid problems with osgDB looking for just lower case plugin
+	  names
+
+2007-08-23 15:36 +0000 [r7279]  robert:
+
+	* Updated for 2.1.7 dev release
+
 2007-08-23 14:35 +0000 [r7278]  robert:
 
 	* From Stephan Huber, fix for crash on exit

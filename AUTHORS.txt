@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.7
+OpenSceneGraph Library 2.1.8
 
-272 Contributors:
+273 Contributors:
 
 Firstname Surname
 -----------------
@@ -210,6 +210,7 @@ Mathia Walker
 Mason Menninger
 Martin Spott
 Martin Amueller
+Mario Valle
 Marin Lavery
 Louis Hamilton
 Lewis Harmon

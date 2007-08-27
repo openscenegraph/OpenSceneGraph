@@ -8,13 +8,14 @@
 #include <osgViewer/Viewer>
 #include <string>
 
-class GraphicsWindowWX: public wxGLCanvas, public osgViewer::GraphicsWindow
+class GraphicsWindowWX : public wxGLCanvas, public osgViewer::GraphicsWindow
 {
 public:
     GraphicsWindowWX(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = 0,
-        const wxString& name = wxT("TestGLCanvas"));
+        const wxString& name = wxT("TestGLCanvas"),
+        int *attributes = 0);
 
     ~GraphicsWindowWX();
     
@@ -30,7 +31,6 @@ public:
     //
     // GraphicsWindow interface
     //
-
     void grabFocus();
     void grabFocusIfPointerInWindow();
     void useCursor(bool cursorOn);

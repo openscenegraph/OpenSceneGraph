@@ -27,15 +27,22 @@ bool wxOsgApp::OnInit()
 
     // create osg canvas
     //    - initialize
-
+    
 
     int width = 800;
     int height = 600;
 
+    int *attributes = new int[6];
+    attributes[0] = int(WX_GL_DOUBLEBUFFER);
+    attributes[1] = WX_GL_RGBA;
+    attributes[2] = WX_GL_DEPTH_SIZE;
+    attributes[3] = 8;
+    attributes[4] = WX_GL_STENCIL_SIZE;
+    attributes[5] = 8;
+
     GraphicsWindowWX* gw = new GraphicsWindowWX(frame, wxID_ANY, wxDefaultPosition,
-                                                wxSize(width, height), wxSUNKEN_BORDER);
-
-
+                                                wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
+    
     osgViewer::Viewer *viewer = new osgViewer::Viewer;
     viewer->getCamera()->setGraphicsContext(gw);
     viewer->getCamera()->setViewport(0,0,width,height);
@@ -95,8 +102,8 @@ BEGIN_EVENT_TABLE(GraphicsWindowWX, wxGLCanvas)
 END_EVENT_TABLE()
 
 GraphicsWindowWX::GraphicsWindowWX(wxWindow *parent, wxWindowID id,
-    const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-    : wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name)
+    const wxPoint& pos, const wxSize& size, long style, const wxString& name, int *attributes)
+    : wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name, attributes)
 {
     // default cursor to standard
     _oldCursor = *wxSTANDARD_CURSOR;

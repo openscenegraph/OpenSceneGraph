@@ -635,9 +635,12 @@ int main(int argc, char** argv)
     
 
     osg::ref_ptr<osgTerrain::Terrain> terrain = new osgTerrain::Terrain;
-    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::EllipsoidLocator(-osg::PI, -osg::PI*0.5, 2.0*osg::PI, osg::PI, 0.0);
+    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
     osg::ref_ptr<osgTerrain::ValidDataOperator> validDataOperator = new osgTerrain::NoDataValue(0.0);
     osg::ref_ptr<osgTerrain::Layer> lastAppliedLayer;
+
+    locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+    locator->setExtents(-osg::PI, -osg::PI*0.5, osg::PI, osg::PI*0.5);
 
     unsigned int layerNum = 0;
 
@@ -668,7 +671,8 @@ int main(int argc, char** argv)
         else if (arguments.read(pos, "-e",x,y,w,h))
         {
             // define the extents.
-            locator = new osgTerrain::EllipsoidLocator(x,y,w,h,0);
+            locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+            locator->setExtents(x,y,x+w,y+h);
             readParameter = true;
         }
 
@@ -681,8 +685,8 @@ int main(int argc, char** argv)
         else if (arguments.read(pos, "--cartesian",x,y,w,h))
         {
             // define the extents.
-            locator = new osgTerrain::CartesianLocator(x,y,w,h,0);
-            readParameter = true;
+            locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+            locator->setExtents(x,y,x+w,y+h);
         }
 
         else if (arguments.read(pos, "--hf",filename))

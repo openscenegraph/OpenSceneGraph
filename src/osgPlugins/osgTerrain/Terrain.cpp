@@ -114,6 +114,86 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
             itrAdvanced = true;
         }
 
+        if (fr.matchSequence("Locator %w %f %f %f"))
+        {
+            
+            double x,y,w,h;
+            fr[2].getFloat(x);
+            fr[3].getFloat(y);
+            fr[4].getFloat(w);
+            fr[5].getFloat(h);
+            
+            locator = new osgTerrain::Locator;
+            
+            if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+            else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
+            else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+            locator->setExtents(x,y,x+w,y+h);
+
+            fr += 6;
+            itrAdvanced = true;
+        }
+
+        if (fr.matchSequence("Locator {"))
+        {
+            locator = new osgTerrain::Locator;
+
+            int local_entry = fr[0].getNoNestedBrackets();
+
+            fr += 2;
+            while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
+            {
+                bool localAdvanced = false;
+
+                if (fr.matchSequence("Format %w") || fr.matchSequence("Format %s") )
+                {
+                    locator->setFormat(fr[1].getStr());
+
+                    fr += 2;
+                    localAdvanced = true;
+                }
+
+                if (fr.matchSequence("CoordinateSystemType %w"))
+                {
+                    if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+                    else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
+                    else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+
+                    fr += 2;
+                    localAdvanced = true;
+                }
+
+
+                if (fr.matchSequence("CoordinateSystem %w") || fr.matchSequence("CoordinateSystem %s") )
+                {
+                    locator->setCoordinateSystem(fr[1].getStr());
+
+                    fr += 2;
+                    localAdvanced = true;
+                }
+
+                if (fr.matchSequence("Extents %f %f %f %f"))
+                {
+                    double minX,minY,maxX,maxY;
+                    fr[1].getFloat(minX);
+                    fr[2].getFloat(minY);
+                    fr[3].getFloat(maxX);
+                    fr[4].getFloat(maxY);
+                    
+                    locator->setExtents(minX, minY, maxX, maxY);
+                    
+                    fr += 5;
+                    localAdvanced = true;
+                }
+                
+                if (!localAdvanced) ++fr;
+            }
+            
+            itrAdvanced = true;
+            
+            ++fr;
+        }
+
         if (fr.matchSequence("EllipsoidLocator %f %f %f %f"))
         {
             double x,y,w,h;
@@ -122,7 +202,9 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
             fr[3].getFloat(w);
             fr[4].getFloat(h);
         
-            locator = new osgTerrain::EllipsoidLocator(x,y,w,h,0);
+            locator = new osgTerrain::Locator;
+            locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+            locator->setExtents(x,y,x+w,y+h);
             
             fr += 5;
             itrAdvanced = true;
@@ -136,8 +218,10 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
             fr[3].getFloat(w);
             fr[4].getFloat(h);
         
-            locator = new osgTerrain::CartesianLocator(x,y,w,h,0);
-            
+            locator = new osgTerrain::Locator;
+            locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+            locator->setExtents(x,y,x+w,y+h);
+         
             fr += 5;
             itrAdvanced = true;
         }
@@ -313,30 +397,76 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
         itrAdvanced = true;
     }
 
+#if 1
     if (!(terrain.getTerrainTechnique()))
     {
         terrain.setTerrainTechnique(new osgTerrain::GeometryTechnique);
     }
-
+#endif
     return itrAdvanced;
 }
 
 bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
 {
-    const osgTerrain::CartesianLocator* cartesian = dynamic_cast<const osgTerrain::CartesianLocator*>(&locator);
-    if (cartesian)
-    {
-        fw.indent()<<"CartesianLocator "<<cartesian->getOriginX()<<" "<<cartesian->getOriginY()<<" "<<cartesian->getLengthX()<<" "<<cartesian->getLengthY()<<std::endl;
-        return true;
-    }
+    
+    if (locator.getCoordinateSystem().empty())
+    {    
+        fw.indent()<<"Locator ";
+        switch(locator.getCoordinateSystemType())
+        {
+            case(osgTerrain::Locator::GEOCENTRIC):
+            {        
+                fw<<"GEOCENTRIC";
+                break;
+            }
+            case(osgTerrain::Locator::GEOGRAPHIC):
+            {        
+                fw<<"GEOGRPAHIC";
+                break;
+            }
+            case(osgTerrain::Locator::PROJECTED):
+            {        
+                fw<<"PROJECTED";
+                break;
+            }
+        }    
 
-    const osgTerrain::EllipsoidLocator* ellipsoid = dynamic_cast<const osgTerrain::EllipsoidLocator*>(&locator);
-    if (ellipsoid)
-    {
-        fw.indent()<<"CartesianLocator "<<ellipsoid->getLongitude()<<" "<<ellipsoid->getLatitude()<<" "<<ellipsoid->getDeltaLongitude()<<" "<<ellipsoid->getDeltaLatitude()<<std::endl;
-        return true;
+        fw<<" "<<locator.getMinX()<<" "<<locator.getMinY()<<" "<<locator.getMaxX()<<" "<<locator.getMaxY()<<std::endl;
     }
+    else
+    {
+        fw.indent()<<"Locator {"<<std::endl;
+        fw.moveIn();
 
+        if (!locator.getFormat().empty()) fw.indent()<<"Format \""<<locator.getFormat()<<"\""<<std::endl;
+        if (!locator.getCoordinateSystem().empty()) fw.indent()<<"CoordinateSystem \""<<locator.getCoordinateSystem()<<"\""<<std::endl;
+
+        fw.indent()<<"CoordinateSystemType ";
+        switch(locator.getCoordinateSystemType())
+        {
+            case(osgTerrain::Locator::GEOCENTRIC):
+            {        
+                fw<<"GEOCENTRIC"<<std::endl;
+                break;
+            }
+            case(osgTerrain::Locator::GEOGRAPHIC):
+            {        
+                fw<<"GEOGRAPHIC"<<std::endl;
+                break;
+            }
+            case(osgTerrain::Locator::PROJECTED):
+            {        
+                fw<<"PROJECTED"<<std::endl;;
+                break;
+            }
+        }    
+
+        fw.indent()<<"Extents "<<locator.getMinX()<<" "<<locator.getMinY()<<" "<<locator.getMaxX()<<" "<<locator.getMaxY()<<std::endl;
+
+        fw.moveOut();
+        fw.indent()<<"}"<<std::endl;
+
+    }
     return false;
 }
 
@@ -392,6 +522,9 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgTerrain::Terrain& terrain = static_cast<const osgTerrain::Terrain&>(obj);
 
+    int prec = fw.precision();
+    fw.precision(15);
+
     if (terrain.getLocator()) 
     {
         writeLocator(*terrain.getLocator(),fw);
@@ -433,6 +566,8 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
             fw.indent()<<"}"<<std::endl;
         }
     }
+    
+    fw.precision(prec);
     
     return true;
 }

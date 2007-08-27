@@ -24,172 +24,11 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgTerrain::CartesianLocator)
+BEGIN_ENUM_REFLECTOR(osgTerrain::Locator::CoordinateSystemType)
 	I_DeclaringFile("osgTerrain/Locator");
-	I_BaseType(osgTerrain::Locator);
-	I_ConstructorWithDefaults6(IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,
-	                           ____CartesianLocator__double__double__double__double__double__double,
-	                           "",
-	                           "");
-	I_MethodWithDefaults6(void, setExtents, IN, double, originX, , IN, double, originY, , IN, double, lengthX, , IN, double, lengthY, , IN, double, height, 0.0f, IN, double, heightScale, 1.0f,
-	                      Properties::NON_VIRTUAL,
-	                      __void__setExtents__double__double__double__double__double__double,
-	                      "",
-	                      "");
-	I_Method1(void, setOriginX, IN, double, x,
-	          Properties::NON_VIRTUAL,
-	          __void__setOriginX__double,
-	          "",
-	          "");
-	I_Method0(double, getOriginX,
-	          Properties::NON_VIRTUAL,
-	          __double__getOriginX,
-	          "",
-	          "");
-	I_Method1(void, setOriginY, IN, double, y,
-	          Properties::NON_VIRTUAL,
-	          __void__setOriginY__double,
-	          "",
-	          "");
-	I_Method0(double, getOriginY,
-	          Properties::NON_VIRTUAL,
-	          __double__getOriginY,
-	          "",
-	          "");
-	I_Method1(void, setLengthX, IN, double, x,
-	          Properties::NON_VIRTUAL,
-	          __void__setLengthX__double,
-	          "",
-	          "");
-	I_Method0(double, getLengthX,
-	          Properties::NON_VIRTUAL,
-	          __double__getLengthX,
-	          "",
-	          "");
-	I_Method1(void, setLengthY, IN, double, y,
-	          Properties::NON_VIRTUAL,
-	          __void__setLengthY__double,
-	          "",
-	          "");
-	I_Method0(double, getLengthY,
-	          Properties::NON_VIRTUAL,
-	          __double__getLengthY,
-	          "",
-	          "");
-	I_Method0(bool, orientationOpenGL,
-	          Properties::VIRTUAL,
-	          __bool__orientationOpenGL,
-	          "",
-	          "");
-	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
-	          Properties::VIRTUAL,
-	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
-	          "",
-	          "");
-	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
-	          Properties::VIRTUAL,
-	          __bool__convertModelToLocal__C5_osg_Vec3d_R1__osg_Vec3d_R1,
-	          "",
-	          "");
-	I_SimpleProperty(double, LengthX, 
-	                 __double__getLengthX, 
-	                 __void__setLengthX__double);
-	I_SimpleProperty(double, LengthY, 
-	                 __double__getLengthY, 
-	                 __void__setLengthY__double);
-	I_SimpleProperty(double, OriginX, 
-	                 __double__getOriginX, 
-	                 __void__setOriginX__double);
-	I_SimpleProperty(double, OriginY, 
-	                 __double__getOriginY, 
-	                 __void__setOriginY__double);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgTerrain::EllipsoidLocator)
-	I_DeclaringFile("osgTerrain/Locator");
-	I_BaseType(osgTerrain::Locator);
-	I_ConstructorWithDefaults8(IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f, IN, double, radiusEquator, osg::WGS_84_RADIUS_EQUATOR, IN, double, radiusPolar, osg::WGS_84_RADIUS_POLAR,
-	                           ____EllipsoidLocator__double__double__double__double__double__double__double__double,
-	                           "",
-	                           "");
-	I_MethodWithDefaults6(void, setExtents, IN, double, longitude, , IN, double, latitude, , IN, double, deltaLongitude, , IN, double, deltaLatitude, , IN, double, height, 0.0, IN, double, heightScale, 1.0f,
-	                      Properties::NON_VIRTUAL,
-	                      __void__setExtents__double__double__double__double__double__double,
-	                      "",
-	                      "");
-	I_Method0(double, getLongitude,
-	          Properties::NON_VIRTUAL,
-	          __double__getLongitude,
-	          "",
-	          "");
-	I_Method0(double, getDeltaLongitude,
-	          Properties::NON_VIRTUAL,
-	          __double__getDeltaLongitude,
-	          "",
-	          "");
-	I_Method0(double, getLatitude,
-	          Properties::NON_VIRTUAL,
-	          __double__getLatitude,
-	          "",
-	          "");
-	I_Method0(double, getDeltaLatitude,
-	          Properties::NON_VIRTUAL,
-	          __double__getDeltaLatitude,
-	          "",
-	          "");
-	I_Method0(double, getHeight,
-	          Properties::NON_VIRTUAL,
-	          __double__getHeight,
-	          "",
-	          "");
-	I_Method1(void, setEllipsoidModel, IN, osg::EllipsoidModel *, em,
-	          Properties::NON_VIRTUAL,
-	          __void__setEllipsoidModel__osg_EllipsoidModel_P1,
-	          "",
-	          "");
-	I_Method0(osg::EllipsoidModel *, getEllipsoidModel,
-	          Properties::NON_VIRTUAL,
-	          __osg_EllipsoidModel_P1__getEllipsoidModel,
-	          "",
-	          "");
-	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
-	          "",
-	          "");
-	I_Method0(bool, orientationOpenGL,
-	          Properties::VIRTUAL,
-	          __bool__orientationOpenGL,
-	          "",
-	          "");
-	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
-	          Properties::VIRTUAL,
-	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
-	          "",
-	          "");
-	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
-	          Properties::VIRTUAL,
-	          __bool__convertModelToLocal__C5_osg_Vec3d_R1__osg_Vec3d_R1,
-	          "",
-	          "");
-	I_SimpleProperty(double, DeltaLatitude, 
-	                 __double__getDeltaLatitude, 
-	                 0);
-	I_SimpleProperty(double, DeltaLongitude, 
-	                 __double__getDeltaLongitude, 
-	                 0);
-	I_SimpleProperty(osg::EllipsoidModel *, EllipsoidModel, 
-	                 __osg_EllipsoidModel_P1__getEllipsoidModel, 
-	                 __void__setEllipsoidModel__osg_EllipsoidModel_P1);
-	I_SimpleProperty(double, Height, 
-	                 __double__getHeight, 
-	                 0);
-	I_SimpleProperty(double, Latitude, 
-	                 __double__getLatitude, 
-	                 0);
-	I_SimpleProperty(double, Longitude, 
-	                 __double__getLongitude, 
-	                 0);
+	I_EnumLabel(osgTerrain::Locator::GEOCENTRIC);
+	I_EnumLabel(osgTerrain::Locator::GEOGRAPHIC);
+	I_EnumLabel(osgTerrain::Locator::PROJECTED);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
@@ -227,6 +66,101 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setCoordinateSystemType, IN, osgTerrain::Locator::CoordinateSystemType, type,
+	          Properties::NON_VIRTUAL,
+	          __void__setCoordinateSystemType__CoordinateSystemType,
+	          "Set the CoordinatesSyetemType. ",
+	          "Note, the user must keep the CoordinateSystemString consistent with the type of the CoordindateSystem. ");
+	I_Method0(osgTerrain::Locator::CoordinateSystemType, getCoordinateSystemType,
+	          Properties::NON_VIRTUAL,
+	          __CoordinateSystemType__getCoordinateSystemType,
+	          "Get the CoordinatesSyetemType. ",
+	          "");
+	I_Method1(void, setFormat, IN, const std::string &, format,
+	          Properties::NON_VIRTUAL,
+	          __void__setFormat__C5_std_string_R1,
+	          "Set the coordinate system format string. ",
+	          "Typical values would be WKT, PROJ4, USGS etc. ");
+	I_Method0(const std::string &, getFormat,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getFormat,
+	          "Get the coordinate system format string. ",
+	          "");
+	I_Method1(void, setCoordinateSystem, IN, const std::string &, cs,
+	          Properties::NON_VIRTUAL,
+	          __void__setCoordinateSystem__C5_std_string_R1,
+	          "Set the CoordinateSystem reference string, should be stored in a form consistent with the Format. ",
+	          "");
+	I_Method0(const std::string &, getCoordinateSystem,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getCoordinateSystem,
+	          "Get the CoordinateSystem reference string. ",
+	          "");
+	I_Method1(void, setEllipsoidModel, IN, osg::EllipsoidModel *, ellipsode,
+	          Properties::NON_VIRTUAL,
+	          __void__setEllipsoidModel__osg_EllipsoidModel_P1,
+	          "Set EllipsoidModel to describe the model used to map lat, long and height into geocentric XYZ and back. ",
+	          "");
+	I_Method0(osg::EllipsoidModel *, getEllipsoidModel,
+	          Properties::NON_VIRTUAL,
+	          __osg_EllipsoidModel_P1__getEllipsoidModel,
+	          "Get the EllipsoidModel. ",
+	          "");
+	I_Method0(const osg::EllipsoidModel *, getEllipsoidModel,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
+	          "Get the const EllipsoidModel. ",
+	          "");
+	I_Method4(void, setExtents, IN, double, minX, IN, double, minY, IN, double, maxX, IN, double, maxY,
+	          Properties::NON_VIRTUAL,
+	          __void__setExtents__double__double__double__double,
+	          "Set the extents of the local coords. ",
+	          "");
+	I_Method4(void, getExtents, IN, double &, minX, IN, double &, minY, IN, double &, maxX, IN, double &, maxY,
+	          Properties::NON_VIRTUAL,
+	          __void__getExtents__double_R1__double_R1__double_R1__double_R1,
+	          "Get the extents of the local coords. ",
+	          "");
+	I_Method1(void, setMinX, IN, double, minX,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinX__double,
+	          "",
+	          "");
+	I_Method0(double, getMinX,
+	          Properties::NON_VIRTUAL,
+	          __double__getMinX,
+	          "",
+	          "");
+	I_Method1(void, setMinY, IN, double, minY,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinY__double,
+	          "",
+	          "");
+	I_Method0(double, getMinY,
+	          Properties::NON_VIRTUAL,
+	          __double__getMinY,
+	          "",
+	          "");
+	I_Method1(void, setMaxX, IN, double, maxX,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxX__double,
+	          "",
+	          "");
+	I_Method0(double, getMaxX,
+	          Properties::NON_VIRTUAL,
+	          __double__getMaxX,
+	          "",
+	          "");
+	I_Method1(void, setMaxY, IN, double, maxY,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxY__double,
+	          "",
+	          "");
+	I_Method0(double, getMaxY,
+	          Properties::NON_VIRTUAL,
+	          __double__getMaxY,
+	          "",
+	          "");
 	I_Method0(bool, orientationOpenGL,
 	          Properties::VIRTUAL,
 	          __bool__orientationOpenGL,
@@ -251,5 +185,29 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	                __bool__convertLocalCoordBetween__C5_Locator_R1__C5_osg_Vec3d_R1__C5_Locator_R1__osg_Vec3d_R1_S,
 	                "",
 	                "");
+	I_SimpleProperty(const std::string &, CoordinateSystem, 
+	                 __C5_std_string_R1__getCoordinateSystem, 
+	                 __void__setCoordinateSystem__C5_std_string_R1);
+	I_SimpleProperty(osgTerrain::Locator::CoordinateSystemType, CoordinateSystemType, 
+	                 __CoordinateSystemType__getCoordinateSystemType, 
+	                 __void__setCoordinateSystemType__CoordinateSystemType);
+	I_SimpleProperty(osg::EllipsoidModel *, EllipsoidModel, 
+	                 __osg_EllipsoidModel_P1__getEllipsoidModel, 
+	                 __void__setEllipsoidModel__osg_EllipsoidModel_P1);
+	I_SimpleProperty(const std::string &, Format, 
+	                 __C5_std_string_R1__getFormat, 
+	                 __void__setFormat__C5_std_string_R1);
+	I_SimpleProperty(double, MaxX, 
+	                 __double__getMaxX, 
+	                 __void__setMaxX__double);
+	I_SimpleProperty(double, MaxY, 
+	                 __double__getMaxY, 
+	                 __void__setMaxY__double);
+	I_SimpleProperty(double, MinX, 
+	                 __double__getMinX, 
+	                 __void__setMinX__double);
+	I_SimpleProperty(double, MinY, 
+	                 __double__getMinY, 
+	                 __void__setMinY__double);
 END_REFLECTOR
 

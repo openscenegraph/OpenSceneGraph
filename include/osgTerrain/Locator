@@ -32,11 +32,75 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         Locator(const Locator&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgTerrain, Locator);
-        
-        virtual bool orientationOpenGL() const { return true; }
 
-        virtual bool convertLocalToModel(const osg::Vec3d& /*local*/, osg::Vec3d& /*world*/) const { return false; }
-        virtual bool convertModelToLocal(const osg::Vec3d& /*world*/, osg::Vec3d& /*local*/) const { return false; }
+        /** CoordinateSystemType provides the classification of the type coordinate system represented.*/
+        enum CoordinateSystemType
+        {
+            /** GEOCENTRIC coordinate systems are ones mapped to the around the ellipsoid, i.e. whole earth.*/
+            GEOCENTRIC,
+
+            /** GEOGRAPHIC coordinate systems are ones mapped to latitude and longitude.*/
+            GEOGRAPHIC,
+
+            /** PROJECTED coordinate systems are ones projected to a local projected coordindate system i.e. UTMs.*/
+            PROJECTED
+        };
+
+        /** Set the CoordinatesSyetemType.
+          * Note, the user must keep the CoordinateSystemString consistent with the type of the CoordindateSystem.*/
+        void setCoordinateSystemType(CoordinateSystemType type) { _coordinateSystemType = type; }
+
+        /** Get the CoordinatesSyetemType.*/
+        CoordinateSystemType getCoordinateSystemType() const { return _coordinateSystemType; }
+
+        /** Set the coordinate system format string. Typical values would be WKT, PROJ4, USGS etc.*/
+        void setFormat(const std::string& format) { _format = format; }
+        
+        /** Get the coordinate system format string.*/
+        const std::string& getFormat() const { return _format; }
+
+        /** Set the CoordinateSystem reference string, should be stored in a form consistent with the Format.*/
+        void setCoordinateSystem(const std::string& cs) { _cs = cs; }
+        
+        /** Get the CoordinateSystem reference string.*/
+        const std::string& getCoordinateSystem() const { return _cs; }
+
+
+        /** Set EllipsoidModel to describe the model used to map lat, long and height into geocentric XYZ and back. */
+        void setEllipsoidModel(osg::EllipsoidModel* ellipsode) { _ellipsoidModel = ellipsode; }
+        
+        /** Get the EllipsoidModel.*/
+        osg::EllipsoidModel* getEllipsoidModel() { return _ellipsoidModel.get(); }
+        
+        /** Get the const EllipsoidModel.*/
+        const osg::EllipsoidModel* getEllipsoidModel() const { return _ellipsoidModel.get(); }
+
+
+
+        /** Set the extents of the local coords.*/
+        void setExtents(double minX, double minY, double maxX, double maxY);
+
+        /** Get the extents of the local coords.*/
+        void getExtents(double& minX, double& minY, double& maxX, double& maxY) const;
+
+        void setMinX(double minX) { _minX = minX; }
+        double getMinX() const { return _minX; }
+
+        void setMinY(double minY) { _minY = minY; }
+        double getMinY() const { return _minY; }
+
+        void setMaxX(double maxX) { _maxX = maxX; }
+        double getMaxX() const { return _maxX; }
+
+        void setMaxY(double maxY) { _maxY = maxY; }
+        double getMaxY() const { return _maxY; }
+
+        
+        virtual bool orientationOpenGL() const;
+
+        virtual bool convertLocalToModel(const osg::Vec3d& /*local*/, osg::Vec3d& /*world*/) const;
+
+        virtual bool convertModelToLocal(const osg::Vec3d& /*world*/, osg::Vec3d& /*local*/) const;
 
         static bool convertLocalCoordBetween(const Locator& source, const osg::Vec3d& sourceNDC, 
                                              const Locator& destination, osg::Vec3d& destinationNDC)
@@ -53,78 +117,17 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
 
         virtual ~Locator();
         
-};
+        CoordinateSystemType                _coordinateSystemType;
 
-class OSGTERRAIN_EXPORT EllipsoidLocator : public osgTerrain::Locator
-{
-    public:
+        std::string                         _format;
+        std::string                         _cs;
+        osg::ref_ptr<osg::EllipsoidModel>   _ellipsoidModel;
 
+        double                              _minX;
+        double                              _minY;
+        double                              _maxX;
+        double                              _maxY;
 
-        EllipsoidLocator(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f, double radiusEquator = osg::WGS_84_RADIUS_EQUATOR, double radiusPolar = osg::WGS_84_RADIUS_POLAR);
-
-        void setExtents(double longitude, double latitude, double deltaLongitude, double deltaLatitude, double height=0.0, double heightScale = 1.0f);
-
-        double getLongitude() const { return _longitude; }
-        double getDeltaLongitude() const { return _deltaLongitude; }
-
-        double getLatitude() const { return _latitude; }
-        double getDeltaLatitude() const { return _deltaLatitude; }
-
-        double getHeight() const { return _height; }
-
-        void setEllipsoidModel(osg::EllipsoidModel* em) { _em=em; }
-        osg::EllipsoidModel* getEllipsoidModel() { return _em.get(); }
-        const osg::EllipsoidModel* getEllipsoidModel() const { return _em.get(); }
-
-        virtual bool orientationOpenGL() const;
-        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const;
-        virtual bool convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const;    
-
-    protected:
-
-        osg::ref_ptr<osg::EllipsoidModel> _em;
-
-        double _longitude;
-        double _latitude;
-        double _deltaLongitude;
-        double _deltaLatitude;
-        double _height;
-        double _heightScale;
-};
-
-
-class OSGTERRAIN_EXPORT CartesianLocator : public osgTerrain::Locator
-{
-    public:
-
-        CartesianLocator(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 1.0f); 
-
-        void setExtents(double originX, double originY, double lengthX, double lengthY, double height = 0.0f, double heightScale = 1.0f); 
-
-        void setOriginX(double x) { _originX = x; }
-        double getOriginX() const { return _originX; }
-
-        void setOriginY(double y) { _originY = y; }
-        double getOriginY() const { return _originY; }
-
-        void setLengthX(double x) { _lengthX = x; }
-        double getLengthX() const { return _lengthX; }
-
-        void setLengthY(double y) { _lengthY = y; }
-        double getLengthY() const { return _lengthY; }
-
-        virtual bool orientationOpenGL() const;
-        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const;
-        virtual bool convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const;    
-
-    protected:
-
-        double _originX;
-        double _originY;
-        double _lengthX;
-        double _lengthY;
-        double _height;
-        double _heightScale;
 };
 
 }

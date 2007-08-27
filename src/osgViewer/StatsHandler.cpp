@@ -224,6 +224,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
     }
 
     _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
+    _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 
     _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
     _camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);

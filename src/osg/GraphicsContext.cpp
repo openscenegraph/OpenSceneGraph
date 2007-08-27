@@ -644,10 +644,27 @@ void GraphicsContext::removeAllOperations()
     _operationsBlock->set(false);
 }
 
+
+struct CameraRenderOrderSortOp
+{
+    inline bool operator() (const Camera* lhs,const Camera* rhs) const
+    {
+        if (lhs->getRenderOrder()<rhs->getRenderOrder()) return true;
+        if (rhs->getRenderOrder()<lhs->getRenderOrder()) return false;
+        return lhs->getRenderOrderNum()<lhs->getRenderOrderNum();
+    }
+};
+
+
 void GraphicsContext::runOperations()
 {
-    for(osg::GraphicsContext::Cameras::iterator itr = _cameras.begin();
-        itr != _cameras.end();
+    // sort the cameras into order
+    typedef std::vector<Camera*> CameraVector;
+    CameraVector camerasCopy(_cameras.begin(),_cameras.end());    
+    std::sort(camerasCopy.begin(), camerasCopy.end(), CameraRenderOrderSortOp());
+    
+    for(CameraVector::iterator itr = camerasCopy.begin();
+        itr != camerasCopy.end();
         ++itr)
     {
         osg::Camera* camera = *itr;

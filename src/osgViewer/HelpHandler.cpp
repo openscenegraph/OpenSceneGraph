@@ -28,6 +28,7 @@ HelpHandler::HelpHandler(osg::ApplicationUsage* au):
 {
     _camera = new osg::Camera;
     _camera->setRenderer(new Renderer(_camera.get()));
+    _camera->setRenderOrder(osg::Camera::POST_RENDER, 11);
 }
 
 

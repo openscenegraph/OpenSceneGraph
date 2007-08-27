@@ -275,14 +275,20 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
                 osg::Quat out_quat2;
                 out_quat2 = out_mat.getRotate();
                 
+                // If the quaternion W is <0, then we should reflect
+                // to get it into the positive W
+                if(out_quat1.w()<0) out_quat1 = out_quat1 * -1.0;
+                if(out_quat2.w()<0) out_quat2 = out_quat2 * -1.0;
+
+
                 // if the output quat length is not one 
-                // or if the component magnitudes do not match,
+                // or if the components do not match,
                 // something is amiss
                 if (fabs(1.0-out_quat2.length()) > eps ||
-                (fabs(out_quat1.x())-fabs(out_quat2.x())) > eps ||
-                (fabs(out_quat1.y())-fabs(out_quat2.y())) > eps ||
-                (fabs(out_quat1.z())-fabs(out_quat2.z())) > eps ||
-                (fabs(out_quat1.w())-fabs(out_quat2.w())) > eps) {
+                (fabs(out_quat1.x()-out_quat2.x())) > eps ||
+                (fabs(out_quat1.y()-out_quat2.y())) > eps ||
+                (fabs(out_quat1.z()-out_quat2.z())) > eps ||
+                (fabs(out_quat1.w()-out_quat2.w())) > eps) {
                 std::cout << __FUNCTION__ << " problem at: \n"
                       << " r1=" << rol1
                       << " p1=" << pit1

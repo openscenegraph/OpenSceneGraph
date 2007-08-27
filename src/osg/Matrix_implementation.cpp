@@ -125,8 +125,74 @@ void Matrix_implementation::setRotate(const Quat& q_in)
 #endif
 }
 
-#if 1
+#define COMPILE_getRotate_David_Spillings_Mk1
+//#define COMPILE_getRotate_David_Spillings_Mk2
+//#define COMPILE_getRotate_Original
 
+#ifdef COMPILE_getRotate_David_Spillings_Mk1
+// David Spillings implementation Mk 1
+Quat Matrix_implementation::getRotate() const
+{
+    Quat q;
+
+    value_type s;
+    value_type tq[4];
+    int    i, j;
+
+    // Use tq to store the largest trace
+    tq[0] = 1 + _mat[0][0]+_mat[1][1]+_mat[2][2];
+    tq[1] = 1 + _mat[0][0]-_mat[1][1]-_mat[2][2];
+    tq[2] = 1 - _mat[0][0]+_mat[1][1]-_mat[2][2];
+    tq[3] = 1 - _mat[0][0]-_mat[1][1]+_mat[2][2];
+
+    // Find the maximum (could also use stacked if's later)
+    j = 0;
+    for(i=1;i<4;i++) j = (tq[i]>tq[j])? i : j;
+
+    // check the diagonal
+    if (j==0)
+    {
+        /* perform instant calculation */
+        QW = tq[0];
+        QX = _mat[1][2]-_mat[2][1]; 
+        QY = _mat[2][0]-_mat[0][2]; 
+        QZ = _mat[0][1]-_mat[1][0]; 
+    }
+    else if (j==1)
+    {
+        QW = _mat[1][2]-_mat[2][1]; 
+        QX = tq[1];
+        QY = _mat[0][1]+_mat[1][0]; 
+        QZ = _mat[2][0]+_mat[0][2]; 
+    }
+    else if (j==2)
+    {
+        QW = _mat[2][0]-_mat[0][2]; 
+        QX = _mat[0][1]+_mat[1][0]; 
+        QY = tq[2];
+        QZ = _mat[1][2]+_mat[2][1]; 
+    }
+    else /* if (j==3) */
+    {
+        QW = _mat[0][1]-_mat[1][0]; 
+        QX = _mat[2][0]+_mat[0][2]; 
+        QY = _mat[1][2]+_mat[2][1]; 
+        QZ = tq[3];
+    }
+
+    s = sqrt(0.25/tq[j]);
+    QW *= s;
+    QX *= s;
+    QY *= s;
+    QZ *= s;
+
+    return q;
+
+}
+#endif
+
+
+#ifdef COMPILE_getRotate_David_Spillings_Mk2
 // David Spillings implementation Mk 2
 Quat Matrix_implementation::getRotate() const
 {
@@ -151,128 +217,66 @@ Quat Matrix_implementation::getRotate() const
 
     return q;
 }
+#endif
 
-#else
+#ifdef COMPILE_getRotate_Original
+// Original implementation
+Quat Matrix_implementation::getRotate() const
+{
+    Quat q;
 
-    #if 1
-    // David Spillings implementation Mk 1
-    Quat Matrix_implementation::getRotate() const
+    // Source: Gamasutra, Rotating Objects Using Quaternions
+    //
+    //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
+
+    value_type  tr, s;
+    value_type tq[4];
+    int    i, j, k;
+
+    int nxt[3] = {1, 2, 0};
+
+    tr = _mat[0][0] + _mat[1][1] + _mat[2][2]+1.0;
+
+    // check the diagonal
+    if (tr > 0.0)
     {
-        Quat q;
-    
-        value_type s;
-        value_type tq[4];
-        int    i, j;
-
-        // Use tq to store the largest trace
-        tq[0] = 1 + _mat[0][0]+_mat[1][1]+_mat[2][2];
-        tq[1] = 1 + _mat[0][0]-_mat[1][1]-_mat[2][2];
-        tq[2] = 1 - _mat[0][0]+_mat[1][1]-_mat[2][2];
-        tq[3] = 1 - _mat[0][0]-_mat[1][1]+_mat[2][2];
-
-        // Find the maximum (could also use stacked if's later)
-        j = 0;
-        for(i=1;i<4;i++) j = (tq[i]>tq[j])? i : j;
-
-        // check the diagonal
-        if (j==0)
-        {
-            /* perform instant calculation */
-            QW = tq[0];
-            QX = _mat[1][2]-_mat[2][1]; 
-            QY = _mat[2][0]-_mat[0][2]; 
-            QZ = _mat[0][1]-_mat[1][0]; 
-        }
-        else if (j==1)
-        {
-            QW = _mat[1][2]-_mat[2][1]; 
-            QX = tq[1];
-            QY = _mat[0][1]+_mat[1][0]; 
-            QZ = _mat[2][0]+_mat[0][2]; 
-        }
-        else if (j==2)
-        {
-            QW = _mat[2][0]-_mat[0][2]; 
-            QX = _mat[0][1]+_mat[1][0]; 
-            QY = tq[2];
-            QZ = _mat[1][2]+_mat[2][1]; 
-        }
-        else /* if (j==3) */
-        {
-            QW = _mat[0][1]-_mat[1][0]; 
-            QX = _mat[2][0]+_mat[0][2]; 
-            QY = _mat[1][2]+_mat[2][1]; 
-            QZ = tq[3];
-        }
-
-        s = sqrt(0.25/tq[j]);
-        QW *= s;
-        QX *= s;
-        QY *= s;
-        QZ *= s;
-        
-        return q;
-
+        s = (value_type)sqrt (tr);
+        QW = s / 2.0;
+        s = 0.5 / s;
+        QX = (_mat[1][2] - _mat[2][1]) * s;
+        QY = (_mat[2][0] - _mat[0][2]) * s;
+        QZ = (_mat[0][1] - _mat[1][0]) * s;
     }
-    #else
-    // Original implementation
-    Quat Matrix_implementation::getRotate() const
+    else
     {
-        Quat q;
+        // diagonal is negative
+        i = 0;
+        if (_mat[1][1] > _mat[0][0])
+            i = 1;
+        if (_mat[2][2] > _mat[i][i])
+            i = 2;
+        j = nxt[i];
+        k = nxt[j];
 
-        // Source: Gamasutra, Rotating Objects Using Quaternions
-        //
-        //http://www.gamasutra.com/features/programming/19980703/quaternions_01.htm
+        s = (value_type)sqrt ((_mat[i][i] - (_mat[j][j] + _mat[k][k])) + 1.0);
 
-        value_type  tr, s;
-        value_type tq[4];
-        int    i, j, k;
+        tq[i] = s * 0.5;
 
-        int nxt[3] = {1, 2, 0};
-
-        tr = _mat[0][0] + _mat[1][1] + _mat[2][2]+1.0;
-
-        // check the diagonal
-        if (tr > 0.0)
-        {
-            s = (value_type)sqrt (tr);
-            QW = s / 2.0;
+        if (s != 0.0)
             s = 0.5 / s;
-            QX = (_mat[1][2] - _mat[2][1]) * s;
-            QY = (_mat[2][0] - _mat[0][2]) * s;
-            QZ = (_mat[0][1] - _mat[1][0]) * s;
-        }
-        else
-        {
-            // diagonal is negative
-            i = 0;
-            if (_mat[1][1] > _mat[0][0])
-                i = 1;
-            if (_mat[2][2] > _mat[i][i])
-                i = 2;
-            j = nxt[i];
-            k = nxt[j];
 
-            s = (value_type)sqrt ((_mat[i][i] - (_mat[j][j] + _mat[k][k])) + 1.0);
+        tq[3] = (_mat[j][k] - _mat[k][j]) * s;
+        tq[j] = (_mat[i][j] + _mat[j][i]) * s;
+        tq[k] = (_mat[i][k] + _mat[k][i]) * s;
 
-            tq[i] = s * 0.5;
-
-            if (s != 0.0)
-                s = 0.5 / s;
-
-            tq[3] = (_mat[j][k] - _mat[k][j]) * s;
-            tq[j] = (_mat[i][j] + _mat[j][i]) * s;
-            tq[k] = (_mat[i][k] + _mat[k][i]) * s;
-
-            QX = tq[0];
-            QY = tq[1];
-            QZ = tq[2];
-            QW = tq[3];
-        }
-        
-        return q;
+        QX = tq[0];
+        QY = tq[1];
+        QZ = tq[2];
+        QW = tq[3];
     }
-    #endif
+
+    return q;
+}
 #endif
 
 int Matrix_implementation::compare(const Matrix_implementation& m) const

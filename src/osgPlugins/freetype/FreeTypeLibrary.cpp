@@ -27,7 +27,7 @@ FreeTypeLibrary::FreeTypeLibrary()
     FT_Error error = FT_Init_FreeType( &_ftlibrary );
     if (error)
     {
-        osg::notify(osg::WARN)<<"Warning: an error occurred during FT_Init_FreeType(..) initialisation .. "<<std::endl;
+        osg::notify(osg::WARN)<<"Warning: an error occurred during FT_Init_FreeType(..) initialisation, error code = "<<std::hex<<error<<std::dec<<std::endl;
     }
 
 }

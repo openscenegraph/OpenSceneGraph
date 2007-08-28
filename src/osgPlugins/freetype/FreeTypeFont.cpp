@@ -80,7 +80,7 @@ void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)
 
     if (error)
     {
-        osg::notify(osg::WARN)<<"FT_Set_Pixel_Sizes() - error "<<error<<std::endl;
+        osg::notify(osg::WARN)<<"FT_Set_Pixel_Sizes() - error 0x"<<std::hex<<error<<std::dec<<std::endl;
     }
     else
     {
@@ -110,7 +110,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(unsigned int charcode)
     FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP|_flags );
     if (error)
     {
-        osg::notify(osg::WARN) << "FT_Load_Char(...) error "<<error<<std::endl;
+        osg::notify(osg::WARN) << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;
         return 0;
     }
 
@@ -211,6 +211,7 @@ osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightc
 
     if (error)
     {
+        osg::notify(osg::WARN) << "FT_Get_Kerning(...) returned error code " <<std::hex<<error<<std::dec<< std::endl;
         return osg::Vec2(0.0f,0.0f);
     }
 

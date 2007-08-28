@@ -484,8 +484,8 @@ public:
     UpdateTextOperation(osg::Group* group):        
         Operation("UpdateTextOperation", true),
         _group(group),
-        _maxNumChildren(20),
-        _maxNumTextPerGeode(100)
+        _maxNumChildren(200),
+        _maxNumTextPerGeode(10)
     {
     }
 

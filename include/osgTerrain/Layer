@@ -297,6 +297,30 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
         
         META_Object(osgTerrain, ProxyLayer);
 
+        /** Return if this ProxyLayer is attached to valid file handle.*/
+        virtual bool isOpen() const { return false; }
+
+        /** Open a file.*/
+        void openFile(const std::string& fileName)
+        {
+            if (_filename!=fileName)
+            {
+                if (isOpen()) close();
+                
+                _filename = fileName;
+            }
+
+            if (!isOpen()) open();
+        }
+
+        /** Open the any associated file handle.*/
+        virtual void open() {}
+
+        /** Open the any associated file handle.*/
+        virtual void close() {}
+
+        /** Extract an ImageLayer from the ProxyLayer.*/
+        virtual ImageLayer* extractImageLayer(unsigned int /*minX*/, unsigned int /*minY*/, unsigned int /*maxX*/, unsigned int /*maxY*/) { return 0; }
 
     protected:
 

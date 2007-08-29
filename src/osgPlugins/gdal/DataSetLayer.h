@@ -33,14 +33,23 @@ class DataSetLayer : public osgTerrain::ProxyLayer
         
         META_Object(GDALPlugin, DataSetLayer);
         
-        bool valid() const { return _dataset!=0; }
-        
+        virtual bool isOpen() const { return _dataset!=0; }
+
+        virtual void open();
+
+        virtual void close();
+
         virtual unsigned int getNumColumns() const;
+
         virtual unsigned int getNumRows() const;
+
+        virtual osgTerrain::ImageLayer* extractImageLayer(unsigned int minX, unsigned int minY, unsigned int maxX, unsigned int maxY);
 
     protected:
     
         virtual ~DataSetLayer();
+    
+        void setUpLocator();
     
         GDALDataset* _dataset;
 

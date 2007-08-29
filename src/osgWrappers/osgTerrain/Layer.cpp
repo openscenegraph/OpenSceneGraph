@@ -592,5 +592,30 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(bool, isOpen,
+	          Properties::VIRTUAL,
+	          __bool__isOpen,
+	          "Return if this ProxyLayer is attached to valid file handle. ",
+	          "");
+	I_Method1(void, openFile, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __void__openFile__C5_std_string_R1,
+	          "Open a file. ",
+	          "");
+	I_Method0(void, open,
+	          Properties::VIRTUAL,
+	          __void__open,
+	          "Open the any associated file handle. ",
+	          "");
+	I_Method0(void, close,
+	          Properties::VIRTUAL,
+	          __void__close,
+	          "Open the any associated file handle. ",
+	          "");
+	I_Method4(osgTerrain::ImageLayer *, extractImageLayer, IN, unsigned, int, IN, unsigned, int, IN, unsigned, int, IN, unsigned, int,
+	          Properties::VIRTUAL,
+	          __ImageLayer_P1__extractImageLayer__unsigned__unsigned__unsigned__unsigned,
+	          "Extract an ImageLayer from the ProxyLayer. ",
+	          "");
 END_REFLECTOR
 

@@ -13,28 +13,51 @@
 
 #include "DataSetLayer.h"
 
+#include <osg/Notify>
+
 using namespace GDALPlugin;
 
-DataSetLayer::DataSetLayer()
+DataSetLayer::DataSetLayer():
+    _dataset(0)
 {
-    _dataset = 0;
 }
 
-DataSetLayer::DataSetLayer(const std::string& fileName)
+DataSetLayer::DataSetLayer(const std::string& fileName):
+    _dataset(0)
 {
-    setFileName(fileName);
-    _dataset = (GDALDataset*)GDALOpen(fileName.c_str(),GA_ReadOnly);
+    openFile(fileName);
 }
 
 DataSetLayer::DataSetLayer(const DataSetLayer& dataSetLayer,const osg::CopyOp& copyop):
     ProxyLayer(dataSetLayer)
 {
-    _dataset = (GDALDataset*)GDALOpen(getFileName().c_str(),GA_ReadOnly);
+    if (dataSetLayer._dataset) open();
 }
 
 DataSetLayer::~DataSetLayer()
 {
-    if (_dataset) delete _dataset;
+    close();
+}
+
+void DataSetLayer::open()
+{
+    if (_dataset) return;
+
+    if (getFileName().empty()) return;
+    
+    _dataset = static_cast<GDALDataset*>(GDALOpen(getFileName().c_str(),GA_ReadOnly));
+    
+    setUpLocator();
+}
+
+void DataSetLayer::close()
+{
+    if (_dataset)
+    {
+        GDALClose(static_cast<GDALDatasetH>(_dataset));
+        
+        _dataset = 0;
+    }
 }
 
 unsigned int DataSetLayer::getNumColumns() const
@@ -47,3 +70,16 @@ unsigned int DataSetLayer::getNumRows() const
     return _dataset!=0 ? _dataset->GetRasterYSize() : 0;
 }
 
+osgTerrain::ImageLayer* DataSetLayer::extractImageLayer(unsigned int minX, unsigned int minY, unsigned int maxX, unsigned int maxY)
+{
+    if (!_dataset || maxX<minX || maxY<minY) return 0;
+
+    osg::notify(osg::NOTICE)<<"DataSetLayer::extractImageLayer("<<minX<<", "<<minY<<", "<<maxX<<", "<<maxY<<") not yet implemented"<<std::endl;
+
+    return 0;
+}
+
+void DataSetLayer::setUpLocator()
+{
+    osg::notify(osg::NOTICE)<<"DataSetLayer::setUpLocator()"<<std::endl;
+}

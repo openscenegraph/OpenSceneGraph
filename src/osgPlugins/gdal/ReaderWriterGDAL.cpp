@@ -54,7 +54,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             // open a DataSetLayer.
             osg::ref_ptr<GDALPlugin::DataSetLayer> dataset = new GDALPlugin::DataSetLayer(fileName);
             
-            if (dataset->valid()) return dataset.release();
+            if (dataset->isOpen()) return dataset.release();
             
             return ReadResult::FILE_NOT_HANDLED;
         }

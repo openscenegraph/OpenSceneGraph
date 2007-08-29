@@ -13,6 +13,8 @@
 
 #include <gdal_priv.h>
 
+#include "DataSetLayer.h"
+
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 // From easyrgb.com
@@ -33,6 +35,25 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
         virtual bool acceptsExtension(const std::string& extension) const
         {
             return osgDB::equalCaseInsensitive(extension,"gdal") || osgDB::equalCaseInsensitive(extension,"gdal");
+        }
+
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
+
+            osg::notify(osg::NOTICE) << "GDALPlugin : " << file << std::endl;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            initGDAL();
+
+            // open a DataSetLayer.
+            osg::ref_ptr<GDALPlugin::DataSetLayer> dataset = new GDALPlugin::DataSetLayer;
+            
+            if (dataset->valid()) return dataset.release();
+            
+            return ReadResult::FILE_NOT_HANDLED;
         }
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
@@ -721,7 +742,7 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
         }
 
-        void initGDAL()
+        void initGDAL() const
         {
             static bool s_initialized = false;
             if (!s_initialized)

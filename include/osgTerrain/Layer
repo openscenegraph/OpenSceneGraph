@@ -286,6 +286,25 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
         Layers _layers;
 };
 
+class OSGTERRAIN_EXPORT ProxyLayer : public Layer
+{
+    public:
+
+        ProxyLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ProxyLayer(const ProxyLayer& proxyLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgTerrain, ProxyLayer);
+
+
+    protected:
+
+        virtual ~ProxyLayer() {}
+
+
+};
+
 }
 
 #endif

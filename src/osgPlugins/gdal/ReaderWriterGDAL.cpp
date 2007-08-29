@@ -46,15 +46,13 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
             OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
 
-            osg::notify(osg::NOTICE) << "GDALPlugin : " << file << std::endl;
-
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             initGDAL();
 
             // open a DataSetLayer.
-            osg::ref_ptr<GDALPlugin::DataSetLayer> dataset = new GDALPlugin::DataSetLayer;
+            osg::ref_ptr<GDALPlugin::DataSetLayer> dataset = new GDALPlugin::DataSetLayer(fileName);
             
             if (dataset->valid()) return dataset.release();
             

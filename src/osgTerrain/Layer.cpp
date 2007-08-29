@@ -326,7 +326,7 @@ unsigned int HeightFieldLayer::getModifiedCount() const
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// HieghtFieldLayer
+// CompositeLayer
 //
 CompositeLayer::CompositeLayer()
 {
@@ -342,3 +342,21 @@ void CompositeLayer::clear()
 {
     _layers.clear();
 }
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ProxyLayer
+//
+ProxyLayer::ProxyLayer()
+{
+}
+
+ProxyLayer::ProxyLayer(const ProxyLayer& proxyLayer,const osg::CopyOp& copyop):
+    Layer(proxyLayer,copyop)
+{
+}
+
+ProxyLayer::~ProxyLayer()
+{
+}
+

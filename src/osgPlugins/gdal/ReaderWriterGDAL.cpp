@@ -39,6 +39,11 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
+            if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(file),"gdal"))
+            {
+                return readObject(osgDB::getNameLessExtension(file),options);
+            }
+
             OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
 
             osg::notify(osg::NOTICE) << "GDALPlugin : " << file << std::endl;
@@ -58,12 +63,22 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
+            if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(fileName),"gdal"))
+            {
+                return readImage(osgDB::getNameLessExtension(fileName),options);
+            }
+
             OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
             return const_cast<ReaderWriterGDAL*>(this)->local_readImage(fileName, options);
         }
         
         virtual ReadResult readHeightField(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
+            if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(fileName),"gdal"))
+            {
+                return readHeightField(osgDB::getNameLessExtension(fileName),options);
+            }
+
             OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
             return const_cast<ReaderWriterGDAL*>(this)->local_readHeightField(fileName, options);
         }

@@ -63,6 +63,23 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
 
         }
 
+        if (fr.matchSequence("ProxyLayer %w") || fr.matchSequence("ProxyLayer %w"))
+        {
+            osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
+            osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
+            if (proxyLayer)
+            {
+                layer = proxyLayer;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Warning: Failed to create ProxyLayer "<<fr[1].getStr()<<std::endl;
+            }
+                        
+            fr += 2;
+            itrAdvanced = true;
+        }
+
         if (fr.matchSequence("Images {") || fr.matchSequence("images {"))
         {
             osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;

@@ -12,6 +12,7 @@
 
 #include <osg/CoordinateSystemNode>
 #include <osg/CopyOp>
+#include <osg/Matrixd>
 #include <osg/Object>
 #include <osg/Vec3d>
 #include <osgTerrain/Locator>
@@ -111,55 +112,20 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
 	          "Get the const EllipsoidModel. ",
 	          "");
-	I_Method4(void, setExtents, IN, double, minX, IN, double, minY, IN, double, maxX, IN, double, maxY,
+	I_Method1(void, setTransform, IN, osg::Matrixd &, transform,
 	          Properties::NON_VIRTUAL,
-	          __void__setExtents__double__double__double__double,
+	          __void__setTransform__osg_Matrixd_R1,
+	          "Set the transformation from local coordinates to model coordinates. ",
+	          "");
+	I_Method0(const osg::Matrixd &, getTransform,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrixd_R1__getTransform,
+	          "Set the transformation from local coordinates to model coordinates. ",
+	          "");
+	I_Method4(void, setTransformAsExtents, IN, double, minX, IN, double, minY, IN, double, maxX, IN, double, maxY,
+	          Properties::NON_VIRTUAL,
+	          __void__setTransformAsExtents__double__double__double__double,
 	          "Set the extents of the local coords. ",
-	          "");
-	I_Method4(void, getExtents, IN, double &, minX, IN, double &, minY, IN, double &, maxX, IN, double &, maxY,
-	          Properties::NON_VIRTUAL,
-	          __void__getExtents__double_R1__double_R1__double_R1__double_R1,
-	          "Get the extents of the local coords. ",
-	          "");
-	I_Method1(void, setMinX, IN, double, minX,
-	          Properties::NON_VIRTUAL,
-	          __void__setMinX__double,
-	          "",
-	          "");
-	I_Method0(double, getMinX,
-	          Properties::NON_VIRTUAL,
-	          __double__getMinX,
-	          "",
-	          "");
-	I_Method1(void, setMinY, IN, double, minY,
-	          Properties::NON_VIRTUAL,
-	          __void__setMinY__double,
-	          "",
-	          "");
-	I_Method0(double, getMinY,
-	          Properties::NON_VIRTUAL,
-	          __double__getMinY,
-	          "",
-	          "");
-	I_Method1(void, setMaxX, IN, double, maxX,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxX__double,
-	          "",
-	          "");
-	I_Method0(double, getMaxX,
-	          Properties::NON_VIRTUAL,
-	          __double__getMaxX,
-	          "",
-	          "");
-	I_Method1(void, setMaxY, IN, double, maxY,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxY__double,
-	          "",
-	          "");
-	I_Method0(double, getMaxY,
-	          Properties::NON_VIRTUAL,
-	          __double__getMaxY,
-	          "",
 	          "");
 	I_Method0(bool, orientationOpenGL,
 	          Properties::VIRTUAL,
@@ -197,17 +163,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	I_SimpleProperty(const std::string &, Format, 
 	                 __C5_std_string_R1__getFormat, 
 	                 __void__setFormat__C5_std_string_R1);
-	I_SimpleProperty(double, MaxX, 
-	                 __double__getMaxX, 
-	                 __void__setMaxX__double);
-	I_SimpleProperty(double, MaxY, 
-	                 __double__getMaxY, 
-	                 __void__setMaxY__double);
-	I_SimpleProperty(double, MinX, 
-	                 __double__getMinX, 
-	                 __void__setMinX__double);
-	I_SimpleProperty(double, MinY, 
-	                 __double__getMinY, 
-	                 __void__setMinY__double);
+	I_SimpleProperty(osg::Matrixd &, Transform, 
+	                 0, 
+	                 __void__setTransform__osg_Matrixd_R1);
 END_REFLECTOR
 

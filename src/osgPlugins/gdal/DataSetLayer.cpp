@@ -14,6 +14,11 @@
 #include "DataSetLayer.h"
 
 #include <osg/Notify>
+#include <osg/io_utils>
+
+#include <cpl_string.h>
+#include <gdalwarper.h>
+#include <ogr_spatialref.h>
 
 using namespace GDALPlugin;
 
@@ -82,4 +87,98 @@ osgTerrain::ImageLayer* DataSetLayer::extractImageLayer(unsigned int sourceMinX,
 void DataSetLayer::setUpLocator()
 {
     osg::notify(osg::NOTICE)<<"DataSetLayer::setUpLocator()"<<std::endl;
+    if (!isOpen()) return;
+    
+    const char* pszSourceSRS = _dataset->GetProjectionRef();
+    if (!pszSourceSRS || strlen(pszSourceSRS)==0) pszSourceSRS = _dataset->GetGCPProjection();
+
+
+    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
+
+    if (pszSourceSRS)
+    {
+        locator->setFormat("WKT");
+        locator->setCoordinateSystem(pszSourceSRS);
+    }
+
+    osg::Matrixd matrix;
+
+    double geoTransform[6];
+    if (_dataset->GetGeoTransform(geoTransform)==CE_None)
+    {
+#ifdef SHIFT_RASTER_BY_HALF_CELL
+        // shift the transform to the middle of the cell if a raster interpreted as vector
+        if (data->_dataType == VECTOR)
+        {
+            geoTransform[0] += 0.5 * geoTransform[1];
+            geoTransform[3] += 0.5 * geoTransform[5];
+        }
+#endif
+
+        matrix.set( geoTransform[1],    geoTransform[4],    0.0,    0.0,
+                    geoTransform[2],    geoTransform[5],    0.0,    0.0,
+                    0.0,                0.0,                1.0,    0.0,
+                    geoTransform[0],    geoTransform[3],    0.0,    1.0);
+                    
+    }
+    else if (_dataset->GetGCPCount()>0 && _dataset->GetGCPProjection())
+    {
+        osg::notify(osg::NOTICE) << "    Using GCP's"<< std::endl;
+
+
+        /* -------------------------------------------------------------------- */
+        /*      Create a transformation object from the source to               */
+        /*      destination coordinate system.                                  */
+        /* -------------------------------------------------------------------- */
+        void *hTransformArg = 
+            GDALCreateGenImgProjTransformer( _dataset, pszSourceSRS, 
+                                             NULL, pszSourceSRS, 
+                                             TRUE, 0.0, 1 );
+
+        if ( hTransformArg == NULL )
+        {
+            osg::notify(osg::NOTICE)<<" failed to create transformer"<<std::endl;
+            return;
+        }
+
+        /* -------------------------------------------------------------------- */
+        /*      Get approximate output definition.                              */
+        /* -------------------------------------------------------------------- */
+        double adfDstGeoTransform[6];
+        int nPixels=0, nLines=0;
+        if( GDALSuggestedWarpOutput( _dataset, 
+                                     GDALGenImgProjTransform, hTransformArg, 
+                                     adfDstGeoTransform, &nPixels, &nLines )
+            != CE_None )
+        {
+            osg::notify(osg::NOTICE)<<" failed to create warp"<<std::endl;
+            return;
+        }
+
+        GDALDestroyGenImgProjTransformer( hTransformArg );
+
+
+        matrix.set( adfDstGeoTransform[1],    adfDstGeoTransform[4],    0.0,    0.0,
+                    adfDstGeoTransform[2],    adfDstGeoTransform[5],    0.0,    0.0,
+                    0.0,                0.0,                1.0,    0.0,
+                    adfDstGeoTransform[0],    adfDstGeoTransform[3],    0.0,    1.0);
+    }
+    else
+    {
+        osg::notify(osg::NOTICE) << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
+
+        matrix.set( 1.0,    0.0,    0.0,    0.0,
+                    0.0,    1.0,    0.0,    0.0,
+                    0.0,    0.0,    1.0,    0.0,
+                    0.0,    0.0,    0.0,    1.0);
+
+    }
+    
+    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
+
+    // need to invert y and scale by pixel size.    
+    locator->setTransform(matrix);
+    
+    setLocator(locator.get());    
+    
 }

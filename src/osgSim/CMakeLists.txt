@@ -66,6 +66,7 @@ ADD_LIBRARY(${LIB_NAME}
 LINK_INTERNAL(${LIB_NAME} 	
 	osgText
 	osgUtil
+	osgDB
 	osg
 	OpenThreads
 )

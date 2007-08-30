@@ -70,6 +70,16 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
             if (proxyLayer)
             {
                 layer = proxyLayer;
+                
+                osgTerrain::Locator* locator = layer->getLocator();
+                osg::notify(osg::NOTICE)<<"Locator = "<<locator<<std::endl;
+                if (layer->getLocator())
+                {
+                    osg::notify(osg::NOTICE)<<"   format = "<<locator->getFormat()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"   cs = "<<locator->getCoordinateSystem()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"   transform "<<locator->getTransform()<<std::endl;
+                }
+                
             }
             else
             {
@@ -145,7 +155,7 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
             if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
             else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
             else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-            locator->setExtents(x,y,x+w,y+h);
+            locator->setTransformAsExtents(x,y,x+w,y+h);
 
             fr += 6;
             itrAdvanced = true;
@@ -189,6 +199,21 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
                     localAdvanced = true;
                 }
 
+                if (fr.matchSequence("Transform %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f"))
+                {
+                    osg::Matrixd matrix;
+                    for(unsigned int i=1; i<=16; ++i)
+                    {
+                        fr[i].getFloat(matrix(i%4,i/4));
+                    }
+                    
+                    locator->setTransform(matrix);
+                
+                    fr += 17;
+                    localAdvanced = true;
+                }
+
+
                 if (fr.matchSequence("Extents %f %f %f %f"))
                 {
                     double minX,minY,maxX,maxY;
@@ -197,7 +222,7 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
                     fr[3].getFloat(maxX);
                     fr[4].getFloat(maxY);
                     
-                    locator->setExtents(minX, minY, maxX, maxY);
+                    locator->setTransformAsExtents(minX, minY, maxX, maxY);
                     
                     fr += 5;
                     localAdvanced = true;
@@ -221,7 +246,7 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
         
             locator = new osgTerrain::Locator;
             locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-            locator->setExtents(x,y,x+w,y+h);
+            locator->setTransformAsExtents(x,y,x+w,y+h);
             
             fr += 5;
             itrAdvanced = true;
@@ -237,7 +262,7 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
         
             locator = new osgTerrain::Locator;
             locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-            locator->setExtents(x,y,x+w,y+h);
+            locator->setTransformAsExtents(x,y,x+w,y+h);
          
             fr += 5;
             itrAdvanced = true;
@@ -426,64 +451,37 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
 bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
 {
     
-    if (locator.getCoordinateSystem().empty())
-    {    
-        fw.indent()<<"Locator ";
-        switch(locator.getCoordinateSystemType())
-        {
-            case(osgTerrain::Locator::GEOCENTRIC):
-            {        
-                fw<<"GEOCENTRIC";
-                break;
-            }
-            case(osgTerrain::Locator::GEOGRAPHIC):
-            {        
-                fw<<"GEOGRPAHIC";
-                break;
-            }
-            case(osgTerrain::Locator::PROJECTED):
-            {        
-                fw<<"PROJECTED";
-                break;
-            }
-        }    
+    fw.indent()<<"Locator {"<<std::endl;
+    fw.moveIn();
 
-        fw<<" "<<locator.getMinX()<<" "<<locator.getMinY()<<" "<<locator.getMaxX()<<" "<<locator.getMaxY()<<std::endl;
-    }
-    else
+    if (!locator.getFormat().empty()) fw.indent()<<"Format "<<fw.wrapString(locator.getFormat())<<std::endl;
+    if (!locator.getCoordinateSystem().empty()) fw.indent()<<"CoordinateSystem "<<fw.wrapString(locator.getCoordinateSystem())<<std::endl;
+
+    fw.indent()<<"CoordinateSystemType ";
+    switch(locator.getCoordinateSystemType())
     {
-        fw.indent()<<"Locator {"<<std::endl;
-        fw.moveIn();
+        case(osgTerrain::Locator::GEOCENTRIC):
+        {        
+            fw<<"GEOCENTRIC"<<std::endl;
+            break;
+        }
+        case(osgTerrain::Locator::GEOGRAPHIC):
+        {        
+            fw<<"GEOGRAPHIC"<<std::endl;
+            break;
+        }
+        case(osgTerrain::Locator::PROJECTED):
+        {        
+            fw<<"PROJECTED"<<std::endl;;
+            break;
+        }
+    }    
 
-        if (!locator.getFormat().empty()) fw.indent()<<"Format \""<<locator.getFormat()<<"\""<<std::endl;
-        if (!locator.getCoordinateSystem().empty()) fw.indent()<<"CoordinateSystem \""<<locator.getCoordinateSystem()<<"\""<<std::endl;
+    fw.indent()<<"Transform "<<locator.getTransform()<<std::endl;
 
-        fw.indent()<<"CoordinateSystemType ";
-        switch(locator.getCoordinateSystemType())
-        {
-            case(osgTerrain::Locator::GEOCENTRIC):
-            {        
-                fw<<"GEOCENTRIC"<<std::endl;
-                break;
-            }
-            case(osgTerrain::Locator::GEOGRAPHIC):
-            {        
-                fw<<"GEOGRAPHIC"<<std::endl;
-                break;
-            }
-            case(osgTerrain::Locator::PROJECTED):
-            {        
-                fw<<"PROJECTED"<<std::endl;;
-                break;
-            }
-        }    
+    fw.moveOut();
+    fw.indent()<<"}"<<std::endl;
 
-        fw.indent()<<"Extents "<<locator.getMinX()<<" "<<locator.getMinY()<<" "<<locator.getMaxX()<<" "<<locator.getMaxY()<<std::endl;
-
-        fw.moveOut();
-        fw.indent()<<"}"<<std::endl;
-
-    }
     return false;
 }
 

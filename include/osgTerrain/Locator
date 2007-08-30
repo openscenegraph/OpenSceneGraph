@@ -76,24 +76,14 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         const osg::EllipsoidModel* getEllipsoidModel() const { return _ellipsoidModel.get(); }
 
 
+        /** Set the transformation from local coordinates to model coordinates.*/
+        void setTransform(osg::Matrixd& transform) { _transform = transform; _inverse.invert(_transform); }
+
+        /** Set the transformation from local coordinates to model coordinates.*/
+        const osg::Matrixd& getTransform() const { return _transform; }
 
         /** Set the extents of the local coords.*/
-        void setExtents(double minX, double minY, double maxX, double maxY);
-
-        /** Get the extents of the local coords.*/
-        void getExtents(double& minX, double& minY, double& maxX, double& maxY) const;
-
-        void setMinX(double minX) { _minX = minX; }
-        double getMinX() const { return _minX; }
-
-        void setMinY(double minY) { _minY = minY; }
-        double getMinY() const { return _minY; }
-
-        void setMaxX(double maxX) { _maxX = maxX; }
-        double getMaxX() const { return _maxX; }
-
-        void setMaxY(double maxY) { _maxY = maxY; }
-        double getMaxY() const { return _maxY; }
+        void setTransformAsExtents(double minX, double minY, double maxX, double maxY);
 
         
         virtual bool orientationOpenGL() const;
@@ -123,10 +113,8 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         std::string                         _cs;
         osg::ref_ptr<osg::EllipsoidModel>   _ellipsoidModel;
 
-        double                              _minX;
-        double                              _minY;
-        double                              _maxX;
-        double                              _maxY;
+        osg::Matrixd                        _transform;
+        osg::Matrixd                        _inverse;
 
 };
 

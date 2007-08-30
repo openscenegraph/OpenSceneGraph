@@ -24,11 +24,7 @@ using namespace osgTerrain;
 //
 Locator::Locator():
     _coordinateSystemType(PROJECTED),
-    _ellipsoidModel(new osg::EllipsoidModel()),
-    _minX(0.0),
-    _minY(0.0),
-    _maxX(0.0),
-    _maxY(0.0)
+    _ellipsoidModel(new osg::EllipsoidModel())
 {
 }
 
@@ -38,10 +34,7 @@ Locator::Locator(const Locator& locator,const osg::CopyOp& copyop):
     _ellipsoidModel(locator._ellipsoidModel),
     _format(locator._format),
     _cs(locator._cs),
-    _minX(locator._minX),
-    _minY(locator._minY),
-    _maxX(locator._maxX),
-    _maxY(locator._maxY)
+    _transform(locator._transform)
 {
 }
 
@@ -49,12 +42,12 @@ Locator::~Locator()
 {
 }
 
-void Locator::setExtents(double minX, double minY, double maxX, double maxY)
+void Locator::setTransformAsExtents(double minX, double minY, double maxX, double maxY)
 {
-    _minX = minX;
-    _minY = minY;
-    _maxX = maxX;
-    _maxY = maxY;
+    _transform.set(maxX-minX, 0.0,       0.0, 0.0,
+                   0.0,       maxY-minY, 0.0, 0.0,
+                   0.0,       0.0,       1.0, 0.0,
+                   minX,      minY,      0.0, 1.0); 
 }
 
 bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight)
@@ -101,7 +94,7 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
 
 bool Locator::orientationOpenGL() const
 {
-    return ((_maxX-_minX) * (_maxY-_minY)) >= 0.0;
+    return _transform(0,0) * _transform(1,1) >= 0.0;
 }
 
 bool Locator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const
@@ -109,27 +102,21 @@ bool Locator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) co
     switch(_coordinateSystemType)
     {
         case(GEOCENTRIC):
-        {        
-            double longitude = _minX * (1.0-local.x()) + _maxX * local.x();
-            double latitude  = _minY * (1.0-local.y()) + _maxY * local.y();
-            double height    = local.z();
-
-            _ellipsoidModel->convertLatLongHeightToXYZ(latitude, longitude, height,
+        {
+            osg::Vec3d geographic = local * _transform;
+                
+            _ellipsoidModel->convertLatLongHeightToXYZ(geographic.x(), geographic.y(), geographic.z(),
                                                        world.x(), world.y(), world.z());
             return true;      
         }
         case(GEOGRAPHIC):
         {        
-            world.x() = _minX * (1.0-local.x()) + _maxX * local.x();
-            world.y() = _minY * (1.0-local.y()) + _maxY * local.y();
-            world.z() = local.z();
+            world = local * _transform;
             return true;      
         }
         case(PROJECTED):
         {        
-            world.x() = _minX * (1.0-local.x()) + _maxX * local.x();
-            world.y() = _minY * (1.0-local.y()) + _maxY * local.y();
-            world.z() = local.z();
+            world = local * _transform;
             return true;      
         }
     }    
@@ -148,25 +135,19 @@ bool Locator::convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) co
             _ellipsoidModel->convertXYZToLatLongHeight(world.x(), world.y(), world.z(),
                                                        latitude, longitude, height );
 
-
-            local.x() = (longitude - _minX) / (_maxX - _minX);
-            local.y() = (latitude - _minY) / (_maxY - _minY);
-            local.z() = height;
+            local = osg::Vec3d(longitude, latitude, height) * _inverse;
 
             return true;      
         }
         case(GEOGRAPHIC):
         {        
-            local.x() = (world.x() - _minX) / (_maxX - _minX);
-            local.y() = (world.y() - _minY) / (_maxY - _minY);
-            local.z() = world.z();
+            local = world * _inverse;
+
             return true;      
         }
         case(PROJECTED):
         {        
-            local.x() = (world.x() - _minX) / (_maxX - _minX);
-            local.y() = (world.y() - _minY) / (_maxY - _minY);
-            local.z() = world.z();
+            local = world * _inverse;
             return true;      
         }
     }    

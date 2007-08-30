@@ -640,7 +640,7 @@ int main(int argc, char** argv)
     osg::ref_ptr<osgTerrain::Layer> lastAppliedLayer;
 
     locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-    locator->setExtents(-osg::PI, -osg::PI*0.5, osg::PI, osg::PI*0.5);
+    locator->setTransformAsExtents(-osg::PI, -osg::PI*0.5, osg::PI, osg::PI*0.5);
 
     unsigned int layerNum = 0;
 
@@ -672,7 +672,7 @@ int main(int argc, char** argv)
         {
             // define the extents.
             locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-            locator->setExtents(x,y,x+w,y+h);
+            locator->setTransformAsExtents(x,y,x+w,y+h);
             readParameter = true;
         }
 
@@ -686,7 +686,7 @@ int main(int argc, char** argv)
         {
             // define the extents.
             locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-            locator->setExtents(x,y,x+w,y+h);
+            locator->setTransformAsExtents(x,y,x+w,y+h);
         }
 
         else if (arguments.read(pos, "--hf",filename))

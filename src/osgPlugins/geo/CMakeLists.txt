@@ -14,6 +14,6 @@ osgGeoAnimation.h
 osgGeoNodes.h
 osgGeoStructs.h
 )
-SET(TARGET_ADDED_LIBRARIES osgSim )
+SET(TARGET_ADDED_LIBRARIES osgSim osgText)
 #### end var setup  ###
 SETUP_PLUGIN(geo)

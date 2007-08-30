@@ -612,10 +612,10 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __void__close,
 	          "Open the any associated file handle. ",
 	          "");
-	I_Method4(osgTerrain::ImageLayer *, extractImageLayer, IN, unsigned, int, IN, unsigned, int, IN, unsigned, int, IN, unsigned, int,
-	          Properties::VIRTUAL,
-	          __ImageLayer_P1__extractImageLayer__unsigned__unsigned__unsigned__unsigned,
-	          "Extract an ImageLayer from the ProxyLayer. ",
-	          "");
+	I_MethodWithDefaults6(osgTerrain::ImageLayer *, extractImageLayer, IN, unsigned, int, , IN, unsigned, int, , IN, unsigned, int, , IN, unsigned, int, , IN, unsigned, int, 0, IN, unsigned, int, 0,
+	                      Properties::VIRTUAL,
+	                      __ImageLayer_P1__extractImageLayer__unsigned__unsigned__unsigned__unsigned__unsigned__unsigned,
+	                      "Extract an ImageLayer from the ProxyLayer. ",
+	                      "");
 END_REFLECTOR
 

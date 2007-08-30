@@ -96,6 +96,34 @@ IF(WIN32)
     IF(UNIX)
         ADD_DEFINITIONS(-DNOMINMAX)
     ENDIF(UNIX)
+########################################################################################################
+# the foolowing options are MSVC specific,
+# the first OSG_MSVC_VERSIONED_DLL activate a custom build-time layout that should allow to run examples and application 
+# fron bin folder without requiring installation step.
+# it also prepend "osg${OPENSCENEGRAPH_SOVERSION}-" to only .dll files, leaving .lib files untouched in lib
+# it also use a hack to get rid of Debug and Release folder in MSVC projects 
+# all the .dll and .pdb are in bin and all the .lib and .exp are in lib
+# 
+# the second option disable incremental linking in debug build , that is enabled by default by CMake
+##########################################################################################################
+
+	IF(MSVC)
+		IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+			MESSAGE("Warning:  disabling versioned options 2.4.6 exibits inconsintencies in .pdb naming, at least under MSVC, suggested upgrading at least to 2.4.7")
+			SET(OSG_MSVC_VERSIONED_DLL OFF)
+			SET(OSG_MSVC_DEBUG_INCREMENTAL_LINK ON)
+		ELSE(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+    	OPTION(OSG_MSVC_VERSIONED_DLL "Set to ON to build OpenSceneGraph with versioned dll names" OFF)
+			MARK_AS_ADVANCED(OSG_MSVC_VERSIONED_DLL)
+    	OPTION(OSG_MSVC_DEBUG_INCREMENTAL_LINK "Set to OFF to build OpenSceneGraph without incremental linking in debug (release is off by default)" ON)
+			MARK_AS_ADVANCED(OSG_MSVC_DEBUG_INCREMENTAL_LINK)
+			IF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
+    		SET(CMAKE_MODULE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
+    		SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
+    		SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
+			ENDIF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
+		ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+	ENDIF(MSVC)
 ENDIF(WIN32)
 
 ########################################################################################################
@@ -219,7 +247,9 @@ SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
 #SET(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME})
 SET(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib)
 MAKE_DIRECTORY(${OUTPUT_LIBDIR})
-MAKE_DIRECTORY(${OUTPUT_LIBDIR}/${OSG_PLUGINS})
+IF(NOT MSVC)
+	MAKE_DIRECTORY(${OUTPUT_LIBDIR}/${OSG_PLUGINS})	
+ENDIF(NOT MSVC)
 SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
 
 
@@ -299,6 +329,8 @@ ELSE(CMAKE_COMPILER_IS_GNUCXX)
         # And do we need to further subcase this for different versions of VS?
         # CMake variables: MSVC60, MSVC70, MSVC71, MSVC80, CMAKE_COMPILER_2005
         SET(OSG_AGGRESSIVE_WARNING_FLAGS "/Wall /W4")
+        
+
     ELSE(MSVC)
         # CMake lacks an elseif, so other non-gcc, non-VS compilers need
         # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should 

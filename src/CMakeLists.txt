@@ -1,6 +1,6 @@
-
-SUBDIRS(
-        OpenThreads
+#the old construct SUBDIRS( was substituded by ADD_SUBDIRECTORY that is to be preferred according on CMake docs.
+FOREACH( mylibfolder 
+  OpenThreads
 	osg
 	osgDB 
 	osgUtil 
@@ -14,7 +14,8 @@ SUBDIRS(
 	osgTerrain
 	osgViewer
 )
-
+	ADD_SUBDIRECTORY(${mylibfolder})
+ENDFOREACH( mylibfolder	)
 OPTION(BUILD_OSG_PLUGINS "Enable to build OSG Plugins" ON)
 IF   (BUILD_OSG_PLUGINS)
 	ADD_SUBDIRECTORY(osgPlugins)

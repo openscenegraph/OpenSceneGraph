@@ -43,7 +43,7 @@ class DataSetLayer : public osgTerrain::ProxyLayer
 
         virtual unsigned int getNumRows() const;
 
-        virtual osgTerrain::ImageLayer* extractImageLayer(unsigned int minX, unsigned int minY, unsigned int maxX, unsigned int maxY);
+        virtual osgTerrain::ImageLayer* extractImageLayer(unsigned int sourceMinX, unsigned int sourceMinY, unsigned int sourceMaxX, unsigned int sourceMaxY, unsigned int targetWidth=0, unsigned int targetHeight=0);
 
     protected:
     

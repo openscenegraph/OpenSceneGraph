@@ -70,11 +70,11 @@ unsigned int DataSetLayer::getNumRows() const
     return _dataset!=0 ? _dataset->GetRasterYSize() : 0;
 }
 
-osgTerrain::ImageLayer* DataSetLayer::extractImageLayer(unsigned int minX, unsigned int minY, unsigned int maxX, unsigned int maxY)
+osgTerrain::ImageLayer* DataSetLayer::extractImageLayer(unsigned int sourceMinX, unsigned int sourceMinY, unsigned int sourceMaxX, unsigned int sourceMaxY, unsigned int targetWidth, unsigned int targetHeight)
 {
-    if (!_dataset || maxX<minX || maxY<minY) return 0;
+    if (!_dataset || sourceMaxX<sourceMinX || sourceMaxY<sourceMinY) return 0;
 
-    osg::notify(osg::NOTICE)<<"DataSetLayer::extractImageLayer("<<minX<<", "<<minY<<", "<<maxX<<", "<<maxY<<") not yet implemented"<<std::endl;
+    osg::notify(osg::NOTICE)<<"DataSetLayer::extractImageLayer("<<sourceMinX<<", "<<sourceMinY<<", "<<sourceMaxX<<", "<<sourceMaxY<<", target:"<<targetWidth<<", "<<targetHeight<<") not yet implemented"<<std::endl;
 
     return 0;
 }

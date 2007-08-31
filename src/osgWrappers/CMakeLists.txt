@@ -65,10 +65,36 @@ MACRO(ADD_WRAPPER_LIB SUBDIR EXPORTDEF)
 	#not sure if needed, but for plugins only msvc need the d suffix
 	IF(NOT MSVC)
 		SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES DEBUG_POSTFIX "")
+  ELSE(NOT MSVC)
+    	IF(OSG_MSVC_VERSIONED_DLL) 
+    		   		
+				#this is a hack... the build place is set to lib/<debug or release> by LIBARARY_OUTPUT_PATH equal to OUTPUT_LIBDIR
+				#the .lib will be crated in ../ so going straight in lib by the IMPORT_PREFIX property
+				#because we want dll placed in OUTPUT_BINDIR ie the bin folder sibling of lib, we can use ../../bin to go there,
+				#it is hardcoded, we should compute OUTPUT_BINDIR position relative to OUTPUT_LIBDIR ... to be implemented
+				#changing bin to something else breaks this hack
+				#the dll are placed in bin/${OSG_PLUGINS} 
+				
+    		SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES PREFIX "../../bin/${OSG_PLUGINS}/")
+	 			SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES IMPORT_PREFIX "../")
+    	ELSE(OSG_MSVC_VERSIONED_DLL)
+    		
+    		#in standard mode (unversioned) the .lib and .dll are placed in lib/<debug or release>/${OSG_PLUGINS}.
+    		#here the PREFIX property has been used, the same result would be accomplidhe by prepending ${OSG_PLUGINS}/ to OUTPUT_NAME target property
+    		
+    		SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES PREFIX "${OSG_PLUGINS}/")
+    	ENDIF(OSG_MSVC_VERSIONED_DLL)
 	ENDIF(NOT MSVC)
 
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES DEFINE_SYMBOL "${EXPORTDEF}" PROJECT_LABEL "Wrapper ${SUBDIR}")
-	TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LINK})
+	IF(MSVC AND OSG_MSVC_VERSIONED_DLL)
+		LINK_INTERNAL(${TARGET_NAME} ${LINK})
+		#when using full path name to specify linkage, it seems that already linked libs must be specified
+		LINK_EXTERNAL(${TARGET_NAME} ${OPENGL_LIBRARIES}) 
+
+	ELSE(MSVC AND OSG_MSVC_VERSIONED_DLL)
+		TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LINK})
+	ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
 	#MESSAGE(STATUS "--TARGET_LINK_LIBRARIES-->${TARGET_NAME}<->${LINK}<-")
 	
 	REMOVE(DEFINE ${DEFINE})	
@@ -103,6 +129,9 @@ SET(OSGWRAPPER_LIB_LIST
 
 
 SET(OSGWRAPPER_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+IF(MSVC)
+	SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
+ENDIF(MSVC)
 FOREACH(LIB ${OSGWRAPPER_LIB_LIST} )
-	ADD_WRAPPER_LIB(${LIB}  OSGWRAPPERS_LIBRARY LINK osg ${LIB} osgIntrospection)	
+	ADD_WRAPPER_LIB(${LIB}  OSGWRAPPERS_LIBRARY LINK OpenThreads osg osgGA ${LIB} osgIntrospection)	
 ENDFOREACH(LIB ${OSGWRAPPER_LIB_LIST} )

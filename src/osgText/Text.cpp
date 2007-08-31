@@ -448,6 +448,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
     return lastChar;
 }
 
+
 void Text::computeGlyphRepresentation()
 {
     Font* activefont = getActiveFont();
@@ -462,6 +463,8 @@ void Text::computeGlyphRepresentation()
         computePositions(); //to reset the origin
         return;
     }
+    
+    OpenThreads::ScopedLock<Font::FontMutex> lock(activefont->getSerializeFontCallsMutex());
 
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();

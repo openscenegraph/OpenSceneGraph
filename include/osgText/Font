@@ -26,6 +26,8 @@
 #include <osgDB/ReaderWriter>
 #include <osgText/Export>
 
+#include <OpenThreads/Mutex>
+
 namespace osgText {
 
 class Font;
@@ -159,6 +161,11 @@ public:
        * for all graphics contexts. */
     virtual void releaseGLObjects(osg::State* state=0) const;
 
+    typedef OpenThreads::Mutex FontMutex;
+    
+    /** Get the mutex that enables the serialization of calls to this font.*/
+    FontMutex& getSerializeFontCallsMutex() const { return _serializeFontCallsMutex; }
+
 protected:
 
     virtual ~Font();
@@ -172,6 +179,7 @@ protected:
     typedef std::pair< unsigned int, unsigned int >         SizePair;
     typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
     
+    mutable FontMutex               _serializeFontCallsMutex;
 
     osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;

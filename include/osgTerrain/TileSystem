@@ -37,7 +37,7 @@ class OSGTERRAIN_EXPORT TileSystem : public osg::Object
         virtual ~TileSystem();
 };
 
-class TileID : public osg::Object
+class OSGTERRAIN_EXPORT TileID : public osg::Object
 {
     public:
     

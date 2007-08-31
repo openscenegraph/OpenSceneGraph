@@ -28,6 +28,7 @@ using namespace std;
 
 static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
 
+static OpenThreads::Mutex s_FontFileMutex;
 
 std::string osgText::findFontFile(const std::string& str)
 {
@@ -35,6 +36,7 @@ std::string osgText::findFontFile(const std::string& str)
     std::string filename = osgDB::findDataFile(str);
     if (!filename.empty()) return filename;
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
 
     static osgDB::FilePathList s_FontFilePath;
     static bool initialized = false;
@@ -88,6 +90,8 @@ osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::R
     std::string foundFile = findFontFile(filename);
     if (foundFile.empty()) return 0;
     
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
     if (!userOptions)
     {
@@ -108,6 +112,8 @@ osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::R
 
 osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
     if (!userOptions)
     {

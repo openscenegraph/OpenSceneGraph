@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(OpenThreads::Mutex, osgText::Font::FontMutex)
+
 BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_DeclaringFile("osgText/Font");
 	I_BaseType(osg::Object);
@@ -211,6 +213,11 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method0(osgText::Font::FontMutex &, getSerializeFontCallsMutex,
+	          Properties::NON_VIRTUAL,
+	          __FontMutex_R1__getSerializeFontCallsMutex,
+	          "Get the mutex that enables the serialization of calls to this font. ",
+	          "");
 	I_ProtectedMethod4(void, addGlyph, IN, unsigned int, width, IN, unsigned int, height, IN, unsigned int, charcode, IN, osgText::Font::Glyph *, glyph,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -241,6 +248,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	I_SimpleProperty(osg::Texture::FilterMode, MinFilterHint, 
 	                 __osg_Texture_FilterMode__getMinFilterHint, 
 	                 __void__setMinFilterHint__osg_Texture_FilterMode);
+	I_SimpleProperty(osgText::Font::FontMutex &, SerializeFontCallsMutex, 
+	                 __FontMutex_R1__getSerializeFontCallsMutex, 
+	                 0);
 	I_SimpleProperty(osg::StateSet *, StateSet, 
 	                 __osg_StateSet_P1__getStateSet, 
 	                 __void__setStateSet__osg_StateSet_P1);

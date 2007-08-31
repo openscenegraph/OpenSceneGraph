@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <OpenThreads/Mutex>
 #include <osg/DeleteHandler>
 #include <osg/Referenced>
 #include <osg/observer_ptr>
@@ -46,6 +47,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	          Properties::NON_VIRTUAL,
 	          __bool__getThreadSafeRefUnref,
 	          "Get whether a mutex is used to ensure ref() and unref() are thread safe. ",
+	          "");
+	I_Method0(OpenThreads::Mutex *, getRefMutex,
+	          Properties::NON_VIRTUAL,
+	          __OpenThreads_Mutex_P1__getRefMutex,
+	          "Get the mutex used to ensure thread safety of ref()/unref(). ",
 	          "");
 	I_Method0(void, ref,
 	          Properties::NON_VIRTUAL,
@@ -99,6 +105,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	                   __void__deleteUsingDeleteHandler,
 	                   "",
 	                   "");
+	I_SimpleProperty(OpenThreads::Mutex *, RefMutex, 
+	                 __OpenThreads_Mutex_P1__getRefMutex, 
+	                 0);
 	I_SimpleProperty(bool, ThreadSafeRefUnref, 
 	                 __bool__getThreadSafeRefUnref, 
 	                 __void__setThreadSafeRefUnref__bool);

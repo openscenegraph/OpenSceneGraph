@@ -464,7 +464,7 @@ void Text::computeGlyphRepresentation()
         return;
     }
     
-    OpenThreads::ScopedLock<Font::FontMutex> lock(activefont->getSerializeFontCallsMutex());
+    OpenThreads::ScopedLock<Font::FontMutex> lock(*(activefont->getSerializeFontCallsMutex()));
 
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();

@@ -44,14 +44,14 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
             StateGraph::moveStateGraph(state,prev_rg_parent,rg->_parent);
 
             // send state changes and matrix changes to OpenGL.
-            state.apply(rg->_stateset);
+            state.apply(rg->getStateSet());
 
         }
         else if (rg!=prev_rg)
         {
 
             // send state changes and matrix changes to OpenGL.
-            state.apply(rg->_stateset);
+            state.apply(rg->getStateSet());
 
         }
         
@@ -68,7 +68,7 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
         // apply state if required.
         StateGraph::moveStateGraph(state,NULL,_parent->_parent);
 
-        state.apply(_parent->_stateset);
+        state.apply(_parent->getStateSet());
 
         // draw the drawable
         _drawable->draw(renderInfo);

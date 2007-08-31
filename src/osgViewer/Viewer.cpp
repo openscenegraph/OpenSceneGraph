@@ -534,8 +534,10 @@ void Viewer::startThreading()
         _endRenderingDispatchBarrier = 0;
         _endDynamicDrawBlock = new osg::EndOfDynamicDrawBlock(numViewerDoubleBufferedRenderingOperation);
         
+#ifndef OSGUTIL_RENDERBACKEND_USE_REF_PTR
         if (!osg::Referenced::getDeleteHandler()) osg::Referenced::setDeleteHandler(new osg::DeleteHandler(2));
         else osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(2);
+#endif
     }
     
     if (numThreadsOnStartBarrier>1)

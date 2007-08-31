@@ -47,7 +47,6 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         typedef std::vector< osg::ref_ptr<RenderLeaf> >                 LeafList;
 
         StateGraph*                         _parent;
-        const osg::StateSet*                _stateset;
 
         int                                 _depth;
         ChildList                           _children;
@@ -96,6 +95,13 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         osg::Referenced* getUserData() { return _userData.get(); }
         const osg::Referenced* getUserData() const { return _userData.get(); }
         
+#ifdef OSGUTIL_RENDERBACKEND_USE_REF_PTR
+        osg::ref_ptr<const osg::StateSet> _stateset;
+        const osg::StateSet* getStateSet() const { return _stateset.get(); }
+#else
+        const osg::StateSet* _stateset;
+        const osg::StateSet* getStateSet() const { return _stateset.get(); }
+#endif
 
         /** return true if all of drawables, lights and children are empty.*/
         inline bool empty() const
@@ -208,7 +214,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                     ++itr)
                 {
                     StateGraph* rg = (*itr);
-                    if (rg->_stateset) state.pushStateSet(rg->_stateset);
+                    if (rg->getStateSet()) state.pushStateSet(rg->getStateSet());
                 }
                 return;
             }
@@ -220,9 +226,9 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             {
                 
                 // state has changed so need to pop old state.
-                if (sg_curr->_stateset) state.popStateSet();
+                if (sg_curr->getStateSet()) state.popStateSet();
                 // and push new state.
-                if (sg_new->_stateset) state.pushStateSet(sg_new->_stateset);
+                if (sg_new->getStateSet()) state.pushStateSet(sg_new->getStateSet());
                 return;
             }
         
@@ -230,7 +236,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             // need to pop back up to the same depth as the new state group.
             while (sg_curr->_depth>sg_new->_depth)
             {
-                if (sg_curr->_stateset) state.popStateSet();
+                if (sg_curr->getStateSet()) state.popStateSet();
                 sg_curr = sg_curr->_parent;
             }
             
@@ -251,7 +257,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             // nodes have the same parent
             while (sg_curr != sg_new)
             {
-                if (sg_curr->_stateset) state.popStateSet();
+                if (sg_curr->getStateSet()) state.popStateSet();
                 sg_curr = sg_curr->_parent;
 
                 return_path.push_back(sg_new);
@@ -263,7 +269,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
                 ++itr)
             {
                 StateGraph* rg = (*itr);
-                if (rg->_stateset) state.pushStateSet(rg->_stateset);
+                if (rg->getStateSet()) state.pushStateSet(rg->getStateSet());
             }
 
         }
@@ -273,7 +279,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             // need to pop back all statesets and matrices.
             while (sg_curr)
             {
-                if (sg_curr->_stateset) state.popStateSet();
+                if (sg_curr->getStateSet()) state.popStateSet();
                 sg_curr = sg_curr->_parent;
             }
             
@@ -285,7 +291,7 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
             // need to pop back all statesets and matrices.
             while (sg_curr)
             {
-                if (sg_curr->_stateset) ++numToPop;
+                if (sg_curr->getStateSet()) ++numToPop;
                 sg_curr = sg_curr->_parent;
             }
             

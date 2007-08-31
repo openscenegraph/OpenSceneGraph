@@ -59,6 +59,9 @@ class OSG_EXPORT Referenced
         /** Get whether a mutex is used to ensure ref() and unref() are thread safe.*/
         bool getThreadSafeRefUnref() const { return _refMutex!=0; }
 
+        /** Get the mutex used to ensure thread safety of ref()/unref(). */
+        OpenThreads::Mutex* getRefMutex() const { return _refMutex; }
+
         /** Increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
         inline void ref() const;

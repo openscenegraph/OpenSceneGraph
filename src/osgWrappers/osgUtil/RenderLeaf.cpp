@@ -56,7 +56,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	                 __C5_osg_Drawable_P1__getDrawable, 
 	                 0);
 	I_PublicMemberProperty(osgUtil::StateGraph *, _parent);
-	I_PublicMemberProperty(osg::Drawable *, _drawable);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, _drawable);
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _projection);
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _modelview);
 	I_PublicMemberProperty(float, _depth);

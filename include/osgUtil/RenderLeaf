@@ -23,6 +23,8 @@
 
 namespace osgUtil {
 
+#define OSGUTIL_RENDERBACKEND_USE_REF_PTR
+
 // Forward declare StateGraph
 class StateGraph;
 
@@ -76,12 +78,12 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     
         StateGraph*                     _parent;
 
-#if 1
-        osg::Drawable*                  _drawable;
-        const osg::Drawable* getDrawable() const { return _drawable; }
-#else
+#ifdef OSGUTIL_RENDERBACKEND_USE_REF_PTR
         osg::ref_ptr<osg::Drawable>     _drawable;
         const osg::Drawable* getDrawable() const { return _drawable.get(); }
+#else
+        osg::Drawable*                  _drawable;
+        const osg::Drawable* getDrawable() const { return _drawable; }
 #endif        
         osg::ref_ptr<osg::RefMatrix>    _projection;
         osg::ref_ptr<osg::RefMatrix>    _modelview;

@@ -65,6 +65,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	          __C5_osg_Referenced_P1__getUserData,
 	          "",
 	          "");
+	I_Method0(const osg::StateSet *, getStateSet,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_StateSet_P1__getStateSet,
+	          "",
+	          "");
 	I_Method0(bool, empty,
 	          Properties::NON_VIRTUAL,
 	          __bool__empty,
@@ -132,6 +137,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StateGraph)
 	                 0);
 	I_SimpleProperty(float, MinimumDistance, 
 	                 __float__getMinimumDistance, 
+	                 0);
+	I_SimpleProperty(const osg::StateSet *, StateSet, 
+	                 __C5_osg_StateSet_P1__getStateSet, 
 	                 0);
 	I_SimpleProperty(osg::Referenced *, UserData, 
 	                 __osg_Referenced_P1__getUserData, 

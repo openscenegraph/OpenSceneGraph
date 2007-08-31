@@ -1716,7 +1716,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             osgUtil::StateGraph* sg = cv->getCurrentStateGraph();
             while(sg)
             {
-                const osg::StateSet* stateset = sg->_stateset;
+                const osg::StateSet* stateset = sg->getStateSet();
                 if (stateset)
                 {
                     statesetStack.push_front(stateset);

@@ -603,42 +603,51 @@ int main(int argc, char** argv)
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
+    
+    typedef std::list< osg::ref_ptr<osg::OperationThread> > Threads;
 
-    osg::ref_ptr<osg::OperationThread> operationThread;
+    Threads operationThreads;
     osg::ref_ptr<UpdateTextOperation> updateOperation;
 
-    if (arguments.read("--mt"))
+    unsigned int numThreads = 0;
+    if (arguments.read("--mt", numThreads) || arguments.read("--mt"))
     {
         // construct a multi-threaded text updating test.
+        if (numThreads==0) numThreads = 1;
         
         // create a group to add everything into.
         osg::Group* mainGroup = new osg::Group;
-
-        osg::Group* textGroup = new osg::Group;
-        mainGroup->addChild(textGroup);
-
-        // create the background thread
-        operationThread = new osg::OperationThread;
         
-        // create the operation that will run in the background and
-        // sync once per frame with the main viewer loop.
-        updateOperation = new UpdateTextOperation(textGroup);
-        
-        // add the operation to the operation thread and start it.
-        operationThread->add(updateOperation.get());
-        operationThread->startThread();
-        
-        // add the operation to the viewer to sync once per frame.
-        viewer.addUpdateOperation(updateOperation.get());
+        for(unsigned int i=0; i<numThreads; ++i)
+        {
+            osg::Group* textGroup = new osg::Group;
+            mainGroup->addChild(textGroup);
+
+            // create the background thread
+            osg::OperationThread* operationThread = new osg::OperationThread;
+            
+            operationThreads.push_back(operationThread);
+
+            // create the operation that will run in the background and
+            // sync once per frame with the main viewer loop.
+            updateOperation = new UpdateTextOperation(textGroup);
+
+            // add the operation to the operation thread and start it.
+            operationThread->add(updateOperation.get());
+            operationThread->startThread();
+
+            // add the operation to the viewer to sync once per frame.
+            viewer.addUpdateOperation(updateOperation.get());
 
 
-        // add a unit cube for the text to appear within.
-        osg::Geode* geode = new osg::Geode;
-        geode->getOrCreateStateSet()->setAttribute(new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
-        geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.5f,0.5f,0.5f),1.0)));
+            // add a unit cube for the text to appear within.
+            osg::Geode* geode = new osg::Geode;
+            geode->getOrCreateStateSet()->setAttribute(new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
+            geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.5f,0.5f,0.5f),1.0)));
 
-        mainGroup->addChild(geode);
-        
+            mainGroup->addChild(geode);
+        }
+                
         viewer.setSceneData(mainGroup);        
     }
     else
@@ -677,9 +686,14 @@ int main(int argc, char** argv)
 
     viewer.run();
     
-    if (operationThread.valid())
+    if (!operationThreads.empty())
     {
-        operationThread->cancel();
+        for(Threads::iterator itr = operationThreads.begin();
+            itr != operationThreads.begin();
+            ++itr)
+        {
+            (*itr)->cancel();
+        }
     }
 }
 

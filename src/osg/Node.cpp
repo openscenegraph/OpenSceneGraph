@@ -95,13 +95,32 @@ Node::~Node()
 
 void Node::addParent(osg::Group* node)
 {
-    _parents.push_back(node);
+    if (getRefMutex())
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getRefMutex());
+
+        _parents.push_back(node);
+    }
+    else
+    {
+        _parents.push_back(node);
+    }
 }
 
 void Node::removeParent(osg::Group* node)
 {
-    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
-    if (pitr!=_parents.end()) _parents.erase(pitr);
+    if (getRefMutex())
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getRefMutex());
+
+        ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
+        if (pitr!=_parents.end()) _parents.erase(pitr);
+    }
+    else
+    {
+        ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),node);
+        if (pitr!=_parents.end()) _parents.erase(pitr);
+    }
 }
 
 void Node::accept(NodeVisitor& nv)

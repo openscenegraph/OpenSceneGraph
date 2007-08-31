@@ -78,7 +78,8 @@ bool osg::isTextureMode(StateAttribute::GLMode mode)
     return getTextureGLModeSet().isTextureMode(mode);
 }
 
-StateSet::StateSet()
+StateSet::StateSet():
+    Object(true)
 {
     _renderingHint = DEFAULT_BIN;
     
@@ -247,14 +248,32 @@ void StateSet::computeDataVariance()
 void StateSet::addParent(osg::Object* object)
 {
     // osg::notify(osg::INFO)<<"Adding parent"<<std::endl;
+    if (getRefMutex())
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getRefMutex());
 
-    _parents.push_back(object);
+        _parents.push_back(object);
+    }
+    else
+    {
+        _parents.push_back(object);
+    }
 }
 
 void StateSet::removeParent(osg::Object* object)
 {
-    ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
-    if (pitr!=_parents.end()) _parents.erase(pitr);
+    if (getRefMutex())
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getRefMutex());
+
+        ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
+        if (pitr!=_parents.end()) _parents.erase(pitr);
+    }
+    else
+    {
+        ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
+        if (pitr!=_parents.end()) _parents.erase(pitr);
+    }
 }
 
 int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const

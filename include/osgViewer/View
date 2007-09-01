@@ -143,6 +143,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Convinience method for a single Camara associated with a single full screen GraphicsWindow.*/
         void setUpViewOnSingleScreen(unsigned int screenNum=0);
         
+
+        /** Convinience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
+        void setUpViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0);
+
+        /** Convinience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
+        void setUpViewForPanoramicSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0);
+
         
         /** Return true if this view contains a specified camera.*/
         bool containsCamera(const osg::Camera* camera) const;

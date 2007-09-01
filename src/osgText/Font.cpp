@@ -30,6 +30,12 @@ static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_V
 
 static OpenThreads::Mutex s_FontFileMutex;
 
+Font::FontMutex* osgText::Font::getSerializeFontCallsMutex()
+{
+    static OpenThreads::Mutex s_FontCallsMutex;
+    return &s_FontCallsMutex;
+}
+
 std::string osgText::findFontFile(const std::string& str)
 {
     // try looking in OSGFILEPATH etc first for fonts.

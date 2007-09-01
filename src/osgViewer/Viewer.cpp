@@ -18,6 +18,7 @@
 
 #include <osgUtil/GLObjectsVisitor>
 #include <osgDB/Registry>
+#include <osgDB/ReadFile>
 #include <osgGA/TrackballManipulator>
 
 #include <osgViewer/Viewer>
@@ -60,8 +61,33 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     
     int x = -1, y = -1, width = -1, height = -1;
     while (arguments.read("--window",x,y,width,height)) {}
+    
+    bool ss3d = false;
+    if ((ss3d=arguments.read("--3d-ss")) || arguments.read("--panoramic-ss"))
+    {
+        double radius = 1.0;
+        while (arguments.read("--radius",radius)) {}
 
-    if (width>0 && height>0)
+        double collar = 0.45;
+        while (arguments.read("--collar",collar)) {}
+
+        std::string intensityMapFilename;
+        while (arguments.read("--im",intensityMapFilename)) {}
+
+        osg::ref_ptr<osg::Image> intensityMap = intensityMapFilename.empty() ? 0 : osgDB::readImageFile(intensityMapFilename);
+
+        if (screenNum<0) screenNum = 0;
+
+        if (ss3d)
+        {
+            setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap.get());
+        }
+        else
+        {
+            setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap.get());
+        }
+    }
+    else if (width>0 && height>0)
     {
         if (screenNum>=0) setUpViewInWindow(x, y, width, height, screenNum);
         else setUpViewInWindow(x,y,width,height);

@@ -164,7 +164,7 @@ public:
     typedef OpenThreads::Mutex FontMutex;
     
     /** Get the mutex that enables the serialization of calls to this font.*/
-    FontMutex* getSerializeFontCallsMutex() const { return &_serializeFontCallsMutex; }
+    static FontMutex* getSerializeFontCallsMutex();
 
 protected:
 

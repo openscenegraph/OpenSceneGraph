@@ -689,7 +689,7 @@ int main(int argc, char** argv)
     if (!operationThreads.empty())
     {
         for(Threads::iterator itr = operationThreads.begin();
-            itr != operationThreads.begin();
+            itr != operationThreads.end();
             ++itr)
         {
             (*itr)->cancel();

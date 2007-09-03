@@ -14,6 +14,7 @@
 #include <osg/CopyOp>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
+#include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
 #include <osg/Timer>
@@ -246,6 +247,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                      Properties::NON_VIRTUAL,
 	                      __void__setUpViewOnSingleScreen__unsigned_int,
 	                      "Convinience method for a single Camara associated with a single full screen GraphicsWindow. ",
+	                      "");
+	I_MethodWithDefaults4(void, setUpViewFor3DSphericalDisplay, IN, double, radius, 1.0, IN, double, collar, 0.45, IN, unsigned int, screenNum, 0, IN, osg::Image *, intensityMap, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setUpViewFor3DSphericalDisplay__double__double__unsigned_int__osg_Image_P1,
+	                      "Convinience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display. ",
+	                      "");
+	I_MethodWithDefaults4(void, setUpViewForPanoramicSphericalDisplay, IN, double, radius, 1.0, IN, double, collar, 0.45, IN, unsigned int, screenNum, 0, IN, osg::Image *, intensityMap, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setUpViewForPanoramicSphericalDisplay__double__double__unsigned_int__osg_Image_P1,
+	                      "Convinience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display. ",
 	                      "");
 	I_Method1(bool, containsCamera, IN, const osg::Camera *, camera,
 	          Properties::NON_VIRTUAL,

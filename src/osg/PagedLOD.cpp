@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -74,9 +74,9 @@ void PagedLOD::setDatabasePath(const std::string& path)
             _databasePath += unixSlash;
         }
 
-/*        
-        // make sure the last character is the appropriate slash 
-#ifdef WIN32       
+/*
+        // make sure the last character is the appropriate slash
+#ifdef WIN32
         if (lastCharacter==unixSlash)
         {
             lastCharacter = winSlash;
@@ -138,11 +138,11 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     }
                 }
             }
- 
+
             int lastChildTraversed = -1;
             bool needToLoadChild = false;
             for(unsigned int i=0;i<_rangeList.size();++i)
-            {    
+            {
                 if (_rangeList[i].first<=required_range && required_range<_rangeList[i].second)
                 {
                     if (i<_children.size())
@@ -158,33 +158,33 @@ void PagedLOD::traverse(NodeVisitor& nv)
                     }
                 }
             }
-            
+
             if (needToLoadChild)
             {
                 unsigned int numChildren = _children.size();
-                
+
                 // select the last valid child.
                 if (numChildren>0 && ((int)numChildren-1)!=lastChildTraversed)
                 {
                     if (updateTimeStamp) _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
                     _children[numChildren-1]->accept(nv);
                 }
-                
+
                 // now request the loading of the next unloaded child.
                 if (nv.getDatabaseRequestHandler() && numChildren<_perRangeDataList.size())
                 {
                     // compute priority from where abouts in the required range the distance falls.
                     float priority = (_rangeList[numChildren].second-required_range)/(_rangeList[numChildren].second-_rangeList[numChildren].first);
-                    
+
                     // invert priority for PIXEL_SIZE_ON_SCREEN mode
                     if(_rangeMode==PIXEL_SIZE_ON_SCREEN)
                     {
                         priority = -priority;
                     }
-                    
+
                     // modify the priority according to the child's priority offset and scale.
                     priority = _perRangeDataList[numChildren]._priorityOffset + priority * _perRangeDataList[numChildren]._priorityScale;
-                    
+
                     if (_databasePath.empty())
                     {
                         nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
@@ -195,11 +195,11 @@ void PagedLOD::traverse(NodeVisitor& nv)
                         nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
                     }
                 }
-                
-                
+
+
             }
-            
-            
+
+
            break;
         }
         default:
@@ -250,7 +250,7 @@ bool PagedLOD::removeChildren( unsigned int pos,unsigned int numChildrenToRemove
 {
     if (pos<_rangeList.size()) _rangeList.erase(_rangeList.begin()+pos, osg::minimum(_rangeList.begin()+(pos+numChildrenToRemove), _rangeList.end()) );
     if (pos<_perRangeDataList.size()) _perRangeDataList.erase(_perRangeDataList.begin()+pos, osg::minimum(_perRangeDataList.begin()+ (pos+numChildrenToRemove), _perRangeDataList.end()) );
-            
+
     return Group::removeChildren(pos,numChildrenToRemove);
 }
 

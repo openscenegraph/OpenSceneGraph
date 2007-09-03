@@ -735,6 +735,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	          __void__glCompressedTexImage2D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
 	          "",
 	          "");
+	I_Method0(bool, isCompressedTexSubImage2DSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isCompressedTexSubImage2DSupported,
+	          "",
+	          "");
 	I_Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr,
 	          Properties::NON_VIRTUAL,
 	          __void__setCompressedTexSubImage2DProc__void_P1,

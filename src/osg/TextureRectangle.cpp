@@ -294,12 +294,21 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
         pbo = 0;
     }
 
-    // UH: ignoring compressed for now.
-    glTexImage2D(target, 0, _internalFormat,
-                 image->s(), image->t(), 0,
-                 (GLenum)image->getPixelFormat(),
-                 (GLenum)image->getDataType(),
-                 image->data() - dataMinusOffset + dataPlusOffset );
+    if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexImage2DSupported())
+    {
+        extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
+            image->s(), image->t(), 0,
+            image->getImageSizeInBytes(), 
+            image->data() - dataMinusOffset + dataPlusOffset);                
+    }
+    else
+    {
+        glTexImage2D(target, 0, _internalFormat,
+            image->s(), image->t(), 0,
+            (GLenum)image->getPixelFormat(),
+            (GLenum)image->getDataType(),
+            image->data() - dataMinusOffset + dataPlusOffset );
+    }
     
 
     if (pbo)

@@ -1,17 +1,27 @@
 ########################################################
+#                                                      #
 # Inventor plugin                                      #
-# Supported file formats (import only):                #
+#                                                      #
+# Supported import formats:                            #
 # - iv (ascii, binary) file format                     #
-# - vrml 1.0                                           #
-# - vrml 2.0 (when using Coin)                         #
+# - VRML 1.0                                           #
+# - VRML 2.0 (when using Coin)                         #
+#                                                      #
+# Supported export formats:                            #
+# - iv format                                          #
+# - VRML 1.0                                           #
+#                                                      #
 ########################################################
 
 
 The plugin requires one of Inventor libraries:
 
-- Coin (http://www.coin3d.org) - GPL, support of VRML 2.0
+- Coin - GPL, support of VRML 2.0
+  (http://www.coin3d.org) 
 - SGI Inventor - LGPL
+  (http://oss.sgi.com/projects/inventor/)
 - TGS Inventor - commercial
+  (http://www.tgs.com/)
 
 
 Contributors:

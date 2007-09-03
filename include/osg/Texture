@@ -514,6 +514,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setCompressedTexImage2DProc(void* ptr) { _glCompressedTexImage2D = ptr; }
                 void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const;
 
+                bool isCompressedTexSubImage2DSupported() const { return _glCompressedTexSubImage2D!=0; }
+                
                 void setCompressedTexSubImage2DProc(void* ptr) { _glCompressedTexSubImage2D = ptr; }
                 void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data) const;
 

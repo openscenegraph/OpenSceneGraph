@@ -297,17 +297,17 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexImage2DSupported())
     {
         extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
-            image->s(), image->t(), 0,
-            image->getImageSizeInBytes(), 
-            image->data() - dataMinusOffset + dataPlusOffset);                
+          image->s(), image->t(), 0,
+          image->getImageSizeInBytes(), 
+          image->data() - dataMinusOffset + dataPlusOffset);                
     }
     else
     {
         glTexImage2D(target, 0, _internalFormat,
-            image->s(), image->t(), 0,
-            (GLenum)image->getPixelFormat(),
-            (GLenum)image->getDataType(),
-            image->data() - dataMinusOffset + dataPlusOffset );
+          image->s(), image->t(), 0,
+          (GLenum)image->getPixelFormat(),
+          (GLenum)image->getDataType(),
+          image->data() - dataMinusOffset + dataPlusOffset );
     }
     
 
@@ -341,6 +341,8 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
+    const Extensions* extensions = getExtensions(contextID,true);
+
 
     // update the modified count to show that it is upto date.
     getModifiedCount(contextID) = image->getModifiedCount();
@@ -374,14 +376,25 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
         pbo = 0;
     }
     
-    
-    // UH: ignoring compressed for now.
-    glTexSubImage2D(target, 0, 
-                 0,0,
-                 image->s(), image->t(),
-                 (GLenum)image->getPixelFormat(),
-                 (GLenum)image->getDataType(),
-                 image->data() - dataMinusOffset + dataPlusOffset  );
+
+    if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexSubImage2DSupported())
+    {
+        extensions->glCompressedTexSubImage2D(target, 0, 
+          0,0, 
+          image->s(), image->t(),
+          (GLenum)image->getPixelFormat(),
+          (GLenum)image->getDataType(),
+          image->data() - dataMinusOffset + dataPlusOffset);                
+    }
+    else
+    {
+        glTexSubImage2D(target, 0, 
+          0,0,
+          image->s(), image->t(),
+          (GLenum)image->getPixelFormat(),
+          (GLenum)image->getDataType(),
+          image->data() - dataMinusOffset + dataPlusOffset  );
+    }
 
     if (pbo)
     {

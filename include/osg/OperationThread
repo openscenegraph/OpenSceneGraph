@@ -50,6 +50,7 @@ class RefBlockCount : virtual public osg::Referenced, public OpenThreads::BlockC
 class Operation : virtual public Referenced
 {
     public:
+
         Operation(const std::string& name, bool keep):
             osg::Referenced(true),
             _name(name),
@@ -75,6 +76,15 @@ class Operation : virtual public Referenced
         virtual void operator () (Object*) = 0;
 
     protected:
+    
+        Operation():
+            Referenced(true),
+            _keep(false) {}
+
+        Operation(const Operation& op):
+            Referenced(true),
+            _name(op._name),
+            _keep(op._keep) {}
 
         virtual ~Operation() {}
 

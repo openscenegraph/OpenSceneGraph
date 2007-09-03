@@ -50,6 +50,7 @@ PagedLOD::PagedLOD()
 
 PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
     LOD(plod,copyop),
+    _databasePath(plod._databasePath),
     _frameNumberOfLastTraversal(plod._frameNumberOfLastTraversal),
     _numChildrenThatCannotBeExpired(plod._numChildrenThatCannotBeExpired),
     _perRangeDataList(plod._perRangeDataList)

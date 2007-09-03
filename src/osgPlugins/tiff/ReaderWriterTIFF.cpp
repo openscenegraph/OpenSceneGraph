@@ -616,7 +616,11 @@ simage_tiff_load(std::istream& fin,
     }
     width_ret = width;
     height_ret = height;
-    numComponents_ret = samplesperpixel;
+    if (photometric == PHOTOMETRIC_PALETTE)
+        numComponents_ret = format;
+    else
+        numComponents_ret = samplesperpixel;
+
     return buffer;
 }
 

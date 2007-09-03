@@ -1,7 +1,5 @@
 INCLUDE(OsgMacroUtils)
 
-INCLUDE_DIRECTORIES( ${INVENTOR_INCLUDE_DIR} )
-
 # Disable the build of a problem section in ConvertToInventor.cpp
 ADD_DEFINITIONS(-DDISABLE_PROBLEM_COMPILE_SECTIONS)
 

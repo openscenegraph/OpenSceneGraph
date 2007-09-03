@@ -40,7 +40,7 @@
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/SbLinear.h>
 
-#ifdef COIN_BASIC_H
+#ifdef __COIN__
 #include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
 #endif
 
@@ -95,7 +95,7 @@ osg::Node* ConvertFromInventor::convert(SoNode* rootIVNode)
     cbAction.addPreCallback(SoGroup::getClassTypeId(), preGroup, this);
     cbAction.addPostCallback(SoGroup::getClassTypeId(), postGroup, this);
     cbAction.addPreCallback(SoTexture2::getClassTypeId(), preTexture, this);
-#ifdef COIN_BASIC_H
+#ifdef __COIN__
     cbAction.addPreCallback(SoVRMLImageTexture::getClassTypeId(),
                             preVRMLImageTexture, this);
 #endif
@@ -498,6 +498,51 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
     // Inherit modes from the global state
     stateSet->clear();
 
+    // Convert the IV texture to OSG texture if any
+    osg::ref_ptr<osg::Texture2D> texture;
+    const SoNode *ivTexture = soTexStack.top();
+    if (ivTexture)
+    {
+        osg::notify(osg::INFO)<<"Have texture"<<std::endl;
+
+        // Found a corresponding OSG texture object
+        if (ivToOsgTexMap[ivTexture])
+            texture = ivToOsgTexMap[ivTexture];
+        else
+        {
+            // Create a new osg texture
+            texture = convertIVTexToOSGTex(ivTexture, action);
+
+            // Add the new texture to the database
+            ivToOsgTexMap[ivTexture] = texture.get();
+        }
+        
+        stateSet->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::ON);
+
+        // Set the texture environment
+        osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
+        switch (action->getTextureModel())
+        {
+            case SoTexture2::MODULATE:
+                texEnv->setMode(osg::TexEnv::MODULATE);
+                break;
+            case SoTexture2::DECAL:
+                texEnv->setMode(osg::TexEnv::DECAL);
+                break;
+            case SoTexture2::BLEND:
+                texEnv->setMode(osg::TexEnv::BLEND);
+                break;
+
+            // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
+            // Coin supports REPLACE since 2.2 release, TGS Inventor from 4.0.
+            // Let's convert to the TexEnv anyway.
+            case (SoTexture2::Model)GL_REPLACE: // SoTexture2::REPLACE is the same as GL_REPLACE
+                texEnv->setMode(osg::TexEnv::REPLACE);
+                break;
+        }
+        stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
+    }
+
     SbColor ambient, diffuse, specular, emission;
     float shininess, transparency;
 
@@ -506,7 +551,24 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
                 shininess, transparency, 0);
     
     // Set transparency
-    if (transparency > 0)
+    SbBool hasTextureTransparency = FALSE;
+    if (ivTexture) {
+      SbVec2s tmp;
+      int bpp;
+      if (ivTexture->isOfType(SoTexture2::getClassTypeId()))
+        ((SoTexture2*)ivTexture)->image.getValue(tmp, bpp);
+#ifdef __COIN__
+      else
+      if (ivTexture->isOfType(SoVRMLImageTexture::getClassTypeId())) {
+        const SbImage *img = ((SoVRMLImageTexture*)ivTexture)->getImage();
+        if (img) img->getValue(tmp, bpp);
+        else bpp = 0;
+      }
+#endif
+      hasTextureTransparency = bpp==4 || bpp==2;
+    }
+
+    if (transparency > 0 || hasTextureTransparency)
     {
         osg::ref_ptr<osg::BlendFunc> transparency = new osg::BlendFunc;
         stateSet->setAttributeAndModes(transparency.get(), 
@@ -621,51 +683,6 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
                                            osg::StateAttribute::ON);
     }
     
-    // Convert the IV texture to OSG texture if any
-    osg::ref_ptr<osg::Texture2D> texture;
-    if (soTexStack.top())
-    {
-        osg::notify(osg::INFO)<<"Have texture"<<std::endl;
-
-        // Found a corresponding OSG texture object
-        if (ivToOsgTexMap[soTexStack.top()])
-            texture = ivToOsgTexMap[soTexStack.top()];
-        else
-        {
-            // Create a new osg texture
-            texture = convertIVTexToOSGTex(soTexStack.top(), action);
-
-            // Add the new texture to the database
-            ivToOsgTexMap[soTexStack.top()] = texture.get();
-        }
-        
-        stateSet->setTextureAttributeAndModes(0,texture.get(), osg::StateAttribute::ON);
-
-        // Set the texture environment
-        osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
-        switch (action->getTextureModel())
-        {
-            case SoTexture2::MODULATE:
-                texEnv->setMode(osg::TexEnv::MODULATE);
-                break;
-            case SoTexture2::DECAL:
-                texEnv->setMode(osg::TexEnv::DECAL);
-                break;
-            case SoTexture2::BLEND:
-                texEnv->setMode(osg::TexEnv::BLEND);
-                break;
-
-#ifdef __COIN__
-// SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
-// Coin supports REPLACE since 2.2 release, TGS Inventor from 4.0.
-            case SoTexture2::REPLACE:
-                texEnv->setMode(osg::TexEnv::REPLACE);
-                break;
-#endif
-        }
-        stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
-    }
-
     return stateSet;
 }
 ////////////////////////////////////////////////////////////////////
@@ -696,7 +713,7 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     std::string fileName;
     if (soNode->isOfType(SoTexture2::getClassTypeId()))
         fileName = ((SoTexture2*)soNode)->filename.getValue().getString();
-#ifdef COIN_BASIC_H
+#ifdef __COIN__
     else
     if (soNode->isOfType(SoVRMLImageTexture::getClassTypeId()))
         fileName = ((SoVRMLImageTexture*)soNode)->url.getNum() >= 1 ? 
@@ -733,7 +750,7 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     }
          
     // Set texture wrap mode
-#ifdef COIN_BASIC_H
+#ifdef __COIN__
     if (soNode->isOfType(SoVRMLImageTexture::getClassTypeId())) {
         // It looks like there is a high probability of bug in Coin (investigated on version 2.4.6).
         // action->getTextureWrap() returns correct value on SoTexture2 (SoTexture2::CLAMP = 0x2900,

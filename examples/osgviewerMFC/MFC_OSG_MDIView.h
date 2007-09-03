@@ -43,6 +43,7 @@ protected:
     afx_msg int  OnCreate(LPCREATESTRUCT lpCreateStruct);
     afx_msg void OnDestroy();
     afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 #ifndef _DEBUG  // debug version in MFC_OSG_MDIView.cpp

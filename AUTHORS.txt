@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.8
+OpenSceneGraph Library 2.1.9
 
-273 Contributors:
+276 Contributors:
 
 Firstname Surname
 -----------------
@@ -19,9 +19,9 @@ Martin Lavery
 Ulrich Hertlein
 Eric Sokolowsky
 Tree 
+Luigi Calori
 Trajce Nikolov
 Mike Wittman
-Luigi Calori
 Pavel Moloshtan
 Tom Jolley
 Norman Vine
@@ -41,9 +41,10 @@ Chris Hanson
 Daniel Sjölie
 Per Fahlberg
 Joran Jessurun
-David Callu
 Jean-Sebastien Guay
+David Callu
 Frederic Marmond
+David Spilling
 David Fries
 Boris Bralo
 Andy Skinner
@@ -55,7 +56,6 @@ Mike Connell
 Jeremy Moles
 Jason Daly
 Jason Beverage
-David Spilling
 Ben Discoe
 Sasa Bistrovic
 Rainer Oder
@@ -64,20 +64,22 @@ Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Joakim Simonsson
+Jan Ciger
 Gordon Tomlinson
 Brad Colbert
 Andreas Ekstrand
 Vivek Rajan
 Stephane Simon
+Sherman Wilcox
 Sean Spicer
 Ravi Mathur
 Nikolaus Hanekamp
 Michael Platings
 Michael Hartman
 Loic Dachary
+Laurens Voerman
 Joseph Steel
 John Shue
-Jan Ciger
 David Guthrie
 Corbin Holtz
 Brad Christiansen
@@ -89,7 +91,7 @@ Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
 Leandro Motta Barros
-Laurens Voerman
+Jan Peciva
 Carlo Camporesi
 Bryan Thrall
 Bruce Clay
@@ -97,7 +99,6 @@ Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Sohey Yamamoto
-Sherman Wilcox
 Serge Lages
 Phil Atkin
 Mathieu Marache
@@ -185,6 +186,7 @@ Robert Swain
 Rick Pingry
 Reinhard Sainitzer
 Rein Kadijk
+Ralf Kern
 Rafa Giatan
 Radu Mihai
 Qing Shen
@@ -226,7 +228,6 @@ Joakim Simmonsson
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
-Jan Peciva
 J.E. Hoffmann
 Henrique Bucher
 Gustavo Wagner
@@ -261,6 +262,7 @@ Chris McGlone
 Carlos Garcea
 Bruno Herbelin
 Brian Keener
+Brandon Hamm
 Brad Anderegg
 Bora Utka
 Blasius Czink
@@ -269,6 +271,7 @@ Bart Gallet
 Axel Volley
 Andrew Reyonolds
 Andreas Jochens
+Almalric Alexandre
 Allen Bierbaum
 Alexandre Amalric
 Alberto Jaspe

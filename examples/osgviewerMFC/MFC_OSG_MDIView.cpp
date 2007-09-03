@@ -17,6 +17,7 @@ BEGIN_MESSAGE_MAP(CMFC_OSG_MDIView, CView)
     ON_WM_CREATE()
     ON_WM_DESTROY()
     ON_WM_KEYDOWN()
+    ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 CMFC_OSG_MDIView::CMFC_OSG_MDIView() :
@@ -107,3 +108,9 @@ void CMFC_OSG_MDIView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
     }
 }
 
+
+BOOL CMFC_OSG_MDIView::OnEraseBkgnd(CDC* pDC)
+{
+    /* Do nothing, to avoid flashing on MSW */
+    return true;
+}

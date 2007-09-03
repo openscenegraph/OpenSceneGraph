@@ -53,6 +53,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	          __void__release,
 	          "if this operation is a barrier then release it. ",
 	          "");
+	I_ProtectedConstructor0(____Operation,
+	                        "",
+	                        "");
+	I_ProtectedConstructor1(IN, const osg::Operation &, op,
+	                        Properties::NON_EXPLICIT,
+	                        ____Operation__C5_Operation_R1,
+	                        "",
+	                        "");
 	I_SimpleProperty(bool, Keep, 
 	                 __bool__getKeep, 
 	                 __void__setKeep__bool);

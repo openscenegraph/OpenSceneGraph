@@ -1,3 +1,292 @@
+2007-09-03 15:47 +0000 [r7353]  robert:
+
+	* Updated wrappers
+
+2007-09-03 15:43 +0000 [r7352]  robert:
+
+	* From Sherman Wilcox, added extension checking support for
+	  compressed texture subloading.
+
+2007-09-03 15:22 +0000 [r7351]  robert:
+
+	* From Jan Peciva, build fix
+
+2007-09-03 14:05 +0000 [r7350]  robert:
+
+	* Updated version number for 2.1.9 dev release
+
+2007-09-03 13:59 +0000 [r7349]  robert:
+
+	* From Jan Peciva, improvement to the FindInventor.
+
+2007-09-03 13:52 +0000 [r7348]  robert:
+
+	* From Jan Peciva, Added write support into Inventor plugin. Note
+	  from Robert Osfield. A couple of lines of code in
+	  ConvertToInventor.cpp would not compile under g++ 4.1.2, so
+	  rather than hold back the dev release till this is resolved I've
+	  optional compiled out the problem section. The #define
+	  DISABLE_PROBLEM_COMPILE_SECTIONS is used to compile out the
+	  problem section, this define is add via the CMakeLists.txt file.
+
+2007-09-03 12:27 +0000 [r7346]  robert:
+
+	* Added osgdepthpeeling example
+
+2007-09-03 10:12 +0000 [r7345]  robert:
+
+	* From Ralf Kern, "the attached color mapped TIFF file klink1_l.tif
+	  is incorrectly read as GL_LUMINANCE data instead of GL_RGB data.
+	  You can easily check with "osgViewer --image klink1_l.tif". The
+	  bug is in ReaderWriterTIFF.cpp function simage_tiff_load, where
+	  numComponents_ret is incorrectly set to 1 instead of 3 for color
+	  mapped data."
+
+2007-09-03 10:04 +0000 [r7344]  robert:
+
+	* From Almalric Alexandre, "I've noticed that all osgViewerMFC
+	  example from osg 2.x.x are flickering when resizing 3D view, to
+	  avoid this only add OnEraseBkgnd callback in CMFC_OSG_MDIView
+	  class and do nothing in it. Just like the WxWidget example.
+	  Attached the modified version of MFC_OSG_MDIView.cpp and
+	  MFC_OSG_MDIView.h." Note from Robert Osfield, submission came
+	  with wrong header file, so have had to guess at what it should
+	  be, fingers crossed it worn't break windows build... :-)
+
+2007-09-03 09:56 +0000 [r7342-7343]  robert:
+
+	* From Laurens Voerman, "I hit a bug when making a copy of a
+	  PagedLOD node, the copy has lost it's _databasePath and can no
+	  longer load it's childen. " Added
+	  _databasePath(plod._databasePath), in the copy copy construcutor.
+
+	* Fixed spacing.
+
+2007-09-03 09:50 +0000 [r7341]  robert:
+
+	* From Sherman Wilcox, "I modified texturerectangle.cpp to address
+	  this issue. I used a DXT5 DDS file to test the change."
+
+2007-09-03 09:47 +0000 [r7340]  robert:
+
+	* Updated wrapper
+
+2007-09-03 09:43 +0000 [r7339]  robert:
+
+	* Added default contructors to Operation
+
+2007-09-02 22:31 +0000 [r7338]  robert:
+
+	* Fixed cancel loop.
+
+2007-09-01 16:56 +0000 [r7337]  robert:
+
+	* Added convinience methods for setting up 3d spherical displays.
+
+2007-09-01 15:24 +0000 [r7336]  robert:
+
+	* Changed Font's mutex to become a static mutex shared between all
+	  instances of Font. This ensures single threaded access of the
+	  freetype plugin.
+
+2007-08-31 20:30 +0000 [r7335]  robert:
+
+	* Changed mutex reference to a mutex pointer to avoid problems with
+	  wrappers
+
+2007-08-31 20:21 +0000 [r7334]  robert:
+
+	* Updated wrappers
+
+2007-08-31 20:16 +0000 [r7332-7333]  robert:
+
+	* To solve creations with multi-threaded creation of text, added
+	  mutex to Font, and use of this mutex in Text, and added mutex to
+	  the reading of fonts.
+
+	* Added mutex locking add addParents/removeParents in Drawable,
+	  Node and StateSet.
+
+2007-08-31 18:56 +0000 [r7331]  robert:
+
+	* Added mutex to protect the readFontFile calls
+
+2007-08-31 16:59 +0000 [r7329]  robert:
+
+	* Added support for running multiple text generation threads
+
+2007-08-31 16:05 +0000 [r7328]  robert:
+
+	* Changed RenderLeaf and StateGraph so that they use ref_ptr<> by
+	  default for Drawable and StateSet.
+
+2007-08-31 15:49 +0000 [r7327]  robert:
+
+	* From Luigi Calori, fixed Windows install of wrappers
+
+2007-08-31 12:14 +0000 [r7326]  robert:
+
+	* Added export for Windows build
+
+2007-08-31 11:04 +0000 [r7325]  robert:
+
+	* From Luigi Calori, added support for Win32 versioning/new buid
+	  placement.
+
+2007-08-30 19:26 +0000 [r7324]  robert:
+
+	* Further work on osgTerrain::Locator and GDAL plugin
+
+2007-08-30 12:18 +0000 [r7323]  robert:
+
+	* From Luigi Calori, add osgText to geo plugin build
+
+2007-08-30 10:41 +0000 [r7322]  robert:
+
+	* From Luigi Calori, introduction of versioning of dll's and
+	  placement of dll and plugins into bin directory during build.
+
+2007-08-30 10:17 +0000 [r7320-7321]  robert:
+
+	* Updated wrappers
+
+	* Further refinement of ProxyLayer API
+
+2007-08-29 16:29 +0000 [r7317]  robert:
+
+	* Further work on new ProxyLayer
+
+2007-08-29 12:18 +0000 [r7316]  robert:
+
+	* Added ProxyLayer support into osgTerrain plugin
+
+2007-08-29 11:51 +0000 [r7315]  robert:
+
+	* Added support for post fixing filenames with .gdal to force use
+	  of gdal plugin.
+
+2007-08-29 10:52 +0000 [r7314]  robert:
+
+	* Added preliminary ProxLayer and DataSetLayer in GDAL plugin to
+	  aid integration of GDAL reading into osgTerrain.
+
+2007-08-28 16:12 +0000 [r7313]  robert:
+
+	* Changed the error code reporting to use hex to match up with
+	  freetype headers
+
+2007-08-28 15:35 +0000 [r7311-7312]  robert:
+
+	* Improved formatting.
+
+	* Removed the OSG_INCLUDE
+
+2007-08-28 15:31 +0000 [r7310]  robert:
+
+	* Tweeked settings
+
+2007-08-28 14:02 +0000 [r7309]  robert:
+
+	* Added multi-threaded test path
+
+2007-08-27 16:59 +0000 [r7308]  robert:
+
+	* Replaced CartesianLocator and EllipsoidLocator by a single
+	  general purpose Locator class
+
+2007-08-27 13:33 +0000 [r7307]  robert:
+
+	* From Brandon Hamm, changed WxWindows example to use double
+	  buffering
+
+2007-08-27 13:29 +0000 [r7306]  robert:
+
+	* Added support for controlling the draw order on Cameras on each
+	  GraphcisContext via the Camera::setRenderOrder parameters
+
+2007-08-27 10:37 +0000 [r7304]  robert:
+
+	* Updated ChangeLog and AUTHORS file for release
+
+2007-08-27 10:29 +0000 [r7302-7303]  robert:
+
+	* Updated date on READEME
+
+	* Updated version numbers for 2.1.8 dev release
+
+2007-08-27 10:00 +0000 [r7301]  robert:
+
+	* Cleaned up the getRotate implementation selection using #defines,
+	  and made the COMPILE_getRotate_David_Spillings_Mk1 the default.
+
+2007-08-27 09:51 +0000 [r7300]  robert:
+
+	* From David Spilling, tweaked quat tests to reproduce getRotate
+	  errors.
+
+2007-08-26 10:27 +0000 [r7299]  robert:
+
+	* From Jan Ciger, warning fixes
+
+2007-08-26 10:24 +0000 [r7298]  robert:
+
+	* From Jean-Sebastien Guay, fixed comment
+
+2007-08-26 10:19 +0000 [r7297]  robert:
+
+	* Added dynamic_cast<GraphicsWindow> and extra doc commented just
+	  to force the use of symbol from osgViewer so that it links
+	  properly and pulls in the platform specific GraphcisWindow*
+	  implementation.
+
+2007-08-26 09:59 +0000 [r7296]  robert:
+
+	* Change char* to const char* to fix warnings
+
+2007-08-26 09:46 +0000 [r7294-7295]  robert:
+
+	* Updated wrappers, and change Renderer so that private: to
+	  proteccted:.
+
+	* Updated links
+
+2007-08-24 19:16 +0000 [r7292-7293]  robert:
+
+	* Changed debug comments to output to notify level and tweaked the
+	  handling of the .terrain file.
+
+	* Added support for reading a .osg style data from a file string
+	  when trailed by a .osgs extension i.e. osgviewer
+	  "osgTerrain::Terrain { ElevationLayer { CartesianLocator 0 0
+	  1000000 1000000 Image ps_height_512.tif } ColorLayer {
+	  CartesianLocator 0 0 1000000 1000000 Image ps_texture_1k.tif }
+	  }".osgs
+
+2007-08-24 18:48 +0000 [r7291]  robert:
+
+	* Added writing out of Terrain, Layer and Locators, and reading in
+	  of .terrain string.
+
+2007-08-24 16:16 +0000 [r7290]  robert:
+
+	* Set the debug out to info notification level
+
+2007-08-24 16:12 +0000 [r7288-7289]  robert:
+
+	* Added better handling of OSG_TEXT_INCREMENTAL_SUBLOADING env var.
+
+	* Added default disabling of incremental subload for ATI cards.
+
+2007-08-24 14:00 +0000 [r7287]  robert:
+
+	* Added support for setting DatabasePager thread priority via
+	  OSG_DATABASE_PAGER_PRIORITY.
+
+2007-08-24 13:33 +0000 [r7286]  robert:
+
+	* Cleaned up the thread priority management in DatabasePager and
+	  added support for paging stats.
+
 2007-08-24 10:58 +0000 [r7285]  robert:
 
 	* Added setting of block into the ThreadSafeQueue's contructor.

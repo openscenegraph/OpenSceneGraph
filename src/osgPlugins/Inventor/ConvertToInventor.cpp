@@ -78,6 +78,7 @@
 
 #define DEBUG_IV_WRITER 1
 
+
 ConvertToInventor::ConvertToInventor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
 {
   // Enable/disable using of some extensions introduced by TGS and Coin.
@@ -245,8 +246,10 @@ static void osgArray2ivMField_composite_template(const osg::Array *array, fieldC
 }
 
 
-template<typename fieldClass, typename ivType, typename osgType, int numComponents, osgType mul, osgType max, osgType min>
-static void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
+template<typename fieldClass, typename ivType, typename osgType, int numComponents>
+static void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass &field,
+                                            osgType mul, osgType max, osgType min,
+                                            int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
 {
   int i,num = array->getNumElements();
   if (startIndex!=0 || stopIndex!=0) {
@@ -295,16 +298,11 @@ static bool applicateIntType(const osg::Array *array, fieldClass &field, int sta
                                           (array, field, startIndex, stopIndex, numItemsUntilMinusOne); return true;
       case osg::Array::FloatArrayType:  osgArray2ivMField_template<fieldClass, fieldItemType, float>
                                           (array, field, startIndex, stopIndex, numItemsUntilMinusOne); return true;
-#ifndef DISABLE_PROBLEM_COMPILE_SECTIONS
-// note from Robert Osfield, could not compile the follow under Linux with g++ version 4.1.2
-// due to error: no matching function for call to ?osgArray2ivMField_pack_template(const osg::Array*&, SoMFInt32&, int&, int&, int&)?
-// this need to be resolved before this section can be compiled by default
       case osg::Array::Vec4bArrayType:  // FIXME: should signed values be handled differently? Like -128..127?
-      case osg::Array::Vec4ubArrayType: osgArray2ivMField_pack_template<fieldClass, fieldItemType, GLubyte, 4, 1.f, 255.f, 0.f>
-                                          (array, field, startIndex, stopIndex, numItemsUntilMinusOne); return true;
-      case osg::Array::Vec4ArrayType:   osgArray2ivMField_pack_template<fieldClass, fieldItemType, float, 4, 255.f, 255.f, 0.f>
-                                          (array, field, startIndex, stopIndex, numItemsUntilMinusOne); return true;
-#endif
+      case osg::Array::Vec4ubArrayType: osgArray2ivMField_pack_template<fieldClass, fieldItemType, GLubyte, 4>
+                                          (array, field, 1, 255, 0, startIndex, stopIndex, numItemsUntilMinusOne); return true;
+      case osg::Array::Vec4ArrayType:   osgArray2ivMField_pack_template<fieldClass, fieldItemType, float, 4>
+                                          (array, field, 255.f, 255.f, 0.f, startIndex, stopIndex, numItemsUntilMinusOne); return true;
     }
   }
   return false;

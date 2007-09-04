@@ -20,6 +20,7 @@
 
 using namespace osgText;
 
+
 DefaultFont::DefaultFont()
 {
     _minFilterHint = osg::Texture::LINEAR_MIPMAP_LINEAR;
@@ -33,6 +34,9 @@ DefaultFont::~DefaultFont()
 
 DefaultFont* DefaultFont::instance()
 {
+    static OpenThreads::Mutex s_DefaultFontMutex;    
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_DefaultFontMutex);
+
     static osg::ref_ptr<DefaultFont> s_defaultFont = new DefaultFont;
     return s_defaultFont.get();
 }

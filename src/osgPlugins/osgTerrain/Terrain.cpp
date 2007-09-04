@@ -199,17 +199,35 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
                     localAdvanced = true;
                 }
 
-                if (fr.matchSequence("Transform %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f"))
+                if (fr.matchSequence("Transform {"))
                 {
+                    int tansform_entry = fr[0].getNoNestedBrackets();
+
+                    fr += 2;
+
+                    int row=0;
+                    int col=0;
+                    double v;
                     osg::Matrixd matrix;
-                    for(unsigned int i=1; i<=16; ++i)
+                    while (!fr.eof() && fr[0].getNoNestedBrackets()>tansform_entry)
                     {
-                        fr[i].getFloat(matrix(i%4,i/4));
+                        if (fr[0].getFloat(v))
+                        {
+                            matrix(row,col)=v;
+                            ++col;
+                            if (col>=4)
+                            {
+                                col = 0;
+                                ++row;
+                            }
+                            ++fr;
+                        }
+                        else fr.advanceOverCurrentFieldOrBlock();
                     }
-                    
+
                     locator->setTransform(matrix);
                 
-                    fr += 17;
+                    ++fr;
                     localAdvanced = true;
                 }
 
@@ -439,12 +457,17 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
         itrAdvanced = true;
     }
 
-#if 1
-    if (!(terrain.getTerrainTechnique()))
+    if (fr.matchSequence("TerrainTechnique %w") || fr.matchSequence("TerrainTechnique %s"))
     {
-        terrain.setTerrainTechnique(new osgTerrain::GeometryTechnique);
+        if (fr[1].matchWord("GeometryTechnique"))
+        {
+            terrain.setTerrainTechnique(new osgTerrain::GeometryTechnique);
+        }
+
+        fr += 2;
+        itrAdvanced = true;
     }
-#endif
+
     return itrAdvanced;
 }
 
@@ -472,12 +495,20 @@ bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
         }
         case(osgTerrain::Locator::PROJECTED):
         {        
-            fw<<"PROJECTED"<<std::endl;;
+            fw<<"PROJECTED"<<std::endl;
             break;
         }
     }    
 
-    fw.indent()<<"Transform "<<locator.getTransform()<<std::endl;
+    const osg::Matrixd& matrix = locator.getTransform();
+    fw.indent() << "Transform {" << std::endl;
+    fw.moveIn();
+    fw.indent() << matrix(0,0) << " " << matrix(0,1) << " " << matrix(0,2) << " " << matrix(0,3) << std::endl;
+    fw.indent() << matrix(1,0) << " " << matrix(1,1) << " " << matrix(1,2) << " " << matrix(1,3) << std::endl;
+    fw.indent() << matrix(2,0) << " " << matrix(2,1) << " " << matrix(2,2) << " " << matrix(2,3) << std::endl;
+    fw.indent() << matrix(3,0) << " " << matrix(3,1) << " " << matrix(3,2) << " " << matrix(3,3) << std::endl;
+    fw.moveOut();
+    fw.indent() << "}"<< std::endl;
 
     fw.moveOut();
     fw.indent()<<"}"<<std::endl;
@@ -487,6 +518,13 @@ bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
 
 bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
 {
+    const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(&layer);
+    if (proxyLayer)
+    {
+        fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
+        return true;
+    }
+    
     if (layer.getLocator()) 
     {
         writeLocator(*layer.getLocator(),fw);
@@ -498,7 +536,7 @@ bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
         fw.indent()<<"Image "<<imageLayer->getFileName()<<std::endl;
         return true;
     }
-    
+
     const osgTerrain::HeightFieldLayer* hfLayer = dynamic_cast<const osgTerrain::HeightFieldLayer*>(&layer);
     if (hfLayer)
     {
@@ -581,7 +619,12 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
             fw.indent()<<"}"<<std::endl;
         }
     }
-    
+
+    if (terrain.getTerrainTechnique())
+    {
+        fw.indent()<<"TerrainTechnique "<<terrain.getTerrainTechnique()->className()<<std::endl;
+    }    
+
     fw.precision(prec);
     
     return true;

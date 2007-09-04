@@ -48,6 +48,12 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
 
         StateGraph*                         _parent;
 
+#ifdef OSGUTIL_RENDERBACKEND_USE_REF_PTR
+        osg::ref_ptr<const osg::StateSet> _stateset;
+#else
+        const osg::StateSet* _stateset;
+#endif
+
         int                                 _depth;
         ChildList                           _children;
         LeafList                            _leaves;
@@ -96,11 +102,9 @@ class OSGUTIL_EXPORT StateGraph : public osg::Referenced
         const osg::Referenced* getUserData() const { return _userData.get(); }
         
 #ifdef OSGUTIL_RENDERBACKEND_USE_REF_PTR
-        osg::ref_ptr<const osg::StateSet> _stateset;
         const osg::StateSet* getStateSet() const { return _stateset.get(); }
 #else
-        const osg::StateSet* _stateset;
-        const osg::StateSet* getStateSet() const { return _stateset.get(); }
+        const osg::StateSet* getStateSet() const { return _stateset; }
 #endif
 
         /** return true if all of drawables, lights and children are empty.*/

@@ -270,6 +270,7 @@ public:
     
         virtual ~GlyphTexture();
 
+
         // parameter used to compute the size and position of empty space
         // in the texture which could accomodate new glyphs.
         int _margin;
@@ -282,8 +283,10 @@ public:
         typedef std::vector< const Glyph* > GlyphPtrList;
         typedef osg::buffered_object< GlyphPtrList > GlyphBuffer;
         
-        GlyphRefList        _glyphs;
-        mutable GlyphBuffer _glyphsToSubload;
+        GlyphRefList                _glyphs;
+        mutable GlyphBuffer         _glyphsToSubload;
+        
+        mutable OpenThreads::Mutex  _mutex;
 
     };
 

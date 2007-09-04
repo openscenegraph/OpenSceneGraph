@@ -484,6 +484,7 @@ bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 
 void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     _glyphs.push_back(glyph);
     for(unsigned int i=0;i<_glyphsToSubload.size();++i)
@@ -507,6 +508,8 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
     if (contextID>=_glyphsToSubload.size())
     {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
         // graphics context is beyond the number of glyphsToSubloads, so
         // we must now copy the glyph list across, this is a potential
         // threading issue though is multiple applies are happening the
@@ -612,6 +615,8 @@ void Font::GlyphTexture::apply(osg::State& state) const
     static bool s_subloadAllGlyphsTogether = false;
     if (!s_renderer)
     {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
         s_renderer = glGetString(GL_RENDERER);
         osg::notify(osg::INFO)<<"glGetString(GL_RENDERER)=="<<s_renderer<<std::endl;
         if (s_renderer && strstr((const char*)s_renderer,"IMPACT")!=0)
@@ -643,7 +648,8 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
     if (!glyphsWereSubloading.empty() || newTextureObject)
     {
-    
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
         if (!s_subloadAllGlyphsTogether)
         {
             if (newTextureObject)

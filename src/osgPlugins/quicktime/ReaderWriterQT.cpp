@@ -100,6 +100,11 @@ public:
    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
    {
       std::string ext = osgDB::getLowerCaseFileExtension(file);
+      if (osgDB::equalCaseInsensitive(ext,"qt"))
+      {
+         return readImage(osgDB::getNameLessExtension(file),options);
+      }
+      
       if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
       std::string fileName = osgDB::findDataFile( file,  options);

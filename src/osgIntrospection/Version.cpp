@@ -11,20 +11,20 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgSim/Version>
+#include <osgIntrospection/Version>
 #include <osg/Version>
 
 extern "C" {
 
-const char* osgSimGetVersion()
+const char* osgIntrospectionGetVersion()
 {
     return osgGetVersion();
 }
 
 
-const char* osgSimGetLibraryName()
+const char* osgIntrospectionGetLibraryName()
 {
-    return "OpenSceneGraph Sim (Visual Simulation) Library";
+    return "OpenSceneGraph Introspection Library";
 }
 
 }

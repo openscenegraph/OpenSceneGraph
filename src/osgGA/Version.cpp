@@ -24,7 +24,7 @@ const char* osgGAGetVersion()
 
 const char* osgGAGetLibraryName()
 {
-    return "OpenSceneGraph Gui Adapter Library";
+    return "OpenSceneGraph GA (Gui Adapter) Library";
 }
 
 }

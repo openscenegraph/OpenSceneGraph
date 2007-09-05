@@ -28,10 +28,10 @@ extern "C" {
  * Here is the code to add to your configure.in:
  \verbatim
  #
- # Check for the OpenSceneGraph (OSG) library
+ # Check for the OpenSceneGraph (OSG) Shadow library
  #
  AC_CHECK_LIB(osg, osgShadowGetVersion, ,
-    [AC_MSG_ERROR(OpenSceneGraph library not found. See http://www.openscenegraph.org)],)
+    [AC_MSG_ERROR(OpenSceneGraph Shadow library not found. See http://www.openscenegraph.org)],)
  \endverbatim
 */
 extern OSGSHADOW_EXPORT const char* osgShadowGetVersion();

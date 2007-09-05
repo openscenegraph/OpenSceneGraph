@@ -23,7 +23,7 @@ const char* osgUtilGetVersion()
 
 const char* osgUtilGetLibraryName()
 {
-    return "OpenSceneGraph Utility Library";
+    return "OpenSceneGraph Util (Utility) Library";
 }
 
 }

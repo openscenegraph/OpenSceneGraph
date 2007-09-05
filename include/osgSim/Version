@@ -28,10 +28,10 @@ extern "C" {
  * Here is the code to add to your configure.in:
  \verbatim
  #
- # Check for the OpenSceneGraph-Sim library
+ # Check for the OpenSceneGraph (OSG) Sim library
  #
  AC_CHECK_LIB(osg, osgSimGetVersion, ,
-    [AC_MSG_ERROR(OpenSceneGraph library not found. See http://www.openscenegraph.org)],)
+    [AC_MSG_ERROR(OpenSceneGraph Sim library not found. See http://www.openscenegraph.org)],)
  \endverbatim
 */
 extern OSGSIM_EXPORT const char* osgSimGetVersion();

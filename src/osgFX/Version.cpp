@@ -10,21 +10,20 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-
-#include <osgSim/Version>
+#include <osgFX/Version>
 #include <osg/Version>
 
 extern "C" {
 
-const char* osgSimGetVersion()
+const char* osgFXGetVersion()
 {
     return osgGetVersion();
 }
 
 
-const char* osgSimGetLibraryName()
+const char* osgFXGetLibraryName()
 {
-    return "OpenSceneGraph Sim (Visual Simulation) Library";
+    return "OpenSceneGraph FX (Special effects) Library";
 }
 
 }

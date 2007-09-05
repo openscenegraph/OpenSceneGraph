@@ -29,10 +29,10 @@ extern "C" {
  * Here is the code to add to your configure.in:
  \verbatim
  #
- # Check for the OpenSceneGraph (OSG) utility library
+ # Check for the OpenSceneGraph (OSG) Util library
  #
  AC_CHECK_LIB(osg, osgUtilGetVersion, ,
-    [AC_MSG_ERROR(OpenSceneGraph utility library not found. See http://www.openscenegraph.org)],)
+    [AC_MSG_ERROR(OpenSceneGraph Util library not found. See http://www.openscenegraph.org)],)
  \endverbatim
 */
 extern OSGUTIL_EXPORT const char* osgUtilGetVersion();

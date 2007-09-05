@@ -28,7 +28,7 @@ extern "C" {
  * Here is the code to add to your configure.in:
  \verbatim
  #
- # Check for the OpenSceneGraph Terrain library
+ # Check for the OpenSceneGraph (OSG) Terrain library
  #
  AC_CHECK_LIB(osg, osgTerrainGetVersion, ,
     [AC_MSG_ERROR(OpenSceneGraph Terrain library not found. See http://www.openscenegraph.org)],)

@@ -11,20 +11,20 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgSim/Version>
+#include <osgManipulator/Version>
 #include <osg/Version>
 
 extern "C" {
 
-const char* osgSimGetVersion()
+const char* osgManipulatorGetVersion()
 {
     return osgGetVersion();
 }
 
 
-const char* osgSimGetLibraryName()
+const char* osgManipulatorGetLibraryName()
 {
-    return "OpenSceneGraph Sim (Visual Simulation) Library";
+    return "OpenSceneGraph Manipulator Library";
 }
 
 }

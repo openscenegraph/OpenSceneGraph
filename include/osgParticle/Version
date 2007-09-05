@@ -29,10 +29,10 @@ extern "C" {
  * Here is the code to add to your configure.in:
  \verbatim
  #
- # Check for the OpenSceneGraph Terrain library
+ # Check for the OpenSceneGraph Particle library
  #
  AC_CHECK_LIB(osg, osgParticleGetVersion, ,
-    [AC_MSG_ERROR(OpenSceneGraph Terrain library not found. See http://www.openscenegraph.org)],)
+    [AC_MSG_ERROR(OpenSceneGraph Particle library not found. See http://www.openscenegraph.org)],)
  \endverbatim
 */
 OSGPARTICLE_EXPORT const char* osgParticleGetVersion();

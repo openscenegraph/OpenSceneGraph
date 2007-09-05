@@ -35,6 +35,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/type_traits
     ${HEADER_PATH}/Utility
     ${HEADER_PATH}/Value
+    ${HEADER_PATH}/Version
     ${HEADER_PATH}/variant_cast
 )
 
@@ -52,6 +53,7 @@ ADD_LIBRARY(${LIB_NAME}
     Type.cpp
     Utility.cpp
     Value.cpp
+    Version.cpp
 )
 
 LINK_INTERNAL(${LIB_NAME}

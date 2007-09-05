@@ -29,6 +29,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Translate2DDragger
     ${HEADER_PATH}/TranslateAxisDragger
     ${HEADER_PATH}/TranslatePlaneDragger
+    ${HEADER_PATH}/Version
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -55,6 +56,7 @@ ADD_LIBRARY(${LIB_NAME}
     Translate2DDragger.cpp
     TranslateAxisDragger.cpp
     TranslatePlaneDragger.cpp
+    Version.cpp
 )
 
 LINK_INTERNAL(${LIB_NAME}     

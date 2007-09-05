@@ -19,6 +19,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/SpecularHighlights
     ${HEADER_PATH}/Technique
     ${HEADER_PATH}/Validator
+    ${HEADER_PATH}/Version
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -35,6 +36,7 @@ ADD_LIBRARY(${LIB_NAME}
     SpecularHighlights.cpp
     Technique.cpp
     Validator.cpp
+    Version.cpp
 )
 
 LINK_INTERNAL(${LIB_NAME}     

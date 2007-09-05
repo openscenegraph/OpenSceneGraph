@@ -28,7 +28,7 @@ extern "C" {
  * Here is the code to add to your configure.in:
  \verbatim
  #
- # Check for the OpenSceneGraph (OSG) library
+ # Check for the OpenSceneGraph (OSG) DB library
  #
  AC_CHECK_LIB(osg, osgDBGetVersion, ,
     [AC_MSG_ERROR(OpenSceneGraph DB library not found. See http://www.openscenegraph.org)],)

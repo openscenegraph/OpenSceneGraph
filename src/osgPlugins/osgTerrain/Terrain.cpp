@@ -531,16 +531,16 @@ bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
 
 bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
 {
+    if (layer.getLocator() && !(layer.getLocator()->getDefinedInFile()))
+    {
+        writeLocator(*layer.getLocator(),fw);
+    }
+
     const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(&layer);
     if (proxyLayer)
     {
         fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
         return true;
-    }
-    
-    if (layer.getLocator()) 
-    {
-        writeLocator(*layer.getLocator(),fw);
     }
 
     const osgTerrain::ImageLayer* imageLayer = dynamic_cast<const osgTerrain::ImageLayer*>(&layer);

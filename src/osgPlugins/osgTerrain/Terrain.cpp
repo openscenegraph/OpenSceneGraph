@@ -26,275 +26,246 @@ osgDB::RegisterDotOsgWrapperProxy Terrain_Proxy
     Terrain_writeLocalData
 );
 
-osgTerrain::Layer* readLayer(osgDB::Input& fr)
+osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
 {
     osg::ref_ptr<osgTerrain::Layer> layer;
     osg::ref_ptr<osgTerrain::Locator> locator;
 
-    int entry = fr[0].getNoNestedBrackets();
-
-    fr += 2;
-
-    while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+    // read any locator data first.
+    if (fr.matchSequence("Locator %w %f %f %f"))
     {
-        bool itrAdvanced = false;
-        
-        if (fr.matchSequence("CompositeLayer {"))
-        {
-            
-            osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
 
-            int local_entry = fr[0].getNoNestedBrackets();
+        double x,y,w,h;
+        fr[2].getFloat(x);
+        fr[3].getFloat(y);
+        fr[4].getFloat(w);
+        fr[5].getFloat(h);
 
-            fr += 2;
-            while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
-            {
-                osgTerrain::Layer* layer = readLayer(fr);
-                if (layer) cl->addLayer(layer);                
+        locator = new osgTerrain::Locator;
 
-                ++fr;
-            }
-            
-            layer = cl.get();
-        
-            itrAdvanced = true;
-            
-            ++fr;
+        if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+        else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
+        else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+        locator->setTransformAsExtents(x,y,x+w,y+h);
 
-        }
-
-        if (fr.matchSequence("ProxyLayer %w") || fr.matchSequence("ProxyLayer %w"))
-        {
-            osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
-            osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
-            if (proxyLayer)
-            {
-                layer = proxyLayer;
-                
-                osgTerrain::Locator* locator = layer->getLocator();
-                osg::notify(osg::NOTICE)<<"Locator = "<<locator<<std::endl;
-                if (layer->getLocator())
-                {
-                    osg::notify(osg::NOTICE)<<"   format = "<<locator->getFormat()<<std::endl;
-                    osg::notify(osg::NOTICE)<<"   cs = "<<locator->getCoordinateSystem()<<std::endl;
-                    osg::notify(osg::NOTICE)<<"   transform "<<locator->getTransform()<<std::endl;
-                }
-                
-            }
-            else
-            {
-                osg::notify(osg::NOTICE)<<"Warning: Failed to create ProxyLayer "<<fr[1].getStr()<<std::endl;
-            }
-                        
-            fr += 2;
-            itrAdvanced = true;
-        }
-
-        if (fr.matchSequence("Images {") || fr.matchSequence("images {"))
-        {
-            osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
-            
-            int local_entry = fr[0].getNoNestedBrackets();
-
-            fr += 2;
-            while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
-            {
-                cl->addLayer(fr[0].getStr());
-                ++fr;
-            }
-            
-            layer = cl.get();
-        
-            itrAdvanced = true;
-            
-            ++fr;
-        }
-
-        if (fr.matchSequence("Image %w") || fr.matchSequence("image %w") || 
-            fr.matchSequence("Image %s") || fr.matchSequence("image %s"))
-        {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(fr[1].getStr());
-            if (image.valid())
-            {
-                osg::ref_ptr<osgTerrain::ImageLayer> imagelayer = new osgTerrain::ImageLayer;
-                imagelayer->setImage(image.get());
-
-                layer = imagelayer.get();
-            }
-                        
-            fr += 2;
-            itrAdvanced = true;
-        }
-
-        if (fr.matchSequence("HeightField %w") || fr.matchSequence("HeightField  %s"))
-        {
-            osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(fr[1].getStr());
-            if (hf.valid())
-            {
-                osg::ref_ptr<osgTerrain::HeightFieldLayer> hflayer = new osgTerrain::HeightFieldLayer;
-                hflayer->setHeightField(hf.get());
-
-                layer = hflayer.get();
-            }
-                        
-            fr += 2;
-            itrAdvanced = true;
-        }
-
-        if (fr.matchSequence("Locator %w %f %f %f"))
-        {
-            
-            double x,y,w,h;
-            fr[2].getFloat(x);
-            fr[3].getFloat(y);
-            fr[4].getFloat(w);
-            fr[5].getFloat(h);
-            
-            locator = new osgTerrain::Locator;
-            
-            if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-            else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
-            else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-            locator->setTransformAsExtents(x,y,x+w,y+h);
-
-            fr += 6;
-            itrAdvanced = true;
-        }
-
-        if (fr.matchSequence("Locator {"))
-        {
-            locator = new osgTerrain::Locator;
-
-            int local_entry = fr[0].getNoNestedBrackets();
-
-            fr += 2;
-            while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
-            {
-                bool localAdvanced = false;
-
-                if (fr.matchSequence("Format %w") || fr.matchSequence("Format %s") )
-                {
-                    locator->setFormat(fr[1].getStr());
-
-                    fr += 2;
-                    localAdvanced = true;
-                }
-
-                if (fr.matchSequence("CoordinateSystemType %w"))
-                {
-                    if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-                    else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
-                    else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-
-                    fr += 2;
-                    localAdvanced = true;
-                }
-
-
-                if (fr.matchSequence("CoordinateSystem %w") || fr.matchSequence("CoordinateSystem %s") )
-                {
-                    locator->setCoordinateSystem(fr[1].getStr());
-
-                    fr += 2;
-                    localAdvanced = true;
-                }
-
-                if (fr.matchSequence("Transform {"))
-                {
-                    int tansform_entry = fr[0].getNoNestedBrackets();
-
-                    fr += 2;
-
-                    int row=0;
-                    int col=0;
-                    double v;
-                    osg::Matrixd matrix;
-                    while (!fr.eof() && fr[0].getNoNestedBrackets()>tansform_entry)
-                    {
-                        if (fr[0].getFloat(v))
-                        {
-                            matrix(row,col)=v;
-                            ++col;
-                            if (col>=4)
-                            {
-                                col = 0;
-                                ++row;
-                            }
-                            ++fr;
-                        }
-                        else fr.advanceOverCurrentFieldOrBlock();
-                    }
-
-                    locator->setTransform(matrix);
-                
-                    ++fr;
-                    localAdvanced = true;
-                }
-
-
-                if (fr.matchSequence("Extents %f %f %f %f"))
-                {
-                    double minX,minY,maxX,maxY;
-                    fr[1].getFloat(minX);
-                    fr[2].getFloat(minY);
-                    fr[3].getFloat(maxX);
-                    fr[4].getFloat(maxY);
-                    
-                    locator->setTransformAsExtents(minX, minY, maxX, maxY);
-                    
-                    fr += 5;
-                    localAdvanced = true;
-                }
-                
-                if (!localAdvanced) ++fr;
-            }
-            
-            itrAdvanced = true;
-            
-            ++fr;
-        }
-
-        if (fr.matchSequence("EllipsoidLocator %f %f %f %f"))
-        {
-            double x,y,w,h;
-            fr[1].getFloat(x);
-            fr[2].getFloat(y);
-            fr[3].getFloat(w);
-            fr[4].getFloat(h);
-        
-            locator = new osgTerrain::Locator;
-            locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-            locator->setTransformAsExtents(x,y,x+w,y+h);
-            
-            fr += 5;
-            itrAdvanced = true;
-        }
-
-        if (fr.matchSequence("CartesianLocator %f %f %f %f"))
-        {
-            double x,y,w,h;
-            fr[1].getFloat(x);
-            fr[2].getFloat(y);
-            fr[3].getFloat(w);
-            fr[4].getFloat(h);
-        
-            locator = new osgTerrain::Locator;
-            locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-            locator->setTransformAsExtents(x,y,x+w,y+h);
-         
-            fr += 5;
-            itrAdvanced = true;
-        }
-
-        if (!itrAdvanced)
-        {
-            if (fr[0].getStr()) osg::notify(osg::NOTICE)<<"Layer - unreconised token : "<<fr[0].getStr() << std::endl;
-            ++fr;
-        }
+        fr += 6;
+        itrAdvanced = true;
     }
 
-    // step over trailing }
-    ++fr;
+    if (fr.matchSequence("Locator {"))
+    {
+        locator = new osgTerrain::Locator;
+
+        int local_entry = fr[0].getNoNestedBrackets();
+
+        fr += 2;
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
+        {
+            bool localAdvanced = false;
+
+            if (fr.matchSequence("Format %w") || fr.matchSequence("Format %s") )
+            {
+                locator->setFormat(fr[1].getStr());
+
+                fr += 2;
+                localAdvanced = true;
+            }
+
+            if (fr.matchSequence("CoordinateSystemType %w"))
+            {
+                if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+                else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
+                else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+
+                fr += 2;
+                localAdvanced = true;
+            }
+
+
+            if (fr.matchSequence("CoordinateSystem %w") || fr.matchSequence("CoordinateSystem %s") )
+            {
+                locator->setCoordinateSystem(fr[1].getStr());
+
+                fr += 2;
+                localAdvanced = true;
+            }
+
+            if (fr.matchSequence("Transform {"))
+            {
+                int tansform_entry = fr[0].getNoNestedBrackets();
+
+                fr += 2;
+
+                int row=0;
+                int col=0;
+                double v;
+                osg::Matrixd matrix;
+                while (!fr.eof() && fr[0].getNoNestedBrackets()>tansform_entry)
+                {
+                    if (fr[0].getFloat(v))
+                    {
+                        matrix(row,col)=v;
+                        ++col;
+                        if (col>=4)
+                        {
+                            col = 0;
+                            ++row;
+                        }
+                        ++fr;
+                    }
+                    else fr.advanceOverCurrentFieldOrBlock();
+                }
+
+                locator->setTransform(matrix);
+
+                ++fr;
+                localAdvanced = true;
+            }
+
+
+            if (fr.matchSequence("Extents %f %f %f %f"))
+            {
+                double minX,minY,maxX,maxY;
+                fr[1].getFloat(minX);
+                fr[2].getFloat(minY);
+                fr[3].getFloat(maxX);
+                fr[4].getFloat(maxY);
+
+                locator->setTransformAsExtents(minX, minY, maxX, maxY);
+
+                fr += 5;
+                localAdvanced = true;
+            }
+
+            if (!localAdvanced) ++fr;
+        }
+
+        itrAdvanced = true;
+
+        ++fr;
+    }
+
+    if (fr.matchSequence("EllipsoidLocator %f %f %f %f"))
+    {
+        double x,y,w,h;
+        fr[1].getFloat(x);
+        fr[2].getFloat(y);
+        fr[3].getFloat(w);
+        fr[4].getFloat(h);
+
+        locator = new osgTerrain::Locator;
+        locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
+        locator->setTransformAsExtents(x,y,x+w,y+h);
+
+        fr += 5;
+        itrAdvanced = true;
+    }
+
+    if (fr.matchSequence("CartesianLocator %f %f %f %f"))
+    {
+        double x,y,w,h;
+        fr[1].getFloat(x);
+        fr[2].getFloat(y);
+        fr[3].getFloat(w);
+        fr[4].getFloat(h);
+
+        locator = new osgTerrain::Locator;
+        locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
+        locator->setTransformAsExtents(x,y,x+w,y+h);
+
+        fr += 5;
+        itrAdvanced = true;
+    }
+        
+
+    if (fr.matchSequence("CompositeLayer {"))
+    {
+
+        osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
+
+        int local_entry = fr[0].getNoNestedBrackets();
+
+        fr += 2;
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
+        {
+            osg::notify(osg::NOTICE)<<"Composite layer "<<fr[0].getStr()<<std::endl;
+            bool localAdvanced = false;
+            osgTerrain::Layer* layer = readLayer(fr, localAdvanced);
+            if (layer) cl->addLayer(layer);
+            if (!localAdvanced) ++fr;
+
+        }
+        
+        layer = cl.get();
+
+        osg::notify(osg::NOTICE)<<"End of Composite layer "<<fr[0].getStr()<<std::endl;
+
+        ++fr;
+    }
+
+    if (fr.matchSequence("ProxyLayer %w") || fr.matchSequence("ProxyLayer %s"))
+    {
+        osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
+        osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
+        if (proxyLayer)
+        {
+            layer = proxyLayer;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Warning: Failed to create ProxyLayer "<<fr[1].getStr()<<std::endl;
+        }
+
+        fr += 2;
+        itrAdvanced = true;
+    }
+
+    if (fr.matchSequence("Images {") || fr.matchSequence("images {"))
+    {
+        osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
+
+        int local_entry = fr[0].getNoNestedBrackets();
+
+        fr += 2;
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
+        {
+            cl->addLayer(fr[0].getStr());
+            ++fr;
+        }
+
+        layer = cl.get();
+        ++fr;
+        itrAdvanced = true;
+    }
+
+    if (fr.matchSequence("Image %w") || fr.matchSequence("image %w") || 
+        fr.matchSequence("Image %s") || fr.matchSequence("image %s"))
+    {
+        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(fr[1].getStr());
+        if (image.valid())
+        {
+            osg::ref_ptr<osgTerrain::ImageLayer> imagelayer = new osgTerrain::ImageLayer;
+            imagelayer->setImage(image.get());
+            layer = imagelayer.get();
+        }
+
+        fr += 2;
+        itrAdvanced = true;
+    }
+
+    if (fr.matchSequence("HeightField %w") || fr.matchSequence("HeightField  %s"))
+    {
+        osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(fr[1].getStr());
+        if (hf.valid())
+        {
+            osg::ref_ptr<osgTerrain::HeightFieldLayer> hflayer = new osgTerrain::HeightFieldLayer;
+            hflayer->setHeightField(hf.get());
+            layer = hflayer.get();
+        }
+
+        fr += 2;
+        itrAdvanced = true;
+    }
     
     if (layer.valid() && locator.valid())
     {
@@ -302,6 +273,48 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr)
     }
     
     return layer.release();
+}
+
+osgTerrain::Layer* readNestedLayer(osgDB::Input& fr)
+{
+    int entry = fr[0].getNoNestedBrackets();
+
+    fr += 2;
+
+    osg::ref_ptr<osgTerrain::CompositeLayer> compositeLayer = 0;
+    osg::ref_ptr<osgTerrain::Layer> layer = 0;
+
+    while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+    {
+        bool itrAdvanced = false;
+        
+        osg::ref_ptr<osgTerrain::Layer> new_layer = readLayer(fr,itrAdvanced);
+        if (new_layer.valid())
+        {
+            if (layer.valid())
+            {
+                compositeLayer = new osgTerrain::CompositeLayer;
+                compositeLayer->addLayer(layer.get());
+                compositeLayer->addLayer(new_layer.get());
+                layer = 0;
+            }
+            else if (compositeLayer.valid())
+            {
+                compositeLayer->addLayer(new_layer.get());
+            }
+            else
+            {
+                layer = new_layer;
+            }
+            
+        }
+        
+        if (!itrAdvanced) ++fr;
+    }
+    
+    if (compositeLayer.valid()) return compositeLayer.release();
+    if (layer.valid()) return layer.release();
+    return 0; 
 }
 
 osg::TransferFunction* readTransferFunction(osgDB::Input& fr)
@@ -399,7 +412,7 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     if (fr.matchSequence("ElevationLayer {"))
     {
-        osgTerrain::Layer* layer = readLayer(fr);
+        osgTerrain::Layer* layer = readNestedLayer(fr);
 
         if (layer) terrain.setElevationLayer(layer);
 
@@ -416,7 +429,7 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
             ++fr;
         }
 
-        osgTerrain::Layer* layer = readLayer(fr);
+        osgTerrain::Layer* layer = readNestedLayer(fr);
         if (layer) terrain.setColorLayer(layerNum, layer);
 
         itrAdvanced = true;

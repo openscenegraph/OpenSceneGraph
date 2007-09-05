@@ -120,6 +120,11 @@ void DataSetLayer::setUpLocator()
                     0.0,                0.0,                1.0,    0.0,
                     geoTransform[0],    geoTransform[3],    0.0,    1.0);
                     
+        locator->setTransform(matrix);
+        locator->setDefinedInFile(true);
+
+        setLocator(locator.get());    
+
     }
     else if (_dataset->GetGCPCount()>0 && _dataset->GetGCPProjection())
     {
@@ -162,23 +167,15 @@ void DataSetLayer::setUpLocator()
                     adfDstGeoTransform[2],    adfDstGeoTransform[5],    0.0,    0.0,
                     0.0,                0.0,                1.0,    0.0,
                     adfDstGeoTransform[0],    adfDstGeoTransform[3],    0.0,    1.0);
+
+        locator->setTransform(matrix);
+        locator->setDefinedInFile(true);
+
+        setLocator(locator.get());    
     }
     else
     {
         osg::notify(osg::NOTICE) << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
-
-        matrix.set( 1.0,    0.0,    0.0,    0.0,
-                    0.0,    1.0,    0.0,    0.0,
-                    0.0,    0.0,    1.0,    0.0,
-                    0.0,    0.0,    0.0,    1.0);
-
     }
-    
-    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
 
-    // need to invert y and scale by pixel size.    
-    locator->setTransform(matrix);
-    
-    setLocator(locator.get());    
-    
 }

@@ -24,7 +24,8 @@ using namespace osgTerrain;
 //
 Locator::Locator():
     _coordinateSystemType(PROJECTED),
-    _ellipsoidModel(new osg::EllipsoidModel())
+    _ellipsoidModel(new osg::EllipsoidModel()),
+    _definedInFile(false)
 {
 }
 
@@ -34,7 +35,8 @@ Locator::Locator(const Locator& locator,const osg::CopyOp& copyop):
     _ellipsoidModel(locator._ellipsoidModel),
     _format(locator._format),
     _cs(locator._cs),
-    _transform(locator._transform)
+    _transform(locator._transform),
+    _definedInFile(locator._definedInFile)
 {
 }
 

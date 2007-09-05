@@ -147,6 +147,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __bool__computeLocalBounds__Locator_R1__osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
+	I_Method1(void, setDefinedInFile, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setDefinedInFile__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDefinedInFile,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDefinedInFile,
+	          "",
+	          "");
 	I_StaticMethod4(bool, convertLocalCoordBetween, IN, const osgTerrain::Locator &, source, IN, const osg::Vec3d &, sourceNDC, IN, const osgTerrain::Locator &, destination, IN, osg::Vec3d &, destinationNDC,
 	                __bool__convertLocalCoordBetween__C5_Locator_R1__C5_osg_Vec3d_R1__C5_Locator_R1__osg_Vec3d_R1_S,
 	                "",
@@ -157,6 +167,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	I_SimpleProperty(osgTerrain::Locator::CoordinateSystemType, CoordinateSystemType, 
 	                 __CoordinateSystemType__getCoordinateSystemType, 
 	                 __void__setCoordinateSystemType__CoordinateSystemType);
+	I_SimpleProperty(bool, DefinedInFile, 
+	                 __bool__getDefinedInFile, 
+	                 __void__setDefinedInFile__bool);
 	I_SimpleProperty(osg::EllipsoidModel *, EllipsoidModel, 
 	                 __osg_EllipsoidModel_P1__getEllipsoidModel, 
 	                 __void__setEllipsoidModel__osg_EllipsoidModel_P1);

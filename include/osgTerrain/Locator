@@ -102,6 +102,9 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         }
         
         bool computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight);
+        
+        void setDefinedInFile(bool flag) { _definedInFile = flag; }
+        bool getDefinedInFile() const { return _definedInFile; }
 
     protected:
 
@@ -115,6 +118,8 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
 
         osg::Matrixd                        _transform;
         osg::Matrixd                        _inverse;
+        
+        bool                                _definedInFile;
 
 };
 

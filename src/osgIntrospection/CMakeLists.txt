@@ -58,6 +58,7 @@ ADD_LIBRARY(${LIB_NAME}
 
 LINK_INTERNAL(${LIB_NAME}
        OpenThreads
+       osg
 )
 
 LINK_CORELIB_DEFAULT(${LIB_NAME})

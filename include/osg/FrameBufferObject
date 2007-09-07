@@ -44,6 +44,7 @@
 #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL_EXT          0x8CD2
 #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE_EXT  0x8CD3
 #define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_3D_ZOFFSET_EXT     0x8CD4
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT          0x8CD4
 #define GL_COLOR_ATTACHMENT0_EXT                0x8CE0
 #define GL_COLOR_ATTACHMENT1_EXT                0x8CE1
 #define GL_COLOR_ATTACHMENT2_EXT                0x8CE2
@@ -105,13 +106,16 @@ namespace osg
         typedef void APIENTRY TglFramebufferTexture1DEXT(GLenum, GLenum, GLenum, GLuint, GLint);
         typedef void APIENTRY TglFramebufferTexture2DEXT(GLenum, GLenum, GLenum, GLuint, GLint);
         typedef void APIENTRY TglFramebufferTexture3DEXT(GLenum, GLenum, GLenum, GLuint, GLint, GLint);
+        typedef void APIENTRY TglFramebufferTextureLayerEXT(GLenum, GLenum, GLuint, GLint, GLint);
         typedef void APIENTRY TglFramebufferRenderbufferEXT(GLenum, GLenum, GLenum, GLuint);
         typedef void APIENTRY TglGenerateMipmapEXT(GLenum);
-
+        typedef void APIENTRY TglRenderbufferStorageMultisampleCoverageNV(GLenum, GLuint, GLuint, GLenum, GLuint, GLuint);
+    
         TglBindRenderbufferEXT* glBindRenderbufferEXT;
         TglGenRenderbuffersEXT* glGenRenderbuffersEXT;
         TglDeleteRenderbuffersEXT* glDeleteRenderbuffersEXT; 
         TglRenderbufferStorageEXT* glRenderbufferStorageEXT;
+        TglRenderbufferStorageMultisampleCoverageNV* glRenderbufferStorageMultisampleCoverageNV;
         TglBindFramebufferEXT* glBindFramebufferEXT;
         TglDeleteFramebuffersEXT* glDeleteFramebuffersEXT;
         TglGenFramebuffersEXT* glGenFramebuffersEXT;
@@ -119,6 +123,7 @@ namespace osg
         TglFramebufferTexture1DEXT* glFramebufferTexture1DEXT;
         TglFramebufferTexture2DEXT* glFramebufferTexture2DEXT;
         TglFramebufferTexture3DEXT* glFramebufferTexture3DEXT;
+        TglFramebufferTextureLayerEXT* glFramebufferTextureLayerEXT;
         TglFramebufferRenderbufferEXT* glFramebufferRenderbufferEXT;
         TglGenerateMipmapEXT* glGenerateMipmapEXT;
 
@@ -246,6 +251,7 @@ namespace osg
     class Texture1D;
     class Texture2D;
     class Texture3D;
+    class Texture2DArray;
     class TextureCubeMap;
     class TextureRectangle;
 
@@ -259,6 +265,7 @@ namespace osg
         explicit FrameBufferAttachment(Texture1D* target, int level = 0);
         explicit FrameBufferAttachment(Texture2D* target, int level = 0);
         explicit FrameBufferAttachment(Texture3D* target, int zoffset, int level = 0);
+        explicit FrameBufferAttachment(Texture2DArray* target, int layer, int level = 0);
         explicit FrameBufferAttachment(TextureCubeMap* target, int face, int level = 0);
         explicit FrameBufferAttachment(TextureRectangle* target);
         explicit FrameBufferAttachment(Camera::Attachment& attachment);

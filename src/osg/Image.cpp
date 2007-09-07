@@ -21,6 +21,7 @@
 #include <osg/StateSet>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
+#include <osg/Texture2DArray>
 
 #include "dxtctool.h"
 
@@ -522,14 +523,25 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 {
     const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
     const osg::Texture3D::Extensions* extensions3D = osg::Texture3D::getExtensions(contextID,true);
+    const osg::Texture2DArray::Extensions* extensions2DArray = osg::Texture2DArray::getExtensions(contextID,true);
 
     
-    GLboolean binding1D, binding2D, binding3D;
+    GLboolean binding1D, binding2D, binding3D, binding2DArray;
     glGetBooleanv(GL_TEXTURE_BINDING_1D, &binding1D);
     glGetBooleanv(GL_TEXTURE_BINDING_2D, &binding2D);
     glGetBooleanv(GL_TEXTURE_BINDING_3D, &binding3D);
+    
+    
+    if (extensions2DArray->isTexture2DArraySupported())
+    {
+        glGetBooleanv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &binding2DArray);
+    }
+    else
+    {
+        binding2DArray - GL_FALSE;
+    }
 
-    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : 0;
+    GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
     
     if (textureMode==0) return;
 
@@ -562,14 +574,21 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     {
         if (extensions->isCompressedTexImage2DSupported())
         {
-            glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+            glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
         }
     }
     else if (textureMode==GL_TEXTURE_3D)
     {
         if (extensions3D->isCompressedTexImage3DSupported())
         {
-            glGetTexLevelParameteriv(GL_TEXTURE_3D, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+            glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
+        }
+    }
+    else if (textureMode==GL_TEXTURE_2D_ARRAY_EXT)
+    {
+        if (extensions2DArray->isCompressedTexImage3DSupported())
+        {
+            glGetTexLevelParameteriv(textureMode, 0, GL_TEXTURE_COMPRESSED_ARB,&compressed);
         }
     }
     

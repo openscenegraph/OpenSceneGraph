@@ -156,6 +156,10 @@
 #define GL_TEXTURE_3D                     0x806F
 #endif
 
+#ifndef GL_TEXTURE_2D_ARRAY_EXT
+#define GL_TEXTURE_2D_ARRAY_EXT           0x8C1A
+#endif
+
 #ifndef GL_TEXTURE_BINDING_3D
 #define GL_TEXTURE_BINDING_3D             0x806A
 #endif

@@ -148,6 +148,10 @@ BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 	I_EnumLabel(osg::Uniform::SAMPLER_CUBE);
 	I_EnumLabel(osg::Uniform::SAMPLER_1D_SHADOW);
 	I_EnumLabel(osg::Uniform::SAMPLER_2D_SHADOW);
+	I_EnumLabel(osg::Uniform::SAMPLER_1D_ARRAY);
+	I_EnumLabel(osg::Uniform::SAMPLER_2D_ARRAY);
+	I_EnumLabel(osg::Uniform::SAMPLER_1D_ARRAY_SHADOW);
+	I_EnumLabel(osg::Uniform::SAMPLER_2D_ARRAY_SHADOW);
 	I_EnumLabel(osg::Uniform::UNDEFINED);
 END_REFLECTOR
 

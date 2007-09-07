@@ -18,6 +18,7 @@
 #include <osg/StateAttribute>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
+#include <osg/Texture2DArray>
 #include <osg/Texture3D>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
@@ -52,9 +53,13 @@ TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture2DEXT)
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture3DEXT)
 
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTextureLayerEXT)
+
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT)
 
 TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT)
+
+TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageMultisampleCoverageNV)
 
 BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_DeclaringFile("osg/FrameBufferObject");
@@ -77,6 +82,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_PublicMemberProperty(osg::FBOExtensions::TglGenRenderbuffersEXT *, glGenRenderbuffersEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteRenderbuffersEXT *, glDeleteRenderbuffersEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglRenderbufferStorageEXT *, glRenderbufferStorageEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglRenderbufferStorageMultisampleCoverageNV *, glRenderbufferStorageMultisampleCoverageNV);
 	I_PublicMemberProperty(osg::FBOExtensions::TglBindFramebufferEXT *, glBindFramebufferEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteFramebuffersEXT *, glDeleteFramebuffersEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglGenFramebuffersEXT *, glGenFramebuffersEXT);
@@ -84,6 +90,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture1DEXT *, glFramebufferTexture1DEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture2DEXT *, glFramebufferTexture2DEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture3DEXT *, glFramebufferTexture3DEXT);
+	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTextureLayerEXT *, glFramebufferTextureLayerEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferRenderbufferEXT *, glFramebufferRenderbufferEXT);
 	I_PublicMemberProperty(osg::FBOExtensions::TglGenerateMipmapEXT *, glGenerateMipmapEXT);
 END_REFLECTOR
@@ -113,6 +120,10 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	                           "");
 	I_ConstructorWithDefaults3(IN, osg::Texture3D *, target, , IN, int, zoffset, , IN, int, level, 0,
 	                           ____FrameBufferAttachment__Texture3D_P1__int__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults3(IN, osg::Texture2DArray *, target, , IN, int, layer, , IN, int, level, 0,
+	                           ____FrameBufferAttachment__Texture2DArray_P1__int__int,
 	                           "",
 	                           "");
 	I_ConstructorWithDefaults3(IN, osg::TextureCubeMap *, target, , IN, int, face, , IN, int, level, 0,

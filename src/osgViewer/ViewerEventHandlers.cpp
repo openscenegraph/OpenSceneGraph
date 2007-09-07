@@ -142,11 +142,11 @@ void WindowSizeHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
     int x;
     int y;
     int width;
-    int    height;
+    int height;
 
     window->getWindowRectangle(x, y, width, height);
 
-    bool    isFullScreen = x == 0 && y == 0 && width == screenWidth && height == screenHeight;
+    bool    isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight;
 
     if (isFullScreen)
     {
@@ -188,11 +188,11 @@ void WindowSizeHandler::changeWindowedResolution(osgViewer::GraphicsWindow *wind
     int x;
     int y;
     int width;
-    int    height;
+    int height;
 
     window->getWindowRectangle(x, y, width, height);
 
-    bool    isFullScreen = x == 0 && y == 0 && width == screenWidth && height == screenHeight;
+    bool    isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight;
 
     if (window->getWindowDecoration() == true || isFullScreen == false)
     {
@@ -356,8 +356,8 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
     _currentlyRecording(false),
     _currentlyPlaying(false),
     _delta(0.0f),
-    _lastFrameTime(osg::Timer::instance()->tick()),
-    _animStartTime(0)
+    _animStartTime(0),
+    _lastFrameTime(osg::Timer::instance()->tick())
 {
     _animPath = new osg::AnimationPath();
 

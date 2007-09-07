@@ -201,7 +201,7 @@ void CullVisitor::computeNearPlane()
     if (!_nearPlaneCandidateMap.empty())
     { 
     
-        osg::Timer_t start_t = osg::Timer::instance()->tick();
+        // osg::Timer_t start_t = osg::Timer::instance()->tick();
         
         // update near from defferred list of drawables
         unsigned int numTests = 0;
@@ -219,7 +219,7 @@ void CullVisitor::computeNearPlane()
             }
         } 
 
-        osg::Timer_t end_t = osg::Timer::instance()->tick();
+        // osg::Timer_t end_t = osg::Timer::instance()->tick();
         // osg::notify(osg::NOTICE)<<"Took "<<osg::Timer::instance()->delta_m(start_t,end_t)<<"ms to test "<<numTests<<" out of "<<_nearPlaneCandidateMap.size()<<std::endl;
 
         _nearPlaneCandidateMap.clear();
@@ -1206,7 +1206,7 @@ void CullVisitor::apply(osg::Camera& camera)
         // will do later.
         osgUtil::RenderStage* previous_stage = getCurrentRenderBin()->getStage();
 
-        unsigned int contextID = getState() ? getState()->getContextID() : 0;
+//        unsigned int contextID = getState() ? getState()->getContextID() : 0;
 
         // use render to texture stage.
         // create the render to texture stage.

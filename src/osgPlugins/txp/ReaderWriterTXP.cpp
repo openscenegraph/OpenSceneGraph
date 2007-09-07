@@ -77,7 +77,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
     {
         int x,y,lod;
         unsigned int id;
-        sscanf(name.c_str(),"tile%d_%dx%d_%d",&lod,&x,&y,&id);
+        sscanf(name.c_str(),"tile%d_%dx%d_%u",&lod,&x,&y,&id);
         TXPArchive* archive = getArchive(id,osgDB::getFilePath(file));
 
         // The way this is done a 'tile' should only be created for lod 0 only,
@@ -191,7 +191,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
     {
         int x,y,lod;
         unsigned int id;
-        sscanf(name.c_str(),"subtiles%d_%dx%d_%d",&lod,&x,&y,&id);
+        sscanf(name.c_str(),"subtiles%d_%dx%d_%u",&lod,&x,&y,&id);
         TXPArchive* archive = getArchive(id,osgDB::getFilePath(file));
 
         int majorVersion, minorVersion;
@@ -207,7 +207,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         {
             int nbChild;
 
-            sscanf(name.c_str(),"subtiles%d_%dx%d_%d_%d",&lod,&x,&y,&id, &nbChild);
+            sscanf(name.c_str(),"subtiles%d_%dx%d_%u_%d",&lod,&x,&y,&id, &nbChild);
             std::vector<TXPArchive::TileLocationInfo> locs;
             bool status = true;
             status = extractChildrenLocations(name, lod, locs, nbChild);

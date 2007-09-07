@@ -1329,7 +1329,7 @@ void Registry::addArchiveExtension(const std::string ext)
             return;
     }
     _archiveExtList.push_back(ext);
-};
+}
 
 ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 {

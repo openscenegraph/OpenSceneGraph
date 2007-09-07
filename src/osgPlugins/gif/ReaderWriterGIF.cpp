@@ -48,7 +48,7 @@
 extern  "C"
 {
     #include <gif_lib.h>
-};
+}
 
 #define ERR_NO_ERROR     0
 #define ERR_OPEN         1

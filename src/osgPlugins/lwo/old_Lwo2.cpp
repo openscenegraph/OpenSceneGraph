@@ -60,7 +60,7 @@ Lwo2::~Lwo2()
     {
       delete (*itr_surf).second;
     }
-};
+}
 
 bool 
 Lwo2::ReadFile( const string& filename )

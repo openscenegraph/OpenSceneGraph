@@ -66,7 +66,8 @@ extern "C" {
 #define socklen_t int
 #endif
 
-void    herror(const char*);
+// need add throw() under Linux when compile with aggressive warning 
+void    herror(const char*) throw();
 
 sockinetaddr::sockinetaddr () 
 {

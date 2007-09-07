@@ -351,8 +351,8 @@ void VertexBufferObject::compileBuffer(State& state) const
     // osg::notify(osg::NOTICE)<<"VertexBufferObject::compileBuffer frameNumber="<<state.getFrameStamp()->getFrameNumber()<<std::endl;
 
     unsigned int totalSizeRequired = 0;
-    unsigned int numModified = 0;
-    unsigned int numNotModified = 0;
+//    unsigned int numModified = 0;
+//    unsigned int numNotModified = 0;
     for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
         itr != _bufferEntryArrayPairs.end();
         ++itr)
@@ -520,8 +520,8 @@ void ElementBufferObject::compileBuffer(State& state) const
     Extensions* extensions = getExtensions(contextID,true);
 
     unsigned int totalSizeRequired = 0;
-    unsigned int numModified = 0;
-    unsigned int numNotModified = 0;
+//    unsigned int numModified = 0;
+//    unsigned int numNotModified = 0;
     for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
         itr != _bufferEntryDrawElementsPairs.end();
         ++itr)

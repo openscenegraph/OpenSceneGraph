@@ -375,7 +375,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
 
     // populate primitive sets
-    bool optimizeOrientations = _elevations!=0;
+//    bool optimizeOrientations = _elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
     
     osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);

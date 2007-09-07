@@ -55,11 +55,25 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             mkdir(dirname);
             // Using unzip.exe from http://www.info-zip.org/pub/infozip/UnZip.html
             // unzip.exe must be in your path.  (PATH environment variable).
-            sprintf( command,
-                "unzip -o -qq \"%s\" -d \"%s\"",
-                fileName.c_str(), dirname);
+
+            // OR - WinRAR
+
+            // Checking for WinRAR
+            std::string winrar = std::string( getenv( "ProgramFiles" ) ) + "/WinRAR/winrar.exe";
+            if ( osgDB::fileExists(winrar) ) {
+                sprintf( command,
+                    "%s x -o+ \"%s\" \"%s\"", winrar.c_str(),
+                    fileName.c_str(), dirname);
+            } else {
+                sprintf( command,
+                    "unzip -o -qq \"%s\" -d \"%s\"",
+                    fileName.c_str(), dirname);
+            }
+
             osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
-            system( command );
+            if ( system( command ) ) {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
 
         #else
             sprintf( dirname, "/tmp/.zip%06d", getpid());

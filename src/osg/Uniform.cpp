@@ -265,10 +265,14 @@ const char* Uniform::getTypename( Type t )
     case FLOAT_MAT4:        return "mat4";
     case SAMPLER_1D:        return "sampler1D";
     case SAMPLER_2D:        return "sampler2D";
+    case SAMPLER_1D_ARRAY:  return "sampler1DArray";
+    case SAMPLER_2D_ARRAY:  return "sampler2DArray";
     case SAMPLER_3D:        return "sampler3D";
     case SAMPLER_CUBE:      return "samplerCube";
     case SAMPLER_1D_SHADOW: return "sampler1DShadow";
     case SAMPLER_2D_SHADOW: return "sampler2DShadow";
+    case SAMPLER_1D_ARRAY_SHADOW: return "sampler1DArrayShadow";
+    case SAMPLER_2D_ARRAY_SHADOW: return "sampler2DArrayShadow";
     default:                return "UNDEFINED";
     }
 }
@@ -282,10 +286,14 @@ int Uniform::getTypeNumComponents( Type t )
     case BOOL:
     case SAMPLER_1D:
     case SAMPLER_2D:
+    case SAMPLER_1D_ARRAY:
+    case SAMPLER_2D_ARRAY:
     case SAMPLER_3D:
     case SAMPLER_CUBE:
     case SAMPLER_1D_SHADOW:
     case SAMPLER_2D_SHADOW:
+    case SAMPLER_1D_ARRAY_SHADOW:
+    case SAMPLER_2D_ARRAY_SHADOW:
         return 1;
 
     case FLOAT_VEC2:
@@ -334,10 +342,14 @@ Uniform::Type Uniform::getTypeId( const std::string& tname )
     if( tname == "mat4" )            return FLOAT_MAT4;
     if( tname == "sampler1D" )       return SAMPLER_1D;
     if( tname == "sampler2D" )       return SAMPLER_2D;
+    if( tname == "sampler1DArray" )  return SAMPLER_1D_ARRAY;
+    if( tname == "sampler2DArray" )  return SAMPLER_2D_ARRAY;
     if( tname == "sampler3D" )       return SAMPLER_3D;
     if( tname == "samplerCube" )     return SAMPLER_CUBE;
     if( tname == "sampler1DShadow" ) return SAMPLER_1D_SHADOW;
     if( tname == "sampler2DShadow" ) return SAMPLER_2D_SHADOW;
+    if( tname == "sampler1DArrayShadow" ) return SAMPLER_1D_ARRAY_SHADOW;
+    if( tname == "sampler2DArrayShadow" ) return SAMPLER_2D_ARRAY_SHADOW;
     return UNDEFINED;
 }
 
@@ -348,10 +360,14 @@ Uniform::Type Uniform::getGlApiType( Type t )
     case BOOL:
     case SAMPLER_1D:
     case SAMPLER_2D:
+    case SAMPLER_1D_ARRAY:
+    case SAMPLER_2D_ARRAY:
     case SAMPLER_3D:
     case SAMPLER_CUBE:
     case SAMPLER_1D_SHADOW:
     case SAMPLER_2D_SHADOW:
+    case SAMPLER_1D_ARRAY_SHADOW:
+    case SAMPLER_2D_ARRAY_SHADOW:
         return INT;
 
     case BOOL_VEC2:
@@ -391,10 +407,14 @@ GLenum Uniform::getInternalArrayType( Type t )
     case BOOL_VEC4:
     case SAMPLER_1D:
     case SAMPLER_2D:
+    case SAMPLER_1D_ARRAY:
+    case SAMPLER_2D_ARRAY:
     case SAMPLER_3D:
     case SAMPLER_CUBE:
     case SAMPLER_1D_SHADOW:
     case SAMPLER_2D_SHADOW:
+    case SAMPLER_1D_ARRAY_SHADOW:
+    case SAMPLER_2D_ARRAY_SHADOW:
         return GL_INT;
 
     default:

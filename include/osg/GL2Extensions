@@ -1,6 +1,7 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
+ * Copyright (C) 2007 Art Tevs
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -22,6 +23,17 @@
 #include <osg/GL>
 
 #include <string>
+
+#ifndef GL_VERSION_2_1    //[
+#define GL_VERSION_2_1 1
+
+#define GL_SAMPLER_1D_ARRAY_EXT           0x8DC0
+#define GL_SAMPLER_2D_ARRAY_EXT           0x8DC1
+#define GL_SAMPLER_1D_ARRAY_SHADOW_EXT    0x8DC3
+#define GL_SAMPLER_2D_ARRAY_SHADOW_EXT    0x8DC4
+
+#endif //]
+
 
 #ifndef GL_VERSION_2_0    //[
 #define GL_VERSION_2_0 1

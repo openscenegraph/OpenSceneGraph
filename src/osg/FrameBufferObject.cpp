@@ -19,6 +19,7 @@
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
+#include <osg/Texture2DArray>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/Notify>
@@ -56,6 +57,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     LOAD_FBO_EXT(glFramebufferTexture1DEXT);
     LOAD_FBO_EXT(glFramebufferTexture2DEXT);
     LOAD_FBO_EXT(glFramebufferTexture3DEXT);
+    LOAD_FBO_EXT(glFramebufferTextureLayerEXT);
     LOAD_FBO_EXT(glFramebufferRenderbufferEXT);
     LOAD_FBO_EXT(glGenerateMipmapEXT);
 
@@ -205,7 +207,8 @@ struct FrameBufferAttachment::Pimpl
         TEXTURE2D,
         TEXTURE3D,
         TEXTURECUBE,
-        TEXTURERECT
+        TEXTURERECT,
+        TEXTURE2DARRAY
     };
     
     TargetType targetType;
@@ -269,6 +272,13 @@ FrameBufferAttachment::FrameBufferAttachment(Texture3D* target, int level, int z
     _ximpl->zoffset = zoffset;
 }
 
+FrameBufferAttachment::FrameBufferAttachment(Texture2DArray* target, int layer, int level)
+{
+    _ximpl = new Pimpl(Pimpl::TEXTURE2DARRAY, level);
+    _ximpl->textureTarget = target;
+    _ximpl->zoffset = layer;
+}
+
 FrameBufferAttachment::FrameBufferAttachment(TextureCubeMap* target, int face, int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURECUBE, level);
@@ -309,6 +319,15 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
         {
             _ximpl = new Pimpl(Pimpl::TEXTURE3D, attachment._level);
             _ximpl->textureTarget = texture3D;
+            _ximpl->zoffset = attachment._face;
+            return;
+        }
+        
+        osg::Texture2DArray* texture2DArray = dynamic_cast<osg::Texture2DArray*>(texture);
+        if (texture2DArray)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURE2DARRAY, attachment._level);
+            _ximpl->textureTarget = texture2DArray;
             _ximpl->zoffset = attachment._face;
             return;
         }
@@ -428,6 +447,9 @@ void FrameBufferAttachment::attach(State &state, GLenum attachment_point, const 
         break;
     case Pimpl::TEXTURE3D:
         ext->glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_3D, tobj->_id, _ximpl->level, _ximpl->zoffset);
+        break;
+    case Pimpl::TEXTURE2DARRAY:
+        ext->glFramebufferTextureLayerEXT(GL_FRAMEBUFFER_EXT, attachment_point, tobj->_id, _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURERECT:
         ext->glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_RECTANGLE, tobj->_id, 0);
@@ -588,6 +610,7 @@ void FrameBufferObject::apply(State &state) const
 
     }
     
+   
     ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
 
     if (dirtyAttachmentList)

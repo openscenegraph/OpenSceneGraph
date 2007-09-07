@@ -10,6 +10,8 @@
 # Created by Robert Osfield. 
 
 FIND_PATH(PERFORMER_INCLUDE_DIR Performer/pfdu.h
+    $ENV{PFROOT}/include
+    $ENV{PFROOT}
     $ENV{PERFORMER_DIR}/include
     $ENV{PERFORMER_DIR}
     $ENV{OSGDIR}/include
@@ -27,25 +29,51 @@ FIND_PATH(PERFORMER_INCLUDE_DIR Performer/pfdu.h
     /usr/freeware/include
 )
 
-FIND_LIBRARY(PERFORMER_LIBRARY 
-    NAMES pf
-    PATHS
-    $ENV{PERFORMER_DIR}/lib
-    $ENV{PERFORMER_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/lib
-    /usr/lib
-    /sw/lib
-    /opt/local/lib
-    /opt/csw/lib
-    /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-    /usr/freeware/lib64
-)
+IF(MSVC)
+    FIND_LIBRARY(PERFORMER_LIBRARY 
+        NAMES libpf
+        PATHS
+        $ENV{PFROOT}/lib
+        $ENV{PFROOT}
+        $ENV{PERFORMER_DIR}/lib
+        $ENV{PERFORMER_DIR}
+        $ENV{OSGDIR}/lib
+        $ENV{OSGDIR}
+        $ENV{OSG_ROOT}/lib
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/lib
+        /usr/lib
+        /sw/lib
+        /opt/local/lib
+        /opt/csw/lib
+        /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+        /usr/freeware/lib64
+    )
+ELSE(MSVC)
+    FIND_LIBRARY(PERFORMER_LIBRARY 
+        NAMES pf
+        PATHS
+        $ENV{PFROOT}/lib
+        $ENV{PFROOT}
+        $ENV{PERFORMER_DIR}/lib
+        $ENV{PERFORMER_DIR}
+        $ENV{OSGDIR}/lib
+        $ENV{OSGDIR}
+        $ENV{OSG_ROOT}/lib
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/lib
+        /usr/lib
+        /sw/lib
+        /opt/local/lib
+        /opt/csw/lib
+        /opt/lib
+        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+        /usr/freeware/lib64
+    )
+ENDIF(MSVC)
 
 SET(PERFORMER_FOUND "NO")
 IF(PERFORMER_LIBRARY AND PERFORMER_INCLUDE_DIR)

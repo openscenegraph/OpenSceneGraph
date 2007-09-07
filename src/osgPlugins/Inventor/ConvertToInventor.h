@@ -41,7 +41,7 @@ namespace osg {
   class ShapeDrawable;
   class TexEnv;
   class TexGen;
-};
+}
 
 
 

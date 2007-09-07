@@ -2084,20 +2084,20 @@ BEGIN_OBJECT_REFLECTOR(osg::TemplateIndexArray< GLushort COMMA  osg::Array::USho
 END_REFLECTOR
 
 
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec2>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec3>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec2b>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec3b>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4b>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec2s>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec3s>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4s>);
-	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4ub>);
-	STD_VECTOR_REFLECTOR(std::vector<GLubyte>);
-	STD_VECTOR_REFLECTOR(std::vector<GLbyte>);
-	STD_VECTOR_REFLECTOR(std::vector<GLushort>);
-	STD_VECTOR_REFLECTOR(std::vector<GLshort>);
-	STD_VECTOR_REFLECTOR(std::vector<GLuint>);
-	STD_VECTOR_REFLECTOR(std::vector<GLint>);
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec2>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec3>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec2b>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec3b>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4b>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec2s>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec3s>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4s>)
+	STD_VECTOR_REFLECTOR(std::vector<osg::Vec4ub>)
+	STD_VECTOR_REFLECTOR(std::vector<GLubyte>)
+	STD_VECTOR_REFLECTOR(std::vector<GLbyte>)
+	STD_VECTOR_REFLECTOR(std::vector<GLushort>)
+	STD_VECTOR_REFLECTOR(std::vector<GLshort>)
+	STD_VECTOR_REFLECTOR(std::vector<GLuint>)
+	STD_VECTOR_REFLECTOR(std::vector<GLint>)
 	

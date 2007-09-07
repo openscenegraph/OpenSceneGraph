@@ -767,7 +767,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Uniform >)
 	                 0);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR_WITH_TYPES(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateAttribute::GLMode, osg::StateAttribute::Values);
+STD_MAP_REFLECTOR_WITH_TYPES(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateAttribute::GLMode, osg::StateAttribute::Values)
 STD_MAP_REFLECTOR(std::map< osg::StateAttribute::TypeMemberPair COMMA  osg::StateSet::RefAttributePair >)
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::StateSet::RefUniformPair >)

@@ -3,7 +3,7 @@
 
 #include "GroupSoLOD.h"
 
-SO_NODE_SOURCE(GroupSoLOD);
+SO_NODE_SOURCE(GroupSoLOD)
 
 void GroupSoLOD::initClass()
 {

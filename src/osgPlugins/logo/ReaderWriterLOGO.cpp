@@ -248,12 +248,20 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                     pos = Logos::LowerCenter;
                 else if( str == "Camera" )
                 {
-                    unsigned int n;
-                    if( (fscanf( fp, "%d", &n )) != 1 )
+                    int tn;
+                    if( (fscanf( fp, "%d", &tn )) != 1 )
                     {
                         osg::notify(osg::WARN) << "Error... Camera requires an integer argument\n";
                         break;
                     }
+                    
+                    if (tn < 0)
+                    {
+                        osg::notify(osg::WARN) << "Error... Camera requires an positive or null value argument\n";
+                        break;
+                    }
+                    
+                    unsigned int n = static_cast<unsigned int>(tn);
                     if( screen != n )
                     {
                         screen = n;

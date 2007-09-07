@@ -314,7 +314,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                 unsigned int dataType;
         };
 
-        const int UNSUPPORTED = 0;
+        const unsigned int UNSUPPORTED = 0;
 
         static const RGBFormat rgbFormats[] =            
         {
@@ -355,7 +355,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 
         bool found = false;
 
-        for ( int i = 0; i < sizeof ( rgbFormats ) / sizeof ( RGBFormat ); i++ )
+        for ( unsigned int i = 0; i < sizeof ( rgbFormats ) / sizeof ( RGBFormat ); i++ )
         {
             const RGBFormat& f = rgbFormats[ i ];
             if ( ddsd.ddpfPixelFormat.dwRGBBitCount     == f.bitCount &&

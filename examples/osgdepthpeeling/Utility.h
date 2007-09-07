@@ -53,5 +53,5 @@ double smoothNoise(unsigned width, unsigned height, unsigned x, unsigned y, unsi
   Get a quad with screen size in order to show a texture full screen
  */
 osg::Geode* getCanvasQuad(unsigned width, unsigned height, double depth=-1);
-};
+}
 #endif

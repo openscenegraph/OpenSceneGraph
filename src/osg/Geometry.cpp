@@ -1244,7 +1244,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
 
-    unsigned int contextID = state.getContextID();
+//    unsigned int contextID = state.getContextID();
     
     // osg::notify(osg::NOTICE)<<"Geometry::drawImplementation"<<std::endl;
 

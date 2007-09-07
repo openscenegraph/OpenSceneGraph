@@ -367,6 +367,6 @@ void EventQueue::userEvent(osg::Referenced* userEventData, double time)
     event->setTime(time);
     
     addEvent(event);
-};
+}
 
 

@@ -1179,7 +1179,9 @@ void OverlayNode::init()
 void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
 {
     osg::notify(osg::INFO)<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
-    OverlayData& overlayData = getOverlayData(0);
+    
+    // force initialization of _overlayDataMap for the key 0 (or NULL)
+    getOverlayData(0);
 }
 
 void OverlayNode::init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
@@ -1563,7 +1565,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         if (usePerspectiveShaders)
         {
 //            osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
-            double original_width = max_side-min_side;
+//            double original_width = max_side-min_side;
 
             double minRatio = 0.02;
             if (ratio<minRatio) ratio = minRatio;
@@ -1622,7 +1624,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                     if (local_base_up < lowest_up)
                     {
                         lowest_up = local_base_up;
-                        double side_over_up = delta_side / delta_up;
+//                        double side_over_up = delta_side / delta_up;
                     }
                 }
                 
@@ -1640,7 +1642,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             min_side = mid_side - max_half_width;
             max_side = mid_side + max_half_width;
             
-            double new_width = max_side-min_side;
+//            double new_width = max_side-min_side;
 
         
             double y0 = (1.0 + ratio) / (1.0 - ratio);

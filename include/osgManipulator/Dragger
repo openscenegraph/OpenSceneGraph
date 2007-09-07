@@ -36,10 +36,10 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         PointerInfo();
 
         PointerInfo(const PointerInfo& rhs):
+            _hitList(rhs._hitList),
             _nearPoint(rhs._nearPoint),
             _farPoint(rhs._farPoint),
-            _eyeDir(rhs._eyeDir),
-            _hitList(rhs._hitList)
+            _eyeDir(rhs._eyeDir)
         {
             _hitIter = _hitList.begin();
         }

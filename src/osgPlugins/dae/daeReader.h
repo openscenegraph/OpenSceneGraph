@@ -160,6 +160,8 @@ protected:
     DAE *dae;
     osg::Node* rootNode;
 
+    std::map<std::string,bool> _targetMap;
+
     int m_numlights;
 
     domEffect *currentEffect;

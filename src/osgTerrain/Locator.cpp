@@ -107,7 +107,7 @@ bool Locator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) co
         {
             osg::Vec3d geographic = local * _transform;
                 
-            _ellipsoidModel->convertLatLongHeightToXYZ(geographic.x(), geographic.y(), geographic.z(),
+            _ellipsoidModel->convertLatLongHeightToXYZ(geographic.y(), geographic.x(), geographic.z(),
                                                        world.x(), world.y(), world.z());
             return true;      
         }

@@ -538,7 +538,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     }
     else
     {
-        binding2DArray - GL_FALSE;
+        binding2DArray = GL_FALSE;
     }
 
     GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;

@@ -23,9 +23,37 @@ osgDB::RegisterDotOsgWrapperProxy View_Proxy
 bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     osgViewer::View& view = static_cast<osgViewer::View&>(obj);
-    bool itAdvanced = false;
+    bool iteratorAdvanced = false;
 
-    return itAdvanced;
+    osg::ref_ptr<osg::Object> readObject;
+    while((readObject=fr.readObjectOfType(osgDB::type_wrapper<osg::Camera>())).valid())
+    {
+        view.setCamera(static_cast<osg::Camera*>(readObject.get()));
+        iteratorAdvanced = true;
+    }
+    
+    if (fr.matchSequence("Slaves {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            readObject = fr.readObjectOfType(osgDB::type_wrapper<osg::Camera>());
+            if (readObject.valid()) view.addSlave(static_cast<osg::Camera*>(readObject.get()));
+            else ++fr;
+        }
+        
+        // skip trainling '}'
+        ++fr;
+        
+        iteratorAdvanced = true;
+
+    }
+    
+
+    return iteratorAdvanced;
 }
 
 bool View_writeLocalData(const osg::Object &obj, osgDB::Output &fw)

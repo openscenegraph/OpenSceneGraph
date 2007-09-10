@@ -109,7 +109,7 @@ void BlendFunc::Extensions::setupGLExtensions(unsigned int contextID)
     _isBlendFuncSeparateSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
         strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
 
-    _glBlendFuncSeparate = getGLExtensionFuncPtr("glBlendFuncSeparate", "glBlendFuncSeparateEXT");
+     setGLExtensionFuncPtr(_glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
 }
 
 void BlendFunc::Extensions::glBlendFuncSeparate(GLenum sfactorRGB,
@@ -119,14 +119,7 @@ void BlendFunc::Extensions::glBlendFuncSeparate(GLenum sfactorRGB,
 {
     if (_glBlendFuncSeparate)
     {
-        typedef void (APIENTRY * GLBlendFuncSeparateProc) (GLenum sfactorRGB,
-                                                           GLenum dfactorRGB,
-                                                           GLenum sfactorAlpha,
-                                                           GLenum dfactorAlpha);
-        ((GLBlendFuncSeparateProc)_glBlendFuncSeparate)(sfactorRGB,
-                                                        dfactorRGB,
-                                                        sfactorAlpha,
-                                                        dfactorAlpha);
+        _glBlendFuncSeparate(sfactorRGB, dfactorRGB, sfactorAlpha, dfactorAlpha);
     }
     else
     {

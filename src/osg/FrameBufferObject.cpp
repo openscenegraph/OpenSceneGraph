@@ -38,7 +38,7 @@ FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInita
 /**************************************************************************
  * FBOExtensions
  **************************************************************************/
-#define LOAD_FBO_EXT(name)    name = (T##name *)getGLExtensionFuncPtr(#name);
+#define LOAD_FBO_EXT(name)    setGLExtensionFuncPtr(name, (#name))
 
 FBOExtensions::FBOExtensions(unsigned int contextID)
 :    _supported(false)

@@ -112,7 +112,6 @@ class OSG_EXPORT Multisample : public StateAttribute
                 bool isMultisampleSupported() const { return _isMultisampleSupported; }
                 bool isMultisampleFilterHintSupported() const { return _isMultisampleFilterHintSupported; }
                 
-                void setSampleCoverageProc(void* ptr) { _glSampleCoverage = ptr; }
                 void glSampleCoverage(GLclampf value, GLboolean invert) const;
 
             protected:
@@ -121,7 +120,9 @@ class OSG_EXPORT Multisample : public StateAttribute
                 
                 bool    _isMultisampleSupported;
                 bool    _isMultisampleFilterHintSupported;
-                void*   _glSampleCoverage;
+                
+                typedef void (APIENTRY * GLSampleCoverageProc) (GLclampf value, GLboolean invert);
+                GLSampleCoverageProc _glSampleCoverage;
 
         };
         

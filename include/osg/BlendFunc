@@ -147,7 +147,6 @@ class OSG_EXPORT BlendFunc : public StateAttribute
             void setBlendFuncSeparateSupported(bool flag) { _isBlendFuncSeparateSupported=flag; }
             bool isBlendFuncSeparateSupported() const { return _isBlendFuncSeparateSupported; }
 
-            void setBlendFuncSeparateProc(void* ptr) { _glBlendFuncSeparate = ptr; }
             void glBlendFuncSeparate(GLenum sfactorRGB,
                                      GLenum dfactorRGB,
                                      GLenum sfactorAlpha,
@@ -157,9 +156,13 @@ class OSG_EXPORT BlendFunc : public StateAttribute
 
             ~Extensions() {}
 
-            bool    _isBlendFuncSeparateSupported;
 
-            void*   _glBlendFuncSeparate;
+            typedef void (APIENTRY * GLBlendFuncSeparateProc) (GLenum sfactorRGB,
+                                                               GLenum dfactorRGB,
+                                                               GLenum sfactorAlpha,
+                                                               GLenum dfactorAlpha);
+            bool                    _isBlendFuncSeparateSupported;
+            GLBlendFuncSeparateProc _glBlendFuncSeparate;
 
         };
 

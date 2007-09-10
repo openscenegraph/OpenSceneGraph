@@ -1473,17 +1473,16 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
        _numTextureUnits = 1;
     }
 
-    _glCompressedTexImage2D = getGLExtensionFuncPtr("glCompressedTexImage2D","glCompressedTexImage2DARB");
-    _glCompressedTexSubImage2D = getGLExtensionFuncPtr("glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
-    _glGetCompressedTexImage = getGLExtensionFuncPtr("glGetCompressedTexImage","glGetCompressedTexImageARB");;
+    setGLExtensionFuncPtr(_glCompressedTexImage2D, "glCompressedTexImage2D","glCompressedTexImage2DARB");
+    setGLExtensionFuncPtr(_glCompressedTexSubImage2D, "glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
+    setGLExtensionFuncPtr(_glGetCompressedTexImage, "glGetCompressedTexImage","glGetCompressedTexImageARB");
 }
 
 void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
 {
     if (_glCompressedTexImage2D)
     {
-        typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-        ((CompressedTexImage2DArbProc)_glCompressedTexImage2D)(target, level, internalformat, width, height, border, imageSize, data);
+        _glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
     }
     else
     {
@@ -1496,8 +1495,7 @@ void Texture::Extensions::glCompressedTexSubImage2D(GLenum target, GLint level, 
 {
     if (_glCompressedTexSubImage2D)
     {
-        typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
-        ((CompressedTexSubImage2DArbProc)_glCompressedTexSubImage2D)(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+        _glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
     }
     else
     {
@@ -1509,8 +1507,7 @@ void Texture::Extensions::glGetCompressedTexImage(GLenum target, GLint level, GL
 {
     if (_glGetCompressedTexImage)
     {
-        typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
-        ((GetCompressedTexImageArbProc)_glGetCompressedTexImage)(target, level, data);
+        _glGetCompressedTexImage(target, level, data);
     }
     else
     {

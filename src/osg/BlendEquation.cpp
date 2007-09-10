@@ -111,15 +111,14 @@ void BlendEquation::Extensions::setupGLExtensions(unsigned int contextID)
     _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
     _isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
 
-    _glBlendEquation = getGLExtensionFuncPtr("glBlendEquation", "glBlendEquationEXT");
+    setGLExtensionFuncPtr(_glBlendEquation, "glBlendEquation", "glBlendEquationEXT");
 }
 
 void BlendEquation::Extensions::glBlendEquation(GLenum mode) const
 {
     if (_glBlendEquation)
     {
-        typedef void (APIENTRY * GLBlendEquationProc) (GLenum mode);
-        ((GLBlendEquationProc)_glBlendEquation)(mode);
+        _glBlendEquation(mode);
     }
     else
     {

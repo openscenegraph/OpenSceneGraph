@@ -191,17 +191,17 @@ void BufferObject::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void BufferObject::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _glGenBuffers = ((GenBuffersProc)osg::getGLExtensionFuncPtr("glGenBuffers","glGenBuffersARB"));
-    _glBindBuffer = ((BindBufferProc)osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB"));
-    _glBufferData = ((BufferDataProc)osg::getGLExtensionFuncPtr("glBufferData","glBufferDataARB"));
-    _glBufferSubData = ((BufferSubDataProc)osg::getGLExtensionFuncPtr("glBufferSubData","glBufferSubDataARB"));
-    _glDeleteBuffers = ((DeleteBuffersProc)osg::getGLExtensionFuncPtr("glDeleteBuffers","glDeleteBuffersARB"));
-    _glIsBuffer = ((IsBufferProc)osg::getGLExtensionFuncPtr("glIsBuffer","glIsBufferARB"));
-    _glGetBufferSubData = ((GetBufferSubDataProc)osg::getGLExtensionFuncPtr("glGetBufferSubData","glGetBufferSubDataARB"));
-    _glMapBuffer = ((MapBufferProc)osg::getGLExtensionFuncPtr("glMapBuffer","glMapBufferARB"));
-    _glUnmapBuffer = ((UnmapBufferProc)osg::getGLExtensionFuncPtr("glUnmapBuffer","glUnmapBufferARB"));
-    _glGetBufferParameteriv = ((GetBufferParameterivProc)osg::getGLExtensionFuncPtr("glGetBufferParameteriv","glGetBufferParameterivARB"));
-    _glGetBufferPointerv = ((GetBufferPointervProc)osg::getGLExtensionFuncPtr("glGetBufferPointerv","glGetBufferPointervARB"));
+    setGLExtensionFuncPtr(_glGenBuffers, "glGenBuffers","glGenBuffersARB");
+    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
+    setGLExtensionFuncPtr(_glBufferData, "glBufferData","glBufferDataARB");
+    setGLExtensionFuncPtr(_glBufferSubData, "glBufferSubData","glBufferSubDataARB");
+    setGLExtensionFuncPtr(_glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB");
+    setGLExtensionFuncPtr(_glIsBuffer, "glIsBuffer","glIsBufferARB");
+    setGLExtensionFuncPtr(_glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB");
+    setGLExtensionFuncPtr(_glMapBuffer, "glMapBuffer","glMapBufferARB");
+    setGLExtensionFuncPtr(_glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB");
+    setGLExtensionFuncPtr(_glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
+    setGLExtensionFuncPtr(_glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
     _isPBOSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
 }
 

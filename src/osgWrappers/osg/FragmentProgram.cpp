@@ -253,6 +253,11 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram::Extensions)
 	          __void__glProgramLocalParameter4fv__GLenum__GLuint__C5_GLfloat_P1,
 	          "",
 	          "");
+
+
+
+
+
 	I_SimpleProperty(bool, FragmentProgramSupported, 
 	                 0, 
 	                 __void__setFragmentProgramSupported__bool);

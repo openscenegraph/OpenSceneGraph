@@ -240,19 +240,12 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
 	          __bool__isBlendFuncSeparateSupported,
 	          "",
 	          "");
-	I_Method1(void, setBlendFuncSeparateProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBlendFuncSeparateProc__void_P1,
-	          "",
-	          "");
 	I_Method4(void, glBlendFuncSeparate, IN, GLenum, sfactorRGB, IN, GLenum, dfactorRGB, IN, GLenum, sfactorAlpha, IN, GLenum, dfactorAlpha,
 	          Properties::NON_VIRTUAL,
 	          __void__glBlendFuncSeparate__GLenum__GLenum__GLenum__GLenum,
 	          "",
 	          "");
-	I_SimpleProperty(void *, BlendFuncSeparateProc, 
-	                 0, 
-	                 __void__setBlendFuncSeparateProc__void_P1);
+
 	I_SimpleProperty(bool, BlendFuncSeparateSupported, 
 	                 0, 
 	                 __void__setBlendFuncSeparateSupported__bool);

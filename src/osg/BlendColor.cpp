@@ -92,15 +92,14 @@ void BlendColor::Extensions::setupGLExtensions(unsigned int contextID)
     _isBlendColorSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
 
-    _glBlendColor = getGLExtensionFuncPtr("glBlendColor", "glBlendColorEXT");
+    setGLExtensionFuncPtr(_glBlendColor, "glBlendColor", "glBlendColorEXT");
 }
 
 void BlendColor::Extensions::glBlendColor(GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha) const
 {
     if (_glBlendColor)
     {
-        typedef void (APIENTRY * GLBlendColorProc) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-        ((GLBlendColorProc)_glBlendColor)(red, green, blue, alpha);
+        _glBlendColor(red, green, blue, alpha);
     }
     else
     {

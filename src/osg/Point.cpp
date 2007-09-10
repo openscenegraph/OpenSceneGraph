@@ -135,22 +135,21 @@ void Point::Extensions::setupGLExtensions(unsigned int contextID)
             
     _isPointSpriteCoordOriginSupported = strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
 
-    _glPointParameteri = getGLExtensionFuncPtr("glPointParameteri", "glPointParameteriARB");
-    if (!_glPointParameteri) _glPointParameteri = getGLExtensionFuncPtr("glPointParameteriEXT", "glPointParameteriSGIS");
+    setGLExtensionFuncPtr(_glPointParameteri, "glPointParameteri", "glPointParameteriARB");
+    if (!_glPointParameteri) setGLExtensionFuncPtr(_glPointParameteri, "glPointParameteriEXT", "glPointParameteriSGIS");
 
-    _glPointParameterf = getGLExtensionFuncPtr("glPointParameterf", "glPointParameterfARB");
-    if (!_glPointParameterf) _glPointParameterf = getGLExtensionFuncPtr("glPointParameterfEXT", "glPointParameterfSGIS");
+    setGLExtensionFuncPtr(_glPointParameterf, "glPointParameterf", "glPointParameterfARB");
+    if (!_glPointParameterf) setGLExtensionFuncPtr(_glPointParameterf, "glPointParameterfEXT", "glPointParameterfSGIS");
 
-    _glPointParameterfv = getGLExtensionFuncPtr("glPointParameterfv", "glPointParameterfvARB");
-    if (!_glPointParameterfv) _glPointParameterfv = getGLExtensionFuncPtr("glPointParameterfvEXT", "glPointParameterfvSGIS");
+    setGLExtensionFuncPtr(_glPointParameterfv, "glPointParameterfv", "glPointParameterfvARB");
+    if (!_glPointParameterfv) setGLExtensionFuncPtr(_glPointParameterfv, "glPointParameterfvEXT", "glPointParameterfvSGIS");
 }
 
 void Point::Extensions::glPointParameteri(GLenum pname, GLint param) const
 {
     if (_glPointParameteri)
     {
-        typedef void (APIENTRY * GLPointParameteriProc) (GLenum pname, GLint param);
-        ((GLPointParameteriProc)_glPointParameteri)(pname, param);
+        _glPointParameteri(pname, param);
     }
     else
     {
@@ -162,8 +161,7 @@ void Point::Extensions::glPointParameterf(GLenum pname, GLfloat param) const
 {
     if (_glPointParameterf)
     {
-        typedef void (APIENTRY * GLPointParameterfProc) (GLenum pname, GLfloat param);
-        ((GLPointParameterfProc)_glPointParameterf)(pname, param);
+        _glPointParameterf(pname, param);
     }
     else
     {
@@ -175,8 +173,7 @@ void Point::Extensions::glPointParameterfv(GLenum pname, const GLfloat *params) 
 {
     if (_glPointParameterfv)
     {
-        typedef void (APIENTRY * GLPointParameterfvProc) (GLenum pname, const GLfloat *params);
-        ((GLPointParameterfvProc)_glPointParameterfv)(pname, params);
+        _glPointParameterfv(pname, params);
     }
     else
     {

@@ -110,18 +110,19 @@ class OSG_EXPORT BlendEquation : public StateAttribute
                 bool isSGIXMinMaxSupported() const { return _isSGIXMinMaxSupported; }
                 bool isLogicOpSupported() const { return _isLogicOpSupported; }
                 
-                void setBlendEquationProc(void* ptr) { _glBlendEquation = ptr; }
                 void glBlendEquation(GLenum mode) const;
 
             protected:
 
                 ~Extensions() {}
                 
-                bool    _isBlendEquationSupported;
-                bool    _isSGIXMinMaxSupported;
-                bool    _isLogicOpSupported;
+                typedef void (APIENTRY * GLBlendEquationProc) (GLenum mode);
 
-                void*   _glBlendEquation;
+                bool                _isBlendEquationSupported;
+                bool                _isSGIXMinMaxSupported;
+                bool                _isLogicOpSupported;
+                
+                GLBlendEquationProc _glBlendEquation;
 
         };
         

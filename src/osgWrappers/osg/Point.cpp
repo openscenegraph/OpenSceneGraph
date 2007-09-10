@@ -216,6 +216,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Point::Extensions)
 	          __void__glPointParameterfv__GLenum__C5_GLfloat_P1,
 	          "",
 	          "");
+
+
+
 	I_SimpleProperty(bool, PointParametersSupported, 
 	                 0, 
 	                 __void__setPointParametersSupported__bool);

@@ -257,11 +257,17 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
                 
                 bool _isFragmentProgramSupported;
                 
-                void* _glBindProgram;
-                void* _glGenPrograms;
-                void *_glDeletePrograms;
-                void* _glProgramString;
-                void* _glProgramLocalParameter4fv;
+                typedef void (APIENTRY * BindProgramProc) (GLenum target, GLuint id);
+                typedef void (APIENTRY * GenProgramsProc) (GLsizei n, GLuint *programs);
+                typedef void (APIENTRY * DeleteProgramsProc) (GLsizei n, GLuint *programs);
+                typedef void (APIENTRY * ProgramStringProc) (GLenum target, GLenum format, GLsizei len, const void *string); 
+                typedef void (APIENTRY * ProgramLocalParameter4fvProc) (GLenum target, GLuint index, const GLfloat *params);
+
+                BindProgramProc _glBindProgram;
+                GenProgramsProc _glGenPrograms;
+                DeleteProgramsProc _glDeletePrograms;
+                ProgramStringProc _glProgramString;
+                ProgramLocalParameter4fvProc _glProgramLocalParameter4fv;
          };
         
         /** Function to call to get the extension of a specified context.

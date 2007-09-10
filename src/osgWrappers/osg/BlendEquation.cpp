@@ -165,19 +165,12 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation::Extensions)
 	          __bool__isLogicOpSupported,
 	          "",
 	          "");
-	I_Method1(void, setBlendEquationProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBlendEquationProc__void_P1,
-	          "",
-	          "");
 	I_Method1(void, glBlendEquation, IN, GLenum, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__glBlendEquation__GLenum,
 	          "",
 	          "");
-	I_SimpleProperty(void *, BlendEquationProc, 
-	                 0, 
-	                 __void__setBlendEquationProc__void_P1);
+
 	I_SimpleProperty(bool, BlendEquationSupported, 
 	                 0, 
 	                 __void__setBlendEquationSupported__bool);

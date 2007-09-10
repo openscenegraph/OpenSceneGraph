@@ -163,19 +163,12 @@ BEGIN_OBJECT_REFLECTOR(osg::ClampColor::Extensions)
 	          __bool__isClampColorSupported,
 	          "",
 	          "");
-	I_Method1(void, setClampColorProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setClampColorProc__void_P1,
-	          "",
-	          "");
 	I_Method2(void, glClampColor, IN, GLenum, target, IN, GLenum, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__glClampColor__GLenum__GLenum,
 	          "",
 	          "");
-	I_SimpleProperty(void *, ClampColorProc, 
-	                 0, 
-	                 __void__setClampColorProc__void_P1);
+
 	I_SimpleProperty(bool, ClampColorSupported, 
 	                 0, 
 	                 __void__setClampColorSupported__bool);

@@ -86,16 +86,16 @@ class OSG_EXPORT BlendColor : public StateAttribute
                 void setBlendColorSupported(bool flag) { _isBlendColorSupported=flag; }
                 bool isBlendColorSupported() const { return _isBlendColorSupported; }
                 
-                void setBlendColorProc(void* ptr) { _glBlendColor = ptr; }
                 void glBlendColor(GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha) const;
 
             protected:
 
                 ~Extensions() {}
                 
-                bool    _isBlendColorSupported;
 
-                void*   _glBlendColor;
+                typedef void (APIENTRY * GLBlendColorProc) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+                bool                _isBlendColorSupported;
+                GLBlendColorProc    _glBlendColor;
 
         };
         

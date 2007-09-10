@@ -725,9 +725,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	          __bool__isCompressedTexImage2DSupported,
 	          "",
 	          "");
-	I_Method1(void, setCompressedTexImage2DProc, IN, void *, ptr,
+	I_Method0(bool, isCompressedTexSubImage2DSupported,
 	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexImage2DProc__void_P1,
+	          __bool__isCompressedTexSubImage2DSupported,
 	          "",
 	          "");
 	I_Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
@@ -735,24 +735,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	          __void__glCompressedTexImage2D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
 	          "",
 	          "");
-	I_Method0(bool, isCompressedTexSubImage2DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage2DSupported,
-	          "",
-	          "");
-	I_Method1(void, setCompressedTexSubImage2DProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setCompressedTexSubImage2DProc__void_P1,
-	          "",
-	          "");
 	I_Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data,
 	          Properties::NON_VIRTUAL,
 	          __void__glCompressedTexSubImage2D__GLenum__GLint__GLint__GLint__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method1(void, setGetCompressedTexImageProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setGetCompressedTexImageProc__void_P1,
 	          "",
 	          "");
 	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data,
@@ -770,18 +755,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	          __bool__isNonPowerOfTwoTextureSupported__GLenum,
 	          "",
 	          "");
-	I_SimpleProperty(void *, CompressedTexImage2DProc, 
-	                 0, 
-	                 __void__setCompressedTexImage2DProc__void_P1);
-	I_SimpleProperty(void *, CompressedTexSubImage2DProc, 
-	                 0, 
-	                 __void__setCompressedTexSubImage2DProc__void_P1);
+
+
+
 	I_SimpleProperty(bool, GenerateMipMapSupported, 
 	                 0, 
 	                 __void__setGenerateMipMapSupported__bool);
-	I_SimpleProperty(void *, GetCompressedTexImageProc, 
-	                 0, 
-	                 __void__setGetCompressedTexImageProc__void_P1);
 	I_SimpleProperty(GLint, MaxTextureSize, 
 	                 0, 
 	                 __void__setMaxTextureSize__GLint);

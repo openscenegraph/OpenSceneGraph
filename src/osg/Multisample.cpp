@@ -91,15 +91,14 @@ void Multisample::Extensions::setupGLExtensions(unsigned int contextID)
     _isMultisampleSupported = isGLExtensionSupported(contextID,"GL_ARB_multisample");
     _isMultisampleFilterHintSupported = isGLExtensionSupported(contextID,"GL_NV_multisample_filter_hint");
 
-    _glSampleCoverage = getGLExtensionFuncPtr("glSampleCoverageARB");
+    setGLExtensionFuncPtr(_glSampleCoverage, "glSampleCoverageARB");
 }
 
 void Multisample::Extensions::glSampleCoverage(GLclampf value, GLboolean invert) const
 {
     if (_glSampleCoverage)
     {
-        typedef void (APIENTRY * GLSampleCoverageProc) (GLclampf value, GLboolean invert);
-        ((GLSampleCoverageProc)_glSampleCoverage)(value, invert);
+        _glSampleCoverage(value, invert);
     }
     else
     {

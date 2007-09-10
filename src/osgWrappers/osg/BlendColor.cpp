@@ -149,19 +149,12 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendColor::Extensions)
 	          __bool__isBlendColorSupported,
 	          "",
 	          "");
-	I_Method1(void, setBlendColorProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setBlendColorProc__void_P1,
-	          "",
-	          "");
 	I_Method4(void, glBlendColor, IN, GLclampf, red, IN, GLclampf, green, IN, GLclampf, blue, IN, GLclampf, alpha,
 	          Properties::NON_VIRTUAL,
 	          __void__glBlendColor__GLclampf__GLclampf__GLclampf__GLclampf,
 	          "",
 	          "");
-	I_SimpleProperty(void *, BlendColorProc, 
-	                 0, 
-	                 __void__setBlendColorProc__void_P1);
+
 	I_SimpleProperty(bool, BlendColorSupported, 
 	                 0, 
 	                 __void__setBlendColorSupported__bool);

@@ -522,16 +522,10 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 GLint numTextureUnits() const { return _numTextureUnits; }
 
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
-
-                void setCompressedTexImage2DProc(void* ptr) { _glCompressedTexImage2D = ptr; }
-                void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const;
-
                 bool isCompressedTexSubImage2DSupported() const { return _glCompressedTexSubImage2D!=0; }
                 
-                void setCompressedTexSubImage2DProc(void* ptr) { _glCompressedTexSubImage2D = ptr; }
+                void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const;
                 void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data) const;
-
-                void setGetCompressedTexImageProc(void* ptr) { _glGetCompressedTexImage = ptr; }
                 void glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const;
 
                 bool isClientStorageSupported() const { return _isClientStorageSupported; }
@@ -564,9 +558,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;
 
-                void*   _glCompressedTexImage2D;
-                void*   _glCompressedTexSubImage2D;
-                void*   _glGetCompressedTexImage;
+                typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
+                typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
+                typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
+
+                CompressedTexImage2DArbProc     _glCompressedTexImage2D;
+                CompressedTexSubImage2DArbProc  _glCompressedTexSubImage2D;
+                GetCompressedTexImageArbProc    _glGetCompressedTexImage;
 
         };
         

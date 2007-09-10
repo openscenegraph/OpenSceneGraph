@@ -156,7 +156,6 @@ public:
         {
             osg::notify(osg::INFO)<<"resetting compileContext "<<_compileContext.get()<<" refCount "<<_compileContext->referenceCount()<<std::endl;
             
-            GraphicsContext* gc = _compileContext.get();
             _compileContext = 0;
         }
     }

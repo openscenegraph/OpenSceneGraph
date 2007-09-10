@@ -96,15 +96,14 @@ void ClampColor::Extensions::setupGLExtensions(unsigned int contextID)
     _isClampColorSupported = isGLExtensionSupported(contextID,"GL_ARB_color_buffer_float") ||
                              strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
 
-    _glClampColor = getGLExtensionFuncPtr("glClampColor", "glClampColorARB");
+    setGLExtensionFuncPtr(_glClampColor, "glClampColor", "glClampColorARB");
 }
 
 void ClampColor::Extensions::glClampColor(GLenum target, GLenum mode) const
 {
     if (_glClampColor)
     {
-        typedef void (APIENTRY * GLClampColorProc) (GLenum target, GLenum mode);
-        ((GLClampColorProc)_glClampColor)(target,mode);
+        _glClampColor(target,mode);
     }
     else
     {

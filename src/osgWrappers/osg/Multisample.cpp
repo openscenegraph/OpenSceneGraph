@@ -181,24 +181,17 @@ BEGIN_OBJECT_REFLECTOR(osg::Multisample::Extensions)
 	          __bool__isMultisampleFilterHintSupported,
 	          "",
 	          "");
-	I_Method1(void, setSampleCoverageProc, IN, void *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setSampleCoverageProc__void_P1,
-	          "",
-	          "");
 	I_Method2(void, glSampleCoverage, IN, GLclampf, value, IN, GLboolean, invert,
 	          Properties::NON_VIRTUAL,
 	          __void__glSampleCoverage__GLclampf__GLboolean,
 	          "",
 	          "");
+
 	I_SimpleProperty(bool, MultisampleFilterHintSupported, 
 	                 0, 
 	                 __void__setMultisampleFilterHintSupported__bool);
 	I_SimpleProperty(bool, MultisampleSupported, 
 	                 0, 
 	                 __void__setMultisampleSupported__bool);
-	I_SimpleProperty(void *, SampleCoverageProc, 
-	                 0, 
-	                 __void__setSampleCoverageProc__void_P1);
 END_REFLECTOR
 

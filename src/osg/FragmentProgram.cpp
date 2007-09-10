@@ -250,19 +250,18 @@ void FragmentProgram::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isFragmentProgramSupported = isGLExtensionSupported(contextID,"GL_ARB_fragment_program");
 
-    _glBindProgram = osg::getGLExtensionFuncPtr("glBindProgramARB");
-    _glGenPrograms = osg::getGLExtensionFuncPtr("glGenProgramsARB");
-    _glDeletePrograms = osg::getGLExtensionFuncPtr("glDeleteProgramsARB");
-    _glProgramString = osg::getGLExtensionFuncPtr("glProgramStringARB");
-    _glProgramLocalParameter4fv = osg::getGLExtensionFuncPtr("glProgramLocalParameter4fvARB");
+    setGLExtensionFuncPtr(_glBindProgram, "glBindProgramARB");
+    setGLExtensionFuncPtr(_glGenPrograms, "glGenProgramsARB");
+    setGLExtensionFuncPtr(_glDeletePrograms, "glDeleteProgramsARB");
+    setGLExtensionFuncPtr(_glProgramString, "glProgramStringARB");
+    setGLExtensionFuncPtr(_glProgramLocalParameter4fv, "glProgramLocalParameter4fvARB");
 }
 
 void FragmentProgram::Extensions::glBindProgram(GLenum target, GLuint id) const
 {
     if (_glBindProgram)
     {
-        typedef void (APIENTRY * BindProgramProc) (GLenum target, GLuint id);
-        ((BindProgramProc)_glBindProgram)(target,id);
+        _glBindProgram(target,id);
     }
     else
     {
@@ -274,8 +273,7 @@ void FragmentProgram::Extensions::glGenPrograms(GLsizei n, GLuint *programs) con
 {
     if (_glGenPrograms)
     {
-        typedef void (APIENTRY * GenProgramsProc) (GLsizei n, GLuint *programs);
-        ((GenProgramsProc)_glGenPrograms)(n,programs);
+        _glGenPrograms(n,programs);
     }
     else
     {
@@ -287,8 +285,7 @@ void FragmentProgram::Extensions::glDeletePrograms(GLsizei n, GLuint *programs) 
 {
     if (_glDeletePrograms)
     {
-        typedef void (APIENTRY * DeleteProgramsProc) (GLsizei n, GLuint *programs);
-        ((DeleteProgramsProc)_glDeletePrograms)(n,programs);
+        _glDeletePrograms(n,programs);
     }
     else
     {
@@ -300,8 +297,7 @@ void FragmentProgram::Extensions::glProgramString(GLenum target, GLenum format, 
 {
     if (_glProgramString)
     {
-        typedef void (APIENTRY * ProgramStringProc) (GLenum target, GLenum format, GLsizei len, const void *string); 
-        ((ProgramStringProc)_glProgramString)(target,format, len, string); 
+        _glProgramString(target,format, len, string); 
     }
     else
     {
@@ -313,8 +309,7 @@ void FragmentProgram::Extensions::glProgramLocalParameter4fv(GLenum target, GLui
 {
     if (_glProgramLocalParameter4fv)
     {
-        typedef void (APIENTRY * ProgramLocalParameter4fvProc) (GLenum target, GLuint index, const GLfloat *params);
-        ((ProgramLocalParameter4fvProc)_glProgramLocalParameter4fv)(target, index, params);
+        _glProgramLocalParameter4fv(target, index, params);
     }
     else
     {

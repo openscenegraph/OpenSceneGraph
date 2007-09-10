@@ -961,51 +961,51 @@ void Drawable::Extensions::setupGLExtensions(unsigned int contextID)
     _isTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query" );;
 
 
-    _glFogCoordfv = ((FogCoordProc)osg::getGLExtensionFuncPtr("glFogCoordfv","glFogCoordfvEXT"));
-    _glSecondaryColor3ubv = ((SecondaryColor3ubvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3ubv","glSecondaryColor3ubvEXT"));
-    _glSecondaryColor3fv = ((SecondaryColor3fvProc)osg::getGLExtensionFuncPtr("glSecondaryColor3fv","glSecondaryColor3fvEXT"));
-    _glMultiTexCoord1f = ((MultiTexCoord1fProc)osg::getGLExtensionFuncPtr("glMultiTexCoord1f","glMultiTexCoord1fARB"));
-    _glMultiTexCoord2fv = ((MultiTexCoordfvProc)osg::getGLExtensionFuncPtr("glMultiTexCoord2fv","glMultiTexCoord2fvARB"));
-    _glMultiTexCoord3fv = ((MultiTexCoordfvProc)osg::getGLExtensionFuncPtr("glMultiTexCoord3fv","glMultiTexCoord3fvARB"));
-    _glMultiTexCoord4fv = ((MultiTexCoordfvProc)osg::getGLExtensionFuncPtr("glMultiTexCoord4fv","glMultiTexCoord4fvARB"));
+    setGLExtensionFuncPtr(_glFogCoordfv, "glFogCoordfv","glFogCoordfvEXT");
+    setGLExtensionFuncPtr(_glSecondaryColor3ubv, "glSecondaryColor3ubv","glSecondaryColor3ubvEXT");
+    setGLExtensionFuncPtr(_glSecondaryColor3fv, "glSecondaryColor3fv","glSecondaryColor3fvEXT");
+    setGLExtensionFuncPtr(_glMultiTexCoord1f, "glMultiTexCoord1f","glMultiTexCoord1fARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord2fv, "glMultiTexCoord2fv","glMultiTexCoord2fvARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord3fv, "glMultiTexCoord3fv","glMultiTexCoord3fvARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB");
 
-    _glVertexAttrib1s = ((VertexAttrib1sProc)osg::getGLExtensionFuncPtr("glVertexAttrib1s","glVertexAttrib1sARB"));
-    _glVertexAttrib1f = ((VertexAttrib1fProc)osg::getGLExtensionFuncPtr("glVertexAttrib1f","glVertexAttrib1fARB"));
-    _glVertexAttrib2fv = ((VertexAttribfvProc)osg::getGLExtensionFuncPtr("glVertexAttrib2fv","glVertexAttrib2fvARB"));
-    _glVertexAttrib3fv = ((VertexAttribfvProc)osg::getGLExtensionFuncPtr("glVertexAttrib3fv","glVertexAttrib3fvARB"));
-    _glVertexAttrib4fv = ((VertexAttribfvProc)osg::getGLExtensionFuncPtr("glVertexAttrib4fv","glVertexAttrib4fvARB"));
-    _glVertexAttrib4ubv = ((VertexAttribubvProc)osg::getGLExtensionFuncPtr("glVertexAttrib4ubv","glVertexAttrib4ubvARB"));
-    _glVertexAttrib4Nubv = ((VertexAttribubvProc)osg::getGLExtensionFuncPtr("glVertexAttrib4Nubv","glVertexAttrib4NubvARB"));
+    setGLExtensionFuncPtr(_glVertexAttrib1s, "glVertexAttrib1s","glVertexAttrib1sARB");
+    setGLExtensionFuncPtr(_glVertexAttrib1f, "glVertexAttrib1f","glVertexAttrib1fARB");
+    setGLExtensionFuncPtr(_glVertexAttrib2fv, "glVertexAttrib2fv","glVertexAttrib2fvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib3fv, "glVertexAttrib3fv","glVertexAttrib3fvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv","glVertexAttrib4fvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4ubv, "glVertexAttrib4ubv","glVertexAttrib4ubvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nubv, "glVertexAttrib4Nubv","glVertexAttrib4NubvARB");
 
-    _glGenBuffers = ((GenBuffersProc)osg::getGLExtensionFuncPtr("glGenBuffers","glGenBuffersARB"));
-    _glBindBuffer = ((BindBufferProc)osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB"));
-    _glBufferData = ((BufferDataProc)osg::getGLExtensionFuncPtr("glBufferData","glBufferDataARB"));
-    _glBufferSubData = ((BufferSubDataProc)osg::getGLExtensionFuncPtr("glBufferSubData","glBufferSubDataARB"));
-    _glDeleteBuffers = ((DeleteBuffersProc)osg::getGLExtensionFuncPtr("glDeleteBuffers","glDeleteBuffersARB"));
-    _glIsBuffer = ((IsBufferProc)osg::getGLExtensionFuncPtr("glIsBuffer","glIsBufferARB"));
-    _glGetBufferSubData = ((GetBufferSubDataProc)osg::getGLExtensionFuncPtr("glGetBufferSubData","glGetBufferSubDataARB"));
-    _glMapBuffer = ((MapBufferProc)osg::getGLExtensionFuncPtr("glMapBuffer","glMapBufferARB"));
-    _glUnmapBuffer = ((UnmapBufferProc)osg::getGLExtensionFuncPtr("glUnmapBuffer","glUnmapBufferARB"));
-    _glGetBufferParameteriv = ((GetBufferParameterivProc)osg::getGLExtensionFuncPtr("glGetBufferParameteriv","glGetBufferParameterivARB"));
-    _glGetBufferPointerv = ((GetBufferPointervProc)osg::getGLExtensionFuncPtr("glGetBufferPointerv","glGetBufferPointervARB"));
+    setGLExtensionFuncPtr(_glGenBuffers, "glGenBuffers","glGenBuffersARB");
+    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
+    setGLExtensionFuncPtr(_glBufferData, "glBufferData","glBufferDataARB");
+    setGLExtensionFuncPtr(_glBufferSubData, "glBufferSubData","glBufferSubDataARB");
+    setGLExtensionFuncPtr(_glDeleteBuffers, "glDeleteBuffers","glDeleteBuffersARB");
+    setGLExtensionFuncPtr(_glIsBuffer, "glIsBuffer","glIsBufferARB");
+    setGLExtensionFuncPtr(_glGetBufferSubData, "glGetBufferSubData","glGetBufferSubDataARB");
+    setGLExtensionFuncPtr(_glMapBuffer, "glMapBuffer","glMapBufferARB");
+    setGLExtensionFuncPtr(_glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB");
+    setGLExtensionFuncPtr(_glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
+    setGLExtensionFuncPtr(_glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
 
-    _glGenOcclusionQueries = ((GenOcclusionQueriesProc)osg::getGLExtensionFuncPtr("glGenOcclusionQueries","glGenOcclusionQueriesNV"));
-    _glDeleteOcclusionQueries = ((DeleteOcclusionQueriesProc)osg::getGLExtensionFuncPtr("glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV"));
-    _glIsOcclusionQuery = ((IsOcclusionQueryProc)osg::getGLExtensionFuncPtr("glIsOcclusionQuery","_glIsOcclusionQueryNV"));
-    _glBeginOcclusionQuery = ((BeginOcclusionQueryProc)osg::getGLExtensionFuncPtr("glBeginOcclusionQuery","glBeginOcclusionQueryNV"));
-    _glEndOcclusionQuery = ((EndOcclusionQueryProc)osg::getGLExtensionFuncPtr("glEndOcclusionQuery","glEndOcclusionQueryNV"));
-    _glGetOcclusionQueryiv = ((GetOcclusionQueryivProc)osg::getGLExtensionFuncPtr("glGetOcclusionQueryiv","glGetOcclusionQueryivNV"));
-    _glGetOcclusionQueryuiv = ((GetOcclusionQueryuivProc)osg::getGLExtensionFuncPtr("glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV"));
+    setGLExtensionFuncPtr(_glGenOcclusionQueries, "glGenOcclusionQueries","glGenOcclusionQueriesNV");
+    setGLExtensionFuncPtr(_glDeleteOcclusionQueries, "glDeleteOcclusionQueries","glDeleteOcclusionQueriesNV");
+    setGLExtensionFuncPtr(_glIsOcclusionQuery, "glIsOcclusionQuery","_glIsOcclusionQueryNV");
+    setGLExtensionFuncPtr(_glBeginOcclusionQuery, "glBeginOcclusionQuery","glBeginOcclusionQueryNV");
+    setGLExtensionFuncPtr(_glEndOcclusionQuery, "glEndOcclusionQuery","glEndOcclusionQueryNV");
+    setGLExtensionFuncPtr(_glGetOcclusionQueryiv, "glGetOcclusionQueryiv","glGetOcclusionQueryivNV");
+    setGLExtensionFuncPtr(_glGetOcclusionQueryuiv, "glGetOcclusionQueryuiv","glGetOcclusionQueryuivNV");
 
-    _gl_gen_queries_arb = (GenQueriesProc)osg::getGLExtensionFuncPtr("glGenQueries", "glGenQueriesARB");
-    _gl_delete_queries_arb = (DeleteQueriesProc)osg::getGLExtensionFuncPtr("glDeleteQueries", "glDeleteQueriesARB");
-    _gl_is_query_arb = (IsQueryProc)osg::getGLExtensionFuncPtr("glIsQuery", "glIsQueryARB");
-    _gl_begin_query_arb = (BeginQueryProc)osg::getGLExtensionFuncPtr("glBeginQuery", "glBeginQueryARB");
-    _gl_end_query_arb = (EndQueryProc)osg::getGLExtensionFuncPtr("glEndQuery", "glEndQueryARB");
-    _gl_get_queryiv_arb = (GetQueryivProc)osg::getGLExtensionFuncPtr("glGetQueryiv", "glGetQueryivARB");
-    _gl_get_query_objectiv_arb = (GetQueryObjectivProc)osg::getGLExtensionFuncPtr("glGetQueryObjectiv","glGetQueryObjectivARB");
-    _gl_get_query_objectuiv_arb = (GetQueryObjectuivProc)osg::getGLExtensionFuncPtr("glGetQueryObjectuiv","glGetQueryObjectuivARB");
-    _gl_get_query_objectui64v = (GetQueryObjectui64vProc)osg::getGLExtensionFuncPtr("glGetQueryObjectui64v","glGetQueryObjectui64vEXT");
+    setGLExtensionFuncPtr(_gl_gen_queries_arb, "glGenQueries", "glGenQueriesARB");
+    setGLExtensionFuncPtr(_gl_delete_queries_arb, "glDeleteQueries", "glDeleteQueriesARB");
+    setGLExtensionFuncPtr(_gl_is_query_arb, "glIsQuery", "glIsQueryARB");
+    setGLExtensionFuncPtr(_gl_begin_query_arb, "glBeginQuery", "glBeginQueryARB");
+    setGLExtensionFuncPtr(_gl_end_query_arb, "glEndQuery", "glEndQueryARB");
+    setGLExtensionFuncPtr(_gl_get_queryiv_arb, "glGetQueryiv", "glGetQueryivARB");
+    setGLExtensionFuncPtr(_gl_get_query_objectiv_arb, "glGetQueryObjectiv","glGetQueryObjectivARB");
+    setGLExtensionFuncPtr(_gl_get_query_objectuiv_arb, "glGetQueryObjectuiv","glGetQueryObjectuivARB");
+    setGLExtensionFuncPtr(_gl_get_query_objectui64v, "glGetQueryObjectui64v","glGetQueryObjectui64vEXT");
 }
 
 void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const

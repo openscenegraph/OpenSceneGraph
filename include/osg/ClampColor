@@ -94,16 +94,15 @@ class OSG_EXPORT ClampColor : public StateAttribute
                 void setClampColorSupported(bool flag) { _isClampColorSupported=flag; }
                 bool isClampColorSupported() const { return _isClampColorSupported; }
                 
-                void setClampColorProc(void* ptr) { _glClampColor = ptr; }
                 void glClampColor(GLenum target, GLenum mode) const;
 
             protected:
 
                 ~Extensions() {}
                 
-                bool    _isClampColorSupported;
-
-                void*   _glClampColor;
+                typedef void (APIENTRY * GLClampColorProc) (GLenum target, GLenum mode);
+                bool                _isClampColorSupported;
+                GLClampColorProc    _glClampColor;
 
         };
         

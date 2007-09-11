@@ -81,8 +81,8 @@ bool Object_writeLocalData(const Object& obj, Output& fw)
     switch(obj.getDataVariance())
     {
         case(osg::Object::STATIC):      fw.indent() << "DataVariance STATIC" << std::endl;break;
-        case(osg::Object::UNSPECIFIED): fw.indent() << "DataVariance UNSPECIFIED" << std::endl;break;
-        default:                        fw.indent() << "DataVariance DYNAMIC" << std::endl;break;
+        case(osg::Object::DYNAMIC):     fw.indent() << "DataVariance DYNAMIC" << std::endl;break;
+        case(osg::Object::UNSPECIFIED): break; // fw.indent() << "DataVariance UNSPECIFIED" << std::endl;break;
     }
 
     if (!obj.getName().empty()) fw.indent() << "name "<<fw.wrapString(obj.getName())<< std::endl;

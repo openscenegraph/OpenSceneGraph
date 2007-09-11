@@ -153,6 +153,9 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _glGetObjectParameterivARB = rhs._glGetObjectParameterivARB;
     _glDeleteObjectARB = rhs._glDeleteObjectARB;
     _glGetHandleARB = rhs._glGetHandleARB;
+
+    _glBindFragDataLocation = rhs._glBindFragDataLocation;
+    _glGetFragDataLocation = rhs._glGetFragDataLocation;
 }
 
 
@@ -265,6 +268,9 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._glGetObjectParameterivARB) _glGetObjectParameterivARB = 0;
     if (!rhs._glDeleteObjectARB) _glDeleteObjectARB = 0;
     if (!rhs._glGetHandleARB) _glGetHandleARB = 0;
+
+    if (!rhs._glBindFragDataLocation) _glBindFragDataLocation = 0;
+    if (!rhs._glGetFragDataLocation) _glGetFragDataLocation = 0;
 }
 
 
@@ -402,6 +408,13 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _glGetObjectParameterivARB = osg::getGLExtensionFuncPtr("glGetObjectParameterivARB");
     _glDeleteObjectARB = osg::getGLExtensionFuncPtr("glDeleteObjectARB");
     _glGetHandleARB = osg::getGLExtensionFuncPtr("glGetHandleARB");
+
+    // v2.1 check also for EXT and ARB names, since this extension can became ARB later
+    _glBindFragDataLocation = osg::getGLExtensionFuncPtr("glBindFragDataLocation", "glBindFragDataLocationARB");
+    if (_glBindFragDataLocation == NULL) _glBindFragDataLocation = osg::getGLExtensionFuncPtr("glBindFragDataLocationEXT");
+    _glGetFragDataLocation = osg::getGLExtensionFuncPtr("glGetFragDataLocation", "glGetFragDataLocationARB");
+    if (_glGetFragDataLocation == NULL) _glGetFragDataLocation = osg::getGLExtensionFuncPtr("glGetFragDataLocationEXT");
+
 }
 
 
@@ -1782,6 +1795,32 @@ void GL2Extensions::glVertexAttribPointer(GLuint index, GLint size, GLenum type,
     }
 }
 
+void GL2Extensions::glBindFragDataLocation(GLuint program, GLuint colorIndex, const GLchar *name) const
+{
+    if (_glBindFragDataLocation)
+    {
+        typedef void (APIENTRY * BindFragDataLocationProc)(GLuint , GLuint, const GLchar*);
+        ((BindFragDataLocationProc)_glBindFragDataLocation)(program, colorIndex, name);
+    }
+    else
+    {
+        NotSupported( "glBindFragDataLocation" );
+    }
+}
+
+GLint GL2Extensions::glGetFragDataLocation(GLuint program, const GLchar *name) const
+{
+    if (_glGetFragDataLocation)
+    {
+        typedef GLint (APIENTRY * GetFragDataLocationProc)(GLuint,  const GLchar*);
+        return ((GetFragDataLocationProc)_glGetFragDataLocation)(program, name);
+    }
+    else
+    {
+        NotSupported( "glGetFragDataLocation" );
+        return -1;
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // C++-friendly convenience methods
@@ -1865,6 +1904,28 @@ bool GL2Extensions::getAttribLocation( const char* attribName, GLuint& location 
     return true;
 }
 
+
+bool GL2Extensions::getFragDataLocation( const char* fragDataName, GLuint& location ) const
+{
+    // is there an active GLSL program?
+    GLuint program = getCurrentProgram();
+    if( glIsProgram(program) == GL_FALSE ) return false;
+
+    // has that program been successfully linked?
+    GLint linked = GL_FALSE;
+    glGetProgramiv( program, GL_LINK_STATUS, &linked );
+    if( linked == GL_FALSE ) return false;
+
+    // check if supported
+    if (_glGetFragDataLocation == NULL) return false;
+
+    // is there such a named attribute?
+    GLint loc = glGetFragDataLocation( program, fragDataName );
+    if( loc < 0 ) return false;
+
+    location = loc;
+    return true;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // static cache of glPrograms flagged for deletion, which will actually
@@ -2079,6 +2140,17 @@ void Program::removeBindAttribLocation( const std::string& name )
     dirtyProgram();
 }
 
+void Program::addBindFragDataLocation( const std::string& name, GLuint index )
+{
+    _fragDataBindingList[name] = index;
+    dirtyProgram();
+}
+
+void Program::removeBindFragDataLocation( const std::string& name )
+{
+    _fragDataBindingList.erase(name);
+    dirtyProgram();
+}
 
 void Program::apply( osg::State& state ) const
 {
@@ -2204,6 +2276,14 @@ void Program::PerContextProgram::linkProgram()
         itr != bindlist.end(); ++itr )
     {
         _extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+    }
+
+    // set any explicit frag data bindings
+    const FragDataBindingList& fdbindlist = _program->getFragDataBindingList();
+    for( FragDataBindingList::const_iterator itr = fdbindlist.begin();
+        itr != fdbindlist.end(); ++itr )
+    {
+        _extensions->glBindFragDataLocation( _glProgramHandle, itr->second, itr->first.c_str() );
     }
 
     // link the glProgram

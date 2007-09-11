@@ -267,6 +267,11 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool getProgramInfoLog( GLuint program, std::string& result ) const;
         bool getShaderInfoLog( GLuint shader, std::string& result ) const;
         bool getAttribLocation( const char* attribName, GLuint& slot ) const;
+        bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
+
+        //EXT_gpu_shader4 to support frag data binding
+        void glBindFragDataLocation(GLuint program, GLuint colorNumber, const GLchar *name) const;
+        GLint glGetFragDataLocation(GLuint program, const GLchar *name) const;
 
     protected:
         ~GL2Extensions() {}
@@ -377,6 +382,9 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void* _glGetObjectParameterivARB;
         void* _glDeleteObjectARB;
         void* _glGetHandleARB;
+
+        void* _glBindFragDataLocation;
+        void* _glGetFragDataLocation;
 };
 
 }

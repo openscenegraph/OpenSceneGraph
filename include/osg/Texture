@@ -20,6 +20,7 @@
 #include <osg/GraphicsContext>
 #include <osg/ref_ptr>
 #include <osg/Vec4>
+#include <osg/Vec4d>
 #include <osg/buffered_value>
 
 #include <list>
@@ -194,6 +195,64 @@
     #define GL_TEXTURE_DEPTH                  0x8071
 #endif
 
+// Integer teture extension as in http://www.opengl.org/registry/specs/EXT/texture_integer.txt
+#ifndef GL_EXT_texture_integer
+    #define GL_RGBA32UI_EXT                                    0x8D70
+    #define GL_RGB32UI_EXT                                     0x8D71
+    #define GL_ALPHA32UI_EXT                                   0x8D72
+    #define GL_INTENSITY32UI_EXT                               0x8D73
+    #define GL_LUMINANCE32UI_EXT                               0x8D74
+    #define GL_LUMINANCE_ALPHA32UI_EXT                         0x8D75
+
+    #define GL_RGBA16UI_EXT                                    0x8D76
+    #define GL_RGB16UI_EXT                                     0x8D77
+    #define GL_ALPHA16UI_EXT                                   0x8D78
+    #define GL_INTENSITY16UI_EXT                               0x8D79
+    #define GL_LUMINANCE16UI_EXT                               0x8D7A
+    #define GL_LUMINANCE_ALPHA16UI_EXT                         0x8D7B
+
+    #define GL_RGBA8UI_EXT                                     0x8D7C
+    #define GL_RGB8UI_EXT                                      0x8D7D
+    #define GL_ALPHA8UI_EXT                                    0x8D7E
+    #define GL_INTENSITY8UI_EXT                                0x8D7F
+    #define GL_LUMINANCE8UI_EXT                                0x8D80
+    #define GL_LUMINANCE_ALPHA8UI_EXT                          0x8D81
+
+    #define GL_RGBA32I_EXT                                     0x8D82
+    #define GL_RGB32I_EXT                                      0x8D83
+    #define GL_ALPHA32I_EXT                                    0x8D84
+    #define GL_INTENSITY32I_EXT                                0x8D85
+    #define GL_LUMINANCE32I_EXT                                0x8D86
+    #define GL_LUMINANCE_ALPHA32I_EXT                          0x8D87
+
+    #define GL_RGBA16I_EXT                                     0x8D88
+    #define GL_RGB16I_EXT                                      0x8D89
+    #define GL_ALPHA16I_EXT                                    0x8D8A
+    #define GL_INTENSITY16I_EXT                                0x8D8B
+    #define GL_LUMINANCE16I_EXT                                0x8D8C
+    #define GL_LUMINANCE_ALPHA16I_EXT                          0x8D8D
+
+    #define GL_RGBA8I_EXT                                      0x8D8E
+    #define GL_RGB8I_EXT                                       0x8D8F
+    #define GL_ALPHA8I_EXT                                     0x8D90
+    #define GL_INTENSITY8I_EXT                                 0x8D91
+    #define GL_LUMINANCE8I_EXT                                 0x8D92
+    #define GL_LUMINANCE_ALPHA8I_EXT                           0x8D93
+
+    #define GL_RED_INTEGER_EXT                                 0x8D94
+    #define GL_GREEN_INTEGER_EXT                               0x8D95
+    #define GL_BLUE_INTEGER_EXT                                0x8D96
+    #define GL_ALPHA_INTEGER_EXT                               0x8D97
+    #define GL_RGB_INTEGER_EXT                                 0x8D98
+    #define GL_RGBA_INTEGER_EXT                                0x8D99
+    #define GL_BGR_INTEGER_EXT                                 0x8D9A
+    #define GL_BGRA_INTEGER_EXT                                0x8D9B
+    #define GL_LUMINANCE_INTEGER_EXT                           0x8D9C
+    #define GL_LUMINANCE_ALPHA_INTEGER_EXT                     0x8D9D
+
+    #define GL_RGBA_INTEGER_MODE_EXT                           0x8D9E
+#endif
+
 namespace osg {
 
 
@@ -256,13 +315,14 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         WrapMode getWrap(WrapParameter which) const;
 
 
-        /** Sets the border color. Only used when wrap mode is
-          * CLAMP_TO_BORDER. */
-        void setBorderColor(const Vec4& color) { _borderColor = color; dirtyTextureParameters(); }
+        /** Sets the border color. Only used when wrap mode is CLAMP_TO_BORDER.
+         * The border color will be casted to the appropriate type to match the
+         * internal pixel format of the texture. */
+        void setBorderColor(const Vec4d& color) { _borderColor = color; dirtyTextureParameters(); }
 
         /** Gets the border color. */
-        const Vec4& getBorderColor() const { return _borderColor; }
-        
+        const Vec4d& getBorderColor() const { return _borderColor; }
+
         /** Sets the border width. */
         void setBorderWidth(GLint width) { _borderWidth = width; dirtyTextureParameters(); }
         
@@ -351,12 +411,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         inline InternalFormatMode getInternalFormatMode() const { return _internalFormatMode; }
 
         /** Sets the internal texture format. Implicitly sets the
-          * internalFormatMode to USE_USER_DEFINED_FORMAT. */
+          * internalFormatMode to USE_USER_DEFINED_FORMAT.
+          * The corresponding internal format type will be computed. */
         inline void setInternalFormat(GLint internalFormat)
         {
             _internalFormatMode = USE_USER_DEFINED_FORMAT;
             _internalFormat = internalFormat;
+            computeInternalFormatType();
         }
+
 
         /** Gets the internal texture format. */
         inline GLint getInternalFormat() const { if (_internalFormat==0) computeInternalFormat(); return _internalFormat; }
@@ -376,7 +439,25 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Gets the external source data type.*/
         inline GLenum getSourceType() const { return _sourceType; }
 
+        /** Texture type determined by the internal texture format */
+        enum InternalFormatType{
 
+            //! default OpenGL format (clamped values to [0,1) or [0,255])
+            NORMALIZED = 0x0,
+
+            //! float values, Shader Model 3.0 (see ARB_texture_float)
+            FLOAT = 0x1,
+
+            //! Signed integer values (see EXT_texture_integer)
+            SIGNED_INTEGER = 0x2,
+
+            //! Unsigned integer value (see EXT_texture_integer)
+            UNSIGNED_INTEGER = 0x4
+        };
+        
+        /** Get the internal texture format type. */
+        inline InternalFormatType getInternalFormatType() const { return _internalFormatType; }
+        
         class TextureObject;
 
         /** Returns a pointer to the texture object for the current context. */
@@ -404,6 +485,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Force a reset on next apply() of associated OpenGL texture
           * parameters. */
         void dirtyTextureParameters();
+
+        /** Force a manual allocation of the mipmap levels on the next apply() call.
+          * User is responsible for filling the mipmap levels with valid data.
+          * The OpenGL's glGenerateMipmapEXT function is used to generate the mipmap levels.
+          * If glGenerateMipmapEXT is not supported or texture's internal format is not supported
+          * by the glGenerateMipmapEXT, then empty mipmap levels will
+          * be allocated manualy. The mipmap levels are also allocated if a non-mipmapped
+          * min filter is used. */
+        void allocateMipmapLevels();
 
 
         /** Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB
@@ -537,6 +627,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                             _isNonPowerOfTwoTextureMipMappedSupported;
                 }
 
+                void setTextureIntegerEXTSupported(bool flag) { _isTextureIntegerEXTSupported=flag; }
+                bool isTextureIntegerEXTSupported() const { return _isTextureIntegerEXTSupported; }
+
+                void glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const;
+                void glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const;
+
             protected:
 
                 ~Extensions() {}
@@ -554,17 +650,22 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isClientStorageSupported;
                 bool    _isNonPowerOfTwoTextureMipMappedSupported;
                 bool    _isNonPowerOfTwoTextureNonMipMappedSupported;
-                
+                bool    _isTextureIntegerEXTSupported;
+
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;
 
                 typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
                 typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
                 typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
+                typedef void (APIENTRY * TexParameterIivProc)(GLenum target, GLenum pname, const GLint* data);
+                typedef void (APIENTRY * TexParameterIuivProc)(GLenum target, GLenum pname, const GLuint* data);
 
                 CompressedTexImage2DArbProc     _glCompressedTexImage2D;
                 CompressedTexSubImage2DArbProc  _glCompressedTexSubImage2D;
                 GetCompressedTexImageArbProc    _glGetCompressedTexImage;
+                TexParameterIivProc             _glTexParameterIiv;
+                TexParameterIuivProc            _glTexParameterIuiv;
 
         };
         
@@ -608,12 +709,19 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         void computeInternalFormatWithImage(const osg::Image& image) const;
 
         void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& numMipmapLevels) const;
+        
+        void computeInternalFormatType() const;
 
         /** Helper method. Sets texture paramters. */
         void applyTexParameters(GLenum target, State& state) const;
 
+        /** Helper method to generate empty mipmap levels by calling of glGenerateMipmapEXT.
+          * If it is not supported, then call the virtual allocateMipmap() method */
+        void generateMipmap(State& state) const;
 
-
+        /** Allocate mipmap levels of the texture by subsequent calling of glTexImage* function. */
+        virtual void allocateMipmap(State& state) const = 0;
+        
         /** Returns -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         int compareTexture(const Texture& rhs) const;
 
@@ -622,7 +730,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         typedef buffered_value<unsigned int> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;
-
+        mutable TexParameterDirtyList _texMipmapGenerationDirtyList;
+        
         WrapMode _wrap_s;
         WrapMode _wrap_t;
         WrapMode _wrap_r;
@@ -635,10 +744,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         bool            _clientStorageHint;
         bool            _resizeNonPowerOfTwoHint;
 
-        Vec4            _borderColor;
+        Vec4d           _borderColor;
         GLint           _borderWidth;
 
-        InternalFormatMode  _internalFormatMode;
+        InternalFormatMode          _internalFormatMode;
+        mutable InternalFormatType  _internalFormatType;
         mutable GLint       _internalFormat;
         mutable GLenum      _sourceFormat;
         mutable GLenum      _sourceType;
@@ -647,7 +757,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         ShadowCompareFunc   _shadow_compare_func;
         ShadowTextureMode   _shadow_texture_mode;
         float               _shadow_ambient;
-
 
     public:
     

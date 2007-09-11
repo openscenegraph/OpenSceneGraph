@@ -170,6 +170,51 @@ GLenum Image::computePixelFormat(GLenum format)
         case(GL_RGBA32F_ARB):
         case(GL_RGBA16F_ARB):
             return GL_RGBA;
+
+        case(GL_ALPHA8I_EXT):
+        case(GL_ALPHA16I_EXT):
+        case(GL_ALPHA32I_EXT):
+        case(GL_ALPHA8UI_EXT):
+        case(GL_ALPHA16UI_EXT):
+        case(GL_ALPHA32UI_EXT):
+            return GL_ALPHA_INTEGER_EXT;
+        case(GL_LUMINANCE8I_EXT):
+        case(GL_LUMINANCE16I_EXT):
+        case(GL_LUMINANCE32I_EXT):
+        case(GL_LUMINANCE8UI_EXT):
+        case(GL_LUMINANCE16UI_EXT):
+        case(GL_LUMINANCE32UI_EXT):
+            return GL_LUMINANCE_INTEGER_EXT;
+        case(GL_INTENSITY8I_EXT):
+        case(GL_INTENSITY16I_EXT):
+        case(GL_INTENSITY32I_EXT):
+        case(GL_INTENSITY8UI_EXT):
+        case(GL_INTENSITY16UI_EXT):
+        case(GL_INTENSITY32UI_EXT):
+            notify(WARN)<<"Image::computePixelFormat("<<std::hex<<format<<std::dec<<") intensity pixel format is not correctly specified, so assume GL_LUMINANCE_INTEGER."<<std::endl;            
+            return GL_LUMINANCE_INTEGER_EXT;
+        case(GL_LUMINANCE_ALPHA8I_EXT):
+        case(GL_LUMINANCE_ALPHA16I_EXT):
+        case(GL_LUMINANCE_ALPHA32I_EXT):
+        case(GL_LUMINANCE_ALPHA8UI_EXT):
+        case(GL_LUMINANCE_ALPHA16UI_EXT):
+        case(GL_LUMINANCE_ALPHA32UI_EXT):
+            return GL_LUMINANCE_ALPHA_INTEGER_EXT;;
+        case(GL_RGB32I_EXT):
+        case(GL_RGB16I_EXT):
+        case(GL_RGB8I_EXT):
+        case(GL_RGB32UI_EXT):
+        case(GL_RGB16UI_EXT):
+        case(GL_RGB8UI_EXT):
+            return GL_RGB_INTEGER_EXT;
+        case(GL_RGBA32I_EXT):
+        case(GL_RGBA16I_EXT):
+        case(GL_RGBA8I_EXT):
+        case(GL_RGBA32UI_EXT):
+        case(GL_RGBA16UI_EXT):
+        case(GL_RGBA8UI_EXT):
+            return GL_RGBA_INTEGER_EXT;;
+
         default:
             return format;
     }
@@ -190,10 +235,22 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_GREEN): return 1;
         case(GL_BLUE): return 1;
         case(GL_ALPHA): return 1;
+        case(GL_ALPHA8I_EXT): return 1;
+        case(GL_ALPHA8UI_EXT): return 1;
+        case(GL_ALPHA16I_EXT): return 1;
+        case(GL_ALPHA16UI_EXT): return 1;
+        case(GL_ALPHA32I_EXT): return 1;
+        case(GL_ALPHA32UI_EXT): return 1;
         case(GL_ALPHA16F_ARB): return 1;
         case(GL_ALPHA32F_ARB): return 1;
         case(GL_RGB): return 3;
         case(GL_BGR): return 3;
+        case(GL_RGB8I_EXT): return 3;
+        case(GL_RGB8UI_EXT): return 3;
+        case(GL_RGB16I_EXT): return 3;
+        case(GL_RGB16UI_EXT): return 3;
+        case(GL_RGB32I_EXT): return 3;
+        case(GL_RGB32UI_EXT): return 3;
         case(GL_RGB16F_ARB): return 3;
         case(GL_RGB32F_ARB): return 3;
         case(GL_RGBA): return 4;
@@ -203,6 +260,12 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_LUMINANCE8): return 1;
         case(GL_LUMINANCE12): return 1;
         case(GL_LUMINANCE16): return 1;
+        case(GL_LUMINANCE8I_EXT): return 1;
+        case(GL_LUMINANCE8UI_EXT): return 1;
+        case(GL_LUMINANCE16I_EXT): return 1;
+        case(GL_LUMINANCE16UI_EXT): return 1;
+        case(GL_LUMINANCE32I_EXT): return 1;
+        case(GL_LUMINANCE32UI_EXT): return 1;
         case(GL_LUMINANCE16F_ARB): return 1;
         case(GL_LUMINANCE32F_ARB): return 1;
         case(GL_LUMINANCE4_ALPHA4): return 2;
@@ -216,9 +279,21 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_INTENSITY8): return 1;
         case(GL_INTENSITY12): return 1;
         case(GL_INTENSITY16): return 1;
+        case(GL_INTENSITY8UI_EXT): return 1;
+        case(GL_INTENSITY8I_EXT): return 1;
+        case(GL_INTENSITY16I_EXT): return 1;
+        case(GL_INTENSITY16UI_EXT): return 1;
+        case(GL_INTENSITY32I_EXT): return 1;
+        case(GL_INTENSITY32UI_EXT): return 1;
         case(GL_INTENSITY16F_ARB): return 1;
         case(GL_INTENSITY32F_ARB): return 1;
         case(GL_LUMINANCE_ALPHA): return 2;
+        case(GL_LUMINANCE_ALPHA8I_EXT): return 2;
+        case(GL_LUMINANCE_ALPHA8UI_EXT): return 2;
+        case(GL_LUMINANCE_ALPHA16I_EXT): return 2;
+        case(GL_LUMINANCE_ALPHA16UI_EXT): return 2;
+        case(GL_LUMINANCE_ALPHA32I_EXT): return 2;
+        case(GL_LUMINANCE_ALPHA32UI_EXT): return 2;
         case(GL_LUMINANCE_ALPHA16F_ARB): return 2;
         case(GL_LUMINANCE_ALPHA32F_ARB): return 2;
         case(GL_HILO_NV): return 2;

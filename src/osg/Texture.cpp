@@ -18,6 +18,7 @@
 #include <osg/GLU>
 #include <osg/Timer>
 #include <osg/ApplicationUsage>
+#include <osg/FrameBufferObject>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -358,7 +359,8 @@ Texture::Texture():
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
             _shadow_texture_mode(LUMINANCE),
-            _shadow_ambient(0)
+            _shadow_ambient(0),
+            _internalFormatType(NORMALIZED)
 {
 }
 
@@ -383,7 +385,8 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _use_shadow_comparison(text._use_shadow_comparison),
             _shadow_compare_func(text._shadow_compare_func),
             _shadow_texture_mode(text._shadow_texture_mode),
-            _shadow_ambient(text._shadow_ambient)
+            _shadow_ambient(text._shadow_ambient),
+            _internalFormatType(text._internalFormatType)
 {
 }
 
@@ -422,6 +425,8 @@ int Texture::compareTexture(const Texture& rhs) const
     COMPARE_StateAttribute_Parameter(_clientStorageHint)
     COMPARE_StateAttribute_Parameter(_resizeNonPowerOfTwoHint)
 
+    COMPARE_StateAttribute_Parameter(_internalFormatType);
+    
     return 0;
 }
 
@@ -492,6 +497,7 @@ void Texture::setMaxAnisotropy(float anis)
     }
 }
 
+
 /** Force a recompile on next apply() of associated OpenGL texture objects.*/
 void Texture::dirtyTextureObject()
 {
@@ -513,10 +519,12 @@ void Texture::takeTextureObjects(Texture::TextureObjectListMap& toblm)
 
 void Texture::dirtyTextureParameters()
 {
-    for(unsigned int i=0;i<_texParametersDirtyList.size();++i)
-    {
-        _texParametersDirtyList[i] = 1;
-    }
+    _texParametersDirtyList.setAllElementsTo(1);
+}
+
+void Texture::allocateMipmapLevels()
+{
+    _texMipmapGenerationDirtyList.setAllElementsTo(1);
 }
 
 void Texture::computeInternalFormatWithImage(const osg::Image& image) const
@@ -609,8 +617,86 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     }
     
     _internalFormat = internalFormat;
+    computeInternalFormatType();
     
     //osg::notify(osg::NOTICE)<<"Internal format="<<std::hex<<internalFormat<<std::dec<<std::endl;
+}
+
+void Texture::computeInternalFormatType() const
+{
+    // Here we could also precompute the _sourceFormat if it is not set,
+    // since it is different for different internal formats
+    // (i.e. rgba integer texture --> _sourceFormat = GL_RGBA_INTEGER_EXT)
+    // Should we do this?  ( Art, 09. Sept. 2007)
+    
+    // compute internal format type based on the internal format
+    switch(_internalFormat)
+    {
+        case GL_RGBA32UI_EXT:
+        case GL_RGBA16UI_EXT:
+        case GL_RGBA8UI_EXT:
+
+        case GL_RGB32UI_EXT:
+        case GL_RGB16UI_EXT:
+        case GL_RGB8UI_EXT:
+
+        case GL_LUMINANCE32UI_EXT:  
+        case GL_LUMINANCE16UI_EXT:   
+        case GL_LUMINANCE8UI_EXT:    
+
+        case GL_INTENSITY32UI_EXT:    
+        case GL_INTENSITY16UI_EXT:    
+        case GL_INTENSITY8UI_EXT:   
+
+        case GL_LUMINANCE_ALPHA32UI_EXT:    
+        case GL_LUMINANCE_ALPHA16UI_EXT:    
+        case GL_LUMINANCE_ALPHA8UI_EXT :   
+            _internalFormatType = UNSIGNED_INTEGER;
+            break;
+
+        case GL_RGBA32I_EXT:
+        case GL_RGBA16I_EXT:
+        case GL_RGBA8I_EXT:
+
+        case GL_RGB32I_EXT:
+        case GL_RGB16I_EXT:
+        case GL_RGB8I_EXT:
+
+        case GL_LUMINANCE32I_EXT:    
+        case GL_LUMINANCE16I_EXT:    
+        case GL_LUMINANCE8I_EXT:    
+
+        case GL_INTENSITY32I_EXT:    
+        case GL_INTENSITY16I_EXT:    
+        case GL_INTENSITY8I_EXT:    
+
+        case GL_LUMINANCE_ALPHA32I_EXT:    
+        case GL_LUMINANCE_ALPHA16I_EXT:    
+        case GL_LUMINANCE_ALPHA8I_EXT:    
+            _internalFormatType = SIGNED_INTEGER;
+            break;
+        
+        case GL_RGBA32F_ARB:
+        case GL_RGBA16F_ARB:
+
+        case GL_RGB32F_ARB:
+        case GL_RGB16F_ARB:
+
+        case GL_LUMINANCE32F_ARB:
+        case GL_LUMINANCE16F_ARB:    
+
+        case GL_INTENSITY32F_ARB:
+        case GL_INTENSITY16F_ARB:    
+
+        case GL_LUMINANCE_ALPHA32F_ARB:
+        case GL_LUMINANCE_ALPHA16F_ARB:    
+            _internalFormatType = FLOAT;
+            break;
+            
+        default:
+            _internalFormatType = NORMALIZED;
+            break;
+    };
 }
 
 bool Texture::isCompressedInternalFormat() const
@@ -703,7 +789,9 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
 
-    if (extensions->isTextureFilterAnisotropicSupported())
+    // Art: I think anisotropic filtering is not supported by the integer textures
+    if (extensions->isTextureFilterAnisotropicSupported() &&
+        _internalFormatType != SIGNED_INTEGER && _internalFormatType != UNSIGNED_INTEGER)
     {
         // note, GL_TEXTURE_MAX_ANISOTROPY_EXT will either be defined
         // by gl.h (or via glext.h) or by include/osg/Texture.
@@ -712,10 +800,23 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 
     if (extensions->isTextureBorderClampSupported())
     {
-        glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, _borderColor.ptr());
+        if (_internalFormatType == SIGNED_INTEGER)
+        {
+            GLint color[4] = {(GLint)_borderColor.r(), (GLint)_borderColor.g(), (GLint)_borderColor.b(), (GLint)_borderColor.a()};
+            extensions->glTexParameterIiv(target, GL_TEXTURE_BORDER_COLOR, color);
+        }else if (_internalFormatType == UNSIGNED_INTEGER)
+        {
+            GLuint color[4] = {(GLuint)_borderColor.r(), (GLuint)_borderColor.g(), (GLuint)_borderColor.b(), (GLuint)_borderColor.a()};
+            extensions->glTexParameterIuiv(target, GL_TEXTURE_BORDER_COLOR, color);
+        }else{
+            GLfloat color[4] = {(GLfloat)_borderColor.r(), (GLfloat)_borderColor.g(), (GLfloat)_borderColor.b(), (GLfloat)_borderColor.a()};
+            glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, color);
+        }
     }
 
-    if (extensions->isShadowSupported() && target == GL_TEXTURE_2D)
+    // integer texture are not supported by the shadow
+    if (extensions->isShadowSupported() && target == GL_TEXTURE_2D &&
+        _internalFormatType != SIGNED_INTEGER && _internalFormatType != UNSIGNED_INTEGER)
     {
         if (_use_shadow_comparison)
         {
@@ -1290,6 +1391,46 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 }
 
 
+void Texture::generateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+
+    // if not initialized before, then do nothing
+    if (textureObject == NULL) return;
+
+    _texMipmapGenerationDirtyList[contextID] = 0;
+    
+    // if internal format does not provide automatic mipmap generation, then do manual allocation
+    if (_internalFormatType == SIGNED_INTEGER || _internalFormatType == UNSIGNED_INTEGER)
+    {
+        allocateMipmap(state);
+        return;
+    }
+    
+    // get fbo extension which provides us with the glGenerateMipmapEXT function
+    osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID(), true);
+
+    // check if the function is supported
+    if (fbo_ext->glGenerateMipmapEXT)
+    {
+        textureObject->bind();
+        fbo_ext->glGenerateMipmapEXT(textureObject->_target);
+        
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
+    
+    // if the function is not supported, then do manual allocation
+    }else
+    {
+        allocateMipmap(state);
+    }
+    
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //  Static map to manage the deletion of texture objects are the right time.
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1365,6 +1506,8 @@ Texture::Extensions::Extensions(const Extensions& rhs):
 
     _isNonPowerOfTwoTextureMipMappedSupported = rhs._isNonPowerOfTwoTextureMipMappedSupported;
     _isNonPowerOfTwoTextureNonMipMappedSupported = rhs._isNonPowerOfTwoTextureNonMipMappedSupported;
+
+    _isTextureIntegerEXTSupported = rhs._isTextureIntegerEXTSupported;
 }
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -1395,6 +1538,8 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
     if (!rhs._isNonPowerOfTwoTextureMipMappedSupported) _isNonPowerOfTwoTextureMipMappedSupported = false;
     if (!rhs._isNonPowerOfTwoTextureNonMipMappedSupported) _isNonPowerOfTwoTextureNonMipMappedSupported = false;
+
+    if (!rhs._isTextureIntegerEXTSupported) _isTextureIntegerEXTSupported = false;
 }
 
 void Texture::Extensions::setupGLExtensions(unsigned int contextID)
@@ -1438,6 +1583,8 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 
     _isNonPowerOfTwoTextureMipMappedSupported = _isNonPowerOfTwoTextureNonMipMappedSupported;
     
+    _isTextureIntegerEXTSupported = isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
+
     if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos)
     {
         _isNonPowerOfTwoTextureMipMappedSupported = false;
@@ -1473,9 +1620,40 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
        _numTextureUnits = 1;
     }
 
-    setGLExtensionFuncPtr(_glCompressedTexImage2D, "glCompressedTexImage2D","glCompressedTexImage2DARB");
-    setGLExtensionFuncPtr(_glCompressedTexSubImage2D, "glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
-    setGLExtensionFuncPtr(_glGetCompressedTexImage, "glGetCompressedTexImage","glGetCompressedTexImageARB");
+    setGLExtensionFuncPtr(_glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB");
+    setGLExtensionFuncPtr(_glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
+    setGLExtensionFuncPtr(_glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB");;
+
+    setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB");
+    setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB");
+    
+    if (_glTexParameterIiv == NULL) setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIivEXT");
+    if (_glTexParameterIuiv == NULL) setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuivEXT");
+}
+
+
+void Texture::Extensions::glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const
+{
+    if (_glTexParameterIiv)
+    {
+        _glTexParameterIiv(target, pname, data);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glTexParameterIiv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Texture::Extensions::glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const
+{
+    if (_glTexParameterIuiv)
+    {
+        _glTexParameterIuiv(target, pname, data);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glTexParameterIuiv not supported by OpenGL driver"<<std::endl;
+    }
 }
 
 void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const

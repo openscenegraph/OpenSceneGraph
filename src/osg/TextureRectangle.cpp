@@ -409,8 +409,8 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
 void TextureRectangle::computeInternalFormat() const
 {
-    if (_image.valid())
-        computeInternalFormatWithImage(*_image); 
+    if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    else computeInternalFormatType();
 }
 
 void TextureRectangle::copyTexImage2D(State& state, int x, int y, int width, int height )
@@ -542,3 +542,46 @@ void TextureRectangle::copyTexSubImage2D(State& state, int xoffset, int yoffset,
         copyTexImage2D(state,x,y,width,height);
     }
 }
+
+void TextureRectangle::allocateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject && _textureWidth != 0 && _textureHeight != 0)
+    {
+        // bind texture
+        textureObject->bind();
+
+        // compute number of mipmap levels
+        int width = _textureWidth;
+        int height = _textureHeight;
+        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, height)));
+
+        // we do not reallocate the level 0, since it was already allocated
+        width >>= 1;
+        height >>= 1;
+        
+        for( GLsizei k = 1; k < numMipmapLevels  && (width || height); k++)
+        {
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
+
+            glTexImage2D( GL_TEXTURE_RECTANGLE, k, _internalFormat,
+                     width, height, _borderWidth,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE, NULL);
+
+            width >>= 1;
+            height >>= 1;
+        }
+                
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+    }
+}
+

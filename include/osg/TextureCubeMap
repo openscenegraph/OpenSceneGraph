@@ -179,6 +179,7 @@ class OSG_EXPORT TextureCubeMap : public Texture
         bool imagesValid() const;
         
         virtual void computeInternalFormat() const;
+        void allocateMipmap(State& state) const;
 
         ref_ptr<Image> _images[6];
 

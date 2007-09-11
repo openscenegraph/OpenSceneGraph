@@ -279,11 +279,18 @@ void Texture3D::apply(State& state) const
     {
         glBindTexture( GL_TEXTURE_3D, 0 );
     }
+    
+    // if texture object is now valid and we have to allocate mipmap levels, then
+    if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
+    {
+        generateMipmap(state);
+    }
 }
 
 void Texture3D::computeInternalFormat() const
 {
     if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    else computeInternalFormatType();
 }
 
 void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMipmapLevels) const
@@ -427,6 +434,56 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     else
     {
         notify(WARN)<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existant texture."<<std::endl;
+    }
+}
+
+void Texture3D::allocateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
+    {
+        const Extensions* extensions = getExtensions(contextID,true);
+        const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
+    
+        // bind texture
+        textureObject->bind();
+
+        // compute number of mipmap levels
+        int width = _textureWidth;
+        int height = _textureHeight;
+        int depth = _textureDepth;
+        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, maximum(depth, height))));
+
+        // we do not reallocate the level 0, since it was already allocated
+        width >>= 1;
+        height >>= 1;
+        depth >>= 1;
+                
+        for( GLsizei k = 1; k < numMipmapLevels  && (width || height || depth); k++)
+        {
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
+            if (depth == 0)
+                depth = 1;
+
+            extensions->glTexImage3D( GL_TEXTURE_3D, k, _internalFormat,
+                     width, height, depth, _borderWidth,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE, NULL);
+
+            width >>= 1;
+            height >>= 1;
+            depth >>= 1;
+        }
+                
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
     }
 }
 

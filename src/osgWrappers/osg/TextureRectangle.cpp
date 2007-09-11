@@ -186,6 +186,12 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 	                   __void__computeInternalFormat,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(void, allocateMipmap, IN, osg::State &, state,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__allocateMipmap__State_R1,
+	                   "Allocate mipmap levels of the texture by subsequent calling of glTexImage* function. ",
+	                   "");
 	I_ProtectedMethod2(void, applyTexParameters, IN, GLenum, target, IN, osg::State &, state,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

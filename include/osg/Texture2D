@@ -132,6 +132,7 @@ class OSG_EXPORT Texture2D : public Texture
         virtual ~Texture2D();
 
         virtual void computeInternalFormat() const;
+        void allocateMipmap(State& state) const;
 
 
         /** It's not ideal that _image is mutable, but it's required since

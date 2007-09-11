@@ -179,7 +179,7 @@ void Texture1D::apply(State& state) const
 
         applyTexParameters(GL_TEXTURE_1D,state);
 
-        // no image present, but dimensions at set so lets create the texture
+        // no image present, but dimensions are set so lets create the texture
         glTexImage1D( GL_TEXTURE_1D, 0, _internalFormat,
                      _textureWidth, _borderWidth,
                      _sourceFormat ? _sourceFormat : _internalFormat,
@@ -190,17 +190,24 @@ void Texture1D::apply(State& state) const
         {
             _readPBuffer->bindPBufferToTexture(GL_FRONT);
         }
-        
+
     }
     else
     {
         glBindTexture( GL_TEXTURE_1D, 0 );
+    }
+
+    // if texture object is now valid and we have to allocate mipmap levels, then
+    if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
+    {
+        generateMipmap(state);
     }
 }
 
 void Texture1D::computeInternalFormat() const
 {
     if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    else computeInternalFormatType();
 }
 
 void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& numMipmapLevels) const
@@ -390,5 +397,42 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
         // no texture object already exsits for this context so need to
         // create it upfront - simply call copyTexImage1D.
         copyTexImage1D(state,x,y,width);
+    }
+}
+
+void Texture1D::allocateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject && _textureWidth != 0)
+    {
+        // bind texture
+        textureObject->bind();
+
+        // compute number of mipmap levels
+        int width = _textureWidth;
+        int numMipmapLevels = 1 + (int)floor(log2(width));
+
+        // we do not reallocate the level 0, since it was already allocated
+        width >>= 1;
+        
+        for( GLsizei k = 1; k < numMipmapLevels  && width; k++)
+        {
+            if (width == 0)
+                width = 1;
+
+            glTexImage1D( GL_TEXTURE_1D, k, _internalFormat,
+                     width, _borderWidth,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE, NULL);
+
+            width >>= 1;
+        }
+                
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
     }
 }

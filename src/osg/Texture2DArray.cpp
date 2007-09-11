@@ -204,7 +204,7 @@ void Texture2DArray::apply(State& state) const
         else
         {
             // for each image of the texture array do
-            for (int n=0; n < _textureDepth; n++)
+            for (GLsizei n=0; n < _textureDepth; n++)
             {
                 osg::Image* image = _images[n].get();
                 
@@ -248,7 +248,7 @@ void Texture2DArray::apply(State& state) const
         applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT, state);
 
         // now for each layer do
-        for (int n=0; n<_textureDepth; n++)
+        for (GLsizei n=0; n<_textureDepth; n++)
         {
             // if image is valid then upload it to the texture memory
             osg::Image* image = _images[n].get();

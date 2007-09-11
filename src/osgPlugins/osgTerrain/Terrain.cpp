@@ -1,5 +1,4 @@
 #include <osgTerrain/Terrain>
-#include <osgTerrain/GeometryTechnique>
 
 #include <iostream>
 #include <string>
@@ -470,16 +469,13 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
         itrAdvanced = true;
     }
 
-    if (fr.matchSequence("TerrainTechnique %w") || fr.matchSequence("TerrainTechnique %s"))
+    osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::TerrainTechnique>());
+    if (readObject.valid())
     {
-        if (fr[1].matchWord("GeometryTechnique"))
-        {
-            terrain.setTerrainTechnique(new osgTerrain::GeometryTechnique);
-        }
-
-        fr += 2;
+        terrain.setTerrainTechnique(dynamic_cast<osgTerrain::TerrainTechnique*>(readObject.get()));
         itrAdvanced = true;
     }
+
 
     return itrAdvanced;
 }
@@ -635,7 +631,7 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 
     if (terrain.getTerrainTechnique())
     {
-        fw.indent()<<"TerrainTechnique "<<terrain.getTerrainTechnique()->className()<<std::endl;
+        fw.writeObject(*terrain.getTerrainTechnique());
     }    
 
     fw.precision(prec);

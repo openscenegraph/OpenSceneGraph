@@ -32,6 +32,8 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         GeometryTechnique(const GeometryTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
+        META_Object(osgTerrain, GeometryTechnique);
+        
         virtual void init();
         
         virtual Locator* computeMasterLocator();

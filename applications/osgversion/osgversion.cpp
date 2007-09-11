@@ -1,6 +1,7 @@
 #include <osg/Version>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <OpenThreads/Version>
 
 #include <set>
 #include <vector>
@@ -649,11 +650,32 @@ int main( int argc, char **argv)
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--entries","Print out number of entries into the ChangeLog file for each contributor.");
     arguments.getApplicationUsage()->addCommandLineOption("--version-number","Print out version number only");
+    arguments.getApplicationUsage()->addCommandLineOption("--soversion-number","Print out shared object version number only");
+    arguments.getApplicationUsage()->addCommandLineOption("--openthreads-version-number","Print out version number for OpenThreads only");
+    arguments.getApplicationUsage()->addCommandLineOption("--openthreads-soversion-number","Print out shared object version number for OpenThreads only");
     arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the ChangeLog to generate an estimated contributors list.");
 
     if (arguments.read("--version-number"))
     {
         std::cout<<osgGetVersion()<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--soversion-number"))
+    {
+        std::cout<<osgGetSOVersion()<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--openthreads-version-number"))
+    {
+        std::cout<<OpenThreadsGetVersion()<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--openthreads-soversion-number"))
+    {
+        std::cout<<OpenThreadsGetSOVersion()<<std::endl;
         return 0;
     }
     

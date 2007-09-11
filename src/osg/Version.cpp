@@ -37,6 +37,18 @@ const char* osgGetVersion()
     return osg_version;
 }
 
+const char* osgGetSOVersion()
+{
+    static char osg_soversion[32];
+    static int osg_soversion_init = 1;
+    if (osg_soversion_init)
+    {
+        sprintf(osg_soversion,"%d",OPENSCENEGRAPH_SOVERSION);
+        osg_soversion_init = 0;
+    }
+    
+    return osg_soversion;
+}
 
 const char* osgGetLibraryName()
 {

@@ -583,6 +583,21 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	          __bool__getAttribLocation__C5_char_P1__GLuint_R1,
 	          "",
 	          "");
+	I_Method2(bool, getFragDataLocation, IN, const char *, fragDataName, IN, GLuint &, slot,
+	          Properties::NON_VIRTUAL,
+	          __bool__getFragDataLocation__C5_char_P1__GLuint_R1,
+	          "",
+	          "");
+	I_Method3(void, glBindFragDataLocation, IN, GLuint, program, IN, GLuint, colorNumber, IN, const GLchar *, name,
+	          Properties::NON_VIRTUAL,
+	          __void__glBindFragDataLocation__GLuint__GLuint__C5_GLchar_P1,
+	          "",
+	          "");
+	I_Method2(GLint, glGetFragDataLocation, IN, GLuint, program, IN, const GLchar *, name,
+	          Properties::NON_VIRTUAL,
+	          __GLint__glGetFragDataLocation__GLuint__C5_GLchar_P1,
+	          "",
+	          "");
 	I_StaticMethod2(osg::GL2Extensions *, Get, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __GL2Extensions_P1__Get__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",

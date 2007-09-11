@@ -28,6 +28,8 @@
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList)
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::FragDataBindingList)
+
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::Program)
@@ -138,11 +140,26 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_Method1(void, removeBindAttribLocation, IN, const std::string &, name,
 	          Properties::NON_VIRTUAL,
 	          __void__removeBindAttribLocation__C5_std_string_R1,
-	          "Add an attribute location binding. ",
+	          "Remove an attribute location binding. ",
+	          "");
+	I_Method2(void, addBindFragDataLocation, IN, const std::string &, name, IN, GLuint, index,
+	          Properties::NON_VIRTUAL,
+	          __void__addBindFragDataLocation__C5_std_string_R1__GLuint,
+	          "Add an frag data location binding. ",
+	          "See EXT_gpu_shader4 for BindFragDataLocationEXT ");
+	I_Method1(void, removeBindFragDataLocation, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
+	          __void__removeBindFragDataLocation__C5_std_string_R1,
+	          "Remove an frag data location binding. ",
 	          "");
 	I_Method0(const osg::Program::AttribBindingList &, getAttribBindingList,
 	          Properties::NON_VIRTUAL,
 	          __C5_AttribBindingList_R1__getAttribBindingList,
+	          "",
+	          "");
+	I_Method0(const osg::Program::FragDataBindingList &, getFragDataBindingList,
+	          Properties::NON_VIRTUAL,
+	          __C5_FragDataBindingList_R1__getFragDataBindingList,
 	          "",
 	          "");
 	I_Method0(bool, isFixedFunction,
@@ -180,6 +197,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	                "");
 	I_SimpleProperty(const osg::Program::AttribBindingList &, AttribBindingList, 
 	                 __C5_AttribBindingList_R1__getAttribBindingList, 
+	                 0);
+	I_SimpleProperty(const osg::Program::FragDataBindingList &, FragDataBindingList, 
+	                 __C5_FragDataBindingList_R1__getFragDataBindingList, 
 	                 0);
 	I_ArrayProperty(osg::Shader *, Shader, 
 	                __Shader_P1__getShader__unsigned_int, 

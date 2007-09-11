@@ -627,8 +627,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                             _isNonPowerOfTwoTextureMipMappedSupported;
                 }
 
-                void setTextureIntegerEXTSupported(bool flag) { _isTextureIntegerEXTSupported=flag; }
-                bool isTextureIntegerEXTSupported() const { return _isTextureIntegerEXTSupported; }
+                void setTextureIntegerSupported(bool flag) { _isTextureIntegerEXTSupported=flag; }
+                bool isTextureIntegerSupported() const { return _isTextureIntegerEXTSupported; }
 
                 void glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const;
                 void glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const;

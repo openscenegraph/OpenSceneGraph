@@ -794,14 +794,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	          __bool__isNonPowerOfTwoTextureSupported__GLenum,
 	          "",
 	          "");
-	I_Method1(void, setTextureIntegerEXTSupported, IN, bool, flag,
+	I_Method1(void, setTextureIntegerSupported, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
-	          __void__setTextureIntegerEXTSupported__bool,
+	          __void__setTextureIntegerSupported__bool,
 	          "",
 	          "");
-	I_Method0(bool, isTextureIntegerEXTSupported,
+	I_Method0(bool, isTextureIntegerSupported,
 	          Properties::NON_VIRTUAL,
-	          __bool__isTextureIntegerEXTSupported,
+	          __bool__isTextureIntegerSupported,
 	          "",
 	          "");
 	I_Method3(void, glTexParameterIiv, IN, GLenum, target, IN, GLenum, pname, IN, const GLint *, data,
@@ -850,9 +850,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	I_SimpleProperty(bool, TextureFilterAnisotropicSupported, 
 	                 0, 
 	                 __void__setTextureFilterAnisotropicSupported__bool);
-	I_SimpleProperty(bool, TextureIntegerEXTSupported, 
+	I_SimpleProperty(bool, TextureIntegerSupported, 
 	                 0, 
-	                 __void__setTextureIntegerEXTSupported__bool);
+	                 __void__setTextureIntegerSupported__bool);
 	I_SimpleProperty(bool, TextureMirroredRepeatSupported, 
 	                 0, 
 	                 __void__setTextureMirroredRepeatSupported__bool);

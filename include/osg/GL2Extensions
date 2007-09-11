@@ -24,15 +24,12 @@
 
 #include <string>
 
-#ifndef GL_VERSION_2_1    //[
-#define GL_VERSION_2_1 1
-
-#define GL_SAMPLER_1D_ARRAY_EXT           0x8DC0
-#define GL_SAMPLER_2D_ARRAY_EXT           0x8DC1
-#define GL_SAMPLER_1D_ARRAY_SHADOW_EXT    0x8DC3
-#define GL_SAMPLER_2D_ARRAY_SHADOW_EXT    0x8DC4
-
-#endif //]
+#ifndef GL_SAMPLER_2D_ARRAY_EXT
+    #define GL_SAMPLER_1D_ARRAY_EXT           0x8DC0
+    #define GL_SAMPLER_2D_ARRAY_EXT           0x8DC1
+    #define GL_SAMPLER_1D_ARRAY_SHADOW_EXT    0x8DC3
+    #define GL_SAMPLER_2D_ARRAY_SHADOW_EXT    0x8DC4
+#endif
 
 
 #ifndef GL_VERSION_2_0    //[

@@ -110,7 +110,7 @@ bool ClipNode::removeClipPlane(unsigned int pos)
 }
 
 // Set the GLModes on StateSet associated with the ClipPlanes.
-void ClipNode::setStateSetModes(StateSet& stateset,const StateAttribute::GLModeValue value) const
+void ClipNode::setStateSetModes(StateSet& stateset,StateAttribute::GLModeValue value) const
 {
     for(ClipPlaneList::const_iterator itr=_planes.begin();
         itr!=_planes.end();

@@ -124,6 +124,7 @@ class OSG_EXPORT Texture1D : public Texture
         virtual ~Texture1D();
 
         virtual void computeInternalFormat() const;
+        void allocateMipmap(State& state) const;
 
         /** Helper method. Createa the texture without setting or using a
           * texture binding. */

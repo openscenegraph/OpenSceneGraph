@@ -196,6 +196,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2D)
 	                   __void__computeInternalFormat,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(void, allocateMipmap, IN, osg::State &, state,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__allocateMipmap__State_R1,
+	                   "Allocate mipmap levels of the texture by subsequent calling of glTexImage* function. ",
+	                   "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__Image_P1);

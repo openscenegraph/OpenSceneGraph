@@ -155,6 +155,7 @@ bool TextureCubeMap::imagesValid() const
 void TextureCubeMap::computeInternalFormat() const
 {
     if (imagesValid()) computeInternalFormatWithImage(*_images[0]); 
+    else computeInternalFormatType();
 }
 
 void TextureCubeMap::apply(State& state) const
@@ -289,6 +290,12 @@ void TextureCubeMap::apply(State& state) const
     {
         glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
     }
+
+    // if texture object is now valid and we have to allocate mipmap levels, then
+    if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
+    {
+        generateMipmap(state);
+    }
 }
 
 void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset, int yoffset, int x, int y, int width, int height )
@@ -362,6 +369,51 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
     }
 }
 
+void TextureCubeMap::allocateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject && _textureWidth != 0 && _textureHeight != 0)
+    {
+        // bind texture
+        textureObject->bind();
+
+        // compute number of mipmap levels
+        int width = _textureWidth;
+        int height = _textureHeight;
+        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, height)));
+
+        // we do not reallocate the level 0, since it was already allocated
+        width >>= 1;
+        height >>= 1;
+        
+        for( GLsizei k = 1; k < numMipmapLevels  && (width || height); k++)
+        {
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
+
+            for (int n=0; n<6; n++)
+            {
+                glTexImage2D( faceTarget[n], k, _internalFormat,
+                            width, height, _borderWidth,
+                            _sourceFormat ? _sourceFormat : _internalFormat,
+                            _sourceType ? _sourceType : GL_UNSIGNED_BYTE,
+                            0);
+            }
+        
+            width >>= 1;
+            height >>= 1;
+        }
+                
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+    }
+}
 
 typedef buffered_value< ref_ptr<TextureCubeMap::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;

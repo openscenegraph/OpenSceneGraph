@@ -167,6 +167,7 @@ bool Texture2DArray::imagesValid() const
 void Texture2DArray::computeInternalFormat() const
 {
     if (imagesValid()) computeInternalFormatWithImage(*_images[0]); 
+    else computeInternalFormatType();
 }
 
 
@@ -299,6 +300,12 @@ void Texture2DArray::apply(State& state) const
     {
         glBindTexture( GL_TEXTURE_2D_ARRAY_EXT, 0 );
     }
+
+    // if texture object is now valid and we have to allocate mipmap levels, then
+    if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
+    {
+        generateMipmap(state);
+    }
 }
 
 void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GLsizei& inwidth, GLsizei& inheight, GLsizei& indepth, GLsizei& numMipmapLevels) const
@@ -385,27 +392,23 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
 
             int width  = image->s();
             int height = image->t();
-            int depth = image->r();
-
-            for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height || depth) ;k++)
+            
+            for( GLsizei k = 0 ; k < numMipmapLevels  && (width || height ) ;k++)
             {
 
                 if (width == 0)
                     width = 1;
                 if (height == 0)
                     height = 1;
-                if (depth == 0)
-                    depth = 1;
 
                 extensions->glTexImage3D( target, k, _internalFormat,
-                                          width, height, depth, _borderWidth,
+                                          width, height, indepth, _borderWidth,
                                           (GLenum)image->getPixelFormat(),
                                           (GLenum)image->getDataType(),
                                           image->getMipmapData(k));
 
                 width >>= 1;
                 height >>= 1;
-                depth >>= 1;
             }
         }
 
@@ -440,6 +443,51 @@ void Texture2DArray::copyTexSubImage2DArray(State& state, int xoffset, int yoffs
     else
     {
         notify(WARN)<<"Warning: Texture2DArray::copyTexSubImage2DArray(..) failed, cannot not copy to a non existant texture."<<std::endl;
+    }
+}
+
+void Texture2DArray::allocateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
+    {
+        const Extensions* extensions = getExtensions(contextID,true);
+        const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
+        
+        // bind texture
+        textureObject->bind();
+
+        // compute number of mipmap levels
+        int width = _textureWidth;
+        int height = _textureHeight;
+        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, height)));
+
+        // we do not reallocate the level 0, since it was already allocated
+        width >>= 1;
+        height >>= 1;
+        
+        for( GLsizei k = 1; k < numMipmapLevels  && (width || height); k++)
+        {
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
+
+            extensions->glTexImage3D( GL_TEXTURE_2D_ARRAY_EXT, k, _internalFormat,
+                     width, height, _textureDepth, _borderWidth,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE, NULL);
+
+            width >>= 1;
+            height >>= 1;
+        }
+                
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
     }
 }
 

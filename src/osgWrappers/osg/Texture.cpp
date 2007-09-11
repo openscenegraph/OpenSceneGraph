@@ -17,7 +17,7 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/Texture>
-#include <osg/Vec4>
+#include <osg/Vec4d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -71,6 +71,14 @@ BEGIN_ENUM_REFLECTOR(osg::Texture::InternalFormatMode)
 	I_EnumLabel(osg::Texture::USE_S3TC_DXT1_COMPRESSION);
 	I_EnumLabel(osg::Texture::USE_S3TC_DXT3_COMPRESSION);
 	I_EnumLabel(osg::Texture::USE_S3TC_DXT5_COMPRESSION);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::Texture::InternalFormatType)
+	I_DeclaringFile("osg/Texture");
+	I_EnumLabel(osg::Texture::NORMALIZED);
+	I_EnumLabel(osg::Texture::FLOAT);
+	I_EnumLabel(osg::Texture::SIGNED_INTEGER);
+	I_EnumLabel(osg::Texture::UNSIGNED_INTEGER);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowCompareFunc)
@@ -166,14 +174,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __WrapMode__getWrap__WrapParameter,
 	          "Gets the texture wrap mode. ",
 	          "");
-	I_Method1(void, setBorderColor, IN, const osg::Vec4 &, color,
+	I_Method1(void, setBorderColor, IN, const osg::Vec4d &, color,
 	          Properties::NON_VIRTUAL,
-	          __void__setBorderColor__C5_Vec4_R1,
+	          __void__setBorderColor__C5_Vec4d_R1,
 	          "Sets the border color. ",
-	          "Only used when wrap mode is CLAMP_TO_BORDER. ");
-	I_Method0(const osg::Vec4 &, getBorderColor,
+	          "Only used when wrap mode is CLAMP_TO_BORDER. The border color will be casted to the appropriate type to match the internal pixel format of the texture. ");
+	I_Method0(const osg::Vec4d &, getBorderColor,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec4_R1__getBorderColor,
+	          __C5_Vec4d_R1__getBorderColor,
 	          "Gets the border color. ",
 	          "");
 	I_Method1(void, setBorderWidth, IN, GLint, width,
@@ -260,7 +268,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          Properties::NON_VIRTUAL,
 	          __void__setInternalFormat__GLint,
 	          "Sets the internal texture format. ",
-	          "Implicitly sets the internalFormatMode to USE_USER_DEFINED_FORMAT. ");
+	          "Implicitly sets the internalFormatMode to USE_USER_DEFINED_FORMAT. The corresponding internal format type will be computed. ");
 	I_Method0(GLint, getInternalFormat,
 	          Properties::NON_VIRTUAL,
 	          __GLint__getInternalFormat,
@@ -291,6 +299,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __GLenum__getSourceType,
 	          "Gets the external source data type. ",
 	          "");
+	I_Method0(osg::Texture::InternalFormatType, getInternalFormatType,
+	          Properties::NON_VIRTUAL,
+	          __InternalFormatType__getInternalFormatType,
+	          "Get the internal texture format type. ",
+	          "");
 	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
 	          __TextureObject_P1__getTextureObject__unsigned_int,
@@ -316,6 +329,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __void__dirtyTextureParameters,
 	          "Force a reset on next apply() of associated OpenGL texture parameters. ",
 	          "");
+	I_Method0(void, allocateMipmapLevels,
+	          Properties::NON_VIRTUAL,
+	          __void__allocateMipmapLevels,
+	          "Force a manual allocation of the mipmap levels on the next apply() call. ",
+	          "User is responsible for filling the mipmap levels with valid data. The OpenGL's glGenerateMipmapEXT function is used to generate the mipmap levels. If glGenerateMipmapEXT is not supported or texture's internal format is not supported by the glGenerateMipmapEXT, then empty mipmap levels will be allocated manualy. The mipmap levels are also allocated if a non-mipmapped min filter is used. ");
 	I_Method1(void, setShadowComparison, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setShadowComparison__bool,
@@ -479,12 +497,30 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                   __void__computeRequiredTextureDimensions__State_R1__C5_osg_Image_R1__GLsizei_R1__GLsizei_R1__GLsizei_R1,
 	                   "",
 	                   "");
+	I_ProtectedMethod0(void, computeInternalFormatType,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeInternalFormatType,
+	                   "",
+	                   "");
 	I_ProtectedMethod2(void, applyTexParameters, IN, GLenum, target, IN, osg::State &, state,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
 	                   __void__applyTexParameters__GLenum__State_R1,
 	                   "Helper method. ",
 	                   "Sets texture paramters. ");
+	I_ProtectedMethod1(void, generateMipmap, IN, osg::State &, state,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__generateMipmap__State_R1,
+	                   "Helper method to generate empty mipmap levels by calling of glGenerateMipmapEXT. ",
+	                   "If it is not supported, then call the virtual allocateMipmap() method ");
+	I_ProtectedMethod1(void, allocateMipmap, IN, osg::State &, state,
+	                   Properties::PURE_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__allocateMipmap__State_R1,
+	                   "Allocate mipmap levels of the texture by subsequent calling of glTexImage* function. ",
+	                   "");
 	I_ProtectedMethod1(int, compareTexture, IN, const osg::Texture &, rhs,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
@@ -497,9 +533,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                   __int__compareTextureObjects__C5_Texture_R1,
 	                   "Returns -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	                   "");
-	I_SimpleProperty(const osg::Vec4 &, BorderColor, 
-	                 __C5_Vec4_R1__getBorderColor, 
-	                 __void__setBorderColor__C5_Vec4_R1);
+	I_SimpleProperty(const osg::Vec4d &, BorderColor, 
+	                 __C5_Vec4d_R1__getBorderColor, 
+	                 __void__setBorderColor__C5_Vec4d_R1);
 	I_SimpleProperty(GLint, BorderWidth, 
 	                 __GLint__getBorderWidth, 
 	                 __void__setBorderWidth__GLint);
@@ -523,6 +559,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_SimpleProperty(osg::Texture::InternalFormatMode, InternalFormatMode, 
 	                 __InternalFormatMode__getInternalFormatMode, 
 	                 __void__setInternalFormatMode__InternalFormatMode);
+	I_SimpleProperty(osg::Texture::InternalFormatType, InternalFormatType, 
+	                 __InternalFormatType__getInternalFormatType, 
+	                 0);
 	I_SimpleProperty(float, MaxAnisotropy, 
 	                 __float__getMaxAnisotropy, 
 	                 __void__setMaxAnisotropy__float);
@@ -755,6 +794,26 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	          __bool__isNonPowerOfTwoTextureSupported__GLenum,
 	          "",
 	          "");
+	I_Method1(void, setTextureIntegerEXTSupported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureIntegerEXTSupported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isTextureIntegerEXTSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isTextureIntegerEXTSupported,
+	          "",
+	          "");
+	I_Method3(void, glTexParameterIiv, IN, GLenum, target, IN, GLenum, pname, IN, const GLint *, data,
+	          Properties::NON_VIRTUAL,
+	          __void__glTexParameterIiv__GLenum__GLenum__C5_GLint_P1,
+	          "",
+	          "");
+	I_Method3(void, glTexParameterIuiv, IN, GLenum, target, IN, GLenum, pname, IN, const GLuint *, data,
+	          Properties::NON_VIRTUAL,
+	          __void__glTexParameterIuiv__GLenum__GLenum__C5_GLuint_P1,
+	          "",
+	          "");
 
 
 
@@ -791,6 +850,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
 	I_SimpleProperty(bool, TextureFilterAnisotropicSupported, 
 	                 0, 
 	                 __void__setTextureFilterAnisotropicSupported__bool);
+	I_SimpleProperty(bool, TextureIntegerEXTSupported, 
+	                 0, 
+	                 __void__setTextureIntegerEXTSupported__bool);
 	I_SimpleProperty(bool, TextureMirroredRepeatSupported, 
 	                 0, 
 	                 __void__setTextureMirroredRepeatSupported__bool);

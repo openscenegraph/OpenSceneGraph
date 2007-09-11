@@ -193,13 +193,13 @@ void Texture2D::apply(State& state) const
 
         if (textureObject->isAllocated())
         {
-            //std::cout<<"Reusing texture object"<<std::endl;
+            //notify(NOTICE)<<"Reusing texture object"<<std::endl;
             applyTexImage2D_subload(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
         }
         else
         {
-            //std::cout<<"Creating new texture object"<<std::endl;
+            //notify(NOTICE)<<"Creating new texture object"<<std::endl;
             applyTexImage2D_load(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _numMipmapLevels);
                                  
@@ -250,13 +250,19 @@ void Texture2D::apply(State& state) const
     {
         glBindTexture( GL_TEXTURE_2D, 0 );
     }
+
+    // if texture object is now valid and we have to allocate mipmap levels, then
+    if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
+    {
+        generateMipmap(state);
+    }
 }
 
 void Texture2D::computeInternalFormat() const
 {
     if (_image.valid()) computeInternalFormatWithImage(*_image); 
+    else computeInternalFormatType();
 }
-
 
 void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height )
 {
@@ -386,3 +392,46 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
         copyTexImage2D(state,x,y,width,height);
     }
 }
+
+void Texture2D::allocateMipmap(State& state) const
+{
+    const unsigned int contextID = state.getContextID();
+
+    // get the texture object for the current contextID.
+    TextureObject* textureObject = getTextureObject(contextID);
+    
+    if (textureObject && _textureWidth != 0 && _textureHeight != 0)
+    {
+        // bind texture
+        textureObject->bind();
+
+        // compute number of mipmap levels
+        int width = _textureWidth;
+        int height = _textureHeight;
+        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, height)));
+
+        // we do not reallocate the level 0, since it was already allocated
+        width >>= 1;
+        height >>= 1;
+        
+        for( GLsizei k = 1; k < numMipmapLevels  && (width || height); k++)
+        {
+            if (width == 0)
+                width = 1;
+            if (height == 0)
+                height = 1;
+
+            glTexImage2D( GL_TEXTURE_2D, k, _internalFormat,
+                     width, height, _borderWidth,
+                     _sourceFormat ? _sourceFormat : _internalFormat,
+                     _sourceType ? _sourceType : GL_UNSIGNED_BYTE, NULL);
+
+            width >>= 1;
+            height >>= 1;
+        }
+                
+        // inform state that this texture is the current one bound.
+        state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
+    }
+}
+

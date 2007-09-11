@@ -190,6 +190,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	                   __void__computeInternalFormat,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(void, allocateMipmap, IN, osg::State &, state,
+	                   Properties::VIRTUAL,
+	                   Properties::CONST,
+	                   __void__allocateMipmap__State_R1,
+	                   "Allocate mipmap levels of the texture by subsequent calling of glTexImage* function. ",
+	                   "");
 	I_ProtectedMethod6(void, applyTexImage2DArray_subload, IN, osg::State &, state, IN, osg::Image *, image, IN, GLsizei &, inwidth, IN, GLsizei &, inheight, IN, GLsizei &, indepth, IN, GLsizei &, numMipmapLevels,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

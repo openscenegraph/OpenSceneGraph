@@ -1,3 +1,235 @@
+2007-09-12 10:04 +0000 [r7399]  robert:
+
+	* From Jan Peciva, build fix
+
+2007-09-11 20:54 +0000 [r7397]  robert:
+
+	* Added log2(int) and log2(uint) methods
+
+2007-09-11 20:24 +0000 [r7396]  robert:
+
+	* Removed int version of log2 to avoid possible errors in assuming
+	  log2(10) should ~= log2(10.0)
+
+2007-09-11 17:10 +0000 [r7394-7395]  robert:
+
+	* Added OpenThreads to target libraries
+
+	* From Art Tevs, Added log2 function.
+
+2007-09-11 16:59 +0000 [r7392-7393]  robert:
+
+	* From Art Tevs, build fix.
+
+	* Replaced allocateMipmap code with warning message as mipmaps
+	  aren't support for TextureRectangle.
+
+2007-09-11 13:47 +0000 [r7391]  robert:
+
+	* Removed the output num_children from Group .osg output and
+	  removed the output of "DataVaraince UNSPECIFIED" as this is
+	  redundent considering the default value is UNSPECIFIED.
+
+2007-09-11 13:42 +0000 [r7389-7390]  robert:
+
+	* Updated wrappers
+
+	* From Mathias Froenlich, "have a problem with the SunOS CC. It
+	  does not like that the prototype of ClipNode::setStateSetModes()
+	  differs from implementation of that function in the constness of
+	  the second parameter. On SunOS it compiles fine, but I get link
+	  errors when the variant that is declared in the header is
+	  referenced. The attached src/osg/ClipNode.cpp file removes the
+	  const qualifier from the implementation to match exactly the
+	  prototype in the header file. The file is based on revision 7386
+	  as of today. "
+
+2007-09-11 13:34 +0000 [r7387-7388]  robert:
+
+	* From Art Trevs, "File Changes: - GL2Extensions, Program and
+	  Program.cpp Features: - Support for fragment output binding.
+	  (e.g. You can now specify in the fragment shader varying out vec3
+	  fragOut; fragOut = vec3(1,0,1); to write to the fragOut variable.
+	  In your program you call glBindFragDataLocation(program, 1,
+	  "fragOut") to bind the fragOut variable with the MRT 1 -
+	  GL_COLOR_ATTACHMENT1_EXT) - new methods
+	  Program::add/removeBindFragDataLocation
+	  Program::getFragDataBindingList "
+
+	* Seperated out GeometryTechnique .osg support.
+
+2007-09-11 12:28 +0000 [r7386]  robert:
+
+	* Changed the isTextureIntegerSupported method so that it no longer
+	  has the EXT entry in it for forward compatability reasons.
+
+2007-09-11 12:04 +0000 [r7385]  robert:
+
+	* From Art Trevs, "Features of the patch are: - Implementation of
+	  integer textures as in EXT_texture_integer - setBorderColor(Vec4)
+	  changed to setBorderColor(Vec4d) to pass double values as border
+	  color. (Probably we have to provide an overloading function to
+	  still support Vec4f ?) - new method
+	  Texture::getInternalFormatType() added. Gives information if the
+	  internal format normalized, float, signed integer or unsigned
+	  integer. Can help people to write better code ;-) " Futher
+	  changes to this submission by Robert Osfield, changed the dirty
+	  mipmap flag into a buffer_value<> vector to ensure safe handling
+	  of multiple contexts.
+
+2007-09-11 10:16 +0000 [r7384]  robert:
+
+	* From Rafa Giatan, "Changed int to GLsizei in the input parameter
+	  of the method osg::Texture2DArray::applyTexImage2DArray_subload
+	  inside Texture2DArray (lines 214 and 257), Otherwise it gives a
+	  compile error on MacOSX."
+
+2007-09-11 10:10 +0000 [r7383]  robert:
+
+	* From Mike Wittman and Robert Osfield, added support for
+	  SO_VERSION number in runtime version info. Added checks for
+	  OpenThreads version.
+
+2007-09-10 16:06 +0000 [r7380]  robert:
+
+	* Maded versioning under Windows the default.
+
+2007-09-10 15:19 +0000 [r7379]  robert:
+
+	* Intoduced a new setGLExtensions template method to do a copy of
+	  void* pointer to local function pointer to avoid compiler
+	  warnings related to case void*. Moved various OSG classes across
+	  to using setGLExtensions instead of getGLExtensions, and changed
+	  them to use typedef declarations in the headers rather than casts
+	  in the .cpp. Updated wrappers
+
+2007-09-08 07:21 +0000 [r7378]  robert:
+
+	* Flesh out a bit more of the view IO support
+
+2007-09-08 07:04 +0000 [r7377]  robert:
+
+	* Fixed typo
+
+2007-09-07 15:03 +0000 [r7375]  robert:
+
+	* From David Callu, warning fixes
+
+2007-09-07 13:54 +0000 [r7374]  robert:
+
+	* Removed warning type not support by gcc 4.1.x
+
+2007-09-07 13:37 +0000 [r7373]  robert:
+
+	* Updated wrappers for new Texture2DArray class
+
+2007-09-07 13:25 +0000 [r7372]  robert:
+
+	* Moved defined from Texture2DArray into Texture
+
+2007-09-07 11:21 +0000 [r7371]  robert:
+
+	* From Art Tevs, "A new texture class Texture2DArray derived from
+	  Texture extends the osg to support the new EXT_texture_array
+	  extensions. Texture arrays provides a feature for people
+	  interesting in GPGPU programming. Faetures and changes: - Full
+	  support for layered 2D textures. - New uniform types were added
+	  (sampler2DArray) - FrameBufferObject implementation were changed
+	  to support attaching of 2D array textures to the framebuffer -
+	  StateSet was slightly changed to support texture arrays. NOTE:
+	  array textures can not be used in fixed function pipeline. Thus
+	  using the layered texture as a statemode for a Drawable produce
+	  invalid enumerant OpenGL errors. - Image class was extended to
+	  support handling of array textures Tests: I have used this class
+	  as a new feature of my application. It works for me without
+	  problems (Note: Texture arrays were introduced only for shading
+	  languages and not for fixed function pipelines!!!). RTT with
+	  Texture2DArray works, as I have tested them as texture targets
+	  for a camera with 6 layers/faces (i.e. replacement for cube
+	  maps). I am using the array textures in shader programming. Array
+	  textures can be attached to the FBO and used as input and as
+	  output."
+
+2007-09-07 10:50 +0000 [r7370]  robert:
+
+	* From Daniel Sjolie, "I patched the zip plugin to make use of my
+	  favorite zip/pack-application for windows if it is installed in
+	  the standard location..."
+
+2007-09-07 10:15 +0000 [r7369]  robert:
+
+	* From Guillaume Millet, "Please find in attachment a small
+	  improvement to the pfb plugin CmakeLists.txt and to the
+	  FindPerformer.cmake module. Under Windows libs are: libpf.lib (we
+	  need to add the lib prefix) and libpfdu-util.lib (libpfdu and
+	  libpfutil are compiled into one lib) We need to add PFROOT to the
+	  search path for libs and includes (default environment variable
+	  for Performer path) And at last we need to put PFROOT/include and
+	  PFROOT/include/Performer as include dir for compiling."
+
+2007-09-07 09:53 +0000 [r7368]  robert:
+
+	* From Maria Ten, fix lat/long usage.
+
+2007-09-07 09:49 +0000 [r7367]  robert:
+
+	* From Mattias Linde, "Have made the updates now. Added a std::map
+	  for easy lookup if a visual node is targeted by a rigid body
+	  which is the reason why the .h-file was changed too. So now
+	  there'll be Group as often as possible, otherwise
+	  PostitionAttitudeTransform."
+
+2007-09-06 08:23 +0000 [r7366]  robert:
+
+	* Added osg lib
+
+2007-09-05 17:12 +0000 [r7365]  robert:
+
+	* From David Callu, improved consistency of Version strings and add
+	  version support for osgIntrospection and osgManipulator.
+
+2007-09-05 17:03 +0000 [r7364]  robert:
+
+	* Changed tabs to four spaces to make merges more straight forward
+
+2007-09-05 16:47 +0000 [r7363]  robert:
+
+	* Added automatic removal of .qt extension that allows one to
+	  automatically select the quicktime plugin.
+
+2007-09-05 16:36 +0000 [r7362]  robert:
+
+	* Added setting of locator source
+
+2007-09-05 14:15 +0000 [r7361]  robert:
+
+	* Added option to Locator to help specify here the locator value
+	  was defined from. Update wrappers and Gdal plugin to use this new
+	  parameter
+
+2007-09-04 14:00 +0000 [r7360]  robert:
+
+	* Improved Terrain IO
+
+2007-09-04 12:38 +0000 [r7359]  robert:
+
+	* Added mutex to DefaultFont::instance().
+
+2007-09-04 12:32 +0000 [r7358]  robert:
+
+	* Added mutex into osgText::Font::GlphTexture to marshel adding to
+	  and reading from glyph list
+
+2007-09-04 09:00 +0000 [r7357]  robert:
+
+	* Rearrange _stateset member variable to avoid compile warning
+
+2007-09-03 16:04 +0000 [r7354-7355]  robert:
+
+	* Updated AUTHORS and README to 2.1.9 dev release
+
+	* Updated ChangeLog
+
 2007-09-03 15:47 +0000 [r7353]  robert:
 
 	* Updated wrappers

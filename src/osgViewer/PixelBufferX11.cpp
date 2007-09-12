@@ -25,9 +25,10 @@
 
 using namespace osgViewer;
 
+#ifdef GLX_VERSION_1_3
 static GLXFBConfig getFBConfigFromVisual(::Display* dpy, XVisualInfo* visualInfo)
 {
-#if defined(__APPLE__) || defined(_AIX)
+#if defined(__APPLE__) || defined(_AIX) || defined(__hpux)
     int screen = visualInfo->screen;
     int nelements;
     GLXFBConfig *configs = glXGetFBConfigs(dpy, screen, &nelements);
@@ -45,12 +46,46 @@ static GLXFBConfig getFBConfigFromVisual(::Display* dpy, XVisualInfo* visualInfo
     return glXGetFBConfigFromVisualSGIX( dpy, visualInfo );
 #endif
 }
+#endif
+
+PixelBufferX11::PixelBufferX11(osg::GraphicsContext::Traits* traits)
+  : _valid(false),
+    _display(0),
+    _parent(0),
+    _pbuffer(0),
+    _visualInfo(0),
+    _glxContext(0),
+    _initialized(false),
+    _realized(false)
+{
+    _traits = traits;
+
+    init();
+    
+    if (valid())
+    {
+        setState( new osg::State );
+        getState()->setGraphicsContext(this);
+
+        if (_traits.valid() && _traits->sharedContext)
+        {
+            getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+            incrementContextIDUsageCount( getState()->getContextID() );   
+        }
+        else
+        {
+            getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+        }
+
+    }
+}
 
 PixelBufferX11::~PixelBufferX11()
 {
     close(true);
 }
 
+#ifdef GLX_VERSION_1_3
 bool PixelBufferX11::createVisualInfo()
 {
     typedef std::vector<int> Attributes;
@@ -92,8 +127,6 @@ bool PixelBufferX11::createVisualInfo()
 void PixelBufferX11::init()
 {
     if (_initialized) return;
-
-#ifdef GLX_VERSION_1_3
 
     if (!_traits)
     {
@@ -232,12 +265,22 @@ void PixelBufferX11::init()
 
     _valid = true;
     _initialized = true;
-#else    
-    _valid = false;
-    _initialized = true;
-    return;
-#endif
 }
+
+#else
+
+// fallback for non GLX1.3 versions where pbuffers are not supported.
+// note, this makes the rest of the pbuffer code a non op as init is false;
+bool PixelBufferX11::createVisualInfo()
+{
+    return false;
+}
+
+void PixelBufferX11::init()
+{
+}
+
+#endif
 
 bool PixelBufferX11::realizeImplementation()
 {
@@ -310,9 +353,7 @@ void PixelBufferX11::closeImplementation()
     
         if (_pbuffer)
         {
-#ifdef GLX_VERSION_1_3
             glXDestroyPbuffer(_display, _pbuffer);
-#endif
         }
 
         XFlush( _display );
@@ -347,5 +388,5 @@ void PixelBufferX11::swapBuffersImplementation()
 
     // osg::notify(osg::NOTICE)<<"PixelBufferX11::swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    glXSwapBuffers(_display, _pbuffer); 
+    glXSwapBuffers(_display, _pbuffer);
 }

@@ -516,7 +516,7 @@ void GraphicsWindowX11::init()
     else
     {
         PixelBufferX11* pixelBufferX11 = dynamic_cast<PixelBufferX11*>(_traits->sharedContext);
-        if (pixelBufferX11)
+        if (pixelBufferX11 && pixelBufferX11->valid())
         {
             sharedContextGLX = pixelBufferX11->getGLXContext();
         }

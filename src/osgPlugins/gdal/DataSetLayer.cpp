@@ -86,7 +86,6 @@ osgTerrain::ImageLayer* DataSetLayer::extractImageLayer(unsigned int sourceMinX,
 
 void DataSetLayer::setUpLocator()
 {
-    osg::notify(osg::NOTICE)<<"DataSetLayer::setUpLocator()"<<std::endl;
     if (!isOpen()) return;
     
     const char* pszSourceSRS = _dataset->GetProjectionRef();
@@ -175,7 +174,7 @@ void DataSetLayer::setUpLocator()
     }
     else
     {
-        osg::notify(osg::NOTICE) << "    No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
+        osg::notify(osg::INFO) << "DataSetLayer::setUpLocator(), No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
     }
 
 }

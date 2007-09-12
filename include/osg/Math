@@ -194,8 +194,8 @@ inline double RadiansToDegrees(double angle) { return angle*180.0/PI; }
 inline float round(float v) { return v>=0.0f?floorf(v+0.5f):ceilf(v-0.5f); }
 inline double round(double v) { return v>=0.0?floor(v+0.5):ceil(v-0.5); }
 
-inline float log2(float v) { return static_cast<float>(log(v)) * INVLN_2; }
-inline double log2(double v) { return static_cast<double>(log(v)) * INVLN_2; }
+inline float log2(float v) { return logf(v) * static_cast<float>(INVLN_2); }
+inline double log2(double v) { return log(v) * INVLN_2; }
 inline float log2(int v) { return log2(static_cast<float>(v)); }
 inline float log2(unsigned int v) { return log2(static_cast<float>(v)); }
 

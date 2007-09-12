@@ -51,6 +51,9 @@ bool validName(const std::string& first)
     if (first=="SpotExponent") return false;
     if (first=="Framstamp") return false;
     if (first=="Stats") return false;
+    if (first=="Group") return false;
+    if (first=="Texture") return false;
+    if (first=="Texture2DArray") return false;
     if (first=="Creator") return false;
     if (first=="CullVisitor") return false;
     if (first=="Drawable") return false;
@@ -213,6 +216,8 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
+    if (name=="Froenlich") return "Fröhlich";
+    if (name=="Froelich") return "Fröhlich";    
     if (name=="Fruciel") return "Frauciel";
     if (name=="Hebelin") return "Herbelin";
     if (name=="Jea-Sebastien") return "Jean-Sebastien";
@@ -314,6 +319,11 @@ std::string typoCorrection(const std::string& name)
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Art" && name.second=="Trevs")
+    {
+        name.first = "Art";
+        name.second = "Tevs";
+    }
     if (name.first=="Tim" && name.second=="More")
     {
         name.first = "Tim";

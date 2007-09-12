@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.9
+OpenSceneGraph Library 2.1.10
 
-276 Contributors:
+278 Contributors:
 
 Firstname Surname
 -----------------
@@ -19,30 +19,30 @@ Martin Lavery
 Ulrich Hertlein
 Eric Sokolowsky
 Tree 
+Mike Wittman
 Luigi Calori
 Trajce Nikolov
-Mike Wittman
 Pavel Moloshtan
 Tom Jolley
 Norman Vine
 Alberto Farre
 Roger James
+Mathias Fröhlich
 André Garneau
 Ruben Lopez
 Randall Hopper
 Olaf Flebbe
-Mathias Fröhlich
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Michael Gronager
+David Callu
+Daniel Sjölie
 Colin McDonald
 Chris Hanson
-Daniel Sjölie
 Per Fahlberg
 Joran Jessurun
 Jean-Sebastien Guay
-David Callu
 Frederic Marmond
 David Spilling
 David Fries
@@ -80,9 +80,11 @@ Loic Dachary
 Laurens Voerman
 Joseph Steel
 John Shue
+Jan Peciva
 David Guthrie
 Corbin Holtz
 Brad Christiansen
+Art Tevs
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -91,7 +93,6 @@ Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
 Leandro Motta Barros
-Jan Peciva
 Carlo Camporesi
 Bryan Thrall
 Bruce Clay
@@ -102,6 +103,7 @@ Sohey Yamamoto
 Serge Lages
 Phil Atkin
 Mathieu Marache
+Maria Ten
 Luc Frauciel
 Ken Sewell
 Julian Ortiz
@@ -128,6 +130,7 @@ Stephan Eilemann
 Stanislav Blinov
 Roland Smeenk
 Riccardo Corsi
+Rafa Giatan
 Philip Lowman
 Peter Hrenka
 Perry Miller
@@ -137,7 +140,6 @@ Maya Leonard
 Max Behensky
 Mathew May
 Martijn Kragtwijk
-Maria Ten
 Kevin Moiule
 Keith Steffen
 Joseph Winston
@@ -187,7 +189,6 @@ Rick Pingry
 Reinhard Sainitzer
 Rein Kadijk
 Ralf Kern
-Rafa Giatan
 Radu Mihai
 Qing Shen
 Philipp Siemoleit
@@ -204,10 +205,10 @@ Michael Morrison
 Michael Logan
 Max Rhiener
 Mauricio Hofmam
+Mattias Linde
 Matthew May
 Matt Green
 Matt Burke
-Mathias Froelich
 Mathia Walker
 Mason Menninger
 Martin Spott
@@ -231,6 +232,7 @@ Jason Ballenger
 J.E. Hoffmann
 Henrique Bucher
 Gustavo Wagner
+Guillaume Millet
 Graeme Harkness
 Glenn Waldrom
 Gian Lorenzetto

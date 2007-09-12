@@ -1,4 +1,3 @@
 SET(TARGET_SRC osgversion.cpp )
-SET(Target_ADDED_LIBRARIES OpenThreads) 
 
 SETUP_COMMANDLINE_APPLICATION(osgversion)

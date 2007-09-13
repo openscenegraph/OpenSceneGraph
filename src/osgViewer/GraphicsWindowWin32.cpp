@@ -775,7 +775,7 @@ bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::Scr
     DisplayDevices displayDevices;
     enumerateDisplayDevices(displayDevices);
 
-    if (si.screenNum>=displayDevices.size())
+    if (si.screenNum>=static_cast<int>(displayDevices.size()))
     {
         osg::notify(osg::WARN) << "Win32WindowingSystem::getScreenInformation() - Cannot get information for screen " << si.screenNum << " because it does not exist." << std::endl;
         return false;

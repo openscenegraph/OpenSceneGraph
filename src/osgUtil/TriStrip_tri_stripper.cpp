@@ -152,7 +152,7 @@ void tri_stripper::InitCache()
     m_IndicesCache.clear();
 
     if (m_CacheSize > 0)
-        m_IndicesCache.resize(m_CacheSize, static_cast<size_t>(-1));
+        m_IndicesCache.resize(m_CacheSize, static_cast<indice>(-1));
 }
 
 

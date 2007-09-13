@@ -313,7 +313,7 @@ int main( int argc, char **argv )
   
   while(!viewer.done())
   {
-    osg::Timer_t current_tick = osg::Timer::instance()->tick();
+    current_tick = osg::Timer::instance()->tick();
 
     *fps = 1.0/osg::Timer::instance()->delta_s(previous_tick,current_tick);
     dePee->updateHUDText();

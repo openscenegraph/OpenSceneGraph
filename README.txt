@@ -10,7 +10,7 @@ For the impatient, read the simplified build notes below.
 
 Robert Osfield.
 Project Lead.
-3rd September 2007.
+13th September 2007.
 
 --
 

@@ -330,36 +330,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray::Extensions)
 	           __void__glCompressedTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
 	           "",
 	           "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLTexImage3DProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLTexSubImage3DProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, CompressedTexImage3DArbProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, CompressedTexSubImage3DArbProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLCopyTexSubImageProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
+
+
+
+
+
 	I_SimpleProperty(GLint, Max2DSize, 
 	                 0, 
 	                 __void__setMax2DSize__GLint);

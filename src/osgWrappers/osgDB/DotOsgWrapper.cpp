@@ -23,9 +23,9 @@
 
 TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DotOsgWrapper::Associates)
 
-TYPE_NAME_ALIAS(bool (*)(osg::Object&,osgDB::Input&), osgDB::DotOsgWrapper::ReadFunc);
+TYPE_NAME_ALIAS(bool (*)(osg::Object&,osgDB::Input&), osgDB::DotOsgWrapper::ReadFunc)
 	
-TYPE_NAME_ALIAS(bool (*)(const osg::Object&,osgDB::Output&), osgDB::DotOsgWrapper::WriteFunc);
+TYPE_NAME_ALIAS(bool (*)(const osg::Object&,osgDB::Output&), osgDB::DotOsgWrapper::WriteFunc)
 	
 BEGIN_ENUM_REFLECTOR(osgDB::DotOsgWrapper::ReadWriteMode)
 	I_DeclaringFile("osgDB/DotOsgWrapper");

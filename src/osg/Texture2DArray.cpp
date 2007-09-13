@@ -103,7 +103,7 @@ int Texture2DArray::compare(const StateAttribute& sa) const
 void Texture2DArray::setImage(unsigned int layer, Image* image)
 {
     // check if the layer exceeds the texture depth
-    if (layer >= _textureDepth)
+    if (static_cast<int>(layer) >= _textureDepth)
     {
         // print warning and do nothing
         notify(WARN)<<"Warning: Texture2DArray::setImage(..) failed, the given layer number is bigger then the size of the texture array."<<std::endl;

@@ -149,7 +149,7 @@ void DePee::setEdgy(bool edgy)
 	  _dePeePasses.back()->remRenderPass(EDGE_MAP);
 	}
       
-      for(int i=0; i < n; i++)
+      for(unsigned int i=0; i < n; i++)
 	{
 	  addDePeePass();
 	}
@@ -167,7 +167,7 @@ void DePee::setFPS(double* fps)
 unsigned int DePee::getNumberOfRenderPasses()
 {
   unsigned int n = 0;
-  for(int i=0; i < _dePeePasses.size();i++)
+  for(unsigned int i=0; i < _dePeePasses.size();i++)
     n += _dePeePasses.at(i)->Cameras.size();
   // add one pass for final rendering pass and one for hud
   return n+2;

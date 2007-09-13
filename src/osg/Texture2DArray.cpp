@@ -325,7 +325,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     computeInternalFormat();
 
     // select the internalFormat required for the texture.
-    bool compressed = isCompressedInternalFormat(_internalFormat);
+    // bool compressed = isCompressedInternalFormat(_internalFormat);
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
 
     // if the required layer is exceeds the maximum allowed layer sizes
@@ -456,7 +456,7 @@ void Texture2DArray::allocateMipmap(State& state) const
     if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
     {
         const Extensions* extensions = getExtensions(contextID,true);
-        const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
+        // const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
         
         // bind texture
         textureObject->bind();
@@ -548,11 +548,11 @@ void Texture2DArray::Extensions::setupGLExtensions(unsigned int contextID)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_max2DSize);
     glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &_maxLayerCount);
 
-    _glTexImage3D                     = getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");
-    _glTexSubImage3D                  = getGLExtensionFuncPtr("glTexSubImage3D","glTexSubImage3DEXT");
-    _glCompressedTexImage3D           = getGLExtensionFuncPtr("glCompressedTexImage3D","glCompressedTexImage3DARB");
-    _glCompressedTexSubImage3D        = getGLExtensionFuncPtr("glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
-    _glCopyTexSubImage3D              = getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+    setGLExtensionFuncPtr(_glTexImage3D, "glTexImage3D","glTexImage3DEXT");
+    setGLExtensionFuncPtr(_glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT");
+    setGLExtensionFuncPtr(_glCompressedTexImage3D, "glCompressedTexImage3D","glCompressedTexImage3DARB");
+    setGLExtensionFuncPtr(_glCompressedTexSubImage3D, "glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
+    setGLExtensionFuncPtr(_glCopyTexSubImage3D, "glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
 }
 
 void Texture2DArray::Extensions::glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const
@@ -560,7 +560,11 @@ void Texture2DArray::Extensions::glTexImage3D( GLenum target, GLint level, GLenu
     if (_glTexImage3D)
     {
         typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-        ((GLTexImage3DProc)_glTexImage3D)( target, level, internalFormat, width, height, depth, border, format, type, pixels);
+        typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+        typedef void (APIENTRY * CompressedTexImage3DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
+        typedef void (APIENTRY * CompressedTexSubImage3DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data);
+        typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+        _glTexImage3D( target, level, internalFormat, width, height, depth, border, format, type, pixels);
     }
     else
     {
@@ -572,8 +576,7 @@ void Texture2DArray::Extensions::glTexSubImage3D( GLenum target, GLint level, GL
 {
     if (_glTexSubImage3D)
     {
-        typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-        ((GLTexSubImage3DProc)_glTexSubImage3D)( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+        _glTexSubImage3D( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     }
     else
     {
@@ -585,8 +588,7 @@ void Texture2DArray::Extensions::glCompressedTexImage3D(GLenum target, GLint lev
 {
     if (_glCompressedTexImage3D)
     {
-        typedef void (APIENTRY * CompressedTexImage3DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
-        ((CompressedTexImage3DArbProc)_glCompressedTexImage3D)(target, level, internalformat, width, height, depth, border, imageSize, data);
+        _glCompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
     }
     else
     {
@@ -598,8 +600,7 @@ void Texture2DArray::Extensions::glCompressedTexSubImage3D( GLenum target, GLint
 {
     if (_glCompressedTexSubImage3D)
     {
-        typedef void (APIENTRY * CompressedTexSubImage3DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data);
-        ((CompressedTexSubImage3DArbProc)_glCompressedTexSubImage3D)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+        _glCompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
     }
     else
     {
@@ -611,8 +612,7 @@ void Texture2DArray::Extensions::glCopyTexSubImage3D( GLenum target, GLint level
 {
     if (_glCopyTexSubImage3D)
     {
-        typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-        ((GLCopyTexSubImageProc)_glCopyTexSubImage3D)(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+        _glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     }
     else
     {

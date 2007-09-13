@@ -145,21 +145,16 @@ class OSG_EXPORT Texture2DArray : public Texture
                 void setMax2DSize(GLint size) { _max2DSize = size; }
                 GLint max2DSize() const { return _max2DSize; }
                 
-                void setTexImage3DProc(void* ptr) { _glTexImage3D = ptr; }
                 void glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const;
 
-                void setTexSubImage3DProc(void* ptr) { _glTexSubImage3D = ptr; }
                 void glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels) const;
                 
-                void setCopyTexSubImage3DProc(void* ptr) { _glCopyTexSubImage3D = ptr; }
                 void glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const;
                 
                 bool isCompressedTexImage3DSupported() const { return _glCompressedTexImage3D!=0; }
-                void setCompressedTexImage3DProc(void* ptr) { _glCompressedTexImage3D = ptr; }
                 void glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data) const;
 
                 bool isCompressedTexSubImage3DSupported() const { return _glCompressedTexSubImage3D!=0; }
-                void setCompressedTexSubImage3DProc(void* ptr) { _glCompressedTexSubImage3D = ptr; }
                 void glCompressedTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data ) const;
 
             protected:
@@ -172,11 +167,17 @@ class OSG_EXPORT Texture2DArray : public Texture
                 GLint   _maxLayerCount;
                 GLint   _max2DSize;
 
-                void*   _glTexImage3D;
-                void*   _glTexSubImage3D;
-                void*   _glCompressedTexImage3D;
-                void*   _glCompressedTexSubImage3D;
-                void*   _glCopyTexSubImage3D;
+                typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
+                typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
+                typedef void (APIENTRY * CompressedTexImage3DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
+                typedef void (APIENTRY * CompressedTexSubImage3DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data);
+                typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
+
+                GLTexImage3DProc                _glTexImage3D;
+                GLTexSubImage3DProc             _glTexSubImage3D;
+                CompressedTexImage3DArbProc     _glCompressedTexImage3D;
+                CompressedTexSubImage3DArbProc  _glCompressedTexSubImage3D;
+                GLCopyTexSubImageProc           _glCopyTexSubImage3D;
                 
         };
         

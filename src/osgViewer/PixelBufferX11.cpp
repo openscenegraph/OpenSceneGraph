@@ -267,6 +267,47 @@ void PixelBufferX11::init()
     _initialized = true;
 }
 
+void PixelBufferX11::closeImplementation()
+{
+    // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
+    if (_display)
+    {
+        if (_glxContext)
+        {
+            glXDestroyContext(_display, _glxContext );
+        }
+    
+        if (_pbuffer)
+        {
+            glXDestroyPbuffer(_display, _pbuffer);
+        }
+
+        XFlush( _display );
+        XSync( _display,0 );
+
+    }
+    
+    _pbuffer = 0;
+    _parent = 0;
+    _glxContext = 0;
+
+    if (_visualInfo)
+    {
+        XFree(_visualInfo);
+        _visualInfo = 0;
+    }
+
+    if (_display)
+    {
+        XCloseDisplay( _display );
+        _display = 0;
+    }
+
+    _initialized = false;
+    _realized = false;
+    _valid = false;
+}
+
 #else
 
 // fallback for non GLX1.3 versions where pbuffers are not supported.
@@ -278,6 +319,17 @@ bool PixelBufferX11::createVisualInfo()
 
 void PixelBufferX11::init()
 {
+}
+
+void PixelBufferX11::closeImplementation()
+{
+    // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
+    _pbuffer = 0;
+    _parent = 0;
+    _glxContext = 0;
+    _initialized = false;
+    _realized = false;
+    _valid = false;
 }
 
 #endif
@@ -338,48 +390,6 @@ bool PixelBufferX11::releaseContextImplementation()
 void PixelBufferX11::bindPBufferToTextureImplementation(GLenum buffer)
 {
     osg::notify(osg::NOTICE)<<"PixelBufferX11::bindPBufferToTextureImplementation() not implementation yet."<<std::endl;
-}
-
-
-void PixelBufferX11::closeImplementation()
-{
-    // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
-    if (_display)
-    {
-        if (_glxContext)
-        {
-            glXDestroyContext(_display, _glxContext );
-        }
-    
-        if (_pbuffer)
-        {
-            glXDestroyPbuffer(_display, _pbuffer);
-        }
-
-        XFlush( _display );
-        XSync( _display,0 );
-
-    }
-    
-    _pbuffer = 0;
-    _parent = 0;
-    _glxContext = 0;
-
-    if (_visualInfo)
-    {
-        XFree(_visualInfo);
-        _visualInfo = 0;
-    }
-
-    if (_display)
-    {
-        XCloseDisplay( _display );
-        _display = 0;
-    }
-
-    _initialized = false;
-    _realized = false;
-    _valid = false;
 }
 
 void PixelBufferX11::swapBuffersImplementation()

@@ -875,8 +875,6 @@ void SceneView::releaseAllGLObjects()
 
 void SceneView::flushAllDeletedGLObjects()
 {
-    osg::State* state = _renderInfo.getState();
-
     _requiresFlush = false;
     
     osg::flushAllDeletedGLObjects(getState()->getContextID());

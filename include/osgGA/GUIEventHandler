@@ -51,7 +51,7 @@ class OSGGA_EXPORT GUIEventHandler : public osg::NodeCallback, public osg::Drawa
 {
 public:
 
-        GUIEventHandler() {}
+        GUIEventHandler() : _ignoreUsedEventsMask(GUIEventAdapter::NONE) {}
         GUIEventHandler(const GUIEventHandler&,const osg::CopyOp&) {}
 
         META_Object(osgGA,GUIEventHandler);
@@ -70,6 +70,15 @@ public:
         
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage&) const {}
+
+        /** Set a mask of osgGA::GUIEeventAdapter::Event to be ignored if marked as handled */
+        void setIgnoreUsedEventsMask(unsigned int mask) { _ignoreUsedEventsMask = mask; }
+
+        unsigned int getIgnoreUsedEventsMask() const { return _ignoreUsedEventsMask; };
+
+protected:
+        unsigned int _ignoreUsedEventsMask;
+
 };
 
 #ifdef USE_DEPRECATED_API

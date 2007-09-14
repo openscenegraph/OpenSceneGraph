@@ -26,10 +26,7 @@ void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
             itr != ev->getEvents().end();
             ++itr)
         {
-            if (handle(*(*itr), *(ev->getActionAdapter()), node, nv))
-            {
-                (*itr)->setHandled(true);
-            }
+            handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
         }
     }
     if (node->getNumChildrenRequiringEventTraversal()>0) traverse(node,nv);
@@ -44,7 +41,7 @@ void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)
             itr != ev->getEvents().end();
             ++itr)
         {
-            handle(*(*itr), *(ev->getActionAdapter()), drawable, nv);
+            handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), drawable, nv);
         }
     }
 }

@@ -1327,12 +1327,12 @@ void Viewer::eventTraversal()
             hitr != _eventHandlers.end();
             ++hitr)
         {
-            if ((*hitr)->handle( *event, *this, 0, 0)) event->setHandled(true);
+            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, 0);
         }
 
         if (_cameraManipulator.valid())
         {
-            if (_cameraManipulator->handle( *event, *this)) event->setHandled(true);
+            _cameraManipulator->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this);
         }
         
     }

@@ -457,7 +457,7 @@ void GraphicsWindowX11::init()
     
     getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
     
-    WindowData* inheritedWindowData =  dynamic_cast<WindowData*>(_traits->inheritedWindowData.get());
+    // WindowData* inheritedWindowData =  dynamic_cast<WindowData*>(_traits->inheritedWindowData.get());
 
     _display = XOpenDisplay(_traits->displayName().c_str());
     

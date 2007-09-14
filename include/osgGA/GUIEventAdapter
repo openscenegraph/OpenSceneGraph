@@ -262,7 +262,7 @@ public:
         
 
         /** Set whether this event has been handled by an event handler or not.*/
-        void setHandled(bool handled) { _handled = handled; }
+        void setHandled(bool handled) const { _handled = handled; }
 
         /** Get whether this event has been handled by an event handler or not.*/
         bool getHandled() const { return _handled; }
@@ -403,7 +403,7 @@ public:
         /** Force users to create on heap, so that multiple referencing is safe.*/
         virtual ~GUIEventAdapter();
 
-        bool _handled;        
+        mutable bool _handled;        
         EventType _eventType;
         double _time;
 

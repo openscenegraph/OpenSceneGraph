@@ -20,7 +20,7 @@
 #include <osg/Timer>
 #include <osgDB/DatabasePager>
 #include <osgGA/EventQueue>
-#include <osgGA/GUIEventHandler.bkp>
+#include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
 #include <osgUtil/LineSegmentIntersector>
 #include <osgUtil/SceneView>

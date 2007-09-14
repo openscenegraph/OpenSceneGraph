@@ -40,8 +40,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::FlightManipulator)
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "",
-	          "");
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
 	          Properties::VIRTUAL,
 	          __void__setByMatrix__C5_osg_Matrixd_R1,

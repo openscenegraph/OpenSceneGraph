@@ -73,9 +73,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	          "",
 	          "");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
@@ -136,12 +136,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
-	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "",
 	          "");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "",
 	          "");
 	I_SimpleProperty(int, KeyEventTogglePlayback, 
 	                 __int__getKeyEventTogglePlayback, 
@@ -208,7 +208,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
@@ -323,9 +323,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
 	          "",
 	          "");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "",
 	          "");
 	I_SimpleProperty(bool, ChangeEndBarrierPosition, 
 	                 __bool__getChangeEndBarrierPosition, 
@@ -405,7 +405,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::WindowSizeHandler)
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
-	          "deprecated, Handle events, return true if handled, false otherwise. ",
+	          "",
 	          "");
 	I_ProtectedMethod1(void, toggleFullscreen, IN, osgViewer::GraphicsWindow *, window,
 	                   Properties::NON_VIRTUAL,

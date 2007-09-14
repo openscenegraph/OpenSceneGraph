@@ -98,7 +98,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	          "Handles incoming osgGA events. ",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Reports Usage parameters to the application. ",
 	          "");

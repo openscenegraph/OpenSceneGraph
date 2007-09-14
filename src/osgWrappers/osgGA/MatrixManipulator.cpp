@@ -33,8 +33,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	          "",
+	          "");
 	I_Method1(void, setMinimumDistance, IN, float, minimumDistance,
 	          Properties::VIRTUAL,
 	          __void__setMinimumDistance__float,

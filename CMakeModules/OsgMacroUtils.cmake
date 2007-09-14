@@ -277,6 +277,7 @@ MACRO(SETUP_COMMANDLINE_EXAMPLE EXAMPLE_NAME)
 
 ENDMACRO(SETUP_COMMANDLINE_EXAMPLE)
 
+# Takes two optional arguments -- osg prefix and osg version
 MACRO(HANDLE_MSVC_DLL)
 	#this is a hack... the build place is set to lib/<debug or release> by LIBARARY_OUTPUT_PATH equal to OUTPUT_LIBDIR
 	#the .lib will be crated in ../ so going straight in lib by the IMPORT_PREFIX property
@@ -284,7 +285,24 @@ MACRO(HANDLE_MSVC_DLL)
 	#it is hardcoded, we should compute OUTPUT_BINDIR position relative to OUTPUT_LIBDIR ... to be implemented
 	#changing bin to something else breaks this hack
 	#the dll are versioned by prefixing the name with osg${OPENSCENEGRAPH_SOVERSION}-
+
+        # LIB_PREFIX: use "osg" by default, else whatever we've been given.
+        IF(${ARGC} GREATER 0)
+                SET(LIB_PREFIX ${ARGV0})
+        ELSE(${ARGC} GREATER 0)
+                SET(LIB_PREFIX osg)
+        ENDIF(${ARGC} GREATER 0)
+
+        # LIB_SOVERSION: use OSG's soversion by default, else whatever we've been given
+        IF(${ARGC} GREATER 1)
+                SET(LIB_SOVERSION ${ARGV1})
+        ELSE(${ARGC} GREATER 1)
+                SET(LIB_SOVERSION ${OPENSCENEGRAPH_SOVERSION})
+        ENDIF(${ARGC} GREATER 1)
 	
-	 SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/osg${OPENSCENEGRAPH_SOVERSION}-")
-	 SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES IMPORT_PREFIX "../")
+        SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/${LIB_PREFIX}${LIB_SOVERSION}-")
+        SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES IMPORT_PREFIX "../")
+
+#	 SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/osg${OPENSCENEGRAPH_SOVERSION}-")
+#	 SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES IMPORT_PREFIX "../")
 ENDMACRO(HANDLE_MSVC_DLL)

@@ -950,12 +950,12 @@ void CompositeViewer::eventTraversal()
                 hitr != view->getEventHandlers().end();
                 ++hitr)
             {
-                if ((*hitr)->handle( *event, *view, 0, 0)) event->setHandled(true);
+                (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view, 0, 0);
             }
 
             if (view->getCameraManipulator())
             {
-                if (view->getCameraManipulator()->handle( *event, *view)) event->setHandled(true);
+                view->getCameraManipulator()->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *view);
             }
         }
     }

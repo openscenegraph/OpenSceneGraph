@@ -288,7 +288,7 @@ bool DePee::createHUD()
     
     {
       geode->addDrawable( _hudText );
-      
+      _hudText->setDataVariance(osg::Object::DYNAMIC);
       _hudText->setFont(timesFont);
       _hudText->setPosition(position);
       _hudText->setText("Head Up Display");

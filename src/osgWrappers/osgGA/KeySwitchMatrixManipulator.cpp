@@ -41,8 +41,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
-	          "",
-	          "");
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
 	I_Method3(void, addMatrixManipulator, IN, int, key, IN, std::string, name, IN, osgGA::MatrixManipulator *, cm,
 	          Properties::NON_VIRTUAL,
 	          __void__addMatrixManipulator__int__std_string__MatrixManipulator_P1,

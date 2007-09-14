@@ -34,22 +34,22 @@ public:
 
         enum EventType {
             NONE=0,
-            PUSH,
-            RELEASE,
-            DOUBLECLICK,
-            DRAG,
-            MOVE,
-            KEYDOWN,
-            KEYUP,
-            FRAME,
-            RESIZE,
-            SCROLL,
-            PEN_PRESSURE,
-            PEN_PROXIMITY_ENTER,
-            PEN_PROXIMITY_LEAVE,
-            CLOSE_WINDOW,
-            QUIT_APPLICATION,
-            USER
+            PUSH=1, 
+            RELEASE=2,
+            DOUBLECLICK=4,
+            DRAG=8,
+            MOVE=16,
+            KEYDOWN=32,
+            KEYUP=64,
+            FRAME=128,
+            RESIZE=256,
+            SCROLL=512,
+            PEN_PRESSURE=1024,
+            PEN_PROXIMITY_ENTER=2048,
+            PEN_PROXIMITY_LEAVE=4096,
+            CLOSE_WINDOW=8192,
+            QUIT_APPLICATION=16384,
+            USER=32768
         };
 
         enum KeySymbol

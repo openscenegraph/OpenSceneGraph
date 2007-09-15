@@ -23,12 +23,14 @@
 #include <osgDB/FileNameUtils>
 #include <osg/GLU>
 
+#include <OpenThreads/ReentrantMutex>
+
 using namespace osgText;
 using namespace std;
 
 static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
 
-static OpenThreads::Mutex s_FontFileMutex;
+static OpenThreads::ReentrantMutex s_FontFileMutex;
 
 Font::FontMutex* osgText::Font::getSerializeFontCallsMutex()
 {
@@ -42,7 +44,7 @@ std::string osgText::findFontFile(const std::string& str)
     std::string filename = osgDB::findDataFile(str);
     if (!filename.empty()) return filename;
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(s_FontFileMutex);
 
     static osgDB::FilePathList s_FontFilePath;
     static bool initialized = false;

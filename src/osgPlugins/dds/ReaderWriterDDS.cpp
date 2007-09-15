@@ -764,9 +764,9 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         //Uncompressed
     case GL_RGBA:
         {
-            ddpf.dwRBitMask        = 0x00ff0000;  
+            ddpf.dwRBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
-            ddpf.dwBBitMask        = 0x000000ff;
+            ddpf.dwBBitMask        = 0x00ff0000;  
             ddpf.dwRGBAlphaBitMask = 0xff000000;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_RGB);
             ddpf.dwRGBBitCount = pixelSize; 
@@ -776,9 +776,9 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_BGRA:
         {
-            ddpf.dwBBitMask        = 0x00ff0000;  
+            ddpf.dwBBitMask        = 0x000000ff;
             ddpf.dwGBitMask        = 0x0000ff00;
-            ddpf.dwRBitMask        = 0x000000ff;
+            ddpf.dwRBitMask        = 0x00ff0000;  
             ddpf.dwRGBAlphaBitMask = 0xff000000;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_RGB);
             ddpf.dwRGBBitCount = pixelSize; 
@@ -798,9 +798,9 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_RGB:
         {
-            ddpf.dwRBitMask         = 0x00ff0000;
-            ddpf.dwGBitMask         = 0x0000ff00;
-            ddpf.dwBBitMask         = 0x000000ff;            
+            ddpf.dwRBitMask        = 0x000000ff;
+            ddpf.dwGBitMask        = 0x0000ff00;
+            ddpf.dwBBitMask        = 0x00ff0000;  
             PF_flags |= DDPF_RGB;
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();

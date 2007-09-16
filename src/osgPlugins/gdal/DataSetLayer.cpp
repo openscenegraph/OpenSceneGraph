@@ -119,7 +119,14 @@ void DataSetLayer::setUpLocator()
                     0.0,                0.0,                1.0,    0.0,
                     geoTransform[0],    geoTransform[3],    0.0,    1.0);
                     
-        locator->setTransform(matrix);
+            
+        int nPixels = _dataset->GetRasterXSize();
+        int nLines = _dataset->GetRasterYSize();
+
+        locator->setTransform(
+            osg::Matrixd::scale(static_cast<double>(nPixels-1), static_cast<double>(nLines-1), 1.0) *
+            matrix);
+
         locator->setDefinedInFile(true);
 
         setLocator(locator.get());    
@@ -167,7 +174,10 @@ void DataSetLayer::setUpLocator()
                     0.0,                0.0,                1.0,    0.0,
                     adfDstGeoTransform[0],    adfDstGeoTransform[3],    0.0,    1.0);
 
-        locator->setTransform(matrix);
+        locator->setTransform(
+            osg::Matrixd::scale(static_cast<double>(nPixels-1), static_cast<double>(nLines-1), 1.0) *
+            matrix);
+            
         locator->setDefinedInFile(true);
 
         setLocator(locator.get());    

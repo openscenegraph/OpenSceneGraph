@@ -77,7 +77,7 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
 
 
         /** Set the transformation from local coordinates to model coordinates.*/
-        void setTransform(osg::Matrixd& transform) { _transform = transform; _inverse.invert(_transform); }
+        void setTransform(const osg::Matrixd& transform) { _transform = transform; _inverse.invert(_transform); }
 
         /** Set the transformation from local coordinates to model coordinates.*/
         const osg::Matrixd& getTransform() const { return _transform; }

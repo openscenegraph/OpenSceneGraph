@@ -46,6 +46,12 @@ void Output::init()
     _pathNameHint = AS_IS;
     _outputTextureFiles = false;
     _textureFileNameNumber = 0;
+    _writeOutDefaultValues = false;
+}
+
+void Output::setOptions(const ReaderWriter::Options* options)
+{
+    _options = options;
 }
 
 void Output::open(const char *name)

@@ -112,9 +112,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __C5_osg_EllipsoidModel_P1__getEllipsoidModel,
 	          "Get the const EllipsoidModel. ",
 	          "");
-	I_Method1(void, setTransform, IN, osg::Matrixd &, transform,
+	I_Method1(void, setTransform, IN, const osg::Matrixd &, transform,
 	          Properties::NON_VIRTUAL,
-	          __void__setTransform__osg_Matrixd_R1,
+	          __void__setTransform__C5_osg_Matrixd_R1,
 	          "Set the transformation from local coordinates to model coordinates. ",
 	          "");
 	I_Method0(const osg::Matrixd &, getTransform,
@@ -176,8 +176,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	I_SimpleProperty(const std::string &, Format, 
 	                 __C5_std_string_R1__getFormat, 
 	                 __void__setFormat__C5_std_string_R1);
-	I_SimpleProperty(osg::Matrixd &, Transform, 
-	                 0, 
-	                 __void__setTransform__osg_Matrixd_R1);
+	I_SimpleProperty(const osg::Matrixd &, Transform, 
+	                 __C5_osg_Matrixd_R1__getTransform, 
+	                 __void__setTransform__C5_osg_Matrixd_R1);
 END_REFLECTOR
 

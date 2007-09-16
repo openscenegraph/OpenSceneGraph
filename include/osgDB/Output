@@ -36,8 +36,11 @@ class OSGDB_EXPORT Output : public std::ofstream
         virtual ~Output();
 
        
-        void setOptions(const ReaderWriter::Options* options) { _options = options; }
+        void setOptions(const ReaderWriter::Options* options);
         const ReaderWriter::Options* getOptions() const { return _options.get(); }
+
+        void setWriteOutDefaultValues(bool flag) { _writeOutDefaultValues = flag; }
+        bool getWriteOutDefaultValues() const { return _writeOutDefaultValues; }
 
         void open(const char *name);
         
@@ -111,6 +114,7 @@ class OSGDB_EXPORT Output : public std::ofstream
         bool _outputTextureFiles;
         unsigned int _textureFileNameNumber;
 
+        bool _writeOutDefaultValues;
 };
 
 }

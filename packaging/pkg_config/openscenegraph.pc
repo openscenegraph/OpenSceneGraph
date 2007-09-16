@@ -1,0 +1,14 @@
+# pkg-config source file
+
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: openscenegraph
+Description: 3D scenegraph
+Version: 2.1.10
+Requires: openthreads
+Conflicts:
+Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgParticle -losgSim -losgText -losgUtil -losgTerrain -losgManipulator -losgViewer
+Cflags: -I${includedir}

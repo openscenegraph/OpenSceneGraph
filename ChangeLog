@@ -1,3 +1,63 @@
+2007-09-13 11:00 +0000 [r7416]  robert:
+
+	* Fix for build error during aggressive warning build
+
+2007-09-13 10:42 +0000 [r7415]  robert:
+
+	* Fixed warning in wrappers
+
+2007-09-13 10:38 +0000 [r7414]  robert:
+
+	* Fixed warnigns
+
+2007-09-13 10:33 +0000 [r7412-7413]  robert:
+
+	* Updated wrappers and READEME
+
+	* From Paul Martsz, changed the Texture clamping mode to
+	  CLAMP_TO_EDGE
+
+2007-09-13 10:21 +0000 [r7410-7411]  robert:
+
+	* From Blake Williams, warning fixes
+
+	* Add static_cast to fix warning.
+
+2007-09-13 10:16 +0000 [r7408-7409]  robert:
+
+	* Removed unncessary typedefs
+
+	* Fixed warnings of casting void* by refactoring the type and
+	  extensiosn setup.
+
+2007-09-13 10:10 +0000 [r7407]  robert:
+
+	* Fixed uint/int comparison warning.
+
+2007-09-13 09:30 +0000 [r7406]  robert:
+
+	* Created two PixelBufferX11::closeImplementation() one the real
+	  implementation and a second non op one for GLX <1.3.
+
+2007-09-12 17:01 +0000 [r7404-7405]  robert:
+
+	* Added preliminary handling of cases where GLX version < 1.3
+
+	* Removed debug messages
+
+2007-09-12 16:28 +0000 [r7403]  robert:
+
+	* Moved the linking of OpenThreads from osgversion/CMakeLists.txt
+	  into applications/CMakeLists.txt
+
+2007-09-12 16:20 +0000 [r7402]  robert:
+
+	* Rejigged the casting to avoid warnings under Windows
+
+2007-09-12 10:43 +0000 [r7400]  robert:
+
+	* Updated version, ChangeLog and AUTHORS file for 2.1.10 release
+
 2007-09-12 10:04 +0000 [r7399]  robert:
 
 	* From Jan Peciva, build fix

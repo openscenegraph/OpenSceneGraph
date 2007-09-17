@@ -1,4 +1,4 @@
-OpenSceneGraph Library 2.1.10
+OpenSceneGraph Library 2.1.11
 
 278 Contributors:
 
@@ -11,8 +11,8 @@ Mike Weiblen
 Eric Wing
 Brede Johansen
 Geoff Michel
-Farshid Lashkari
 Paul Martz
+Farshid Lashkari
 Stephan Huber
 Bob Kuehne
 Martin Lavery
@@ -116,6 +116,7 @@ Donn Mielcarek
 Domenico Mangieri
 Daniel Larimer
 Charles Cole
+Blake Williams
 Antoine Hue
 Ali Botorabi
 Zach Deedler
@@ -154,7 +155,6 @@ Edgar Ellis
 David Ergo
 Daniel Trstenjak
 Csaba Halasz
-Blake Williams
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel

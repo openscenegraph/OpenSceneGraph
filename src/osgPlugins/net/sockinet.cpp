@@ -67,7 +67,7 @@ extern "C" {
 #endif
 
 // need add throw() under Linux when compile with aggressive warning 
-void    herror(const char*) throw();
+// void herror(const char*) throw();
 
 sockinetaddr::sockinetaddr () 
 {

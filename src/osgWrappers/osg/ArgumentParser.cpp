@@ -232,6 +232,10 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	                __bool__isNumber__C5_char_P1_S,
 	                "Return true if specified parameter is a number. ",
 	                "");
+	I_StaticMethod1(bool, isBool, IN, const char *, str,
+	                __bool__isBool__C5_char_P1_S,
+	                "Return true if specified parameter is a bool. ",
+	                "");
 	I_SimpleProperty(std::string, ApplicationName, 
 	                 __std_string__getApplicationName, 
 	                 0);
@@ -245,6 +249,7 @@ END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::Parameter::ParameterType)
 	I_DeclaringFile("osg/ArgumentParser");
+	I_EnumLabel(osg::ArgumentParser::Parameter::BOOL_PARAMETER);
 	I_EnumLabel(osg::ArgumentParser::Parameter::FLOAT_PARAMETER);
 	I_EnumLabel(osg::ArgumentParser::Parameter::DOUBLE_PARAMETER);
 	I_EnumLabel(osg::ArgumentParser::Parameter::INT_PARAMETER);
@@ -254,6 +259,11 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArgumentParser::Parameter)
 	I_DeclaringFile("osg/ArgumentParser");
+	I_Constructor1(IN, bool &, value,
+	               Properties::NON_EXPLICIT,
+	               ____Parameter__bool_R1,
+	               "",
+	               "");
 	I_Constructor1(IN, float &, value,
 	               Properties::NON_EXPLICIT,
 	               ____Parameter__float_R1,

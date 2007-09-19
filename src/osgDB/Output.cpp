@@ -22,6 +22,8 @@
 using namespace std;
 using namespace osgDB;
 
+static osg::ApplicationUsageProxy Output_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WRITE_OUT_DEFAULT_VALUES", "ON | OFF");
+
 Output::Output()
 {
     init();
@@ -47,6 +49,12 @@ void Output::init()
     _outputTextureFiles = false;
     _textureFileNameNumber = 0;
     _writeOutDefaultValues = false;
+
+    const char* env = getenv("OSG_WRITE_OUT_DEFAULT_VALUES");
+    if (env)
+    {
+        _writeOutDefaultValues = strcmp(env,"ON")==0;
+    }
 }
 
 void Output::setOptions(const ReaderWriter::Options* options)

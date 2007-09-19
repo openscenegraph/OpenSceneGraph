@@ -35,6 +35,15 @@ bool ArgumentParser::isString(const char* str)
     //return !isOption(str);
 }
 
+bool ArgumentParser::isBool(const char* str)
+{
+    if (!str) return false;
+
+    return (strcmp(str,"True")==0 || strcmp(str,"true")==0 || strcmp(str,"TRUE")==0 ||
+            strcmp(str,"False")==0 || strcmp(str,"false")==0 || strcmp(str,"FALSE")==0 ||
+            strcmp(str,"0")==0 || strcmp(str,"1")==0);
+}
+
 bool ArgumentParser::isNumber(const char* str)
 {
     if (!str) return false;
@@ -133,6 +142,7 @@ bool ArgumentParser::Parameter::valid(const char* str) const
 {
     switch(_type)
     {
+    case Parameter::BOOL_PARAMETER:         return isBool(str); break;
     case Parameter::FLOAT_PARAMETER:        return isNumber(str); break;
     case Parameter::DOUBLE_PARAMETER:       return isNumber(str); break;
     case Parameter::INT_PARAMETER:          return isNumber(str); break;
@@ -148,6 +158,11 @@ bool ArgumentParser::Parameter::assign(const char* str)
     {
         switch(_type)
         {
+        case Parameter::BOOL_PARAMETER:
+        {
+            *_value._bool =  (strcmp(str,"True")==0 || strcmp(str,"true")==0 || strcmp(str,"TRUE")==0);
+            break;
+        }
         case Parameter::FLOAT_PARAMETER:        *_value._float = atof(str); break;
         case Parameter::DOUBLE_PARAMETER:       *_value._double = atof(str); break;
         case Parameter::INT_PARAMETER:          *_value._int = atoi(str); break;

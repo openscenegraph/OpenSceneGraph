@@ -33,6 +33,7 @@ class OSG_EXPORT ArgumentParser
         public:
             enum ParameterType
             {
+                BOOL_PARAMETER,
                 FLOAT_PARAMETER,
                 DOUBLE_PARAMETER,
                 INT_PARAMETER,
@@ -42,12 +43,15 @@ class OSG_EXPORT ArgumentParser
         
             union ValueUnion
             {
+                bool*           _bool;
                 float*          _float;
                 double*         _double;
                 int*            _int;
                 unsigned int*   _uint;
                 std::string*    _string;
             };
+
+            Parameter(bool& value) { _type = BOOL_PARAMETER; _value._bool = &value; }
 
             Parameter(float& value) { _type = FLOAT_PARAMETER; _value._float = &value; }
                 
@@ -82,6 +86,9 @@ class OSG_EXPORT ArgumentParser
         
         /** Return true if specified parameter is a number. */
         static bool isNumber(const char* str);
+
+        /** Return true if specified parameter is a bool. */
+        static bool isBool(const char* str);
 
     public:
 

@@ -18,6 +18,7 @@
 #include <osg/Node>
 #include <osg/Drawable>
 #include <osg/StateAttribute>
+#include <osg/ArgumentParser>
 
 #include <osgDB/FieldReaderIterator>
 #include <osgDB/ReaderWriter>
@@ -56,6 +57,18 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
         
         virtual osg::Object*         getObjectForUniqueID(const std::string& uniqueID);
         virtual void                 registerUniqueIDForObject(const std::string& uniqueID,osg::Object* obj);
+
+        typedef osg::ArgumentParser::Parameter Parameter;
+
+        bool read(const char* str);
+        bool read(const char* str, Parameter value1);
+        bool read(const char* str, Parameter value1, Parameter value2);
+        bool read(const char* str, Parameter value1, Parameter value2, Parameter value3);
+        bool read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4);
+        bool read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5);
+        bool read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6);
+        bool read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7);
+        bool read(const char* str, Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7, Parameter value8);
 
     private:
     

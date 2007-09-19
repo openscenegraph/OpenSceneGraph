@@ -40,6 +40,7 @@
 #include <osgShadow/ShadowTexture>
 #include <osgShadow/ShadowMap>
 #include <osgShadow/SoftShadowMap>
+#include <osgShadow/ParallelSplitShadowMap>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -494,6 +495,9 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--ssm", "Select SoftShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
 //    arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--mapcount", "ParallelSplitShadowMap texture count.");//ADEGLI
+
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
     arguments.getApplicationUsage()->addCommandLineOption("-3", "Use test model three.");
@@ -613,13 +617,13 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::ShadowTexture> st = new osgShadow::ShadowTexture;
         shadowedScene->setShadowTechnique(st.get());
     }
-#if 0    
     else if (arguments.read("--pssm"))
     {
-        osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap;
+        int mapcount = 3;
+        while (arguments.read("--mapcount", mapcount));
+        osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap(NULL,mapcount);
         shadowedScene->setShadowTechnique(pssm.get());
     }
-#endif    
     else if (arguments.read("--ssm"))
     {
         osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
@@ -687,6 +691,10 @@ int main(int argc, char** argv)
                 lightpos.set(sinf(t),cosf(t),1.0f,0.0f);
             }
             ls->getLight()->setPosition(lightpos);
+            
+            osg::Vec3f lightDir(-lightpos.x(),-lightpos.y(),-lightpos.z());
+            lightDir.normalize();
+            ls->getLight()->setDirection(lightDir);
         }
 
         viewer.frame();

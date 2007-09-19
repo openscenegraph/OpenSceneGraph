@@ -16,6 +16,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ShadowVolume
     ${HEADER_PATH}/ShadowedScene
     ${HEADER_PATH}/SoftShadowMap
+    ${HEADER_PATH}/ParallelSplitShadowMap
     ${HEADER_PATH}/Version
 )
 
@@ -30,6 +31,7 @@ ADD_LIBRARY(${LIB_NAME}
     ShadowVolume.cpp
     ShadowedScene.cpp
     SoftShadowMap.cpp
+    ParallelSplitShadowMap.cpp
     Version.cpp
 )
 

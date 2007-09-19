@@ -1,0 +1,107 @@
+/* OpenSceneGraph example, osgshadow.
+*
+*  Permission is hereby granted, free of charge, to any person obtaining a copy
+*  of this software and associated documentation files (the "Software"), to deal
+*  in the Software without restriction, including without limitation the rights
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*  copies of the Software, and to permit persons to whom the Software is
+*  furnished to do so, subject to the following conditions:
+*
+*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*  THE SOFTWARE.
+*/
+
+/* ParallelSplitShadowMap written by Adrian Egli */
+
+#ifndef OSGSHADOW_ParallelSplitShadowMap 
+#define OSGSHADOW_ParallelSplitShadowMap 1
+
+#include <osg/Camera>
+#include <osg/Material>
+
+#include <osgShadow/ShadowTechnique>
+ 
+namespace osgShadow {
+class ParallelSplitShadowMap :  public ShadowTechnique 
+{
+    public:
+        ParallelSplitShadowMap(osg::Geode** debugGroup=NULL, int icountplanes=3);
+
+        ParallelSplitShadowMap(const ParallelSplitShadowMap& es, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgShadow, ParallelSplitShadowMap);
+
+
+        /** initialize the ShadowedScene and local cached data structures.*/
+        virtual void init();
+
+        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
+        virtual void update(osg::NodeVisitor& nv);
+
+        /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
+        virtual void cull(osgUtil::CullVisitor& cv);
+
+        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        virtual void cleanSceneGraph();
+
+    protected :
+
+        virtual ~ParallelSplitShadowMap() {}
+
+        
+        struct PSSMShadowSplitTexture {
+            // RTT
+            osg::ref_ptr<osg::Camera>       _camera;
+            osg::ref_ptr<osg::TexGen>       _texgen;
+            osg::ref_ptr<osg::Texture2D>    _texture;
+            osg::ref_ptr<osg::StateSet>     _stateset;
+            unsigned int                    _textureUnit;
+            osg::Vec2d                      _ambientBias;
+
+
+            osg::ref_ptr<osg::Camera>       _debug_camera;
+            osg::ref_ptr<osg::Texture2D>    _debug_texture;
+            osg::ref_ptr<osg::StateSet>     _debug_stateset;
+            unsigned int                    _debug_textureUnit;
+
+
+            
+            // Light (SUN)
+            osg::Vec3d                        _lightCameraSource;
+            osg::Vec3d                        _lightCameraTarget;
+            osg::Vec3d                        _frustumSplitCenter;
+            osg::Vec3d                        _lightDirection;
+            double                            _lightNear;
+            double                            _lightFar;
+
+            osg::Matrix                        _cameraView;
+            osg::Matrix                        _cameraProj;
+
+            unsigned int                    _splitID;
+            unsigned int                    _resolution;
+
+            osg::Uniform*                    _farDistanceSplit;
+
+        };
+        typedef std::map<unsigned int,PSSMShadowSplitTexture> PSSMShadowSplitTextureMap;
+        PSSMShadowSplitTextureMap _PSSMShadowSplitTextureMap;
+
+
+    private:
+        void calculateFrustumCorners(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners);
+        void calculateLightInitalPosition(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners);
+        void calculateLightNearFarFormFrustum(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners);
+        void calculateLightViewProjectionFormFrustum(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners);
+
+        osg::Geode** _displayTexturesGroupingNode;
+
+        unsigned int _textureUnitOffset;
+
+};
+}
+#endif

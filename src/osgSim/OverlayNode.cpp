@@ -1091,12 +1091,6 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         overlayData._mainSubgraphProgram = new osg::Program;
 
         // get shaders from source
-        std::string vertexShaderFile = osgDB::findDataFile("shaders/overlay_perspective_main.vert");
-        if (!vertexShaderFile.empty())
-        {
-            overlayData._mainSubgraphProgram->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
-        }
-
         std::string fragmentShaderFile = osgDB::findDataFile("shaders/overlay_perspective_main.frag");
         if (!fragmentShaderFile.empty())
         {

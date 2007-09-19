@@ -33,6 +33,15 @@ struct dereference_less
     }
 };
 
+template<class T>
+bool dereference_check_less(const T& lhs,const T& rhs)
+{
+    if (lhs==rhs) return false;
+    if (!lhs) return true;
+    if (!rhs) return false;
+    return *lhs < *rhs;
+}
+
 struct dereference_clear
 {
     template<class T>
@@ -238,12 +247,12 @@ public:
 
     void copyBackToGeometry();
 
-    typedef std::vector<float>                                                                           FloatList;
-    typedef std::set<osg::ref_ptr<Edge>,dereference_less >                          EdgeSet;
-    typedef std::set< osg::ref_ptr<Point>,dereference_less >                       PointSet;
-    typedef std::vector< osg::ref_ptr<Point> >                                                           PointList;
-    typedef std::list< osg::ref_ptr<Triangle> >                                                          TriangleList;
-    typedef std::set< osg::ref_ptr<Triangle> >                                                           TriangleSet;
+    typedef std::vector<float>                                                  FloatList;
+    typedef std::set<osg::ref_ptr<Edge>,dereference_less >                      EdgeSet;
+    typedef std::set< osg::ref_ptr<Point>,dereference_less >                    PointSet;
+    typedef std::vector< osg::ref_ptr<Point> >                                  PointList;
+    typedef std::list< osg::ref_ptr<Triangle> >                                 TriangleList;
+    typedef std::set< osg::ref_ptr<Triangle> >                                  TriangleSet;
     typedef std::map< osg::ref_ptr<Triangle>, unsigned int, dereference_less >  TriangleMap;
 
     struct Point : public osg::Referenced
@@ -321,11 +330,11 @@ public:
             // both error metrics are computed
             if (getErrorMetric()<rhs.getErrorMetric()) return true;
             else if (rhs.getErrorMetric()<getErrorMetric()) return false;
-            
-            if (_p1 < rhs._p1) return true;
-            else if (rhs._p1 < _p1) return false;
 
-            return (_p2 < rhs._p2);
+            if (dereference_check_less(_p1,rhs._p1)) return true;
+            if (dereference_check_less(rhs._p1,_p1)) return false;
+            
+            return dereference_check_less(_p2,rhs._p2);
         }
         
         bool operator == ( const Edge& rhs) const
@@ -406,20 +415,20 @@ public:
 
         inline bool operator < (const Triangle& rhs) const
         {
-            if (_p1 < rhs._p1) return true;
-            if (rhs._p1 < _p1) return false;
+            if (dereference_check_less(_p1,rhs._p1)) return true;
+            if (dereference_check_less(rhs._p1,_p1)) return false;
 
 
-            const Point* lhs_lower = _p2<_p3 ? _p2.get() : _p3.get(); 
-            const Point* rhs_lower = rhs._p2<rhs._p3 ? rhs._p2.get() : rhs._p3.get(); 
+            const Point* lhs_lower = dereference_check_less(_p2,_p3) ? _p2.get() : _p3.get(); 
+            const Point* rhs_lower = dereference_check_less(rhs._p2,rhs._p3) ? rhs._p2.get() : rhs._p3.get(); 
 
-            if (lhs_lower < rhs_lower) return true;
-            if (rhs_lower < lhs_lower) return false;
+            if (dereference_check_less(lhs_lower,rhs_lower)) return true;
+            if (dereference_check_less(rhs_lower,lhs_lower)) return false;
 
-            const Point* lhs_upper = _p2<_p3 ? _p3.get() : _p2.get(); 
-            const Point* rhs_upper = rhs._p2<rhs._p3 ? rhs._p3.get() : rhs._p2.get(); 
+            const Point* lhs_upper = dereference_check_less(_p2,_p3) ? _p3.get() : _p2.get(); 
+            const Point* rhs_upper = dereference_check_less(rhs._p2,rhs._p3) ? rhs._p3.get() : rhs._p2.get(); 
 
-            return (lhs_upper < rhs_upper);
+            return dereference_check_less(lhs_upper,rhs_upper);
         }
 
 
@@ -431,10 +440,9 @@ public:
             points[2] = p3;
 
             // find the lowest value point in the list.
-            unsigned int lowest = 0;        
-            if (points[1]<points[lowest]) lowest = 1;
-            if (points[2]<points[lowest]) lowest = 2;
-
+            unsigned int lowest = 0;
+            if (dereference_check_less(points[1],points[lowest])) lowest = 1;
+            if (dereference_check_less(points[2],points[lowest])) lowest = 2;
 
             _p1 = points[lowest];
             _p2 = points[(lowest+1)%3];
@@ -509,10 +517,9 @@ public:
         points[2] = addPoint(triangle, p3);
         
         // find the lowest value point in the list.
-        unsigned int lowest = 0;        
-        if (points[1]<points[lowest]) lowest = 1;
-        if (points[2]<points[lowest]) lowest = 2;
-        
+        unsigned int lowest = 0;
+        if (dereference_check_less(points[1],points[lowest])) lowest = 1;
+        if (dereference_check_less(points[2],points[lowest])) lowest = 2;
 
         triangle->_p1 = points[lowest];
         triangle->_p2 = points[(lowest+1)%3];
@@ -549,9 +556,8 @@ public:
         
         // find the lowest value point in the list.
         unsigned int lowest = 0;        
-        if (points[1]<points[lowest]) lowest = 1;
-        if (points[2]<points[lowest]) lowest = 2;
-        
+        if (dereference_check_less(points[1],points[lowest])) lowest = 1;
+        if (dereference_check_less(points[2],points[lowest])) lowest = 2;
 
         triangle->_p1 = points[lowest];
         triangle->_p2 = points[(lowest+1)%3];
@@ -677,7 +683,7 @@ public:
     {
         // osg::notify(osg::NOTICE)<<"        addEdge("<<p1<<","<<p2<<")"<<std::endl;
         osg::ref_ptr<Edge> edge = new Edge;
-        if (p1<p2)
+        if (dereference_check_less(p1, p2))
         {
             edge->_p1 = p1;
             edge->_p2 = p2;
@@ -740,7 +746,7 @@ public:
             if (edge->_p1==pOriginal) edge->_p1=pNew;
             if (edge->_p2==pOriginal) edge->_p2=pNew;
 
-            if (edge->_p2 < edge->_p1)
+            if (dereference_check_less(edge->_p2,edge->_p1))
             {
                 edge->_p1.swap(edge->_p2);
             }
@@ -1653,10 +1659,19 @@ void EdgeCollapse::copyBackToGeometry()
             _geometry->getVertexAttribArray(vi)->accept(copyArrayToPoints);
     }
 
-    osg::DrawElementsUInt* primitives = new osg::DrawElementsUInt(GL_TRIANGLES,_triangleSet.size()*3);
+    typedef std::set< osg::ref_ptr<Triangle>, dereference_less >    TrianglesSorted;
+    TrianglesSorted trianglesSorted;
+    for(TriangleSet::iterator itr = _triangleSet.begin();
+        itr != _triangleSet.end();
+        ++itr)
+    {
+        trianglesSorted.insert(*itr);
+    }
+
+    osg::DrawElementsUInt* primitives = new osg::DrawElementsUInt(GL_TRIANGLES,trianglesSorted.size()*3);
     unsigned int pos = 0;
-    for(TriangleSet::iterator titr=_triangleSet.begin();
-        titr!=_triangleSet.end();
+    for(TrianglesSorted::iterator titr=trianglesSorted.begin();
+        titr!=trianglesSorted.end();
         ++titr)
     {
         const Triangle* triangle = (*titr).get();

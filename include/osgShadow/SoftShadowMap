@@ -40,6 +40,27 @@ class OSGSHADOW_EXPORT SoftShadowMap : public ShadowTechnique
         /** Set the values for the ambient bias the shader will use.*/
         void setAmbientBias(const osg::Vec2& ambientBias );
 
+
+        /** Set the resolution of the rendertarget texture used for shadow generation */
+        void setTextureSize(int width, int height) { setTextureSize(osg::Vec2s(width, height)); }
+
+        /** Set the resolution of the rendertarget texture used for shadow generation */
+        void setTextureSize(const osg::Vec2s&);
+
+        /** Get the resolution of the rendertarget texture used for shadow generation */
+        const osg::Vec2s& getTextureSize() const { return _textureSize; }
+
+
+        /** Add a small bias to the z-value when calculating the MVPT matrix, this can reduce 
+         *  shadow acne problem. 
+         *  Suitable values are 0-0.005 
+         *  Default is 0. */
+        void setBias(float bias) { _bias = bias; }
+
+        /** Return the bias value set used when calculating the MVPT matrix */
+        float getBias() const { return _bias; }
+
+
         /** Set the values for width of the soft penumbra the shader will use.
          *  Zero is for hard shadow (no penumbra). 0.01 is already very soft penumbra.
          *  Default is 0.005.*/
@@ -87,6 +108,9 @@ class OSGSHADOW_EXPORT SoftShadowMap : public ShadowTechnique
         osg::Vec2                       _ambientBias;
         float                           _softnesswidth;
         float                           _jitteringscale;
+        float                           _bias;        
+        osg::Vec2s                      _textureSize;
+
 };
 
 }

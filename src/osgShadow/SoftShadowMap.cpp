@@ -157,7 +157,9 @@ SoftShadowMap::SoftShadowMap():
     _textureUnit(1),
     _ambientBias(0.5f,0.5f),
     _softnesswidth(0.005f),
-    _jitteringscale(32.f)
+    _jitteringscale(32.f),
+    _bias(0.0f),
+    _textureSize(1024, 1024)
 {
 }
 
@@ -166,7 +168,9 @@ SoftShadowMap::SoftShadowMap(const SoftShadowMap& copy, const osg::CopyOp& copyo
     _textureUnit(copy._textureUnit),
     _ambientBias(copy._ambientBias),
     _softnesswidth(copy._softnesswidth),
-    _jitteringscale(copy._jitteringscale)
+    _jitteringscale(copy._jitteringscale),
+    _bias(copy._bias),
+    _textureSize(copy._textureSize)
 {
 }
 
@@ -190,16 +194,24 @@ void SoftShadowMap::setJitteringScale(const float jitteringscale )
     _jitteringscale = jitteringscale;
 }
 
+void SoftShadowMap::setTextureSize(const osg::Vec2s& texsize)
+{ 
+    _textureSize = texsize; 
+
+    if (_texture.valid())
+    {
+        _texture->setTextureSize(_textureSize[0], _textureSize[1]);
+        _camera->setViewport(0,0,_textureSize[0], _textureSize[1]);
+    }
+}
+
 
 void SoftShadowMap::init()
 {
     if (!_shadowedScene) return;
 
-    unsigned int tex_width = 1024;
-    unsigned int tex_height = 1024;
-
     _texture = new osg::Texture2D;
-    _texture->setTextureSize(tex_width, tex_height);
+    _texture->setTextureSize(_textureSize[0], _textureSize[1]);
     _texture->setInternalFormat(GL_DEPTH_COMPONENT);
     _texture->setSourceType(GL_UNSIGNED_INT);
 
@@ -228,7 +240,7 @@ void SoftShadowMap::init()
         _camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
 
         // set viewport
-        _camera->setViewport(0,0,tex_width,tex_height);
+        _camera->setViewport(0,0,_textureSize[0],_textureSize[1]);
 
         // set the camera to render before the main camera.
         _camera->setRenderOrder(osg::Camera::PRE_RENDER);
@@ -410,7 +422,7 @@ void SoftShadowMap::cull(osgUtil::CullVisitor& cv)
         osg::Matrix MVPT = _camera->getViewMatrix() *
                            _camera->getProjectionMatrix() *
                            osg::Matrix::translate(1.0,1.0,1.0) *
-                           osg::Matrix::scale(0.5f,0.5f,0.5f);
+                           osg::Matrix::scale(0.5,0.5,0.5+_bias);
 
         _texgen->setMode(osg::TexGen::EYE_LINEAR);
         _texgen->setPlanesFromMatrix(MVPT);
@@ -460,45 +472,45 @@ void SoftShadowMap::initJittering(osg::StateSet *ss)
 
     for ( unsigned int s = 0; s < size; ++s )
     {
-      for ( unsigned int t = 0; t < size; ++t )
-      {
-        float v[4], d[4];
-
-        for ( unsigned int r = 0; r < R; ++r )
+        for ( unsigned int t = 0; t < size; ++t )
         {
-          const int x = r % ( gridW / 2 );
-          const int y = ( gridH - 1 ) - ( r / (gridW / 2) );
+            float v[4], d[4];
 
-          // Generate points on a  regular gridW x gridH rectangular
-          // grid.   We  multiply  x   by  2  because,  we  treat  2
-          // consecutive x  each loop iteration.  Add 0.5f  to be in
-          // the center of the pixel. x, y belongs to [ 0.0, 1.0 ].
-          v[0] = float( x * 2     + 0.5f ) / gridW;
-          v[1] = float( y         + 0.5f ) / gridH;
-          v[2] = float( x * 2 + 1 + 0.5f ) / gridW;
-          v[3] = v[1];
+            for ( unsigned int r = 0; r < R; ++r )
+            {
+                const int x = r % ( gridW / 2 );
+                const int y = ( gridH - 1 ) - ( r / (gridW / 2) );
 
-          // Jitter positions. ( 0.5f / w ) == ( 1.0f / 2*w )
-          v[0] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridW );
-          v[1] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridH );
-          v[2] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridW );
-          v[3] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridH );
+                // Generate points on a  regular gridW x gridH rectangular
+                // grid.   We  multiply  x   by  2  because,  we  treat  2
+                // consecutive x  each loop iteration.  Add 0.5f  to be in
+                // the center of the pixel. x, y belongs to [ 0.0, 1.0 ].
+                v[0] = float( x * 2     + 0.5f ) / gridW;
+                v[1] = float( y         + 0.5f ) / gridH;
+                v[2] = float( x * 2 + 1 + 0.5f ) / gridW;
+                v[3] = v[1];
 
-          // Warp to disk; values in [-1,1]
-          d[0] = sqrtf( v[1] ) * cosf( 2.f * 3.1415926f * v[0] );
-          d[1] = sqrtf( v[1] ) * sinf( 2.f * 3.1415926f * v[0] );
-          d[2] = sqrtf( v[3] ) * cosf( 2.f * 3.1415926f * v[2] );
-          d[3] = sqrtf( v[3] ) * sinf( 2.f * 3.1415926f * v[2] );
+                // Jitter positions. ( 0.5f / w ) == ( 1.0f / 2*w )
+                v[0] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridW );
+                v[1] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridH );
+                v[2] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridW );
+                v[3] += ((float)rand() * 2.f / RAND_MAX - 1.f) * ( 0.5f / gridH );
 
-          // store d into unsigned values [0,255]
-          const unsigned int tmp = ( (r * size * size) + (t * size) + s ) * 4;
-          data3D[ tmp + 0 ] = (unsigned char)( ( 1.f + d[0] ) * 127  );
-          data3D[ tmp + 1 ] = (unsigned char)( ( 1.f + d[1] ) * 127  );
-          data3D[ tmp + 2 ] = (unsigned char)( ( 1.f + d[2] ) * 127  );
-          data3D[ tmp + 3 ] = (unsigned char)( ( 1.f + d[3] ) * 127  );
+                // Warp to disk; values in [-1,1]
+                d[0] = sqrtf( v[1] ) * cosf( 2.f * 3.1415926f * v[0] );
+                d[1] = sqrtf( v[1] ) * sinf( 2.f * 3.1415926f * v[0] );
+                d[2] = sqrtf( v[3] ) * cosf( 2.f * 3.1415926f * v[2] );
+                d[3] = sqrtf( v[3] ) * sinf( 2.f * 3.1415926f * v[2] );
 
+                // store d into unsigned values [0,255]
+                const unsigned int tmp = ( (r * size * size) + (t * size) + s ) * 4;
+                data3D[ tmp + 0 ] = (unsigned char)( ( 1.f + d[0] ) * 127  );
+                data3D[ tmp + 1 ] = (unsigned char)( ( 1.f + d[1] ) * 127  );
+                data3D[ tmp + 2 ] = (unsigned char)( ( 1.f + d[2] ) * 127  );
+                data3D[ tmp + 3 ] = (unsigned char)( ( 1.f + d[3] ) * 127  );
+
+            }
         }
-      }
     }
 
     // the GPU Gem implementation uses a NV specific internal texture format (GL_SIGNED_RGBA_NV)

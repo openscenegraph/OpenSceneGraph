@@ -14,6 +14,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Vec2>
+#include <osg/Vec2s>
 #include <osgShadow/SoftShadowMap>
 #include <osgUtil/CullVisitor>
 
@@ -75,6 +76,31 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	          __void__setAmbientBias__C5_osg_Vec2_R1,
 	          "Set the values for the ambient bias the shader will use. ",
 	          "");
+	I_Method2(void, setTextureSize, IN, int, width, IN, int, height,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureSize__int__int,
+	          "Set the resolution of the rendertarget texture used for shadow generation. ",
+	          "");
+	I_Method1(void, setTextureSize, IN, const osg::Vec2s &, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureSize__C5_osg_Vec2s_R1,
+	          "Set the resolution of the rendertarget texture used for shadow generation. ",
+	          "");
+	I_Method0(const osg::Vec2s &, getTextureSize,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec2s_R1__getTextureSize,
+	          "Get the resolution of the rendertarget texture used for shadow generation. ",
+	          "");
+	I_Method1(void, setBias, IN, float, bias,
+	          Properties::NON_VIRTUAL,
+	          __void__setBias__float,
+	          "Add a small bias to the z-value when calculating the MVPT matrix, this can reduce shadow acne problem. ",
+	          "Suitable values are 0-0.005 Default is 0. ");
+	I_Method0(float, getBias,
+	          Properties::NON_VIRTUAL,
+	          __float__getBias,
+	          "Return the bias value set used when calculating the MVPT matrix. ",
+	          "");
 	I_Method1(void, setSoftnessWidth, IN, const float, softnesswidth,
 	          Properties::NON_VIRTUAL,
 	          __void__setSoftnessWidth__C5_float,
@@ -129,12 +155,18 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
 	                 __C5_osg_Vec2_R1__getAmbientBias, 
 	                 __void__setAmbientBias__C5_osg_Vec2_R1);
+	I_SimpleProperty(float, Bias, 
+	                 __float__getBias, 
+	                 __void__setBias__float);
 	I_SimpleProperty(const float, JitteringScale, 
 	                 __C5_float__getJitteringScale, 
 	                 __void__setJitteringScale__C5_float);
 	I_SimpleProperty(const float, SoftnessWidth, 
 	                 __C5_float__getSoftnessWidth, 
 	                 __void__setSoftnessWidth__C5_float);
+	I_SimpleProperty(const osg::Vec2s &, TextureSize, 
+	                 __C5_osg_Vec2s_R1__getTextureSize, 
+	                 __void__setTextureSize__C5_osg_Vec2s_R1);
 	I_SimpleProperty(unsigned int, TextureUnit, 
 	                 __unsigned_int__getTextureUnit, 
 	                 __void__setTextureUnit__unsigned_int);

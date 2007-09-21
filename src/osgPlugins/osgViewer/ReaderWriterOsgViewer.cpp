@@ -29,7 +29,7 @@ public:
 
     virtual bool acceptsExtension(const std::string& extension) const
     { 
-        return osgDB::equalCaseInsensitive( extension, "osgViewer" ) || osgDB::equalCaseInsensitive( extension, "view" ) ;
+        return osgDB::equalCaseInsensitive( extension, "osgviewer" ) || osgDB::equalCaseInsensitive( extension, "view" ) ;
     }
 
 

@@ -37,6 +37,13 @@ CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
 {
     constructorInit();
     
+    std::string filename;
+    bool readConfig = false;
+    while (arguments.read("-c",filename))
+    {
+        readConfig = readConfiguration(filename) || readConfig;
+    }
+
     while (arguments.read("--SingleThreaded")) setThreadingModel(SingleThreaded);
     while (arguments.read("--ThreadPerContext")) setThreadingModel(ThreadPerContext);
 
@@ -107,6 +114,11 @@ CompositeViewer::~CompositeViewer()
     }
 
     osg::notify(osg::INFO)<<"finished CompositeViewer::~CompsiteViewer()"<<std::endl;
+}
+
+bool CompositeViewer::readConfiguration(const std::string& filename)
+{
+    osg::notify(osg::NOTICE)<<"CompositeViewer::readConfiguration("<<filename<<")"<<std::endl;
 }
 
 

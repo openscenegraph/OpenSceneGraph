@@ -32,7 +32,14 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         Viewer(osg::ArgumentParser& arguments);
 
+        Viewer(const osgViewer::Viewer& viewer, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
         virtual ~Viewer();
+        
+        META_Object(osgViewer,Viewer);
+
+        /** read the viewer configuration from a configuration file.*/
+        bool readConfiguration(const std::string& filename);
         
         /** Get whether at least of one of this viewers windows are realized.*/
         bool isRealized() const;

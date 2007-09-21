@@ -23,9 +23,66 @@ class OSGReaderWriter : public ReaderWriter
             return equalCaseInsensitive(extension,"osg");
         }
 
-        virtual ReadResult readObject(const std::string& fileName, const Options* opt) const { return readNode(fileName, opt); }
+        virtual ReadResult readObject(const std::string& file, const Options* opt) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+                        
+            if (equalCaseInsensitive(ext,"osgs"))
+            {   
+                std::istringstream fin(osgDB::getNameLessExtension(file));
+                if (fin) return readNode(fin,opt);
+                return ReadResult::ERROR_IN_READING_FILE;
+            }            
+            
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-        virtual ReadResult readObject(std::istream& fin, const Options* opt) const { return readNode(fin, opt); }
+            std::string fileName = osgDB::findDataFile( file, opt );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            // code for setting up the database path so that internally referenced file are searched for on relative paths. 
+            osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+            local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+            std::ifstream fin(fileName.c_str());
+            if (fin)
+            {
+                return readObject(fin, local_opt.get());
+            }
+            return 0L;
+        }               
+
+        virtual ReadResult readObject(std::istream& fin, const Options* options) const
+        {
+            fin.imbue(std::locale::classic());
+
+            Input fr;
+            fr.attach(&fin);
+            fr.setOptions(options);
+            
+            typedef std::vector<osg::Object*> ObjectList;
+            ObjectList objectList;
+
+            // load all nodes in file, placing them in a group.
+            while(!fr.eof())
+            {
+                Object *object = fr.readObject();
+                if (object) objectList.push_back(object);
+                else fr.advanceOverCurrentFieldOrBlock();
+            }
+
+            if  (objectList.empty())
+            {
+                return ReadResult("No data loaded");
+            }
+            else if (objectList.size()==1)
+            {
+                return objectList.front();
+            }
+            else
+            {
+                return objectList.front();
+            }
+        }
 
         virtual ReadResult readNode(const std::string& file, const Options* opt) const
         {

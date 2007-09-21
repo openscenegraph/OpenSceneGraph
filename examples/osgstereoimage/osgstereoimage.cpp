@@ -45,6 +45,8 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+    texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+    texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
     texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(image);
 
@@ -277,22 +279,22 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 _previousTime = ea.getTime();
                 return true;
             }
-            else if (ea.getKey()=='n')
+            else if ((ea.getKey()=='n') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_Right)) 
             {
                 nextSlide();
                 return true;
             }
-            else if (ea.getKey()=='p')
+            else if ((ea.getKey()=='p') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_Left)) 
             {
                 previousSlide();
                 return true;
             }
-            else if (ea.getKey()=='w')
+            else if ((ea.getKey()=='w') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Add)) 
             {
                 scaleImage(0.99f);
                 return true;
             }
-            else if (ea.getKey()=='s')
+            else if ((ea.getKey()=='s') || (ea.getKey()==osgGA::GUIEventAdapter::KEY_KP_Subtract)) 
             {
                 scaleImage(1.01f);
                 return true;
@@ -462,6 +464,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("--disk","Keep images on disk");
+    arguments.getApplicationUsage()->addCommandLineOption("-files <filename>","Load filenames from a file");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--SingleThreaded","Select SingleThreaded threading model for viewer.");
     arguments.getApplicationUsage()->addCommandLineOption("--CullDrawThreadPerContext","Select CullDrawThreadPerContext threading model for viewer.");
@@ -492,6 +495,19 @@ int main( int argc, char **argv )
     bool onDisk=false;
     while (arguments.read("--disk")) { onDisk=true;}
 
+    std::string filename="";
+    FileList fileList;
+    // extract the filenames from the a file, one filename per line.
+    while (arguments.read("-files",filename)) {
+        std::ifstream is(filename.c_str());
+        if (is) {
+                std::string line;
+                while (std::getline(is,line,'\n')) fileList.push_back(line);
+                is.close();
+            }
+    
+    }
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -518,7 +534,6 @@ int main( int argc, char **argv )
     }
     
     // extract the filenames from the arguments list.
-    FileList fileList;
     for(int pos=1;pos<arguments.argc();++pos)
     {
         if (arguments.isString(pos)) fileList.push_back(arguments[pos]);

@@ -119,6 +119,7 @@ CompositeViewer::~CompositeViewer()
 bool CompositeViewer::readConfiguration(const std::string& filename)
 {
     osg::notify(osg::NOTICE)<<"CompositeViewer::readConfiguration("<<filename<<")"<<std::endl;
+    return false;
 }
 
 

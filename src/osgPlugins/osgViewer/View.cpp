@@ -60,6 +60,8 @@ bool View_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgViewer::View& view = static_cast<const osgViewer::View&>(obj);
 
+    osg::notify(osg::NOTICE)<<"View_writeLocalData"<<std::endl;
+
     if (view.getCamera())
     {
         fw.writeObject(*view.getCamera());

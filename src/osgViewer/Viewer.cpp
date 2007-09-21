@@ -23,11 +23,18 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/Renderer>
+#include <osgViewer/CompositeViewer>
 
 
 #include <sstream>
 
 using namespace osgViewer;
+
+//static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CONFIG_FILE <filename>","Specify a viewer configuration file to load by default.");
+static osg::ApplicationUsageProxy Viewer_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
+static osg::ApplicationUsageProxy Viewer_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN <value>","Set the default screen that windows should open up on.");
+static osg::ApplicationUsageProxy Viewer_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WINDOW x y width height","Set the default window dimensions that windows should open up on.");
+
 
 Viewer::Viewer()
 {
@@ -38,6 +45,13 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
 {
     constructorInit();
     
+    std::string filename;
+    bool readConfig = false;
+    while (arguments.read("-c",filename))
+    {
+        readConfig = readConfiguration(filename) || readConfig;
+    }
+
     while (arguments.read("--SingleThreaded")) setThreadingModel(SingleThreaded);
     while (arguments.read("--CullDrawThreadPerContext")) setThreadingModel(CullDrawThreadPerContext);
     while (arguments.read("--DrawThreadPerContext")) setThreadingModel(DrawThreadPerContext);
@@ -100,6 +114,11 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
 
 }
 
+Viewer::Viewer(const osgViewer::Viewer& viewer, const osg::CopyOp& copyop):
+    View(viewer,copyop)
+{
+}
+
 void Viewer::constructorInit()
 {
     _firstFrame = true;
@@ -157,6 +176,43 @@ Viewer::~Viewer()
 
     osg::notify(osg::INFO)<<"Viewer::~Viewer() end destrcutor getThreads = "<<threads.size()<<std::endl;
 
+}
+
+bool Viewer::readConfiguration(const std::string& filename)
+{
+    osg::notify(osg::NOTICE)<<"Viewer::readConfiguration("<<filename<<")"<<std::endl;
+    
+    osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
+    if (!object) 
+    {
+        osg::notify(osg::NOTICE)<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
+        return false;
+    }
+    
+    CompositeViewer* compositeViewer = dynamic_cast<CompositeViewer*>(object.get());
+    if (compositeViewer)
+    {
+        osg::notify(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" containing CompositeViewer cannot be loaded by Viewer."<<std::endl;
+        return false;
+    }
+    
+    osg::notify(osg::NOTICE)<<"Loaded object =  "<<object->className()<<std::endl;
+
+    View* view = dynamic_cast<osgViewer::View*>(object.get());
+    if (view)
+    {
+        Viewer* viewer = dynamic_cast<Viewer*>(object.get());
+        osg::notify(osg::NOTICE)<<"  ViewerPtr =  "<<viewer<<std::endl;
+        osg::notify(osg::NOTICE)<<"  ViewPtr =  "<<view<<std::endl;
+        return true;
+    }
+    else
+    {    
+        osg::notify(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" does not contain a valid Viewer configuration."<<std::endl;
+        return false;
+    }
+    
+    return false;
 }
 
 bool Viewer::isRealized() const
@@ -415,10 +471,6 @@ void Viewer::stopThreading()
 
     osg::notify(osg::INFO)<<"Viewer::stopThreading() - stopped threading."<<std::endl;
 }
-
-static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
-static osg::ApplicationUsageProxy Viewer_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN <value>","Set the default screen that windows should open up on.");
-static osg::ApplicationUsageProxy Viewer_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WINDOW x y width height","Set the default window dimensions that windows should open up on.");
 
 Viewer::ThreadingModel Viewer::suggestBestThreadingModel()
 {

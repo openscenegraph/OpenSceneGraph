@@ -32,9 +32,12 @@ class OSGVIEWER_EXPORT CompositeViewer : public osg::Object
 
         CompositeViewer(osg::ArgumentParser& arguments);
         
-        META_Object(osg,CompositeViewer);
+        META_Object(osgViewer,CompositeViewer);
 
         virtual ~CompositeViewer();
+
+        /** read the viewer configuration from a configuration file.*/
+        bool readConfiguration(const std::string& filename);
 
         void addView(osgViewer::View* view);
         void removeView(osgViewer::View* view);

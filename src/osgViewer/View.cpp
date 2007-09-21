@@ -164,6 +164,40 @@ View::~View()
     osg::notify(osg::INFO)<<"Destructing osgViewer::View"<<std::endl;
 }
 
+void View::take(osg::View& rhs)
+{
+    osg::View::take(rhs);
+
+    osgViewer::View* rhs_osgViewer = dynamic_cast<osgViewer::View*>(&rhs);    
+    if (rhs_osgViewer)
+    {
+        // copy across rhs
+        _startTick = rhs_osgViewer->_startTick;
+        _frameStamp = rhs_osgViewer->_frameStamp;
+
+        _scene = rhs_osgViewer->_scene;
+        _cameraManipulator = rhs_osgViewer->_cameraManipulator;
+        _eventHandlers = rhs_osgViewer->_eventHandlers;
+
+        _coordinateSystemNodePath = rhs_osgViewer->_coordinateSystemNodePath;
+
+        _displaySettings = rhs_osgViewer->_displaySettings;
+        _fusionDistanceMode = rhs_osgViewer->_fusionDistanceMode;
+        _fusionDistanceValue = rhs_osgViewer->_fusionDistanceValue;
+        
+        
+        // clear rhs
+        rhs_osgViewer->_frameStamp = 0;
+        rhs_osgViewer->_scene = 0;
+        rhs_osgViewer->_cameraManipulator = 0;
+        rhs_osgViewer->_eventHandlers.clear();
+        
+        rhs_osgViewer->_coordinateSystemNodePath.clear();
+        
+        rhs_osgViewer->_displaySettings;
+    }
+
+}
 
 osg::GraphicsOperation* View::createRenderer(osg::Camera* camera)
 {

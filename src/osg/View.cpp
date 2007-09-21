@@ -190,15 +190,25 @@ bool View::removeSlave(unsigned int pos)
     return true;
 }
 
-View::Slave* View::findSlaveForCamera(osg::Camera* camera)
+
+View::Slave * View::findSlaveForCamera(osg::Camera* camera)
 {
-    if (_camera == camera) return 0;
+    unsigned int i = findSlaveIndexForCamera(camera);
+
+    if (i >= getNumSlaves()) return (NULL);
+
+    return &(_slaves[i]);
+}
+
+unsigned int View::findSlaveIndexForCamera(osg::Camera* camera)
+{
+    if (_camera == camera) return _slaves.size();
 
     for(unsigned int i=0; i<_slaves.size(); ++i)
     {
-        if (_slaves[i]._camera == camera) return &(_slaves[i]);
+        if (_slaves[i]._camera == camera) return (i);
     }
     
-    return 0;
+    return _slaves.size();
 }
 

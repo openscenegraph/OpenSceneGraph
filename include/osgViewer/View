@@ -35,6 +35,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         View(const osgViewer::View& view, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgViewer,View);
+        
+        /** Take all the settings, Camera and Slaves from the passed in view, leaving it empty. */
+        virtual void take(osg::View& rhs);
 
         virtual void setStartTick(osg::Timer_t tick);
         osg::Timer_t getStartTick() const { return _startTick; }

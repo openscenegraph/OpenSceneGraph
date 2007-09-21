@@ -178,9 +178,54 @@ Viewer::~Viewer()
 
 }
 
+void Viewer::take(View& rhs)
+{
+    osgViewer::View::take(rhs);
+    
+    osgViewer::Viewer* rhs_viewer = dynamic_cast<osgViewer::Viewer*>(&rhs);
+    if (rhs_viewer)
+    {
+#if 1
+        // variables left to take.
+        _firstFrame = rhs_viewer->_firstFrame;
+        _done = rhs_viewer->_done;
+        _keyEventSetsDone = rhs_viewer->_keyEventSetsDone;
+        _quitEventSetsDone = rhs_viewer->_quitEventSetsDone;
+        _threadingModel = rhs_viewer->_threadingModel;
+        _threadsRunning = rhs_viewer->_threadsRunning;
+        _endBarrierPosition = rhs_viewer->_endBarrierPosition;
+        _startRenderingBarrier = rhs_viewer->_startRenderingBarrier;
+        _endRenderingDispatchBarrier = rhs_viewer->_endRenderingDispatchBarrier;
+        _endDynamicDrawBlock = rhs_viewer->_endDynamicDrawBlock;
+        _numWindowsOpenAtLastSetUpThreading = rhs_viewer->_numWindowsOpenAtLastSetUpThreading;
+        _cameraWithFocus = rhs_viewer->_cameraWithFocus;
+        _eventVisitor = rhs_viewer->_eventVisitor;
+        _updateOperations = rhs_viewer->_updateOperations;
+        _updateVisitor = rhs_viewer->_updateVisitor;
+        _realizeOperation = rhs_viewer->_realizeOperation;
+        _currentContext = rhs_viewer->_currentContext;
+
+
+        // objects to clear
+        rhs_viewer->_done = true;
+        rhs_viewer->_startRenderingBarrier = 0;
+        rhs_viewer->_endRenderingDispatchBarrier = 0;
+        rhs_viewer->_endDynamicDrawBlock = 0;
+        rhs_viewer->_numWindowsOpenAtLastSetUpThreading = 0;
+        rhs_viewer->_cameraWithFocus = 0;
+        rhs_viewer->_eventVisitor = 0;
+        rhs_viewer->_updateOperations = 0;
+        rhs_viewer->_updateVisitor = 0;
+        rhs_viewer->_realizeOperation = 0;
+        rhs_viewer->_currentContext = 0;
+
+#endif
+    }
+}
+
 bool Viewer::readConfiguration(const std::string& filename)
 {
-    osg::notify(osg::NOTICE)<<"Viewer::readConfiguration("<<filename<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"Viewer::readConfiguration("<<filename<<")"<<std::endl;
     
     osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
     if (!object) 
@@ -196,14 +241,11 @@ bool Viewer::readConfiguration(const std::string& filename)
         return false;
     }
     
-    osg::notify(osg::NOTICE)<<"Loaded object =  "<<object->className()<<std::endl;
-
     View* view = dynamic_cast<osgViewer::View*>(object.get());
     if (view)
     {
-        Viewer* viewer = dynamic_cast<Viewer*>(object.get());
-        osg::notify(osg::NOTICE)<<"  ViewerPtr =  "<<viewer<<std::endl;
-        osg::notify(osg::NOTICE)<<"  ViewPtr =  "<<view<<std::endl;
+        take(*view);
+
         return true;
     }
     else
@@ -864,13 +906,15 @@ void Viewer::getCameras(Cameras& cameras, bool onlyActive)
 {
     cameras.clear();
     
-    if (!onlyActive || (_camera->getGraphicsContext() && _camera->getGraphicsContext()->valid()) ) cameras.push_back(_camera.get());
+    if (_camera.valid() && 
+        (!onlyActive || (_camera->getGraphicsContext() && _camera->getGraphicsContext()->valid())) ) cameras.push_back(_camera.get());
 
     for(Slaves::iterator itr = _slaves.begin();
         itr != _slaves.end();
         ++itr)
     {
-        if (!onlyActive || (itr->_camera->getGraphicsContext() && itr->_camera->getGraphicsContext()->valid()) ) cameras.push_back(itr->_camera.get());
+        if (itr->_camera.valid() &&
+            (!onlyActive || (itr->_camera->getGraphicsContext() && itr->_camera->getGraphicsContext()->valid())) ) cameras.push_back(itr->_camera.get());
     }
         
 }

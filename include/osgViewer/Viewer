@@ -38,6 +38,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         META_Object(osgViewer,Viewer);
 
+        /** Take all the settings, Camera and Slaves from the passed in view(er), leaving it empty. */
+        virtual void take(View& rhs);
+
         /** read the viewer configuration from a configuration file.*/
         bool readConfiguration(const std::string& filename);
         

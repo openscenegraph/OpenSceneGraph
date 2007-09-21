@@ -85,6 +85,29 @@ View::~View()
     osg::notify(osg::INFO)<<"Done destructing osg::View"<<std::endl;
 }
 
+void View::take(osg::View& rhs)
+{
+    // copy across the contents first
+    _lightingMode = rhs._lightingMode;
+    _light = rhs._light;
+    _camera = rhs._camera;
+    _slaves = rhs._slaves;
+
+    // update the cameras so they all now see this View as their parent View    
+    if (_camera.valid()) _camera->setView(this);
+    
+    for(unsigned int i=0; i<_slaves.size(); ++i)
+    {
+        if (_slaves[i]._camera.valid()) _slaves[i]._camera->setView(this);
+    }
+
+    // then clear the passing in view.
+    rhs._light = 0;
+    rhs._camera = 0;
+    rhs._slaves.clear();
+}
+
+
 void View::setLightingMode(LightingMode lightingMode)
 {
     _lightingMode = lightingMode;

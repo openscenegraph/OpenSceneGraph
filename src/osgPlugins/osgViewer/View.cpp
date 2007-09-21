@@ -6,6 +6,7 @@
 #include <osgDB/Registry>
 #include <osgDB/Input>
 #include <osgDB/Output>
+#include <osgDB/ReadFile>
 #include <osgDB/ParameterOutput>
 
 bool View_readLocalData(osg::Object &obj, osgDB::Input &fr);
@@ -24,6 +25,73 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     osgViewer::View& view = static_cast<osgViewer::View&>(obj);
     bool iteratorAdvanced = false;
+
+    bool matchedFirst = false;
+    if ((matchedFirst = fr.matchSequence("setUpViewFor3DSphericalDisplay {")) ||
+        fr.matchSequence("setUpViewForPanoramicSphericalDisplay {"))
+    {
+        double radius=1.0;
+        double collar=0.45;
+        unsigned int screenNum=0;
+        std::string filename;
+        osg::Image* intensityMap=0;
+        int entry = fr[0].getNoNestedBrackets();
+
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            bool local_itrAdvanced = false;
+            if (fr.read("radius",radius)) local_itrAdvanced = true;
+            if (fr.read("collar",collar)) local_itrAdvanced = true;
+            if (fr.read("screenNum",screenNum)) local_itrAdvanced = true;
+            if (fr.read("intensityMap",filename)) local_itrAdvanced = true;
+            
+            if (!local_itrAdvanced) ++fr;
+        }
+        
+        // skip trainling '}'
+        ++fr;
+        
+        iteratorAdvanced = true;
+        
+        if (!filename.empty())
+        {
+            intensityMap = osgDB::readImageFile(filename);
+        }
+
+        if (matchedFirst) view.setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap);
+        else view.setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap);
+    }
+
+    int x = 0;
+    int y = 0;
+    int width = 128;
+    int height = 1024;
+    unsigned int screenNum = 0;
+    
+    if (fr.read("setUpViewOnSingleScreen",screenNum))
+    {
+        view.setUpViewOnSingleScreen(screenNum);
+        iteratorAdvanced = true;
+    }
+    
+    if (fr.read("setUpViewAcrossAllScreens"))
+    {
+        view.setUpViewAcrossAllScreens();
+        iteratorAdvanced = true;
+    }
+    
+    if (fr.read("setUpViewInWindow",x,y,width,height,screenNum))
+    {
+        view.setUpViewInWindow(x, y, width, height, screenNum);
+    }
+    
+    if (fr.read("setUpViewInWindow",x,y,width,height))
+    {
+        view.setUpViewInWindow(x, y, width, height);
+    }
+
 
     osg::ref_ptr<osg::Object> readObject;
     while((readObject=fr.readObjectOfType(osgDB::type_wrapper<osg::Camera>())).valid())
@@ -52,7 +120,6 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
     }
     
-
     return iteratorAdvanced;
 }
 

@@ -30,7 +30,7 @@
 
 using namespace osgViewer;
 
-//static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CONFIG_FILE <filename>","Specify a viewer configuration file to load by default.");
+static osg::ApplicationUsageProxy Viewer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CONFIG_FILE <filename>","Specify a viewer configuration file to load by default.");
 static osg::ApplicationUsageProxy Viewer_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
 static osg::ApplicationUsageProxy Viewer_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN <value>","Set the default screen that windows should open up on.");
 static osg::ApplicationUsageProxy Viewer_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WINDOW x y width height","Set the default window dimensions that windows should open up on.");
@@ -182,10 +182,10 @@ void Viewer::take(View& rhs)
 {
     osgViewer::View::take(rhs);
     
+#if 1
     osgViewer::Viewer* rhs_viewer = dynamic_cast<osgViewer::Viewer*>(&rhs);
     if (rhs_viewer)
     {
-#if 1
         // variables left to take.
         _firstFrame = rhs_viewer->_firstFrame;
         _done = rhs_viewer->_done;
@@ -218,9 +218,8 @@ void Viewer::take(View& rhs)
         rhs_viewer->_updateVisitor = 0;
         rhs_viewer->_realizeOperation = 0;
         rhs_viewer->_currentContext = 0;
-
-#endif
     }
+#endif    
 }
 
 bool Viewer::readConfiguration(const std::string& filename)
@@ -259,7 +258,6 @@ bool Viewer::readConfiguration(const std::string& filename)
 
 bool Viewer::isRealized() const
 {
-
     Contexts contexts;
     const_cast<Viewer*>(this)->getContexts(contexts);
 
@@ -991,34 +989,41 @@ void Viewer::realize()
         // no windows are already set up so set up a default view        
         
         const char* ptr = 0;
-        int screenNum = -1;
-        if ((ptr = getenv("OSG_SCREEN")) != 0)
+        if ((ptr = getenv("OSG_CONFIG_FILE")) != 0)
         {
-            if (strlen(ptr)!=0) screenNum = atoi(ptr);
-            else screenNum = -1;
-        }
-        
-        int x = -1, y = -1, width = -1, height = -1;
-        if ((ptr = getenv("OSG_WINDOW")) != 0)
-        {
-            std::istringstream iss(ptr);
-            iss >> x >> y >> width >> height;
-        }
-
-        if (width>0 && height>0)
-        {
-            if (screenNum>=0) setUpViewInWindow(x, y, width, height, screenNum);
-            else setUpViewInWindow(x,y,width,height);
-        }
-        else if (screenNum>=0)
-        {
-            setUpViewOnSingleScreen(screenNum);
+            readConfiguration(ptr);
         }
         else
         {
-            setUpViewAcrossAllScreens();
-        }
+            int screenNum = -1;
+            if ((ptr = getenv("OSG_SCREEN")) != 0)
+            {
+                if (strlen(ptr)!=0) screenNum = atoi(ptr);
+                else screenNum = -1;
+            }
 
+            int x = -1, y = -1, width = -1, height = -1;
+            if ((ptr = getenv("OSG_WINDOW")) != 0)
+            {
+                std::istringstream iss(ptr);
+                iss >> x >> y >> width >> height;
+            }
+
+            if (width>0 && height>0)
+            {
+                if (screenNum>=0) setUpViewInWindow(x, y, width, height, screenNum);
+                else setUpViewInWindow(x,y,width,height);
+            }
+            else if (screenNum>=0)
+            {
+                setUpViewOnSingleScreen(screenNum);
+            }
+            else
+            {
+                setUpViewAcrossAllScreens();
+            }
+        }
+        
         getContexts(contexts);
     }
 

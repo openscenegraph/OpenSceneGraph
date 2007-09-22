@@ -168,16 +168,26 @@ void View::take(osg::View& rhs)
 {
     osg::View::take(rhs);
 
+#if 1
     osgViewer::View* rhs_osgViewer = dynamic_cast<osgViewer::View*>(&rhs);    
     if (rhs_osgViewer)
     {
+    
         // copy across rhs
         _startTick = rhs_osgViewer->_startTick;
         _frameStamp = rhs_osgViewer->_frameStamp;
 
-        _scene = rhs_osgViewer->_scene;
-        _cameraManipulator = rhs_osgViewer->_cameraManipulator;
-        _eventHandlers = rhs_osgViewer->_eventHandlers;
+        if (rhs_osgViewer->getSceneData())
+        {
+            _scene = rhs_osgViewer->_scene;
+        }
+        
+        if (rhs_osgViewer->_cameraManipulator.valid())
+        {
+            _cameraManipulator = rhs_osgViewer->_cameraManipulator;
+        }
+        
+        _eventHandlers.insert(_eventHandlers.end(), rhs_osgViewer->_eventHandlers.begin(), rhs_osgViewer->_eventHandlers.end());
 
         _coordinateSystemNodePath = rhs_osgViewer->_coordinateSystemNodePath;
 
@@ -196,7 +206,9 @@ void View::take(osg::View& rhs)
         
         rhs_osgViewer->_displaySettings;
     }
-
+#endif
+    computeActiveCoordinateSystemNodePath();
+    assignSceneDataToCameras();
 }
 
 osg::GraphicsOperation* View::createRenderer(osg::Camera* camera)

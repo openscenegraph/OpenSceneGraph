@@ -32,23 +32,36 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         META_Object(osgShadow, ParallelSplitShadowMap);
 
 
-        /** initialize the ShadowedScene and local cached data structures.*/
+        /** Initialize the ShadowedScene and local cached data structures.*/
         virtual void init();
 
-        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
+        /** Run the update traversal of the ShadowedScene and update any loca chached data structures.*/
         virtual void update(osg::NodeVisitor& nv);
 
-        /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
+        /** Run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
         virtual void cull(osgUtil::CullVisitor& cv);
 
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
 
+        /** Switch on the debug coloring in GLSL (only the first 3 texture/splits showed for visualisation */
+        inline void setDebugColorOn() { _debug_color_in_GLSL = true; }
+
+        /** Set the polygon offset osg::Vec2f(factor,unit) */
+        inline void setPolygonOffset(const osg::Vec2f& p) { _polgyonOffset = p;_user_polgyonOffset_set=true;}
+
+        /** Get the polygon offset osg::Vec2f(factor,unit) */
+        inline const osg::Vec2f& getPolygonOffset() { return _polgyonOffset;}
+
+        /** Set the texture resolution */
+        inline void setTextureResolution(unsigned int resolution) { _resolution = resolution; }
+
     protected :
 
         virtual ~ParallelSplitShadowMap() {}
 
-        
+        std::string generateGLSL_FragmentShader_BaseTex(bool debug, unsigned int splitCount);
+
         struct PSSMShadowSplitTexture {
             // RTT
             osg::ref_ptr<osg::Camera>       _camera;
@@ -65,7 +78,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
             unsigned int                    _debug_textureUnit;
 
 
-            
+
             // Light (SUN)
             osg::Vec3d                        _lightCameraSource;
             osg::Vec3d                        _lightCameraTarget;
@@ -96,6 +109,15 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         osg::Geode** _displayTexturesGroupingNode;
 
         unsigned int _textureUnitOffset;
+
+        unsigned int _number_of_splits;
+
+        bool _debug_color_in_GLSL;
+
+        osg::Vec2f _polgyonOffset;
+        bool _user_polgyonOffset_set;
+
+        unsigned int _resolution;
 
 };
 }

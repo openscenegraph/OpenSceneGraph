@@ -497,6 +497,8 @@ int main(int argc, char** argv)
 //    arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--mapcount", "ParallelSplitShadowMap texture count.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--mapres", "ParallelSplitShadowMap texture resolution.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--debug-color", "ParallelSplitShadowMap display debugging color (only the first 3 maps are color r=0,g=1,b=2.");//ADEGLI
 
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
@@ -622,6 +624,14 @@ int main(int argc, char** argv)
         int mapcount = 3;
         while (arguments.read("--mapcount", mapcount));
         osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap(NULL,mapcount);
+
+        unsigned int mapres = 1024;
+        while (arguments.read("--mapres", mapres));
+        pssm->setTextureResolution(mapres);
+        
+        while (arguments.read("--debug-color")) { pssm->setDebugColorOn(); }
+         
+
         shadowedScene->setShadowTechnique(pssm.get());
     }
     else if (arguments.read("--ssm"))

@@ -25,9 +25,6 @@
 BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_DeclaringFile("osgViewer/Scene");
 	I_BaseType(osg::Referenced);
-	I_Constructor0(____Scene,
-	               "",
-	               "");
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
 	          Properties::NON_VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,
@@ -62,6 +59,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	                __Scene_P1__getScene__osg_Node_P1_S,
 	                "Get the Scene object that has the specified node assigned to it. ",
 	                "return 0 if no Scene has yet been assigned the specified node. ");
+	I_ProtectedConstructor0(____Scene,
+	                        "",
+	                        "");
 	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
 	                 __osgDB_DatabasePager_P1__getDatabasePager, 
 	                 __void__setDatabasePager__osgDB_DatabasePager_P1);

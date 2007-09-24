@@ -90,6 +90,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(bool, readConfiguration, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __bool__readConfiguration__C5_std_string_R1,
+	          "read the viewer configuration from a configuration file. ",
+	          "");
 	I_Method1(void, addView, IN, osgViewer::View *, view,
 	          Properties::NON_VIRTUAL,
 	          __void__addView__osgViewer_View_P1,

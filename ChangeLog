@@ -1,3 +1,194 @@
+2007-09-24 10:36 +0000 [r7460]  robert:
+
+	* From Alberto Luaces, fixed typo of valid() in warning message
+
+2007-09-24 10:31 +0000 [r7459]  robert:
+
+	* Changed iterator name to avoid warning
+
+2007-09-24 09:39 +0000 [r7458]  robert:
+
+	* From Mirko Viviani, "attacched you'll find the updated xcode
+	  project for OpenSceneGraph 2.1.11. The one supplied in the
+	  archive does not build due to some missing file references."
+
+2007-09-24 09:35 +0000 [r7457]  robert:
+
+	* From Jose Delport: "have been using the new
+	  VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY mode of the OverlayNode.
+	  I change the overlay subgraph dynamically and when I remove all
+	  the subgraph nodes that is inside the current main camera FOV
+	  (others outside still exist), the overlay texture does not update
+	  because of the early return in the traversal. I then get a kind
+	  of ghost texture moving around the terrain. The attached file
+	  fixed the problem for me, but I'm not sure if it is the best way
+	  to address the problem."
+
+2007-09-24 09:26 +0000 [r7456]  robert:
+
+	* From Art Tevs, "Following two lines has to be included into the
+	  Image.cpp in the computeNumComponents(...) method:
+	  case(GL_RGBA16F_ARB): return 4; case(GL_RGBA32F_ARB): return 4;"
+
+2007-09-24 09:05 +0000 [r7455]  robert:
+
+	* Made ReaderWriter and ReaderWriter::Options use thread safe ref
+	  counting.
+
+2007-09-22 17:39 +0000 [r7454]  robert:
+
+	* Improved the handling of OSG_CONFIG_FILE support.
+
+2007-09-22 16:50 +0000 [r7453]  robert:
+
+	* From David Callu, added getOrCreateScene method, made contractors
+	  protected. From Robert Osfield, made getOrCreateScene protected
+	  and made View a friend of Scene to all it to construct Scene
+	  objects itself.
+
+2007-09-22 16:46 +0000 [r7452]  robert:
+
+	* From Adrian Egli, update to ParallelSplitShadowMap.
+
+2007-09-22 13:06 +0000 [r7451]  robert:
+
+	* Added EXPORT
+
+2007-09-21 19:43 +0000 [r7450]  robert:
+
+	* From David Callu, added findSlaveIndexForCamera method
+
+2007-09-21 19:04 +0000 [r7449]  robert:
+
+	* Added return
+
+2007-09-21 15:34 +0000 [r7448]  robert:
+
+	* Added support for basic viewer configuration files
+
+2007-09-21 13:30 +0000 [r7447]  robert:
+
+	* Further steps towards reading coniguration files.
+
+2007-09-21 09:02 +0000 [r7446]  robert:
+
+	* From Luc Frauciel, "A few improvements to osgstereoimage: - When
+	  using a large numbrer of files, the command line was too long;
+	  Added a -files option that allow to store filenames in a file
+	  (one file per line) - Added some more intuitive key bindings for
+	  controls (left, right, + , -) - Set the texture wrapping to
+	  CLAMP_TO_EDGE (it's cleaner now) "
+
+2007-09-20 10:14 +0000 [r7444-7445]  robert:
+
+	* Updated wrappers
+
+	* From Anders Backman, added bias and texture size methods. From
+	  Robert Osfield, tweaks to the above for method parameters and
+	  indenting.
+
+2007-09-19 16:53 +0000 [r7443]  robert:
+
+	* Added supoort for OSG_WRITE_OUT_DEFAULT_VALUES env var
+
+2007-09-19 15:29 +0000 [r7442]  robert:
+
+	* Added support for bool in ArgumentParser::Parameter. Added
+	  support for using Input::read(...) methods using
+	  ArgumentParser::Paramter to adapter to multiple paramter types.
+
+2007-09-19 11:56 +0000 [r7441]  robert:
+
+	* From Adrian Egli, ParallelSplitShadowMap implmentation. Changes
+	  by Robert Osfield - CMakeLists.txt and name change to
+	  ParallelSplitShadowMap.
+
+2007-09-19 10:14 +0000 [r7440]  robert:
+
+	* Changed the simplifier so that it produces deterministic results,
+	  no longer using memory pointers for sorting.
+
+2007-09-19 09:00 +0000 [r7439]  robert:
+
+	* Removed check for shaders/overlay_perspective_main.vert
+
+2007-09-18 16:00 +0000 [r7438]  robert:
+
+	* Commented out herror() as its not called anywhere in the code.
+
+2007-09-17 09:33 +0000 [r7436]  robert:
+
+	* Updated ChangeLog, AUTHORS and README for 2.1.11 release
+
+2007-09-17 09:26 +0000 [r7435]  robert:
+
+	* Updated version numbers for 2.1.11 dev release
+
+2007-09-16 17:48 +0000 [r7431-7434]  robert:
+
+	* Fixed Locator::setTransform method so it takes a const Matrixd&,
+	  and improved the setting of Locator in the gdal plugin.
+
+	* Setting for new option for hinting whether to write out default
+	  values
+
+	* Added option for controlling whether output code should write out
+	  default values
+
+	* Fixed warning
+
+2007-09-16 07:55 +0000 [r7429]  robert:
+
+	* From Loic Dachary, pkg_config files
+
+2007-09-15 17:40 +0000 [r7428]  robert:
+
+	* Introduced the use of a ReentrantMutex to avoid problems with
+	  findFontFile.
+
+2007-09-15 17:36 +0000 [r7427]  robert:
+
+	* From David Spilling, "Given no replies to my recent "does anybody
+	  use the DDS writer" query, I was emboldened to submit this very
+	  small patch. The bitmasks for RGBA and RGB have been modified in
+	  the writer portion of the code (line 765 onwards). This is now
+	  consistent with what the DDS plugin reads. In terms of testing,
+	  note that many 3rd party applications erroneously ignore the
+	  bitmasks in the file, and assume a BGRA order."
+
+2007-09-14 11:26 +0000 [r7426]  robert:
+
+	* Updated wrappers
+
+2007-09-14 11:06 +0000 [r7425]  robert:
+
+	* From Andy Skinner, added support for ot-soversion-OpenThreads.dll
+	  dll naming under Windows
+
+2007-09-14 11:02 +0000 [r7421-7423]  robert:
+
+	* Updated wrappers
+
+	* Added TemplateRegisterDotOsgWrapperProxy.
+
+	* Ran conversion of tabs to four spaces
+
+2007-09-14 10:44 +0000 [r7420]  robert:
+
+	* Introduce
+	  GUIEventHandler::handleWithCheckAgainstIgnoreHandledEventsMask()
+	  methods to help make it easier to get event handles to ingore
+	  events that have already been handled.
+
+2007-09-14 10:26 +0000 [r7419]  robert:
+
+	* From Ole-Morten Duesund, added IgnoreUsedEventsMask.
+
+2007-09-14 10:00 +0000 [r7418]  robert:
+
+	* Added _hudText->setDataVariance(osg::Object::DYNAMIC); to prevent
+	  from the text being updated at the same time as being rendered.
+
 2007-09-13 11:00 +0000 [r7416]  robert:
 
 	* Fix for build error during aggressive warning build

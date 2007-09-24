@@ -125,7 +125,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
     public:
 
         /** Return whether a valid and usable GraphicsContext has been created.*/
-        virtual bool valid() const { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
+        virtual bool valid() const { osg::notify(osg::NOTICE)<<"GraphicsWindow::valid() not implemented."<<std::endl; return false; }
 
         /** Realise the GraphicsContext implementation, 
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */

@@ -561,11 +561,11 @@ std::string Registry::createLibraryNameForFile(const std::string& fileName)
 std::string Registry::createLibraryNameForExtension(const std::string& ext)
 {
     std::string lowercase_ext;
-    for(std::string::const_iterator itr=ext.begin();
-        itr!=ext.end();
-        ++itr)
+    for(std::string::const_iterator sitr=ext.begin();
+        sitr!=ext.end();
+        ++sitr)
     {
-        lowercase_ext.push_back(tolower(*itr));
+        lowercase_ext.push_back(tolower(*sitr));
     }
 
     ExtensionAliasMap::iterator itr=_extAliasMap.find(lowercase_ext);

@@ -499,7 +499,14 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--mapcount", "ParallelSplitShadowMap texture count.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--mapres", "ParallelSplitShadowMap texture resolution.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--debug-color", "ParallelSplitShadowMap display debugging color (only the first 3 maps are color r=0,g=1,b=2.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--minNearSplit", "ParallelSplitShadowMap shadow map near offset.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "ParallelSplitShadowMap max far distance to shadow.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--NVidea", "ParallelSplitShadowMap set default PolygonOffset for NVidea.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Factor", "ParallelSplitShadowMap set PolygonOffset factor.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Unit", "ParallelSplitShadowMap set PolygonOffset unit.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--CullFaceFront", "ParallelSplitShadowMap add a cull face: front.");//ADEGLI
 
+    
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
     arguments.getApplicationUsage()->addCommandLineOption("-3", "Use test model three.");
@@ -625,12 +632,41 @@ int main(int argc, char** argv)
         while (arguments.read("--mapcount", mapcount));
         osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap(NULL,mapcount);
 
-        unsigned int mapres = 1024;
-        while (arguments.read("--mapres", mapres));
-        pssm->setTextureResolution(mapres);
+        int mapres = 1024;
+        while (arguments.read("--mapres", mapres)) 
+            pssm->setTextureResolution(mapres);
         
         while (arguments.read("--debug-color")) { pssm->setDebugColorOn(); }
          
+
+        int minNearSplit=0;
+        while (arguments.read("--minNearSplit", minNearSplit))
+            if ( minNearSplit > 0 ) {
+                pssm->setMinNearDistanceForSplits(minNearSplit);
+                std::cout << "ParallelSplitShadowMap : setMinNearDistanceForSplits(" << minNearSplit <<")" << std::endl;
+            }
+
+        int maxfardist = 0;
+        while (arguments.read("--maxFarDist", maxfardist))
+            if ( maxfardist > 0 ) {
+                pssm->setMaxFarDistance(maxfardist);
+                std::cout << "ParallelSplitShadowMap : setMaxFarDistance(" << maxfardist<<")" << std::endl;
+            }
+
+        double polyoffsetfactor = -0.02;
+        double polyoffsetunit = 1.0;
+        while (arguments.read("--PolyOffset-Factor", polyoffsetfactor));
+        while (arguments.read("--PolyOffset-Unit", polyoffsetunit));
+        pssm->setPolygonOffset(osg::Vec2(polyoffsetfactor,polyoffsetunit)); //ATI Radeon
+
+        if (arguments.read("--NVidea")){
+            //pssm->setPolygonOffset(osg::Vec2(-0.02,1.0)); //ATI Radeon
+            pssm->setPolygonOffset(osg::Vec2(10.0f,20.0f)); //NVidea 
+        }
+
+        if ( arguments.read("--CullFaceFront") ) {
+            pssm->forceFrontCullFace();
+        }
 
         shadowedScene->setShadowTechnique(pssm.get());
     }

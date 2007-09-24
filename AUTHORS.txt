@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.11
+OpenSceneGraph Library 2.1.12
 
-278 Contributors:
+281 Contributors:
 
 Firstname Surname
 -----------------
@@ -31,23 +31,23 @@ Mathias Fröhlich
 André Garneau
 Ruben Lopez
 Randall Hopper
+David Callu
 Olaf Flebbe
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Michael Gronager
-David Callu
 Daniel Sjölie
 Colin McDonald
 Chris Hanson
 Per Fahlberg
 Joran Jessurun
 Jean-Sebastien Guay
-Frederic Marmond
 David Spilling
+Andy Skinner
+Frederic Marmond
 David Fries
 Boris Bralo
-Andy Skinner
 Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
@@ -63,10 +63,12 @@ Paul Melis
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
+Loic Dachary
 Joakim Simonsson
 Jan Ciger
 Gordon Tomlinson
 Brad Colbert
+Art Tevs
 Andreas Ekstrand
 Vivek Rajan
 Stephane Simon
@@ -76,7 +78,6 @@ Ravi Mathur
 Nikolaus Hanekamp
 Michael Platings
 Michael Hartman
-Loic Dachary
 Laurens Voerman
 Joseph Steel
 John Shue
@@ -84,7 +85,6 @@ Jan Peciva
 David Guthrie
 Corbin Holtz
 Brad Christiansen
-Art Tevs
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -92,7 +92,9 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
+Luc Frauciel
 Leandro Motta Barros
+José Delport
 Carlo Camporesi
 Bryan Thrall
 Bruce Clay
@@ -104,10 +106,8 @@ Serge Lages
 Phil Atkin
 Mathieu Marache
 Maria Ten
-Luc Frauciel
 Ken Sewell
 Julian Ortiz
-José Delport
 John Kelso
 Jeremy Bell
 James French
@@ -118,7 +118,9 @@ Daniel Larimer
 Charles Cole
 Blake Williams
 Antoine Hue
+Anders Backman
 Ali Botorabi
+Adrian Egli
 Zach Deedler
 Yuzhong Shen
 Tugkan Calapoglu
@@ -158,7 +160,6 @@ Csaba Halasz
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
-Anders Backman
 Zbigniew Sroczynski
 Yuri Vilmanis
 Wojciech Lewandowski
@@ -195,9 +196,11 @@ Philipp Siemoleit
 Paul Fredrikson
 Parag Chaudhur
 Orhun Birsoy
+Ole-Morten Duesund
 Nicolas Brodu
 Nathan Cournia
 Morné Pistorius
+Mirko Viviani
 Mikkel GjÃ¸l
 Mihai Radu
 Michael Polak
@@ -276,9 +279,9 @@ Andreas Jochens
 Almalric Alexandre
 Allen Bierbaum
 Alexandre Amalric
+Alberto Luaces
 Alberto Jaspe
 Alan Purvis
 Alan Ott
 Alan Harris
-Adrian Egli
 Adam Richard

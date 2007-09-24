@@ -20,8 +20,9 @@
 #include <osg/Material>
 
 #include <osgShadow/ShadowTechnique>
- 
+
 namespace osgShadow {
+
 class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique 
 {
     public:
@@ -56,6 +57,38 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         /** Set the texture resolution */
         inline void setTextureResolution(unsigned int resolution) { _resolution = resolution; }
 
+        /** Set the max far distance */ 
+        inline void setMaxFarDistance(double farDist) { _setMaxFarDistance = farDist; _isSetMaxFarDistance = true; }
+
+        /** Force to add a osg::CullFace::FRONT state */
+        inline void forceFrontCullFace() { _useFrontCullFace = true; }
+
+        /** Set min near distance for splits */ 
+        inline void setMinNearDistanceForSplits(double nd){ _split_min_near_dist=nd; }
+
+        /** use linear split (default: linear) */
+        inline void useLinearSplit(bool flag) { _linearSplit = flag;}
+    
+    
+    /** 
+         light              /  | 
+           \             /     |
+     min near dist    /        |
+      for splits   /           |
+              \ /    ¦         |
+            ./ \     ¦         |
+            |   \    ¦         |
+            |    x   ¦         |
+            |        ¦         |
+            .        |         |
+               \       ¦         |
+                \    ¦         |
+                    \          |
+                        \      |
+                              \  |
+                              
+            .<- max far dist. ->.
+    */ 
     protected :
 
         virtual ~ParallelSplitShadowMap() {}
@@ -118,6 +151,15 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         bool _user_polgyonOffset_set;
 
         unsigned int _resolution;
+
+        double _setMaxFarDistance;
+        bool _isSetMaxFarDistance;
+
+        bool _useFrontCullFace;
+
+        double _split_min_near_dist;
+        
+        bool _linearSplit;
 
 };
 }

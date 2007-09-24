@@ -1860,6 +1860,12 @@
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
+		AC0CCB8F0C9F1FED00BD0077 /* Texture2DArray in Resources */ = {isa = PBXBuildFile; fileRef = AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */; };
+		AC0CCB920C9F201E00BD0077 /* Texture2DArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */; };
+		AC0CCB980C9F208A00BD0077 /* Texture2DArray in Headers */ = {isa = PBXBuildFile; fileRef = AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC0CCBC60C9F29A700BD0077 /* Version in Resources */ = {isa = PBXBuildFile; fileRef = AC0CCBC50C9F29A700BD0077 /* Version */; };
+		AC0CCBC70C9F29CE00BD0077 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = AC0CCBC50C9F29A700BD0077 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
+		AC0CCBCA0C9F2A2D00BD0077 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC0CCBC90C9F2A2C00BD0077 /* Version.cpp */; };
 		BE1180D205D63B8900EB53E5 /* AlphaFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE117FB805D63B8900EB53E5 /* AlphaFunc.cpp */; };
 		BE1180D305D63B8900EB53E5 /* AnimationPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE117FB905D63B8900EB53E5 /* AnimationPath.cpp */; };
 		BE1180D405D63B8900EB53E5 /* ApplicationUsage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE117FBA05D63B8900EB53E5 /* ApplicationUsage.cpp */; };
@@ -5638,6 +5644,10 @@
 		5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowVolume.cpp; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Texture2DArray; sourceTree = "<group>"; };
+		AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2DArray.cpp; sourceTree = "<group>"; };
+		AC0CCBC50C9F29A700BD0077 /* Version */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
+		AC0CCBC90C9F2A2C00BD0077 /* Version.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Version.cpp; path = common/Version.cpp; sourceTree = "<group>"; };
 		BE117FB305D63B3800EB53E5 /* osg.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osg.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE117FB405D63B3800EB53E5 /* osg-Info.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; path = "osg-Info.plist"; sourceTree = "<group>"; };
 		BE117FB805D63B8900EB53E5 /* AlphaFunc.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = AlphaFunc.cpp; path = ../../src/osg/AlphaFunc.cpp; sourceTree = SOURCE_ROOT; };
@@ -5978,7 +5988,7 @@
 		D47A06CC0B83406700E19024 /* Translate2DDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Translate2DDragger.cpp; sourceTree = "<group>"; };
 		D47A06CD0B83406700E19024 /* TranslateAxisDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslateAxisDragger.cpp; sourceTree = "<group>"; };
 		D47A06CE0B83406700E19024 /* TranslatePlaneDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslatePlaneDragger.cpp; sourceTree = "<group>"; };
-		D47A070A0B83413800E19024 /* osgshadow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgshadow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D47A070A0B83413800E19024 /* osgmanipulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgmanipulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A07120B83417900E19024 /* osgmanipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmanipulator.cpp; sourceTree = "<group>"; };
 		D48EC64B0B4EBF2E000E05A4 /* CompositeViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeViewer.cpp; sourceTree = "<group>"; };
 		D48EC64D0B4EBF2F000E05A4 /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
@@ -8704,6 +8714,7 @@
 				0037A0440C18D9800089AA1C /* ReentrantMutex */,
 				0037A0450C18D9800089AA1C /* ScopedLock */,
 				0037A0460C18D9810089AA1C /* Thread */,
+				AC0CCBC50C9F29A700BD0077 /* Version */,
 			);
 			name = OpenThreads;
 			path = ../../include/OpenThreads;
@@ -8712,6 +8723,7 @@
 		0037A0500C18D9CF0089AA1C /* OpenThreads */ = {
 			isa = PBXGroup;
 			children = (
+				AC0CCBC90C9F2A2C00BD0077 /* Version.cpp */,
 				0037A0520C18D9CF0089AA1C /* pthreads */,
 			);
 			name = OpenThreads;
@@ -9874,7 +9886,7 @@
 				D4C6F2610B8316100052E667 /* osgShadow.framework */,
 				D4C6F2AD0B8317AB0052E667 /* osgshadow.app */,
 				D47A06810B833F6E00E19024 /* osgManipulator.framework */,
-				D47A070A0B83413800E19024 /* osgshadow.app */,
+				D47A070A0B83413800E19024 /* osgmanipulator.app */,
 				0037A02D0C18D74C0089AA1C /* OpenThreads.framework */,
 				5BDF58FE0C1FF8C4008DDEC0 /* osgdb_3dc.so */,
 				5BC2F6470C441D5200671A68 /* osgdb_txf.so */,
@@ -10207,6 +10219,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */,
 				5BC2F8030C468B0500671A68 /* OperationThread.cpp */,
 				5BC2F6320C441CE100671A68 /* GLObjects.cpp */,
 				5BC1910D0C15F48C002CF5BC /* Hint.cpp */,
@@ -10488,6 +10501,7 @@
 				BE11824A05D63C0A00EB53E5 /* Texture */,
 				BE11824B05D63C0A00EB53E5 /* Texture1D */,
 				BE11824C05D63C0A00EB53E5 /* Texture2D */,
+				AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */,
 				BE11824D05D63C0A00EB53E5 /* Texture3D */,
 				BE11824E05D63C0A00EB53E5 /* TextureCubeMap */,
 				BE11824F05D63C0A00EB53E5 /* TextureRectangle */,
@@ -11418,6 +11432,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0CCBC70C9F29CE00BD0077 /* Version in Headers */,
 				0037A0470C18D9810089AA1C /* Barrier in Headers */,
 				0037A0480C18D9810089AA1C /* Block in Headers */,
 				0037A0490C18D9810089AA1C /* Condition in Headers */,
@@ -12087,6 +12102,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0CCB980C9F208A00BD0077 /* Texture2DArray in Headers */,
 				5BC2F62F0C441CA200671A68 /* GLObjects in Headers */,
 				5BC2F8230C468B3100671A68 /* OperationThread in Headers */,
 				0037A0A50C18DA690089AA1C /* TemplatePrimitiveFunctor in Headers */,
@@ -15068,7 +15084,7 @@
 			);
 			name = osgmanipulator;
 			productName = osgtext;
-			productReference = D47A070A0B83413800E19024 /* osgshadow.app */;
+			productReference = D47A070A0B83413800E19024 /* osgmanipulator.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D4C6F2320B8316100052E667 /* osgShadow */ = {
@@ -15552,6 +15568,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0CCBC60C9F29A700BD0077 /* Version in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15909,6 +15926,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0CCB8F0C9F1FED00BD0077 /* Texture2DArray in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16870,6 +16888,7 @@
 				0037A0A70C18DBE20089AA1C /* PThreadBarrier.c++ in Sources */,
 				0037A0A90C18DBE30089AA1C /* PThreadCondition.c++ in Sources */,
 				0037A0AB0C18DBE40089AA1C /* PThreadMutex.c++ in Sources */,
+				AC0CCBCA0C9F2A2D00BD0077 /* Version.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17667,6 +17686,7 @@
 				5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */,
 				5BC2F6330C441CE100671A68 /* GLObjects.cpp in Sources */,
 				5BC2F8050C468B0500671A68 /* OperationThread.cpp in Sources */,
+				AC0CCB920C9F201E00BD0077 /* Texture2DArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

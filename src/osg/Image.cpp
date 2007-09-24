@@ -253,6 +253,8 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_RGB32UI_EXT): return 3;
         case(GL_RGB16F_ARB): return 3;
         case(GL_RGB32F_ARB): return 3;
+        case(GL_RGBA16F_ARB): return 4;
+        case(GL_RGBA32F_ARB): return 4;
         case(GL_RGBA): return 4;
         case(GL_BGRA): return 4;
         case(GL_LUMINANCE): return 1;

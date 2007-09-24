@@ -37,7 +37,9 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
     public:
     
     
-        ReaderWriter() {}
+        ReaderWriter():
+            osg::Object(true) {}
+            
         ReaderWriter(const ReaderWriter& rw,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             osg::Object(rw,copyop) {}
 
@@ -82,8 +84,13 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 };
             
 
-                Options():_objectCacheHint(CACHE_ARCHIVES) {}
-                Options(const std::string& str):_str(str), _objectCacheHint(CACHE_ARCHIVES) {}
+                Options():
+                    osg::Object(true),
+                    _objectCacheHint(CACHE_ARCHIVES) {}
+                Options(const std::string& str):
+                    osg::Object(true),
+                    _str(str), 
+                    _objectCacheHint(CACHE_ARCHIVES) {}
                 
                 Options(const Options& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
                     osg::Object(options,copyop),

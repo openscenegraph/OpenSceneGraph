@@ -1501,8 +1501,14 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 #else
         overlayPolytope.computeSilhoette(lookVector, corners);
 #endif
-        if (corners.empty()) return;
-        
+        if (corners.empty())
+        {
+            camera->setClearColor(_overlayClearColor);
+            //camera->setStateSet(overlayData._overlayStateSet.get());
+            camera->accept(*cv);
+            return;
+        }
+
         if (overlayData._geode.valid())
         {
             overlayData._geode->addDrawable(overlayPolytope.createDrawable(osg::Vec4d(1.0f,1.0f,1.0f,1.0f)));

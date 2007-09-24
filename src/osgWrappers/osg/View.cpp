@@ -69,6 +69,11 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, take, IN, osg::View &, rhs,
+	          Properties::VIRTUAL,
+	          __void__take__View_R1,
+	          "Take all the settings, Camera and Slaves from the passed in view, leaving it empty. ",
+	          "");
 	I_Method1(void, setStats, IN, osg::Stats *, stats,
 	          Properties::NON_VIRTUAL,
 	          __void__setStats__osg_Stats_P1,
@@ -152,6 +157,11 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_Method1(const osg::View::Slave &, getSlave, IN, unsigned int, pos,
 	          Properties::NON_VIRTUAL,
 	          __C5_Slave_R1__getSlave__unsigned_int,
+	          "",
+	          "");
+	I_Method1(unsigned int, findSlaveIndexForCamera, IN, osg::Camera *, camera,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__findSlaveIndexForCamera__osg_Camera_P1,
 	          "",
 	          "");
 	I_Method1(osg::View::Slave *, findSlaveForCamera, IN, osg::Camera *, camera,

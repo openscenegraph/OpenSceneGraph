@@ -672,18 +672,57 @@ int main( int argc, char **argv)
         return 0;
     }
     
+    if (arguments.read("--major-number"))
+    {
+        std::cout<<OPENSCENEGRAPH_MAJOR_VERSION<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--minor-number"))
+    {
+        std::cout<<OPENSCENEGRAPH_MINOR_VERSION<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--patch-number"))
+    {
+        std::cout<<OPENSCENEGRAPH_PATCH_VERSION<<std::endl;
+        return 0;
+    }
+    
     if (arguments.read("--soversion-number"))
     {
         std::cout<<osgGetSOVersion()<<std::endl;
         return 0;
     }
     
+
     if (arguments.read("--openthreads-version-number"))
     {
         std::cout<<OpenThreadsGetVersion()<<std::endl;
         return 0;
     }
     
+    
+    if (arguments.read("--openthreads-major-number"))
+    {
+        std::cout<<OPENTHREADS_MAJOR_VERSION<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--openthreads-minor-number"))
+    {
+        std::cout<<OPENTHREADS_MINOR_VERSION<<std::endl;
+        return 0;
+    }
+    
+    if (arguments.read("--openthreads-patch-number"))
+    {
+        std::cout<<OPENTHREADS_PATCH_VERSION<<std::endl;
+        return 0;
+    }
+    
+
     if (arguments.read("--openthreads-soversion-number"))
     {
         std::cout<<OpenThreadsGetSOVersion()<<std::endl;

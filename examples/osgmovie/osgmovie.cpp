@@ -323,8 +323,8 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--texture2D","Use Texture2D rather than TextureRectangle.");
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
-    arguments.getApplicationUsage()->addCommandLineOption("--dome","Use full dome distortion correction.");
-    arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie..");
+    arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie.");
+    arguments.getApplicationUsage()->addCommandLineOption("--flip","Flip the movie so top becomes bottom.");
     
     bool useTextureRectangle = true;
     bool useShader = false;

@@ -267,14 +267,14 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 }
 
 
-osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle)
+osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle, bool xyPlane)
 {
     bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
     if (useTextureRectangle)
     {
         osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
-                                           osg::Vec3(0.0f,0.0f,height),
+                                           xyPlane ? osg::Vec3(0.0f,height,0.0f) : osg::Vec3(0.0f,0.0f,height),
                                            0.0f, flip ? image->t() : 0.0, image->s(), flip ? 0.0 : image->t());
 
         osg::TextureRectangle* texture = new osg::TextureRectangle(image);
@@ -292,7 +292,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     {
         osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
                                            osg::Vec3(width,0.0f,0.0f),
-                                           osg::Vec3(0.0f,0.0f,height),
+                                           xyPlane ? osg::Vec3(0.0f,height,0.0f) : osg::Vec3(0.0f,0.0f,height),
                                            0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
                                     
         osg::Texture2D* texture = new osg::Texture2D(image);
@@ -309,324 +309,6 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
 }
 
-class DomeModel
-{
-public:
-
-    DomeModel(osg::ArgumentParser& arguments):
-        sphere_radius(1.0),
-        collar_radius(0.45),
-        rotationDegrees(180.0),
-        distance(0.0),
-        flip(false),
-        texcoord_flip(false)
-    {
-        if (arguments.read("--radius", sphere_radius)) {}
-        if (arguments.read("--collar", collar_radius)) {}
-        if (arguments.read("--rotation", rotationDegrees)) {}
-
-        distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
-        if (arguments.read("--distance", distance)) {}
-
-        if (arguments.read("--flip")) { flip = true; }
-    }
-    
-    double sphere_radius;
-    double collar_radius;
-    double rotationDegrees;
-    double distance;
-    bool flip;
-    bool texcoord_flip;
-
-};
-
-
-osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, DomeModel& domeModel)
-{
-    osg::Vec3d center(0.0,0.0,0.0);
-    osg::Vec3d eye(0.0,0.0,0.0);
-    
-    bool centerProjection = false;
-
-    osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, domeModel.distance);
-    
-    
-    osg::notify(osg::NOTICE)<<"Projector position = "<<projector<<std::endl;
-    osg::notify(osg::NOTICE)<<"distance = "<<domeModel.distance<<std::endl;
-
-
-    // create the quad to visualize.
-    osg::Geometry* geometry = new osg::Geometry();
-
-    geometry->setSupportsDisplayList(false);
-
-    osg::Vec3 xAxis(widthVector);
-    float width = widthVector.length();
-    xAxis /= width;
-
-    osg::Vec3 yAxis(heightVector);
-    float height = heightVector.length();
-    yAxis /= height;
-    
-    int noSteps = 160;
-
-    osg::Vec3Array* vertices = new osg::Vec3Array;
-    osg::Vec2Array* texcoords = new osg::Vec2Array;
-    osg::Vec4Array* colors = new osg::Vec4Array;
-
-    osg::Vec3 bottom = origin;
-    osg::Vec3 dx = xAxis*(width/((float)(noSteps-2)));
-    osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
-    
-    osg::Vec3 top = origin + yAxis*height;
-
-    osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
-    float screenRadius = heightVector.length() * 0.5f;
-
-    double rotation = osg::DegreesToRadians(domeModel.rotationDegrees);
-
-    osg::Vec3 cursor = bottom;
-    int i,j;
-    
-    int midSteps = noSteps/2;
-    
-    for(i=0;i<midSteps;++i)
-    {
-        osg::Vec3 cursor = bottom+dy*(float)i;
-        for(j=0;j<midSteps;++j)
-        {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), -delta.y());
-            theta += 2*osg::PI;
-
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
-
-            double f = domeModel.distance * sin(phi);
-            double e = domeModel.distance * cos(phi) + sqrt( domeModel.sphere_radius*domeModel.sphere_radius - f*f);
-            double l = e * cos(phi);
-            double h = e * sin(phi);
-            double gamma = atan2(h, l-domeModel.distance);
-
-            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
-
-            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
-
-            if (domeModel.flip)
-                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
-            else
-                vertices->push_back(cursor);
-            
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back( domeModel.texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-
-            if (j+1<midSteps) cursor += dx;
-        }
-
-        for(;j<noSteps;++j)
-        {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), -delta.y());
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
-
-            double f = domeModel.distance * sin(phi);
-            double e = domeModel.distance * cos(phi) + sqrt( domeModel.sphere_radius*domeModel.sphere_radius - f*f);
-            double l = e * cos(phi);
-            double h = e * sin(phi);
-            double gamma = atan2(h, l-domeModel.distance);
-
-            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
-
-            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
-
-            if (domeModel.flip)
-                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
-            else
-                vertices->push_back(cursor);
-
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back( domeModel.texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-
-            cursor += dx;
-        }
-        // osg::notify(osg::NOTICE)<<std::endl;
-    }
-    
-    for(;i<noSteps;++i)
-    {
-        osg::Vec3 cursor = bottom+dy*(float)i;
-        for(j=0;j<noSteps;++j)
-        {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), -delta.y());
-            if (theta<0.0) theta += 2*osg::PI;
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
-
-            double f = domeModel.distance * sin(phi);
-            double e = domeModel.distance * cos(phi) + sqrt( domeModel.sphere_radius*domeModel.sphere_radius - f*f);
-            double l = e * cos(phi);
-            double h = e * sin(phi);
-            double gamma = atan2(h, l-domeModel.distance);
-
-            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
-
-            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
-
-            if (domeModel.flip)
-                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
-            else
-                vertices->push_back(cursor);
-
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-            texcoords->push_back( domeModel.texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-
-            cursor += dx;
-        }
-
-        // osg::notify(osg::NOTICE)<<std::endl;
-    }
-
-    // pass the created vertex array to the points geometry object.
-    geometry->setVertexArray(vertices);
-
-    geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-
-    geometry->setTexCoordArray(0,texcoords);
-
-    for(i=0;i<noSteps-1;++i)
-    {
-        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::QUAD_STRIP);
-        for(j=0;j<noSteps;++j)
-        {
-            elements->push_back(j+(i+1)*noSteps);
-            elements->push_back(j+(i)*noSteps);
-        }
-        geometry->addPrimitiveSet(elements);
-    }
-    
-    return geometry;
-}
-
-
-void setDomeCorrection(osgViewer::Viewer& viewer, osg::ArgumentParser& arguments)
-{
-    // enforce single threading right now to avoid double buffering of RTT texture
-    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
- 
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
-    {
-        osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-    unsigned int screenNum = 0;
-    while (arguments.read("--screen",screenNum)) {}
-
-
-    unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(screenNum), width, height);
-
-    while (arguments.read("--width",width)) {}
-    while (arguments.read("--height",height)) {}
-
-    DomeModel domeModel(arguments);
-
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->screenNum = screenNum;
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = width;
-    traits->height = height;
-    traits->windowDecoration = false;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-    
-    
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    if (!gc)
-    {
-        osg::notify(osg::NOTICE)<<"GraphicsWindow has not been created successfully."<<std::endl;
-        return;
-    }
-
-    osg::Texture* texture = 0;
-    for(int i=1;i<arguments.argc() && !texture;++i)
-    {
-        if (arguments.isString(i))
-        {
-            osg::Image* image = osgDB::readImageFile(arguments[i]);
-            osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
-            if (imagestream) imagestream->play();
-
-            if (image)
-            {
-                domeModel.texcoord_flip = image->getOrigin()==osg::Image::TOP_LEFT;
-            
-#if 1            
-                texture = new osg::TextureRectangle(image);
-#else
-                texture = new osg::Texture2D(image);
-#endif
-            }
-        }
-    }
-    
-    if (!texture)
-    {
-        return;
-    }
-
-    // distortion correction set up.
-    {
-        osg::Geode* geode = new osg::Geode();
-        geode->addDrawable( createDomeDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), domeModel) );
-
-        // new we need to add the texture to the mesh, we do so by creating a 
-        // StateSet to contain the Texture StateAttribute.
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        stateset->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-        texture->setMaxAnisotropy(16.0f);
-        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
-#if 1        
-        osg::TexMat* texmat = new osg::TexMat;
-        texmat->setScaleByTextureRectangleSize(true);
-        stateset->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
-#endif
-        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext(gc.get());
-        camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-        camera->setClearColor( osg::Vec4(0.1,0.1,1.0,1.0) );
-        camera->setViewport(new osg::Viewport(0, 0, width, height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
-        camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
-        camera->setAllowEventFocus(false);
-        //camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
-        //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
-        
-        camera->setProjectionMatrixAsOrtho2D(0,width,0,height);
-        camera->setViewMatrix(osg::Matrix::identity());
-
-        // add subgraph to render
-        // camera->addChild(geode);
-        
-        camera->setName("DistortionCorrectionCamera");
-
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), true);
-
-        viewer.setSceneData(geode);
-    }
-    
-    
-    viewer.getCamera()->setNearFarRatio(0.0001f);
-}
-
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -640,6 +322,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--texture2D","Use Texture2D rather than TextureRectangle.");
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
     arguments.getApplicationUsage()->addCommandLineOption("--dome","Use full dome distortion correction.");
+    arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie..");
     
     bool useTextureRectangle = true;
     bool useShader = false;
@@ -663,89 +346,89 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    bool fullscreen = !arguments.read("--interactive");
 
 
-    if (arguments.read("--dome") || arguments.read("--puffer") )
-    {    
-        setDomeCorrection(viewer, arguments);
-    }
-    else
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
+    osg::StateSet* stateset = geode->getOrCreateStateSet();
+    stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+
+    if (useShader)
     {
-        osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-        osg::Vec3 pos(0.0f,0.0f,0.0f);
+        //useTextureRectangle = false;
 
-        osg::StateSet* stateset = geode->getOrCreateStateSet();
-        stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+        static const char *shaderSourceTextureRec = {
+            "uniform vec4 cutoff_color;\n"
+            "uniform samplerRect movie_texture;\n"
+            "void main(void)\n"
+            "{\n"
+            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
+            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
+            "    gl_FragColor = texture_color;\n"
+            "}\n"
+        };
 
-        if (useShader)
+        static const char *shaderSourceTexture2D = {
+            "uniform vec4 cutoff_color;\n"
+            "uniform sampler2D movie_texture;\n"
+            "void main(void)\n"
+            "{\n"
+            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"
+            "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
+            "    gl_FragColor = texture_color;\n"
+            "}\n"
+        };
+
+        osg::Program* program = new osg::Program;
+
+        program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
+                                           useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));
+
+        stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
+        stateset->addUniform(new osg::Uniform("movie_texture",0));
+
+        stateset->setAttribute(program);
+
+    }
+
+    osg::Vec3 pos(0.0f,0.0f,0.0f);
+    osg::Vec3 topleft = pos;
+    osg::Vec3 bottomright = pos;
+    
+    bool xyPlane = fullscreen;
+    
+    for(int i=1;i<arguments.argc();++i)
+    {
+        if (arguments.isString(i))
         {
-            //useTextureRectangle = false;
+            osg::Image* image = osgDB::readImageFile(arguments[i]);
+            osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
+            if (imagestream) imagestream->play();
 
-            static const char *shaderSourceTextureRec = {
-                "uniform vec4 cutoff_color;\n"
-                "uniform samplerRect movie_texture;\n"
-                "void main(void)\n"
-                "{\n"
-                "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
-                "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
-                "    gl_FragColor = texture_color;\n"
-                "}\n"
-            };
-
-            static const char *shaderSourceTexture2D = {
-                "uniform vec4 cutoff_color;\n"
-                "uniform sampler2D movie_texture;\n"
-                "void main(void)\n"
-                "{\n"
-                "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"
-                "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
-                "    gl_FragColor = texture_color;\n"
-                "}\n"
-            };
-
-            osg::Program* program = new osg::Program;
-
-            program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
-                                               useTextureRectangle ? shaderSourceTextureRec : shaderSourceTexture2D));
-
-            stateset->addUniform(new osg::Uniform("cutoff_color",osg::Vec4(0.1f,0.1f,0.1f,1.0f)));
-            stateset->addUniform(new osg::Uniform("movie_texture",0));
-
-            stateset->setAttribute(program);
-
-        }
-
-        for(int i=1;i<arguments.argc();++i)
-        {
-            if (arguments.isString(i))
+            if (image)
             {
-                osg::Image* image = osgDB::readImageFile(arguments[i]);
-                osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
-                if (imagestream) imagestream->play();
+                geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane));
+        
+                bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
 
-                if (image)
-                {
-                    geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle));
-
-                    pos.z() += image->t()*1.5f;
-                }
-                else
-                {
-                    std::cout<<"Unable to read file "<<arguments[i]<<std::endl;
-                }            
+                pos.y() += image->t()*1.5f;
             }
-        }
-
-        // set the scene to render
-        viewer.setSceneData(geode.get());
-
-        if (viewer.getSceneData()==0)
-        {
-            arguments.getApplicationUsage()->write(std::cout);
-            return 1;
+            else
+            {
+                std::cout<<"Unable to read file "<<arguments[i]<<std::endl;
+            }            
         }
     }
     
+    // set the scene to render
+    viewer.setSceneData(geode.get());
+
+    if (viewer.getSceneData()==0)
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
@@ -762,10 +445,22 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    if (fullscreen)
+    {
+        viewer.realize();
 
+        viewer.getCamera()->setViewMatrix(osg::Matrix::identity());
+        viewer.getCamera()->setProjectionMatrixAsOrtho2D(topleft.x(),bottomright.x(),topleft.y(),bottomright.y());
 
-    // create the windows and run the threads.
-    return viewer.run();
-
-
+        while(!viewer.done())
+        {
+            viewer.frame();
+        }
+        return 0;
+    }
+    else
+    {
+        // create the windows and run the threads.
+        return viewer.run();
+    }
 }

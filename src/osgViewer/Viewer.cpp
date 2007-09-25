@@ -77,7 +77,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     while (arguments.read("--window",x,y,width,height)) {}
     
     bool ss3d = false;
-    if ((ss3d=arguments.read("--3d-ss")) || arguments.read("--panoramic-ss"))
+    if ((ss3d=arguments.read("--3d-sd")) || arguments.read("--panoramic-sd"))
     {
         double radius = 1.0;
         while (arguments.read("--radius",radius)) {}
@@ -94,10 +94,12 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
 
         if (ss3d)
         {
+            setThreadingModel(SingleThreaded);
             setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap.get());
         }
         else
         {
+            setThreadingModel(SingleThreaded);
             setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap.get());
         }
     }

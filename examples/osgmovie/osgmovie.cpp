@@ -267,9 +267,11 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 }
 
 
-osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle, bool xyPlane)
+osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,float height, osg::Image* image, bool useTextureRectangle, bool xyPlane, bool option_flip)
 {
     bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
+    if (option_flip) flip = !flip;
+    
     if (useTextureRectangle)
     {
         osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
@@ -347,7 +349,7 @@ int main(int argc, char** argv)
     }
 
     bool fullscreen = !arguments.read("--interactive");
-
+    bool flip = arguments.read("--flip");
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
@@ -408,7 +410,7 @@ int main(int argc, char** argv)
 
             if (image)
             {
-                geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane));
+                geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane, flip));
         
                 bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
 

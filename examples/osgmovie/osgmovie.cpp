@@ -645,7 +645,7 @@ int main(int argc, char** argv)
     bool useShader = false;
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
     
     if (arguments.argc()<=1)
     {

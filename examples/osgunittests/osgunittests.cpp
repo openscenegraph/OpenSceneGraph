@@ -24,6 +24,8 @@
 #include <osg/Timer>
 #include <osg/io_utils>
 
+#include <OpenThreads/Thread>
+
 #include "UnitTestFramework.h"
 #include "performance.h"
 
@@ -381,6 +383,26 @@ void testQuat(const osg::Vec3d& quat_scale)
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<"rotation = "<<quat<<", expected quat = (0,0,0,1)"<<std::endl;
 }
 
+class MyThread : public OpenThreads::Thread {
+public:
+  void run(void) { }
+};
+
+void testThreadInitAndExit()
+{
+    std::cout<<"******   Running thread start and delete test   ****** "<<std::endl;
+
+    {
+        MyThread thread;
+        thread.startThread();
+    }
+    
+    // add a sleep to allow the thread start to fall over it its going to.
+    OpenThreads::Thread::microSleep(500000);
+    
+    std::cout<<"pass    thread start and delete test"<<std::endl<<std::endl;
+}
+
 
 int main( int argc, char** argv )
 {
@@ -414,7 +436,10 @@ int main( int argc, char** argv )
     while (arguments.read("sizeof")) printSizeOfTest = true; 
 
     bool printQuatTest = false; 
-    while (arguments.read("quat")) printQuatTest = true; 
+    while (arguments.read("quat")) printQuatTest = true;
+    
+    bool doTestThreadInitAndExit = false;
+    while (arguments.read("thread")) doTestThreadInitAndExit = true;
 
     osg::Vec3d quat_scale(1.0,1.0,1.0); 
     while (arguments.read("quat_scaled", quat_scale.x(), quat_scale.y(), quat_scale.z() )) printQuatTest = true; 
@@ -499,6 +524,11 @@ int main( int argc, char** argv )
          osgUtx::QualifiedTestPrinter printer;
          osgUtx::TestGraph::instance().root()->accept( printer );    
          std::cout<<std::endl;
+    }
+
+    if (doTestThreadInitAndExit)
+    {
+        testThreadInitAndExit();
     }
 
     std::cout<<"******   Running tests   ******"<<std::endl;

@@ -194,42 +194,55 @@ Display* GraphicsWindowX11::getDisplayToUse() const
 
 bool GraphicsWindowX11::createVisualInfo()
 {
-    typedef std::vector<int> Attributes;
-    Attributes attributes;
-    
-    attributes.push_back(GLX_USE_GL);
-    
-    attributes.push_back(GLX_RGBA);
-    
-    if (_traits->doubleBuffer) attributes.push_back(GLX_DOUBLEBUFFER);
-    
-    if (_traits->quadBufferStereo) attributes.push_back(GLX_STEREO);
-    
-    attributes.push_back(GLX_RED_SIZE); attributes.push_back(_traits->red);
-    attributes.push_back(GLX_GREEN_SIZE); attributes.push_back(_traits->green);
-    attributes.push_back(GLX_BLUE_SIZE); attributes.push_back(_traits->blue);
-    attributes.push_back(GLX_DEPTH_SIZE); attributes.push_back(_traits->depth);
-    
-    if (_traits->alpha) { attributes.push_back(GLX_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
-    
-    if (_traits->stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
+    if( _window != 0 )
+    {
+        XWindowAttributes watt;
+        XGetWindowAttributes( _display, _window, &watt );
+        XVisualInfo temp;
+        temp.visualid = XVisualIDFromVisual(watt.visual);
+        int n;
+        _visualInfo = XGetVisualInfo( _display, VisualIDMask, &temp, &n );
+    }
+    else
+    {
 
-#if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
-
-    if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
-    if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
-
-#endif
-    // TODO
-    //  GLX_AUX_BUFFERS
-    //  GLX_ACCUM_RED_SIZE
-    //  GLX_ACCUM_GREEN_SIZE
-    //  GLX_SAMPLE_BUFFERS
-    //  GLX_SAMPLES
+        typedef std::vector<int> Attributes;
+        Attributes attributes;
+        
+        attributes.push_back(GLX_USE_GL);
+        
+        attributes.push_back(GLX_RGBA);
+        
+        if (_traits->doubleBuffer) attributes.push_back(GLX_DOUBLEBUFFER);
+        
+        if (_traits->quadBufferStereo) attributes.push_back(GLX_STEREO);
+        
+        attributes.push_back(GLX_RED_SIZE); attributes.push_back(_traits->red);
+        attributes.push_back(GLX_GREEN_SIZE); attributes.push_back(_traits->green);
+        attributes.push_back(GLX_BLUE_SIZE); attributes.push_back(_traits->blue);
+        attributes.push_back(GLX_DEPTH_SIZE); attributes.push_back(_traits->depth);
+        
+        if (_traits->alpha) { attributes.push_back(GLX_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
+        
+        if (_traits->stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
     
-    attributes.push_back(None);
+    #if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
     
-    _visualInfo = glXChooseVisual( _display, _traits->screenNum, &(attributes.front()) );
+        if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
+        if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
+    
+    #endif
+        // TODO
+        //  GLX_AUX_BUFFERS
+        //  GLX_ACCUM_RED_SIZE
+        //  GLX_ACCUM_GREEN_SIZE
+        //  GLX_SAMPLE_BUFFERS
+        //  GLX_SAMPLES
+        
+        attributes.push_back(None);
+        
+        _visualInfo = glXChooseVisual( _display, _traits->screenNum, &(attributes.front()) );
+    }
 
     return _visualInfo != 0;
 }
@@ -335,6 +348,26 @@ bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width
     usleep(100000);
     
     return true;
+}
+
+void GraphicsWindowX11::setWindowName(const std::string& name)
+{
+    if( _window ) return;
+
+    //    char *slist[] = { name.c_str(), 0L };
+    //    XTextProperty xtp;
+
+    //    XStringListToTextProperty( slist, 1, &xtp );
+
+    Display* display = getDisplayToUse();
+    if( !display ) return;
+
+    //    XSetWMName( display, _window, &xtp );
+    XStoreName( display, _window, name.c_str() );
+    XSetIconName( display, _window, name.c_str() );
+
+    XFlush(display); 
+    XSync(display,0);
 }
 
 void GraphicsWindowX11::setCursor(MouseCursor mouseCursor)
@@ -454,14 +487,17 @@ void GraphicsWindowX11::init()
         _valid = false;
         return;
     }
-    
+
     getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
-    
-    // WindowData* inheritedWindowData =  dynamic_cast<WindowData*>(_traits->inheritedWindowData.get());
+
+    WindowData* inheritedWindowData = dynamic_cast<WindowData*>(_traits->inheritedWindowData.get());
+    Window windowHandle = inheritedWindowData ? inheritedWindowData->_window : 0;
+
+    _ownsWindow = windowHandle == 0;
+
+
 
     _display = XOpenDisplay(_traits->displayName().c_str());
-    
-    unsigned int screen = _traits->screenNum;
 
     if (!_display)
     {
@@ -470,7 +506,7 @@ void GraphicsWindowX11::init()
         return;
     }
 
-     // Query for GLX extension
+    // Query for GLX extension
     int errorBase, eventBase;
     if( glXQueryExtension( _display, &errorBase, &eventBase)  == False )
     {
@@ -481,7 +517,7 @@ void GraphicsWindowX11::init()
         _valid = false;
         return;
     }
-    
+
     // osg::notify(osg::NOTICE)<<"GLX extension, errorBase="<<errorBase<<" eventBase="<<eventBase<<std::endl;
 
     if (!createVisualInfo())
@@ -503,8 +539,7 @@ void GraphicsWindowX11::init()
             return;
         }    
     }
-    
-    
+
     GLXContext sharedContextGLX = NULL;
 
     // get any shared GLX contexts    
@@ -532,7 +567,21 @@ void GraphicsWindowX11::init()
         _valid = false;
         return;
     }
-    
+
+    _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
+    _valid = _initialized;
+
+    if (_valid == false)
+    {
+        _display = 0;
+        XCloseDisplay( _display );
+    }
+}
+
+bool GraphicsWindowX11::createWindow()
+{
+    unsigned int screen = _traits->screenNum;
+
     _eventDisplay = XOpenDisplay(_traits->displayName().c_str());
 
     _parent = RootWindow( _display, screen );
@@ -566,11 +615,8 @@ void GraphicsWindowX11::init()
     if (!_window)
     {
         osg::notify(osg::NOTICE)<<"Error: Unable to create Window."<<std::endl;
-        XCloseDisplay( _display );
-        _display = 0;
         _glxContext = 0;
-        _valid = false;
-        return;
+        return false;
     }
 
 
@@ -613,11 +659,52 @@ void GraphicsWindowX11::init()
                                      KeyPressMask | KeyReleaseMask |
                                      PointerMotionMask  | ButtonPressMask | ButtonReleaseMask);
 
+    setWindowName(_traits->windowName);
+
     XFlush( _eventDisplay );
     XSync( _eventDisplay, 0 );
 
-    _valid = true;
-    _initialized = true;
+    return true;
+}
+
+bool GraphicsWindowX11::setWindow(Window window)
+{
+    if (_initialized)
+    {
+        osg::notify(osg::NOTICE) << "GraphicsWindowX11::setWindow() - Window already created; it cannot be changed";
+        return false;
+    }
+    
+    if (window==0)
+    {
+        osg::notify(osg::NOTICE) << "GraphicsWindowX11::setWindow() - Invalid window handle passed ";
+        return false;
+    }
+    
+    _window = window;
+    if (_window==0)
+    {
+        osg::notify(osg::NOTICE) << "GraphicsWindowX11::setWindow() - Unable to retrieve native window handle";
+        return false;
+    }
+
+    XWindowAttributes watt;
+    XGetWindowAttributes( _display, _window, &watt );
+    _traits->x = watt.x;
+    _traits->y = watt.y;
+    _traits->width = watt.width;
+    _traits->height = watt.height;
+
+    _parent = DefaultRootWindow( _display );
+
+    //_traits->supportsResize = false;
+    _traits->windowDecoration = false;
+    _eventDisplay = XOpenDisplay(_traits->displayName().c_str());
+
+    XFlush( _eventDisplay );
+    XSync( _eventDisplay, 0 );
+
+    return true;
 }
 
 bool GraphicsWindowX11::realizeImplementation()
@@ -725,7 +812,7 @@ void GraphicsWindowX11::swapBuffersImplementation()
 
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    glXSwapBuffers(_display, _window); 
+    glXSwapBuffers(_display, _window);
 
     while( XPending(_display) )
     {
@@ -780,6 +867,7 @@ void GraphicsWindowX11::checkEvents()
                 if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
                     osg::notify(osg::NOTICE)<<"DeleteWindow event recieved"<<std::endl;
+                    // FIXME only do if _ownsWindow ?
                     destroyWindowRequested = true;
                     getEventQueue()->closeWindow(eventTime);
                 }
@@ -1057,7 +1145,6 @@ void GraphicsWindowX11::grabFocusIfPointerInWindow()
 #endif
     }
 }
-
 
 void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 {

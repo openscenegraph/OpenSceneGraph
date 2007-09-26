@@ -60,6 +60,15 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
 
         typedef osg::ArgumentParser::Parameter Parameter;
 
+        bool read(Parameter value1);
+        bool read(Parameter value1, Parameter value2);
+        bool read(Parameter value1, Parameter value2, Parameter value3);
+        bool read(Parameter value1, Parameter value2, Parameter value3, Parameter value4);
+        bool read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5);
+        bool read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6);
+        bool read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7);
+        bool read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7, Parameter value8);
+
         bool read(const char* str);
         bool read(const char* str, Parameter value1);
         bool read(const char* str, Parameter value1, Parameter value2);

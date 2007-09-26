@@ -98,6 +98,150 @@ osg::Node* Input::readNode(const std::string& fileName)
     return readNodeFile(fileName,_options.get());
 }
 
+bool Input::read(Parameter value1)
+{
+    if (value1.valid((*this)[0].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        (*this) += 1;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        (*this) += 2;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2, Parameter value3)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()) &&
+        value3.valid((*this)[2].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        value3.assign((*this)[2].getStr());
+        (*this) += 3;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2, Parameter value3, Parameter value4)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()) &&
+        value3.valid((*this)[2].getStr()) &&
+        value4.valid((*this)[3].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        value3.assign((*this)[2].getStr());
+        value4.assign((*this)[3].getStr());
+        (*this) += 4;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()) &&
+        value3.valid((*this)[2].getStr()) &&
+        value4.valid((*this)[3].getStr()) &&
+        value5.valid((*this)[4].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        value3.assign((*this)[2].getStr());
+        value4.assign((*this)[3].getStr());
+        value5.assign((*this)[4].getStr());
+        (*this) += 5;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()) &&
+        value3.valid((*this)[2].getStr()) &&
+        value4.valid((*this)[3].getStr()) &&
+        value5.valid((*this)[4].getStr()) &&
+        value6.valid((*this)[5].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        value3.assign((*this)[2].getStr());
+        value4.assign((*this)[3].getStr());
+        value5.assign((*this)[4].getStr());
+        value6.assign((*this)[5].getStr());
+        (*this) += 6;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()) &&
+        value3.valid((*this)[2].getStr()) &&
+        value4.valid((*this)[3].getStr()) &&
+        value5.valid((*this)[4].getStr()) &&
+        value6.valid((*this)[5].getStr()) &&
+        value7.valid((*this)[6].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        value3.assign((*this)[2].getStr());
+        value4.assign((*this)[3].getStr());
+        value5.assign((*this)[4].getStr());
+        value6.assign((*this)[5].getStr());
+        value7.assign((*this)[6].getStr());
+        (*this) += 7;
+        return true;
+    }
+    else return false;
+}
+
+bool Input::read(Parameter value1, Parameter value2, Parameter value3, Parameter value4, Parameter value5, Parameter value6, Parameter value7, Parameter value8)
+{
+    if (value1.valid((*this)[0].getStr()) &&
+        value2.valid((*this)[1].getStr()) &&
+        value3.valid((*this)[2].getStr()) &&
+        value4.valid((*this)[3].getStr()) &&
+        value5.valid((*this)[4].getStr()) &&
+        value6.valid((*this)[5].getStr()) &&
+        value7.valid((*this)[6].getStr()) &&
+        value8.valid((*this)[7].getStr()))
+    {
+        value1.assign((*this)[0].getStr());
+        value2.assign((*this)[1].getStr());
+        value3.assign((*this)[2].getStr());
+        value4.assign((*this)[3].getStr());
+        value5.assign((*this)[4].getStr());
+        value6.assign((*this)[5].getStr());
+        value7.assign((*this)[6].getStr());
+        value8.assign((*this)[7].getStr());
+        (*this) += 8;
+        return true;
+    }
+    else return false;
+}
+
 bool Input::read(const char* str)
 {
     if ((*this)[0].matchWord(str))

@@ -21,6 +21,79 @@ osgDB::RegisterDotOsgWrapperProxy View_Proxy
     View_writeLocalData
 );
 
+osg::Image* readIntensityImage(osgDB::Input& fr, bool& itrAdvanced)
+{
+    if (fr.matchSequence("intensityMap {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        typedef std::map<float,float> IntensityMap;
+        IntensityMap intensityMap;
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            float position, intensity;
+            if (fr.read(position,intensity))
+            {
+                intensityMap[position] = intensity;
+            }
+            else
+            {
+                ++fr;
+            }
+        }
+        ++fr;
+        
+        itrAdvanced = true;
+
+        if (!intensityMap.empty())
+        {
+            unsigned int numPixels = 256;
+        
+            osg::Image* image = new osg::Image;
+            image->allocateImage(1,numPixels,1,GL_LUMINANCE,GL_FLOAT);
+        
+            float intensityMultiplier = 0.01f;
+            float* ptr = reinterpret_cast<float*>(image->data());
+            for(unsigned int i=0; i<numPixels; ++i)
+            {
+                float position = (1.0f - float(i)/float(numPixels-1)) * 180.0f;
+                float intensity = 1.0f;
+                if (position <= intensityMap.begin()->first)
+                {
+                    intensity = intensityMap.begin()->second * intensityMultiplier;
+                }
+                else if (position>=intensityMap.rbegin()->first)
+                {
+                    intensity = intensityMap.rbegin()->second * intensityMultiplier;
+                }
+                else
+                {
+                    IntensityMap::iterator above_itr = intensityMap.lower_bound(position);
+                    if (above_itr != intensityMap.begin())
+                    {
+                        IntensityMap::iterator below_itr = above_itr;
+                        --below_itr;
+                        float r = (position - below_itr->first) / (above_itr->first - below_itr->first);
+                        intensity = (below_itr->second + (above_itr->second - below_itr->second) * r) * intensityMultiplier;
+                    }
+                    else
+                    {
+                        intensity = above_itr->second * intensityMultiplier;
+                    }
+                    
+                }
+                
+                *ptr++ = intensity;
+            }
+            
+            return image;
+        }
+        
+    }
+    return 0;
+}
+
 bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     osgViewer::View& view = static_cast<osgViewer::View&>(obj);
@@ -34,7 +107,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
         double collar=0.45;
         unsigned int screenNum=0;
         std::string filename;
-        osg::Image* intensityMap=0;
+        osg::ref_ptr<osg::Image> intensityMap;
         int entry = fr[0].getNoNestedBrackets();
 
         fr += 2;
@@ -45,7 +118,8 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             if (fr.read("radius",radius)) local_itrAdvanced = true;
             if (fr.read("collar",collar)) local_itrAdvanced = true;
             if (fr.read("screenNum",screenNum)) local_itrAdvanced = true;
-            if (fr.read("intensityMap",filename)) local_itrAdvanced = true;
+            if (fr.read("intensityFile",filename)) local_itrAdvanced = true;
+            if (fr.matchSequence("intensityMap {")) intensityMap = readIntensityImage(fr,local_itrAdvanced);
             
             if (!local_itrAdvanced) ++fr;
         }
@@ -60,8 +134,8 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             intensityMap = osgDB::readImageFile(filename);
         }
 
-        if (matchedFirst) view.setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap);
-        else view.setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap);
+        if (matchedFirst) view.setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap.get());
+        else view.setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap.get());
     }
 
     int x = 0;

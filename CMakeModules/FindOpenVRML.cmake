@@ -8,6 +8,7 @@
 # correspond to the ./configure --prefix=$OPENVRML_DIR
 #
 # Created by Robert Osfield. 
+# Modified for the debug library by Jean-Sébastien Guay.
 
 FIND_PATH(OPENVRML_INCLUDE_DIR openvrml/openvrml/common.h
     $ENV{OPENVRML_DIR}/include
@@ -29,6 +30,26 @@ FIND_PATH(OPENVRML_INCLUDE_DIR openvrml/openvrml/common.h
 
 FIND_LIBRARY(OPENVRML_LIBRARY 
     NAMES openvrml
+    PATHS
+    $ENV{OPENVRML_DIR}/lib
+    $ENV{OPENVRML_DIR}
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
+    $ENV{OSG_ROOT}/lib
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/lib
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+    /usr/freeware/lib64
+)
+
+FIND_LIBRARY(OPENVRML_LIBRARY_DEBUG 
+    NAMES openvrmld
     PATHS
     $ENV{OPENVRML_DIR}/lib
     $ENV{OPENVRML_DIR}

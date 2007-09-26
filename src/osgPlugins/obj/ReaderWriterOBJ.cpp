@@ -8,6 +8,9 @@
  * Modified by Robert Osfield to support per Drawable coord, normal and
  * texture coord arrays, bug fixes, and support for texture mapping.
  *
+ * Writing support added 2007 by Stephan Huber, http://digitalmind.de, 
+ * some ideas taken from the dae-plugin
+ *
  * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for 
  * real-time rendering of large 3D photo-realistic models. 
  * The OSG homepage is http://www.openscenegraph.org/
@@ -41,6 +44,7 @@
 #include <osgUtil/Tessellator>
 
 #include "obj.h"
+#include "OBJWriterNodeVisitor.h"
 
 #include <map>
 #include <set>
@@ -58,6 +62,56 @@ public:
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
+    
+    virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const 
+    {
+        const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
+        if (node)
+            return writeNode(*node, fileName, options);
+        else 
+            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+    }
+    
+    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const 
+    { 
+        if (!acceptsExtension(osgDB::getFileExtension(fileName)))
+            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+            
+        std::ofstream f(fileName.c_str());
+        std::string materialFile = osgDB::getNameLessExtension(fileName) + ".mtl";
+        OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile));
+        
+        // we must cast away constness
+        (const_cast<osg::Node*>(&node))->accept(nv);
+        
+        std::ofstream mf(materialFile.c_str());
+        nv.writeMaterials(mf);
+         
+        return WriteResult(WriteResult::FILE_SAVED); 
+    }
+
+    
+    virtual WriteResult writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL) const 
+    {
+        const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
+        if (node)
+            return writeNode(*node, fout, options);
+        else 
+            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+    }
+
+    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* =NULL) const 
+    { 
+        // writing to a stream does not support materials
+        
+        OBJWriterNodeVisitor nv(fout);
+        
+        // we must cast away constness
+        (const_cast<osg::Node*>(&node))->accept(nv);
+    
+        return WriteResult(WriteResult::FILE_SAVED); 
+    }
+
 
 
 protected:

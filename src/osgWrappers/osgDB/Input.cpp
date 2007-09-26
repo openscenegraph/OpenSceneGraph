@@ -111,6 +111,46 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	          __void__registerUniqueIDForObject__C5_std_string_R1__osg_Object_P1,
 	          "",
 	          "");
+	I_Method1(bool, read, IN, osgDB::Input::Parameter, value1,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter,
+	          "",
+	          "");
+	I_Method2(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method3(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2, IN, osgDB::Input::Parameter, value3,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method4(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2, IN, osgDB::Input::Parameter, value3, IN, osgDB::Input::Parameter, value4,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method5(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2, IN, osgDB::Input::Parameter, value3, IN, osgDB::Input::Parameter, value4, IN, osgDB::Input::Parameter, value5,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method6(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2, IN, osgDB::Input::Parameter, value3, IN, osgDB::Input::Parameter, value4, IN, osgDB::Input::Parameter, value5, IN, osgDB::Input::Parameter, value6,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method7(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2, IN, osgDB::Input::Parameter, value3, IN, osgDB::Input::Parameter, value4, IN, osgDB::Input::Parameter, value5, IN, osgDB::Input::Parameter, value6, IN, osgDB::Input::Parameter, value7,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
+	I_Method8(bool, read, IN, osgDB::Input::Parameter, value1, IN, osgDB::Input::Parameter, value2, IN, osgDB::Input::Parameter, value3, IN, osgDB::Input::Parameter, value4, IN, osgDB::Input::Parameter, value5, IN, osgDB::Input::Parameter, value6, IN, osgDB::Input::Parameter, value7, IN, osgDB::Input::Parameter, value8,
+	          Properties::NON_VIRTUAL,
+	          __bool__read__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
+	          "",
+	          "");
 	I_Method1(bool, read, IN, const char *, str,
 	          Properties::NON_VIRTUAL,
 	          __bool__read__C5_char_P1,

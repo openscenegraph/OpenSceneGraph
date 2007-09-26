@@ -2172,6 +2172,10 @@
 		D4035FDA0B52EB2100CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4035FE10B52EB3A00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4035FE20B52EB4D00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D41CA8FB0CAAB10300D6176C /* OBJWriterNodeVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41CA8F90CAAB10200D6176C /* OBJWriterNodeVisitor.cpp */; };
+		D41CA8FC0CAAB10300D6176C /* OBJWriterNodeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */; };
+		D41CA9000CAAB58F00D6176C /* ParallelSplitShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */; };
+		D41CA9020CAAB5A500D6176C /* ParallelSplitShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D42FE5860B542DD10058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D42FE5870B542DD10058A380 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D42FE5880B542DD10058A380 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -5946,6 +5950,10 @@
 		BE11891D05D7665600EB53E5 /* WriteFile */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = WriteFile; path = ../../include/osgDB/WriteFile; sourceTree = SOURCE_ROOT; };
 		D40359220B512B6500CB9E15 /* GraphicsWindowCarbon.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsWindowCarbon.cpp; sourceTree = "<group>"; };
 		D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = GraphicsWindowCarbon; path = api/Carbon/GraphicsWindowCarbon; sourceTree = "<group>"; };
+		D41CA8F90CAAB10200D6176C /* OBJWriterNodeVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OBJWriterNodeVisitor.cpp; sourceTree = "<group>"; };
+		D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OBJWriterNodeVisitor.h; sourceTree = "<group>"; };
+		D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelSplitShadowMap.cpp; sourceTree = "<group>"; };
+		D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
 		D47A06810B833F6E00E19024 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A068F0B83404400E19024 /* AntiSquish */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = AntiSquish; sourceTree = "<group>"; };
 		D47A06900B83404400E19024 /* Command */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Command; sourceTree = "<group>"; };
@@ -8192,6 +8200,8 @@
 		001D018E065AA9AB003310BF /* obj */ = {
 			isa = PBXGroup;
 			children = (
+				D41CA8F90CAAB10200D6176C /* OBJWriterNodeVisitor.cpp */,
+				D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */,
 				00E281BC07676CB4005AEE61 /* obj.cpp */,
 				00E281BD07676CB5005AEE61 /* obj.h */,
 				001D0192065AA9AB003310BF /* ReaderWriterOBJ.cpp */,
@@ -10769,6 +10779,7 @@
 		D4C6F26C0B8316D50052E667 /* osgShadow */ = {
 			isa = PBXGroup;
 			children = (
+				D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */,
 				D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */,
 				D4C6F26D0B8316D50052E667 /* Export */,
 				D4C6F26E0B8316D50052E667 /* OccluderGeometry */,
@@ -10786,6 +10797,7 @@
 		D4C6F28F0B83171D0052E667 /* osgShadow */ = {
 			isa = PBXGroup;
 			children = (
+				D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */,
 				D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */,
 				D4C6F27F0B8317150052E667 /* OccluderGeometry.cpp */,
 				D4C6F2810B8317150052E667 /* ShadowedScene.cpp */,
@@ -11122,6 +11134,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E281BF07676CB7005AEE61 /* obj.h in Headers */,
+				D41CA8FC0CAAB10300D6176C /* OBJWriterNodeVisitor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12380,6 +12393,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D41CA9020CAAB5A500D6176C /* ParallelSplitShadowMap in Headers */,
 				D48ED2AC0C71D3AD00A72121 /* SoftShadowMap in Headers */,
 				D4C6F2760B8316D60052E667 /* Export in Headers */,
 				D4C6F2770B8316D60052E667 /* OccluderGeometry in Headers */,
@@ -16431,6 +16445,7 @@
 			files = (
 				001D0197065AA9AB003310BF /* ReaderWriterOBJ.cpp in Sources */,
 				00E281BE07676CB7005AEE61 /* obj.cpp in Sources */,
+				D41CA8FB0CAAB10300D6176C /* OBJWriterNodeVisitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17812,6 +17827,7 @@
 				D4C6F28D0B8317150052E667 /* ShadowVolume.cpp in Sources */,
 				D4C6F28E0B8317150052E667 /* Version.cpp in Sources */,
 				D48ED2AA0C71D39700A72121 /* SoftShadowMap.cpp in Sources */,
+				D41CA9000CAAB58F00D6176C /* ParallelSplitShadowMap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

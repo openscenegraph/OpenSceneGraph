@@ -22,6 +22,7 @@
 
 #include <osgViewer/Export>
 
+
 extern "C"
 {
     typedef void (* CGraphicsWindowFunction) (void);
@@ -113,6 +114,13 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
             BottomRightCorner,
             BottomLeftCorner
         };
+
+        /** Set the name of the window */
+        virtual void setWindowName(const std::string& /*name*/) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowName(..) not implemented."<<std::endl; }
+
+        /** Return the name of the window */
+        virtual std::string getWindowName() { return _traits.valid() ? _traits->windowName : ""; }
+
         /** Switch on/off the cursor.*/
         virtual void useCursor(bool cursorOn) { setCursor(cursorOn ? InheritCursor : NoCursor); }
 

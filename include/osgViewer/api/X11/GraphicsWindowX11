@@ -110,6 +110,9 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         /** Set the window's position and size.*/
         virtual bool setWindowRectangleImplementation(int x, int y, int width, int height);
 
+        /** Set the name of the window */
+        virtual void setWindowName(const std::string& name);
+
         /** Set mouse cursor to a specific shape.*/
         virtual void setCursor(MouseCursor cursor);
 
@@ -144,6 +147,10 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Cursor getOrCreateCursor(MouseCursor mouseShape);
         
         bool createVisualInfo();
+
+        bool createWindow();
+
+        bool setWindow(Window window);
         
         void init();
 
@@ -164,6 +171,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         
         bool            _initialized;
         bool            _realized;
+        bool            _ownsWindow;
 
         double          _timeOfLastCheckEvents;
 

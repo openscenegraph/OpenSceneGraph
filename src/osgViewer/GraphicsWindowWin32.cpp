@@ -1777,6 +1777,12 @@ bool GraphicsWindowWin32::setWindowRectangleImplementation(int x, int y, int wid
     return true;
 }
 
+void GraphicsWindowWin32::setWindowName( const std::string & name )
+{
+    _traits->windowName = name;
+    SetWindowText(_hwnd, name.c_str());
+}
+
 void GraphicsWindowWin32::useCursor( bool cursorOn )
 {
     _traits->useCursor = cursorOn;

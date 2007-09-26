@@ -131,6 +131,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__grabFocusIfPointerInWindow,
 	          "Get focus on if the pointer is in this window. ",
 	          "");
+	I_Method1(void, setWindowName, IN, const std::string &, x,
+	          Properties::VIRTUAL,
+	          __void__setWindowName__C5_std_string_R1,
+	          "Set the name of the window. ",
+	          "");
+	I_Method0(std::string, getWindowName,
+	          Properties::VIRTUAL,
+	          __std_string__getWindowName,
+	          "Return the name of the window. ",
+	          "");
 	I_Method1(void, useCursor, IN, bool, cursorOn,
 	          Properties::VIRTUAL,
 	          __void__useCursor__bool,
@@ -213,6 +223,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_SimpleProperty(bool, WindowDecorationImplementation, 
 	                 0, 
 	                 __bool__setWindowDecorationImplementation__bool);
+	I_SimpleProperty(std::string, WindowName, 
+	                 __std_string__getWindowName, 
+	                 __void__setWindowName__C5_std_string_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)

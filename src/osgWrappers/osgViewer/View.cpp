@@ -25,7 +25,6 @@
 #include <osgGA/MatrixManipulator>
 #include <osgUtil/LineSegmentIntersector>
 #include <osgUtil/SceneView>
-#include <osgViewer/Scene>
 #include <osgViewer/View>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -104,12 +103,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
-	I_Method0(osgViewer::Scene *, getScene,
+	I_Method0(Scene *, getScene,
 	          Properties::NON_VIRTUAL,
 	          __Scene_P1__getScene,
 	          "",
 	          "");
-	I_Method0(const osgViewer::Scene *, getScene,
+	I_Method0(const Scene *, getScene,
 	          Properties::NON_VIRTUAL,
 	          __C5_Scene_P1__getScene,
 	          "",
@@ -342,7 +341,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(float, FusionDistanceValue, 
 	                 __float__getFusionDistanceValue, 
 	                 0);
-	I_SimpleProperty(osgViewer::Scene *, Scene, 
+	I_SimpleProperty(Scene *, Scene, 
 	                 __Scene_P1__getScene, 
 	                 0);
 	I_SimpleProperty(osg::Node *, SceneData, 

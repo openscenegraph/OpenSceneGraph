@@ -48,6 +48,7 @@ using namespace osgShadow;
 
 
 #define ZNEAR_MIN_FROM_LIGHT_SOURCE 2.0
+#define MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR 0.0
 
 //#define SHOW_SHADOW_TEXTURE_DEBUG    // DEPTH instead of color for debug information texture display in a rectangle
 
@@ -167,7 +168,8 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
     _isSetMaxFarDistance(false),
     _useFrontCullFace(false),
     _split_min_near_dist(ZNEAR_MIN_FROM_LIGHT_SOURCE),
-    _linearSplit(LINEAR_SPLIT)
+    _linearSplit(LINEAR_SPLIT),
+    _move_vcam_behind_rcam_factor(MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR)
 {
     _displayTexturesGroupingNode = gr;
     _number_of_splits = icountplanes;
@@ -188,8 +190,8 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& cop
     _linearSplit(copy._linearSplit),
     _number_of_splits(copy._number_of_splits),
     _polgyonOffset(copy._polgyonOffset),
-    _setMaxFarDistance(copy._setMaxFarDistance)
-
+    _setMaxFarDistance(copy._setMaxFarDistance),
+    _move_vcam_behind_rcam_factor(copy._move_vcam_behind_rcam_factor)
 {
 }
 
@@ -668,8 +670,18 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
 
 
 
+    osg::Matrixf viewMat;
+    osg::Vec3d camEye,camCenter,camUp;
+    pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
+    osg::Vec3d viewDir = camCenter - camEye;
+    //viewDir.normalize();
+    camEye = camEye  - viewDir * _move_vcam_behind_rcam_factor;
+    camFar += _move_vcam_behind_rcam_factor * viewDir.length();
+    viewMat.makeLookAt(camEye,camCenter,camUp);
+     
+
     if ( _isSetMaxFarDistance ) {
-        if ( camNear + _setMaxFarDistance < camFar) camFar = camNear + _setMaxFarDistance;
+        if (_setMaxFarDistance < camFar) camFar = _setMaxFarDistance;
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -716,16 +728,14 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
 
     //////////////////////////////////////////////////////////////////////////
     /// TRANSFORM frustum corners (Optimized for Orthogonal)
-
     osg::Matrixf invProjViewMat;
 
+ 
     osg::Matrixf projMat;
     projMat.makePerspective(fovy,aspectRatio,camNear,camFar);
-    osg::Matrixf projViewMat(pssmShadowSplitTexture._cameraView*projMat);
+
+    osg::Matrixf projViewMat(viewMat*projMat);
     invProjViewMat.invert(projViewMat);
-
-
-
 
     //transform frustum vertices to world space
     frustumCorners[0] = const_pointFarBR * invProjViewMat;
@@ -764,45 +774,56 @@ void ParallelSplitShadowMap::calculateLightNearFarFormFrustum(
 
 
     // force zNear > 0.0
-    // set 2.0m distance to the nearest point
+    // set _split_min_near_dist(2.0m) distance to the nearest point
     int count = 0;
     while (zNear <= _split_min_near_dist && count++ < 10) {
+
+        // init zNear, zFar
         zNear= DBL_MAX;
         zFar =-DBL_MAX;
+
+        // calculate zNear, zFar
         for(int i=0;i<8;i++) {
             double dist_z_from_light = pssmShadowSplitTexture._lightDirection*(frustumCorners[i] - pssmShadowSplitTexture._lightCameraSource);
             if ( zNear > dist_z_from_light ) zNear = dist_z_from_light;
             if ( zFar  < dist_z_from_light ) zFar  = dist_z_from_light;
-         }
+        }
 
+        // update if zNear too small 
         if ( zNear <= _split_min_near_dist ){
             osg::Vec3 dUpdate = - pssmShadowSplitTexture._lightDirection*(fabs(zNear)+_split_min_near_dist);
             pssmShadowSplitTexture._lightCameraSource = pssmShadowSplitTexture._lightCameraSource + dUpdate;
         }
-
     }
 
 
-    pssmShadowSplitTexture._lightCameraTarget = pssmShadowSplitTexture._lightCameraSource + pssmShadowSplitTexture._lightDirection*zFar;
-    pssmShadowSplitTexture._lightNear = zNear;
+    pssmShadowSplitTexture._lightCameraTarget = pssmShadowSplitTexture._frustumSplitCenter;//pssmShadowSplitTexture._lightCameraSource + pssmShadowSplitTexture._lightDirection;//*zFar;
+    pssmShadowSplitTexture._lightNear = 0.1;//zNear;
     pssmShadowSplitTexture._lightFar  = zFar;
 }
 
 void ParallelSplitShadowMap::calculateLightViewProjectionFormFrustum(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners) {
     //////////////////////////////////////////////////////////////////////////
 
-    // light dir
-    osg::Vec3d lightDir = pssmShadowSplitTexture._lightDirection;
-
-    osg::Vec3d up(0,1,0);
+    // calculate top, left
+    osg::Vec3d top(0,0,1);
     osg::Vec3d left;
-    osg::Vec3d top;
+    osg::Vec3d lightDir = pssmShadowSplitTexture._lightDirection;
+    lightDir.normalize();
+    
+    osg::Vec3d camEye,camCenter,camUp;
+    pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
 
-    left = up ^ lightDir;
-    top = lightDir ^ left;
+    osg::Vec3d viewDir(camCenter-camEye);
+    viewDir.normalize();
+    
+    osg::Vec3d camLeft = camUp ^ viewDir;
+    camLeft.normalize();
+    
+    top = lightDir ^ camLeft;
+    left = top ^ lightDir;
 
-
-     double maxLeft,maxTop;
+    double maxLeft,maxTop;
     double minLeft,minTop;
 
     osg::Vec3d fCenter = pssmShadowSplitTexture._frustumSplitCenter;
@@ -811,32 +832,25 @@ void ParallelSplitShadowMap::calculateLightViewProjectionFormFrustum(PSSMShadowS
     minLeft = minTop = DBL_MAX;
     for(int i = 0; i < 8; i++)
     {
-        osg::Vec3d diffCorner = fCenter - frustumCorners[i];
-         double lLeft = (diffCorner*left) * 1.5; // scale, removes edges problem, faster for calculation
-        double lTop  = (diffCorner*top)  * 1.5; // scale, removes edges problem, faster for calculation
+        osg::Vec3d diffCorner = pssmShadowSplitTexture._frustumSplitCenter - frustumCorners[i];
+        double lLeft = (diffCorner*left) * 1.41425;  
+        double lTop  = (diffCorner*top)  * 1.41425; 
 
         if ( lLeft > maxLeft ) maxLeft  =  lLeft;
-        if ( lTop  > maxTop  ) maxTop   =  lTop ;
+        if ( lTop  > maxTop  ) maxTop   =  lTop;
 
         if ( lLeft < minLeft ) minLeft  =  lLeft;
-        if ( lTop  < minTop  ) minTop   =  lTop ;
-     }
+        if ( lTop  < minTop  ) minTop   =  lTop;
+    }
 
     osg::Matrixd lightView;
-    lightView.makeLookAt(pssmShadowSplitTexture._lightCameraSource,pssmShadowSplitTexture._lightCameraTarget,up);
+    lightView.makeLookAt(pssmShadowSplitTexture._lightCameraSource,pssmShadowSplitTexture._lightCameraTarget,top);
     osg::Matrixd lightProj;
 
-    double zNear = pssmShadowSplitTexture._lightNear;
-    double zFar  = pssmShadowSplitTexture._lightFar;
-
-    lightProj.makeOrtho(minLeft,maxLeft,minTop,maxTop,zNear,zFar);
-
+    lightProj.makeOrtho(minLeft,maxLeft,minTop,maxTop,pssmShadowSplitTexture._lightNear,pssmShadowSplitTexture._lightFar);
 
     pssmShadowSplitTexture._camera->setViewMatrix(lightView);
     pssmShadowSplitTexture._camera->setProjectionMatrix(lightProj);
-
-
-
 }
 
 

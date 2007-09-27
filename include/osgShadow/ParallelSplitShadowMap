@@ -60,7 +60,10 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         /** Set the max far distance */ 
         inline void setMaxFarDistance(double farDist) { _setMaxFarDistance = farDist; _isSetMaxFarDistance = true; }
 
-        /** Force to add a osg::CullFace::FRONT state */
+        /** Set the factor for moving the virtual camera behind the real camera*/
+        inline void setMoveVCamBehindRCamFactor(double distFactor ) { _move_vcam_behind_rcam_factor = distFactor; }
+
+        /** Force to add a cull face front */
         inline void forceFrontCullFace() { _useFrontCullFace = true; }
 
         /** Set min near distance for splits */ 
@@ -158,7 +161,9 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         bool _useFrontCullFace;
 
         double _split_min_near_dist;
-        
+
+        double _move_vcam_behind_rcam_factor;
+
         bool _linearSplit;
 
 };

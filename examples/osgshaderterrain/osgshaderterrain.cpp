@@ -258,20 +258,17 @@ osg::Node* createScene()
     return scene;
 }
 
-class TestSupportOperation: public osg::Operation
+class TestSupportOperation: public osg::GraphicsOperation
 {
 public:
 
     TestSupportOperation():
-        osg::Operation("TestSupportOperation",false),
+        osg::GraphicsOperation("TestSupportOperation",false),
         _supported(true),
         _errorMessage() {}
 
-    virtual void operator () (osg::Object* object)
+    virtual void operator () (osg::GraphicsContext* gc)
     {
-        osg::GraphicsContext* gc = dynamic_cast<osg::GraphicsContext*>(object);
-        if (!gc) return;
-    
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
         unsigned int contextID = gc->getState()->getContextID();

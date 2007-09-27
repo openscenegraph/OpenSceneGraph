@@ -501,6 +501,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--debug-color", "ParallelSplitShadowMap display debugging color (only the first 3 maps are color r=0,g=1,b=2.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--minNearSplit", "ParallelSplitShadowMap shadow map near offset.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "ParallelSplitShadowMap max far distance to shadow.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "ParallelSplitShadowMap move the virtual frustum behind the real camera, (also back ground object can cast shadow).");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--NVidea", "ParallelSplitShadowMap set default PolygonOffset for NVidea.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Factor", "ParallelSplitShadowMap set PolygonOffset factor.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Unit", "ParallelSplitShadowMap set PolygonOffset unit.");//ADEGLI
@@ -576,31 +577,6 @@ int main(int argc, char** argv)
     // add stats
     viewer.addEventHandler( new osgViewer::StatsHandler() );
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
-    if (model.valid())
-    {
-        model->setNodeMask(CastsShadowTraversalMask | ReceivesShadowTraversalMask);
-    }
-    else
-    {
-        model = createTestModel(arguments);
-    }
-
-    // get the bounds of the model.    
-    osg::ComputeBoundsVisitor cbbv;
-    model->accept(cbbv);
-    osg::BoundingBox bb = cbbv.getBoundingBox();
-
-    osg::Vec4 lightpos;
-    
-    if (postionalLight)
-    {
-        lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()  ,1.0f);
-    }
-    else
-    {
-        lightpos.set(0.5f,0.25f,0.8f,0.0f);
-    }
 
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
@@ -653,6 +629,14 @@ int main(int argc, char** argv)
                 std::cout << "ParallelSplitShadowMap : setMaxFarDistance(" << maxfardist<<")" << std::endl;
             }
 
+        int moveVCamFactor = 0;
+        while (arguments.read("--moveVCamFactor", moveVCamFactor))
+            if ( maxfardist > 0 ) {
+                pssm->setMoveVCamBehindRCamFactor(moveVCamFactor);
+                std::cout << "ParallelSplitShadowMap : setMoveVCamBehindRCamFactor(" << moveVCamFactor<<")" << std::endl;
+            }
+            
+
         double polyoffsetfactor = -0.02;
         double polyoffsetunit = 1.0;
         while (arguments.read("--PolyOffset-Factor", polyoffsetfactor));
@@ -680,6 +664,33 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;
         shadowedScene->setShadowTechnique(sm.get());
     }
+    
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
+    if (model.valid())
+    {
+        model->setNodeMask(CastsShadowTraversalMask | ReceivesShadowTraversalMask);
+    }
+    else
+    {
+        model = createTestModel(arguments);
+    }
+
+    // get the bounds of the model.    
+    osg::ComputeBoundsVisitor cbbv;
+    model->accept(cbbv);
+    osg::BoundingBox bb = cbbv.getBoundingBox();
+
+    osg::Vec4 lightpos;
+    
+    if (postionalLight)
+    {
+        lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()  ,1.0f);
+    }
+    else
+    {
+        lightpos.set(0.5f,0.25f,0.8f,0.0f);
+    }
+
 
     if ( arguments.read("--base"))
     {
@@ -712,7 +723,7 @@ int main(int argc, char** argv)
         ls->getLight()->setAmbient(osg::Vec4(0.2,0.2,0.2,1.0));
         ls->getLight()->setDiffuse(osg::Vec4(0.8,0.8,0.8,1.0));
     }
-    
+
     shadowedScene->addChild(model.get());
     shadowedScene->addChild(ls.get());
     

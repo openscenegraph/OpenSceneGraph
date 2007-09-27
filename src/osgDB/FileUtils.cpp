@@ -47,7 +47,7 @@
     #if (MAC_OS_X_VERSION_MAX_ALLOWED <= 1040)
         #define stat64 stat
     #endif
-#elif defined(__CYGWIN__) || defined(__FreeBSD__)
+#elif defined(__CYGWIN__) || defined(__FreeBSD__) || (defined(__hpux) && !defined(_LARGEFILE64_SOURCE))
     #define stat64 stat
 #endif
 

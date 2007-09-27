@@ -465,7 +465,7 @@ std::string OBJWriterNodeVisitor::getUniqueName(const std::string& defaultvalue)
         name += "_" +defaultvalue;
     
     if (_nameMap.find(name) == _nameMap.end())
-        _nameMap.insert(std::make_pair(name, 0));
+        _nameMap.insert(std::make_pair(name, 0u));
         
     std::stringstream ss;
     ss << name << "_" << _nameMap[name];
@@ -503,7 +503,7 @@ void OBJWriterNodeVisitor::processStateSet(osg::StateSet* ss)
     
     if (mat || tex) 
     {
-        _materialMap.insert(std::make_pair(ss, OBJMaterial(mat, tex)));
+        _materialMap.insert(std::make_pair(osg::ref_ptr<osg::StateSet>(ss), OBJMaterial(mat, tex)));
         _fout << "usemtl " << _materialMap[ss].name << std::endl;
     }
     

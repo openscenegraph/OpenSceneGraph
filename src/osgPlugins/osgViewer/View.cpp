@@ -103,9 +103,10 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if ((matchedFirst = fr.matchSequence("setUpViewFor3DSphericalDisplay {")) ||
         fr.matchSequence("setUpViewForPanoramicSphericalDisplay {"))
     {
-        double radius=1.0;
-        double collar=0.45;
-        unsigned int screenNum=0;
+        double radius = 1.0;
+        double collar = 0.45;
+        unsigned int screenNum = 0;
+        unsigned int intensityFormat = 8;
         std::string filename;
         osg::ref_ptr<osg::Image> intensityMap;
         int entry = fr[0].getNoNestedBrackets();
@@ -120,6 +121,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             if (fr.read("screenNum",screenNum)) local_itrAdvanced = true;
             if (fr.read("intensityFile",filename)) local_itrAdvanced = true;
             if (fr.matchSequence("intensityMap {")) intensityMap = readIntensityImage(fr,local_itrAdvanced);
+            if (fr.read("intensityFormat",intensityFormat)) local_itrAdvanced = true;
             
             if (!local_itrAdvanced) ++fr;
         }
@@ -133,6 +135,14 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
         {
             intensityMap = osgDB::readImageFile(filename);
         }
+
+        if (intensityMap.valid())
+        {
+            if (intensityFormat==16) intensityMap->setInternalTextureFormat(GL_LUMINANCE16F_ARB);
+            else if (intensityFormat==32) intensityMap->setInternalTextureFormat(GL_LUMINANCE32F_ARB);
+            // else intensityMap->setInternalTextureFormat(image->getPixelFormat());
+        }
+
 
         if (matchedFirst) view.setUpViewFor3DSphericalDisplay(radius, collar, screenNum, intensityMap.get());
         else view.setUpViewForPanoramicSphericalDisplay(radius, collar, screenNum, intensityMap.get());

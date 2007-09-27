@@ -659,7 +659,8 @@ void GraphicsContext::runOperations()
 {
     // sort the cameras into order
     typedef std::vector<Camera*> CameraVector;
-    CameraVector camerasCopy(_cameras.begin(),_cameras.end());    
+    CameraVector camerasCopy;
+    std::copy(_cameras.begin(), _cameras.end(), std::back_inserter(camerasCopy));
     std::sort(camerasCopy.begin(), camerasCopy.end(), CameraRenderOrderSortOp());
     
     for(CameraVector::iterator itr = camerasCopy.begin();

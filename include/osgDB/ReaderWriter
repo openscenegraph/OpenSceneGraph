@@ -121,6 +121,21 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 /** Get whether the Registry::ObjectCache should be used by default.*/
                 CacheHintOptions getObjectCacheHint() const { return _objectCacheHint; }
 
+                /** Sets a plugindata value PluginData with a string */
+                void setPluginData(const std::string& s, void* v) { _pluginData[s] = v; }
+
+                /** Get a value from the PluginData */
+                void* getPluginData(const std::string& s) { return _pluginData[s]; }
+
+                /** Get a value from the PluginData */
+                const void* getPluginData(const std::string& s) const
+                {
+                    PluginDataMap::const_iterator itr = _pluginData.find(s);
+                    return (itr == _pluginData.end()) ? 0 : itr->second;
+                }
+
+                /** Remove a value from the PluginData */
+                void removePluginData(const std::string& s) { _pluginData.erase(s); }
 
             protected:
 
@@ -130,6 +145,8 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 FilePathList        _databasePaths;
                 CacheHintOptions    _objectCacheHint;
 
+                typedef std::map<std::string,void*> PluginDataMap;
+                PluginDataMap _pluginData;
         };
 
 

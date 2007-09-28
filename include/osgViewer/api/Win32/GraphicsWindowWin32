@@ -121,7 +121,18 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         void destroyWindow( bool deleteNativeWindow = true );
         void recreateWindow();
         
-        bool determineWindowPositionAndStyle( bool decorated, int& x, int& y, unsigned int& w, unsigned int& h, unsigned int& style, unsigned int& extendedStyle );
+        bool determineWindowPositionAndStyle( unsigned int  screenNum,
+                                              int           clientAreaX,
+                                              int           clientAreaY,
+                                              unsigned int  clientAreaWidth,
+                                              unsigned int  clientAreaHeight,
+                                              bool          decorated,
+                                              int&          x,
+                                              int&          y,
+                                              unsigned int& w,
+                                              unsigned int& h,
+                                              unsigned int& style,
+                                              unsigned int& extendedStyle );
         
         bool setPixelFormat();
         

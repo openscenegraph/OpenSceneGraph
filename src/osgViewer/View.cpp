@@ -462,8 +462,10 @@ void View::setUpViewAcrossAllScreens()
 
         for(unsigned int i=0; i<numScreens; ++i)
         {
+            si.screenNum = i;
+
             unsigned int width, height;
-            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(i), width, height);
+            wsi->getScreenResolution(si, width, height);
             translate_x += double(width) / (double(height) * aspectRatio);
         }
         

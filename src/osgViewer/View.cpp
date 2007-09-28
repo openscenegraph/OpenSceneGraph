@@ -850,8 +850,6 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         return;
     }
 
-    unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
@@ -860,6 +858,10 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     if (si.displayNum<0) si.displayNum = 0;
 
     si.screenNum = screenNum;
+
+    unsigned int width, height;
+    wsi->getScreenResolution(si, width, height);
+
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->hostName = si.hostName;
@@ -1257,9 +1259,6 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
         return;
     }
 
-    unsigned int width, height;
-    wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
-
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
     
@@ -1267,6 +1266,9 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     if (si.displayNum<0) si.displayNum = 0;
 
     si.screenNum = screenNum;
+
+    unsigned int width, height;
+    wsi->getScreenResolution(si, width, height);
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
     traits->hostName = si.hostName;

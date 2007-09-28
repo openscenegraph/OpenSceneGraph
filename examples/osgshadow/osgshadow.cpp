@@ -516,7 +516,7 @@ int main(int argc, char** argv)
 
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -577,6 +577,8 @@ int main(int argc, char** argv)
     // add stats
     viewer.addEventHandler( new osgViewer::StatsHandler() );
 
+    // add the record camera path handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;

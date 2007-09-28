@@ -1030,7 +1030,12 @@ bool GraphicsWindowWin32::createWindow()
     unsigned int extendedStyle;
     unsigned int windowStyle;
 
-    if (!determineWindowPositionAndStyle(_traits->windowDecoration,
+    if (!determineWindowPositionAndStyle(_traits->screenNum,
+                                         _traits->x,
+                                         _traits->y,
+                                         _traits->width,
+                                         _traits->height,
+                                         _traits->windowDecoration,
                                          _windowOriginXToRealize,
                                          _windowOriginYToRealize,
                                          _windowWidthToRealize,
@@ -1232,7 +1237,18 @@ bool GraphicsWindowWin32::unregisterWindowProcedure()
     return true;
 }
 
-bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& x, int& y, unsigned int& w, unsigned int& h, unsigned int& style, unsigned int& extendedStyle )
+bool GraphicsWindowWin32::determineWindowPositionAndStyle( unsigned int  screenNum,
+                                                           int           clientAreaX,
+                                                           int           clientAreaY,
+                                                           unsigned int  clientAreaWidth,
+                                                           unsigned int  clientAreaHeight,
+                                                           bool          decorated,
+                                                           int&          x,
+                                                           int&          y,
+                                                           unsigned int& w,
+                                                           unsigned int& h,
+                                                           unsigned int& style,
+                                                           unsigned int& extendedStyle )
 {
     if (_traits==0) return false;
 
@@ -1240,16 +1256,16 @@ bool GraphicsWindowWin32::determineWindowPositionAndStyle( bool decorated, int& 
     // Query the screen position and size
     //
 
-    osg::GraphicsContext::ScreenIdentifier screenId(_traits->screenNum);
+    osg::GraphicsContext::ScreenIdentifier screenId(screenNum);
     Win32WindowingSystem* windowManager = Win32WindowingSystem::getInterface();
 
     windowManager->getScreenPosition(screenId, _screenOriginX, _screenOriginY, _screenWidth, _screenHeight);
     if (_screenWidth==0 || _screenHeight==0) return false;
 
-    x = _traits->x + _screenOriginX;
-    y = _traits->y + _screenOriginY;
-    w = _traits->width;
-    h = _traits->height;
+    x = clientAreaX + _screenOriginX;
+    y = clientAreaY + _screenOriginY;
+    w = clientAreaWidth;
+    h = clientAreaHeight;
 
     style = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
@@ -1485,7 +1501,18 @@ bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
     int x, y;
     unsigned int w, h;
 
-    if (!determineWindowPositionAndStyle(decorated, x, y, w, h, windowStyle, extendedStyle))
+    if (!determineWindowPositionAndStyle(_traits->screenNum,
+                                 _traits->x,
+                     _traits->y,
+                     _traits->width,
+                     _traits->height,
+                     decorated,
+                     x,
+                     y,
+                     w,
+                     h,
+                     windowStyle,
+                     extendedStyle))
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindowDecoration() - Unable to determine the window position and style", _traits->screenNum, 0);
         return false;
@@ -1528,13 +1555,10 @@ bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
     }
 
     //
-    // Repaint the desktop to cleanup decorations removed
+    // Force a repaint of the desktop
     //
 
-    if (!decorated)
-    {
-        ::InvalidateRect(NULL, NULL, TRUE);
-    }
+    ::InvalidateRect(NULL, NULL, TRUE);
     
     return true;
 }
@@ -1769,9 +1793,36 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
 
 bool GraphicsWindowWin32::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
-    if (!::SetWindowPos(_hwnd, HWND_TOP, x, y, width, height, SWP_SHOWWINDOW | SWP_FRAMECHANGED))
+    unsigned int windowStyle;
+    unsigned int extendedStyle;
+
+    //
+    // Determine position and size of window with/without decorations to retain the size specified in traits
+    //
+
+    int wx, wy;
+    unsigned int ww, wh;
+
+    if (!determineWindowPositionAndStyle(_traits->screenNum,
+                                         x,
+                                         y,
+                                         width,
+                                         height,
+                                         _traits->windowDecoration,
+                                         wx,
+                                         wy,
+                                         ww,
+                                         wh,
+                                         windowStyle,
+                                         extendedStyle))
     {
-        reportErrorForScreen("GraphicsWindowWin32::setWindowRectangle() - Unable to set new window position and size", _traits->screenNum, ::GetLastError());
+        reportErrorForScreen("GraphicsWindowWin32::setWindowRectangleImplementation() - Unable to determine the window position and style", _traits->screenNum, 0);
+        return false;
+    }
+
+    if (!::SetWindowPos(_hwnd, HWND_TOP, wx, wy, ww, wh, SWP_SHOWWINDOW | SWP_FRAMECHANGED))
+    {
+        reportErrorForScreen("GraphicsWindowWin32::setWindowRectangleImplementation() - Unable to set new window position and size", _traits->screenNum, ::GetLastError());
         return false;
     }
     return true;
@@ -1959,12 +2010,9 @@ void GraphicsWindowWin32::transformMouseXY( float& x, float& y )
 LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
     //!@todo adapt windows event time to osgGA event queue time for better resolution
-
-    double baseTime   = _timeOfLastCheckEvents;
-    double eventTime  = _timeOfLastCheckEvents;
+    double eventTime  = getEventQueue()->getTime();
     double resizeTime = eventTime;
-
-    _timeOfLastCheckEvents = getEventQueue()->getTime();
+    _timeOfLastCheckEvents = eventTime;
 
     switch(uMsg)
     {

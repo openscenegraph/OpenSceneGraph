@@ -96,7 +96,7 @@ osg::Image* readIntensityImage(osgDB::Input& fr, bool& itrAdvanced)
 
 bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
-    osgViewer::View& view = static_cast<osgViewer::View&>(obj);
+    osgViewer::View& view = dynamic_cast<osgViewer::View&>(obj);
     bool iteratorAdvanced = false;
 
     bool matchedFirst = false;
@@ -209,7 +209,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
 
 bool View_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
-    const osgViewer::View& view = static_cast<const osgViewer::View&>(obj);
+    const osgViewer::View& view = dynamic_cast<const osgViewer::View&>(obj);
 
     osg::notify(osg::NOTICE)<<"View_writeLocalData"<<std::endl;
 

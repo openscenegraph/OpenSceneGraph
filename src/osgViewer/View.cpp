@@ -123,6 +123,45 @@ protected:
     osg::observer_ptr<osgViewer::View> _view;
 };
 
+
+ViewerBase::ViewerBase():
+    osg::Object(true)
+{
+    _done = false;
+    _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
+    _quitEventSetsDone = true;
+    _threadingModel = AutomaticSelection;
+    _threadsRunning = false;
+
+}
+
+ViewerBase::ViewerBase(const ViewerBase& base):
+    osg::Object(true)
+{
+}
+
+void ViewerBase::addUpdateOperation(osg::Operation* operation)
+{
+    if (!operation) return;
+
+    if (!_updateOperations) _updateOperations = new osg::OperationQueue;
+    
+    _updateOperations->add(operation);
+}
+
+void ViewerBase::removeUpdateOperation(osg::Operation* operation)
+{
+    if (!operation) return;
+
+    if (_updateOperations.valid())
+    {
+        _updateOperations->remove(operation);
+    } 
+}
+
+
+
+
 View::View():
     _fusionDistanceMode(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE),
     _fusionDistanceValue(1.0f)
@@ -1623,87 +1662,6 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
     {
         intersections.clear();
         return false;
-    }
-}
-
-void View::getCameras(Cameras& cameras, bool onlyActive)
-{
-    cameras.clear();
-    
-    if (_camera.valid() && 
-        (!onlyActive || (_camera->getGraphicsContext() && _camera->getGraphicsContext()->valid())) ) cameras.push_back(_camera.get());
-
-    for(Slaves::iterator itr = _slaves.begin();
-        itr != _slaves.end();
-        ++itr)
-    {
-        if (itr->_camera.valid() &&
-            (!onlyActive || (itr->_camera->getGraphicsContext() && itr->_camera->getGraphicsContext()->valid())) ) cameras.push_back(itr->_camera.get());
-    }
-        
-}
-
-struct LessGraphicsContext
-{
-    bool operator () (const osg::GraphicsContext* lhs, const osg::GraphicsContext* rhs) const
-    {
-        int screenLeft = lhs->getTraits()? lhs->getTraits()->screenNum : 0;
-        int screenRight = rhs->getTraits()? rhs->getTraits()->screenNum : 0;
-        if (screenLeft < screenRight) return true;
-        if (screenLeft > screenRight) return false;
-
-        screenLeft = lhs->getTraits()? lhs->getTraits()->x : 0;
-        screenRight = rhs->getTraits()? rhs->getTraits()->x : 0;
-        if (screenLeft < screenRight) return true;
-        if (screenLeft > screenRight) return false;
-
-        screenLeft = lhs->getTraits()? lhs->getTraits()->y : 0;
-        screenRight = rhs->getTraits()? rhs->getTraits()->y : 0;
-        if (screenLeft < screenRight) return true;
-        if (screenLeft > screenRight) return false;
-        
-        return lhs < rhs;
-    } 
-};
-
-
-
-void View::getContexts(Contexts& contexts, bool onlyValid)
-{
-    typedef std::set<osg::GraphicsContext*> ContextSet;
-    ContextSet contextSet;
-
-    if (_camera.valid() && 
-        _camera->getGraphicsContext() && 
-        (_camera->getGraphicsContext()->valid() || !onlyValid))
-    {
-        contextSet.insert(_camera->getGraphicsContext());
-    }
-    
-    for(unsigned int i=0; i<getNumSlaves(); ++i)
-    {
-        Slave& slave = getSlave(i);
-        if (slave._camera.valid() && 
-            slave._camera->getGraphicsContext() && 
-            (slave._camera->getGraphicsContext()->valid() || !onlyValid))
-        {
-            contextSet.insert(slave._camera->getGraphicsContext());
-        }
-    }
-
-    contexts.clear();
-    contexts.reserve(contextSet.size());
-
-    for(ContextSet::iterator itr = contextSet.begin();
-        itr != contextSet.end();
-        ++itr)
-    {
-        contexts.push_back(const_cast<osg::GraphicsContext*>(*itr));
-    }
-
-    if (contexts.size()>=2)
-    {
-        std::sort(contexts.begin(), contexts.end(), LessGraphicsContext()); 
     }
 }
 

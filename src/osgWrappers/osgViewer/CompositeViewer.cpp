@@ -10,16 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/ApplicationUsage>
 #include <osg/ArgumentParser>
 #include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/FrameStamp>
 #include <osg/Object>
-#include <osg/OperationThread>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
-#include <osgGA/EventVisitor>
-#include <osgUtil/UpdateVisitor>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
 
@@ -31,19 +29,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::CompositeViewer::Contexts)
-
-TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::CompositeViewer::Windows)
-
-TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::CompositeViewer::Scenes)
-
-BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::ThreadingModel)
-	I_DeclaringFile("osgViewer/CompositeViewer");
-	I_EnumLabel(osgViewer::CompositeViewer::SingleThreaded);
-	I_EnumLabel(osgViewer::CompositeViewer::ThreadPerContext);
-	I_EnumLabel(osgViewer::CompositeViewer::ThreadPerCamera);
-END_REFLECTOR
-
 BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::BarrierPosition)
 	I_DeclaringFile("osgViewer/CompositeViewer");
 	I_EnumLabel(osgViewer::CompositeViewer::BeforeSwapBuffers);
@@ -52,7 +37,8 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_DeclaringFile("osgViewer/CompositeViewer");
-	I_BaseType(osg::Object);
+	I_BaseType(osgViewer::ViewerBase);
+	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____CompositeViewer,
 	               "",
 	               "");
@@ -91,7 +77,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(bool, readConfiguration, IN, const std::string &, filename,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__readConfiguration__C5_std_string_R1,
 	          "read the viewer configuration from a configuration file. ",
 	          "");
@@ -121,33 +107,18 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          "",
 	          "");
 	I_Method0(bool, isRealized,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__isRealized,
 	          "Get whether at least of one of this viewers windows are realized. ",
 	          "");
 	I_Method0(void, realize,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__realize,
 	          "set up windows and associated threads. ",
 	          "");
-	I_Method1(void, setDone, IN, bool, done,
-	          Properties::NON_VIRTUAL,
-	          __void__setDone__bool,
-	          "",
-	          "");
-	I_Method0(bool, done,
-	          Properties::NON_VIRTUAL,
-	          __bool__done,
-	          "",
-	          "");
 	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setStartTick__osg_Timer_t,
-	          "",
-	          "");
-	I_Method0(osg::Timer_t, getStartTick,
-	          Properties::NON_VIRTUAL,
-	          __osg_Timer_t__getStartTick,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, setReferenceTime, IN, double, time, 0.0,
@@ -165,40 +136,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
-	I_Method1(void, setThreadingModel, IN, osgViewer::CompositeViewer::ThreadingModel, threadingModel,
-	          Properties::NON_VIRTUAL,
+	I_Method1(void, setThreadingModel, IN, osgViewer::ViewerBase::ThreadingModel, threadingModel,
+	          Properties::VIRTUAL,
 	          __void__setThreadingModel__ThreadingModel,
 	          "Set the threading model the rendering traversals will use. ",
-	          "");
-	I_Method0(osgViewer::CompositeViewer::ThreadingModel, getThreadingModel,
-	          Properties::NON_VIRTUAL,
-	          __ThreadingModel__getThreadingModel,
-	          "Get the threading model the rendering traversals will use. ",
-	          "");
-	I_Method1(void, setEndBarrierPosition, IN, osgViewer::CompositeViewer::BarrierPosition, bp,
-	          Properties::NON_VIRTUAL,
-	          __void__setEndBarrierPosition__BarrierPosition,
-	          "Set the position of the end barrier. ",
-	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconcistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
-	I_Method0(osgViewer::CompositeViewer::BarrierPosition, getEndBarrierPosition,
-	          Properties::NON_VIRTUAL,
-	          __BarrierPosition__getEndBarrierPosition,
-	          "Get the end barrier position. ",
-	          "");
-	I_Method1(void, setEventVisitor, IN, osgGA::EventVisitor *, eventVisitor,
-	          Properties::NON_VIRTUAL,
-	          __void__setEventVisitor__osgGA_EventVisitor_P1,
-	          "Set the EventVisitor. ",
-	          "");
-	I_Method0(osgGA::EventVisitor *, getEventVisitor,
-	          Properties::NON_VIRTUAL,
-	          __osgGA_EventVisitor_P1__getEventVisitor,
-	          "Get the EventVisitor. ",
-	          "");
-	I_Method0(const osgGA::EventVisitor *, getEventVisitor,
-	          Properties::NON_VIRTUAL,
-	          __C5_osgGA_EventVisitor_P1__getEventVisitor,
-	          "Get the const EventVisitor. ",
 	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
@@ -215,65 +156,15 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __C5_osgGA_EventQueue_P1__getEventQueue,
 	          "",
 	          "");
-	I_Method1(void, setKeyEventSetsDone, IN, int, key,
+	I_Method1(void, setEndBarrierPosition, IN, osgViewer::CompositeViewer::BarrierPosition, bp,
 	          Properties::NON_VIRTUAL,
-	          __void__setKeyEventSetsDone__int,
-	          "Set the key event that the viewer checks on each frame to see if the viewer's done flag should be set to signal end of viewers main loop. ",
-	          "Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape). Setting to 0 switches off the feature. ");
-	I_Method0(int, getKeyEventSetsDone,
+	          __void__setEndBarrierPosition__BarrierPosition,
+	          "Set the position of the end barrier. ",
+	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconcistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
+	I_Method0(osgViewer::CompositeViewer::BarrierPosition, getEndBarrierPosition,
 	          Properties::NON_VIRTUAL,
-	          __int__getKeyEventSetsDone,
-	          "get the key event that the viewer checks on each frame to see if the viewer's done flag. ",
-	          "");
-	I_Method1(void, setQuitEventSetsDone, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setQuitEventSetsDone__bool,
-	          "if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature ",
-	          "");
-	I_Method0(bool, getQuitEventSetsDone,
-	          Properties::NON_VIRTUAL,
-	          __bool__getQuitEventSetsDone,
-	          "",
-	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
-	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, updateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
-	          "Set the UpdateVisitor. ",
-	          "");
-	I_Method0(osgUtil::UpdateVisitor *, getUpdateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __osgUtil_UpdateVisitor_P1__getUpdateVisitor,
-	          "Get the UpdateVisitor. ",
-	          "");
-	I_Method0(const osgUtil::UpdateVisitor *, getUpdateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
-	          "Get the const UpdateVisitor. ",
-	          "");
-	I_Method1(void, setUpdateOperations, IN, osg::OperationQueue *, operations,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpdateOperations__osg_OperationQueue_P1,
-	          "Set the Update OperationQueue. ",
-	          "");
-	I_Method0(osg::OperationQueue *, getUpdateOperations,
-	          Properties::NON_VIRTUAL,
-	          __osg_OperationQueue_P1__getUpdateOperations,
-	          "Get the Update OperationQueue. ",
-	          "");
-	I_Method0(const osg::OperationQueue *, getUpdateOperations,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_OperationQueue_P1__getUpdateOperations,
-	          "Get the const Update OperationQueue. ",
-	          "");
-	I_Method1(void, addUpdateOperation, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__addUpdateOperation__osg_Operation_P1,
-	          "Add an update operation. ",
-	          "");
-	I_Method1(void, removeUpdateOperation, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__removeUpdateOperation__osg_Operation_P1,
-	          "Remove an update operation. ",
+	          __BarrierPosition__getEndBarrierPosition,
+	          "Get the end barrier position. ",
 	          "");
 	I_Method0(int, run,
 	          Properties::VIRTUAL,
@@ -330,45 +221,55 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __C5_osgViewer_View_P1__getViewWithFocus,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, getContexts, IN, osgViewer::CompositeViewer::Contexts &, contexts, , IN, bool, onlyValid, true,
-	                      Properties::NON_VIRTUAL,
+	I_MethodWithDefaults2(void, getCameras, IN, osgViewer::ViewerBase::Cameras &, cameras, , IN, bool, onlyActive, true,
+	                      Properties::VIRTUAL,
+	                      __void__getCameras__Cameras_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getContexts, IN, osgViewer::ViewerBase::Contexts &, contexts, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
 	                      __void__getContexts__Contexts_R1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::CompositeViewer::Windows &, windows, , IN, bool, onlyValid, true,
-	                      Properties::NON_VIRTUAL,
+	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::ViewerBase::Windows &, windows, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
 	                      __void__getWindows__Windows_R1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, getScenes, IN, osgViewer::CompositeViewer::Scenes &, scenes, , IN, bool, onlyValid, true,
-	                      Properties::NON_VIRTUAL,
+	I_MethodWithDefaults2(void, getAllThreads, IN, osgViewer::ViewerBase::Threads &, threads, , IN, bool, onlyActive, true,
+	                      Properties::VIRTUAL,
+	                      __void__getAllThreads__Threads_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getOperationThreads, IN, osgViewer::ViewerBase::OperationThreads &, threads, , IN, bool, onlyActive, true,
+	                      Properties::VIRTUAL,
+	                      __void__getOperationThreads__OperationThreads_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getScenes, IN, osgViewer::ViewerBase::Scenes &, scenes, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
 	                      __void__getScenes__Scenes_R1__bool,
 	                      "",
 	                      "");
-	I_Method1(void, setRealizeOperation, IN, osg::Operation *, op,
-	          Properties::NON_VIRTUAL,
-	          __void__setRealizeOperation__osg_Operation_P1,
-	          "Set the graphics operation to call on realization of the viewers graphics windows. ",
-	          "");
-	I_Method0(osg::Operation *, getRealizeOperation,
-	          Properties::NON_VIRTUAL,
-	          __osg_Operation_P1__getRealizeOperation,
-	          "Get the graphics operation to call on realization of the viewers graphics windows. ",
-	          "");
-	I_Method0(bool, areThreadsRunning,
-	          Properties::NON_VIRTUAL,
-	          __bool__areThreadsRunning,
-	          "Return true if viewer threads are running. ",
+	I_Method0(void, setUpThreading,
+	          Properties::VIRTUAL,
+	          __void__setUpThreading,
+	          "Set up the threading and processor affinity as per the viewers threading model. ",
 	          "");
 	I_Method0(void, stopThreading,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__stopThreading,
 	          "Stop any threads begin run by viewer. ",
 	          "");
 	I_Method0(void, startThreading,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__startThreading,
 	          "Start any threads required by the viewer, as per viewers ThreadingModel. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this viewer. ",
 	          "");
 	I_ProtectedMethod0(void, constructorInit,
 	                   Properties::NON_VIRTUAL,
@@ -397,45 +298,24 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);
-	I_SimpleProperty(bool, Done, 
-	                 0, 
-	                 __void__setDone__bool);
 	I_SimpleProperty(osgViewer::CompositeViewer::BarrierPosition, EndBarrierPosition, 
 	                 __BarrierPosition__getEndBarrierPosition, 
 	                 __void__setEndBarrierPosition__BarrierPosition);
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
-	I_SimpleProperty(osgGA::EventVisitor *, EventVisitor, 
-	                 __osgGA_EventVisitor_P1__getEventVisitor, 
-	                 __void__setEventVisitor__osgGA_EventVisitor_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
 	                 0);
-	I_SimpleProperty(int, KeyEventSetsDone, 
-	                 __int__getKeyEventSetsDone, 
-	                 __void__setKeyEventSetsDone__int);
-	I_SimpleProperty(bool, QuitEventSetsDone, 
-	                 __bool__getQuitEventSetsDone, 
-	                 __void__setQuitEventSetsDone__bool);
-	I_SimpleProperty(osg::Operation *, RealizeOperation, 
-	                 __osg_Operation_P1__getRealizeOperation, 
-	                 __void__setRealizeOperation__osg_Operation_P1);
 	I_SimpleProperty(double, ReferenceTime, 
 	                 0, 
 	                 __void__setReferenceTime__double);
 	I_SimpleProperty(osg::Timer_t, StartTick, 
-	                 __osg_Timer_t__getStartTick, 
+	                 0, 
 	                 __void__setStartTick__osg_Timer_t);
-	I_SimpleProperty(osgViewer::CompositeViewer::ThreadingModel, ThreadingModel, 
-	                 __ThreadingModel__getThreadingModel, 
+	I_SimpleProperty(osgViewer::ViewerBase::ThreadingModel, ThreadingModel, 
+	                 0, 
 	                 __void__setThreadingModel__ThreadingModel);
-	I_SimpleProperty(osg::OperationQueue *, UpdateOperations, 
-	                 __osg_OperationQueue_P1__getUpdateOperations, 
-	                 __void__setUpdateOperations__osg_OperationQueue_P1);
-	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
-	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
-	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
 	I_ArrayProperty(osgViewer::View *, View, 
 	                __osgViewer_View_P1__getView__unsigned, 
 	                0, 
@@ -447,8 +327,4 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                 __osgViewer_View_P1__getViewWithFocus, 
 	                 0);
 END_REFLECTOR
-
-STD_VECTOR_REFLECTOR(std::vector< osgViewer::GraphicsWindow * >)
-
-STD_VECTOR_REFLECTOR(std::vector< osgViewer::Scene * >)
 

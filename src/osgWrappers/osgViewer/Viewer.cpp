@@ -16,10 +16,7 @@
 #include <osg/CopyOp>
 #include <osg/Node>
 #include <osg/Object>
-#include <osg/OperationThread>
 #include <osg/Timer>
-#include <osgGA/EventVisitor>
-#include <osgUtil/UpdateVisitor>
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/View>
 #include <osgViewer/Viewer>
@@ -32,25 +29,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::Viewer::Contexts)
-
-TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::Viewer::Windows)
-
-TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::Viewer::Cameras)
-
-TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::Viewer::Threads)
-
-TYPE_NAME_ALIAS(std::vector< osg::OperationThread * >, osgViewer::Viewer::OperationThreads)
-
-BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::ThreadingModel)
-	I_DeclaringFile("osgViewer/Viewer");
-	I_EnumLabel(osgViewer::Viewer::SingleThreaded);
-	I_EnumLabel(osgViewer::Viewer::CullDrawThreadPerContext);
-	I_EnumLabel(osgViewer::Viewer::DrawThreadPerContext);
-	I_EnumLabel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
-	I_EnumLabel(osgViewer::Viewer::AutomaticSelection);
-END_REFLECTOR
-
 BEGIN_ENUM_REFLECTOR(osgViewer::Viewer::BarrierPosition)
 	I_DeclaringFile("osgViewer/Viewer");
 	I_EnumLabel(osgViewer::Viewer::BeforeSwapBuffers);
@@ -59,6 +37,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_DeclaringFile("osgViewer/Viewer");
+	I_BaseType(osgViewer::ViewerBase);
 	I_BaseType(osgViewer::View);
 	I_Constructor0(____Viewer,
 	               "",
@@ -103,29 +82,19 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          "Take all the settings, Camera and Slaves from the passed in view(er), leaving it empty. ",
 	          "");
 	I_Method1(bool, readConfiguration, IN, const std::string &, filename,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__readConfiguration__C5_std_string_R1,
 	          "read the viewer configuration from a configuration file. ",
 	          "");
 	I_Method0(bool, isRealized,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__isRealized,
 	          "Get whether at least of one of this viewers windows are realized. ",
 	          "");
 	I_Method0(void, realize,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__realize,
 	          "set up windows and associated threads. ",
-	          "");
-	I_Method1(void, setDone, IN, bool, done,
-	          Properties::NON_VIRTUAL,
-	          __void__setDone__bool,
-	          "",
-	          "");
-	I_Method0(bool, done,
-	          Properties::NON_VIRTUAL,
-	          __bool__done,
-	          "",
 	          "");
 	I_Method1(void, setStartTick, IN, osg::Timer_t, tick,
 	          Properties::VIRTUAL,
@@ -147,17 +116,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __GraphicsWindowEmbedded_P1__setUpViewerAsEmbeddedInWindow__int__int__int__int,
 	          "Convenience method for setting up the viewer so it can be used embedded in an external managed window. ",
 	          "Returns the GraphicsWindowEmbedded that can be used by applications to pass in events to the viewer. ");
-	I_Method1(void, setThreadingModel, IN, osgViewer::Viewer::ThreadingModel, threadingModel,
-	          Properties::NON_VIRTUAL,
+	I_Method1(void, setThreadingModel, IN, osgViewer::ViewerBase::ThreadingModel, threadingModel,
+	          Properties::VIRTUAL,
 	          __void__setThreadingModel__ThreadingModel,
 	          "Set the threading model the rendering traversals will use. ",
 	          "");
-	I_Method0(osgViewer::Viewer::ThreadingModel, getThreadingModel,
-	          Properties::NON_VIRTUAL,
-	          __ThreadingModel__getThreadingModel,
-	          "Get the threading model the rendering traversals will use. ",
-	          "");
-	I_Method0(osgViewer::Viewer::ThreadingModel, suggestBestThreadingModel,
+	I_Method0(osgViewer::ViewerBase::ThreadingModel, suggestBestThreadingModel,
 	          Properties::NON_VIRTUAL,
 	          __ThreadingModel__suggestBestThreadingModel,
 	          "Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available. ",
@@ -171,81 +135,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          Properties::NON_VIRTUAL,
 	          __BarrierPosition__getEndBarrierPosition,
 	          "Get the end barrier position. ",
-	          "");
-	I_Method1(void, setEventVisitor, IN, osgGA::EventVisitor *, eventVisitor,
-	          Properties::NON_VIRTUAL,
-	          __void__setEventVisitor__osgGA_EventVisitor_P1,
-	          "Set the EventVisitor. ",
-	          "");
-	I_Method0(osgGA::EventVisitor *, getEventVisitor,
-	          Properties::NON_VIRTUAL,
-	          __osgGA_EventVisitor_P1__getEventVisitor,
-	          "Get the EventVisitor. ",
-	          "");
-	I_Method0(const osgGA::EventVisitor *, getEventVisitor,
-	          Properties::NON_VIRTUAL,
-	          __C5_osgGA_EventVisitor_P1__getEventVisitor,
-	          "Get the const EventVisitor. ",
-	          "");
-	I_Method1(void, setKeyEventSetsDone, IN, int, key,
-	          Properties::NON_VIRTUAL,
-	          __void__setKeyEventSetsDone__int,
-	          "Set the key event that the viewer checks on each frame to see if the viewer's done flag should be set to signal end of viewers main loop. ",
-	          "Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape). Setting to 0 switches off the feature. ");
-	I_Method0(int, getKeyEventSetsDone,
-	          Properties::NON_VIRTUAL,
-	          __int__getKeyEventSetsDone,
-	          "get the key event that the viewer checks on each frame to see if the viewer's done flag. ",
-	          "");
-	I_Method1(void, setQuitEventSetsDone, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setQuitEventSetsDone__bool,
-	          "if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature ",
-	          "");
-	I_Method0(bool, getQuitEventSetsDone,
-	          Properties::NON_VIRTUAL,
-	          __bool__getQuitEventSetsDone,
-	          "",
-	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
-	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, updateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
-	          "Set the UpdateVisitor. ",
-	          "");
-	I_Method0(osgUtil::UpdateVisitor *, getUpdateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __osgUtil_UpdateVisitor_P1__getUpdateVisitor,
-	          "Get the UpdateVisitor. ",
-	          "");
-	I_Method0(const osgUtil::UpdateVisitor *, getUpdateVisitor,
-	          Properties::NON_VIRTUAL,
-	          __C5_osgUtil_UpdateVisitor_P1__getUpdateVisitor,
-	          "Get the const UpdateVisitor. ",
-	          "");
-	I_Method1(void, setUpdateOperations, IN, osg::OperationQueue *, operations,
-	          Properties::NON_VIRTUAL,
-	          __void__setUpdateOperations__osg_OperationQueue_P1,
-	          "Set the Update OperationQueue. ",
-	          "");
-	I_Method0(osg::OperationQueue *, getUpdateOperations,
-	          Properties::NON_VIRTUAL,
-	          __osg_OperationQueue_P1__getUpdateOperations,
-	          "Get the Update OperationQueue. ",
-	          "");
-	I_Method0(const osg::OperationQueue *, getUpdateOperations,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_OperationQueue_P1__getUpdateOperations,
-	          "Get the const Update OperationQueue. ",
-	          "");
-	I_Method1(void, addUpdateOperation, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__addUpdateOperation__osg_Operation_P1,
-	          "Add an update operation. ",
-	          "");
-	I_Method1(void, removeUpdateOperation, IN, osg::Operation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__removeUpdateOperation__osg_Operation_P1,
-	          "Remove an update operation. ",
 	          "");
 	I_Method0(int, run,
 	          Properties::VIRTUAL,
@@ -292,58 +181,48 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	          __C5_osg_Camera_P1__getCameraWithFocus,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, getContexts, IN, osgViewer::Viewer::Contexts &, contexts, , IN, bool, onlyValid, true,
-	                      Properties::NON_VIRTUAL,
-	                      __void__getContexts__Contexts_R1__bool,
-	                      "",
-	                      "");
-	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::Viewer::Windows &, windows, , IN, bool, onlyValid, true,
-	                      Properties::NON_VIRTUAL,
-	                      __void__getWindows__Windows_R1__bool,
-	                      "",
-	                      "");
-	I_MethodWithDefaults2(void, getCameras, IN, osgViewer::Viewer::Cameras &, cameras, , IN, bool, onlyActive, true,
-	                      Properties::NON_VIRTUAL,
+	I_MethodWithDefaults2(void, getCameras, IN, osgViewer::ViewerBase::Cameras &, cameras, , IN, bool, onlyActive, true,
+	                      Properties::VIRTUAL,
 	                      __void__getCameras__Cameras_R1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, getAllThreads, IN, osgViewer::Viewer::Threads &, threads, , IN, bool, onlyActive, true,
-	                      Properties::NON_VIRTUAL,
+	I_MethodWithDefaults2(void, getContexts, IN, osgViewer::ViewerBase::Contexts &, contexts, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
+	                      __void__getContexts__Contexts_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::ViewerBase::Windows &, windows, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
+	                      __void__getWindows__Windows_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getAllThreads, IN, osgViewer::ViewerBase::Threads &, threads, , IN, bool, onlyActive, true,
+	                      Properties::VIRTUAL,
 	                      __void__getAllThreads__Threads_R1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, getOperationThreads, IN, osgViewer::Viewer::OperationThreads &, threads, , IN, bool, onlyActive, true,
-	                      Properties::NON_VIRTUAL,
+	I_MethodWithDefaults2(void, getOperationThreads, IN, osgViewer::ViewerBase::OperationThreads &, threads, , IN, bool, onlyActive, true,
+	                      Properties::VIRTUAL,
 	                      __void__getOperationThreads__OperationThreads_R1__bool,
 	                      "",
 	                      "");
-	I_Method1(void, setRealizeOperation, IN, osg::Operation *, op,
-	          Properties::NON_VIRTUAL,
-	          __void__setRealizeOperation__osg_Operation_P1,
-	          "Set the graphics operation to call on realization of the viewers graphics windows. ",
-	          "");
-	I_Method0(osg::Operation *, getRealizeOperation,
-	          Properties::NON_VIRTUAL,
-	          __osg_Operation_P1__getRealizeOperation,
-	          "Get the graphics operation to call on realization of the viewers graphics windows. ",
-	          "");
+	I_MethodWithDefaults2(void, getScenes, IN, osgViewer::ViewerBase::Scenes &, scenes, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
+	                      __void__getScenes__Scenes_R1__bool,
+	                      "",
+	                      "");
 	I_Method0(void, setUpThreading,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setUpThreading,
 	          "Set up the threading and processor affinity as per the viewers threading model. ",
 	          "");
-	I_Method0(bool, areThreadsRunning,
-	          Properties::NON_VIRTUAL,
-	          __bool__areThreadsRunning,
-	          "Return true if viewer threads are running. ",
-	          "");
 	I_Method0(void, stopThreading,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__stopThreading,
 	          "Stop any threads begin run by viewer. ",
 	          "");
 	I_Method0(void, startThreading,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__startThreading,
 	          "Start any threads required by the viewer. ",
 	          "");
@@ -379,24 +258,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);
-	I_SimpleProperty(bool, Done, 
-	                 0, 
-	                 __void__setDone__bool);
 	I_SimpleProperty(osgViewer::Viewer::BarrierPosition, EndBarrierPosition, 
 	                 __BarrierPosition__getEndBarrierPosition, 
 	                 __void__setEndBarrierPosition__BarrierPosition);
-	I_SimpleProperty(osgGA::EventVisitor *, EventVisitor, 
-	                 __osgGA_EventVisitor_P1__getEventVisitor, 
-	                 __void__setEventVisitor__osgGA_EventVisitor_P1);
-	I_SimpleProperty(int, KeyEventSetsDone, 
-	                 __int__getKeyEventSetsDone, 
-	                 __void__setKeyEventSetsDone__int);
-	I_SimpleProperty(bool, QuitEventSetsDone, 
-	                 __bool__getQuitEventSetsDone, 
-	                 __void__setQuitEventSetsDone__bool);
-	I_SimpleProperty(osg::Operation *, RealizeOperation, 
-	                 __osg_Operation_P1__getRealizeOperation, 
-	                 __void__setRealizeOperation__osg_Operation_P1);
 	I_SimpleProperty(double, ReferenceTime, 
 	                 0, 
 	                 __void__setReferenceTime__double);
@@ -406,20 +270,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_SimpleProperty(osg::Timer_t, StartTick, 
 	                 0, 
 	                 __void__setStartTick__osg_Timer_t);
-	I_SimpleProperty(osgViewer::Viewer::ThreadingModel, ThreadingModel, 
-	                 __ThreadingModel__getThreadingModel, 
+	I_SimpleProperty(osgViewer::ViewerBase::ThreadingModel, ThreadingModel, 
+	                 0, 
 	                 __void__setThreadingModel__ThreadingModel);
-	I_SimpleProperty(osg::OperationQueue *, UpdateOperations, 
-	                 __osg_OperationQueue_P1__getUpdateOperations, 
-	                 __void__setUpdateOperations__osg_OperationQueue_P1);
-	I_SimpleProperty(osgUtil::UpdateVisitor *, UpdateVisitor, 
-	                 __osgUtil_UpdateVisitor_P1__getUpdateVisitor, 
-	                 __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1);
 END_REFLECTOR
-
-STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::Camera * >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::OperationThread * >)
 

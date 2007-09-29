@@ -125,7 +125,7 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         
         osg::ref_ptr<osg::Switch>           _switch;
         
-       unsigned int                            _threadingModel;
+        ViewerBase::ThreadingModel          _threadingModel;
         osg::ref_ptr<osgText::Text>         _threadingModelText;
 
         unsigned int                        _frameRateChildNum;

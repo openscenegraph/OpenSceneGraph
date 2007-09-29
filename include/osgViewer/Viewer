@@ -24,7 +24,7 @@
 namespace osgViewer {
 
 /** Viewer holds a single view on to a single scene.*/
-class OSGVIEWER_EXPORT Viewer : public osgViewer::View
+class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
 {
     public:
 
@@ -42,20 +42,15 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         virtual void take(View& rhs);
 
         /** read the viewer configuration from a configuration file.*/
-        bool readConfiguration(const std::string& filename);
+        virtual bool readConfiguration(const std::string& filename);
         
         /** Get whether at least of one of this viewers windows are realized.*/
-        bool isRealized() const;
+        virtual bool isRealized() const;
 
         /** set up windows and associated threads.*/
-        void realize();
+        virtual void realize();
 
-        void setDone(bool done) { _done = done; }
-        
-        bool done() const { return _done; }
-        
         virtual void setStartTick(osg::Timer_t tick);
-
         void setReferenceTime(double time=0.0);
 
         /** Set the sene graph data that viewer with view.*/
@@ -66,21 +61,9 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
           * Returns the GraphicsWindowEmbedded that can be used by applications to pass in events to the viewer. */
         virtual GraphicsWindowEmbedded* setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height);
 
-
-        enum ThreadingModel
-        {
-            SingleThreaded,
-            CullDrawThreadPerContext,
-            DrawThreadPerContext,
-            CullThreadPerCameraDrawThreadPerContext,
-            AutomaticSelection
-        };
-        
         /** Set the threading model the rendering traversals will use.*/
-        void setThreadingModel(ThreadingModel threadingModel);
+        virtual void setThreadingModel(ThreadingModel threadingModel);
         
-        /** Get the threading model the rendering traversals will use.*/
-        ThreadingModel getThreadingModel() const { return _threadingModel; }
 
         /** Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available.*/
         ThreadingModel suggestBestThreadingModel();
@@ -100,61 +83,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
 
         /** Get the end barrier position.*/
         BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
-
-
-
-        /** Set the EventVisitor. */
-        void setEventVisitor(osgGA::EventVisitor* eventVisitor) { _eventVisitor = eventVisitor; }
-
-        /** Get the EventVisitor. */
-        osgGA::EventVisitor* getEventVisitor() { return _eventVisitor.get(); }
-
-        /** Get the const EventVisitor. */
-        const osgGA::EventVisitor* getEventVisitor() const { return _eventVisitor.get(); }
-
-        /** Set the key event that the viewer checks on each frame to see if the viewer's done flag should be set to
-          * signal end of viewers main loop.
-          * Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape).
-          * Setting to 0 switches off the feature.*/
-        void setKeyEventSetsDone(int key) { _keyEventSetsDone = key; }
-
-        /** get the key event that the viewer checks on each frame to see if the viewer's done flag.*/
-        int getKeyEventSetsDone() const { return _keyEventSetsDone; }
-        
-        /** if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature */
-        void setQuitEventSetsDone(bool flag) { _quitEventSetsDone = flag; }
-        
-        /** @return true if the viewer respond to the QUIT_APPLICATION-event */
-        bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
-
-
-
-
-
-        /** Set the UpdateVisitor. */
-        void setUpdateVisitor(osgUtil::UpdateVisitor* updateVisitor) { _updateVisitor = updateVisitor; }
-
-        /** Get the UpdateVisitor. */
-        osgUtil::UpdateVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
-
-        /** Get the const UpdateVisitor. */
-        const osgUtil::UpdateVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
-
-
-        /** Set the Update OperationQueue. */
-        void setUpdateOperations(osg::OperationQueue* operations) { _updateOperations = operations; }
-
-        /** Get the Update OperationQueue. */
-        osg::OperationQueue* getUpdateOperations() { return _updateOperations.get(); }
-        
-        /** Get the const Update OperationQueue. */
-        const osg::OperationQueue* getUpdateOperations() const { return _updateOperations.get(); }
-        
-        /** Add an update operation.*/
-        void addUpdateOperation(osg::Operation* operation);
-
-        /** Remove an update operation.*/
-        void removeUpdateOperation(osg::Operation* operation);
 
 
         /** Execute a main frame loop.
@@ -180,35 +108,32 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
         const osg::Camera* getCameraWithFocus() const { return _cameraWithFocus.get(); }
         
-        typedef std::vector<osgViewer::GraphicsWindow*> Windows;
-        void getWindows(Windows& windows, bool onlyValid=true);
+        virtual void getCameras(Cameras& cameras, bool onlyActive=true);
+        
+        virtual void getContexts(Contexts& contexts, bool onlyValid=true);
 
-        typedef std::vector<OpenThreads::Thread*> Threads;
-        void getAllThreads(Threads& threads, bool onlyActive=true);
+        virtual void getWindows(Windows& windows, bool onlyValid=true);
 
-        typedef std::vector<osg::OperationThread*> OperationThreads;
-        void getOperationThreads(OperationThreads& threads, bool onlyActive=true);
+        virtual void getAllThreads(Threads& threads, bool onlyActive=true);
 
-        /** Set the graphics operation to call on realization of the viewers graphics windows.*/
-        void setRealizeOperation(osg::Operation* op) { _realizeOperation = op; }
+        virtual void getOperationThreads(OperationThreads& threads, bool onlyActive=true);
 
-        /** Get the graphics operation to call on realization of the viewers graphics windows.*/
-        osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
+        virtual void getScenes(Scenes& scenes, bool onlyValid=true);
+
 
         /** Set up the threading and processor affinity as per the viewers threading model.*/
-        void setUpThreading();      
-
-        /** Return true if viewer threads are running. */
-        bool areThreadsRunning() const { return _threadsRunning; }
+        virtual void setUpThreading();      
 
         /** Stop any threads begin run by viewer.*/
-        void stopThreading();
+        virtual void stopThreading();
 
         /** Start any threads required by the viewer.*/
-        void startThreading();        
+        virtual void startThreading();        
 
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+
 
     protected:
     
@@ -237,12 +162,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         bool            _firstFrame;
         
-        bool            _done;
-        int             _keyEventSetsDone;
-        bool            _quitEventSetsDone;
-        
-        ThreadingModel  _threadingModel;
-        bool            _threadsRunning;
         
         BarrierPosition _endBarrierPosition;
 
@@ -254,12 +173,6 @@ class OSGVIEWER_EXPORT Viewer : public osgViewer::View
         
         osg::observer_ptr<osg::Camera>              _cameraWithFocus;
         
-        osg::ref_ptr<osgGA::EventVisitor>           _eventVisitor;
-        
-        osg::ref_ptr<osg::OperationQueue>           _updateOperations;
-        osg::ref_ptr<osgUtil::UpdateVisitor>        _updateVisitor;
-        
-        osg::ref_ptr<osg::Operation>                _realizeOperation;
 
         osg::observer_ptr<osg::GraphicsContext>     _currentContext;
 };

@@ -28,7 +28,7 @@ CompositeViewer::CompositeViewer()
 }
 
 CompositeViewer::CompositeViewer(const CompositeViewer& cv,const osg::CopyOp& copyop):
-    osg::Object(cv,copyop)
+    ViewerBase()
 {
     constructorInit();
 }
@@ -53,12 +53,6 @@ CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
 
 void CompositeViewer::constructorInit()
 {
-    _firstFrame = true;
-    _done = false;
-    _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
-    _quitEventSetsDone = true;
-    _threadingModel = ThreadPerContext;
-    _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
     _numThreadsOnBarrier = 0;
     _startTick = 0;
@@ -70,14 +64,13 @@ void CompositeViewer::constructorInit()
     _frameStamp->setFrameNumber(0);
     _frameStamp->setReferenceTime(0);
     _frameStamp->setSimulationTime(0);
-
-    setEventQueue(new osgGA::EventQueue);
-
+    
     _eventVisitor = new osgGA::EventVisitor;
     _eventVisitor->setFrameStamp(_frameStamp.get());
-
+    
     _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
+
 
 }
 
@@ -130,6 +123,8 @@ void CompositeViewer::addView(osgViewer::View* view)
 
     _views.push_back(view);
     
+    view->_viewerBase = this;
+    
     view->setFrameStamp(_frameStamp.get());
     view->setStats(new osg::Stats("CompositeViewer"));
     
@@ -146,6 +141,8 @@ void CompositeViewer::removeView(osgViewer::View* view)
         {
             bool threadsWereRuinning = _threadsRunning;
             if (threadsWereRuinning) stopThreading();
+
+            view->_viewerBase = 0;
 
             _views.erase(itr);
 
@@ -305,6 +302,21 @@ unsigned int CompositeViewer::computeNumberOfThreadsIncludingMainRequired()
     return firstContextAsMainThread ? contexts.size() : contexts.size()+1;
 }
 
+void CompositeViewer::setUpThreading()
+{
+    Contexts contexts;
+    getContexts(contexts);
+
+    if (_threadingModel==SingleThreaded)
+    {
+        if (_threadsRunning) stopThreading();
+    }
+    else
+    {
+        if (!_threadsRunning) startThreading();
+    }
+    
+}
 
 void CompositeViewer::startThreading()
 {
@@ -498,6 +510,29 @@ void CompositeViewer::getContexts(Contexts& contexts, bool onlyValid)
     }
 }
 
+void CompositeViewer::getCameras(Cameras& cameras, bool onlyActive)
+{
+    cameras.clear();
+    
+    for(Views::iterator vitr = _views.begin();
+        vitr != _views.end();
+        ++vitr)
+    {
+        View* view = vitr->get();
+
+        if (view->getCamera() && 
+            (!onlyActive || (view->getCamera()->getGraphicsContext() && view->getCamera()->getGraphicsContext()->valid())) ) cameras.push_back(view->getCamera());
+
+        for(View::Slaves::iterator itr = view->_slaves.begin();
+            itr != view->_slaves.end();
+            ++itr)
+        {
+            if (itr->_camera.valid() &&
+                (!onlyActive || (itr->_camera->getGraphicsContext() && itr->_camera->getGraphicsContext()->valid())) ) cameras.push_back(itr->_camera.get());
+        }
+    }
+}
+ 
 void CompositeViewer::getWindows(Windows& windows, bool onlyValid)
 {
     windows.clear();
@@ -536,6 +571,69 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
     {
         scenes.push_back(const_cast<osgViewer::Scene*>(*sitr));
     }
+}
+
+void CompositeViewer::getAllThreads(Threads& threads, bool onlyActive)
+{
+    OperationThreads operationThreads;
+    getOperationThreads(operationThreads);
+    
+    for(OperationThreads::iterator itr = operationThreads.begin();
+        itr != operationThreads.end();
+        ++itr)
+    {
+        threads.push_back(*itr);
+    }
+
+    Scenes scenes;
+    getScenes(scenes);
+    
+    for(Scenes::iterator sitr = scenes.begin();
+        sitr != scenes.end();
+        ++sitr)
+    {
+        Scene* scene = *sitr;
+        if (scene->getDatabasePager() &&
+           (!onlyActive || scene->getDatabasePager()->isRunning())) 
+        {
+            threads.push_back(scene->getDatabasePager());
+        }
+    }
+}
+
+
+void CompositeViewer::getOperationThreads(OperationThreads& threads, bool onlyActive)
+{
+    threads.clear();
+    
+    Contexts contexts;
+    getContexts(contexts);
+    for(Contexts::iterator gcitr = contexts.begin();
+        gcitr != contexts.end();
+        ++gcitr)
+    {
+        osg::GraphicsContext* gc = *gcitr;
+        if (gc->getGraphicsThread() && 
+            (!onlyActive || gc->getGraphicsThread()->isRunning()) )
+        {
+            threads.push_back(gc->getGraphicsThread());
+        }
+    }
+    
+    Cameras cameras;
+    getCameras(cameras);
+    for(Cameras::iterator citr = cameras.begin();
+        citr != cameras.end();
+        ++citr)
+    {
+        osg::Camera* camera = *citr;
+        if (camera->getCameraThread() && 
+            (!onlyActive || camera->getCameraThread()->isRunning()) )
+        {
+            threads.push_back(camera->getCameraThread());
+        }
+    }
+    
 }
 
 void CompositeViewer::realize()
@@ -1062,25 +1160,6 @@ void CompositeViewer::eventTraversal()
 }
 
 
-void CompositeViewer::addUpdateOperation(osg::Operation* operation)
-{
-    if (!operation) return;
-
-    if (!_updateOperations) _updateOperations = new osg::OperationQueue;
-    
-    _updateOperations->add(operation);
-}
-
-void CompositeViewer::removeUpdateOperation(osg::Operation* operation)
-{
-    if (!operation) return;
-
-    if (_updateOperations.valid())
-    {
-        _updateOperations->remove(operation);
-    } 
-}
-
 void CompositeViewer::updateTraversal()
 {
     if (_done) return;
@@ -1237,6 +1316,27 @@ void CompositeViewer::renderingTraversals()
         if (dp)
         {
             dp->signalEndFrame();
+        }
+    }
+}
+
+void CompositeViewer::getUsage(osg::ApplicationUsage& usage) const
+{
+    for(Views::const_iterator vitr = _views.begin();
+        vitr != _views.end();
+        ++vitr)
+    {
+        const View* view = vitr->get();
+        if (view->getCameraManipulator())
+        {
+            view->getCameraManipulator()->getUsage(usage);
+        }
+
+        for(View::EventHandlers::const_iterator hitr = view->_eventHandlers.begin();
+            hitr != view->_eventHandlers.end();
+            ++hitr)
+        {
+            (*hitr)->getUsage(usage);
         }
     }
 }

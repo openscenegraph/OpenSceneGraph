@@ -25,7 +25,7 @@ namespace osg {
   * Note, if no slave cameras are attached to the view then the master camera does both the control and implementation of the rendering of the scene,
   * but if slave cameras are present then the master controls the view onto the scene, while the slaves implement the rendering of the scene.
 */
-class OSG_EXPORT View : public osg::Object
+class OSG_EXPORT View : public virtual osg::Object
 {
     public :
 

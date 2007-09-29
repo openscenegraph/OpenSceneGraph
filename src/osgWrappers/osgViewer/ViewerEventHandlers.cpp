@@ -215,10 +215,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
-	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::Viewer *, viewer,
+	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::View *, view,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__setUpHUDCamera__osgViewer_Viewer_P1,
+	                   __void__setUpHUDCamera__osgViewer_View_P1,
 	                   "",
 	                   "");
 	I_ProtectedMethod4(osg::Geometry *, createGeometry, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numBlocks,
@@ -245,10 +245,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	                   __osg_Node_P1__createCameraStats__C5_std_string_R1__osg_Vec3_R1__float__bool__float__osg_Stats_P1__osg_Camera_P1,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::Viewer *, viewer,
+	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::View *, view,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__setUpScene__osgViewer_Viewer_P1,
+	                   __void__setUpScene__osgViewer_View_P1,
 	                   "",
 	                   "");
 	I_ProtectedMethod0(void, updateThreadingModelText,

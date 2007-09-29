@@ -27,7 +27,7 @@ StatsHandler::StatsHandler():
     _keyEventPrintsOutStats('S'),
     _statsType(NO_STATS),
     _initialized(false),
-    _threadingModel(0xffff),
+    _threadingModel(ViewerBase::SingleThreaded),
     _frameRateChildNum(0),
     _viewerChildNum(0),
     _sceneChildNum(0),
@@ -45,7 +45,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
     if (!view) return false;
     
-    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+    osgViewer::ViewerBase* viewer = view->getViewerBase();
     if (viewer && _threadingModelText.valid() && viewer->getThreadingModel()!=_threadingModel)
     {
         _threadingModel = viewer->getThreadingModel();
@@ -73,8 +73,8 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
 
                     if (_statsType==LAST) _statsType = NO_STATS;
                     
-                    osgViewer::View::Cameras cameras;
-                    view->getCameras(cameras);
+                    osgViewer::ViewerBase::Cameras cameras;
+                    viewer->getCameras(cameras);
 
                     switch(_statsType)
                     {
@@ -84,7 +84,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             view->getStats()->collectStats("event",false);
                             view->getStats()->collectStats("update",false);
 
-                            for(osgViewer::View::Cameras::iterator itr = cameras.begin();
+                            for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
                                 itr != cameras.end();
                                 ++itr)
                             {
@@ -114,7 +114,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             view->getStats()->collectStats("event",true);
                             view->getStats()->collectStats("update",true);
 
-                            for(osgViewer::View::Cameras::iterator itr = cameras.begin();
+                            for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
                                 itr != cameras.end();
                                 ++itr)
                             {
@@ -151,9 +151,9 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     StatsList statsList;
                     statsList.push_back(view->getStats());
 
-                    osgViewer::View::Contexts contexts;
-                    view->getContexts(contexts);
-                    for(osgViewer::View::Contexts::iterator gcitr = contexts.begin();
+                    osgViewer::ViewerBase::Contexts contexts;
+                    viewer->getContexts(contexts);
+                    for(osgViewer::ViewerBase::Contexts::iterator gcitr = contexts.begin();
                         gcitr != contexts.end();
                         ++gcitr)
                     {
@@ -214,11 +214,8 @@ void StatsHandler::reset()
 
 void StatsHandler::setUpHUDCamera(osgViewer::View* view)
 {
-    
-    
-    
     osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(view);
+    osgViewer::ViewerBase* viewer = view->getViewerBase();
     osg::GraphicsContext* context;
     
     if (viewer && !window)

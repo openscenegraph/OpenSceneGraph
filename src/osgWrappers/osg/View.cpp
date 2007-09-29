@@ -36,7 +36,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_DeclaringFile("osg/View");
-	I_BaseType(osg::Object);
+	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____View,
 	               "",
 	               "");

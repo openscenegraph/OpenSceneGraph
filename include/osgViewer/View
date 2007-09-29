@@ -175,6 +175,12 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);
         virtual void requestWarpPointer(float x,float y);
+        
+        typedef std::vector<osg::Camera*> Cameras;
+        void getCameras(Cameras& cameras, bool onlyActive=true);
+        
+        typedef std::vector<osg::GraphicsContext*> Contexts;
+        void getContexts(Contexts& contexts, bool onlyValid=true);
 
     public:
         

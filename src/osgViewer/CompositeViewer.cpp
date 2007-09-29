@@ -131,6 +131,7 @@ void CompositeViewer::addView(osgViewer::View* view)
     _views.push_back(view);
     
     view->setFrameStamp(_frameStamp.get());
+    view->setStats(new osg::Stats("CompositeViewer"));
     
     if (threadsWereRuinning) startThreading();
 }
@@ -661,6 +662,10 @@ void CompositeViewer::frame(double simulationTime)
 void CompositeViewer::advance(double simulationTime)
 {
     if (_done) return;
+    
+    double prevousReferenceTime = _frameStamp->getReferenceTime();
+    int previousFrameNumber = _frameStamp->getFrameNumber();
+
 
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
 
@@ -674,6 +679,24 @@ void CompositeViewer::advance(double simulationTime)
     {
         _frameStamp->setSimulationTime(simulationTime);
     }
+    
+    for(Views::iterator vitr = _views.begin();
+            vitr != _views.end();
+            ++vitr)
+    {
+        if ((*vitr)->getStats() && (*vitr)->getStats()->collectStats("frame_rate"))
+        {
+            // update previous frame stats
+            double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
+            (*vitr)->getStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
+            (*vitr)->getStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
+
+            // update current frames stats
+            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
+        }
+        
+    }
+    
 }
 
 void CompositeViewer::setCameraWithFocus(osg::Camera* camera)
@@ -703,6 +726,8 @@ void CompositeViewer::eventTraversal()
     if (_done) return;
     
     if (_views.empty()) return;
+    
+    double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     // osg::notify(osg::NOTICE)<<"CompositeViewer::frameEventTraversal()."<<std::endl;
     
@@ -1016,6 +1041,24 @@ void CompositeViewer::eventTraversal()
         }
         
     }
+    
+    // stats:
+    
+    for(Views::iterator vitr = _views.begin();
+            vitr != _views.end();
+            ++vitr)
+    {
+    
+        if ((*vitr)->getStats() && (*vitr)->getStats()->collectStats("event"))
+        {
+            double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+            // update current frames stats
+            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time", beginEventTraversal);
+            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time", endEventTraversal);
+            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
+        }
+    }
 }
 
 
@@ -1041,6 +1084,8 @@ void CompositeViewer::removeUpdateOperation(osg::Operation* operation)
 void CompositeViewer::updateTraversal()
 {
     if (_done) return;
+    
+    double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     Scenes scenes;
     getScenes(scenes);
@@ -1101,7 +1146,21 @@ void CompositeViewer::updateTraversal()
             view->getCamera()->setViewMatrix( view->getCameraManipulator()->getInverseMatrix());
         }
         view->updateSlaves();
+        
+        // stats
+        if (view->getStats() && view->getStats()->collectStats("update"))
+        {
+            double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+            // update current frames stats
+            view->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time", beginUpdateTraversal);
+            view->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time", endUpdateTraversal);
+            view->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
+        }
+
     }
+    
+    
 
 }
 

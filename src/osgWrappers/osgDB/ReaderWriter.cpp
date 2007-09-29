@@ -251,6 +251,26 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __CacheHintOptions__getObjectCacheHint,
 	          "Get whether the Registry::ObjectCache should be used by default. ",
 	          "");
+	I_Method2(void, setPluginData, IN, const std::string &, s, IN, void *, v,
+	          Properties::NON_VIRTUAL,
+	          __void__setPluginData__C5_std_string_R1__void_P1,
+	          "Sets a plugindata value PluginData with a string. ",
+	          "");
+	I_Method1(void *, getPluginData, IN, const std::string &, s,
+	          Properties::NON_VIRTUAL,
+	          __void_P1__getPluginData__C5_std_string_R1,
+	          "Get a value from the PluginData. ",
+	          "");
+	I_Method1(const void *, getPluginData, IN, const std::string &, s,
+	          Properties::NON_VIRTUAL,
+	          __C5_void_P1__getPluginData__C5_std_string_R1,
+	          "Get a value from the PluginData. ",
+	          "");
+	I_Method1(void, removePluginData, IN, const std::string &, s,
+	          Properties::NON_VIRTUAL,
+	          __void__removePluginData__C5_std_string_R1,
+	          "Remove a value from the PluginData. ",
+	          "");
 	I_SimpleProperty(const std::string &, DatabasePath, 
 	                 0, 
 	                 __void__setDatabasePath__C5_std_string_R1);
@@ -263,6 +283,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	I_SimpleProperty(const std::string &, OptionString, 
 	                 __C5_std_string_R1__getOptionString, 
 	                 __void__setOptionString__C5_std_string_R1);
+	I_IndexedProperty(void *, PluginData, 
+	                  __void_P1__getPluginData__C5_std_string_R1, 
+	                  __void__setPluginData__C5_std_string_R1__void_P1, 
+	                  0);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)

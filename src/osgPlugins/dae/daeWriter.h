@@ -242,7 +242,7 @@ private: //members
         std::string uniquify( const std::string &name );
 };
 
-};
+}
 
 #endif
 

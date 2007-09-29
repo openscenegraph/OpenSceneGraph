@@ -176,7 +176,7 @@ protected:
     AuthoringTool m_AuthoringTool;
 };
 
-};
+}
 
 #endif
 

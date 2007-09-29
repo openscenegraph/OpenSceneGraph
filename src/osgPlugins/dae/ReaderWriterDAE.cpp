@@ -11,6 +11,7 @@
 */
 
 #include <sstream>
+#include <memory>
 
 #include <osg/Notify>
 #include <osgDB/ReaderWriter>
@@ -72,7 +73,13 @@ ReaderWriterDAE::readNode(const std::string& fname,
         const osgDB::ReaderWriter::Options* options) const
 {
     SERIALIZER();
-    
+   
+    DAE* daeptr = 0L;
+   
+    if ( options ) {        
+        daeptr = (DAE*) options->getPluginData("DAE");        
+    }
+
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
 
@@ -81,15 +88,30 @@ ReaderWriterDAE::readNode(const std::string& fname,
 
     osg::notify(osg::INFO) << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
 
-    if (_dae == NULL)
-      _dae = new DAE();
+   
+    if (daeptr == NULL) {
+        if (_dae == NULL) 
+                _dae = new DAE();
+        daeptr = _dae;
+    }
 
-    osgdae::daeReader daeReader(_dae);
+    osgdae::daeReader daeReader(daeptr) ;
     std::string fileURI( osgDB::convertFileNameToUnixStyle(fileName) );
     if ( ! daeReader.convert( fileURI ) )
     {
         osg::notify( osg::WARN ) << "Load failed in COLLADA DOM conversion" << std::endl;
         return ReadResult::ERROR_IN_READING_FILE;
+    }
+
+    if ( options ) {
+        // return DAE* used
+        options->setPluginData("DAE", daeptr);
+        // and filename document was stored as in database, does not have to be
+        // the same as fname
+        options->setPluginData("DAE-DocumentFileName", ( fileURI[1] == ':' ?  
+              (void*) new std::auto_ptr<std::string>(new std::string('/'+fileURI)) :
+              (void*) new std::auto_ptr<std::string>(new std::string(fileURI)) ) 
+        );
     }
 
     osg::Node* rootNode( daeReader.getRootNode() );
@@ -104,8 +126,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 {
     SERIALIZER();
 
+    DAE* daeptr = 0L;
+
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
+
+    if ( options ) {        
+        daeptr = (DAE*) options->getPluginData("DAE");        
+    }
 
     // Process options
     bool usePolygon(false);
@@ -129,10 +157,13 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
       }
     }
     
-    if (_dae == NULL)
-      _dae = new DAE();
+    if (daeptr == NULL) {
+        if (_dae == NULL) 
+                _dae = new DAE();
+        daeptr = _dae;
+    }
 
-    osgdae::daeWriter daeWriter(_dae, fname, usePolygon );
+    osgdae::daeWriter daeWriter(daeptr, fname, usePolygon );
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 
@@ -145,6 +176,17 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         }
     }
     
+    if ( options ) {
+        // return DAE* used
+        options->setPluginData("DAE", daeptr);
+
+        // saving filename so read and write work the same way,
+        // this could be skipped since write does not currently modify the
+        // filename which load might do (under windows for example)
+        options->setPluginData("DAE-DocumentFileName", (void*) new
+                std::auto_ptr<std::string>(new std::string(fname)));
+    }
+
     return retVal;
 }
 

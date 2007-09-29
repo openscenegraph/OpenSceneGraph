@@ -34,6 +34,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/FlightManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osgViewer/CompositeViewer>
 
@@ -139,12 +140,18 @@ int main( int argc, char **argv )
     osgViewer::CompositeViewer viewer;
     
     
+
+    
     if (arguments.read("-1"))
     {
         {
             osgViewer::View* view = new osgViewer::View;
             view->setSceneData(osgDB::readNodeFile("fountain.osg"));
-
+            
+            osg::ref_ptr<osgViewer::StatsHandler> statsHandler = new osgViewer::StatsHandler;
+            view->addEventHandler( statsHandler.get() );
+            
+            
             view->setUpViewAcrossAllScreens();
             view->setCameraManipulator(new osgGA::TrackballManipulator);
             viewer.addView(view);
@@ -178,6 +185,10 @@ int main( int argc, char **argv )
             view->setUpViewOnSingleScreen(1);
             view->setSceneData(scene.get());
             view->setCameraManipulator(new osgGA::TrackballManipulator);
+            
+            osg::ref_ptr<osgViewer::StatsHandler> statsHandler = new osgViewer::StatsHandler;
+            view->addEventHandler( statsHandler.get() );
+
             
             // add the handler for doing the picking
             view->addEventHandler(new PickHandler());
@@ -237,6 +248,9 @@ int main( int argc, char **argv )
             statesetManipulator->setStateSet(view->getCamera()->getOrCreateStateSet());
 
             view->addEventHandler( statesetManipulator.get() );
+            
+            osg::ref_ptr<osgViewer::StatsHandler> statsHandler = new osgViewer::StatsHandler;
+            view->addEventHandler( statsHandler.get() );
         }
 
         // view two

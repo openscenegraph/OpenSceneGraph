@@ -70,6 +70,7 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::AxisAlignment)
 	I_EnumLabel(osgText::Text::YZ_PLANE);
 	I_EnumLabel(osgText::Text::REVERSED_YZ_PLANE);
 	I_EnumLabel(osgText::Text::SCREEN);
+	I_EnumLabel(osgText::Text::USER_DEFINED_ROTATION);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::Layout)
@@ -293,6 +294,11 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method1(void, setAxisAlignment, IN, osgText::Text::AxisAlignment, axis,
 	          Properties::NON_VIRTUAL,
 	          __void__setAxisAlignment__AxisAlignment,
+	          "",
+	          "");
+	I_Method0(osgText::Text::AxisAlignment, getAxisAlignment,
+	          Properties::NON_VIRTUAL,
+	          __AxisAlignment__getAxisAlignment,
 	          "",
 	          "");
 	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
@@ -644,7 +650,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                 __bool__getAutoRotateToScreen, 
 	                 __void__setAutoRotateToScreen__bool);
 	I_SimpleProperty(osgText::Text::AxisAlignment, AxisAlignment, 
-	                 0, 
+	                 __AxisAlignment__getAxisAlignment, 
 	                 __void__setAxisAlignment__AxisAlignment);
 	I_SimpleProperty(const osg::Vec4 &, BackdropColor, 
 	                 __C5_osg_Vec4_R1__getBackdropColor, 

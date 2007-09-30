@@ -1586,7 +1586,7 @@ ReaderWriter::ReadResult Registry::readObjectImplementation(const std::string& f
                               options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_OBJECTS)!=0: false);
 }
 
-ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,const std::string& fileName,const ReaderWriter::Options* options)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1596,7 +1596,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,options);
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1607,7 +1607,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,options);
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1639,7 +1639,7 @@ ReaderWriter::ReadResult Registry::readImageImplementation(const std::string& fi
                               options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_IMAGES)!=0: false);
 }
 
-ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,const std::string& fileName,const ReaderWriter::Options* options)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1649,7 +1649,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,options);
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1662,7 +1662,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,options);
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1693,7 +1693,7 @@ ReaderWriter::ReadResult Registry::readHeightFieldImplementation(const std::stri
                               options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_HEIGHTFIELDS)!=0: false);
 }
 
-ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightField& HeightField,const std::string& fileName,const ReaderWriter::Options* options)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1703,7 +1703,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,options);
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1716,7 +1716,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,options);
             if (rr.success()) return rr;
             else results.push_back(rr);
         }
@@ -1747,7 +1747,7 @@ ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fil
                               options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_NODES)!=0: false);
 }
 
-ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName)
+ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName,const ReaderWriter::Options* options)
 {
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::WriteResult> Results;
@@ -1757,7 +1757,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     AvailableReaderWriterIterator itr(_rwList);
     for(;itr.valid();++itr)
     {
-        ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
+        ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,options);
         if (rr.success()) return rr;
         else results.push_back(rr);
     }
@@ -1772,7 +1772,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     {
         for(;itr.valid();++itr)
         {
-            ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,_options.get());
+            ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,options);
     
             if (rr.success()) return rr;
             else results.push_back(rr);

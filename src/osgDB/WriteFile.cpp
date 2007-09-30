@@ -24,32 +24,32 @@
 using namespace osg;
 using namespace osgDB;
 
-bool osgDB::writeObjectFile(const Object& object,const std::string& filename)
+bool osgDB::writeObjectFile(const Object& object,const std::string& filename, const ReaderWriter::Options* options )
 {
-    ReaderWriter::WriteResult wr = Registry::instance()->writeObject(object,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeObject( object, filename, options );
     if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
 
 
-bool osgDB::writeImageFile(const Image& image,const std::string& filename)
+bool osgDB::writeImageFile(const Image& image,const std::string& filename, const ReaderWriter::Options* options )
 {
-    ReaderWriter::WriteResult wr = Registry::instance()->writeImage(image,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeImage( image, filename, options );
     if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
 
 
-bool osgDB::writeHeightFieldFile(const HeightField& HeightField,const std::string& filename)
+bool osgDB::writeHeightFieldFile(const HeightField& HeightField,const std::string& filename, const ReaderWriter::Options* options )
 {
-    ReaderWriter::WriteResult wr = Registry::instance()->writeHeightField(HeightField,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeHeightField( HeightField, filename, options );
     if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
 
-bool osgDB::writeNodeFile(const Node& node,const std::string& filename)
+bool osgDB::writeNodeFile(const Node& node,const std::string& filename, const ReaderWriter::Options* options )
 {
-    ReaderWriter::WriteResult wr = Registry::instance()->writeNode(node,filename);
+    ReaderWriter::WriteResult wr = Registry::instance()->writeNode( node, filename, options );
     if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }

@@ -215,24 +215,24 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         {
         public:
         
-            virtual ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName)
+            virtual ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName,const ReaderWriter::Options* options)
             {
-                return osgDB::Registry::instance()->writeObjectImplementation(obj,fileName);
+                return osgDB::Registry::instance()->writeObjectImplementation(obj,fileName,options);
             }
 
-            virtual ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName)
+            virtual ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName,const ReaderWriter::Options* options)
             {
-                return osgDB::Registry::instance()->writeImageImplementation(obj,fileName);
+                return osgDB::Registry::instance()->writeImageImplementation(obj,fileName,options);
             }
             
-            virtual ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName)
+            virtual ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName,const ReaderWriter::Options* options)
             {
-                return osgDB::Registry::instance()->writeHeightFieldImplementation(obj,fileName);
+                return osgDB::Registry::instance()->writeHeightFieldImplementation(obj,fileName,options);
             }
             
-            virtual ReaderWriter::WriteResult writeNode(const osg::Node& obj, const std::string& fileName)
+            virtual ReaderWriter::WriteResult writeNode(const osg::Node& obj, const std::string& fileName,const ReaderWriter::Options* options)
             {
-                return osgDB::Registry::instance()->writeNodeImplementation(obj,fileName);
+                return osgDB::Registry::instance()->writeNodeImplementation(obj,fileName,options);
             }
             
         protected:
@@ -249,33 +249,33 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         const WriteFileCallback* getWriteFileCallback() const { return _writeFileCallback.get(); }
 
 
-        ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName)
+        ReaderWriter::WriteResult writeObject(const osg::Object& obj, const std::string& fileName,const ReaderWriter::Options* options)
         {
-            if (_writeFileCallback.valid()) return _writeFileCallback->writeObject(obj,fileName);
-            else return writeObjectImplementation(obj,fileName);
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeObject(obj,fileName,options);
+            else return writeObjectImplementation(obj,fileName,options);
         }
-        ReaderWriter::WriteResult writeObjectImplementation(const osg::Object& obj, const std::string& fileName);
+        ReaderWriter::WriteResult writeObjectImplementation(const osg::Object& obj, const std::string& fileName,const ReaderWriter::Options* options);
 
-        ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName)
+        ReaderWriter::WriteResult writeImage(const osg::Image& obj, const std::string& fileName,const ReaderWriter::Options* options)
         {
-            if (_writeFileCallback.valid()) return _writeFileCallback->writeImage(obj,fileName);
-            else return writeImageImplementation(obj,fileName);
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeImage(obj,fileName,options);
+            else return writeImageImplementation(obj,fileName,options);
         }
-        ReaderWriter::WriteResult writeImageImplementation(const osg::Image& obj, const std::string& fileName);
+        ReaderWriter::WriteResult writeImageImplementation(const osg::Image& obj, const std::string& fileName,const ReaderWriter::Options* options);
 
-        ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName)
+        ReaderWriter::WriteResult writeHeightField(const osg::HeightField& obj, const std::string& fileName,const ReaderWriter::Options* options)
         {
-            if (_writeFileCallback.valid()) return _writeFileCallback->writeHeightField(obj,fileName);
-            else return writeHeightFieldImplementation(obj,fileName);
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeHeightField(obj,fileName,options);
+            else return writeHeightFieldImplementation(obj,fileName,options);
         }
-        ReaderWriter::WriteResult writeHeightFieldImplementation(const osg::HeightField& obj, const std::string& fileName);
+        ReaderWriter::WriteResult writeHeightFieldImplementation(const osg::HeightField& obj, const std::string& fileName,const ReaderWriter::Options* options);
 
-        ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName)
+        ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& fileName,const ReaderWriter::Options* options)
         {
-            if (_writeFileCallback.valid()) return _writeFileCallback->writeNode(node,fileName);
-            else return writeNodeImplementation(node,fileName);
+            if (_writeFileCallback.valid()) return _writeFileCallback->writeNode(node,fileName,options);
+            else return writeNodeImplementation(node,fileName,options);
         }
-        ReaderWriter::WriteResult writeNodeImplementation(const osg::Node& node, const std::string& fileName);
+        ReaderWriter::WriteResult writeNodeImplementation(const osg::Node& node, const std::string& fileName,const ReaderWriter::Options* options);
         
         
 

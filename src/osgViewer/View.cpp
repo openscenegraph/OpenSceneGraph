@@ -124,44 +124,6 @@ protected:
 };
 
 
-ViewerBase::ViewerBase():
-    osg::Object(true)
-{
-    _done = false;
-    _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
-    _quitEventSetsDone = true;
-    _threadingModel = AutomaticSelection;
-    _threadsRunning = false;
-
-}
-
-ViewerBase::ViewerBase(const ViewerBase& base):
-    osg::Object(true)
-{
-}
-
-void ViewerBase::addUpdateOperation(osg::Operation* operation)
-{
-    if (!operation) return;
-
-    if (!_updateOperations) _updateOperations = new osg::OperationQueue;
-    
-    _updateOperations->add(operation);
-}
-
-void ViewerBase::removeUpdateOperation(osg::Operation* operation)
-{
-    if (!operation) return;
-
-    if (_updateOperations.valid())
-    {
-        _updateOperations->remove(operation);
-    } 
-}
-
-
-
-
 View::View():
     _fusionDistanceMode(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE),
     _fusionDistanceValue(1.0f)

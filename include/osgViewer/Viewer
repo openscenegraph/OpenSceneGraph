@@ -120,6 +120,8 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
 
         virtual void getScenes(Scenes& scenes, bool onlyValid=true);
 
+        virtual void getViews(Views& views, bool onlyValid=true);
+
 
         /** Set up the threading and processor affinity as per the viewers threading model.*/
         virtual void setUpThreading();      
@@ -161,7 +163,6 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         
         
         bool            _firstFrame;
-        
         
         BarrierPosition _endBarrierPosition;
 

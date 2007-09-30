@@ -101,7 +101,7 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
     protected:
 
-        void setUpHUDCamera(osgViewer::View* view);
+        void setUpHUDCamera(osgViewer::ViewerBase* viewer);
 
         osg::Geometry* createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks);
 
@@ -111,7 +111,7 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         osg::Node* createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
 
-        void setUpScene(osgViewer::View* view);
+        void setUpScene(osgViewer::ViewerBase* viewer);
         
         void updateThreadingModelText();
 

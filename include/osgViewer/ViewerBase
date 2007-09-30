@@ -1,0 +1,221 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVIEWER_VIEWERBASE
+#define OSGVIEWER_VIEWERBASE 1
+
+#include <osg/Stats>
+
+#include <osgUtil/UpdateVisitor>
+
+#include <osgGA/MatrixManipulator>
+#include <osgGA/EventVisitor>
+#include <osgGA/EventQueue>
+
+#include <osgViewer/Scene>
+#include <osgViewer/GraphicsWindow>
+
+namespace osgViewer {
+
+#define USE_REFERENCE_TIME DBL_MAX
+
+class View;
+
+/** ViewerBase is the view base class that is inhertied by both Viewer and CompositeViewer.*/
+class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
+{
+    public:
+    
+        ViewerBase();
+        ViewerBase(const ViewerBase& vb);
+        
+        
+        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        void setStats(osg::Stats* stats) { _stats = stats; }
+
+        /** Get the Viewers Stats object.*/
+        osg::Stats* getStats() { return _stats.get(); }
+
+        /** Get the Viewers Stats object.*/
+        const osg::Stats* getStats() const { return _stats.get(); }
+
+            
+         /** read the viewer configuration from a configuration file.*/
+        virtual bool readConfiguration(const std::string& filename) = 0;
+        
+        /** Get whether at least of one of this viewers windows are realized.*/
+        virtual bool isRealized() const = 0;
+
+        /** set up windows and associated threads.*/
+        virtual void realize() = 0;
+
+        enum ThreadingModel
+        {
+            SingleThreaded,
+            CullDrawThreadPerContext,
+            ThreadPerContext = CullDrawThreadPerContext,
+            DrawThreadPerContext,
+            CullThreadPerCameraDrawThreadPerContext,
+            ThreadPerCamera = CullThreadPerCameraDrawThreadPerContext,
+            AutomaticSelection
+        };
+
+        /** Set the threading model the rendering traversals will use.*/
+        virtual void setThreadingModel(ThreadingModel threadingModel) = 0;
+        
+        /** Get the threading model the rendering traversals will use.*/
+        ThreadingModel getThreadingModel() const { return _threadingModel; }
+        
+ 
+        /** Set the done flag to singnal the viewer's work is done and should exit the frame loop.*/
+        void setDone(bool done) { _done = done; }
+
+        /** Reurn true if  viewer's work is done and should exit the frame loop.*/
+        bool done() const { return _done; }
+
+        /** Set the EventVisitor. */
+        void setEventVisitor(osgGA::EventVisitor* eventVisitor) { _eventVisitor = eventVisitor; }
+
+        /** Get the EventVisitor. */
+        osgGA::EventVisitor* getEventVisitor() { return _eventVisitor.get(); }
+
+        /** Get the const EventVisitor. */
+        const osgGA::EventVisitor* getEventVisitor() const { return _eventVisitor.get(); }
+
+        /** Set the key event that the viewer checks on each frame to see if the viewer's done flag should be set to
+          * signal end of viewers main loop.
+          * Default value is Escape (osgGA::GUIEVentAdapter::KEY_Escape).
+          * Setting to 0 switches off the feature.*/
+        void setKeyEventSetsDone(int key) { _keyEventSetsDone = key; }
+
+        /** get the key event that the viewer checks on each frame to see if the viewer's done flag.*/
+        int getKeyEventSetsDone() const { return _keyEventSetsDone; }
+        
+        /** if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature */
+        void setQuitEventSetsDone(bool flag) { _quitEventSetsDone = flag; }
+        
+        /** @return true if the viewer respond to the QUIT_APPLICATION-event */
+        bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
+
+
+
+        /** Set the UpdateVisitor. */
+        void setUpdateVisitor(osgUtil::UpdateVisitor* updateVisitor) { _updateVisitor = updateVisitor; }
+
+        /** Get the UpdateVisitor. */
+        osgUtil::UpdateVisitor* getUpdateVisitor() { return _updateVisitor.get(); }
+
+        /** Get the const UpdateVisitor. */
+        const osgUtil::UpdateVisitor* getUpdateVisitor() const { return _updateVisitor.get(); }
+
+
+        /** Set the Update OperationQueue. */
+        void setUpdateOperations(osg::OperationQueue* operations) { _updateOperations = operations; }
+
+        /** Get the Update OperationQueue. */
+        osg::OperationQueue* getUpdateOperations() { return _updateOperations.get(); }
+        
+        /** Get the const Update OperationQueue. */
+        const osg::OperationQueue* getUpdateOperations() const { return _updateOperations.get(); }
+        
+        /** Add an update operation.*/
+        void addUpdateOperation(osg::Operation* operation);
+
+        /** Remove an update operation.*/
+        void removeUpdateOperation(osg::Operation* operation);
+
+
+        /** Execute a main frame loop.
+          * Equivialant to while (!viewer.done()) viewer.frame();
+          * Also calls realize() if the viewer is not already realized,
+          * and installs trackball manipulator if one is not already assigned.
+          */
+        virtual int run() = 0;
+
+        /** Render a complete new frame.
+          * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
+        virtual void frame(double simulationTime=USE_REFERENCE_TIME) = 0;
+
+        virtual void advance(double simulationTime=USE_REFERENCE_TIME) = 0;
+
+        virtual void eventTraversal() = 0;
+
+        virtual void updateTraversal() = 0;
+        
+        virtual void renderingTraversals() = 0;
+
+        typedef std::vector<osg::Camera*> Cameras;
+        virtual void getCameras(Cameras& cameras, bool onlyActive=true) = 0;
+
+        typedef std::vector<osg::GraphicsContext*> Contexts;
+        virtual void getContexts(Contexts& contexts, bool onlyValid=true) = 0;
+
+        typedef std::vector<osgViewer::GraphicsWindow*> Windows;
+        virtual void getWindows(Windows& windows, bool onlyValid=true) = 0;
+
+        typedef std::vector<OpenThreads::Thread*> Threads;
+        virtual void getAllThreads(Threads& threads, bool onlyActive=true) = 0;
+
+        typedef std::vector<osg::OperationThread*> OperationThreads;
+        virtual void getOperationThreads(OperationThreads& threads, bool onlyActive=true) = 0;
+
+        typedef std::vector<osgViewer::Scene*> Scenes;
+        virtual void getScenes(Scenes& scenes, bool onlyValid=true) = 0;
+
+        typedef std::vector<osgViewer::View*> Views;
+        virtual void getViews(Views& views, bool onlyValid=true) = 0;
+
+
+        /** Set the graphics operation to call on realization of the viewers graphics windows.*/
+        void setRealizeOperation(osg::Operation* op) { _realizeOperation = op; }
+
+        /** Get the graphics operation to call on realization of the viewers graphics windows.*/
+        osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
+
+        /** Set up the threading and processor affinity as per the viewers threading model.*/
+        virtual void setUpThreading() = 0;
+
+        /** Return true if viewer threads are running. */
+        bool areThreadsRunning() const { return _threadsRunning; }
+
+        /** Stop any threads begin run by viewer.*/
+        virtual void stopThreading() = 0;
+
+        /** Start any threads required by the viewer.*/
+        virtual void startThreading() = 0;        
+
+        /** Get the keyboard and mouse usage of this viewer.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
+
+    protected:
+    
+        osg::ref_ptr<osg::Stats>                    _stats;
+
+        bool                                        _done;
+        int                                         _keyEventSetsDone;
+        bool                                        _quitEventSetsDone;
+        
+        ThreadingModel                              _threadingModel;
+        bool                                        _threadsRunning;
+        
+        osg::ref_ptr<osgGA::EventVisitor>           _eventVisitor;
+        
+        osg::ref_ptr<osg::OperationQueue>           _updateOperations;
+        osg::ref_ptr<osgUtil::UpdateVisitor>        _updateVisitor;
+        
+        osg::ref_ptr<osg::Operation>                _realizeOperation;
+
+};
+}
+
+#endif

@@ -20,6 +20,7 @@
 #include <osgGA/EventQueue>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
+#include <osgViewer/ViewerBase>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -249,6 +250,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_MethodWithDefaults2(void, getScenes, IN, osgViewer::ViewerBase::Scenes &, scenes, , IN, bool, onlyValid, true,
 	                      Properties::VIRTUAL,
 	                      __void__getScenes__Scenes_R1__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(void, getViews, IN, osgViewer::ViewerBase::Views &, views, , IN, bool, onlyValid, true,
+	                      Properties::VIRTUAL,
+	                      __void__getViews__Views_R1__bool,
 	                      "",
 	                      "");
 	I_Method0(void, setUpThreading,

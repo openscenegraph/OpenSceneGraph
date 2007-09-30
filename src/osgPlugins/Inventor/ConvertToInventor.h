@@ -57,29 +57,28 @@ public:
   virtual void apply(osg::Node &node);
   virtual void apply(osg::Geode &node);
   virtual void apply(osg::Group &node);
-#if 0
-  virtual void apply(Billboard& node)                 { apply((Geode&)node); }
-  virtual void apply(ProxyNode& node)                 { apply((Group&)node); }
-  virtual void apply(Projection& node)                { apply((Group&)node); }
-  virtual void apply(CoordinateSystemNode& node)      { apply((Group&)node); }
 
-  virtual void apply(ClipNode& node)                  { apply((Group&)node); }
-  virtual void apply(TexGenNode& node)                { apply((Group&)node); }
-  virtual void apply(LightSource& node)               { apply((Group&)node); }
-#endif
+  virtual void apply(osg::Billboard& node);
+  //virtual void apply(ProxyNode& node)                 { apply((Group&)node); }
+  //virtual void apply(Projection& node)                { apply((Group&)node); }
+  //virtual void apply(CoordinateSystemNode& node)      { apply((Group&)node); }
+
+  //virtual void apply(ClipNode& node)                  { apply((Group&)node); }
+  //virtual void apply(TexGenNode& node)                { apply((Group&)node); }
+  //virtual void apply(LightSource& node)               { apply((Group&)node); }
+
   //virtual void apply(Transform& node);
   //virtual void apply(Camera& node)                    { apply((Transform&)node); }
   //virtual void apply(CameraView& node)                { apply((Transform&)node); }
   virtual void apply(osg::MatrixTransform& node);
   virtual void apply(osg::PositionAttitudeTransform& node);
-#if 0
-  virtual void apply(Switch& node)                    { apply((Group&)node); }
-  virtual void apply(Sequence& node)                  { apply((Group&)node); }
-  virtual void apply(LOD& node)                       { apply((Group&)node); }
-  virtual void apply(PagedLOD& node)                  { apply((LOD&)node); }
-  virtual void apply(ClearNode& node)                 { apply((Group&)node); }
-  virtual void apply(OccluderNode& node)              { apply((Group&)node); }
-#endif
+
+  //virtual void apply(Switch& node)                    { apply((Group&)node); }
+  //virtual void apply(Sequence& node)                  { apply((Group&)node); }
+  virtual void apply(osg::LOD& node);
+  //virtual void apply(PagedLOD& node)                  { apply((LOD&)node); }
+  //virtual void apply(ClearNode& node)                 { apply((Group&)node); }
+  //virtual void apply(OccluderNode& node)              { apply((Group&)node); }
 
 protected:
   bool vrml1Conversion;
@@ -87,9 +86,9 @@ protected:
   SoSeparator *ivRoot;
 
   typedef struct InventorState {
-    class SoSeparator  *ivSeparator;
+    class SoGroup      *ivHead;
     class SoTexture2   *ivTexture;
-    class SoNode       *ivMaterial;
+    class SoMaterial   *ivMaterial;
     const osg::Material *osgMaterial;
     bool osgTexture2Enabled;
     const osg::Texture  *osgTexture;
@@ -105,14 +104,14 @@ protected:
     const osg::BlendFunc *osgBlendFunc;
     
     InventorState()  {}
-    InventorState(SoSeparator *separator) : ivSeparator(separator), ivTexture(NULL),
+    InventorState(SoGroup *root) : ivHead(root), ivTexture(NULL),
         ivMaterial(NULL), osgMaterial(NULL),
         osgTexture2Enabled(false), osgTexture(NULL), osgTexEnv(NULL),
         osgTexGenS(false), osgTexGenT(false), osgTexGen(NULL),
         osgLighting(true), osgTwoSided(false), osgFrontFace(osg::FrontFace::COUNTER_CLOCKWISE),
         osgCullFaceEnabled(false), osgCullFace(osg::CullFace::BACK),
         osgBlendEnabled(false), osgBlendFunc(NULL)  {}
-    InventorState(const InventorState &s) : ivSeparator(s.ivSeparator), ivTexture(s.ivTexture), 
+    InventorState(const InventorState &s) : ivHead(s.ivHead), ivTexture(s.ivTexture), 
         ivMaterial(s.ivMaterial), osgMaterial(s.osgMaterial),
         osgTexture2Enabled(s.osgTexture2Enabled), osgTexture(s.osgTexture), osgTexEnv(s.osgTexEnv),
         osgTexGenS(s.osgTexGenS), osgTexGenT(s.osgTexGenT), osgTexGen(osgTexGen),
@@ -127,6 +126,7 @@ protected:
   std::map<const osg::Texture*, Env2ivTexMap> ivTexturesMap;
   int uniqueIdGenerator;
 
+  void processDrawable(osg::Drawable *d);
   void processGeometry(const osg::Geometry *g, InventorState *ivState);
   void processShapeDrawable(const osg::ShapeDrawable *d, InventorState *ivState);
 

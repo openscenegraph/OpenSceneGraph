@@ -27,10 +27,12 @@
 
 
 #include <osg/BlendFunc>
+#include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/Group>
 #include <osg/LightModel>
+#include <osg/LOD>
 #include <osg/Material>
 #include <osg/MatrixTransform>
 #include <osg/Node>
@@ -52,14 +54,14 @@
 #include <Inventor/nodes/SoIndexedTriangleStripSet.h>
 #include <Inventor/nodes/SoLightModel.h>
 #include <Inventor/nodes/SoLineSet.h>
+#include <Inventor/nodes/SoLOD.h>
+#include <Inventor/nodes/SoLevelOfDetail.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMatrixTransform.h>
 #include <Inventor/nodes/SoNode.h>
 #include <Inventor/nodes/SoNormal.h>
 #include <Inventor/nodes/SoNormalBinding.h>
-#include <Inventor/nodes/SoPackedColor.h>
 #include <Inventor/nodes/SoPointSet.h>
-#include <Inventor/nodes/SoQuadMesh.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoShapeHints.h>
 #include <Inventor/nodes/SoSphere.h>
@@ -68,15 +70,59 @@
 #include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTextureCoordinateEnvironment.h>
 #include <Inventor/nodes/SoTransform.h>
+#include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoTriangleStripSet.h>
 #include <Inventor/fields/SoFields.h>
 #ifdef __COIN__
 #include <Inventor/nodes/SoTransparencyType.h>
+#include <Inventor/VRMLnodes/SoVRMLBillboard.h>
 #endif
 #include "ConvertToInventor.h"
 
 
 #define DEBUG_IV_WRITER 1
+
+
+// Considerations for VRML1 support:
+//
+// SoSeparator:                supported (only renderCulling field)
+// SoCoordinate3:              supported
+// SoCoordinate4:              no -> conversion to Coordinate3 required <---- missing
+// SoTextureCoordinate2:       supported
+// SoTextureCoordinate3:       no - 3D textures not supported by VRML1
+// SoTextureCoordinateEnvironment no <- should texturing be disabled in this case?
+// SoTextureCoordinateBinding: no -> indexing is probably mandatory
+// SoNormal:                   supported
+// SoNormalBinding:            supported (all modes supported, including non-indexed modes)
+// SoMaterial:                 supported
+// SoMaterialBinding:          supported (all modes supported, including non-indexed modes)
+// SoBaseColor:                no -> using SoMaterial instead
+// SoPointSet:                 supported
+// SoLineSet:                  no -> using SoIndexedListSet instead
+// SoIndexedLineSet:           supported
+// SoIndexedTriangleStripSet:  no -> using SoIndexedFaceSet instead
+// SoTriangleStripSet:         no -> using SoIndexedFaceSet instead
+// SoMatrixTransform:          supported
+// SoTransform:                supported
+// SoTransparencyType:         no   <---- missing
+// SoShapeHints:               supported
+// SoCone,SoCube,SoCylinder,SoSphere supported
+// SoTranslation               supported
+// SoLightModel:               ?
+// SoLOD:                      supported
+// SoLevelOfDetail:            no
+
+
+// Node list from VRML1 documentation:
+// shape nodes: AsciiText, Cone, Cube, Cylinder, IndexedFaceSet, IndexedLineSet, PointSet, Sphere
+// properties nodes: Coordinate3, FontStyle, Info, Material, MaterialBinding, Normal, NormalBinding,
+//                   Texture2, Texture2Transform, TextureCoordinate2, ShapeHints
+// transformantion nodes: MatrixTransform, Rotation, Scale, Transform, Translation
+// group nodes: Separator, Switch, WWWAnchor, LOD
+// cameras: OrthographicCamera, PerspectiveCamera
+// lights: DirectionalLight, PointLight, SpotLight
+// others: WWWInline
+
 
 
 ConvertToInventor::ConvertToInventor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN)
@@ -713,7 +759,7 @@ static void setSoTransform(SoTransform *tr, const osg::Vec3 &translation, const 
   tr->translation.setValue(translation.ptr());
   tr->rotation.setValue(rotation.x(), rotation.y(), rotation.z(), rotation.w());
   tr->scaleFactor.setValue(scale.ptr());
-  //tr->scaleCenter.setValue(osg::Vec3f(node.getPivotPoint()));
+  //tr->scaleCenter.setValue(osg::Vec3f(node.getPivotPoint())); <- testing required on this line
 }
 
 
@@ -732,8 +778,8 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
   InventorState *ivState = &ivStack.top();
 
   // Inventor graph
-  ivState->ivSeparator = new SoSeparator;
-  ivPrevState->ivSeparator->addChild(ivState->ivSeparator);
+  ivState->ivHead = new SoSeparator;
+  ivPrevState->ivHead->addChild(ivState->ivHead);
 
   if (ss) {
     
@@ -746,7 +792,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
     if (ivState->osgLighting != ivPrevState->osgLighting) {
       SoLightModel *lm = new SoLightModel;
       lm->model = (ivState->osgLighting) ? SoLightModel::PHONG : SoLightModel::BASE_COLOR;
-      ivState->ivSeparator->addChild(lm);
+      ivState->ivHead->addChild(lm);
     }
 
     // two-sided lighting
@@ -806,7 +852,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
           // no face culling
           sh->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
       }
-      ivState->ivSeparator->addChild(sh);
+      ivState->ivHead->addChild(sh);
     }
 
     //
@@ -877,65 +923,36 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
 
     // Material parameters
     const osg::Material *osgMaterial = dynamic_cast<const osg::Material*>(ss->getAttribute(osg::StateAttribute::MATERIAL));
-    if (osgMaterial) {
-
-      // Update ivState
+    if (osgMaterial)
       ivState->osgMaterial = osgMaterial;
 
-      if (ivState->osgLighting) {
+    if (ivState->osgMaterial != ivPrevState->osgMaterial) {
 
-        SoMaterial *ivMaterial = new SoMaterial;
-        ivState->ivMaterial = ivMaterial;
+      ivState->ivMaterial = new SoMaterial;
+      assert(ivState->osgMaterial);
 
-        // Warn if using two side materials
-        // FIXME: The geometry can be probably doubled, or some estimation can be made
-        // whether only front or back faces are used.
-        if (osgMaterial->getAmbientFrontAndBack() == false ||
-            osgMaterial->getDiffuseFrontAndBack() == false ||
-            osgMaterial->getSpecularFrontAndBack() == false ||
-            osgMaterial->getEmissionFrontAndBack() == false ||
-            osgMaterial->getShininessFrontAndBack() == false)
-          osg::notify(osg::WARN) << "IvWriter: Model contains different materials for front and "
-                                    "back faces. This is not handled properly. Using front material only." << std::endl;
+      // Warn if using two side materials
+      // FIXME: The geometry can be probably doubled, or some estimation can be made
+      // whether only front or back faces are used.
+      if (ivState->osgMaterial->getAmbientFrontAndBack() == false ||
+          ivState->osgMaterial->getDiffuseFrontAndBack() == false ||
+          ivState->osgMaterial->getSpecularFrontAndBack() == false ||
+          ivState->osgMaterial->getEmissionFrontAndBack() == false ||
+          ivState->osgMaterial->getShininessFrontAndBack() == false)
+        osg::notify(osg::WARN) << "IvWriter: Model contains different materials for front and "
+                                  "back faces. This is not handled properly. Using front material only." << std::endl;
 
-        // Convert material components
-        // FIXME: Transparency can be specified for each component in OSG,
-        // in Inventor just globally.
-        // Solutions? It can be averaged or just diffuse can be used.
-        ivMaterial->ambientColor.setValue(osgMaterial->getAmbient(osgMaterial->getAmbientFrontAndBack() ?
-                                          osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
-        ivMaterial->diffuseColor.setValue(osgMaterial->getDiffuse(osgMaterial->getDiffuseFrontAndBack() ?
-                                          osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
-        ivMaterial->specularColor.setValue(osgMaterial->getSpecular(osgMaterial->getSpecularFrontAndBack() ?
-                                           osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
-        ivMaterial->emissiveColor.setValue(osgMaterial->getEmission(osgMaterial->getEmissionFrontAndBack() ?
-                                           osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
-        ivMaterial->shininess.setValue(osgMaterial->getShininess(osgMaterial->getShininessFrontAndBack() ?
-                                       osg::Material::FRONT_AND_BACK : osg::Material::FRONT));
-        ivMaterial->transparency.setValue(1.f - osgMaterial->getDiffuse(osgMaterial->getDiffuseFrontAndBack() ?
-                                          osg::Material::FRONT_AND_BACK : osg::Material::FRONT).a());
-      
-      } else {
-        
-        if (vrml1Conversion)
-          ivState->ivMaterial = new SoMaterial;
-        else
-          ivState->ivMaterial = new SoBaseColor;
-      }
-    }
     
-    // Convert colors
-    // OSG represents colors by: Vec3, Vec4,Vec4ub
-    // Inventor by: uint32 (RGBA, by SoPackedColor), SbColor (Vec3f, by SoMaterial and SoBaseColor)
-    // note: Inventor can use DIFFUSE component inside a shape only. Material is set for whole shape.
-    // Although SoMaterial is used only, SoPackedColor may bring some possibilities on per-vertex
-    // alpha and SoBaseColor may be useful on pre-lit scene.
+      // Convert colors
+      // OSG represents colors by: Vec3, Vec4,Vec4ub
+      // Inventor by: uint32 (RGBA, by SoPackedColor), SbColor (Vec3f, by SoMaterial and SoBaseColor)
+      // note: Inventor can use DIFFUSE component inside a shape only. Material is set for whole shape.
+      // Although SoMaterial is used only, SoPackedColor may bring some possibilities on per-vertex
+      // alpha and SoBaseColor may be useful on pre-lit scene.
+      if (ivState->osgMaterial->getColorMode() != osg::Material::DIFFUSE &&
+          ivState->osgMaterial->getColorMode() != osg::Material::OFF) {
 
-    if (osgMaterial)
-      if (osgMaterial->getColorMode() != osg::Material::DIFFUSE &&
-          osgMaterial->getColorMode() != osg::Material::OFF) {
-
-      if (osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
+      if (ivState->osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
         osg::notify(osg::WARN) << "IvWriter: The model is using AMBIENT_AND_DIFFUSE material "
                                   "mode while Inventor supports DIFFUSE mode only. "
                                   "The model colors may not much exactly." << std::endl;
@@ -944,6 +961,24 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
                                   "Inventor supports DIFFUSE mode only. "
                                   "The model colors may not be correct." << std::endl;
       }
+
+      // Convert material components
+      // FIXME: Transparency can be specified for each component in OSG
+      // and just globally in Inventor.
+      // Solutions? It can be averaged or just diffuse can be used.
+      ((SoMaterial*)ivState->ivMaterial)->ambientColor.setValue(osgMaterial->getAmbient(
+        osgMaterial->getAmbientFrontAndBack()   ? osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
+      ((SoMaterial*)ivState->ivMaterial)->diffuseColor.setValue(osgMaterial->getDiffuse(
+        osgMaterial->getDiffuseFrontAndBack()   ? osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
+      ((SoMaterial*)ivState->ivMaterial)->specularColor.setValue(osgMaterial->getSpecular(
+        osgMaterial->getSpecularFrontAndBack()  ? osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
+      ((SoMaterial*)ivState->ivMaterial)->emissiveColor.setValue(osgMaterial->getEmission(
+        osgMaterial->getEmissionFrontAndBack()  ? osg::Material::FRONT_AND_BACK : osg::Material::FRONT).ptr());
+      ((SoMaterial*)ivState->ivMaterial)->shininess.setValue(osgMaterial->getShininess(
+        osgMaterial->getShininessFrontAndBack() ? osg::Material::FRONT_AND_BACK : osg::Material::FRONT));
+      ((SoMaterial*)ivState->ivMaterial)->transparency.setValue(1.f - osgMaterial->getDiffuse(
+        osgMaterial->getDiffuseFrontAndBack()   ? osg::Material::FRONT_AND_BACK : osg::Material::FRONT).a());
+    }
 
     // note on "headlight":
     // OSG is using HEADLIGHT or SKY_LIGHT. In both cases it sets these defaults:
@@ -979,7 +1014,8 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
     // possiblity to control transparency type from file format.
     //
     // However, SoTransparencyType node was introduced to overcome this historical limitation
-    // when transparency was performance expensive. Support by different Inventor branches:
+    // because transparency was performance expensive long time ago.
+    // Support by different Inventor branches:
     //
     // SGI Inventor: no
     // Coin: since 2.0
@@ -999,27 +1035,29 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
     updateMode(ivState->osgBlendEnabled, ss->getMode(GL_BLEND));
     ivState->osgBlendFunc = dynamic_cast<const osg::BlendFunc*>(ss->getAttribute(osg::StateAttribute::BLENDFUNC));
 
-    if (ivState->osgBlendEnabled != ivPrevState->osgBlendEnabled ||
-        ivState->osgBlendFunc != ivPrevState->osgBlendFunc ||
-        (ivState->osgBlendFunc && ivPrevState->osgBlendFunc &&
-         ivState->osgBlendFunc->getDestinationRGB() != ivPrevState->osgBlendFunc->getDestinationRGB())) {
+    if (useIvExtensions)
+      if (ivState->osgBlendEnabled != ivPrevState->osgBlendEnabled ||
+          ivState->osgBlendFunc != ivPrevState->osgBlendFunc ||
+          (ivState->osgBlendFunc && ivPrevState->osgBlendFunc &&
+          ivState->osgBlendFunc->getDestinationRGB() != ivPrevState->osgBlendFunc->getDestinationRGB())) {
 
-      const SoTransparencyType::Type transparencyTable[8] = {
-        SoTransparencyType::BLEND,         SoTransparencyType::ADD,
-        SoTransparencyType::DELAYED_BLEND, SoTransparencyType::DELAYED_ADD,
-        // FIXME: add sorted modes and test previous four
-      };
+        const SoTransparencyType::Type transparencyTable[8] = {
+          SoTransparencyType::BLEND,         SoTransparencyType::ADD,
+          SoTransparencyType::DELAYED_BLEND, SoTransparencyType::DELAYED_ADD,
+          // FIXME: add sorted modes and test previous four
+        };
 
-      int index = 0;
-      if (!ivState->osgBlendFunc)  index |= 0;
-      else  index = (ivState->osgBlendFunc->getDestinationRGB() == osg::BlendFunc::ONE) ? 1 : 0;
-      index |= (ss->getRenderingHint() == osg::StateSet::TRANSPARENT_BIN) ? 2 : 0;
+        int index = 0;
+        if (!ivState->osgBlendFunc)  index |= 0;
+        else  index = (ivState->osgBlendFunc->getDestinationRGB() == osg::BlendFunc::ONE) ? 1 : 0;
+        index |= (ss->getRenderingHint() == osg::StateSet::TRANSPARENT_BIN) ? 2 : 0;
 
-      SoTransparencyType *ivTransparencyType = new SoTransparencyType;
-      ivTransparencyType->value = transparencyTable[index];
-      ivState->ivSeparator->addChild(ivTransparencyType);
-    }
+        SoTransparencyType *ivTransparencyType = new SoTransparencyType;
+        ivTransparencyType->value = transparencyTable[index];
+        ivState->ivHead->addChild(ivTransparencyType);
+      }
   #endif
+
   }
 
   // ref Inventor nodes that are required when processing Drawables
@@ -1077,7 +1115,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
   SoNode *nonIndexedCoords = NULL;
   SoNode *nonIndexedTexCoords = NULL;
   SoNormal *nonIndexedNormals = NULL;
-  SoMaterial *nonIndexedMaterial = NULL;
+  SoNode *nonIndexedMaterial = NULL;
 
   // Normal indexing
   int normalStart = g->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX ? startIndex : normalIndex;
@@ -1155,71 +1193,83 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
     // create alternate coordinates
     if (ivCoords->isOfType(SoCoordinate4::getClassTypeId())) {
       nonIndexedCoords = new SoCoordinate4;
-      ((SoCoordinate4*)nonIndexedCoords)->point.setNum(n);
-      if (ok)
+      if (ok) {
+        ((SoCoordinate4*)nonIndexedCoords)->point.setNum(n);
         ok = processArray<SbVec4f,SoMFVec4f>(g->getVertexIndices(),
                                              drawElemIndices,
                                              &((SoCoordinate4*)nonIndexedCoords)->point,
                                              &((SoCoordinate4*)ivCoords)->point,
                                              startIndex, n);
+      }
     } else {
       nonIndexedCoords = new SoCoordinate3;
-      ((SoCoordinate3*)nonIndexedCoords)->point.setNum(n);
-      if (ok)
+      if (ok) {
+        ((SoCoordinate3*)nonIndexedCoords)->point.setNum(n);
         ok = processArray<SbVec3f,SoMFVec3f>(g->getVertexIndices(),
                                              drawElemIndices,
                                              &((SoCoordinate3*)nonIndexedCoords)->point,
                                              &((SoCoordinate3*)ivCoords)->point,
                                              startIndex, n);
+      }
     }
 
     // create alternate texture coordinates
     if (ivTexCoords)
       if (ivTexCoords->isOfType(SoTextureCoordinate2::getClassTypeId())) {
         nonIndexedTexCoords = new SoTextureCoordinate2;
-        ((SoTextureCoordinate2*)nonIndexedTexCoords)->point.setNum(n);
-        if (ok)
+        if (ok) {
+          ((SoTextureCoordinate2*)nonIndexedTexCoords)->point.setNum(n);
           ok = processArray<SbVec2f,SoMFVec2f>(g->getTexCoordIndices(0),
                                                drawElemIndices,
                                                &((SoTextureCoordinate2*)nonIndexedTexCoords)->point,
                                                &((SoTextureCoordinate2*)ivTexCoords)->point,
                                                startIndex, n);
+        }
       } else
       if (ivTexCoords->isOfType(SoTextureCoordinate3::getClassTypeId())) {
         nonIndexedTexCoords = new SoTextureCoordinate3;
-        ((SoTextureCoordinate3*)nonIndexedTexCoords)->point.setNum(n);
-        if (ok)
+        if (ok) {
+          ((SoTextureCoordinate3*)nonIndexedTexCoords)->point.setNum(n);
           ok = processArray<SbVec3f,SoMFVec3f>(g->getTexCoordIndices(0),
                                                drawElemIndices,
                                                &((SoTextureCoordinate3*)nonIndexedTexCoords)->point,
                                                &((SoTextureCoordinate3*)ivCoords)->point,
                                                startIndex, n);
+        }
       } else
         nonIndexedTexCoords = ivTexCoords;
 
     // create alternate normals
     if (ivNormals) {
       nonIndexedNormals = new SoNormal;
-      nonIndexedNormals->vector.setNum(numNormalsUsed==0 ? 1 : numNormalsUsed);
-      if (ok)
+      if (ok) {
+        nonIndexedNormals->vector.setNum(numNormalsUsed==0 ? 1 : numNormalsUsed);
         ok = processArray<SbVec3f,SoMFVec3f>(g->getNormalIndices(),
                                              g->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
                                              &nonIndexedNormals->vector, &ivNormals->vector,
                                              normalStart, numNormalsUsed==0 ? 1 : numNormalsUsed);
+      }
     }
 
     // create alternate material
     if (ivMaterial) {
-      nonIndexedMaterial = new SoMaterial;
-      nonIndexedMaterial->diffuseColor.setNum(numColorsUsed==0 ? 1 : numColorsUsed);
+      SoMFColor *dstColorField;
+      if (ivMaterial->isOfType(SoMaterial::getClassTypeId())) {
+        nonIndexedMaterial = new SoMaterial;
+        dstColorField = &((SoMaterial*)nonIndexedMaterial)->diffuseColor;
+      } else {
+        nonIndexedMaterial = new SoBaseColor;
+        dstColorField = &((SoBaseColor*)nonIndexedMaterial)->rgb;
+      }
       if (ok) {
         // FIXME: diffuse only?
-        SoMFColor *colorField = (ivMaterial->isOfType(SoMaterial::getClassTypeId())) ?
-                                &((SoMaterial*)ivMaterial)->diffuseColor :
-                                &((SoBaseColor*)ivMaterial)->rgb;
+        SoMFColor *srcColorField = (ivMaterial->isOfType(SoMaterial::getClassTypeId())) ?
+                                   &((SoMaterial*)ivMaterial)->diffuseColor :
+                                   &((SoBaseColor*)ivMaterial)->rgb;
+        dstColorField->setNum(numColorsUsed==0 ? 1 : numColorsUsed);
         ok = processArray<SbColor,SoMFColor>(g->getColorIndices(),
                                             g->getColorBinding()==osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
-                                            &nonIndexedMaterial->diffuseColor, colorField,
+                                            dstColorField, srcColorField,
                                             colorStart, numColorsUsed==0 ? 1 : numColorsUsed);
       }
     }
@@ -1403,40 +1453,63 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
   SoSeparator *nonIndexedRoot = NULL;
 
   // Active material
-  SoNode *ivMaterial = ivState->ivMaterial;
+  SoMaterial *ivStateMaterial = ivState->ivMaterial;
+  SoNode *ivMaterial = NULL;
+  if (ivState->osgLighting || vrml1Conversion)
+    // SoMaterial
+    if (g->getColorArray())
+      if (ivStateMaterial)  ivMaterial = ivStateMaterial->copy();
+      else  ivMaterial = new SoMaterial; // FIXME: check default values of SoMaterial and OSG lighting
+    else
+      if (ivStateMaterial)  ivMaterial = ivStateMaterial;
+      else  ivMaterial = NULL;
+  else
+    // SoBaseColor
+    if (g->getColorArray())
+      if (ivStateMaterial) {
+        ivMaterial = new SoBaseColor;
+        ((SoBaseColor*)ivMaterial)->rgb.setValue(ivStateMaterial->diffuseColor[0]); // copy first value
+      } else
+        ivMaterial = new SoBaseColor; // FIXME: check default values of SoBaseColor and OSG pre-lit scene
+    else
+      if (ivStateMaterial) {
+        ivMaterial = new SoBaseColor;
+        ((SoBaseColor*)ivMaterial)->rgb.setValue(ivStateMaterial->diffuseColor[0]); // copy first value
+      } else
+        ivMaterial = NULL;
 
   // Convert color array into the SoMaterial
   if (g->getColorArray()) {
+    assert(ivMaterial);
 
-    // Make copy of SoMaterial (we need to modify it)
-    ivMaterial = (ivMaterial!=NULL) ? ivMaterial->copy() :
-                    (ivState->osgLighting || vrml1Conversion) ? (SoNode*)new SoMaterial : new SoBaseColor;
+    // Choose correct color field
+    SoMFColor *colorField;
+    if (ivMaterial->isOfType(SoMaterial::getClassTypeId())) {
+      if (vrml1Conversion && ivState->osgLighting==false) {
 
-    SoMFColor *colorField = (ivMaterial->isOfType(SoMaterial::getClassTypeId())) ?
-                            &((SoMaterial*)ivMaterial)->diffuseColor :
-                            &((SoBaseColor*)ivMaterial)->rgb;
+        // special case of pre-lit VRML1 scene
+        ((SoMaterial*)ivMaterial)->ambientColor.setValue(0.f,0.f,0.f);
+        ((SoMaterial*)ivMaterial)->diffuseColor.setValue(0.f,0.f,0.f);
+        ((SoMaterial*)ivMaterial)->specularColor.setValue(0.f,0.f,0.f);
+        colorField = &((SoMaterial*)ivMaterial)->emissiveColor;
+      } else
+        // regular diffuse color
+        colorField = &((SoMaterial*)ivMaterial)->diffuseColor;
+    } else
+      // Using of SoBaseColor
+      colorField = &((SoBaseColor*)ivMaterial)->rgb;
 
-    if (ivState->osgMaterial) {
-      
-      // Color array with material
-      if (ivState->osgMaterial->getColorMode() == osg::Material::DIFFUSE ||
-          ivState->osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
-        osgArray2ivMField(g->getColorArray(), *colorField);
-      else; // FIXME: implement some workaround for non-diffuse cases?
-            // note: Warning was already shown in createInventorState().
-            // note2: There is no effect to convert SoMaterial::[ambient|specular|emissive]color
-            // here because Inventor does not set them per-vertex (performance reasons). See
-            // Inventor documentation for more details.
-    
-    } else {
 
-      // Color array without material
-
-      // FIXME: Should some lighting model be set here?
-      // FIXME: What about ambientColor, specular and other fields of material?
-      // What values should go inside?
+    // Color array with material
+    if (ivState->osgMaterial == NULL ||
+        ivState->osgMaterial->getColorMode() == osg::Material::DIFFUSE ||
+        ivState->osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
       osgArray2ivMField(g->getColorArray(), *colorField);
-    }
+    else; // FIXME: implement some workaround for non-diffuse cases?
+          // note: Warning was already shown in createInventorState().
+          // note2: There is no effect to convert SoMaterial::[ambient|specular|emissive]color
+          // here because Inventor does not set them per-vertex (performance reasons). See
+          // Inventor documentation for more details.
   }
 
 
@@ -1624,8 +1697,8 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
     }
   }
 
-  if (indexedRoot)  ivState->ivSeparator->addChild(indexedRoot);
-  if (nonIndexedRoot)  ivState->ivSeparator->addChild(nonIndexedRoot);
+  if (indexedRoot)  ivState->ivHead->addChild(indexedRoot);
+  if (nonIndexedRoot)  ivState->ivHead->addChild(nonIndexedRoot);
 
   coords->unref();
   if (texCoords)  texCoords->unref();
@@ -1639,7 +1712,7 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
   class MyShapeVisitor : public osg::ConstShapeVisitor {
   public:
     void processNode(SoNode *ivNode, const osg::Vec3& center, osg::Quat rotation,
-                      SoSeparator *root) {
+                      SoGroup *root) {
       // convert rotation
       rotation = osg::Quat(-M_PI_2, osg::Vec3(0.,1.,0.)) * osg::Quat(M_PI_2, osg::Vec3(1.,0.,0.)) * rotation;
       
@@ -1671,14 +1744,14 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
     virtual void apply(const osg::Sphere &s) { 
       SoSphere *ivSphere = new SoSphere;
       ivSphere->radius.setValue(s.getRadius());
-      processNode(ivSphere, s.getCenter(), osg::Quat(0., osg::Vec3(1.,0.,0.)), ivState->ivSeparator);
+      processNode(ivSphere, s.getCenter(), osg::Quat(0., osg::Vec3(1.,0.,0.)), ivState->ivHead);
     }
     virtual void apply(const osg::Box &b) {
       SoCube *ivCube = new SoCube;
       ivCube->width  = 2 * b.getHalfLengths().y();
       ivCube->height = 2 * b.getHalfLengths().z();
       ivCube->depth  = 2 * b.getHalfLengths().x();
-      processNode(ivCube, b.getCenter(), b.getRotation(), ivState->ivSeparator);
+      processNode(ivCube, b.getCenter(), b.getRotation(), ivState->ivHead);
     }
     virtual void apply(const osg::Cone &c) {
       SoCone *ivCone = new SoCone;
@@ -1686,13 +1759,13 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
       ivCone->height = c.getHeight();
       osg::Vec3 newCenter(c.getCenter());
       newCenter.ptr()[2] -= c.getBaseOffset();
-      processNode(ivCone, newCenter, c.getRotation(), ivState->ivSeparator);
+      processNode(ivCone, newCenter, c.getRotation(), ivState->ivHead);
     }
     virtual void apply(const osg::Cylinder &c) {
       SoCylinder *ivCylinder = new SoCylinder;
       ivCylinder->radius = c.getRadius();
       ivCylinder->height = c.getHeight();
-      processNode(ivCylinder, c.getCenter(), c.getRotation(), ivState->ivSeparator);
+      processNode(ivCylinder, c.getCenter(), c.getRotation(), ivState->ivHead);
     }
     
     void warnNonSupported() {
@@ -1716,77 +1789,43 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
 }
 
 
+void ConvertToInventor::processDrawable(osg::Drawable *d)
+{
+  osg::Geometry *g = d->asGeometry(); // FIXME: other drawables have to be handled also
+  osg::ShapeDrawable *sd;
+
+  // Create SoSeparator and convert StateSet for Drawable
+  InventorState *ivDrawableState = createInventorState(d->getStateSet());
+
+  if (g != NULL)
+    processGeometry(g, ivDrawableState);
+  else
+  
+  if ((sd = dynamic_cast<osg::ShapeDrawable*>(d)) != NULL) {
+    processShapeDrawable(sd, ivDrawableState);
+  }
+  else
+    osg::notify(osg::WARN) << "IvWriter: Unsupported drawable found: \"" << d->className() <<
+                              "\". Skipping it." << std::endl;
+
+  // Restore state
+  popInventorState();
+}
+
+
 void ConvertToInventor::apply(osg::Geode &node)
 {
 #ifdef DEBUG_IV_WRITER
   osg::notify(osg::INFO) << "IvWriter: Geode traversed" << std::endl;
 #endif
 
-  // Considerations for VRML1 support:
-  //
-  // SoSeparator:                supported (only renderCulling field)
-  // SoCoordinate3:              supported
-  // SoCoordinate4:              no -> conversion to Coordinate3 required <---- missing
-  // SoTextureCoordinate2:       supported
-  // SoTextureCoordinate3:       no - 3D textures not supported by VRML1
-  // SoTextureCoordinateEnvironment no <- should texturing be disabled in this case?
-  // SoTextureCoordinateBinding: no -> indexing is probably mandatory
-  // SoNormal:                   supported
-  // SoNormalBinding:            supported (all modes supported, including non-indexed modes)
-  // SoMaterial:                 supported
-  // SoMaterialBinding:          supported (all modes supported, including non-indexed modes)
-  // SoPointSet:                 supported
-  // SoLineSet:                  no -> using SoIndexedListSet instead
-  // SoIndexedLineSet:           supported
-  // SoIndexedTriangleStripSet:  no -> using SoIndexedFaceSet instead
-  // SoTriangleStripSet:         no -> using SoIndexedFaceSet instead
-  // SoMatrixTransform:          supported
-  // SoTransform:                supported
-  // SoTransparencyType:         no   <---- missing
-  // SoShapeHints:               supported
-
-
-
-  // Node list from VRML1 documentation:
-  // shape nodes: AsciiText, Cone, Cube, Cylinder, IndexedFaceSet, IndexedLineSet, PointSet, Sphere
-  // properties nodes: Coordinate3, FontStyle, Info, Material, MaterialBinding, Normal, NormalBinding,
-  //                   Texture2, Texture2Transform, TextureCoordinate2, ShapeHints
-  // transformantion nodes: MatrixTransform, Rotation, Scale, Transform, Translation
-  // group nodes: Separator, Switch, WWWAnchor, LOD
-  // cameras: OrthographicCamera, PerspectiveCamera
-  // lights: DirectionalLight, PointLight, SpotLight
-  // others: WWWInline
-
-
   // Create SoSeparator and convert StateSet for Geode
   InventorState *ivGeodeState = createInventorState(node.getStateSet());
 
-
-  // Make loop throughout the drawables
+  // Convert drawables
   const int numDrawables = node.getNumDrawables();
-  for (int drawableIndex=0; drawableIndex<numDrawables; drawableIndex++) {
-
-    osg::Drawable *d = node.getDrawable(drawableIndex);
-    osg::Geometry *g = d->asGeometry(); // FIXME: other drawables have to be handled also
-    osg::ShapeDrawable *sd;
-
-    // Create SoSeparator and convert StateSet for Drawable
-    InventorState *ivDrawableState = createInventorState(d->getStateSet());
-
-    if (g != NULL)
-      processGeometry(g, ivDrawableState);
-    else
-    
-    if ((sd = dynamic_cast<osg::ShapeDrawable*>(d)) != NULL) {
-      processShapeDrawable(sd, ivDrawableState);
-    }
-    else
-      osg::notify(osg::WARN) << "IvWriter: Unsupported drawable found: \"" << d->className() <<
-                                "\". Skipping it." << std::endl;
-
-    // Restore state
-    popInventorState();
-  }
+  for (int i=0; i<numDrawables; i++)
+    processDrawable(node.getDrawable(i));
 
   traverse(node);
 
@@ -1810,6 +1849,84 @@ void ConvertToInventor::apply(osg::Group &node)
 }
 
 
+void ConvertToInventor::apply(osg::Billboard& node)
+{
+#ifdef DEBUG_IV_WRITER
+  osg::notify(osg::INFO) << "IvWriter: Billboard traversed" << std::endl;
+#endif
+
+#ifdef __COIN__
+
+  if (useIvExtensions) {
+    
+    // Create SoSeparator and convert StateSet
+    InventorState *ivState = createInventorState(node.getStateSet());
+    SoGroup *root = ivState->ivHead;
+
+    // Process drawables
+    const int numDrawables = node.getNumDrawables();
+    for (int i=0; i<numDrawables; i++) {
+
+      SoVRMLBillboard *billboard = new SoVRMLBillboard;
+
+      // SoVRMLBillboard is VRML 2.0 node supported by Coin (?since 2.0?)
+      // However, I am seeing bug in my Coin 2.4.5 so that if
+      // SoVRMLBillboard::axisOfRotation is not 0,0,0, the billboard behaviour is strange.
+      // As long as it is set to 0,0,0, POINT_ROT_EYE-style billboard works perfectly.
+      // AXIAL_ROT seems not possible with the bug. And POINT_ROT_WORLD was not
+      // investigated by me until now.
+      // There is also billboard culling bug in Coin, so the billboards may not be
+      // rendered properly from time to time. PCJohn-2007-09-08
+    #if 0
+      SbVec3f axis;
+      switch (node.getMode()) {
+        case osg::Billboard::POINT_ROT_EYE:   axis = SbVec3f(0.f,0.f,0.f); break;
+        case osg::Billboard::POINT_ROT_WORLD: axis = SbVec3f(0.f,0.f,0.f); break;
+        case osg::Billboard::AXIAL_ROT:       axis = node.getAxis().ptr(); break;
+        default:
+          axis = SbVec3f(0.f,0.f,0.f);
+      };
+      billboard->axisOfRotation.setValue(axis);
+    #else
+      
+      billboard->axisOfRotation.setValue(SbVec3f(0.f,0.f,0.f));
+
+    #endif
+
+      SoTranslation *translation = new SoTranslation;
+      translation->translation.setValue(node.getPosition(i).ptr());
+
+      // Rotate billboard correctly (OSG->IV conversion)
+      // Note: use SoTransform instead of SoRotation because SoRotation is not supported by VRML1.
+      SoTransform *transform = new SoTransform;
+      transform->rotation = SbRotation(SbVec3f(1.f,0.f,0.f), -M_PI_2);
+
+      SoSeparator *separator = new SoSeparator;
+      separator->addChild(translation);
+      separator->addChild(billboard);
+      billboard->addChild(transform);
+
+      root->addChild(separator);
+      ivState->ivHead = billboard;
+
+      processDrawable(node.getDrawable(i));
+
+      traverse((osg::Node&)node);
+    }
+
+    popInventorState();
+  
+  } else
+    apply((osg::Geode&)node);
+
+#else
+
+  apply((osg::Geode&)node);
+
+#endif
+}
+
+
 void ConvertToInventor::apply(osg::MatrixTransform& node)
 {
 #ifdef DEBUG_IV_WRITER
@@ -1827,7 +1944,7 @@ void ConvertToInventor::apply(osg::MatrixTransform& node)
 
   // Create SoSeparator and convert StateSet
   InventorState *ivState = createInventorState(node.getStateSet());
-  ivState->ivSeparator->addChild(ivTransform);
+  ivState->ivHead->addChild(ivTransform);
 
   traverse((osg::Node&)node);
 
@@ -1838,7 +1955,7 @@ void ConvertToInventor::apply(osg::MatrixTransform& node)
 void ConvertToInventor::apply(osg::PositionAttitudeTransform& node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: MatrixTransform traversed" << std::endl;
+  osg::notify(osg::INFO) << "IvWriter: PositionAttitudeTransform traversed" << std::endl;
 #endif
 
   // Convert matrix
@@ -1847,7 +1964,62 @@ void ConvertToInventor::apply(osg::PositionAttitudeTransform& node)
 
   // Create SoSeparator and convert StateSet
   InventorState *ivState = createInventorState(node.getStateSet());
-  ivState->ivSeparator->addChild(ivTransform);
+  ivState->ivHead->addChild(ivTransform);
+
+  traverse((osg::Node&)node);
+
+  popInventorState();
+}
+
+
+void ConvertToInventor::apply(osg::LOD& node)
+{
+#ifdef DEBUG_IV_WRITER
+  osg::notify(osg::INFO) << "IvWriter: LOD traversed" << std::endl;
+#endif
+
+  // Convert LOD
+  SoGroup *ivLOD = NULL;
+  osg::LOD::RangeMode rangeMode = node.getRangeMode();
+  if (rangeMode == osg::LOD::DISTANCE_FROM_EYE_POINT) {
+    
+    // use SoLOD for DISTANCE_FROM_EYE_POINT
+    SoLOD *lod = new SoLOD;
+
+    // copy ranges
+    int i,c=node.getNumRanges();
+    for (i=0; i<c; i++)
+       lod->range.set1Value(i, node.getMaxRange(i));
+
+    // set center
+    lod->center.setValue(node.getCenter().ptr());
+
+    ivLOD = lod;
+
+  } else
+  if (rangeMode == osg::LOD::PIXEL_SIZE_ON_SCREEN) {
+
+    // use SoLevelOfDetail for PIXEL_SIZE_ON_SCREEN
+    SoLevelOfDetail *lod = new SoLevelOfDetail;
+
+    // copy ranges
+    int i,c=node.getNumRanges();
+    for (i=0; i<c; i++)
+       lod->screenArea.set1Value(i, node.getMaxRange(i));
+
+    ivLOD = lod;
+
+  } else {
+    
+    // undefined mode -> put warning
+    osg::notify(osg::WARN) << "IvWriter: Undefined LOD::RangeMode value." << std::endl;
+    ivLOD = new SoGroup;
+  }
+
+  // Create SoSeparator and convert StateSet
+  InventorState *ivState = createInventorState(node.getStateSet());
+  ivState->ivHead->addChild(ivLOD);
+  ivState->ivHead = ivLOD;
 
   traverse((osg::Node&)node);
 

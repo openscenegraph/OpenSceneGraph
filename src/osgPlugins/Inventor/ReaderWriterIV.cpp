@@ -13,7 +13,7 @@
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/actions/SoCallbackAction.h>
 
-#ifdef COIN_BASIC_H
+#ifdef __COIN__
 #include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
 #endif
 
@@ -52,7 +52,7 @@ ReaderWriterIV::readNode(const std::string& file,
     // Initial GroupSoLOD node
     GroupSoLOD::initClass();
 
-#ifdef COIN_BASIC_H
+#ifdef __COIN__
     // Disable delayed loading of VRML textures
     SoVRMLImageTexture::setDelayFetchURL(FALSE);
 #endif

@@ -249,8 +249,8 @@ int main( int argc, char **argv )
 
             view->addEventHandler( statesetManipulator.get() );
             
-            osg::ref_ptr<osgViewer::StatsHandler> statsHandler = new osgViewer::StatsHandler;
-            view->addEventHandler( statsHandler.get() );
+            view->addEventHandler( new osgViewer::StatsHandler );
+            view->addEventHandler( new osgViewer::HelpHandler );
         }
 
         // view two
@@ -282,6 +282,7 @@ int main( int argc, char **argv )
         }
 
     }
+
     
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::CompositeViewer::SingleThreaded); }
     while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerContext); }

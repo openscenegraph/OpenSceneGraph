@@ -40,7 +40,10 @@ void HelpHandler::reset()
 
 bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
-    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    if (!view) return false;
+    
+    osgViewer::ViewerBase* viewer = view->getViewerBase();
     if (!viewer) return false;
     
     if (ea.getHandled()) return false;
@@ -77,7 +80,7 @@ bool HelpHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapt
 
 }
 
-void HelpHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
+void HelpHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 {
     osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
 
@@ -106,7 +109,7 @@ void HelpHandler::setUpHUDCamera(osgViewer::Viewer* viewer)
     _initialized = true;
 }
 
-void HelpHandler::setUpScene(osgViewer::Viewer* viewer)
+void HelpHandler::setUpScene(osgViewer::ViewerBase* viewer)
 {
     _switch = new osg::Switch;
 

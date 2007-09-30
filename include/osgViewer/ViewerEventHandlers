@@ -50,9 +50,9 @@ class OSGVIEWER_EXPORT HelpHandler : public osgGA::GUIEventHandler
 
     protected:
 
-        void setUpHUDCamera(osgViewer::Viewer* viewer);
+        void setUpHUDCamera(osgViewer::ViewerBase* viewer);
 
-        void setUpScene(osgViewer::Viewer* viewer);
+        void setUpScene(osgViewer::ViewerBase* viewer);
         
         osg::ref_ptr<osg::ApplicationUsage> _applicationUsage;
 

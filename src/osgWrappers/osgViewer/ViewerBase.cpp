@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osgViewer/View>
+	
 TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::ViewerBase::Cameras)
 
 TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::ViewerBase::Contexts)

@@ -22,3 +22,51 @@
 #undef OUT
 #endif
 
+BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
+	I_DeclaringFile("osgViewer/Scene");
+	I_BaseType(osg::Referenced);
+	I_Method1(void, setSceneData, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
+	          __void__setSceneData__osg_Node_P1,
+	          "",
+	          "");
+	I_Method0(osg::Node *, getSceneData,
+	          Properties::NON_VIRTUAL,
+	          __osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method0(const osg::Node *, getSceneData,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Node_P1__getSceneData,
+	          "",
+	          "");
+	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, dp,
+	          Properties::NON_VIRTUAL,
+	          __void__setDatabasePager__osgDB_DatabasePager_P1,
+	          "",
+	          "");
+	I_Method0(osgDB::DatabasePager *, getDatabasePager,
+	          Properties::NON_VIRTUAL,
+	          __osgDB_DatabasePager_P1__getDatabasePager,
+	          "",
+	          "");
+	I_Method0(const osgDB::DatabasePager *, getDatabasePager,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
+	          "",
+	          "");
+	I_StaticMethod1(osgViewer::Scene *, getScene, IN, osg::Node *, node,
+	                __Scene_P1__getScene__osg_Node_P1_S,
+	                "Get the Scene object that has the specified node assigned to it. ",
+	                "return 0 if no Scene has yet been assigned the specified node. ");
+	I_ProtectedConstructor0(____Scene,
+	                        "",
+	                        "");
+	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
+	                 __osgDB_DatabasePager_P1__getDatabasePager, 
+	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
+	I_SimpleProperty(osg::Node *, SceneData, 
+	                 __osg_Node_P1__getSceneData, 
+	                 __void__setSceneData__osg_Node_P1);
+END_REFLECTOR
+

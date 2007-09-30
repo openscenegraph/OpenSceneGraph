@@ -1631,7 +1631,6 @@
 		5B05E7AD0C18079100B0EAD8 /* ViewerCocoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B653DC70C1745FF002B54A3 /* ViewerCocoa.h */; };
 		5B05E7AE0C18079100B0EAD8 /* ViewerCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */; };
 		5B724E770C61FF19001377CD /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B724E760C61FF18001377CD /* Renderer.cpp */; };
-		5B724E790C61FF39001377CD /* Renderer in Resources */ = {isa = PBXBuildFile; fileRef = 5B724E780C61FF39001377CD /* Renderer */; };
 		5B724E7A0C61FF5A001377CD /* Renderer in Headers */ = {isa = PBXBuildFile; fileRef = 5B724E780C61FF39001377CD /* Renderer */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BC1910B0C15F462002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
 		5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910D0C15F48C002CF5BC /* Hint.cpp */; };
@@ -1655,7 +1654,7 @@
 		5BC2F64A0C441DCC00671A68 /* TXFFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F6380C441D2D00671A68 /* TXFFont.h */; };
 		5BC2F64B0C441DF800671A68 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		5BC2F6750C44C7E100671A68 /* PixelBufferCarbon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F6740C44C7E100671A68 /* PixelBufferCarbon.cpp */; };
-		5BC2F67D0C44C88400671A68 /* PixelBufferCarbon in Resources */ = {isa = PBXBuildFile; fileRef = 5BC2F67C0C44C88400671A68 /* PixelBufferCarbon */; };
+		5BC2F67D0C44C88400671A68 /* PixelBufferCarbon in Copy Subheaders to api:Carbon */ = {isa = PBXBuildFile; fileRef = 5BC2F67C0C44C88400671A68 /* PixelBufferCarbon */; };
 		5BC2F7400C44C9CF00671A68 /* AlphaFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F6830C44C99900671A68 /* AlphaFunc.cpp */; };
 		5BC2F7410C44C9CF00671A68 /* AlphaFunc.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC2F6840C44C99900671A68 /* AlphaFunc.h */; };
 		5BC2F7420C44C9CF00671A68 /* AnimationPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC2F6850C44C99900671A68 /* AnimationPath.cpp */; };
@@ -2338,6 +2337,8 @@
 		D4DFC4880B57D6C2005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC4890B57D6DA005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC48B0B57D6FD005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D4E1D5470CAFF2B4007F8430 /* ViewerBase in Headers */ = {isa = PBXBuildFile; fileRef = D4E1D5460CAFF2B4007F8430 /* ViewerBase */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4E1D5490CAFF2C9007F8430 /* ViewerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */; };
 		D4E759AB0B57D1BB006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759B80B57D22B006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759C60B57D288006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -4462,6 +4463,7 @@
 			dstPath = Headers/api/Carbon;
 			dstSubfolderSpec = 1;
 			files = (
+				5BC2F67D0C44C88400671A68 /* PixelBufferCarbon in Copy Subheaders to api:Carbon */,
 				D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Copy Subheaders to api:Carbon */,
 			);
 			name = "Copy Subheaders to api:Carbon";
@@ -6056,6 +6058,8 @@
 		D4C6F2860B8317150052E667 /* Version.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Version.cpp; sourceTree = "<group>"; };
 		D4C6F2AD0B8317AB0052E667 /* osgshadow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgshadow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4C6F2B40B8318110052E667 /* osgshadow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgshadow.cpp; path = ../../examples/osgshadow/osgshadow.cpp; sourceTree = "<group>"; };
+		D4E1D5460CAFF2B4007F8430 /* ViewerBase */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ViewerBase; sourceTree = "<group>"; };
+		D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerBase.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -9723,6 +9727,7 @@
 		00FB210F0B015F4A0052DD79 /* osgViewer */ = {
 			isa = PBXGroup;
 			children = (
+				D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */,
 				5B724E760C61FF18001377CD /* Renderer.cpp */,
 				5BC2F6740C44C7E100671A68 /* PixelBufferCarbon.cpp */,
 				5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */,
@@ -9742,6 +9747,7 @@
 		00FB21160B0160380052DD79 /* osgViewer */ = {
 			isa = PBXGroup;
 			children = (
+				D4E1D5460CAFF2B4007F8430 /* ViewerBase */,
 				5BC2F6760C44C82700671A68 /* api */,
 				5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */,
 				D48EC6550B4EBFCD000E05A4 /* CompositeViewer */,
@@ -12069,6 +12075,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4E1D5470CAFF2B4007F8430 /* ViewerBase in Headers */,
 				5B724E7A0C61FF5A001377CD /* Renderer in Headers */,
 				5BC191130C15F4FC002CF5BC /* ViewerEventHandlers in Headers */,
 				D48EC65A0B4EBFCE000E05A4 /* CompositeViewer in Headers */,
@@ -15924,8 +15931,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC2F67D0C44C88400671A68 /* PixelBufferCarbon in Resources */,
-				5B724E790C61FF39001377CD /* Renderer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17537,6 +17542,7 @@
 				5BC1910F0C15F4AD002CF5BC /* ViewerEventHandlers.cpp in Sources */,
 				5BC2F6750C44C7E100671A68 /* PixelBufferCarbon.cpp in Sources */,
 				5B724E770C61FF19001377CD /* Renderer.cpp in Sources */,
+				D4E1D5490CAFF2C9007F8430 /* ViewerBase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -127,6 +127,8 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
 
         virtual void getScenes(Scenes& scenes, bool onlyValid=true);
 
+        virtual void getViews(Views& views, bool onlyValid=true);
+
 
         /** Set up the threading and processor affinity as per the viewers threading model.*/
         virtual void setUpThreading();      
@@ -147,9 +149,9 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         void init();
 
         void checkWindowStatus();
-
-        typedef std::vector< osg::ref_ptr<osgViewer::View> > Views;
-        Views _views;
+        
+        typedef std::vector< osg::ref_ptr<osgViewer::View> > RefViews;
+        RefViews _views;
        
         bool _firstFrame;
         

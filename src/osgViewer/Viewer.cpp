@@ -1408,7 +1408,6 @@ void Viewer::eventTraversal()
         getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
     }
 
-
 }
 
 void Viewer::updateTraversal()
@@ -1583,6 +1582,11 @@ void Viewer::renderingTraversals()
 void Viewer::getScenes(Scenes& scenes, bool onlyValid)
 {
     scenes.push_back(_scene.get());
+}
+
+void Viewer::getViews(Views& views, bool onlyValid)
+{
+    views.push_back(this);
 }
 
 struct LessGraphicsContext

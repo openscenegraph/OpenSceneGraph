@@ -71,7 +71,7 @@ void CompositeViewer::constructorInit()
     _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
 
-
+    setStats(new osg::Stats("CompsiteViewer"));
 }
 
 CompositeViewer::~CompositeViewer()
@@ -126,14 +126,13 @@ void CompositeViewer::addView(osgViewer::View* view)
     view->_viewerBase = this;
     
     view->setFrameStamp(_frameStamp.get());
-    view->setStats(new osg::Stats("CompositeViewer"));
     
     if (threadsWereRuinning) startThreading();
 }
 
 void CompositeViewer::removeView(osgViewer::View* view)
 {
-    for(Views::iterator itr = _views.begin();
+    for(RefViews::iterator itr = _views.begin();
         itr != _views.end();
         ++itr)
     {
@@ -173,7 +172,7 @@ bool CompositeViewer::isRealized() const
 
 int CompositeViewer::run()
 {
-    for(Views::iterator itr = _views.begin();
+    for(RefViews::iterator itr = _views.begin();
         itr != _views.end();
         ++itr)
     {
@@ -201,7 +200,7 @@ void CompositeViewer::setStartTick(osg::Timer_t tick)
 {
     _startTick = tick;
     
-    for(Views::iterator vitr = _views.begin();
+    for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
@@ -462,7 +461,7 @@ void CompositeViewer::init()
 {
     osg::notify(osg::INFO)<<"CompositeViewer::init()"<<std::endl;
 
-    for(Views::iterator itr = _views.begin();
+    for(RefViews::iterator itr = _views.begin();
         itr != _views.end();
         ++itr)
     {
@@ -475,7 +474,7 @@ void CompositeViewer::getContexts(Contexts& contexts, bool onlyValid)
     typedef std::set<osg::GraphicsContext*> ContextSet;
     ContextSet contextSet;
 
-    for(Views::iterator vitr = _views.begin();
+    for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
@@ -514,7 +513,7 @@ void CompositeViewer::getCameras(Cameras& cameras, bool onlyActive)
 {
     cameras.clear();
     
-    for(Views::iterator vitr = _views.begin();
+    for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
@@ -554,7 +553,7 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
     typedef std::set<osgViewer::Scene*> SceneSet;
     SceneSet sceneSet;
 
-    for(Views::iterator vitr = _views.begin();
+    for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
@@ -570,6 +569,16 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
         ++sitr)
     {
         scenes.push_back(const_cast<osgViewer::Scene*>(*sitr));
+    }
+}
+
+void CompositeViewer::getViews(Views& views, bool onlyValid)
+{
+    for(RefViews::iterator vitr = _views.begin();
+        vitr != _views.end();
+        ++vitr)
+    {
+        views.push_back(vitr->get());
     }
 }
 
@@ -778,23 +787,17 @@ void CompositeViewer::advance(double simulationTime)
         _frameStamp->setSimulationTime(simulationTime);
     }
     
-    for(Views::iterator vitr = _views.begin();
-            vitr != _views.end();
-            ++vitr)
+    if (getStats() && getStats()->collectStats("frame_rate"))
     {
-        if ((*vitr)->getStats() && (*vitr)->getStats()->collectStats("frame_rate"))
-        {
-            // update previous frame stats
-            double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
-            (*vitr)->getStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
-            (*vitr)->getStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
+        // update previous frame stats
+        double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
+        getStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
+        getStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
 
-            // update current frames stats
-            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
-        }
-        
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
     }
-    
+
 }
 
 void CompositeViewer::setCameraWithFocus(osg::Camera* camera)
@@ -803,7 +806,7 @@ void CompositeViewer::setCameraWithFocus(osg::Camera* camera)
 
     if (camera)
     {
-        for(Views::iterator vitr = _views.begin();
+        for(RefViews::iterator vitr = _views.begin();
             vitr != _views.end();
             ++vitr)
         {
@@ -1016,7 +1019,7 @@ void CompositeViewer::eventTraversal()
     // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
-    for(Views::iterator vitr = _views.begin();
+    for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
@@ -1140,22 +1143,15 @@ void CompositeViewer::eventTraversal()
         
     }
     
-    // stats:
-    
-    for(Views::iterator vitr = _views.begin();
-            vitr != _views.end();
-            ++vitr)
-    {
-    
-        if ((*vitr)->getStats() && (*vitr)->getStats()->collectStats("event"))
-        {
-            double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
-            // update current frames stats
-            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time", beginEventTraversal);
-            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time", endEventTraversal);
-            (*vitr)->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
-        }
+    if (getStats() && getStats()->collectStats("event"))
+    {
+        double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time", beginEventTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time", endEventTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
     }
 }
 
@@ -1191,7 +1187,7 @@ void CompositeViewer::updateTraversal()
         _updateOperations->runOperations(this);
     }
 
-    for(Views::iterator vitr = _views.begin();
+    for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
@@ -1225,21 +1221,18 @@ void CompositeViewer::updateTraversal()
             view->getCamera()->setViewMatrix( view->getCameraManipulator()->getInverseMatrix());
         }
         view->updateSlaves();
-        
-        // stats
-        if (view->getStats() && view->getStats()->collectStats("update"))
-        {
-            double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
-
-            // update current frames stats
-            view->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time", beginUpdateTraversal);
-            view->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time", endUpdateTraversal);
-            view->getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
-        }
 
     }
     
-    
+    if (getStats() && getStats()->collectStats("update"))
+    {
+        double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time", beginUpdateTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time", endUpdateTraversal);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
+    }
 
 }
 
@@ -1249,6 +1242,8 @@ void CompositeViewer::renderingTraversals()
     checkWindowStatus();
 
     if (_done) return;
+
+    double beginRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
     Scenes scenes;
     getScenes(scenes);
@@ -1318,11 +1313,21 @@ void CompositeViewer::renderingTraversals()
             dp->signalEndFrame();
         }
     }
+
+    if (getStats() && getStats()->collectStats("update"))
+    {
+        double endRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+
+        // update current frames stats
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
+        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
+    }
 }
 
 void CompositeViewer::getUsage(osg::ApplicationUsage& usage) const
 {
-    for(Views::const_iterator vitr = _views.begin();
+    for(RefViews::const_iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {

@@ -42,10 +42,10 @@ StatsHandler::StatsHandler():
 bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     
-    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
-    if (!view) return false;
+    osgViewer::View* myview = dynamic_cast<osgViewer::View*>(&aa);
+    if (!myview) return false;
     
-    osgViewer::ViewerBase* viewer = view->getViewerBase();
+    osgViewer::ViewerBase* viewer = myview->getViewerBase();
     if (viewer && _threadingModelText.valid() && viewer->getThreadingModel()!=_threadingModel)
     {
         _threadingModel = viewer->getThreadingModel();
@@ -61,12 +61,12 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
         {
             if (ea.getKey()==_keyEventTogglesOnScreenStats)
             {
-                if (view->getStats())
+                if (viewer->getStats())
                 {
                     if (!_initialized)
                     {
-                        setUpHUDCamera(view);
-                        setUpScene(view);
+                        setUpHUDCamera(viewer);
+                        setUpScene(viewer);
                     }
 
                     ++_statsType;
@@ -80,9 +80,9 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     {
                         case(NO_STATS):
                         {
-                            view->getStats()->collectStats("frame_rate",false);
-                            view->getStats()->collectStats("event",false);
-                            view->getStats()->collectStats("update",false);
+                            viewer->getStats()->collectStats("frame_rate",false);
+                            viewer->getStats()->collectStats("event",false);
+                            viewer->getStats()->collectStats("update",false);
 
                             for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
                                 itr != cameras.end();
@@ -98,7 +98,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                         case(FRAME_RATE):
                         {
-                            view->getStats()->collectStats("frame_rate",true);
+                            viewer->getStats()->collectStats("frame_rate",true);
                             
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_frameRateChildNum, true);
@@ -106,13 +106,22 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                         case(VIEWER_STATS):
                         {
-                            if (view->getDatabasePager() && view->getDatabasePager()->isRunning())
+                            ViewerBase::Scenes scenes;
+                            viewer->getScenes(scenes);
+                            for(ViewerBase::Scenes::iterator itr = scenes.begin();
+                                itr != scenes.end();
+                                ++itr)
                             {
-                                view->getDatabasePager()->resetStats();
+                                Scene* scene = *itr;
+                                osgDB::DatabasePager* dp = scene->getDatabasePager();
+                                if (dp && dp->isRunning())
+                                {
+                                    dp->resetStats();
+                                }
                             }
                         
-                            view->getStats()->collectStats("event",true);
-                            view->getStats()->collectStats("update",true);
+                            viewer->getStats()->collectStats("event",true);
+                            viewer->getStats()->collectStats("update",true);
 
                             for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
                                 itr != cameras.end();
@@ -144,12 +153,12 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
             }
             if (ea.getKey()==_keyEventPrintsOutStats)
             {
-                if (view->getStats())
+                if (viewer->getStats())
                 {
                     osg::notify(osg::NOTICE)<<std::endl<<"Stats report:"<<std::endl;
                     typedef std::vector<osg::Stats*> StatsList;
                     StatsList statsList;
-                    statsList.push_back(view->getStats());
+                    statsList.push_back(viewer->getStats());
 
                     osgViewer::ViewerBase::Contexts contexts;
                     viewer->getContexts(contexts);
@@ -169,7 +178,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                     }
 
-                    for(int i = view->getStats()->getEarliestFrameNumber(); i<= view->getStats()->getLatestFrameNumber()-1; ++i)
+                    for(int i = viewer->getStats()->getEarliestFrameNumber(); i<= viewer->getStats()->getLatestFrameNumber()-1; ++i)
                     {
                         for(StatsList::iterator itr = statsList.begin();
                             itr != statsList.end();
@@ -212,13 +221,12 @@ void StatsHandler::reset()
     _camera->setGraphicsContext(0);
 }
 
-void StatsHandler::setUpHUDCamera(osgViewer::View* view)
+void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 {
     osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-    osgViewer::ViewerBase* viewer = view->getViewerBase();
     osg::GraphicsContext* context;
     
-    if (viewer && !window)
+    if (!window)
     {    
         osgViewer::Viewer::Windows windows;
         viewer->getWindows(windows);
@@ -230,10 +238,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::View* view)
                 
         context = window;
     }
-    else if (!viewer) 
-    {
-        context = view->getCamera()->getGraphicsContext();
-    }
+
     _camera->setGraphicsContext(context);
 
     _camera->setViewport(0, 0, context->getTraits()->width, context->getTraits()->height);
@@ -546,7 +551,7 @@ osg::Geometry* StatsHandler::createTick(const osg::Vec3& pos, float height, cons
     return geometry;       
 }
 
-void StatsHandler::setUpScene(osgViewer::View* view)
+void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 {
     _switch = new osg::Switch;
 
@@ -562,23 +567,23 @@ void StatsHandler::setUpScene(osgViewer::View* view)
 
 
     // collect all the relevant camers
-    typedef std::vector<osg::Camera*> Cameras;
-    Cameras cameras;
-    if (view->getCamera()->getStats() && view->getCamera()->getGraphicsContext()) 
+    ViewerBase::Cameras validCameras;
+    viewer->getCameras(validCameras);
+
+    ViewerBase::Cameras cameras;
+    for(ViewerBase::Cameras::iterator itr = validCameras.begin();
+        itr != validCameras.end();
+        ++itr)
     {
-        cameras.push_back(view->getCamera());            
-    }
-    for(unsigned int si=0; si<view->getNumSlaves(); ++si)
-    {
-        if (view->getSlave(si)._camera->getStats()  && view->getSlave(si)._camera->getGraphicsContext()) 
+        if ((*itr)->getStats()) 
         {
-            cameras.push_back(view->getSlave(si)._camera.get());
+            cameras.push_back(*itr);
         }
     }
 
     // check for querry time support
     unsigned int numCamrasWithTimerQuerySupport = 0;
-    for(Cameras::iterator citr = cameras.begin();
+    for(ViewerBase::Cameras::iterator citr = cameras.begin();
         citr != cameras.end();
         ++citr)
     {
@@ -634,7 +639,7 @@ void StatsHandler::setUpScene(osgViewer::View* view)
         frameRateValue->setPosition(pos);
         frameRateValue->setText("0.0");
 
-        frameRateValue->setDrawCallback(new TextDrawCallback(view->getStats(),"Frame rate",-1, true, 1.0));
+        frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1, true, 1.0));
 
         pos.y() -= characterSize*1.5f;
 
@@ -693,11 +698,11 @@ void StatsHandler::setUpScene(osgViewer::View* view)
             eventValue->setPosition(pos);
             eventValue->setText("0.0");
 
-            eventValue->setDrawCallback(new TextDrawCallback(view->getStats(),"Event traversal time taken",-1, false, 1000.0));
+            eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
-            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, view->getStats(), view->getStats(), "Event traversal begin time", "Event traversal end time", -1, _numBlocks));
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Event traversal begin time", "Event traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
@@ -726,11 +731,11 @@ void StatsHandler::setUpScene(osgViewer::View* view)
             updateValue->setPosition(pos);
             updateValue->setText("0.0");
 
-            updateValue->setDrawCallback(new TextDrawCallback(view->getStats(),"Update traversal time taken",-1, false, 1000.0));
+            updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
-            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, view->getStats(), view->getStats(), "Update traversal begin time", "Update traversal end time", -1, _numBlocks));
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Update traversal begin time", "Update traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
@@ -740,11 +745,11 @@ void StatsHandler::setUpScene(osgViewer::View* view)
 
 
         // add camera stats
-        for(Cameras::iterator citr = cameras.begin();
+        for(ViewerBase::Cameras::iterator citr = cameras.begin();
             citr != cameras.end();
             ++citr)
         {
-            group->addChild(createCameraStats(font, pos, startBlocks, aquireGPUStats, characterSize, view->getStats(), *citr));
+            group->addChild(createCameraStats(font, pos, startBlocks, aquireGPUStats, characterSize, viewer->getStats(), *citr));
         }
 
 
@@ -763,91 +768,98 @@ void StatsHandler::setUpScene(osgViewer::View* view)
             geode->addDrawable(ticks);
 
             osg::Geometry* frameMarkers = createFrameMarkers(pos, height, colourTicks, _numBlocks + 1);
-            frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, view->getStats(), 0, _numBlocks + 1));
+            frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getStats(), 0, _numBlocks + 1));
             geode->addDrawable(frameMarkers);
         }
 
 
-        osgDB::DatabasePager* dp = view->getDatabasePager();
-        if (dp && dp->isRunning())
+        ViewerBase::Scenes scenes;
+        viewer->getScenes(scenes);
+        for(ViewerBase::Scenes::iterator itr = scenes.begin();
+            itr != scenes.end();
+            ++itr)
         {
-            pos.y() -= characterSize*1.5f;
-            
+            Scene* scene = *itr;
+            osgDB::DatabasePager* dp = scene->getDatabasePager();
+            if (dp && dp->isRunning())
+            {
+                pos.y() -= characterSize*1.5f;
+
+                pos.x() = leftPos;
+
+                osg::ref_ptr<osgText::Text> averageLabel = new osgText::Text;
+                geode->addDrawable( averageLabel.get() );
+
+                averageLabel->setColor(colorDP);
+                averageLabel->setFont(font);
+                averageLabel->setCharacterSize(characterSize);
+                averageLabel->setPosition(pos);
+                averageLabel->setText("DatabasePager time to merge new tiles - average: ");
+
+                pos.x() = averageLabel->getBound().xMax();
+
+                osg::ref_ptr<osgText::Text> averageValue = new osgText::Text;
+                geode->addDrawable( averageValue.get() );
+
+                averageValue->setColor(colorDP);
+                averageValue->setFont(font);
+                averageValue->setCharacterSize(characterSize);
+                averageValue->setPosition(pos);
+                averageValue->setText("1000");
+
+                pos.x() = averageValue->getBound().xMax() + 2.0f*characterSize;
+
+
+                osg::ref_ptr<osgText::Text> minLabel = new osgText::Text;
+                geode->addDrawable( minLabel.get() );
+
+                minLabel->setColor(colorDP);
+                minLabel->setFont(font);
+                minLabel->setCharacterSize(characterSize);
+                minLabel->setPosition(pos);
+                minLabel->setText("min: ");
+
+                pos.x() = minLabel->getBound().xMax();
+
+                osg::ref_ptr<osgText::Text> minValue = new osgText::Text;
+                geode->addDrawable( minValue.get() );
+
+                minValue->setColor(colorDP);
+                minValue->setFont(font);
+                minValue->setCharacterSize(characterSize);
+                minValue->setPosition(pos);
+                minValue->setText("1000");
+
+                pos.x() = minValue->getBound().xMax() + 2.0f*characterSize;
+
+
+                osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
+                geode->addDrawable( maxLabel.get() );
+
+                maxLabel->setColor(colorDP);
+                maxLabel->setFont(font);
+                maxLabel->setCharacterSize(characterSize);
+                maxLabel->setPosition(pos);
+                maxLabel->setText("max: ");
+
+                pos.x() = maxLabel->getBound().xMax();
+
+                osg::ref_ptr<osgText::Text> maxValue = new osgText::Text;
+                geode->addDrawable( maxValue.get() );
+
+                maxValue->setColor(colorDP);
+                maxValue->setFont(font);
+                maxValue->setCharacterSize(characterSize);
+                maxValue->setPosition(pos);
+                maxValue->setText("1000");
+
+                pos.x() = maxLabel->getBound().xMax();
+
+                geode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), 1000.0));
+            }
+
             pos.x() = leftPos;
-
-            osg::ref_ptr<osgText::Text> averageLabel = new osgText::Text;
-            geode->addDrawable( averageLabel.get() );
-
-            averageLabel->setColor(colorDP);
-            averageLabel->setFont(font);
-            averageLabel->setCharacterSize(characterSize);
-            averageLabel->setPosition(pos);
-            averageLabel->setText("DatabasePager time to merge new tiles - average: ");
-
-            pos.x() = averageLabel->getBound().xMax();
-
-            osg::ref_ptr<osgText::Text> averageValue = new osgText::Text;
-            geode->addDrawable( averageValue.get() );
-
-            averageValue->setColor(colorDP);
-            averageValue->setFont(font);
-            averageValue->setCharacterSize(characterSize);
-            averageValue->setPosition(pos);
-            averageValue->setText("1000");
-
-            pos.x() = averageValue->getBound().xMax() + 2.0f*characterSize;
-
-
-            osg::ref_ptr<osgText::Text> minLabel = new osgText::Text;
-            geode->addDrawable( minLabel.get() );
-
-            minLabel->setColor(colorDP);
-            minLabel->setFont(font);
-            minLabel->setCharacterSize(characterSize);
-            minLabel->setPosition(pos);
-            minLabel->setText("min: ");
-
-            pos.x() = minLabel->getBound().xMax();
-
-            osg::ref_ptr<osgText::Text> minValue = new osgText::Text;
-            geode->addDrawable( minValue.get() );
-
-            minValue->setColor(colorDP);
-            minValue->setFont(font);
-            minValue->setCharacterSize(characterSize);
-            minValue->setPosition(pos);
-            minValue->setText("1000");
-
-            pos.x() = minValue->getBound().xMax() + 2.0f*characterSize;
-
-
-            osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
-            geode->addDrawable( maxLabel.get() );
-
-            maxLabel->setColor(colorDP);
-            maxLabel->setFont(font);
-            maxLabel->setCharacterSize(characterSize);
-            maxLabel->setPosition(pos);
-            maxLabel->setText("max: ");
-
-            pos.x() = maxLabel->getBound().xMax();
-
-            osg::ref_ptr<osgText::Text> maxValue = new osgText::Text;
-            geode->addDrawable( maxValue.get() );
-
-            maxValue->setColor(colorDP);
-            maxValue->setFont(font);
-            maxValue->setCharacterSize(characterSize);
-            maxValue->setPosition(pos);
-            maxValue->setText("1000");
-
-            pos.x() = maxLabel->getBound().xMax();
-
-            geode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), 1000.0));
         }
-
-        pos.x() = leftPos;
-
     }
 #if 0
     // scene stats

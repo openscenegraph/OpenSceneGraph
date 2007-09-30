@@ -181,10 +181,12 @@ public:
         REVERSED_XZ_PLANE,
         YZ_PLANE,
         REVERSED_YZ_PLANE,
-        SCREEN
+        SCREEN,
+        USER_DEFINED_ROTATION
     };
 
     void setAxisAlignment(AxisAlignment axis);
+    AxisAlignment getAxisAlignment() const { return _axisAlignment; }
     
     void setRotation(const osg::Quat& quat);
     const osg::Quat& getRotation() const { return _rotation; }
@@ -533,6 +535,7 @@ protected:
     String                                  _text;
     osg::Vec3                               _position;
     AlignmentType                           _alignment;
+    AxisAlignment                            _axisAlignment;
     osg::Quat                               _rotation;
     bool                                    _autoRotateToScreen;
     Layout                                  _layout;

@@ -2339,6 +2339,8 @@
 		D4DFC48B0B57D6FD005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E1D5470CAFF2B4007F8430 /* ViewerBase in Headers */ = {isa = PBXBuildFile; fileRef = D4E1D5460CAFF2B4007F8430 /* ViewerBase */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4E1D5490CAFF2C9007F8430 /* ViewerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */; };
+		D4E1D85F0CB031BA007F8430 /* hdrwriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */; };
+		D4E1D8600CB031BA007F8430 /* hdrwriter.h in Headers */ = {isa = PBXBuildFile; fileRef = D4E1D85E0CB031B9007F8430 /* hdrwriter.h */; };
 		D4E759AB0B57D1BB006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759B80B57D22B006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759C60B57D288006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -6060,6 +6062,8 @@
 		D4C6F2B40B8318110052E667 /* osgshadow.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgshadow.cpp; path = ../../examples/osgshadow/osgshadow.cpp; sourceTree = "<group>"; };
 		D4E1D5460CAFF2B4007F8430 /* ViewerBase */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ViewerBase; sourceTree = "<group>"; };
 		D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerBase.cpp; sourceTree = "<group>"; };
+		D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = hdrwriter.cpp; sourceTree = "<group>"; };
+		D4E1D85E0CB031B9007F8430 /* hdrwriter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = hdrwriter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -9451,6 +9455,8 @@
 		00A150D4084E6B36000150AD /* hdr */ = {
 			isa = PBXGroup;
 			children = (
+				D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */,
+				D4E1D85E0CB031B9007F8430 /* hdrwriter.h */,
 				00A150D6084E6B36000150AD /* hdrloader.cpp */,
 				00A150D7084E6B37000150AD /* hdrloader.h */,
 				00A150D8084E6B37000150AD /* ReaderWriterHDR.cpp */,
@@ -11870,6 +11876,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00A150DA084E6B38000150AD /* hdrloader.h in Headers */,
+				D4E1D8600CB031BA007F8430 /* hdrwriter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17296,6 +17303,7 @@
 			files = (
 				00A150D9084E6B38000150AD /* hdrloader.cpp in Sources */,
 				00A150DB084E6B38000150AD /* ReaderWriterHDR.cpp in Sources */,
+				D4E1D85F0CB031BA007F8430 /* hdrwriter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

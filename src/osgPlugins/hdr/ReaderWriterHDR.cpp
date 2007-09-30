@@ -42,12 +42,13 @@
 #include <sstream>
 
 #include "hdrloader.h"
+#include "hdrwriter.h"
 
 class ReaderWriterHDR : public osgDB::ReaderWriter
 {
 public:
     virtual const char* className() { return "HDR Image Reader"; }
-    virtual bool acceptsExtension(const std::string &extension) { return osgDB::equalCaseInsensitive(extension, "hdr"); }
+    virtual bool acceptsExtension(const std::string &extension) const { return osgDB::equalCaseInsensitive(extension, "hdr"); }
 
     virtual ReadResult readImage(const std::string &_file, const osgDB::ReaderWriter::Options *_opts) const
     {
@@ -94,7 +95,7 @@ public:
                 }
                 else if(opt == "YFLIP")
                 {
-                    bYFlip = true; // TODO
+                    bYFlip = true; // Image is flipped later if required
                 }
             }
         }
@@ -167,7 +168,97 @@ public:
                             osg::Image::USE_NEW_DELETE);
         }
 
+        // Y flip
+        if(bYFlip==true) img->flipVertical();
+
         return img;
+    }
+
+
+    // Additional write methods
+    virtual WriteResult writeImage(const osg::Image &image,const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        std::string ext = osgDB::getFileExtension(file);
+        if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+        std::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+        if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+        return writeImage(image,fout,options);
+    }
+
+    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options* options) const
+    {
+
+        bool bYFlip = true;        // Whether to flip the vertical
+        bool rawRGBE = false;    // Whether to write as raw RGBE
+
+        if(options)
+        {
+            std::istringstream iss(options->getOptionString());
+            std::string opt;
+            while (iss >> opt)
+            {
+                if (opt=="NO_YFLIP")
+                {
+                    // We want to YFLIP because although the file format specification 
+                    // dictates that +Y M +X N is a valid resolution line, no software (including
+                    // HDRShop!) actually recognises it; hence everything tends to be written upside down
+                    // So we flip the image first...
+                    bYFlip = false;
+                }
+                else if(opt=="RAW")
+                {
+                    rawRGBE = true;
+                }
+                /* The following are left out for the moment as 
+                   we don't really do anything with them in OSG 
+                else if(opt=="GAMMA")
+                {
+                   iss >> gamma;
+                }
+                else if(opt=="EXPOSURE")
+                {
+                    iss >> exposure;
+                }
+                */
+
+            }
+        }
+    
+        // Reject unhandled image formats
+        if(rawRGBE==false)
+        {
+            if(image.getInternalTextureFormat()!=GL_RGB32F_ARB)    // We only handle RGB (no alpha) with 32F formats
+            {
+                return WriteResult::FILE_NOT_HANDLED;
+            }
+        }
+        else    // Outputting raw RGBE (as interpreted by a shader, for example)
+        {
+            if(image.getInternalTextureFormat()!=GL_RGBA8) // We need 8 bit bytes including alpha (E)
+            {
+                return WriteResult::FILE_NOT_HANDLED;
+            }
+        }
+
+        // Get a temporary copy to flip if we need to
+        osg::ref_ptr<osg::Image> source = new osg::Image(image,osg::CopyOp::DEEP_COPY_ALL);
+
+        if(bYFlip==true) source->flipVertical();
+
+        bool success;
+        success = HDRWriter::writeHeader(source.get(),fout);
+        if(!success)
+        {
+            return WriteResult::ERROR_IN_WRITING_FILE;    // early out
+            source = 0;    // delete the temporary image
+        }
+
+        success = HDRWriter::writeRLE(source.get(), fout);
+
+        source = 0; // delete the temporary image
+        return (success)? WriteResult::FILE_SAVED : WriteResult::ERROR_IN_WRITING_FILE;
     }
 };
 

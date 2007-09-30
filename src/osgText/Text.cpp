@@ -41,6 +41,7 @@ Text::Text():
     _maximumHeight(0.0f),
     _lineSpacing(0.0f),
     _alignment(BASE_LINE),
+    _axisAlignment(XY_PLANE),
     _autoRotateToScreen(false),
     _layout(LEFT_TO_RIGHT),
     _color(1.0f,1.0f,1.0f,1.0f),
@@ -77,6 +78,7 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
     _text(text._text),
     _position(text._position),
     _alignment(text._alignment),
+    _axisAlignment(text._axisAlignment),
     _rotation(text._rotation),
     _autoRotateToScreen(text._autoRotateToScreen),
     _layout(text._layout),
@@ -199,6 +201,8 @@ void Text::setAlignment(AlignmentType alignment)
 
 void Text::setAxisAlignment(AxisAlignment axis)
 {
+    _axisAlignment = axis;
+
     switch(axis)
     {
     case XZ_PLANE:

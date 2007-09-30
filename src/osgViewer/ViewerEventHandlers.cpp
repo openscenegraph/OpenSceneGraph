@@ -62,7 +62,10 @@ void WindowSizeHandler::getUsage(osg::ApplicationUsage &usage) const
 
 bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    osgViewer::Viewer    *viewer = dynamic_cast<osgViewer::Viewer *>(&aa);
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    if (!view) return false;
+    
+    osgViewer::ViewerBase* viewer = view->getViewerBase();
 
     if (viewer == NULL)
     {
@@ -282,9 +285,13 @@ void ThreadingHandler::getUsage(osg::ApplicationUsage &usage) const
 
 bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    osgViewer::Viewer    *viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    if (!view) return false;
+    
+    osgViewer::ViewerBase* viewerBase = view->getViewerBase();
+    osgViewer::Viewer* viewer = dynamic_cast<Viewer*>(viewerBase);
 
-    if (viewer == NULL)
+    if (viewerBase == NULL)
     {
         return false;
     }
@@ -301,32 +308,38 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
             {
                 _tickOrLastKeyPress = osg::Timer::instance()->tick();
 
-                switch(viewer->getThreadingModel())
+                switch(viewerBase->getThreadingModel())
                 {
-                case(osgViewer::Viewer::SingleThreaded):
-                    viewer->setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
+                case(osgViewer::ViewerBase::SingleThreaded):
+                    viewerBase->setThreadingModel(osgViewer::ViewerBase::CullDrawThreadPerContext);
                     osg::notify(osg::NOTICE)<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
                     break;
-                case(osgViewer::Viewer::CullDrawThreadPerContext):
-                    viewer->setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
+                case(osgViewer::ViewerBase::CullDrawThreadPerContext):
+                    viewerBase->setThreadingModel(osgViewer::ViewerBase::DrawThreadPerContext);
                     osg::notify(osg::NOTICE)<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
                     break;
-                case(osgViewer::Viewer::DrawThreadPerContext):
-                    viewer->setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
+                case(osgViewer::ViewerBase::DrawThreadPerContext):
+                    viewerBase->setThreadingModel(osgViewer::ViewerBase::CullThreadPerCameraDrawThreadPerContext);
                     osg::notify(osg::NOTICE)<<"Threading model 'CullThreadPerCameraDrawThreadPerContext' selected."<<std::endl;
                     break;
-                case(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext):
-                    viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
+                case(osgViewer::ViewerBase::CullThreadPerCameraDrawThreadPerContext):
+                    viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
                     osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
                     break;
-                case(osgViewer::Viewer::AutomaticSelection):
-                    viewer->setThreadingModel(viewer->suggestBestThreadingModel());
+#if 1                    
+                case(osgViewer::ViewerBase::AutomaticSelection):
+                    viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
                     osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
+#else                    
+                case(osgViewer::ViewerBase::AutomaticSelection):
+                    viewerBase->setThreadingModel(viewer->suggestBestThreadingModel());
+                    osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
+#endif
                     break;
                 }
                 return true;
             }
-            if (_changeEndBarrierPosition == true && ea.getKey() == _keyEventChangeEndBarrierPosition)
+            if (viewer && _changeEndBarrierPosition == true && ea.getKey() == _keyEventChangeEndBarrierPosition)
             {
                 switch(viewer->getEndBarrierPosition())
                 {
@@ -376,9 +389,9 @@ void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
 
 bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa)
 {
-    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
 
-    if (viewer == NULL)
+    if (view == NULL)
     {
         return false;
     }
@@ -396,7 +409,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
         // calculating when the next insert should happen.
         if (_currentlyRecording && _delta >= _interval)
         {
-            const osg::Matrixd& m = viewer->getCamera()->getInverseViewMatrix();
+            const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
             _animPath->insert(osg::Timer::instance()->delta_s(_animStartTime, time), osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
             _delta = 0.0f;
         }
@@ -474,8 +487,8 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     // around of the original MatrixManipulator to restore later.
                     if (_animPathManipulator.valid() && _animPathManipulator->valid())
                     {
-                        _oldManipulator = viewer->getCameraManipulator();
-                        viewer->setCameraManipulator(_animPathManipulator.get());
+                        _oldManipulator = view->getCameraManipulator();
+                        view->setCameraManipulator(_animPathManipulator.get());
                         _currentlyPlaying = true;
                     }
                 }
@@ -484,7 +497,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                 else
                 {
                     // Restore the old manipulator if necessary and stop playback.
-                    if(_oldManipulator.valid()) viewer->setCameraManipulator(_oldManipulator.get());
+                    if(_oldManipulator.valid()) view->setCameraManipulator(_oldManipulator.get());
                     _currentlyPlaying = false;
                     _oldManipulator = 0;
                 }

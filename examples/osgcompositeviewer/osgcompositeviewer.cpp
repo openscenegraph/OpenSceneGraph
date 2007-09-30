@@ -148,9 +148,7 @@ int main( int argc, char **argv )
             osgViewer::View* view = new osgViewer::View;
             view->setSceneData(osgDB::readNodeFile("fountain.osg"));
             
-            osg::ref_ptr<osgViewer::StatsHandler> statsHandler = new osgViewer::StatsHandler;
-            view->addEventHandler( statsHandler.get() );
-            
+            view->addEventHandler( new osgViewer::StatsHandler );
             
             view->setUpViewAcrossAllScreens();
             view->setCameraManipulator(new osgGA::TrackballManipulator);
@@ -186,8 +184,7 @@ int main( int argc, char **argv )
             view->setSceneData(scene.get());
             view->setCameraManipulator(new osgGA::TrackballManipulator);
             
-            osg::ref_ptr<osgViewer::StatsHandler> statsHandler = new osgViewer::StatsHandler;
-            view->addEventHandler( statsHandler.get() );
+            view->addEventHandler( new osgViewer::StatsHandler );
 
             
             // add the handler for doing the picking
@@ -251,6 +248,9 @@ int main( int argc, char **argv )
             
             view->addEventHandler( new osgViewer::StatsHandler );
             view->addEventHandler( new osgViewer::HelpHandler );
+            view->addEventHandler( new osgViewer::WindowSizeHandler );
+            view->addEventHandler( new osgViewer::ThreadingHandler );
+            view->addEventHandler( new osgViewer::RecordCameraPathHandler );
         }
 
         // view two

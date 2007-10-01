@@ -1210,7 +1210,7 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
 
 void GraphicsWindowX11::requestWarpPointer(float x,float y)
 {
-    Display* display = getDisplayToUse();
+    Display* display = _eventDisplay; // getDisplayToUse();
 
     XWarpPointer( display, 
                   None,

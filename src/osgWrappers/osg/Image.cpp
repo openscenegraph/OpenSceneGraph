@@ -357,6 +357,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                            __int__computeNearestPowerOfTwo__int__float_S,
 	                            "",
 	                            "");
+	I_StaticMethodWithDefaults3(int, computeNumberOfMipmapLevels, IN, int, s, , IN, int, t, 1, IN, int, r, 1,
+	                            __int__computeNumberOfMipmapLevels__int__int__int_S,
+	                            "",
+	                            "");
 	I_ProtectedMethod0(void, deallocateData,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

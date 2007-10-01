@@ -429,6 +429,13 @@ int Image::computeNearestPowerOfTwo(int s,float bias)
     return s;
 }
 
+int Image::computeNumberOfMipmapLevels(int s,int t, int r)
+{
+    int w = maximum(s, t);
+    w = maximum(w, r);
+    return 1 + static_cast<int>(floor(logf(w)/logf(2.0f)));
+}
+
 unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
 {
     if (_mipmapData.empty()) 

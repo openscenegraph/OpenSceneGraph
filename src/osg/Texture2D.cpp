@@ -408,7 +408,7 @@ void Texture2D::allocateMipmap(State& state) const
         // compute number of mipmap levels
         int width = _textureWidth;
         int height = _textureHeight;
-        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, height)));
+        int numMipmapLevels = Image::computeNumberOfMipmapLevels(width, height);
 
         // we do not reallocate the level 0, since it was already allocated
         width >>= 1;

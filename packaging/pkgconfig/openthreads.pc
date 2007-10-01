@@ -7,7 +7,7 @@ includedir=${prefix}/include
 
 Name: openthreads
 Description: Object-Oriented (OO) thread interface for C++ programmers
-Version: 1.9.6
+Version: 1.9.7
 Requires:
 Conflicts:
 Libs: -L${libdir} -lOpenThreads

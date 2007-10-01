@@ -456,7 +456,7 @@ void Texture3D::allocateMipmap(State& state) const
         int width = _textureWidth;
         int height = _textureHeight;
         int depth = _textureDepth;
-        int numMipmapLevels = 1 + (int)floor(log2(maximum(width, maximum(depth, height))));
+        int numMipmapLevels = Image::computeNumberOfMipmapLevels(width, height, depth);
 
         // we do not reallocate the level 0, since it was already allocated
         width >>= 1;

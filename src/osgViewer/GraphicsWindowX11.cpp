@@ -333,7 +333,7 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
 
 bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
-    if (!_realized) return false;
+    if (!_initialized) return false;
     
     Display* display = getDisplayToUse();
     
@@ -352,7 +352,7 @@ bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width
 
 void GraphicsWindowX11::setWindowName(const std::string& name)
 {
-    if( _window ) return;
+    if( _window == 0) return;
 
     //    char *slist[] = { name.c_str(), 0L };
     //    XTextProperty xtp;
@@ -368,6 +368,8 @@ void GraphicsWindowX11::setWindowName(const std::string& name)
 
     XFlush(display); 
     XSync(display,0);
+
+    _traits->windowName = name;
 }
 
 void GraphicsWindowX11::setCursor(MouseCursor mouseCursor)
@@ -573,8 +575,8 @@ void GraphicsWindowX11::init()
 
     if (_valid == false)
     {
-        _display = 0;
         XCloseDisplay( _display );
+        _display = 0;
     }
 }
 
@@ -659,8 +661,6 @@ bool GraphicsWindowX11::createWindow()
                                      KeyPressMask | KeyReleaseMask |
                                      PointerMotionMask  | ButtonPressMask | ButtonReleaseMask);
 
-    setWindowName(_traits->windowName);
-
     XFlush( _eventDisplay );
     XSync( _eventDisplay, 0 );
 
@@ -699,6 +699,9 @@ bool GraphicsWindowX11::setWindow(Window window)
 
     //_traits->supportsResize = false;
     _traits->windowDecoration = false;
+
+    if (_traits->windowName.size()) setWindowName(_traits->windowName);
+
     _eventDisplay = XOpenDisplay(_traits->displayName().c_str());
 
     XFlush( _eventDisplay );
@@ -747,7 +750,7 @@ bool GraphicsWindowX11::releaseContextImplementation()
 {
     if (!_realized)
     {
-        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do release context."<<std::endl;
         return false;
     }
 
@@ -775,7 +778,7 @@ void GraphicsWindowX11::closeImplementation()
             glXDestroyContext(_display, _glxContext );
         }
     
-        if (_window)
+        if (_window && _ownsWindow)
         {
             XDestroyWindow(_display, _window);
         }

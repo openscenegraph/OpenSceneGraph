@@ -1,3 +1,291 @@
+2007-10-01 09:41 +0000 [r7522]  robert:
+
+	* Changed requestWarpPointer to use _eventDislay to avoid crash in
+	  osghanglide example due to async usage.
+
+2007-10-01 08:50 +0000 [r7521]  robert:
+
+	* Removed log2 and replaced the places where is was used with a new
+	  Image::computeNumberOfMipmapLevels method.
+
+2007-09-30 20:16 +0000 [r7520]  shuber:
+
+	* updated XCode-projects
+
+2007-09-30 19:56 +0000 [r7519]  robert:
+
+	* Updated wrappers
+
+2007-09-30 19:53 +0000 [r7518]  robert:
+
+	* From Paul Martz, "here's the osgDB::Registry changes to add
+	  Options to the read*File() interface. As we discussed, this
+	  preserves the old interface for backwards compatibility. osgconv
+	  also changed to use the new Registry::writeNode() interface. No
+	  other applications or examples were affected."
+
+2007-09-30 19:39 +0000 [r7517]  robert:
+
+	* Updated wrappers
+
+2007-09-30 19:27 +0000 [r7516]  robert:
+
+	* Added support for CompositeViewer to WindowSizeHandler,
+	  ThreadingHandler, RecordCameraPathManipulator and HelpHandler.
+
+2007-09-30 19:15 +0000 [r7515]  robert:
+
+	* Changed HelpHandler so it supports use with CompositeViewer and
+	  Viewer
+
+2007-09-30 18:43 +0000 [r7513-7514]  robert:
+
+	* Added hdwriter to CMake build
+
+	* From David Spilling, "Please find attached an extension of the
+	  Radiance HDR (RGBE) image reader to support writing. The options
+	  are intended to match the existing read options. By default it
+	  will only write RGB32F format; if the "RAW" option is selected,
+	  it will output 8 bit RGBA as "raw" RGBE. Note also that the
+	  writer inserts a flipVertical(); although the RGBE format,
+	  according to spec, should support top-to-bottom or bottom-to-top
+	  ordering, no software I've found, including that from the formats
+	  originator, actually respects this."
+
+2007-09-30 18:33 +0000 [r7512]  robert:
+
+	* From Jan Peciva, "I am submitting improved Inventor (iv) writer.
+	  List of changes: - added support for Billboards and LOD -
+	  improved Material handling "
+
+2007-09-30 16:24 +0000 [r7511]  shuber:
+
+	* updated xcode-projects
+
+2007-09-30 15:24 +0000 [r7510]  robert:
+
+	* Updated wrappers
+
+2007-09-30 15:07 +0000 [r7508-7509]  robert:
+
+	* Updated wrappers
+
+	* From Dan Minor, "osgText::Text does not currently have a
+	  getAxisAlignment method. The attached code adds this, along with
+	  a member variable to keep track of the setting. It is based on
+	  the latest subversion version, and was tested by creating a new
+	  text object with the same axis alignment as an existing one (e.g.
+	  new_text->setAxisAlignment(old_text->getAxisAlignment()); )."
+	  From Robert Osfield, " I originally didn't add a
+	  getAxisAlignment() as all setAxisAlignment does is set the
+	  Rotation member variable, and potentially one could apply user
+	  defined Rotation setting after the setAxisAlignment() which would
+	  bring it out of sync with the setAxisAlignment. Rather than
+	  reject your submission on the ground of potentially getting out
+	  of sync and therefore misleading users I've added a
+	  USED_DEFINED_ROTATION to AxisAlignment enum, and set this in the
+	  serRotation and then override this setting of _axisAlignment in
+	  the setAxisAlingment method. I've also removed the lazy updating
+	  optimization you've added to the top of setAxisAlignment to avoid
+	  potential problems as well."
+
+2007-09-30 11:37 +0000 [r7507]  robert:
+
+	* Moved ViewerBase class out into its own header and source file.
+	  Improved the support for stats collection in
+	  CompositeViewer/StatsHandler.
+
+2007-09-29 16:46 +0000 [r7506]  robert:
+
+	* Refactor Viewer/CompositeViewer so the both inherit from the a
+	  ViewerBase class
+
+2007-09-29 11:41 +0000 [r7505]  robert:
+
+	* From Stephan Huber, add basic support for CompositeViewer in
+	  StatsHandler
+
+2007-09-29 11:12 +0000 [r7504]  robert:
+
+	* From Mattias Linde, "Nice, this almost gets the job done, one way
+	  communication into the plugin is possible. I've done some
+	  additional small modification regarding constness in ReaderWriter
+	  and added mutable on _pluginData so passing data back would be
+	  possible too. Have updated the collada plugin
+	  (ReaderWriterDAE.cpp) to use the map to handle options and have
+	  attached the changes. The stuff in daeReader.h and daeWriter.h
+	  are just cosmetic changes to get rid of a warning."
+
+2007-09-28 13:42 +0000 [r7503]  robert:
+
+	* Fixed SphericalDisplay set up codes to properly manage display
+	  host/num
+
+2007-09-28 13:38 +0000 [r7501-7502]  robert:
+
+	* From Mathias Froehlich, "I had a chance to look into the remote
+	  display problems. The screen resolution was queried for the wrong
+	  display."
+
+	* From Mattias Linde, "I've attached a modified ReaderWriter header
+	  which has some additions to osgDB::ReaderWriter::Options to
+	  handle PluginData."
+
+2007-09-28 08:53 +0000 [r7499-7500]  robert:
+
+	* Andre Garneau, three fixes in one submissions: "This is a fix for
+	  the issue reported by Anders a week ago (see \u201c[osg-users]
+	  BUG?: mouse coordinate changes after window move\u201d discussion
+	  thread on Sept. 20). The issue was that the initial
+	  implementation added a few months back was not converting the
+	  window coordinates to client-area coordinates resulting in a
+	  slight offset each time a decorated window was moved (caused by
+	  the window border). This was also causing windows to move out of
+	  their assigned screen." and "Attached is a fix for the taskbar
+	  repaint issue that occurs when a graphics window is toggled from
+	  full-screen mode to windowed mode (as identified by Gert van
+	  Maren a couple of weeks ago). Also included is a fix derived from
+	  the \u201cEvents from the past\u201d discussion thread that took
+	  place on July 11."
+
+	* Added record path manipulator
+
+2007-09-27 13:49 +0000 [r7498]  robert:
+
+	* Changed across to using a GraphicsOperation as the base class for
+	  the RealizeOperation.
+
+2007-09-27 12:47 +0000 [r7497]  robert:
+
+	* From Adrian Egli, "update the PSSM, i did some bug fixes and
+	  added new features to move the camera virtual against the view
+	  direction by applaying a simple distance factor (a), which is
+	  calculated camera eye - camera center distance. and we can move
+	  the "light camera" against the light direction (b). (a) some
+	  objects behind the camera can cast shadow (b) object aboive the
+	  camera can cast shadow then i fixed the shadow map orientation,
+	  now screen x coordinate alinged which improve the quality"
+
+2007-09-27 12:15 +0000 [r7496]  robert:
+
+	* From Mathias Froehlich, compile fix for HP-UX without large file
+	  support
+
+2007-09-27 10:47 +0000 [r7495]  robert:
+
+	* From Mathias Froehlich, "Some more file that needs some
+	  adjustment because of missing member templates in suns stl."
+
+2007-09-27 10:42 +0000 [r7494]  robert:
+
+	* Changed copy constrcutor to a default constrcutor and std::copy
+	  to avoid problems with dodge Sun compiler.
+
+2007-09-27 10:22 +0000 [r7492]  robert:
+
+	* Added support for selecting internal texture format via the
+	  internalFormat <numbits> entry in the .osg file
+
+2007-09-26 16:17 +0000 [r7491]  shuber:
+
+	* updated XCode project-files
+
+2007-09-26 14:44 +0000 [r7490]  robert:
+
+	* From Jean-Sebastien Guay, "Attached you will find an expanded
+	  FindOpenVRML.cmake file, as well as a fixed CMakeLists.txt file
+	  for the VRML plugin ."
+
+2007-09-26 14:31 +0000 [r7489]  robert:
+
+	* Updated wrappers
+
+2007-09-26 14:02 +0000 [r7488]  robert:
+
+	* Added IntensityMap reading in .view files
+
+2007-09-26 11:32 +0000 [r7486]  robert:
+
+	* Tweaked the wrapping of osgViewer::Scene to fix build problems
+
+2007-09-26 10:58 +0000 [r7485]  robert:
+
+	* From Stephan Huber, "attached you'll find a first implementation
+	  for the obj-plugin to write obj-files. It is not feature complete
+	  but usable. Known issues: * not all materials are handled
+	  correctly (especially when using osg::StateAttribute::OVERRIDE),
+	  not all properties are supported * could not test point and
+	  lines, all of my programs which are capable to read obj-files
+	  only import triangle-meshes. * only simple texture-handling"
+
+2007-09-26 10:46 +0000 [r7484]  robert:
+
+	* Added suprression of the reflection of osgViewer::Scene to avoid
+	  build issues associated with the class.
+
+2007-09-26 09:59 +0000 [r7483]  robert:
+
+	* Updated wrappers
+
+2007-09-26 09:50 +0000 [r7482]  robert:
+
+	* From David Callu, adding support for GraphicsWindowX11 window
+	  inhertance and setWindowName() method.
+
+2007-09-25 19:14 +0000 [r7481]  robert:
+
+	* Added support for intensityMap and fix naming of --panoramic-sd
+	  and --3d-sd command line arguments
+
+2007-09-25 17:02 +0000 [r7479-7480]  robert:
+
+	* Added --flip argument docs.
+
+	* Added --flip option to allow one to flip the source data about
+	  the x axis.
+
+2007-09-25 15:01 +0000 [r7477]  robert:
+
+	* Removed all dome distortion correction code as this is now part
+	  of the core osgViewer. Added viewer mode where movies are made
+	  fullscreen. One can use the old interactive camera mode by using
+	  --interactive parameter on the command line.
+
+2007-09-25 13:51 +0000 [r7475]  robert:
+
+	* Preliminary PanoramicSphericalScreen support
+
+2007-09-25 12:34 +0000 [r7473]  robert:
+
+	* Added --major/minor/path-number support
+
+2007-09-25 11:26 +0000 [r7472]  robert:
+
+	* Fixed version number
+
+2007-09-25 10:18 +0000 [r7471]  robert:
+
+	* Added thread unit test to test the create, start and destruction
+	  of threads
+
+2007-09-24 16:34 +0000 [r7466]  robert:
+
+	* Updated Version and AUTHORS for 2.1.12 dev release
+
+2007-09-24 16:30 +0000 [r7464-7465]  robert:
+
+	* Renamed packaging directory to pkgconfig
+
+	* Updated ChangeLog for release
+
+2007-09-24 16:25 +0000 [r7463]  robert:
+
+	* Updated wrappers
+
+2007-09-24 15:24 +0000 [r7462]  robert:
+
+	* From Adrian Egli, further work on PSSM implementation.
+
 2007-09-24 10:36 +0000 [r7460]  robert:
 
 	* From Alberto Luaces, fixed typo of valid() in warning message

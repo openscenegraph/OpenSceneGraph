@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.12
+OpenSceneGraph Library 2.1.13
 
-281 Contributors:
+282 Contributors:
 
 Firstname Surname
 -----------------
@@ -24,14 +24,14 @@ Luigi Calori
 Trajce Nikolov
 Pavel Moloshtan
 Tom Jolley
+Mathias Fröhlich
 Norman Vine
 Alberto Farre
 Roger James
-Mathias Fröhlich
+David Callu
 André Garneau
 Ruben Lopez
 Randall Hopper
-David Callu
 Olaf Flebbe
 Gideon May
 Don Tidrow
@@ -40,10 +40,10 @@ Michael Gronager
 Daniel Sjölie
 Colin McDonald
 Chris Hanson
-Per Fahlberg
-Joran Jessurun
 Jean-Sebastien Guay
 David Spilling
+Per Fahlberg
+Joran Jessurun
 Andy Skinner
 Frederic Marmond
 David Fries
@@ -65,6 +65,7 @@ Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
 Joakim Simonsson
+Jan Peciva
 Jan Ciger
 Gordon Tomlinson
 Brad Colbert
@@ -81,10 +82,10 @@ Michael Hartman
 Laurens Voerman
 Joseph Steel
 John Shue
-Jan Peciva
 David Guthrie
 Corbin Holtz
 Brad Christiansen
+Adrian Egli
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -104,6 +105,7 @@ Uwe Woessner
 Sohey Yamamoto
 Serge Lages
 Phil Atkin
+Mattias Linde
 Mathieu Marache
 Maria Ten
 Ken Sewell
@@ -120,7 +122,6 @@ Blake Williams
 Antoine Hue
 Anders Backman
 Ali Botorabi
-Adrian Egli
 Zach Deedler
 Yuzhong Shen
 Tugkan Calapoglu
@@ -208,7 +209,6 @@ Michael Morrison
 Michael Logan
 Max Rhiener
 Mauricio Hofmam
-Mattias Linde
 Matthew May
 Matt Green
 Matt Burke
@@ -260,6 +260,7 @@ Donny Cipperly
 Dean Iverson
 David Jung
 David Gurhrie
+Dan Minor
 Clay Fowler
 Chuck Sembroski
 Chuck Seberion

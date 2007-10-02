@@ -585,9 +585,9 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 #if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
     #ifdef __CYGWIN__
-        return prepend+"cyg"+"osgdb_"+lowercase_ext+".dll";
+        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
     #elif defined(__MINGW32__)
-        return prepend+"lib"+"osgdb_"+lowercase_ext+".dll";
+        return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
     #else
         #ifdef _DEBUG
             return prepend+"osgdb_"+lowercase_ext+"d.dll";

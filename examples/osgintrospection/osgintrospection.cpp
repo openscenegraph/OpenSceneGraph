@@ -38,9 +38,9 @@ std::string createLibraryNameForWrapper(const std::string& ext)
 #if defined(WIN32)
     // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
     #ifdef __CYGWIN__
-        return "cygosgwrapper_"+ext+".dll";
+        return "cygwin_osgwrapper_"+ext+".dll";
     #elif defined(__MINGW32__)
-        return "libosgwrapper_"+ext+".dll";
+        return "mingw_osgwrapper_"+ext+".dll";
     #else
         #ifdef _DEBUG
             return "osgwrapper_"+ext+"d.dll";

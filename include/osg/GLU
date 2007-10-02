@@ -14,17 +14,14 @@
 #ifndef OSG_GLU
 #define OSG_GLU 1
 
+#include <osg/GL>
+
 #if defined(__APPLE__) || defined (_AIX)
     #include <OpenGL/glu.h>
-    #define GLU_CALLBACK_PARAMETER ...
 #else
     #include <GL/glu.h>
 #endif
 
-#if !defined(GLU_CALLBACK_PARAMETER)
-    #define GLU_CALLBACK_PARAMETER
-#endif
-
-#define GLU_TESS_CALLBACK GLvoid (CALLBACK*)(GLU_CALLBACK_PARAMETER)
+typedef void (APIENTRY *GLU_TESS_CALLBACK)();
 
 #endif  // __osgGLU_h

@@ -10,10 +10,15 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
 #include <osg/CopyOp>
+#include <osg/Light>
+#include <osg/LightSource>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/Shader>
 #include <osg/Vec2>
+#include <osg/Vec2s>
 #include <osgShadow/ShadowMap>
 #include <osgUtil/CullVisitor>
 
@@ -24,6 +29,10 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Uniform > >, osgShadow::ShadowMap::UniformList)
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Shader > >, osgShadow::ShadowMap::ShaderList)
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	I_DeclaringFile("osgShadow/ShadowMap");
@@ -80,6 +89,36 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          __C5_osg_Vec2_R1__getAmbientBias,
 	          "Get the values that are used for the ambient bias in the shader. ",
 	          "");
+	I_Method1(void, setTextureSize, IN, const osg::Vec2s &, textureSize,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureSize__C5_osg_Vec2s_R1,
+	          "set the size in pixels x / y for the shadow texture. ",
+	          "");
+	I_Method0(const osg::Vec2s &, getTextureSize,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec2s_R1__getTextureSize,
+	          "Get the values that are used for the ambient bias in the shader. ",
+	          "");
+	I_Method1(void, setLight, IN, osg::Light *, light,
+	          Properties::NON_VIRTUAL,
+	          __void__setLight__osg_Light_P1,
+	          "Set the Light that will cast shadows. ",
+	          "");
+	I_Method1(void, setLight, IN, osg::LightSource *, ls,
+	          Properties::NON_VIRTUAL,
+	          __void__setLight__osg_LightSource_P1,
+	          "",
+	          "");
+	I_Method1(void, addShader, IN, osg::Shader *, shader,
+	          Properties::NON_VIRTUAL,
+	          __void__addShader__osg_Shader_P1,
+	          "Add a shader to internal list, will be used instead of the default ones. ",
+	          "");
+	I_Method0(void, clearShaderList,
+	          Properties::NON_VIRTUAL,
+	          __void__clearShaderList,
+	          "Reset internal shader list. ",
+	          "");
 	I_Method0(void, init,
 	          Properties::VIRTUAL,
 	          __void__init,
@@ -100,11 +139,118 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          __void__cleanSceneGraph,
 	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
 	          "");
+	I_Method0(osg::ref_ptr< osg::Camera >, makeDebugHUD,
+	          Properties::NON_VIRTUAL,
+	          __osg_ref_ptrT1_osg_Camera___makeDebugHUD,
+	          "",
+	          "");
+	I_ProtectedMethod0(void, createUniforms,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__createUniforms,
+	                   "Create the managed Uniforms. ",
+	                   "");
+	I_ProtectedMethod0(void, createShaders,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__createShaders,
+	                   "",
+	                   "");
 	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
 	                 __C5_osg_Vec2_R1__getAmbientBias, 
 	                 __void__setAmbientBias__C5_osg_Vec2_R1);
+	I_SimpleProperty(osg::Light *, Light, 
+	                 0, 
+	                 __void__setLight__osg_Light_P1);
+	I_SimpleProperty(const osg::Vec2s &, TextureSize, 
+	                 __C5_osg_Vec2s_R1__getTextureSize, 
+	                 __void__setTextureSize__C5_osg_Vec2s_R1);
 	I_SimpleProperty(unsigned int, TextureUnit, 
 	                 __unsigned_int__getTextureUnit, 
 	                 __void__setTextureUnit__unsigned_int);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Camera >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Camera *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Camera > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Camera *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Camera > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Camera *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shader >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Shader *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Shader > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Shader *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Shader *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Shader > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Shader *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Shader > >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Uniform > >)
 

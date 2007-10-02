@@ -137,7 +137,7 @@ int main( int argc, char **argv )
     if (!scene) return 1;
 
     // construct the viewer.
-    osgViewer::CompositeViewer viewer;
+    osgViewer::CompositeViewer viewer(arguments);
     
     
 
@@ -285,8 +285,8 @@ int main( int argc, char **argv )
 
     
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::CompositeViewer::SingleThreaded); }
-    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerContext); }
-    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::CompositeViewer::ThreadPerCamera); }
+    while (arguments.read("-g")) { viewer.setThreadingModel(osgViewer::CompositeViewer::CullDrawThreadPerContext); }
+    while (arguments.read("-c")) { viewer.setThreadingModel(osgViewer::CompositeViewer::CullThreadPerCameraDrawThreadPerContext); }
  
      // run the viewer's main frame loop
      return viewer.run();

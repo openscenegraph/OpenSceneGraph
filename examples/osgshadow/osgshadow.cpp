@@ -665,7 +665,11 @@ int main(int argc, char** argv)
     {
         osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;
         shadowedScene->setShadowTechnique(sm.get());
-    }
+
+        int mapres = 1024;
+        while (arguments.read("--mapres", mapres)) 
+            sm->setTextureSize(osg::Vec2s(mapres,mapres));
+   }
     
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model.valid())
@@ -715,6 +719,22 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
     ls->getLight()->setPosition(lightpos);
+    
+    bool spotlight = false;
+    if (arguments.read("--spotLight"))
+    {
+        spotlight = true;
+
+        osg::Vec3 center = bb.center();
+        osg::Vec3 lightdir = center - osg::Vec3(lightpos.x(), lightpos.y(), lightpos.z());
+        lightdir.normalize();
+        ls->getLight()->setDirection(lightdir);
+        ls->getLight()->setSpotCutoff(30.0f);
+
+        //set the LightSource, only for checking, there is only 1 light in the scene
+        dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique())->setLight(ls.get());
+    }
+
     if ( arguments.read("--coloured-light"))
     {
         ls->getLight()->setAmbient(osg::Vec4(1.0,0.0,0.0,1.0));
@@ -730,9 +750,28 @@ int main(int argc, char** argv)
     shadowedScene->addChild(ls.get());
     
     viewer.setSceneData(shadowedScene.get());
-    
+
     // create the windows and run the threads.
     viewer.realize();
+
+    // it is done after viewer.realize() so that the windows are already initialized
+    if ( arguments.read("--debugHUD"))
+    {
+        osgViewer::Viewer::Windows windows;
+        viewer.getWindows(windows);
+        
+        if (windows.empty()) return 1;
+        
+        osgShadow::ShadowMap* sm = dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique());
+        osg::ref_ptr<osg::Camera> hudCamera = sm->makeDebugHUD();
+        
+        // set up cameras to rendering on the first window available.
+        hudCamera->setGraphicsContext(windows[0]);
+        hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
+
+        viewer.addSlave(hudCamera.get(), false);
+    }
+
 
     // osgDB::writeNodeFile(*group,"test.osg");
 
@@ -743,7 +782,7 @@ int main(int argc, char** argv)
             float t = viewer.getFrameStamp()->getSimulationTime();
             if (postionalLight)
             {
-                lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()  ,1.0f);
+                lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()*2.0f  ,1.0f);
             }
             else
             {
@@ -752,6 +791,9 @@ int main(int argc, char** argv)
             ls->getLight()->setPosition(lightpos);
             
             osg::Vec3f lightDir(-lightpos.x(),-lightpos.y(),-lightpos.z());
+            if(spotlight)
+                lightDir =  osg::Vec3(bb.center().x()+sinf(t)*bb.radius()/2.0, bb.center().y() + cosf(t)*bb.radius()/2.0, bb.center().z()) 
+                - osg::Vec3(lightpos.x(), lightpos.y(), lightpos.z()) ;
             lightDir.normalize();
             ls->getLight()->setDirection(lightDir);
         }

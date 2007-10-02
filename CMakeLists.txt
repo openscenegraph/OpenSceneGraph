@@ -91,7 +91,7 @@ IF(WIN32)
     ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
     #needed for net plugin
-    SET (OSG_SOCKET_LIBS wsock32.lib)
+    SET (OSG_SOCKET_LIBS wsock32)
     # Both Cygwin and Msys need -DNOMINMAX ???
     IF(UNIX)
         ADD_DEFINITIONS(-DNOMINMAX)
@@ -179,13 +179,30 @@ FIND_PACKAGE(Performer)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(GDAL)
 
-# SET(DESIRED_QT_VERSION 3)
-# FIND_PACKAGE(Qt)
-FIND_PACKAGE(Qt3)
-FIND_PACKAGE(Qt4)
-
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
+
+# To select a specific version of QT define DESIRED_QT_VERSION
+# via cmake -DDESIRED_QT_VERSION=4
+IF  (DESIRED_QT_VERSION)
+
+    IF  (DESIRED_QT_VERSION MATCHES 4)
+      FIND_PACKAGE(Qt4)
+    ELSE(DESIRED_QT_VERSION MATCHES 4)
+      FIND_PACKAGE(Qt3)
+    ENDIF(DESIRED_QT_VERSION MATCHES 4)
+    
+ELSE(DESIRED_QT_VERSION)
+
+    FIND_PACKAGE(Qt4)
+    
+    IF  (NOT QT4_FOUND)
+        FIND_PACKAGE(Qt3)
+    ENDIF(NOT QT4_FOUND)
+    
+ENDIF(DESIRED_QT_VERSION)
+
+
 
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything

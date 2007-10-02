@@ -30,12 +30,6 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgViewer::CompositeViewer::BarrierPosition)
-	I_DeclaringFile("osgViewer/CompositeViewer");
-	I_EnumLabel(osgViewer::CompositeViewer::BeforeSwapBuffers);
-	I_EnumLabel(osgViewer::CompositeViewer::AfterSwapBuffers);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_DeclaringFile("osgViewer/CompositeViewer");
 	I_BaseType(osgViewer::ViewerBase);
@@ -137,10 +131,15 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
-	I_Method1(void, setThreadingModel, IN, osgViewer::ViewerBase::ThreadingModel, threadingModel,
+	I_Method0(double, elapsedTime,
 	          Properties::VIRTUAL,
-	          __void__setThreadingModel__ThreadingModel,
-	          "Set the threading model the rendering traversals will use. ",
+	          __double__elapsedTime,
+	          "",
+	          "");
+	I_Method0(osg::FrameStamp *, getViewerFrameStamp,
+	          Properties::VIRTUAL,
+	          __osg_FrameStamp_P1__getViewerFrameStamp,
+	          "",
 	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
@@ -157,26 +156,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __C5_osgGA_EventQueue_P1__getEventQueue,
 	          "",
 	          "");
-	I_Method1(void, setEndBarrierPosition, IN, osgViewer::CompositeViewer::BarrierPosition, bp,
-	          Properties::NON_VIRTUAL,
-	          __void__setEndBarrierPosition__BarrierPosition,
-	          "Set the position of the end barrier. ",
-	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconcistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
-	I_Method0(osgViewer::CompositeViewer::BarrierPosition, getEndBarrierPosition,
-	          Properties::NON_VIRTUAL,
-	          __BarrierPosition__getEndBarrierPosition,
-	          "Get the end barrier position. ",
-	          "");
 	I_Method0(int, run,
 	          Properties::VIRTUAL,
 	          __int__run,
 	          "Execute a main frame loop. ",
 	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned. ");
-	I_MethodWithDefaults1(void, frame, IN, double, simulationTime, USE_REFERENCE_TIME,
-	                      Properties::VIRTUAL,
-	                      __void__frame__double,
-	                      "Render a complete new frame. ",
-	                      "Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). ");
 	I_MethodWithDefaults1(void, advance, IN, double, simulationTime, USE_REFERENCE_TIME,
 	                      Properties::VIRTUAL,
 	                      __void__advance__double,
@@ -190,11 +174,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_Method0(void, updateTraversal,
 	          Properties::VIRTUAL,
 	          __void__updateTraversal,
-	          "",
-	          "");
-	I_Method0(void, renderingTraversals,
-	          Properties::VIRTUAL,
-	          __void__renderingTraversals,
 	          "",
 	          "");
 	I_Method1(void, setCameraWithFocus, IN, osg::Camera *, camera,
@@ -257,21 +236,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                      __void__getViews__Views_R1__bool,
 	                      "",
 	                      "");
-	I_Method0(void, setUpThreading,
-	          Properties::VIRTUAL,
-	          __void__setUpThreading,
-	          "Set up the threading and processor affinity as per the viewers threading model. ",
-	          "");
-	I_Method0(void, stopThreading,
-	          Properties::VIRTUAL,
-	          __void__stopThreading,
-	          "Stop any threads begin run by viewer. ",
-	          "");
-	I_Method0(void, startThreading,
-	          Properties::VIRTUAL,
-	          __void__startThreading,
-	          "Start any threads required by the viewer, as per viewers ThreadingModel. ",
-	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
@@ -283,30 +247,15 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                   __void__constructorInit,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(void, init,
-	                   Properties::NON_VIRTUAL,
+	I_ProtectedMethod0(void, viewerInit,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__init,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(void, checkWindowStatus,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__checkWindowStatus,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(unsigned int, computeNumberOfThreadsIncludingMainRequired,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __unsigned_int__computeNumberOfThreadsIncludingMainRequired,
+	                   __void__viewerInit,
 	                   "",
 	                   "");
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);
-	I_SimpleProperty(osgViewer::CompositeViewer::BarrierPosition, EndBarrierPosition, 
-	                 __BarrierPosition__getEndBarrierPosition, 
-	                 __void__setEndBarrierPosition__BarrierPosition);
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
@@ -319,9 +268,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(osg::Timer_t, StartTick, 
 	                 0, 
 	                 __void__setStartTick__osg_Timer_t);
-	I_SimpleProperty(osgViewer::ViewerBase::ThreadingModel, ThreadingModel, 
-	                 0, 
-	                 __void__setThreadingModel__ThreadingModel);
 	I_ArrayProperty(osgViewer::View *, View, 
 	                __osgViewer_View_P1__getView__unsigned, 
 	                0, 
@@ -331,6 +277,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	                0);
 	I_SimpleProperty(osgViewer::View *, ViewWithFocus, 
 	                 __osgViewer_View_P1__getViewWithFocus, 
+	                 0);
+	I_SimpleProperty(osg::FrameStamp *, ViewerFrameStamp, 
+	                 __osg_FrameStamp_P1__getViewerFrameStamp, 
 	                 0);
 END_REFLECTOR
 

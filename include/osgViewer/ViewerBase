@@ -71,11 +71,43 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         };
 
         /** Set the threading model the rendering traversals will use.*/
-        virtual void setThreadingModel(ThreadingModel threadingModel) = 0;
+        virtual void setThreadingModel(ThreadingModel threadingModel);
         
         /** Get the threading model the rendering traversals will use.*/
         ThreadingModel getThreadingModel() const { return _threadingModel; }
+
+        /** Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available.*/
+        virtual ThreadingModel suggestBestThreadingModel();
+
+        /** Set up the threading and processor affinity as per the viewers threading model.*/
+        virtual void setUpThreading();      
+
+        /** Return true if viewer threads are running. */
+        bool areThreadsRunning() const { return _threadsRunning; }
+
+        /** Stop any threads begin run by viewer.*/
+        virtual void stopThreading();
+
+        /** Start any threads required by the viewer.*/
+        virtual void startThreading();        
+
+        enum BarrierPosition
+        {
+            BeforeSwapBuffers,
+            AfterSwapBuffers
+        };
         
+         /** Set the position of the end barrier.
+          * AfterSwapBuffers will may result is slightly higher framerates, by may
+          * lead to inconcistent swapping between different windows.
+          * BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers,
+          * especially important if you are likely to consistently break frame.*/
+        void setEndBarrierPosition(BarrierPosition bp);
+
+        /** Get the end barrier position.*/
+        BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
+
+ 
  
         /** Set the done flag to singnal the viewer's work is done and should exit the frame loop.*/
         void setDone(bool done) { _done = done; }
@@ -135,6 +167,18 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         void removeUpdateOperation(osg::Operation* operation);
 
 
+        /** Set the graphics operation to call on realization of the viewers graphics windows.*/
+        void setRealizeOperation(osg::Operation* op) { _realizeOperation = op; }
+
+        /** Get the graphics operation to call on realization of the viewers graphics windows.*/
+        osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
+
+
+        /** Check to see if windows are still open, if not set viewer done to true. */
+        void checkWindowStatus();
+
+
+
         /** Execute a main frame loop.
           * Equivialant to while (!viewer.done()) viewer.frame();
           * Also calls realize() if the viewer is not already realized,
@@ -144,7 +188,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Render a complete new frame.
           * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
-        virtual void frame(double simulationTime=USE_REFERENCE_TIME) = 0;
+        virtual void frame(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void advance(double simulationTime=USE_REFERENCE_TIME) = 0;
 
@@ -152,7 +196,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         virtual void updateTraversal() = 0;
         
-        virtual void renderingTraversals() = 0;
+        virtual void renderingTraversals();
 
         typedef std::vector<osg::Camera*> Cameras;
         virtual void getCameras(Cameras& cameras, bool onlyActive=true) = 0;
@@ -175,38 +219,51 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         typedef std::vector<osgViewer::View*> Views;
         virtual void getViews(Views& views, bool onlyValid=true) = 0;
 
+        virtual double elapsedTime() = 0;
 
-        /** Set the graphics operation to call on realization of the viewers graphics windows.*/
-        void setRealizeOperation(osg::Operation* op) { _realizeOperation = op; }
-
-        /** Get the graphics operation to call on realization of the viewers graphics windows.*/
-        osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
-
-        /** Set up the threading and processor affinity as per the viewers threading model.*/
-        virtual void setUpThreading() = 0;
-
-        /** Return true if viewer threads are running. */
-        bool areThreadsRunning() const { return _threadsRunning; }
-
-        /** Stop any threads begin run by viewer.*/
-        virtual void stopThreading() = 0;
-
-        /** Start any threads required by the viewer.*/
-        virtual void startThreading() = 0;        
+        virtual osg::FrameStamp* getViewerFrameStamp() = 0;
 
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
 
     protected:
     
+        inline void makeCurrent(osg::GraphicsContext* gc)
+        {
+            if (_currentContext==gc) return;
+            
+            releaseContext();
+            
+            if (gc && gc->valid() && gc->makeCurrent()) _currentContext = gc;
+        }
+        
+        inline void releaseContext()
+        {
+            if (_currentContext.valid() && _currentContext->valid())
+            {
+                _currentContext->releaseContext();
+            }
+            _currentContext = 0;
+        }
+
+        virtual void viewerInit() = 0;
+        
+
         osg::ref_ptr<osg::Stats>                    _stats;
 
+        bool                                        _firstFrame;
         bool                                        _done;
         int                                         _keyEventSetsDone;
         bool                                        _quitEventSetsDone;
         
         ThreadingModel                              _threadingModel;
         bool                                        _threadsRunning;
+
+        BarrierPosition                             _endBarrierPosition;
+
+        osg::ref_ptr<osg::BarrierOperation>         _startRenderingBarrier;
+        osg::ref_ptr<osg::BarrierOperation>         _endRenderingDispatchBarrier;
+        osg::ref_ptr<osg::EndOfDynamicDrawBlock>    _endDynamicDrawBlock;
         
         osg::ref_ptr<osgGA::EventVisitor>           _eventVisitor;
         
@@ -215,7 +272,9 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         
         osg::ref_ptr<osg::Operation>                _realizeOperation;
 
+        osg::observer_ptr<osg::GraphicsContext>     _currentContext;
 };
+
 }
 
 #endif

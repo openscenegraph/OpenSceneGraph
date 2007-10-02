@@ -61,32 +61,14 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
         const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
-        /** Set the threading model the rendering traversals will use.*/
-        virtual void setThreadingModel(ThreadingModel threadingModel);
+        virtual double elapsedTime();
+        
+        virtual osg::FrameStamp* getViewerFrameStamp() { return getFrameStamp(); }
+        
 
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
         osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
-
-
-        enum BarrierPosition
-        {
-            BeforeSwapBuffers,
-            AfterSwapBuffers
-        };
-        
-        /** Set the position of the end barrier.
-          * AfterSwapBuffers will may result is slightly higher framerates, by may
-          * lead to inconcistent swapping between different windows.
-          * BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers,
-          * especially important if you are likely to consistently break frame.*/
-        void setEndBarrierPosition(BarrierPosition bp);
-
-        /** Get the end barrier position.*/
-        BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
-
-
-
 
         /** Execute a main frame loop.
           * Equivialant to while (!viewer.done()) viewer.frame();
@@ -95,18 +77,12 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
           */
         virtual int run();
 
-        /** Render a complete new frame.
-          * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
-        virtual void frame(double simulationTime=USE_REFERENCE_TIME);
-
         virtual void advance(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void eventTraversal();
 
         virtual void updateTraversal();
         
-        virtual void renderingTraversals();
-
         
         void setCameraWithFocus(osg::Camera* camera);
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
@@ -130,15 +106,6 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         virtual void getViews(Views& views, bool onlyValid=true);
 
 
-        /** Set up the threading and processor affinity as per the viewers threading model.*/
-        virtual void setUpThreading();      
-
-        /** Stop any threads begin run by viewer.*/
-        virtual void stopThreading();
-
-        /** Start any threads required by the viewer, as per viewers ThreadingModel.*/
-        virtual void startThreading();        
-
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
@@ -146,23 +113,12 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
 
         void constructorInit();
 
-        void init();
-
-        void checkWindowStatus();
+        virtual void viewerInit();
         
         typedef std::vector< osg::ref_ptr<osgViewer::View> > RefViews;
         RefViews _views;
        
         bool _firstFrame;
-        
-        BarrierPosition _endBarrierPosition;
-
-        osg::ref_ptr<osg::BarrierOperation> _startRenderingBarrier;
-        osg::ref_ptr<osg::BarrierOperation> _endRenderingDispatchBarrier;
-
-        unsigned int computeNumberOfThreadsIncludingMainRequired();
-
-        unsigned int _numThreadsOnBarrier;
         
         osg::Timer_t                        _startTick;
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;

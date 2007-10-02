@@ -61,28 +61,10 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
           * Returns the GraphicsWindowEmbedded that can be used by applications to pass in events to the viewer. */
         virtual GraphicsWindowEmbedded* setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height);
 
-        /** Set the threading model the rendering traversals will use.*/
-        virtual void setThreadingModel(ThreadingModel threadingModel);
+
+        virtual double elapsedTime();
         
-
-        /** Let the viewer suggest the best threading model for the viewers camera/window setup and the hardware available.*/
-        ThreadingModel suggestBestThreadingModel();
-
-        enum BarrierPosition
-        {
-            BeforeSwapBuffers,
-            AfterSwapBuffers
-        };
-        
-        /** Set the position of the end barrier.
-          * AfterSwapBuffers will may result is slightly higher framerates, by may
-          * lead to inconcistent swapping between different windows.
-          * BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers,
-          * especially important if you are likely to consistently break frame.*/
-        void setEndBarrierPosition(BarrierPosition bp);
-
-        /** Get the end barrier position.*/
-        BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
+        virtual osg::FrameStamp* getViewerFrameStamp() { return getFrameStamp(); }
 
 
         /** Execute a main frame loop.
@@ -92,17 +74,11 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
           */
         virtual int run();
 
-        /** Render a complete new frame.
-          * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
-        virtual void frame(double simulationTime=USE_REFERENCE_TIME);
-
         virtual void advance(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void eventTraversal();
 
         virtual void updateTraversal();
-        
-        virtual void renderingTraversals();
         
         void setCameraWithFocus(osg::Camera* camera) { _cameraWithFocus = camera; }
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
@@ -122,60 +98,19 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
 
         virtual void getViews(Views& views, bool onlyValid=true);
 
-
-        /** Set up the threading and processor affinity as per the viewers threading model.*/
-        virtual void setUpThreading();      
-
-        /** Stop any threads begin run by viewer.*/
-        virtual void stopThreading();
-
-        /** Start any threads required by the viewer.*/
-        virtual void startThreading();        
-
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
-
 
 
     protected:
     
         void constructorInit();
-    
-        void checkWindowStatus();
         
-        inline void makeCurrent(osg::GraphicsContext* gc)
-        {
-            if (_currentContext==gc) return;
-            
-            releaseContext();
-            
-            if (gc && gc->valid() && gc->makeCurrent()) _currentContext = gc;
-        }
-        
-        inline void releaseContext()
-        {
-            if (_currentContext.valid() && _currentContext->valid())
-            {
-                _currentContext->releaseContext();
-            }
-            _currentContext = 0;
-        }
-        
-        
-        bool            _firstFrame;
-        
-        BarrierPosition _endBarrierPosition;
+        virtual void viewerInit() { init(); }
 
-        osg::ref_ptr<osg::BarrierOperation>         _startRenderingBarrier;
-        osg::ref_ptr<osg::BarrierOperation>         _endRenderingDispatchBarrier;
-        osg::ref_ptr<osg::EndOfDynamicDrawBlock>    _endDynamicDrawBlock;
-
-        unsigned int                                _numWindowsOpenAtLastSetUpThreading;
-        
         osg::observer_ptr<osg::Camera>              _cameraWithFocus;
         
 
-        osg::observer_ptr<osg::GraphicsContext>     _currentContext;
 };
 
 

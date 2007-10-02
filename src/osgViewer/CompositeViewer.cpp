@@ -45,7 +45,9 @@ CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
     }
 
     while (arguments.read("--SingleThreaded")) setThreadingModel(SingleThreaded);
-    while (arguments.read("--ThreadPerContext")) setThreadingModel(ThreadPerContext);
+    while (arguments.read("--CullDrawThreadPerContext")) setThreadingModel(CullDrawThreadPerContext);
+    while (arguments.read("--DrawThreadPerContext")) setThreadingModel(DrawThreadPerContext);
+    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
 
     osg::DisplaySettings::instance()->readCommandLine(arguments);
     osgDB::readCommandLine(arguments);
@@ -54,7 +56,6 @@ CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
 void CompositeViewer::constructorInit()
 {
     _endBarrierPosition = AfterSwapBuffers;
-    _numThreadsOnBarrier = 0;
     _startTick = 0;
 
     // make sure View is safe to reference multi-threaded.
@@ -183,17 +184,7 @@ int CompositeViewer::run()
         }
     }
         
-    if (!isRealized())
-    {
-        realize();
-    }
-
-    while (!done())
-    {
-        frame();
-    }
-    
-    return 0;
+    return ViewerBase::run();
 }
 
 void CompositeViewer::setStartTick(osg::Timer_t tick)
@@ -236,228 +227,8 @@ void CompositeViewer::setReferenceTime(double time)
 }
 
 
-void CompositeViewer::setThreadingModel(ThreadingModel threadingModel)
-{
-    if (_threadingModel == threadingModel) return;
-    
-    if (_threadingModel!=SingleThreaded) stopThreading();
-    
-    _threadingModel = threadingModel;
 
-    if (isRealized() && _threadingModel!=SingleThreaded) startThreading();
-}
-
-
-void CompositeViewer::setEndBarrierPosition(BarrierPosition bp)
-{
-    if (_endBarrierPosition == bp) return;
-    
-    if (_threadingModel!=SingleThreaded) stopThreading();
-    
-    _endBarrierPosition = bp;
-
-    if (_threadingModel!=SingleThreaded) startThreading();
-}
-
-void CompositeViewer::stopThreading()
-{
-    if (!_threadsRunning) return;
-
-    if (_numThreadsOnBarrier==0) return;
-
-    osg::notify(osg::INFO)<<"CompositeViewer::stopThreading() - stopping threading"<<std::endl;
-
-    Contexts contexts;
-    getContexts(contexts);
-
-    // delete all the graphics threads.    
-    for(Contexts::iterator itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
-    {
-        (*itr)->setGraphicsThread(0);
-    }
-
-    _startRenderingBarrier = 0;
-    _endRenderingDispatchBarrier = 0;
-    _numThreadsOnBarrier = 0;
-}
-
-
-unsigned int CompositeViewer::computeNumberOfThreadsIncludingMainRequired()
-{
-    Contexts contexts;
-    getContexts(contexts);
-
-    if (contexts.empty()) return 0;
-
-    if (contexts.size()==1 || _threadingModel==SingleThreaded)
-    {
-        return 1;
-    }
-
-    bool firstContextAsMainThread = _threadingModel == ThreadPerContext;
-    
-    return firstContextAsMainThread ? contexts.size() : contexts.size()+1;
-}
-
-void CompositeViewer::setUpThreading()
-{
-    Contexts contexts;
-    getContexts(contexts);
-
-    if (_threadingModel==SingleThreaded)
-    {
-        if (_threadsRunning) stopThreading();
-    }
-    else
-    {
-        if (!_threadsRunning) startThreading();
-    }
-    
-}
-
-void CompositeViewer::startThreading()
-{
-    if (_threadsRunning) return;
-
-    unsigned int numThreadsIncludingMainThread = computeNumberOfThreadsIncludingMainRequired();
-
-    // return if we don't need multiple threads.
-    if (numThreadsIncludingMainThread <= 1) return;
-    
-    // return if threading is already up and running
-    if (numThreadsIncludingMainThread == _numThreadsOnBarrier) return;
-    
-    if (_numThreadsOnBarrier!=0) 
-    {
-        // we already have threads running but not the right number, so stop them and then create new threads.
-        stopThreading();
-    }
-
-    osg::notify(osg::INFO)<<"CompositeViewer::startThreading() - starting threading"<<std::endl;
-
-    // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
-    osg::Referenced::setThreadSafeReferenceCounting(true);
-    
-    Scenes scenes;
-    getScenes(scenes);
-    for(Scenes::iterator sitr = scenes.begin();
-        sitr != scenes.end();
-        ++sitr)
-    {
-        osg::Node* sceneData = (*sitr)->getSceneData();
-        if (sceneData)
-        {
-            osg::notify(osg::INFO)<<"Making scene thread safe"<<std::endl;
-
-            // make sure that existing scene graph objects are allocated with thread safe ref/unref
-            sceneData->setThreadSafeRefUnref(true);
-
-            // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
-            sceneData->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
-        }
-    }
-
-    Contexts contexts;
-    getContexts(contexts);
-
-    int numProcessors = OpenThreads::GetNumberOfProcessors();
-    bool affinity = false;
-    
-    bool firstContextAsMainThread = numThreadsIncludingMainThread==contexts.size();
-
-    // osg::notify(osg::NOTICE)<<"numThreadsIncludingMainThread=="<<numThreadsIncludingMainThread<<std::endl;
-
-    _numThreadsOnBarrier = numThreadsIncludingMainThread;
-    _startRenderingBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
-    _endRenderingDispatchBarrier = new osg::BarrierOperation(_numThreadsOnBarrier, osg::BarrierOperation::NO_OPERATION);
-    osg::ref_ptr<osg::SwapBuffersOperation> swapOp = new osg::SwapBuffersOperation();
-
-    Contexts::iterator citr = contexts.begin(); 
-    unsigned int processNum = 0;
-
-    if (firstContextAsMainThread)
-    {
-        ++processNum;
-        ++citr;
-    }
-
-    for(;
-        citr != contexts.end();
-        ++citr,
-        ++processNum)
-    {
-        osg::GraphicsContext* gc = (*citr);
-
-        // create the a graphics thread for this context
-        gc->createGraphicsThread();
-
-        if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
-
-        gc->getGraphicsThread()->add(new osgUtil::GLObjectsOperation());
-
-        // add the startRenderingBarrier
-        gc->getGraphicsThread()->add(_startRenderingBarrier.get());
-
-        // add the rendering operation itself.
-        gc->getGraphicsThread()->add(new osg::RunOperations());
-
-        if (_endBarrierPosition==BeforeSwapBuffers)
-        {
-            // add the endRenderingDispatchBarrier
-            gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
-        }
-
-        // add the swap buffers
-        gc->getGraphicsThread()->add(swapOp.get());
-
-        if (_endBarrierPosition==AfterSwapBuffers)
-        {
-            // add the endRenderingDispatchBarrier
-            gc->getGraphicsThread()->add(_endRenderingDispatchBarrier.get());
-        }
-
-    }
-
-    if (firstContextAsMainThread)
-    {
-        if (affinity) OpenThreads::SetProcessorAffinityOfCurrentThread(0);
-    }
-
-    for(citr = contexts.begin();
-        citr != contexts.end();
-        ++citr)
-    {
-        osg::GraphicsContext* gc = (*citr);
-        if (gc->getGraphicsThread() && !gc->getGraphicsThread()->isRunning())
-        {
-            //osg::notify(osg::NOTICE)<<"  gc->getGraphicsThread()->startThread() "<<gc->getGraphicsThread()<<std::endl;
-            gc->getGraphicsThread()->startThread();
-            // OpenThreads::Thread::YieldCurrentThread();
-        }
-    }
-
-    _threadsRunning = true;
-}
-
-void CompositeViewer::checkWindowStatus()
-{
-    Contexts contexts;
-    getContexts(contexts);
-    
-    // osg::notify(osg::INFO)<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
-    
-    if (contexts.size()==0)
-    {
-        _done = true;
-        if (areThreadsRunning()) stopThreading();
-    }
-}
-
-
-
-void CompositeViewer::init()
+void CompositeViewer::viewerInit()
 {
     osg::notify(osg::INFO)<<"CompositeViewer::init()"<<std::endl;
 
@@ -739,31 +510,6 @@ void CompositeViewer::realize()
         }
     }
 
-}
-
-
-void CompositeViewer::frame(double simulationTime)
-{
-    if (_done) return;
-
-    // osg::notify(osg::NOTICE)<<std::endl<<"CompositeViewer::frame()"<<std::endl<<std::endl;
-
-    if (_firstFrame)
-    {
-        init();
-        
-        if (!isRealized())
-        {
-            realize();
-        }
-        
-        _firstFrame = false;
-    }
-    advance(simulationTime);
-    
-    eventTraversal();
-    updateTraversal();
-    renderingTraversals();
 }
 
 void CompositeViewer::advance(double simulationTime)
@@ -1236,93 +982,9 @@ void CompositeViewer::updateTraversal()
 
 }
 
-void CompositeViewer::renderingTraversals()
+double CompositeViewer::elapsedTime()
 {
-    // check to see if windows are still valid
-    checkWindowStatus();
-
-    if (_done) return;
-
-    double beginRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
-
-    Scenes scenes;
-    getScenes(scenes);
-    
-    for(Scenes::iterator sitr = scenes.begin();
-        sitr != scenes.end();
-        ++sitr)
-    {
-        Scene* scene = *sitr;
-        osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
-        if (dp)
-        {
-            dp->signalBeginFrame(getFrameStamp());
-        }
-    }
-    
-    // osg::notify(osg::NOTICE)<<std::endl<<"Joing _startRenderingBarrier block"<<std::endl;
-    
-
-    Contexts contexts;
-    getContexts(contexts);
-
-    // dispatch the the rendering threads
-    if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
-
-    Contexts::iterator itr;
-    for(itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
-    {
-        if (_done) return;
-        if (!((*itr)->getGraphicsThread())  && (*itr)->valid())
-        { 
-            (*itr)->makeCurrent();
-            (*itr)->runOperations();
-            (*itr)->releaseContext();
-        }
-    }
-
-    // osg::notify(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block"<<std::endl;
-
-    // wait till the rendering dispatch is done.
-    if (_endRenderingDispatchBarrier.valid()) _endRenderingDispatchBarrier->block();
-
-    for(itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
-    {
-        if (_done) return;
-
-        if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
-        { 
-            (*itr)->makeCurrent();
-            (*itr)->swapBuffers();
-            (*itr)->releaseContext();
-        }
-    }
-
-    for(Scenes::iterator sitr = scenes.begin();
-        sitr != scenes.end();
-        ++sitr)
-    {
-        Scene* scene = *sitr;
-        osgDB::DatabasePager* dp = scene ? scene->getDatabasePager() : 0;
-        if (dp)
-        {
-            dp->signalEndFrame();
-        }
-    }
-
-    if (getStats() && getStats()->collectStats("update"))
-    {
-        double endRenderingTraversals = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
-
-        // update current frames stats
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
-    }
+    return osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 }
 
 void CompositeViewer::getUsage(osg::ApplicationUsage& usage) const

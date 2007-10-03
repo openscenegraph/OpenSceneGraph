@@ -690,7 +690,7 @@ int main(int argc, char** argv)
     
     if (postionalLight)
     {
-        lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()  ,1.0f);
+        lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()*2.0f  ,1.0f);
     }
     else
     {
@@ -729,7 +729,7 @@ int main(int argc, char** argv)
         osg::Vec3 lightdir = center - osg::Vec3(lightpos.x(), lightpos.y(), lightpos.z());
         lightdir.normalize();
         ls->getLight()->setDirection(lightdir);
-        ls->getLight()->setSpotCutoff(30.0f);
+        ls->getLight()->setSpotCutoff(25.0f);
 
         //set the LightSource, only for checking, there is only 1 light in the scene
         dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique())->setLight(ls.get());
@@ -782,7 +782,7 @@ int main(int argc, char** argv)
             float t = viewer.getFrameStamp()->getSimulationTime();
             if (postionalLight)
             {
-                lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()*2.0f  ,1.0f);
+                lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()*3.0f  ,1.0f);
             }
             else
             {

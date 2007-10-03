@@ -55,6 +55,29 @@ using namespace osgShadow;
         "    gl_FragColor = color * (osgShadow_ambientBias.x + shadow2DProj( osgShadow_shadowTexture, gl_TexCoord[1] ) * osgShadow_ambientBias.y); \n"
         "}\n";
 
+    //////////////////////////////////////////////////////////////////
+    // fragment shader
+    //
+    static const char fragmentShaderSource_debugHUD_texcoord[] =
+        "uniform sampler2D osgShadow_shadowTexture; \n"
+        " \n"
+        "void main(void) \n"
+        "{ \n"
+        "   vec4 texCoord = gl_TexCoord[1].xyzw; \n"
+        "   float value = texCoord.z / texCoord.w; \n"
+        "   gl_FragColor = vec4( value, value, value, 1.0 ); \n"
+        "} \n";
+
+    static const char fragmentShaderSource_debugHUD[] =
+        "uniform sampler2D osgShadow_shadowTexture; \n"
+        " \n"
+        "void main(void) \n"
+        "{ \n"
+        "   vec4 texResult = texture2D(osgShadow_shadowTexture, gl_TexCoord[0].st ); \n"
+        "   float value = texResult.g - 0.5; \n"
+        "   gl_FragColor = vec4( value, value, value, 0.8 ); \n"
+        "} \n";
+
     ShadowMap::ShadowMap():
     _baseTextureUnit(0),
         _shadowTextureUnit(1),
@@ -145,8 +168,11 @@ using namespace osgShadow;
         _texture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
         _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
         _texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-        _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_EDGE);
-        _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_EDGE);
+
+        // the shadow comparison should fail if object is outside the texture
+        _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+        _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+        _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
 
         // set up the render to texture camera.
         {
@@ -369,6 +395,8 @@ using namespace osgShadow;
                     _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
                 }
 
+
+            }
                 // compute the matrix which takes a vertex from local coords into tex coords
                 // will use this later to specify osg::TexGen..
                 osg::Matrix MVPT = _camera->getViewMatrix() * 
@@ -378,8 +406,6 @@ using namespace osgShadow;
 
                 _texgen->setMode(osg::TexGen::EYE_LINEAR);
                 _texgen->setPlanesFromMatrix(MVPT);
-            }
-
 
             cv.setTraversalMask( traversalMask & 
                 getShadowedScene()->getCastsShadowTraversalMask() );
@@ -461,10 +487,31 @@ using namespace osgShadow;
         //stateset->setAttribute(new osg::PolygonOffset(1.0f,1.0f),osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
+        // test with regular texture
         //stateset->setTextureAttributeAndModes(_baseTextureUnit, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
-        stateset->setTextureAttributeAndModes(_baseTextureUnit,_texture.get(),osg::StateAttribute::ON);
 
-        //TODO might need to have a shader for correct display
+        stateset->setTextureAttributeAndModes(_shadowTextureUnit,_texture.get(),osg::StateAttribute::ON);
+        
+        //test to check the texture coordinates generated during shadow pass
+#if 0
+        stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
+        stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);
+        stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_R,osg::StateAttribute::ON);
+        stateset->setTextureMode(_shadowTextureUnit,GL_TEXTURE_GEN_Q,osg::StateAttribute::ON);
+
+        // create TexGen node
+        osg::ref_ptr<osg::TexGenNode> texGenNode = new osg::TexGenNode;
+        texGenNode->setTextureUnit(_shadowTextureUnit);
+        texGenNode->setTexGen(_texgen.get());
+        camera->addChild(texGenNode.get());
+#endif
+        //shader for correct display
+
+        osg::ref_ptr<osg::Program> program = new osg::Program;
+        stateset->setAttribute(program.get());
+        
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_debugHUD);
+        program->addShader(fragment_shader);
 
         camera->addChild(geode);
 

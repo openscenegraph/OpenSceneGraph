@@ -609,9 +609,9 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     return "lib"+name+".dll";
 #elif defined(WIN32)
     #ifdef _DEBUG
-        return return name+"d.dll";
+        return name+"d.dll";
     #else
-        return return name+".dll";
+        return name+".dll";
     #endif
 #elif macintosh
     return name;

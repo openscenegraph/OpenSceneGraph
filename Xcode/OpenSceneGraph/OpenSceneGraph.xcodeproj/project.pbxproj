@@ -19813,7 +19813,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osg-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osg;
 				REZ_EXECUTABLE = NO;
@@ -19841,7 +19840,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osg-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osg;
 				REZ_EXECUTABLE = NO;
@@ -19863,7 +19861,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osg-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osg;
 				REZ_EXECUTABLE = NO;
@@ -19891,7 +19888,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgUtil-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
@@ -19918,7 +19914,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgUtil-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
@@ -19939,7 +19934,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgUtil-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
@@ -19966,8 +19960,10 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgDB-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-DDARWIN_QUICKTIME";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DDARWIN_QUICKTIME",
+					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
+				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgDB;
 				REZ_EXECUTABLE = NO;
@@ -19995,8 +19991,10 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgDB-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-DDARWIN_QUICKTIME";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DDARWIN_QUICKTIME",
+					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
+				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgDB;
 				REZ_EXECUTABLE = NO;
@@ -20018,8 +20016,10 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgDB-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
-				OTHER_CPLUSPLUSFLAGS = "-DDARWIN_QUICKTIME";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DDARWIN_QUICKTIME",
+					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
+				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgDB;
 				REZ_EXECUTABLE = NO;
@@ -20047,7 +20047,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgText-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgText;
 				REZ_EXECUTABLE = NO;
@@ -20075,7 +20074,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgText-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgText;
 				REZ_EXECUTABLE = NO;
@@ -20097,7 +20095,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgText-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgText;
 				REZ_EXECUTABLE = NO;
@@ -20125,7 +20122,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgGA-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgGA;
 				REZ_EXECUTABLE = NO;
@@ -20153,7 +20149,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgGA-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgGA;
 				REZ_EXECUTABLE = NO;
@@ -20175,7 +20170,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgGA-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgGA;
 				REZ_EXECUTABLE = NO;
@@ -20203,7 +20197,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgParticle-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgParticle;
 				REZ_EXECUTABLE = NO;
@@ -20231,7 +20224,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgParticle-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgParticle;
 				REZ_EXECUTABLE = NO;
@@ -20253,7 +20245,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgParticle-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgParticle;
 				REZ_EXECUTABLE = NO;
@@ -20437,7 +20428,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgIntrospection-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgIntrospection;
 				SECTORDER_FLAGS = "";
@@ -20464,7 +20454,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgIntrospection-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgIntrospection;
 				SECTORDER_FLAGS = "";
@@ -20485,7 +20474,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "osgIntrospection-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgIntrospection;
 				SECTORDER_FLAGS = "";
@@ -30045,6 +30033,7 @@
 					"$(inherited)",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -30069,6 +30058,7 @@
 				GCC_OPTIMIZATION_LEVEL = s;
 				HEADER_SEARCH_PATHS = ../../include;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				STRIP_STYLE = "non-global";
@@ -30096,6 +30086,7 @@
 					../../../OpenThreads/include,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};

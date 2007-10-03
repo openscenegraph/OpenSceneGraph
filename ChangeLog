@@ -1,3 +1,114 @@
+2007-10-03 21:12 +0000 [r7550]  shuber:
+
+	* updated XCode projects
+
+2007-10-03 20:21 +0000 [r7549]  robert:
+
+	* Added GLU_TESS_CALLBACK_TRIPLEDOT path into include/osg/GLU and
+	  enabled this for AIX as reading the old paths this was required.
+	  This looks like it is needed under Xcode build as well.
+
+2007-10-03 19:54 +0000 [r7548]  robert:
+
+	* Removed double return error
+
+2007-10-03 12:49 +0000 [r7545-7546]  robert:
+
+	* Updated version, authors and change log for the 2.1.14 release
+
+	* From Mahai Radu, improvements to handling of spotlights
+
+2007-10-03 12:04 +0000 [r7544]  robert:
+
+	* Refactored the plugin and library naming to fix Cygwin plugin
+	  loaded issues.
+
+2007-10-03 10:38 +0000 [r7542-7543]  robert:
+
+	* Added preliminary press release
+
+	* From Alberto Luaces, build fix for Cygwin.
+
+2007-10-03 08:34 +0000 [r7541]  robert:
+
+	* Added return 0 to fix warning
+
+2007-10-02 21:45 +0000 [r7539-7540]  robert:
+
+	* Updated wrappers
+
+	* From Mihair Radu, "Most of the additions are small utility
+	  methods: - set the resolution of the shadow map; it calls dirty()
+	  to re-initialize at next update - keep a list of Shader objects
+	  to use instead of the default ones, if the list is empty, the
+	  default shaders are used - explicitly create the Uniform
+	  variables, so that subsequent additions that require more
+	  Uniforms can put them in a central place - set a Light or
+	  LightSource to use explicitly for shadow casting, allows multiple
+	  lights in the scene, with one casting shadows There are two
+	  additions that do not ( yet ) function correctly, but in the
+	  present usage they do not interfere with the regular usage of the
+	  techique: - support for using spotlights, it's using
+	  Light.spotCutoff to determine if it's a spot-light and not
+	  point-light, there is an error in the setup of either the shadow
+	  camera or the texgen, most likely due to the direction of the
+	  spotlight, since the position is being used just like in point or
+	  directional lights. - creation of a debugHUD the hud is created
+	  properly, ( the example included shows it ), but it displays only
+	  white, there has been some discussion of displaying the shadow
+	  map, but I could not find it, the addition of a simple fragment
+	  shader with the appropriate color transform should get this
+	  going."
+
+2007-10-02 21:28 +0000 [r7535-7538]  robert:
+
+	* Updated wrappers
+
+	* Introduced a OSG_PLUGIN_PREFIX variable into CMake build system
+	  with it set to "" for all platforms except Cygwin where its set
+	  to "cygwin_" and Mingw where it is set to "mingw_". Updated
+	  osgDB::Registry to look for these for the plugins. Updated the
+	  osgintrospection example to search for these names as well.
+
+	* Updated to reflect new CompositeViewer threading models
+
+	* Merged the threading set up and rendering code from Viewer and
+	  CompositeViewer into ViewerBase to allow CompositeViewer to
+	  inherit the same theading models previously just supported by
+	  osgViewer::Viewer
+
+2007-10-02 20:56 +0000 [r7532-7534]  robert:
+
+	* Changed the search for Qt version to prevent problems when having
+	  both Qt3 and Qt4 installed on one machine.
+
+	* Added a #ifdef 0 code block to test setting of the
+	  StateSetManipulator's DataVariance to DYNAMIC to solve a
+	  threading issue relating to mixing of StateSetManipulator and
+	  DrawThreadPerContext.
+
+	* Changed the GLU_TESS_CALLBACK in an attempt to avoid compile
+	  problems under OSX.
+
+2007-10-02 20:45 +0000 [r7531]  robert:
+
+	* From Andy Skinner, changes the library linkage to just include
+	  osg and OpenThreads
+
+2007-10-01 15:11 +0000 [r7530]  robert:
+
+	* Removed redundent malloc.
+
+2007-10-01 11:02 +0000 [r7528]  robert:
+
+	* From David Callu, various fixes for window inheritance
+
+2007-10-01 10:23 +0000 [r7525-7526]  robert:
+
+	* Updated AUTHORS for 2.1.13 release
+
+	* Updated Version number for 2.1.13 and updated ChangeLog.
+
 2007-10-01 09:41 +0000 [r7522]  robert:
 
 	* Changed requestWarpPointer to use _eventDislay to avoid crash in

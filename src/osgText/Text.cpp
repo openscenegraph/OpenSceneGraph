@@ -390,11 +390,13 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
               case LEFT_TO_RIGHT:
               {
                 if (_maximumWidth>0.0f && cursor.x()+width>_maximumWidth) outOfSpace=true;
+                if(_maximumHeight>0.0f && cursor.y()<-_maximumHeight) outOfSpace=true;
                 break;
               }
               case RIGHT_TO_LEFT:
               {
                 if (_maximumWidth>0.0f && cursor.x()<-_maximumWidth) outOfSpace=true;
+                if(_maximumHeight>0.0f && cursor.y()<-_maximumHeight) outOfSpace=true;
                 break;
               }
               case VERTICAL:

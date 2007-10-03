@@ -22,6 +22,10 @@
     #include <GL/glu.h>
 #endif
 
-typedef void (APIENTRY *GLU_TESS_CALLBACK)();
+#if defined(GLU_TESS_CALLBACK_TRIPLEDOT)
+    typedef void (APIENTRY *GLU_TESS_CALLBACK)(...);
+#else
+    typedef void (APIENTRY *GLU_TESS_CALLBACK)();
+#endif
 
 #endif  // __osgGLU_h

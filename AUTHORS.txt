@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.1.14
+OpenSceneGraph Library 2.1.15
 
-282 Contributors:
+281 Contributors:
 
 Firstname Surname
 -----------------
@@ -26,9 +26,9 @@ Pavel Moloshtan
 Tom Jolley
 Mathias Fröhlich
 Norman Vine
+David Callu
 Alberto Farre
 Roger James
-David Callu
 André Garneau
 Ruben Lopez
 Randall Hopper
@@ -42,9 +42,9 @@ Colin McDonald
 Chris Hanson
 Jean-Sebastien Guay
 David Spilling
+Andy Skinner
 Per Fahlberg
 Joran Jessurun
-Andy Skinner
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -93,6 +93,7 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
+Mihai Radu
 Luc Frauciel
 Leandro Motta Barros
 José Delport
@@ -161,6 +162,7 @@ Csaba Halasz
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
+Alberto Luaces
 Zbigniew Sroczynski
 Yuri Vilmanis
 Wojciech Lewandowski
@@ -191,7 +193,6 @@ Rick Pingry
 Reinhard Sainitzer
 Rein Kadijk
 Ralf Kern
-Radu Mihai
 Qing Shen
 Philipp Siemoleit
 Paul Fredrikson
@@ -203,7 +204,6 @@ Nathan Cournia
 Morné Pistorius
 Mirko Viviani
 Mikkel GjÃ¸l
-Mihai Radu
 Michael Polak
 Michael Morrison
 Michael Logan
@@ -280,7 +280,6 @@ Andreas Jochens
 Almalric Alexandre
 Allen Bierbaum
 Alexandre Amalric
-Alberto Luaces
 Alberto Jaspe
 Alan Purvis
 Alan Ott

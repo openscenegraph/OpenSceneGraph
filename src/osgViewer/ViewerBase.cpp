@@ -550,8 +550,8 @@ int ViewerBase::run()
             frame();
         }
     }
-
 #endif    
+    return 0;
 }
 
 void ViewerBase::frame(double simulationTime)

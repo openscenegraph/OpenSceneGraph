@@ -42,6 +42,15 @@
 using namespace osg;
 using namespace osgDB;
 
+#if !defined(WIN32) || defined(__CYGWIN__)
+static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
+static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
+#else
+static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
+static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
+#endif
+
+
 class Registry::AvailableReaderWriterIterator
 {
 public:
@@ -281,12 +290,6 @@ void Registry::destruct()
     closeAllLibraries();
 }
 
-#if !defined(WIN32) || defined(__CYGWIN__)
-static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[:path]..","Paths for locating datafiles");
-#else
-static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FILE_PATH <path>[;path]..","Paths for locating datafiles");
-#endif
-
 #include <iostream>
 
 void Registry::initDataFilePathList()
@@ -321,11 +324,6 @@ void Registry::setDataFilePathList(const std::string& paths)
 
 void Registry::setLibraryFilePathList(const std::string& paths) { _libraryFilePath.clear(); convertStringPathIntoFilePathList(paths,_libraryFilePath); }
 
-#ifndef WIN32
-static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[:path]..","Paths for locating libraries/ plugins");
-#else
-static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
-#endif
 
 
 void Registry::initLibraryFilePathList()
@@ -582,18 +580,15 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     static std::string prepend = std::string("osgPlugins-")+std::string(osgGetVersion())+std::string("/");
 #endif
 
-#if defined(WIN32)
-    // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
-    #ifdef __CYGWIN__
-        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
-    #elif defined(__MINGW32__)
-        return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
+#if defined(__CYGWIN__)
+    return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
+#elif defined(__MINGW32__)
+    return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
+#elif defined(WIN32)
+    #ifdef _DEBUG
+        return prepend+"osgdb_"+lowercase_ext+"d.dll";
     #else
-        #ifdef _DEBUG
-            return prepend+"osgdb_"+lowercase_ext+"d.dll";
-        #else
-            return prepend+"osgdb_"+lowercase_ext+".dll";
-        #endif
+        return prepend+"osgdb_"+lowercase_ext+".dll";
     #endif
 #elif macintosh
     return prepend+"osgdb_"+lowercase_ext;
@@ -608,18 +603,15 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 
 std::string Registry::createLibraryNameForNodeKit(const std::string& name)
 {
-#if defined(WIN32)
-    // !! recheck evolving Cygwin DLL extension naming protocols !! NHV
-    #ifdef __CYGWIN__ // [
+#if defined(__CYGWIN__)
     return "cyg"+name+".dll";
-    #elif defined(__MINGW32__)
-        return "lib"+name+".dll";
+#elif defined(__MINGW32__)
+    return "lib"+name+".dll";
+#elif defined(WIN32)
+    #ifdef _DEBUG
+        return return name+"d.dll";
     #else
-        #ifdef _DEBUG
-            return name+"d.dll";
-        #else
-            return name+".dll";
-        #endif
+        return return name+".dll";
     #endif
 #elif macintosh
     return name;

@@ -921,8 +921,8 @@ bool sockbuf::atmark () const
   return arg!=0;
 }
 
-#if !defined(WIN32)
-//#if !(defined(__CYGWIN__) || defined(WIN32))
+//#if !defined(WIN32)
+#if !(defined(__CYGWIN__) || defined(WIN32))
 int sockbuf::pgrp () const
 // return the process group id that would receive SIGIO and SIGURG
 // signals

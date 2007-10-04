@@ -1,9 +1,9 @@
 OSG News
 ========
 
-= OpenSceneGraph 2.2 release improves support for advanced displays, soft and parallel split shadow maps and easier builds =
+= OpenSceneGraph 2.2 release adds support for advanced displays, soft and parallel split shadow maps and easier builds =
 
-PERTHSHIRE, Scotland - 4th October 2007  - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.2 written entirely in Standard C++ and built upon !OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and !FreeBSD operating systems.
+PERTHSHIRE, Scotland - 4th October 2007  - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.2 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.2 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and !FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.2 release is the culmination of 8 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
@@ -11,6 +11,7 @@ The !OpenSceneGraph 2.2 release is the culmination of 8 years of work by the lea
 === Updates include: ===
 
  * Improved build support under Windows including versioning of dll's to avoid problems with mixing !OpenSceneGraph versions on a single system.
+ * Support for Texture2DArray and integer texture OpenGL extensions.
  * Support for spherical displays.
  * Support for checkerboard stereo displays.
  * Soft Shadows and Parallel Split Shadow Maps now supported.
@@ -42,15 +43,16 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 === Community support and contributions ===
 The diverse and growing community of over 1700 developers is centered around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointTwo 281 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointTwo 282 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
 
 ----
 
 About !OpenSceneGraph:[[BR]]
-Further information, screenshots, downloads, documentation, and support links can be found on the [=OpenSceneGraph=] project website http://www.openscenegraph.org.
+!OpenSceneGraph Project was founded in September 1999 by Don Burns and Robert Osfield.
+Further information, screenshots, downloads, documentation, and support links can be found on the !OpenSceneGraph project website http://www.openscenegraph.org.
 
 About !OpenSceneGraph Professional Services:[[BR]]
-!OpenSceneGraph Professional Services, founded by Robert Osfield in April 2001, is based in Callander, Perhshire, Scotland, and provides professional services on top of !OpenSceneGraph. Further information about the services it provides can be found at http://www.openscenegraph.com .
+!OpenSceneGraph Professional Services, founded by project lead Robert Osfield in April 2001, is based in Callander, Perhshire, Scotland, and provides professional services on top of !OpenSceneGraph. Further information about the services it provides can be found at http://www.openscenegraph.com.
 
 
 --------------------------------------------------------------------------------

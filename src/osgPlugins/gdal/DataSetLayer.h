@@ -15,6 +15,7 @@
 #define DATASETLAYER 1
 
 #include <osgTerrain/Layer>
+#include <osgDB/ReaderWriter>
 
 #include <gdal_priv.h>
 
@@ -45,6 +46,8 @@ class DataSetLayer : public osgTerrain::ProxyLayer
 
         virtual osgTerrain::ImageLayer* extractImageLayer(unsigned int sourceMinX, unsigned int sourceMinY, unsigned int sourceMaxX, unsigned int sourceMaxY, unsigned int targetWidth=0, unsigned int targetHeight=0);
 
+        void setGdalReader(const osgDB::ReaderWriter* rw);
+
     protected:
     
         virtual ~DataSetLayer();
@@ -52,6 +55,9 @@ class DataSetLayer : public osgTerrain::ProxyLayer
         void setUpLocator();
     
         GDALDataset* _dataset;
+
+        osgDB::ReaderWriter* _gdalReader;
+
 
 };
 

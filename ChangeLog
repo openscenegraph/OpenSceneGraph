@@ -1,3 +1,37 @@
+2007-10-04 10:05 +0000 [r7558]  robert:
+
+	* Updated version for 2.2 release
+
+2007-10-04 08:54 +0000 [r7556]  robert:
+
+	* From Trajce Nikolov, added support for extract a region for
+	  geospatial imagery
+
+2007-10-03 23:44 +0000 [r7554]  robert:
+
+	* Updated ChangeLog, NEWS and AUTHORS file for 2.1.15 release
+
+2007-10-03 23:27 +0000 [r7553]  robert:
+
+	* Updated version for 2.1.15 dev release
+
+2007-10-03 23:03 +0000 [r7551-7552]  robert:
+
+	* From Panagiotis Papadakos, "Setting the maximum height of osgText
+	  doen't seem to work. If the text is big enough, it exceeds the
+	  height that I gave as input to setMaximumHeight. So check if
+	  cursor is out of -_maximumHeight."
+
+	* Added support for defining an option
+	  OSG_GLU_TESS_CALLBACK_TRIPLEDOT within the CMake build system,
+	  enabling this option will build the OSG against the (...) version
+	  of the tesselation callback functions. One can also set the
+	  default value of this option via the
+	  DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT variable that is set locally
+	  to OFF for all platforms except AIX and OSX, but can be overriden
+	  by setting it via command line option i.e. cmake .
+	  -DDDEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT=ON
+
 2007-10-03 21:12 +0000 [r7550]  shuber:
 
 	* updated XCode projects

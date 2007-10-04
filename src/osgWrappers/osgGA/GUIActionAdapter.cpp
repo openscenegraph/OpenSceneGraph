@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/View>
 #include <osgGA/GUIActionAdapter>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -25,6 +26,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIActionAdapter)
 	I_Constructor0(____GUIActionAdapter,
 	               "",
 	               "");
+	I_Method0(osg::View *, asView,
+	          Properties::VIRTUAL,
+	          __osg_View_P1__asView,
+	          "Provide a mechanism for getting the osg::View assocaited with this GUIActionAdapter. ",
+	          "One would use this to case view to osgViewer::View(er) if supported by the subclass. ");
 	I_Method0(void, requestRedraw,
 	          Properties::PURE_VIRTUAL,
 	          __void__requestRedraw,

@@ -41,6 +41,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         META_Object(osgViewer,View);
         
+        /** Provide a mechanism for getting the osg::View assocaited from the GUIActionAdapter.
+          * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
+        virtual osg::View* asView() { return this; }
+        
+        /** Provide a mechanism for getting the viewer object from this osgViewer::View.
+          * In the case of a osgViewer::Viewer the ViewerBase will effectively point to this object as Viewer subclasses from View.
+          * In the case of a osgViewer::CompsoiteViewer the ViewerBase will point to the CompositeViewer that owns this View. */
         ViewerBase* getViewerBase() { return _viewerBase.get(); }
 
         /** Take all the settings, Camera and Slaves from the passed in view, leaving it empty. */

@@ -15,6 +15,7 @@
 #define OSGGA_GUIACTIONADAPTER 1 
 
 #include <osgGA/Export>
+#include <osg/View>
 
 namespace osgGA{
 
@@ -55,6 +56,10 @@ class GUIActionAdapter
 {
 public:
         virtual ~GUIActionAdapter() {}
+        
+        /** Provide a mechanism for getting the osg::View assocaited with this GUIActionAdapter.
+          * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
+        virtual osg::View* asView() { return 0; }
         
         /**
         requestRedraw() requests a single redraw.

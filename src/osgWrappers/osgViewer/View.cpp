@@ -75,11 +75,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(osg::View *, asView,
+	          Properties::VIRTUAL,
+	          __osg_View_P1__asView,
+	          "Provide a mechanism for getting the osg::View assocaited from the GUIActionAdapter. ",
+	          "One would use this to case view to osgViewer::View(er) if supported by the subclass. ");
 	I_Method0(osgViewer::ViewerBase *, getViewerBase,
 	          Properties::NON_VIRTUAL,
 	          __ViewerBase_P1__getViewerBase,
-	          "",
-	          "");
+	          "Provide a mechanism for getting the viewer object from this osgViewer::View. ",
+	          "In the case of a osgViewer::Viewer the ViewerBase will effectively point to this object as Viewer subclasses from View. In the case of a osgViewer::CompsoiteViewer the ViewerBase will point to the CompositeViewer that owns this View. ");
 	I_Method1(void, take, IN, osg::View &, rhs,
 	          Properties::VIRTUAL,
 	          __void__take__osg_View_R1,

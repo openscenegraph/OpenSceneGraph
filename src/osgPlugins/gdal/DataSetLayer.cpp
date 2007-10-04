@@ -20,21 +20,23 @@
 #include <gdalwarper.h>
 #include <ogr_spatialref.h>
 
+#include <osgDB/ImageOptions>
+
 using namespace GDALPlugin;
 
 DataSetLayer::DataSetLayer():
-    _dataset(0)
+_dataset(0), _gdalReader(0)
 {
 }
 
 DataSetLayer::DataSetLayer(const std::string& fileName):
-    _dataset(0)
+_dataset(0), _gdalReader(0)
 {
     openFile(fileName);
 }
 
 DataSetLayer::DataSetLayer(const DataSetLayer& dataSetLayer,const osg::CopyOp& copyop):
-    ProxyLayer(dataSetLayer)
+ProxyLayer(dataSetLayer), _gdalReader(dataSetLayer._gdalReader)
 {
     if (dataSetLayer._dataset) open();
 }
@@ -49,9 +51,9 @@ void DataSetLayer::open()
     if (_dataset) return;
 
     if (getFileName().empty()) return;
-    
+
     _dataset = static_cast<GDALDataset*>(GDALOpen(getFileName().c_str(),GA_ReadOnly));
-    
+
     setUpLocator();
 }
 
@@ -60,7 +62,7 @@ void DataSetLayer::close()
     if (_dataset)
     {
         GDALClose(static_cast<GDALDatasetH>(_dataset));
-        
+
         _dataset = 0;
     }
 }
@@ -79,15 +81,39 @@ osgTerrain::ImageLayer* DataSetLayer::extractImageLayer(unsigned int sourceMinX,
 {
     if (!_dataset || sourceMaxX<sourceMinX || sourceMaxY<sourceMinY) return 0;
 
-    osg::notify(osg::NOTICE)<<"DataSetLayer::extractImageLayer("<<sourceMinX<<", "<<sourceMinY<<", "<<sourceMaxX<<", "<<sourceMaxY<<", target:"<<targetWidth<<", "<<targetHeight<<") not yet implemented"<<std::endl;
+    if (!_gdalReader) return 0;
 
-    return 0;
+    osg::ref_ptr<osgDB::ImageOptions> imageOptions = new osgDB::ImageOptions;
+    imageOptions->_sourceImageWindowMode = osgDB::ImageOptions::PIXEL_WINDOW;
+    imageOptions->_sourcePixelWindow.windowX = sourceMinX;
+    imageOptions->_sourcePixelWindow.windowY = sourceMinY;
+    imageOptions->_sourcePixelWindow.windowWidth = sourceMaxX-sourceMinX;
+    imageOptions->_sourcePixelWindow.windowHeight = sourceMaxY-sourceMinY;
+    imageOptions->_destinationPixelWindow.windowX = 0;
+    imageOptions->_destinationPixelWindow.windowY = 0;
+    imageOptions->_destinationPixelWindow.windowWidth = targetWidth;
+    imageOptions->_destinationPixelWindow.windowHeight = targetHeight;
+
+    osgDB::ReaderWriter::ReadResult result = _gdalReader->readImage(getFileName(),imageOptions.get());
+    osg::Image* image = result.getImage();
+    if (!image) return 0;
+
+    osgTerrain::ImageLayer* layer = new osgTerrain::ImageLayer;
+    layer->setFileName(getFileName());
+    layer->setImage(image);
+
+    return layer;
+}
+
+void DataSetLayer::setGdalReader(const osgDB::ReaderWriter* rw)
+{
+    _gdalReader = const_cast<osgDB::ReaderWriter*>(rw);
 }
 
 void DataSetLayer::setUpLocator()
 {
     if (!isOpen()) return;
-    
+
     const char* pszSourceSRS = _dataset->GetProjectionRef();
     if (!pszSourceSRS || strlen(pszSourceSRS)==0) pszSourceSRS = _dataset->GetGCPProjection();
 

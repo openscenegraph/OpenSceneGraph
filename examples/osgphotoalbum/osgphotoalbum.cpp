@@ -683,7 +683,9 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
+    
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     // register the handler to add keyboard and mosue handling.
     SlideEventHandler* seh = new SlideEventHandler();

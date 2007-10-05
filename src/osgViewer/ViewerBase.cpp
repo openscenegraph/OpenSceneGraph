@@ -11,6 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include <osgViewer/ViewerBase>
 #include <osgViewer/Renderer>
 

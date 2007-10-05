@@ -318,7 +318,6 @@
 #include <osgTerrain/Export>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
-#include <osgTerrain/TerrainNode>
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Version>
 

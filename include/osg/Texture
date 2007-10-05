@@ -179,7 +179,11 @@
 
 #ifndef GL_TEXTURE_COMPARE_MODE_ARB
     #define GL_TEXTURE_COMPARE_MODE_ARB       0x884C
+#endif
+#ifndef GL_TEXTURE_COMPARE_FUNC_ARB
     #define GL_TEXTURE_COMPARE_FUNC_ARB       0x884D
+#endif
+#ifndef GL_COMPARE_R_TO_TEXTURE_ARB
     #define GL_COMPARE_R_TO_TEXTURE_ARB       0x884E
 #endif
 

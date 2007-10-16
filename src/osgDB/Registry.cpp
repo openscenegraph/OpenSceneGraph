@@ -205,6 +205,7 @@ Registry::Registry()
     addFileExtensionAlias("mov",  "qt");
     addFileExtensionAlias("avi",  "qt");
     addFileExtensionAlias("mpg",  "qt");
+    addFileExtensionAlias("flv",  "qt");
     addFileExtensionAlias("mpv",  "qt");
     addFileExtensionAlias("dv",   "qt");
     addFileExtensionAlias("mp4",   "qt");
@@ -222,6 +223,7 @@ Registry::Registry()
         addFileExtensionAlias("dv",   "xine");
         addFileExtensionAlias("avi",  "xine");
         addFileExtensionAlias("wmv",  "xine");
+        addFileExtensionAlias("flv",  "xine");
     #endif
 
 #endif

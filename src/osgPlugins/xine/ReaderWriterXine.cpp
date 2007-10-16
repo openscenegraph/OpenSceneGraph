@@ -312,6 +312,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"mpg") ||
                    osgDB::equalCaseInsensitive(extension,"mpv") || 
                    osgDB::equalCaseInsensitive(extension,"db") || 
+                   osgDB::equalCaseInsensitive(extension,"flv") || 
                    osgDB::equalCaseInsensitive(extension,"mov") || 
                    osgDB::equalCaseInsensitive(extension,"avi") ||
                    osgDB::equalCaseInsensitive(extension,"wmv") ||

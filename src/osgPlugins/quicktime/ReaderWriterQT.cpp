@@ -70,6 +70,7 @@ public:
          osgDB::equalCaseInsensitive(extension,"m4v") ||
          osgDB::equalCaseInsensitive(extension,"dv")  ||
          osgDB::equalCaseInsensitive(extension,"avi") ||
+         osgDB::equalCaseInsensitive(extension,"flv") ||
          osgDB::equalCaseInsensitive(extension,"swf");
    }
 

@@ -27,7 +27,6 @@
 #include <X11/Xmd.h>
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
-#include <X11/Intrinsic.h>
 
 #include <X11/Xmd.h>        /* For CARD16 */
 

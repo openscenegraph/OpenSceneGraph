@@ -1057,7 +1057,7 @@ osg::VertexBufferObject* Geometry::getOrCreateVertexBufferObject()
         ++vitr)
     {
         osg::Array* array = *vitr;
-        if (!array->getVertexBufferObject()) vbo = array->getVertexBufferObject();
+        if (array->getVertexBufferObject()) vbo = array->getVertexBufferObject();
     }
 
     if (!vbo) vbo = new osg::VertexBufferObject;

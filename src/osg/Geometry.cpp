@@ -1120,7 +1120,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
                 ++vitr)
             {
                 osg::Array* array = *vitr;
-                if (!array->getVertexBufferObject()) vbo = array->getVertexBufferObject();
+                if (array->getVertexBufferObject()) vbo = array->getVertexBufferObject();
             }
 
             if (!vbo) vbo = new osg::VertexBufferObject;
@@ -1146,7 +1146,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
                 ++deitr)
             {
                 osg::DrawElements* elements = *deitr;
-                if (!elements->getElementBufferObject()) ebo = elements->getElementBufferObject();
+                if (elements->getElementBufferObject()) ebo = elements->getElementBufferObject();
             }
 
             if (!ebo) ebo = new osg::ElementBufferObject;
@@ -1167,7 +1167,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
             ++vitr)
         {
             osg::Array* array = *vitr;
-            if (!array->getVertexBufferObject()) array->setVertexBufferObject(0);
+            if (array->getVertexBufferObject()) array->setVertexBufferObject(0);
         }
 
         for(DrawElementsList::iterator deitr = drawElementsList.begin();
@@ -1175,7 +1175,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
             ++deitr)
         {
             osg::DrawElements* elements = *deitr;
-            if (!elements->getElementBufferObject()) elements->setElementBufferObject(0);
+            if (elements->getElementBufferObject()) elements->setElementBufferObject(0);
         }
     }
 }

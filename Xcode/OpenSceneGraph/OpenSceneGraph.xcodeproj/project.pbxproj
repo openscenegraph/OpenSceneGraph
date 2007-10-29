@@ -3615,13 +3615,6 @@
 			remoteGlobalIDString = 00A14EFA084E65A9000150AD;
 			remoteInfo = osgparticleeffects;
 		};
-		00A150D0084E6AEF000150AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00A15008084E6ABB000150AD;
-			remoteInfo = osgdb_hdr;
-		};
 		00A150DE084E6B76000150AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -14392,7 +14385,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				00A150D1084E6AEF000150AD /* PBXTargetDependency */,
 				0098F4640652F42C007615E2 /* PBXTargetDependency */,
 			);
 			name = osgdb_freetype;
@@ -19026,11 +19018,6 @@
 			target = 0055835A0624D1E5000A808A /* osgFX */;
 			targetProxy = 009DA105081D8F99001FA987 /* PBXContainerItemProxy */;
 		};
-		00A150D1084E6AEF000150AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00A15008084E6ABB000150AD /* osgdb_hdr */;
-			targetProxy = 00A150D0084E6AEF000150AD /* PBXContainerItemProxy */;
-		};
 		00A150DF084E6B76000150AD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 00A14FB0084E68D6000150AD /* osgdb_dxf */;
@@ -20669,7 +20656,7 @@
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-L/usr/X11R6/lib",
+					"-L$(SDKROOT)/usr/X11R6/lib",
 					"-lfreetype",
 					"-framework",
 					OpenThreads,
@@ -20713,7 +20700,7 @@
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-L/usr/X11R6/lib",
+					"-L$(SDKROOT)/usr/X11R6/lib",
 					"-lfreetype",
 					"-framework",
 					OpenThreads,
@@ -20752,7 +20739,7 @@
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
-					"-L/usr/X11R6/lib",
+					"-L$(SDKROOT)/usr/X11R6/lib",
 					"-lfreetype",
 					"-framework",
 					OpenThreads,

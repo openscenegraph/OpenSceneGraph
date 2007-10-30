@@ -187,7 +187,7 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
         fr += 2;
         while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
         {
-            osg::notify(osg::NOTICE)<<"Composite layer "<<fr[0].getStr()<<std::endl;
+            osg::notify(osg::INFO)<<"Composite layer "<<fr[0].getStr()<<std::endl;
             bool localAdvanced = false;
             osgTerrain::Layer* layer = readLayer(fr, localAdvanced);
             if (layer) cl->addLayer(layer);
@@ -197,7 +197,7 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
         
         layer = cl.get();
 
-        osg::notify(osg::NOTICE)<<"End of Composite layer "<<fr[0].getStr()<<std::endl;
+        osg::notify(osg::INFO)<<"End of Composite layer "<<fr[0].getStr()<<std::endl;
 
         ++fr;
     }

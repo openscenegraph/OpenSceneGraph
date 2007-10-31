@@ -15,6 +15,7 @@
 
 #include <osg/Image>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -1261,3 +1262,44 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
     }
 }
 
+template <typename T>    
+Vec4 _readColor(GLenum pixelFormat, T* data,float scale)
+{
+    switch(pixelFormat)
+    {
+        case(GL_LUMINANCE):         { float l = float(*data++)*scale; return Vec4(l, l, l, 1.0f); }
+        case(GL_ALPHA):             { float a = float(*data++)*scale; return Vec4(1.0f, 1.0f, 1.0f, a); }
+        case(GL_LUMINANCE_ALPHA):   { float l = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(l,l,l,a); }
+        case(GL_RGB):               { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; return Vec4(r,g,b,1.0f); }
+        case(GL_RGBA):              { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(r,g,b,a); }
+        case(GL_BGR):               { float b = float(*data++)*scale; float g = float(*data++)*scale; float r = float(*data++)*scale; return Vec4(r,g,b,1.0f); }
+        case(GL_BGRA):              { float b = float(*data++)*scale; float g = float(*data++)*scale; float r = float(*data++)*scale; float a = float(*data++)*scale; return Vec4(r,g,b,a); }
+    }
+    return Vec4(1.0f,1.0f,1.0f,1.0f);
+}
+
+Vec4 Image::getColor(unsigned int s,unsigned t,unsigned r) const
+{
+    const unsigned char* ptr = data(s,t,r);
+
+    switch(_dataType)
+    {
+        case(GL_BYTE):              return _readColor(_pixelFormat, (char*)ptr,             1.0f/128.0f);
+        case(GL_UNSIGNED_BYTE):     return _readColor(_pixelFormat, (unsigned char*)ptr,    1.0f/255.0f);
+        case(GL_SHORT):             return _readColor(_pixelFormat, (short*)ptr,            1.0f/32768.0f);
+        case(GL_UNSIGNED_SHORT):    return _readColor(_pixelFormat, (unsigned short*)ptr,   1.0f/65535.0f);
+        case(GL_INT):               return _readColor(_pixelFormat, (int*)ptr,              1.0f/2147483648.0f);
+        case(GL_UNSIGNED_INT):      return _readColor(_pixelFormat, (unsigned int*)ptr,     1.0f/4294967295.0f);
+        case(GL_FLOAT):             return _readColor(_pixelFormat, (float*)ptr,            1.0f);
+    }
+    return Vec4(1.0f,1.0f,1.0f,1.0f);
+}
+
+Vec4 Image::getColor(const Vec3& texcoord) const
+{
+    int s = int(texcoord.x()*float(_s-1)) % _s;
+    int t = int(texcoord.y()*float(_t-1)) % _t;
+    int r = int(texcoord.z()*float(_r-1)) % _r;
+    //osg::notify(osg::NOTICE)<<"getColor("<<texcoord<<")="<<getColor(s,t,r)<<std::endl;
+    return getColor(s,t,r);
+}

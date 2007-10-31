@@ -15,6 +15,9 @@
 #define OSG_IMAGE 1
 
 #include <osg/BufferObject>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 
 #include <string>
 #include <vector>
@@ -202,6 +205,15 @@ class OSG_EXPORT Image : public Object
             if (!_data) return NULL;
             return _data+(column*getPixelSizeInBits())/8+row*getRowSizeInBytes()+image*getImageSizeInBytes();
         }
+
+        /** Get the color value for specified texcoord.*/
+        Vec4 getColor(unsigned int s,unsigned t=0,unsigned r=0) const;
+
+        /** Get the color value for specified texcoord.*/
+        Vec4 getColor(const Vec2& texcoord) const { return getColor(Vec3(texcoord.x(),texcoord.y(),0.0f)); }
+
+        /** Get the color value for specified texcoord.*/
+        Vec4 getColor(const Vec3& texcoord) const;
 
 
         /** Flip the image horizontally. */

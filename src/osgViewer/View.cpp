@@ -704,7 +704,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     _camera->setReadBuffer(buffer);
 }
 
-static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius)
+static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius,osg::Image* intensityMap)
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
@@ -736,7 +736,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     osg::Vec3Array* texcoords0 = new osg::Vec3Array;
-    osg::Vec2Array* texcoords1 = new osg::Vec2Array;
+    osg::Vec2Array* texcoords1 = intensityMap==0 ? new osg::Vec2Array : 0;
     osg::Vec4Array* colors = new osg::Vec4Array;
 
     osg::Vec3 bottom = origin;
@@ -773,9 +773,18 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
                                    cos(phi));
 
                 vertices->push_back(cursor);
-                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
                 texcoords0->push_back(texcoord);
-                texcoords1->push_back( osg::Vec2(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2) );
+
+                osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
+                if (intensityMap)
+                {            
+                    colors->push_back(intensityMap->getColor(texcoord1));
+                }
+                else
+                {
+                    colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                    if (texcoords1) texcoords1->push_back( texcoord1 );
+                }
 
                 cursor += dx;
             }
@@ -808,9 +817,18 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
                                    z / sphere_radius);
 
                 vertices->push_back(cursor);
-                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
                 texcoords0->push_back(texcoord);
-                texcoords1->push_back( osg::Vec2(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2) );
+
+                osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
+                if (intensityMap)
+                {            
+                    colors->push_back(intensityMap->getColor(texcoord1));
+                }
+                else
+                {
+                    colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                    if (texcoords1) texcoords1->push_back( texcoord1 );
+                }
 
                 cursor += dx;
             }
@@ -825,7 +843,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
     geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     geometry->setTexCoordArray(0,texcoords0);
-    geometry->setTexCoordArray(1,texcoords1);
+    if (texcoords1) geometry->setTexCoordArray(1,texcoords1);
 
     for(i=0;i<noSteps-1;++i)
     {
@@ -883,6 +901,8 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         osg::notify(osg::NOTICE)<<"GraphicsWindow has not been created successfully."<<std::endl;
         return;
     }
+    
+    bool applyIntensityMapAsColours = true;
 
     int tex_width = 512;
     int tex_height = 512;
@@ -1028,7 +1048,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     // distortion correction set up.
     {
         osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(create3DSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar));
+        geode->addDrawable(create3DSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0));
 
         // new we need to add the texture to the mesh, we do so by creating a 
         // StateSet to contain the Texture StateAttribute.
@@ -1036,7 +1056,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
         stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
-        if (intensityMap)
+        if (!applyIntensityMapAsColours && intensityMap)
         {
             stateset->setTextureAttributeAndModes(1, new osg::Texture2D(intensityMap), osg::StateAttribute::ON);
         }
@@ -1074,7 +1094,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     }
 }
 
-static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius)
+static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius, osg::Image* intensityMap)
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
@@ -1109,7 +1129,7 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
     osg::Vec2Array* texcoords0 = new osg::Vec2Array;
-    osg::Vec2Array* texcoords1 = new osg::Vec2Array;
+    osg::Vec2Array* texcoords1 = intensityMap==0 ? new osg::Vec2Array : 0;
     osg::Vec4Array* colors = new osg::Vec4Array;
 
     osg::Vec3 bottom = origin;
@@ -1155,9 +1175,18 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             else
                 vertices->push_back(cursor);
             
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
             texcoords0->push_back( texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-            texcoords1->push_back( osg::Vec2(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2) );
+        
+            osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
+            if (intensityMap)
+            {            
+                colors->push_back(intensityMap->getColor(texcoord1));
+            }
+            else
+            {
+                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                if (texcoords1) texcoords1->push_back( texcoord1 );
+            }
 
             if (j+1<midSteps) cursor += dx;
         }
@@ -1184,9 +1213,18 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             else
                 vertices->push_back(cursor);
 
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
             texcoords0->push_back( texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-            texcoords1->push_back( osg::Vec2(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2) );
+
+            osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
+            if (intensityMap)
+            {            
+                colors->push_back(intensityMap->getColor(texcoord1));
+            }
+            else
+            {
+                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                if (texcoords1) texcoords1->push_back( texcoord1 );
+            }
 
             cursor += dx;
         }
@@ -1219,9 +1257,18 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             else
                 vertices->push_back(cursor);
 
-            colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
             texcoords0->push_back( texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-            texcoords1->push_back( osg::Vec2(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2) );
+
+            osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
+            if (intensityMap)
+            {            
+                colors->push_back(intensityMap->getColor(texcoord1));
+            }
+            else
+            {
+                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                if (texcoords1) texcoords1->push_back( texcoord1 );
+            }
 
             cursor += dx;
         }
@@ -1236,7 +1283,7 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     geometry->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
 
     geometry->setTexCoordArray(0,texcoords0);
-    geometry->setTexCoordArray(1,texcoords1);
+    if (texcoords1) geometry->setTexCoordArray(1,texcoords1);
 
     for(i=0;i<noSteps-1;++i)
     {
@@ -1286,6 +1333,8 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
     
+
+    bool applyIntensityMapAsColours = true;
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
@@ -1338,7 +1387,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     // distortion correction set up.
     {
         osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(createParoramicSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar));
+        geode->addDrawable(createParoramicSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0));
 
         // new we need to add the texture to the mesh, we do so by creating a 
         // StateSet to contain the Texture StateAttribute.
@@ -1350,7 +1399,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
         texmat->setScaleByTextureRectangleSize(true);
         stateset->setTextureAttributeAndModes(0, texmat, osg::StateAttribute::ON);
 
-        if (intensityMap)
+        if (!applyIntensityMapAsColours && intensityMap)
         {
             stateset->setTextureAttributeAndModes(1, new osg::Texture2D(intensityMap), osg::StateAttribute::ON);
         }

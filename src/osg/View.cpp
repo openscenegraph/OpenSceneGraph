@@ -175,7 +175,7 @@ bool View::addSlave(osg::Camera* camera, const osg::Matrix& projectionOffset, co
         
         if (_camera.valid())
         {
-            for(unsigned int i=0; _camera->getNumChildren(); ++i)
+            for(unsigned int i=0; i<_camera->getNumChildren(); ++i)
             {
                 camera->addChild(_camera->getChild(i));
             }

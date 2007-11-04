@@ -60,7 +60,7 @@ SET(TARGET_H
     TXPSeamLOD.h
 )
 
-INCLUDE_DIRECTORIES(.)
+INCLUDE_DIRECTORIES(${OpenSceneGraph_SOURCE_DIR}/src/osgPlugins/txp)
 
 SET(TARGET_ADDED_LIBRARIES osgSim osgText)
 

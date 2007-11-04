@@ -26,6 +26,7 @@
 #include "QuicktimeImageStream.h"
 #include <osg/Notify>
 #include <osg/Timer>
+#include <osg/Math>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Thread>
@@ -132,7 +133,7 @@ void QuicktimeImageStream::quit(bool wiatForThreadToExit)
 
 void QuicktimeImageStream::setVolume(float volume)
 {
-    _movieData->setVolume(volume);
+    _movieData->setVolume(osg::minimum(osg::maximum(volume,0.0f),1.0f));
 }
 
 // Get and Set the playback volume of the stream.

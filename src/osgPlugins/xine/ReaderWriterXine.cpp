@@ -30,7 +30,8 @@ class XineImageStream : public osg::ImageStream
             _visual(0),
             _stream(0),
             _event_queue(0),
-            _ready(false)
+            _ready(false),
+            _volume(-1.0)
         {
             setOrigin(osg::Image::TOP_LEFT);
         }
@@ -41,6 +42,21 @@ class XineImageStream : public osg::ImageStream
 
         META_Object(osgXine,XineImageStream);
         
+        void setVolume(float volume)
+        {
+            _volume = osg::minimum(osg::maximum(volume,0.0f),1.0f);
+            if (_stream) 
+            {
+                xine_set_param(_stream, XINE_PARAM_AUDIO_VOLUME, static_cast<int>(_volume*100.0f));
+                osg::notify(osg::NOTICE)<<"Setting volume "<<_volume<<std::endl;
+            }
+        }
+        
+        float getVolume() const
+        {
+            return _volume;
+        }
+
         bool open(xine_t* xine, const std::string& filename)
         {
             if (filename==getFileName()) return true;
@@ -70,6 +86,18 @@ class XineImageStream : public osg::ImageStream
 
             // set up stream
             _stream = xine_stream_new(_xine, _ao, _vo);
+            
+            if (_stream)
+            {
+                if (_volume < 0.0)
+                {
+                    _volume = static_cast<float>(xine_get_param(_stream, XINE_PARAM_AUDIO_VOLUME))/100.0f;
+                }
+                else
+                {
+                    setVolume(_volume);
+                }
+            }
 
             _event_queue = xine_event_new_queue(_stream);
             xine_event_create_listener_thread(_event_queue, event_listener, this);
@@ -200,6 +228,7 @@ class XineImageStream : public osg::ImageStream
         xine_stream_t*          _stream;
         xine_event_queue_t*     _event_queue;
         bool                    _ready;
+        float                   _volume;
 
     protected:
 

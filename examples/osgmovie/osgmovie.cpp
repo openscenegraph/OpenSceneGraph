@@ -54,7 +54,7 @@ public:
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
-    typedef std::vector< osg::ref_ptr<osg::ImageStream> > ImageStreamList;
+    typedef std::vector< osg::observer_ptr<osg::ImageStream> > ImageStreamList;
 
 protected:
 
@@ -203,7 +203,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     ++itr)
                 {
                     std::cout<<"Play"<<std::endl;
-                     (*itr)->play();
+                    (*itr)->play();
                 }
                 return true;
             }
@@ -215,6 +215,28 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 {
                     std::cout<<"Pause"<<std::endl;
                     (*itr)->pause();
+                }
+                return true;
+            }
+            else if (ea.getKey()=='+')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    osg::ImageStream* movie = itr->get();
+                    movie->setVolume(movie->getVolume()+0.1f);
+                }
+                return true;
+            }
+            else if (ea.getKey()=='-')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    osg::ImageStream* movie = itr->get();
+                    movie->setVolume(movie->getVolume()-0.1f);
                 }
                 return true;
             }

@@ -15,12 +15,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef __APPLE__
+#include "Components.h"
+#include "QuickTimeComponents.h"
+#else
+#include <Quicktime/Quicktime.h>
+#endif
+
 #ifndef SEEK_SET
 #  define SEEK_SET 0
 #endif
 #include "QTUtils.h"
+#include "QTLiveUtils.h"
 #include "QTtexture.h"
 #include "QuicktimeImageStream.h"
+#include "QuicktimeLiveImageStream.h"
 
 
 using namespace osg;
@@ -34,8 +43,12 @@ class QuicktimeExitObserver : public osg::Observer
 {
 public:
 
-   QuicktimeExitObserver () : _instanceCount(0){}
-   virtual ~QuicktimeExitObserver(){};
+   QuicktimeExitObserver () : _instanceCount(0)
+   {
+   }
+   virtual ~QuicktimeExitObserver()
+   {
+   };
 
    void addMedia(Image* ptr)
    {
@@ -59,6 +72,14 @@ private:
 class ReaderWriterQT : public osgDB::ReaderWriter
 {
 public:
+    ReaderWriterQT::ReaderWriterQT()
+    {
+    }
+    ReaderWriterQT::~ReaderWriterQT()
+    {
+    }
+
+
    virtual const char* className() const { return "Default Quicktime Image Reader/Writer"; }
 
    virtual bool acceptsMovieExtension(const std::string& extension) const
@@ -72,6 +93,11 @@ public:
          osgDB::equalCaseInsensitive(extension,"avi") ||
          osgDB::equalCaseInsensitive(extension,"flv") ||
          osgDB::equalCaseInsensitive(extension,"swf");
+   }
+
+   virtual bool acceptsLiveExtension(const std::string& extension) const
+   {
+       return osgDB::equalCaseInsensitive(extension,"live");     
    }
 
    virtual bool acceptsExtension(const std::string& extension) const
@@ -95,7 +121,8 @@ public:
          osgDB::equalCaseInsensitive(extension,"psd") ||
          #endif 
 
-         acceptsMovieExtension(extension);
+         acceptsMovieExtension(extension) ||
+         acceptsLiveExtension(extension);
    }
 
    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -108,6 +135,89 @@ public:
       
       if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
+      // if the file is a ".live" video encoded string then load as an ImageStream
+      if (acceptsLiveExtension(ext))
+      {
+          long num_video_components;
+          {
+              // Begin QuickTime
+              QTScopedQTMLInitialiser  qt_init;
+              QTScopedMovieInitialiser qt_movie_init;
+              //
+              ComponentDescription video_component_description;
+              video_component_description.componentType         = 'vdig';  /* A unique 4-byte code indentifying the command set */
+              video_component_description.componentSubType      = 0L;      /* Particular flavor of this instance */
+              video_component_description.componentManufacturer = 0L;      /* Vendor indentification */
+              video_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
+              video_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
+              num_video_components = CountComponents (&video_component_description);
+          }
+          if (osgDB::getNameLessExtension(file) == "devices")
+          {
+              osg::notify(osg::ALWAYS) << " available Video DigitizerComponents : " << num_video_components << std::endl;
+              if (num_video_components)
+              {
+                  // Probe Video Dig
+                  probe_video_digitizer_components();
+                  // Probe SG
+                  std::vector<OSG_SGDeviceList> devices_list = probe_sequence_grabber_components();
+                  if (devices_list.size())
+                  {
+                      // Video
+                      OSG_SGDeviceList& video_device_list = devices_list[0];
+                      // Print
+                      osg::notify(osg::ALWAYS) << std::endl;
+                      osg::notify(osg::ALWAYS) << "Video Component/Input IDs follow: " << std::endl;
+                      osg::notify(osg::ALWAYS) << std::endl;
+                      for (int device_input = 0; device_input < video_device_list.size(); ++device_input)
+                      {
+                          OSG_SGDevicePair device_pair = video_device_list[device_input];
+                          osg::notify(osg::ALWAYS) << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
+                      }
+                  }
+                  if (devices_list.size() > 1)
+                  {
+                      // Audio
+                      OSG_SGDeviceList& audio_device_list = devices_list[1];
+                      // Print
+                      osg::notify(osg::ALWAYS) << std::endl;
+                      osg::notify(osg::ALWAYS) << "Audio Component/Input IDs follow: " << std::endl;
+                      osg::notify(osg::ALWAYS) << std::endl;
+                      for (int device_input = 0; device_input < audio_device_list.size(); ++device_input)
+                      {
+                          OSG_SGDevicePair device_pair = audio_device_list[device_input];
+                          osg::notify(osg::ALWAYS) << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
+                      }
+                  }
+              }
+              return ReadResult::FILE_NOT_HANDLED;
+          }
+          else
+          {
+              osg::notify(osg::DEBUG_INFO) << " available Video DigitizerComponents : " << num_video_components << std::endl;
+              if (num_video_components)
+              {
+                  // Note from Riccardo Corsi 
+                  // Quicktime initialization is done here, when a media is found
+                  // and before any image or movie is loaded. 
+                  // After the first call the function does nothing. 
+                  // The cleaning up is left to the QuicktimeExitObserver (see below)
+                  initQuicktime();
+                  //
+                  QuicktimeLiveImageStream* p_qt_image_stream = new QuicktimeLiveImageStream(osgDB::getNameLessExtension(file));
+                  // add the media to the observer for proper clean up on exit
+                  _qtExitObserver.addMedia(p_qt_image_stream);
+                  return p_qt_image_stream;
+              }
+              else
+              {
+                  osg::notify(osg::DEBUG_INFO) << "No available Video DigitizerComponents : " <<  std::endl;
+                  return ReadResult::FILE_NOT_HANDLED;
+              }
+          }
+      }
+
+      // Not an encoded "live" psuedo file - so check a real file exists
       std::string fileName = osgDB::findDataFile( file,  options);
       if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
@@ -117,6 +227,7 @@ public:
       // After the first call the function does nothing. 
       // The cleaning up is left to the QuicktimeExitObserver (see below)
       initQuicktime();
+
 
       // if the file is a movie file then load as an ImageStream.
       if (acceptsMovieExtension(ext))

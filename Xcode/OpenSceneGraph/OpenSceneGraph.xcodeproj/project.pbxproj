@@ -1859,10 +1859,8 @@
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
-		AC0CCB8F0C9F1FED00BD0077 /* Texture2DArray in Resources */ = {isa = PBXBuildFile; fileRef = AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */; };
 		AC0CCB920C9F201E00BD0077 /* Texture2DArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */; };
 		AC0CCB980C9F208A00BD0077 /* Texture2DArray in Headers */ = {isa = PBXBuildFile; fileRef = AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */; settings = {ATTRIBUTES = (Public, ); }; };
-		AC0CCBC60C9F29A700BD0077 /* Version in Resources */ = {isa = PBXBuildFile; fileRef = AC0CCBC50C9F29A700BD0077 /* Version */; };
 		AC0CCBC70C9F29CE00BD0077 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = AC0CCBC50C9F29A700BD0077 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC0CCBCA0C9F2A2D00BD0077 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC0CCBC90C9F2A2C00BD0077 /* Version.cpp */; };
 		BE1180D205D63B8900EB53E5 /* AlphaFunc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE117FB805D63B8900EB53E5 /* AlphaFunc.cpp */; };
@@ -12122,7 +12120,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC0CCB980C9F208A00BD0077 /* Texture2DArray in Headers */,
 				5BC2F62F0C441CA200671A68 /* GLObjects in Headers */,
 				5BC2F8230C468B3100671A68 /* OperationThread in Headers */,
 				0037A0A50C18DA690089AA1C /* TemplatePrimitiveFunctor in Headers */,
@@ -12280,6 +12277,7 @@
 				006E24470AC0D44800FBB48F /* View in Headers */,
 				BE11848D05D70D1900EB53E5 /* Viewport in Headers */,
 				00E2813D07676504005AEE61 /* dxtctool.h in Headers */,
+				AC0CCB980C9F208A00BD0077 /* Texture2DArray in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15588,7 +15586,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC0CCBC60C9F29A700BD0077 /* Version in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15944,7 +15941,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC0CCB8F0C9F1FED00BD0077 /* Texture2DArray in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

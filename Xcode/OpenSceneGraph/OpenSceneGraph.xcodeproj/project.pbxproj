@@ -15153,10 +15153,12 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 001103B108736A190015C576 /* Build configuration list for PBXProject "OpenSceneGraph" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* OpenSceneGraph */;
 			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				006FD302065A8A1600677FA5 /* AllStandardTargets */,
 				005988A50652DB9D003D6AA1 /* osgFrameworks */,
@@ -20655,10 +20657,6 @@
 					"-L$(SDKROOT)/usr/X11/lib",
 					"-L$(SDKROOT)/usr/X11R6/lib",
 					"-lfreetype",
-					"-framework",
-					OpenThreads,
-					"-framework",
-					AppKit,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgdb_freetype;
@@ -20700,10 +20698,6 @@
 					"-L$(SDKROOT)/usr/X11/lib",
 					"-L$(SDKROOT)/usr/X11R6/lib",
 					"-lfreetype",
-					"-framework",
-					OpenThreads,
-					"-framework",
-					AppKit,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgdb_freetype;
@@ -20740,10 +20734,6 @@
 					"-L$(SDKROOT)/usr/X11/lib",
 					"-L$(SDKROOT)/usr/X11R6/lib",
 					"-lfreetype",
-					"-framework",
-					OpenThreads,
-					"-framework",
-					AppKit,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgdb_freetype;

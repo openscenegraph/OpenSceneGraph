@@ -812,6 +812,10 @@
 		001DFFB8065AA3F1003310BF /* Matrixd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE1180A405D63B8900EB53E5 /* Matrixd.cpp */; };
 		001DFFCF065AA472003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		001DFFD0065AA472003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		00294B6E0CE5577B00A90A9E /* QTLiveUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00294B6A0CE5577A00A90A9E /* QTLiveUtils.cpp */; };
+		00294B6F0CE5577B00A90A9E /* QTLiveUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 00294B6B0CE5577A00A90A9E /* QTLiveUtils.h */; };
+		00294B700CE5577B00A90A9E /* QuicktimeLiveImageStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00294B6C0CE5577A00A90A9E /* QuicktimeLiveImageStream.cpp */; };
+		00294B710CE5577B00A90A9E /* QuicktimeLiveImageStream.h in Headers */ = {isa = PBXBuildFile; fileRef = 00294B6D0CE5577B00A90A9E /* QuicktimeLiveImageStream.h */; };
 		002BE0680768EF1700D7268C /* Tessellator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860A05D71A7B00EB53E5 /* Tessellator.cpp */; };
 		002BE06A0768EF1C00D7268C /* Tessellator in Headers */ = {isa = PBXBuildFile; fileRef = BE11864805D71AD300EB53E5 /* Tessellator */; settings = {ATTRIBUTES = (Public, ); }; };
 		002BE3810769069900D7268C /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
@@ -4856,6 +4860,10 @@
 		001DFFFD065AA4BD003310BF /* tcb.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = tcb.cpp; sourceTree = "<group>"; };
 		001DFFFE065AA4BD003310BF /* tcb.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = tcb.h; sourceTree = "<group>"; };
 		001DFFFF065AA4BD003310BF /* tracks.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = tracks.cpp; sourceTree = "<group>"; };
+		00294B6A0CE5577A00A90A9E /* QTLiveUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTLiveUtils.cpp; sourceTree = "<group>"; };
+		00294B6B0CE5577A00A90A9E /* QTLiveUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTLiveUtils.h; sourceTree = "<group>"; };
+		00294B6C0CE5577A00A90A9E /* QuicktimeLiveImageStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuicktimeLiveImageStream.cpp; sourceTree = "<group>"; };
+		00294B6D0CE5577B00A90A9E /* QuicktimeLiveImageStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuicktimeLiveImageStream.h; sourceTree = "<group>"; };
 		0037A02D0C18D74C0089AA1C /* OpenThreads.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenThreads.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0037A03E0C18D97D0089AA1C /* Barrier */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Barrier; sourceTree = "<group>"; };
 		0037A03F0C18D97E0089AA1C /* Block */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Block; sourceTree = "<group>"; };
@@ -8491,6 +8499,10 @@
 		001D060A065AB3CD003310BF /* quicktime */ = {
 			isa = PBXGroup;
 			children = (
+				00294B6A0CE5577A00A90A9E /* QTLiveUtils.cpp */,
+				00294B6B0CE5577A00A90A9E /* QTLiveUtils.h */,
+				00294B6C0CE5577A00A90A9E /* QuicktimeLiveImageStream.cpp */,
+				00294B6D0CE5577B00A90A9E /* QuicktimeLiveImageStream.h */,
 				001D060C065AB3CD003310BF /* MovieData.cpp */,
 				001D060D065AB3CD003310BF /* MovieData.h */,
 				001D060E065AB3CD003310BF /* QTtexture.cpp */,
@@ -11358,6 +11370,8 @@
 				001D0618065AB3CD003310BF /* QTtexture.h in Headers */,
 				001D061A065AB3CD003310BF /* QTUtils.h in Headers */,
 				001D061C065AB3CD003310BF /* QuicktimeImageStream.h in Headers */,
+				00294B6F0CE5577B00A90A9E /* QTLiveUtils.h in Headers */,
+				00294B710CE5577B00A90A9E /* QuicktimeLiveImageStream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16805,6 +16819,8 @@
 				001D0619065AB3CD003310BF /* QTUtils.cpp in Sources */,
 				001D061B065AB3CD003310BF /* QuicktimeImageStream.cpp in Sources */,
 				001D061D065AB3CD003310BF /* ReaderWriterQT.cpp in Sources */,
+				00294B6E0CE5577B00A90A9E /* QTLiveUtils.cpp in Sources */,
+				00294B700CE5577B00A90A9E /* QuicktimeLiveImageStream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

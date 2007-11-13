@@ -189,8 +189,19 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
         {
             osg::notify(osg::INFO)<<"Composite layer "<<fr[0].getStr()<<std::endl;
             bool localAdvanced = false;
-            osgTerrain::Layer* layer = readLayer(fr, localAdvanced);
-            if (layer) cl->addLayer(layer);
+            
+            if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
+            {
+                cl->addLayer(fr[1].getStr());
+                fr += 2;
+                localAdvanced = true;
+            }
+            else
+            {
+                osgTerrain::Layer* layer = readLayer(fr, localAdvanced);
+                if (layer) cl->addLayer(layer);
+            }
+            
             if (!localAdvanced) ++fr;
 
         }
@@ -567,7 +578,7 @@ bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
             }
             else if (!compositeLayer->getFileName(i).empty())
             {
-                fw.indent()<<"image "<<compositeLayer->getFileName(i)<<std::endl;
+                fw.indent()<<"file "<<compositeLayer->getFileName(i)<<std::endl;
             }
         }
         fw.moveOut();

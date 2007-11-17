@@ -347,6 +347,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
     arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie.");
     arguments.getApplicationUsage()->addCommandLineOption("--flip","Flip the movie so top becomes bottom.");
+    arguments.getApplicationUsage()->addCommandLineOption("--devices","Print the Video input capability via QuickTime and exit.");
     
     bool useTextureRectangle = true;
     bool useShader = false;
@@ -357,6 +358,14 @@ int main(int argc, char** argv)
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
+
+    // if user requests devices video capability.
+    if (arguments.read("-devices") || arguments.read("--devices"))
+    {
+        // Force load QuickTime plugin, probe video capability, exit
+        osgDB::readImageFile("devices.live");
         return 1;
     }
 

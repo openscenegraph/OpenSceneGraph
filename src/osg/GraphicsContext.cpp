@@ -454,29 +454,35 @@ void GraphicsContext::close(bool callCloseImplementation)
     {
         osg::notify(osg::INFO)<<"Closing still viable window "<<sharedContextExists<<" _state->getContextID()="<<_state->getContextID()<<std::endl;
 
-        makeCurrent();
+        if (makeCurrent())
+        {
         
-        osg::notify(osg::INFO)<<"Doing Flush"<<std::endl;
+            osg::notify(osg::INFO)<<"Doing Flush"<<std::endl;
 
-        // flush all the OpenGL object buffer for this context.
-        double availableTime = 100.0f;
-        double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+            // flush all the OpenGL object buffer for this context.
+            double availableTime = 100.0f;
+            double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
 
-        osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
-        osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
-        osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
-        osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
-        osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
-        osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
-        osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
-        osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
-        osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
+            osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
+            osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
+            osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
+            osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
+            osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
+            osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
+            osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
+            osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
+            osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
 
-        osg::notify(osg::INFO)<<"Done Flush "<<availableTime<<std::endl;
+            osg::notify(osg::INFO)<<"Done Flush "<<availableTime<<std::endl;
 
-        _state->reset();
-        
-        releaseContext();
+            _state->reset();
+
+            releaseContext();
+        }
+        else
+        {
+            osg::notify(osg::INFO)<<"makeCurrent did not succedd, could not do flush/deletion of OpenGL objects."<<std::endl;
+        }
     }
     
     if (callCloseImplementation) closeImplementation();
@@ -498,7 +504,7 @@ bool GraphicsContext::makeCurrent()
     {
         _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
 
-        // initialize extension proces, not only initializes on first
+        // initialize extension process, note, only initializes on first
         // call, will be a non-op on subsequent calls.        
         getState()->initializeExtensionProcs();
     }

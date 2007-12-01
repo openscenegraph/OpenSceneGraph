@@ -64,8 +64,8 @@ class OSG_EXPORT Polytope
             _planeList.push_back(Plane(-1.0,0.0,0.0,1.0)); // right plane.
             _planeList.push_back(Plane(0.0,1.0,0.0,1.0)); // bottom plane.
             _planeList.push_back(Plane(0.0,-1.0,0.0,1.0)); // top plane.
-            if (withNear) _planeList.push_back(Plane(0.0,0.0,-1.0,1.0)); // near plane
-            if (withFar) _planeList.push_back(Plane(0.0,0.0,1.0,1.0)); // far plane
+            if (withNear) _planeList.push_back(Plane(0.0,0.0,1.0,1.0)); // near plane
+            if (withFar) _planeList.push_back(Plane(0.0,0.0,-1.0,1.0)); // far plane
             setupMask();
         }
 
@@ -77,8 +77,8 @@ class OSG_EXPORT Polytope
             _planeList.push_back(Plane(-1.0,0.0,0.0,bb.xMax())); // right plane.
             _planeList.push_back(Plane(0.0,1.0,0.0,-bb.yMin())); // bottom plane.
             _planeList.push_back(Plane(0.0,-1.0,0.0,bb.yMax())); // top plane.
-            _planeList.push_back(Plane(0.0,0.0,-1.0,bb.zMin())); // near plane
-            _planeList.push_back(Plane(0.0,0.0,1.0,bb.zMax())); // far plane
+            _planeList.push_back(Plane(0.0,0.0,1.0,-bb.zMin())); // near plane
+            _planeList.push_back(Plane(0.0,0.0,-1.0,bb.zMax())); // far plane
             setupMask();
         }
 

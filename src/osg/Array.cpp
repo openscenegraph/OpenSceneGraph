@@ -38,11 +38,16 @@ static const char* s_ArrayNames[] =
     "Vec2bArray",    // 15
     "Vec3bArray",    // 16
     "Vec4bArray",    // 17
+
+    "DoubleArray",   // 18
+    "Vec2dArray",    // 19
+    "Vec3dArray",    // 20
+    "Vec4dArray",    // 21
 };
 
 const char* Array::className() const
 {
-    if (_arrayType>=ArrayType && _arrayType<=Vec4bArrayType)
+    if (_arrayType>=ArrayType && _arrayType<=Vec4dArrayType)
         return s_ArrayNames[_arrayType];
     else
         return "UnknownArray";

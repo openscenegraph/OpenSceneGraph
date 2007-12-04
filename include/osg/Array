@@ -19,6 +19,9 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Vec2d>
+#include <osg/Vec3d>
+#include <osg/Vec4d>
 #include <osg/Vec4ub>
 #include <osg/Vec2s>
 #include <osg/Vec3s>
@@ -64,8 +67,11 @@ class OSG_EXPORT Array : public Object
             Vec4sArrayType    = 14,
             Vec2bArrayType    = 15,
             Vec3bArrayType    = 16,
-            Vec4bArrayType    = 17
-            
+            Vec4bArrayType    = 17,
+            DoubleArrayType   = 18,
+            Vec2dArrayType    = 19,
+            Vec3dArrayType    = 20,
+            Vec4dArrayType    = 21            
         };
 
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
@@ -337,6 +343,11 @@ typedef TemplateArray<Vec2b,Array::Vec2bArrayType,2,GL_BYTE>                    
 typedef TemplateArray<Vec3b,Array::Vec3bArrayType,3,GL_BYTE>                    Vec3bArray;
 typedef TemplateArray<Vec4b,Array::Vec4bArrayType,4,GL_BYTE>                    Vec4bArray;
 
+typedef TemplateArray<GLdouble,Array::DoubleArrayType,1,GL_DOUBLE>               DoubleArray;
+typedef TemplateArray<Vec2d,Array::Vec2dArrayType,2,GL_DOUBLE>                   Vec2dArray;
+typedef TemplateArray<Vec3d,Array::Vec3dArrayType,3,GL_DOUBLE>                   Vec3dArray;
+typedef TemplateArray<Vec4d,Array::Vec4dArrayType,4,GL_DOUBLE>                   Vec4dArray;
+
 
 class ArrayVisitor
 {
@@ -352,6 +363,7 @@ class ArrayVisitor
         virtual void apply(UShortArray&) {}
         virtual void apply(UIntArray&) {}
         virtual void apply(FloatArray&) {}
+        virtual void apply(DoubleArray&) {}
 
         virtual void apply(Vec2Array&) {}
         virtual void apply(Vec3Array&) {}
@@ -366,6 +378,10 @@ class ArrayVisitor
         virtual void apply(Vec2sArray&) {}
         virtual void apply(Vec3sArray&) {}
         virtual void apply(Vec4sArray&) {}
+
+        virtual void apply(Vec2dArray&) {}
+        virtual void apply(Vec3dArray&) {}
+        virtual void apply(Vec4dArray&) {}
 };
 
 class ConstArrayVisitor
@@ -382,6 +398,7 @@ class ConstArrayVisitor
         virtual void apply(const UShortArray&) {}
         virtual void apply(const UIntArray&) {}
         virtual void apply(const FloatArray&) {}
+        virtual void apply(const DoubleArray&) {}
 
         virtual void apply(const Vec2Array&) {}
         virtual void apply(const Vec3Array&) {}
@@ -396,6 +413,10 @@ class ConstArrayVisitor
         virtual void apply(const Vec2sArray&) {}
         virtual void apply(const Vec3sArray&) {}
         virtual void apply(const Vec4sArray&) {}
+
+        virtual void apply(const Vec2dArray&) {}
+        virtual void apply(const Vec3dArray&) {}
+        virtual void apply(const Vec4dArray&) {}
 };
 
 
@@ -412,6 +433,7 @@ class ValueVisitor
         virtual void apply(GLubyte&) {}
         virtual void apply(GLuint&) {}
         virtual void apply(GLfloat&) {}
+        virtual void apply(GLdouble&) {}
         
         
         virtual void apply(Vec2&) {}
@@ -427,6 +449,10 @@ class ValueVisitor
         virtual void apply(Vec2s&) {}
         virtual void apply(Vec3s&) {}
         virtual void apply(Vec4s&) {}
+
+        virtual void apply(Vec2d&) {}
+        virtual void apply(Vec3d&) {}
+        virtual void apply(Vec4d&) {}
 };
 
 class ConstValueVisitor
@@ -442,6 +468,7 @@ class ConstValueVisitor
         virtual void apply(const GLubyte&) {}
         virtual void apply(const GLuint&) {}
         virtual void apply(const GLfloat&) {}
+        virtual void apply(const GLdouble&) {}
 
         virtual void apply(const Vec4ub&) {}
 
@@ -456,6 +483,10 @@ class ConstValueVisitor
         virtual void apply(const Vec2s&) {}
         virtual void apply(const Vec3s&) {}
         virtual void apply(const Vec4s&) {}
+        
+        virtual void apply(const Vec2d&) {}
+        virtual void apply(const Vec3d&) {}
+        virtual void apply(const Vec4d&) {}
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

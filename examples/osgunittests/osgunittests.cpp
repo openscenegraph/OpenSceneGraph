@@ -21,6 +21,7 @@
 
 #include <osg/Vec3>
 #include <osg/Matrix>
+#include <osg/Polytope>
 #include <osg/Timer>
 #include <osg/io_utils>
 
@@ -403,6 +404,22 @@ void testThreadInitAndExit()
     std::cout<<"pass    thread start and delete test"<<std::endl<<std::endl;
 }
 
+void testPolytope()
+{
+    osg::Polytope pt;
+    pt.setToBoundingBox(osg::BoundingBox(-1000, -1000, -1000, 1000, 1000, 1000));
+    bool bContains = pt.contains(osg::Vec3(0, 0, 0));
+    if (bContains)
+    {
+        std::cout<<"Polytope pt.contains(osg::Vec3(0, 0, 0)) has succeeded."<<std::endl;
+    }
+    else
+    {
+        std::cout<<"Polytope pt.contains(osg::Vec3(0, 0, 0)) has failed."<<std::endl;
+    }
+
+}
+
 
 int main( int argc, char** argv )
 {
@@ -437,6 +454,9 @@ int main( int argc, char** argv )
 
     bool printQuatTest = false; 
     while (arguments.read("quat")) printQuatTest = true;
+
+    bool printPolytopeTest = false; 
+    while (arguments.read("polytope")) printPolytopeTest = true;
     
     bool doTestThreadInitAndExit = false;
     while (arguments.read("thread")) doTestThreadInitAndExit = true;
@@ -469,7 +489,6 @@ int main( int argc, char** argv )
     {
         testQuat(quat_scale);
     }
-
 
     if (printMatrixTest)
     {
@@ -514,6 +533,11 @@ int main( int argc, char** argv )
         std::cout<<"**** performance tests  ******"<<std::endl;
         
         runPerformanceTests();
+    }
+
+    if (printPolytopeTest)
+    {
+        testPolytope();
     }
 
 

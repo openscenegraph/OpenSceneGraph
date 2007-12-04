@@ -2234,6 +2234,11 @@ class MergeArrayVisitor : public osg::ArrayVisitor
         virtual void apply(osg::Vec3Array& rhs) { _merge(rhs); }
         virtual void apply(osg::Vec4Array& rhs) { _merge(rhs); }
         
+        virtual void apply(osg::DoubleArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec2dArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec3dArray& rhs) { _merge(rhs); }
+        virtual void apply(osg::Vec4dArray& rhs) { _merge(rhs); }
+        
         virtual void apply(osg::Vec2bArray&  rhs) { _merge(rhs); }
         virtual void apply(osg::Vec3bArray&  rhs) { _merge(rhs); }
         virtual void apply(osg::Vec4bArray&  rhs) { _merge(rhs); }        

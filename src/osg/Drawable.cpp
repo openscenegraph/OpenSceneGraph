@@ -21,6 +21,7 @@
 #include <osg/GLExtensions>
 #include <osg/Timer>
 #include <osg/TriangleFunctor>
+#include <osg/io_utils>
 
 #include <algorithm>
 #include <map>
@@ -700,105 +701,104 @@ void Drawable::setEventCallback(EventCallback* ac)
 
 struct ComputeBound : public PrimitiveFunctor
 {
-   ComputeBound()  {   _vertices = 0;  _vertices4 = 0;}
-
-        virtual void setVertexArray(unsigned int,const Vec2*)
+        ComputeBound()
         {
-            notify(WARN)<<"ComputeBound does not support Vec2* vertex arrays"<<std::endl;
+            _vertices2f = 0;
+            _vertices3f = 0;  
+            _vertices4f = 0;
+            _vertices2d = 0;  
+            _vertices3d = 0;  
+            _vertices4d = 0;
         }
 
-        virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices  = vertices; }
-        virtual void setVertexArray(unsigned int,const Vec4* vertices) { _vertices4 = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec2* vertices) { _vertices2f = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec3* vertices) { _vertices3f = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec4* vertices) { _vertices4f = vertices; }
+
+        virtual void setVertexArray(unsigned int,const Vec2d* vertices) { _vertices2d  = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec3d* vertices) { _vertices3d  = vertices; }
+        virtual void setVertexArray(unsigned int,const Vec4d* vertices) { _vertices4d = vertices; }
+
+        template<typename T>
+        void _drawArrays(T* vert, T* end)
+        {
+            for(;vert<end;++vert)
+            {
+                vertex(*vert);
+            }
+        }
+
+
+        template<typename T, typename I>
+        void _drawElements(T* vert, I* indices, I* end)
+        {
+            for(;indices<end;++indices)
+            {
+                vertex(vert[*indices]);
+            }
+        }
 
         virtual void drawArrays(GLenum,GLint first,GLsizei count)
         {
-            if (_vertices)
-            {
-                const osg::Vec3* vert = _vertices+first;
-                for(;count>0;--count,++vert)
-                {
-                    _bb.expandBy(*vert);
-                }
-            }
-
-            if (_vertices4)
-            {
-                const osg::Vec4* vert = _vertices4+first;
-                for(;count>0;--count,++vert)
-                {
-                    _bb.expandBy(*((Vec3*) vert));
-                }
-            }
+            if      (_vertices3f) _drawArrays(_vertices3f+first, _vertices3f+(first+count));
+            else if (_vertices2f) _drawArrays(_vertices2f+first, _vertices2f+(first+count));
+            else if (_vertices4f) _drawArrays(_vertices4f+first, _vertices4f+(first+count));
+            else if (_vertices2d) _drawArrays(_vertices2d+first, _vertices2d+(first+count));
+            else if (_vertices3d) _drawArrays(_vertices3d+first, _vertices3d+(first+count));
+            else if (_vertices4d) _drawArrays(_vertices4d+first, _vertices4d+(first+count));
         }
 
         virtual void drawElements(GLenum,GLsizei count,const GLubyte* indices)
         {
-            if (_vertices)
-            {
-                for(;count>0;--count,++indices)
-                {
-                    _bb.expandBy(_vertices[*indices]);
-                }
-            }
-
-            if (_vertices4)
-            {
-                for(;count>0;--count,++indices)
-                {
-                    _bb.expandBy(*((Vec3*)&_vertices4[*indices]));
-                }
-            }
+            if (_vertices3f) _drawElements(_vertices3f, indices, indices + count);
+            else if (_vertices2f) _drawElements(_vertices2f, indices, indices + count);
+            else if (_vertices4f) _drawElements(_vertices4f, indices, indices + count);
+            else if (_vertices2d) _drawElements(_vertices2d, indices, indices + count);
+            else if (_vertices3d) _drawElements(_vertices3d, indices, indices + count);
+            else if (_vertices4d) _drawElements(_vertices4d, indices, indices + count);
         }
 
         virtual void drawElements(GLenum,GLsizei count,const GLushort* indices)
         {
-            if (_vertices)
-            {
-                for(;count>0;--count,++indices)
-                {
-                    _bb.expandBy(_vertices[*indices]);
-                }
-            }
-
-            if (_vertices4)
-            {
-                for(;count>0;--count,++indices)
-                {
-                    _bb.expandBy(*((Vec3*)&_vertices4[*indices]));
-                }
-            }
+            if      (_vertices3f) _drawElements(_vertices3f, indices, indices + count);
+            else if (_vertices2f) _drawElements(_vertices2f, indices, indices + count);
+            else if (_vertices4f) _drawElements(_vertices4f, indices, indices + count);
+            else if (_vertices2d) _drawElements(_vertices2d, indices, indices + count);
+            else if (_vertices3d) _drawElements(_vertices3d, indices, indices + count);
+            else if (_vertices4d) _drawElements(_vertices4d, indices, indices + count);
         }
 
         virtual void drawElements(GLenum,GLsizei count,const GLuint* indices)
         {
-            if (_vertices)
-            {
-                for(;count>0;--count,++indices)
-                {
-                    _bb.expandBy(_vertices[*indices]);
-                }
-            }
-
-            if (_vertices4)
-            {
-                for(;count>0;--count,++indices)
-                {
-                    _bb.expandBy(*((Vec3*)&_vertices4[*indices]));
-                }
-            }
+            if      (_vertices3f) _drawElements(_vertices3f, indices, indices + count);
+            else if (_vertices2f) _drawElements(_vertices2f, indices, indices + count);
+            else if (_vertices4f) _drawElements(_vertices4f, indices, indices + count);
+            else if (_vertices2d) _drawElements(_vertices2d, indices, indices + count);
+            else if (_vertices3d) _drawElements(_vertices3d, indices, indices + count);
+            else if (_vertices4d) _drawElements(_vertices4d, indices, indices + count);
         }
 
         virtual void begin(GLenum) {}
         virtual void vertex(const Vec2& vert) { _bb.expandBy(osg::Vec3(vert[0],vert[1],0.0f)); }
         virtual void vertex(const Vec3& vert) { _bb.expandBy(vert); }
         virtual void vertex(const Vec4& vert) { if (vert[3]!=0.0f) _bb.expandBy(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
+        virtual void vertex(const Vec2d& vert) { _bb.expandBy(osg::Vec3(vert[0],vert[1],0.0f)); }
+        virtual void vertex(const Vec3d& vert) { _bb.expandBy(vert); }
+        virtual void vertex(const Vec4d& vert) { if (vert[3]!=0.0f) _bb.expandBy(osg::Vec3(vert[0],vert[1],vert[2])/vert[3]); }
         virtual void vertex(float x,float y)  { _bb.expandBy(x,y,1.0f); }
         virtual void vertex(float x,float y,float z) { _bb.expandBy(x,y,z); }
         virtual void vertex(float x,float y,float z,float w) { if (w!=0.0f) _bb.expandBy(x/w,y/w,z/w); }
+        virtual void vertex(double x,double y)  { _bb.expandBy(x,y,1.0f); }
+        virtual void vertex(double x,double y,double z) { _bb.expandBy(x,y,z); }
+        virtual void vertex(double x,double y,double z,double w) { if (w!=0.0f) _bb.expandBy(x/w,y/w,z/w); }
         virtual void end() {}
        
-        const Vec3*     _vertices;
-        const Vec4*     _vertices4;
+        const Vec2*     _vertices2f;
+        const Vec3*     _vertices3f;
+        const Vec4*     _vertices4f;
+        const Vec2d*    _vertices2d;
+        const Vec3d*    _vertices3d;
+        const Vec4d*    _vertices4d;
         BoundingBox     _bb; 
 };
 
@@ -808,6 +808,12 @@ BoundingBox Drawable::computeBound() const
 
     Drawable* non_const_this = const_cast<Drawable*>(this);
     non_const_this->accept(cb);
+
+#if 0    
+    osg::notify(osg::NOTICE)<<"computeBound() "<<cb._bb.xMin()<<", "<<cb._bb.xMax()<<", "<<std::endl;
+    osg::notify(osg::NOTICE)<<"               "<<cb._bb.yMin()<<", "<<cb._bb.yMax()<<", "<<std::endl;
+    osg::notify(osg::NOTICE)<<"               "<<cb._bb.zMin()<<", "<<cb._bb.zMax()<<", "<<std::endl;
+#endif
     
     return cb._bb;
 }
@@ -968,12 +974,20 @@ void Drawable::Extensions::setupGLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glMultiTexCoord2fv, "glMultiTexCoord2fv","glMultiTexCoord2fvARB");
     setGLExtensionFuncPtr(_glMultiTexCoord3fv, "glMultiTexCoord3fv","glMultiTexCoord3fvARB");
     setGLExtensionFuncPtr(_glMultiTexCoord4fv, "glMultiTexCoord4fv","glMultiTexCoord4fvARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord1d, "glMultiTexCoord1d","glMultiTexCoorddfARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord2dv, "glMultiTexCoord2dv","glMultiTexCoord2dvARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord3dv, "glMultiTexCoord3dv","glMultiTexCoord3dvARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord4dv, "glMultiTexCoord4dv","glMultiTexCoord4dvARB");
 
     setGLExtensionFuncPtr(_glVertexAttrib1s, "glVertexAttrib1s","glVertexAttrib1sARB");
     setGLExtensionFuncPtr(_glVertexAttrib1f, "glVertexAttrib1f","glVertexAttrib1fARB");
+    setGLExtensionFuncPtr(_glVertexAttrib1d, "glVertexAttrib1d","glVertexAttrib1dARB");
     setGLExtensionFuncPtr(_glVertexAttrib2fv, "glVertexAttrib2fv","glVertexAttrib2fvARB");
     setGLExtensionFuncPtr(_glVertexAttrib3fv, "glVertexAttrib3fv","glVertexAttrib3fvARB");
     setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv","glVertexAttrib4fvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib2dv, "glVertexAttrib2dv","glVertexAttrib2dvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib3dv, "glVertexAttrib3dv","glVertexAttrib3dvARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4dv, "glVertexAttrib4dv","glVertexAttrib4dvARB");
     setGLExtensionFuncPtr(_glVertexAttrib4ubv, "glVertexAttrib4ubv","glVertexAttrib4ubvARB");
     setGLExtensionFuncPtr(_glVertexAttrib4Nubv, "glVertexAttrib4Nubv","glVertexAttrib4NubvARB");
 
@@ -1092,6 +1106,54 @@ void Drawable::Extensions::glMultiTexCoord4fv(GLenum target,const GLfloat* coord
     }
 }
 
+void Drawable::Extensions::glMultiTexCoord1d(GLenum target,GLdouble coord) const
+{
+    if (_glMultiTexCoord1d)
+    {
+        _glMultiTexCoord1d(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glMultiTexCoord1d not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord2dv(GLenum target,const GLdouble* coord) const
+{
+    if (_glMultiTexCoord2dv)
+    {
+        _glMultiTexCoord2dv(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glMultiTexCoord2dv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord3dv(GLenum target,const GLdouble* coord) const
+{
+    if (_glMultiTexCoord3dv)
+    {
+        _glMultiTexCoord3dv(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: _glMultiTexCoord3dv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glMultiTexCoord4dv(GLenum target,const GLdouble* coord) const
+{
+    if (_glMultiTexCoord4dv)
+    {
+        _glMultiTexCoord4dv(target,coord); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glMultiTexCoord4dv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
 void Drawable::Extensions::glVertexAttrib1s(unsigned int index, GLshort s) const
 {
     if (_glVertexAttrib1s)
@@ -1113,6 +1175,18 @@ void Drawable::Extensions::glVertexAttrib1f(unsigned int index, GLfloat f) const
     else
     {
         notify(WARN)<<"Error: glVertexAttrib1f not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib1d(unsigned int index, GLdouble f) const
+{
+    if (_glVertexAttrib1d)
+    {
+        _glVertexAttrib1d(index,f); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib1d not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1149,6 +1223,42 @@ void Drawable::Extensions::glVertexAttrib4fv(unsigned int index, const GLfloat *
     else
     {
         notify(WARN)<<"Error: glVertexAttrib4fv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib2dv(unsigned int index, const GLdouble * v) const
+{
+    if (_glVertexAttrib2dv)
+    {
+        _glVertexAttrib2dv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib2dv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib3dv(unsigned int index, const GLdouble * v) const
+{
+    if (_glVertexAttrib3dv)
+    {
+        _glVertexAttrib3dv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib3dv not supported by OpenGL driver"<<std::endl;
+    }
+}
+
+void Drawable::Extensions::glVertexAttrib4dv(unsigned int index, const GLdouble * v) const
+{
+    if (_glVertexAttrib4dv)
+    {
+        _glVertexAttrib4dv(index,v); 
+    }
+    else
+    {
+        notify(WARN)<<"Error: glVertexAttrib4dv not supported by OpenGL driver"<<std::endl;
     }
 }
 

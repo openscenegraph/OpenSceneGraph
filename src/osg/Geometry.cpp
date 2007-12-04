@@ -60,6 +60,15 @@ class DrawVertex
             case(Array::Vec4ArrayType): 
                 apply((*(static_cast<const Vec4Array*>(_vertices)))[pos]);
                 break;
+            case(Array::Vec3dArrayType): 
+                apply((*(static_cast<const Vec3dArray*>(_vertices)))[pos]);
+                break;
+            case(Array::Vec2dArrayType): 
+                apply((*(static_cast<const Vec2dArray*>(_vertices)))[pos]);
+                break;
+            case(Array::Vec4dArrayType): 
+                apply((*(static_cast<const Vec4dArray*>(_vertices)))[pos]);
+                break;
             default:
                 break;
             }
@@ -69,6 +78,9 @@ class DrawVertex
         inline void apply(const Vec2& v)   { glVertex2fv(v.ptr()); }
         inline void apply(const Vec3& v)   { glVertex3fv(v.ptr()); }
         inline void apply(const Vec4& v)   { glVertex4fv(v.ptr()); }
+        inline void apply(const Vec2d& v)   { glVertex2dv(v.ptr()); }
+        inline void apply(const Vec3d& v)   { glVertex3dv(v.ptr()); }
+        inline void apply(const Vec4d& v)   { glVertex4dv(v.ptr()); }
 
         const Array*        _vertices;
         const IndexArray*   _indices;
@@ -243,6 +255,18 @@ public:
     virtual void apply(const Vec4& v) 
     {
         _extensions->glVertexAttrib4fv( _vertAttribIndex, v.ptr() );
+    }
+    virtual void apply(const Vec2d& v) 
+    {
+        _extensions->glVertexAttrib2dv( _vertAttribIndex, v.ptr() );
+    }
+    virtual void apply(const Vec3d& v) 
+    {
+        _extensions->glVertexAttrib3dv( _vertAttribIndex, v.ptr() );
+    }
+    virtual void apply(const Vec4d& v) 
+    {
+        _extensions->glVertexAttrib4dv( _vertAttribIndex, v.ptr() );
     }
 
     unsigned int                    _vertAttribIndex;
@@ -2056,6 +2080,10 @@ class AttributeFunctorArrayVisitor : public ArrayVisitor
         virtual void apply(Vec2Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(Vec3Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(Vec4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(DoubleArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec2dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec3dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(Vec4dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
     
     
         inline void applyArray(Drawable::AttributeType type,Array* array)
@@ -2112,6 +2140,10 @@ class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
         virtual void apply(const Vec2Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const Vec3Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
         virtual void apply(const Vec4Array& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const DoubleArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec2dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec3dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
+        virtual void apply(const Vec4dArray& array) {  if (!array.empty()) _af.apply(_type,array.size(),&(array.front())); }
     
     
         inline void applyArray(Drawable::AttributeType type,const Array* array)
@@ -2165,6 +2197,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
         case(Array::Vec4ArrayType): 
             functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4*>(_vertexData.array->getDataPointer()));
             break;
+        case(Array::Vec2dArrayType): 
+            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2d*>(_vertexData.array->getDataPointer()));
+            break;
+        case(Array::Vec3dArrayType): 
+            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3d*>(_vertexData.array->getDataPointer()));
+            break;
+        case(Array::Vec4dArrayType): 
+            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4d*>(_vertexData.array->getDataPointer()));
+            break;
         default:
             notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
             return;
@@ -2182,6 +2223,9 @@ void Geometry::accept(PrimitiveFunctor& functor) const
         const Vec2Array* vec2Array = 0;
         const Vec3Array* vec3Array = 0;
         const Vec4Array* vec4Array = 0;
+        const Vec2dArray* vec2dArray = 0;
+        const Vec3dArray* vec3dArray = 0;
+        const Vec4dArray* vec4dArray = 0;
         Array::Type type = _vertexData.array->getType();
         switch(type)
         {
@@ -2193,6 +2237,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
             break;
         case(Array::Vec4ArrayType): 
             vec4Array = static_cast<const Vec4Array*>(_vertexData.array.get());
+            break;
+        case(Array::Vec2dArrayType): 
+            vec2dArray = static_cast<const Vec2dArray*>(_vertexData.array.get());
+            break;
+        case(Array::Vec3dArrayType): 
+            vec3dArray = static_cast<const Vec3dArray*>(_vertexData.array.get());
+            break;
+        case(Array::Vec4dArrayType): 
+            vec4dArray = static_cast<const Vec4dArray*>(_vertexData.array.get());
             break;
         default:
             notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
@@ -2229,6 +2282,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         case(Array::Vec4ArrayType): 
                             functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
+                        case(Array::Vec2dArrayType): 
+                            functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec3dArrayType): 
+                            functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec4dArrayType): 
+                            functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
+                            break;
                         default:
                             break;
                         }
@@ -2261,6 +2323,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                                 functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
                                 break;
                             case(Array::Vec4ArrayType): 
+                                functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
+                                break;
+                            case(Array::Vec2dArrayType): 
+                                functor.vertex((*vec2Array)[_vertexData.indices->index(vindex)]);
+                                break;
+                            case(Array::Vec3dArrayType): 
+                                functor.vertex((*vec3Array)[_vertexData.indices->index(vindex)]);
+                                break;
+                            case(Array::Vec4dArrayType): 
                                 functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                                 break;
                             default:
@@ -2296,6 +2367,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         case(Array::Vec4ArrayType): 
                             functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
+                        case(Array::Vec2dArrayType): 
+                            functor.vertex((*vec2dArray)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec3dArrayType): 
+                            functor.vertex((*vec3dArray)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec4dArrayType): 
+                            functor.vertex((*vec4dArray)[_vertexData.indices->index(vindex)]);
+                            break;
                         default:
                             break;
                         }
@@ -2325,6 +2405,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         case(Array::Vec4ArrayType): 
                             functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
                             break;
+                        case(Array::Vec2dArrayType): 
+                            functor.vertex((*vec2dArray)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec3dArrayType): 
+                            functor.vertex((*vec3dArray)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec4dArrayType): 
+                            functor.vertex((*vec4dArray)[_vertexData.indices->index(vindex)]);
+                            break;
                         default:
                             break;
                         }
@@ -2353,6 +2442,15 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                             break;
                         case(Array::Vec4ArrayType): 
                             functor.vertex((*vec4Array)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec2dArrayType): 
+                            functor.vertex((*vec2dArray)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec3dArrayType): 
+                            functor.vertex((*vec3dArray)[_vertexData.indices->index(vindex)]);
+                            break;
+                        case(Array::Vec4dArrayType): 
+                            functor.vertex((*vec4dArray)[_vertexData.indices->index(vindex)]);
                             break;
                         default:
                             break;
@@ -2386,6 +2484,15 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
         break;
     case(Array::Vec4ArrayType): 
         functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4*>(_vertexData.array->getDataPointer()));
+        break;
+    case(Array::Vec2dArrayType): 
+        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2d*>(_vertexData.array->getDataPointer()));
+        break;
+    case(Array::Vec3dArrayType): 
+        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3d*>(_vertexData.array->getDataPointer()));
+        break;
+    case(Array::Vec4dArrayType): 
+        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4d*>(_vertexData.array->getDataPointer()));
         break;
     default:
         notify(WARN)<<"Warning: Geometry::accept(PrimtiveIndexFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;

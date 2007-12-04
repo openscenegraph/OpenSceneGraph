@@ -501,6 +501,11 @@ class OSG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,unsigned int,Vec3*) {}
             virtual void apply(AttributeType,unsigned int,Vec4*) {}
             virtual void apply(AttributeType,unsigned int,Vec4ub*) {}
+
+            virtual void apply(AttributeType,unsigned int,double*) {}
+            virtual void apply(AttributeType,unsigned int,Vec2d*) {}
+            virtual void apply(AttributeType,unsigned int,Vec3d*) {}
+            virtual void apply(AttributeType,unsigned int,Vec4d*) {}
         };
 
 
@@ -532,6 +537,11 @@ class OSG_EXPORT Drawable : public Object
             virtual void apply(AttributeType,unsigned int,const Vec3*) {}
             virtual void apply(AttributeType,unsigned int,const Vec4*) {}
             virtual void apply(AttributeType,unsigned int,const Vec4ub*) {}
+
+            virtual void apply(AttributeType,unsigned int,const double*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec2d*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec3d*) {}
+            virtual void apply(AttributeType,unsigned int,const Vec4d*) {}
         };
 
         /** Return true if the Drawable subclass supports accept(ConstAttributeFunctor&).*/
@@ -608,11 +618,20 @@ class OSG_EXPORT Drawable : public Object
             void glMultiTexCoord3fv(GLenum target,const GLfloat* coord) const;
             void glMultiTexCoord4fv(GLenum target,const GLfloat* coord) const;
 
+            void glMultiTexCoord1d(GLenum target,GLdouble coord) const;
+            void glMultiTexCoord2dv(GLenum target,const GLdouble* coord) const;
+            void glMultiTexCoord3dv(GLenum target,const GLdouble* coord) const;
+            void glMultiTexCoord4dv(GLenum target,const GLdouble* coord) const;
+
             void glVertexAttrib1s(unsigned int index, GLshort s) const;
             void glVertexAttrib1f(unsigned int index, GLfloat f) const;
+            void glVertexAttrib1d(unsigned int index, GLdouble f) const;
             void glVertexAttrib2fv(unsigned int index, const GLfloat * v) const;
             void glVertexAttrib3fv(unsigned int index, const GLfloat * v) const;
             void glVertexAttrib4fv(unsigned int index, const GLfloat * v) const;
+            void glVertexAttrib2dv(unsigned int index, const GLdouble * v) const;
+            void glVertexAttrib3dv(unsigned int index, const GLdouble * v) const;
+            void glVertexAttrib4dv(unsigned int index, const GLdouble * v) const;
             void glVertexAttrib4ubv(unsigned int index, const GLubyte * v) const;
             void glVertexAttrib4Nubv(unsigned int index, const GLubyte * v) const;
 
@@ -654,7 +673,9 @@ class OSG_EXPORT Drawable : public Object
 
             typedef void (APIENTRY * VertexAttrib1sProc) (unsigned int index, GLshort s);
             typedef void (APIENTRY * VertexAttrib1fProc) (unsigned int index, GLfloat f);
+            typedef void (APIENTRY * VertexAttrib1dProc) (unsigned int index, GLdouble f);
             typedef void (APIENTRY * VertexAttribfvProc) (unsigned int index, const GLfloat * v);
+            typedef void (APIENTRY * VertexAttribdvProc) (unsigned int index, const GLdouble * v);
             typedef void (APIENTRY * VertexAttribubvProc) (unsigned int index, const GLubyte * v);
 
             typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
@@ -662,6 +683,8 @@ class OSG_EXPORT Drawable : public Object
 
             typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
             typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
+            typedef void (APIENTRY * MultiTexCoord1dProc) (GLenum target,GLdouble coord);
+            typedef void (APIENTRY * MultiTexCoorddvProc) (GLenum target,const GLdouble* coord);
 
 
             typedef void (APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
@@ -712,9 +735,13 @@ class OSG_EXPORT Drawable : public Object
 
             VertexAttrib1sProc _glVertexAttrib1s;
             VertexAttrib1fProc _glVertexAttrib1f;
+            VertexAttrib1dProc _glVertexAttrib1d;
             VertexAttribfvProc _glVertexAttrib2fv;
             VertexAttribfvProc _glVertexAttrib3fv;
             VertexAttribfvProc _glVertexAttrib4fv;
+            VertexAttribdvProc _glVertexAttrib2dv;
+            VertexAttribdvProc _glVertexAttrib3dv;
+            VertexAttribdvProc _glVertexAttrib4dv;
             VertexAttribubvProc _glVertexAttrib4ubv;
             VertexAttribubvProc _glVertexAttrib4Nubv;
 
@@ -722,6 +749,10 @@ class OSG_EXPORT Drawable : public Object
             MultiTexCoordfvProc _glMultiTexCoord2fv;
             MultiTexCoordfvProc _glMultiTexCoord3fv;
             MultiTexCoordfvProc _glMultiTexCoord4fv;
+            MultiTexCoord1dProc _glMultiTexCoord1d;
+            MultiTexCoorddvProc _glMultiTexCoord2dv;
+            MultiTexCoorddvProc _glMultiTexCoord3dv;
+            MultiTexCoorddvProc _glMultiTexCoord4dv;
 
             GenBuffersProc          _glGenBuffers;
             BindBufferProc          _glBindBuffer;

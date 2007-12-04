@@ -37,6 +37,18 @@ public:
     {
     }
 
+    virtual void setVertexArray(unsigned int,const Vec2d*) 
+    {
+    }
+
+    virtual void setVertexArray(unsigned int ,const Vec3d* )
+    {
+    }
+
+    virtual void setVertexArray(unsigned int,const Vec4d* ) 
+    {
+    }
+
     virtual void begin(GLenum mode)
     {
         _modeCache = mode;

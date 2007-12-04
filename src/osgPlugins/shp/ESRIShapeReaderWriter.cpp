@@ -29,7 +29,13 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile(file, options);
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            ESRIShape::ESRIShapeParser sp(fileName);
+            bool useDouble = false;
+            if (options && options->getOptionString().find("double")!=std::string::npos)
+            {
+                useDouble = true;
+            }
+
+            ESRIShape::ESRIShapeParser sp(fileName, useDouble);
             return sp.getGeode();
         }
 

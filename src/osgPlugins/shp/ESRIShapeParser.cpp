@@ -12,8 +12,9 @@
 
 using namespace ESRIShape;
 
-ESRIShapeParser::ESRIShapeParser( const std::string fileName ):
-    _valid(false)
+ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
+    _valid(false),
+    _useDouble(useDouble)
 {
     int fd = 0;
     if( !fileName.empty() )
@@ -209,8 +210,11 @@ osg::Geode *ESRIShapeParser::getGeode()
 void ESRIShapeParser::_combinePointToMultipoint()
 {
     if( !_valid ) return;
+    
+    osg::notify(osg::NOTICE)<<"_combinePointToMultipoint()"<<std::endl;
 
-    osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+    ArrayHelper coords(_useDouble);
+
     unsigned int numDrawables = _geode->getNumDrawables();
 
     for( unsigned int i = 0; i < numDrawables; i++ )
@@ -218,9 +222,7 @@ void ESRIShapeParser::_combinePointToMultipoint()
         osg::Geometry *geom = dynamic_cast<osg::Geometry *>(_geode->getDrawable(i));
         if( geom != 0L )
         {
-            osg::Vec3Array *va = dynamic_cast<osg::Vec3Array *>(geom->getVertexArray());
-            if( va != 0L )
-                coords->push_back( va->front() );
+            coords.add( geom->getVertexArray(), 0 );
         }
     }
 
@@ -228,7 +230,7 @@ void ESRIShapeParser::_combinePointToMultipoint()
 
     osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
     geometry->setVertexArray(coords.get());
-    geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords->size()));
+    geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords.size()));
     _geode->addDrawable( geometry.get() );
 }
 
@@ -239,8 +241,9 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::Point> &pts )
     std::vector<ESRIShape::Point>::const_iterator p;
     for( p = pts.begin(); p != pts.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        coords->push_back( osg::Vec3( p->x, p->y, 0.0 ));
+        ArrayHelper coords(_useDouble);
+
+        coords.add( p->x, p->y, 0.0 );
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
         geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, 1));
@@ -258,13 +261,14 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPoint> &mpts )
     std::vector<ESRIShape::MultiPoint>::const_iterator p;
     for( p = mpts.begin(); p != mpts.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
+
         for( int i = 0; i < p->numPoints ; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
+            coords.add( p->points[i].x, p->points[i].y, 0.0 );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
-        geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords->size()));
+        geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords.size()));
 
         _geode->addDrawable( geometry.get() );
     }
@@ -277,11 +281,11 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLine> &lines )
     std::vector<ESRIShape::PolyLine>::const_iterator p;
     for( p = lines.begin(); p != lines.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
 
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
+            coords.add( p->points[i].x, p->points[i].y, 0.0 );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
@@ -307,15 +311,13 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::Polygon> &polys )
     std::vector<ESRIShape::Polygon>::const_iterator p;
     for( p = polys.begin(); p != polys.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
+            coords.add( p->points[i].x, p->points[i].y, 0.0 );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
-
-
 
         for( i = 0; i < p->numParts; i++ )
         {
@@ -347,8 +349,8 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PointM> &ptms )
     std::vector<ESRIShape::PointM>::const_iterator p;
     for( p = ptms.begin(); p != ptms.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        coords->push_back( osg::Vec3( p->x, p->y, 0.0 ));
+        ArrayHelper coords(_useDouble);
+        coords.add( p->x, p->y, 0.0 );
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
         geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, 1));
@@ -365,15 +367,15 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPointM> &mptms
     std::vector<ESRIShape::MultiPointM>::const_iterator p;
     for( p = mptms.begin(); p != mptms.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
 
         // Here is where we would use the 'M' (?)
         for( int i = 0; i < p->numPoints ; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
+            coords.add( p->points[i].x, p->points[i].y, 0.0 );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
-        geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords->size()));
+        geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords.size()));
 
         _geode->addDrawable( geometry.get() );
     }
@@ -386,11 +388,11 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLineM> &linems )
     std::vector<ESRIShape::PolyLineM>::const_iterator p;
     for( p = linems.begin(); p != linems.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
 
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
+            coords.add( p->points[i].x, p->points[i].y, 0.0 );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
@@ -416,10 +418,10 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonM> &polyms )
     std::vector<ESRIShape::PolygonM>::const_iterator p;
     for( p = polyms.begin(); p != polyms.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, 0.0 ));
+            coords.add( p->points[i].x, p->points[i].y, 0.0 );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
@@ -445,8 +447,8 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PointZ> &ptzs )
     std::vector<ESRIShape::PointZ>::const_iterator p;
     for( p = ptzs.begin(); p != ptzs.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
-        coords->push_back( osg::Vec3( p->x, p->y, p->z ));
+        ArrayHelper coords(_useDouble);
+        coords.add( p->x, p->y, p->z );
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
         geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, 1));
@@ -463,15 +465,15 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPointZ> &mptzs
     std::vector<ESRIShape::MultiPointZ>::const_iterator p;
     for( p = mptzs.begin(); p != mptzs.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
 
         // Here is where we would use the 'M' (?)
         for( int i = 0; i < p->numPoints ; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
+            coords.add( p->points[i].x, p->points[i].y, p->zArray[i] );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
-        geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords->size()));
+        geometry->addPrimitiveSet( new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, coords.size()));
 
         _geode->addDrawable( geometry.get() );
     }
@@ -484,11 +486,11 @@ void ESRIShapeParser::_process(const std::vector<ESRIShape::PolyLineZ> &linezs )
     std::vector<ESRIShape::PolyLineZ>::const_iterator p;
     for( p = linezs.begin(); p != linezs.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
 
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
+            coords.add( p->points[i].x, p->points[i].y, p->zArray[i] );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
@@ -514,11 +516,11 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::PolygonZ> &polyzs )
     std::vector<ESRIShape::PolygonZ>::const_iterator p;
     for( p = polyzs.begin(); p != polyzs.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
         
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
+            coords.add( p->points[i].x, p->points[i].y, p->zArray[i] );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());
@@ -544,11 +546,11 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
     std::vector<ESRIShape::MultiPatch>::const_iterator p;
     for( p = mpatches.begin(); p != mpatches.end(); p++ )
     {
-        osg::ref_ptr<osg::Vec3Array> coords  = new osg::Vec3Array;
+        ArrayHelper coords(_useDouble);
         
         int i;
         for( i = 0; i < p->numPoints; i++ )
-            coords->push_back( osg::Vec3( p->points[i].x, p->points[i].y, p->zArray[i] ));
+            coords.add( p->points[i].x, p->points[i].y, p->zArray[i] );
 
         osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
         geometry->setVertexArray(coords.get());

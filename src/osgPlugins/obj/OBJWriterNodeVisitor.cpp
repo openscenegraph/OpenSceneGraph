@@ -99,6 +99,12 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
 
         virtual void setVertexArray(unsigned int,const osg::Vec4* ) {}
         
+        virtual void setVertexArray(unsigned int,const osg::Vec2d*) {}
+
+        virtual void setVertexArray(unsigned int ,const osg::Vec3d* ) {}
+
+        virtual void setVertexArray(unsigned int,const osg::Vec4d* ) {}
+        
         void write(unsigned int i) 
         {
             _fout << (i + _lastVertexIndex) << "/";
@@ -524,7 +530,7 @@ void OBJWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) {
     {
         osg::PrimitiveSet* ps = geo->getPrimitiveSet(i);
         
-        PrimitiveIndexWriter pif(_fout, geo, normalIndex, _lastVertexIndex, _lastNormalIndex, _lastTexIndex);            
+        PrimitiveIndexWriter pif(_fout, geo, normalIndex, _lastVertexIndex, _lastNormalIndex, _lastTexIndex);
         ps->accept(pif);
         
         if(geo->getNormalArray() && geo->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET)

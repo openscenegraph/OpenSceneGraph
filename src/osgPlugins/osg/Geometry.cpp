@@ -550,6 +550,23 @@ Array* Array_readLocalData(Input& fr)
         ++fr;
         return_array = array;
     }
+    else if (strcmp(arrayName,"DoubleArray")==0)
+    {
+        DoubleArray* array = new DoubleArray;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            double double_value;
+            if (fr[0].getFloat(double_value))
+            {
+                ++fr;
+                array->push_back(double_value);
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
     else if (strcmp(arrayName,"Vec2Array")==0)
     {
         Vec2Array* array = new Vec2Array;
@@ -557,6 +574,23 @@ Array* Array_readLocalData(Input& fr)
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             Vec2 v;
+            if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()))
+            {
+                fr += 2;
+                array->push_back(v);
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Vec2dArray")==0)
+    {
+        Vec2dArray* array = new Vec2dArray;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            Vec2d v;
             if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()))
             {
                 fr += 2;
@@ -584,6 +618,23 @@ Array* Array_readLocalData(Input& fr)
         ++fr;
         return_array = array;
     }
+    else if (strcmp(arrayName,"Vec3dArray")==0)
+    {
+        Vec3dArray* array = new Vec3dArray;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            Vec3d v;
+            if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()))
+            {
+                fr += 3;
+                array->push_back(v);
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
     else if (strcmp(arrayName,"Vec4Array")==0)
     {
         Vec4Array* array = new Vec4Array;
@@ -591,6 +642,23 @@ Array* Array_readLocalData(Input& fr)
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
         {
             Vec4 v;
+            if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()) && fr[3].getFloat(v.w()))
+            {
+                fr += 4;
+                array->push_back(v);
+            }
+            else ++fr;
+        }
+        ++fr;
+        return_array = array;
+    }
+    else if (strcmp(arrayName,"Vec4dArray")==0)
+    {
+        Vec4dArray* array = new Vec4dArray;
+        array->reserve(capacity);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            Vec4d v;
             if (fr[0].getFloat(v.x()) && fr[1].getFloat(v.y()) && fr[2].getFloat(v.z()) && fr[3].getFloat(v.w()))
             {
                 fr += 4;
@@ -832,6 +900,46 @@ bool Array_writeLocalData(const Array& array,Output& fw)
                 const Vec4Array& carray = static_cast<const Vec4Array&>(array);
                 fw<<array.className()<<" "<<carray.size()<<std::endl;
                 writeArray(fw,carray.begin(),carray.end(),1);
+                return true;
+            }
+            break;
+        case(Array::DoubleArrayType):
+            {
+                int prec = fw.precision(15);
+                const DoubleArray& carray = static_cast<const DoubleArray&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end());
+                fw.precision(prec);
+                return true;
+            }
+            break;
+        case(Array::Vec2dArrayType):
+            {
+                int prec = fw.precision(15);
+                const Vec2dArray& carray = static_cast<const Vec2dArray&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(),1);
+                fw.precision(prec);
+                return true;
+            }
+            break;
+        case(Array::Vec3dArrayType):
+            {
+                int prec = fw.precision(15);
+                const Vec3dArray& carray = static_cast<const Vec3dArray&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(),1);
+                fw.precision(prec);
+                return true;
+            }
+            break;
+        case(Array::Vec4dArrayType):
+            {
+                int prec = fw.precision(15);
+                const Vec4dArray& carray = static_cast<const Vec4dArray&>(array);
+                fw<<array.className()<<" "<<carray.size()<<std::endl;
+                writeArray(fw,carray.begin(),carray.end(),1);
+                fw.precision(prec);
                 return true;
             }
             break;

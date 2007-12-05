@@ -48,6 +48,12 @@ ADD_SUBDIRECTORY(net)
 ADD_SUBDIRECTORY(osg)
 ADD_SUBDIRECTORY(ive)
 
+############################################################
+#
+#  Viewer plugins
+#
+ADD_SUBDIRECTORY(cfg)
+
 
 ############################################################
 #

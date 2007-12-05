@@ -185,8 +185,6 @@ public:
     else
       result = ReadResult(view.get());
       
-    osgDB::writeObjectFile(*view,"test.view");
-
     if(options && filePathList)
       filePathList->pop_back();
 

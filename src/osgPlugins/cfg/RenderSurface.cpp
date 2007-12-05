@@ -494,7 +494,7 @@ void RenderSurface::setVisualInfo( VisualInfo *vi )
         return;
     }
     _visualInfo = vi;
-#ifdef WIN32
+#ifdef _WIN32_IMPLEMENTATION
     _ownVisualInfo = false;
 #endif
 }
@@ -519,7 +519,8 @@ void RenderSurface::setVisualChooser( VisualChooser *vc )
         return;
     }
     _visualChooser = vc;
-#ifdef WIN32
+
+#ifdef _WIN32_IMPLEMENTATION
     _ownVisualChooser = false;
 #endif
 }

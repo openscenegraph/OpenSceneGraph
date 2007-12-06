@@ -266,22 +266,63 @@ bool GraphicsWindowX11::createVisualInfo()
 #define MWM_FUNC_CLOSE        (1L<<5)
 
 
+bool GraphicsWindowX11::checkAndSendEventFullScreenIfNeeded(Display* display, int x, int y, int width, int height, bool windowDecoration)
+{
+  osg::GraphicsContext::WindowingSystemInterface *wsi = osg::GraphicsContext::getWindowingSystemInterface();
+  if (wsi == NULL) {
+    osg::notify(osg::NOTICE) << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
+    return false;
+  }
+
+  unsigned int    screenWidth;
+  unsigned int    screenHeight;
+
+  wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
+  bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !windowDecoration;
+
+  Atom netWMStateAtom = XInternAtom(display, "_NET_WM_STATE", True);
+  Atom netWMStateFullscreenAtom = XInternAtom(display,
+                                              "_NET_WM_STATE_FULLSCREEN", True);
+
+  if (netWMStateAtom != None && netWMStateFullscreenAtom != None) {
+    XEvent xev;
+    xev.xclient.type = ClientMessage;
+    xev.xclient.serial = 0;
+    xev.xclient.send_event = True;
+    xev.xclient.window = _window;
+    xev.xclient.message_type = netWMStateAtom;
+    xev.xclient.format = 32;
+    xev.xclient.data.l[0] = isFullScreen ? 1 : 0;
+    xev.xclient.data.l[1] = netWMStateFullscreenAtom;
+    xev.xclient.data.l[2] = 0;
+
+    XSendEvent(display, RootWindow(display, DefaultScreen(display)),
+               False,  SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+    return true;
+  }
+  return false;
+}
+
 bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
 {
     Display* display = getDisplayToUse();
-    
+
+    XMapWindow(display, _window );
+
+    checkAndSendEventFullScreenIfNeeded(display, _traits->x, _traits->y, _traits->width, _traits->height, flag);
+    struct
+    {
+        unsigned long flags;
+        unsigned long functions;
+        unsigned long decorations;
+        long          inputMode;
+        unsigned long status;
+    } wmHints;
+
     Atom atom;
+    bool result = false;
     if( (atom = XInternAtom( display, "_MOTIF_WM_HINTS", 0 )) != None )
     {
-    
-        struct
-        {
-            unsigned long flags;
-            unsigned long functions;
-            unsigned long decorations;
-            long          inputMode;
-            unsigned long status;
-        } wmHints;
         
         wmHints.flags = 0;
         wmHints.functions = MWM_FUNC_ALL;
@@ -299,35 +340,22 @@ bool GraphicsWindowX11::setWindowDecorationImplementation(bool flag)
             wmHints.flags |= MWM_HINTS_FUNCTIONS;
             if (_traits.valid() && !_traits->supportsResize) wmHints.functions |= MWM_FUNC_RESIZE;
         }
-
-        XMapWindow(display, _window );
         XChangeProperty( display, _window, atom, atom, 32, PropModeReplace, (unsigned char *)&wmHints,  5 );
-
-        XFlush(display);
-        XSync(display,0);
-
-#if 0
-        // now update the window dimensions to account for any size changes made by the window manager,
-        XGetWindowAttributes( display, _window, &watt );
-        _traits->width = watt.width;
-        _traits->height = watt.height;
-#endif
-
-        // add usleep here to give window manager a chance to handle the request, if
-        // we don't add this sleep then any X11 calls right afterwards can produce
-        // X11 errors.
-        usleep(100000);
-        
-        return true;
-
+        result = true;
     }
     else
     {
         osg::notify(osg::NOTICE)<<"Error: GraphicsWindowX11::setBorder(" << flag << ") - couldn't change decorations." << std::endl;
-        return false;
+        result = false;
     }
 
-    
+    XFlush(display);
+    XSync(display,0);
+    // add usleep here to give window manager a chance to handle the request, if
+    // we don't add this sleep then any X11 calls right afterwards can produce
+    // X11 errors.
+    usleep(100000);
+    return result;
 }
 
 bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width, int height)
@@ -341,10 +369,13 @@ bool GraphicsWindowX11::setWindowRectangleImplementation(int x, int y, int width
     XFlush(display);
     XSync(display, 0);
 
+    checkAndSendEventFullScreenIfNeeded(display, x, y, width, height, _traits->windowDecoration);
+
     // add usleep here to give window manager a chance to handle the request, if
     // we don't add this sleep then any X11 calls right afterwards can produce
     // X11 errors.
     usleep(100000);
+
     
     return true;
 }

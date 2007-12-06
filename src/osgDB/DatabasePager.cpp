@@ -25,6 +25,8 @@ static osg::ApplicationUsageProxy DatabasePager_e1(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
 static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_DRAWABLE <mode>","Set the drawable policy for setting of loaded drawable to specified type.  mode can be one of DoNotModify, DisplayList, VBO or VertexArrays>.");
 static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
+static osg::ApplicationUsageProxy DatabasePager_e5(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_CHILDREN_TO_REMOVE_PER_FRAME <int>", "Set the maximum number of PagedLOD child to remove per frame.");
+static osg::ApplicationUsageProxy DatabasePager_e6(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_MINIMUM_INACTIVE_PAGEDLOD <int>", "Set the minimum number of inactive PagedLOD child to keep.");
 
 DatabasePager::DatabasePager()
 {
@@ -134,6 +136,16 @@ DatabasePager::DatabasePager()
         _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
     }
 
+    _maximumNumOfRemovedChildPagedLODs = 1;
+    if( (ptr = getenv("OSG_DATABASE_PAGER_CHILDREN_TO_REMOVE_PER_FRAME")) != 0)
+    {
+        _maximumNumOfRemovedChildPagedLODs = atoi(ptr);
+    }
+    _minimumNumOfInactivePagedLODs = 100;
+    if( (ptr = getenv("OSG_DATABASE_PAGER_MINIMUM_INACTIVE_PAGEDLOD")) != 0)
+    {
+        _minimumNumOfInactivePagedLODs = atoi(ptr);
+    }
 
     // initialize the stats variables
     resetStats();
@@ -174,6 +186,8 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _targetFrameRate = rhs._targetFrameRate;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = rhs._minimumTimeAvailableForGLCompileAndDeletePerFrame;
     _maximumNumOfObjectsToCompilePerFrame = rhs._maximumNumOfObjectsToCompilePerFrame;
+    _maximumNumOfRemovedChildPagedLODs = rhs._maximumNumOfRemovedChildPagedLODs;
+    _minimumNumOfInactivePagedLODs = rhs._minimumNumOfInactivePagedLODs;
 
     // initialize the stats variables
     resetStats();
@@ -833,11 +847,10 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     
     unsigned int i = 0;
     // unsigned int numberOfPagedLODToTest = _inactivePagedLODList.size();
-    unsigned int targetNumOfInActivePagedLODs = 100;
     unsigned int targetNumOfRemovedChildPagedLODs = 0;
-    if (_inactivePagedLODList.size()>targetNumOfInActivePagedLODs) targetNumOfRemovedChildPagedLODs = _inactivePagedLODList.size()-targetNumOfInActivePagedLODs;
+    if (_inactivePagedLODList.size() > _minimumNumOfInactivePagedLODs) targetNumOfRemovedChildPagedLODs = _inactivePagedLODList.size() - _minimumNumOfInactivePagedLODs;
     
-    if (targetNumOfRemovedChildPagedLODs>1) targetNumOfRemovedChildPagedLODs=1;
+    if (targetNumOfRemovedChildPagedLODs > _maximumNumOfRemovedChildPagedLODs) targetNumOfRemovedChildPagedLODs = _maximumNumOfRemovedChildPagedLODs;
     
 
     // filter out singly referenced PagedLOD and move reactivated PagedLOD into the active list

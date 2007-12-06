@@ -237,8 +237,8 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
     double yaw2stop = 91.0;
     double yaw2step = 0.1;
 #endif
-    
-    std::cout << std::endl << "Starting " << __FUNCTION__ << ", it can take a while ..." << std::endl;
+
+    std::cout << std::endl << "Starting testGetQuatFromMatrix, it can take a while ..." << std::endl;
 
     osg::Timer_t tstart, tstop;
     tstart = osg::Timer::instance()->tick();
@@ -292,7 +292,7 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
                 (fabs(out_quat1.y()-out_quat2.y())) > eps ||
                 (fabs(out_quat1.z()-out_quat2.z())) > eps ||
                 (fabs(out_quat1.w()-out_quat2.w())) > eps) {
-                std::cout << __FUNCTION__ << " problem at: \n"
+                std::cout << "testGetQuatFromMatrix problem at: \n"
                       << " r1=" << rol1
                       << " p1=" << pit1
                       << " y1=" << yaw1
@@ -310,7 +310,7 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
     }
     tstop = osg::Timer::instance()->tick();
     double duration = osg::Timer::instance()->delta_s(tstart,tstop);
-    std::cout << "Time for " << __FUNCTION__ << " with " << count << " iterations: " << duration << std::endl << std::endl;
+    std::cout << "Time for testGetQuatFromMatrix with " << count << " iterations: " << duration << std::endl << std::endl;
 }
 
 void testQuatRotate(const osg::Vec3d& from, const osg::Vec3d& to)

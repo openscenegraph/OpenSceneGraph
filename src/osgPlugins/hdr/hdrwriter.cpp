@@ -30,6 +30,7 @@
 #include "hdrwriter.h"
 
 #include <sstream>
+#include <ostream>
 #include <string>
 #include <math.h>
 #include <ctype.h>

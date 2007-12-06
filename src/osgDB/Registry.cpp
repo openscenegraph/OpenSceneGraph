@@ -1331,14 +1331,15 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         aitr!=_archiveExtList.end();
         ++aitr)
     {
-        std::string archiveName = "." + (*aitr);
+        std::string archiveExtension = "." + (*aitr);
 
-        std::string::size_type positionArchive = readFunctor._filename.find(archiveName+'/');
-        if (positionArchive==std::string::npos) positionArchive = readFunctor._filename.find(archiveName+'\\');
+        std::string::size_type positionArchive = readFunctor._filename.find(archiveExtension+'/');
+        if (positionArchive==std::string::npos) positionArchive = readFunctor._filename.find(archiveExtension+'\\');
         if (positionArchive!=std::string::npos)
         {
-            std::string archiveName(readFunctor._filename.substr(0,positionArchive+5));
-            std::string fileName(readFunctor._filename.substr(positionArchive+6,std::string::npos));
+            std::string::size_type endArchive = positionArchive + archiveExtension.length();
+            std::string archiveName( readFunctor._filename.substr(0,endArchive));
+            std::string fileName(readFunctor._filename.substr(endArchive+1,std::string::npos));
             osg::notify(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
             osg::notify(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
             osg::notify(osg::INFO)<<"         filename : "<<fileName<<std::endl;

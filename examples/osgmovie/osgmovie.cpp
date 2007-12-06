@@ -34,6 +34,7 @@
 #include <osg/io_utils>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
 #include <osgGA/EventVisitor>
 
 #include <iostream>
@@ -43,7 +44,7 @@ class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    MovieEventHandler():_trackMouse(false) {}
+    MovieEventHandler():_trackMouse(false),playToggle_(true) {}
     
     void setMouseTracking(bool track) { _trackMouse = track; }
     bool getMouseTracking() const { return _trackMouse; }
@@ -54,7 +55,7 @@ public:
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
-    typedef std::vector< osg::observer_ptr<osg::ImageStream> > ImageStreamList;
+    typedef std::vector< osg::ref_ptr<osg::ImageStream> > ImageStreamList;
 
 protected:
 
@@ -112,6 +113,7 @@ protected:
     };
 
 
+    bool            playToggle_;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
     
@@ -196,47 +198,25 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()=='s')
+            if (ea.getKey()=='p')
             {
                 for(ImageStreamList::iterator itr=_imageStreamList.begin();
                     itr!=_imageStreamList.end();
                     ++itr)
                 {
-                    std::cout<<"Play"<<std::endl;
-                    (*itr)->play();
-                }
-                return true;
-            }
-            else if (ea.getKey()=='p')
-            {
-                for(ImageStreamList::iterator itr=_imageStreamList.begin();
-                    itr!=_imageStreamList.end();
-                    ++itr)
-                {
-                    std::cout<<"Pause"<<std::endl;
-                    (*itr)->pause();
-                }
-                return true;
-            }
-            else if (ea.getKey()=='+')
-            {
-                for(ImageStreamList::iterator itr=_imageStreamList.begin();
-                    itr!=_imageStreamList.end();
-                    ++itr)
-                {
-                    osg::ImageStream* movie = itr->get();
-                    movie->setVolume(movie->getVolume()+0.1f);
-                }
-                return true;
-            }
-            else if (ea.getKey()=='-')
-            {
-                for(ImageStreamList::iterator itr=_imageStreamList.begin();
-                    itr!=_imageStreamList.end();
-                    ++itr)
-                {
-                    osg::ImageStream* movie = itr->get();
-                    movie->setVolume(movie->getVolume()-0.1f);
+                    playToggle_ = !playToggle_;
+                    if ( playToggle_ )
+                    {
+                        // playing, so pause
+                        std::cout<<"Play"<<std::endl;
+                        (*itr)->play();
+                    }
+                    else
+                    {
+                        // playing, so pause
+                        std::cout<<"Pause"<<std::endl;
+                        (*itr)->pause();
+                    }
                 }
                 return true;
             }
@@ -252,7 +232,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 }
                 return true;
             }
-            else if (ea.getKey()=='l')
+            else if (ea.getKey()=='L')
             {
                 for(ImageStreamList::iterator itr=_imageStreamList.begin();
                     itr!=_imageStreamList.end();
@@ -282,8 +262,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
 
 void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    usage.addKeyboardMouseBinding("p","Pause movie");
-    usage.addKeyboardMouseBinding("s","Play movie");
+    usage.addKeyboardMouseBinding("p","Play/Pause movie");
     usage.addKeyboardMouseBinding("r","Restart movie");
     usage.addKeyboardMouseBinding("l","Toggle looping of movie");
 }
@@ -465,11 +444,15 @@ int main(int argc, char** argv)
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
-    meh->set(viewer.getSceneData());
-    viewer.addEventHandler(meh);
-    
-    // add in support for stats
-    viewer.addEventHandler(new osgViewer::StatsHandler());
+    meh->set( viewer.getSceneData() );
+    viewer.addEventHandler( meh );
+
+    viewer.addEventHandler( new osgViewer::StatsHandler );
+    viewer.addEventHandler( new osgGA::StateSetManipulator( viewer.getCamera()->getOrCreateStateSet() ) );
+    viewer.addEventHandler( new osgViewer::WindowSizeHandler );
+
+    // add the record camera path handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
     // report any errors if they have occured when parsing the program aguments.
     if (arguments.errors())

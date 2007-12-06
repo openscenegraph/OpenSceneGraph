@@ -26,6 +26,7 @@
 
 #include <osg/Image>
 
+#include <iosfwd>
 #include <math.h>
 
 class HDRWriter {

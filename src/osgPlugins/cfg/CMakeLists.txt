@@ -16,5 +16,7 @@ SET(TARGET_H
   VisualChooser.h
 )
 
+SET(TARGET_ADDED_LIBRARIES osgViewer)
+
 #### end var setup  ###
 SETUP_PLUGIN(cfg)

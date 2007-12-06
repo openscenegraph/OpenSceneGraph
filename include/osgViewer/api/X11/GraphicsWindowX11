@@ -154,6 +154,9 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         
         void init();
 
+        bool checkAndSendEventFullScreenIfNeeded(Display* display, int x, int y, int width, int height, bool windowDecoration);
+
+
         void transformMouseXY(float& x, float& y);
         void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);
         

@@ -79,6 +79,8 @@
 #endif
 #include "ConvertToInventor.h"
 
+#include <assert.h>
+
 
 #define DEBUG_IV_WRITER 1
 

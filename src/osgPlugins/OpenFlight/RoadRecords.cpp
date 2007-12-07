@@ -35,9 +35,12 @@ class RoadSegment : public PrimaryRecord
 
         virtual ~RoadSegment() {}
 
-        virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             _roadSegment = new osg::Group;
+            std::string id = in.readString(8);
+
+            _roadSegment->setName(id);
 
             // Add to parent.
             if (_parent.valid())
@@ -70,9 +73,13 @@ class RoadConstruction : public PrimaryRecord
 
         virtual ~RoadConstruction() {}
 
-        virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             _roadConstruction = new osg::Group;
+
+            std::string id = in.readString(8);
+
+            _roadConstruction->setName(id);
 
             // Add to parent.
             if (_parent.valid())

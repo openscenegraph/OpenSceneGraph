@@ -361,7 +361,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
         if (!foundEntry)
         {
-            osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
+            osg::notify(osg::INFO)<<"In DatabasePager::requestNodeFile("<<fileName<<")"<<std::endl;
 
             osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
 
@@ -783,7 +783,7 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
         } 
         group->addChild(databaseRequest->_loadedModel.get());
 
-        osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
+        osg::notify(osg::INFO)<<"merged subgraph "<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
     
         double timeToMerge = timeStamp-databaseRequest->_timestampFirstRequest;
 

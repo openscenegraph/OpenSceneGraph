@@ -607,7 +607,9 @@ void StateSet::merge(const StateSet& rhs)
         ModeList::iterator lhs_mitr = _modeList.find(rhs_mitr->first);
         if (lhs_mitr!=_modeList.end())
         {
-            if (!(lhs_mitr->second & StateAttribute::OVERRIDE)) 
+            // take the rhs mode unless the lhs is override and the rhs is not protected 
+            if (!(lhs_mitr->second & StateAttribute::OVERRIDE ) ||
+                 (rhs_mitr->second & StateAttribute::PROTECTED)) 
             {
                 // override isn't on in rhs, so overrite it with incomming
                 // value.
@@ -630,7 +632,9 @@ void StateSet::merge(const StateSet& rhs)
         AttributeList::iterator lhs_aitr = _attributeList.find(rhs_aitr->first);
         if (lhs_aitr!=_attributeList.end())
         {
-            if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE)) 
+            // take the rhs attribute unless the lhs is override and the rhs is not protected 
+            if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE) ||
+                 (rhs_aitr->second.second & StateAttribute::PROTECTED))
             {
                 // override isn't on in rhs, so overrite it with incomming
                 // value.
@@ -675,7 +679,9 @@ void StateSet::merge(const StateSet& rhs)
             ModeList::iterator lhs_mitr = lhs_modeList.find(rhs_mitr->first);
             if (lhs_mitr!=lhs_modeList.end())
             {
-                if (!(lhs_mitr->second & StateAttribute::OVERRIDE)) 
+                // take the rhs mode unless the lhs is override and the rhs is not protected 
+                if (!(lhs_mitr->second & StateAttribute::OVERRIDE) ||
+                     (rhs_mitr->second & StateAttribute::PROTECTED)) 
                 {
                     // override isn't on in rhs, so overrite it with incomming
                     // value.
@@ -705,7 +711,9 @@ void StateSet::merge(const StateSet& rhs)
             AttributeList::iterator lhs_aitr = lhs_attributeList.find(rhs_aitr->first);
             if (lhs_aitr!=lhs_attributeList.end())
             {
-                if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE)) 
+                // take the rhs attribute unless the lhs is override and the rhs is not protected 
+                if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE) ||
+                     (rhs_aitr->second.second & StateAttribute::PROTECTED)) 
                 {
                     // override isn't on in rhs, so overrite it with incomming
                     // value.
@@ -739,7 +747,9 @@ void StateSet::merge(const StateSet& rhs)
         UniformList::iterator lhs_uitr = _uniformList.find(rhs_uitr->first);
         if (lhs_uitr!=_uniformList.end())
         {
-            if (!(lhs_uitr->second.second & StateAttribute::OVERRIDE)) 
+            // take the rhs uniform unless the lhs is override and the rhs is not protected 
+            if (!(lhs_uitr->second.second & StateAttribute::OVERRIDE) ||
+                 (rhs_uitr->second.second & StateAttribute::PROTECTED)) 
             {
                 // override isn't on in rhs, so overrite it with incomming
                 // value.

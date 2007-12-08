@@ -27,6 +27,8 @@ class OSG_EXPORT Light : public StateAttribute
 
         Light();
 
+        Light(unsigned int lightnum);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Light(const Light& light,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(light,copyop),
@@ -42,7 +44,12 @@ class OSG_EXPORT Light : public StateAttribute
             _spot_exponent(light._spot_exponent),
             _spot_cutoff(light._spot_cutoff) {}
         
-        META_StateAttribute(osg, Light, LIGHT);
+        virtual osg::Object* cloneType() const { return new Light(_lightnum); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Light(*this,copyop); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Light *>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Light"; }
+        virtual Type getType() const { return LIGHT; }
 
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const
@@ -78,7 +85,7 @@ class OSG_EXPORT Light : public StateAttribute
         
 
         /** Set which OpenGL light to operate on. */
-        void setLightNum(int num) { _lightnum = num; }
+        void setLightNum(int num);
         
         /** Get which OpenGL light this osg::Light operates on. */
         int getLightNum() const { return _lightnum; }

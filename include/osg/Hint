@@ -25,7 +25,7 @@ public:
 
         Hint():
             _target(GL_NONE),
-            _mode(GL_NONE) {}
+            _mode(GL_DONT_CARE) {}
 
         Hint(GLenum target, GLenum mode):
             _target(target),
@@ -37,13 +37,18 @@ public:
             _target(hint._target),
             _mode(hint._mode) {}
 
-        META_StateAttribute(osg, Hint, HINT);
+        virtual osg::Object* cloneType() const { return new Hint( _target, GL_DONT_CARE ); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Hint(*this,copyop); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Hint *>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "Light"; }
+        virtual Type getType() const { return HINT; }
 
         virtual int compare(const StateAttribute& sa) const
         {
-	    // check the types are equal and then create the rhs variable
-	    // used by the COMPARE_StateAttribute_Parameter macro's below.
-	    COMPARE_StateAttribute_Types(Hint,sa)
+        // check the types are equal and then create the rhs variable
+        // used by the COMPARE_StateAttribute_Parameter macro's below.
+        COMPARE_StateAttribute_Types(Hint,sa)
 
             // compare each paramter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_target)
@@ -55,7 +60,7 @@ public:
         /** Return the member identifier within the attribute's class type. Used for light number/clip plane number etc.*/
         virtual unsigned int getMember() const { return static_cast<unsigned int>(_target); }
         
-        inline void setTarget(GLenum target) { _target = target;  }
+        inline void setTarget(GLenum target);
         inline GLenum getTarget() const { return _target;  }
         
         inline void setMode(GLenum mode) { _mode = mode; }

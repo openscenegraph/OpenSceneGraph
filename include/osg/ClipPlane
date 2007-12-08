@@ -27,6 +27,7 @@ class OSG_EXPORT ClipPlane : public StateAttribute
     public :
 
         ClipPlane();
+        inline ClipPlane(unsigned int no) { setClipPlaneNum(no); }
         inline ClipPlane(unsigned int no,const Vec4d& plane)    { setClipPlaneNum(no); setClipPlane(plane); }
         inline ClipPlane(unsigned int no,const Plane& plane)   { setClipPlaneNum(no); setClipPlane(plane); }
         inline ClipPlane(unsigned int no,double a,double b,double c,double d)  { setClipPlaneNum(no); setClipPlane(a,b,c,d); }
@@ -42,7 +43,12 @@ class OSG_EXPORT ClipPlane : public StateAttribute
             _clipPlaneNum=cp._clipPlaneNum;
         }
         
-        META_StateAttribute(osg, ClipPlane, CLIPPLANE);
+        virtual osg::Object* cloneType() const { return new ClipPlane( _clipPlaneNum ); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new ClipPlane(*this,copyop); }
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const ClipPlane *>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "ClipPlane"; }
+        virtual Type getType() const { return CLIPPLANE; }
         
         /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const StateAttribute& sa) const

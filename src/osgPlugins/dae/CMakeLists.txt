@@ -14,18 +14,44 @@ SET(TARGET_SRC
     domSourceReader.cpp
     ReaderWriterDAE.cpp
 )
+
 SET(TARGET_H 
     daeReader.h
     daeWriter.h
     domSourceReader.h
 )
-IF(WIN32)
+
+OPTION(COLLADA_USE_STATIC "Set to ON to build OpenSceneGraph with static Collada support." OFF)
+MARK_AS_ADVANCED(COLLADA_USE_STATIC)
+
+IF    (WIN32)
+
+  IF   (COLLADA_USE_STATIC)
     SET(TARGET_EXTERNAL_LIBRARIES libcollada_dom libcollada_dae libcollada_STLDatabase libcollada_LIBXMLPlugin libcollada_stdErrPlugin libxml2 )
-ELSE(WIN32)
-    #SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae collada_STLDatabase collada_LIBXMLPlugin collada_stdErrPlugin xml2 )
+  ELSE (COLLADA_USE_STATIC)
+    ADD_DEFINITIONS(-DDOM_DYNAMIC)
+  ENDIF(COLLADA_USE_STATIC)
+
+ELSE (WIN32)
+
+    # SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae collada_STLDatabase collada_LIBXMLPlugin collada_stdErrPlugin xml2 )
     # JC hack STLDatabase and XMLPlugin are statically linked on Linux
-    SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae xml2 )
+    #
+    # This works in "shared" mode
+    # SET(TARGET_EXTERNAL_LIBRARIES collada_dom_shared collada_dae_shared xml2 )
+    #
+    # This works in "static" mode
+    # SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae xml2 pcrecpp)
+    #
+    # ...so what we need is a conditional way to properly SET() the right one.
+    IF(COLLADA_USE_STATIC)
+        SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae xml2 pcrecpp)
+    ELSE(COLLADA_USE_STATIC)
+        SET(TARGET_EXTERNAL_LIBRARIES collada_dom_shared collada_dae_shared xml2)
+    ENDIF(COLLADA_USE_STATIC)
+
 ENDIF(WIN32)
+
 SET(TARGET_LIBRARIES_VARS COLLADA_LIBRARY)
 
 #### end var setup  ###

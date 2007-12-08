@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Light>
+#include <osg/StateSet>
 #include <osg/Notify>
 
 using namespace osg;
@@ -18,19 +19,13 @@ using namespace osg;
 Light::Light( void )
 {
     init();
-
-    //     notify(DEBUG) << "_ambient "<<_ambient<<std::endl;
-    //     notify(DEBUG) << "_diffuse "<<_diffuse<<std::endl;
-    //     notify(DEBUG) << "_specular "<<_specular<<std::endl;
-    //     notify(DEBUG) << "_position "<<_position<<std::endl;
-    //     notify(DEBUG) << "_direction "<<_direction<<std::endl;
-    //     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<std::endl;
-    //     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<std::endl;
-    //     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<std::endl;
-    //     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<std::endl;
-    //     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<std::endl;
 }
 
+Light::Light(unsigned int lightnum)
+{
+    init();
+    _lightnum = lightnum;
+}
 
 Light::~Light( void )
 {
@@ -50,7 +45,60 @@ void Light::init( void )
     _constant_attenuation = 1.0f;
     _linear_attenuation = 0.0f;
     _quadratic_attenuation = 0.0f;
+
+    //     notify(DEBUG) << "_ambient "<<_ambient<<std::endl;
+    //     notify(DEBUG) << "_diffuse "<<_diffuse<<std::endl;
+    //     notify(DEBUG) << "_specular "<<_specular<<std::endl;
+    //     notify(DEBUG) << "_position "<<_position<<std::endl;
+    //     notify(DEBUG) << "_direction "<<_direction<<std::endl;
+    //     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<std::endl;
+    //     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<std::endl;
+    //     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<std::endl;
+    //     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<std::endl;
+    //     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<std::endl;
 }
+
+void Light::setLightNum(int num) 
+{
+    if (_lightnum==num) return;
+
+    if (_parents.empty())
+    {
+        _lightnum = num;
+        return;
+    }
+
+    // take a reference to this clip plane to prevent it from going out of scope
+    // when we remove it temporarily from its parents.
+    osg::ref_ptr<Light> lightRef = this;
+
+    // copy the parents as they _parents list will be changed by the subsequent removeAttributes.
+    ParentList parents = _parents;
+
+    // remove this attribute from its parents as its position is being changed
+    // and would no longer be valid.
+    ParentList::iterator itr;
+    for(itr = parents.begin();
+        itr != parents.end();
+        ++itr)
+    {
+        osg::StateSet* stateset = *itr;
+        stateset->removeAttribute(this);
+    }
+    
+    // assign the hint target
+    _lightnum = num;
+
+    // add this attribute back into its original parents with its new position
+    for(itr = parents.begin();
+        itr != parents.end();
+        ++itr)
+    {
+        osg::StateSet* stateset = *itr;
+        stateset->setAttribute(this);
+    }
+}
+
 
 
 void Light::captureLightState()

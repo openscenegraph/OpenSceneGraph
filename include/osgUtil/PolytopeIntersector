@@ -24,14 +24,21 @@ namespace osgUtil
 class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 {
     public:
-    
-        /** Construct a PolytopeIntersector using speified polytope in MODEL coordinates.*/
+        /// dimension enum to specify primitive types to check.
+        enum {
+            DimZero = (1<<0),    ///< check for points
+            DimOne = (1<<1),     ///< check for lines
+            DimTwo = (1<<2),     ///< check for triangles, quad
+            AllDims = (DimZero | DimOne | DimTwo)
+        };
+
+        /** Construct a PolytopeIntersector using specified polytope in MODEL coordinates.*/
         PolytopeIntersector(const osg::Polytope& polytope);
-        
-        /** Construct a PolytopeIntersector using speified polytope in specified coordinate frame.*/
+
+        /** Construct a PolytopeIntersector using specified polytope in specified coordinate frame.*/
         PolytopeIntersector(CoordinateFrame cf, const osg::Polytope& polytope);
-        
-        /** Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates
+
+        /** Convenience constructor for supporting picking in WINDOW, or PROJECTION coordinates
           * In WINDOW coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax.
           * In PROJECTION coordinates (clip space cube) creates a five sided polytope box that has a front face at -1 and sides around box xMin, yMin, xMax, yMax.
           * In VIEW and MODEL coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax.*/
@@ -40,16 +47,29 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
         struct Intersection
         {
             Intersection() {}
-        
+
             bool operator < (const Intersection& rhs) const
             {
+                if (distance < rhs.distance) return true;
+                if (rhs.distance < distance) return false;
+                if (primitiveIndex < rhs.primitiveIndex) return true;
+                if (rhs.primitiveIndex < primitiveIndex) return false;
                 if (nodePath < rhs.nodePath) return true;
                 if (rhs.nodePath < nodePath ) return false;
                 return (drawable < rhs.drawable);
             }
 
+            enum { MaxNumIntesectionPoints=6 };
+
+            double                          distance;     ///< distance from reference plane
+            double                          maxDistance;  ///< maximum distance of intersection points from reference plane
             osg::NodePath                   nodePath;
             osg::ref_ptr<osg::Drawable>     drawable;
+            osg::ref_ptr<osg::RefMatrix>    matrix;
+            osg::Vec3                       localIntersectionPoint;  ///< center of all intersection points
+            unsigned int                    numIntersectionPoints;
+            osg::Vec3                       intersectionPoints[MaxNumIntesectionPoints];
+            unsigned int                    primitiveIndex; ///< primitive index
         };
         
         typedef std::set<Intersection> Intersections;
@@ -59,6 +79,23 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
         inline Intersections& getIntersections() { return _parent ? _parent->_intersections : _intersections; }
 
         inline Intersection getFirstIntersection() { Intersections& intersections = getIntersections(); return intersections.empty() ? Intersection() : *(intersections.begin()); }
+
+        inline unsigned int getDimensionMask() const { return _dimensionMask; }
+
+        /** set the dimension mask.
+         * As polytope-triangle and polytope-quad intersections are expensive to compute
+         * it is possible to turn them off by calling setDimensionMask( DimZero | DimOne )
+         */
+        inline void setDimensionMask(unsigned int dimensionMask) { _dimensionMask = dimensionMask; }
+
+        inline const osg::Plane& getReferencePlane() const { return _referencePlane; }
+
+        /** set the plane used to sort the intersections.
+         * The intersections are sorted by the distance of the localIntersectionPoint
+         * and the reference plane. The default for the reference plane is the
+         * last plane of the polytope.
+         */
+        inline void setReferencePlane(const osg::Plane& plane) { _referencePlane = plane; }
 
     public:
 
@@ -79,7 +116,10 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
         PolytopeIntersector* _parent;
 
         osg::Polytope _polytope;
-        
+
+        unsigned int _dimensionMask; ///< mask which dimensions should be checked
+        osg::Plane _referencePlane; ///< plane to use for sorting intersections
+
         Intersections _intersections;
     
 };

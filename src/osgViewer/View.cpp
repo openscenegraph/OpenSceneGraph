@@ -1607,7 +1607,7 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     
 
     osgUtil::LineSegmentIntersector::CoordinateFrame cf = camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
-    osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(cf, local_x, local_y);
+    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(cf, local_x, local_y);
 
 #if 0
     osg::notify(osg::NOTICE)<<"View::computeIntersections(x="<<x<<", y="<<y<<", local_x="<<local_x<<", local_y="<<local_y<<") "<<cf<<std::endl;
@@ -1620,7 +1620,7 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     }
 #endif
 
-    osgUtil::IntersectionVisitor iv(picker);
+    osgUtil::IntersectionVisitor iv(picker.get());
     iv.setTraversalMask(traversalMask);
     const_cast<osg::Camera*>(camera)->accept(iv);
 
@@ -1663,9 +1663,9 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
     osg::Vec3d startVertex = osg::Vec3d(local_x,local_y,zNear) * inverse;
     osg::Vec3d endVertex = osg::Vec3d(local_x,local_y,zFar) * inverse;
     
-    osgUtil::LineSegmentIntersector* picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::MODEL, startVertex, endVertex);
+    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::MODEL, startVertex, endVertex);
     
-    osgUtil::IntersectionVisitor iv(picker);
+    osgUtil::IntersectionVisitor iv(picker.get());
     iv.setTraversalMask(traversalMask);
     nodePath.back()->accept(iv);
 

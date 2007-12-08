@@ -891,7 +891,7 @@ bool Geometry::computeFastPathsUsed()
     if (_useDisplayList && s_DisableFastPathInDisplayLists)
     {
         osg::notify(osg::DEBUG_INFO)<<"Geometry::computeFastPathsUsed() - Disabling fast paths in display lists"<<std::endl;
-        _fastPath = false;
+        _supportsVertexBufferObjects = _fastPath = false;
         return _fastPath;
     }
 

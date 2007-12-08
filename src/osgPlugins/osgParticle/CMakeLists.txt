@@ -13,6 +13,7 @@ IO_ExplosionDebrisEffect.cpp
 IO_ExplosionEffect.cpp
 IO_FireEffect.cpp
 IO_FluidFrictionOperator.cpp
+IO_FluidProgram.cpp
 IO_ForceOperator.cpp
 IO_LinearInterpolator.cpp
 IO_ModularEmitter.cpp

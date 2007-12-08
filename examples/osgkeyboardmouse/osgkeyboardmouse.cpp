@@ -234,20 +234,22 @@ public:
 
             if (picker->containsIntersections())
             {
-                osgUtil::PolytopeIntersector::Intersections& intersections = picker->getIntersections();
+                osgUtil::PolytopeIntersector::Intersection intersection = picker->getFirstIntersection();
 
-                for (osgUtil::PolytopeIntersector::Intersections::iterator it=intersections.begin();
-                     it!=intersections.end(); ++it) {
-                    osgUtil::PolytopeIntersector::Intersection intersection=*it;
+                osg::notify(osg::NOTICE)<<"Picked "<<intersection.localIntersectionPoint<<std::endl
+                    <<"  Distance to ref. plane "<<intersection.distance
+                    <<", max. dist "<<intersection.maxDistance
+                    <<", primitive index "<<intersection.primitiveIndex
+                    <<", numIntersectionPoints "
+                    <<intersection.numIntersectionPoints
+                    <<std::endl;
 
-                    osg::NodePath& nodePath = intersection.nodePath;
-                    node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
-                    parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
+                osg::NodePath& nodePath = intersection.nodePath;
+                node = (nodePath.size()>=1)?nodePath[nodePath.size()-1]:0;
+                parent = (nodePath.size()>=2)?dynamic_cast<osg::Group*>(nodePath[nodePath.size()-2]):0;
 
-                    if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size"<<nodePath.size()<<std::endl;
-                    toggleScribe(parent, node);
-                }
-
+                if (node) std::cout<<"  Hits "<<node->className()<<" nodePath size "<<nodePath.size()<<std::endl;    
+                toggleScribe(parent, node);
             }
 
         }

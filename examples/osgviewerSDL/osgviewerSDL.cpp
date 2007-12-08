@@ -99,11 +99,11 @@ int main( int argc, char **argv )
     const SDL_version* linked_version = SDL_Linked_Version();
     if(linked_version->major == 1 && linked_version->minor == 2)
     {
-    if(linked_version->patch < 10)
-    {
-        windowWidth = 1280;
-        windowHeight = 1024;
-    }
+        if(linked_version->patch < 10)
+        {
+            windowWidth = 1280;
+            windowHeight = 1024;
+        }
     }
 
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
@@ -146,6 +146,7 @@ int main( int argc, char **argv )
             switch (event.type) {
 
                 case SDL_VIDEORESIZE:
+                    SDL_SetVideoMode(event.resize.w, event.resize.h, bitDepth, SDL_OPENGL | SDL_RESIZABLE);
                     gw->resized(0, 0, event.resize.w, event.resize.h );
                     break;
 

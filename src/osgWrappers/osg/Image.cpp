@@ -14,6 +14,9 @@
 #include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/Object>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -248,6 +251,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                      __C5_unsigned_char_P1__data__int__int__int,
 	                      "",
 	                      "");
+	I_MethodWithDefaults3(osg::Vec4, getColor, IN, unsigned int, s, , IN, unsigned, t, 0, IN, unsigned, r, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __Vec4__getColor__unsigned_int__unsigned__unsigned,
+	                      "Get the color value for specified texcoord. ",
+	                      "");
+	I_Method1(osg::Vec4, getColor, IN, const osg::Vec2 &, texcoord,
+	          Properties::NON_VIRTUAL,
+	          __Vec4__getColor__C5_Vec2_R1,
+	          "Get the color value for specified texcoord. ",
+	          "");
+	I_Method1(osg::Vec4, getColor, IN, const osg::Vec3 &, texcoord,
+	          Properties::NON_VIRTUAL,
+	          __Vec4__getColor__C5_Vec3_R1,
+	          "Get the color value for specified texcoord. ",
+	          "");
 	I_Method0(void, flipHorizontal,
 	          Properties::NON_VIRTUAL,
 	          __void__flipHorizontal,

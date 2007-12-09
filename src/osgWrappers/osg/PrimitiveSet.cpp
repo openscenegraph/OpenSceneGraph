@@ -16,8 +16,11 @@
 #include <osg/PrimitiveSet>
 #include <osg/State>
 #include <osg/Vec2>
+#include <osg/Vec2d>
 #include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osg/Vec4>
+#include <osg/Vec4d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -643,6 +646,21 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveFunctor)
 	          __void__setVertexArray__unsigned_int__C5_Vec4_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2d *, vertices,
+	          Properties::PURE_VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_Vec2d_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3d *, vertices,
+	          Properties::PURE_VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_Vec3d_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4d *, vertices,
+	          Properties::PURE_VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_Vec4d_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
 	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count,
 	          Properties::PURE_VIRTUAL,
 	          __void__drawArrays__GLenum__GLint__GLsizei,
@@ -723,6 +741,21 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveIndexFunctor)
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, vertices,
 	          Properties::PURE_VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_Vec4_P1,
+	          "",
+	          "");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2d *, vertices,
+	          Properties::PURE_VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_Vec2d_P1,
+	          "",
+	          "");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3d *, vertices,
+	          Properties::PURE_VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_Vec3d_P1,
+	          "",
+	          "");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4d *, vertices,
+	          Properties::PURE_VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_Vec4d_P1,
 	          "",
 	          "");
 	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count,

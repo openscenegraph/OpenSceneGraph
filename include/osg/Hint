@@ -60,7 +60,7 @@ public:
         /** Return the member identifier within the attribute's class type. Used for light number/clip plane number etc.*/
         virtual unsigned int getMember() const { return static_cast<unsigned int>(_target); }
         
-        inline void setTarget(GLenum target);
+        void setTarget(GLenum target);
         inline GLenum getTarget() const { return _target;  }
         
         inline void setMode(GLenum mode) { _mode = mode; }

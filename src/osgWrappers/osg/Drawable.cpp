@@ -23,8 +23,11 @@
 #include <osg/State>
 #include <osg/StateSet>
 #include <osg/Vec2>
+#include <osg/Vec2d>
 #include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osg/Vec4>
+#include <osg/Vec4d>
 #include <osg/Vec4ub>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -581,6 +584,26 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::AttributeFunctor)
 	          __void__apply__AttributeType__unsigned__Vec4ub_P1,
 	          "",
 	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, double *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__double_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec2d *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__Vec2d_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec3d *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__Vec3d_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, osg::Vec4d *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__Vec4d_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
@@ -683,6 +706,26 @@ BEGIN_VALUE_REFLECTOR(osg::Drawable::ConstAttributeFunctor)
 	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, const osg::Vec4ub *, x,
 	          Properties::VIRTUAL,
 	          __void__apply__AttributeType__unsigned__C5_Vec4ub_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, const double *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__C5_double_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, const osg::Vec2d *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__C5_Vec2d_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, const osg::Vec3d *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__C5_Vec3d_P1,
+	          "",
+	          "");
+	I_Method3(void, apply, IN, osg::Drawable::AttributeType, x, IN, unsigned, int, IN, const osg::Vec4d *, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AttributeType__unsigned__C5_Vec4d_P1,
 	          "",
 	          "");
 END_REFLECTOR
@@ -946,6 +989,26 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	          __void__glMultiTexCoord4fv__GLenum__C5_GLfloat_P1,
 	          "",
 	          "");
+	I_Method2(void, glMultiTexCoord1d, IN, GLenum, target, IN, GLdouble, coord,
+	          Properties::NON_VIRTUAL,
+	          __void__glMultiTexCoord1d__GLenum__GLdouble,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord2dv, IN, GLenum, target, IN, const GLdouble *, coord,
+	          Properties::NON_VIRTUAL,
+	          __void__glMultiTexCoord2dv__GLenum__C5_GLdouble_P1,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord3dv, IN, GLenum, target, IN, const GLdouble *, coord,
+	          Properties::NON_VIRTUAL,
+	          __void__glMultiTexCoord3dv__GLenum__C5_GLdouble_P1,
+	          "",
+	          "");
+	I_Method2(void, glMultiTexCoord4dv, IN, GLenum, target, IN, const GLdouble *, coord,
+	          Properties::NON_VIRTUAL,
+	          __void__glMultiTexCoord4dv__GLenum__C5_GLdouble_P1,
+	          "",
+	          "");
 	I_Method2(void, glVertexAttrib1s, IN, unsigned int, index, IN, GLshort, s,
 	          Properties::NON_VIRTUAL,
 	          __void__glVertexAttrib1s__unsigned_int__GLshort,
@@ -954,6 +1017,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	I_Method2(void, glVertexAttrib1f, IN, unsigned int, index, IN, GLfloat, f,
 	          Properties::NON_VIRTUAL,
 	          __void__glVertexAttrib1f__unsigned_int__GLfloat,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib1d, IN, unsigned int, index, IN, GLdouble, f,
+	          Properties::NON_VIRTUAL,
+	          __void__glVertexAttrib1d__unsigned_int__GLdouble,
 	          "",
 	          "");
 	I_Method2(void, glVertexAttrib2fv, IN, unsigned int, index, IN, const GLfloat *, v,
@@ -969,6 +1037,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	I_Method2(void, glVertexAttrib4fv, IN, unsigned int, index, IN, const GLfloat *, v,
 	          Properties::NON_VIRTUAL,
 	          __void__glVertexAttrib4fv__unsigned_int__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib2dv, IN, unsigned int, index, IN, const GLdouble *, v,
+	          Properties::NON_VIRTUAL,
+	          __void__glVertexAttrib2dv__unsigned_int__C5_GLdouble_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib3dv, IN, unsigned int, index, IN, const GLdouble *, v,
+	          Properties::NON_VIRTUAL,
+	          __void__glVertexAttrib3dv__unsigned_int__C5_GLdouble_P1,
+	          "",
+	          "");
+	I_Method2(void, glVertexAttrib4dv, IN, unsigned int, index, IN, const GLdouble *, v,
+	          Properties::NON_VIRTUAL,
+	          __void__glVertexAttrib4dv__unsigned_int__C5_GLdouble_P1,
 	          "",
 	          "");
 	I_Method2(void, glVertexAttrib4ubv, IN, unsigned int, index, IN, const GLubyte *, v,
@@ -1116,6 +1199,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
 	          __void__glGetQueryObjectui64v__GLuint__GLenum__GLuint64EXT_P1,
 	          "",
 	          "");
+
+
+
+
 
 
 

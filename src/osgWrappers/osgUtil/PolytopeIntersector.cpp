@@ -12,6 +12,7 @@
 
 #include <osg/Drawable>
 #include <osg/Node>
+#include <osg/Plane>
 #include <osg/Polytope>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/PolytopeIntersector>
@@ -32,15 +33,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PolytopeIntersector)
 	I_Constructor1(IN, const osg::Polytope &, polytope,
 	               Properties::NON_EXPLICIT,
 	               ____PolytopeIntersector__C5_osg_Polytope_R1,
-	               "Construct a PolytopeIntersector using speified polytope in MODEL coordinates. ",
+	               "Construct a PolytopeIntersector using specified polytope in MODEL coordinates. ",
 	               "");
 	I_Constructor2(IN, osgUtil::Intersector::CoordinateFrame, cf, IN, const osg::Polytope &, polytope,
 	               ____PolytopeIntersector__CoordinateFrame__C5_osg_Polytope_R1,
-	               "Construct a PolytopeIntersector using speified polytope in specified coordinate frame. ",
+	               "Construct a PolytopeIntersector using specified polytope in specified coordinate frame. ",
 	               "");
 	I_Constructor5(IN, osgUtil::Intersector::CoordinateFrame, cf, IN, double, xMin, IN, double, yMin, IN, double, xMax, IN, double, yMax,
 	               ____PolytopeIntersector__CoordinateFrame__double__double__double__double,
-	               "Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates In WINDOW coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax. ",
+	               "Convenience constructor for supporting picking in WINDOW, or PROJECTION coordinates In WINDOW coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax. ",
 	               "In PROJECTION coordinates (clip space cube) creates a five sided polytope box that has a front face at -1 and sides around box xMin, yMin, xMax, yMax. In VIEW and MODEL coordinates (clip space cube) creates a five sided polytope box that has a front face at 0.0 and sides around box xMin, yMin, xMax, yMax. ");
 	I_Method1(void, insertIntersection, IN, const osgUtil::PolytopeIntersector::Intersection &, intersection,
 	          Properties::NON_VIRTUAL,
@@ -57,6 +58,26 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PolytopeIntersector)
 	          __Intersection__getFirstIntersection,
 	          "",
 	          "");
+	I_Method0(unsigned int, getDimensionMask,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getDimensionMask,
+	          "",
+	          "");
+	I_Method1(void, setDimensionMask, IN, unsigned int, dimensionMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setDimensionMask__unsigned_int,
+	          "set the dimension mask. ",
+	          "As polytope-triangle and polytope-quad intersections are expensive to compute it is possible to turn them off by calling setDimensionMask( DimZero | DimOne ) ");
+	I_Method0(const osg::Plane &, getReferencePlane,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Plane_R1__getReferencePlane,
+	          "",
+	          "");
+	I_Method1(void, setReferencePlane, IN, const osg::Plane &, plane,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferencePlane__C5_osg_Plane_R1,
+	          "set the plane used to sort the intersections. ",
+	          "The intersections are sorted by the distance of the localIntersectionPoint and the reference plane. The default for the reference plane is the last plane of the polytope. ");
 	I_Method1(osgUtil::Intersector *, clone, IN, osgUtil::IntersectionVisitor &, iv,
 	          Properties::VIRTUAL,
 	          __Intersector_P1__clone__osgUtil_IntersectionVisitor_R1,
@@ -87,12 +108,18 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::PolytopeIntersector)
 	          __bool__containsIntersections,
 	          "",
 	          "");
+	I_SimpleProperty(unsigned int, DimensionMask, 
+	                 __unsigned_int__getDimensionMask, 
+	                 __void__setDimensionMask__unsigned_int);
 	I_SimpleProperty(osgUtil::PolytopeIntersector::Intersection, FirstIntersection, 
 	                 __Intersection__getFirstIntersection, 
 	                 0);
 	I_SimpleProperty(osgUtil::PolytopeIntersector::Intersections &, Intersections, 
 	                 __Intersections_R1__getIntersections, 
 	                 0);
+	I_SimpleProperty(const osg::Plane &, ReferencePlane, 
+	                 __C5_osg_Plane_R1__getReferencePlane, 
+	                 __void__setReferencePlane__C5_osg_Plane_R1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgUtil::PolytopeIntersector::Intersection)
@@ -100,8 +127,14 @@ BEGIN_VALUE_REFLECTOR(osgUtil::PolytopeIntersector::Intersection)
 	I_Constructor0(____Intersection,
 	               "",
 	               "");
+	I_PublicMemberProperty(double, distance);
+	I_PublicMemberProperty(double, maxDistance);
 	I_PublicMemberProperty(osg::NodePath, nodePath);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Drawable >, drawable);
+	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, matrix);
+	I_PublicMemberProperty(osg::Vec3, localIntersectionPoint);
+	I_PublicMemberProperty(unsigned int, numIntersectionPoints);
+	I_PublicMemberProperty(unsigned int, primitiveIndex);
 END_REFLECTOR
 
 STD_SET_REFLECTOR(std::set< osgUtil::PolytopeIntersector::Intersection >)

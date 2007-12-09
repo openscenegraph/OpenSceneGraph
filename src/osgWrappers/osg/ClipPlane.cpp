@@ -32,6 +32,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ClipPlane)
 	I_Constructor0(____ClipPlane,
 	               "",
 	               "");
+	I_Constructor1(IN, unsigned int, no,
+	               Properties::NON_EXPLICIT,
+	               ____ClipPlane__unsigned_int,
+	               "",
+	               "");
 	I_Constructor2(IN, unsigned int, no, IN, const osg::Vec4d &, plane,
 	               ____ClipPlane__unsigned_int__C5_Vec4d_R1,
 	               "",

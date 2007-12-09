@@ -18,8 +18,11 @@
 #include <osg/Switch>
 #include <osg/Transform>
 #include <osg/Vec2>
+#include <osg/Vec2d>
 #include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osg/Vec4>
+#include <osg/Vec4d>
 #include <osgUtil/Statistics>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -77,6 +80,21 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, x,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec4_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3d *, x,
+	          Properties::VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_osg_Vec3d_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2d *, x,
+	          Properties::VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_osg_Vec2d_P1,
+	          "Sets the array of vertices used to describe the primitives. ",
+	          "Somehow mimics the OpenGL glVertexPointer() function. ");
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4d *, x,
+	          Properties::VIRTUAL,
+	          __void__setVertexArray__unsigned_int__C5_osg_Vec4d_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
 	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, x, IN, GLsizei, count,

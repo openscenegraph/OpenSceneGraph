@@ -32,6 +32,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Light)
 	I_Constructor0(____Light,
 	               "",
 	               "");
+	I_Constructor1(IN, unsigned int, lightnum,
+	               Properties::NON_EXPLICIT,
+	               ____Light__unsigned_int,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::Light &, light, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____Light__C5_Light_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

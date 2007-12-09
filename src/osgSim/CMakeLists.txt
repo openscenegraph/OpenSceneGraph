@@ -28,6 +28,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScalarBar
     ${HEADER_PATH}/ScalarsToColors
     ${HEADER_PATH}/Sector
+    ${HEADER_PATH}/ShapeAttribute
     ${HEADER_PATH}/SphereSegment
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/VisibilityGroup
@@ -58,6 +59,7 @@ ADD_LIBRARY(${LIB_NAME}
     ScalarBar.cpp
     ScalarsToColors.cpp
     Sector.cpp
+    ShapeAttribute.cpp
     SphereSegment.cpp
     Version.cpp
     VisibilityGroup.cpp

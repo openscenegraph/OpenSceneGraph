@@ -748,21 +748,6 @@ PointZ::~PointZ() {}
 
 bool PointZ::read( int fd )
 {
-    if( readVal<Double>( fd, x, LittleEndian ) == false ) return false;
-    if( readVal<Double>( fd, y, LittleEndian ) == false ) return false;
-    if( readVal<Double>( fd, z, LittleEndian ) == false ) return false;
-    if( readVal<Double>( fd, m, LittleEndian ) == false ) return false;
-
-    return true;
-}
-
-void PointZ::print()
-{
-    printf( "    %G %G %G (%G)\n", x, y, z, m );
-}
-
-bool PointZRecord::read( int fd )
-{
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
@@ -774,9 +759,27 @@ bool PointZRecord::read( int fd )
     if( shapeType != ShapeTypePointZ )
         return false;
 
-    return pointZ.read(fd);
+    if( readVal<Double>( fd, x, LittleEndian ) == false )
+        return false;
+
+    if( readVal<Double>( fd, y, LittleEndian ) == false )
+        return false;
+
+    if( readVal<Double>( fd, z, LittleEndian ) == false )
+        return false;
+
+    // Sometimes, M field is not supplied
+    if( rh.contentLength >= 18 )
+        if( readVal<Double>( fd, m, LittleEndian ) == false )
+            return false;
+
+    return true;
 }
 
+void PointZ::print()
+{
+    printf( "    %G %G %G (%G)\n", x, y, z, m );
+}
 
 MultiPointZ::MultiPointZ(): 
     ShapeObject(ShapeTypeMultiPointZ), 
@@ -900,12 +903,18 @@ PolyLineZ::PolyLineZ(const PolyLineZ &p):
 
     points = new Point[numPoints];
     zArray = new Double[numPoints];
-    mArray = new Double[numPoints];
     for( i = 0; i < numPoints; i++ )
     {
         points[i] = p.points[i];
         zArray[i] = p.zArray[i];
-        mArray[i] = p.mArray[i];
+    }
+
+    // Sometimes, M Array is not present on the file
+    if( p.mArray != NULL )
+    {
+        mArray = new Double[numPoints];
+        for( i = 0; i < numPoints; i++ )
+            mArray[i] = p.mArray[i];
     }
 }
 

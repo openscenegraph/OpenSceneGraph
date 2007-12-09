@@ -2134,23 +2134,8 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 RECT clientRect;
                 ::GetClientRect(hwnd, &clientRect);
 
-                int windowWidth;
-                int windowHeight;
-
-                if (clientRect.bottom==0 || clientRect.right==0)
-                {
-                    //
-                    // Window has been minimized or has only toolbars visible; keep window width & height to a minimum of 1 pixel
-                    //
-
-                    windowWidth  = 1;
-                    windowHeight = 1;
-                }
-                else
-                {
-                    windowWidth  = clientRect.right;
-                    windowHeight = clientRect.bottom;
-                }
+                int windowWidth = (clientRect.right == 0) ? 1 : clientRect.right ;
+                int windowHeight = (clientRect.bottom == 0) ? 1 : clientRect.bottom;;
 
                 if (windowX!=_traits->x || windowY!=_traits->y || windowWidth!=_traits->width || windowHeight!=_traits->height)
                 {

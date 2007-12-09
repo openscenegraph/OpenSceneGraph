@@ -74,7 +74,7 @@ using namespace osgShadow;
         "void main(void) \n"
         "{ \n"
         "   vec4 texResult = texture2D(osgShadow_shadowTexture, gl_TexCoord[0].st ); \n"
-        "   float value = texResult.g - 0.5; \n"
+        "   float value = texResult.r + 0.5; \n"
         "   gl_FragColor = vec4( value, value, value, 0.8 ); \n"
         "} \n";
 
@@ -253,6 +253,37 @@ using namespace osgShadow;
                 _stateset->addUniform(itr->get());
             }
 
+            {
+                // fake texture for baseTexture, add a fake texture
+                // we support by default at least one texture layer
+                // without this fake texture we can not support
+                // textured and not textured scene
+
+                // TODO: at the moment the PSSM supports just one texture layer in the GLSL shader, multitexture are
+                //       not yet supported !
+
+                osg::Image* image = new osg::Image;
+                // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivilant to a Vec4!
+                int noPixels = 1;
+                image->allocateImage(noPixels,1,1,GL_RGBA,GL_FLOAT);
+                image->setInternalTextureFormat(GL_RGBA);
+                // fill in the image data.
+                osg::Vec4* dataPtr = (osg::Vec4*)image->data();
+                osg::Vec4 color(1,1,1,1);
+                *dataPtr = color;
+                // make fake texture
+                osg::Texture2D* fakeTex = new osg::Texture2D;
+                fakeTex->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+                fakeTex->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+                fakeTex->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+                fakeTex->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+                fakeTex->setImage(image);
+                // add fake texture
+                _stateset->setTextureAttribute(_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
+                _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
+                _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
+                _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
+            }
         }
 
         _dirty = false;

@@ -23,7 +23,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/LightPointSystem
     ${HEADER_PATH}/LineOfSight
     ${HEADER_PATH}/MultiSwitch
-    ${HEADER_PATH}/OpenFlightOptimizer
     ${HEADER_PATH}/OverlayNode
     ${HEADER_PATH}/ScalarBar
     ${HEADER_PATH}/ScalarsToColors
@@ -54,7 +53,6 @@ ADD_LIBRARY(${LIB_NAME}
     LightPointSpriteDrawable.h
     LineOfSight.cpp
     MultiSwitch.cpp
-    OpenFlightOptimizer.cpp
     OverlayNode.cpp
     ScalarBar.cpp
     ScalarsToColors.cpp

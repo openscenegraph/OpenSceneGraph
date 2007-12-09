@@ -2,6 +2,7 @@
 
 
 SET(TARGET_SRC
+IO_ShapeAttribute.cpp
 IO_BlinkSequence.cpp
 IO_DOFTransform.cpp
 IO_Impostor.cpp

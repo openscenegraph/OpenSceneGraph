@@ -298,12 +298,6 @@ struct PointZ : public ShapeObject
     void print();
 };
 
-struct PointZRecord
-{
-    PointZ pointZ;
-    bool read( int fd );
-};
-
 struct MultiPointZ: public ShapeObject
 {
     Box             bbox;

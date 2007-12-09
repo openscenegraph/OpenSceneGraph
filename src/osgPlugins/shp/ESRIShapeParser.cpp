@@ -141,9 +141,9 @@ ESRIShapeParser::ESRIShapeParser( const std::string fileName, bool useDouble ):
         case ESRIShape::ShapeTypePointZ      :
             {
                 std::vector<ESRIShape::PointZ> ptzs;
-                ESRIShape::PointZRecord pointZRecord;
-                while( pointZRecord.read(fd) )
-                    ptzs.push_back( pointZRecord.pointZ );
+                ESRIShape::PointZ pointZ;
+                while( pointZ.read( fd ) )
+                    ptzs.push_back( pointZ );
                 _process( ptzs );
             }
             break;

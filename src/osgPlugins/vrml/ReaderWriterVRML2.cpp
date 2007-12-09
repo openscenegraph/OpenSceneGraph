@@ -9,11 +9,15 @@
  *           Bruno Herbelin (bruno.herbelin@gmail.com)
  *           
  *           (c) VRlab EPFL, Switzerland, 2004-2006
+ *
+ *           Gino van den Bergen, DTECTA (gino@dtecta.com) 
+ * 
  */
 
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <complex>
 
 #include <openvrml/vrml97node.h>
 #include <openvrml/common.h>
@@ -187,8 +191,6 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
         osg_stateset->setAttributeAndModes(osg_mat.get());
         osg_mat->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
 
-        osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
-
         // parse the geometry
         {
             const openvrml::field_value &fv = obj->field("geometry");
@@ -197,8 +199,14 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             {
                 const openvrml::sfnode &sfn = dynamic_cast<const openvrml::sfnode &>(fv);
                 // is it indexed_face_set_node ?
-                if (openvrml::vrml97_node::indexed_face_set_node *vrml_ifs =
-                            dynamic_cast<openvrml::vrml97_node::indexed_face_set_node *>(sfn.value.get())) {
+                
+                openvrml::vrml97_node::abstract_geometry_node* vrml_geom = 
+                    static_cast<openvrml::vrml97_node::abstract_geometry_node*>(sfn.value.get()->to_geometry());
+                
+                if (openvrml::vrml97_node::indexed_face_set_node *vrml_ifs = dynamic_cast<openvrml::vrml97_node::indexed_face_set_node *>(vrml_geom))
+                {                  
+                    osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
+                    
                     // get array of vertex coordinate_nodes
                     {
                         const openvrml::field_value & fv = vrml_ifs->field("coord");
@@ -392,7 +400,369 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                             }
                         }
                     }
-                } else {
+
+                    if (static_cast<const openvrml::sfbool&>(vrml_ifs->field("solid")).value)
+                    {
+                         osg_stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+                    }
+                }
+                else if (openvrml::vrml97_node::box_node* vrml_box = dynamic_cast<openvrml::vrml97_node::box_node*>(vrml_geom)) 
+                {
+                    const openvrml::vec3f& size = static_cast<const openvrml::sfvec3f&>(vrml_box->field("size")).value;
+                    
+                    osg::Vec3 halfSize(size[0] * 0.5f, size[1] * 0.5f, size[2] * 0.5f);  
+                    
+                    osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
+                    osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
+                    osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();  
+                    
+                    osg::ref_ptr<osg::DrawArrays> box = new osg::DrawArrays(osg::PrimitiveSet::QUADS);
+        
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], halfSize[1], halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], -halfSize[1], halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], -halfSize[1], halfSize[2])); 
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], halfSize[1], halfSize[2])); 
+
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], halfSize[1], -halfSize[2])); 
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], -halfSize[1], -halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], -halfSize[1], -halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], halfSize[1], -halfSize[2]));  
+
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], halfSize[1], halfSize[2])); 
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], -halfSize[1], halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], -halfSize[1], -halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], halfSize[1], -halfSize[2]));
+
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], halfSize[1], -halfSize[2])); 
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], -halfSize[1], -halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], -halfSize[1], halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], halfSize[1], halfSize[2])); 
+
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], halfSize[1], -halfSize[2])); 
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], halfSize[1], halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], halfSize[1], halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], halfSize[1], -halfSize[2]));      
+                
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], -halfSize[1], halfSize[2])); 
+                    osg_vertices->push_back(osg::Vec3(-halfSize[0], -halfSize[1], -halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], -halfSize[1], -halfSize[2]));           
+                    osg_vertices->push_back(osg::Vec3(halfSize[0], -halfSize[1], halfSize[2])); 
+
+                    for (int i = 0; i != 6; ++i)
+                    {
+                         osg_texcoords->push_back(osg::Vec2(0.0f, 1.0f));
+                         osg_texcoords->push_back(osg::Vec2(0.0f, 0.0f));
+                         osg_texcoords->push_back(osg::Vec2(1.0f, 0.0f));
+                         osg_texcoords->push_back(osg::Vec2(1.0f, 1.0f));
+                    }
+
+                    osg_normals->push_back(osg::Vec3(0.0f, 0.0f, 1.0f));
+                    osg_normals->push_back(osg::Vec3(0.0f, 0.0f, -1.0f));
+                    osg_normals->push_back(osg::Vec3(1.0f, 0.0f, 0.0f));
+                    osg_normals->push_back(osg::Vec3(-1.0f, 0.0f, 0.0f));
+                    osg_normals->push_back(osg::Vec3(0.0f, 1.0f, 0.0f));
+                    osg_normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+
+                    box->setCount(osg_vertices->size());
+                    
+                    osg_geom->addPrimitiveSet(box.get());
+                
+                    osg_geom->setVertexArray(osg_vertices.get());
+                    osg_geom->setTexCoordArray(0, osg_texcoords.get());
+                    osg_geom->setNormalArray(osg_normals.get());
+                    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+
+                    osg_stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+                }
+                else if (openvrml::vrml97_node::sphere_node* vrml_sphere = dynamic_cast<openvrml::vrml97_node::sphere_node*>(vrml_geom)) 
+                {
+                    float radius = static_cast<const openvrml::sffloat&>(vrml_sphere->field("radius")).value;
+                 
+                    osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
+                    osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
+                    osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
+
+                    unsigned int numSegments = 40;
+                    unsigned int numRows = 20;
+
+                    const float thetaDelta = 2.0f * float(osg::PI) / float(numSegments);
+                    const float texCoordSDelta = 1.0f / float(numSegments);
+                    const float phiDelta = float(osg::PI) / float(numRows);
+                    const float texCoordTDelta = 1.0f / float(numRows);
+
+                    float phi = -0.5f * float(osg::PI);
+                    float texCoordT = 0.0f;
+                    
+                    osg::ref_ptr<osg::DrawArrayLengths> sphere = new osg::DrawArrayLengths(osg::PrimitiveSet::QUAD_STRIP);
+                    
+                    for (unsigned int i = 0; i < numRows; ++i, phi += phiDelta, texCoordT += texCoordTDelta)
+                    {
+                        std::complex<float> latBottom = std::polar(1.0f, phi);
+                        std::complex<float> latTop = std::polar(1.0f, phi + phiDelta);
+                        std::complex<float> eBottom = latBottom * radius;
+                        std::complex<float> eTop = latTop * radius;
+
+                        float theta = 0.0f;
+                        float texCoordS = 0.0f;
+                     
+                        for (unsigned int j = 0; j < numSegments; ++j, theta += thetaDelta, texCoordS += texCoordSDelta)
+                        {
+                            std::complex<float> n = -std::polar(1.0f, theta);
+
+                            osg_normals->push_back(osg::Vec3(latTop.real() * n.imag(), latTop.imag(), latTop.real() * n.real()));
+                            osg_normals->push_back(osg::Vec3(latBottom.real() * n.imag(), latBottom.imag(), latBottom.real() * n.real()));
+                          
+                            osg_texcoords->push_back(osg::Vec2(texCoordS, texCoordT + texCoordTDelta));
+                            osg_texcoords->push_back(osg::Vec2(texCoordS, texCoordT));
+                  
+                            osg_vertices->push_back(osg::Vec3(eTop.real() * n.imag(), eTop.imag(), eTop.real() * n.real()));
+                            osg_vertices->push_back(osg::Vec3(eBottom.real() * n.imag(), eBottom.imag(), eBottom.real() * n.real()));
+                        }
+
+                        osg_normals->push_back(osg::Vec3(0.0f, latTop.imag(), -latTop.real()));
+                        osg_normals->push_back(osg::Vec3(0.0f, latBottom.imag(), -latBottom.real()));
+              
+                        osg_texcoords->push_back(osg::Vec2(1.0f, texCoordT + texCoordTDelta));
+                        osg_texcoords->push_back(osg::Vec2(1.0f, texCoordT));
+              
+                        osg_vertices->push_back(osg::Vec3(0.0f, eTop.imag(), -eTop.real()));
+                        osg_vertices->push_back(osg::Vec3(0.0f, eBottom.imag(), -eBottom.real()));
+                         
+                        sphere->push_back(numSegments * 2 + 2);
+                    }
+                    
+                    osg_geom->addPrimitiveSet(sphere.get());
+                
+                    osg_geom->setVertexArray(osg_vertices.get());
+                    osg_geom->setTexCoordArray(0, osg_texcoords.get());
+                    osg_geom->setNormalArray(osg_normals.get());
+                    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+                    osg_stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+
+                }
+                else if (openvrml::vrml97_node::cone_node* vrml_cone = dynamic_cast<openvrml::vrml97_node::cone_node*>(vrml_geom)) 
+                {
+                    float height = static_cast<const openvrml::sffloat&>(vrml_cone->field("height")).value;
+                    float radius = static_cast<const openvrml::sffloat&>(vrml_cone->field("bottomRadius")).value;
+                 
+                    osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
+                    osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
+                    osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
+
+                    unsigned int numSegments = 40;
+
+                    const float thetaDelta = 2.0f * float(osg::PI) / float(numSegments);
+                                 
+                    float topY = height * 0.5f;
+                    float bottomY = height * -0.5f;
+                   
+                    if (static_cast<const openvrml::sfbool&>(vrml_cone->field("side")).value)
+                    {
+                        osg::ref_ptr<osg::DrawArrays> side = new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP);
+                            
+                        const float texCoordDelta = 1.0f / float(numSegments);
+                        float theta = 0.0f;
+                        float texCoord = 0.0f;
+                        
+                        for (unsigned int i = 0; i < numSegments; ++i, theta += thetaDelta, texCoord += texCoordDelta)
+                        {
+                            std::complex<float> n = -std::polar(1.0f, theta);
+                            std::complex<float> e = n * radius;  
+                         
+                            osg::Vec3 normal(n.imag() * height, radius, n.real() * height);
+                            normal.normalize();
+
+                            osg_normals->push_back(normal);
+                            osg_normals->push_back(normal);
+                  
+                            osg_texcoords->push_back(osg::Vec2(texCoord, 1.0f));
+                            osg_texcoords->push_back(osg::Vec2(texCoord, 0.0f));
+                  
+                            osg_vertices->push_back(osg::Vec3(0.0f, topY, 0.0f));
+                            osg_vertices->push_back(osg::Vec3(e.imag(), bottomY, e.real()));
+                        }
+                      
+                        // do last point by hand to ensure no round off errors.
+                        
+                        osg::Vec3 normal(0.0f, radius, -height);
+                        normal.normalize();
+
+                        osg_normals->push_back(normal);    
+                        osg_normals->push_back(normal);
+                  
+                        osg_texcoords->push_back(osg::Vec2(1.0f, 1.0f));
+                        osg_texcoords->push_back(osg::Vec2(1.0f, 0.0f));
+                         
+                        osg_vertices->push_back(osg::Vec3(0.0f, topY, 0.0f));
+                        osg_vertices->push_back(osg::Vec3(0.0f, bottomY, -radius)); 
+                        
+                        side->setCount(osg_vertices->size());
+                        osg_geom->addPrimitiveSet(side.get()); 
+                    }
+
+                    if (static_cast<const openvrml::sfbool&>(vrml_cone->field("bottom")).value)
+                    {
+                        osg::ref_ptr<osg::DrawArrays> bottom = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN);
+                            
+
+                        size_t first = osg_vertices->size();
+                        bottom->setFirst(first);
+
+                        float theta = 0.0f;
+                                               
+                        for (unsigned int i = 0; i < numSegments; ++i, theta += thetaDelta)
+                        {
+                            std::complex<float> n = -std::polar(1.0f, theta);
+                            std::complex<float> e = n * radius;  
+                                                    
+                            osg_normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+                            osg_texcoords->push_back(osg::Vec2(0.5f - 0.5f * n.imag(), 0.5f + 0.5f * n.real()));
+                            osg_vertices->push_back(osg::Vec3(-e.imag(), bottomY, e.real()));
+                        }
+                      
+                        // do last point by hand to ensure no round off errors.
+                        
+                        osg_normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+                        osg_texcoords->push_back(osg::Vec2(0.5f, 0.0f));
+                        osg_vertices->push_back(osg::Vec3(0.0f, bottomY, -radius));
+                        
+                        bottom->setCount(osg_vertices->size() - first);
+                        osg_geom->addPrimitiveSet(bottom.get());
+                    }
+ 
+                    osg_geom->setVertexArray(osg_vertices.get());
+                    osg_geom->setTexCoordArray(0, osg_texcoords.get());
+                    osg_geom->setNormalArray(osg_normals.get());
+                    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+                    osg_stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+                }
+                else if (openvrml::vrml97_node::cylinder_node* vrml_cylinder = dynamic_cast<openvrml::vrml97_node::cylinder_node*>(vrml_geom)) 
+                { 
+                    float height = static_cast<const openvrml::sffloat&>(vrml_cylinder->field("height")).value;
+                    float radius = static_cast<const openvrml::sffloat&>(vrml_cylinder->field("radius")).value;
+                  
+                    osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
+                    osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
+                    osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
+
+                    unsigned int numSegments = 40;
+
+                    const float thetaDelta = 2.0f * float(osg::PI) / float(numSegments);
+                    
+                  
+                    float topY = height * 0.5f;
+                    float bottomY = height * -0.5f;                  
+
+                    if (static_cast<const openvrml::sfbool&>(vrml_cylinder->field("side")).value)
+                    {
+                        osg::ref_ptr<osg::DrawArrays> side = new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP);
+                        
+                        const float texCoordDelta = 1.0f / float(numSegments);
+                        float theta = 0.0f;
+                        float texCoord = 0.0f;
+                        
+                        for (unsigned int i = 0; i < numSegments; ++i, theta += thetaDelta, texCoord += texCoordDelta)
+                        {
+                            std::complex<float> n = -std::polar(1.0f, theta);
+                            std::complex<float> e = n * radius;  
+                         
+                            osg::Vec3 normal(n.imag(), 0.0f, n.real());
+                            
+                            osg_normals->push_back(normal);
+                            osg_normals->push_back(normal);
+                  
+                            osg_texcoords->push_back(osg::Vec2(texCoord, 1.0f));
+                            osg_texcoords->push_back(osg::Vec2(texCoord, 0.0f));
+                  
+                            osg_vertices->push_back(osg::Vec3(e.imag(), topY, e.real()));
+                            osg_vertices->push_back(osg::Vec3(e.imag(), bottomY, e.real()));
+                        }
+                      
+                        // do last point by hand to ensure no round off errors.
+
+                        osg::Vec3 normal(0.0f, 0.0f, -1.0f);
+                        osg_normals->push_back(normal);    
+                        osg_normals->push_back(normal);
+                  
+                        osg_texcoords->push_back(osg::Vec2(1.0f, 1.0f));
+                        osg_texcoords->push_back(osg::Vec2(1.0f, 0.0f));
+                         
+                        osg_vertices->push_back(osg::Vec3(0.0f, topY, -radius));
+                        osg_vertices->push_back(osg::Vec3(0.0f, bottomY, -radius));
+
+                        side->setCount(osg_vertices->size());
+                        osg_geom->addPrimitiveSet(side.get());
+                    }
+                     
+                    if (static_cast<const openvrml::sfbool&>(vrml_cylinder->field("bottom")).value)
+                    {
+                        osg::ref_ptr<osg::DrawArrays> bottom = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN);
+                            
+                        size_t first = osg_vertices->size();
+                        bottom->setFirst(first);
+
+                        float theta = 0.0f;
+                                               
+                        for (unsigned int i = 0; i < numSegments; ++i, theta += thetaDelta)
+                        {
+                            std::complex<float> n = -std::polar(1.0f, theta);
+                            std::complex<float> e = n * radius;  
+                                                    
+                            osg_normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+                            osg_texcoords->push_back(osg::Vec2(0.5f - 0.5f * n.imag(), 0.5f + 0.5f * n.real()));
+                            osg_vertices->push_back(osg::Vec3(-e.imag(), bottomY, e.real()));
+                        }
+                      
+                        // do last point by hand to ensure no round off errors.
+                        
+                        osg_normals->push_back(osg::Vec3(0.0f, -1.0f, 0.0f));
+                        osg_texcoords->push_back(osg::Vec2(0.5f, 0.0f));
+                        osg_vertices->push_back(osg::Vec3(0.0f, bottomY, -radius));
+                        
+                        bottom->setCount(osg_vertices->size() - first);
+                        osg_geom->addPrimitiveSet(bottom.get());
+                    }
+
+                    if (static_cast<const openvrml::sfbool&>(vrml_cylinder->field("top")).value)
+                    {
+                        osg::ref_ptr<osg::DrawArrays> top = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN);
+                            
+                        size_t first = osg_vertices->size();
+                        top->setFirst(first);
+
+                        float theta = 0.0f;
+                                               
+                        for (unsigned int i = 0; i < numSegments; ++i, theta += thetaDelta)
+                        {
+                            std::complex<float> n = -std::polar(1.0f, theta);
+                            std::complex<float> e = n * radius;  
+                                                    
+                            osg_normals->push_back(osg::Vec3(0.0f, 1.0f, 0.0f));
+                            osg_texcoords->push_back(osg::Vec2(0.5f + 0.5f * n.imag(), 0.5f - 0.5f * n.real()));
+                            osg_vertices->push_back(osg::Vec3(e.imag(), topY, e.real()));
+                        }
+                      
+                        // do last point by hand to ensure no round off errors.
+                        
+                        osg_normals->push_back(osg::Vec3(0.0f, 1.0f, 0.0f));
+                        osg_texcoords->push_back(osg::Vec2(0.5f, 1.0f));
+                        osg_vertices->push_back(osg::Vec3(0.0f, topY, -radius));
+                        
+                        top->setCount(osg_vertices->size() - first);
+                        osg_geom->addPrimitiveSet(top.get());
+                    }
+       
+                    osg_geom->setVertexArray(osg_vertices.get());
+                    osg_geom->setTexCoordArray(0, osg_texcoords.get());
+                    osg_geom->setNormalArray(osg_normals.get());
+                    osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+
+                    osg_stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+                }
+                else 
+                {
                     // other geometry types not handled yet
                 }
             }
@@ -407,9 +777,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 const openvrml::sfnode &sfn = dynamic_cast<const openvrml::sfnode &>(fv);
                 //              std::cerr << "FV->sfnode OK" << std::endl << std::flush;
 
-                openvrml::vrml97_node::appearance_node *vrml_app =
-                    dynamic_cast<openvrml::vrml97_node::appearance_node *>(sfn.value.get());
-                //              std::cerr << "sfnode->appearance_node OK" << std::endl << std::flush;
+                openvrml::vrml97_node::appearance_node* vrml_app = static_cast<openvrml::vrml97_node::appearance_node*>(sfn.value.get()->to_appearance());
 
                 const openvrml::node_ptr &vrml_material_node = vrml_app->material();
                 const openvrml::node_ptr &vrml_texture_node = vrml_app->texture();

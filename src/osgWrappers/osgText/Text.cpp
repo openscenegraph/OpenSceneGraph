@@ -10,18 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
-#include <osg/Quat>
 #include <osg/RenderInfo>
 #include <osg/State>
-#include <osg/Vec3>
 #include <osg/Vec4>
 #include <osgText/Font>
-#include <osgText/String>
 #include <osgText/Text>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -33,59 +29,6 @@
 #endif
 
 TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap)
-
-BEGIN_ENUM_REFLECTOR(osgText::Text::CharacterSizeMode)
-	I_DeclaringFile("osgText/Text");
-	I_EnumLabel(osgText::Text::OBJECT_COORDS);
-	I_EnumLabel(osgText::Text::SCREEN_COORDS);
-	I_EnumLabel(osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgText::Text::AlignmentType)
-	I_DeclaringFile("osgText/Text");
-	I_EnumLabel(osgText::Text::LEFT_TOP);
-	I_EnumLabel(osgText::Text::LEFT_CENTER);
-	I_EnumLabel(osgText::Text::LEFT_BOTTOM);
-	I_EnumLabel(osgText::Text::CENTER_TOP);
-	I_EnumLabel(osgText::Text::CENTER_CENTER);
-	I_EnumLabel(osgText::Text::CENTER_BOTTOM);
-	I_EnumLabel(osgText::Text::RIGHT_TOP);
-	I_EnumLabel(osgText::Text::RIGHT_CENTER);
-	I_EnumLabel(osgText::Text::RIGHT_BOTTOM);
-	I_EnumLabel(osgText::Text::LEFT_BASE_LINE);
-	I_EnumLabel(osgText::Text::CENTER_BASE_LINE);
-	I_EnumLabel(osgText::Text::RIGHT_BASE_LINE);
-	I_EnumLabel(osgText::Text::LEFT_BOTTOM_BASE_LINE);
-	I_EnumLabel(osgText::Text::CENTER_BOTTOM_BASE_LINE);
-	I_EnumLabel(osgText::Text::RIGHT_BOTTOM_BASE_LINE);
-	I_EnumLabel(osgText::Text::BASE_LINE);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgText::Text::AxisAlignment)
-	I_DeclaringFile("osgText/Text");
-	I_EnumLabel(osgText::Text::XY_PLANE);
-	I_EnumLabel(osgText::Text::REVERSED_XY_PLANE);
-	I_EnumLabel(osgText::Text::XZ_PLANE);
-	I_EnumLabel(osgText::Text::REVERSED_XZ_PLANE);
-	I_EnumLabel(osgText::Text::YZ_PLANE);
-	I_EnumLabel(osgText::Text::REVERSED_YZ_PLANE);
-	I_EnumLabel(osgText::Text::SCREEN);
-	I_EnumLabel(osgText::Text::USER_DEFINED_ROTATION);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgText::Text::Layout)
-	I_DeclaringFile("osgText/Text");
-	I_EnumLabel(osgText::Text::LEFT_TO_RIGHT);
-	I_EnumLabel(osgText::Text::RIGHT_TO_LEFT);
-	I_EnumLabel(osgText::Text::VERTICAL);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgText::Text::DrawModeMask)
-	I_DeclaringFile("osgText/Text");
-	I_EnumLabel(osgText::Text::TEXT);
-	I_EnumLabel(osgText::Text::BOUNDINGBOX);
-	I_EnumLabel(osgText::Text::ALIGNMENT);
-END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
 	I_DeclaringFile("osgText/Text");
@@ -118,7 +61,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_DeclaringFile("osgText/Text");
-	I_BaseType(osg::Drawable);
+	I_BaseType(osgText::TextBase);
 	I_Constructor0(____Text,
 	               "",
 	               "");
@@ -166,171 +109,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          __C5_Font_P1__getFont,
 	          "Get the font. ",
 	          "Return 0 if default is being used. ");
-	I_Method2(void, setFontResolution, IN, unsigned int, width, IN, unsigned int, height,
-	          Properties::NON_VIRTUAL,
-	          __void__setFontResolution__unsigned_int__unsigned_int,
-	          "Set the Font reference width and height resolution in texels. ",
-	          "Note, the size may not be supported by current font, the closest supported font size will be selected. ");
-	I_Method0(unsigned int, getFontWidth,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getFontWidth,
-	          "",
-	          "");
-	I_Method0(unsigned int, getFontHeight,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getFontHeight,
-	          "",
-	          "");
-	I_Method1(void, setText, IN, const osgText::String &, text,
-	          Properties::NON_VIRTUAL,
-	          __void__setText__C5_String_R1,
-	          "Set the text using a osgText::String. ",
-	          "");
-	I_Method1(void, setText, IN, const std::string &, text,
-	          Properties::NON_VIRTUAL,
-	          __void__setText__C5_std_string_R1,
-	          "Set the text using a std::string, which is converted to an internal TextString. ",
-	          "");
-	I_Method2(void, setText, IN, const std::string &, text, IN, osgText::String::Encoding, encoding,
-	          Properties::NON_VIRTUAL,
-	          __void__setText__C5_std_string_R1__String_Encoding,
-	          "Set the text using a Unicode encoded std::string, which is converted to an internal TextString. ",
-	          "The encoding parameter specificies which Unicode encodeding is used in the std::string. ");
-	I_Method1(void, setText, IN, const wchar_t *, text,
-	          Properties::NON_VIRTUAL,
-	          __void__setText__C5_wchar_t_P1,
-	          "Set the text using a wchar_t string, which is converted to an internal TextString. ",
-	          "");
-	I_Method0(osgText::String &, getText,
-	          Properties::NON_VIRTUAL,
-	          __String_R1__getText,
-	          "Get the text string. ",
-	          "Note, if you modify the string you must call Text::update() for the internal glyph reprentation to be updated. ");
-	I_Method0(const osgText::String &, getText,
-	          Properties::NON_VIRTUAL,
-	          __C5_String_R1__getText,
-	          "Get the const text string. ",
-	          "");
-	I_Method0(void, update,
-	          Properties::NON_VIRTUAL,
-	          __void__update,
-	          "update internal glyph respresnetation used for rendering, and bounding volume. ",
-	          "");
-	I_MethodWithDefaults2(void, setCharacterSize, IN, float, height, , IN, float, aspectRatio, 1.0f,
-	                      Properties::NON_VIRTUAL,
-	                      __void__setCharacterSize__float__float,
-	                      "Set the rendered character size in object coordinates. ",
-	                      "");
-	I_Method0(float, getCharacterHeight,
-	          Properties::NON_VIRTUAL,
-	          __float__getCharacterHeight,
-	          "",
-	          "");
-	I_Method0(float, getCharacterAspectRatio,
-	          Properties::NON_VIRTUAL,
-	          __float__getCharacterAspectRatio,
-	          "",
-	          "");
-	I_Method1(void, setCharacterSizeMode, IN, osgText::Text::CharacterSizeMode, mode,
-	          Properties::NON_VIRTUAL,
-	          __void__setCharacterSizeMode__CharacterSizeMode,
-	          "Set how the CharacterSize value relates to the final rendered character. ",
-	          "");
-	I_Method0(osgText::Text::CharacterSizeMode, getCharacterSizeMode,
-	          Properties::NON_VIRTUAL,
-	          __CharacterSizeMode__getCharacterSizeMode,
-	          "Get the CharacterSizeMode. ",
-	          "");
-	I_Method1(void, setMaximumWidth, IN, float, maximumWidth,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaximumWidth__float,
-	          "Set the maximum width of the text box. ",
-	          "With horizontal layouts any characters which do not fit are wrapped around. 0 or negative values indicate that no maximum width is set, lines can be as long as they need be to fit thre required text ");
-	I_Method0(float, getMaximumWidth,
-	          Properties::NON_VIRTUAL,
-	          __float__getMaximumWidth,
-	          "Get the maximim width of the text box. ",
-	          "");
-	I_Method1(void, setMaximumHeight, IN, float, maximumHeight,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaximumHeight__float,
-	          "Set the maximum height of the text box. ",
-	          "With horizontal layouts any characters which do not fit are wrapped around. 0 or negative values indicate that no maximum height is set, lines can be as long as they need be to fit the required text ");
-	I_Method0(float, getMaximumHeight,
-	          Properties::NON_VIRTUAL,
-	          __float__getMaximumHeight,
-	          "Get the maximum height of the text box. ",
-	          "");
-	I_Method1(void, setLineSpacing, IN, float, lineSpacing,
-	          Properties::NON_VIRTUAL,
-	          __void__setLineSpacing__float,
-	          "Set the line spacing of the text box, given as a percentage of the character height. ",
-	          "The default value is 0 for backward compatibility. For longer paragraphs of text, a value of at least 25% (i.e. set line spacing to 0.25) is recommended. ");
-	I_Method0(float, getLineSpacing,
-	          Properties::NON_VIRTUAL,
-	          __float__getLineSpacing,
-	          "Get the line spacing of the text box. ",
-	          "");
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
-	          Properties::NON_VIRTUAL,
-	          __void__setPosition__C5_osg_Vec3_R1,
-	          "Set the position of text. ",
-	          "");
-	I_Method0(const osg::Vec3 &, getPosition,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getPosition,
-	          "Get the position of text. ",
-	          "");
-	I_Method1(void, setAlignment, IN, osgText::Text::AlignmentType, alignment,
-	          Properties::NON_VIRTUAL,
-	          __void__setAlignment__AlignmentType,
-	          "",
-	          "");
-	I_Method0(osgText::Text::AlignmentType, getAlignment,
-	          Properties::NON_VIRTUAL,
-	          __AlignmentType__getAlignment,
-	          "",
-	          "");
-	I_Method1(void, setAxisAlignment, IN, osgText::Text::AxisAlignment, axis,
-	          Properties::NON_VIRTUAL,
-	          __void__setAxisAlignment__AxisAlignment,
-	          "",
-	          "");
-	I_Method0(osgText::Text::AxisAlignment, getAxisAlignment,
-	          Properties::NON_VIRTUAL,
-	          __AxisAlignment__getAxisAlignment,
-	          "",
-	          "");
-	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
-	          Properties::NON_VIRTUAL,
-	          __void__setRotation__C5_osg_Quat_R1,
-	          "",
-	          "");
-	I_Method0(const osg::Quat &, getRotation,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Quat_R1__getRotation,
-	          "",
-	          "");
-	I_Method1(void, setAutoRotateToScreen, IN, bool, autoRotateToScreen,
-	          Properties::NON_VIRTUAL,
-	          __void__setAutoRotateToScreen__bool,
-	          "",
-	          "");
-	I_Method0(bool, getAutoRotateToScreen,
-	          Properties::NON_VIRTUAL,
-	          __bool__getAutoRotateToScreen,
-	          "",
-	          "");
-	I_Method1(void, setLayout, IN, osgText::Text::Layout, layout,
-	          Properties::NON_VIRTUAL,
-	          __void__setLayout__Layout,
-	          "",
-	          "");
-	I_Method0(osgText::Text::Layout, getLayout,
-	          Properties::NON_VIRTUAL,
-	          __Layout__getLayout,
-	          "",
-	          "");
 	I_Method1(void, setColor, IN, const osg::Vec4 &, color,
 	          Properties::NON_VIRTUAL,
 	          __void__setColor__C5_osg_Vec4_R1,
@@ -339,16 +117,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method0(const osg::Vec4 &, getColor,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getColor,
-	          "",
-	          "");
-	I_Method1(void, setDrawMode, IN, unsigned int, mode,
-	          Properties::NON_VIRTUAL,
-	          __void__setDrawMode__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getDrawMode,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getDrawMode,
 	          "",
 	          "");
 	I_Method1(void, setBackdropType, IN, osgText::Text::BackdropType, type,
@@ -436,21 +204,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          __C5_osg_Vec4_R1__getColorGradientTopRight,
 	          "",
 	          "");
-	I_Method1(void, setKerningType, IN, osgText::KerningType, kerningType,
-	          Properties::NON_VIRTUAL,
-	          __void__setKerningType__KerningType,
-	          "",
-	          "");
-	I_Method0(osgText::KerningType, getKerningType,
-	          Properties::NON_VIRTUAL,
-	          __KerningType__getKerningType,
-	          "",
-	          "");
-	I_Method0(unsigned int, getLineCount,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getLineCount,
-	          "Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns 0 otherwise. ",
-	          "");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__osg_RenderInfo_R1,
@@ -506,11 +259,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          __C5_TextureGlyphQuadMap_R1__getTextureGlyphQuadMap,
 	          "",
 	          "");
-	I_Method0(osg::BoundingBox, computeBound,
-	          Properties::VIRTUAL,
-	          __osg_BoundingBox__computeBound,
-	          "Compute the bounding box around Drawables's geometry. ",
-	          "");
 	I_ProtectedMethod0(osgText::Font *, getActiveFont,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -530,7 +278,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                   "",
 	                   "");
 	I_ProtectedMethod0(void, computeGlyphRepresentation,
-	                   Properties::NON_VIRTUAL,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__computeGlyphRepresentation,
 	                   "",
@@ -541,14 +289,8 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                   __bool__computeAverageGlyphWidthAndHeight__float_R1__float_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(void, computePositions,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__computePositions,
-	                   "",
-	                   "");
 	I_ProtectedMethod1(void, computePositions, IN, unsigned int, contextID,
-	                   Properties::NON_VIRTUAL,
+	                   Properties::VIRTUAL,
 	                   Properties::CONST,
 	                   __void__computePositions__unsigned_int,
 	                   "",
@@ -643,15 +385,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                   __void__convertRgbToHsv__float__float,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgText::Text::AlignmentType, Alignment, 
-	                 __AlignmentType__getAlignment, 
-	                 __void__setAlignment__AlignmentType);
-	I_SimpleProperty(bool, AutoRotateToScreen, 
-	                 __bool__getAutoRotateToScreen, 
-	                 __void__setAutoRotateToScreen__bool);
-	I_SimpleProperty(osgText::Text::AxisAlignment, AxisAlignment, 
-	                 __AxisAlignment__getAxisAlignment, 
-	                 __void__setAxisAlignment__AxisAlignment);
 	I_SimpleProperty(const osg::Vec4 &, BackdropColor, 
 	                 __C5_osg_Vec4_R1__getBackdropColor, 
 	                 __void__setBackdropColor__C5_osg_Vec4_R1);
@@ -670,15 +403,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_SimpleProperty(float, BackdropVerticalOffset, 
 	                 __float__getBackdropVerticalOffset, 
 	                 0);
-	I_SimpleProperty(float, CharacterAspectRatio, 
-	                 __float__getCharacterAspectRatio, 
-	                 0);
-	I_SimpleProperty(float, CharacterHeight, 
-	                 __float__getCharacterHeight, 
-	                 0);
-	I_SimpleProperty(osgText::Text::CharacterSizeMode, CharacterSizeMode, 
-	                 __CharacterSizeMode__getCharacterSizeMode, 
-	                 __void__setCharacterSizeMode__CharacterSizeMode);
 	I_SimpleProperty(const osg::Vec4 &, Color, 
 	                 __C5_osg_Vec4_R1__getColor, 
 	                 __void__setColor__C5_osg_Vec4_R1);
@@ -697,45 +421,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_SimpleProperty(const osg::Vec4 &, ColorGradientTopRight, 
 	                 __C5_osg_Vec4_R1__getColorGradientTopRight, 
 	                 0);
-	I_SimpleProperty(unsigned int, DrawMode, 
-	                 __unsigned_int__getDrawMode, 
-	                 __void__setDrawMode__unsigned_int);
 	I_SimpleProperty(osgText::Font *, Font, 
 	                 0, 
 	                 __void__setFont__Font_P1);
-	I_SimpleProperty(unsigned int, FontHeight, 
-	                 __unsigned_int__getFontHeight, 
-	                 0);
-	I_SimpleProperty(unsigned int, FontWidth, 
-	                 __unsigned_int__getFontWidth, 
-	                 0);
-	I_SimpleProperty(osgText::KerningType, KerningType, 
-	                 __KerningType__getKerningType, 
-	                 __void__setKerningType__KerningType);
-	I_SimpleProperty(osgText::Text::Layout, Layout, 
-	                 __Layout__getLayout, 
-	                 __void__setLayout__Layout);
-	I_SimpleProperty(unsigned int, LineCount, 
-	                 __unsigned_int__getLineCount, 
-	                 0);
-	I_SimpleProperty(float, LineSpacing, 
-	                 __float__getLineSpacing, 
-	                 __void__setLineSpacing__float);
-	I_SimpleProperty(float, MaximumHeight, 
-	                 __float__getMaximumHeight, 
-	                 __void__setMaximumHeight__float);
-	I_SimpleProperty(float, MaximumWidth, 
-	                 __float__getMaximumWidth, 
-	                 __void__setMaximumWidth__float);
-	I_SimpleProperty(const osg::Vec3 &, Position, 
-	                 __C5_osg_Vec3_R1__getPosition, 
-	                 __void__setPosition__C5_osg_Vec3_R1);
-	I_SimpleProperty(const osg::Quat &, Rotation, 
-	                 __C5_osg_Quat_R1__getRotation, 
-	                 __void__setRotation__C5_osg_Quat_R1);
-	I_SimpleProperty(const osgText::String &, Text, 
-	                 __C5_String_R1__getText, 
-	                 __void__setText__C5_String_R1);
 	I_SimpleProperty(const osgText::Text::TextureGlyphQuadMap &, TextureGlyphQuadMap, 
 	                 __C5_TextureGlyphQuadMap_R1__getTextureGlyphQuadMap, 
 	                 0);

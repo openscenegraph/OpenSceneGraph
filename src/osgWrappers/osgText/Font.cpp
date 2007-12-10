@@ -19,6 +19,7 @@
 #include <osg/Texture>
 #include <osg/Vec2>
 #include <osgText/Font>
+#include <osgText/KerningType>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -535,12 +536,5 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::GlyphTexture)
 	I_SimpleProperty(bool, ThreadSafeRefUnref, 
 	                 0, 
 	                 __void__setThreadSafeRefUnref__bool);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgText::KerningType)
-	I_DeclaringFile("osgText/Font");
-	I_EnumLabel(osgText::KERNING_DEFAULT);
-	I_EnumLabel(osgText::KERNING_UNFITTED);
-	I_EnumLabel(osgText::KERNING_NONE);
 END_REFLECTOR
 

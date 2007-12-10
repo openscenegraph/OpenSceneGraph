@@ -186,6 +186,7 @@ namespace osgViewer
 // Examples of providing an action to connect to.
 - (IBAction) resetPosition:(id)the_sender;
 - (IBAction) takeBackgroundColorFrom:(id)the_sender;
+- (IBAction) toggleFullScreen:(id)the_sender;
 
 
 @end

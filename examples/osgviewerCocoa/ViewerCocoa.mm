@@ -674,6 +674,11 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 	else
 	{
 		theViewer->getEventQueue()->mouseDoubleButtonPress(converted_point.x, converted_point.y, 1);
+		
+		
+		// Let's toggle fullscreen for show
+		[self toggleFullScreen:nil];
+
 	}
 	[self setNeedsDisplay:YES];
 }
@@ -1386,6 +1391,27 @@ A -respondsToSelector: check has been used to provide compatibility with previou
 		)
 	);
 	[self setNeedsDisplay:YES];
+}
+
+- (IBAction) toggleFullScreen:(id)the_sender
+{
+	// I'm lazy and rather use the new 10.5 Cocoa Fullscreen API.
+	// For now, no legacy support for fullscreen.
+	// One of the cool things about Obj-C is dynamic/late binding.
+	// We can compile and run this code on versions prior to 10.5.
+	// At run-time, we check to see if these methods actually exist
+	// and if they do, we message them. If not, we avoid them.
+	if([self respondsToSelector:@selector(isInFullScreenMode)])
+	{
+		if([self isInFullScreenMode])
+		{
+			[self exitFullScreenModeWithOptions:nil];
+		}
+		else
+		{
+			[self enterFullScreenMode:[NSScreen mainScreen] withOptions:nil];
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////

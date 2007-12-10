@@ -140,11 +140,12 @@ bool XBaseParser::parse(int fd)
     
     
     // ** read each record and store them in the ShapeAttributeListList
-    char record[_xBaseHeader._recordLength];
+    char* record = new char[_xBaseHeader._recordLength];
+    
     std::vector<XBaseFieldDescriptor>::iterator it, end = _xBaseFieldDescriptorList.end();
     for (Integer i = 0; i < _xBaseHeader._numRecord; ++i)
     {
-        if ((nbytes = ::read( fd, &record, sizeof(record))) <= 0) return false;    
+        if ((nbytes = ::read( fd, record, _xBaseHeader._recordLength)) <= 0) return false;    
         
         char * recordPtr = record;
         osgSim::ShapeAttributeList * shapeAttributeList = new osgSim::ShapeAttributeList;
@@ -200,6 +201,8 @@ bool XBaseParser::parse(int fd)
         
         _shapeAttributeListList.push_back(shapeAttributeList);
     }
+    
+    delete [] record;
     
     close (fd);
          

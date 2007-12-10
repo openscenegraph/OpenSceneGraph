@@ -17,6 +17,7 @@
 #include <osg/ref_ptr>
 
 #include <algorithm>
+#include <string.h>
 
 using namespace osg;
 using namespace std;

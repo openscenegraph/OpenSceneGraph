@@ -24,6 +24,8 @@
 #include <osg/Texture3D>
 #include <osg/Texture2DArray>
 
+#include <string.h>
+
 #include "dxtctool.h"
 
 using namespace osg;

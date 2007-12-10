@@ -157,7 +157,7 @@ bool XBaseParser::parse(int fd)
             {
             case 'C':
             {
-                char str[it->_fieldLength + 1];
+                char* str = new char[it->_fieldLength + 1];
                 memcpy(str, recordPtr, it->_fieldLength);
                 str[it->_fieldLength] = 0;
                 shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (char*) str));
@@ -165,7 +165,7 @@ bool XBaseParser::parse(int fd)
             }
             case 'N':
             {
-                char number[it->_fieldLength + 1];
+                char* number = new char[it->_fieldLength + 1];
                 memcpy(number, recordPtr, it->_fieldLength);
                 number[it->_fieldLength] = 0;
                 shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (int) atoi(number)));

@@ -92,9 +92,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         virtual void apply(osg::Camera& node);
         virtual void apply(osg::OccluderNode& node);
 
-        void setClearNode(const osg::ClearNode* earthSky) { _clearNode = earthSky; }
-        const osg::ClearNode* getClearNode() const { return _clearNode.get(); }
-
         /** Push state set on the current state group.
           * If the state exists in a child state group of the current
           * state group then move the current state group to that child.
@@ -285,8 +282,6 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             if (callback) (*callback)(&node,this);
             else acceptNode->accept(*this);
         }
-
-        osg::ref_ptr<const osg::ClearNode>                          _clearNode;
 
         osg::ref_ptr<StateGraph>                                   _rootStateGraph;
         StateGraph*                                                _currentStateGraph;

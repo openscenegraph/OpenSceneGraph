@@ -21,6 +21,7 @@
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgViewer/GraphicsWindow>
+#include <osgViewer/Version>
 
 #include <iostream>
 
@@ -118,7 +119,7 @@ public:
         MyGraphicsContext context;
         if (!context.valid())
         {
-            osg::notify(osg::NOTICE)<<"Error: Unable to create graphis context - cannot run compression"<<std::endl;
+            osg::notify(osg::NOTICE)<<"Error: Unable to create graphis context, problem with running osgViewer-"<<osgViewerGetVersion()<<", cannot run compression."<<std::endl;
             return;
         }
 

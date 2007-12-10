@@ -3,7 +3,7 @@
 /*
  * Wavefront OBJ loader for Open Scene Graph
  *
- * Copyright (C) 2001 Ulrich Hertlein <u.hertlein@web.de>
+ * Copyright (C) 2001,2007 Ulrich Hertlein <u.hertlein@sandbox.de>
  *
  * Modified by Robert Osfield to support per Drawable coord, normal and
  * texture coord arrays, bug fixes, and support for texture mapping.
@@ -213,14 +213,20 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
         bool isTransparent = false;
 
         // handle material colors
+        // http://java3d.j3d.org/utilities/loaders/obj/sun.html
+        if (material.illum != 0)
         {
             osg::Material* osg_material = new osg::Material;
             stateset->setAttribute(osg_material);
 
             osg_material->setAmbient(osg::Material::FRONT_AND_BACK,material.ambient);
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK,material.diffuse);
-            osg_material->setSpecular(osg::Material::FRONT_AND_BACK,material.specular);
-            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.shininess/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
+            if (material.illum == 2) {
+                osg_material->setSpecular(osg::Material::FRONT_AND_BACK,material.specular);
+            } else {
+                osg_material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,1));
+            }
+            osg_material->setShininess(osg::Material::FRONT_AND_BACK,(material.Ns/1000.0f)*128.0f ); // note OBJ shiniess is 0..1000.
             
             if (material.ambient[3]!=1.0 ||
                 material.diffuse[3]!=1.0 ||

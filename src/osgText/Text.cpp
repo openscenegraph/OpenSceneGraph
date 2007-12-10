@@ -32,22 +32,7 @@ using namespace osgText;
 //#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
 
 Text::Text():
-    _fontWidth(32),
-    _fontHeight(32),
-    _characterHeight(32),
-    _characterAspectRatio(1.0f),
-    _characterSizeMode(OBJECT_COORDS),
-    _maximumWidth(0.0f),
-    _maximumHeight(0.0f),
-    _lineSpacing(0.0f),
-    _alignment(BASE_LINE),
-    _axisAlignment(XY_PLANE),
-    _autoRotateToScreen(false),
-    _layout(LEFT_TO_RIGHT),
     _color(1.0f,1.0f,1.0f,1.0f),
-    _drawMode(TEXT),
-    _kerningType(KERNING_DEFAULT),
-    _lineCount(0),
     _backdropType(NONE),
     _backdropImplementation(DEPTH_RANGE),
     _backdropHorizontalOffset(0.07f),
@@ -58,34 +43,12 @@ Text::Text():
     _colorGradientBottomLeft(0.0f, 1.0f, 0.0f, 1.0f),
     _colorGradientBottomRight(0.0f, 0.0f, 1.0f, 1.0f),
     _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)    
-{
-    setStateSet(DefaultFont::instance()->getStateSet());
-    setUseDisplayList(false);
-    setSupportsDisplayList(false);
-}
+{}
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
-    osg::Drawable(text,copyop),
+    osgText::TextBase(text,copyop),
     _font(text._font),
-    _fontWidth(text._fontWidth),
-    _fontHeight(text._fontHeight),
-    _characterHeight(text._characterHeight),
-    _characterAspectRatio(text._characterAspectRatio),
-    _characterSizeMode(text._characterSizeMode),
-    _maximumWidth(text._maximumWidth),
-    _maximumHeight(text._maximumHeight),
-    _lineSpacing(text._lineSpacing),
-    _text(text._text),
-    _position(text._position),
-    _alignment(text._alignment),
-    _axisAlignment(text._axisAlignment),
-    _rotation(text._rotation),
-    _autoRotateToScreen(text._autoRotateToScreen),
-    _layout(text._layout),
     _color(text._color),
-    _drawMode(text._drawMode),
-    _kerningType(text._kerningType),
-    _lineCount(text._lineCount),
     _backdropType(text._backdropType),
     _backdropImplementation(text._backdropImplementation),
     _backdropHorizontalOffset(text._backdropHorizontalOffset),
@@ -126,182 +89,12 @@ void Text::setFont(const std::string& fontfile)
     setFont(readFontFile(fontfile));
 }
 
-void Text::setFontResolution(unsigned int width, unsigned int height)
-{
-    _fontWidth = width;
-    _fontHeight = height;
-    computeGlyphRepresentation();
-}
-
-void Text::setCharacterSize(float height,float aspectRatio)
-{
-    _characterHeight = height;
-    _characterAspectRatio = aspectRatio;
-    computeGlyphRepresentation();
-}
-
-void Text::setMaximumWidth(float maximumWidth)
-{
-    _maximumWidth = maximumWidth;
-    computeGlyphRepresentation();
-}
-
-void  Text::setMaximumHeight(float maximumHeight)
-{
-    _maximumHeight = maximumHeight;
-    computeGlyphRepresentation();
-}
-
-void Text::setLineSpacing(float lineSpacing)
-{
-    _lineSpacing = lineSpacing;
-    computeGlyphRepresentation();
-}
-    
-
-void Text::setText(const String& text)
-{
-    if (_text==text) return;
-    
-    _text = text;
-    computeGlyphRepresentation();
-}
-
-void Text::setText(const std::string& text)
-{
-    setText(String(text));
-}
-
-void Text::setText(const std::string& text,String::Encoding encoding)
-{
-    setText(String(text,encoding));
-}
-    
-
-void Text::setText(const wchar_t* text)
-{
-    setText(String(text));
-}
-
-void Text::setPosition(const osg::Vec3& pos)
-{
-    if (_position==pos) return;
-
-    _position = pos;
-    computePositions();
-}
-
-void Text::setAlignment(AlignmentType alignment)
-{
-    if (_alignment==alignment) return;
-    
-    _alignment = alignment;
-    computePositions();
-}
-
-void Text::setAxisAlignment(AxisAlignment axis)
-{
-    _axisAlignment = axis;
-
-    switch(axis)
-    {
-    case XZ_PLANE:
-        setAutoRotateToScreen(false);
-        setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))); 
-        break;
-    case REVERSED_XZ_PLANE:
-        setAutoRotateToScreen(false);
-        setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f))*
-                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))); 
-        break;
-    case YZ_PLANE:  
-        setAutoRotateToScreen(false);
-        setRotation(osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))*
-                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(0.0f,0.0f,1.0f)));
-        break;
-    case REVERSED_YZ_PLANE:  
-        setAutoRotateToScreen(false);
-        setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f))*
-                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(1.0f,0.0f,0.0f))*
-                    osg::Quat(osg::inDegrees(90.0f),osg::Vec3(0.0f,0.0f,1.0f)));
-        break;
-    case XY_PLANE:
-        setAutoRotateToScreen(false);
-        setRotation(osg::Quat());  // nop - already on XY plane.
-        break;
-    case REVERSED_XY_PLANE:
-        setAutoRotateToScreen(false);
-        setRotation(osg::Quat(osg::inDegrees(180.0f),osg::Vec3(0.0f,1.0f,0.0f)));
-        break;
-    case SCREEN:
-        setAutoRotateToScreen(true);
-        setRotation(osg::Quat());  // nop - already on XY plane.
-        break;
-    }
-}
-
-void Text::setRotation(const osg::Quat& quat)
-{
-    _rotation = quat;
-    computePositions();
-}
-
-
-void Text::setAutoRotateToScreen(bool autoRotateToScreen)
-{
-    if (_autoRotateToScreen==autoRotateToScreen) return;
-    
-    _autoRotateToScreen = autoRotateToScreen;
-}
-
-
-void Text::setLayout(Layout layout)
-{
-    if (_layout==layout) return;
-
-    _layout = layout;
-    computeGlyphRepresentation();
-}
 
 void Text::setColor(const osg::Vec4& color)
 {
     _color = color;
 }
 
-void Text::setDrawMode(unsigned int mode) 
-{ 
-    if (_drawMode==mode) return;
-
-    _drawMode=mode;
-}
-
-
-osg::BoundingBox Text::computeBound() const
-{
-    osg::BoundingBox  bbox;
-
-    if (_textBB.valid())
-    {
-    
-        for(unsigned int i=0;i<_autoTransformCache.size();++i)
-        {
-            if (_autoTransformCache[i]._traversalNumber<0 && (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen))
-            {
-                // _autoTransformCache is not valid so don't take it into accoumt when compute bounding volume.
-            }
-            else
-            {            
-                osg::Matrix& matrix = _autoTransformCache[i]._matrix;
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
-                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
-            }
-        }
-    }
-    
-    return bbox;
-}
 
 Font* Text::getActiveFont()
 {
@@ -466,11 +259,11 @@ void Text::computeGlyphRepresentation()
     if (_text.empty()) 
     {
         _textBB.set(0,0,0,0,0,0);//no size text
-        computePositions(); //to reset the origin
+        TextBase::computePositions(); //to reset the origin
         return;
     }
     
-    OpenThreads::ScopedLock<Font::FontMutex> lock(*(Font::getSerializeFontCallsMutex()));
+    OpenThreads::ScopedLock<Font::FontMutex> lock(*(activefont->getSerializeFontCallsMutex()));
 
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();
@@ -746,7 +539,7 @@ void Text::computeGlyphRepresentation()
 
     }
    
-    computePositions();
+    TextBase::computePositions();
     computeBackdropBoundingBox();
     computeColorGradients();
 }
@@ -803,22 +596,6 @@ bool Text::computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height
     return is_valid_size;
 }
 
-void Text::computePositions()
-{
-    unsigned int size = osg::maximum(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts(),_autoTransformCache.size());
-    
-    // FIXME: OPTIMIZE: This would be one of the ideal locations to
-    // call computeAverageGlyphWidthAndHeight(). It is out of the contextID loop
-    // so the value would be computed fewer times. But the code will need changes
-    // to get the value down to the locations it is needed. (Either pass through parameters
-    // or member variables, but we would need a system to know if the values are stale.)
-
-    
-    for(unsigned int i=0;i<size;++i)
-    {
-        computePositions(i);
-    }
-}
 
 void Text::computePositions(unsigned int contextID) const
 {
@@ -1670,16 +1447,14 @@ void Text::accept(osg::PrimitiveFunctor& pf) const
 
 void Text::setThreadSafeRefUnref(bool threadSafe)
 {
-    Drawable::setThreadSafeRefUnref(threadSafe);
+    TextBase::setThreadSafeRefUnref(threadSafe);
 
     getActiveFont()->setThreadSafeRefUnref(threadSafe);
 }
 
 void Text::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    Drawable::resizeGLObjectBuffers(maxSize);
-
-    _autoTransformCache.resize(maxSize);
+    TextBase::resizeGLObjectBuffers(maxSize);
     
     getActiveFont()->resizeGLObjectBuffers(maxSize);
 }
@@ -1687,7 +1462,7 @@ void Text::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Text::releaseGLObjects(osg::State* state) const
 {
-    Drawable::releaseGLObjects(state);
+    TextBase::releaseGLObjects(state);
     getActiveFont()->releaseGLObjects(state);
 }
 
@@ -1983,7 +1758,6 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
 }
 
-
 void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
@@ -2044,7 +1818,6 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
     glPopAttrib();
 }
-    
 
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {

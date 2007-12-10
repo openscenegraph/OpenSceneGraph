@@ -14,16 +14,17 @@
 #ifndef OSGTEXT_TEXT
 #define OSGTEXT_TEXT 1
 
+
 #include <osg/Drawable>
 #include <osg/Quat>
 
+#include <osgText/TextBase>
 #include <osgText/Font>
-#include <osgText/String>
 
 namespace osgText {
 
 
-class OSGTEXT_EXPORT Text : public osg::Drawable
+class OSGTEXT_EXPORT Text : public osgText::TextBase
 {
 public:
 
@@ -50,179 +51,14 @@ public:
     const Font* getFont() const { return _font.get(); }
 
     
-    /** Set the Font reference width and height resolution in texels.
-      * Note, the size may not be supported by current font, 
-      * the closest supported font size will be selected.*/
-    void setFontResolution(unsigned int width, unsigned int height);
-
-    unsigned int getFontWidth() const { return _fontWidth; }
-    unsigned int getFontHeight() const { return _fontHeight; }
-    
-    
-    /** Set the text using a osgText::String.*/
-    void setText(const String& text);
-
-    /** Set the text using a std::string, 
-      * which is converted to an internal TextString.*/
-    void setText(const std::string& text);
-
-    /** Set the text using a Unicode encoded std::string, which is converted to an internal TextString.
-      * The encoding parameter specificies which Unicode encodeding is used in the std::string. */
-    void setText(const std::string& text,String::Encoding encoding);
-
-    /** Set the text using a wchar_t string, 
-      * which is converted to an internal TextString.*/
-    void setText(const wchar_t* text);
-    
-    /** Get the text string. 
-      * Note, if you modify the string you must call Text::update() for
-      * the internal glyph reprentation to be updated.*/
-    String& getText() { return _text; }
-
-    /** Get the const text string.*/
-    const String& getText() const { return _text; }
-    
-    /** update internal glyph respresnetation used for rendering, 
-      * and bounding volume.*/
-    void update() { computeGlyphRepresentation(); }
-
-
-    /** Set the rendered character size in object coordinates.*/
-    void setCharacterSize(float height,float aspectRatio=1.0f);
-    
-    float getCharacterHeight() const { return _characterHeight; }
-    float getCharacterAspectRatio() const { return _characterAspectRatio; }
-
-    enum CharacterSizeMode
-    {
-        OBJECT_COORDS, /// default
-        SCREEN_COORDS, /// internally scale the characters to be constant screen size.
-        OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT /// text that behavaves like OBJECT_COORDS sized text when a long distance way, but has its screen sized capped automatically when the viewer gets near.
-    };
-
-    /** Set how the CharacterSize value relates to the final rendered character.*/
-    void setCharacterSizeMode(CharacterSizeMode mode) { _characterSizeMode = mode; }
-    
-    /** Get the CharacterSizeMode.*/
-    CharacterSizeMode getCharacterSizeMode() const { return _characterSizeMode; }
-
-
-    /** Set the maximum width of the text box.
-      * With horizontal layouts any characters which do not fit are wrapped around.
-      * 0 or negative values indicate that no maximum width is set, lines can be as long as 
-      * they need be to fit thre required text*/
-    void setMaximumWidth(float maximumWidth);
-    
-    /** Get the maximim width of the text box.*/
-    float getMaximumWidth() const { return _maximumWidth; }
-
-    /** Set the maximum height of the text box.
-      * With horizontal layouts any characters which do not fit are wrapped around.
-      * 0 or negative values indicate that no maximum height is set, lines can be as long as 
-      * they need be to fit the required text*/
-    void setMaximumHeight(float maximumHeight);
-    
-    /** Get the maximum height of the text box.*/
-    float getMaximumHeight() const { return _maximumHeight; }
-
-    /** Set the line spacing of the text box, given as a percentage of
-      * the character height. The default value is 0 for backward 
-      * compatibility. For longer paragraphs of text, a value of at 
-      * least 25% (i.e. set line spacing to 0.25) is recommended. */
-    void setLineSpacing(float lineSpacing);
-
-    /** Get the line spacing of the text box. */
-    float getLineSpacing() const { return _lineSpacing; }
-
-
-
-    /** Set the position of text.*/
-    void setPosition(const osg::Vec3& pos);
-    
-    /** Get the position of text.*/
-    const osg::Vec3& getPosition() const { return _position; }
-       
-
-    enum AlignmentType
-    {
-        LEFT_TOP,
-        LEFT_CENTER,
-        LEFT_BOTTOM,
-
-        CENTER_TOP,
-        CENTER_CENTER,
-        CENTER_BOTTOM,
-
-        RIGHT_TOP,
-        RIGHT_CENTER,
-        RIGHT_BOTTOM,
-        
-        LEFT_BASE_LINE,
-        CENTER_BASE_LINE,
-        RIGHT_BASE_LINE,
-    
-        LEFT_BOTTOM_BASE_LINE,
-        CENTER_BOTTOM_BASE_LINE,
-        RIGHT_BOTTOM_BASE_LINE,
-    
-        BASE_LINE = LEFT_BASE_LINE /// default.
-    
-    };
-    
-    void setAlignment(AlignmentType alignment);
-    AlignmentType getAlignment() const { return _alignment; }
-
-
-    enum AxisAlignment
-    {
-        XY_PLANE,
-        REVERSED_XY_PLANE,
-        XZ_PLANE,
-        REVERSED_XZ_PLANE,
-        YZ_PLANE,
-        REVERSED_YZ_PLANE,
-        SCREEN,
-        USER_DEFINED_ROTATION
-    };
-
-    void setAxisAlignment(AxisAlignment axis);
-    AxisAlignment getAxisAlignment() const { return _axisAlignment; }
-    
-    void setRotation(const osg::Quat& quat);
-    const osg::Quat& getRotation() const { return _rotation; }
-
-    void setAutoRotateToScreen(bool autoRotateToScreen);
-    bool getAutoRotateToScreen() const { return _autoRotateToScreen; }
-
-    enum Layout
-    {
-        LEFT_TO_RIGHT, /// default
-        RIGHT_TO_LEFT,
-        VERTICAL
-    };
-    
-    void setLayout(Layout layout);
-    
-    Layout getLayout() const { return _layout; }
-
 
     void setColor(const osg::Vec4& color);
     
     const osg::Vec4& getColor() const { return _color; }
 
 
-    enum DrawModeMask
-    {
-        TEXT        = 1, /// default
-        BOUNDINGBOX = 2,
-        ALIGNMENT   = 4
-    };
-
-    void setDrawMode(unsigned int mode);
     
-    unsigned int getDrawMode() const { return _drawMode; }
-
-
+    
     enum BackdropType
     {
         DROP_SHADOW_BOTTOM_RIGHT = 0,  // usually the type of shadow you see
@@ -417,13 +253,7 @@ public:
     const osg::Vec4& getColorGradientTopRight() const { return _colorGradientTopRight; }
 
 
-    void setKerningType(KerningType kerningType) { _kerningType = kerningType; }
-
-    KerningType getKerningType() const { return _kerningType; }
-
-    /** Get the number of wrapped lines - only valid after computeGlyphRepresentation() has been called, returns 0 otherwise */
-    unsigned int getLineCount() const { return _lineCount; }
-
+    
     /** Draw the text.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo) const;
 
@@ -454,9 +284,9 @@ public:
       * for all graphics contexts. */
     virtual void releaseGLObjects(osg::State* state=0) const;
 
-    // make Font a friend to allow it set the _font to 0 if the font is 
-    // forcefully unloaded.
-    friend class Font;
+//    // make Font a friend to allow it set the _font to 0 if the font is 
+//    // forcefully unloaded.
+//    friend class Font;
 public:
 
     // internal structures, variable and methods used for rendering of characters.
@@ -510,7 +340,6 @@ public:
         return _textureGlyphQuadMap;
     }
 
-    virtual osg::BoundingBox computeBound() const;
 
 protected:
 
@@ -523,26 +352,7 @@ protected:
     
     // members which have public access.
     osg::ref_ptr<Font>                      _font;
-    unsigned int                            _fontWidth;
-    unsigned int                            _fontHeight;
-    float                                   _characterHeight;
-    float                                   _characterAspectRatio;
-    CharacterSizeMode                       _characterSizeMode;
-    float                                   _maximumWidth;
-    float                                   _maximumHeight;
-    float                                   _lineSpacing;
-
-    String                                  _text;
-    osg::Vec3                               _position;
-    AlignmentType                           _alignment;
-    AxisAlignment                            _axisAlignment;
-    osg::Quat                               _rotation;
-    bool                                    _autoRotateToScreen;
-    Layout                                  _layout;
     osg::Vec4                               _color;
-    unsigned int                            _drawMode;
-    KerningType                             _kerningType;
-    unsigned int                            _lineCount;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     mutable TextureGlyphQuadMap            _textureGlyphQuadMap;
@@ -551,31 +361,9 @@ protected:
 
     // internal caches of the positioning of the text.
     
-    struct AutoTransformCache
-    {    
-        AutoTransformCache():
-            _traversalNumber(-1),
-            _width(0),
-            _height(0) {}
-    
-        int         _traversalNumber;
-        int         _width;
-        int         _height;
-        osg::Vec3   _transformedPosition;
-        osg::Matrix _modelview;
-        osg::Matrix _projection;
-        osg::Matrix _matrix;
-    };
-    
-    mutable osg::buffered_object<AutoTransformCache>    _autoTransformCache;
-    mutable osg::Vec3                                   _offset;
-    mutable osg::Vec3                                   _normal;
-    mutable osg::BoundingBox                            _textBB;
-
-
     bool computeAverageGlyphWidthAndHeight(float& avg_width, float& avg_height) const;
-    void computePositions();
-    void computePositions(unsigned int contextID) const;
+    
+    virtual void computePositions(unsigned int contextID) const;
     
     void computeBackdropPositions(unsigned int contextID) const;
     void computeBackdropBoundingBox() const;

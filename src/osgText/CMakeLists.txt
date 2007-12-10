@@ -10,8 +10,12 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Font
+    ${HEADER_PATH}/Font3D
+    ${HEADER_PATH}/KerningType
     ${HEADER_PATH}/String
+    ${HEADER_PATH}/TextBase
     ${HEADER_PATH}/Text
+    ${HEADER_PATH}/Text3D
     ${HEADER_PATH}/FadeText
     ${HEADER_PATH}/Version
 )
@@ -23,12 +27,17 @@ ADD_LIBRARY(${LIB_NAME}
     DefaultFont.cpp
     DefaultFont.h
     Font.cpp
+    Font3D.cpp
     String.cpp
     FadeText.cpp
+    TextBase.cpp
     Text.cpp
+    Text3D.cpp
     Version.cpp
 )
 
+
+SET(TARGET_LIBRARIES_VARS FREETYPE_LIBRARY )
 LINK_INTERNAL(${LIB_NAME}     
     osgDB
     osg

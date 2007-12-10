@@ -13,7 +13,7 @@
 
 #include "FreeTypeLibrary.h"
 #include <osg/Notify>
-#include <ft2build.h>
+//#include <ft2build.h>
 
 //#define PRINT_OUT_FONT_DETAILS
 #ifdef PRINT_OUT_FONT_DETAILS
@@ -24,6 +24,7 @@
 
 FreeTypeLibrary::FreeTypeLibrary()
 {
+    osg::notify(osg::INFO) << "FreeTypeLibrary::FreeTypeLibrary()" << std::endl; 
     FT_Error error = FT_Init_FreeType( &_ftlibrary );
     if (error)
     {
@@ -47,6 +48,14 @@ FreeTypeLibrary::~FreeTypeLibrary()
         font->setImplementation(0);
     }
     
+    while(!_font3DImplementationSet.empty())
+    {
+        FreeTypeFont3D* font3DImplementation = *_font3DImplementationSet.begin();
+        _font3DImplementationSet.erase(_font3DImplementationSet.begin());
+        osgText::Font3D* font3D = font3DImplementation->_facade;
+        font3D->setImplementation(0);
+    }
+    
     FT_Done_FreeType( _ftlibrary);
 }
 
@@ -56,22 +65,20 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
     return s_library.get();
 }
 
-osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int index, unsigned int flags)
+bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT_Face & face)
 {
-
-    FT_Face face; /* handle to face object */
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
     if (error == FT_Err_Unknown_File_Format)
     {
         osg::notify(osg::WARN)<<" .... the font file could be opened and read, but it appears"<<std::endl;
         osg::notify(osg::WARN)<<" .... that its font format is unsupported"<<std::endl;
-        return 0;
+        return false;
     }
     else if (error)
     {
         osg::notify(osg::WARN)<<" .... another error code means that the font file could notd"<<std::endl;
         osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..d"<<std::endl;
-        return 0;
+        return false;
     }
     
 #ifdef PRINT_OUT_FONT_DETAILS
@@ -96,18 +103,11 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile,unsigned int
     //
     verifyCharacterMap(face);
     
-    FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face,flags);
-    osgText::Font* font = new osgText::Font(fontImp);
-
-    _fontImplementationSet.insert(fontImp);
-    
-    return font;
-
+    return true;
 }
 
-osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int index, unsigned int flags)
+FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, FT_Face & face)
 {
-    FT_Face face;    /* handle to face object */
     FT_Open_Args args;
 
     std::streampos start = fontstream.tellg();
@@ -142,11 +142,35 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
         osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..."<<std::endl;
         return 0;
     }
-    
+
     //
     // GT: Fix to handle symbol fonts in MS Windows
     //
     verifyCharacterMap(face);
+    
+    return buffer;
+}
+
+
+osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile, unsigned int index, unsigned int flags)
+{
+    FT_Face face;
+    if (getFace(fontfile, index, face) == false) return (0);
+
+    
+    FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face,flags);
+    osgText::Font* font = new osgText::Font(fontImp);
+
+    _fontImplementationSet.insert(fontImp);
+    
+    return font;
+}
+osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int index, unsigned int flags)
+{
+    FT_Face face = 0;
+    FT_Byte * buffer = getFace(fontstream, index, face);
+    if (face == 0) return (0);
+
     
     FreeTypeFont* fontImp = new FreeTypeFont(buffer,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
@@ -154,6 +178,34 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
     _fontImplementationSet.insert(fontImp);
 
     return font;
+}
+
+osgText::Font3D* FreeTypeLibrary::getFont3D(const std::string& fontfile, unsigned int index, unsigned int flags)
+{
+    FT_Face face;
+    if (getFace(fontfile, index, face) == false) return (0);
+
+    
+    FreeTypeFont3D* font3DImp = new FreeTypeFont3D(fontfile,face,flags);
+    osgText::Font3D* font3D = new osgText::Font3D(font3DImp);
+
+    _font3DImplementationSet.insert(font3DImp);
+    
+    return font3D;
+}
+osgText::Font3D* FreeTypeLibrary::getFont3D(std::istream& fontstream, unsigned int index, unsigned int flags)
+{
+    FT_Face face = 0;
+    FT_Byte * buffer = getFace(fontstream, index, face);
+    if (face == 0) return (0);
+    
+    
+    FreeTypeFont3D* font3DImp = new FreeTypeFont3D(buffer,face,flags);
+    osgText::Font3D* font3D = new osgText::Font3D(font3DImp);
+    
+    _font3DImplementationSet.insert(font3DImp);
+
+    return font3D;
 }
 
 void FreeTypeLibrary::verifyCharacterMap(FT_Face face)

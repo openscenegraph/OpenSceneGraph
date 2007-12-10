@@ -49,7 +49,10 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            return freeTypeLibrary->getFont(fileName,0,getFlags(options));
+            if (options->getPluginData("3D"))
+                return freeTypeLibrary->getFont3D(fileName,0,getFlags(options));
+            else
+                return freeTypeLibrary->getFont(fileName,0,getFlags(options));
         }
 
         virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options* options) const

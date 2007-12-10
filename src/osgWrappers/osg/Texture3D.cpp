@@ -174,7 +174,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	          Properties::NON_VIRTUAL,
 	          __void__setNumMipmapLevels__unsigned_int,
 	          "Helper function. ",
-	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texuture::apply(), or during a custom OpenGL texture load. ");
+	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texture::apply(), or during a custom OpenGL texture load. ");
 	I_Method0(unsigned int, getNumMipmapLevels,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumMipmapLevels,
@@ -192,12 +192,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	          "If the texture object hasn't already been compiled, create the texture mipmap levels. ");
 	I_StaticMethod2(osg::Texture3D::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
-	                "Encapsulates queries of extension availability, obtains extension function pointers, and provides convinience wrappers for calling extension functions. ",
+	                "Encapsulates queries of extension availability, obtains extension function pointers, and provides convenience wrappers for calling extension functions. ",
 	                "");
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture3D::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "Overrides Extensions objects across graphics contexts. ",
-	                "Typically used to ensure the same lowest common denominator of extensions on sustems with different graphics pipes. ");
+	                "Typically used to ensure the same lowest common denominator of extensions on systems with different graphics pipes. ");
 	I_ProtectedMethod6(void, computeRequiredTextureDimensions, IN, osg::State &, state, IN, const osg::Image &, image, IN, GLsizei &, width, IN, GLsizei &, height, IN, GLsizei &, depth, IN, GLsizei &, numMipmapLevels,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

@@ -197,12 +197,12 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method4(void, decompose, IN, osg::Vec3f &, translation, IN, osg::Quat &, rotation, IN, osg::Vec3f &, scale, IN, osg::Quat &, so,
 	          Properties::NON_VIRTUAL,
 	          __void__decompose__osg_Vec3f_R1__osg_Quat_R1__osg_Vec3f_R1__osg_Quat_R1,
-	          "decompose the matrix into translation, rotation, scale and scale orietation. ",
+	          "decompose the matrix into translation, rotation, scale and scale orientation. ",
 	          "");
 	I_Method4(void, decompose, IN, osg::Vec3d &, translation, IN, osg::Quat &, rotation, IN, osg::Vec3d &, scale, IN, osg::Quat &, so,
 	          Properties::NON_VIRTUAL,
 	          __void__decompose__osg_Vec3d_R1__osg_Quat_R1__osg_Vec3d_R1__osg_Quat_R1,
-	          "decompose the matrix into translation, rotation, scale and scale orietation. ",
+	          "decompose the matrix into translation, rotation, scale and scale orientation. ",
 	          "");
 	I_Method6(void, makeOrtho, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top, IN, double, zNear, IN, double, zFar,
 	          Properties::NON_VIRTUAL,
@@ -212,7 +212,7 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method6(bool, getOrtho, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar,
 	          Properties::NON_VIRTUAL,
 	          __bool__getOrtho__double_R1__double_R1__double_R1__double_R1__double_R1__double_R1,
-	          "Get the othogrraphic settings of the orthographic projection matrix. ",
+	          "Get the orthographic settings of the orthographic projection matrix. ",
 	          "Note, if matrix is not an orthographic matrix then invalid values will be returned. ");
 	I_Method4(void, makeOrtho2D, IN, double, left, IN, double, right, IN, double, bottom, IN, double, top,
 	          Properties::NON_VIRTUAL,

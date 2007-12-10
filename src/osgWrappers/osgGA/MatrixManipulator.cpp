@@ -104,12 +104,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          Properties::VIRTUAL,
 	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
 	          "Get the FusionDistanceMode. ",
-	          "Used by SceneView for setting up setereo convergence. ");
+	          "Used by SceneView for setting up stereo convergence. ");
 	I_Method0(float, getFusionDistanceValue,
 	          Properties::VIRTUAL,
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
-	          "Used by SceneView for setting up setereo convergence. ");
+	          "Used by SceneView for setting up stereo convergence. ");
 	I_Method1(void, setIntersectTraversalMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,
 	          __void__setIntersectTraversalMask__unsigned_int,
@@ -143,7 +143,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_Method3(void, getHomePosition, IN, osg::Vec3d &, eye, IN, osg::Vec3d &, center, IN, osg::Vec3d &, up,
 	          Properties::VIRTUAL,
 	          __void__getHomePosition__osg_Vec3d_R1__osg_Vec3d_R1__osg_Vec3d_R1,
-	          "Get the mnaully set home position. ",
+	          "Get the manually set home position. ",
 	          "");
 	I_Method1(void, setAutoComputeHomePosition, IN, bool, flag,
 	          Properties::VIRTUAL,

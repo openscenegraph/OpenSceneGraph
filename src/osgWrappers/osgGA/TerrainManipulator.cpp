@@ -77,12 +77,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	          Properties::VIRTUAL,
 	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
 	          "Get the FusionDistanceMode. ",
-	          "Used by SceneView for setting up setereo convergence. ");
+	          "Used by SceneView for setting up stereo convergence. ");
 	I_Method0(float, getFusionDistanceValue,
 	          Properties::VIRTUAL,
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
-	          "Used by SceneView for setting up setereo convergence. ");
+	          "Used by SceneView for setting up stereo convergence. ");
 	I_Method1(void, setNode, IN, osg::Node *, x,
 	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,

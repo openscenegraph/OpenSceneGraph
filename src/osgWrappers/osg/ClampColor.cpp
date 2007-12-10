@@ -111,7 +111,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ClampColor)
 	I_StaticMethod2(osg::ClampColor::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Returns the Extensions object for the given context. ",
-	                "If createIfNotInitalized is true and the Exentsions object doesn't exist, getExtensions() creates it on the given context. Returns NULL if createIfNotInitalized is false and the Extensions object doesn't exist. ");
+	                "If createIfNotInitalized is true and the Extensions object doesn't exist, getExtensions() creates it on the given context. Returns NULL if createIfNotInitalized is false and the Extensions object doesn't exist. ");
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::ClampColor::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "setExtensions() allows users to override the extensions across graphics contexts. ",

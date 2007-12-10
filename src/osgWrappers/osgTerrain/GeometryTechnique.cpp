@@ -133,7 +133,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
 	          __void__dirty,
-	          "Dirty so that cached data structurese will be updated on next use. ",
+	          "Dirty so that cached data structures will be updated on next use. ",
 	          "");
 	I_Method1(void, setFilterBias, IN, float, filterBias,
 	          Properties::NON_VIRTUAL,

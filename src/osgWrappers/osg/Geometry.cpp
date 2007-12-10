@@ -574,7 +574,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method1(bool, getArrayList, IN, osg::Geometry::ArrayList &, arrayList,
 	          Properties::NON_VIRTUAL,
 	          __bool__getArrayList__ArrayList_R1,
@@ -664,7 +664,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          Properties::VIRTUAL,
 	          __unsigned_int__getGLObjectSizeHint,
 	          "Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable. ",
-	          "This size is used a hint for reuse of deleteed display lists/vertex buffer objects. ");
+	          "This size is used a hint for reuse of deleted display lists/vertex buffer objects. ");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,
@@ -678,7 +678,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(void, accept, IN, osg::Drawable::AttributeFunctor &, af,
 	          Properties::VIRTUAL,
 	          __void__accept__Drawable_AttributeFunctor_R1,
-	          "Accept an Drawable::AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "Accept an Drawable::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::Drawable::ConstAttributeFunctor &, x,
 	          Properties::VIRTUAL,
@@ -688,7 +688,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
 	          Properties::VIRTUAL,
 	          __void__accept__Drawable_ConstAttributeFunctor_R1,
-	          "Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
 	          Properties::VIRTUAL,
@@ -698,7 +698,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf,
 	          Properties::VIRTUAL,
 	          __void__accept__PrimitiveFunctor_R1,
-	          "Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. ",
+	          "Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveIndexFunctor &, x,
 	          Properties::VIRTUAL,
@@ -708,7 +708,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(void, accept, IN, osg::PrimitiveIndexFunctor &, pf,
 	          Properties::VIRTUAL,
 	          __void__accept__PrimitiveIndexFunctor_R1,
-	          "Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. ",
+	          "Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
 	          "");
 	I_ProtectedMethod1(bool, verifyBindings, IN, const osg::Geometry::ArrayData &, arrayData,
 	                   Properties::NON_VIRTUAL,

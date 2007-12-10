@@ -124,7 +124,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureSize__int__int,
 	          "Set the texture width and height. ",
-	          "If width or height are zero then the repsective size value is calculated from the source image sizes. ");
+	          "If width or height are zero then the respective size value is calculated from the source image sizes. ");
 	I_Method1(void, setTextureWidth, IN, int, width,
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureWidth__int,
@@ -197,7 +197,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 	                   Properties::CONST,
 	                   __void__applyTexParameters__GLenum__State_R1,
 	                   "Helper method. ",
-	                   "Sets texture paramters. ");
+	                   "Sets texture parameters. ");
 	I_ProtectedMethod5(void, applyTexImage_load, IN, GLenum, target, IN, osg::Image *, image, IN, osg::State &, state, IN, GLsizei &, inwidth, IN, GLsizei &, inheight,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

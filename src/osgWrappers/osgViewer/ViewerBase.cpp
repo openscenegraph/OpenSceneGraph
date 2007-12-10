@@ -139,7 +139,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          Properties::NON_VIRTUAL,
 	          __void__setEndBarrierPosition__BarrierPosition,
 	          "Set the position of the end barrier. ",
-	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconcistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
+	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconsistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
 	I_Method0(osgViewer::ViewerBase::BarrierPosition, getEndBarrierPosition,
 	          Properties::NON_VIRTUAL,
 	          __BarrierPosition__getEndBarrierPosition,
@@ -148,12 +148,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_Method1(void, setDone, IN, bool, done,
 	          Properties::NON_VIRTUAL,
 	          __void__setDone__bool,
-	          "Set the done flag to singnal the viewer's work is done and should exit the frame loop. ",
+	          "Set the done flag to signal the viewer's work is done and should exit the frame loop. ",
 	          "");
 	I_Method0(bool, done,
 	          Properties::NON_VIRTUAL,
 	          __bool__done,
-	          "Reurn true if viewer's work is done and should exit the frame loop. ",
+	          "Return true if viewer's work is done and should exit the frame loop. ",
 	          "");
 	I_Method1(void, setEventVisitor, IN, osgGA::EventVisitor *, eventVisitor,
 	          Properties::NON_VIRTUAL,
@@ -249,7 +249,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          Properties::PURE_VIRTUAL,
 	          __int__run,
 	          "Execute a main frame loop. ",
-	          "Equivialant to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned. ");
+	          "Equivalent to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned. ");
 	I_MethodWithDefaults1(void, frame, IN, double, simulationTime, USE_REFERENCE_TIME,
 	                      Properties::VIRTUAL,
 	                      __void__frame__double,

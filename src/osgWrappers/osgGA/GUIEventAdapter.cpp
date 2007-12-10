@@ -351,7 +351,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Method0(float, getYmin,
 	          Properties::NON_VIRTUAL,
 	          __float__getYmin,
-	          "get mmouse minimum y. ",
+	          "get mouse minimum y. ",
 	          "");
 	I_Method0(float, getYmax,
 	          Properties::NON_VIRTUAL,
@@ -446,12 +446,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Method0(float, getXnormalized,
 	          Properties::NON_VIRTUAL,
 	          __float__getXnormalized,
-	          "return the getX() value normalised to the range of -1 to 1. ",
+	          "return the getX() value normalized to the range of -1 to 1. ",
 	          "-1 would be the left hand side of the window. 0.0 would be the middle of the window. +1 would be the right hand side of the window. ");
 	I_Method0(float, getYnormalized,
 	          Properties::NON_VIRTUAL,
 	          __float__getYnormalized,
-	          "return the getY() value normalised to the range of -1 to 1. ",
+	          "return the getY() value normalized to the range of -1 to 1. ",
 	          "-1 would be the bottom of the window. 0.0 would be the middle of the window. +1 would be the top of the window. ");
 	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo,
 	          Properties::NON_VIRTUAL,

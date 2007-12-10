@@ -90,7 +90,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Billboard)
 	          Properties::NON_VIRTUAL,
 	          __void__setAxis__C5_Vec3_R1,
 	          "Set the rotation axis for the billboard's child Drawables. ",
-	          "Only utlized when mode==AXIAL_ROT. ");
+	          "Only utilized when mode==AXIAL_ROT. ");
 	I_Method0(const osg::Vec3 &, getAxis,
 	          Properties::NON_VIRTUAL,
 	          __C5_Vec3_R1__getAxis,

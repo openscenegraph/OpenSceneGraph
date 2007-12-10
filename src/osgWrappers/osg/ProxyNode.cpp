@@ -143,7 +143,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	          Properties::NON_VIRTUAL,
 	          __void__setRadius__float,
 	          "Set the object-space reference radius of the volume enclosed by the ProxyNode. ",
-	          "Used to detmine the bounding sphere of the ProxyNode in the absense of any children. ");
+	          "Used to determine the bounding sphere of the ProxyNode in the absence of any children. ");
 	I_Method0(float, getRadius,
 	          Properties::NON_VIRTUAL,
 	          __float__getRadius,

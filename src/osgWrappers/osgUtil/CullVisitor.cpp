@@ -167,16 +167,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          __void__apply__osg_OccluderNode_R1,
 	          "",
 	          "");
-	I_Method1(void, setClearNode, IN, const osg::ClearNode *, earthSky,
-	          Properties::NON_VIRTUAL,
-	          __void__setClearNode__C5_osg_ClearNode_P1,
-	          "",
-	          "");
-	I_Method0(const osg::ClearNode *, getClearNode,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_ClearNode_P1__getClearNode,
-	          "",
-	          "");
 	I_Method1(void, pushStateSet, IN, const osg::StateSet *, ss,
 	          Properties::NON_VIRTUAL,
 	          __void__pushStateSet__C5_osg_StateSet_P1,
@@ -364,9 +354,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_SimpleProperty(osgUtil::CullVisitor::value_type, CalculatedNearPlane, 
 	                 __value_type__getCalculatedNearPlane, 
 	                 0);
-	I_SimpleProperty(const osg::ClearNode *, ClearNode, 
-	                 __C5_osg_ClearNode_P1__getClearNode, 
-	                 __void__setClearNode__C5_osg_ClearNode_P1);
 	I_SimpleProperty(osgUtil::RenderBin *, CurrentRenderBin, 
 	                 __RenderBin_P1__getCurrentRenderBin, 
 	                 __void__setCurrentRenderBin__RenderBin_P1);

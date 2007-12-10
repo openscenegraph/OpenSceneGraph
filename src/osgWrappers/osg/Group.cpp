@@ -110,11 +110,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	          Properties::VIRTUAL,
 	          __bool__replaceChild__Node_P1__Node_P1,
 	          "Replace specified Node with another Node. ",
-	          "Equivalent to setChild(getChildIndex(orignChild),node) See docs for setChild for futher details on implementation. ");
+	          "Equivalent to setChild(getChildIndex(orignChild),node) See docs for setChild for further details on implementation. ");
 	I_Method0(unsigned int, getNumChildren,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildren,
-	          "Return the number of chilren nodes. ",
+	          "Return the number of children nodes. ",
 	          "");
 	I_Method2(bool, setChild, IN, unsigned int, i, IN, osg::Node *, node,
 	          Properties::VIRTUAL,
@@ -155,7 +155,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __BoundingSphere__computeBound,

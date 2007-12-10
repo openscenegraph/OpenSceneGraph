@@ -125,7 +125,7 @@ BEGIN_OBJECT_REFLECTOR(osg::PolygonOffset)
 	                "");
 	I_StaticMethod0(void, setFactorAndUnitsMultipliersUsingBestGuessForDriver,
 	                __void__setFactorAndUnitsMultipliersUsingBestGuessForDriver_S,
-	                "Checks with the OpenGL driver to try and pick multiplier approrpriate for the hardware. ",
+	                "Checks with the OpenGL driver to try and pick multiplier appropriate for the hardware. ",
 	                "note, requires a valid graphics context to be current. ");
 	I_SimpleProperty(float, Factor, 
 	                 __float__getFactor, 

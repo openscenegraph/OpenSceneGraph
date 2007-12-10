@@ -86,18 +86,18 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraView)
 	I_Method1(void, setAttitude, IN, const osg::Quat &, quat,
 	          Properties::NON_VIRTUAL,
 	          __void__setAttitude__C5_Quat_R1,
-	          "Set the attitide of the camera view. ",
+	          "Set the attitude of the camera view. ",
 	          "");
 	I_Method0(const osg::Quat &, getAttitude,
 	          Properties::NON_VIRTUAL,
 	          __C5_Quat_R1__getAttitude,
-	          "Get the attitide of the camera view. ",
+	          "Get the attitude of the camera view. ",
 	          "");
 	I_Method1(void, setFieldOfView, IN, double, fieldOfView,
 	          Properties::NON_VIRTUAL,
 	          __void__setFieldOfView__double,
 	          "Set the field of view. ",
-	          "The cameras field of view can be contrained to either the horizontal or vertex axis of the camera, or unconstrained in which case the camera/application are left to choose an appropriate field of view. The default value if 60 degrres. ");
+	          "The cameras field of view can be constrained to either the horizontal or vertex axis of the camera, or unconstrained in which case the camera/application are left to choose an appropriate field of view. The default value if 60 degrees. ");
 	I_Method0(double, getFieldOfView,
 	          Properties::NON_VIRTUAL,
 	          __double__getFieldOfView,
@@ -106,7 +106,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CameraView)
 	I_Method1(void, setFieldOfViewMode, IN, osg::CameraView::FieldOfViewMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setFieldOfViewMode__FieldOfViewMode,
-	          "Set the field of view mode - controlling how the field of view of the camera is contrained by the CameaView settings. ",
+	          "Set the field of view mode - controlling how the field of view of the camera is constrained by the CameaView settings. ",
 	          "");
 	I_Method0(osg::CameraView::FieldOfViewMode, getFieldOfViewMode,
 	          Properties::NON_VIRTUAL,

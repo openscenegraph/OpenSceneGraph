@@ -169,7 +169,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2D)
 	          Properties::NON_VIRTUAL,
 	          __void__setNumMipmapLevels__unsigned_int,
 	          "Helper function. ",
-	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texuture::apply(), or during a custom OpenGL texture load. ");
+	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texture::apply(), or during a custom OpenGL texture load. ");
 	I_Method0(unsigned int, getNumMipmapLevels,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumMipmapLevels,

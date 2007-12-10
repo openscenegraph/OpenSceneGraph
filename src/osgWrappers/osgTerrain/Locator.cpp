@@ -71,7 +71,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          Properties::NON_VIRTUAL,
 	          __void__setCoordinateSystemType__CoordinateSystemType,
 	          "Set the CoordinatesSyetemType. ",
-	          "Note, the user must keep the CoordinateSystemString consistent with the type of the CoordindateSystem. ");
+	          "Note, the user must keep the CoordinateSystemString consistent with the type of the CoordinateSystem. ");
 	I_Method0(osgTerrain::Locator::CoordinateSystemType, getCoordinateSystemType,
 	          Properties::NON_VIRTUAL,
 	          __CoordinateSystemType__getCoordinateSystemType,

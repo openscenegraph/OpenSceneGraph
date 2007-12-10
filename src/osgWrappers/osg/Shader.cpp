@@ -143,7 +143,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_StaticMethod2(void, deleteGlShader, IN, unsigned int, contextID, IN, GLuint, shader,
 	                __void__deleteGlShader__unsigned_int__GLuint_S,
 	                "Mark internal glShader for deletion. ",
-	                "Deletion requests are queued tuntil they can be executed in the proper GL context. ");
+	                "Deletion requests are queued until they can be executed in the proper GL context. ");
 	I_StaticMethod3(void, flushDeletedGlShaders, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
 	                __void__flushDeletedGlShaders__unsigned_int__double__double_R1_S,
 	                "flush all the cached glShaders which need to be deleted in the OpenGL context related to contextID. ",

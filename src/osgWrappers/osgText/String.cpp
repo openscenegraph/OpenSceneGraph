@@ -75,7 +75,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::String)
 	          Properties::NON_VIRTUAL,
 	          __void__set__C5_std_string_R1__Encoding,
 	          "Set the text using a Unicode encoded std::string, which is converted to an internal TextString. ",
-	          "The encoding parameter specificies which Unicode encodeding is used in the std::string. ");
+	          "The encoding parameter specifies which Unicode encoding is used in the std::string. ");
 	I_Method0(std::string, createUTF8EncodedString,
 	          Properties::NON_VIRTUAL,
 	          __std_string__createUTF8EncodedString,

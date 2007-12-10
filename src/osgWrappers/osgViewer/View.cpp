@@ -78,7 +78,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Method0(osg::View *, asView,
 	          Properties::VIRTUAL,
 	          __osg_View_P1__asView,
-	          "Provide a mechanism for getting the osg::View assocaited from the GUIActionAdapter. ",
+	          "Provide a mechanism for getting the osg::View associated from the GUIActionAdapter. ",
 	          "One would use this to case view to osgViewer::View(er) if supported by the subclass. ");
 	I_Method0(osgViewer::ViewerBase *, getViewerBase,
 	          Properties::NON_VIRTUAL,
@@ -253,27 +253,27 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Method0(void, setUpViewAcrossAllScreens,
 	          Properties::NON_VIRTUAL,
 	          __void__setUpViewAcrossAllScreens,
-	          "Convinience method for creating slave Cameras and associated GraphicsWindows across all screens. ",
+	          "Convenience method for creating slave Cameras and associated GraphicsWindows across all screens. ",
 	          "");
 	I_MethodWithDefaults5(void, setUpViewInWindow, IN, int, x, , IN, int, y, , IN, int, width, , IN, int, height, , IN, unsigned int, screenNum, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setUpViewInWindow__int__int__int__int__unsigned_int,
-	                      "Convinience method for a single Camara on a single window. ",
+	                      "Convenience method for a single camera on a single window. ",
 	                      "");
 	I_MethodWithDefaults1(void, setUpViewOnSingleScreen, IN, unsigned int, screenNum, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setUpViewOnSingleScreen__unsigned_int,
-	                      "Convinience method for a single Camara associated with a single full screen GraphicsWindow. ",
+	                      "Convenience method for a single camera associated with a single full screen GraphicsWindow. ",
 	                      "");
 	I_MethodWithDefaults4(void, setUpViewFor3DSphericalDisplay, IN, double, radius, 1.0, IN, double, collar, 0.45, IN, unsigned int, screenNum, 0, IN, osg::Image *, intensityMap, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setUpViewFor3DSphericalDisplay__double__double__unsigned_int__osg_Image_P1,
-	                      "Convinience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display. ",
+	                      "Convenience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display. ",
 	                      "");
 	I_MethodWithDefaults4(void, setUpViewForPanoramicSphericalDisplay, IN, double, radius, 1.0, IN, double, collar, 0.45, IN, unsigned int, screenNum, 0, IN, osg::Image *, intensityMap, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setUpViewForPanoramicSphericalDisplay__double__double__unsigned_int__osg_Image_P1,
-	                      "Convinience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display. ",
+	                      "Convenience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display. ",
 	                      "");
 	I_Method1(bool, containsCamera, IN, const osg::Camera *, camera,
 	          Properties::NON_VIRTUAL,

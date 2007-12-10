@@ -110,7 +110,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
 	          Properties::VIRTUAL,
 	          __void__accept__Drawable_ConstAttributeFunctor_R1,
-	          "Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
 	          Properties::VIRTUAL,

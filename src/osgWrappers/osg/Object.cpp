@@ -89,7 +89,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	          Properties::NON_VIRTUAL,
 	          __void__setDataVariance__DataVariance,
 	          "Set the data variance of this object. ",
-	          "Can be set to either STATIC for values that do not change over the lifetime of the object, or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value can be used by routines such as optimzation codes that wish to share static data. UNSPECIFIED is used to sepecify that the DataVariance hasn't been set yet. ");
+	          "Can be set to either STATIC for values that do not change over the lifetime of the object, or DYNAMIC for values that vary over the lifetime of the object. The DataVariance value can be used by routines such as optimization codes that wish to share static data. UNSPECIFIED is used to specify that the DataVariance hasn't been set yet. ");
 	I_Method0(osg::Object::DataVariance, getDataVariance,
 	          Properties::NON_VIRTUAL,
 	          __DataVariance__getDataVariance,
@@ -98,7 +98,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	I_Method0(void, computeDataVariance,
 	          Properties::VIRTUAL,
 	          __void__computeDataVariance,
-	          "Compute the DataVariance based on an assestment of callback etc. ",
+	          "Compute the DataVariance based on an assessment of callback etc. ",
 	          "");
 	I_Method1(void, setUserData, IN, osg::Referenced *, obj,
 	          Properties::NON_VIRTUAL,
@@ -124,7 +124,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_SimpleProperty(osg::Object::DataVariance, DataVariance, 
 	                 __DataVariance__getDataVariance, 
 	                 __void__setDataVariance__DataVariance);

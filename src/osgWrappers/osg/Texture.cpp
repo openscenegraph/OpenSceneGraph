@@ -208,7 +208,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          Properties::NON_VIRTUAL,
 	          __void__setMaxAnisotropy__float,
 	          "Sets the maximum anisotropy value, default value is 1.0 for no anisotropic filtering. ",
-	          "If hardware does not support anisotropic filtering, use normal filtering (equivilant to a max anisotropy value of 1.0. Valid range is 1.0f upwards. The maximum value depends on the graphics system. ");
+	          "If hardware does not support anisotropic filtering, use normal filtering (equivalent to a max anisotropy value of 1.0. Valid range is 1.0f upwards. The maximum value depends on the graphics system. ");
 	I_Method0(float, getMaxAnisotropy,
 	          Properties::NON_VIRTUAL,
 	          __float__getMaxAnisotropy,
@@ -228,7 +228,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          Properties::NON_VIRTUAL,
 	          __void__setUnRefImageDataAfterApply__bool,
 	          "Sets whether or not the apply() function will unreference the image data. ",
-	          "If enabled, and the image data is only referened by this Texture, apply() will delete the image data. ");
+	          "If enabled, and the image data is only referenced by this Texture, apply() will delete the image data. ");
 	I_Method0(bool, getUnRefImageDataAfterApply,
 	          Properties::NON_VIRTUAL,
 	          __bool__getUnRefImageDataAfterApply,
@@ -333,7 +333,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          Properties::NON_VIRTUAL,
 	          __void__allocateMipmapLevels,
 	          "Force a manual allocation of the mipmap levels on the next apply() call. ",
-	          "User is responsible for filling the mipmap levels with valid data. The OpenGL's glGenerateMipmapEXT function is used to generate the mipmap levels. If glGenerateMipmapEXT is not supported or texture's internal format is not supported by the glGenerateMipmapEXT, then empty mipmap levels will be allocated manualy. The mipmap levels are also allocated if a non-mipmapped min filter is used. ");
+	          "User is responsible for filling the mipmap levels with valid data. The OpenGL's glGenerateMipmapEXT function is used to generate the mipmap levels. If glGenerateMipmapEXT is not supported or texture's internal format is not supported by the glGenerateMipmapEXT, then empty mipmap levels will be allocated manually. The mipmap levels are also allocated if a non-mipmapped min filter is used. ");
 	I_Method1(void, setShadowComparison, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setShadowComparison__bool,
@@ -392,22 +392,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method1(void, setReadPBuffer, IN, osg::GraphicsContext *, context,
 	          Properties::NON_VIRTUAL,
 	          __void__setReadPBuffer__GraphicsContext_P1,
-	          "Set the PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
+	          "Set the PBuffer graphics context to read from when using PBuffers for RenderToTexture. ",
 	          "");
 	I_Method0(osg::GraphicsContext *, getReadPBuffer,
 	          Properties::NON_VIRTUAL,
 	          __GraphicsContext_P1__getReadPBuffer,
-	          "Get the PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
+	          "Get the PBuffer graphics context to read from when using PBuffers for RenderToTexture. ",
 	          "");
 	I_Method0(const osg::GraphicsContext *, getReadPBuffer,
 	          Properties::NON_VIRTUAL,
 	          __C5_GraphicsContext_P1__getReadPBuffer,
-	          "Get the const PBuffer graphis context to read from when using PBuffers for RenderToTexture. ",
+	          "Get the const PBuffer graphics context to read from when using PBuffers for RenderToTexture. ",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, state,
 	          Properties::PURE_VIRTUAL,
 	          __void__apply__State_R1,
-	          "Texture is a pure virtual base class, apply must be overriden. ",
+	          "Texture is a pure virtual base class, apply must be overridden. ",
 	          "");
 	I_Method1(void, compileGLObjects, IN, osg::State &, state,
 	          Properties::VIRTUAL,
@@ -423,7 +423,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method6(void, applyTexImage2D_load, IN, osg::State &, state, IN, GLenum, target, IN, const osg::Image *, image, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, numMipmapLevels,
 	          Properties::NON_VIRTUAL,
 	          __void__applyTexImage2D_load__State_R1__GLenum__C5_Image_P1__GLsizei__GLsizei__GLsizei,
@@ -446,7 +446,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "Overrides Extensions objects across graphics contexts. ",
-	                "Typically used to ensure the same lowest common denominator of extensions on sustems with different graphics pipes. ");
+	                "Typically used to ensure the same lowest common denominator of extensions on systems with different graphics pipes. ");
 	I_StaticMethod1(bool, isCompressedInternalFormat, IN, GLint, internalFormat,
 	                __bool__isCompressedInternalFormat__GLint_S,
 	                "Determine whether the given internalFormat is a compressed image format. ",
@@ -508,7 +508,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                   Properties::CONST,
 	                   __void__applyTexParameters__GLenum__State_R1,
 	                   "Helper method. ",
-	                   "Sets texture paramters. ");
+	                   "Sets texture parameters. ");
 	I_ProtectedMethod1(void, generateMipmap, IN, osg::State &, state,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

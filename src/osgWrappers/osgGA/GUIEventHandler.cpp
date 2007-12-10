@@ -77,7 +77,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 	I_Method4(bool, handleWithCheckAgainstIgnoreHandledEventsMask, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, object, IN, osg::NodeVisitor *, nv,
 	          Properties::NON_VIRTUAL,
 	          __bool__handleWithCheckAgainstIgnoreHandledEventsMask__C5_GUIEventAdapter_R1__GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
-	          "Convnience method that only passes on to the handle(,,,) method events that either haven't been handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask. ",
+	          "Convenience method that only passes on to the handle(,,,) method events that either haven't been handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask. ",
 	          "Note, this method is an inline method, and not appropriate for users to override, override the handle(,,,) method instead. ");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
@@ -87,7 +87,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 	I_Method2(bool, handleWithCheckAgainstIgnoreHandledEventsMask, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
 	          Properties::NON_VIRTUAL,
 	          __bool__handleWithCheckAgainstIgnoreHandledEventsMask__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
-	          "Convnience method that only passes on to the handle(,) method events that either haven't been handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask. ",
+	          "Convenience method that only passes on to the handle(,) method events that either haven't been handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask. ",
 	          "Note, this method is an inline method, and not appropriate for users to override, override the handle(,) method instead. ");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, x,
 	          Properties::VIRTUAL,

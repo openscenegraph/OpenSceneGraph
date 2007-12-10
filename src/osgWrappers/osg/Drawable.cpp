@@ -101,7 +101,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_Method0(void, computeDataVariance,
 	          Properties::VIRTUAL,
 	          __void__computeDataVariance,
-	          "Compute the DataVariance based on an assestment of callback etc. ",
+	          "Compute the DataVariance based on an assessment of callback etc. ",
 	          "");
 	I_Method0(const osg::Drawable::ParentList &, getParents,
 	          Properties::NON_VIRTUAL,
@@ -272,7 +272,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method1(void, setUpdateCallback, IN, osg::Drawable::UpdateCallback *, ac,
 	          Properties::VIRTUAL,
 	          __void__setUpdateCallback__UpdateCallback_P1,
@@ -347,7 +347,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          Properties::PURE_VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,
 	          "drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable. ",
-	          " param renderInfo The osg::RenderInfo object that encapulates the current rendering information including the osg::State OpenGL state for the current graphics context.  ");
+	          " param renderInfo The osg::RenderInfo object that encapsulates the current rendering information including the osg::State OpenGL state for the current graphics context.  ");
 	I_Method1(bool, supports, IN, const osg::Drawable::AttributeFunctor &, x,
 	          Properties::VIRTUAL,
 	          __bool__supports__C5_AttributeFunctor_R1,

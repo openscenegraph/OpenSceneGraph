@@ -75,7 +75,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method0(osg::RefBlock *, getOperationsBlock,
 	          Properties::NON_VIRTUAL,
 	          __osg_RefBlock_P1__getOperationsBlock,
-	          "Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block. ",
+	          "Get the operations queue block used to mark an empty queue, if you end items into the empty queue you must release this block. ",
 	          "");
 	I_Method0(osg::Operation *, getCurrentOperation,
 	          Properties::NON_VIRTUAL,
@@ -135,7 +135,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method0(bool, realize,
 	          Properties::NON_VIRTUAL,
 	          __bool__realize,
-	          "Realise the GraphicsContext. ",
+	          "Realize the GraphicsContext. ",
 	          "");
 	I_MethodWithDefaults1(void, close, IN, bool, callCloseImplementation, true,
 	                      Properties::NON_VIRTUAL,
@@ -150,18 +150,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method0(bool, isRealized,
 	          Properties::NON_VIRTUAL,
 	          __bool__isRealized,
-	          "Return true if the graphics context has been realised and is ready to use. ",
+	          "Return true if the graphics context has been realized and is ready to use. ",
 	          "");
 	I_Method0(bool, makeCurrent,
 	          Properties::NON_VIRTUAL,
 	          __bool__makeCurrent,
 	          "Make this graphics context current. ",
-	          "Implementated by calling makeCurrentImplementation(). Returns true on success. ");
+	          "Implemented by calling makeCurrentImplementation(). Returns true on success. ");
 	I_Method1(bool, makeContextCurrent, IN, osg::GraphicsContext *, readContext,
 	          Properties::NON_VIRTUAL,
 	          __bool__makeContextCurrent__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context. ",
-	          "Implementated by calling makeContextCurrentImplementation(). Returns true on success. ");
+	          "Implemented by calling makeContextCurrentImplementation(). Returns true on success. ");
 	I_Method0(bool, releaseContext,
 	          Properties::NON_VIRTUAL,
 	          __bool__releaseContext,
@@ -200,28 +200,28 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_Method0(bool, realizeImplementation,
 	          Properties::PURE_VIRTUAL,
 	          __bool__realizeImplementation,
-	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
+	          "Realize the GraphicsContext implementation, Pure virtual - must be implemented by concrete implementations of GraphicsContext. ",
 	          "");
 	I_Method0(bool, isRealizedImplementation,
 	          Properties::PURE_VIRTUAL,
 	          __bool__isRealizedImplementation,
-	          "Return true if the graphics context has been realised, and is ready to use, implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Return true if the graphics context has been realized, and is ready to use, implementation. ",
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, closeImplementation,
 	          Properties::PURE_VIRTUAL,
 	          __void__closeImplementation,
 	          "Close the graphics context implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(bool, makeCurrentImplementation,
 	          Properties::PURE_VIRTUAL,
 	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method1(bool, makeContextCurrentImplementation, IN, osg::GraphicsContext *, readContext,
 	          Properties::PURE_VIRTUAL,
 	          __bool__makeContextCurrentImplementation__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(bool, releaseContextImplementation,
 	          Properties::PURE_VIRTUAL,
 	          __bool__releaseContextImplementation,
@@ -231,12 +231,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          Properties::PURE_VIRTUAL,
 	          __void__bindPBufferToTextureImplementation__GLenum,
 	          "Pure virtual, Bind the graphics context to associated texture implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, swapBuffersImplementation,
 	          Properties::PURE_VIRTUAL,
 	          __void__swapBuffersImplementation,
 	          "Swap the front and back buffers implementation. ",
-	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method4(void, resized, IN, int, x, IN, int, y, IN, int, width, IN, int, height,
 	          Properties::NON_VIRTUAL,
 	          __void__resized__int__int__int__int,
@@ -289,7 +289,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          "Must be defined by derived classes. ");
 	I_StaticMethod1(void, setWindowingSystemInterface, IN, osg::GraphicsContext::WindowingSystemInterface *, wsInterface,
 	                __void__setWindowingSystemInterface__WindowingSystemInterface_P1_S,
-	                "Set the querry the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
+	                "Set the query the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
 	                "");
 	I_StaticMethod0(osg::GraphicsContext::WindowingSystemInterface *, getWindowingSystemInterface,
 	                __WindowingSystemInterface_P1__getWindowingSystemInterface_S,
@@ -310,7 +310,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_StaticMethod1(void, incrementContextIDUsageCount, IN, unsigned int, contextID,
 	                __void__incrementContextIDUsageCount__unsigned_int_S,
 	                "Increment the usage count associate with a contextID. ",
-	                "The usage count speficies how many graphics contexts a specific contextID is shared between. ");
+	                "The usage count specifies how many graphics contexts a specific contextID is shared between. ");
 	I_StaticMethod1(void, decrementContextIDUsageCount, IN, unsigned int, contextID,
 	                __void__decrementContextIDUsageCount__unsigned_int_S,
 	                "Decrement the usage count associate with a contextID. ",

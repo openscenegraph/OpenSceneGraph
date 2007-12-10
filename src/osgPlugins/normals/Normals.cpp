@@ -83,7 +83,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                 _local_coords->push_back( v );
                 _local_coords->push_back( (v + n));
             }
-            else // BIND_PER_PRIMTIVE_SET, BIND_PER_PRIMTITIV, BIND_PER_VERTEX
+            else // BIND_PER_PRIMITIVE_SET, BIND_PER_PRIMITIVE, BIND_PER_VERTEX
             {
                 Geometry::PrimitiveSetList& primitiveSets = geom->getPrimitiveSetList();
                 Geometry::PrimitiveSetList::iterator itr;

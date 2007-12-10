@@ -180,13 +180,13 @@ void IntersectVisitor::IntersectState::addLineSegment(osg::LineSegment* seg)
 IntersectVisitor::IntersectVisitor()
 {
 
-    // overide the default node visitor mode.
+    // override the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     
     // Initialize eyepoint to 0,0,0
     setEyePoint(Vec3(0.0f,0.0f,0.0f));
 
-    setLODSelectionMode(USE_HIGHEST_LEVEL_OF_DETAIL); // orignal IntersectVisitor behavior
+    setLODSelectionMode(USE_HIGHEST_LEVEL_OF_DETAIL); // original IntersectVisitor behavior
     //setLODSelectionMode(USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 
     reset();

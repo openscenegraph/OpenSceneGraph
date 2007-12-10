@@ -19,19 +19,19 @@
 namespace osgUtil
 {
 
-/** Concrent class for implementing line intersections with the scene graph.
+/** Concrete class for implementing line intersections with the scene graph.
   * To be used in conjunction with IntersectionVisitor. */
 class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
 {
     public:
 
-        /** Construct a LineSegmentIntersector the runs between the secified start and end points in MODEL coordinates. */
+        /** Construct a LineSegmentIntersector the runs between the specified start and end points in MODEL coordinates. */
         LineSegmentIntersector(const osg::Vec3d& start, const osg::Vec3d& end);
         
-        /** Construct a LineSegmentIntersector the runs between the secified start and end points in the specified coordinate frame. */
+        /** Construct a LineSegmentIntersector the runs between the specified start and end points in the specified coordinate frame. */
         LineSegmentIntersector(CoordinateFrame cf, const osg::Vec3d& start, const osg::Vec3d& end);
         
-        /** Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates
+        /** Convenience constructor for supporting picking in WINDOW, or PROJECTION coordinates
           * In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1).
           * In PROJECTION coordinates (clip space cube) creates a start value of (x,y,-1) and end value of (x,y,1).
           * In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1).*/

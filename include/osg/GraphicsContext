@@ -81,13 +81,13 @@ class OSG_EXPORT GraphicsContext : public Object
                 sharedContext(0),
                 setInheritedWindowPixelFormat(false) {}
                             
-            // graphics context orginal and size
+            // graphics context original and size
             int x;
             int y;
             int width;
             int height;
             
-            // window decoration and baviour
+            // window decoration and behaviour
             std::string windowName;
             bool        windowDecoration;
             bool        supportsResize;
@@ -153,7 +153,7 @@ class OSG_EXPORT GraphicsContext : public Object
         };
     
     
-        /** Set the querry the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. */
+        /** Set the query the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. */
         static void setWindowingSystemInterface(WindowingSystemInterface* wsInterface);
         
         /** Get the WindowingSystemInterface*/
@@ -169,7 +169,7 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Get the current max ContextID.*/
         static unsigned int getMaxContextID();
 
-        /** Increment the usage count associate with a contextID. The usage count speficies how many graphics contexts a specific contextID is shared between.*/
+        /** Increment the usage count associate with a contextID. The usage count specifies how many graphics contexts a specific contextID is shared between.*/
         static void incrementContextIDUsageCount(unsigned int contextID);
 
         /** Decrement the usage count associate with a contextID. Once the contextID goes to 0 the contextID is then free to be reused.*/
@@ -217,7 +217,7 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Get the operations queue mutex.*/
         OpenThreads::Mutex* getOperationsMutex() { return &_operationsMutex; }
 
-        /** Get the operations queue block used to mark an empty queue, if you end items into the empty queu you must release this block.*/
+        /** Get the operations queue block used to mark an empty queue, if you end items into the empty queue you must release this block.*/
         osg::RefBlock* getOperationsBlock() { return _operationsBlock.get(); }
 
         /** Get the current operations that is being run.*/
@@ -261,7 +261,7 @@ class OSG_EXPORT GraphicsContext : public Object
         virtual void clear();
         
 
-        /** Realise the GraphicsContext.*/
+        /** Realize the GraphicsContext.*/
         bool realize();
 
         /** close the graphics context.
@@ -274,17 +274,17 @@ class OSG_EXPORT GraphicsContext : public Object
         /** swap the front and back buffers.*/
         void swapBuffers();
 
-        /** Return true if the graphics context has been realised and is ready to use.*/
+        /** Return true if the graphics context has been realized and is ready to use.*/
         inline bool isRealized() const { return isRealizedImplementation(); }
 
 
         /** Make this graphics context current.
-          * Implementated by calling makeCurrentImplementation(). 
+          * Implemented by calling makeCurrentImplementation(). 
           * Returns true on success. */
         bool makeCurrent();
         
         /** Make this graphics context current with specified read context.
-          * Implementated by calling makeContextCurrentImplementation().
+          * Implemented by calling makeContextCurrentImplementation().
           * Returns true on success. */
         bool makeContextCurrent(GraphicsContext* readContext);
         
@@ -313,35 +313,35 @@ class OSG_EXPORT GraphicsContext : public Object
         const GraphicsThread* getGraphicsThread() const { return _graphicsThread.get(); }
 
 
-        /** Realise the GraphicsContext implementation, 
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        /** Realize the GraphicsContext implementation, 
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool realizeImplementation() = 0;
 
-        /** Return true if the graphics context has been realised, and is ready to use, implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        /** Return true if the graphics context has been realized, and is ready to use, implementation.
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool isRealizedImplementation() const = 0;
 
         /** Close the graphics context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void closeImplementation() = 0;
 
         /** Make this graphics context current implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeCurrentImplementation() = 0;
         
         /** Make this graphics context current with specified read context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeContextCurrentImplementation(GraphicsContext* readContext) = 0;
 
         /** Release the graphics context implementation.*/
         virtual bool releaseContextImplementation() = 0;
 
         /** Pure virtual, Bind the graphics context to associated texture implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void bindPBufferToTextureImplementation(GLenum buffer) = 0;
 
         /** Swap the front and back buffers implementation.
-          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void swapBuffersImplementation() = 0;
 
 

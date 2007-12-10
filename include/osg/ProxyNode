@@ -71,7 +71,7 @@ class OSG_EXPORT ProxyNode : public Group
 
 
         /** Set the object-space reference radius of the volume enclosed by the ProxyNode. 
-          * Used to detmine the bounding sphere of the ProxyNode in the absense of any children.*/
+          * Used to determine the bounding sphere of the ProxyNode in the absence of any children.*/
         inline void setRadius(float radius) { _radius = radius; }
         
         /** Get the object-space radius of the volume enclosed by the ProxyNode.*/

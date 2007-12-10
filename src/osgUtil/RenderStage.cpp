@@ -221,15 +221,15 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     osg::Camera::RenderTargetImplementation renderTargetImplemntation = _camera->getRenderTargetImplementation();
     osg::Camera::RenderTargetImplementation renderTargetFallback = _camera->getRenderTargetFallback();
 
-    osg::Camera::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
+    osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
 
     // compute the required dimensions
     int width = static_cast<int>(_viewport->x() + _viewport->width());
     int height = static_cast<int>(_viewport->y() + _viewport->height());
     int depth = 1;
     osg::Camera::BufferAttachmentMap::iterator itr;
-    for(itr = bufferAttachements.begin();
-        itr != bufferAttachements.end();
+    for(itr = bufferAttachments.begin();
+        itr != bufferAttachments.end();
         ++itr)
     {
         width = osg::maximum(width,itr->second.width());
@@ -241,8 +241,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     // osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp computed "<<width<<" "<<height<<" "<<depth<<std::endl;
 
     // attach an images that need to be copied after the stage is drawn.
-    for(itr = bufferAttachements.begin();
-        itr != bufferAttachements.end();
+    for(itr = bufferAttachments.begin();
+        itr != bufferAttachments.end();
         ++itr)
     {
         // if one exist attach image to the RenderStage.
@@ -331,8 +331,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             bool colorAttached = false;
             bool depthAttached = false;
             bool stencilAttached = false;
-            for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
-                itr != bufferAttachements.end();
+            for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
+                itr != bufferAttachments.end();
                 ++itr)
             {
 
@@ -423,7 +423,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             renderTargetImplemntation = osg::Camera::PIXEL_BUFFER;
     }
 
-    // if any of the renderTargetImplementations require a seperate graphics context such as with pbuffer try in turn to
+    // if any of the renderTargetImplementations require a separate graphics context such as with pbuffer try in turn to
     // set up, but if each level fails then resort to the next level down.    
     while (!getGraphicsContext() &&
            (renderTargetImplemntation==osg::Camera::PIXEL_BUFFER_RTT ||
@@ -454,8 +454,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             bool colorAttached = false;
             bool depthAttached = false;
             bool stencilAttached = false;
-            for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
-                itr != bufferAttachements.end();
+            for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
+                itr != bufferAttachments.end();
                 ++itr)
             {
 
@@ -585,7 +585,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             }
             else
             {
-                osg::notify(osg::INFO)<<"Failed to aquire Graphics Context"<<std::endl;
+                osg::notify(osg::INFO)<<"Failed to acquire Graphics Context"<<std::endl;
                 
                 if (renderTargetImplemntation==osg::Camera::PIXEL_BUFFER_RTT)
                 {
@@ -609,8 +609,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     {
         osg::notify(osg::INFO)<<"Setting up osg::Camera::FRAME_BUFFER"<<std::endl;
 
-        for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachements.begin();
-            itr != bufferAttachements.end();
+        for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
+            itr != bufferAttachments.end();
             ++itr)
         {
             // assign the texture... 
@@ -860,7 +860,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         useThread = useContext->getGraphicsThread();
         useRenderInfo.setState(useState);
         
-        // syncronize the frame stamps
+        // synchronize the frame stamps
         useState->setFrameStamp(const_cast<osg::FrameStamp*>(state.getFrameStamp()));
 
         // map the DynamicObjectCount across to the new window
@@ -989,7 +989,7 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
         return;
     }
 
-    // push the stages camera so that drawing code can querry it     
+    // push the stages camera so that drawing code can query it     
     if (_camera) renderInfo.pushCamera(_camera);
 
     // set up the back buffer.

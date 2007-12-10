@@ -42,12 +42,12 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
             /** GEOGRAPHIC coordinate systems are ones mapped to latitude and longitude.*/
             GEOGRAPHIC,
 
-            /** PROJECTED coordinate systems are ones projected to a local projected coordindate system i.e. UTMs.*/
+            /** PROJECTED coordinate systems are ones projected to a local projected coordinate system i.e. UTMs.*/
             PROJECTED
         };
 
         /** Set the CoordinatesSyetemType.
-          * Note, the user must keep the CoordinateSystemString consistent with the type of the CoordindateSystem.*/
+          * Note, the user must keep the CoordinateSystemString consistent with the type of the CoordinateSystem.*/
         void setCoordinateSystemType(CoordinateSystemType type) { _coordinateSystemType = type; }
 
         /** Get the CoordinatesSyetemType.*/

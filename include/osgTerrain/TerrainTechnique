@@ -48,13 +48,13 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         /** Clean scene graph from any terrain technique specific nodes.*/
         virtual void cleanSceneGraph();
 
-        /** Traverse the terain subgraph.*/
+        /** Traverse the terrain subgraph.*/
         virtual void traverse(osg::NodeVisitor& nv);
 
-        /** Dirty so that cached data structurese will be updated on next use.*/
+        /** Dirty so that cached data structures will be updated on next use.*/
         virtual void dirty();
 
-        /** Return true if cached data structurese need updating.*/
+        /** Return true if cached data structures need updating.*/
         virtual bool isDirty() const { return _dirty; }
 
     protected:

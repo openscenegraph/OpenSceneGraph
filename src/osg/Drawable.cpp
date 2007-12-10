@@ -206,7 +206,7 @@ void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
     }
 }
 
-/** flush all the cached display list which need to be deleted
+/** flush all the cached display lists which need to be deleted
   * in the OpenGL context related to contextID.*/
 void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
 {
@@ -415,7 +415,7 @@ void Drawable::setNumChildrenRequiringUpdateTraversal(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -450,7 +450,7 @@ void Drawable::setNumChildrenRequiringEventTraversal(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -500,7 +500,7 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
     // get the globj for the current contextID.
     GLuint& globj = _globjList[contextID];
 
-    // call the globj if already set otherwise comple and execute.
+    // call the globj if already set otherwise compile and execute.
     if( globj != 0 )
     {   
         glDeleteLists( globj, 1 );
@@ -557,7 +557,7 @@ void Drawable::releaseGLObjects(State* state) const
         // get the globj for the current contextID.
         GLuint& globj = _globjList[contextID];
 
-        // call the globj if already set otherwise comple and execute.
+        // call the globj if already set otherwise compile and execute.
         if( globj != 0 )
         {
             Drawable::deleteDisplayList(contextID,globj, getGLObjectSizeHint());

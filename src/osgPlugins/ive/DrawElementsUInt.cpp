@@ -50,7 +50,7 @@ void DrawElementsUInt::read(DataInputStream* in)
             ((ive::PrimitiveSet*)(prim))->read(in);
         }
         else
-            throw Exception("DrawElementsUInt::read(): Could not cast this osg::DrawElementsUInt to an osg::PrimtiveSet.");
+            throw Exception("DrawElementsUInt::read(): Could not cast this osg::DrawElementsUInt to an osg::PrimitiveSet.");
 
         // Read array length and its elements.
         int size = in->readInt();

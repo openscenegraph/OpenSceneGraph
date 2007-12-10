@@ -69,8 +69,8 @@ namespace osg {
 class GraphicsContext;
 
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
-  * implements lazy state updating and provides accessors for querrying the current state.
-  . The venerable Red Book says that "OpenGL is a state machine", and this class
+  * implements lazy state updating and provides accessors for querying the current state.
+  * The venerable Red Book says that "OpenGL is a state machine", and this class
   * represents the OpenGL state in OSG. Furthermore, \c State also has other
   * important features:
   * - It works as a stack of states (see \c pushStateSet() and
@@ -79,7 +79,7 @@ class GraphicsContext;
   * - It implements lazy state updating. This means that, if one requests a
   *   state change and that particular state is already in the requested state,
   *   no OpenGL call will be made. This ensures that the OpenGL pipeline is not
-  *   stalled by unncessary state changes.
+  *   stalled by unnecessary state changes.
   * - It allows to query the current OpenGL state without calls to \c glGet*(),
   *   which typically stall the graphics pipeline (see, for instance,
   *   \c captureCurrentState() and \c getModelViewMatrix()).
@@ -377,7 +377,7 @@ class OSG_EXPORT State : public Referenced
 
         /** texture Attribute has been applied externally,
           * and therefore this attribute type has been dirtied
-          * and will need to be re-appplied on next osg::State.apply(..).
+          * and will need to be re-applied on next osg::State.apply(..).
           * note, if you have an osg::StateAttribute which you have applied externally
           * then use the have_applied(attribute) method as this will the osg::State to
           * track the current state more accurately and enable lazy state updating such
@@ -881,7 +881,7 @@ class OSG_EXPORT State : public Referenced
 
 
         /** Set the current texture unit, return true if selected,
-          * false if selection failed such as when multitexturing is not supported.
+          * false if selection failed such as when multi texturing is not supported.
           * note, only updates values that change.*/
         bool setActiveTextureUnit( unsigned int unit );
         
@@ -889,7 +889,7 @@ class OSG_EXPORT State : public Referenced
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
 
         /** Set the current tex coord array texture unit, return true if selected,
-          * false if selection failed such as when multitexturing is not supported.
+          * false if selection failed such as when multi texturing is not supported.
           * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
 

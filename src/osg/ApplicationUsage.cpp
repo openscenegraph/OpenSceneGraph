@@ -164,7 +164,7 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                     if (width==0)
                     {
                         // word must be longer than a whole line so will need
-                        // to concatinate it.
+                        // to concatenate it.
                         width = explanationWidth-1;
                         concatinated = true;
                     }

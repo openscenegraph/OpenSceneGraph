@@ -225,7 +225,7 @@ int DatabasePager::cancel()
         // result = Thread::cancel();
         //join();
 
-        // release the frameBlock and _databasePagerThreadBlock incase its holding up thread cancelation.
+        // release the frameBlock and _databasePagerThreadBlock in case its holding up thread cancellation.
         _databasePagerThreadBlock->release();
 
         // then wait for the the thread to stop running.
@@ -361,7 +361,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
         if (!foundEntry)
         {
-            osg::notify(osg::INFO)<<"In DatabasePager::requestNodeFile("<<fileName<<")"<<std::endl;
+            osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
 
             osg::ref_ptr<DatabaseRequest> databaseRequest = new DatabaseRequest;
 
@@ -448,7 +448,7 @@ public:
     {
         if (stateset)
         {
-            // search for the existance of any texture object attributes
+            // search for the existence of any texture object attributes
             bool foundTextureState = false;
             for(unsigned int i=0;i<stateset->getTextureAttributeList().size();++i)
             {
@@ -725,7 +725,7 @@ void DatabasePager::run()
         if (firstTime)
         {
             // do a yield to get round a peculiar thread hang when testCancel() is called 
-            // in certain cirumstances - of which there is no particular pattern.
+            // in certain circumstances - of which there is no particular pattern.
             YieldCurrentThread();
             firstTime = false;
         }
@@ -783,7 +783,7 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
         } 
         group->addChild(databaseRequest->_loadedModel.get());
 
-        osg::notify(osg::INFO)<<"merged subgraph "<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
+        osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
     
         double timeToMerge = timeStamp-databaseRequest->_timestampFirstRequest;
 
@@ -1042,7 +1042,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
         osg::ref_ptr<DatabaseRequest> databaseRequest;
 
-        // get the first compileable entry.
+        // get the first compilable entry.
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
             if (!_dataToCompileList.empty())

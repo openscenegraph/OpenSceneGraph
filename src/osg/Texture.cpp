@@ -510,7 +510,7 @@ void Texture::takeTextureObjects(Texture::TextureObjectListMap& toblm)
     {
         if (_textureObjectBuffer[i].valid()) 
         {
-            //notify(INFO) << "releasing texure "<<toblm[i].size()<<std::endl;
+            //notify(INFO) << "releasing texture "<<toblm[i].size()<<std::endl;
             toblm[i].push_back(_textureObjectBuffer[i]);
         }
     }
@@ -542,7 +542,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     else
     {
 
-        const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same paramters for each graphics context...
+        const unsigned int contextID = 0; // state.getContextID();  // set to 0 right now, assume same parameters for each graphics context...
         const Extensions* extensions = getExtensions(contextID,true);
 
         switch(_internalFormatMode)

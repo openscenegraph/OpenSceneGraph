@@ -263,7 +263,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
     // calc texture size for eye, bs.
 
     // convert the corners of the sprite (in world coords) into their
-    // equivilant window coordinates by using the camera's project method.
+    // equivalent window coordinates by using the camera's project method.
     const osg::Matrix& MVPW = *(cv->getMVPW());
     Vec3 c00_win = c00 * MVPW;
     Vec3 c11_win = c11 * MVPW;

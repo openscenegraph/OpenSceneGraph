@@ -340,7 +340,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
             !hitFound && i<2;
             ++i, endPoint = farPosition)
         {
-            // compute the itersection with the scene.
+            // compute the intersection with the scene.
             osgUtil::IntersectVisitor iv;
             iv.setTraversalMask(_intersectTraversalMask);
 
@@ -367,7 +367,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
         }
     }
 
-    // note LookAt = inv(CF)*inv(RM)*inv(T) which is equivilant to:
+    // note LookAt = inv(CF)*inv(RM)*inv(T) which is equivalent to:
     // inv(R) = CF*LookAt.
 
     osg::Matrixd rotation_matrix = osg::Matrixd::lookAt(eye,center,up);
@@ -480,7 +480,7 @@ bool TerrainManipulator::calcMovement()
 
         _center += dv;
 
-        // need to recompute the itersection point along the look vector.
+        // need to recompute the intersection point along the look vector.
         
         if (_node.valid())
         {

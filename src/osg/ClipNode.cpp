@@ -62,7 +62,7 @@ bool ClipNode::addClipPlane(ClipPlane* clipplane)
 
     if (std::find(_planes.begin(),_planes.end(),clipplane)==_planes.end())
     {
-        // cliplane doesn't exist in list so add it.
+        // clipplane doesn't exist in list so add it.
         _planes.push_back(clipplane);
         setLocalStateSetModes(_value);
         return true;
@@ -82,7 +82,7 @@ bool ClipNode::removeClipPlane(ClipPlane* clipplane)
     ClipPlaneList::iterator itr = std::find(_planes.begin(),_planes.end(),clipplane);
     if (itr!=_planes.end())
     {
-        // cliplane exist in list so erase it.
+        // clipplane exist in list so erase it.
         _planes.erase(itr);
         setLocalStateSetModes(_value);
         return true;

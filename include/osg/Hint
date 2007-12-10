@@ -50,7 +50,7 @@ public:
         // used by the COMPARE_StateAttribute_Parameter macro's below.
         COMPARE_StateAttribute_Types(Hint,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_target)
             COMPARE_StateAttribute_Parameter(_mode)
             

@@ -41,7 +41,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         META_Object(osgViewer,View);
         
-        /** Provide a mechanism for getting the osg::View assocaited from the GUIActionAdapter.
+        /** Provide a mechanism for getting the osg::View associated from the GUIActionAdapter.
           * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
         virtual osg::View* asView() { return this; }
         
@@ -81,7 +81,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the const View's database pager.*/
         const osgDB::DatabasePager* getDatabasePager() const;
 
-        /* Set the EventQueue that View uses to intregrate external non window related events.*/
+        /* Set the EventQueue that View uses to integrate external non window related events.*/
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
 
         /* Get the View's EventQueue.*/
@@ -151,20 +151,20 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         float getFusionDistanceValue() const { return _fusionDistanceValue; }
 
         
-        /** Convinience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
+        /** Convenience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
         void setUpViewAcrossAllScreens();
 
-        /** Convinience method for a single Camara on a single window.*/
+        /** Convenience method for a single camera on a single window.*/
         void setUpViewInWindow(int x, int y, int width, int height, unsigned int screenNum=0);
 
-        /** Convinience method for a single Camara associated with a single full screen GraphicsWindow.*/
+        /** Convenience method for a single camera associated with a single full screen GraphicsWindow.*/
         void setUpViewOnSingleScreen(unsigned int screenNum=0);
         
 
-        /** Convinience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
+        /** Convenience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
         void setUpViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0);
 
-        /** Convinience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
+        /** Convenience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display.*/
         void setUpViewForPanoramicSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0);
 
         

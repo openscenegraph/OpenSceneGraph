@@ -356,7 +356,7 @@ public:
         void addTriangle(Triangle* triangle)
         {
             _triangles.insert(triangle);
-            // if (_triangles.size()>2) osg::notify(osg::NOTICE)<<"Warning too many traingles ("<<_triangles.size()<<") sharing edge "<<std::endl;
+            // if (_triangles.size()>2) osg::notify(osg::NOTICE)<<"Warning too many triangles ("<<_triangles.size()<<") sharing edge "<<std::endl;
         }
         
         bool isBoundaryEdge() const
@@ -464,7 +464,7 @@ public:
             return osg::Plane(p1->_vertex,p2->_vertex,p3->_vertex);
         }
         
-        // note return 1 - dotproduct, so that deviation is in the range of 0.0 to 2.0, where 0 is coincendent, 1.0 is 90 degrees, and 2.0 is 180 degrees.
+        // note return 1 - dotproduct, so that deviation is in the range of 0.0 to 2.0, where 0 is coincident, 1.0 is 90 degrees, and 2.0 is 180 degrees.
         float computeNormalDeviationOnEdgeCollapse(Edge* edge,Point* pNew) const
         {
             const Point* p1 = (_p1==edge->_p1 || _p1==edge->_p2) ? pNew : _p1.get();  
@@ -601,7 +601,7 @@ public:
             triangle->_e2 = replaceEdgePoint(triangle->_e2.get(),pOriginal,pNew);
             triangle->_e3 = replaceEdgePoint(triangle->_e3.get(),pOriginal,pNew);
             
-            // remove the triangle form the orignal point, and possibly the point if its the last triangle to use it
+            // remove the triangle form the original point, and possibly the point if its the last triangle to use it
             removePoint(triangle, pOriginal);
             
             // add the triangle to that point

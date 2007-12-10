@@ -191,7 +191,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
 }
 
 /**************************************************************************
- * FrameBufferAttachement
+ * FrameBufferAttachment
  **************************************************************************/
 
 #ifndef GL_TEXTURE_CUBE_MAP_POSITIVE_X
@@ -593,7 +593,7 @@ void FrameBufferObject::apply(State &state) const
 
     if (dirtyAttachmentList)
     {
-        // the set of of attachements appears to be thread sensitive, it shouldn't be because 
+        // the set of of attachments appears to be thread sensitive, it shouldn't be because 
         // OpenGL FBO handles osg::FrameBufferObject has are multi-buffered...
         // so as a temporary fix will stick in a mutex to ensure that only one thread passes through here
         // at one time.

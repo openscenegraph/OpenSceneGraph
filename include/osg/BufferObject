@@ -142,7 +142,7 @@ class OSG_EXPORT BufferObject : public Object
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * the specified graphics context. Otherwise, releases OpenGL objects
           * for all graphics contexts. */
         void releaseGLObjects(State* state=0) const;
 
@@ -216,7 +216,7 @@ class OSG_EXPORT BufferObject : public Object
         };
 
         /** Function to call to get the extension of a specified context.
-        * If the Exentsion object for that context has not yet been created  
+        * If the Extension object for that context has not yet been created  
         * and the 'createIfNotInitalized' flag been set to false then returns NULL.
         * If 'createIfNotInitalized' is true then the Extensions object is 
         * automatically created.  However, in this case the extension object is

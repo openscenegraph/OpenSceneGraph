@@ -86,7 +86,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void addFileExtensionAlias(const std::string mapExt, const std::string toExt);
 
         /** Reads a file that configures extension mappings. File is ASCII text
-          * and each line contains the parameyters to the addFileExtensionAlias
+          * and each line contains the parameters to the addFileExtensionAlias
           * method. Lines can be commented out with an initial '#' character.*/
         bool readPluginAliasConfigurationFile( const std::string& file );
 
@@ -288,18 +288,18 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         const ReaderWriter::Options*  getOptions() const { return _options.get(); }
 
 
-        /** initilize both the Data and Library FilePaths, by default called by the 
+        /** initialize both the Data and Library FilePaths, by default called by the 
           * constructor, so it should only be required if you want to force
           * the re-reading of environmental variables.*/
         void initFilePathLists() { initDataFilePathList(); initLibraryFilePathList(); }
         
-        /** initilize the Data FilePath by reading the OSG_FILE_PATH environmental variable.*/
+        /** initialize the Data FilePath by reading the OSG_FILE_PATH environmental variable.*/
         void initDataFilePathList();
 
         /** Set the data file path using a list of paths stored in a FilePath, which is used when search for data files.*/
         void setDataFilePathList(const FilePathList& filepath) { _dataFilePath = filepath; }
 
-        /** Set the data file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
+        /** Set the data file path using a single string delimited either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
         void setDataFilePathList(const std::string& paths);
 
         /** get the data file path which is used when search for data files.*/
@@ -308,14 +308,14 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get the const data file path which is used when search for data files.*/
         const FilePathList& getDataFilePathList() const { return _dataFilePath; }
 
-        /** initilize the Library FilePath by reading the OSG_LIBRARY_PATH 
+        /** initialize the Library FilePath by reading the OSG_LIBRARY_PATH 
           * and the appropriate system environmental variables*/
         void initLibraryFilePathList();
 
         /** Set the library file path using a list of paths stored in a FilePath, which is used when search for data files.*/
         void setLibraryFilePathList(const FilePathList& filepath) { _libraryFilePath = filepath; }
 
-        /** Set the library file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
+        /** Set the library file path using a single string delimited either with ';' (Windows) or ':' (All other platforms), which is used when search for data files.*/
         void setLibraryFilePathList(const std::string& paths);
 
         /** get the library file path which is used when search for library (dso/dll's) files.*/
@@ -329,7 +329,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * for that object in the cache to specified time.
           * This would typically be called once per frame by applications which are doing database paging,
           * and need to prune objects that are no longer required.
-          * Time value is time in sceonds.*/
+          * Time value is time in seconds.*/
         void updateTimeStampOfObjectsInCacheWithExternalReferences(double currentTime);
 
         /** Removed object in the cache which have a time stamp at or before the specified expiry time.
@@ -338,13 +338,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(currentTime). 
           * Note, the currentTime is not the expiryTime, one would typically set the expiry time
           * to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0.
-          * Time value is time in sceonds.*/
+          * Time value is time in seconds.*/
         void removeExpiredObjectsInCache(double expiryTime);
         
         /** Remove all objects in the cache regardless of having external references or expiry times.*/ 
         void clearObjectCache();
 
-        /** Add a filename,object,timestamp tripple to the Registry::ObjectCache.*/
+        /** Add a filename,object,timestamp triple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
 
         /** Get an object from the object cache*/ 
@@ -460,7 +460,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,bool useObjectCache);
 
 
-        // forward declar helper class
+        // forward declare helper class
         class AvailableReaderWriterIterator;
         friend class AvailableReaderWriterIterator;
 

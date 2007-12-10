@@ -24,7 +24,7 @@
 
 namespace osgViewer{
 
-/** Scene holds the highe level reference to a single scene graph.*/
+/** Scene holds the higher level reference to a single scene graph.*/
 class OSGVIEWER_EXPORT Scene : public osg::Referenced
 {
     public:

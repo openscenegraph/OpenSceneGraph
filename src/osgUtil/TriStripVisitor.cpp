@@ -216,7 +216,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         geom.copyToAndOptimize(geom);
     }
 
-    // check for the existance of surface primitives
+    // check for the existence of surface primitives
     unsigned int numSurfacePrimitives = 0;
     unsigned int numNonSurfacePrimitives = 0;
     Geometry::PrimitiveSetList& primitives = geom.getPrimitiveSetList();

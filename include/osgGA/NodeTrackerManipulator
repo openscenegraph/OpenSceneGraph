@@ -48,11 +48,11 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         enum TrackerMode 
         {
             /** Track the center of the node's bounding sphere, but not rotations of the node.  
-              * For datatbases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
+              * For databases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
               */
             NODE_CENTER,
             /** Track the center of the node's bounding sphere, and the azimuth rotation (about the z axis of the current coordinate frame).
-              * For datatbases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
+              * For databases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
               */
             NODE_CENTER_AND_AZIM,
             /** Tack the center of the node's bounding sphere, and the all rotations of the node.
@@ -90,10 +90,10 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
         virtual osg::Matrixd getInverseMatrix() const;
 
-        /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }
 
-        /** Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return _distance; }
 
         /** Attach a node to the manipulator. 

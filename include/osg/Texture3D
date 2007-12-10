@@ -108,7 +108,7 @@ class OSG_EXPORT Texture3D : public Texture
 
 
         /** Helper function. Sets the number of mipmap levels created for this
-          * texture. Should only be called within an osg::Texuture::apply(), or
+          * texture. Should only be called within an osg::Texture::apply(), or
           * during a custom OpenGL texture load. */
         void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
@@ -132,7 +132,7 @@ class OSG_EXPORT Texture3D : public Texture
         
 
         /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convinience wrappers for
+          * function pointers, and provides convenience wrappers for
           * calling extension functions. */        
         class OSG_EXPORT Extensions : public osg::Referenced
         {
@@ -192,13 +192,13 @@ class OSG_EXPORT Texture3D : public Texture
         };
         
         /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convinience wrappers for
+          * function pointers, and provides convenience wrappers for
           * calling extension functions. */        
         static Extensions* getExtensions(unsigned int contextID,bool createIfNotInitalized);
 
         /** Overrides Extensions objects across graphics contexts. Typically
           * used to ensure the same lowest common denominator of extensions
-          * on sustems with different graphics pipes. */
+          * on systems with different graphics pipes. */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
     protected :

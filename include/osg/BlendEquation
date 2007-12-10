@@ -92,7 +92,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         
         virtual void apply(State& state) const;
         /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convinience wrappers for
+          * function pointers, and provides convenience wrappers for
           * calling extension functions. */        
         class OSG_EXPORT Extensions : public osg::Referenced
         {
@@ -127,7 +127,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         };
         
         /** Returns the Extensions object for the given context.
-          * If createIfNotInitalized is true and the Exentsions object doesn't
+          * If createIfNotInitalized is true and the Extensions object doesn't
           * exist, getExtensions() creates it on the given context.
           * Returns NULL if createIfNotInitalized is false and the Extensions
           * object doesn't exist. */

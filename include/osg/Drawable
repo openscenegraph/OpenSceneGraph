@@ -125,7 +125,7 @@ class OSG_EXPORT Drawable : public Object
         virtual const Geometry* asGeometry() const { return 0; }
 
 
-        /** Compute the DataVariance based on an assestment of callback etc.*/
+        /** Compute the DataVariance based on an assessment of callback etc.*/
         virtual void computeDataVariance();
 
 
@@ -310,7 +310,7 @@ class OSG_EXPORT Drawable : public Object
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * the specified graphics context. Otherwise, releases OpenGL objects
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
@@ -420,8 +420,8 @@ class OSG_EXPORT Drawable : public Object
         /** drawImplementation(RenderInfo&) is a pure virtual method for the actual implementation of OpenGL drawing calls, such as vertex arrays and primitives, that
           * must be implemented in concrete subclasses of the Drawable base class, examples include osg::Geometry and osg::ShapeDrawable.
           * drawImplementation(RenderInfo&) is called from the draw(RenderInfo&) method, with the draw method handling management of OpenGL display lists,
-          * and drawImplementation(RenderInfo&) handling the actuall drawing itself.  
-          * @param renderInfo The osg::RenderInfo object that encapulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
+          * and drawImplementation(RenderInfo&) handling the actual drawing itself.  
+          * @param renderInfo The osg::RenderInfo object that encapsulates the current rendering information including the osg::State OpenGL state for the current graphics context. */
         virtual void drawImplementation(RenderInfo& renderInfo) const = 0;
 
 
@@ -479,7 +479,7 @@ class OSG_EXPORT Drawable : public Object
             TEXTURE_COORDS_5    = TEXTURE_COORDS_0+5,
             TEXTURE_COORDS_6    = TEXTURE_COORDS_0+6,
             TEXTURE_COORDS_7    = TEXTURE_COORDS_0+7
-            // only eight texture coord examples provided here, but underlying code can handle any no of texure units,
+            // only eight texture coord examples provided here, but underlying code can handle any no of texture units,
             // simply co them as (TEXTURE_COORDS_0+unit).
         };
 

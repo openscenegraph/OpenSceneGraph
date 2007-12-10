@@ -76,17 +76,17 @@ class OSG_EXPORT Referenced
             a pointer to this object is referencing it.  However, do
             not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
             should only be called if the user knows exactly who will
-            be resonsible for, one should prefer unref() over unref_nodelete() 
+            be responsible for, one should prefer unref() over unref_nodelete() 
             as the later can lead to memory leaks.*/
         void unref_nodelete() const;
         
         /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
 
-        /** Add a Observer that is observering this object, notify the Observer when this object gets deleted.*/
+        /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
         void addObserver(Observer* observer);
 
-        /** Add a Observer that is observering this object, notify the Observer when this object gets deleted.*/
+        /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
         void removeObserver(Observer* observer);
 
     public:

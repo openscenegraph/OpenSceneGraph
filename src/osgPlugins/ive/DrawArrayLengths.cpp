@@ -52,7 +52,7 @@ void DrawArrayLengths::read(DataInputStream* in){
             ((ive::PrimitiveSet*)(prim))->read(in);
         }
         else
-            throw Exception("DrawArrayLengths::read(): Could not cast this osg::DrawArrayLengths to an osg::PrimtiveSet.");
+            throw Exception("DrawArrayLengths::read(): Could not cast this osg::DrawArrayLengths to an osg::PrimitiveSet.");
 
         // Read properties
         setFirst(in->readInt());

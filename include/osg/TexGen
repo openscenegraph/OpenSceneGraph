@@ -70,7 +70,7 @@ class OSG_EXPORT TexGen : public StateAttribute
             usage.usesTextureMode(GL_TEXTURE_GEN_S);
             usage.usesTextureMode(GL_TEXTURE_GEN_T);
 
-            // Not happy with turning all tex gen paramters on
+            // Not happy with turning all tex gen parameters on
             // as the OSG currently only supports 2D textures and therefore
             // only S and T will be required, R&Q would be redundant...
             // So commenting out the following until OSG supports 3D textures.
@@ -121,7 +121,7 @@ class OSG_EXPORT TexGen : public StateAttribute
 
         Mode _mode;
 
-        /** Additional texgen coefficents for GL_OBJECT_PLANE or
+        /** Additional texgen coefficients for GL_OBJECT_PLANE or
           * GL_EYE_PLANE, */
         Plane _plane_s, _plane_t, _plane_r, _plane_q;
 

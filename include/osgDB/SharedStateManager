@@ -68,7 +68,7 @@ namespace osgDB {
         typedef std::set< osg::ref_ptr<osg::StateSet> > StateSetSet;
         StateSetSet _sharedStateSetList;
 
-        // Temporary lists just to avoid unnecesary find calls
+        // Temporary lists just to avoid unnecessary find calls
         typedef std::pair<osg::StateAttribute*, bool> TextureSharePair;
         typedef std::map<osg::StateAttribute*, TextureSharePair> TextureTextureSharePairMap;
         TextureTextureSharePairMap tmpSharedTextureList;

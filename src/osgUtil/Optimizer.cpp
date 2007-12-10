@@ -2059,7 +2059,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                 {
                     // now need to clean up primitiveset so it no longer contains the rhs combined primitives.
 
-                    // first swap with a empty primtiveSet to empty it completely.
+                    // first swap with a empty primitiveSet to empty it completely.
                     osg::Geometry::PrimitiveSetList oldPrimitives;
                     primitives.swap(oldPrimitives);
                     
@@ -2162,7 +2162,7 @@ bool Optimizer::MergeGeometryVisitor::geometryContainsSharedArrays(osg::Geometry
         if (tex && tex->referenceCount()>1) return true;
     }
     
-    // shift the indices of the incomming primitives to account for the pre exisiting geometry.
+    // shift the indices of the incoming primitives to account for the pre existing geometry.
     for(osg::Geometry::PrimitiveSetList::iterator primItr=geom.getPrimitiveSetList().begin();
         primItr!=geom.getPrimitiveSetList().end();
         ++primItr)
@@ -2387,7 +2387,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     }
 
 
-    // shift the indices of the incomming primitives to account for the pre exisiting geometry.
+    // shift the indices of the incoming primitives to account for the pre existing geometry.
     for(osg::Geometry::PrimitiveSetList::iterator primItr=rhs.getPrimitiveSetList().begin();
         primItr!=rhs.getPrimitiveSetList().end();
         ++primItr)

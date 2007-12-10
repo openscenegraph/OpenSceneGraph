@@ -46,7 +46,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         /** Realize the GraphicsContext.*/
         virtual bool realizeImplementation();
 
-        /** Return true if the graphics context has been realised and is ready to use.*/
+        /** Return true if the graphics context has been realized and is ready to use.*/
         virtual bool isRealizedImplementation() const { return _realized; }
 
         /** Close the graphics context.*/

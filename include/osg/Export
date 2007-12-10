@@ -16,7 +16,7 @@
 
 // define USE_DEPRECATED_API is used to include in API which is being fazed out
 // if you can compile your apps with this turned off you are
-// well placed for compatablity with future versions.
+// well placed for compatibility with future versions.
 #define USE_DEPRECATED_API
 
 #if defined(_MSC_VER)

@@ -266,7 +266,7 @@ public:
 
 
         // parameter used to compute the size and position of empty space
-        // in the texture which could accomodate new glyphs.
+        // in the texture which could accommodate new glyphs.
         int _margin;
         float _marginRatio;
         int _usedY;

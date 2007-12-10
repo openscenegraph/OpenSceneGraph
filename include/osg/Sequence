@@ -37,7 +37,7 @@ class OSG_EXPORT Sequence : public Group
 
         // the relationship between the _frameTime vector and the _children
         // vector is a bit of a mess.  This is how it was in previous versions,
-        // and there's no way out of it if upward compatability needs to be
+        // and there's no way out of it if upward compatibility needs to be
         // maintained.  New code should set defaultTime and use addChild, and
         // not mess with the setTime method
 

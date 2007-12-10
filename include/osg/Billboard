@@ -20,7 +20,7 @@
 namespace osg {
 
 /** Billboard is a derived form of Geode that orients its osg::Drawable
-  * children to face the eye point. Typical uses incllude trees and
+  * children to face the eye point. Typical uses include trees and
   * particle explosions,
 */
 class OSG_EXPORT Billboard : public Geode
@@ -46,7 +46,7 @@ class OSG_EXPORT Billboard : public Geode
         inline Mode getMode() const { return _mode; }
 
         /** Set the rotation axis for the billboard's child Drawables.
-          * Only utlized when mode==AXIAL_ROT. */
+          * Only utilized when mode==AXIAL_ROT. */
         void setAxis(const Vec3& axis);
         /** Get the rotation axis. */
         inline const Vec3& getAxis() const { return _axis; }

@@ -130,7 +130,7 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(FragmentProgram,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_fragmentProgram)
 
             return 0; // passed all the above comparison macro's, must be equal.
@@ -224,7 +224,7 @@ class OSG_EXPORT FragmentProgram : public StateAttribute
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** release an OpenGL objects in specified graphics context if State
-            object is passed, otherwise release OpenGL objexts for all graphics context if
+            object is passed, otherwise release OpenGL objects for all graphics context if
             State object pointer == NULL.*/
         virtual void releaseGLObjects(State* state=0) const;
 

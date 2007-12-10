@@ -489,7 +489,7 @@ void GeometryTechnique::applyColorLayers()
             
             if (tf)
             {
-                // up the precision of hte internal texture format to its maximum.
+                // up the precision of the internal texture format to its maximum.
                 //image->setInternalTextureFormat(GL_LUMINANCE32F_ARB);
                 image->setInternalTextureFormat(GL_LUMINANCE16);
             }
@@ -589,7 +589,7 @@ void GeometryTechnique::applyTransparency()
     osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
 
     // if the elevationLayer and colorLayer are the same, and there is colorTF then
-    // simply assing as a texture coordinate.
+    // simply assign as a texture coordinate.
     if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
     
     bool containsTransparency = false;

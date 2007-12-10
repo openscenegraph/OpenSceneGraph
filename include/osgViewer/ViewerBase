@@ -31,7 +31,7 @@ namespace osgViewer {
 
 class View;
 
-/** ViewerBase is the view base class that is inhertied by both Viewer and CompositeViewer.*/
+/** ViewerBase is the view base class that is inherited by both Viewer and CompositeViewer.*/
 class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 {
     public:
@@ -99,7 +99,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         
          /** Set the position of the end barrier.
           * AfterSwapBuffers will may result is slightly higher framerates, by may
-          * lead to inconcistent swapping between different windows.
+          * lead to inconsistent swapping between different windows.
           * BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers,
           * especially important if you are likely to consistently break frame.*/
         void setEndBarrierPosition(BarrierPosition bp);
@@ -109,10 +109,10 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
  
  
-        /** Set the done flag to singnal the viewer's work is done and should exit the frame loop.*/
+        /** Set the done flag to signal the viewer's work is done and should exit the frame loop.*/
         void setDone(bool done) { _done = done; }
 
-        /** Reurn true if  viewer's work is done and should exit the frame loop.*/
+        /** Return true if  viewer's work is done and should exit the frame loop.*/
         bool done() const { return _done; }
 
         /** Set the EventVisitor. */
@@ -180,7 +180,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
 
         /** Execute a main frame loop.
-          * Equivialant to while (!viewer.done()) viewer.frame();
+          * Equivalent to while (!viewer.done()) viewer.frame();
           * Also calls realize() if the viewer is not already realized,
           * and installs trackball manipulator if one is not already assigned.
           */

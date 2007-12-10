@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors()) {
         arguments.writeErrorMessages(std::cout);
         return 1;
@@ -341,7 +341,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // optimize the scene graph, remove rendundent nodes and state etc.
+    // optimize the scene graph, remove redundant nodes and state etc.
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 

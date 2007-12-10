@@ -126,7 +126,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             if (!local_itrAdvanced) ++fr;
         }
         
-        // skip trainling '}'
+        // skip trailing '}'
         ++fr;
         
         iteratorAdvanced = true;
@@ -197,7 +197,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
             else ++fr;
         }
         
-        // skip trainling '}'
+        // skip trailing '}'
         ++fr;
         
         iteratorAdvanced = true;

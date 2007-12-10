@@ -37,13 +37,13 @@ extern OSG_EXPORT Matrix computeWorldToLocal(const NodePath& nodePath, bool igno
 
 /** Compute the matrix which transforms objects in local coords to eye coords,
   * by accumulating the Transform local to world matrices along the specified node path 
-  * and multipling by the supplied initial camera modelview.
+  * and multiplying by the supplied initial camera modelview.
 */
 extern OSG_EXPORT Matrix computeLocalToEye(const Matrix& modelview, const NodePath& nodePath, bool ignoreCameras = true);
 
 /** Compute the matrix which transforms objects in eye coords to local coords,
   * by accumulating the Transform world to local matrices along the specified node path
-  * and multipling by the inverse of the supplied initialial camera modelview.
+  * and multiplying by the inverse of the supplied initial camera modelview.
 */
 extern OSG_EXPORT Matrix computeEyeToLocal(const Matrix& modelview, const NodePath& nodePath, bool ignoreCameras = true);
 
@@ -100,7 +100,7 @@ class OSG_EXPORT Transform : public Group
           * Note: Setting the ReferenceFrame to be ABSOLUTE_RF will
           * also set the CullingActive flag on the transform, and hence all
           * of its parents, to false, thereby disabling culling of it and
-          * all its parents.  This is neccessary to prevent inappropriate
+          * all its parents.  This is necessary to prevent inappropriate
           * culling, but may impact cull times if the absolute transform is
           * deep in the scene graph.  It is therefore recommended to only use
           * absolute Transforms at the top of the scene, for such things as
@@ -110,7 +110,7 @@ class OSG_EXPORT Transform : public Group
           * as its local viewpoint in the new coordinates frame.  This is useful for
           * Render to texture Cameras that wish to use the main views LOD range computation 
           * (which uses the viewpoint rather than the eye point) rather than use the local
-          * eye point defined by the this Transforms' abosolute view matrix.
+          * eye point defined by the this Transforms' absolute view matrix.
         */
         void setReferenceFrame(ReferenceFrame rf);
         

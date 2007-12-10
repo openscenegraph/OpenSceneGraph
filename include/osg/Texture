@@ -355,7 +355,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Sets the maximum anisotropy value, default value is 1.0 for no
           * anisotropic filtering. If hardware does not support anisotropic
-          * filtering, use normal filtering (equivilant to a max anisotropy
+          * filtering, use normal filtering (equivalent to a max anisotropy
           * value of 1.0. Valid range is 1.0f upwards.  The maximum value
           * depends on the graphics system. */
         void setMaxAnisotropy(float anis);
@@ -371,7 +371,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         inline bool getUseHardwareMipMapGeneration() const { return _useHardwareMipMapGeneration; }
 
         /** Sets whether or not the apply() function will unreference the image
-          * data. If enabled, and the image data is only referened by this
+          * data. If enabled, and the image data is only referenced by this
           * Texture, apply() will delete the image data. */
         inline void setUnRefImageDataAfterApply(bool flag) { _unrefImageDataAfterApply = flag; }
         
@@ -495,7 +495,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * The OpenGL's glGenerateMipmapEXT function is used to generate the mipmap levels.
           * If glGenerateMipmapEXT is not supported or texture's internal format is not supported
           * by the glGenerateMipmapEXT, then empty mipmap levels will
-          * be allocated manualy. The mipmap levels are also allocated if a non-mipmapped
+          * be allocated manually. The mipmap levels are also allocated if a non-mipmapped
           * min filter is used. */
         void allocateMipmapLevels();
 
@@ -542,16 +542,16 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         virtual unsigned int getNumImages() const = 0;
 
 
-        /** Set the PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
+        /** Set the PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         void setReadPBuffer(GraphicsContext* context) { _readPBuffer = context; }
 
-        /** Get the PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
+        /** Get the PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         GraphicsContext* getReadPBuffer() { return _readPBuffer.get(); }
 
-        /** Get the const PBuffer graphis context to read from when using PBuffers for RenderToTexture.*/
+        /** Get the const PBuffer graphics context to read from when using PBuffers for RenderToTexture.*/
         const GraphicsContext* getReadPBuffer() const { return _readPBuffer.get(); }
 
-        /** Texture is a pure virtual base class, apply must be overriden. */
+        /** Texture is a pure virtual base class, apply must be overridden. */
         virtual void apply(State& state) const = 0;
 
         /** Calls apply(state) to compile the texture. */
@@ -561,12 +561,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * the specified graphics context. Otherwise, releases OpenGL objects
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
         /** Encapsulates queries of extension availability, obtains extension
-          * function pointers, and provides convinience wrappers for
+          * function pointers, and provides convenience wrappers for
           * calling extension functions. */        
         class OSG_EXPORT Extensions : public osg::Referenced
         {
@@ -681,7 +681,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Overrides Extensions objects across graphics contexts. Typically
           * used to ensure the same lowest common denominator of extensions
-          * on sustems with different graphics pipes. */
+          * on systems with different graphics pipes. */
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
         /** Determine whether the given internalFormat is a compressed
@@ -716,7 +716,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         
         void computeInternalFormatType() const;
 
-        /** Helper method. Sets texture paramters. */
+        /** Helper method. Sets texture parameters. */
         void applyTexParameters(GLenum target, State& state) const;
 
         /** Helper method to generate empty mipmap levels by calling of glGenerateMipmapEXT.

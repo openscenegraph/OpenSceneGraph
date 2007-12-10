@@ -27,7 +27,7 @@ namespace osg
 {
 
 /** Class which encapsulates the frame number, reference time and calendar
-  * time of specific frame, used to synchonize operations on the scene graph
+  * time of specific frame, used to synchronize operations on the scene graph
   * and other machines when using a graphics cluster.  Note the calendar
   * time can be an artificial simulation time or capture the real time
   * of day etc.*/ 
@@ -69,7 +69,7 @@ class OSG_EXPORT FrameStamp : public Referenced
         
         // member variables of time.h's tm structure, copied here to
         // ensure that all data is not dynamic. The tm structure itself
-        // is not completely consistent betweem implementations, which
+        // is not completely consistent between implementations, which
         // could be a problem when sending the FrameStamp across a network
         // with different versions of tm (i.e mixing Unix and Windows.)
         int tm_sec;            /* Seconds.        [0-60] (1 leap second) */

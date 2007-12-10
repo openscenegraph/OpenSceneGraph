@@ -229,7 +229,7 @@ inline std::istream& operator >> (std::istream& input, Vec4s& vec)
 
 
 //////////////////////////////////////////////////////////////////////////
-// Matrxf steaming operators.
+// Matrixf steaming operators.
 inline std::ostream& operator<< (std::ostream& os, const Matrixf& m )
 {
     os << "{"<<std::endl;
@@ -245,7 +245,7 @@ inline std::ostream& operator<< (std::ostream& os, const Matrixf& m )
 
 
 //////////////////////////////////////////////////////////////////////////
-// Matrxd steaming operators.
+// Matrixd steaming operators.
 inline std::ostream& operator<< (std::ostream& os, const Matrixd& m )
 {
     os << "{"<<std::endl;

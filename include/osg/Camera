@@ -140,10 +140,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             VERTICAL /** Adjust the VERTICAL field of view on window resizes.*/
         };
         
-        /** Set the policy used to determin if and how the projection matrix should be adjusted on window resizes. */
+        /** Set the policy used to determine if and how the projection matrix should be adjusted on window resizes. */
         inline void setProjectionResizePolicy(ProjectionResizePolicy policy) { _projectionResizePolicy = policy; }
 
-        /** Get the policy used to determin if and how the projection matrix should be adjusted on window resizes. */
+        /** Get the policy used to determine if and how the projection matrix should be adjusted on window resizes. */
         inline ProjectionResizePolicy getProjectionResizePolicy() const { return _projectionResizePolicy; }
 
 
@@ -178,7 +178,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Get the const projection matrix.*/
         const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
 
-        /** Get the othographic settings of the orthographic projection matrix. 
+        /** Get the orthographic settings of the orthographic projection matrix. 
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
         bool getProjectionMatrixAsOrtho(double& left, double& right,
                                         double& bottom, double& top,

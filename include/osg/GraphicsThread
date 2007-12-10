@@ -37,7 +37,7 @@ struct OSG_EXPORT GraphicsOperation : public Operation
     GraphicsOperation(const std::string& name, bool keep):
         Operation(name,keep) {}
 
-    /** Override the standard Operation opertator and dynamic cast object to a GraphicsContext,
+    /** Override the standard Operation operator and dynamic cast object to a GraphicsContext,
       * on success call operation()(GraphicsContext*).*/
     virtual void operator () (Object* object);
 
@@ -54,7 +54,7 @@ struct OSG_EXPORT SwapBuffersOperation : public GraphicsOperation
     virtual void operator () (GraphicsContext* context);
 };
 
-/** BarrierOperation allows one to syncronize multiple GraphicsThreads with each other.*/
+/** BarrierOperation allows one to synchronize multiple GraphicsThreads with each other.*/
 struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barrier
 {
     enum PreBlockOp
@@ -76,8 +76,8 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
     PreBlockOp _preBlockOp;
 };
 
-/** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to aquire, 
-  * then blocks waiting for context to be released, once the block is release the context is re-aqquired.*/
+/** ReleaseContext_Block_MakeCurrentOperation releases the context for another thread to acquire, 
+  * then blocks waiting for context to be released, once the block is release the context is re-acquired.*/
 struct OSG_EXPORT ReleaseContext_Block_MakeCurrentOperation : public GraphicsOperation, public RefBlock
 {
     ReleaseContext_Block_MakeCurrentOperation():

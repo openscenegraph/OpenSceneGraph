@@ -55,7 +55,7 @@ public:
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
-    typedef std::vector< osg::ref_ptr<osg::ImageStream> > ImageStreamList;
+    typedef std::vector< osg::observer_ptr<osg::ImageStream> > ImageStreamList;
 
 protected:
 
@@ -454,7 +454,7 @@ int main(int argc, char** argv)
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);

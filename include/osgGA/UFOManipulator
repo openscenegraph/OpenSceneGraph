@@ -70,7 +70,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
          */
         virtual void setByMatrix( const osg::Matrixd &matrix ) ;
 
-        /** Set the current position with the invers matrix
+        /** Set the current position with the inverse matrix
           \param invmat The inverse of a viewpoint matrix
           */
         virtual void setByInverseMatrix( const osg::Matrixd &invmat);

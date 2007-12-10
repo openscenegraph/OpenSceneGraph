@@ -406,7 +406,7 @@ namespace PlaneIntersectorUtils
                     {
                         if (de<0.0)
                         {
-                            // osg::notify(osg::NOTICE)<<"Disgard segment "<<std::endl;
+                            // osg::notify(osg::NOTICE)<<"Discard segment "<<std::endl;
                             return;
                         }
                         

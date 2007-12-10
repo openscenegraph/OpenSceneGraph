@@ -1707,7 +1707,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             }
 
 
-            // draw primtives by the more flexible "slow" path,
+            // draw primitives by the more flexible "slow" path,
             // sending OpenGL glBegin/glVertex.../glEnd().
             switch(primitiveset->getType())
             {
@@ -2207,7 +2207,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
             functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4d*>(_vertexData.array->getDataPointer()));
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
             return;
         }
         
@@ -2248,7 +2248,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
             vec4dArray = static_cast<const Vec4dArray*>(_vertexData.array.get());
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimtiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
             return;
         }
 
@@ -2495,7 +2495,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
         functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4d*>(_vertexData.array->getDataPointer()));
         break;
     default:
-        notify(WARN)<<"Warning: Geometry::accept(PrimtiveIndexFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+        notify(WARN)<<"Warning: Geometry::accept(PrimitiveIndexFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
         return;
     }
 
@@ -2616,7 +2616,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
     return;
 }
 
-unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
+unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
 {
 
     unsigned int totalNumberOfPrimitives = 0;
@@ -2638,7 +2638,7 @@ unsigned int _computeNumberOfPrimtives(const osg::Geometry& geom)
             default:            primLength=0; osg::notify(osg::INFO)<<"prim="<<std::hex<<mode<<std::dec<<std::endl; break; // compute later when =0.
         }
 
-        // draw primtives by the more flexible "slow" path,
+        // draw primitives by the more flexible "slow" path,
         // sending OpenGL glBegin/glVertex.../glEnd().
         switch(primitiveset->getType())
         {
@@ -2685,7 +2685,7 @@ bool _verifyBindings(const osg::Geometry& geom, const A& arrayData)
             if (numElements!=geom.getPrimitiveSetList().size()) return false;
             break;
         case(osg::Geometry::BIND_PER_PRIMITIVE):
-            if (numElements!=_computeNumberOfPrimtives(geom)) return false;
+            if (numElements!=_computeNumberOfPrimitives(geom)) return false;
             break;
         case(osg::Geometry::BIND_PER_VERTEX):
         {
@@ -2776,7 +2776,7 @@ void _computeCorrectBindingsAndArraySizes(std::ostream& out, const osg::Geometry
     }
     
     // check to see if binding might be per primitive   
-    unsigned int numPrimitives = _computeNumberOfPrimtives(geom);
+    unsigned int numPrimitives = _computeNumberOfPrimitives(geom);
     if (numElements==numPrimitives)
     {
         if (arrayData.binding != osg::Geometry::BIND_PER_PRIMITIVE)

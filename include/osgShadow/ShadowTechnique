@@ -27,7 +27,7 @@ namespace osgShadow {
 // forward declare ShadowedScene
 class ShadowedScene;
 
-/** ShadowedScene provides a mechansim for decorating a scene that the needs to have shadows cast upon it.*/
+/** ShadowedScene provides a mechanism for decorating a scene that the needs to have shadows cast upon it.*/
 class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
 {
     public :
@@ -42,7 +42,7 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
         /** initialize the ShadowedScene and local cached data structures.*/
         virtual void init();
         
-        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
+        /** run the update traversal of the ShadowedScene and update any local cached data structures.*/
         virtual void update(osg::NodeVisitor& nv);
         
         /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
@@ -53,7 +53,7 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
 
         virtual void traverse(osg::NodeVisitor& nv);
         
-        /** Dirty so that cached data structurese are updated.*/
+        /** Dirty so that cached data structures are updated.*/
         virtual void dirty() { _dirty = true; }
 
     protected :

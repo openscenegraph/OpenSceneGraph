@@ -60,7 +60,7 @@ void TerrainTechnique::cleanSceneGraph()
 
 void TerrainTechnique::dirty()
 {
-    // osg::notify(osg::NOTICE)<<className()<<"::dirty(..) not implementated yet"<<std::endl;    
+    // osg::notify(osg::NOTICE)<<className()<<"::dirty(..) not implemented yet"<<std::endl;    
     _dirty = true;
 }
 

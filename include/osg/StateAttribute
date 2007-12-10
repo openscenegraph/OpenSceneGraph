@@ -86,7 +86,7 @@ class OSG_EXPORT StateAttribute : public Object
 
         /** list values which can be used to set either GLModeValues or OverrideValues.
           * When using in conjunction with GLModeValues, all Values have meaning. 
-          * When using in conjection with StateAttribute OverrideValue only 
+          * When using in conjunction with StateAttribute OverrideValue only 
           * OFF,OVERRIDE and INHERIT are meaningful.
           * However, they are useful when using GLModeValue 
           * and OverrideValue in conjunction with each other as when using
@@ -319,7 +319,7 @@ class OSG_EXPORT StateAttribute : public Object
         virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
 
         /** Release OpenGL objects in specified graphics context if State
-            object is passed, otherwise release OpenGL objexts for all graphics context if
+            object is passed, otherwise release OpenGL objects for all graphics context if
             State object pointer NULL.*/
         virtual void releaseGLObjects(State* =0) const {}
 

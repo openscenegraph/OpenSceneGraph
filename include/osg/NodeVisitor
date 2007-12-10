@@ -156,7 +156,7 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
         inline TraversalMode getTraversalMode() const { return _traversalMode; }
 
         /**
-         * Set user data, data must be subclased from Referenced to allow
+         * Set user data, data must be subclassed from Referenced to allow
          * automatic memory handling.  If your own data isn't directly 
          * subclassed from Referenced then create an adapter object
          * which points to your own objects and handles the memory addressing.

@@ -71,7 +71,7 @@ void DrawPixels::getSubImageDimensions(unsigned int& offsetX,unsigned int& offse
 
 BoundingBox DrawPixels::computeBound() const
 {
-    // really needs to be dependant of view poistion and projection... will implement simple version right now.
+    // really needs to be dependent of view position and projection... will implement simple version right now.
     BoundingBox bbox;
     float diagonal = 0.0f;
     if (_useSubImage)

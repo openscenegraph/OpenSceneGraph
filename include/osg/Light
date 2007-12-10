@@ -58,7 +58,7 @@ class OSG_EXPORT Light : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(Light,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_lightnum)
             COMPARE_StateAttribute_Parameter(_ambient)
             COMPARE_StateAttribute_Parameter(_diffuse)

@@ -41,7 +41,7 @@ osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
 
     int noPixels = 1024;
     
-    // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivilant to a Vec4!
+    // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivalent to a Vec4!
     image->allocateImage(noPixels,1,1,GL_RGBA,GL_FLOAT);
     image->setInternalTextureFormat(GL_RGBA);
     

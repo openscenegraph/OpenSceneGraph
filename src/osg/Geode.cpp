@@ -98,7 +98,7 @@ bool Geode::removeDrawables(unsigned int pos,unsigned int numDrawablesToRemove)
         {
             // remove this Geode from the child parent list.
             _drawables[i]->removeParent(this);
-            // update the number of app calbacks removed
+            // update the number of app callbacks removed
             if (_drawables[i]->requiresUpdateTraversal()) ++updateCallbackRemoved;
             if (_drawables[i]->requiresEventTraversal()) ++eventCallbackRemoved;
         }
@@ -162,7 +162,7 @@ bool Geode::setDrawable( unsigned  int i, Drawable* newDrawable )
         origDrawable->removeParent(this);
         
         // note ref_ptr<> automatically handles decrementing origGset's reference count,
-        // and inccrementing newGset's reference count.
+        // and incrementing newGset's reference count.
         _drawables[i] = newDrawable;
 
         // register as parent of child.

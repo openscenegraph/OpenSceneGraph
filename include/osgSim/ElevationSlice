@@ -21,7 +21,7 @@
 
 namespace osgSim {
 
-/** Helper class for setting up and aquiring height above terrain intersections with terrain.*/
+/** Helper class for setting up and acquiring height above terrain intersections with terrain.*/
 class OSGSIM_EXPORT ElevationSlice
 {
     public :
@@ -68,7 +68,7 @@ class OSGSIM_EXPORT ElevationSlice
         void clearDatabaseCache() { if (_dcrc.valid()) _dcrc->clearDatabaseCache(); }
 
         /** Set the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs.
-          * Note, if you have mulitple LineOfSight or ElevationSlice objects in use at one time then you should share a single
+          * Note, if you have multiple LineOfSight or ElevationSlice objects in use at one time then you should share a single
           * DatabaseCacheReadCallback between all of them. */
         void setDatabaseCacheReadCallback(DatabaseCacheReadCallback* dcrc);
 

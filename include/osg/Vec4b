@@ -32,7 +32,6 @@ class Vec4b
         /** Number of vector components. */
         enum { num_components = 4 };
         
-        /** Vec member varaible. */
         value_type _v[4];
 
         Vec4b() { _v[0]=0; _v[1]=0; _v[2]=0; _v[3]=0; }

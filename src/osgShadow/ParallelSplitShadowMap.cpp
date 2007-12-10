@@ -365,7 +365,7 @@ void ParallelSplitShadowMap::init(){
                 //       not yet supported !
 
                 osg::Image* image = new osg::Image;
-                // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivilant to a Vec4!
+                // allocate the image data, noPixels x 1 x 1 with 4 rgba floats - equivalent to a Vec4!
                 int noPixels = 1;
                 image->allocateImage(noPixels,1,1,GL_RGBA,GL_FLOAT);
                 image->setInternalTextureFormat(GL_RGBA);
@@ -392,7 +392,7 @@ void ParallelSplitShadowMap::init(){
             {
                 // texture for randomTexture (for smoothing shadow edges)
                 osg::Image* image = new osg::Image;
-                // allocate the image data, noPixels x noPixels x 1 with 4 rgba floats - equivilant to a Vec4!
+                // allocate the image data, noPixels x noPixels x 1 with 4 rgba floats - equivalent to a Vec4!
                 int noPixels = 128;
                 image->allocateImage(noPixels,noPixels,1,GL_RGBA,GL_FLOAT);
                 image->setInternalTextureFormat(GL_RGBA);
@@ -493,7 +493,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
     unsigned int traversalMask = cv.getTraversalMask();
     osgUtil::RenderStage* orig_rs = cv.getRenderStage();
 
-    // do traversal of shadow recieving scene which does need to be decorated by the shadow map
+    // do traversal of shadow receiving scene which does need to be decorated by the shadow map
     for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
     {
         PSSMShadowSplitTexture pssmShadowSplitTexture = it->second;
@@ -550,7 +550,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
      if (selectLight)
     {
 
-        // do traversal of shadow recieving scene which does need to be decorated by the shadow map
+        // do traversal of shadow receiving scene which does need to be decorated by the shadow map
         unsigned int iMaxSplit = _PSSMShadowSplitTextureMap.size();
 
         for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
@@ -751,7 +751,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
 
 //////////////////////////////////////////////////////////////////////////
 //
-// compute directional light inital postion;
+// compute directional light initial position;
 void ParallelSplitShadowMap::calculateLightInitalPosition(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners){
     pssmShadowSplitTexture._frustumSplitCenter = frustumCorners[0];
     for(int i=1;i<8;i++) {

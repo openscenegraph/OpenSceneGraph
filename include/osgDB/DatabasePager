@@ -36,7 +36,7 @@ namespace osgDB {
 
 
 /** Database paging class which manages the loading of files in a background thread, 
-  * and syncronizing of loaded models with the main scene graph.*/
+  * and synchronizing of loaded models with the main scene graph.*/
 class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public OpenThreads::Thread
 {
     public :
@@ -206,13 +206,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             addLoadedDataToSceneGraph(currentFrameTime);
         }
         
-        /** Turn the compilation of rendering objects for specfied graphics context on (true) or off(false). */
+        /** Turn the compilation of rendering objects for specified graphics context on (true) or off(false). */
         void setCompileGLObjectsForContextID(unsigned int contextID, bool on);
         
-        /** Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false). */
+        /** Get whether the compilation of rendering objects for specified graphics context on (true) or off(false). */
         bool getCompileGLObjectsForContextID(unsigned int contextID);
 
-        /** Rerturn true if an external draw thread should call compileGLObjects(..) or not.*/
+        /** Return true if an external draw thread should call compileGLObjects(..) or not.*/
         bool requiresExternalCompileGLObjects(unsigned int contextID) const;
 
         /** Return true if there are pending compile operations that are required.

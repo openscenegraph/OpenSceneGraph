@@ -301,7 +301,7 @@ class OSG_EXPORT Plane
 
     protected:
 
-        /** Vec member varaible. */
+        /** Vec member variable. */
         value_type _fv[4];
 
         // variables cached to optimize calcs against bounding boxes.

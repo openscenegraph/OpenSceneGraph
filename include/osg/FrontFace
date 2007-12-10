@@ -46,7 +46,7 @@ class OSG_EXPORT FrontFace : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(FrontFace,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_mode)
 
             return 0; // passed all the above comparison macro's, must be equal.

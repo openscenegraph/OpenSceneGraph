@@ -67,7 +67,7 @@ DePee::DePee(osg::Group* parent, osg::Group* subgraph, unsigned width, unsigned 
   _quadGeode = Utility::getCanvasQuad(_width, _height);
   
   
-  //!!!Getting problems if assigning unit to texture in depth peeling subraph and removing depth peeling steps!!!
+  //!!!Getting problems if assigning unit to texture in depth peeling subgraph and removing depth peeling steps!!!
   //That's why it is done here
   osg::StateSet* stateset = _parent->getOrCreateStateSet();
   stateset->setTextureAttributeAndModes(1, _normalDepthMap0.get(), osg::StateAttribute::ON);
@@ -464,7 +464,7 @@ bool DePee::createEdgeMap(bool first)
   
   znear *= 0.9f;
   zfar *= 1.1f;
-	
+    
   
   // set up projection.
   //_dePeePasses.back()->Cameras.top()->setProjectionMatrixAsFrustum(-proj_right,proj_right,-proj_top,proj_top,znear,zfar);
@@ -472,7 +472,7 @@ bool DePee::createEdgeMap(bool first)
   
   //set view
   _dePeePasses.back()->Cameras[EDGE_MAP]->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
-	
+    
   _dePeePasses.back()->Cameras[EDGE_MAP]->setViewMatrixAsLookAt(osg::Vec3(0.0f,0.0f,2.0f)*bs.radius(), osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0f,1.0f,0.0f));
   
   // set viewport
@@ -483,7 +483,7 @@ bool DePee::createEdgeMap(bool first)
 
   // tell the camera to use OpenGL frame buffer object
   _dePeePasses.back()->Cameras[EDGE_MAP]->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER);
-	
+    
   //switch lighting off
   osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
   
@@ -501,7 +501,7 @@ bool DePee::createEdgeMap(bool first)
   stateset->addUniform( new osg::Uniform("edgeMap", 3));
   
   stateset->setMode(GL_LIGHTING,osg::StateAttribute::OVERRIDE | 
-			  osg::StateAttribute::OFF);
+              osg::StateAttribute::OFF);
   //setup shader
   stateset->setAttributeAndModes(_edgeMapProgram.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
   stateset->addUniform(new osg::Uniform("width", (float) _width));
@@ -551,7 +551,7 @@ bool DePee::createNormalDepthColorMap(MapMode mapMode, bool first)
   float znear = 1.0f*bs.radius();
   float zfar  = 3.0f*bs.radius();
     
-  // 2:1 aspect ratio as per flag geomtry below.
+  // 2:1 aspect ratio as per flag geometry below.
   float projTop   = 0.25f*znear;
   float projRight = projTop * ((double)_width/(double)_height);
     

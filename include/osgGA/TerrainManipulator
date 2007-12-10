@@ -50,10 +50,10 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
         virtual osg::Matrixd getInverseMatrix() const;
 
-        /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }
 
-        /** Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return _distance; }
 
         /** Attach a node to the manipulator. 

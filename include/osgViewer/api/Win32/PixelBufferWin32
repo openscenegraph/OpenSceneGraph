@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-/* Note, elements of PixeBufferWin32 have used Prodcer/RenderSurface_Win32.cpp as both
+/* Note, elements of PixeBufferWin32 have used Producer/RenderSurface_Win32.cpp as both
  * a guide to use of X11/GLX and copiying directly in the case of setBorder().
  * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
@@ -47,7 +47,7 @@ class OSGVIEWER_EXPORT PixelBufferWin32 : public osg::GraphicsContext
         /** Realize the GraphicsContext.*/
         virtual bool realizeImplementation();
 
-        /** Return true if the graphics context has been realised and is ready to use.*/
+        /** Return true if the graphics context has been realized and is ready to use.*/
         virtual bool isRealizedImplementation() const { return _realized; }
 
         /** Close the graphics context.*/

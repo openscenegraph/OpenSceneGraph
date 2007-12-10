@@ -43,7 +43,7 @@ class OSGSIM_EXPORT DatabaseCacheReadCallback : public osgUtil::IntersectionVisi
         FileNameSceneMap    _filenameSceneMap;
 };
 
-/** Helper class for setting up and aquiring line of sight intersections with terrain.
+/** Helper class for setting up and acquiring line of sight intersections with terrain.
   * Supports automatic paging in of PagedLOD tiles. */
 class OSGSIM_EXPORT LineOfSight
 {
@@ -60,7 +60,7 @@ class OSGSIM_EXPORT LineOfSight
         /** Get the number of line of sight tests.*/
         unsigned int getNumLOS() const { return _LOSList.size(); }
         
-        /** Set the start point of signel line of sight test.*/
+        /** Set the start point of single line of sight test.*/
         void setStartPoint(unsigned int i, const osg::Vec3d& start) { _LOSList[i]._start = start; }
 
         /** Get the start point of single line of sight test.*/
@@ -89,7 +89,7 @@ class OSGSIM_EXPORT LineOfSight
         void clearDatabaseCache() { if (_dcrc.valid()) _dcrc->clearDatabaseCache(); }
 
         /** Set the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs.
-          * Note, if you have mulitple LineOfSight or HeightAboveTerrain objects in use at one time then you should share a single
+          * Note, if you have multiple LineOfSight or HeightAboveTerrain objects in use at one time then you should share a single
           * DatabaseCacheReadCallback between all of them. */
         void setDatabaseCacheReadCallback(DatabaseCacheReadCallback* dcrc);
 

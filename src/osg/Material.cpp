@@ -358,8 +358,8 @@ void Material::apply(State&) const
     }
     else
     {
-        glEnable(GL_COLOR_MATERIAL);
         glColorMaterial(GL_FRONT_AND_BACK,(GLenum)_colorMode);
+        glEnable(GL_COLOR_MATERIAL);
         switch(_colorMode)
         {
             case(AMBIENT): glColor4fv(_ambientFront.ptr()); break;

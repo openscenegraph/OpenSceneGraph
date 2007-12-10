@@ -1090,7 +1090,17 @@ void CullVisitor::apply(LOD& node)
 void CullVisitor::apply(osg::ClearNode& node)
 {
     // simply override the current earth sky.
-    setClearNode(&node);
+    if (node.getRequiresClear())
+    {
+      getCurrentRenderBin()->getStage()->setClearColor(node.getClearColor());
+      getCurrentRenderBin()->getStage()->setClearMask(node.getClearMask());
+    }
+    else
+    {
+      // we have an earth sky implementation to do the work for use
+      // so we don't need to clear.
+      getCurrentRenderBin()->getStage()->setClearMask(0);
+    }
 
     // push the node's state.
     StateSet* node_state = node.getStateSet();

@@ -139,7 +139,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)
 	I_Method0(void, removeOccludedOccluders,
 	          Properties::NON_VIRTUAL,
 	          __void__removeOccludedOccluders,
-	          "Removes occluded occluders for the collected occluders list, then discards all but MaximumNumberOfActiveOccluders of occluders, discarding the occluders with the lowests shadow occluder volume. ",
+	          "Removes occluded occluders for the collected occluders list, then discards all but MaximumNumberOfActiveOccluders of occluders, discarding the occluders with the lowest shadow occluder volume. ",
 	          "");
 	I_ProtectedMethod1(void, handle_cull_callbacks_and_traverse, IN, osg::Node &, node,
 	                   Properties::NON_VIRTUAL,

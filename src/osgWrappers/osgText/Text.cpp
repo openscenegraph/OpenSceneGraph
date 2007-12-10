@@ -222,7 +222,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_Drawable_ConstAttributeFunctor_R1,
-	          "accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "accept an ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. ",
 	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
 	          Properties::VIRTUAL,
@@ -232,7 +232,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_PrimitiveFunctor_R1,
-	          "accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
+	          "accept a PrimtiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. ",
 	          "");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
 	          Properties::VIRTUAL,

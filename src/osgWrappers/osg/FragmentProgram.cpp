@@ -163,7 +163,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
-	                      "release an OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objexts for all graphics context if State object pointer == NULL. ",
+	                      "release an OpenGL objects in specified graphics context if State object is passed, otherwise release OpenGL objects for all graphics context if State object pointer == NULL. ",
 	                      "");
 	I_StaticMethod2(void, deleteFragmentProgramObject, IN, unsigned int, contextID, IN, GLuint, handle,
 	                __void__deleteFragmentProgramObject__unsigned_int__GLuint_S,

@@ -130,7 +130,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Viewport)
 	          Properties::NON_VIRTUAL,
 	          __double__aspectRatio,
 	          "Return the aspectRatio of the viewport, which is equal to width/height. ",
-	          "If height is zero, the potental division by zero is avoided by simply returning 1.0f. ");
+	          "If height is zero, the potential division by zero is avoided by simply returning 1.0f. ");
 	I_Method0(const osg::Matrix, computeWindowMatrix,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Matrix__computeWindowMatrix,

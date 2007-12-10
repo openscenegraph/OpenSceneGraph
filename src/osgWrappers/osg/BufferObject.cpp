@@ -110,7 +110,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
 	                __void__deleteBufferObject__unsigned_int__GLuint_S,
 	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
@@ -122,7 +122,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	I_StaticMethod2(osg::BufferObject::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",
-	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object is only created with the graphics context associated with ContextID.. ");
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object is only created with the graphics context associated with ContextID.. ");
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BufferObject::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "setExtensions allows users to override the extensions across graphics contexts. ",

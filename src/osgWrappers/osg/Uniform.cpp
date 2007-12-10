@@ -682,7 +682,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          Properties::NON_VIRTUAL,
 	          __void__dirty,
 	          "Increment the modified count on the Uniform so Programs watching it know it update themselves. ",
-	          "NOTE: autotomatically called during osg::Uniform::set*(); you must call if modifying the internal data array directly. ");
+	          "NOTE: automatically called during osg::Uniform::set*(); you must call if modifying the internal data array directly. ");
 	I_Method1(bool, setArray, IN, osg::FloatArray *, array,
 	          Properties::NON_VIRTUAL,
 	          __bool__setArray__FloatArray_P1,

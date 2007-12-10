@@ -158,7 +158,7 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	I_Method1(osg::BoundingBox, intersect, IN, const osg::BoundingBox &, bb,
 	          Properties::NON_VIRTUAL,
 	          __BoundingBox__intersect__C5_BoundingBox_R1,
-	          "Returns the intesection of this bounding box and the specified bounding box. ",
+	          "Returns the intersection of this bounding box and the specified bounding box. ",
 	          "");
 	I_Method1(bool, intersects, IN, const osg::BoundingBox &, bb,
 	          Properties::NON_VIRTUAL,

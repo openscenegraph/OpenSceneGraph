@@ -61,7 +61,7 @@ BEGIN_VALUE_REFLECTOR(osg::Polytope)
 	I_Method1(void, setToBoundingBox, IN, const osg::BoundingBox &, bb,
 	          Properties::NON_VIRTUAL,
 	          __void__setToBoundingBox__C5_BoundingBox_R1,
-	          "Create a Polytope which is a equivilant to BoundingBox. ",
+	          "Create a Polytope which is a equivalent to BoundingBox. ",
 	          "");
 	I_Method2(void, setAndTransformProvidingInverse, IN, const osg::Polytope &, pt, IN, const osg::Matrix &, matrix,
 	          Properties::NON_VIRTUAL,

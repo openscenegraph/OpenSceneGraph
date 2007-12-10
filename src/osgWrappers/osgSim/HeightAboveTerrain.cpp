@@ -57,7 +57,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::HeightAboveTerrain)
 	          Properties::NON_VIRTUAL,
 	          __double__getHeightAboveTerrain__unsigned_int,
 	          "Get the intersection height for a single height above terrain test. ",
-	          "Note, you must call computeIntersections(..) before you can querry the HeightAboveTerrain. If no intersections are found then height returned will be the height above mean sea level. ");
+	          "Note, you must call computeIntersections(..) before you can query the HeightAboveTerrain. If no intersections are found then height returned will be the height above mean sea level. ");
 	I_Method1(void, setLowestHeight, IN, double, lowestHeight,
 	          Properties::NON_VIRTUAL,
 	          __void__setLowestHeight__double,
@@ -82,7 +82,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::HeightAboveTerrain)
 	          Properties::NON_VIRTUAL,
 	          __void__setDatabaseCacheReadCallback__DatabaseCacheReadCallback_P1,
 	          "Set the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
-	          "Note, if you have mulitple LineOfSight or HeightAboveTerrain objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
+	          "Note, if you have multiple LineOfSight or HeightAboveTerrain objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
 	I_Method0(osgSim::DatabaseCacheReadCallback *, getDatabaseCacheReadCallback,
 	          Properties::NON_VIRTUAL,
 	          __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback,

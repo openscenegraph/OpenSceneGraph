@@ -45,7 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, invmat,
 	          Properties::VIRTUAL,
 	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
-	          "Set the current position with the invers matrix. ",
+	          "Set the current position with the inverse matrix. ",
 	          " param invmat The inverse of a viewpoint matrix  ");
 	I_Method0(osg::Matrixd, getMatrix,
 	          Properties::VIRTUAL,

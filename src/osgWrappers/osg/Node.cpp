@@ -293,12 +293,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_Method1(void, setInitialBound, IN, const osg::BoundingSphere &, bsphere,
 	          Properties::NON_VIRTUAL,
 	          __void__setInitialBound__C5_osg_BoundingSphere_R1,
-	          "Set the intial bounding volume to use when computing the overall bounding volume. ",
+	          "Set the initial bounding volume to use when computing the overall bounding volume. ",
 	          "");
 	I_Method0(const osg::BoundingSphere &, getInitialBound,
 	          Properties::NON_VIRTUAL,
 	          __C5_BoundingSphere_R1__getInitialBound,
-	          "Set the intial bounding volume to use when computing the overall bounding volume. ",
+	          "Set the initial bounding volume to use when computing the overall bounding volume. ",
 	          "");
 	I_Method0(void, dirtyBound,
 	          Properties::NON_VIRTUAL,
@@ -344,7 +344,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_ProtectedMethod1(void, addParent, IN, osg::Group *, node,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

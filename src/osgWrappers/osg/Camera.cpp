@@ -255,12 +255,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_Method1(void, setProjectionResizePolicy, IN, osg::Camera::ProjectionResizePolicy, policy,
 	          Properties::NON_VIRTUAL,
 	          __void__setProjectionResizePolicy__ProjectionResizePolicy,
-	          "Set the policy used to determin if and how the projection matrix should be adjusted on window resizes. ",
+	          "Set the policy used to determine if and how the projection matrix should be adjusted on window resizes. ",
 	          "");
 	I_Method0(osg::Camera::ProjectionResizePolicy, getProjectionResizePolicy,
 	          Properties::NON_VIRTUAL,
 	          __ProjectionResizePolicy__getProjectionResizePolicy,
-	          "Get the policy used to determin if and how the projection matrix should be adjusted on window resizes. ",
+	          "Get the policy used to determine if and how the projection matrix should be adjusted on window resizes. ",
 	          "");
 	I_Method1(void, setProjectionMatrix, IN, const osg::Matrixf &, matrix,
 	          Properties::NON_VIRTUAL,
@@ -305,7 +305,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_Method6(bool, getProjectionMatrixAsOrtho, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar,
 	          Properties::NON_VIRTUAL,
 	          __bool__getProjectionMatrixAsOrtho__double_R1__double_R1__double_R1__double_R1__double_R1__double_R1,
-	          "Get the othographic settings of the orthographic projection matrix. ",
+	          "Get the orthographic settings of the orthographic projection matrix. ",
 	          "Returns false if matrix is not an orthographic matrix, where parameter values are undefined. ");
 	I_Method6(bool, getProjectionMatrixAsFrustum, IN, double &, left, IN, double &, right, IN, double &, bottom, IN, double &, top, IN, double &, zNear, IN, double &, zFar,
 	          Properties::NON_VIRTUAL,

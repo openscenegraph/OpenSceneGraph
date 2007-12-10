@@ -104,7 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureSize__int__int__int,
 	          "Set the texture width and height. ",
-	          "If width or height are zero then the repsective size value is calculated from the source image sizes. Depth parameter specifies the number of layers to be used. ");
+	          "If width or height are zero then the respective size value is calculated from the source image sizes. Depth parameter specifies the number of layers to be used. ");
 	I_Method1(void, setTextureWidth, IN, int, width,
 	          Properties::NON_VIRTUAL,
 	          __void__setTextureWidth__int,
@@ -154,7 +154,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	          Properties::NON_VIRTUAL,
 	          __void__setNumMipmapLevels__unsigned_int,
 	          "Set the number of mip map levels the the texture has been created with. ",
-	          "Should only be called within an osg::Texuture::apply() and custom OpenGL texture load. ");
+	          "Should only be called within an osg::Texture::apply() and custom OpenGL texture load. ");
 	I_Method0(unsigned int, getNumMipmapLevels,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumMipmapLevels,
@@ -173,7 +173,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	I_StaticMethod2(osg::Texture2DArray::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",
-	                "If the Exentsion object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID. ");
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object will only be created with the graphics context associated with ContextID. ");
 	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::Texture2DArray::Extensions *, extensions,
 	                __void__setExtensions__unsigned_int__Extensions_P1_S,
 	                "The setExtensions method allows users to override the extensions across graphics contexts. ",

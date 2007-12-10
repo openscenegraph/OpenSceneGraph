@@ -296,7 +296,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_SimpleProperty(osg::DrawElements *, DrawElements, 
 	                 __DrawElements_P1__getDrawElements, 
 	                 0);
@@ -944,7 +944,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method0(void, computeRange,
 	          Properties::VIRTUAL,
 	          __void__computeRange,

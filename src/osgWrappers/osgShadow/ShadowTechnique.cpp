@@ -73,7 +73,7 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
 	I_Method1(void, update, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__update__osg_NodeVisitor_R1,
-	          "run the update traversal of the ShadowedScene and update any loca chached data structures. ",
+	          "run the update traversal of the ShadowedScene and update any local cached data structures. ",
 	          "");
 	I_Method1(void, cull, IN, osgUtil::CullVisitor &, cv,
 	          Properties::VIRTUAL,
@@ -93,7 +93,7 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
 	          __void__dirty,
-	          "Dirty so that cached data structurese are updated. ",
+	          "Dirty so that cached data structures are updated. ",
 	          "");
 	I_SimpleProperty(osgShadow::ShadowedScene *, ShadowedScene, 
 	                 __ShadowedScene_P1__getShadowedScene, 

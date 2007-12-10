@@ -159,28 +159,28 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_Method0(bool, realizeImplementation,
 	          Properties::VIRTUAL,
 	          __bool__realizeImplementation,
-	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
+	          "Realize the GraphicsContext implementation, Pure virtual - must be implemented by concrete implementations of GraphicsContext. ",
 	          "");
 	I_Method0(bool, isRealizedImplementation,
 	          Properties::VIRTUAL,
 	          __bool__isRealizedImplementation,
-	          "Return true if the graphics context has been realised, and is ready to use, implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Return true if the graphics context has been realized, and is ready to use, implementation. ",
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, closeImplementation,
 	          Properties::VIRTUAL,
 	          __void__closeImplementation,
 	          "Close the graphics context implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(bool, makeCurrentImplementation,
 	          Properties::VIRTUAL,
 	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method1(bool, makeContextCurrentImplementation, IN, osg::GraphicsContext *, x,
 	          Properties::VIRTUAL,
 	          __bool__makeContextCurrentImplementation__GraphicsContext_P1,
 	          "Make this graphics context current with specified read context implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(bool, releaseContextImplementation,
 	          Properties::VIRTUAL,
 	          __bool__releaseContextImplementation,
@@ -190,12 +190,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          Properties::VIRTUAL,
 	          __void__bindPBufferToTextureImplementation__GLenum,
 	          "Pure virtual, Bind the graphics context to associated texture implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, swapBuffersImplementation,
 	          Properties::VIRTUAL,
 	          __void__swapBuffersImplementation,
 	          "Swap the front and back buffers implementation. ",
-	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, requestRedraw,
 	          Properties::VIRTUAL,
 	          __void__requestRedraw,
@@ -268,23 +268,23 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	I_Method0(bool, realizeImplementation,
 	          Properties::VIRTUAL,
 	          __bool__realizeImplementation,
-	          "Realise the GraphicsContext implementation, Pure virtual - must be implemented by concrate implementations of GraphicsContext. ",
+	          "Realize the GraphicsContext implementation, Pure virtual - must be implemented by concrete implementations of GraphicsContext. ",
 	          "");
 	I_Method0(bool, isRealizedImplementation,
 	          Properties::VIRTUAL,
 	          __bool__isRealizedImplementation,
-	          "Return true if the graphics context has been realised, and is ready to use, implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Return true if the graphics context has been realized, and is ready to use, implementation. ",
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, closeImplementation,
 	          Properties::VIRTUAL,
 	          __void__closeImplementation,
 	          "Close the graphics context implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(bool, makeCurrentImplementation,
 	          Properties::VIRTUAL,
 	          __bool__makeCurrentImplementation,
 	          "Make this graphics context current implementation. ",
-	          "Pure virtual - must be implemented by concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(bool, releaseContextImplementation,
 	          Properties::VIRTUAL,
 	          __bool__releaseContextImplementation,
@@ -294,7 +294,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	          Properties::VIRTUAL,
 	          __void__swapBuffersImplementation,
 	          "Swap the front and back buffers implementation. ",
-	          "Pure virtual - must be implemented by Concrate implementations of GraphicsContext. ");
+	          "Pure virtual - must be implemented by concrete implementations of GraphicsContext. ");
 	I_Method0(void, grabFocus,
 	          Properties::VIRTUAL,
 	          __void__grabFocus,

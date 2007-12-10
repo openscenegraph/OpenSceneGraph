@@ -194,7 +194,7 @@ BEGIN_VALUE_REFLECTOR(osg::ApplicationUsageProxy)
 	I_DeclaringFile("osg/ApplicationUsage");
 	I_Constructor3(IN, osg::ApplicationUsage::Type, type, IN, const std::string &, option, IN, const std::string &, explanation,
 	               ____ApplicationUsageProxy__ApplicationUsage_Type__C5_std_string_R1__C5_std_string_R1,
-	               "register an explanation of commandline/evironmentalvaraible/keyboard mouse usage. ",
+	               "register an explanation of commandline/environmentvariable/keyboard mouse usage. ",
 	               "");
 END_REFLECTOR
 

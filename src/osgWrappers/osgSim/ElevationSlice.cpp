@@ -78,7 +78,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::ElevationSlice)
 	          Properties::NON_VIRTUAL,
 	          __void__setDatabaseCacheReadCallback__DatabaseCacheReadCallback_P1,
 	          "Set the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
-	          "Note, if you have mulitple LineOfSight or ElevationSlice objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
+	          "Note, if you have multiple LineOfSight or ElevationSlice objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
 	I_Method0(osgSim::DatabaseCacheReadCallback *, getDatabaseCacheReadCallback,
 	          Properties::NON_VIRTUAL,
 	          __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback,

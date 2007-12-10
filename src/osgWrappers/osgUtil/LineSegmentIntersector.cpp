@@ -32,15 +32,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	I_BaseType(osgUtil::Intersector);
 	I_Constructor2(IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end,
 	               ____LineSegmentIntersector__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
-	               "Construct a LineSegmentIntersector the runs between the secified start and end points in MODEL coordinates. ",
+	               "Construct a LineSegmentIntersector the runs between the specified start and end points in MODEL coordinates. ",
 	               "");
 	I_Constructor3(IN, osgUtil::Intersector::CoordinateFrame, cf, IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end,
 	               ____LineSegmentIntersector__CoordinateFrame__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
-	               "Construct a LineSegmentIntersector the runs between the secified start and end points in the specified coordinate frame. ",
+	               "Construct a LineSegmentIntersector the runs between the specified start and end points in the specified coordinate frame. ",
 	               "");
 	I_Constructor3(IN, osgUtil::Intersector::CoordinateFrame, cf, IN, double, x, IN, double, y,
 	               ____LineSegmentIntersector__CoordinateFrame__double__double,
-	               "Convinience constructor for supporting picking in WINDOW, or PROJECTION coorindates In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1). ",
+	               "Convenience constructor for supporting picking in WINDOW, or PROJECTION coordinates In WINDOW coordinates creates a start value of (x,y,0) and end value of (x,y,1). ",
 	               "In PROJECTION coordinates (clip space cube) creates a start value of (x,y,-1) and end value of (x,y,1). In VIEW and MODEL coordinates creates a start value of (x,y,0) and end value of (x,y,1). ");
 	I_Method1(void, insertIntersection, IN, const osgUtil::LineSegmentIntersector::Intersection &, intersection,
 	          Properties::NON_VIRTUAL,

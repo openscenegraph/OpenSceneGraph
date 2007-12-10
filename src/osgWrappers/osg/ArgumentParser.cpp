@@ -68,7 +68,7 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	I_Method1(int, find, IN, const std::string &, str,
 	          Properties::NON_VIRTUAL,
 	          __int__find__C5_std_string_R1,
-	          "Return the position of an occurance of a string in the argument list. ",
+	          "Return the position of an occurrence of a string in the argument list. ",
 	          "Return -1 if no string is found. ");
 	I_Method1(bool, isOption, IN, int, pos,
 	          Properties::NON_VIRTUAL,
@@ -103,8 +103,8 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	I_Method1(bool, read, IN, const std::string &, str,
 	          Properties::NON_VIRTUAL,
 	          __bool__read__C5_std_string_R1,
-	          "Search for an occurance of a string in the argument list. ",
-	          "If found, remove that occurance and return true. Otherwise, return false. ");
+	          "Search for an occurrence of a string in the argument list. ",
+	          "If found, remove that occurrence and return true. Otherwise, return false. ");
 	I_Method2(bool, read, IN, const std::string &, str, IN, osg::ArgumentParser::Parameter, value1,
 	          Properties::NON_VIRTUAL,
 	          __bool__read__C5_std_string_R1__Parameter,
@@ -193,7 +193,7 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	I_MethodWithDefaults1(bool, errors, IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::BENIGN,
 	                      Properties::NON_VIRTUAL,
 	                      __bool__errors__ErrorSeverity,
-	                      "Return the error flag, true if an error has occured when reading arguments. ",
+	                      "Return the error flag, true if an error has occurred when reading arguments. ",
 	                      "");
 	I_MethodWithDefaults2(void, reportError, IN, const std::string &, message, , IN, osg::ArgumentParser::ErrorSeverity, severity, osg::ArgumentParser::CRITICAL,
 	                      Properties::NON_VIRTUAL,
@@ -208,17 +208,17 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	I_Method0(osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap,
 	          Properties::NON_VIRTUAL,
 	          __ErrorMessageMap_R1__getErrorMessageMap,
-	          "Return the error message, if any has occured. ",
+	          "Return the error message, if any has occurred. ",
 	          "");
 	I_Method0(const osg::ArgumentParser::ErrorMessageMap &, getErrorMessageMap,
 	          Properties::NON_VIRTUAL,
 	          __C5_ErrorMessageMap_R1__getErrorMessageMap,
-	          "Return the error message, if any has occured. ",
+	          "Return the error message, if any has occurred. ",
 	          "");
 	I_MethodWithDefaults2(void, writeErrorMessages, IN, std::ostream &, output, , IN, osg::ArgumentParser::ErrorSeverity, sevrity, osg::ArgumentParser::BENIGN,
 	                      Properties::NON_VIRTUAL,
 	                      __void__writeErrorMessages__std_ostream_R1__ErrorSeverity,
-	                      "Write error messages to the given ostream, if at or above the given severiity. ",
+	                      "Write error messages to the given ostream, if at or above the given severity. ",
 	                      "");
 	I_StaticMethod1(bool, isOption, IN, const char *, str,
 	                __bool__isOption__C5_char_P1_S,

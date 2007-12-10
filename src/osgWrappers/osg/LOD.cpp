@@ -126,7 +126,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	          Properties::NON_VIRTUAL,
 	          __void__setRadius__float,
 	          "Set the object-space reference radius of the volume enclosed by the LOD. ",
-	          "Used to detmine the bounding sphere of the LOD in the absense of any children. ");
+	          "Used to determine the bounding sphere of the LOD in the absence of any children. ");
 	I_Method0(float, getRadius,
 	          Properties::NON_VIRTUAL,
 	          __float__getRadius,
@@ -135,17 +135,17 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	I_Method1(void, setRangeMode, IN, osg::LOD::RangeMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setRangeMode__RangeMode,
-	          "Set how the range values should be intepreted when computing which child is active. ",
+	          "Set how the range values should be interpreted when computing which child is active. ",
 	          "");
 	I_Method0(osg::LOD::RangeMode, getRangeMode,
 	          Properties::NON_VIRTUAL,
 	          __RangeMode__getRangeMode,
-	          "Get how the range values should be intepreted when computing which child is active. ",
+	          "Get how the range values should be interpreted when computing which child is active. ",
 	          "");
 	I_Method3(void, setRange, IN, unsigned int, childNo, IN, float, min, IN, float, max,
 	          Properties::NON_VIRTUAL,
 	          __void__setRange__unsigned_int__float__float,
-	          "Sets the min and max visible ranges of range of specifiec child. ",
+	          "Sets the min and max visible ranges of range of specific child. ",
 	          "Values are floating point distance specified in local objects coordinates. ");
 	I_Method1(float, getMinRange, IN, unsigned int, childNo,
 	          Properties::NON_VIRTUAL,

@@ -83,7 +83,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          Properties::NON_VIRTUAL,
 	          __bool__readPluginAliasConfigurationFile__C5_std_string_R1,
 	          "Reads a file that configures extension mappings. ",
-	          "File is ASCII text and each line contains the parameyters to the addFileExtensionAlias method. Lines can be commented out with an initial '#' character. ");
+	          "File is ASCII text and each line contains the parameters to the addFileExtensionAlias method. Lines can be commented out with an initial '#' character. ");
 	I_Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
 	          Properties::NON_VIRTUAL,
 	          __void__addDotOsgWrapper__DotOsgWrapper_P1,
@@ -332,12 +332,12 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method0(void, initFilePathLists,
 	          Properties::NON_VIRTUAL,
 	          __void__initFilePathLists,
-	          "initilize both the Data and Library FilePaths, by default called by the constructor, so it should only be required if you want to force the re-reading of environmental variables. ",
+	          "initialize both the Data and Library FilePaths, by default called by the constructor, so it should only be required if you want to force the re-reading of environmental variables. ",
 	          "");
 	I_Method0(void, initDataFilePathList,
 	          Properties::NON_VIRTUAL,
 	          __void__initDataFilePathList,
-	          "initilize the Data FilePath by reading the OSG_FILE_PATH environmental variable. ",
+	          "initialize the Data FilePath by reading the OSG_FILE_PATH environmental variable. ",
 	          "");
 	I_Method1(void, setDataFilePathList, IN, const osgDB::FilePathList &, filepath,
 	          Properties::NON_VIRTUAL,
@@ -347,7 +347,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method1(void, setDataFilePathList, IN, const std::string &, paths,
 	          Properties::NON_VIRTUAL,
 	          __void__setDataFilePathList__C5_std_string_R1,
-	          "Set the data file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files. ",
+	          "Set the data file path using a single string delimited either with ';' (Windows) or ':' (All other platforms), which is used when search for data files. ",
 	          "");
 	I_Method0(osgDB::FilePathList &, getDataFilePathList,
 	          Properties::NON_VIRTUAL,
@@ -362,7 +362,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method0(void, initLibraryFilePathList,
 	          Properties::NON_VIRTUAL,
 	          __void__initLibraryFilePathList,
-	          "initilize the Library FilePath by reading the OSG_LIBRARY_PATH and the appropriate system environmental variables ",
+	          "initialize the Library FilePath by reading the OSG_LIBRARY_PATH and the appropriate system environmental variables ",
 	          "");
 	I_Method1(void, setLibraryFilePathList, IN, const osgDB::FilePathList &, filepath,
 	          Properties::NON_VIRTUAL,
@@ -372,7 +372,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method1(void, setLibraryFilePathList, IN, const std::string &, paths,
 	          Properties::NON_VIRTUAL,
 	          __void__setLibraryFilePathList__C5_std_string_R1,
-	          "Set the library file path using a single string deliminated either with ';' (Windows) or ':' (All other platforms), which is used when search for data files. ",
+	          "Set the library file path using a single string delimited either with ';' (Windows) or ':' (All other platforms), which is used when search for data files. ",
 	          "");
 	I_Method0(osgDB::FilePathList &, getLibraryFilePathList,
 	          Properties::NON_VIRTUAL,
@@ -388,12 +388,12 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          Properties::NON_VIRTUAL,
 	          __void__updateTimeStampOfObjectsInCacheWithExternalReferences__double,
 	          "For each object in the cache which has an reference count greater than 1 (and therefore referenced by elsewhere in the application) set the time stamp for that object in the cache to specified time. ",
-	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required. Time value is time in sceonds. ");
+	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required. Time value is time in seconds. ");
 	I_Method1(void, removeExpiredObjectsInCache, IN, double, expiryTime,
 	          Properties::NON_VIRTUAL,
 	          __void__removeExpiredObjectsInCache__double,
 	          "Removed object in the cache which have a time stamp at or before the specified expiry time. ",
-	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required, and called after the a called after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(currentTime). Note, the currentTime is not the expiryTime, one would typically set the expiry time to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0. Time value is time in sceonds. ");
+	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required, and called after the a called after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(currentTime). Note, the currentTime is not the expiryTime, one would typically set the expiry time to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0. Time value is time in seconds. ");
 	I_Method0(void, clearObjectCache,
 	          Properties::NON_VIRTUAL,
 	          __void__clearObjectCache,
@@ -402,7 +402,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_MethodWithDefaults3(void, addEntryToObjectCache, IN, const std::string &, filename, , IN, osg::Object *, object, , IN, double, timestamp, 0.0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__addEntryToObjectCache__C5_std_string_R1__osg_Object_P1__double,
-	                      "Add a filename,object,timestamp tripple to the Registry::ObjectCache. ",
+	                      "Add a filename,object,timestamp triple to the Registry::ObjectCache. ",
 	                      "");
 	I_Method1(osg::Object *, getFromObjectCache, IN, const std::string &, fileName,
 	          Properties::NON_VIRTUAL,

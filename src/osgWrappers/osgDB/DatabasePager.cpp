@@ -236,17 +236,17 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_Method2(void, setCompileGLObjectsForContextID, IN, unsigned int, contextID, IN, bool, on,
 	          Properties::NON_VIRTUAL,
 	          __void__setCompileGLObjectsForContextID__unsigned_int__bool,
-	          "Turn the compilation of rendering objects for specfied graphics context on (true) or off(false). ",
+	          "Turn the compilation of rendering objects for specified graphics context on (true) or off(false). ",
 	          "");
 	I_Method1(bool, getCompileGLObjectsForContextID, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
 	          __bool__getCompileGLObjectsForContextID__unsigned_int,
-	          "Get whether the compilation of rendering objects for specfied graphics context on (true) or off(false). ",
+	          "Get whether the compilation of rendering objects for specified graphics context on (true) or off(false). ",
 	          "");
 	I_Method1(bool, requiresExternalCompileGLObjects, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
 	          __bool__requiresExternalCompileGLObjects__unsigned_int,
-	          "Rerturn true if an external draw thread should call compileGLObjects(. ",
+	          "Return true if an external draw thread should call compileGLObjects(. ",
 	          ".) or not. ");
 	I_Method0(bool, requiresCompileGLObjects,
 	          Properties::NON_VIRTUAL,

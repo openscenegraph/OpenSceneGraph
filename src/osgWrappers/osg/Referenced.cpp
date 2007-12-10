@@ -67,7 +67,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	          Properties::NON_VIRTUAL,
 	          __void__unref_nodelete,
 	          "Decrement the reference count by one, indicating that a pointer to this object is referencing it. ",
-	          "However, do not delete it, even if ref count goes to 0. Warning, unref_nodelete() should only be called if the user knows exactly who will be resonsible for, one should prefer unref() over unref_nodelete() as the later can lead to memory leaks. ");
+	          "However, do not delete it, even if ref count goes to 0. Warning, unref_nodelete() should only be called if the user knows exactly who will be responsible for, one should prefer unref() over unref_nodelete() as the later can lead to memory leaks. ");
 	I_Method0(int, referenceCount,
 	          Properties::NON_VIRTUAL,
 	          __int__referenceCount,
@@ -76,12 +76,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Method1(void, addObserver, IN, osg::Observer *, observer,
 	          Properties::NON_VIRTUAL,
 	          __void__addObserver__Observer_P1,
-	          "Add a Observer that is observering this object, notify the Observer when this object gets deleted. ",
+	          "Add a Observer that is observing this object, notify the Observer when this object gets deleted. ",
 	          "");
 	I_Method1(void, removeObserver, IN, osg::Observer *, observer,
 	          Properties::NON_VIRTUAL,
 	          __void__removeObserver__Observer_P1,
-	          "Add a Observer that is observering this object, notify the Observer when this object gets deleted. ",
+	          "Add a Observer that is observing this object, notify the Observer when this object gets deleted. ",
 	          "");
 	I_StaticMethod1(void, setThreadSafeReferenceCounting, IN, bool, enableThreadSafeReferenceCounting,
 	                __void__setThreadSafeReferenceCounting__bool_S,

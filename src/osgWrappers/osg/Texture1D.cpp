@@ -154,7 +154,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture1D)
 	          Properties::NON_VIRTUAL,
 	          __void__setNumMipmapLevels__unsigned_int,
 	          "Helper function. ",
-	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texuture::apply(), or during a custom OpenGL texture load. ");
+	          "Sets the number of mipmap levels created for this texture. Should only be called within an osg::Texture::apply(), or during a custom OpenGL texture load. ");
 	I_Method0(unsigned int, getNumMipmapLevels,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumMipmapLevels,
@@ -192,7 +192,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture1D)
 	                   Properties::CONST,
 	                   __void__applyTexImage1D__GLenum__Image_P1__State_R1__GLsizei_R1__GLsizei_R1,
 	                   "Helper method. ",
-	                   "Createa the texture without setting or using a texture binding. ");
+	                   "Create the texture without setting or using a texture binding. ");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__Image_P1);

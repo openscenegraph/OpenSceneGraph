@@ -88,7 +88,7 @@ BEGIN_VALUE_REFLECTOR(osg::Timer)
 	I_Method0(double, getSecondsPerTick,
 	          Properties::NON_VIRTUAL,
 	          __double__getSecondsPerTick,
-	          "Get the the numer of ticks per second. ",
+	          "Get the the number of ticks per second. ",
 	          "");
 	I_StaticMethod0(osg::Timer *, instance,
 	                __Timer_P1__instance_S,

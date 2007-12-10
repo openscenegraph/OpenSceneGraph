@@ -154,7 +154,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_SimpleProperty(const osg::BoundingBox &, BoundingBox, 
 	                 __C5_BoundingBox_R1__getBoundingBox, 
 	                 0);

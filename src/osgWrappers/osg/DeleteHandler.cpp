@@ -36,7 +36,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DeleteHandler)
 	          Properties::NON_VIRTUAL,
 	          __void__setNumFramesToRetainObjects__int,
 	          "Set the number of frames to retain objects that are have been requested for deletion. ",
-	          "When set to zero objects are deleted immediately, by set to 1 there are kept around for an extra frame etc. The ability to retain obejcts for several frames is useful to prevent premature deletion when objects are stil be used the graphics threads that are using double buffering of rendering data structures with non ref_ptr<> pointers to scene graph elements. ");
+	          "When set to zero objects are deleted immediately, by set to 1 there are kept around for an extra frame etc. The ability to retain objects for several frames is useful to prevent premature deletion when objects are still be used the graphics threads that are using double buffering of rendering data structures with non ref_ptr<> pointers to scene graph elements. ");
 	I_Method0(int, getNumFramesToRetainObjects,
 	          Properties::NON_VIRTUAL,
 	          __int__getNumFramesToRetainObjects,
@@ -45,7 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::DeleteHandler)
 	I_Method1(void, setFrameNumber, IN, int, frameNumber,
 	          Properties::NON_VIRTUAL,
 	          __void__setFrameNumber__int,
-	          "Set the current frame numberso that subsequent deletes get tagged as associated with this frame. ",
+	          "Set the current frame number so that subsequent deletes get tagged as associated with this frame. ",
 	          "");
 	I_Method0(int, getFrameNumber,
 	          Properties::NON_VIRTUAL,

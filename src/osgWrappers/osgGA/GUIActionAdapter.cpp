@@ -29,7 +29,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIActionAdapter)
 	I_Method0(osg::View *, asView,
 	          Properties::VIRTUAL,
 	          __osg_View_P1__asView,
-	          "Provide a mechanism for getting the osg::View assocaited with this GUIActionAdapter. ",
+	          "Provide a mechanism for getting the osg::View associated with this GUIActionAdapter. ",
 	          "One would use this to case view to osgViewer::View(er) if supported by the subclass. ");
 	I_Method0(void, requestRedraw,
 	          Properties::PURE_VIRTUAL,

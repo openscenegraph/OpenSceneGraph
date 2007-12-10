@@ -1501,7 +1501,6 @@ void Text::setBackdropOffset(float horizontal, float vertical)
 void Text::setBackdropColor(const osg::Vec4& color)
 {
     _backdropColor = color;
-    computeGlyphRepresentation();
 }
 
 void Text::setColorGradientMode(ColorGradientMode mode)

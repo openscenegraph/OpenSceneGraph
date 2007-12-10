@@ -294,7 +294,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_MethodWithDefaults3(void, haveAppliedTextureAttribute, IN, unsigned int, unit, , IN, osg::StateAttribute::Type, type, , IN, unsigned int, member, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__haveAppliedTextureAttribute__unsigned_int__StateAttribute_Type__unsigned_int,
-	                      "texture Attribute has been applied externally, and therefore this attribute type has been dirtied and will need to be re-appplied on next osg::State.apply(. ",
+	                      "texture Attribute has been applied externally, and therefore this attribute type has been dirtied and will need to be re-applied on next osg::State.apply(. ",
 	                      ".). note, if you have an osg::StateAttribute which you have applied externally then use the have_applied(attribute) method as this will the osg::State to track the current state more accurately and enable lazy state updating such that only changed state will be applied. ");
 	I_Method2(bool, getLastAppliedTextureMode, IN, unsigned int, unit, IN, osg::StateAttribute::GLMode, mode,
 	          Properties::NON_VIRTUAL,
@@ -549,7 +549,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method1(bool, setActiveTextureUnit, IN, unsigned int, unit,
 	          Properties::NON_VIRTUAL,
 	          __bool__setActiveTextureUnit__unsigned_int,
-	          "Set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported. ",
+	          "Set the current texture unit, return true if selected, false if selection failed such as when multi texturing is not supported. ",
 	          "note, only updates values that change. ");
 	I_Method0(unsigned int, getActiveTextureUnit,
 	          Properties::NON_VIRTUAL,
@@ -559,7 +559,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method1(bool, setClientActiveTextureUnit, IN, unsigned int, unit,
 	          Properties::NON_VIRTUAL,
 	          __bool__setClientActiveTextureUnit__unsigned_int,
-	          "Set the current tex coord array texture unit, return true if selected, false if selection failed such as when multitexturing is not supported. ",
+	          "Set the current tex coord array texture unit, return true if selected, false if selection failed such as when multi texturing is not supported. ",
 	          "note, only updates values that change. ");
 	I_Method0(unsigned int, getClientActiveTextureUnit,
 	          Properties::NON_VIRTUAL,

@@ -124,7 +124,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_Method0(void, computeDataVariance,
 	          Properties::VIRTUAL,
 	          __void__computeDataVariance,
-	          "Compute the DataVariance based on an assestment of callback etc. ",
+	          "Compute the DataVariance based on an assessment of callback etc. ",
 	          "");
 	I_Method0(void, setGlobalDefaults,
 	          Properties::NON_VIRTUAL,

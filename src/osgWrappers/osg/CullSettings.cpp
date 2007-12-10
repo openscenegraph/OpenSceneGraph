@@ -92,12 +92,12 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	I_Method1(void, setInheritanceMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,
 	          __void__setInheritanceMask__unsigned_int,
-	          "Set the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object. ",
+	          "Set the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object. ",
 	          "");
 	I_Method0(unsigned int, getInheritanceMask,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getInheritanceMask,
-	          "Get the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object. ",
+	          "Get the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object. ",
 	          "");
 	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, settings,
 	          Properties::NON_VIRTUAL,

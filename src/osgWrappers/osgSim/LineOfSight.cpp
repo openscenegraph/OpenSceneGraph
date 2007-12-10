@@ -83,7 +83,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
 	I_Method2(void, setStartPoint, IN, unsigned int, i, IN, const osg::Vec3d &, start,
 	          Properties::NON_VIRTUAL,
 	          __void__setStartPoint__unsigned_int__C5_osg_Vec3d_R1,
-	          "Set the start point of signel line of sight test. ",
+	          "Set the start point of single line of sight test. ",
 	          "");
 	I_Method1(const osg::Vec3d &, getStartPoint, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
@@ -119,7 +119,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::LineOfSight)
 	          Properties::NON_VIRTUAL,
 	          __void__setDatabaseCacheReadCallback__DatabaseCacheReadCallback_P1,
 	          "Set the ReadCallback that does the reading of external PagedLOD models, and caching of loaded subgraphs. ",
-	          "Note, if you have mulitple LineOfSight or HeightAboveTerrain objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
+	          "Note, if you have multiple LineOfSight or HeightAboveTerrain objects in use at one time then you should share a single DatabaseCacheReadCallback between all of them. ");
 	I_Method0(osgSim::DatabaseCacheReadCallback *, getDatabaseCacheReadCallback,
 	          Properties::NON_VIRTUAL,
 	          __DatabaseCacheReadCallback_P1__getDatabaseCacheReadCallback,

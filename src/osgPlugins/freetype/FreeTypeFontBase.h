@@ -11,15 +11,13 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef FREETYPE_FONT
-#define FREETYPE_FONT 1
-
-#include <osgText/Font>
+#ifndef FREETYPE_FONTBASE
+#define FREETYPE_FONTBASE 1
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-class FreeTypeFont : public osgText::Font::FontImplementation
+class FreeTypeFontBase : public osgText::Font::FontImplementation
 {
 // declare the interface to a font.
 public:
@@ -33,8 +31,6 @@ public:
 
     virtual void setFontResolution(unsigned int width, unsigned int height);
 
-    virtual osgText::Font::Glyph* getGlyph(unsigned int charcode);
-        
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
     
     virtual bool hasVertical() const;

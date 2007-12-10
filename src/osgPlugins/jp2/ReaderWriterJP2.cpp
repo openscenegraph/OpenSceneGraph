@@ -170,6 +170,17 @@ extern "C" {
 class ReaderWriterJP2 : public osgDB::ReaderWriter
 {
     public:
+
+
+        ReaderWriterJP2()
+        {
+            // little dance here to get around warnings created by jas_image_strtofmt use of char* rather than const char*
+            // as a parameted and modern compilers deprecating "jp2" string being treated as char*.
+            char* jp2 = strdup("jp2");
+            _fmt_jp2 = jas_image_strtofmt(jp2);
+            free(jp2);
+        }
+
         virtual const char* className() const { return "RGB Image Reader/Writer"; }
         
         virtual bool acceptsExtension(const std::string& extension) const
@@ -411,7 +422,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 opt = new char[options->getOptionString().size() + 1];
                 strcpy(opt, options->getOptionString().c_str());
             }
-            jas_image_encode(jimage, out, jas_image_strtofmt("jp2"),  opt);
+            jas_image_encode(jimage, out, _fmt_jp2,  opt);
             if(opt) delete[] opt;
 
             jas_stream_flush(out);
@@ -491,7 +502,8 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 opt = new char[options->getOptionString().size() + 1];
                 strcpy(opt, options->getOptionString().c_str());
             }
-            jas_image_encode(jimage, out, jas_image_strtofmt("jp2"),  opt);
+            
+            jas_image_encode(jimage, out, _fmt_jp2,  opt);
             if(opt) delete[] opt;
 
             jas_stream_flush(out);
@@ -511,6 +523,8 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             return WriteResult::FILE_SAVED;
         }
 
+
+        int _fmt_jp2;
 };
 
 // now register with Registry to instantiate the above

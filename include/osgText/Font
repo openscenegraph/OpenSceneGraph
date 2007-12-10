@@ -25,6 +25,7 @@
 #include <osg/TexEnv>
 #include <osgDB/ReaderWriter>
 #include <osgText/Export>
+#include <osgText/KerningType>
 
 #include <OpenThreads/Mutex>
 
@@ -32,12 +33,7 @@ namespace osgText {
 
 class Font;
 class Text;
-enum KerningType
-{
-    KERNING_DEFAULT,    //default locked to integer kerning values
-    KERNING_UNFITTED,   //use floating point value for kerning
-    KERNING_NONE        //no kerning
-};
+
 
 /** Read a font from specified file. The filename may contain a path.
   * It will search for the font file in the following places in this order: 
@@ -179,8 +175,6 @@ protected:
     typedef std::pair< unsigned int, unsigned int >         SizePair;
     typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
     
-    mutable FontMutex               _serializeFontCallsMutex;
-
     osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;
     SizeGlyphMap                    _sizeGlyphMap;

@@ -11,40 +11,54 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef FREETYPE_FONT
-#define FREETYPE_FONT 1
+#ifndef FREETYPE_FONT3D
+#define FREETYPE_FONT3D 1
 
-#include <osgText/Font>
+#include <osgText/Font3D>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-class FreeTypeFont : public osgText::Font::FontImplementation
+class FreeTypeFont3D : public osgText::Font3D::Font3DImplementation
 {
 // declare the interface to a font.
 public:
 
-    FreeTypeFont(const std::string& filename, FT_Face face, unsigned int flags);
-    FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags);
-
-    virtual ~FreeTypeFont();
+    FreeTypeFont3D(const std::string& filename, FT_Face face, unsigned int flags);
+    FreeTypeFont3D(FT_Byte* buffer, FT_Face face, unsigned int flags);
 
     virtual std::string getFileName() const { return _filename; }
 
-    virtual void setFontResolution(unsigned int width, unsigned int height);
+//    virtual void setFontResolution(unsigned int width, unsigned int height, unsigned int depth);
 
-    virtual osgText::Font::Glyph* getGlyph(unsigned int charcode);
+    virtual osgText::Font3D::Glyph3D * getGlyph(unsigned int charcode);
         
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
     
     virtual bool hasVertical() const;
+    
+    virtual float getScale() const;
 
 protected:
 
+    void init();
+    
+    long ft_round( long x ) { return (( x + 32 ) & -64); }
+    long ft_floor( long x ) { return (x & -64); }
+    long ft_ceiling( long x ){ return (( x + 63 ) & -64); }
+    
+    virtual ~FreeTypeFont3D();
+    
     std::string     _filename;
     FT_Byte*        _buffer;
     FT_Face         _face;
     unsigned int    _flags;
+    
+    
+    double  _scale;
+    double  _shiftY;
+    double  _shiftX;
+    double  _charScale;
 };
 
 #endif

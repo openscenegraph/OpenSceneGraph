@@ -34,8 +34,8 @@ static OpenThreads::ReentrantMutex s_FontFileMutex;
 
 Font::FontMutex* osgText::Font::getSerializeFontCallsMutex()
 {
-    static OpenThreads::Mutex s_FontCallsMutex;
-    return &s_FontCallsMutex;
+    static OpenThreads::Mutex s_serializeFontCallsMutex;
+    return &s_serializeFontCallsMutex;
 }
 
 std::string osgText::findFontFile(const std::string& str)

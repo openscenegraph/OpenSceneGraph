@@ -39,10 +39,11 @@ public:
         diffuse(0.8f,0.8f,0.8f,1.0f),
         specular(0.0f,0.0f,0.0f,1.0f),
         emissive(0.0f,0.0f,0.0f,1.0f),
-        shininess(0.0f),
         sharpness(0.0f),
-        illum(0),
+        illum(2),
         Tf(0.0f,0.0f,0.0f,1.0f),
+        Ni(0),
+        Ns(0),
         textureReflection(false),
         alpha(1.0f),
         uScale(1.0f),
@@ -56,13 +57,12 @@ public:
     osg::Vec4   diffuse;
     osg::Vec4   specular;
     osg::Vec4   emissive;
-    float       shininess;
     float       sharpness;
     int         illum;
     
     osg::Vec4   Tf;
     int         Ni;
-    int         Ns;
+    int         Ns; // shininess 0..1000
 
     std::string map_Ka;
     std::string map_Kd;
@@ -73,9 +73,8 @@ public:
     float       vScale;
     float       uOffset;
     float       vOffset;
-    
-protected:
 
+protected:
 };
 
 class Element : public osg::Referenced
@@ -158,6 +157,7 @@ public:
     void setDatabasePath(const std::string& path) { databasePath = path; }
     const std::string& getDatabasePath() const { return databasePath; }
 
+    std::string lastComponent(const char* linep);
     bool readMTL(std::istream& fin);
     bool readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options);
     
@@ -194,9 +194,5 @@ public:
 };
 
 }
-
-
-
-
 
 #endif

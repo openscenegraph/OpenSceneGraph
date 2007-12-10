@@ -112,6 +112,16 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
 }
 
 
+std::string Model::lastComponent(const char* linep)
+{
+    std::string line = std::string(linep);
+    int space = line.find_last_of(" ");
+    if (space >= 0) {
+        line = line.substr(space+1);
+    }
+    return line;
+}
+
 bool Model::readMTL(std::istream& fin)
 {
     osg::notify(osg::INFO)<<"Reading MTL file"<<std::endl;
@@ -213,13 +223,6 @@ bool Model::readMTL(std::istream& fin)
 
                     if (fieldsRead==1) material->Ni = Ni;
                 }
-                else if (strncmp(line,"illum ",6)==0)
-                {
-                    int illum = 0;
-                    unsigned int fieldsRead = sscanf(line+6,"%d", &illum);
-
-                    if (fieldsRead==1) material->illum = illum;
-                }
                 else if (strncmp(line,"Tr ",3)==0)
                 {
                     float alpha=1.0f;
@@ -253,13 +256,11 @@ bool Model::readMTL(std::istream& fin)
                 }
                 else if (strncmp(line,"map_Kd ",7)==0)
                 {
-                    std::string filename(line+7);
-                    material->map_Kd = filename;
+                    material->map_Kd = lastComponent(line+7);
                 }
                 else if (strncmp(line,"map_Ks ",7)==0)
                 {
-                    std::string filename(line+7);
-                    material->map_Ks = filename;
+                    material->map_Ks = lastComponent(line+7);
                 }
                 else if (strcmp(line,"refl")==0 || strncmp(line,"refl ",5)==0)
                 {

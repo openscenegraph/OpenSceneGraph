@@ -55,7 +55,7 @@ class OSG_EXPORT Viewport : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(Viewport,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_x)
             COMPARE_StateAttribute_Parameter(_y)
             COMPARE_StateAttribute_Parameter(_width)
@@ -104,7 +104,7 @@ class OSG_EXPORT Viewport : public StateAttribute
         inline bool valid() const { return _width>0 && _height>0; }
 
         /** Return the aspectRatio of the viewport, which is equal to width/height.
-          * If height is zero, the potental division by zero is avoided by simply returning 1.0f.
+          * If height is zero, the potential division by zero is avoided by simply returning 1.0f.
         */
         inline double aspectRatio() const { if (_height!=0) return (double)_width/(double)_height; else return 1.0; }
         

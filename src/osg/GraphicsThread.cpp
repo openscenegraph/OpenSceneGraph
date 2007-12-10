@@ -86,10 +86,10 @@ void ReleaseContext_Block_MakeCurrentOperation::operator () (GraphicsContext* co
     // reset the block so that it the next call to block() 
     reset();
     
-    // block this thread, untill the block is released externally.
+    // block this thread, until the block is released externally.
     block();
     
-    // re aquire the graphcis context.
+    // re acquire the graphics context.
     context->makeCurrent();
 }
 

@@ -239,7 +239,7 @@ void Node::setUpdateCallback(NodeCallback* nc)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -275,7 +275,7 @@ void Node::setNumChildrenRequiringUpdateTraversal(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -317,7 +317,7 @@ void Node::setEventCallback(NodeCallback* nc)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -353,7 +353,7 @@ void Node::setNumChildrenRequiringEventTraversal(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -393,7 +393,7 @@ void Node::setCullingActive(bool active)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -428,7 +428,7 @@ void Node::setNumChildrenWithCullingDisabled(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -465,7 +465,7 @@ void Node::setNumChildrenWithOccluderNodes(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)

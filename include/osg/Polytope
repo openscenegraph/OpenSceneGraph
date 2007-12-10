@@ -69,7 +69,7 @@ class OSG_EXPORT Polytope
             setupMask();
         }
 
-        /** Create a Polytope which is a equivilant to BoundingBox.*/
+        /** Create a Polytope which is a equivalent to BoundingBox.*/
         void setToBoundingBox(const BoundingBox& bb)
         {
             _planeList.clear();

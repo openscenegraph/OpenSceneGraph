@@ -68,7 +68,7 @@ ref_ptr<Operation> OperationQueue::getNextOperation(bool blockIfEmpty)
     
     if (_currentOperationIterator == _operations.end())
     {
-        // iterator at end of operations so reset to begining.
+        // iterator at end of operations so reset to beginning.
         _currentOperationIterator = _operations.begin();
     }
     
@@ -104,7 +104,7 @@ void OperationQueue::add(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
-    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
     // add the operation to the end of the list
@@ -117,7 +117,7 @@ void OperationQueue::remove(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
 
-    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
     for(Operations::iterator itr = _operations.begin();
@@ -140,10 +140,10 @@ void OperationQueue::remove(const std::string& name)
 {
     osg::notify(osg::INFO)<<"Doing remove named operation"<<std::endl;
     
-    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
-    // find the remove all operations with specificed name
+    // find the remove all operations with specified name
     for(Operations::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {
@@ -185,7 +185,7 @@ void OperationQueue::runOperations(Object* callingObject)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
-    // reset current operation iterator to begining if at end.
+    // reset current operation iterator to beginning if at end.
     if (_currentOperationIterator==_operations.end()) _currentOperationIterator = _operations.begin();
     
     for(;
@@ -421,7 +421,7 @@ void OperationThread::run()
         if (firstTime)
         {
             // do a yield to get round a peculiar thread hang when testCancel() is called 
-            // in certain cirumstances - of which there is no particular pattern.
+            // in certain circumstances - of which there is no particular pattern.
             YieldCurrentThread();
             firstTime = false;
         }

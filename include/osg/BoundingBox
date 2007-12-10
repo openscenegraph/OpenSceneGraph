@@ -164,7 +164,7 @@ class OSG_EXPORT BoundingBox
         void expandBy(const BoundingSphere& sh);
         
 
-        /** Returns the intesection of this bounding box and the specified bounding box. */
+        /** Returns the intersection of this bounding box and the specified bounding box. */
         BoundingBox intersect(const BoundingBox& bb) const
         {    return osg::BoundingBox(osg::maximum(xMin(),bb.xMin()),osg::maximum(yMin(),bb.yMin()),osg::maximum(zMin(),bb.zMin()),
                                      osg::minimum(xMax(),bb.xMax()),osg::minimum(yMax(),bb.yMax()),osg::minimum(zMax(),bb.zMax()));

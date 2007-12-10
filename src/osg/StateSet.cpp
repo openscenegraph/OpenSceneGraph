@@ -611,7 +611,7 @@ void StateSet::merge(const StateSet& rhs)
             if (!(lhs_mitr->second & StateAttribute::OVERRIDE ) ||
                  (rhs_mitr->second & StateAttribute::PROTECTED)) 
             {
-                // override isn't on in rhs, so overrite it with incomming
+                // override isn't on in rhs, so override it with incoming
                 // value.
                 lhs_mitr->second = rhs_mitr->second;
             }
@@ -636,14 +636,14 @@ void StateSet::merge(const StateSet& rhs)
             if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE) ||
                  (rhs_aitr->second.second & StateAttribute::PROTECTED))
             {
-                // override isn't on in rhs, so overrite it with incomming
+                // override isn't on in rhs, so override it with incoming
                 // value.
                 if (lhs_aitr->second.first!=rhs_aitr->second.first)
                 {
                     // new attribute so need to remove self from outgoing attribute
                     lhs_aitr->second.first->removeParent(this);
 
-                    // override isn't on in rhs, so overrite it with incomming
+                    // override isn't on in rhs, so override it with incoming
                     // value.
                     lhs_aitr->second = rhs_aitr->second;
                     lhs_aitr->second.first->addParent(this);
@@ -683,7 +683,7 @@ void StateSet::merge(const StateSet& rhs)
                 if (!(lhs_mitr->second & StateAttribute::OVERRIDE) ||
                      (rhs_mitr->second & StateAttribute::PROTECTED)) 
                 {
-                    // override isn't on in rhs, so overrite it with incomming
+                    // override isn't on in rhs, so override it with incoming
                     // value.
                     lhs_mitr->second = rhs_mitr->second;
                 }
@@ -715,7 +715,7 @@ void StateSet::merge(const StateSet& rhs)
                 if (!(lhs_aitr->second.second & StateAttribute::OVERRIDE) ||
                      (rhs_aitr->second.second & StateAttribute::PROTECTED)) 
                 {
-                    // override isn't on in rhs, so overrite it with incomming
+                    // override isn't on in rhs, so override it with incoming
                     // value.
                     
                     if (lhs_aitr->second.first!=rhs_aitr->second.first)
@@ -751,7 +751,7 @@ void StateSet::merge(const StateSet& rhs)
             if (!(lhs_uitr->second.second & StateAttribute::OVERRIDE) ||
                  (rhs_uitr->second.second & StateAttribute::PROTECTED)) 
             {
-                // override isn't on in rhs, so overrite it with incomming
+                // override isn't on in rhs, so override it with incoming
                 // value.
 
                 if (lhs_uitr->second.first!=rhs_uitr->second.first)
@@ -1753,7 +1753,7 @@ void StateSet::setNumChildrenRequiringUpdateTraversal(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)
@@ -1798,7 +1798,7 @@ void StateSet::setNumChildrenRequiringEventTraversal(unsigned int num)
         {
             // the number of callbacks has changed, need to pass this
             // on to parents so they know whether app traversal is
-            // reqired on this subgraph.
+            // required on this subgraph.
             for(ParentList::iterator itr =_parents.begin();
                 itr != _parents.end();
                 ++itr)

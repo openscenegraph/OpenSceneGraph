@@ -622,7 +622,7 @@ unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
             default:            primLength=0; break; // compute later when =0.
         }
 
-        // draw primtives by the more flexible "slow" path,
+        // draw primitives by the more flexible "slow" path,
         // sending OpenGL glBegin/glVertex.../glEnd().
         switch(primitiveset->getType())
         {

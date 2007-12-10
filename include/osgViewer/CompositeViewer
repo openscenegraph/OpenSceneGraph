@@ -71,7 +71,7 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
         /** Execute a main frame loop.
-          * Equivialant to while (!viewer.done()) viewer.frame();
+          * Equivalent to while (!viewer.done()) viewer.frame();
           * Also calls realize() if the viewer is not already realized,
           * and installs trackball manipulator if one is not already assigned.
           */

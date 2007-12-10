@@ -275,7 +275,7 @@ namespace osg {
         /** Note:
          * begin(..),vertex(..) & end() are convenience methods for adapting
          * non vertex array primitives to vertex array based primitives.
-         * This is done to simplify the implementation of primtive functor
+         * This is done to simplify the implementation of primitive functor
          * subclasses - users only need override drawArray and drawElements.
          */
         virtual void begin(GLenum mode)

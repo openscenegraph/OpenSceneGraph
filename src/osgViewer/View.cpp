@@ -59,7 +59,7 @@ public:
 };
 
 
-/** callback class to use to allow matrix manipulators to querry the application for the local coordinate frame.*/
+/** callback class to use to allow matrix manipulators to query the application for the local coordinate frame.*/
 class ViewerCoordinateFrameCallback : public osgGA::MatrixManipulator::CoordinateFrameCallback
 {
 public:
@@ -142,7 +142,7 @@ View::View():
     // make sure View is safe to reference multi-threaded.
     setThreadSafeRefUnref(true);
     
-    // need to attach a Renderer to the maaster camera which has been default constructed
+    // need to attach a Renderer to the master camera which has been default constructed
     getCamera()->setRenderer(createRenderer(getCamera()));
 
     setEventQueue(new osgGA::EventQueue);
@@ -157,7 +157,7 @@ View::View(const osgViewer::View& view, const osg::CopyOp& copyop):
 {
     _scene = new Scene;
 
-    // need to attach a Renderer to the maaster camera which has been default constructed
+    // need to attach a Renderer to the master camera which has been default constructed
     getCamera()->setRenderer(createRenderer(getCamera()));
 
     setEventQueue(new osgGA::EventQueue);
@@ -271,7 +271,7 @@ void View::setSceneData(osg::Node* node)
 
     if (getSceneData())
     {        
-        // now make sure the scene graph is set up with the correct DataVariance to protect the dyamic elements of
+        // now make sure the scene graph is set up with the correct DataVariance to protect the dynamic elements of
         // the scene graph from being run in parallel.
         osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
         getSceneData()->accept(sodv);

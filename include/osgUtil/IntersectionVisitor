@@ -26,7 +26,7 @@ namespace osgUtil
 // forward declare to allow Intersector to reference it.
 class IntersectionVisitor;
 
-/** Pure virtual base class for implementating custom intersection technique.
+/** Pure virtual base class for implementing custom intersection technique.
   * To implement a specific intersection technique on must override all
   * the pure virtue methods, concrete examples of how to do this can be seen in
   * the LineSegmentIntersector. */
@@ -77,7 +77,7 @@ class Intersector : public osg::Referenced
 };
 
 
-/** Concrent class for passing multiple intersectors through the scene graph.
+/** Concrete class for passing multiple intersectors through the scene graph.
   * To be used in conjunction with IntersectionVisitor. */
 class OSGUTIL_EXPORT IntersectorGroup : public Intersector
 {
@@ -124,7 +124,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
     public:
 
         /** Callback used to implement the reading of external files, allowing support for paged databases to be
-          * intergrated with IntersectionVisitor.  A concrete implementation can be found in osgDB.
+          * integrated with IntersectionVisitor.  A concrete implementation can be found in osgDB.
           * Note, this loose coupling approach is required as osgUtil is independent from osgDB where the file reading
           * is implemented, and osgDB itself is dependent upon osgUtil so a circular dependency would result from
           * tighter integration.*/

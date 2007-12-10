@@ -110,7 +110,7 @@ void State::reset()
         as.changed = true;
     }
     
-    // we can do a straight clear, we arn't intrested in GL_DEPTH_TEST defaults in texture modes.
+    // we can do a straight clear, we arn't interested in GL_DEPTH_TEST defaults in texture modes.
     for(TextureModeMapList::iterator tmmItr=_textureModeMapList.begin();
         tmmItr!=_textureModeMapList.end();
         ++tmmItr)
@@ -147,7 +147,7 @@ void State::reset()
     // reset active texture unit values and call OpenGL
     // note, this OpenGL op precludes the use of State::reset() without a
     // valid graphics context, therefore the new implementation below 
-    // is prefered.
+    // is preferred.
     setActiveTextureUnit(0);
 #else
     // reset active texture unit values without calling OpenGL
@@ -365,7 +365,7 @@ void State::apply(const StateSet* dstate)
 {
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
 
-    // equivilant to:
+    // equivalent to:
     //pushStateSet(dstate);
     //apply();
     //popStateSet();
@@ -428,7 +428,7 @@ void State::apply(const StateSet* dstate)
     }
     else
     {
-        // no incomming stateset, so simply apply state.
+        // no incoming stateset, so simply apply state.
         apply();
     }
 

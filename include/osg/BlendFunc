@@ -167,7 +167,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
         };
 
         /** Returns the Extensions object for the given context.
-        * If createIfNotInitalized is true and the Exentsions object doesn't
+        * If createIfNotInitalized is true and the Extensions object doesn't
         * exist, getExtensions() creates it on the given context.
         * Returns NULL if createIfNotInitalized is false and the Extensions
         * object doesn't exist. */

@@ -7,7 +7,7 @@ using namespace osgText;
 
 ////////////////////////////////////////////////////////////////////////
 //
-// helper class to make it safer to querry std::string's for encoding.
+// helper class to make it safer to query std::string's for encoding.
 //
 struct look_ahead_iterator
 {

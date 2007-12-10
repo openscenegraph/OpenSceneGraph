@@ -105,7 +105,7 @@ class ApplicationUsageProxy
 {   
     public:
 
-        /** register an explanation of commandline/evironmentalvaraible/keyboard mouse usage.*/
+        /** register an explanation of commandline/environmentvariable/keyboard mouse usage.*/
         ApplicationUsageProxy(ApplicationUsage::Type type,const std::string& option,const std::string& explanation)
         {
             ApplicationUsage::instance()->addUsageExplanation(type,option,explanation);

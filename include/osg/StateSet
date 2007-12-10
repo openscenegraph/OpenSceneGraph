@@ -36,7 +36,7 @@ namespace osg {
 // forward declare for the purposes of the UpdateCallback.
 class NodeVisitor;
 
-/** Stores a set of modes and attributes which respresent a set of OpenGL state.
+/** Stores a set of modes and attributes which represent a set of OpenGL state.
   *  Notice that a \c StateSet contains just a subset of the whole OpenGL state.
   * <p>In OSG, each \c Drawable and each \c Node has a reference to a
   * \c StateSet. These <tt>StateSet</tt>s can be shared between
@@ -92,7 +92,7 @@ class OSG_EXPORT StateSet : public Object
         inline unsigned int getNumParents() const { return _parents.size(); }
 
 
-        /** Compute the DataVariance based on an assestment of callback etc.*/
+        /** Compute the DataVariance based on an assessment of callback etc.*/
         virtual void computeDataVariance();
 
 

@@ -94,7 +94,7 @@ class OSG_EXPORT Texture1D : public Texture
 
 
         /** Helper function. Sets the number of mipmap levels created for this
-          * texture. Should only be called within an osg::Texuture::apply(), or
+          * texture. Should only be called within an osg::Texture::apply(), or
           * during a custom OpenGL texture load. */
         void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 
@@ -126,7 +126,7 @@ class OSG_EXPORT Texture1D : public Texture
         virtual void computeInternalFormat() const;
         void allocateMipmap(State& state) const;
 
-        /** Helper method. Createa the texture without setting or using a
+        /** Helper method. Create the texture without setting or using a
           * texture binding. */
         void applyTexImage1D(GLenum target, Image* image, State& state, GLsizei& width, GLsizei& numMipmapLevels) const;
 

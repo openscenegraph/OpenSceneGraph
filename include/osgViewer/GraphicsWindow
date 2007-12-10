@@ -30,10 +30,10 @@ extern "C"
 
 namespace osgViewer {
 
-/** Base class for providing Windowing API agnostic access to creating and managing graphisc window and events.
+/** Base class for providing Windowing API agnostic access to creating and managing graphics window and events.
   * Note, the GraphicsWindow is subclassed from osg::GraphicsContext, and to provide an implemention you'll need to implement its 
   * range of pure virtual functions, you'll find these all have naming convention methodNameImplemention(..).
-  * GraphicsWindow adds the event queue ontop of the GraphicsContext, thereby adding a mechnism for adapting Windowing events
+  * GraphicsWindow adds the event queue on top of the GraphicsContext, thereby adding a mechanism for adapting Windowing events
   * as well as basics graphics context work, you should wire up custom GraphicsWindowImplementation to push their events through
   * into the EventQueue. */
 class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgGA::GUIActionAdapter
@@ -135,35 +135,35 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         /** Return whether a valid and usable GraphicsContext has been created.*/
         virtual bool valid() const { osg::notify(osg::NOTICE)<<"GraphicsWindow::valid() not implemented."<<std::endl; return false; }
 
-        /** Realise the GraphicsContext implementation, 
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        /** Realize the GraphicsContext implementation, 
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
 
-        /** Return true if the graphics context has been realised, and is ready to use, implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+        /** Return true if the graphics context has been realized, and is ready to use, implementation.
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool isRealizedImplementation() const  { osg::notify(osg::NOTICE)<<"GraphicsWindow::isRealizedImplementation() not implemented."<<std::endl; return false; }
 
         /** Close the graphics context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void closeImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::closeImplementation() not implemented."<<std::endl; }
 
         /** Make this graphics context current implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false;}
         
         /** Make this graphics context current with specified read context implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false;}
 
         /** Release the graphics context.*/
         virtual bool releaseContextImplementation() {  osg::notify(osg::NOTICE)<<"GraphicsWindow::releaseContextImplementation(..) not implemented."<<std::endl; return false; }
 
         /** Pure virtual, Bind the graphics context to associated texture implementation.
-          * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void bindPBufferToTextureImplementation(GLenum /*buffer*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::bindPBufferToTextureImplementation(..) not implemented."<<std::endl; }
 
         /** Swap the front and back buffers implementation.
-          * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
+          * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void swapBuffersImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow:: swapBuffersImplementation() not implemented."<<std::endl; }
 
     public:
@@ -231,7 +231,7 @@ class GraphicsWindowEmbedded : public GraphicsWindow
             }
         }
 
-        // dumy implementations, assume that graphics context is *always* current and valid.
+        // dummy implementations, assume that graphics context is *always* current and valid.
         virtual bool valid() const { return true; }
         virtual bool realizeImplementation() { return true; }
         virtual bool isRealizedImplementation() const  { return true; }

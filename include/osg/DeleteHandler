@@ -41,14 +41,14 @@ class OSG_EXPORT DeleteHandler
 
         /** Set the number of frames to retain objects that are have been requested for deletion.
           * When set to zero objects are deleted immediately, by set to 1 there are kept around for an extra frame etc.
-          * The ability to retain obejcts for several frames is useful to prevent premature deletion when objects
-          * are stil be used the graphics threads that are using double buffering of rendering data structures with
+          * The ability to retain objects for several frames is useful to prevent premature deletion when objects
+          * are still be used the graphics threads that are using double buffering of rendering data structures with
           * non ref_ptr<> pointers to scene graph elements.*/        
         void setNumFramesToRetainObjects(int numberOfFramesToRetainObjects) {  _numFramesToRetainObjects = numberOfFramesToRetainObjects; }
 
         int getNumFramesToRetainObjects() const { return _numFramesToRetainObjects; }
 
-        /** Set the current frame numberso that subsequent deletes get tagged as associated with this frame.*/
+        /** Set the current frame number so that subsequent deletes get tagged as associated with this frame.*/
         void setFrameNumber(int frameNumber) { _currentFrameNumber = frameNumber; }
 
         /** Get the current frame number.*/

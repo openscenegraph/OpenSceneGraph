@@ -676,7 +676,7 @@ int main( int argc, char **argv )
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use node masks to create stereo images.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file [image_file]");
-    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in sceonds between the display of successive image pairs when in auto advance mode.");
+    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in seconds between the display of successive image pairs when in auto advance mode.");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Enter auto advance of image pairs on start up.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--create <filename>","Create an photo archive of specified files");
@@ -687,7 +687,7 @@ int main( int argc, char **argv )
     
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
-    // register the handler to add keyboard and mosue handling.
+    // register the handler to add keyboard and mouse handling.
     SlideEventHandler* seh = new SlideEventHandler();
     viewer.addEventHandler(seh);
 
@@ -711,7 +711,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);

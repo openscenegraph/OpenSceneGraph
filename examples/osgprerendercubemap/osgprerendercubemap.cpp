@@ -142,7 +142,7 @@ class UpdateCameraAndTexGenCallback : public osg::NodeCallback
        
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
-            // first update subgraph to make sure objects are all moved into postion
+            // first update subgraph to make sure objects are all moved into position
             traverse(node,nv);
 
             // compute the position of the center of the reflector subgraph
@@ -195,7 +195,7 @@ class TexMatCullCallback : public osg::NodeCallback
        
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         {
-            // first update subgraph to make sure objects are all moved into postion
+            // first update subgraph to make sure objects are all moved into position
             traverse(node,nv);
             
             osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
@@ -303,7 +303,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--fbo","Use Frame Buffer Object for render to texture, where supported.");
     arguments.getApplicationUsage()->addCommandLineOption("--fb","Use FrameBuffer for render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Use Pixel Buffer for render to texture, where supported.");
-    arguments.getApplicationUsage()->addCommandLineOption("--window","Use a seperate Window for render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window","Use a separate Window for render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture");
     arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture");
 
@@ -333,7 +333,7 @@ int main(int argc, char** argv)
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
       arguments.writeErrorMessages(std::cout);

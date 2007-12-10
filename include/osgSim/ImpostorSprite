@@ -131,19 +131,19 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         /** Return true, osg::ImpostorSprite does support accept(Drawable::AttributeFunctor&). */
         virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }
 
-        /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
+        /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
         virtual void accept(Drawable::AttributeFunctor& af);
 
         /** Return true, osg::ImpostorSprite does support accept(Drawable::ConstAttributeFunctor&). */
         virtual bool supports(const Drawable::ConstAttributeFunctor&) const { return true; }
 
-        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
+        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
         virtual void accept(Drawable::ConstAttributeFunctor& af) const;
 
         /** Return true, osg::ImpostorSprite does support accept(PrimitiveFunctor&). */
         virtual bool supports(const osg::PrimitiveFunctor&) const { return true; }
 
-        /** Accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. */
+        /** Accept a PrimtiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. */
         virtual void accept(osg::PrimitiveFunctor& pf) const;
 
         // for debugging purposes.

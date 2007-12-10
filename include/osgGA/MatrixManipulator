@@ -43,7 +43,7 @@ public:
 
         virtual const char* className() const { return "MatrixManipulator"; }
         
-        /** callback class to use to allow matrix manipulators to querry the application for the local coordinate frame.*/
+        /** callback class to use to allow matrix manipulators to query the application for the local coordinate frame.*/
         class CoordinateFrameCallback : public osg::Referenced
         {
         public:
@@ -94,10 +94,10 @@ public:
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
         virtual osg::Matrixd getInverseMatrix() const = 0;
 
-        /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE; }
 
-        /** Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return 1.0f; }
 
         /** Set the mask to use when set up intersection traversal such as used in manipulators that follow terrain or have collision detection.
@@ -129,7 +129,7 @@ public:
             _homeUp = up;
         }
         
-        /** Get the mnaully set home position. */
+        /** Get the manually set home position. */
         virtual void getHomePosition(osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up) const
         {
             eye = _homeEye;

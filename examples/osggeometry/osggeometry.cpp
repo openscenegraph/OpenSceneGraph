@@ -39,17 +39,17 @@
 
 // This demos uses the illustrates how to creates the various different types of geometry that
 // the osg::Geometry class can represent.  This demos uses the OpenGL red books diagram of different 
-// OpenGL Primitives as a template for all the equivilant OpenSceneGraph Primitives.  The OpenSceneGraph 
+// OpenGL Primitives as a template for all the equivalent OpenSceneGraph Primitives.  The OpenSceneGraph 
 // wraps OpenGL very thinly so uses all the same enum and naming conventions. The coordinate data is also 
-// wrapped around OpenGL's vertex arrays and draw arrays/elements calls.  Familarity with
+// wrapped around OpenGL's vertex arrays and draw arrays/elements calls.  Familiarity with
 // OpenGL will help understand the the osg::Geometry class which encapsulate all this, or if you
-// havn't learnt OpenGL yet, learning osg::Geometry will help you understand how OpenGL
+// havn't learned OpenGL yet, learning osg::Geometry will help you understand how OpenGL
 // works!
 
 // The osg::Geometry class "is a" subclass of osg::Drawable base class, so is an object that provides
 // a draw method for drawing objects in the scene.  osg::Geometry contains all the vertex, normal
-// color and texture coordate arrays required to specify the coordinates of your objects, and the
-// primtives join these coordinates together as the points, lines or surfaces that you will see
+// color and texture coordinate arrays required to specify the coordinates of your objects, and the
+// primitives join these coordinates together as the points, lines or surfaces that you will see
 // rendered on your screen. 
 //
 // This demo is split into two functions, the createScene() function which creates the scene graph
@@ -67,7 +67,7 @@ struct NormalPrint
     }
 };
 
-// decompose Drawable primtives into triangles, print out these triangles and computed normals.
+// decompose Drawable primitives into triangles, print out these triangles and computed normals.
 void printTriangles(const std::string& name, osg::Drawable& drawable)
 {
     std::cout<<name<<std::endl;
@@ -85,19 +85,19 @@ osg::Node* createScene()
     osg::Geode* geode = new osg::Geode();
 
     // follows are separate blocks for creating POINTS, LINES, LINE_STRIP, LINE_LOOP, POLYGON, QUADS,
-    // QUAD_STRIP, TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN primtives.  A image of these primtives
-    // are provided in the distribution : OpenSceneGraph-Data/Images/primtives.gif.
+    // QUAD_STRIP, TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN primitives.  A image of these primitives
+    // are provided in the distribution : OpenSceneGraph-Data/Images/primitives.gif.
 
 
     // create POINTS
     {
-        // create Geometry object to store all the vetices and points primtive.
+        // create Geometry object to store all the vertices and points primitive.
         osg::Geometry* pointsGeom = new osg::Geometry();
         
         // create a Vec3Array and add to it all my coordinates.
-        // Like all the *Array variants (see include/osg/Array) , Vec3Array is derivied from both osg::Array 
+        // Like all the *Array variants (see include/osg/Array) , Vec3Array is derived from both osg::Array 
         // and std::vector<>.  osg::Array's are reference counted and hence sharable,
-        // which std::vector<> provides all the convinience, flexibility and robustness
+        // which std::vector<> provides all the convenience, flexibility and robustness
         // of the most popular of all STL containers.
         osg::Vec3Array* vertices = new osg::Vec3Array;
         vertices->push_back(osg::Vec3(-1.02168, -2.15188e-09, 0.885735));
@@ -112,13 +112,13 @@ osg::Node* createScene()
         
         
         // create the color of the geometry, one single for the whole geometry.
-        // for consitency of design even one single color must added as an element
+        // for consistency of design even one single color must added as an element
         // in a color array.
         osg::Vec4Array* colors = new osg::Vec4Array;
         // add a white color, colors take the form r,g,b,a with 0.0 off, 1.0 full on.
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         
-        // pass the color arry to points geometry, note the binding to tell the geometry
+        // pass the color array to points geometry, note the binding to tell the geometry
         // that only use one color for the whole object.
         pointsGeom->setColorArray(colors);
         pointsGeom->setColorBinding(osg::Geometry::BIND_OVERALL);
@@ -131,24 +131,24 @@ osg::Node* createScene()
         pointsGeom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 
-        // create and add a DrawArray Primitive (see include/osg/Primtive).  The first
-        // paramter passed to the DrawArrays constructor is the Primtive::Mode which
+        // create and add a DrawArray Primitive (see include/osg/Primitive).  The first
+        // parameter passed to the DrawArrays constructor is the Primitive::Mode which
         // in this case is POINTS (which has the same value GL_POINTS), the second
         // parameter is the index position into the vertex array of the first point
         // to draw, and the third parameter is the number of points to draw.
         pointsGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS,0,vertices->size()));
         
         
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(pointsGeom);
     }
 
     // create LINES
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* linesGeom = new osg::Geometry();
         
-        // this time we'll prealloacte the vertex array to the size we
+        // this time we'll preallocate the vertex array to the size we
         // need and then simple set them as array elements, 8 points
         // makes 4 line segments.
         osg::Vec3Array* vertices = new osg::Vec3Array(8);
@@ -165,7 +165,7 @@ osg::Node* createScene()
         // pass the created vertex array to the points geometry object.
         linesGeom->setVertexArray(vertices);
         
-        // set the colors as before, plus using the aobve
+        // set the colors as before, plus using the above
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         linesGeom->setColorArray(colors);
@@ -184,16 +184,16 @@ osg::Node* createScene()
         linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINES,0,8));
         
         
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(linesGeom);
     }
     
     // create LINE_STRIP
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* linesGeom = new osg::Geometry();
         
-        // this time we'll prealloacte the vertex array to the size 
+        // this time we'll preallocate the vertex array to the size 
         // and then use an iterator to fill in the values, a bit perverse
         // but does demonstrate that we have just a standard std::vector underneath.
         osg::Vec3Array* vertices = new osg::Vec3Array(5);
@@ -207,7 +207,7 @@ osg::Node* createScene()
         // pass the created vertex array to the points geometry object.
         linesGeom->setVertexArray(vertices);
         
-        // set the colors as before, plus using the aobve
+        // set the colors as before, plus using the above
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         linesGeom->setColorArray(colors);
@@ -226,16 +226,16 @@ osg::Node* createScene()
         linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP,0,5));
         
         
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(linesGeom);
     }
 
     // create LINE_LOOP
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* linesGeom = new osg::Geometry();
         
-        // this time we'll a C arrays to initilize the vertices.
+        // this time we'll a C arrays to initialize the vertices.
         
         osg::Vec3 myCoords[] =
         {
@@ -254,7 +254,7 @@ osg::Node* createScene()
         // pass the created vertex array to the points geometry object.
         linesGeom->setVertexArray(vertices);
         
-        // set the colors as before, plus using the aobve
+        // set the colors as before, plus using the above
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,0.0f,1.0f));
         linesGeom->setColorArray(colors);
@@ -273,7 +273,7 @@ osg::Node* createScene()
         linesGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP,0,numCoords));
         
         
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(linesGeom);
     }
 
@@ -305,11 +305,11 @@ osg::Node* createScene()
 
     // create POLYGON
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* polyGeom = new osg::Geometry();
         
-        // this time we'll a C arrays to initilize the vertices.
-        // note, anticlockwsie ordering.
+        // this time we'll a C arrays to initialize the vertices.
+        // note, anticlockwise ordering.
         // note II, OpenGL polygons must be convex plan polygons, otherwise 
         // undefined results will occur.  If you have concave polygons or ones
         // that cross over themselves then use the osgUtil::Tessellator to fix
@@ -346,17 +346,17 @@ osg::Node* createScene()
 
         printTriangles("Polygon",*polyGeom);
         
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(polyGeom);
     }
 
 
     // create QUADS
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* polyGeom = new osg::Geometry();
         
-        // note, anticlockwsie ordering.
+        // note, anticlockwise ordering.
         osg::Vec3 myCoords[] =
         {
             osg::Vec3(0.0247182, 0.0f, -0.156548),
@@ -394,13 +394,13 @@ osg::Node* createScene()
         
         printTriangles("Quads",*polyGeom);
 
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(polyGeom);
     }
 
     // create QUAD_STRIP
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* polyGeom = new osg::Geometry();
         
         // note, first coord at top, second at bottom, reverse to that buggy OpenGL image..
@@ -443,25 +443,25 @@ osg::Node* createScene()
         
         printTriangles("Quads strip",*polyGeom);
 
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(polyGeom);
     }
 
     // create TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN all in one Geometry/
     {
-        // create Geometry object to store all the vetices and lines primtive.
+        // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* polyGeom = new osg::Geometry();
         
         // note, first coord at top, second at bottom, reverse to that buggy OpenGL image..
         osg::Vec3 myCoords[] =
         {
             // TRIANGLES 6 vertices, v0..v5
-            // note in aniclockwise order.
+            // note in anticlockwise order.
             osg::Vec3(-1.12056, -2.15188e-09, -0.840418),
             osg::Vec3(-0.95165, -2.15188e-09, -0.840418),
             osg::Vec3(-1.11644, 9.18133e-09, -0.716827),
 
-            // note in aniclockwise order.
+            // note in anticlockwise order.
             osg::Vec3(-0.840418, 9.18133e-09, -0.778623),
             osg::Vec3(-0.622074, 9.18133e-09, -0.613835),
             osg::Vec3(-1.067, 9.18133e-09, -0.609715),
@@ -478,7 +478,7 @@ osg::Node* createScene()
             osg::Vec3(0.280139, -2.15188e-09, -0.823939),
 
             // TRIANGLE FAN 5 vertices, v12..v16
-            // note defined in anticlockwsie order.
+            // note defined in anticlockwise order.
             osg::Vec3(0.844538, 9.18133e-09, -0.712708),
             osg::Vec3(1.0258, 9.18133e-09, -0.799221),
             osg::Vec3(1.03816, -2.15188e-09, -0.692109),
@@ -518,7 +518,7 @@ osg::Node* createScene()
         
         printTriangles("Triangles/Strip/Fan",*polyGeom);
 
-        // add the points geomtry to the geode.
+        // add the points geometry to the geode.
         geode->addDrawable(polyGeom);
     }
     
@@ -566,10 +566,10 @@ osg::Node* createBackground()
     if (!image) return NULL;
     
  
-    // create Geometry object to store all the vetices and lines primtive.
+    // create Geometry object to store all the vertices and lines primitive.
     osg::Geometry* polyGeom = new osg::Geometry();
 
-    // note, anticlockwsie ordering.
+    // note, anticlockwise ordering.
     osg::Vec3 myCoords[] =
     {
         osg::Vec3(-1.22908f,0.0f,1.0f),
@@ -620,9 +620,9 @@ osg::Node* createBackground()
 
     int numIndices = sizeof(myIndices)/sizeof(unsigned short);
 
-    // Theere are three variants of the DrawElements osg::Primitive, UByteDrawElements which
-    // contains unsigned char indicies, UShortDrawElements which contains unsigned short indices,
-    // and UIntDrawElements whcih contains ... unsigned int indices.  
+    // There are three variants of the DrawElements osg::Primitive, UByteDrawElements which
+    // contains unsigned char indices, UShortDrawElements which contains unsigned short indices,
+    // and UIntDrawElements which contains ... unsigned int indices.  
     // The first parameter to DrawElements is 
     polyGeom->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::QUADS,numIndices,myIndices));
 
@@ -642,12 +642,12 @@ osg::Node* createBackground()
     // create the Geode (Geometry Node) to contain all our osg::Geometry objects.
     osg::Geode* geode = new osg::Geode();
 
-    // add the points geomtry to the geode.
+    // add the points geometry to the geode.
     geode->addDrawable(polyGeom);
 
     //return geode;
 
-    // create a tranform to move the background back and forward with.
+    // create a transform to move the background back and forward with.
  
     osg::MatrixTransform* transform = new osg::MatrixTransform();
     transform->setUpdateCallback(new MyTransformCallback(1.0f));

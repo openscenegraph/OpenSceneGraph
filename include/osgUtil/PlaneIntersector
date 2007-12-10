@@ -21,7 +21,7 @@
 namespace osgUtil
 {
 
-/** Concrent class for implementing polytope intersections with the scene graph.
+/** Concrete class for implementing polytope intersections with the scene graph.
   * To be used in conjunction with IntersectionVisitor. */
 class OSGUTIL_EXPORT PlaneIntersector : public Intersector
 {

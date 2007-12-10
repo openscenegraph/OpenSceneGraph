@@ -65,7 +65,7 @@ bool AnimationPath::getInterpolatedControlPoint(double time,ControlPoint& contro
         
         // we have both a lower bound and the next item.
 
-        // deta_time = second.time - first.time
+        // delta_time = second.time - first.time
         double delta_time = second->first - first->first;
 
         if (delta_time==0.0)

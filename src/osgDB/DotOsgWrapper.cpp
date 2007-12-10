@@ -27,7 +27,7 @@ DotOsgWrapper::DotOsgWrapper(osg::Object* proto,
     _name = name;
     
 
-    // copy the names in the space deliminated associates input into
+    // copy the names in the space delimited associates input into
     // a vector of separated names.    
     std::string::size_type start_of_name = associates.find_first_not_of(' ');
     while (start_of_name!=std::string::npos)

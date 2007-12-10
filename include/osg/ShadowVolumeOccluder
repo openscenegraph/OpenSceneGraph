@@ -22,7 +22,7 @@ namespace osg {
 
 class CullStack;
 
-/** ShadowVolumeOccluder is a helper class for implementating shadow occlusion culling. */
+/** ShadowVolumeOccluder is a helper class for implementing shadow occlusion culling. */
 class OSG_EXPORT ShadowVolumeOccluder
 {
 

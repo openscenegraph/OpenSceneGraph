@@ -31,7 +31,7 @@
 namespace osg
 {
 
-// specialzed smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
+// specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
 struct DeleteHandlerPointer
 {
     DeleteHandlerPointer():
@@ -178,7 +178,7 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
     {
         if (!_refMutex)
         {
-            // we want thread safe ref()/unref() so assing a mutex
+            // we want thread safe ref()/unref() so assign a mutex
             _refMutex = new OpenThreads::Mutex;
         }
     }

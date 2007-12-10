@@ -337,7 +337,7 @@ GraphicsContext* GraphicsContext::getOrCreateCompileContext(unsigned int context
     {    
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_contextIDMapMutex);
         s_contextIDMap[contextID]._compileContext = gc;
-        osg::notify(osg::INFO)<<"   succeded GraphicsContext::createCompileContext."<<std::endl;
+        osg::notify(osg::INFO)<<"   succeeded GraphicsContext::createCompileContext."<<std::endl;
         return gc.release();
     }
     else
@@ -436,7 +436,7 @@ void GraphicsContext::close(bool callCloseImplementation)
         if (s_contextIDMap[_state->getContextID()]._numContexts>1) sharedContextExists = true;
     }
 
-    // release all the OpenGL objects in the scene graphs associted with this 
+    // release all the OpenGL objects in the scene graphs associated with this 
     for(Cameras::iterator itr = _cameras.begin();
         itr != _cameras.end();
         ++itr)
@@ -504,7 +504,7 @@ bool GraphicsContext::makeCurrent()
     {
         _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
 
-        // initialize extension process, note, only initializes on first
+        // initialize extension process, not only initializes on first
         // call, will be a non-op on subsequent calls.        
         getState()->initializeExtensionProcs();
     }
@@ -520,7 +520,7 @@ bool GraphicsContext::makeContextCurrent(GraphicsContext* readContext)
     {
         _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
 
-        // initialize extension proces, not only initializes on first
+        // initialize extension process, not only initializes on first
         // call, will be a non-op on subsequent calls.        
         getState()->initializeExtensionProcs();
     }
@@ -590,7 +590,7 @@ void GraphicsContext::add(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing add"<<std::endl;
 
-    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
     // add the operation to the end of the list
@@ -603,7 +603,7 @@ void GraphicsContext::remove(Operation* operation)
 {
     osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
 
-    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
     for(OperationQueue::iterator itr = _operations.begin();
@@ -623,10 +623,10 @@ void GraphicsContext::remove(const std::string& name)
 {
     osg::notify(osg::INFO)<<"Doing remove named operation"<<std::endl;
     
-    // aquire the lock on the operations queue to prevent anyone else for modifying it at the same time
+    // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
-    // find the remove all operations with specificed name
+    // find the remove all operations with specified name
     for(OperationQueue::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {

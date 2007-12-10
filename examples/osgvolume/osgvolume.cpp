@@ -262,7 +262,7 @@ struct ProcessRow
     }
 
     ///////////////////////////////////////////////////////////////////////////////
-    // alpha luminiance sources..    
+    // alpha luminance sources..    
     virtual void LA_to_A(unsigned int num, unsigned char* source, unsigned char* dest) const
     {
         for(unsigned int i=0;i<num;++i)
@@ -757,7 +757,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     // set up the 3d texture itself,
     // note, well set the filtering up so that mip mapping is disabled,
     // gluBuild3DMipsmaps doesn't do a very good job of handled the
-    // inbalanced dimensions of the 256x256x4 texture.
+    // imbalanced dimensions of the 256x256x4 texture.
     osg::Texture3D* texture3D = new osg::Texture3D;
     texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
     texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
@@ -1138,7 +1138,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         // set up the 3d texture itself,
         // note, well set the filtering up so that mip mapping is disabled,
         // gluBuild3DMipsmaps doesn't do a very good job of handled the
-        // inbalanced dimensions of the 256x256x4 texture.
+        // imbalanced dimensions of the 256x256x4 texture.
         osg::Texture3D* texture3D = new osg::Texture3D;
         texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
         texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
@@ -1332,7 +1332,7 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
         {
             for(int t=0;t<sizeT;++t)
             {
-                // reset the indices to begining
+                // reset the indices to beginning
                 readOp._pos = 0;
                 writeOp._pos = 0;
             
@@ -1562,14 +1562,14 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
 
-    // assume remaining argments are file names of textures.
+    // assume remaining arguments are file names of textures.
     for(int pos=1;pos<arguments.argc() && !image_3d;++pos)
     {
         if (!arguments.isOption(pos))

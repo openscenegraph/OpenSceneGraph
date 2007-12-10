@@ -137,7 +137,7 @@ osg::BoundingBox SphereSegment::EdgeLine::computeBound() const
 
 /**
 SphereSegment::Side is a Drawable which represents one of the
-planar areas, at either the minimum or maxium azimuth.
+planar areas, at either the minimum or maximum azimuth.
  */
 class SphereSegment::Side: public osg::Drawable
 {
@@ -701,7 +701,7 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
                 {
                     start = 0;
                     end = _density;
-                    normal = -normal;   // Make sure normals orientationint 'outwards'
+                    normal = -normal;   // Make sure normals oriented 'outwards'
                 }
                 delta = end>start?1:-1;
 
@@ -763,7 +763,7 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
                 {
                     start = _density;
                     end = 0;
-                    normal = -normal;   // Make sure normals orientationint 'outwards'
+                    normal = -normal;   // Make sure normals orientated 'outwards'
                 }
                 else
                 {
@@ -982,7 +982,7 @@ void SphereSegment::setAllColors(const osg::Vec4& c)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// SphereSegment interesection code.
+// SphereSegment intersection code.
 
 class PolytopeVisitor : public osg::NodeVisitor
 {
@@ -1807,7 +1807,7 @@ namespace SphereSegmentIntersector
             if (hitEdges.empty()) return lineList;
 
             // now need to build the toTraverse list for each hit edge,
-            // but should only contain traingles that actually hit the intersection surface
+            // but should only contain triangles that actually hit the intersection surface
             EdgeList::iterator hitr;
             for(hitr = hitEdges.begin();
                 hitr != hitEdges.end();
@@ -1840,7 +1840,7 @@ namespace SphereSegmentIntersector
                         edge->_toTraverse.push_back(tri);
                     }
 
-                    // osg::notify(osg::INFO)<<"Number active edges "<<numActiveEdges<<" num orignal edges "<<numEdges<<std::endl;
+                    // osg::notify(osg::INFO)<<"Number active edges "<<numActiveEdges<<" num original edges "<<numEdges<<std::endl;
                 }
             }
 
@@ -1993,7 +1993,7 @@ namespace SphereSegmentIntersector
         }
 
 
-        // handle a paird of surfaces that work to enclose a convex region, which means that 
+        // handle a paired of surfaces that work to enclose a convex region, which means that 
         // points can be inside either surface to be valid, and be outside both surfaces to be invalid.
         template<class I>
         void trim(SphereSegment::LineList& lineList, osg::Vec3Array* sourceLine, I intersector1, I intersector2)
@@ -2047,7 +2047,7 @@ namespace SphereSegmentIntersector
 
 
                         // work out which intersector to use by discounting the one that
-                        // isn't a plausible candiate.
+                        // isn't a plausible candidate.
                         bool possible1 = end1>=0.0;
                         bool possible2 = end2>=0.0;
                         if (possible1 && possible2)
@@ -2106,7 +2106,7 @@ namespace SphereSegmentIntersector
                         double start2 = intersector2.distance(start);
 
                         // work out which intersector to use by discounting the one that
-                        // isn't a plausible candiate.
+                        // isn't a plausible candidate.
                         bool possible1 = start1>=0.0;
                         bool possible2 = start2>=0.0;
                         if (possible1 && possible2)
@@ -2310,7 +2310,7 @@ namespace SphereSegmentIntersector
             SphereSegment::LineList fusedLines;
             SphereSegment::LineList unfusedLines;
 
-            // first seperat the already fused lines from the unfused ones.
+            // first separate the already fused lines from the unfused ones.
             for(SphereSegment::LineList::iterator itr = _generatedLines.begin();
                 itr != _generatedLines.end();
                 ++itr)
@@ -2460,7 +2460,7 @@ namespace SphereSegmentIntersector
                     // add the newline into the unfused for further processing.
                     unfusedLines.push_back(newline);
 
-                    osg::notify(osg::INFO)<<"Fusing two seperate lines "<<newline<<std::endl;
+                    osg::notify(osg::INFO)<<"Fusing two separate lines "<<newline<<std::endl;
                 }
 
                 _generatedLines = fusedLines;
@@ -2526,10 +2526,10 @@ namespace SphereSegmentIntersector
             edge->_p1Outside = _lowerOutside ? (d1<0.0) : (d1>0.0);
             edge->_p2Outside = _lowerOutside ? (d2<0.0) : (d2>0.0);
 
-            // if both points inside then disgard
+            // if both points inside then discard
             if (d1<0.0 && d2<0.0) return false;
 
-            // if both points outside then disgard
+            // if both points outside then discard
             if (d1>0.0 && d2>0.0) return false;
 
             if (d1==0.0)
@@ -2627,10 +2627,10 @@ namespace SphereSegmentIntersector
             edge->_p1Outside = _lowerOutside ? (elev1<_elev) : (elev1>_elev);
             edge->_p2Outside = _lowerOutside ? (elev2<_elev) : (elev2>_elev);
 
-            // if both points inside then disgard
+            // if both points inside then discard
             if (elev1<_elev && elev2<_elev) return false;
 
-            // if both points outside then disgard
+            // if both points outside then discard
             if (elev1>_elev && elev2>_elev) return false;
 
             if (elev1==_elev)
@@ -2757,10 +2757,10 @@ namespace SphereSegmentIntersector
             edge->_p1Outside = radius1>_tif._radius;
             edge->_p2Outside = radius2>_tif._radius;
 
-            // if both points inside then disgard
+            // if both points inside then discard
             if (radius1<_tif._radius && radius2<_tif._radius) return false;
 
-            // if both points outside then disgard
+            // if both points outside then discard
             if (radius1>_tif._radius && radius2>_tif._radius) return false;
 
             if (radius1==_tif._radius)
@@ -2977,19 +2977,19 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif._generatedLines.insert(tif._generatedLines.end(), elevMinLines.begin(), elevMinLines.end());
     tif._generatedLines.insert(tif._generatedLines.end(), elevMaxLines.begin(), elevMaxLines.end());
  
-    osg::notify(osg::INFO)<<"number of seperate lines = "<<tif._generatedLines.size()<<std::endl;
+    osg::notify(osg::INFO)<<"number of separate lines = "<<tif._generatedLines.size()<<std::endl;
 
     float fuseDistance = 1.0;
     tif.joinEnds(fuseDistance, true, true);
 
-    osg::notify(osg::INFO)<<"number of seperate lines after fuse = "<<tif._generatedLines.size()<<std::endl;
+    osg::notify(osg::INFO)<<"number of separate lines after fuse = "<<tif._generatedLines.size()<<std::endl;
 
     float joinDistance = 1e8;
     tif.joinEnds(joinDistance, false, false);
-    osg::notify(osg::INFO)<<"number of seperate lines after join = "<<tif._generatedLines.size()<<std::endl;
+    osg::notify(osg::INFO)<<"number of separate lines after join = "<<tif._generatedLines.size()<<std::endl;
 
     tif.joinEnds(joinDistance, false, true);
-    osg::notify(osg::INFO)<<"number of seperate lines after second join = "<<tif._generatedLines.size()<<std::endl;
+    osg::notify(osg::INFO)<<"number of separate lines after second join = "<<tif._generatedLines.size()<<std::endl;
  
     return tif._generatedLines;
 }

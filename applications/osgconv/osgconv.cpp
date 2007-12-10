@@ -103,7 +103,7 @@ public:
     
     virtual void apply(osg::StateSet& stateset)
     {
-        // search for the existance of any texture object attributes
+        // search for the existence of any texture object attributes
         for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
         {
             osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
@@ -221,7 +221,7 @@ public:
         bool hasTexture = false;
 
 
-        // search for the existance of any texture object attributes
+        // search for the existence of any texture object attributes
         for(unsigned int i=0;i<stateset.getTextureAttributeList().size();++i)
         {
             osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset.getTextureAttribute(i,osg::StateAttribute::TEXTURE));
@@ -455,7 +455,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is a utility for converting between various input and output databases formats.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line paramters");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
 
 
@@ -589,7 +589,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);

@@ -59,7 +59,8 @@ void PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver()
     if (renderer)
     {
         if ((strstr((const char*)renderer,"Radeon")!=0) ||
-            (strstr((const char*)renderer,"RADEON")!=0))
+            (strstr((const char*)renderer,"RADEON")!=0) ||
+            (strstr((const char*)renderer,"ALL-IN-WONDER")!=0))
         {
             setFactorMultiplier(1.0f);
             setUnitsMultiplier(128.0f);

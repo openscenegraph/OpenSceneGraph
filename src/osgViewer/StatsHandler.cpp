@@ -566,7 +566,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     std::string font("fonts/arial.ttf");
 
 
-    // collect all the relevant camers
+    // collect all the relevant cameras
     ViewerBase::Cameras validCameras;
     viewer->getCameras(validCameras);
 
@@ -581,7 +581,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         }
     }
 
-    // check for querry time support
+    // check for query time support
     unsigned int numCamrasWithTimerQuerySupport = 0;
     for(ViewerBase::Cameras::iterator citr = cameras.begin();
         citr != cameras.end();
@@ -598,7 +598,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         }
     }
 
-    bool aquireGPUStats = numCamrasWithTimerQuerySupport==cameras.size();
+    bool acquireGPUStats = numCamrasWithTimerQuerySupport==cameras.size();
 
     float leftPos = 10.0f;
     float startBlocks = 150.0f;
@@ -749,7 +749,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             citr != cameras.end();
             ++citr)
         {
-            group->addChild(createCameraStats(font, pos, startBlocks, aquireGPUStats, characterSize, viewer->getStats(), *citr));
+            group->addChild(createCameraStats(font, pos, startBlocks, acquireGPUStats, characterSize, viewer->getStats(), *citr));
         }
 
 
@@ -886,7 +886,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 #endif    
 }
 
-osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera)
+osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera)
 {
     osg::Stats* stats = camera->getStats();
     if (!stats) return 0;
@@ -972,7 +972,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         pos.y() -= characterSize*1.5f;
     }
 
-    if (aquireGPUStats)
+    if (acquireGPUStats)
     {
         pos.x() = leftPos;
 
@@ -1015,7 +1015,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
 
 void StatsHandler::getUsage(osg::ApplicationUsage& usage) const
 {
-    usage.addKeyboardMouseBinding("s","Onscreen stats.");
+    usage.addKeyboardMouseBinding("s","On screen stats.");
     usage.addKeyboardMouseBinding("S","Output stats to console.");
 }
 

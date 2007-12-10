@@ -49,7 +49,7 @@ bool dxtc_pixels::OpenGLSize() const
 
 bool dxtc_pixels::VFlip() const
 {
-    // Check that the given dimentions are 2^x, 2^y
+    // Check that the given dimensions are 2^x, 2^y
     if (! OpenGLSize())
         return false;
 

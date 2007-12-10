@@ -459,7 +459,7 @@ int main( int argc, char **argv )
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use node masks to create stereo images.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] image_file_left_eye image_file_right_eye");
-    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in sceonds between the display of successive image pairs when in auto advance mode.");
+    arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time delay in seconds between the display of successive image pairs when in auto advance mode.");
     arguments.getApplicationUsage()->addCommandLineOption("-a","Enter auto advance of image pairs on start up.");
     arguments.getApplicationUsage()->addCommandLineOption("-x <float>","Horizontal offset of left and right images.");
     arguments.getApplicationUsage()->addCommandLineOption("-y <float>","Vertical offset of left and right images.");
@@ -475,7 +475,7 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
-    // register the handler to add keyboard and mosue handling.
+    // register the handler to add keyboard and mouse handling.
     SlideEventHandler* seh = new SlideEventHandler();
     viewer.addEventHandler(seh);
 
@@ -526,7 +526,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
@@ -559,7 +559,7 @@ int main( int argc, char **argv )
     float height = 2*radius*tan(osg::DegreesToRadians(fovy)*0.5f);
     float length = osg::PI*radius;  // half a cylinder.
 
-    // use a texure matrix to control the placement of the image.
+    // use a texture matrix to control the placement of the image.
     osg::TexMat* texmatLeft = new osg::TexMat;
     osg::TexMat* texmatRight = new osg::TexMat;
 

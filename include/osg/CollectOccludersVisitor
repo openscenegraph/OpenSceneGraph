@@ -68,7 +68,7 @@ class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::
 
         /** Removes occluded occluders for the collected occluders list, then
           * discards all but MaximumNumberOfActiveOccluders of occluders,
-          * discarding the occluders with the lowests shadow occluder volume. */
+          * discarding the occluders with the lowest shadow occluder volume. */
         void removeOccludedOccluders();
 
 

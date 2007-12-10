@@ -42,7 +42,7 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
             // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(PolygonOffset,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_factor)
             COMPARE_StateAttribute_Parameter(_units)
 
@@ -74,7 +74,7 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
         
         static bool areFactorAndUnitsMultipliersSet();
         
-        /** Checks with the OpenGL driver to try and pick multiplier approrpriate for the hardware.
+        /** Checks with the OpenGL driver to try and pick multiplier appropriate for the hardware.
             note, requires a valid graphics context to be current. */
         static void setFactorAndUnitsMultipliersUsingBestGuessForDriver();
 

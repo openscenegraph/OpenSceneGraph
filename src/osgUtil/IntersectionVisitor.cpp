@@ -152,7 +152,7 @@ bool IntersectorGroup::containsIntersections()
 
 IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback* readCallback)
 {
-    // overide the default node visitor mode.
+    // override the default node visitor mode.
     setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     
     setIntersector(intersector);
@@ -162,7 +162,7 @@ IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback*
 
 void IntersectionVisitor::setIntersector(Intersector* intersector)
 {
-    // keep refernce around just in case intersector is already in the _intersectorStack, otherwsie the clear could delete it.
+    // keep reference around just in case intersector is already in the _intersectorStack, otherwise the clear could delete it.
     osg::ref_ptr<Intersector> temp = intersector;
 
     _intersectorStack.clear();
@@ -288,7 +288,7 @@ void IntersectionVisitor::apply(osg::Transform& transform)
     
     popModelMatrix();
 
-    // tidy up an cached cull variabes in the current intersector.
+    // tidy up an cached cull variables in the current intersector.
     leave();
 }
 

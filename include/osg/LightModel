@@ -43,7 +43,7 @@ class OSG_EXPORT LightModel : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(LightModel,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_ambient)
             COMPARE_StateAttribute_Parameter(_colorControl)
             COMPARE_StateAttribute_Parameter(_localViewer)

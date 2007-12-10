@@ -53,7 +53,7 @@ Texture2D::~Texture2D()
 int Texture2D::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macro's below.
     COMPARE_StateAttribute_Types(Texture2D,sa)
 
     if (_image!=rhs._image) // smart pointer comparison.
@@ -90,7 +90,7 @@ int Texture2D::compare(const StateAttribute& sa) const
     int result = compareTexture(rhs);
     if (result!=0) return result;
 
-    // compare each paramter in turn against the rhs.
+    // compare each parameter in turn against the rhs.
 #if 1    
     if (_textureWidth != 0 && rhs._textureWidth != 0)
     {

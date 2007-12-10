@@ -224,7 +224,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             {
                 --lastValidChar;
                 
-                //Substract off glyphs from the cursor position (to correctly center text)
+                // Subtract off glyphs from the cursor position (to correctly center text)
                 Font::Glyph* glyph = activefont->getGlyph(*lastValidChar);
                 if (glyph)
                 {
@@ -365,7 +365,7 @@ void Text::computeGlyphRepresentation()
             switch(_alignment)
             {
               // TODO: current behaviour top baselines lined up in both cases - need to implement
-              //       top of characters aligment - Question is this neccesary?
+              //       top of characters alignment - Question is this necessary?
               // ... otherwise, nothing to be done for these 6 cases
               //case LEFT_TOP:
               //case CENTER_TOP:
@@ -1758,6 +1758,7 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
 }
 
+
 void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
     unsigned int contextID = state.getContextID();
@@ -1818,6 +1819,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
     glPopAttrib();
 }
+    
 
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {

@@ -302,7 +302,7 @@ using namespace osgShadow;
 
         osgUtil::RenderStage* orig_rs = cv.getRenderStage();
 
-        // do traversal of shadow recieving scene which does need to be decorated by the shadow map
+        // do traversal of shadow receiving scene which does need to be decorated by the shadow map
         {
             cv.pushStateSet(_stateset.get());
 

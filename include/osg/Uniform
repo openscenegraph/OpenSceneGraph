@@ -378,7 +378,7 @@ class OSG_EXPORT Uniform : public Object
         const Callback* getEventCallback() const { return _eventCallback.get(); }
 
         /** Increment the modified count on the Uniform so Programs watching it know it update themselves.
-          * NOTE: autotomatically called during osg::Uniform::set*();
+          * NOTE: automatically called during osg::Uniform::set*();
           * you must call if modifying the internal data array directly. */
         inline void dirty() { ++_modifiedCount; }
 

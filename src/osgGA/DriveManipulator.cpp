@@ -552,7 +552,7 @@ bool DriveManipulator::calcMovement()
 #endif
 
 #if defined(ABOSULTE_PITCH)
-    // abosolute pitch
+    // absolute pitch
     double dy = _ga_t0->getYnormalized();
     _pitch = -dy*0.5;
 #elif defined(INCREMENTAL_PITCH)

@@ -106,7 +106,7 @@ void CreateHouses()
     // coordIndices
     osg::UByteArray* coordIndices = new osg::UByteArray(48,indices);
 
-        // share the primtive set.
+        // share the primitive set.
         osg::PrimitiveSet* primitives = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES,0,48);
 
     for (int q = 0; q < HOUSES_SIZE; q++)

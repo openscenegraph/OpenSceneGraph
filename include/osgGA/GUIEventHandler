@@ -66,7 +66,7 @@ public:
         /** Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor*) { return handle(ea,aa); }
 
-        /** Convnience method that only passes on to the handle(,,,) method events that either haven't been
+        /** Convenience method that only passes on to the handle(,,,) method events that either haven't been
           * handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask.
           * Note, this method is an inline method, and not appropriate for users to override, override the handle(,,,)
           * method instead.*/
@@ -88,7 +88,7 @@ public:
         /** Deprecated, Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter&,GUIActionAdapter&) { return false; }
         
-        /** Convnience method that only passes on to the handle(,) method events that either haven't been
+        /** Convenience method that only passes on to the handle(,) method events that either haven't been
           * handled yet, or have been handled but haven't be set to be ignored by the IgnoreHandledEventsMask.
           * Note, this method is an inline method, and not appropriate for users to override, override the handle(,)
           * method instead.*/

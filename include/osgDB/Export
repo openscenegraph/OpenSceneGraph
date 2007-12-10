@@ -42,7 +42,7 @@
 \namespace osgDB
 
 The osgDB library provides support for reading and writing scene graphs, providing a plugin framework and file utility classes.  
-The plugin framework in centred around the osgDB::Registry, and allows plugins which provide specific file format support to be dynamically loaded on demand.
+The plugin framework in centered around the osgDB::Registry, and allows plugins which provide specific file format support to be dynamically loaded on demand.
 */
 
 #endif

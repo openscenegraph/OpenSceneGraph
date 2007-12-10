@@ -103,7 +103,7 @@ class OSG_EXPORT Shader : public osg::Object
         bool getGlShaderInfoLog(unsigned int contextID, std::string& log) const;
 
         /** Mark internal glShader for deletion.
-          * Deletion requests are queued tuntil they can be executed
+          * Deletion requests are queued until they can be executed
           * in the proper GL context. */
         static void deleteGlShader(unsigned int contextID, GLuint shader);
 

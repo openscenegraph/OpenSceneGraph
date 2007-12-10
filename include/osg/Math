@@ -139,14 +139,14 @@ inline bool equivalent(float lhs,float rhs,float epsilon=1e-6)
 inline bool equivalent(double lhs,double rhs,double epsilon=1e-6)
   { double delta = rhs-lhs; return delta<0.0?delta>=-epsilon:delta<=epsilon; }
 
-/** return the minimum of two values, equivilent to std::min.
+/** return the minimum of two values, equivalent to std::min.
   * std::min not used because of STL implementation under IRIX not containing
   * std::min.
 */
 template<typename T>
 inline T minimum(T lhs,T rhs) { return lhs<rhs?lhs:rhs; }
 
-/** return the maximum of two values, equivilent to std::max.
+/** return the maximum of two values, equivalent to std::max.
   * std::max not used because of STL implementation under IRIX not containing
   * std::max.
 */

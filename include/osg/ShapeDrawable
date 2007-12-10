@@ -173,7 +173,7 @@ class OSG_EXPORT ShapeDrawable : public Drawable
         /** Return true, osg::ShapeDrawable does support accept(Drawable::ConstAttributeFunctor&).*/
         virtual bool supports(const Drawable::ConstAttributeFunctor&) const { return true; }
 
-        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has.*/
+        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has.*/
         virtual void accept(Drawable::ConstAttributeFunctor& af) const;
 
         /** Return true, osg::ShapeDrawable does support accept(PrimitiveFunctor&) .*/

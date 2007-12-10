@@ -76,7 +76,7 @@ class OSG_EXPORT LOD : public Group
 
 
         /** Set the object-space reference radius of the volume enclosed by the LOD. 
-          * Used to detmine the bounding sphere of the LOD in the absense of any children.*/
+          * Used to determine the bounding sphere of the LOD in the absence of any children.*/
         inline void setRadius(float radius) { _radius = radius; }
         
         /** Get the object-space radius of the volume enclosed by the LOD.*/
@@ -84,21 +84,21 @@ class OSG_EXPORT LOD : public Group
 
 
 
-        /** Modes that control how the range values should be intepreted when computing which child is active.*/
+        /** Modes that control how the range values should be interpreted when computing which child is active.*/
         enum RangeMode
         {
             DISTANCE_FROM_EYE_POINT,
             PIXEL_SIZE_ON_SCREEN
         };
         
-        /** Set how the range values should be intepreted when computing which child is active.*/
+        /** Set how the range values should be interpreted when computing which child is active.*/
         void setRangeMode(RangeMode mode) { _rangeMode = mode; }
 
-        /** Get how the range values should be intepreted when computing which child is active.*/
+        /** Get how the range values should be interpreted when computing which child is active.*/
         RangeMode getRangeMode() const { return _rangeMode; }
 
 
-        /** Sets the min and max visible ranges of range of specifiec child.
+        /** Sets the min and max visible ranges of range of specific child.
             Values are floating point distance specified in local objects coordinates.*/
         void setRange(unsigned int childNo, float min,float max);
         

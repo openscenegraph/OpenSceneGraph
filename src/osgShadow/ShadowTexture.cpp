@@ -119,7 +119,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
         _shadowedScene->osg::Group::traverse(cv);
     }
 
-    // do traversal of shadow recieving scene which does need to be decorated by the shadow texture
+    // do traversal of shadow receiving scene which does need to be decorated by the shadow texture
     {
         cv.pushStateSet(_stateset.get());
     

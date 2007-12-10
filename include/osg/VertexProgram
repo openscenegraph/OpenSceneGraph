@@ -130,7 +130,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
             // used by the COMPARE_StateAttribute_Paramter macro's below.
             COMPARE_StateAttribute_Types(VertexProgram,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_vertexProgram)
 
             return 0; // passed all the above comparison macros, must be equal.
@@ -225,7 +225,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** Release any OpenGL objects in specified graphics context if State
-          * object is passed, otherwise release OpenGL objexts for all graphics contexts if
+          * object is passed, otherwise release OpenGL objects for all graphics contexts if
           * State object pointer is NULL.
         */
         virtual void releaseGLObjects(State* state=0) const;
@@ -269,7 +269,7 @@ class OSG_EXPORT VertexProgram : public StateAttribute
         };
         
         /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created
+          * If the Extension object for that context has not yet been created
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
           * If 'createIfNotInitalized' is true then the Extensions object is
           * automatically created. However, in this case the extension object

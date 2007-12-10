@@ -233,7 +233,7 @@ unsigned int ImageLayer::getModifiedCount() const
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// HieghtFieldLayer
+// HeightFieldLayer
 //
 HeightFieldLayer::HeightFieldLayer():
     _modifiedCount(0)

@@ -491,7 +491,7 @@ bool RenderBin::getStats(Statistics& stats) const
         
         if (dw)
         {
-              // then tot up the primtive types and no vertices.
+              // then tot up the primitive types and no vertices.
               dw->accept(stats); // use sub-class to find the stats for each drawable
         }
         statsCollected = true;
@@ -512,7 +512,7 @@ bool RenderBin::getStats(Statistics& stats) const
             if (rl->_modelview.get()) stats.addMatrix(); // number of matrices
             if (dw)
             {
-                // then tot up the primtive types and no vertices.
+                // then tot up the primitive types and no vertices.
                 dw->accept(stats); // use sub-class to find the stats for each drawable
             }
         }

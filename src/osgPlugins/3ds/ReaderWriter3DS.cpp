@@ -322,8 +322,8 @@ How to cope with pivot points in 3ds (short version)
   Objects with pivot points have a position relative to their PP, so they have to undergo this transform:
 
     invert the mesh matrix, apply this matrix to the object. This puts the object back at the origin
-    Transform the object by the nodes (nnegative) pivot point coords, this puts the PP at the origin
-    Tranform the node by the node matrix, which does the orientation about the pivot point, (and currently) transforms the object back by a translation to the PP.
+    Transform the object by the nodes (negative) pivot point coords, this puts the PP at the origin
+    Transform the node by the node matrix, which does the orientation about the pivot point, (and currently) transforms the object back by a translation to the PP.
 
   */
 osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node) {
@@ -786,13 +786,13 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
             // so we'll override material back to white.
             // and no longer require the decal hack below...
 #if 0
-            // Eric orignal fallback
+            // Eric original fallback
             osg::Vec4 white(1.0f,1.0f,1.0f,alpha);
             material->setAmbient(osg::Material::FRONT_AND_BACK,white);
             material->setDiffuse(osg::Material::FRONT_AND_BACK,white);
             material->setSpecular(osg::Material::FRONT_AND_BACK,white);
 #else
-            // try alternative to avoid staturating with white
+            // try alternative to avoid saturating with white
             // setting white as per OpenGL defaults.
             material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.2f,0.2f,0.2f,alpha));
             material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.8f,0.8f,0.8f,alpha));

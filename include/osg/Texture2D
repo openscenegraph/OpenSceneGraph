@@ -99,7 +99,7 @@ class OSG_EXPORT Texture2D : public Texture
 
 
         /** Helper function. Sets the number of mipmap levels created for this
-          * texture. Should only be called within an osg::Texuture::apply(), or
+          * texture. Should only be called within an osg::Texture::apply(), or
           * during a custom OpenGL texture load. */
         void setNumMipmapLevels(unsigned int num) const { _numMipmapLevels=num; }
 

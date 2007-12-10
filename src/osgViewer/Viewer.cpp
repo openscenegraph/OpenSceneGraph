@@ -430,7 +430,7 @@ void Viewer::realize()
     // initialize the global timer to be relative to the current time.
     osg::Timer::instance()->setStartTick();
 
-    // pass on the start tick to all the associated eventqueues
+    // pass on the start tick to all the associated event queues
     setStartTick(osg::Timer::instance()->getStartTick());
 
     setUpThreading();
@@ -839,7 +839,7 @@ void Viewer::updateTraversal()
     
     if (_scene->getDatabasePager())
     {    
-        // syncronize changes required by the DatabasePager thread to the scene graph
+        // synchronize changes required by the DatabasePager thread to the scene graph
         _scene->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
     }
 

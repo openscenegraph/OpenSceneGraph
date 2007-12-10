@@ -959,7 +959,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
         glBegin(GL_QUAD_STRIP);
 
-        // draw skirt at begining if required.
+        // draw skirt at beginning if required.
         if (field.getSkirtHeight()!=0.0f)
         {
             vertTop.set(0.0f,dy*(float)(row+1),field.getHeight(0,row+1)-field.getSkirtHeight());
@@ -1294,7 +1294,7 @@ void ComputeBoundShapeVisitor::apply(const CompositeShape& group)
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// Accept a primtive functor for each of the shapes.
+// Accept a primitive functor for each of the shapes.
 //
 
 class PrimitiveShapeVisitor : public ConstShapeVisitor

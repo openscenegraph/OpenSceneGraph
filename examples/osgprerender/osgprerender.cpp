@@ -43,7 +43,7 @@
 
 #include <iostream>
 
-// call back which cretes a deformation field to oscilate the model.
+// call back which creates a deformation field to oscillate the model.
 class MyGeometryCallback : 
     public osg::Drawable::UpdateCallback, 
     public osg::Drawable::AttributeFunctor
@@ -323,7 +323,7 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         float znear = 1.0f*bs.radius();
         float zfar  = 3.0f*bs.radius();
 
-        // 2:1 aspect ratio as per flag geomtry below.
+        // 2:1 aspect ratio as per flag geometry below.
         float proj_top   = 0.25f*znear;
         float proj_right = 0.5f*znear;
 
@@ -360,11 +360,11 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
             
             // Rather than attach the texture directly to illustrate the texture's ability to
             // detect an image update and to subload the image onto the texture.  You needn't
-            // do this when using an Image for copying to, as a seperate camera->attach(..)
-            // would suffice as well, but we'll do it the long way round here just for demonstation
+            // do this when using an Image for copying to, as a separate camera->attach(..)
+            // would suffice as well, but we'll do it the long way round here just for demonstration
             // purposes (long way round meaning we'll need to copy image to main memory, then
             // copy it back to the graphics card to the texture in one frame).
-            // The long way round allows us to mannually modify the copied image via the callback
+            // The long way round allows us to manually modify the copied image via the callback
             // and then let this modified image by reloaded back.
             texture->setImage(0, image);
         }
@@ -397,11 +397,11 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--fbo","Use Frame Buffer Object for render to texture, where supported.");
     arguments.getApplicationUsage()->addCommandLineOption("--fb","Use FrameBuffer for render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Use Pixel Buffer for render to texture, where supported.");
-    arguments.getApplicationUsage()->addCommandLineOption("--window","Use a seperate Window for render to texture.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window","Use a separate Window for render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--image","Render to an image, then apply a post draw callback to it, and use this image to update a texture.");
-    arguments.getApplicationUsage()->addCommandLineOption("--texture-rectangle","Use osg::TextureRectangle for doing the render to texure to.");
+    arguments.getApplicationUsage()->addCommandLineOption("--texture-rectangle","Use osg::TextureRectangle for doing the render to texture to.");
    
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);

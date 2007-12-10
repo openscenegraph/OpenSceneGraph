@@ -222,7 +222,7 @@ void DefaultFont::constructGlyphs()
 
         glyph->setInternalTextureFormat(GL_ALPHA);
 
-        // now populate data arry by converting bitmap into a luminance_alpha map.
+        // now populate data array by converting bitmap into a luminance_alpha map.
         unsigned char* ptr = rasters[i-32];
         unsigned char value_on = 255;
         unsigned char value_off = 0;

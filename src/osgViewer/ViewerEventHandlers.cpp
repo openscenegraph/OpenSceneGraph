@@ -459,7 +459,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
             // check for a KeySwitchManipulator, create one if not present, and then add this
             // to either the newly created one or the existing one. However, the code do that was
             // EXTREMELY dirty, so I opted for a simpler solution. At a later date, someone may
-            // want to implement the original recomendation (which is in a mailing list reply
+            // want to implement the original recommendation (which is in a mailing list reply
             // from June 1st by Robert in a thread called "osgviewer Camera Animation (preliminary)".
             else if (ea.getKey() == _keyEventTogglePlayback)
             {
@@ -483,7 +483,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     _animPathManipulator->home(ea,aa);
 
 
-                    // If we succesfully found our _filename file, set it and keep a copy
+                    // If we successfully found our _filename file, set it and keep a copy
                     // around of the original MatrixManipulator to restore later.
                     if (_animPathManipulator.valid() && _animPathManipulator->valid())
                     {

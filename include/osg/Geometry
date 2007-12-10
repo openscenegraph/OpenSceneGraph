@@ -294,7 +294,7 @@ class OSG_EXPORT Geometry : public Drawable
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
         /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objexts
+          * the specified graphics context. Otherwise, releases OpenGL objects
           * for all graphics contexts. */
         virtual void releaseGLObjects(State* state=0) const;
 
@@ -345,7 +345,7 @@ class OSG_EXPORT Geometry : public Drawable
 
 
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
-          * This size is used a hint for reuse of deleteed display lists/vertex buffer objects. */
+          * This size is used a hint for reuse of deleted display lists/vertex buffer objects. */
         virtual unsigned int getGLObjectSizeHint() const;
         
         /** Draw Geometry directly ignoring an OpenGL display list which could be attached.
@@ -357,25 +357,25 @@ class OSG_EXPORT Geometry : public Drawable
         /** Return true, osg::Geometry does support accept(Drawable::AttributeFunctor&). */
         virtual bool supports(const Drawable::AttributeFunctor&) const { return true; }
 
-        /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
+        /** Accept an Drawable::AttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
         virtual void accept(Drawable::AttributeFunctor& af);
 
         /** Return true, osg::Geometry does support accept(Drawable::ConstAttributeFunctor&). */
         virtual bool supports(const Drawable::ConstAttributeFunctor&) const { return true; }
 
-        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. */
+        /** Accept a Drawable::ConstAttributeFunctor and call its methods to tell it about the internal attributes that this Drawable has. */
         virtual void accept(Drawable::ConstAttributeFunctor& af) const;
 
         /** Return true, osg::Geometry does support accept(PrimitiveFunctor&). */
         virtual bool supports(const PrimitiveFunctor&) const { return true; }
 
-        /** Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. */
+        /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. */
         virtual void accept(PrimitiveFunctor& pf) const;
 
         /** Return true, osg::Geometry does support accept(PrimitiveIndexFunctor&). */
         virtual bool supports(const PrimitiveIndexFunctor&) const { return true; }
 
-        /** Accept a PrimitiveFunctor and call its methods to tell it about the interal primitives that this Drawable has. */
+        /** Accept a PrimitiveFunctor and call its methods to tell it about the internal primitives that this Drawable has. */
         virtual void accept(PrimitiveIndexFunctor& pf) const;
 
 

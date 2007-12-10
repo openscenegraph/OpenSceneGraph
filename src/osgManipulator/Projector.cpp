@@ -177,7 +177,7 @@ bool getCylinderLineIntersection(const osg::Cylinder& cylinder,
 osg::Vec3 getLocalEyeDirection(const osg::Vec3& eyeDir, const osg::Matrix& localToWorld)
 {
     // To take a normal from world to local you need to transform it by the transpose of the inverse of the 
-    // world to local matrix. Pre-multipling is equivalent to doing a post-multiplication of the transpose.
+    // world to local matrix. Pre-multiplying is equivalent to doing a post-multiplication of the transpose.
     osg::Vec3 localEyeDir = localToWorld * eyeDir;
     localEyeDir.normalize();
     return localEyeDir;

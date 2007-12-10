@@ -51,7 +51,7 @@ Texture2DArray::~Texture2DArray()
 int Texture2DArray::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macro's below.
     COMPARE_StateAttribute_Types(Texture2DArray,sa)
 
     bool noImages = true;
@@ -91,7 +91,7 @@ int Texture2DArray::compare(const StateAttribute& sa) const
     int result = compareTexture(rhs);
     if (result!=0) return result;
 
-    // compare each paramter in turn against the rhs.
+    // compare each parameter in turn against the rhs.
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_textureHeight)
     COMPARE_StateAttribute_Parameter(_textureDepth)
@@ -546,9 +546,7 @@ void Texture2DArray::Extensions::setupGLExtensions(unsigned int contextID)
     _isTexture2DArraySupported = isGLExtensionSupported(contextID,"GL_EXT_texture_array");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_max2DSize);
-    _maxLayerCount = 0;
-    if (_isTexture2DArraySupported)
-        glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &_maxLayerCount);
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &_maxLayerCount);
 
     setGLExtensionFuncPtr(_glTexImage3D, "glTexImage3D","glTexImage3DEXT");
     setGLExtensionFuncPtr(_glTexSubImage3D, "glTexSubImage3D","glTexSubImage3DEXT");

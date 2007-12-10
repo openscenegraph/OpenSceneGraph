@@ -26,7 +26,6 @@ class Vec3s
         /** Number of vector components. */
         enum { num_components = 3 };
         
-        /** Vec member varaible. */
         value_type _v[3];
 
         Vec3s() { _v[0]=0; _v[1]=0; _v[2]=0; }

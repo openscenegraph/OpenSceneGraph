@@ -27,8 +27,8 @@ namespace osgGA{
 // per line.  The succession of values are:
 // time  px py pz ax ay az aw
 // where:
-//    time = elapsed time in seconds from the begining of the animation
-//    px py pz = World position in catesian coordinates
+//    time = elapsed time in seconds from the beginning of the animation
+//    px py pz = World position in cartesian coordinates
 //    ax ay az aw = Orientation (attitude) defined as a quaternion
 
 class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator

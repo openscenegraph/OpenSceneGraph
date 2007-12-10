@@ -60,7 +60,7 @@ View::~View()
         _camera->setCullCallback(0);
     }
     
-    // detatch the cameras from this View to prevent dangling pointers
+    // detach the cameras from this View to prevent dangling pointers
     for(Slaves::iterator itr = _slaves.begin();
         itr != _slaves.end();
         ++itr)

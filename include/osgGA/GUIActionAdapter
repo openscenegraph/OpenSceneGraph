@@ -21,7 +21,7 @@ namespace osgGA{
 
 /**
 Abstract base class defining the interface by which GUIEventHandlers may request
-actions of the GUI system in use. These requests for actions should then be honoured
+actions of the GUI system in use. These requests for actions should then be honored
 by the GUI toolkit of the user's application.
 
 To provide more detail, when a GUIEventHandler (e.g. a TrackballManipulator)
@@ -57,7 +57,7 @@ class GUIActionAdapter
 public:
         virtual ~GUIActionAdapter() {}
         
-        /** Provide a mechanism for getting the osg::View assocaited with this GUIActionAdapter.
+        /** Provide a mechanism for getting the osg::View associated with this GUIActionAdapter.
           * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
         virtual osg::View* asView() { return 0; }
         

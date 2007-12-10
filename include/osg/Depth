@@ -58,7 +58,7 @@ class OSG_EXPORT Depth : public StateAttribute
             // used by the COMPARE_StateAttribute_Parameter macro's below.
             COMPARE_StateAttribute_Types(Depth,sa)
 
-            // compare each paramter in turn against the rhs.
+            // compare each parameter in turn against the rhs.
             COMPARE_StateAttribute_Parameter(_func)
             COMPARE_StateAttribute_Parameter(_depthWriteMask)
             COMPARE_StateAttribute_Parameter(_zNear)

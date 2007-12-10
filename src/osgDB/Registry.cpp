@@ -151,7 +151,7 @@ Registry* Registry::instance(bool erase)
 // definition of the Registry
 Registry::Registry()
 {
-    // comment out because it was causing problems under OSX - causing it to crash osgconv when constucting ostream in osg::notify().
+    // comment out because it was causing problems under OSX - causing it to crash osgconv when constructing ostream in osg::notify().
     // notify(INFO) << "Constructing osg::Registry"<<std::endl;
 
     _createNodeFromImage = false;
@@ -250,7 +250,7 @@ Registry::Registry()
     addFileExtensionAlias("fon",   "freetype");  // Windows bitmap fonts
     addFileExtensionAlias("fnt",   "freetype");    // Windows bitmap fonts
     
-    // wont't add type1 and type2 until resolve extension collision with Peformer binary and ascii files.
+    // wont't add type1 and type2 until resolve extension collision with Performer binary and ascii files.
     // addFileExtensionAlias("pfb",   "freetype");  // type1 binary
     // addFileExtensionAlias("pfa",   "freetype");  // type2 ascii
 
@@ -281,9 +281,9 @@ void Registry::destruct()
     // object cache clear needed here to prevent crash in unref() of
     // the objects it contains when running the TXP plugin.
     // Not sure why, but perhaps there is is something in a TXP plugin
-    // which is deleted the data before its ref count hits zero, perhaps
+    // which deletes the data before its ref count hits zero, perhaps
     // even some issue with objects be allocated by a plugin that is
-    // mainted after that plugin is deleted...  Robert Osfield, Jan 2004.
+    // maintained after that plugin is deleted...  Robert Osfield, Jan 2004.
     clearObjectCache();
     clearArchiveCache();
     
@@ -756,7 +756,7 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
         {
             // we have a composite name so now strip off the library name
             // are try to load it, and then retry the readObject to see
-            // if we can recongise the objects.
+            // if we can recognize the objects.
         
             std::string libraryName = std::string(token,0,posDoubleColon);
 
@@ -821,7 +821,7 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
 
                         // we have a composite name so now strip off the library name
                         // are try to load it, and then retry the find to see
-                        // if we can recongise the objects.
+                        // if we can recognize the objects.
 
                         std::string libraryName = std::string(token,0,posDoubleColon);
 
@@ -883,7 +883,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
         {
             // we have a composite name so now strip off the library name
             // are try to load it, and then retry the readObject to see
-            // if we can recongise the objects.
+            // if we can recognize the objects.
         
             std::string libraryName = std::string(token,0,posDoubleColon);
 
@@ -943,7 +943,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
 
                         // we have a composite name so now strip off the library name
                         // are try to load it, and then retry the find to see
-                        // if we can recongise the objects.
+                        // if we can recognize the objects.
 
                         std::string libraryName = std::string(token,0,posDoubleColon);
 
@@ -1217,7 +1217,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 
                     // we have a composite name so now strip off the library name
                     // are try to load it, and then retry the find to see
-                    // if we can recongise the objects.
+                    // if we can recognize the objects.
 
                     std::string libraryName = std::string(token,0,posDoubleColon);
 
@@ -1564,7 +1564,7 @@ ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& 
 
     ReaderWriter::ReadResult result = readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, options),false);
 
-    // default to using chaching archive if no options structure provided, but if options are provided use archives
+    // default to using caching archive if no options structure provided, but if options are provided use archives
     // only if supplied.
     if (result.validArchive() &&
         (!options || (options->getObjectCacheHint() & ReaderWriter::Options::CACHE_ARCHIVES)) )
@@ -1831,7 +1831,7 @@ void Registry::removeExpiredObjectsInCache(double expiryTime)
     typedef std::vector<std::string> ObjectsToRemove;
     ObjectsToRemove objectsToRemove;
 
-    // first collect all the exprired entries in the ObjectToRemove list.
+    // first collect all the expired entries in the ObjectToRemove list.
     for(ObjectCache::iterator oitr=_objectCache.begin();
         oitr!=_objectCache.end();
         ++oitr)

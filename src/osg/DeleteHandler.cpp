@@ -16,7 +16,7 @@
 namespace osg
 {
 
-// specialzed smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
+// specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
 struct DeleteHandlerPointer
 {
     DeleteHandlerPointer():

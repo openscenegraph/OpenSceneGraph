@@ -100,10 +100,10 @@ public:
         /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
         virtual osg::Matrixd getInverseMatrix() const { return _current->getInverseMatrix(); }
 
-        /** Get the FusionDistanceMode. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
         virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return _current->getFusionDistanceMode(); }
 
-        /** Get the FusionDistanceValue. Used by SceneView for setting up setereo convergence.*/
+        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return _current->getFusionDistanceValue(); }
 
 

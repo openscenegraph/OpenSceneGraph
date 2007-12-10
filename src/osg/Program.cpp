@@ -2007,7 +2007,7 @@ Program::~Program()
 int Program::compare(const osg::StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macro's below.
     COMPARE_StateAttribute_Types(Program,sa)
     
     if( _shaderList.size() < rhs._shaderList.size() ) return -1;

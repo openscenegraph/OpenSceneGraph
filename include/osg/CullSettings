@@ -78,10 +78,10 @@ class OSG_EXPORT CullSettings
             ALL_VARIABLES                           = 0xFFFF
         };
 
-        /** Set the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object.*/
+        /** Set the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object.*/
         void setInheritanceMask(unsigned int mask) { _inheritanceMask = mask; }
 
-        /** Get the inheritance mask used in inheritCullSettings to control which variables get overritten by the passed in CullSettings object.*/
+        /** Get the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object.*/
         unsigned int getInheritanceMask() const { return _inheritanceMask; }
         
         /** Set the local cull settings values from specified CullSettings object.*/

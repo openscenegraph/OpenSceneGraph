@@ -35,7 +35,6 @@ class Vec2d
         /** Number of vector components. */
         enum { num_components = 2 };
         
-        /** Vec member varaible. */
         value_type _v[2];
 
         Vec2d() {_v[0]=0.0; _v[1]=0.0;}

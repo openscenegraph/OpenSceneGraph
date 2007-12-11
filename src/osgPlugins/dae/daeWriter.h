@@ -73,7 +73,7 @@ protected:
 public:
     enum NodeType { NODE, GEODE, GROUP, LIGHT, CAMERA, MATRIX, POSATT, SWITCH, LOD };
 
-    daeWriter( DAE *dae_, const std::string &fname, bool usePolygons=false );
+    daeWriter( DAE *dae_, const std::string &fileURI, bool usePolygons=false, bool GoogleMode = false );
     virtual ~daeWriter();
 
     void setRootNode( const osg::Node &node );
@@ -240,6 +240,13 @@ private: //members
         
         /** provide an unique name */
         std::string uniquify( const std::string &name );
+
+        /** work in Google compatibility mode */
+        bool m_GoogleMode;
+
+        /** Current RenderingHint */
+        /** This are needed because the stateSet merge code currently does not handle it */
+        int m_CurrentRenderingHint;
 };
 
 }

@@ -89,7 +89,8 @@ void daeReader::processBindMaterial( domBind_material *bm, osg::Node *geo )
 
 osg::StateSet *daeReader::processMaterial( domMaterial *mat )
 {
-    domEffect *effect = daeSafeCast< domEffect >( getElementFromURI( mat->getInstance_effect()->getUrl() ) );
+    currentInstance_effect = mat->getInstance_effect();
+    domEffect *effect = daeSafeCast< domEffect >( getElementFromURI( currentInstance_effect->getUrl() ) );
     if ( effect == NULL )
     {
         osg::notify( osg::WARN ) << "Failed to locate effect " << mat->getInstance_effect()->getUrl().getURI() << std::endl;
@@ -327,9 +328,19 @@ osg::StateAttribute **sa )
             mat->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
             retVal = true;
         }
+
+        else if (cot->getParam() != NULL)
+        {
+            domFloat4 f4;
+            if (GetFloat4Param(cot->getParam()->getRef(), f4))
+            {
+                mat->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+                retVal = true;
+            }
+        }
         else
         {
-            osg::notify( osg::WARN ) << "Currently no support for <param> or <texture> in Emission channel " << std::endl;
+            osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
         }       
     }
     else if ( channel == osg::Material::AMBIENT )
@@ -340,9 +351,18 @@ osg::StateAttribute **sa )
             mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
             retVal = true;
         }
+        else if (cot->getParam() != NULL)
+        {
+            domFloat4 f4;
+            if (GetFloat4Param(cot->getParam()->getRef(), f4))
+            {
+                mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+                retVal = true;
+            }
+        }
         else
         {
-            osg::notify( osg::WARN ) << "Currently no support for <param> or <texture> in Ambient channel " << std::endl;
+            osg::notify( osg::WARN ) << "Currently no support for <texture> in Ambient channel " << std::endl;
         }
     }
     else if ( channel == osg::Material::DIFFUSE )
@@ -377,9 +397,14 @@ osg::StateAttribute **sa )
                 }
             }
         }
-        else
+        else if (cot->getParam() != NULL)
         {
-            osg::notify( osg::WARN ) << "Currently no support for <param> in Diffuse channel " << std::endl;
+            domFloat4 f4;
+            if (GetFloat4Param(cot->getParam()->getRef(), f4))
+            {
+                mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+                retVal = true;
+            }
         }
     }
     else if ( channel == osg::Material::SPECULAR )
@@ -390,9 +415,18 @@ osg::StateAttribute **sa )
             mat->setSpecular( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
             retVal = true;
         }
-        else
+         else if (cot->getParam() != NULL)
         {
-            osg::notify( osg::WARN ) << "Currently no support for <param> or <texture> in Specular channel " << std::endl;
+            domFloat4 f4;
+            if (GetFloat4Param(cot->getParam()->getRef(), f4))
+            {
+                mat->setSpecular( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
+                retVal = true;
+            }
+        }
+       else
+        {
+            osg::notify( osg::WARN ) << "Currently no support for <texture> in Specular channel " << std::endl;
         }
         if ( fop != NULL && fop->getFloat() != NULL )
         {
@@ -402,6 +436,100 @@ osg::StateAttribute **sa )
     }
 
     return retVal;
+}
+
+bool daeReader::GetFloat4Param(xsNCName Reference, domFloat4 &f4)
+{
+    std::string MyReference = Reference;
+
+    MyReference.insert(0, "./");
+    daeSIDResolver Resolver(currentEffect, MyReference.c_str());
+    daeElement *el = Resolver.getElement();
+    if (NULL == el)
+            return false;
+
+    if (NULL != currentInstance_effect)
+    {
+        // look here first for setparams
+        // I am sure there must be a better way of doing this
+        // Maybe the Collada DAE guys can give us a parameter management mechanism !
+        const domInstance_effect::domSetparam_Array& SetParamArray = currentInstance_effect->getSetparam_array();
+        size_t NumberOfSetParams = SetParamArray.getCount();
+        for (size_t i = 0; i < NumberOfSetParams; i++)
+        {
+            // Just do a simple comaprison of the ref strings for the time being
+            if (0 == strcmp(SetParamArray[i]->getRef(), Reference))
+            {
+                if (NULL != SetParamArray[i]->getFx_basic_type_common() && (NULL != SetParamArray[i]->getFx_basic_type_common()->getFloat4()))
+                {
+                    f4 = SetParamArray[i]->getFx_basic_type_common()->getFloat4()->getValue();
+                    return true;
+                }
+            }
+        }
+    }
+
+    domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el ); 
+    domFx_newparam_common *npc = daeSafeCast< domFx_newparam_common >( el );
+    if ((cnp != NULL) && (NULL != cnp->getFloat4()))
+    {
+        f4 = cnp->getFloat4()->getValue();
+        return true;
+    }
+    else if ((npc != NULL) && (NULL != npc->getFx_basic_type_common()) && (NULL != npc->getFx_basic_type_common()->getFloat4()))
+    {
+        f4 = npc->getFx_basic_type_common()->getFloat4()->getValue();
+        return true;
+    }
+    else
+        return false;
+}
+
+bool daeReader::GetFloatParam(xsNCName Reference, domFloat &f)
+{
+    std::string MyReference = Reference;
+
+    MyReference.insert(0, "./");
+    daeSIDResolver Resolver(currentEffect, MyReference.c_str());
+    daeElement *el = Resolver.getElement();
+    if (NULL == el)
+        return false;
+
+    if (NULL != currentInstance_effect)
+    {
+        // look here first for setparams
+        // I am sure there must be a better way of doing this
+        // Maybe the Collada DAE guys can give us a parameter management mechanism !
+        const domInstance_effect::domSetparam_Array& SetParamArray = currentInstance_effect->getSetparam_array();
+        size_t NumberOfSetParams = SetParamArray.getCount();
+        for (size_t i = 0; i < NumberOfSetParams; i++)
+        {
+            // Just do a simple comaprison of the ref strings for the time being
+            if (0 == strcmp(SetParamArray[i]->getRef(), Reference))
+            {
+                if (NULL != SetParamArray[i]->getFx_basic_type_common() && (NULL != SetParamArray[i]->getFx_basic_type_common()->getFloat()))
+                {
+                    f = SetParamArray[i]->getFx_basic_type_common()->getFloat()->getValue();
+                    return true;
+                }
+            }
+        }
+    }
+
+    domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el ); 
+    domFx_newparam_common *npc = daeSafeCast< domFx_newparam_common >( el );
+    if ((cnp != NULL) && (NULL != cnp->getFloat()))
+    {
+        f = cnp->getFloat()->getValue();
+        return true;
+    }
+    else if ((npc != NULL) && (NULL != npc->getFx_basic_type_common()) && (NULL != npc->getFx_basic_type_common()->getFloat()))
+    {
+        f = npc->getFx_basic_type_common()->getFloat()->getValue();
+        return true;
+    }
+    else
+        return false;
 }
 
 osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex )
@@ -508,8 +636,12 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
             }
 
 #ifdef WIN32
-            // under windows the URI passed back from the dom includes a / i.e. /c:/path/file, so we need to jump over the leading /
-            char* filename = path+1;
+            // If the path has a drive specifier or a UNC name then strip the leading /
+            char* filename;
+            if ((path[2] == ':') || ((path[1] == '/') && (path[2] == '/')))
+                filename = path+1;
+            else
+                filename = path;
 #else
             char* filename = path;
 #endif
@@ -717,18 +849,17 @@ osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transpare
     else
     {
         Opaque = ctt->getOpaque();
-        if (NULL == ctt->getColor().cast())
+        if (NULL != ctt->getColor())
         {
-            // I test for a texture in the ctt above
-            // but there could still be a param rather than a color
-            // I don't know what to do with a param (Can anyone help here?)
-            // So I will just assume a default
+            f4 = ctt->getColor()->getValue();
+        }
+        else if ((NULL == ctt->getParam()) || !GetFloat4Param(ctt->getParam()->getRef(), f4))
+        {
             f4.append(0.0f);
             f4.append(0.0f);
             f4.append(0.0f);
             f4.append(1.0f);
         }
-        f4 = ctt->getColor()->getValue();
     }
 
     domFloat Transparency;
@@ -736,9 +867,22 @@ osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transpare
         Transparency = 1.0f;
     else
     {
-        Transparency = pTransparency->getFloat()->getValue();
-        if (m_AuthoringTool == GOOGLE_SKETCHUP) // Google back to front support
-            Transparency = 1.0f - Transparency;
+        if (NULL != pTransparency->getFloat())
+        {
+            Transparency = pTransparency->getFloat()->getValue();
+            if (m_AuthoringTool == GOOGLE_SKETCHUP) // Google back to front support
+                Transparency = 1.0f - Transparency;
+        }
+        else if (NULL != pTransparency->getParam())
+        {
+            if (GetFloatParam(pTransparency->getParam()->getRef(), Transparency))
+            {
+                if (m_AuthoringTool == GOOGLE_SKETCHUP) // Google back to front support
+                    Transparency = 1.0f - Transparency;
+            }
+            else
+                Transparency = 1.0f;
+        }
     }
 
     osg::BlendColor *bc = new osg::BlendColor();

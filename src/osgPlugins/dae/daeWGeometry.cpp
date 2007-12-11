@@ -32,6 +32,8 @@ void daeWriter::apply( osg::Geode &node )
 #endif
 
     pushStateSet(node.getStateSet());
+    if (NULL != node.getStateSet())
+        m_CurrentRenderingHint = node.getStateSet()->getRenderingHint();
 
     unsigned int count = node.getNumDrawables();
     for ( unsigned int i = 0; i < count; i++ )
@@ -810,6 +812,9 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     }
 
                     primItrBegin+=nbVerticesPerPoly;
+#if ( _SECURE_SCL == 1 )
+                    if (primItrBegin != drawElements->end())
+#endif
                     primItrEnd+=nbVerticesPerPoly;
                 }
                 break;
@@ -906,6 +911,9 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
                   }
                   primItrBegin+=nbVerticesPerPoly;
+#if ( _SECURE_SCL == 1 )
+                  if (primItrBegin != drawElements->end())
+#endif
                   primItrEnd+=nbVerticesPerPoly;      
                 }
       
@@ -1004,6 +1012,9 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     }
                   }
                   primItrBegin+=nbVerticesPerPoly;
+#if ( _SECURE_SCL == 1 )
+                  if (primItrBegin != drawElements->end())
+#endif
                   primItrEnd+=nbVerticesPerPoly;      
                 }
                 break;

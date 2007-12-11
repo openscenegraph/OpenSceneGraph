@@ -22,16 +22,17 @@
 
 using namespace osgdae;
 
-daeWriter::daeWriter( DAE *dae_, const std::string &fname,bool _usePolygons ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
+daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool GoogleMode ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
                                         dae(dae_),
-                                        usePolygons (_usePolygons) 
+                                        usePolygons (_usePolygons),
+                                        m_GoogleMode(GoogleMode)
 {
     success = true;
 
     dae->setDatabase( NULL );
     dae->setIOPlugin( NULL );
     //create document
-    dae->getDatabase()->createDocument( fname.c_str(), &doc );
+    dae->getDatabase()->createDocument( fileURI.c_str(), &doc );
     dom = (domCOLLADA*)doc->getDomRoot();
     //create scene and instance visual scene
     domCOLLADA::domScene *scene = daeSafeCast< domCOLLADA::domScene >( dom->createAndPlace( COLLADA_ELEMENT_SCENE ) );

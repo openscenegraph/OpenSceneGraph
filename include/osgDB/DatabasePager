@@ -31,6 +31,8 @@
 
 #include <map>
 #include <list>
+#include <algorithm>
+#include <functional>
 
 namespace osgDB {
 
@@ -275,7 +277,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
 
         friend struct DatabaseRequest;
-        
+
         struct DatabaseRequest : public osg::Referenced
         {
             DatabaseRequest():
@@ -294,8 +296,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             osg::ref_ptr<osg::Node>     _loadedModel;
             DataToCompileMap            _dataToCompileMap;
             osg::ref_ptr<ReaderWriter::Options> _loadOptions;
+
+            bool isRequestCurrent (int frameNumber) const
+            {
+                return frameNumber - _frameNumberLastRequest <= 1;
+            }
         };
-        
+
         typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
         typedef std::vector<  osg::ref_ptr<osg::Object> > ObjectList;
 
@@ -321,8 +328,86 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             _databasePagerThreadBlock->set(
                 (!_fileRequestList.empty() || !_childrenToDeleteList.empty()) && !_databasePagerThreadPaused);
         }
-        
 
+        // Helper functions for determining if objects need to be
+        // compiled.
+        inline static bool isCompiled(const osg::Texture* texture,
+                                      unsigned int contextID)
+        {
+            return texture->getTextureObject(contextID);
+        }
+        // Is texture compiled for all active contexts?
+        inline bool isCompiled(osg::Texture* texture) const
+        {
+            using namespace std;
+            return (count_if(_activeGraphicsContexts.begin(),
+                             _activeGraphicsContexts.end(),
+                             bind1st(mem_fun(&osg::Texture::getTextureObject),
+                                     texture))
+                    == _activeGraphicsContexts.size());
+        }
+        
+        inline static bool isCompiled(const osg::StateSet* stateSet,
+                                      unsigned int contextID)
+        {
+            for (unsigned i = 0;
+                 i < stateSet->getTextureAttributeList().size();
+                 ++i)
+            {
+                const osg::Texture* texture
+                    = dynamic_cast<const osg::Texture*>(stateSet->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+                if (texture && !isCompiled(texture, contextID))
+                    return false;
+            }
+            return true;
+        }
+
+        inline bool isCompiled(osg::StateSet* stateSet)
+        {
+            using namespace std;
+            for (unsigned i = 0;
+                 i < stateSet->getTextureAttributeList().size();
+                 ++i)
+            {
+                osg::Texture* texture
+                    = dynamic_cast<osg::Texture*>(stateSet->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
+                if (texture
+                    && (count_if(_activeGraphicsContexts.begin(),
+                                 _activeGraphicsContexts.end(),
+                                 bind1st(mem_fun(&osg::Texture::getTextureObject),
+                                         texture))
+                        != _activeGraphicsContexts.size()))
+                    return false;
+            }
+            return true;
+        }
+        
+        inline static bool isCompiled(const osg::Drawable* drawable,
+                                      unsigned int contextID)
+        {
+            // Worry about vbos later
+            if (drawable->getUseDisplayList())
+            {
+                return drawable->getDisplayList(contextID) != 0;
+            }
+            return true;
+        }
+
+        inline bool isCompiled(const osg::Drawable* drawable) const
+        {
+            using namespace std;
+            if (drawable->getUseDisplayList())
+            {
+                return (count_if(_activeGraphicsContexts.begin(),
+                                 _activeGraphicsContexts.end(),
+                                 bind1st(mem_fun(&osg::Drawable::getDisplayList),
+                                         drawable))
+                        == _activeGraphicsContexts.size());
+            }
+            return true;
+        }
+
+        
         /** Iterate through the active PagedLOD nodes children removing 
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */

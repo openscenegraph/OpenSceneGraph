@@ -12,6 +12,7 @@
  */
 
 #include "daeWriter.h"
+#include "ReaderWriterDAE.h"
 
 #include <dae/domAny.h>
 #include <dom/domCOLLADA.h>
@@ -97,49 +98,10 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
 
         osg::Image *osgimg = tex->getImage( 0 );
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->createAndPlace( "init_from" ) );
-#ifdef WIN32
-        char path1[ MAX_PATH + 1 ];
-        char path2[ MAX_PATH + 1 ];
-        LPTSTR pFileName;
-        std::string imageFileName = osgDB::findDataFile( osgimg->getFileName() );
-        GetFullPathName( imageFileName.c_str(), MAX_PATH + 1, path1, &pFileName );
-        GetShortPathName( path1, path2, MAX_PATH + 1 );
-        GetLongPathName( path2, path1, MAX_PATH + 1 );
-        imageFileName = osgDB::convertFileNameToUnixStyle(path1);
-        if ((imageFileName.length() > 3) && (isalpha(imageFileName[0])) && (imageFileName[1] == ':') && (imageFileName[2] == '/'))
-        {
-            if (islower(imageFileName[0]))
-                imageFileName[0] = (char)_toupper(imageFileName[0]);
-            imageFileName = '/' + imageFileName;
-        }
-        daeURI imageFileUri( imageFileName.c_str() );
-        imageFileUri.validate();
-        std::string docFileName = doc->getDocumentURI()->getFilepath();
-        docFileName += doc->getDocumentURI()->getFile();
-        if ((docFileName.length() > 3) && (docFileName[0] == '/') && (isalpha(docFileName[1])) && (docFileName[2] == ':') && (docFileName[3] == '/'))
-            GetFullPathName( docFileName.c_str() + 1, MAX_PATH + 1, path1, &pFileName );
-        else
-            GetFullPathName( docFileName.c_str(), MAX_PATH + 1, path1, &pFileName );
-        GetShortPathName( path1, path2, MAX_PATH + 1 );
-        GetLongPathName( path2, path1, MAX_PATH + 1 );
-        docFileName = osgDB::convertFileNameToUnixStyle(path1);
-        if ((docFileName.length() > 3) && (isalpha(docFileName[0])) && (docFileName[1] == ':') && (docFileName[2] == '/'))
-        {
-            if (islower(docFileName[0]))
-                docFileName[0] = (char)_toupper(docFileName[0]);
-            docFileName = '/' + docFileName;
-        }
-        daeURI docFileUri( docFileName.c_str() );
-        docFileUri.validate();
-        imgif->setValue( imageFileUri.getURI() );
-        imgif->getValue().makeRelativeTo( &docFileUri );
-#else
-        std::string imgstr = osgDB::convertFileNameToUnixStyle( osgDB::findDataFile( osgimg->getFileName() ) );
-        daeURI uri( imgstr.c_str() );
-        uri.validate(); // This returns an absolute URI
-        imgif->setValue( uri.getURI() );
-        imgif->getValue().makeRelativeTo( doc->getDocumentURI() );
-#endif
+        std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
+        imgif->setValue(daeURI(fileURI.c_str()));
+        // The document URI should contain the canonical path it was created with
+        imgif->getValue().makeRelativeTo(doc->getDocumentURI());
 
 #ifndef EARTH_TEX
         domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->createAndPlace( "newparam" ) );
@@ -274,6 +236,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         bvi->setInput_semantic( "TEXCOORD" );
         bvi->setInput_set( 0 );
 
+/*  I dont think this belongs here RFJ
         //take care of blending if any
         osg::BlendFunc *bf = static_cast< osg::BlendFunc * >( ssClean->getAttribute( osg::StateAttribute::BLENDFUNC ) );
         osg::BlendColor *bc = static_cast< osg::BlendColor * >( ssClean->getAttribute( osg::StateAttribute::BLENDCOLOR ) );
@@ -299,7 +262,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
 #endif
             dtex->setTexcoord( "texcoord0" );           
         }
-        
+*/       
     }
     osg::Material *osgmat = static_cast<osg::Material*>(ssClean->getAttribute( osg::StateAttribute::MATERIAL ));
     if ( osgmat != NULL )
@@ -363,6 +326,73 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         f->setValue( shininess );
     }
 
+    // Do common transparency stuff here
+    // if (osg::StateSet::TRANSPARENT_BIN == ssClean->getRenderingHint()) cannot do this at the moment because stateSet::merge does does not handle the hints
+    if (osg::StateSet::TRANSPARENT_BIN == m_CurrentRenderingHint)
+    {
+        osg::BlendFunc *pBlendFunc = static_cast< osg::BlendFunc * >( ssClean->getAttribute( osg::StateAttribute::BLENDFUNC ) );
+        osg::BlendColor *pBlendColor = static_cast< osg::BlendColor * >( ssClean->getAttribute( osg::StateAttribute::BLENDCOLOR ) );
+        if ((NULL != pBlendFunc) && (NULL != pBlendColor))
+        {
+            if ((GL_CONSTANT_ALPHA == pBlendFunc->getSource()) && (GL_ONE_MINUS_CONSTANT_ALPHA == pBlendFunc->getDestination()))
+            {
+                // A_ONE opaque mode
+                domCommon_transparent_type *pTransparent = daeSafeCast<domCommon_transparent_type>(phong->createAndPlace("transparent"));
+                pTransparent->setOpaque(FX_OPAQUE_ENUM_A_ONE);
+                domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->createAndPlace("color"));
+                domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->createAndPlace( "transparency"));
+                domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->createAndPlace("float"));
+                if (m_GoogleMode)
+                {
+                    pColor->getValue().append(1.0);
+                    pColor->getValue().append(1.0);
+                    pColor->getValue().append(1.0);
+                    pColor->getValue().append(1.0);
+                    pTransparency->setValue(1.0 - pBlendColor->getConstantColor().a());
+                }
+                else
+                {
+                    pColor->getValue().append(pBlendColor->getConstantColor().r());
+                    pColor->getValue().append(pBlendColor->getConstantColor().g());
+                    pColor->getValue().append(pBlendColor->getConstantColor().b());
+                    pColor->getValue().append(pBlendColor->getConstantColor().a());
+                    pTransparency->setValue(1.0);
+                }
+            }
+            else if ((GL_ONE_MINUS_CONSTANT_COLOR == pBlendFunc->getSource()) && (GL_CONSTANT_COLOR == pBlendFunc->getDestination()))
+            {
+                // RGB_ZERO opaque mode
+                domCommon_transparent_type *pTransparent = daeSafeCast<domCommon_transparent_type>(phong->createAndPlace("transparent"));
+                pTransparent->setOpaque(FX_OPAQUE_ENUM_RGB_ZERO);
+                domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->createAndPlace("color"));
+                pColor->getValue().append(pBlendColor->getConstantColor().r());
+                pColor->getValue().append(pBlendColor->getConstantColor().g());
+                pColor->getValue().append(pBlendColor->getConstantColor().b());
+                pColor->getValue().append(pBlendColor->getConstantColor().a());
+                domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->createAndPlace( "transparency"));
+                domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->createAndPlace("float"));
+                pTransparency->setValue(1.0);
+            }
+            else
+                osg::notify( osg::WARN ) << "Unsupported BlendFunction parameters in transparency processing." << std::endl;
+        }
+        else
+            osg::notify( osg::WARN ) << "Transparency processing - BlendFunction or BlendColor not found." << std::endl;
+    }
+
+    // Process GOOGLE one sided stuff here
+    if (osg::StateAttribute::INHERIT != ssClean->getMode(GL_CULL_FACE))
+    {
+        domExtra *pExtra = daeSafeCast<domExtra>(pc->createAndPlace(COLLADA_ELEMENT_EXTRA));
+        domTechnique *pTechnique = daeSafeCast<domTechnique>(pExtra->createAndPlace( COLLADA_ELEMENT_TECHNIQUE ) );
+        pTechnique->setProfile("GOOGLEEARTH");
+        domAny *pAny = (domAny*)(daeElement*)pTechnique->createAndPlace("double_sided");
+        if (GL_FALSE == ssClean->getMode(GL_CULL_FACE))
+            pAny->setValue("1");
+        else
+            pAny->setValue("0");
+    }
+
     materialMap.insert( std::make_pair( ssClean, mat ) );
 }
 
@@ -377,7 +407,9 @@ osg::StateSet* daeWriter::CleanStateSet(osg::StateSet* pStateSet) const
         pCleanedStateSet->setAttribute(pStateSet->getAttribute(osg::StateAttribute::BLENDCOLOR));
     if (NULL != pStateSet->getAttribute(osg::StateAttribute::MATERIAL))
         pCleanedStateSet->setAttribute(pStateSet->getAttribute(osg::StateAttribute::MATERIAL));
-
+    // pCleanedStateSet->setRenderingHint(pStateSet->getRenderingHint()); does not work at the moment due to stateSet::merge
+    if (osg::StateAttribute::INHERIT != pStateSet->getMode(GL_CULL_FACE))
+        pCleanedStateSet->setMode(GL_CULL_FACE, pStateSet->getMode(GL_CULL_FACE));
     return pCleanedStateSet;
 }
 

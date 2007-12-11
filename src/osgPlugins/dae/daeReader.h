@@ -106,6 +106,11 @@ public:
     
     osg::Node* getRootNode()    { return rootNode; }
 
+    // Additional Information
+    std::string m_AssetUnitName;
+    float m_AssetUnitMeter;
+    domUpAxisType m_AssetUp_axis;
+
 protected:
     //scene processing
     osg::Node* processVisualScene( domVisual_scene *scene );
@@ -149,6 +154,8 @@ protected:
     bool processColorOrTextureType( domCommon_color_or_texture_type *cot, 
         osg::Material::ColorMode channel, osg::Material *mat, domCommon_float_or_param_type *fop = NULL, osg::StateAttribute **sa = NULL );
     osg::StateAttribute *processTransparencySettings( domCommon_transparent_type *ctt, domCommon_float_or_param_type *pTransparency, osg::StateSet *ss );
+    bool GetFloat4Param(xsNCName Reference, domFloat4 &f4);
+    bool GetFloatParam(xsNCName Reference, domFloat &f);
 
     osg::StateAttribute *processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex );
 
@@ -164,6 +171,7 @@ protected:
 
     int m_numlights;
 
+    domInstance_effect *currentInstance_effect;
     domEffect *currentEffect;
 
     std::map< domGeometry*, osg::Node* > geometryMap;

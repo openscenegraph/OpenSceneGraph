@@ -23,9 +23,13 @@ daeReader::daeReader(DAE *dae_) : dae(dae_),
                   rootNode(NULL),
                   m_numlights(0),
                   currentEffect(NULL),
+                  currentInstance_effect(NULL),
                   geometryMap(),
                   materialMap(),
-                  m_AuthoringTool(UNKNOWN)
+                  m_AuthoringTool(UNKNOWN),
+                  m_AssetUnitName("meter"),
+                  m_AssetUnitMeter(1.0),
+                  m_AssetUp_axis(UPAXISTYPE_Y_UP)
 {
 }
 
@@ -40,26 +44,16 @@ bool daeReader::convert( const std::string &fileURI )
 
     daeInt count, result;
 
-
-    std::string fURI;
-    if ( fileURI[1] == ':' )
-    {
-        fURI = "/" + fileURI;
-    }
-    else
-    {
-        fURI = fileURI;
-    }
-    daeInt res = dae->load( fURI.c_str() );
+    daeInt res = dae->load( fileURI.c_str() );
     
     if( res != DAE_OK && res != DAE_ERR_COLLECTION_ALREADY_EXISTS) 
     {
         osg::notify( osg::WARN ) << "Load failed in COLLADA DOM" << std::endl;
         return false;
     }
-    osg::notify( osg::INFO ) << "URI loaded: " << fURI << std::endl;
+    osg::notify( osg::INFO ) << "URI loaded: " << fileURI << std::endl;
 
-    domCOLLADA* document = dae->getDom( fURI.c_str() );
+    domCOLLADA* document = dae->getDom( fileURI.c_str() );
 
     if ( !document->getScene() || !document->getScene()->getInstance_visual_scene() ) 
     {
@@ -81,6 +75,15 @@ bool daeReader::convert( const std::string &fileURI )
                     m_AuthoringTool = GOOGLE_SKETCHUP;
             }
         }
+        if (document->getAsset()->getUnit())
+        {
+            if (NULL != document->getAsset()->getUnit()->getName())
+                m_AssetUnitName = std::string(document->getAsset()->getUnit()->getName());
+            if (0 != document->getAsset()->getUnit()->getMeter())
+                m_AssetUnitMeter = document->getAsset()->getUnit()->getMeter();
+        }
+        if (document->getAsset()->getUp_axis())
+            m_AssetUp_axis = document->getAsset()->getUp_axis()->getValue();
     }
 
     if (dae->getDatabase()) {
@@ -190,7 +193,7 @@ osg::Node* daeReader::processNode( domNode *node )
 
     // <rotate>
     osg::Quat osgRot;
-    for (int i=0; i<node->getRotate_array().getCount(); i++) 
+    for (unsigned int i=0; i<node->getRotate_array().getCount(); i++) 
     {
         daeSmartRef<domRotate> rot = node->getRotate_array().get(i);
         if (rot->getValue().getCount() != 4 ) {
@@ -208,7 +211,7 @@ osg::Node* daeReader::processNode( domNode *node )
 
     // <scale>
     osg::Vec3 osgScale = osg::Vec3(1.0, 1.0, 1.0);
-    for (int i=0; i<node->getScale_array().getCount(); i++) 
+    for (unsigned int i=0; i<node->getScale_array().getCount(); i++) 
     {
         daeSmartRef<domScale> scale = node->getScale_array().get(i);
 
@@ -226,7 +229,7 @@ osg::Node* daeReader::processNode( domNode *node )
 
     // <translate>
     osg::Vec3 osgTrans = osg::Vec3(0.0, 0.0, 0.0);
-    for (int i=0; i<node->getTranslate_array().getCount(); i++) 
+    for (unsigned int i=0; i<node->getTranslate_array().getCount(); i++) 
     {
         daeSmartRef<domTranslate> trans = node->getTranslate_array().get(i);
 

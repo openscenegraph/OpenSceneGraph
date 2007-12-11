@@ -19,67 +19,29 @@
 #include <osgDB/Registry>
 
 #include <OpenThreads/ScopedLock>
-#include <OpenThreads/ReentrantMutex>
 
+#include "ReaderWriterDAE.h"
 #include "daeReader.h"
 #include "daeWriter.h"
 
-#define EXTENSION_NAME "dae"
+#ifdef WIN32
+#include "windows.h"
+#endif
 
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
-
-///////////////////////////////////////////////////////////////////////////
-// OSG reader/writer plugin for the COLLADA 1.4.x ".dae" format.
-// See http://collada.org/ and http://khronos.org/collada/
-
-class ReaderWriterDAE : public osgDB::ReaderWriter
-{
-public:
-    ReaderWriterDAE() : _dae(NULL)
-    {
-    }
-
-    ~ReaderWriterDAE()
-    {
-        if(_dae != NULL){
-            delete _dae;
-            DAE::cleanup();
-            _dae = NULL;
-        }
-    }
-
-    const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }
-
-    bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
-    }
-
-    ReadResult readNode(const std::string&, const Options*) const;
-
-    WriteResult writeNode(const osg::Node&, const std::string&, const Options*) const;
-  
-private:
-
-    mutable DAE *_dae;
-    mutable OpenThreads::ReentrantMutex _serializerMutex;
-
-};
-
-///////////////////////////////////////////////////////////////////////////
 
 osgDB::ReaderWriter::ReadResult
 ReaderWriterDAE::readNode(const std::string& fname,
         const osgDB::ReaderWriter::Options* options) const
 {
     SERIALIZER();
-   
-    DAE* daeptr = 0L;
-   
-    if ( options ) {        
-        daeptr = (DAE*) options->getPluginData("DAE");        
-    }
 
+    bool bOwnDAE = false;
+    DAE* pDAE = NULL;
+   
+    if ( options )
+        pDAE = (DAE*) options->getPluginData("DAE");        
+    
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
 
@@ -88,31 +50,39 @@ ReaderWriterDAE::readNode(const std::string& fname,
 
     osg::notify(osg::INFO) << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
 
-   
-    if (daeptr == NULL) {
-        if (_dae == NULL) 
-                _dae = new DAE();
-        daeptr = _dae;
+    if (NULL == pDAE)
+    {
+        bOwnDAE = true;
+        pDAE = new DAE;
     }
 
-    osgdae::daeReader daeReader(daeptr) ;
-    std::string fileURI( osgDB::convertFileNameToUnixStyle(fileName) );
+    osgdae::daeReader daeReader(pDAE) ;
+
+    // Convert file name to URI
+    std::string fileURI = ConvertFilePathToColladaCompatibleURI(fileName);
+
     if ( ! daeReader.convert( fileURI ) )
     {
         osg::notify( osg::WARN ) << "Load failed in COLLADA DOM conversion" << std::endl;
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
-    if ( options ) {
-        // return DAE* used
-        options->setPluginData("DAE", daeptr);
-        // and filename document was stored as in database, does not have to be
-        // the same as fname
-        options->setPluginData("DAE-DocumentFileName", ( fileURI[1] == ':' ?  
-              (void*) new std::auto_ptr<std::string>(new std::string('/'+fileURI)) :
-              (void*) new std::auto_ptr<std::string>(new std::string(fileURI)) ) 
-        );
-    }
+    if ( options )
+    {
+        // Return the document URI
+        if (options->getPluginData("DAE-DocumentURI"))
+            *(std::string*)options->getPluginData("DAE-DocumentURI") = fileURI;
+        // Return some additional information about the document
+        if (options->getPluginData("DAE-AssetUnitName"))
+             *(std::string*)options->getPluginData("DAE-AssetUnitName") = daeReader.m_AssetUnitName;
+        if (options->getPluginData("DAE-AssetUnitMeter"))
+            *(float*)options->getPluginData("DAE-AssetUnitMeter") = daeReader.m_AssetUnitMeter;
+        if (options->getPluginData("DAE-AssetUp_axis"))
+            *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.m_AssetUp_axis;
+   }
+
+    if (bOwnDAE)
+        delete pDAE;
 
     osg::Node* rootNode( daeReader.getRootNode() );
     return rootNode;
@@ -126,44 +96,48 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 {
     SERIALIZER();
 
-    DAE* daeptr = 0L;
+    bool bOwnDAE = false;
+    DAE* pDAE = NULL;
 
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
 
-    if ( options ) {        
-        daeptr = (DAE*) options->getPluginData("DAE");        
-    }
-
     // Process options
     bool usePolygon(false);
+    bool GoogleMode(false);
     if( options )
     {
-      std::istringstream iss( options->getOptionString() );
-      std::string opt;
+        pDAE = (DAE*) options->getPluginData("DAE");        
+        std::istringstream iss( options->getOptionString() );
+        std::string opt;
 
       while( std::getline( iss, opt, ',' ) )
       {
         if( opt == "polygon")  usePolygon = true;
+        else if (opt == "GoogleMode") GoogleMode = true;
         else
         {
           osg::notify(osg::WARN)
               << "\n" "COLLADA dae plugin: unrecognized option \"" << opt << "\"\n"
               << "comma-delimited options:\n"
               << "\tpolygon = use polygons instead of polylists for element\n"
+              << "\tGoogleMode = write files suitable for use by Google products\n"
               << "example: osgviewer -O polygon bar.dae" "\n"
               << std::endl;
         }
       }
     }
     
-    if (daeptr == NULL) {
-        if (_dae == NULL) 
-                _dae = new DAE();
-        daeptr = _dae;
+    if (NULL == pDAE)
+    {
+        bOwnDAE = true;
+        pDAE = new DAE;
     }
 
-    osgdae::daeWriter daeWriter(daeptr, fname, usePolygon );
+    // Convert file name to URI
+    std::string fileURI = ConvertFilePathToColladaCompatibleURI(fname);
+
+    osgdae::daeWriter daeWriter(pDAE, fileURI, usePolygon, GoogleMode );
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 
@@ -171,24 +145,39 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     if ( daeWriter.isSuccess() )
     {
         if ( daeWriter.writeFile() )
-        {
             retVal = WriteResult::FILE_SAVED;
-        }
     }
     
-    if ( options ) {
-        // return DAE* used
-        options->setPluginData("DAE", daeptr);
-
-        // saving filename so read and write work the same way,
-        // this could be skipped since write does not currently modify the
-        // filename which load might do (under windows for example)
-        options->setPluginData("DAE-DocumentFileName", (void*) new
-                std::auto_ptr<std::string>(new std::string(fname)));
+    if ( options )
+    {
+        if (!bOwnDAE)
+        {
+            // Return the document URI used so that users of an external DAE object
+            // can locate the correct database
+            if (options->getPluginData("DAE-DocumentURI"))
+                *(std::string*)options->getPluginData("DAE-DocumentURI") = fileURI;
+        }
     }
+
+    if (bOwnDAE)
+        delete pDAE;
 
     return retVal;
 }
+
+std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::string& FilePath)
+{
+    std::string fileURI = osgDB::convertFileNameToUnixStyle(osgDB::getRealPath(FilePath));
+    // fileURI should now contain a canonical absolute path name with UNIX style component separators
+#if defined(WIN32)  && !defined(__CYGWIN__)
+    // Check for windows drive designator or UNC path
+    if ((fileURI[1] == ':') || ((fileURI[0] == '/') && (fileURI[1] == '/')))
+        fileURI.insert(0, 1, '/');
+#endif
+    fileURI.insert(0, "file://");
+    return fileURI;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 // Add ourself to the Registry to instantiate the reader/writer.

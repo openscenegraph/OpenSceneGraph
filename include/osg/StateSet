@@ -259,8 +259,10 @@ class OSG_EXPORT StateSet : public Object
 
 
         void setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value);
+        void removeAssociatedModes(const StateAttribute* attribute);
 
         void setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value);
+        void removeAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute);
 
 
 

@@ -14,6 +14,7 @@
 #include <limits.h>
 
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #ifdef WIN32
     #include <windows.h>
@@ -238,9 +239,34 @@ std::string osgDB::concatPaths(const std::string& left, const std::string& right
 std::string osgDB::getRealPath(const std::string& path)
 {
 #if defined(WIN32)  && !defined(__CYGWIN__)
-    TCHAR retbuf[MAX_PATH + sizeof(TCHAR)];
-    GetFullPathName(path.c_str(), sizeof(retbuf), retbuf, 0);
-    return std::string(retbuf);
+    // Not unicode compatible should give an error if UNICODE defined
+    char retbuf[MAX_PATH + 1];
+    char tempbuf1[MAX_PATH + 1];
+    GetFullPathName(path.c_str(), sizeof(retbuf), retbuf, NULL);
+    // Force drive letter to upper case
+    if ((retbuf[1] == ':') && islower(retbuf[0]))
+        retbuf[0] = _toupper(retbuf[0]);
+    if (fileExists(std::string(retbuf)))
+    {
+        // Canonicalise the full path
+        GetShortPathName(retbuf, tempbuf1, sizeof(tempbuf1));
+        GetLongPathName(tempbuf1, retbuf, sizeof(retbuf));
+        return std::string(retbuf);
+    }
+    else
+    {
+        // Canonicalise the directories
+        std::string FilePath = getFilePath(retbuf);
+        char tempbuf2[MAX_PATH + 1];
+        if (0 == GetShortPathName(FilePath.c_str(), tempbuf1, sizeof(tempbuf1)))
+            return std::string(retbuf);
+        if (0 == GetLongPathName(tempbuf1, tempbuf2, sizeof(tempbuf2)))
+            return std::string(retbuf);
+        FilePath = std::string(tempbuf2);
+        FilePath.append("\\");
+        FilePath.append(getSimpleFileName(std::string(retbuf)));
+        return FilePath;
+    }
 #else
     char resolved_path[PATH_MAX];
     char* result = realpath(path.c_str(), resolved_path);

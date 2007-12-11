@@ -1471,15 +1471,52 @@ class SetAssociateModesHelper : public StateAttribute::ModeUsage
         unsigned int                _unit;
 };
 
+class RemoveAssociateModesHelper : public StateAttribute::ModeUsage
+{
+    public:
+        RemoveAssociateModesHelper(StateSet* stateset, unsigned int unit=0):
+            _stateset(stateset),
+            _unit(unit) {}
+            
+        virtual ~RemoveAssociateModesHelper() {}
+        
+        virtual void usesMode(StateAttribute::GLMode mode)
+        {
+            _stateset->removeMode(mode);
+        }
+        
+        virtual void usesTextureMode(StateAttribute::GLMode mode)
+        {
+           _stateset->removeTextureMode(_unit, mode);
+        }
+        
+       
+        
+        StateSet*                   _stateset;
+        unsigned int                _unit;
+};
+
 void StateSet::setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value)
 {
     SetAssociateModesHelper helper(this,value);
     attribute->getModeUsage(helper);
 }
 
+void StateSet::removeAssociatedModes(const StateAttribute* attribute)
+{
+    RemoveAssociateModesHelper helper(this);
+    attribute->getModeUsage(helper);
+}
+
 void StateSet::setAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute, StateAttribute::GLModeValue value)
 {
     SetAssociateModesHelper helper(this,value,unit);
+    attribute->getModeUsage(helper);
+}
+
+void StateSet::removeAssociatedTextureModes(unsigned int unit,const StateAttribute* attribute)
+{
+    RemoveAssociateModesHelper helper(this,unit);
     attribute->getModeUsage(helper);
 }
 

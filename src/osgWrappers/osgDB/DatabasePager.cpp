@@ -327,6 +327,24 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                   __void__updateDatabasePagerThreadBlock,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(bool, isCompiled, IN, osg::Texture *, texture,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__isCompiled__osg_Texture_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, isCompiled, IN, osg::StateSet *, stateSet,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__isCompiled__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, isCompiled, IN, const osg::Drawable *, drawable,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__isCompiled__C5_osg_Drawable_P1,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(void, removeExpiredSubgraphs, IN, double, currentFrameTime,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,

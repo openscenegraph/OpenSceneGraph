@@ -131,6 +131,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          __void__attachShader__unsigned_int__GLuint,
 	          "For a given GL context, attach a glShader to a glProgram. ",
 	          "");
+	I_Method2(void, detachShader, IN, unsigned int, contextID, IN, GLuint, program,
+	          Properties::NON_VIRTUAL,
+	          __void__detachShader__unsigned_int__GLuint,
+	          "For a given GL context, detach a glShader to a glProgram. ",
+	          "");
 	I_Method2(bool, getGlShaderInfoLog, IN, unsigned int, contextID, IN, std::string &, log,
 	          Properties::NON_VIRTUAL,
 	          __bool__getGlShaderInfoLog__unsigned_int__std_string_R1,

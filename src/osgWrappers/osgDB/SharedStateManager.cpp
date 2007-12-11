@@ -13,6 +13,7 @@
 #include <OpenThreads/Mutex>
 #include <osg/Geode>
 #include <osg/Node>
+#include <osg/StateSet>
 #include <osgDB/SharedStateManager>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -65,6 +66,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	I_Method1(void, apply, IN, osg::Geode &, geode,
 	          Properties::VIRTUAL,
 	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(bool, isShared, IN, osg::StateSet *, stateSet,
+	          Properties::NON_VIRTUAL,
+	          __bool__isShared__osg_StateSet_P1,
 	          "",
 	          "");
 	I_ProtectedMethod2(void, process, IN, osg::StateSet *, ss, IN, osg::Object *, parent,

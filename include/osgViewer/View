@@ -56,10 +56,6 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         virtual void setStartTick(osg::Timer_t tick);
         osg::Timer_t getStartTick() const { return _startTick; }
 
-        void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
-        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
-        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
-
         Scene* getScene() { return _scene.get(); }
         const Scene* getScene() const { return _scene.get(); }
 
@@ -207,7 +203,6 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
 
         osg::Timer_t                            _startTick;
-        osg::ref_ptr<osg::FrameStamp>           _frameStamp;
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;

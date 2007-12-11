@@ -71,6 +71,15 @@ class OSG_EXPORT View : public virtual osg::Object
         /** Get the const master camera of the view. */        
         const osg::Camera* getCamera() const { return _camera.get(); }
 
+        /** Set the frame stamp of the view. */        
+        void setFrameStamp(osg::FrameStamp* fs) { _frameStamp = fs; }
+
+        /** Get the frame stamp of the view. */        
+        osg::FrameStamp* getFrameStamp() { return _frameStamp.get(); }
+
+        /** Get the frame stamp of the view. */        
+        const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
+
         /** Slave allows one to up a camera that follows the master with a local offset to the project and view matrices.*/
         struct Slave
         {
@@ -130,13 +139,15 @@ class OSG_EXPORT View : public virtual osg::Object
 
         virtual osg::GraphicsOperation* createRenderer(osg::Camera*) { return 0; }
 
-        LightingMode                _lightingMode;
-        osg::ref_ptr<osg::Light>    _light;
+        LightingMode                    _lightingMode;
+        osg::ref_ptr<osg::Light>        _light;
 
-        osg::ref_ptr<osg::Camera>   _camera;
+        osg::ref_ptr<osg::Camera>       _camera;
         
-        typedef std::vector<Slave>  Slaves;
-        Slaves                      _slaves;
+        typedef std::vector<Slave>      Slaves;
+        Slaves                          _slaves;
+
+        osg::ref_ptr<osg::FrameStamp>   _frameStamp;
 };
 
 }

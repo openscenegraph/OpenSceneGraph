@@ -27,42 +27,42 @@
 namespace osgParticle
 {
 
-    /** A sector-shaped particle placer.
+    /** A box-shaped particle placer.
         This placer sets the initial position of incoming particle by choosing a random position 
-        within a circular sector; this sector is defined by three parameters: a <I>center point</I>, 
-        which is inherited directly from <CODE>osgParticle::CenteredPlacer</CODE>, a range of values 
-        for <I>radius</I>, and a range of values for the <I>central angle</I> (sometimes called    <B>phi</B>).        
+        within the volume of a box; this placer is defined by four parameters: a <I>center point</I>, 
+        which is inherited directly from <CODE>osgParticle::CenteredPlacer</CODE>, and three ranges of values 
+    for the valid <I>X</I>, <I>Y</I>, and <I>Z</I> coordinates.
     */
     class BoxPlacer: public CenteredPlacer {
     public:
         inline BoxPlacer();
         inline BoxPlacer(const BoxPlacer& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
-        /// Get the range of possible values for radius.
+        /// Get the range of possible values along the X axis.
         inline const rangef& getXRange() const;
         
-        /// Set the range of possible values for radius.
+        /// Set the range of possible values along the X axis.
         inline void setXRange(const rangef& r);
         
-        /// Set the range of possible values for radius.
+        /// Set the range of possible values along the X axis.
         inline void setXRange(float r1, float r2);
         
-        /// Get the range of possible values for the central angle.
+        /// Get the range of possible values along the Y axis.
         inline const rangef& getYRange() const;        
         
-        /// Set the range of possible values for the central angle.
+        /// Set the range of possible values along the Y axis.
         inline void setYRange(const rangef& r);
         
-        /// Set the range of possible values for the central angle.
+        /// Set the range of possible values along the Y axis.
         inline void setYRange(float r1, float r2);    
 
-        /// Get the range of possible values for the height.
+        /// Get the range of possible values along the Z axis.
         inline const rangef& getZRange() const;   
 
-        /// Set the range of possible values for the height.
+        /// Set the range of possible values along the Z axis.
         inline void setZRange(const rangef& r);
         
-        /// Set the range of possible values for the height.
+        /// Set the range of possible values along the Z axis.
         inline void setZRange(float r1, float r2);  
 
         META_Object(osgParticle, BoxPlacer);

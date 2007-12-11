@@ -229,6 +229,8 @@ class TemplateArray : public Array, public std::vector<T>
         virtual unsigned int    getTotalDataSize() const { return this->size()*sizeof(T); }
         virtual unsigned int    getNumElements() const { return this->size(); }
 
+        typedef T ElementDataType; // expose T
+
     protected:
     
         virtual ~TemplateArray() {}
@@ -314,6 +316,8 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
         virtual unsigned int    getNumElements() const { return this->size(); }
 
         virtual unsigned int    index(unsigned int pos) const { return (*this)[pos]; }
+
+        typedef T ElementDataType; // expose T
 
     protected:
     

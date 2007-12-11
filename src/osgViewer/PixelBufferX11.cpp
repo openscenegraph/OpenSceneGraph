@@ -164,9 +164,31 @@ void PixelBufferX11::init()
         _valid = false;
         return;
     }
-    
+
     // osg::notify(osg::NOTICE)<<"GLX extension, errorBase="<<errorBase<<" eventBase="<<eventBase<<std::endl;
 
+    int major, minor;
+    if (glXQueryVersion(_display, &major, &minor) == False)
+    {
+        osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
+                                 << " can not query GLX version." << std::endl;
+        XCloseDisplay( _display );
+        _display = 0;
+        _valid = false;
+        return;
+    }
+
+    // We need to have at least GLX 1.3 to use getFBConfigFromVisual and glXCreatePbuffer
+    if (major < 1 || (major == 1 && minor < 3))
+    {
+        osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
+                                 << " GLX version " << major << "." << minor << " is too little." << std::endl;
+        XCloseDisplay( _display );
+        _display = 0;
+        _valid = false;
+        return;
+    }
+    
     if (!createVisualInfo())
     {
         _traits->red /= 2; 

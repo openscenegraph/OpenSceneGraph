@@ -12,6 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/CopyOp>
+#include <osg/FrameStamp>
 #include <osg/Light>
 #include <osg/Matrix>
 #include <osg/Matrixd>
@@ -113,6 +114,21 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	          __C5_osg_Camera_P1__getCamera,
 	          "Get the const master camera of the view. ",
 	          "");
+	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
+	          Properties::NON_VIRTUAL,
+	          __void__setFrameStamp__osg_FrameStamp_P1,
+	          "Set the frame stamp of the view. ",
+	          "");
+	I_Method0(osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
+	          __osg_FrameStamp_P1__getFrameStamp,
+	          "Get the frame stamp of the view. ",
+	          "");
+	I_Method0(const osg::FrameStamp *, getFrameStamp,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_FrameStamp_P1__getFrameStamp,
+	          "Get the frame stamp of the view. ",
+	          "");
 	I_MethodWithDefaults2(bool, addSlave, IN, osg::Camera *, camera, , IN, bool, useMastersSceneData, true,
 	                      Properties::NON_VIRTUAL,
 	                      __bool__addSlave__osg_Camera_P1__bool,
@@ -172,6 +188,9 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 __void__setCamera__osg_Camera_P1);
+	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
+	                 __osg_FrameStamp_P1__getFrameStamp, 
+	                 __void__setFrameStamp__osg_FrameStamp_P1);
 	I_SimpleProperty(osg::Light *, Light, 
 	                 __osg_Light_P1__getLight, 
 	                 __void__setLight__osg_Light_P1);

@@ -13,7 +13,6 @@
 #include <osg/Camera>
 #include <osg/CopyOp>
 #include <osg/DisplaySettings>
-#include <osg/FrameStamp>
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
@@ -98,21 +97,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_Method0(osg::Timer_t, getStartTick,
 	          Properties::NON_VIRTUAL,
 	          __osg_Timer_t__getStartTick,
-	          "",
-	          "");
-	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
-	          Properties::NON_VIRTUAL,
-	          __void__setFrameStamp__osg_FrameStamp_P1,
-	          "",
-	          "");
-	I_Method0(osg::FrameStamp *, getFrameStamp,
-	          Properties::NON_VIRTUAL,
-	          __osg_FrameStamp_P1__getFrameStamp,
-	          "",
-	          "");
-	I_Method0(const osg::FrameStamp *, getFrameStamp,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_FrameStamp_P1__getFrameStamp,
 	          "",
 	          "");
 	I_Method0(osgViewer::Scene *, getScene,
@@ -344,9 +328,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
-	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
-	                 __osg_FrameStamp_P1__getFrameStamp, 
-	                 __void__setFrameStamp__osg_FrameStamp_P1);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);

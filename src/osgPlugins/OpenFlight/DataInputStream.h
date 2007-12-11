@@ -1,13 +1,12 @@
 //
 // OpenFlight® loader for OpenSceneGraph
 //
-//  Copyright (C) 2005-2006  Brede Johansen
+//  Copyright (C) 2005-2007  Brede Johansen
 //
 
 #ifndef FLT_DATAINPUTSTREAM
 #define FLT_DATAINPUTSTREAM 1
 
-//#include <iostream>        // for ifstream
 #include <istream>
 #include <string>
 #include <osg/Vec3f>
@@ -46,9 +45,6 @@ class DataInputStream : public std::istream
         int16 peekInt16();
 
     protected:
-
-        virtual std::istream& vread(char_type *str, std::streamsize count);
-        virtual std::istream& vforward(std::istream::off_type off);
 
         bool                _byteswap;
 };

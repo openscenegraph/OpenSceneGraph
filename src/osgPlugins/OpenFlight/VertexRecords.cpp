@@ -1,7 +1,7 @@
 //
 // OpenFlight® loader for OpenSceneGraph
 //
-//  Copyright (C) 2005-2006  Brede Johansen
+//  Copyright (C) 2005-2007  Brede Johansen
 //
 
 #include "Record.h"
@@ -228,7 +228,7 @@ class AbsoluteVertex : public Record
             vertex.setCoord(osg::Vec3(x,y,z) * document.unitScale());
 
             // optional texture coordinates
-            if (in.tellg() < in.getEndOfRecord())
+            if (in.getRecordBodySize() > (4+4+4))
             {
                 osg::Vec2f uv = in.readVec2f();
                 vertex.setUV(0,uv);
@@ -276,7 +276,7 @@ class ShadedVertex : public Record
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
 
             // optional texture coordinates
-            if (in.tellg() < in.getEndOfRecord())
+            if (in.getRecordBodySize() > (4+4+4+1+1+2))
             {
                 osg::Vec2f uv = in.readVec2f();
                 vertex.setUV(0,uv);
@@ -324,7 +324,7 @@ class NormalVertex : public Record
                 vertex.setColor(getColorFromPool(colorIndex, document.getColorPool()));   // Color from pool
 
             // optional texture coordinates
-            if (in.tellg() < in.getEndOfRecord())
+            if (in.getRecordBodySize() > (4+4+4+1+1+2+3*8))
             {
                 osg::Vec2f uv = in.readVec2f();
                 vertex.setUV(0,uv);

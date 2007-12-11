@@ -1,7 +1,7 @@
 //
 // OpenFlight® loader for OpenSceneGraph
 //
-//  Copyright (C) 2005-2006  Brede Johansen
+//  Copyright (C) 2005-2007  Brede Johansen
 //
 
 #include <iostream>
@@ -16,48 +16,19 @@ using namespace std;
 
 RecordInputStream::RecordInputStream(std::streambuf* sb):
     DataInputStream(sb),
-    _recordSize(0),
-    _recordOffset(0)
+    _recordSize(0)
 {}
-
-
-std::istream& RecordInputStream::vread(char_type *str, std::streamsize count)
-{
-    if ((_recordSize>0) && (_recordOffset+count > _recordSize))
-    {
-        setstate(ios::failbit); // end-of-record (EOR)
-        return *this;
-    }
-
-    _recordOffset += count;
-    return DataInputStream::vread(str,count);
-}
-
-
-std::istream& RecordInputStream::vforward(std::istream::off_type off)
-{
-    if ((_recordSize>0) && (_recordOffset+off > _recordSize))
-    {
-        setstate(ios::failbit); // end-of-record (EOR)
-        return *this;
-    }
-
-    _recordOffset += off;
-    return DataInputStream::vforward(off);
-}
-
 
 bool RecordInputStream::readRecord(Document& document)
 {
-    // Get current read position in stream.
-    _start = tellg();
-    _recordOffset = 0;
+    opcode_type opcode = (opcode_type)readUInt16();
+    size_type   size   = (size_type)readUInt16();
 
-    // Get record header without bounds check.
-    _recordSize = 0;               // disable boundary check
-    uint16 opcode = readUInt16();
-    int size = (int)readUInt16();
+    return readRecordBody(opcode, size, document);
+}
 
+bool RecordInputStream::readRecordBody(opcode_type opcode, size_type size, Document& document)
+{
     // Correct endian error in Creator v2.5 gallery models.
     // Last pop level record in little-endian.
     const uint16 LITTLE_ENDIAN_POP_LEVEL_OP = 0x0B00;
@@ -70,29 +41,12 @@ bool RecordInputStream::readRecord(Document& document)
 
     _recordSize = size;
 
-    // Update end-of-record
-    _end = _start + (std::istream::pos_type)size;
-
-#if 0
-    // TODO: Peek at next opcode looking for continuation record.
-    seekg(_end, std::ios_base::beg);
-    if (_istream->fail())
-        return false;
-
-    int16 nextOpcode = readUInt16();
-    seekg(_start+(std::istream::pos_type)4, std::ios_base::beg);
-    if (nextOpcode == CONTINUATION_OP)
-    {
-
-    }
-#endif
-
     // Get prototype record
     Record* prototype = Registry::instance()->getPrototype((int)opcode);
 
     if (prototype)
     {
-#if 0 //def _DEBUG
+#if 0 // for debuging
         {
             for (int i=0; i<document.level(); i++)
                 cout << "   ";
@@ -101,17 +55,11 @@ bool RecordInputStream::readRecord(Document& document)
             cout << endl;
         }
 #endif
+        // Create from prototype.
+        osg::ref_ptr<Record> record = prototype->cloneType();
 
-        {
-            // Create from prototype.
-            osg::ref_ptr<Record> record = prototype->cloneType();
-
-            // Read record
-            record->read(*this,document);
-        }
-
-        // Clear failbit, it's used for end-of-record testing.
-        clear(rdstate() & ~std::ios::failbit);
+        // Read record
+        record->read(*this,document);
     }
     else // prototype not found
     {
@@ -120,9 +68,6 @@ bool RecordInputStream::readRecord(Document& document)
         // Add to registry so we only have to see this error message once.
         Registry::instance()->addPrototype(opcode,new DummyRecord);
     }
-
-    // Move to beginning of next record
-    seekg(_end, std::ios_base::beg);
 
     return good();
 }

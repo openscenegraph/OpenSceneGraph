@@ -307,6 +307,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	          __GLint__getAttribLocation__C5_std_string_R1,
 	          "",
 	          "");
+	I_Method1(void, addShaderToAttach, IN, osg::Shader *, shader,
+	          Properties::NON_VIRTUAL,
+	          __void__addShaderToAttach__Shader_P1,
+	          "",
+	          "");
+	I_Method1(void, addShaderToDetach, IN, osg::Shader *, shader,
+	          Properties::NON_VIRTUAL,
+	          __void__addShaderToDetach__Shader_P1,
+	          "",
+	          "");
 	I_SimpleProperty(const osg::Program::ActiveVarInfoMap &, ActiveAttribs, 
 	                 __C5_ActiveVarInfoMap_R1__getActiveAttribs, 
 	                 0);

@@ -99,6 +99,9 @@ class OSG_EXPORT Shader : public osg::Object
         /** For a given GL context, attach a glShader to a glProgram */
         void attachShader(unsigned int contextID, GLuint program) const;
 
+        /** For a given GL context, detach a glShader to a glProgram */
+        void detachShader(unsigned int contextID, GLuint program) const;
+
         /** Query InfoLog from a glShader */
         bool getGlShaderInfoLog(unsigned int contextID, std::string& log) const;
 

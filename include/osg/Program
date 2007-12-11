@@ -203,6 +203,16 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 inline GLint getUniformLocation( const std::string& name ) const { ActiveVarInfoMap::const_iterator itr = _uniformInfoMap.find(name); return (itr!=_uniformInfoMap.end()) ? itr->second._location : -1; }
                 inline GLint getAttribLocation( const std::string& name ) const { ActiveVarInfoMap::const_iterator itr = _attribInfoMap.find(name); return (itr!=_attribInfoMap.end()) ? itr->second._location : -1; }
 
+                inline void addShaderToAttach(Shader *shader)
+                {
+                    _shadersToAttach.push_back(shader);
+                }
+
+                inline void addShaderToDetach(Shader *shader)
+                {
+                    _shadersToDetach.push_back(shader);
+                }
+      
             protected:        /*methods*/
                 ~PerContextProgram();
 
@@ -225,6 +235,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 typedef std::pair<const osg::Uniform*, unsigned int> UniformModifiedCountPair;
                 typedef std::vector<UniformModifiedCountPair> LastAppliedUniformList;
                 mutable LastAppliedUniformList _lastAppliedUniformList;
+      
+                typedef std::vector< ref_ptr<Shader> > ShaderList;
+                ShaderList _shadersToDetach;
+                ShaderList _shadersToAttach;
 
             private:
                 PerContextProgram();        // disallowed
@@ -246,7 +260,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
         typedef std::vector< ref_ptr<Shader> > ShaderList;
         ShaderList _shaderList;
-
 
     private:
         Program& operator=(const Program&);        // disallowed

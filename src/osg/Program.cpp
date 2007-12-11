@@ -2100,6 +2100,12 @@ bool Program::addShader( Shader* shader )
         if( shader == _shaderList[i].get() ) return false;
     }
 
+    // Add shader to PCPs
+    for( unsigned int cxt=0; cxt < _pcpList.size(); ++cxt )
+    {
+        if( _pcpList[cxt].valid() ) _pcpList[cxt]->addShaderToAttach( shader );
+    }
+
     shader->addProgramRef( this );
     _shaderList.push_back( shader );
     dirtyProgram();
@@ -2118,12 +2124,20 @@ bool Program::removeShader( Shader* shader )
     {
         if( shader == itr->get() )
         {
+            // Remove shader from PCPs
+            for( unsigned int cxt=0; cxt < _pcpList.size(); ++cxt )
+            {
+                if( _pcpList[cxt].valid() ) _pcpList[cxt]->addShaderToDetach( shader );
+            }
+
             shader->removeProgramRef( this );
             _shaderList.erase(itr);
+
             dirtyProgram();
             return true;
         }
     }
+
     return false;
 }
 
@@ -2196,9 +2210,10 @@ Program::PerContextProgram* Program::getPCP(unsigned int contextID) const
         // attach all PCSs to this new PCP
         for( unsigned int i=0; i < _shaderList.size(); ++i )
         {
-            _shaderList[i]->attachShader( contextID, _pcpList[contextID]->getHandle() );
+            _pcpList[contextID]->addShaderToAttach( _shaderList[i].get() );
         }
     }
+
     return _pcpList[contextID].get();
 }
 
@@ -2265,6 +2280,20 @@ void Program::PerContextProgram::linkProgram()
         << " id=" << _glProgramHandle
         << " contextID=" << _contextID
         <<  std::endl;
+
+    // Detach removed shaders
+    for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
+    {
+        _shadersToDetach[i]->detachShader( _contextID, _glProgramHandle );
+    }
+    _shadersToDetach.clear();
+    
+    // Attach new shaders
+    for( unsigned int i=0; i < _shadersToAttach.size(); ++i )
+    {
+        _shadersToAttach[i]->attachShader( _contextID, _glProgramHandle );
+    }
+    _shadersToAttach.clear();
 
     _uniformInfoMap.clear();
     _attribInfoMap.clear();

@@ -240,6 +240,12 @@ void Shader::attachShader(unsigned int contextID, GLuint program) const
     if( pcs ) pcs->attachShader( program );
 }
 
+void Shader::detachShader(unsigned int contextID, GLuint program) const
+{
+    PerContextShader* pcs = getPCS( contextID );
+    if( pcs ) pcs->detachShader( program );
+}
+
 
 bool Shader::getGlShaderInfoLog(unsigned int contextID, std::string& log) const
 {

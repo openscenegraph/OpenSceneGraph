@@ -1,7 +1,7 @@
 //
 // OpenFlight® loader for OpenSceneGraph
 //
-//  Copyright (C) 2005-2006  Brede Johansen
+//  Copyright (C) 2005-2007  Brede Johansen
 //
 
 #include "DataInputStream.h"
@@ -18,92 +18,131 @@ DataInputStream::DataInputStream(std::streambuf* sb):
     _byteswap = osg::getCpuByteOrder() == osg::LittleEndian;
 }
 
+
 int8 DataInputStream::readInt8(int8 def)
 {
-    int8 d=def;
-    vread((char*)&d, sizeof(int8));
+    int8 d;
+    read((char*)&d, sizeof(int8));
+
+    if (!good())
+        return def;
+
     return d;
 }
 
 
 uint8 DataInputStream::readUInt8(uint8 def)
 {
-    uint8 d=def;
-    vread((char*)&d, sizeof(uint8));
+    uint8 d;
+    read((char*)&d, sizeof(uint8));
+
+    if (!good())
+        return def;
+
     return d;
 }
 
 
 int16 DataInputStream::readInt16(int16 def)
 {
-    int16 d=def;
-    vread((char*)&d, sizeof(int16));
-    if (_byteswap && good())
+    int16 d;
+    read((char*)&d, sizeof(int16));
+
+    if (!good())
+        return def;
+
+    if (_byteswap)
         osg::swapBytes2((char *)&d);
+
     return d;
 }
 
 
 uint16 DataInputStream::readUInt16(uint16 def)
 {
-    uint16 d=def;
-    vread((char*)&d, sizeof(uint16));
-    if (_byteswap && good())
+    uint16 d;
+    read((char*)&d, sizeof(uint16));
+
+    if (!good())
+        return def;
+
+    if (_byteswap)
         osg::swapBytes2((char *)&d);
+
     return d;
 }
 
 
 int32 DataInputStream::readInt32(int32 def)
 {
-    int32 d=def;
-    vread((char*)&d, sizeof(int32));
-    if (_byteswap && good())
+    int32 d;
+    read((char*)&d, sizeof(int32));
+
+    if (!good())
+        return def;
+
+    if (_byteswap)
         osg::swapBytes4((char *)&d);
+
     return d;
 }
 
 
 uint32 DataInputStream::readUInt32(uint32 def)
 {
-    uint32 d=def;
-    vread((char*)&d, sizeof(uint32));
-    if (_byteswap && good())
+    uint32 d;
+    read((char*)&d, sizeof(uint32));
+
+    if (!good())
+        return def;
+
+    if (_byteswap)
         osg::swapBytes4((char *)&d);
+
     return d;
 }
 
 
 float32 DataInputStream::readFloat32(float32 def)
 {
-    float32 d=def;
-    vread((char*)&d, sizeof(float32));
-    if (_byteswap && good())
+    float32 d;
+    read((char*)&d, sizeof(float32));
+
+    if (!good())
+        return def;
+
+    if (_byteswap)
         osg::swapBytes4((char*)&d);
+
     return d;
 }
 
 
 float64 DataInputStream::readFloat64(float64 def)
 {
-    float64 d=def;
-    vread((char*)&d, sizeof(float64));
-    if (_byteswap && good())
+    float64 d;
+    read((char*)&d, sizeof(float64));
+
+    if (!good())
+        return def;
+
+    if (_byteswap)
         osg::swapBytes8((char*)&d);
+
     return d;
 }
 
 
 void DataInputStream::readCharArray(char* data, int size)
 {
-    vread(data,size);
+    read(data,size);
 }
 
 
 std::string DataInputStream::readString(int size)
 {
     char* buf = new char[size+1];
-    vread(buf,size);
+    read(buf,size);
     buf[size] = '\0';
     std::string str = buf;
     delete [] buf;
@@ -188,10 +227,11 @@ int16 DataInputStream::peekInt16()
 
 std::istream& DataInputStream::forward(std::istream::off_type off)
 {
-    return vforward(off);
+    //return vforward(off);
+    return seekg(off, std::ios_base::cur);
 }
 
-
+#if 0
 std::istream& DataInputStream::vread(char_type *str, std::streamsize count)
 {
     return read(str,count);
@@ -202,4 +242,4 @@ std::istream& DataInputStream::vforward(std::istream::off_type off)
 {
     return seekg(off, std::ios_base::cur);
 }
-
+#endif

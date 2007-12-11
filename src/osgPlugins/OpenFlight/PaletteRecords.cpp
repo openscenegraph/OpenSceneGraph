@@ -34,10 +34,15 @@ protected:
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         uint32 paletteSize = in.readUInt32();
-        in.moveToStartOfRecord();
+
+        // Enteries in vertex pool found by offset from start of this record.
+        const int RECORD_HEADER_SIZE = 4;
+        const int OFFSET = RECORD_HEADER_SIZE+sizeof(paletteSize);
 
         std::string buffer(paletteSize,'\0');
-        in.read(&(*buffer.begin()),paletteSize);
+        in.read(&buffer[OFFSET], paletteSize-OFFSET);
+
+        // Keep a copy of the vertex pool in memory for later reference.
         document.setVertexPool(new VertexPool(buffer));
     }
 };

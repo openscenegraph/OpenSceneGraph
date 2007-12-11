@@ -1,7 +1,7 @@
 //
 // OpenFlight loader for OpenSceneGraph
 //
-//  Copyright (C) 2005-2006  Brede Johansen
+//  Copyright (C) 2005-2007  Brede Johansen
 //
 
 #include <stdexcept>
@@ -229,12 +229,81 @@ class FLTReaderWriter : public ReaderWriter
                 }
             }
 
+            const int RECORD_HEADER_SIZE = 4;
+            opcode_type continuationOpcode = -1;
+            std::string continuationBuffer;
+
+            while (fin.good() && !document.done())
             {
-                // read records
-                flt::RecordInputStream recordStream(fin.rdbuf());
-                while (recordStream.good() && !document.done())
+                // The continuation record complicates things a bit.
+
+                // Get current read position in stream.
+                std::istream::pos_type pos = fin.tellg();
+
+                // get opcode and size
+                flt::DataInputStream dataStream(fin.rdbuf());
+                opcode_type opcode = (opcode_type)dataStream.readUInt16();
+                size_type   size   = (size_type)dataStream.readUInt16();
+
+                // variable length record complete?
+                if (!continuationBuffer.empty() && opcode!=CONTINUATION_OP)
                 {
-                    recordStream.readRecord(document);
+                    // parse variable length record
+                    std::stringbuf sb(continuationBuffer);
+                    flt::RecordInputStream recordStream(&sb);
+                    recordStream.readRecordBody(continuationOpcode, continuationBuffer.length(), document);
+
+                    continuationOpcode = -1;
+                    continuationBuffer.clear();
+                }
+
+                // variable length record use continuation buffer in case next
+                // record is a continuation record.
+                if (opcode==EXTENSION_OP ||
+                    opcode==NAME_TABLE_OP ||
+                    opcode==LOCAL_VERTEX_POOL_OP ||
+                    opcode==MESH_PRIMITIVE_OP)
+                {
+                    continuationOpcode = opcode;
+
+                    if (size > RECORD_HEADER_SIZE)
+                    {
+                        // Put record in buffer.
+                        std::string buffer((std::string::size_type)size-RECORD_HEADER_SIZE,'\0');
+                        fin.read(&buffer[0], size-RECORD_HEADER_SIZE);
+
+                        // Can't parse it until we know we have the complete record.
+                        continuationBuffer = buffer;
+                    }
+                }
+                else if (opcode==CONTINUATION_OP)
+                {
+                    if (size > RECORD_HEADER_SIZE)
+                    {
+                        std::string buffer((std::string::size_type)size-RECORD_HEADER_SIZE,'\0');
+                        fin.read(&buffer[0], size-RECORD_HEADER_SIZE);
+
+                        // The record continues.
+                        continuationBuffer.append(buffer);
+                    }
+                }
+                else if (opcode==VERTEX_PALETTE_OP)
+                {
+                    // Vertex Palette needs the file stream as it reads beyond the current record.
+                    flt::RecordInputStream recordStream(fin.rdbuf());
+                    recordStream.readRecordBody(opcode, size, document);
+                }
+                else // normal (fixed size) record.
+                {
+                    // Put record in buffer.
+                    std::string buffer((std::string::size_type)size,'\0');
+                    if (size > RECORD_HEADER_SIZE)
+                        fin.read(&buffer[0], size-RECORD_HEADER_SIZE);
+
+                    // Parse buffer.
+                    std::stringbuf sb(buffer);
+                    flt::RecordInputStream recordStream(&sb);
+                    recordStream.readRecordBody(opcode, size, document);
                 }
             }
 

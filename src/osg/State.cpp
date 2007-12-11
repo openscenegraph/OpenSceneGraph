@@ -742,12 +742,18 @@ void State::initializeExtensionProcs()
     _glDisableVertexAttribArray =  (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     _glBindBuffer = (BindBufferProc) osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB");
 
-    _glMaxTextureCoords = 1;
-    glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
-
     _glMaxTextureUnits = 1;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-    _glMaxTextureUnits = maximum(_glMaxTextureCoords,_glMaxTextureUnits);
+
+    if (osg::getGLVersionNumber() < 2.0)
+    {
+        _glMaxTextureCoords = _glMaxTextureUnits;
+    }
+    else
+    {
+        glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
+        _glMaxTextureUnits = maximum(_glMaxTextureCoords,_glMaxTextureUnits);
+    }
 
     _extensionProcsInitialized = true;
 }
